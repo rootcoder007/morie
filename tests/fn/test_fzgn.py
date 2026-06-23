@@ -1,6 +1,7 @@
 """Tests for fzgn.fauzi_gn_edgeworth_correction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzgn import fauzi_gn_edgeworth_correction
 
 
@@ -12,7 +13,7 @@ def test_fzgn_basic():
     bandwidth = 0.3
     result = fauzi_gn_edgeworth_correction(x, sigma_n, e_moments, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzgn_edge():

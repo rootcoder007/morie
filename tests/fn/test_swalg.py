@@ -1,5 +1,5 @@
 """Tests for morie.fn.swalg."""
-import numpy as np
+
 from morie.fn.swalg import smith_waterman
 
 
@@ -26,6 +26,7 @@ def test_swalg_no_match():
 
 def test_cheatsheet():
     from morie.fn.swalg import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

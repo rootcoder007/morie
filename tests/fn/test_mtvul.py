@@ -1,6 +1,7 @@
 """Test mtvul."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtvul import mtvul
 
 

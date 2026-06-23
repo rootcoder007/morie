@@ -1,6 +1,7 @@
 """Tests for morie.fn.cltrn -- Cluster trial sample size."""
 
 import pytest
+
 from morie.fn.cltrn import cluster_trial_size
 
 

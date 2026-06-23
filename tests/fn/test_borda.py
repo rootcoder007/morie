@@ -1,5 +1,7 @@
 """Tests for morie.fn.borda — Borda count."""
+
 import numpy as np
+
 from morie.fn.borda import borda
 
 

@@ -1,9 +1,10 @@
 """Tests for morie.fn.prgef — program effect."""
 
-import pytest
 import numpy as np
-from morie.fn.prgef import program_effect
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.prgef import program_effect
 
 
 class TestProgramEffect:

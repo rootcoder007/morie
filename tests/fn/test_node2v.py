@@ -1,6 +1,7 @@
 """Tests for node2v.node2vec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.node2v import node2vec
 
 
@@ -12,7 +13,7 @@ def test_node2v_basic():
     dim = np.random.default_rng(42).normal(0, 1, 100)
     result = node2vec(G, p, q, dim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_node2v_edge():

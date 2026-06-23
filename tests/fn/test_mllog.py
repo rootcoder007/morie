@@ -1,6 +1,7 @@
 """Tests for mllog.ml_log_likelihood_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mllog import ml_log_likelihood_regression
 
 
@@ -12,7 +13,7 @@ def test_mllog_basic():
     sigma2 = np.random.default_rng(42).normal(0, 1, 100)
     result = ml_log_likelihood_regression(y, X, beta, sigma2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mllog_edge():

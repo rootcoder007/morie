@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pass@k for code generation: expected fraction of at-least-one-correct in k samples."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_pass_at_k"]
@@ -34,7 +36,14 @@ def kamath_pass_at_k(n, c, k):
     n = len(n)
     result = float(np.mean(n))
     se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pass@k for code generation: expected fraction of at-least-one-correct in k samples"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pass@k for code generation: expected fraction of at-least-one-correct in k samples",
+        }
+    )
 
 
 def cheatsheet():

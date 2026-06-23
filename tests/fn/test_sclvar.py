@@ -1,6 +1,7 @@
 """Tests for sclvar.selection_coefficient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sclvar import selection_coefficient
 
 
@@ -11,7 +12,7 @@ def test_sclvar_basic():
     Ne = np.random.default_rng(42).normal(0, 1, 100)
     result = selection_coefficient(freqs, generations, Ne)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sclvar_edge():

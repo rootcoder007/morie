@@ -76,8 +76,7 @@ You can quit at any prompt (press q) and resume by re-running
     _print_step(
         1,
         "What does morie know how to do?",
-        "morie ships ~23 analysis modules.  Each has a short description and a "
-        "list of output files.  Let's see them:",
+        "morie ships ~23 analysis modules.  Each has a short description and a list of output files.  Let's see them:",
     )
     ans = _prompt()
     if ans == "q":
@@ -122,7 +121,7 @@ You can quit at any prompt (press q) and resume by re-running
         4,
         "What did we just produce?",
         f"The module wrote ~13 CSVs to:\n\n    {out_dir}\n\n"
-        f"The one that answers \"how many participants do I need?\" is "
+        f'The one that answers "how many participants do I need?" is '
         f"`power_two_proportion_gender.csv`.  Let's peek at it:",
     )
     ans = _prompt()
@@ -160,7 +159,7 @@ You can quit at any prompt (press q) and resume by re-running
         "You now have everything you need to:\n\n"
         "  • Run any of the 23 modules:   morie run-module <name>\n"
         "  • Pull any TPS or CPADS feed:  morie pull <name>\n"
-        "  • Ask the agent for help:      morie ask \"...\"\n"
+        '  • Ask the agent for help:      morie ask "..."\n'
         "  • Browse the cheat sheet:      morie cheatsheet\n"
         "  • Read the full tutorial:      cat TUTORIAL.md\n"
         "  • File an issue if stuck:      https://github.com/rootcoder007/morie/issues\n\n"

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsrf -- Spatial random forest"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsrf import spatial_rf
 

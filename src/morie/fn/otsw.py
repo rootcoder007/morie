@@ -1,6 +1,7 @@
 """Sliced Wasserstein distance via random projections."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_sliced_wasserstein"]
@@ -36,7 +37,9 @@ def ot_sliced_wasserstein(X, Y, p, n_proj):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sliced Wasserstein distance via random projections"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sliced Wasserstein distance via random projections"}
+    )
 
 
 def cheatsheet():

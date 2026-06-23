@@ -1,7 +1,9 @@
 """Test sample_covariance (scov)."""
+
 import numpy as np
-from morie.fn.scov import sample_covariance, scov
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.scov import sample_covariance, scov
 
 
 class TestSampleCovariance:

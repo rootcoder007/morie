@@ -2,6 +2,8 @@
 """Regularised lower incomplete gamma."""
 
 from scipy.special import gammainc
+
+
 def igamma(a: float, x: float) -> float:
     """Regularised lower incomplete gamma function P(a, x).
 

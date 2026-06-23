@@ -1,6 +1,7 @@
 """ICC(A,1) absolute agreement single rater."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["icc_absolute_agreement"]
@@ -34,7 +35,9 @@ def icc_absolute_agreement(y, subject, rater):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ICC(A,1) absolute agreement single rater"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "ICC(A,1) absolute agreement single rater"}
+    )
 
 
 def cheatsheet():

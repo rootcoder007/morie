@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.qreg import quantile_regression, qreg
+
 from morie.fn._containers import RegressionResult
+from morie.fn.qreg import qreg, quantile_regression
 
 
 @pytest.fixture()
@@ -29,6 +30,7 @@ class TestQreg:
     def test_median_similar_to_ols(self, qreg_data):
         """Median regression (tau=0.5) should give similar results to OLS for symmetric errors."""
         from morie.fn.rey import linear_regression
+
         ols = linear_regression(qreg_data, y="y", x="x")
         med = quantile_regression(qreg_data, y="y", x="x", tau=0.5)
         # Slopes should be within 0.5 of each other

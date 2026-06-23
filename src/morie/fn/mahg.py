@@ -1,6 +1,7 @@
 """Hedges' g standardised mean difference (small-sample bias correction)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_hedges_g"]
@@ -40,7 +41,14 @@ def ma_hedges_g(m1, m2, s1, s2, n1, n2):
     n = len(m1)
     result = float(np.mean(m1))
     se = float(np.std(m1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hedges' g standardised mean difference (small-sample bias correction)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Hedges' g standardised mean difference (small-sample bias correction)",
+        }
+    )
 
 
 def cheatsheet():

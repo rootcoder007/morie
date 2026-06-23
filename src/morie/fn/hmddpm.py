@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Denoising diffusion probabilistic model (DDPM)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddpm"]
@@ -38,7 +40,9 @@ def geron_ddpm(X, T, beta_schedule, epochs, lr):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Denoising diffusion probabilistic model (DDPM)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Denoising diffusion probabilistic model (DDPM)"}
+    )
 
 
 def cheatsheet():

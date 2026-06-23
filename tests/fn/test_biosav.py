@@ -1,8 +1,9 @@
 """Tests for morie.fn.biosav -- Biot-Savart magnetic field."""
 
 import numpy as np
-from morie.fn.biosav import biot_savart, biosav
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.biosav import biosav, biot_savart
 
 
 class TestBiosav:

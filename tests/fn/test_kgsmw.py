@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgsmw -- Simple kriging weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgsmw import sk_weights
 

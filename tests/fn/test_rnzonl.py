@@ -1,6 +1,8 @@
 """Tests for rnzonl."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnzonl import rnzonl
 
 
@@ -28,4 +30,5 @@ def test_rnzonl_no_data():
 
 def test_rnzonl_alias():
     from morie.fn.rnzonl import rnzonl
+
     assert rnzonl is rnzonl

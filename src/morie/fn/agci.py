@@ -64,4 +64,4 @@ agci = agresti_coull
 
 
 def cheatsheet() -> str:
-    return 'agresti_coull({}) -> Agresti-Coull interval for binomial proportion.'
+    return "agresti_coull({}) -> Agresti-Coull interval for binomial proportion."

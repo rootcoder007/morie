@@ -1,6 +1,7 @@
 r"""Prefix tuning obj.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prefix_tuning_obj"]

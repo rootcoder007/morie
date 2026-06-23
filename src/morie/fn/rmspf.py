@@ -7,11 +7,10 @@ Adaptive learning rate method with exponential moving average of squared gradien
 
 import numpy as np
 
-__all__ = ['rmspf']
+__all__ = ["rmspf"]
 
 
-def rmspf(f, grad_f, x0, learning_rate=0.01, decay=0.9, epsilon=1e-8, max_iter=1000,
-          full_output=False, seed=None):
+def rmspf(f, grad_f, x0, learning_rate=0.01, decay=0.9, epsilon=1e-8, max_iter=1000, full_output=False, seed=None):
     """
     RMSprop optimizer for unconstrained minimization.
 
@@ -81,19 +80,11 @@ def rmspf(f, grad_f, x0, learning_rate=0.01, decay=0.9, epsilon=1e-8, max_iter=1
         residual = np.linalg.norm(x_new - x)
         if residual < 1e-6:
             if full_output:
-                return x_new, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x_new)
-                }
+                return x_new, {"iterations": iteration + 1, "converged": True, "final_value": f(x_new)}
             return x_new
 
         x = x_new
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

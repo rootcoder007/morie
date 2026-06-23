@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet spike-and-slab prior for function estimation."""
+
 import numpy as np
 from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_wavelet_prior"]
@@ -13,9 +15,9 @@ def _haar_dwt(y):
     n = len(y)
     # Pad to next power of 2.
     L = 1
-    while L < n:
+    while n > L:
         L *= 2
-    if L > n:
+    if n < L:
         y = np.concatenate([y, np.zeros(L - n)])
     coeffs = []
     cur = y.copy()
@@ -24,7 +26,7 @@ def _haar_dwt(y):
         d = (cur[0::2] - cur[1::2]) / np.sqrt(2.0)
         coeffs.append(d)
         cur = a
-    coeffs.append(cur)         # scaling coefficient(s) at the coarsest level
+    coeffs.append(cur)  # scaling coefficient(s) at the coarsest level
     return coeffs, L
 
 
@@ -33,7 +35,7 @@ def _haar_idwt(coeffs, L):
     from coarsest (last) to finest (first) and the scaling coefficient
     (last entry of `coeffs`)."""
     cur = coeffs[-1]
-    details = list(coeffs[:-1])[::-1]   # finest first -> reverse to coarsest first
+    details = list(coeffs[:-1])[::-1]  # finest first -> reverse to coarsest first
     for d in details[::-1]:
         # Wait -- coeffs[:-1] is [d_level1 (finest), d_level2, ...]
         # We need to inverse from coarsest to finest, so iterate in reverse.
@@ -90,12 +92,14 @@ def ghosal_wavelet_prior(x, pi=0.5, sigma=None, noise=None):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 4:
-        return RichResult(payload={
-            "estimate": float(np.mean(x)) if n else float("nan"),
-            "fitted": x.tolist(),
-            "n": n,
-            "method": "Wavelet prior (n<4)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float(np.mean(x)) if n else float("nan"),
+                "fitted": x.tolist(),
+                "n": n,
+                "method": "Wavelet prior (n<4)",
+            }
+        )
     coeffs, L = _haar_dwt(x)
     # Detail coefficients only (not the scaling); first list entry is finest.
     finest = coeffs[0]
@@ -105,41 +109,43 @@ def ghosal_wavelet_prior(x, pi=0.5, sigma=None, noise=None):
         noise = max(noise, 1e-6)
     if sigma is None:
         all_d = np.concatenate([c.ravel() for c in coeffs[:-1]])
-        sigma = float(np.sqrt(max(np.var(all_d) - noise ** 2, 1e-6)))
+        sigma = float(np.sqrt(max(np.var(all_d) - noise**2, 1e-6)))
     sigma = max(float(sigma), 1e-6)
     incl_list = []
     new_coeffs = []
     for d in coeffs[:-1]:
-        var_slab = sigma ** 2 + noise ** 2
+        var_slab = sigma**2 + noise**2
         log_slab = norm.logpdf(d, loc=0, scale=np.sqrt(var_slab))
         log_spike = norm.logpdf(d, loc=0, scale=noise)
         a = np.log(pi) + log_slab
         b = np.log(1 - pi) + log_spike
         m = np.maximum(a, b)
         w = np.exp(a - m) / (np.exp(a - m) + np.exp(b - m))
-        shrink = sigma ** 2 / var_slab
+        shrink = sigma**2 / var_slab
         new_d = w * shrink * d
         incl_list.append(w)
         new_coeffs.append(new_d)
     new_coeffs.append(coeffs[-1])
     # Reconstruct
     cur = new_coeffs[-1]
-    for d in new_coeffs[-2::-1]:    # coarsest detail -> finest
+    for d in new_coeffs[-2::-1]:  # coarsest detail -> finest
         out = np.empty(len(cur) + len(d))
         out[0::2] = (cur + d) / np.sqrt(2.0)
         out[1::2] = (cur - d) / np.sqrt(2.0)
         cur = out
     fitted = cur[:n]
     incl_mean = float(np.mean(np.concatenate(incl_list)))
-    return RichResult(payload={
-        "estimate": float(np.mean(fitted)),
-        "fitted": fitted.tolist(),
-        "noise": float(noise),
-        "sigma": float(sigma),
-        "inclusion": incl_mean,
-        "n": n,
-        "method": "Haar-wavelet spike-and-slab BayesThresh",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(fitted)),
+            "fitted": fitted.tolist(),
+            "noise": float(noise),
+            "sigma": float(sigma),
+            "inclusion": incl_mean,
+            "n": n,
+            "method": "Haar-wavelet spike-and-slab BayesThresh",
+        }
+    )
 
 
 def cheatsheet():

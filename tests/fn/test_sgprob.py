@@ -1,6 +1,8 @@
 """Tests for sgprob."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgprob import sgprob
 
 
@@ -28,4 +30,5 @@ def test_sgprob_no_data():
 
 def test_sgprob_alias():
     from morie.fn.sgprob import sgprob
+
     assert sgprob is sgprob

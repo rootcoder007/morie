@@ -1,6 +1,7 @@
 """Tests for morisp.morans_i."""
+
 import numpy as np
-import pytest
+
 from morie.fn.morisp import morans_i
 
 
@@ -10,7 +11,7 @@ def test_morisp_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = morans_i(x, W)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_morisp_edge():

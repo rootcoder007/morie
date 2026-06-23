@@ -1,13 +1,11 @@
 """Tests for morie.fn.tq3 — 3-bit TurboQuant."""
 
 import numpy as np
-import pytest
 
 from morie.fn.tq3 import turboquant_3bit
 
 
 class TestTurboquant3bit:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = turboquant_3bit(x)

@@ -38,4 +38,5 @@ def test_shr_positive(cr_data):
 
 def test_cheatsheet():
     from morie.fn.fgreg import cheatsheet
+
     assert "fine-gray" in cheatsheet().lower()

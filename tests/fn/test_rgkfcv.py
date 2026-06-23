@@ -1,6 +1,7 @@
 """Tests for rgkfcv.rangayyan_kfold_cv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgkfcv import rangayyan_kfold_cv
 
 
@@ -12,7 +13,7 @@ def test_rgkfcv_basic():
     classifier = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_kfold_cv(X, y, k, classifier)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgkfcv_edge():

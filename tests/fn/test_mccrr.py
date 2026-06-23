@@ -1,5 +1,5 @@
 """Tests for mcc_score."""
-import pytest
+
 from morie.fn.mccrr import mcc_score, mccrr
 
 

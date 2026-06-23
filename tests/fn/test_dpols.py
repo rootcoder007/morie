@@ -1,6 +1,7 @@
 """Tests for dpols.dp_linear_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpols import dp_linear_regression
 
 
@@ -11,7 +12,7 @@ def test_dpols_basic():
     epsilon = 1e-6
     result = dp_linear_regression(X, y, epsilon)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_dpols_edge():

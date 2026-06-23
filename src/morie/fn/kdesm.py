@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def kde_smooth(x, bandwidth=None, n_points: int = 256, **kwargs) -> DescriptiveResult:
     """
     Kernel density estimation with a Gaussian kernel.

@@ -1,6 +1,7 @@
 """Tests for morie.fn.dsmrt -- Direct standardization."""
 
 import pytest
+
 from morie.fn.dsmrt import direct_standardization
 
 

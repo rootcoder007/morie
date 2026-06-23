@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Finite random series prior: f = sum_{k<=K} beta_k phi_k, K ~ pi_n adaptive."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_rnd_series_pr"]
@@ -30,7 +32,14 @@ def ghosal_rnd_series_pr(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Finite random series prior: f = sum_{k<=K} beta_k phi_k, K ~ pi_n adaptive"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Finite random series prior: f = sum_{k<=K} beta_k phi_k, K ~ pi_n adaptive",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for matvar.matern_variogram_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matvar import matern_variogram_model
 
 
@@ -13,7 +14,7 @@ def test_matvar_basic():
     nu = np.random.default_rng(42).normal(0, 1, 100)
     result = matern_variogram_model(h, c0, c, a, nu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_matvar_edge():

@@ -1,6 +1,8 @@
 """Tests for nnsib."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nnsib import nnsib
 
 
@@ -28,4 +30,5 @@ def test_nnsib_no_data():
 
 def test_nnsib_alias():
     from morie.fn.nnsib import nnsib
+
     assert nnsib is nnsib

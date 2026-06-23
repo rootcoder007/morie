@@ -1,6 +1,5 @@
 """Tests for morie.fn.cosmx -- comoving distance."""
 
-import numpy as np
 import pytest
 
 from morie.fn.cosmx import cosmx
@@ -9,8 +8,7 @@ from morie.fn.cosmx import cosmx
 def test_returns_dict():
     r = cosmx(z=1.0)
     assert isinstance(r, dict)
-    for k in ("comoving_distance_Mpc", "luminosity_distance_Mpc",
-              "angular_diameter_distance_Mpc", "lookback_time_Gyr"):
+    for k in ("comoving_distance_Mpc", "luminosity_distance_Mpc", "angular_diameter_distance_Mpc", "lookback_time_Gyr"):
         assert k in r
 
 

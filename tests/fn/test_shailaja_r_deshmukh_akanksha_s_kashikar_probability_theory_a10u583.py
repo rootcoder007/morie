@@ -1,7 +1,10 @@
 """Tests for shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10u583.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_unnumbered_583."""
+
 import numpy as np
-import pytest
-from morie.fn.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10u583 import shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_unnumbered_583
+
+from morie.fn.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10u583 import (
+    shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_unnumbered_583,
+)
 
 
 def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10u583_basic():
@@ -9,7 +12,7 @@ def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10u583_basi
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_10_unnumbered_583(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a10u583_edge():

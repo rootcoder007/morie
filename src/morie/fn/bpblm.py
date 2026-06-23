@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bits-per-byte evaluation metric (Gao et al. 2020, The Pile)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -39,9 +40,7 @@ def bits_per_byte(x, n_bytes: int | None = None):
     return RichResult(
         title="Bits per Byte (Gao 2020)",
         summary_lines=[("BPB", bpb), ("n_tokens", n_tok), ("n_bytes", nb)],
-        payload={"value": float(bpb), "nll_nats": total_nats,
-                 "n_tokens": n_tok, "n_bytes": nb,
-                 "method": "BPB"},
+        payload={"value": float(bpb), "nll_nats": total_nats, "n_tokens": n_tok, "n_bytes": nb, "method": "BPB"},
     )
 
 

@@ -1,5 +1,7 @@
 """Tests for morie.fn.irtva -- per-legislator IRT variance."""
+
 import numpy as np
+
 from morie.fn.irtva import irt_variance_legislator, irtva
 
 

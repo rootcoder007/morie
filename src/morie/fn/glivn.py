@@ -91,10 +91,12 @@ def glivn(x: np.ndarray, cdf=None, *, cdf_fn: object | None = None, alpha: float
 
     true_vals = np.asarray(cdf_fn(x_sorted))
 
-    sup_dev = float(max(
-        np.max(np.abs(ecdf_vals - true_vals)),
-        np.max(np.abs(ecdf_prev - true_vals)),
-    ))
+    sup_dev = float(
+        max(
+            np.max(np.abs(ecdf_vals - true_vals)),
+            np.max(np.abs(ecdf_prev - true_vals)),
+        )
+    )
 
     dkw_bound = np.sqrt(np.log(2.0 / alpha) / (2.0 * n))
 

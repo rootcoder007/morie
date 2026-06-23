@@ -1,6 +1,7 @@
 """Tests for rrblp.rrblup_marker_effects."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rrblp import rrblup_marker_effects
 
 
@@ -11,7 +12,7 @@ def test_rrblp_basic():
     lam = 0.1
     result = rrblup_marker_effects(y, Z, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rrblp_edge():

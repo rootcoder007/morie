@@ -1,6 +1,7 @@
 """Test vmzrn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmzrn import vmzrn
 
 

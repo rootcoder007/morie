@@ -39,4 +39,5 @@ def test_grid_length(surv_data):
 
 def test_cheatsheet():
     from morie.fn.smhaz import cheatsheet
+
     assert "smooth" in cheatsheet().lower()

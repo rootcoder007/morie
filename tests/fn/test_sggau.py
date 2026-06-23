@@ -1,5 +1,7 @@
 """Tests for Gaussian variogram."""
+
 import numpy as np
+
 from morie.fn.sggau import sggau
 
 

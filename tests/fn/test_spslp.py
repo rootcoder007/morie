@@ -1,7 +1,9 @@
 """Test spectral_slope (spslp)."""
+
 import numpy as np
-from morie.fn.spslp import spectral_slope, spslp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spslp import spectral_slope, spslp
 
 
 class TestSpslp:

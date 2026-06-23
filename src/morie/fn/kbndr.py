@@ -4,12 +4,23 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kbndr"]
 
 
-def kbndr(data: np.ndarray, x_eval: np.ndarray | None = None, cdf=None, *, bw: float | None = None, lower: float = 0.0, upper: float = np.inf, method: str = "reflection", n_grid: int = 512) -> dict:
+def kbndr(
+    data: np.ndarray,
+    x_eval: np.ndarray | None = None,
+    cdf=None,
+    *,
+    bw: float | None = None,
+    lower: float = 0.0,
+    upper: float = np.inf,
+    method: str = "reflection",
+    n_grid: int = 512,
+) -> dict:
     r"""
     Boundary-corrected kernel density estimator.
 
@@ -71,7 +82,7 @@ def kbndr(data: np.ndarray, x_eval: np.ndarray | None = None, cdf=None, *, bw: f
 
     def _gauss_kde(pts, d):
         u = (pts[:, None] - d[None, :]) / bw
-        k = np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+        k = np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
         return k.mean(axis=1) / bw
 
     if method == "reflection":
@@ -90,6 +101,7 @@ def kbndr(data: np.ndarray, x_eval: np.ndarray | None = None, cdf=None, *, bw: f
         density[~mask] = 0.0
     elif method == "renormalization":
         from scipy.stats import norm
+
         density = _gauss_kde(x_eval, data)
         a_lo = (lower - data[None, :]) / bw if not np.isneginf(lower) else -np.inf
         a_hi = (upper - data[None, :]) / bw if not np.isinf(upper) else np.inf

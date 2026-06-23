@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmgmp -- Geometric Mean Probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmgmp import gmp_stat
 

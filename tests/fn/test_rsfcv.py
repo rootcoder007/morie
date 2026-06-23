@@ -1,6 +1,7 @@
 """Test rsfcv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsfcv import rsfcv
 
 

@@ -1,6 +1,7 @@
 """Tests for ghs011.ghosal_ch3_countable_dirichlet_marginal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs011 import ghosal_ch3_countable_dirichlet_marginal
 
 
@@ -11,7 +12,7 @@ def test_ghs011_basic():
     k = 5
     result = ghosal_ch3_countable_dirichlet_marginal(p_j, alpha_j, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs011_edge():

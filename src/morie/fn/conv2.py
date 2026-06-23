@@ -15,7 +15,7 @@ __all__ = ["conv2"]
 import numpy as np
 
 
-def conv2(x, kernel, padding='valid', stride=1):
+def conv2(x, kernel, padding="valid", stride=1):
     """
     2D convolution.
 
@@ -43,15 +43,15 @@ def conv2(x, kernel, padding='valid', stride=1):
     batch, height, width = x.shape
     k_h, k_w = kernel.shape
 
-    if padding == 'valid':
+    if padding == "valid":
         pad_h, pad_w = 0, 0
-    elif padding == 'same':
+    elif padding == "same":
         pad_h = (k_h - 1) // 2
         pad_w = (k_w - 1) // 2
     else:
         raise ValueError("padding must be 'valid' or 'same'")
 
-    x_padded = np.pad(x, ((0, 0), (pad_h, pad_h), (pad_w, pad_w)), mode='constant')
+    x_padded = np.pad(x, ((0, 0), (pad_h, pad_h), (pad_w, pad_w)), mode="constant")
     out_h = (x_padded.shape[1] - k_h) // stride + 1
     out_w = (x_padded.shape[2] - k_w) // stride + 1
 
@@ -59,8 +59,7 @@ def conv2(x, kernel, padding='valid', stride=1):
     for i in range(out_h):
         for j in range(out_w):
             output[:, i, j] = np.sum(
-                x_padded[:, i*stride:i*stride+k_h, j*stride:j*stride+k_w] * kernel,
-                axis=(1, 2)
+                x_padded[:, i * stride : i * stride + k_h, j * stride : j * stride + k_w] * kernel, axis=(1, 2)
             )
 
     return output

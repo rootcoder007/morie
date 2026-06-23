@@ -1,6 +1,7 @@
 """Tests for eslprt.esl_partial_dependence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslprt import esl_partial_dependence
 
 
@@ -11,7 +12,7 @@ def test_eslprt_basic():
     S = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_partial_dependence(model, X, S)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslprt_edge():

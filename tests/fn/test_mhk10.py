@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhk10 -- K10 score."""
 
 import pytest
+
 from morie.fn.mhk10 import k10_score
 
 

@@ -1,6 +1,7 @@
 """Tests for dctest.discontinuity_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dctest import discontinuity_test
 
 
@@ -11,7 +12,7 @@ def test_dctest_basic():
     time = np.linspace(0, 10, 100)
     result = discontinuity_test(y, D, time)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_dctest_edge():

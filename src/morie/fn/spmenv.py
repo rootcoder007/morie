@@ -1,5 +1,7 @@
 """Expected value and variance of Moran's I under randomization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_moran_expectation"]
@@ -31,7 +33,14 @@ def schabenberger_moran_expectation(x, w):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Expected value and variance of Moran's I under randomization"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Expected value and variance of Moran's I under randomization",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.cndrc — Condorcet winner."""
+
 import numpy as np
+
 from morie.fn.cndrc import cndrc
 
 

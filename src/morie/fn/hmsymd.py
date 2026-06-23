@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Symbolic differentiation: manipulate algebraic expressions analytically."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_symbolic_diff"]
@@ -32,7 +34,14 @@ def geron_symbolic_diff(expr, var):
     n = len(expr)
     result = float(np.mean(expr))
     se = float(np.std(expr, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Symbolic differentiation: manipulate algebraic expressions analytically"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Symbolic differentiation: manipulate algebraic expressions analytically",
+        }
+    )
 
 
 def cheatsheet():

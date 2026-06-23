@@ -15,6 +15,7 @@ is flagged rather than silently treated as green). Off by default
 because most contributors won't have a configured remote endpoint
 or the bundled local SQLite mirrors.
 """
+
 from __future__ import annotations
 
 import os
@@ -22,7 +23,6 @@ import os
 import pytest
 
 from morie import eval_pipeline as ep
-
 
 _GATES = ep.gates()
 STRICT = os.getenv("MORIE_PIPELINE_STRICT", "0") == "1"

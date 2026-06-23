@@ -32,36 +32,37 @@ def _step(label: str):
     print(f"\n{bar}\n{label}\n{bar}", flush=True)
 
 
-def otis_only(*, run_descriptive: bool = True,
-              run_churn: bool = True,
-              run_overlay: bool = False) -> dict[str, Any]:
+def otis_only(*, run_descriptive: bool = True, run_churn: bool = True, run_overlay: bool = False) -> dict[str, Any]:
     """Run OTIS-only analyses: 28 dataset descriptive + 6 Goffmanian
     churn tests."""
     out: dict[str, Any] = {}
     if run_descriptive:
         _step("OTIS descriptive (28 tables)")
         from . import otis_all_analyze
+
         out["descriptive"] = otis_all_analyze.analyze_all()
         print(f"  ✓ {len(out['descriptive'])} datasets")
     if run_churn:
         _step("OTIS Goffmanian churn (6 tests)")
         from . import otis_churn
+
         out["churn"] = otis_churn.analyze_all()
         print(f"  ✓ {len(out['churn'])} churn analyses")
     if run_overlay:
         _step("OTIS × TPS YoY overlay")
         from . import otis_tps_overlay
+
         out["overlay"] = otis_tps_overlay.analyze_all()
     return out
 
 
-def tps_only(category: str = "Assault",
-             *, sample_rows: int | None = 50_000) -> dict[str, Any]:
+def tps_only(category: str = "Assault", *, sample_rows: int | None = 50_000) -> dict[str, Any]:
     """Run TPS-only stack on one category."""
     _step(f"TPS analyses -- {category}")
     out: dict[str, Any] = {}
 
     from . import tps_all_analyze, tps_datasets, tps_spatial, tps_spatial_advanced, tps_stochastic, tps_temporal
+
     df = tps_datasets.load_tps_dataset(category, nrows=sample_rows)
     print(f"  loaded {len(df):,} rows for {category}")
 
@@ -84,8 +85,7 @@ def tps_only(category: str = "Assault",
     print("  [6/7] advanced spatial (Ripley K + Gi* + DBSCAN)")
     out["ripley_k"] = tps_spatial_advanced.ripley_k(df, ds_name=category)
     out["g_star"] = tps_spatial_advanced.getis_ord_g_star(df, ds_name=category)
-    out["dbscan"] = tps_spatial_advanced.dbscan_clusters(
-        df, ds_name=category, eps_km=0.3, min_samples=20)
+    out["dbscan"] = tps_spatial_advanced.dbscan_clusters(df, ds_name=category, eps_km=0.3, min_samples=20)
 
     print("  [7/7] stochastic physics (Hawkes + SARIMA + OU + FP)")
     out["stochastic"] = tps_stochastic.analyze(category)
@@ -97,6 +97,7 @@ def tps_only(category: str = "Assault",
 def overlay() -> dict[str, Any]:
     _step("OTIS × TPS overlay")
     from . import otis_tps_overlay
+
     return otis_tps_overlay.analyze_all()
 
 
@@ -105,14 +106,13 @@ def render_figures() -> dict[str, str]:
     Tries R/ggplot first, falls back to matplotlib if R unavailable."""
     _step("Render paper-205 figures (R/ggplot first)")
     import subprocess
+
     result = {}
     r_script = PROJECT / "r-package/morie/R/viz_ggplot.R"
     if r_script.exists():
         try:
-            cmd = ["Rscript", "-e",
-                   f'source("{r_script}"); morie_render_all()']
-            r = subprocess.run(cmd, capture_output=True, text=True,
-                               timeout=300, cwd=PROJECT)
+            cmd = ["Rscript", "-e", f'source("{r_script}"); morie_render_all()']
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd=PROJECT)
             print(r.stdout[-2000:])
             if r.returncode == 0:
                 result["r_render"] = "ok"
@@ -125,8 +125,7 @@ def render_figures() -> dict[str, str]:
     return result
 
 
-def full(sample_rows: int | None = 50_000,
-         tps_categories: list[str] | None = None) -> dict[str, Any]:
+def full(sample_rows: int | None = 50_000, tps_categories: list[str] | None = None) -> dict[str, Any]:
     """Run everything end-to-end on the bundled OTIS+TPS data.
 
     Wall-clock on a 2024 MacBook Air M2 / external VSR drive: ~5 min
@@ -137,15 +136,20 @@ def full(sample_rows: int | None = 50_000,
     print("=" * 60)
 
     out: dict[str, Any] = {}
-    out["otis"] = otis_only(run_descriptive=True, run_churn=True,
-                              run_overlay=True)
+    out["otis"] = otis_only(run_descriptive=True, run_churn=True, run_overlay=True)
 
     if tps_categories is None:
         # The 6 categories that have full TPS data + render cleanly
         tps_categories = [
-            "Assault", "AutoTheft", "BicycleTheft", "BreakandEnter",
-            "Robbery", "TheftFromMovingVehicle", "TheftOver",
-            "Homicides", "ShootingAndFirearmDiscarges",
+            "Assault",
+            "AutoTheft",
+            "BicycleTheft",
+            "BreakandEnter",
+            "Robbery",
+            "TheftFromMovingVehicle",
+            "TheftOver",
+            "Homicides",
+            "ShootingAndFirearmDiscarges",
         ]
     out["tps"] = {}
     for cat in tps_categories:

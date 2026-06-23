@@ -1,5 +1,7 @@
 """Tests for kriging conditional simulation."""
+
 import numpy as np
+
 from morie.fn.sgkcs import sgkcs
 
 
@@ -17,6 +19,7 @@ def test_sgkcs_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgkcs import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

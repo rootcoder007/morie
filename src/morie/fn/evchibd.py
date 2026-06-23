@@ -1,6 +1,7 @@
 """Asymptotic-independence diagnostic χ̄(u)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_chibar_dependence"]
@@ -34,7 +35,9 @@ def evt_chibar_dependence(x, y, u_grid):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Asymptotic-independence diagnostic χ̄(u)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Asymptotic-independence diagnostic χ̄(u)"}
+    )
 
 
 def cheatsheet():

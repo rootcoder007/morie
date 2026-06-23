@@ -1,13 +1,11 @@
 """Tests for morie.fn.unfrm — uniform quantizer."""
 
 import numpy as np
-import pytest
 
 from morie.fn.unfrm import uniform_quantize
 
 
 class TestUniformQuantize:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(100)
         res = uniform_quantize(x, bits=8)

@@ -1,6 +1,7 @@
 """Tests for gan_an.gan_anomaly."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gan_an import gan_anomaly
 
 
@@ -10,7 +11,7 @@ def test_gan_an_basic():
     gan = np.random.default_rng(42).normal(0, 1, 100)
     result = gan_anomaly(X, gan)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gan_an_edge():

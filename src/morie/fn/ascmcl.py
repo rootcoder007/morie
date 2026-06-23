@@ -1,6 +1,7 @@
 """Augmented Synthetic Control (Ben-Michael-Feller-Rothstein)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["augmented_synthetic_control"]
@@ -36,7 +37,14 @@ def augmented_synthetic_control(y, treated, controls, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Augmented Synthetic Control (Ben-Michael-Feller-Rothstein)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Augmented Synthetic Control (Ben-Michael-Feller-Rothstein)",
+        }
+    )
 
 
 def cheatsheet():

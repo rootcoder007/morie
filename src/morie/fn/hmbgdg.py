@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient of linear-regression MSE cost."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_batch_gd_grad"]
@@ -34,7 +36,9 @@ def geron_batch_gd_grad(X, y, theta):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient of linear-regression MSE cost"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Gradient of linear-regression MSE cost"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Goldman-Hodgkin-Katz (GHK) equation for resting membrane potential."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_goldman_eqn"]
@@ -38,7 +40,14 @@ def rangayyan_goldman_eqn(T, P_K, P_Na, P_Cl, ion_concs):
     n = int(T) if T.ndim == 0 else len(T)
     result = float(np.mean(T))
     se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Goldman-Hodgkin-Katz (GHK) equation for resting membrane potential"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Goldman-Hodgkin-Katz (GHK) equation for resting membrane potential",
+        }
+    )
 
 
 def cheatsheet():

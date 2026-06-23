@@ -1,6 +1,7 @@
 """Test gdlit."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdlit import gdlit
 
 

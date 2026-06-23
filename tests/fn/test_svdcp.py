@@ -1,8 +1,8 @@
 """Tests for morie.fn.svdcp -- SVD computation."""
 
 import numpy as np
+
 from morie.fn.svdcp import svd_compute, svdcp
-from morie.fn._containers import DescriptiveResult
 
 
 class TestSvdcp:

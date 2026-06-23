@@ -1,5 +1,7 @@
 """Test layer normalization."""
+
 import numpy as np
+
 from morie.fn.lnorm import lnorm
 
 

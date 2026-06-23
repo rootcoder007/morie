@@ -79,4 +79,4 @@ spectc = spectral_cluster
 
 
 def cheatsheet() -> str:
-    return 'spectral_cluster({}) -> Spectral clustering.'
+    return "spectral_cluster({}) -> Spectral clustering."

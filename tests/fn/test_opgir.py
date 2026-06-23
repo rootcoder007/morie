@@ -1,6 +1,7 @@
 """Test opgir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opgir import opgir
 
 

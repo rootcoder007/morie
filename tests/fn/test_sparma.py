@@ -1,5 +1,7 @@
 """Tests for morie.fn.sparma."""
+
 import numpy as np
+
 from morie.fn.sparma import sparma
 
 
@@ -17,6 +19,7 @@ def test_sparma_smoke():
 
 def test_cheatsheet():
     from morie.fn.sparma import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

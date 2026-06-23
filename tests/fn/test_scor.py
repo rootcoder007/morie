@@ -1,12 +1,12 @@
 """Tests for morie.fn.scor -- inter-subscale correlations."""
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 from morie.fn.scor import subscale_correlations
 
 
 class TestSubscaleCorrelations:
-
     def test_returns_dataframe(self, mapq_df):
         result = subscale_correlations(mapq_df)
         assert isinstance(result, pd.DataFrame)

@@ -1,6 +1,7 @@
 """Tests for morie.fn.stpwz -- Stepped-wedge design."""
 
 import pytest
+
 from morie.fn.stpwz import stepped_wedge_design
 
 

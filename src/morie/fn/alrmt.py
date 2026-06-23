@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Reward-model training via Bradley-Terry pair loss (Alammar framing)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_reward_model_training_bt"]
@@ -32,7 +34,14 @@ def alammar_reward_model_training_bt(scores_w, scores_l):
     n = len(scores_w)
     result = float(np.mean(scores_w))
     se = float(np.std(scores_w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reward-model training via Bradley-Terry pair loss (Alammar framing)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Reward-model training via Bradley-Terry pair loss (Alammar framing)",
+        }
+    )
 
 
 def cheatsheet():

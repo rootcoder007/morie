@@ -1,6 +1,7 @@
 """Tests for grgptl.geron_gpt_autoregressive_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grgptl import geron_gpt_autoregressive_loss
 
 
@@ -10,7 +11,7 @@ def test_grgptl_basic():
     targets = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_gpt_autoregressive_loss(logits, targets)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grgptl_edge():

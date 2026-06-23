@@ -42,12 +42,10 @@ Velleman, P.F. and Wilkinson, L. (1993). "Nominal, ordinal, interval,
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from morie.dataset_dictionary import ColumnSpec, DatasetSchema
-
 
 # ── Enums ──────────────────────────────────────────────────────────
 
@@ -95,10 +93,10 @@ class LevelOfMeasurement(str, Enum):
 class Cardinality(str, Enum):
     """Coarse cardinality classes, used to short-circuit slow methods."""
 
-    BINARY = "binary"             # exactly 2 distinct values
-    DISCRETE_LOW = "discrete_low"          # 3-10 distinct
-    DISCRETE_MEDIUM = "discrete_medium"    # 11-100 distinct
-    DISCRETE_HIGH = "discrete_high"        # 101-10000 distinct
+    BINARY = "binary"  # exactly 2 distinct values
+    DISCRETE_LOW = "discrete_low"  # 3-10 distinct
+    DISCRETE_MEDIUM = "discrete_medium"  # 11-100 distinct
+    DISCRETE_HIGH = "discrete_high"  # 101-10000 distinct
     CONTINUOUS = "continuous"
     """Effectively continuous (>>1000 distinct values relative to n,
     or floating-point)."""
@@ -166,19 +164,16 @@ class VariableTaxonomy:
         if self.level == LevelOfMeasurement.ORDINAL:
             return "median + IQR + Mann-Whitney/Wilcoxon for pairwise"
         if self.level == LevelOfMeasurement.RATIO:
-            return ("mean + SD + Gini if non-negative + log-scale "
-                    "histogram + Pareto Hill-MLE if heavy-tailed")
+            return "mean + SD + Gini if non-negative + log-scale histogram + Pareto Hill-MLE if heavy-tailed"
         if self.level == LevelOfMeasurement.INTERVAL:
             return "mean + SD + skew/kurtosis + linear regression"
-        if self.level in (LevelOfMeasurement.DATE,
-                           LevelOfMeasurement.DATETIME):
-            return ("min/max date + temporal histogram + change-point "
-                    "if treated as time series")
+        if self.level in (LevelOfMeasurement.DATE, LevelOfMeasurement.DATETIME):
+            return "min/max date + temporal histogram + change-point if treated as time series"
         if self.level == LevelOfMeasurement.FREE_TEXT:
             return "n distinct, length distribution (NLP otherwise)"
         return "(unknown level - manual inspection)"
 
-    def recommended_pair_test(self, other: "VariableTaxonomy") -> str:
+    def recommended_pair_test(self, other: VariableTaxonomy) -> str:
         """Hint at the right bivariate test between this variable and ``other``.
 
         Levels-of-measurement → test mapping (Velleman & Wilkinson
@@ -187,27 +182,29 @@ class VariableTaxonomy:
         a = self.level
         b = other.level
 
-        if (a == LevelOfMeasurement.IDENTIFIER
-                or b == LevelOfMeasurement.IDENTIFIER):
+        if a == LevelOfMeasurement.IDENTIFIER or b == LevelOfMeasurement.IDENTIFIER:
             return "(identifier — use for grouping, not for tests)"
-        if a in (LevelOfMeasurement.NOMINAL, LevelOfMeasurement.BOOLEAN) \
-                and b in (LevelOfMeasurement.NOMINAL, LevelOfMeasurement.BOOLEAN):
+        if a in (LevelOfMeasurement.NOMINAL, LevelOfMeasurement.BOOLEAN) and b in (
+            LevelOfMeasurement.NOMINAL,
+            LevelOfMeasurement.BOOLEAN,
+        ):
             return "chi-square (or Fisher exact if small) + Cramer's V"
         if a == LevelOfMeasurement.ORDINAL and b == LevelOfMeasurement.ORDINAL:
             return "Spearman rho + Kendall tau"
-        if {a, b} == {LevelOfMeasurement.NOMINAL,
-                       LevelOfMeasurement.INTERVAL} or \
-           {a, b} == {LevelOfMeasurement.NOMINAL,
-                       LevelOfMeasurement.RATIO}:
+        if {a, b} == {LevelOfMeasurement.NOMINAL, LevelOfMeasurement.INTERVAL} or {a, b} == {
+            LevelOfMeasurement.NOMINAL,
+            LevelOfMeasurement.RATIO,
+        }:
             return "Welch's ANOVA (or Kruskal-Wallis if non-normal)"
-        if {a, b} == {LevelOfMeasurement.ORDINAL,
-                       LevelOfMeasurement.INTERVAL} or \
-           {a, b} == {LevelOfMeasurement.ORDINAL,
-                       LevelOfMeasurement.RATIO}:
-            return ("Spearman rho (rank-based) or polychoric "
-                    "correlation if cells are sufficient")
-        if a in (LevelOfMeasurement.INTERVAL, LevelOfMeasurement.RATIO) and \
-           b in (LevelOfMeasurement.INTERVAL, LevelOfMeasurement.RATIO):
+        if {a, b} == {LevelOfMeasurement.ORDINAL, LevelOfMeasurement.INTERVAL} or {a, b} == {
+            LevelOfMeasurement.ORDINAL,
+            LevelOfMeasurement.RATIO,
+        }:
+            return "Spearman rho (rank-based) or polychoric correlation if cells are sufficient"
+        if a in (LevelOfMeasurement.INTERVAL, LevelOfMeasurement.RATIO) and b in (
+            LevelOfMeasurement.INTERVAL,
+            LevelOfMeasurement.RATIO,
+        ):
             return "Pearson r + linear regression (or Spearman if not normal)"
         if a == LevelOfMeasurement.DATE or b == LevelOfMeasurement.DATE:
             return "stratify by date bucket, then apply pair test on the rest"
@@ -226,12 +223,12 @@ INVARIANT_OVERRIDES: dict[tuple[str, str], dict] = {
     ("b01", "UniqueIndividual_ID"): {
         "cross_year_safe": False,
         "role": Role.IDENTIFIER,
-        "notes": ("Random per-fiscal-year reassignment per OTIS data "
-                  "dictionary; cross-year joins meaningless."),
+        "notes": ("Random per-fiscal-year reassignment per OTIS data dictionary; cross-year joins meaningless."),
         "source": "override",
     },
     ("a01", "UniqueIndividual_ID"): {
-        "cross_year_safe": False, "role": Role.IDENTIFIER,
+        "cross_year_safe": False,
+        "role": Role.IDENTIFIER,
         "notes": "Random per-fiscal-year reassignment (OTIS dict).",
         "source": "override",
     },
@@ -243,16 +240,20 @@ INVARIANT_OVERRIDES: dict[tuple[str, str], dict] = {
         "source": "override",
     },
     ("uof_individual_records", "BatchFileName"): {
-        "role": Role.IDENTIFIER, "source": "override",
+        "role": Role.IDENTIFIER,
+        "source": "override",
     },
     ("uof_weapon_records", "BatchFileName"): {
-        "role": Role.IDENTIFIER, "source": "override",
+        "role": Role.IDENTIFIER,
+        "source": "override",
     },
     ("uof_probe_cycle_records", "BatchFileName"): {
-        "role": Role.IDENTIFIER, "source": "override",
+        "role": Role.IDENTIFIER,
+        "source": "override",
     },
     ("uof_individual_records", "Indiv_Index"): {
-        "role": Role.IDENTIFIER, "source": "override",
+        "role": Role.IDENTIFIER,
+        "source": "override",
     },
     # ARSAU outcome column (with trailing-space typo in 2023)
     ("uof_individual_records", "IndivInjuries_PhysicalInjuries"): {
@@ -355,7 +356,7 @@ def _level_from_spec(spec: ColumnSpec, dataset_name: str) -> LevelOfMeasurement:
     if dtype == "int" and _RATIO_NAME_PATTERNS.search(name):
         return LevelOfMeasurement.RATIO
     if dtype == "float":
-        return LevelOfMeasurement.RATIO   # default for floats
+        return LevelOfMeasurement.RATIO  # default for floats
 
     if dtype == "int":
         # Integer without a count-like name: still ratio (counts have
@@ -430,6 +431,7 @@ def classify_variable(
     if override:
         # Build a kwargs dict from the existing taxonomy + patch.
         from dataclasses import replace
+
         kwargs = {k: v for k, v in override.items() if k != "notes"}
         tax = replace(tax, **kwargs, notes=override.get("notes"))
 
@@ -438,10 +440,7 @@ def classify_variable(
 
 def classify_schema(schema: DatasetSchema) -> list[VariableTaxonomy]:
     """Classify every column in a :class:`DatasetSchema`."""
-    return [
-        classify_variable(col, dataset_name=schema.dataset_name)
-        for col in schema.columns
-    ]
+    return [classify_variable(col, dataset_name=schema.dataset_name) for col in schema.columns]
 
 
 __all__ = [

@@ -1,5 +1,7 @@
 """Tests for wvrec.py - Wavelet reconstruct."""
+
 import numpy as np
+
 from morie.fn.wvdec import wavelet_decompose
 from morie.fn.wvrec import wavelet_reconstruct, wvrec
 

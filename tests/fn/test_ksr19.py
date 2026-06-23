@@ -1,6 +1,7 @@
 """Tests for ksr19.kosorok_cox_partial_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr19 import kosorok_cox_partial_likelihood
 
 
@@ -11,7 +12,7 @@ def test_ksr19_basic():
     event = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_cox_partial_likelihood(x, t, event)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr19_edge():

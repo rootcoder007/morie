@@ -1,5 +1,7 @@
 """Tests for morie.fn.rollc — Roll call analysis."""
+
 import numpy as np
+
 from morie.fn.rollc import rollc
 
 

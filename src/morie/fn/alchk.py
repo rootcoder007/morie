@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Recursive text chunking: split on separators in priority order until under target size."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_recursive_chunking"]
@@ -36,7 +38,14 @@ def alammar_recursive_chunking(text, separators, target_size, overlap):
     n = len(text)
     result = float(np.mean(text))
     se = float(np.std(text, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Recursive text chunking: split on separators in priority order until under target size"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Recursive text chunking: split on separators in priority order until under target size",
+        }
+    )
 
 
 def cheatsheet():

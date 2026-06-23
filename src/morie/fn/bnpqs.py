@@ -6,7 +6,14 @@ from __future__ import annotations
 import numpy as np
 
 
-def bayesian_nonparametric_quantiles(x: np.ndarray, quantiles: np.ndarray | None = None, alpha: float = 1.0, n_boot: int = 1000, rng: np.random.Generator | None = None, cdf=None) -> dict:
+def bayesian_nonparametric_quantiles(
+    x: np.ndarray,
+    quantiles: np.ndarray | None = None,
+    alpha: float = 1.0,
+    n_boot: int = 1000,
+    rng: np.random.Generator | None = None,
+    cdf=None,
+) -> dict:
     r"""
     Bayesian nonparametric quantile estimation via Bayesian bootstrap.
 
@@ -50,7 +57,7 @@ def bayesian_nonparametric_quantiles(x: np.ndarray, quantiles: np.ndarray | None
         cdf = np.cumsum(weights[np.argsort(x)])
 
         for q in quantiles:
-            idx = np.searchsorted(cdf, q, side='left')
+            idx = np.searchsorted(cdf, q, side="left")
             idx = min(idx, n - 1)
             quantile_samples[q].append(x_sorted[idx])
 
@@ -69,7 +76,7 @@ def bayesian_nonparametric_quantiles(x: np.ndarray, quantiles: np.ndarray | None
         result["quantile_estimates"][float(q)] = float(np.mean(samples))
         result["credible_intervals"][float(q)] = (
             float(np.percentile(samples, 2.5)),
-            float(np.percentile(samples, 97.5))
+            float(np.percentile(samples, 97.5)),
         )
 
     return result

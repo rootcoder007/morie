@@ -1,12 +1,9 @@
 """Tests for morie.fn.vinc — Incremental validity."""
 
-import numpy as np
-import pytest
 from morie.fn.vinc import validity_incremental
 
 
 class TestValidityIncremental:
-
     def test_positive_delta_r2(self, rng):
         n = 200
         x_base = rng.standard_normal(n)

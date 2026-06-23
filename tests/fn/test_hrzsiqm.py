@@ -1,6 +1,7 @@
 """Tests for hrzsiqm.horowitz_sim_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzsiqm import horowitz_sim_quantile
 
 
@@ -12,7 +13,7 @@ def test_hrzsiqm_basic():
     bandwidth = 0.3
     result = horowitz_sim_quantile(x, y, tau, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzsiqm_edge():

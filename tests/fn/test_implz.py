@@ -1,6 +1,8 @@
 """Tests for implz.py - Impulse response from I/O."""
+
 import numpy as np
-from morie.fn.implz import impulse_from_io_fn, implz
+
+from morie.fn.implz import implz, impulse_from_io_fn
 
 
 def test_implz_returns_result():

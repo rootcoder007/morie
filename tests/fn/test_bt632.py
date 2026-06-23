@@ -1,6 +1,7 @@
 """Tests for bt632.boot_632_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bt632 import boot_632_estimator
 
 
@@ -10,7 +11,7 @@ def test_bt632_basic():
     err_oob = np.random.default_rng(42).normal(0, 1, 100)
     result = boot_632_estimator(err_app, err_oob)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bt632_edge():

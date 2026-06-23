@@ -1,6 +1,7 @@
 """Nearest neighbor distance distribution G(r)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["nearest_neighbor_distance"]
@@ -32,7 +33,9 @@ def nearest_neighbor_distance(coords, r_grid):
     n = len(coords)
     result = float(np.mean(coords))
     se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nearest neighbor distance distribution G(r)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Nearest neighbor distance distribution G(r)"}
+    )
 
 
 def cheatsheet():

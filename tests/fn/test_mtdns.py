@@ -1,6 +1,7 @@
 """Test mtdns."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtdns import mtdns
 
 

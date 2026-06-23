@@ -1,6 +1,7 @@
 """Test trair."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trair import trair
 
 

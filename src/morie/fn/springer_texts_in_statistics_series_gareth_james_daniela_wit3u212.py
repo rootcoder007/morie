@@ -1,8 +1,8 @@
 """ANOVA expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_3_unnumbered_212"]
 
@@ -46,4 +46,6 @@ def springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_3_unnum
 
 
 def cheatsheet():
-    return "springer_texts_in_statistics_series_gareth_james_daniela_wit3u212: ANOVA expression (auto-extracted; see ref)."
+    return (
+        "springer_texts_in_statistics_series_gareth_james_daniela_wit3u212: ANOVA expression (auto-extracted; see ref)."
+    )

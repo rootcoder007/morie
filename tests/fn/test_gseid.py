@@ -1,8 +1,9 @@
 """Tests for morie.fn.gseid -- Gauss-Seidel solver."""
 
 import numpy as np
-from morie.fn.gseid import gauss_seidel, gseid
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gseid import gauss_seidel, gseid
 
 
 class TestGseid:
@@ -18,6 +19,7 @@ class TestGseid:
 
     def test_faster_than_jacobi(self):
         from morie.fn.jacbi import jacobi_solve
+
         A = np.array([[10, 1, 1], [1, 10, 1], [1, 1, 10]], dtype=float)
         b = np.array([1, 2, 3], dtype=float)
         rg = gauss_seidel(A, b)

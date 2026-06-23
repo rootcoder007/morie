@@ -1,7 +1,6 @@
 """Tests for morie.fn.mscls -- Classical MDS (Torgerson)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mscls import classical_mds
 
@@ -14,5 +13,5 @@ class TestClassicalMds:
         assert result.value is not None
 
     def test_output_type(self):
-        result = classical_mds(np.random.default_rng(0).standard_normal((5,2)))
+        result = classical_mds(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

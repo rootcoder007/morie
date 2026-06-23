@@ -1,8 +1,9 @@
 """Tests for morie.fn.smote — SMOTE oversampling with fallback."""
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from morie.fn.smote import apply_smote as smote
 
 

@@ -1,6 +1,8 @@
 """Tests for morie.fn.ctprx -- cutting plane proximity."""
+
 import numpy as np
-from morie.fn.ctprx import cutting_plane_proximity, ctprx
+
+from morie.fn.ctprx import ctprx, cutting_plane_proximity
 
 
 def test_alias():

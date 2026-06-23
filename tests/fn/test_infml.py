@@ -1,10 +1,9 @@
 """Tests for morie.fn.infml — infer measurement level (NOIR)."""
 
 import pandas as pd
-import pytest
 
-from morie.fn.infml import infml, infer_measurement_level
 from morie.dataset import MeasurementLevel
+from morie.fn.infml import infer_measurement_level, infml
 
 
 def test_alias_is_same_function():
@@ -50,8 +49,7 @@ def test_ratio_float():
 
 def test_interval_float_with_hint():
     """Float column with interval-hinting name (year) should be INTERVAL."""
-    s = pd.Series([2020.0, 2021.0, 2022.0, 2023.0, 2024.0,
-                    2020.5, 2021.5, 2022.5, 2023.5, 2024.5], name="year")
+    s = pd.Series([2020.0, 2021.0, 2022.0, 2023.0, 2024.0, 2020.5, 2021.5, 2022.5, 2023.5, 2024.5], name="year")
     assert infml(s) == MeasurementLevel.INTERVAL
 
 

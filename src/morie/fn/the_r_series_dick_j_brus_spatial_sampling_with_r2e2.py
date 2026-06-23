@@ -1,8 +1,8 @@
 """Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_2"]
 
@@ -41,7 +41,12 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_2(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Probability equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
+        },
     )
 
 

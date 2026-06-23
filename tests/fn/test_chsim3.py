@@ -1,6 +1,8 @@
 """Tests for chsim3."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chsim3 import chsim3
 
 
@@ -28,4 +30,5 @@ def test_chsim3_no_data():
 
 def test_chsim3_alias():
     from morie.fn.chsim3 import chsim3
+
     assert chsim3 is chsim3

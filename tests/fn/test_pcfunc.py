@@ -1,6 +1,7 @@
 """Tests for pcfunc.pair_correlation_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pcfunc import pair_correlation_function
 
 
@@ -11,7 +12,7 @@ def test_pcfunc_basic():
     r = 10
     result = pair_correlation_function(points, window, r)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_pcfunc_edge():

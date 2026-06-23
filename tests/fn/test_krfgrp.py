@@ -1,6 +1,5 @@
 """Tests for krfgrp.kronecker_graph."""
-import numpy as np
-import pytest
+
 from morie.fn.krfgrp import kronecker_graph
 
 
@@ -10,7 +9,7 @@ def test_krfgrp_basic():
     k = 5
     result = kronecker_graph(seed, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_krfgrp_edge():

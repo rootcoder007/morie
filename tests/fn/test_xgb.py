@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.xgb import xgb_classify
 
 
@@ -9,8 +10,7 @@ class TestXgbClassify:
     def test_linearly_separable(self):
         """Should perfectly classify linearly separable data."""
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [2, 2],
-                        rng.standard_normal((30, 2)) - [2, 2]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [2, 2], rng.standard_normal((30, 2)) - [2, 2]])
         y = np.array([1] * 30 + [0] * 30, dtype=float)
         result = xgb_classify(X, y, n_estimators=50)
         assert "predictions" in result

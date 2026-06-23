@@ -1,6 +1,7 @@
 """Sequential (causally ordered) mediators."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sequential_mediators"]
@@ -38,7 +39,9 @@ def sequential_mediators(Y, X, M1, M2, C):
     n = len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sequential (causally ordered) mediators"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sequential (causally ordered) mediators"}
+    )
 
 
 def cheatsheet():

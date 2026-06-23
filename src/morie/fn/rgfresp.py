@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Frequency response H(f) of a digital filter from coefficients."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_freq_response"]
@@ -36,7 +38,14 @@ def rangayyan_freq_response(b, a, fs, n_freqs):
     n = int(b) if b.ndim == 0 else len(b)
     result = float(np.mean(b))
     se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frequency response H(f) of a digital filter from coefficients"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Frequency response H(f) of a digital filter from coefficients",
+        }
+    )
 
 
 def cheatsheet():

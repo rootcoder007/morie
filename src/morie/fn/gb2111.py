@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution-free tolerance interval: U_(s)-U_(r) ~ Beta(s-r, n-s+r+1)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_tolerance_beta"]
@@ -38,7 +40,14 @@ def gibbons_tolerance_beta(x, r, s, p, gamma):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Distribution-free tolerance interval: U_(s)-U_(r) ~ Beta(s-r, n-s+r+1)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Distribution-free tolerance interval: U_(s)-U_(r) ~ Beta(s-r, n-s+r+1)",
+        }
+    )
 
 
 def cheatsheet():

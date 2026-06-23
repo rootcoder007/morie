@@ -22,11 +22,11 @@ from ._containers import DescriptiveResult
 # Hazard Index = sum of HQs across the four compounds. HI > 1 is the
 # enforceable violation threshold.
 _EPA_HBWC_PPT: dict[str, float] = {
-    "pfhxs":   10.0,
-    "hfpo-da": 10.0,   # Also called GenX
-    "genx":    10.0,   # alias
-    "pfna":    10.0,
-    "pfbs":  2000.0,
+    "pfhxs": 10.0,
+    "hfpo-da": 10.0,  # Also called GenX
+    "genx": 10.0,  # alias
+    "pfna": 10.0,
+    "pfbs": 2000.0,
 }
 
 # Individual MCLs (ppt) for PFOA/PFOS -- these are *not* part of the
@@ -102,10 +102,7 @@ def pfas_hazard_index(
     conc = {k.lower().strip(): float(v) for k, v in concentrations_ppt.items()}
     for c in conc:
         if c not in _EPA_HBWC_PPT and c not in _EPA_MCL_PPT:
-            raise KeyError(
-                f"Unknown PFAS compound {c!r}. Recognized: "
-                f"{sorted(set(_EPA_HBWC_PPT) | set(_EPA_MCL_PPT))}"
-            )
+            raise KeyError(f"Unknown PFAS compound {c!r}. Recognized: {sorted(set(_EPA_HBWC_PPT) | set(_EPA_MCL_PPT))}")
     if any(v < 0 for v in conc.values()):
         raise ValueError("Concentrations must be non-negative.")
 

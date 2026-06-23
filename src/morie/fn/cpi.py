@@ -75,4 +75,4 @@ short = cpi_inflation
 
 
 def cheatsheet() -> str:
-    return 'cpi_inflation({}) -> CPI and inflation rate.'
+    return "cpi_inflation({}) -> CPI and inflation rate."

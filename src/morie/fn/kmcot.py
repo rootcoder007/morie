@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chain-of-thought prompting: elicit step-by-step reasoning before the answer."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_chain_of_thought"]
@@ -32,7 +34,14 @@ def kamath_chain_of_thought(prompt, model):
     n = len(prompt)
     result = float(np.mean(prompt))
     se = float(np.std(prompt, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Chain-of-thought prompting: elicit step-by-step reasoning before the answer"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Chain-of-thought prompting: elicit step-by-step reasoning before the answer",
+        }
+    )
 
 
 def cheatsheet():

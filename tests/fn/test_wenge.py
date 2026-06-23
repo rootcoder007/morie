@@ -1,6 +1,7 @@
 """Tests for wenge.weight_based_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wenge import weight_based_mediation
 
 
@@ -12,7 +13,7 @@ def test_wenge_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = weight_based_mediation(X, M, C, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wenge_edge():

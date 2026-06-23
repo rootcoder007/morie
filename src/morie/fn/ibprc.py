@@ -74,7 +74,7 @@ def indian_buffet_process(
     max_k = max(len(row) for row in features) if features else 0
     features_array = np.zeros((n, max_k), dtype=int)
     for i, z_i in enumerate(features):
-        features_array[i, :len(z_i)] = z_i
+        features_array[i, : len(z_i)] = z_i
 
     dish_counts = np.array(dish_counts, dtype=int)
 

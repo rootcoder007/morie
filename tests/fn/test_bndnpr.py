@@ -1,6 +1,7 @@
 """Tests for bndnpr.bound_nonparam_regr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndnpr import bound_nonparam_regr
 
 
@@ -12,7 +13,7 @@ def test_bndnpr_basic():
     bw = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_nonparam_regr(y, D, X, bw)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndnpr_edge():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.plbb — plot Blackbox result."""
+
 import numpy as np
+
 from morie.fn.plbb import plbb
 
 
@@ -13,6 +15,7 @@ def test_plbb_smoke():
 
 def test_cheatsheet():
     from morie.fn.plbb import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

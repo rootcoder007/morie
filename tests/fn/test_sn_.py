@@ -1,6 +1,10 @@
 """Tests for sn_estimator."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.sn_ import sn_estimator
+
 
 class TestSn:
     def test_normal(self):

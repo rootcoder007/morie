@@ -75,4 +75,4 @@ short = karnaugh_map
 
 
 def cheatsheet() -> str:
-    return 'karnm() -> Generate Karnaugh map layout and identify minterms'
+    return "karnm() -> Generate Karnaugh map layout and identify minterms"

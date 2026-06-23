@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.dr_ import doubly_robust_ate
 
 
@@ -28,4 +29,4 @@ class TestDoublyRobust:
 
     def test_non_binary_treatment_raises(self):
         with pytest.raises(ValueError, match="binary"):
-            doubly_robust_ate(np.ones(10), np.array([0, 1, 2]*3 + [0]), np.ones((10, 1)))
+            doubly_robust_ate(np.ones(10), np.array([0, 1, 2] * 3 + [0]), np.ones((10, 1)))

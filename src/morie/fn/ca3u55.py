@@ -1,8 +1,8 @@
 """CentralTendency expression involving 'possibilities' (auto-extracted; see reference for full context).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_3_unnumbered_55"]
 
@@ -41,9 +41,16 @@ def ca_chapter_3_unnumbered_55(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression involving 'possibilities' (auto-extracted; see reference for full context)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression involving 'possibilities' (auto-extracted; see reference for full context).",
+        },
     )
 
 
 def cheatsheet():
-    return "ca3u55: CentralTendency expression involving 'possibilities' (auto-extracted; see reference for full context)."
+    return (
+        "ca3u55: CentralTendency expression involving 'possibilities' (auto-extracted; see reference for full context)."
+    )

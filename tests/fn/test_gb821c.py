@@ -1,6 +1,7 @@
 """Tests for gb821c.gibbons_wrs_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb821c import gibbons_wrs_ci
 
 
@@ -11,7 +12,7 @@ def test_gb821c_basic():
     alpha = 0.05
     result = gibbons_wrs_ci(x, y, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb821c_edge():

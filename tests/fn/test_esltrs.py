@@ -1,6 +1,7 @@
 """Tests for esltrs.esl_basis_truncated."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esltrs import esl_basis_truncated
 
 
@@ -11,7 +12,7 @@ def test_esltrs_basic():
     p = 5
     result = esl_basis_truncated(x, knots, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esltrs_edge():

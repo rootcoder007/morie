@@ -1,6 +1,7 @@
 """Test dkglb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkglb import dkglb
 
 

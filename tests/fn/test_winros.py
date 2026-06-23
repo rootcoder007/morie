@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.winros import wind_rose, winros
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.winros import wind_rose, winros
 
 
 class TestWinros:
@@ -12,10 +13,12 @@ class TestWinros:
 
     def test_basic(self):
         rng = np.random.default_rng(42)
-        df = pd.DataFrame({
-            "direction": rng.uniform(0, 360, 200),
-            "speed": rng.exponential(5, 200),
-        })
+        df = pd.DataFrame(
+            {
+                "direction": rng.uniform(0, 360, 200),
+                "speed": rng.exponential(5, 200),
+            }
+        )
         result = wind_rose(df, n_sectors=8)
         assert isinstance(result, DescriptiveResult)
         assert len(result.value["sector_centers"]) == 8

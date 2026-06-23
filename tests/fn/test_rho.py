@@ -1,7 +1,7 @@
 """Tests for morie.fn.rho -- Spearman rank correlation."""
 
-import numpy as np
 import pytest
+
 from morie.fn.rho import spearman_rho
 
 

@@ -1,6 +1,7 @@
 """Numbered display equation (3.5) from MVSML chapter 3.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_elements_lin_reg_eq_3_5"]
@@ -40,7 +41,14 @@ def mvsml_elements_lin_reg_eq_3_5(colnames, results_i, c, Observed, Predicted, T
     n = len(colnames)
     result = float(np.mean(colnames))
     se = float(np.std(colnames, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (3.5) from MVSML chapter 3."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (3.5) from MVSML chapter 3.",
+        }
+    )
 
 
 def cheatsheet():

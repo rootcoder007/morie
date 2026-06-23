@@ -1,6 +1,7 @@
 """Test nbgrd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbgrd import nbgrd
 
 

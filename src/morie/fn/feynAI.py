@@ -1,6 +1,7 @@
 """AI Feynman symbolic regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ai_feynman"]

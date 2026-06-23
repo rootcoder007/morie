@@ -1,8 +1,9 @@
 """Tests for morie.fn.siurcm — SIU recommendation."""
 
 import pytest
-from morie.fn.siurcm import siu_recommendation
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siurcm import siu_recommendation
 
 
 class TestSiuRecommendation:

@@ -1,6 +1,7 @@
 """Tests for rgpolysg.rangayyan_polysomnography."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpolysg import rangayyan_polysomnography
 
 
@@ -13,7 +14,7 @@ def test_rgpolysg_basic():
     epoch_len = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_polysomnography(eeg, eog, emg, fs, epoch_len)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpolysg_edge():

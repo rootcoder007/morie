@@ -1,6 +1,7 @@
 """Lipschitz bound for least-absolute-deviation criterion class."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_lad_lipschitz_bound"]
@@ -36,7 +37,14 @@ def kosorok_ch2_lad_lipschitz_bound(theta_1, theta_2, u, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lipschitz bound for least-absolute-deviation criterion class"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Lipschitz bound for least-absolute-deviation criterion class",
+        }
+    )
 
 
 def cheatsheet():

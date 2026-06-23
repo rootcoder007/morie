@@ -1,6 +1,7 @@
 """Tests for infcrt.information_criterion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.infcrt import information_criterion
 
 
@@ -9,7 +10,7 @@ def test_infcrt_basic():
     log_lik_samples = np.random.default_rng(42).normal(0, 1, 100)
     result = information_criterion(log_lik_samples)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_infcrt_edge():

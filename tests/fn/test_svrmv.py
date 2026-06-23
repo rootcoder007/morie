@@ -1,7 +1,6 @@
 """Tests for morie.fn.svrmv -- Rabinowitz-Macdonald intensity component"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svrmv import rm_intensity
 

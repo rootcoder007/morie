@@ -1,6 +1,8 @@
 """Tests for chlvar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlvar import chlvar
 
 
@@ -28,4 +30,5 @@ def test_chlvar_no_data():
 
 def test_chlvar_alias():
     from morie.fn.chlvar import chlvar
+
     assert chlvar is chlvar

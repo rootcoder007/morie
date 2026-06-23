@@ -1,6 +1,7 @@
 """Tests for maorw.ma_orwin_fsn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maorw import ma_orwin_fsn
 
 
@@ -12,7 +13,7 @@ def test_maorw_basic():
     k = 5
     result = ma_orwin_fsn(d_obs, d_crit, d_filldraw, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_maorw_edge():

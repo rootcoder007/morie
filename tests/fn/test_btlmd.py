@@ -1,5 +1,7 @@
 """Tests for morie.fn.btlmd — Bradley-Terry-Luce model."""
+
 import numpy as np
+
 from morie.fn.btlmd import btlmd
 
 

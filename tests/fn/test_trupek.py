@@ -1,6 +1,7 @@
 """Tests for trupek.trust_region."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trupek import trust_region
 
 
@@ -13,7 +14,7 @@ def test_trupek_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = trust_region(f, grad_f, hess_f, x0, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trupek_edge():

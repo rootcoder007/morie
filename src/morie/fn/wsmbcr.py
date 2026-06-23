@@ -1,6 +1,7 @@
 """Bayesian credible interval."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_credible_interval"]

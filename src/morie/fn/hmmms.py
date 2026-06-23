@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Min-max scaling to range [0,1]."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_min_max_scaling"]

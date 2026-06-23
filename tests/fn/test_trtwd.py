@@ -1,6 +1,7 @@
 """Test trtwd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trtwd import trtwd
 
 

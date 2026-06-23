@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """UMAP: uniform manifold approximation, preserves local and some global structure."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_umap"]
@@ -36,7 +38,14 @@ def geron_umap(X, n_components, n_neighbors, min_dist):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "UMAP: uniform manifold approximation, preserves local and some global structure"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "UMAP: uniform manifold approximation, preserves local and some global structure",
+        }
+    )
 
 
 def cheatsheet():

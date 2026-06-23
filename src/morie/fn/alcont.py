@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Continued pretraining on domain corpus with MLM objective before fine-tuning."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_continued_pretraining_mlm"]
@@ -34,7 +36,14 @@ def alammar_continued_pretraining_mlm(domain_corpus, encoder, n_mlm_steps):
     n = len(domain_corpus)
     result = float(np.mean(domain_corpus))
     se = float(np.std(domain_corpus, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Continued pretraining on domain corpus with MLM objective before fine-tuning"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Continued pretraining on domain corpus with MLM objective before fine-tuning",
+        }
+    )
 
 
 def cheatsheet():

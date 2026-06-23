@@ -9,7 +9,15 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_mediation(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", mediator: str = "alert_mental_health", covariates: list[str] | None = None) -> dict:
+def otis_mediation(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    treatment: str = "D",
+    mediator: str = "alert_mental_health",
+    covariates: list[str] | None = None,
+) -> dict:
     """Baron-Kenny mediation analysis.
 
     Estimates total, direct, and indirect (mediated) effects using

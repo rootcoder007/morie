@@ -1,6 +1,7 @@
 """Tests for mhst1.mantel_haenszel_or."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mhst1 import mantel_haenszel_or
 
 
@@ -9,7 +10,7 @@ def test_mhst1_basic():
     strata = np.random.default_rng(42).normal(0, 1, 100)
     result = mantel_haenszel_or(strata)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mhst1_edge():

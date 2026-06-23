@@ -1,7 +1,9 @@
 """Test peak_to_peak (spp)."""
+
 import numpy as np
-from morie.fn.spp import peak_to_peak, spp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spp import peak_to_peak, spp
 
 
 class TestPeakToPeak:

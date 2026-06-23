@@ -1,6 +1,7 @@
 """Tests for rgchoi.rangayyan_choi_williams."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgchoi import rangayyan_choi_williams
 
 
@@ -11,7 +12,7 @@ def test_rgchoi_basic():
     sigma = 1.0
     result = rangayyan_choi_williams(x, fs, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgchoi_edge():

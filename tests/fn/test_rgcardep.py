@@ -1,6 +1,7 @@
 """Tests for rgcardep.rangayyan_cardiac_elecphys."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgcardep import rangayyan_cardiac_elecphys
 
 
@@ -13,7 +14,7 @@ def test_rgcardep_basic():
     I_ion = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_cardiac_elecphys(mesh, sigma_i, sigma_e, C_m, I_ion)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgcardep_edge():

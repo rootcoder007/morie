@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Noise Conditional Score Network (NCSN): score-based generative model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ncsn"]
@@ -36,7 +38,14 @@ def geron_ncsn(X, sigmas, epochs, lr):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Noise Conditional Score Network (NCSN): score-based generative model"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Noise Conditional Score Network (NCSN): score-based generative model",
+        }
+    )
 
 
 def cheatsheet():

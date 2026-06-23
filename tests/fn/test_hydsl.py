@@ -1,6 +1,7 @@
 """Test hydsl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hydsl import hydsl
 
 

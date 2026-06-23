@@ -1,6 +1,7 @@
 """Test enno2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enno2 import enno2
 
 

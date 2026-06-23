@@ -1,6 +1,7 @@
 """Negative control outcome -- known-null check."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["negative_control_outcome"]
@@ -34,7 +35,9 @@ def negative_control_outcome(y_neg, D, X):
     n = len(y_neg)
     result = float(np.mean(y_neg))
     se = float(np.std(y_neg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Negative control outcome -- known-null check"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Negative control outcome -- known-null check"}
+    )
 
 
 def cheatsheet():

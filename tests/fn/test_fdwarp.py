@@ -1,6 +1,7 @@
 """Tests for fdwarp.functional_warping."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fdwarp import functional_warping
 
 
@@ -11,7 +12,7 @@ def test_fdwarp_basic():
     cost = np.random.default_rng(42).normal(0, 1, 100)
     result = functional_warping(x, y, cost)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fdwarp_edge():

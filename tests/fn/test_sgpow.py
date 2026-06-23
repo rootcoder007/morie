@@ -1,5 +1,7 @@
 """Tests for power variogram."""
+
 import numpy as np
+
 from morie.fn.sgpow import sgpow
 
 
@@ -13,5 +15,6 @@ def test_sgpow_smoke():
 
 def test_sgpow_invalid_alpha():
     import pytest
+
     with pytest.raises(ValueError):
         sgpow(np.array([1.0]), c0=0, c1=1, alpha=2.5)

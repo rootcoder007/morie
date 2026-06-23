@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Top-k expert gating: keep top-k gate scores, renormalize, zero the rest."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_moe_top_k_gating"]
@@ -32,7 +34,14 @@ def kamath_moe_top_k_gating(gates, k):
     n = len(gates)
     result = float(np.mean(gates))
     se = float(np.std(gates, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Top-k expert gating: keep top-k gate scores, renormalize, zero the rest"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Top-k expert gating: keep top-k gate scores, renormalize, zero the rest",
+        }
+    )
 
 
 def cheatsheet():

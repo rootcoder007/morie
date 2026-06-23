@@ -1,6 +1,7 @@
 """Tests for galois.galois_group."""
+
 import numpy as np
-import pytest
+
 from morie.fn.galois import galois_group
 
 
@@ -9,7 +10,7 @@ def test_galois_basic():
     poly = np.random.default_rng(42).normal(0, 1, 100)
     result = galois_group(poly)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_galois_edge():

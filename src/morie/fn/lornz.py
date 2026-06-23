@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Compute Lorenz curve coordinates for income distribution."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -61,4 +62,4 @@ short = lorenz_curve
 
 
 def cheatsheet() -> str:
-    return 'lorenz_curve({}) -> Lorenz curve coordinates.'
+    return "lorenz_curve({}) -> Lorenz curve coordinates."

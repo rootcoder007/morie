@@ -1,6 +1,7 @@
 """Bridge sampling for marginal likelihoods."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bridge_sampling"]
@@ -36,7 +37,9 @@ def bridge_sampling(chain, proposal, log_p, log_q):
     n = len(chain)
     result = float(np.mean(chain))
     se = float(np.std(chain, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bridge sampling for marginal likelihoods"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bridge sampling for marginal likelihoods"}
+    )
 
 
 def cheatsheet():

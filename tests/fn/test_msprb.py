@@ -1,7 +1,6 @@
 """Tests for morie.fn.msprb -- Oblique Procrustes rotation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msprb import procrustes_obl
 
@@ -14,5 +13,5 @@ class TestProcrustesObl:
         assert result.value is not None
 
     def test_output_type(self):
-        result = procrustes_obl(np.random.default_rng(0).standard_normal((5,2)))
+        result = procrustes_obl(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

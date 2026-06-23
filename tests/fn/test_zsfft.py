@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsfft -- FFT-based spectral simulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsfft import spectral_sim
 

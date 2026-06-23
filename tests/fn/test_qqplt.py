@@ -1,5 +1,7 @@
 """Tests for morie.fn.qqplt."""
+
 import numpy as np
+
 from morie.fn.qqplt import qq_data
 
 
@@ -13,6 +15,7 @@ def test_qqplt_smoke():
 
 def test_cheatsheet():
     from morie.fn.qqplt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

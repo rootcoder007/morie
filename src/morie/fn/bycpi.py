@@ -68,7 +68,7 @@ def bycpi(
         scale_prior = np.var(y) / n_qtl * (df_prior - 2.0) / df_prior
         scale_prior = max(scale_prior, 1e-8)
 
-    ztz = np.sum(Z ** 2, axis=0)
+    ztz = np.sum(Z**2, axis=0)
     g = np.zeros(p)
     var_e = np.var(y) * 0.5
     var_g = float(scale_prior)
@@ -88,10 +88,7 @@ def bycpi(
             mean_j = rhs / lhs
             var_j = var_e / lhs
 
-            log_bf = (
-                0.5 * np.log(var_e / (var_g * lhs + 1e-30))
-                + 0.5 * mean_j ** 2 / var_j
-            )
+            log_bf = 0.5 * np.log(var_e / (var_g * lhs + 1e-30)) + 0.5 * mean_j**2 / var_j
             log_odds = np.log(max(1 - pi, 1e-12)) - np.log(max(pi, 1e-12)) + log_bf
             prob_in = 1.0 / (1.0 + np.exp(-np.clip(log_odds, -500, 500)))
 
@@ -113,7 +110,7 @@ def bycpi(
             var_g = scale_g / rng.gamma(shape_g)
 
         shape_e = (n - 2.0) / 2.0
-        scale_e = np.sum(e ** 2) / 2.0
+        scale_e = np.sum(e**2) / 2.0
         if shape_e > 0:
             var_e = scale_e / rng.gamma(shape_e)
 

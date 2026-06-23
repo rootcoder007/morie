@@ -1,7 +1,7 @@
 """Tests for morie.fn.mdcyc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mdcyc import mdcyc
 
 

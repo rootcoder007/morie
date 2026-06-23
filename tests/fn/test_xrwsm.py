@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwsm -- Weights symmetrization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwsm import w_symmetrize
 

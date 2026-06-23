@@ -37,7 +37,7 @@ def metric_mds(dissimilarities, n_dims: int = 2, *, max_iter: int = 300, tol: fl
 
     def _distances(X):
         diff = X[:, None, :] - X[None, :, :]
-        return np.sqrt((diff ** 2).sum(axis=-1) + 1e-14)
+        return np.sqrt((diff**2).sum(axis=-1) + 1e-14)
 
     def _stress(X):
         d = _distances(X)
@@ -62,7 +62,7 @@ def metric_mds(dissimilarities, n_dims: int = 2, *, max_iter: int = 300, tol: fl
         stress = new_stress
 
     H = np.eye(n) - np.ones((n, n)) / n
-    B_dc = -0.5 * H @ (D ** 2) @ H
+    B_dc = -0.5 * H @ (D**2) @ H
     eigvals = np.linalg.eigvalsh(B_dc)[::-1]
 
     return MdsRes(coordinates=X, stress=stress, eigenvalues=eigvals[:n_dims])

@@ -1,6 +1,7 @@
 """Tests for gb1221m.gibbons_friedman_mult."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb1221m import gibbons_friedman_mult
 
 
@@ -11,7 +12,7 @@ def test_gb1221m_basic():
     alpha = 0.05
     result = gibbons_friedman_mult(data, k, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb1221m_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsqr -- Spatial quantile regression"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsqr import spatial_quantile
 

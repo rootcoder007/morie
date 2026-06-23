@@ -62,7 +62,7 @@ def klgrd(
     dx = x[1] - x[0]
 
     if initial_phi is None:
-        phi0 = np.exp(-x ** 2 / 2.0)
+        phi0 = np.exp(-(x**2) / 2.0)
     else:
         phi0 = np.array([initial_phi(xi) for xi in x])
 
@@ -77,11 +77,11 @@ def klgrd(
         phi = y[:n_x]
         pi = y[n_x:]
         d2phi = np.zeros(n_x)
-        d2phi[1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[:-2]) / dx ** 2
+        d2phi[1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[:-2]) / dx**2
         d2phi[0] = d2phi[1]
         d2phi[-1] = d2phi[-2]
         dphi_dt = pi
-        dpi_dt = c ** 2 * (d2phi - mass_term * phi)
+        dpi_dt = c**2 * (d2phi - mass_term * phi)
         return np.concatenate([dphi_dt, dpi_dt])
 
     y0 = np.concatenate([phi0, dphi0])
@@ -91,7 +91,7 @@ def klgrd(
     phi_out = sol.y[:n_x, :].T
 
     k = np.fft.fftfreq(n_x, d=dx) * 2 * np.pi
-    omega = c * np.sqrt(k ** 2 + mass_term)
+    omega = c * np.sqrt(k**2 + mass_term)
 
     return {
         "x": x,

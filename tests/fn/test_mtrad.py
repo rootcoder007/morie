@@ -1,6 +1,7 @@
 """Test mtrad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtrad import mtrad
 
 

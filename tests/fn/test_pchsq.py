@@ -1,6 +1,5 @@
 """Tests for morie.fn.pchsq — chi-squared CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.pchsq import pchisq

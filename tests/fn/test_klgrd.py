@@ -24,7 +24,7 @@ def test_dispersion_relation():
     r = klgrd(m=1.0, n_x=100, hbar=1.0, c=1.0)
     k = r["dispersion_relation"]["k"]
     omega = r["dispersion_relation"]["omega"]
-    expected = np.sqrt(k ** 2 + 1.0)
+    expected = np.sqrt(k**2 + 1.0)
     np.testing.assert_allclose(omega, expected, atol=1e-10)
 
 

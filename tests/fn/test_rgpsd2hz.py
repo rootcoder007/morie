@@ -1,6 +1,7 @@
 """Tests for rgpsd2hz.rangayyan_psd_to_hz."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpsd2hz import rangayyan_psd_to_hz
 
 
@@ -11,7 +12,7 @@ def test_rgpsd2hz_basic():
     fs = 100.0
     result = rangayyan_psd_to_hz(psd, N, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpsd2hz_edge():

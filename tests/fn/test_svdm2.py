@@ -1,7 +1,6 @@
 """Tests for morie.fn.svdm2 -- Second dimensionality test"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svdm2 import dim_test_2
 

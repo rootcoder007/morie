@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RAGAS faithfulness: fraction of answer claims entailed by the retrieved context."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ragas_faithfulness"]
@@ -32,7 +34,14 @@ def kamath_ragas_faithfulness(answer, context):
     n = len(answer)
     result = float(np.mean(answer))
     se = float(np.std(answer, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RAGAS faithfulness: fraction of answer claims entailed by the retrieved context"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "RAGAS faithfulness: fraction of answer claims entailed by the retrieved context",
+        }
+    )
 
 
 def cheatsheet():

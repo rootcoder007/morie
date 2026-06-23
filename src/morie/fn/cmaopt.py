@@ -1,6 +1,7 @@
 """CMA-ES evolution strategy."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cma_es"]

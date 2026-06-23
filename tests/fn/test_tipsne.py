@@ -1,6 +1,7 @@
 """Tests for tipsne.tipping_point_sensitivity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tipsne import tipping_point_sensitivity
 
 
@@ -11,7 +12,7 @@ def test_tipsne_basic():
     missing_indicator = np.random.default_rng(42).normal(0, 1, 100)
     result = tipping_point_sensitivity(y, D, missing_indicator)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tipsne_edge():

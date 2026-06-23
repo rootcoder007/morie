@@ -1,6 +1,7 @@
 """Tests for ogkcv.orthogonalized_gk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ogkcv import orthogonalized_gk
 
 
@@ -10,7 +11,7 @@ def test_ogkcv_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = orthogonalized_gk(y, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ogkcv_edge():

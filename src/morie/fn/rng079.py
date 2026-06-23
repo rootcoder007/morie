@@ -1,6 +1,7 @@
 """Circular (periodic) convolution of two N-periodic discrete signals.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_periodic_convolution"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_periodic_convolution(x_p, h_p, n, N):
     n = len(x_p)
     result = float(np.mean(x_p))
     se = float(np.std(x_p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Circular (periodic) convolution of two N-periodic discrete signals."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Circular (periodic) convolution of two N-periodic discrete signals.",
+        }
+    )
 
 
 def cheatsheet():

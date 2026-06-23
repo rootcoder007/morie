@@ -1,6 +1,8 @@
 """Imbens sensitivity correlation parameter."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sensitivity_mediation_imbens"]
@@ -36,9 +38,23 @@ def sensitivity_mediation_imbens(Y, X, C, r2_grid):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(Y), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Imbens sensitivity correlation parameter"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Imbens sensitivity correlation parameter",
+            }
+        )
     result = stats.spearmanr(Y[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Imbens sensitivity correlation parameter"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Imbens sensitivity correlation parameter",
+        }
+    )
 
 
 def cheatsheet():

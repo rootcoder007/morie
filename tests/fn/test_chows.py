@@ -1,6 +1,8 @@
 """Tests for morie.fn.chows -- Chow test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chows import chow_test
 
 
@@ -19,4 +21,5 @@ class TestChow:
 
     def test_cheatsheet(self):
         from morie.fn.chows import cheatsheet
+
         assert isinstance(cheatsheet(), str)

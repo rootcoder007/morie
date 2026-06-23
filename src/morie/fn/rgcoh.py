@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Magnitude-squared coherence -- Rangayyan Ch 4."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -51,10 +52,13 @@ def rangayyan_coherence(x, y, fs=1.0, nperseg=None):
             ("Peak freq (Hz)", float(f[peak])),
         ],
         interpretation=f"Peak coherence {Cxy[peak]:.3g} at {f[peak]:.3g} Hz.",
-        payload={"freqs": f, "coherence": Cxy,
-                 "mean_coherence": float(Cxy.mean()),
-                 "peak_freq": float(f[peak]),
-                 "peak_coherence": float(Cxy[peak])},
+        payload={
+            "freqs": f,
+            "coherence": Cxy,
+            "mean_coherence": float(Cxy.mean()),
+            "peak_freq": float(f[peak]),
+            "peak_coherence": float(Cxy[peak]),
+        },
     )
     return with_describe_pointer(res, "rgcoh")
 

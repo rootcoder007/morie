@@ -1,6 +1,7 @@
 """Tests for empfun.empty_space_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.empfun import empty_space_function
 
 
@@ -11,7 +12,7 @@ def test_empfun_basic():
     window = np.random.default_rng(42).normal(0, 1, 100)
     result = empty_space_function(coords, r_grid, window)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_empfun_edge():

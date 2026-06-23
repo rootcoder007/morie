@@ -1,6 +1,7 @@
 """Tests for hillEst.hill_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hillEst import hill_estimator
 
 
@@ -10,7 +11,7 @@ def test_hillEst_basic():
     k = 5
     result = hill_estimator(x, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hillEst_edge():

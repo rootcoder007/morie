@@ -1,6 +1,7 @@
 """Test wldst."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wldst import wldst
 
 

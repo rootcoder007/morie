@@ -12,13 +12,12 @@ The default ``deterministic_seed=None`` path is unchanged.
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
-from morie.fn.rfens import random_forest_ensemble
 from morie.fn.gbens import gradient_boosting_ensemble
-from morie.fn.xgbst import xgboost_objective
-from morie.fn.tsnrd import tsne_reduction
+from morie.fn.rfens import random_forest_ensemble
 from morie.fn.rndsr import random_search_cv
+from morie.fn.tsnrd import tsne_reduction
+from morie.fn.xgbst import xgboost_objective
 
 
 def _xy_classification(n: int = 200, p: int = 4):
@@ -30,8 +29,7 @@ def _xy_classification(n: int = 200, p: int = 4):
 
 def _x_blobs(n_per: int = 30, p: int = 5):
     rng = np.random.default_rng(0)
-    return np.vstack([rng.normal(loc=-3, size=(n_per, p)),
-                      rng.normal(loc=+3, size=(n_per, p))])
+    return np.vstack([rng.normal(loc=-3, size=(n_per, p)), rng.normal(loc=+3, size=(n_per, p))])
 
 
 def test_rfens_deterministic_seed_reproducible():
@@ -52,8 +50,7 @@ def test_gbens_deterministic_seed_reproducible():
     assert r1["feature_importances"] == r2["feature_importances"]
     assert r1["train_score"] == r2["train_score"]
     # Different deterministic seed should change at least the rng-driven outputs.
-    assert (r1["feature_importances"] != r3["feature_importances"]
-            or r1["train_score"] != r3["train_score"])
+    assert r1["feature_importances"] != r3["feature_importances"] or r1["train_score"] != r3["train_score"]
 
 
 def test_xgbst_deterministic_seed_reproducible():
@@ -95,5 +92,4 @@ def test_rndsr_deterministic_seed_reproducible():
     assert r1["best_score"] == r2["best_score"]
     assert r1["sampled_scores"] == r2["sampled_scores"]
     # Different seed should produce different sampled-params -> different scores.
-    assert (r1["sampled_scores"] != r3["sampled_scores"]
-            or r1["best_params"] != r3["best_params"])
+    assert r1["sampled_scores"] != r3["sampled_scores"] or r1["best_params"] != r3["best_params"]

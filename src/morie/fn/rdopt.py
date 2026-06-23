@@ -94,13 +94,10 @@ def _ik_bw(R, Y, c, h_pilot, n):
     Y_loc = Y[mask]
     T_loc = (R_loc >= 0).astype(float)
 
-    X = np.column_stack([
-        np.ones(mask.sum()), R_loc, T_loc, R_loc * T_loc,
-        R_loc ** 2, R_loc ** 2 * T_loc
-    ])
+    X = np.column_stack([np.ones(mask.sum()), R_loc, T_loc, R_loc * T_loc, R_loc**2, R_loc**2 * T_loc])
     beta = np.linalg.lstsq(X, Y_loc, rcond=None)[0]
     resid = Y_loc - X @ beta
-    sigma2 = float(np.sum(resid ** 2)) / max(mask.sum() - 6, 1)
+    sigma2 = float(np.sum(resid**2)) / max(mask.sum() - 6, 1)
 
     m2_plus = abs(float(beta[4] + beta[5]))
     m2_minus = abs(float(beta[4]))
@@ -112,7 +109,7 @@ def _ik_bw(R, Y, c, h_pilot, n):
     f_c = float(mask.sum()) / (2 * h_pilot * n)
     C_k = 3.4375
 
-    h_opt = C_k * (sigma2 / (f_c * m2_sum ** 2 * n)) ** (1.0 / 5.0)
+    h_opt = C_k * (sigma2 / (f_c * m2_sum**2 * n)) ** (1.0 / 5.0)
     return max(h_opt, h_pilot * 0.05)
 
 
@@ -128,22 +125,29 @@ def _cct_bw(R, Y, c, h_pilot, n):
     Y_loc = Y[mask]
     T_loc = (R_loc >= 0).astype(float)
 
-    X = np.column_stack([
-        np.ones(mask.sum()), R_loc, T_loc, R_loc * T_loc,
-        R_loc ** 2, R_loc ** 2 * T_loc,
-        R_loc ** 3, R_loc ** 3 * T_loc,
-    ])
+    X = np.column_stack(
+        [
+            np.ones(mask.sum()),
+            R_loc,
+            T_loc,
+            R_loc * T_loc,
+            R_loc**2,
+            R_loc**2 * T_loc,
+            R_loc**3,
+            R_loc**3 * T_loc,
+        ]
+    )
     beta = np.linalg.lstsq(X, Y_loc, rcond=None)[0]
     resid = Y_loc - X @ beta
-    sigma2 = float(np.sum(resid ** 2)) / max(mask.sum() - 8, 1)
+    sigma2 = float(np.sum(resid**2)) / max(mask.sum() - 8, 1)
 
     m3 = abs(float(beta[6])) + abs(float(beta[7]))
     if m3 < 1e-10:
         return h_ik
 
-    h_b = 1.84 * (sigma2 / (m3 ** 2 * n)) ** (1.0 / 7.0)
+    h_b = 1.84 * (sigma2 / (m3**2 * n)) ** (1.0 / 7.0)
     rho = h_ik / h_b if h_b > 0 else 1.0
-    h_cct = h_ik * (1 + rho ** 2) ** (-1.0 / 5.0)
+    h_cct = h_ik * (1 + rho**2) ** (-1.0 / 5.0)
 
     return max(float(h_cct), h_pilot * 0.05)
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svip2 -- 2D ideal point estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svip2 import ideal_point_2d
 

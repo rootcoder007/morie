@@ -1,6 +1,7 @@
 """Getis-Ord hot/cold spot map."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hot_cold_spots"]

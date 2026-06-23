@@ -1,6 +1,7 @@
 """Tests for morie.fn.casct -- Case-control odds ratio."""
 
 import pytest
+
 from morie.fn.casct import case_control_or
 
 

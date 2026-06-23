@@ -1,6 +1,9 @@
 """Tests for hot_deck_impute."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.hotdk import hot_deck_impute
+
 
 class TestHotDeck:
     def test_fills_missing(self):

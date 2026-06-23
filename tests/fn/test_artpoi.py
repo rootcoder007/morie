@@ -1,8 +1,9 @@
 """Tests for morie.fn.artpoi -- graph articulation points."""
 
 import numpy as np
-from morie.fn.artpoi import articulation_points, artpoi
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.artpoi import articulation_points, artpoi
 
 
 class TestArtpoi:
@@ -10,12 +11,14 @@ class TestArtpoi:
         assert artpoi is articulation_points
 
     def test_bridge_graph(self):
-        adj = np.array([
-            [0, 1, 0, 0],
-            [1, 0, 1, 0],
-            [0, 1, 0, 1],
-            [0, 0, 1, 0],
-        ])
+        adj = np.array(
+            [
+                [0, 1, 0, 0],
+                [1, 0, 1, 0],
+                [0, 1, 0, 1],
+                [0, 0, 1, 0],
+            ]
+        )
         result = articulation_points(adj)
         assert isinstance(result, DescriptiveResult)
         assert result.value >= 2

@@ -7,7 +7,14 @@ import numpy as np
 import scipy.stats as stats
 
 
-def pcchy(x: Union[float, np.ndarray], loc: float = 0.0, scale: float = 1.0, lower_tail: bool = True, log_p: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def pcchy(
+    x: Union[float, np.ndarray],
+    loc: float = 0.0,
+    scale: float = 1.0,
+    lower_tail: bool = True,
+    log_p: bool = False,
+    cdf=None,
+) -> Union[float, np.ndarray]:
     r"""
     Cauchy distribution CDF.
 

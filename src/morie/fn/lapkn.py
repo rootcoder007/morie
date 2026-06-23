@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Laplacian kernel function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["laplacian_kernel"]

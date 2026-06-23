@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EWMA volatility (RiskMetrics 1996)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -41,21 +42,23 @@ def ewma_volatility(x, lambda_=0.94):
         raise ValueError(f"Need at least 2 observations, got {n}.")
     if not (0.0 < lambda_ < 1.0):
         raise ValueError(f"lambda must be in (0,1), got {lambda_}.")
-    r2 = r ** 2
+    r2 = r**2
     s2 = np.zeros(n)
     s2[0] = r2[0]
     for t in range(1, n):
         s2[t] = lambda_ * s2[t - 1] + (1.0 - lambda_) * r2[t - 1]
     sig = np.sqrt(s2)
-    return RichResult(payload={
-        "conditional_variance": s2,
-        "conditional_volatility": sig,
-        "lambda": float(lambda_),
-        "n": int(n),
-        "last_variance": float(s2[-1]),
-        "last_volatility": float(sig[-1]),
-        "method": "EWMA RiskMetrics",
-    })
+    return RichResult(
+        payload={
+            "conditional_variance": s2,
+            "conditional_volatility": sig,
+            "lambda": float(lambda_),
+            "n": int(n),
+            "last_variance": float(s2[-1]),
+            "last_volatility": float(sig[-1]),
+            "method": "EWMA RiskMetrics",
+        }
+    )
 
 
 def cheatsheet():

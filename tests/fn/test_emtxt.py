@@ -1,6 +1,7 @@
 """Tests for emtxt.em_irt_text."""
+
 import numpy as np
-import pytest
+
 from morie.fn.emtxt import em_irt_text
 
 
@@ -10,7 +11,7 @@ def test_emtxt_basic():
     n_dims = 2
     result = em_irt_text(word_freq_matrix, n_dims)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_emtxt_edge():

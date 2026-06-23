@@ -1,6 +1,7 @@
 """Tests for kanon.k_anonymity_check."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kanon import k_anonymity_check
 
 
@@ -11,7 +12,7 @@ def test_kanon_basic():
     k = 5
     result = k_anonymity_check(y, quasi_ids, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kanon_edge():

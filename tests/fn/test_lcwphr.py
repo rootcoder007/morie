@@ -1,6 +1,7 @@
 """Tests for lcwphr.latent_class_weighted."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lcwphr import latent_class_weighted
 
 
@@ -12,7 +13,7 @@ def test_lcwphr_basic():
     K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
     result = latent_class_weighted(y, A, H, K)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lcwphr_edge():

@@ -1,6 +1,7 @@
 """Tests for eslnnb.esl_naive_bayes."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslnnb import esl_naive_bayes
 
 
@@ -10,7 +11,7 @@ def test_eslnnb_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = esl_naive_bayes(X, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslnnb_edge():

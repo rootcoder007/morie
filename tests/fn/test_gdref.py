@@ -1,6 +1,7 @@
 """Test gdref."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdref import gdref
 
 

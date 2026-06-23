@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.brkts import brkts, BracketingResult
+from morie.fn.brkts import BracketingResult, brkts
 
 
 def test_returns_result_type():

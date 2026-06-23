@@ -1,6 +1,7 @@
 """Notch filter with two zeros at 60 Hz on the unit circle.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_notch_filter_60Hz"]
@@ -30,7 +31,14 @@ def rangayyan_ch3_notch_filter_60Hz(z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Notch filter with two zeros at 60 Hz on the unit circle."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Notch filter with two zeros at 60 Hz on the unit circle.",
+        }
+    )
 
 
 def cheatsheet():

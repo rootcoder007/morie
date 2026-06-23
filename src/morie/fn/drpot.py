@@ -67,4 +67,4 @@ short = dropout
 
 
 def cheatsheet() -> str:
-    return 'dropout({}) -> Dropout regularization.'
+    return "dropout({}) -> Dropout regularization."

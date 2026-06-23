@@ -1,6 +1,7 @@
 """Tests for btnpqr.boot_quantile_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btnpqr import boot_quantile_regression
 
 
@@ -13,7 +14,7 @@ def test_btnpqr_basic():
     alpha = 0.05
     result = boot_quantile_regression(X, y, tau, B, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btnpqr_edge():

@@ -4,6 +4,7 @@
 __all__ = ["renyh"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -60,6 +61,6 @@ def renyh(pmf: np.ndarray, alpha: float) -> dict:
     elif alpha == np.inf:
         h_alpha = float(-np.log2(np.max(pmf)))
     else:
-        h_alpha = float(np.log2(np.sum(p_pos ** alpha)) / (1.0 - alpha))
+        h_alpha = float(np.log2(np.sum(p_pos**alpha)) / (1.0 - alpha))
 
     return RichResult(payload={"entropy": h_alpha, "alpha": alpha, "shannon_entropy": shannon})

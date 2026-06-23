@@ -29,20 +29,20 @@ from ._containers import DescriptiveResult
 # by in-home inspection or municipal service-line database.
 _US_BANDS: list[tuple[int, int, str, float]] = [
     # (min_year, max_year, label, risk_probability)
-    (0,    1900, "very_high", 0.90),
+    (0, 1900, "very_high", 0.90),
     (1901, 1940, "very_high", 0.85),
-    (1941, 1960, "high",      0.60),
-    (1961, 1985, "moderate",  0.25),
-    (1986, 2010, "low",       0.05),
-    (2011, 2100, "very_low",  0.01),
+    (1941, 1960, "high", 0.60),
+    (1961, 1985, "moderate", 0.25),
+    (1986, 2010, "low", 0.05),
+    (2011, 2100, "very_low", 0.01),
 ]
 
 _CANADA_BANDS: list[tuple[int, int, str, float]] = [
-    (0,    1900, "very_high", 0.85),
+    (0, 1900, "very_high", 0.85),
     (1901, 1950, "very_high", 0.80),
-    (1951, 1975, "high",      0.45),
-    (1976, 1999, "moderate",  0.15),
-    (2000, 2100, "low",       0.03),
+    (1951, 1975, "high", 0.45),
+    (1976, 1999, "moderate", 0.15),
+    (2000, 2100, "low", 0.03),
 ]
 
 
@@ -161,8 +161,7 @@ def lead_service_line_risk(
         "band_distribution": distribution,
         "country": c,
         "mean_probability": val,
-        "source": ("EPA LCRR/LCRI 2024" if c.startswith("u")
-                    else "Health Canada 2022 Guideline Lead"),
+        "source": ("EPA LCRR/LCRI 2024" if c.startswith("u") else "Health Canada 2022 Guideline Lead"),
     }
     if with_intervals:
         extra["bands"] = bands

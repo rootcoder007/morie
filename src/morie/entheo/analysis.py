@@ -36,6 +36,7 @@ __all__ = ["beautiful_loop_metric", "san_score"]
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _extract_pair(record_or_eeg, fmri):
     """Coerce inputs into (eeg_dmt, fmri_dmt, eeg_pcb, fmri_pcb).
 
@@ -68,6 +69,7 @@ def _coerce(a) -> np.ndarray | None:
 # Public callables
 # ---------------------------------------------------------------------------
 
+
 def beautiful_loop_metric(eeg, fmri=None) -> RichResult:
     """Bayne-Laukkonen integrated phenomenal-binding metric.
 
@@ -97,8 +99,7 @@ def beautiful_loop_metric(eeg, fmri=None) -> RichResult:
 
     warnings_list: list[str] = []
     if e_dmt is None or f_dmt is None:
-        warnings_list.append(
-            "EEG or fMRI missing for primary condition; returning NaN score")
+        warnings_list.append("EEG or fMRI missing for primary condition; returning NaN score")
         return RichResult(
             title="Beautiful Loop phenomenal-binding metric",
             call="beautiful_loop_metric(<missing inputs>)",
@@ -122,15 +123,12 @@ def beautiful_loop_metric(eeg, fmri=None) -> RichResult:
         summary.append(("score_pcb", score_pcb))
         summary.append(("contrast_dmt_minus_pcb", contrast))
 
-    interp = (
-        f"Beautiful Loop score = {score_dmt:.4f}. "
-        + (
-            f"DMT − PCB contrast = {contrast:+.4f}. "
-            "Positive contrasts suggest dose-dependent increases in "
-            "predictive integration of phenomenal binding."
-            if contrast is not None else
-            "No PCB condition supplied; report DMT score only."
-        )
+    interp = f"Beautiful Loop score = {score_dmt:.4f}. " + (
+        f"DMT − PCB contrast = {contrast:+.4f}. "
+        "Positive contrasts suggest dose-dependent increases in "
+        "predictive integration of phenomenal binding."
+        if contrast is not None
+        else "No PCB condition supplied; report DMT score only."
     )
     return RichResult(
         title="Beautiful Loop phenomenal-binding metric",
@@ -162,8 +160,7 @@ def san_score(eeg, fmri=None) -> RichResult:
 
     warnings_list: list[str] = []
     if e_dmt is None or f_dmt is None:
-        warnings_list.append(
-            "EEG or fMRI missing for primary condition; returning NaN score")
+        warnings_list.append("EEG or fMRI missing for primary condition; returning NaN score")
         return RichResult(
             title="Self-Aware Networks recurrence score",
             call="san_score(<missing inputs>)",
@@ -187,15 +184,12 @@ def san_score(eeg, fmri=None) -> RichResult:
         summary.append(("score_pcb", score_pcb))
         summary.append(("contrast_dmt_minus_pcb", contrast))
 
-    interp = (
-        f"SAN recurrence score = {score_dmt:.4f}. "
-        + (
-            f"DMT − PCB contrast = {contrast:+.4f}. "
-            "Negative contrasts are consistent with the SAN prediction "
-            "that DMT temporarily disrupts meta-cognitive recurrence."
-            if contrast is not None else
-            "No PCB condition supplied; report DMT score only."
-        )
+    interp = f"SAN recurrence score = {score_dmt:.4f}. " + (
+        f"DMT − PCB contrast = {contrast:+.4f}. "
+        "Negative contrasts are consistent with the SAN prediction "
+        "that DMT temporarily disrupts meta-cognitive recurrence."
+        if contrast is not None
+        else "No PCB condition supplied; report DMT score only."
     )
     return RichResult(
         title="Self-Aware Networks recurrence score",

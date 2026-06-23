@@ -50,9 +50,11 @@ def brent(
     n_funcs, n_pts = data.shape
 
     if metric == "l2":
+
         def dist(a, b):
             return np.sqrt(np.mean((a - b) ** 2))
     else:
+
         def dist(a, b):
             return np.max(np.abs(a - b))
 

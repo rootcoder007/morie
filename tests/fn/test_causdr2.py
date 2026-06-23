@@ -1,6 +1,7 @@
 """Tests for causdr2.causal_dr_orthogonal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causdr2 import causal_dr_orthogonal
 
 
@@ -13,7 +14,7 @@ def test_causdr2_basic():
     m0 = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_dr_orthogonal(y, T, ps, m1, m0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causdr2_edge():

@@ -1,6 +1,7 @@
 """Test clhdb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clhdb import clhdb
 
 

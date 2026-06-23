@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adaptive TFD of VAG signals via matching pursuit."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_vag_adaptive_tfd"]
@@ -34,7 +36,9 @@ def rangayyan_vag_adaptive_tfd(vag, fs, n_atoms):
     n = int(vag) if vag.ndim == 0 else len(vag)
     result = float(np.mean(vag))
     se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive TFD of VAG signals via matching pursuit"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive TFD of VAG signals via matching pursuit"}
+    )
 
 
 def cheatsheet():

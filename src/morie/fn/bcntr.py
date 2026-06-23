@@ -42,7 +42,7 @@ def bayesian_contraction_rate(
     # eps_n ~ n^{-beta/(2*beta + d)}
 
     exponent = -smoothness / (2.0 * smoothness + dimension)
-    metric_rate = (n ** exponent) / np.sqrt(np.log(n))
+    metric_rate = (n**exponent) / np.sqrt(np.log(n))
 
     if prior_entropy is None:
         # Default: DP prior

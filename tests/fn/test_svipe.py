@@ -1,7 +1,6 @@
 """Tests for morie.fn.svipe -- EM ideal point estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svipe import ideal_point_em
 

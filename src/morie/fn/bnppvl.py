@@ -1,6 +1,7 @@
 """NP Bayes predictive value of new observation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bnp_predictive_value"]
@@ -32,7 +33,9 @@ def bnp_predictive_value(y, prior_family):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "NP Bayes predictive value of new observation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "NP Bayes predictive value of new observation"}
+    )
 
 
 def cheatsheet():

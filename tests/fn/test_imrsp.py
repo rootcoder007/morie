@@ -1,7 +1,7 @@
 """Test impulse_response (imrsp)."""
-import numpy as np
-from morie.fn.imrsp import impulse_response, imrsp
+
 from morie.fn._containers import SignalResult
+from morie.fn.imrsp import impulse_response, imrsp
 
 
 class TestImpulseResponse:

@@ -1,13 +1,11 @@
 """Tests for morie.fn.lloym — Lloyd-Max optimal quantizer."""
 
 import numpy as np
-import pytest
 
 from morie.fn.lloym import lloyd_max
 
 
 class TestLloydMax:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(200)
         res = lloyd_max(x, levels=8)

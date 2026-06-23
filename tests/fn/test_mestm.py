@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.mestm import mestm, MEstimatorResult
+from morie.fn.mestm import MEstimatorResult, mestm
 
 
 def _huber_rho(xi, theta, k=1.345):
@@ -39,51 +39,43 @@ def location_data():
 
 
 def test_returns_result_type(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     assert isinstance(result, MEstimatorResult)
 
 
 def test_converges(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     assert result.converged is True
 
 
 def test_theta_near_true(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     assert abs(result.theta[0] - 5.0) < 1.0
 
 
 def test_robust_to_outlier(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     mean_val = float(np.mean(location_data))
     assert abs(result.theta[0] - 5.0) < abs(mean_val - 5.0)
 
 
 def test_se_positive(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     assert result.se[0] > 0
 
 
 def test_influence_shape(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     assert result.influence_fn.shape == (150, 1)
 
 
 def test_influence_mean_near_zero(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, dpsi=_huber_dpsi, theta0=np.array([4.0]))
     assert abs(np.mean(result.influence_fn)) < 0.5
 
 
 def test_finite_diff_jacobian(location_data):
-    result = mestm(_huber_rho, _huber_psi, location_data,
-                   theta0=np.array([4.0]))
+    result = mestm(_huber_rho, _huber_psi, location_data, theta0=np.array([4.0]))
     assert result.converged is True
     assert abs(result.theta[0] - 5.0) < 1.0
 

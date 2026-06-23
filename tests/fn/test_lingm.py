@@ -1,6 +1,8 @@
 """Tests for morie.fn.lingm — LiNGAM causal discovery."""
+
 import numpy as np
 import pytest
+
 from morie.fn.lingm import lingm
 
 
@@ -59,4 +61,5 @@ def test_three_variables():
 
 def test_cheatsheet():
     from morie.fn.lingm import cheatsheet
+
     assert len(cheatsheet()) > 0

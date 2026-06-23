@@ -1,6 +1,7 @@
 """Tests for toppS.top_p_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.toppS import top_p_sampling
 
 
@@ -11,7 +12,7 @@ def test_toppS_basic():
     temp = np.random.default_rng(42).normal(0, 1, 100)
     result = top_p_sampling(logits, p, temp)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_toppS_edge():

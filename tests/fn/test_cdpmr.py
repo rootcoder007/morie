@@ -1,6 +1,7 @@
 """Tests for morie.fn.cdpmr -- proportionate mortality."""
 
 import pytest
+
 from morie.fn.cdpmr import proportionate_mortality
 
 

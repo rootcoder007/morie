@@ -1,14 +1,15 @@
 """Smoke tests for morie.entheo.data."""
+
 from __future__ import annotations
 
 import os
 
 import numpy as np
-import pytest
 
 
 def test_dmt_imaging_root_resolves_or_none():
     from morie.entheo.data import dmt_imaging_root
+
     p = dmt_imaging_root()
     # Either we have the real dataset on disk, or the loader is
     # honest about it being absent.
@@ -17,6 +18,7 @@ def test_dmt_imaging_root_resolves_or_none():
 
 def test_list_subjects_returns_list():
     from morie.entheo.data import list_subjects
+
     subs = list_subjects()
     assert isinstance(subs, list)
     for s in subs:
@@ -25,6 +27,7 @@ def test_list_subjects_returns_list():
 
 def test_load_single_synthetic_subject():
     from morie.entheo.data import load_dmt_imaging
+
     # Force the synthetic fallback by pointing at a non-existent root.
     os.environ["MORIE_DMT_IMAGING_ROOT"] = "/nope/this/does/not/exist"
     try:
@@ -44,6 +47,7 @@ def test_load_single_synthetic_subject():
 
 def test_load_all_synthetic_when_root_missing():
     from morie.entheo.data import load_dmt_imaging
+
     os.environ["MORIE_DMT_IMAGING_ROOT"] = "/nope/this/does/not/exist"
     try:
         res = load_dmt_imaging()
@@ -56,6 +60,7 @@ def test_load_all_synthetic_when_root_missing():
 
 def test_load_subject_id_int_normalises():
     from morie.entheo.data import load_dmt_imaging
+
     os.environ["MORIE_DMT_IMAGING_ROOT"] = "/nope/this/does/not/exist"
     try:
         res = load_dmt_imaging(subject_id=3)

@@ -1,6 +1,5 @@
 """Tests for barabsi.barabasi_albert."""
-import numpy as np
-import pytest
+
 from morie.fn.barabsi import barabasi_albert
 
 
@@ -10,7 +9,7 @@ def test_barabsi_basic():
     m = 10
     result = barabasi_albert(n, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_barabsi_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinal encoding: map K ordered categories to {0,1,...,K-1}."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ordinal_encoding"]
@@ -30,7 +32,14 @@ def geron_ordinal_encoding(categories):
     n = int(categories) if categories.ndim == 0 else len(categories)
     result = float(np.mean(categories))
     se = float(np.std(categories, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ordinal encoding: map K ordered categories to {0,1,...,K-1}"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Ordinal encoding: map K ordered categories to {0,1,...,K-1}",
+        }
+    )
 
 
 def cheatsheet():

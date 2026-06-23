@@ -1,6 +1,7 @@
 """Tests for malor.ma_log_odds_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.malor import ma_log_odds_ratio
 
 
@@ -12,7 +13,7 @@ def test_malor_basic():
     d = 5
     result = ma_log_odds_ratio(a, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_malor_edge():

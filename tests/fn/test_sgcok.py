@@ -1,5 +1,7 @@
 """Tests for cokriging."""
+
 import numpy as np
+
 from morie.fn.sgcok import sgcok
 
 
@@ -16,6 +18,7 @@ def test_sgcok_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgcok import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

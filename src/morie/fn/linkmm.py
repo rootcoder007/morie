@@ -1,6 +1,7 @@
 """IRT linking -- mean/mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["linking_meanmean"]

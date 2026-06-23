@@ -1,7 +1,6 @@
 """Tests for morie.fn.spec — Specificity."""
-import numpy as np
 
-from morie.fn.spec import specificity_dx, spec
+from morie.fn.spec import spec, specificity_dx
 
 
 def test_perfect_specificity():

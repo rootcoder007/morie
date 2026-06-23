@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.dbias import double_debias, dbias
+
 from morie.fn._containers import ESRes
+from morie.fn.dbias import dbias, double_debias
 
 
 class TestDoubleDebias:

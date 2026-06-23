@@ -1,7 +1,7 @@
 """Test lr_schedule."""
-import numpy as np
-from morie.fn.lrsch import lr_schedule, lrsch
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lrsch import lr_schedule, lrsch
 
 
 class TestLrSchedule:

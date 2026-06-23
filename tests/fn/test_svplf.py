@@ -1,7 +1,6 @@
 """Tests for morie.fn.svplf -- Affective polarization measure"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svplf import polarization_aff
 

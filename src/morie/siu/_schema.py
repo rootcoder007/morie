@@ -18,22 +18,20 @@ from __future__ import annotations
 # Column order matters -- this is the CSV header order.
 SIU_COLUMNS: list[str] = [
     # ── Identifiers / provenance ───────────────────────────────────
-    "case_number",                  # PRIMARY KEY  e.g. "17-PVI-371"
-    "drid",                         # URL locator (integer)
-    "nrid",                         # news-release URL locator (integer or null)
+    "case_number",  # PRIMARY KEY  e.g. "17-PVI-371"
+    "drid",  # URL locator (integer)
+    "nrid",  # news-release URL locator (integer or null)
     "source_url_report",
     "source_url_news",
-    "scraped_at_utc",               # ISO-8601 with 'Z' suffix
-    "parser_version",               # semver of the parser at extract time
-
+    "scraped_at_utc",  # ISO-8601 with 'Z' suffix
+    "parser_version",  # semver of the parser at extract time
     # ── Temporal -- incident ─────────────────────────────────────────
     "date_of_incident_iso",
     "date_of_incident_raw",
     "time_of_incident_raw",
     "date_of_injury_iso",
     "date_of_injury_raw",
-    "incident_to_injury_raw",       # duration string
-
+    "incident_to_injury_raw",  # duration string
     # ── Temporal -- notification + decision ──────────────────────────
     "date_siu_notified_iso",
     "date_siu_notified_raw",
@@ -43,16 +41,14 @@ SIU_COLUMNS: list[str] = [
     "date_of_director_decision_iso",
     "date_of_director_decision_raw",
     "time_of_director_decision_raw",
-    "siu_investigators",            # free-text or "; "-joined names
+    "siu_investigators",  # free-text or "; "-joined names
     "siu_forensics_investigators",
-
     # ── Police / scene ──────────────────────────────────────────────
     "police_service",
     "number_of_officers_involved",
     "location_of_call",
     "type_of_building_or_scene",
     "reason_for_interaction",
-
     # ── Affected person ─────────────────────────────────────────────
     "injuries_sustained",
     "injuries_other_text",
@@ -64,7 +60,6 @@ SIU_COLUMNS: list[str] = [
     "affected_interviewed",
     "date_of_affected_interview_iso",
     "date_of_affected_interview_raw",
-
     # ── Witnesses + officer interviews ──────────────────────────────
     "number_of_civilian_witnesses",
     "date_of_witness_interview_raw",
@@ -73,34 +68,30 @@ SIU_COLUMNS: list[str] = [
     "date_of_subject_interview_raw",
     "number_of_witness_officials",
     "date_of_witness_official_interview_raw",
-
     # ── Evidence + decision ─────────────────────────────────────────
-    "evidence_types",                # joined "; "
+    "evidence_types",  # joined "; "
     "evidence_other_text",
     "evidence_features",
-    "narrative_summary",             # ~1 paragraph
-    "narrative_full",                # full director's report body
+    "narrative_summary",  # ~1 paragraph
+    "narrative_full",  # full director's report body
     "relevant_legislation",
     "legislation_other_text",
     "weapons_or_force_used",
     "weapons_other_text",
-    "charges_recommended",           # bool-like
+    "charges_recommended",  # bool-like
     "directors_decision_reasonable",
-
     # ── Supplemental ────────────────────────────────────────────────
     "supplemental_materials",
     "news_links_extra",
     "mental_health_or_race_indications",
-
     # ── Provenance flags (added Phase 2b, 2026-05-06) ───────────────
-    "_language",                     # 'en' | 'fr' | 'unknown'
-
+    "_language",  # 'en' | 'fr' | 'unknown'
     # ── News release (parsed from paired nrid page, 2026-05-06) ─────
-    "news_release_title",            # headline of the release
-    "news_release_date_iso",         # release publication date
+    "news_release_title",  # headline of the release
+    "news_release_date_iso",  # release publication date
     "news_release_date_raw",
-    "news_release_summary",          # 1-paragraph public summary
-    "directors_name",                # director who signed the report
+    "news_release_summary",  # 1-paragraph public summary
+    "directors_name",  # director who signed the report
 ]
 
 

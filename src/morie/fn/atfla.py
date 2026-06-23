@@ -1,6 +1,7 @@
 """FlashAttention IO-aware block-tiled attention."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["When I let go of what I am, I become what I might be. -- Lao Tzu"]
@@ -38,8 +39,15 @@ def flash_attention_block(y, Q, K, V, block_size):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "When I let go of what I am, I become what I might be. -- Lao Tzu"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "When I let go of what I am, I become what I might be. -- Lao Tzu",
+        }
+    )
 
 
 def cheatsheet():
-    return 'atfla() -> FlashAttention IO-aware block-tiled attention'
+    return "atfla() -> FlashAttention IO-aware block-tiled attention"

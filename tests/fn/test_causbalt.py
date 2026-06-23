@@ -1,6 +1,7 @@
 """Tests for causbalt.causal_balance_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causbalt import causal_balance_test
 
 
@@ -11,7 +12,7 @@ def test_causbalt_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = causal_balance_test(X, treat, weights)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_causbalt_edge():

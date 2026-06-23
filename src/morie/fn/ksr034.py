@@ -1,6 +1,7 @@
 """Sufficient bracketing-entropy condition for Glivenko-Cantelli class."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_glivenko_cantelli_bracketing"]
@@ -34,7 +35,14 @@ def kosorok_ch2_glivenko_cantelli_bracketing(F, P, eps):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sufficient bracketing-entropy condition for Glivenko-Cantelli class"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sufficient bracketing-entropy condition for Glivenko-Cantelli class",
+        }
+    )
 
 
 def cheatsheet():

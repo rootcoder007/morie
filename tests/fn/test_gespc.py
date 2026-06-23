@@ -1,6 +1,7 @@
 """Test gespc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gespc import gespc
 
 

@@ -1,6 +1,7 @@
 """Test trmtd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trmtd import trmtd
 
 

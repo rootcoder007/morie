@@ -2,9 +2,9 @@
 
 import numpy as np
 import pandas as pd
-import pytest
-from morie.fn.iptw import stabilized_iptw, iptw
+
 from morie.fn._containers import ESRes
+from morie.fn.iptw import iptw, stabilized_iptw
 
 
 class TestStabilizedIPTW:

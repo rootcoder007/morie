@@ -2,18 +2,16 @@
 
 from __future__ import annotations
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
 from morie.chat import (
     ChatMessage,
     ChatSession,
-    SlashCommand,
     list_agents,
     load_agent_prompt,
 )
-
 
 # ---------------------------------------------------------------------------
 # ChatMessage
@@ -75,9 +73,7 @@ class TestChatSessionSlashCommands:
         assert "provider" in result.lower()
 
     def test_clear_command(self):
-        self.session.history.append(
-            ChatMessage(role="user", content="test")
-        )
+        self.session.history.append(ChatMessage(role="user", content="test"))
         assert len(self.session.history) == 1
         result = self.session.send("/clear", stream=False)
         assert "cleared" in result.lower()
@@ -88,9 +84,7 @@ class TestChatSessionSlashCommands:
         assert "No conversation" in result
 
     def test_history_with_messages(self):
-        self.session.history.append(
-            ChatMessage(role="user", content="what is IPW?")
-        )
+        self.session.history.append(ChatMessage(role="user", content="what is IPW?"))
         result = self.session.send("/history", stream=False)
         assert "IPW" in result
 

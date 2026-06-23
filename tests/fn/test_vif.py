@@ -1,4 +1,5 @@
 """Tests for morie.fn.vif — Variance Inflation Factor."""
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -9,8 +10,7 @@ from morie.fn.vif import variance_inflation, vif
 def test_uncorrelated_vif_near_one():
     """Uncorrelated predictors should have VIF near 1."""
     rng = np.random.default_rng(42)
-    df = pd.DataFrame({"a": rng.standard_normal(200), "b": rng.standard_normal(200),
-                        "c": rng.standard_normal(200)})
+    df = pd.DataFrame({"a": rng.standard_normal(200), "b": rng.standard_normal(200), "c": rng.standard_normal(200)})
     result = variance_inflation(df)
     for v in result.value.values():
         assert v < 2.0, f"VIF={v} too high for uncorrelated predictors"

@@ -1,7 +1,7 @@
 """Tests for morie.fn.umcex."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umcex import umcex
 
 

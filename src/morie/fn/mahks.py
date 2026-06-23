@@ -1,6 +1,7 @@
 """Hartung-Knapp-Sidik-Jonkman variance correction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_hartung_knapp"]
@@ -34,7 +35,9 @@ def ma_hartung_knapp(yi, vi, tau2):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hartung-Knapp-Sidik-Jonkman variance correction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Hartung-Knapp-Sidik-Jonkman variance correction"}
+    )
 
 
 def cheatsheet():

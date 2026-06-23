@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.irteap import irt_eap_theta
 
 

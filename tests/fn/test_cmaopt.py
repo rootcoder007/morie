@@ -1,6 +1,7 @@
 """Tests for cmaopt.cma_es."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cmaopt import cma_es
 
 
@@ -12,7 +13,7 @@ def test_cmaopt_basic():
     lam = 0.1
     result = cma_es(f, x0, sigma, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cmaopt_edge():

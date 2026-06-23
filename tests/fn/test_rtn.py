@@ -7,7 +7,6 @@ from morie.fn.rtn import round_to_nearest
 
 
 class TestRoundToNearest:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = round_to_nearest(x, bits=4)

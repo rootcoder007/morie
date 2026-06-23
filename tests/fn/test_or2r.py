@@ -1,6 +1,7 @@
 """Tests for morie.fn.or2r -- Convert odds ratio to Pearson r."""
 
 import pytest
+
 from morie.fn.or2r import or_to_r
 
 

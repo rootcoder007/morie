@@ -1,6 +1,7 @@
 """Test bmsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bmsim import bmsim
 
 

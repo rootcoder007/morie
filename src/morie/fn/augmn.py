@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Albert-Chib data augmentation for binary ordinal Gibbs sampler."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["albert_chib_augmentation"]
@@ -34,7 +36,14 @@ def albert_chib_augmentation(y_bin, X, Z):
     n = int(y_bin) if y_bin.ndim == 0 else len(y_bin)
     result = float(np.mean(y_bin))
     se = float(np.std(y_bin, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Albert-Chib data augmentation for binary ordinal Gibbs sampler"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Albert-Chib data augmentation for binary ordinal Gibbs sampler",
+        }
+    )
 
 
 def cheatsheet():

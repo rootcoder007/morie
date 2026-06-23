@@ -1,6 +1,7 @@
 """Test ophdb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ophdb import ophdb
 
 

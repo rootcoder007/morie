@@ -1,6 +1,7 @@
 """Tests for rghaar.rangayyan_haar_wavelet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rghaar import rangayyan_haar_wavelet
 
 
@@ -10,7 +11,7 @@ def test_rghaar_basic():
     levels = [0.5, 1.0, 1.5, 2.0]
     result = rangayyan_haar_wavelet(x, levels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rghaar_edge():

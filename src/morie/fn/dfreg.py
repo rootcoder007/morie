@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Regression degrees of freedom."""
 
+
 def dfreg(k: int) -> int:
     """Regression degrees of freedom: number of slope params."""
     if k < 1:

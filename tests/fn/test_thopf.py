@@ -9,7 +9,7 @@ from morie.fn.thopf import hopf_fibration
 class TestHopfFibration:
     def test_on_s2(self):
         r = hopf_fibration(n_points=100)
-        norms = np.sqrt(r.extra["s2_x"]**2 + r.extra["s2_y"]**2 + r.extra["s2_z"]**2)
+        norms = np.sqrt(r.extra["s2_x"] ** 2 + r.extra["s2_y"] ** 2 + r.extra["s2_z"] ** 2)
         np.testing.assert_allclose(norms, 1.0, atol=1e-12)
 
     def test_s3_points(self):

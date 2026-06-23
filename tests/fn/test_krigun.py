@@ -1,6 +1,7 @@
 """Tests for krigun.universal_kriging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.krigun import universal_kriging
 
 
@@ -12,7 +13,7 @@ def test_krigun_basic():
     trend_order = np.random.default_rng(42).normal(0, 1, 100)
     result = universal_kriging(coords, values, s_predict, trend_order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_krigun_edge():

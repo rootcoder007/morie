@@ -39,8 +39,8 @@ from __future__ import annotations
 
 import os
 import platform
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 
 def _env(name: str) -> str | None:
@@ -164,16 +164,20 @@ def resolve_data_dir(
     # 3. Generic MORIE_DATA_DIR + /<domain>
     e3 = _env("MORIE_DATA_DIR")
     if e3:
-        candidates.append((
-            "MORIE_DATA_DIR + /" + domain_lc,
-            (Path(e3).expanduser() / domain_lc).resolve(),
-        ))
+        candidates.append(
+            (
+                "MORIE_DATA_DIR + /" + domain_lc,
+                (Path(e3).expanduser() / domain_lc).resolve(),
+            )
+        )
         # Also try with original-case domain (some users prefer it):
         if domain_lc != domain:
-            candidates.append((
-                "MORIE_DATA_DIR + /" + domain,
-                (Path(e3).expanduser() / domain).resolve(),
-            ))
+            candidates.append(
+                (
+                    "MORIE_DATA_DIR + /" + domain,
+                    (Path(e3).expanduser() / domain).resolve(),
+                )
+            )
 
     # 4. Persistent user data dir (only if it already exists)
     user_dir = _user_data_dir() / domain_lc

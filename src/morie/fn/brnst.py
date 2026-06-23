@@ -51,15 +51,16 @@ def bernstein_density_estimate(
     # Build Bernstein basis matrix
     B = np.zeros((len(x_eval), n_basis + 1))
     for k in range(n_basis + 1):
-        B[:, k] = comb(n_basis, k) * (x_eval ** k) * ((1 - x_eval) ** (n_basis - k))
+        B[:, k] = comb(n_basis, k) * (x_eval**k) * ((1 - x_eval) ** (n_basis - k))
 
     # Fit coefficients by LS (non-negative)
     B_train = np.zeros((n, n_basis + 1))
     for k in range(n_basis + 1):
-        B_train[:, k] = comb(n_basis, k) * (x_scaled ** k) * ((1 - x_scaled) ** (n_basis - k))
+        B_train[:, k] = comb(n_basis, k) * (x_scaled**k) * ((1 - x_scaled) ** (n_basis - k))
 
     # Non-negative LS: minimize ||By - theta||^2 subject to theta >= 0
     from scipy.optimize import nnls
+
     theta, _ = nnls(B_train, np.ones(n))
     theta /= np.sum(theta)  # Normalize
 

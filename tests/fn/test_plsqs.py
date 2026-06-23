@@ -1,6 +1,7 @@
 """Tests for plsqs.pls_qsar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.plsqs import pls_qsar
 
 
@@ -11,7 +12,7 @@ def test_plsqs_basic():
     n_components = 3
     result = pls_qsar(activities, descriptors, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_plsqs_edge():

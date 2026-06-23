@@ -1,6 +1,7 @@
 """Tests for hrzt2.horowitz_local_ate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzt2 import horowitz_local_ate
 
 
@@ -12,7 +13,7 @@ def test_hrzt2_basic():
     treatment = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_local_ate(x, y, z, treatment)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzt2_edge():

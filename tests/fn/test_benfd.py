@@ -1,5 +1,7 @@
 """Tests for benfd (Benford law test)."""
+
 import numpy as np
+
 from morie.fn.benfd import benfords_law_test
 
 
@@ -13,6 +15,7 @@ def test_benfords_basic():
 
 def test_cheatsheet():
     from morie.fn.benfd import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

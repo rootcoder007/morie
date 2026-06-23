@@ -1,6 +1,7 @@
 """Discrete-time causal convolution sum.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_discrete_convolution_causal"]

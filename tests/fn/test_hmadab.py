@@ -1,6 +1,7 @@
 """Tests for hmadab.geron_adaboost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmadab import geron_adaboost
 
 
@@ -12,7 +13,7 @@ def test_hmadab_basic():
     n_estimators = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_adaboost(X, y, base_estimator, n_estimators)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmadab_edge():

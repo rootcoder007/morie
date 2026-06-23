@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AlexNet: deep CNN for ImageNet with ReLU and dropout."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_alexnet"]
@@ -30,7 +32,9 @@ def geron_alexnet(n_classes):
     n = len(n_classes)
     result = float(np.mean(n_classes))
     se = float(np.std(n_classes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlexNet: deep CNN for ImageNet with ReLU and dropout"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "AlexNet: deep CNN for ImageNet with ReLU and dropout"}
+    )
 
 
 def cheatsheet():

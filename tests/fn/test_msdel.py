@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdel -- 2D Delaunay triangulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdel import delaunay_2d
 

@@ -47,6 +47,7 @@ from ..mrm_primitives.spatial_spillover import (
 @dataclass
 class GentrificationPolicingResult:
     """Per-year SDM decomposition + diagnostics + reproduction notes."""
+
     year: int
     n_tracts: int
     rho: float
@@ -66,8 +67,7 @@ class GentrificationPolicingResult:
             f"Moran's I (OLS residuals)={self.moran_i_ols:+.4f}.  "
         )
         gent_line = (
-            f"Gentrification effect: direct={gent.direct:+.4f}, "
-            f"indirect={gent.indirect:+.4f}, total={gent.total:+.4f}."
+            f"Gentrification effect: direct={gent.direct:+.4f}, indirect={gent.indirect:+.4f}, total={gent.total:+.4f}."
             if gent is not None
             else "Gentrification coefficient not found in decomposition."
         )
@@ -156,9 +156,7 @@ def gentrification_policing(
     #    The categorical flag is constant across years within a tract.
     if growth_college_col is None:
         df = df.copy()
-        df["_growth_college"] = (
-            df[follow_college_col] - df[baseline_college_col]
-        )
+        df["_growth_college"] = df[follow_college_col] - df[baseline_college_col]
         growth_college_col = "_growth_college"
     if growth_rent_col is None:
         df["_growth_rent"] = df[follow_rent_col] - df[baseline_rent_col]
@@ -174,15 +172,9 @@ def gentrification_policing(
         growth_rent_col=growth_rent_col,
         return_thresholds=True,
     )
-    df = df.set_index(tract_id_col).join(
-        gent_flag.rename("gentrification"), how="left"
-    ).reset_index()
+    df = df.set_index(tract_id_col).join(gent_flag.rename("gentrification"), how="left").reset_index()
 
-    gent_dist_overall = (
-        df.drop_duplicates(tract_id_col)["gentrification"]
-        .value_counts()
-        .to_dict()
-    )
+    gent_dist_overall = df.drop_duplicates(tract_id_col)["gentrification"].value_counts().to_dict()
 
     # 2. Per-year SDM decomposition
     if years is None:
@@ -194,17 +186,14 @@ def gentrification_policing(
         n = len(yr_df)
         if n < 10:
             warnings.warn(
-                f"morie.laniyonu.gentrification_policing: year {yr} has "
-                f"only {n} tracts; skipping.",
+                f"morie.laniyonu.gentrification_policing: year {yr} has only {n} tracts; skipping.",
                 UserWarning,
                 stacklevel=2,
             )
             continue
 
         # Build design matrix X and outcome y
-        gent_dummies = pd.get_dummies(
-            yr_df["gentrification"], prefix="gent", drop_first=True
-        ).astype(float)
+        gent_dummies = pd.get_dummies(yr_df["gentrification"], prefix="gent", drop_first=True).astype(float)
         X_cols = list(gent_dummies.columns) + [crime_col, demand_col]
         if additional_controls:
             X_cols += additional_controls
@@ -230,8 +219,7 @@ def gentrification_policing(
             # built from felony-count similarity.  NOT a real contiguity W;
             # in pre-fitted mode the caller supplies the real one.
             W = _placeholder_weight_matrix(yr_df[crime_col].to_numpy(dtype=float))
-            note = ("Using placeholder W from felony-count proximity; "
-                    "pass weight_matrix=... for paper-grade results.")
+            note = "Using placeholder W from felony-count proximity; pass weight_matrix=... for paper-grade results."
         else:
             W = weight_matrix
             note = f"Using user-supplied W (kind={weight_matrix_kind})."
@@ -242,15 +230,13 @@ def gentrification_policing(
             mi = float("nan")
 
         # SDM decomposition — pre-fitted or lite-mode fall-back
-        if (fitted_rho is not None and fitted_beta_direct is not None
-                and fitted_beta_spatial is not None):
-            rho_yr = (fitted_rho[yr] if isinstance(fitted_rho, dict)
-                      else float(fitted_rho))
+        if fitted_rho is not None and fitted_beta_direct is not None and fitted_beta_spatial is not None:
+            rho_yr = fitted_rho[yr] if isinstance(fitted_rho, dict) else float(fitted_rho)
             beta_d = fitted_beta_direct[yr]
             beta_s = fitted_beta_spatial[yr]
         else:
             rho_yr = 0.0
-            beta_d = beta_ols[1:]                 # drop intercept
+            beta_d = beta_ols[1:]  # drop intercept
             beta_s = np.zeros_like(beta_d)
             note += "  (lite mode: rho=0; pass fitted_* for SDM decomposition.)"
 
@@ -262,20 +248,20 @@ def gentrification_policing(
             coefficient_names=X_cols,
         )
 
-        gent_dist_yr = (
-            yr_df["gentrification"].value_counts().to_dict()
-        )
+        gent_dist_yr = yr_df["gentrification"].value_counts().to_dict()
 
-        out.append(GentrificationPolicingResult(
-            year=int(yr),
-            n_tracts=n,
-            rho=float(rho_yr),
-            moran_i_ols=float(mi),
-            decompositions=decomps,
-            gentrification_distribution=gent_dist_yr,
-            sensitivity_thresholds=thresholds,
-            note=note,
-        ))
+        out.append(
+            GentrificationPolicingResult(
+                year=int(yr),
+                n_tracts=n,
+                rho=float(rho_yr),
+                moran_i_ols=float(mi),
+                decompositions=decomps,
+                gentrification_distribution=gent_dist_yr,
+                sensitivity_thresholds=thresholds,
+                note=note,
+            )
+        )
 
     return out
 

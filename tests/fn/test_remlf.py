@@ -1,6 +1,7 @@
 """Tests for remlf.reml_log_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.remlf import reml_log_likelihood
 
 
@@ -11,7 +12,7 @@ def test_remlf_basic():
     V = np.random.default_rng(42).normal(0, 1, 100)
     result = reml_log_likelihood(y, X, V)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_remlf_edge():

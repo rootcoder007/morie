@@ -82,11 +82,13 @@ def tmle(
         Q0 = _logistic_fit_predict(np.column_stack([T[:, None], X, np.ones(n)]), Y)
         Q0 = np.clip(Q0, 1e-6, 1.0 - 1e-6)
         Q1 = _logistic_fit_predict(
-            np.column_stack([np.ones((n, 1)), X, np.ones(n)]), Y,
+            np.column_stack([np.ones((n, 1)), X, np.ones(n)]),
+            Y,
             fit_X=np.column_stack([T[:, None], X, np.ones(n)]),
         )
         Q0_ctrl = _logistic_fit_predict(
-            np.column_stack([np.zeros((n, 1)), X, np.ones(n)]), Y,
+            np.column_stack([np.zeros((n, 1)), X, np.ones(n)]),
+            Y,
             fit_X=np.column_stack([T[:, None], X, np.ones(n)]),
         )
     else:

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.runs import runs_test
+
 from morie.fn._containers import TestResult
+from morie.fn.runs import runs_test
 
 
 class TestRuns:

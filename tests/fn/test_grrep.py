@@ -1,6 +1,7 @@
 """Tests for grrep.geron_reparameterization_trick."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grrep import geron_reparameterization_trick
 
 
@@ -10,7 +11,7 @@ def test_grrep_basic():
     logvar = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_reparameterization_trick(mu, logvar)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grrep_edge():

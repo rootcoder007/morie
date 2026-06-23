@@ -1,6 +1,7 @@
 """Tests for rgglr.rangayyan_gen_likelihood_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgglr import rangayyan_gen_likelihood_ratio
 
 
@@ -11,7 +12,7 @@ def test_rgglr_basic():
     order = 4
     result = rangayyan_gen_likelihood_ratio(x, seg_len, order)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_rgglr_edge():

@@ -1,6 +1,7 @@
 """Tests for gaussm.gaussian_mechanism."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gaussm import gaussian_mechanism
 
 
@@ -12,7 +13,7 @@ def test_gaussm_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = gaussian_mechanism(f_value, l2_sens, epsilon, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gaussm_edge():

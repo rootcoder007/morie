@@ -1,6 +1,7 @@
 """MSM Poisson regression for count outcomes."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["msm_poisson"]
@@ -36,7 +37,9 @@ def msm_poisson(y, treatment_history, covariate_history, offset):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MSM Poisson regression for count outcomes"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MSM Poisson regression for count outcomes"}
+    )
 
 
 def cheatsheet():

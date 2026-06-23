@@ -1,6 +1,7 @@
 """Test bfdr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bfdr import bayesian_fdr
 
 

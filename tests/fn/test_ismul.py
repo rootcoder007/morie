@@ -1,7 +1,7 @@
 """Tests for morie.fn.ismul."""
 
 import numpy as np
-import pytest
+
 from morie.fn.ismul import ismul
 
 

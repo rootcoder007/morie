@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.brtrf import brent_root, brtrf
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.brtrf import brent_root, brtrf
 
 
 class TestBrtrf:

@@ -1,6 +1,7 @@
 """Tests for ghs016.ghosal_ch3_dirichlet_posterior_cov."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs016 import ghosal_ch3_dirichlet_posterior_cov
 
 
@@ -13,7 +14,7 @@ def test_ghs016_basic():
     n = 100
     result = ghosal_ch3_dirichlet_posterior_cov(alpha_j, alpha_jprime, N_j, N_jprime, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs016_edge():

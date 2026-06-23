@@ -1,6 +1,7 @@
 r"""Numbered display equation (8.12) from MVSML chapter 8.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_categorical_count_eq_8_12"]
@@ -40,7 +41,14 @@ def mvsml_categorical_count_eq_8_12(y, Pf, Model, similar, to, model):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (8.12) from MVSML chapter 8."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (8.12) from MVSML chapter 8.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test ppmc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmc import ppmc
 
 

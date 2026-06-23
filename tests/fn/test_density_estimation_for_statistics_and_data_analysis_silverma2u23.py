@@ -1,7 +1,10 @@
 """Tests for density_estimation_for_statistics_and_data_analysis_silverma2u23.density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_23."""
+
 import numpy as np
-import pytest
-from morie.fn.density_estimation_for_statistics_and_data_analysis_silverma2u23 import density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_23
+
+from morie.fn.density_estimation_for_statistics_and_data_analysis_silverma2u23 import (
+    density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_23,
+)
 
 
 def test_density_estimation_for_statistics_and_data_analysis_silverma2u23_basic():
@@ -9,7 +12,7 @@ def test_density_estimation_for_statistics_and_data_analysis_silverma2u23_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_23(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_density_estimation_for_statistics_and_data_analysis_silverma2u23_edge():

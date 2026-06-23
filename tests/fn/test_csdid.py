@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from morie.fn.csdid import cs_did, csdid
 
 
@@ -40,8 +41,7 @@ class TestCSDiD:
         assert result["n_cells"] >= 2
 
     def test_no_never_treated_raises(self):
-        rows = [{"unit": i, "time": t, "outcome": 1.0, "treat_time": 3}
-                for i in range(5) for t in range(1, 6)]
+        rows = [{"unit": i, "time": t, "outcome": 1.0, "treat_time": 3} for i in range(5) for t in range(1, 6)]
         df = pd.DataFrame(rows)
         with pytest.raises(ValueError, match="never-treated"):
             cs_did(df)

@@ -1,5 +1,7 @@
 """Tests for MSPE kriging."""
+
 import numpy as np
+
 from morie.fn.sgmspe import sgmspe
 
 
@@ -14,6 +16,7 @@ def test_sgmspe_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgmspe import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

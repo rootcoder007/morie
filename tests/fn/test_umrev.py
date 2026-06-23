@@ -1,7 +1,7 @@
 """Tests for morie.fn.umrev."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umrev import umrev
 
 

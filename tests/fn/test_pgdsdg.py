@@ -1,6 +1,7 @@
 """Tests for pgdsdg.projected_gd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pgdsdg import projected_gd
 
 
@@ -13,7 +14,7 @@ def test_pgdsdg_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = projected_gd(f, grad_f, project, x0, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pgdsdg_edge():

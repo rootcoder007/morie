@@ -1,6 +1,7 @@
 """Network SIS epidemic."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sis_epidemic"]

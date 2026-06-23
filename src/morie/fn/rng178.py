@@ -1,6 +1,7 @@
 """Weighted combination of first and second derivatives for QRS detection.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_qrs_combined_balda"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_qrs_combined_balda(y_0, y_1, n):
     n = len(y_0)
     result = float(np.mean(y_0))
     se = float(np.std(y_0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Weighted combination of first and second derivatives for QRS detection."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Weighted combination of first and second derivatives for QRS detection.",
+        }
+    )
 
 
 def cheatsheet():

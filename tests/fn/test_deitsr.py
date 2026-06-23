@@ -1,6 +1,7 @@
 """Tests for deitsr.deit_distill."""
+
 import numpy as np
-import pytest
+
 from morie.fn.deitsr import deit_distill
 
 
@@ -10,7 +11,7 @@ def test_deitsr_basic():
     teacher = np.random.default_rng(42).normal(0, 1, 100)
     result = deit_distill(x, teacher)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_deitsr_edge():

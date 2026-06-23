@@ -1,8 +1,9 @@
 """Tests for morie.fn.gld -- Glass's delta effect size."""
 
 import pytest
-from morie.fn.gld import glass_delta
+
 from morie.fn._containers import ESRes
+from morie.fn.gld import glass_delta
 
 
 class TestGlassDelta:

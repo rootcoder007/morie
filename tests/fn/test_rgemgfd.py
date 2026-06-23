@@ -1,6 +1,7 @@
 """Tests for rgemgfd.rangayyan_emg_fractal_dim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgemgfd import rangayyan_emg_fractal_dim
 
 
@@ -12,7 +13,7 @@ def test_rgemgfd_basic():
     kmax = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_emg_fractal_dim(emg, force, fs, kmax)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgemgfd_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.sumort -- substance mortality."""
 
 import pytest
+
 from morie.fn.sumort import substance_mortality
 
 

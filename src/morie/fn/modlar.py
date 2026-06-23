@@ -1,6 +1,7 @@
 """Modularity Q (Newman) of a community partition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["modularity_newman"]
@@ -34,7 +35,9 @@ def modularity_newman(y, A, communities):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Modularity Q (Newman) of a community partition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Modularity Q (Newman) of a community partition"}
+    )
 
 
 def cheatsheet():

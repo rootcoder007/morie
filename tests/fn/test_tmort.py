@@ -45,8 +45,8 @@ def test_tmort_array_input():
     rrs = r.extra["rr"]
     assert rrs[2] == pytest.approx(1.0)
     # Monotone in each arm
-    assert rrs[0] > rrs[1] > rrs[2]   # colder → higher RR on cold arm
-    assert rrs[2] < rrs[3] < rrs[4]   # hotter → higher RR on heat arm
+    assert rrs[0] > rrs[1] > rrs[2]  # colder → higher RR on cold arm
+    assert rrs[2] < rrs[3] < rrs[4]  # hotter → higher RR on heat arm
 
 
 def test_tmort_custom_slopes():

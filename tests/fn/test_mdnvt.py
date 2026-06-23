@@ -1,5 +1,5 @@
 """Tests for morie.fn.mdnvt — Median voter."""
-import numpy as np
+
 from morie.fn.mdnvt import mdnvt
 
 

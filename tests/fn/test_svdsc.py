@@ -1,7 +1,6 @@
 """Tests for morie.fn.svdsc -- Discounted directional utility"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svdsc import discount_utility
 

@@ -36,4 +36,4 @@ mdsrk = mds_reconstruct_distances
 
 
 def cheatsheet() -> str:
-    return 'mds_reconstruct_distances({}) -> Reconstruct distances from MDS coordinates.'
+    return "mds_reconstruct_distances({}) -> Reconstruct distances from MDS coordinates."

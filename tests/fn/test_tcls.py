@@ -1,6 +1,7 @@
 """Tests for tcls.t_closeness."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tcls import t_closeness
 
 
@@ -12,7 +13,7 @@ def test_tcls_basic():
     t = np.linspace(0, 10, 100)
     result = t_closeness(X, quasi_ids, sensitive, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tcls_edge():

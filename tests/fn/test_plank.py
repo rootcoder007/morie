@@ -24,7 +24,7 @@ def test_stefan_boltzmann():
     nu = np.linspace(1e10, 1e14, 100)
     r = plank(nu, T=5778.0)
     sigma = 5.670374419e-8
-    expected = sigma * 5778.0 ** 4
+    expected = sigma * 5778.0**4
     assert r["total_power"] == pytest.approx(expected, rel=1e-3)
 
 

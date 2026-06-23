@@ -1,6 +1,7 @@
 """Tests for causrddh.causal_rdd_imbens_kalyanaraman."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causrddh import causal_rdd_imbens_kalyanaraman
 
 
@@ -11,7 +12,7 @@ def test_causrddh_basic():
     cutoff = 10.0
     result = causal_rdd_imbens_kalyanaraman(x, y, cutoff)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causrddh_edge():

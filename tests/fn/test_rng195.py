@@ -1,6 +1,7 @@
 """Tests for rng195.rangayyan_ch4_length_transformation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng195 import rangayyan_ch4_length_transformation
 
 
@@ -12,7 +13,7 @@ def test_rng195_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch4_length_transformation(x, N, w, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng195_edge():

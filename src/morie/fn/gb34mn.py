@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean of total runs up-and-down in a random sequence of n numbers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_runs_ud_mean"]
@@ -33,7 +35,14 @@ def gibbons_runs_ud_mean(n):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean of total runs up-and-down in a random sequence of n numbers"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mean of total runs up-and-down in a random sequence of n numbers",
+        }
+    )
 
 
 def cheatsheet():

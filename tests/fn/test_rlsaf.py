@@ -1,9 +1,9 @@
 """Test rls_adaptive_filter (rlsaf)."""
-import numpy as np
-import pytest
 
-from morie.fn.rlsaf import rls_adaptive_filter, rlsaf
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.rlsaf import rls_adaptive_filter, rlsaf
 
 
 class TestRlsAdaptiveFilter:

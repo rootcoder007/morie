@@ -1,6 +1,7 @@
 """Tests for miefa1.mi_fmi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.miefa1 import mi_fmi
 
 
@@ -11,7 +12,7 @@ def test_miefa1_basic():
     m = 10
     result = mi_fmi(between, within, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_miefa1_edge():

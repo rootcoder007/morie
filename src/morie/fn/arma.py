@@ -73,4 +73,4 @@ arma = arima_fit
 
 
 def cheatsheet() -> str:
-    return 'arima_fit({}) -> ARIMA model fitting.'
+    return "arima_fit({}) -> ARIMA model fitting."

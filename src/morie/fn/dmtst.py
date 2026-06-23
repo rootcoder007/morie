@@ -7,7 +7,9 @@ from scipy import stats
 from ._containers import DescriptiveResult
 
 
-def dm_test(actual: np.ndarray, forecast1: np.ndarray, forecast2: np.ndarray, h: int = 1, loss: str = "squared", cdf=None) -> DescriptiveResult:
+def dm_test(
+    actual: np.ndarray, forecast1: np.ndarray, forecast2: np.ndarray, h: int = 1, loss: str = "squared", cdf=None
+) -> DescriptiveResult:
     """
     Diebold-Mariano test for equal predictive accuracy.
 

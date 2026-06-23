@@ -87,4 +87,4 @@ megtr = kronecker_decompose
 
 
 def cheatsheet() -> str:
-    return 'megtr() -> Approximate nearest Kronecker product decomposition'
+    return "megtr() -> Approximate nearest Kronecker product decomposition"

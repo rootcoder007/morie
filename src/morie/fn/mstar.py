@@ -45,7 +45,7 @@ def ms_ar(y: np.ndarray, p: int = 1, n_regimes: int = 2, max_iter: int = 100) ->
         for r in range(n_regimes):
             resid = dep - X @ betas[r]
             s2 = max(sigma2[r], 1e-10)
-            log_lik[:, r] = -0.5 * (np.log(2 * np.pi * s2) + resid ** 2 / s2)
+            log_lik[:, r] = -0.5 * (np.log(2 * np.pi * s2) + resid**2 / s2)
         max_ll = np.max(log_lik, axis=1, keepdims=True)
         lik = np.exp(log_lik - max_ll)
         gamma = lik / lik.sum(axis=1, keepdims=True)
@@ -59,7 +59,7 @@ def ms_ar(y: np.ndarray, p: int = 1, n_regimes: int = 2, max_iter: int = 100) ->
             except np.linalg.LinAlgError:
                 pass
             resid = dep - X @ betas[r]
-            sigma2[r] = max(float(np.sum(w * resid ** 2) / max(np.sum(w), 1e-10)), 1e-10)
+            sigma2[r] = max(float(np.sum(w * resid**2) / max(np.sum(w), 1e-10)), 1e-10)
         for r in range(n_regimes):
             for s in range(n_regimes):
                 trans[r, s] = max(np.sum(gamma[:-1, r] * gamma[1:, s]), 1e-10)

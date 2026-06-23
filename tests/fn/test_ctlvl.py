@@ -1,6 +1,8 @@
 """Tests for ctlvl."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctlvl import ctlvl
 
 
@@ -28,4 +30,5 @@ def test_ctlvl_no_data():
 
 def test_ctlvl_alias():
     from morie.fn.ctlvl import ctlvl
+
     assert ctlvl is ctlvl

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Symbolic differentiation: apply rules (sum, product, chain) to expression trees."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_symbolic_differentiation"]
@@ -30,7 +32,14 @@ def geron_symbolic_differentiation(expression):
     n = len(expression)
     result = float(np.mean(expression))
     se = float(np.std(expression, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Symbolic differentiation: apply rules (sum, product, chain) to expression trees"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Symbolic differentiation: apply rules (sum, product, chain) to expression trees",
+        }
+    )
 
 
 def cheatsheet():

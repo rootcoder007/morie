@@ -1,6 +1,7 @@
 """Tests for penmth.penalty_method."""
+
 import numpy as np
-import pytest
+
 from morie.fn.penmth import penalty_method
 
 
@@ -12,7 +13,7 @@ def test_penmth_basic():
     mu = 0.0
     result = penalty_method(f, constraints, x0, mu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_penmth_edge():

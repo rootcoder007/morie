@@ -1,6 +1,7 @@
 """Tests for wsmscr.wasserman_score_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmscr import wasserman_score_test
 
 
@@ -11,7 +12,7 @@ def test_wsmscr_basic():
     theta0 = 0.0
     result = wasserman_score_test(data, f, theta0)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_wsmscr_edge():

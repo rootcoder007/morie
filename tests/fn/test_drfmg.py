@@ -1,8 +1,9 @@
 """Test drift_magnitude (drfmg)."""
+
 import numpy as np
 
-from morie.fn.drfmg import drift_magnitude, drfmg
 from morie.fn._containers import DescriptiveResult
+from morie.fn.drfmg import drfmg, drift_magnitude
 
 
 class TestDriftMagnitude:

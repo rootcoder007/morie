@@ -2,9 +2,9 @@
 
 import numpy as np
 import pandas as pd
-import pytest
-from morie.fn.jarber import jarque_bera, jarber
+
 from morie.fn._containers import TestResult
+from morie.fn.jarber import jarber, jarque_bera
 
 
 class TestJarJar:

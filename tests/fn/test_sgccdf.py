@@ -1,5 +1,7 @@
 """Tests for conditional CDF via indicator kriging."""
+
 import numpy as np
+
 from morie.fn.sgccdf import sgccdf
 
 
@@ -16,6 +18,7 @@ def test_sgccdf_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgccdf import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

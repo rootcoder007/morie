@@ -1,6 +1,8 @@
 """Tests for rbflnr."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rbflnr import rbflnr
 
 
@@ -28,4 +30,5 @@ def test_rbflnr_no_data():
 
 def test_rbflnr_alias():
     from morie.fn.rbflnr import rbflnr
+
     assert rbflnr is rbflnr

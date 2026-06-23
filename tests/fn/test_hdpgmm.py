@@ -1,6 +1,7 @@
 """Tests for hdpgmm.hdp_gaussian_mixture."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hdpgmm import hdp_gaussian_mixture
 
 
@@ -12,7 +13,7 @@ def test_hdpgmm_basic():
     alpha = 0.05
     result = hdp_gaussian_mixture(y, groups, gamma, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hdpgmm_edge():

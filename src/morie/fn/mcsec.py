@@ -1,6 +1,7 @@
 """MCMC standard error of posterior mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mcmc_standard_error"]

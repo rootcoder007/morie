@@ -1,6 +1,7 @@
 """HAR-Q model adding realised quarticity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_har_q"]
@@ -32,7 +33,9 @@ def vol_har_q(RV, RQ):
     n = len(RV)
     result = float(np.mean(RV))
     se = float(np.std(RV, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HAR-Q model adding realised quarticity"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "HAR-Q model adding realised quarticity"}
+    )
 
 
 def cheatsheet():

@@ -40,7 +40,7 @@ def multiscale_entropy(x, m: int = 2, r: float | None = None, max_scale: int = 1
             return float("nan")
 
         def _count(dim):
-            templates = np.array([y[i:i + dim] for i in range(ny - dim)])
+            templates = np.array([y[i : i + dim] for i in range(ny - dim)])
             cnt = 0
             for i in range(len(templates)):
                 for j in range(i + 1, len(templates)):
@@ -60,7 +60,7 @@ def multiscale_entropy(x, m: int = 2, r: float | None = None, max_scale: int = 1
         k = n // tau
         if k < m + 2:
             break
-        coarse = np.array([np.mean(x[i * tau:(i + 1) * tau]) for i in range(k)])
+        coarse = np.array([np.mean(x[i * tau : (i + 1) * tau]) for i in range(k)])
         se = _sampen(coarse)
         scales.append(tau)
         entropies.append(float(se))

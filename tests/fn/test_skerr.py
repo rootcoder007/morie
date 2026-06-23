@@ -7,7 +7,6 @@ from morie.fn.skerr import spatial_error_model
 
 
 class TestSpatialErrorModel:
-
     def test_lambda_estimated(self):
         """Lambda (spatial autocorrelation) is estimated and finite."""
         rng = np.random.default_rng(42)

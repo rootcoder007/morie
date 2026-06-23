@@ -1,6 +1,7 @@
 """Tests for hdbsc.hdbscan."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hdbsc import hdbscan
 
 
@@ -10,7 +11,7 @@ def test_hdbsc_basic():
     min_cluster_size = 100
     result = hdbscan(X, min_cluster_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hdbsc_edge():

@@ -1,6 +1,7 @@
 """Test markg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.markg import markg
 
 

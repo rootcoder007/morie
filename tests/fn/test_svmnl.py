@@ -1,7 +1,6 @@
 """Tests for morie.fn.svmnl -- Multinomial spatial choice model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svmnl import multinomial_spatial
 

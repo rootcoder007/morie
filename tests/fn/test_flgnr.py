@@ -1,6 +1,9 @@
 """Tests for fligner_killeen."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.flgnr import fligner_killeen
+
 
 class TestFligner:
     def test_equal_var(self):

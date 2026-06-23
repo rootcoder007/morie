@@ -1,5 +1,7 @@
 """Tests for morie.fn.qvote — Quadratic voting."""
+
 import numpy as np
+
 from morie.fn.qvote import qvote
 
 

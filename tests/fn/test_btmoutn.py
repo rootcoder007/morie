@@ -1,6 +1,7 @@
 """Tests for btmoutn.boot_m_out_of_n."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btmoutn import boot_m_out_of_n
 
 
@@ -12,7 +13,7 @@ def test_btmoutn_basic():
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = boot_m_out_of_n(x, m, stat, B)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btmoutn_edge():

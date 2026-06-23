@@ -1,6 +1,7 @@
 """Hill numbers of order q for a composition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["compositional_hill"]
@@ -32,7 +33,9 @@ def compositional_hill(x, q):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hill numbers of order q for a composition"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Hill numbers of order q for a composition"}
+    )
 
 
 def cheatsheet():

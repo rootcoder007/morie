@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian multi-trait multi-environment model (BMTME)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bmtme_model"]
@@ -36,7 +38,9 @@ def bmtme_model(Y, markers, env_labels, n_iter):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian multi-trait multi-environment model (BMTME)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian multi-trait multi-environment model (BMTME)"}
+    )
 
 
 def cheatsheet():

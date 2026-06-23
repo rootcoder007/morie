@@ -1,6 +1,7 @@
 """DP synthetic data (e.g. PrivBayes / MWEM)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_synthetic_data"]
@@ -32,7 +33,9 @@ def dp_synthetic_data(X, epsilon):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DP synthetic data (e.g. PrivBayes / MWEM)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DP synthetic data (e.g. PrivBayes / MWEM)"}
+    )
 
 
 def cheatsheet():

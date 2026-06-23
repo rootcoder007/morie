@@ -1,6 +1,7 @@
 """Amalgamation: sum a subset of parts into one."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["aitchison_amalgamation"]
@@ -32,7 +33,9 @@ def aitchison_amalgamation(x, idx):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Amalgamation: sum a subset of parts into one"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Amalgamation: sum a subset of parts into one"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_white_noise_optimal_rate"]
@@ -30,7 +32,14 @@ def ghosal_white_noise_optimal_rate(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax",
+        }
+    )
 
 
 def cheatsheet():

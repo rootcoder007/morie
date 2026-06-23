@@ -1,8 +1,9 @@
 """Tests for morie.fn.moncar -- Monte Carlo integration."""
 
 import numpy as np
-from morie.fn.moncar import monte_carlo, moncar
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.moncar import moncar, monte_carlo
 
 
 class TestMoncar:

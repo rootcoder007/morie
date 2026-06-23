@@ -1,6 +1,7 @@
 """Tests for smspln.smoothing_spline."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smspln import smoothing_spline
 
 
@@ -11,7 +12,7 @@ def test_smspln_basic():
     lam = 0.1
     result = smoothing_spline(x, y, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smspln_edge():

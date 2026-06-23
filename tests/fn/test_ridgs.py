@@ -1,6 +1,7 @@
 """Tests for ridgs.ridge_solution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ridgs import ridge_solution
 
 
@@ -11,7 +12,7 @@ def test_ridgs_basic():
     lam = 0.1
     result = ridge_solution(X, y, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ridgs_edge():

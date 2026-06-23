@@ -1,5 +1,7 @@
 """Tests for Ripley's K function."""
+
 import numpy as np
+
 from morie.fn.sgkfn import sgkfn
 
 
@@ -14,6 +16,7 @@ def test_sgkfn_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgkfn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Approximate nearest neighbor search (HNSW-style): navigable-small-world greedy descent."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_approximate_nearest_neighbor"]
@@ -34,7 +36,14 @@ def alammar_approximate_nearest_neighbor(query_vec, index, ef_search):
     n = len(query_vec)
     result = float(np.mean(query_vec))
     se = float(np.std(query_vec, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Approximate nearest neighbor search (HNSW-style): navigable-small-world greedy descent"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Approximate nearest neighbor search (HNSW-style): navigable-small-world greedy descent",
+        }
+    )
 
 
 def cheatsheet():

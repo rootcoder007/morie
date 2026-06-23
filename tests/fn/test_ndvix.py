@@ -1,7 +1,5 @@
 """Tests for NDVI green-space exposure RR."""
 
-import math
-
 import numpy as np
 import pytest
 
@@ -23,7 +21,7 @@ def test_ndvix_is_protective_greener_is_lower_rr():
     r_high = ndvix(0.5, reference_ndvi=0.1)
     # 0.96^4 ≈ 0.8493
     assert r_high.value < r_low.value
-    assert r_high.value == pytest.approx(0.96 ** 4, abs=1e-4)
+    assert r_high.value == pytest.approx(0.96**4, abs=1e-4)
 
 
 def test_ndvix_depression_outcome_has_stronger_effect():

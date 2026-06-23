@@ -1,9 +1,10 @@
 """Tests for morie.fn.tpsgis — geo analysis."""
 
-import pytest
 import numpy as np
-from morie.fn.tpsgis import tps_geo_analysis
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tpsgis import tps_geo_analysis
 
 
 class TestGeoAnalysis:

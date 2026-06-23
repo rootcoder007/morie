@@ -1,6 +1,7 @@
 """Cross-validated TMLE -- k-fold sample-splitting."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_cv_targeting"]
@@ -36,7 +37,9 @@ def tmle_cv_targeting(y, D, X, K):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross-validated TMLE -- k-fold sample-splitting"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cross-validated TMLE -- k-fold sample-splitting"}
+    )
 
 
 def cheatsheet():

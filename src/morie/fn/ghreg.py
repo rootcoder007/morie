@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian-nonparametric regression -- GP prior on the mean."""
+
 import numpy as np
+
 from ._richresult import RichResult
 from .ghgps import ghosal_gp_squared_exponential
 
@@ -36,8 +38,7 @@ def ghosal_np_regression(x, y, length_scale=None, sigma_f=1.0, noise=None):
     Rasmussen & Williams (2006). GPML.
     Ghosal & van der Vaart (2017) Ch 12.
     """
-    gp = ghosal_gp_squared_exponential(
-        x, y, length_scale=length_scale, sigma_f=sigma_f, noise=noise)
+    gp = ghosal_gp_squared_exponential(x, y, length_scale=length_scale, sigma_f=sigma_f, noise=noise)
     y_arr = np.asarray(y, dtype=float).ravel()
     mu = np.asarray(gp["mu"])
     sd = np.asarray(gp["sd"])
@@ -47,25 +48,26 @@ def ghosal_np_regression(x, y, length_scale=None, sigma_f=1.0, noise=None):
     r2 = 1 - ss_res / max(ss_tot, 1e-12)
     # Marginal log-likelihood under a Gaussian likelihood
     sigma_n = float(gp["noise"])
-    var_pred = sd ** 2 + sigma_n ** 2
-    log_marg = float(-0.5 * np.sum((y_arr - mu) ** 2 / var_pred
-                                    + np.log(2 * np.pi * var_pred)))
-    ci_lower = (mu - 1.96 * np.sqrt(sd ** 2 + sigma_n ** 2)).tolist()
-    ci_upper = (mu + 1.96 * np.sqrt(sd ** 2 + sigma_n ** 2)).tolist()
-    return RichResult(payload={
-        "estimate": float(np.mean(mu)),
-        "se": float(np.mean(sd)),
-        "mu": mu.tolist(),
-        "sd": sd.tolist(),
-        "ci_lower": ci_lower,
-        "ci_upper": ci_upper,
-        "r2": float(r2),
-        "log_marginal": log_marg,
-        "length_scale": float(gp["length_scale"]),
-        "noise": sigma_n,
-        "n": n,
-        "method": "GP regression posterior",
-    })
+    var_pred = sd**2 + sigma_n**2
+    log_marg = float(-0.5 * np.sum((y_arr - mu) ** 2 / var_pred + np.log(2 * np.pi * var_pred)))
+    ci_lower = (mu - 1.96 * np.sqrt(sd**2 + sigma_n**2)).tolist()
+    ci_upper = (mu + 1.96 * np.sqrt(sd**2 + sigma_n**2)).tolist()
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(mu)),
+            "se": float(np.mean(sd)),
+            "mu": mu.tolist(),
+            "sd": sd.tolist(),
+            "ci_lower": ci_lower,
+            "ci_upper": ci_upper,
+            "r2": float(r2),
+            "log_marginal": log_marg,
+            "length_scale": float(gp["length_scale"]),
+            "noise": sigma_n,
+            "n": n,
+            "method": "GP regression posterior",
+        }
+    )
 
 
 def cheatsheet():

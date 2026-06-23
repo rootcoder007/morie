@@ -1,7 +1,7 @@
 """Tests for morie.fn.bal -- Balance diagnostics."""
 
 import numpy as np
-import pytest
+
 from morie.fn.bal import balance_diagnostics
 
 
@@ -34,7 +34,7 @@ class TestBalanceDiagnostics:
 
     def test_custom_names(self):
         X = np.ones((10, 2))
-        T = np.array([0]*5 + [1]*5)
+        T = np.array([0] * 5 + [1] * 5)
         results = balance_diagnostics(X, T, covariate_names=["age", "income"])
         assert results[0]["variable"] == "age"
         assert results[1]["variable"] == "income"

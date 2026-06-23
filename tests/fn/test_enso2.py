@@ -1,6 +1,7 @@
 """Test enso2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enso2 import enso2
 
 

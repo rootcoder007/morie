@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """STFT parameter selection (window length vs. time/freq resolution tradeoff)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_stft_params"]
@@ -34,7 +36,14 @@ def rangayyan_stft_params(fs, desired_t_res, desired_f_res):
     n = int(fs) if fs.ndim == 0 else len(fs)
     result = float(np.mean(fs))
     se = float(np.std(fs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "STFT parameter selection (window length vs. time/freq resolution tradeoff)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "STFT parameter selection (window length vs. time/freq resolution tradeoff)",
+        }
+    )
 
 
 def cheatsheet():

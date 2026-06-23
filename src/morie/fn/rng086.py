@@ -1,6 +1,8 @@
 """Normalized cross-correlation coefficient used in template matching.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_normalized_cross_correlation_template"]
@@ -40,9 +42,23 @@ def rangayyan_ch3_normalized_cross_correlation_template(x, y, k, N, x_bar, y_bar
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Normalized cross-correlation coefficient used in template matching."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Normalized cross-correlation coefficient used in template matching.",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Normalized cross-correlation coefficient used in template matching."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Normalized cross-correlation coefficient used in template matching.",
+        }
+    )
 
 
 def cheatsheet():

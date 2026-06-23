@@ -1,6 +1,8 @@
 """Tests for integration (neural complexity)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.intgn import integration, intgn
 
 

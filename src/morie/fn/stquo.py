@@ -1,5 +1,7 @@
 """Status quo point and agenda setter power in spatial model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["status_quo_spatial"]
@@ -33,7 +35,14 @@ def status_quo_spatial(ideal_points, status_quo, proposal):
     n = int(ideal_points) if ideal_points.ndim == 0 else len(ideal_points)
     result = float(np.mean(ideal_points))
     se = float(np.std(ideal_points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Status quo point and agenda setter power in spatial model"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Status quo point and agenda setter power in spatial model",
+        }
+    )
 
 
 def cheatsheet():

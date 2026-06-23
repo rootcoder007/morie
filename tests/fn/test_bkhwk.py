@@ -1,5 +1,7 @@
 """Test bkhwk."""
+
 import pytest
+
 from morie.fn.bkhwk import bekenstein_hawking
 
 

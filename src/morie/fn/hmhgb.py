@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Histogram-based gradient boosting (HistGB): bin features before split search."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_histogram_gradient_boosting"]
@@ -38,7 +40,14 @@ def geron_histogram_gradient_boosting(X, y, max_iter, learning_rate, max_bins):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Histogram-based gradient boosting (HistGB): bin features before split search"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Histogram-based gradient boosting (HistGB): bin features before split search",
+        }
+    )
 
 
 def cheatsheet():

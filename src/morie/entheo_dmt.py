@@ -37,6 +37,12 @@ e2218949120.
 
 from __future__ import annotations
 
+# ── Where the dataset lives ────────────────────────────────────────
+# The DMT_Imaging dataset is expected at the path given by the
+# MORIE_DMT_IMAGING_ROOT environment variable. Set it before
+# importing this module; otherwise, the default placeholder below
+# is used.
+import os as _os
 import re
 from pathlib import Path
 from typing import Literal
@@ -45,17 +51,12 @@ import numpy as np
 
 from .fn._richresult import RichResult
 
-# ── Where the dataset lives ────────────────────────────────────────
-
-# The DMT_Imaging dataset is expected at the path given by the
-# MORIE_DMT_IMAGING_ROOT environment variable. Set it before
-# importing this module; otherwise, the default placeholder below
-# is used.
-import os as _os
-DATASET_ROOT = Path(_os.environ.get(
-    "MORIE_DMT_IMAGING_ROOT",
-    "/path/to/workspace/DMT_Imaging",
-))
+DATASET_ROOT = Path(
+    _os.environ.get(
+        "MORIE_DMT_IMAGING_ROOT",
+        "/path/to/workspace/DMT_Imaging",
+    )
+)
 
 EEG_REGIONS = ("Central", "Frontal", "Occipital", "Parietal", "Temporal")
 EEG_BANDS = ("delta", "theta", "alpha", "beta", "gamma")
@@ -68,7 +69,8 @@ def _require_root() -> Path:
         raise FileNotFoundError(
             f"DMT_Imaging not found at {DATASET_ROOT}.  Clone "
             "https://github.com/timmer500/DMT_Imaging.git or set "
-            "MORIE_DMT_IMAGING_ROOT.")
+            "MORIE_DMT_IMAGING_ROOT."
+        )
     return DATASET_ROOT
 
 
@@ -77,8 +79,7 @@ def _loadmat(path: Path) -> dict:
     try:
         from scipy.io import loadmat
     except ImportError as exc:
-        raise RuntimeError("scipy is required to read DMT_Imaging "
-                            ".mat files") from exc
+        raise RuntimeError("scipy is required to read DMT_Imaging .mat files") from exc
     return loadmat(path)
 
 
@@ -105,8 +106,7 @@ def available_subjects() -> list[int]:
     return sorted(ids)
 
 
-def load_fmri_subject(subject_id: int,
-                       condition: Condition = "DMT") -> np.ndarray:
+def load_fmri_subject(subject_id: int, condition: Condition = "DMT") -> np.ndarray:
     """Load a subject's BOLD AAL parcellation under one condition.
 
     Returns
@@ -117,9 +117,7 @@ def load_fmri_subject(subject_id: int,
     fname = f"LongS{subject_id:02d}{condition}.mat"
     path = root / "fMRI" / fname
     if not path.exists():
-        raise FileNotFoundError(
-            f"{fname} not in {path.parent}.  Available subjects: "
-            f"{available_subjects()}")
+        raise FileNotFoundError(f"{fname} not in {path.parent}.  Available subjects: {available_subjects()}")
     mat = _loadmat(path)
     if "BOLD_AAL" not in mat:
         raise KeyError(f"BOLD_AAL key missing from {fname}")
@@ -140,8 +138,7 @@ def load_eeg_region(region: Region) -> dict[str, np.ndarray]:
     root = _require_root()
     path = root / "EEG" / f"RegressorsInterpscrubbedIRASA_{region}.mat"
     mat = _loadmat(path)
-    return {k: np.ascontiguousarray(mat[k], dtype=np.float64)
-             for k in ("regDMT", "regPCB", "regdiff") if k in mat}
+    return {k: np.ascontiguousarray(mat[k], dtype=np.float64) for k in ("regDMT", "regPCB", "regdiff") if k in mat}
 
 
 def dataset_overview() -> RichResult:
@@ -169,8 +166,7 @@ def dataset_overview() -> RichResult:
             "are stubbed -- wire to morie.fn Rangayyan-style "
             "primitives in a follow-up."
         ),
-        payload={"root": str(root), "n_subjects": len(subs),
-                  "subject_ids": subs},
+        payload={"root": str(root), "n_subjects": len(subs), "subject_ids": subs},
     )
 
 
@@ -180,18 +176,17 @@ def dataset_overview() -> RichResult:
 # the standard biomedical-signal-analysis convention
 # (Rangayyan & Krishnan 2024, Ch. 5).
 DEFAULT_BANDS: tuple[tuple[str, float, float], ...] = (
-    ("delta", 0.5,  4.0),
-    ("theta", 4.0,  8.0),
+    ("delta", 0.5, 4.0),
+    ("theta", 4.0, 8.0),
     ("alpha", 8.0, 13.0),
-    ("beta",  13.0, 30.0),
+    ("beta", 13.0, 30.0),
     ("gamma", 30.0, 80.0),
 )
 
 
-def spectral_band_power(signal: np.ndarray, *,
-                         fs: float = 200.0,
-                         bands: tuple = DEFAULT_BANDS,
-                         nperseg: int | None = None) -> RichResult:
+def spectral_band_power(
+    signal: np.ndarray, *, fs: float = 200.0, bands: tuple = DEFAULT_BANDS, nperseg: int | None = None
+) -> RichResult:
     """Welch-PSD band-power decomposition for one EEG channel.
 
     Wraps :func:`morie.fn.psdwl.psdwl` to estimate the PSD, then
@@ -217,8 +212,7 @@ def spectral_band_power(signal: np.ndarray, *,
 
     sig = np.asarray(signal, dtype=float).ravel()
     if sig.size < 16:
-        return RichResult(title="spectral_band_power",
-                          warnings=[f"signal too short ({sig.size} samples)"])
+        return RichResult(title="spectral_band_power", warnings=[f"signal too short ({sig.size} samples)"])
     if nperseg is None:
         nperseg = min(sig.size, max(64, int(4 * fs)))
     res = psdwl(sig, fs=fs, nperseg=nperseg)
@@ -230,16 +224,16 @@ def spectral_band_power(signal: np.ndarray, *,
     for name, lo, hi in bands:
         mask = (f >= lo) & (f <= hi)
         if mask.sum() < 2:
-            absp = float("nan"); rel = float("nan")
+            absp = float("nan")
+            rel = float("nan")
         else:
             absp = float(np.trapezoid(psd[mask], f[mask]))
             rel = absp / total if total > 0 else float("nan")
-        rows.append({"band": name, "f_lo": lo, "f_hi": hi,
-                      "abs_power": round(absp, 6),
-                      "rel_power": round(rel, 4)})
-    summary = [(f"{r['band']} ({r['f_lo']}--{r['f_hi']} Hz)",
-                  f"abs={r['abs_power']:.4g}, rel={r['rel_power']:.3f}")
-                for r in rows]
+        rows.append({"band": name, "f_lo": lo, "f_hi": hi, "abs_power": round(absp, 6), "rel_power": round(rel, 4)})
+    summary = [
+        (f"{r['band']} ({r['f_lo']}--{r['f_hi']} Hz)", f"abs={r['abs_power']:.4g}, rel={r['rel_power']:.3f}")
+        for r in rows
+    ]
     summary.append(("Total broadband power", round(total, 6)))
     return RichResult(
         title="EEG band-power decomposition (Welch)",
@@ -250,16 +244,17 @@ def spectral_band_power(signal: np.ndarray, *,
             "DMT vs PCB contrasts, alpha-band relative power "
             "decreases and gamma increases under DMT."
         ),
-        payload={"rows": rows, "total_power": total,
-                  "bands": [r["band"] for r in rows],
-                  "abs_power_per_band": [r["abs_power"] for r in rows],
-                  "rel_power_per_band": [r["rel_power"] for r in rows]},
+        payload={
+            "rows": rows,
+            "total_power": total,
+            "bands": [r["band"] for r in rows],
+            "abs_power_per_band": [r["abs_power"] for r in rows],
+            "rel_power_per_band": [r["rel_power"] for r in rows],
+        },
     )
 
 
-def dynamic_functional_connectivity(bold: np.ndarray, *,
-                                      window: int = 30,
-                                      step: int = 5) -> RichResult:
+def dynamic_functional_connectivity(bold: np.ndarray, *, window: int = 30, step: int = 5) -> RichResult:
     """Sliding-window inter-region BOLD correlation (dRSFC).
 
     For an AAL-parcellated BOLD matrix of shape (n_regions, n_TRs),
@@ -272,8 +267,7 @@ def dynamic_functional_connectivity(bold: np.ndarray, *,
     """
     bold = np.asarray(bold, dtype=float)
     if bold.ndim != 2 or bold.shape[0] < 2 or bold.shape[1] < window + step:
-        return RichResult(title="dynamic_functional_connectivity",
-                          warnings=[f"insufficient BOLD shape {bold.shape}"])
+        return RichResult(title="dynamic_functional_connectivity", warnings=[f"insufficient BOLD shape {bold.shape}"])
     nr, nt = bold.shape
     iu = np.triu_indices(nr, k=1)
     starts = np.arange(0, nt - window + 1, step)
@@ -281,7 +275,7 @@ def dynamic_functional_connectivity(bold: np.ndarray, *,
     n_pairs = iu[0].size
     cube = np.empty((n_windows, n_pairs), dtype=np.float32)
     for i, s in enumerate(starts):
-        seg = bold[:, s:s + window]
+        seg = bold[:, s : s + window]
         # Pearson correlation between rows
         c = np.corrcoef(seg)
         cube[i] = c[iu]
@@ -292,10 +286,8 @@ def dynamic_functional_connectivity(bold: np.ndarray, *,
         ("Window / step (TR)", f"{window} / {step}"),
         ("Number of windows", n_windows),
         ("Number of region pairs", n_pairs),
-        ("Mean across windows of mean correlation",
-          round(float(mean_per_pair.mean()), 4)),
-        ("Mean across windows of std correlation",
-          round(float(std_per_pair.mean()), 4)),
+        ("Mean across windows of mean correlation", round(float(mean_per_pair.mean()), 4)),
+        ("Mean across windows of std correlation", round(float(std_per_pair.mean()), 4)),
     ]
     return RichResult(
         title="Dynamic resting-state functional connectivity (dRSFC)",
@@ -306,14 +298,16 @@ def dynamic_functional_connectivity(bold: np.ndarray, *,
             "windows indicates a more dynamically reconfiguring "
             "connectivity profile -- a Timmermann 2023 DMT signature."
         ),
-        payload={"n_windows": n_windows, "n_pairs": n_pairs,
-                  "mean_per_pair": mean_per_pair.tolist()[:50],
-                  "std_per_pair": std_per_pair.tolist()[:50]},
+        payload={
+            "n_windows": n_windows,
+            "n_pairs": n_pairs,
+            "mean_per_pair": mean_per_pair.tolist()[:50],
+            "std_per_pair": std_per_pair.tolist()[:50],
+        },
     )
 
 
-def lz_complexity(signal: np.ndarray, *,
-                    threshold: float | None = None) -> RichResult:
+def lz_complexity(signal: np.ndarray, *, threshold: float | None = None) -> RichResult:
     """Lempel-Ziv (LZ76) complexity of a binarised signal.
 
     Wraps :func:`morie.fn.lzcmp.lempel_ziv_complexity`.  The
@@ -325,22 +319,18 @@ def lz_complexity(signal: np.ndarray, *,
 
     sig = np.asarray(signal, dtype=float).ravel()
     if sig.size < 8:
-        return RichResult(title="lz_complexity",
-                          warnings=[f"signal too short ({sig.size})"])
+        return RichResult(title="lz_complexity", warnings=[f"signal too short ({sig.size})"])
     res = lempel_ziv_complexity(sig, threshold=threshold)
     # morie.fn.lzcmp returns ESRes with .estimate (raw LZ count) and
     # .extra["normalised"] (length-normalised, the headline statistic).
     raw = float(getattr(res, "estimate", float("nan")))
-    normalised = float(getattr(res, "extra", {}).get(
-        "normalised", float("nan")))
-    used_threshold = float(getattr(res, "extra", {}).get(
-        "threshold", float("nan")))
+    normalised = float(getattr(res, "extra", {}).get("normalised", float("nan")))
+    used_threshold = float(getattr(res, "extra", {}).get("threshold", float("nan")))
     return RichResult(
         title="Lempel-Ziv (LZ76) complexity",
         summary_lines=[
             ("Signal length", sig.size),
-            ("Binarisation threshold",
-              round(used_threshold, 4)),
+            ("Binarisation threshold", round(used_threshold, 4)),
             ("LZ raw count", round(raw, 1)),
             ("LZ normalised (length-corrected)", round(normalised, 4)),
         ],
@@ -349,14 +339,13 @@ def lz_complexity(signal: np.ndarray, *,
             "binary encoding.  In DMT vs PCB EEG contrasts, "
             "normalised LZ rises under DMT (Timmermann 2023 §Results)."
         ),
-        payload={"lz_raw": raw, "lz_normalised": normalised,
-                  "threshold": used_threshold},
+        payload={"lz_raw": raw, "lz_normalised": normalised, "threshold": used_threshold},
     )
 
 
-def analyze_subject(subject_id: int, *,
-                     conditions: tuple = ("DMT", "PCB"),
-                     window: int = 30, step: int = 5) -> RichResult:
+def analyze_subject(
+    subject_id: int, *, conditions: tuple = ("DMT", "PCB"), window: int = 30, step: int = 5
+) -> RichResult:
     """Run all three Layer-2 analyses on one subject's BOLD data
     under each condition and return a comparison RichResult.
 
@@ -369,27 +358,23 @@ def analyze_subject(subject_id: int, *,
         try:
             bold = load_fmri_subject(subject_id, cond)
         except FileNotFoundError as exc:
-            rows.append({"subject": subject_id, "condition": cond,
-                          "error": str(exc)})
+            rows.append({"subject": subject_id, "condition": cond, "error": str(exc)})
             continue
         # Mean BOLD across regions as a "global signal" for LZ
         gs = bold.mean(axis=0)
         lz_res = lz_complexity(gs)
-        dfc = dynamic_functional_connectivity(bold,
-                                                window=window, step=step)
-        rows.append({
-            "subject": subject_id, "condition": cond,
-            "lz_global_signal_raw": round(
-                lz_res.payload.get("lz_raw", float("nan")), 1),
-            "lz_global_signal_normalised": round(
-                lz_res.payload.get("lz_normalised", float("nan")), 4),
-            "n_dfc_windows": dfc.payload.get("n_windows"),
-            "mean_dfc_corr": round(
-                float(np.mean(dfc.payload.get("mean_per_pair", [0]))), 4),
-        })
-    summary = [("Subject", subject_id),
-                ("Conditions evaluated",
-                  [r["condition"] for r in rows if "error" not in r])]
+        dfc = dynamic_functional_connectivity(bold, window=window, step=step)
+        rows.append(
+            {
+                "subject": subject_id,
+                "condition": cond,
+                "lz_global_signal_raw": round(lz_res.payload.get("lz_raw", float("nan")), 1),
+                "lz_global_signal_normalised": round(lz_res.payload.get("lz_normalised", float("nan")), 4),
+                "n_dfc_windows": dfc.payload.get("n_windows"),
+                "mean_dfc_corr": round(float(np.mean(dfc.payload.get("mean_per_pair", [0]))), 4),
+            }
+        )
+    summary = [("Subject", subject_id), ("Conditions evaluated", [r["condition"] for r in rows if "error" not in r])]
     return RichResult(
         title=f"DMT-vs-PCB per-subject analysis -- subj {subject_id}",
         summary_lines=summary,

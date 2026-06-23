@@ -78,4 +78,4 @@ bgg = bagging
 
 
 def cheatsheet() -> str:
-    return '_ols_predict({}) -> Bootstrap aggregating (bagging).'
+    return "_ols_predict({}) -> Bootstrap aggregating (bagging)."

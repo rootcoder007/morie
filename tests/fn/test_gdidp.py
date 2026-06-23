@@ -1,6 +1,7 @@
 """Test gdidp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdidp import gdidp
 
 

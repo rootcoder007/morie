@@ -8,7 +8,9 @@ import pandas as pd
 from scipy import stats
 
 
-def otis_risk_table(df: pd.DataFrame, cdf=None, *, outcome: str = "D", covariates: list[str] | None = None) -> pd.DataFrame:
+def otis_risk_table(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "D", covariates: list[str] | None = None
+) -> pd.DataFrame:
     """Univariate risk factor table (OR + 95% CI for each covariate).
 
     For each numeric covariate, fits a simple logistic-like model

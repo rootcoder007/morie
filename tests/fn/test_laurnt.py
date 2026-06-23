@@ -1,6 +1,7 @@
 """Tests for laurnt.laurent_series."""
+
 import numpy as np
-import pytest
+
 from morie.fn.laurnt import laurent_series
 
 
@@ -11,7 +12,7 @@ def test_laurnt_basic():
     order = 4
     result = laurent_series(f, c, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_laurnt_edge():

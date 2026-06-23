@@ -1,6 +1,7 @@
 """Tests for spintp.schabenberger_intensity_estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spintp import schabenberger_intensity_estimation
 
 
@@ -11,7 +12,7 @@ def test_spintp_basic():
     region = (0.0, 1.0, 0.0, 1.0)
     result = schabenberger_intensity_estimation(points, bandwidth, region)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spintp_edge():

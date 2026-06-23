@@ -12,6 +12,7 @@ pair-copulas are Gaussian; conditional CDFs use the Gaussian rosenblatt
 update.  Returns the partial-correlation matrix and the joint
 log-likelihood.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -36,8 +37,7 @@ def vine_copula(x):
     """
     x = np.asarray(x, dtype=float)
     if x.ndim != 2 or x.shape[0] < 3 or x.shape[1] < 2:
-        return RichResult(payload={"estimate": float("nan"),
-                                   "method": "vine copula (need 2-D, n>=3)"})
+        return RichResult(payload={"estimate": float("nan"), "method": "vine copula (need 2-D, n>=3)"})
     n, d = x.shape
     # pseudo-observations
     u = (np.argsort(np.argsort(x, axis=0), axis=0) + 1) / (n + 1)
@@ -72,12 +72,17 @@ def vine_copula(x):
             loglik = -0.5 * n * (logdet + float(np.trace(R_inv @ S)))
         except Exception:
             loglik = float("nan")
-    return RichResult(payload={
-        "partial_corr": P, "R": R, "loglik": float(loglik),
-        "estimate": float(np.mean(np.abs(P[np.triu_indices(d, k=1)]))),
-        "n": int(n), "d": int(d),
-        "method": "Gaussian D-vine copula (Aas et al. 2009)",
-    })
+    return RichResult(
+        payload={
+            "partial_corr": P,
+            "R": R,
+            "loglik": float(loglik),
+            "estimate": float(np.mean(np.abs(P[np.triu_indices(d, k=1)]))),
+            "n": int(n),
+            "d": int(d),
+            "method": "Gaussian D-vine copula (Aas et al. 2009)",
+        }
+    )
 
 
 # CANONICAL TEST

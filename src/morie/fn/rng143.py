@@ -1,6 +1,8 @@
 """Autocorrelation matrix of the input vector x(n) used in Wiener filtering.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_autocorrelation_matrix"]
@@ -32,9 +34,23 @@ def rangayyan_ch3_autocorrelation_matrix(x, n):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Autocorrelation matrix of the input vector x(n) used in Wiener filtering."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Autocorrelation matrix of the input vector x(n) used in Wiener filtering.",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Autocorrelation matrix of the input vector x(n) used in Wiener filtering."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Autocorrelation matrix of the input vector x(n) used in Wiener filtering.",
+        }
+    )
 
 
 def cheatsheet():

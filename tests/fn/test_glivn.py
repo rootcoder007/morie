@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.glivn import glivn, GlivenkoCantelliResult
+from morie.fn.glivn import GlivenkoCantelliResult, glivn
 
 
 @pytest.fixture()
@@ -23,6 +23,7 @@ def test_converges_for_correct_cdf(normal_sample):
 
 def test_does_not_converge_wrong_cdf():
     from scipy.stats import uniform
+
     rng = np.random.default_rng(42)
     x = rng.standard_normal(500)
     result = glivn(x, cdf_fn=uniform.cdf)

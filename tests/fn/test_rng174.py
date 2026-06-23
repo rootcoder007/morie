@@ -1,6 +1,7 @@
 """Tests for rng174.rangayyan_ch3_rls_weight_update_compact."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng174 import rangayyan_ch3_rls_weight_update_compact
 
 
@@ -12,7 +13,7 @@ def test_rng174_basic():
     n = 100
     result = rangayyan_ch3_rls_weight_update_compact(w_tilde, k, alpha, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng174_edge():

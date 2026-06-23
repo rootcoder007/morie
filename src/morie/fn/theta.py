@@ -1,6 +1,5 @@
 """Watterson's theta estimator from segregating sites."""
 
-
 from ._containers import GenomicsResult
 
 

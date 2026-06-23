@@ -7,7 +7,6 @@ from morie.fn.nskov import nskov
 
 
 class TestNskov:
-
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

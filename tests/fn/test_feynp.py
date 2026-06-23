@@ -1,6 +1,5 @@
 """Tests for morie.fn.feynp -- Feynman path integral."""
 
-import numpy as np
 import pytest
 
 from morie.fn.feynp import feynp
@@ -9,8 +8,7 @@ from morie.fn.feynp import feynp
 def test_returns_dict():
     r = feynp(x_i=0, x_f=0, T=1.0, n_paths=100, n_slices=10)
     assert isinstance(r, dict)
-    for k in ("propagator_mc", "propagator_exact", "classical_action",
-              "relative_error"):
+    for k in ("propagator_mc", "propagator_exact", "classical_action", "relative_error"):
         assert k in r
 
 

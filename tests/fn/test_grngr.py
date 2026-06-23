@@ -1,4 +1,5 @@
 """Tests for morie.fn.grngr — Granger causality test."""
+
 import numpy as np
 
 from morie.fn.grngr import granger_cause, grngr

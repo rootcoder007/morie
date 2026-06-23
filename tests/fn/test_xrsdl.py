@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrsdl -- Spatial Durbin Error model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrsdl import sdem_ml
 

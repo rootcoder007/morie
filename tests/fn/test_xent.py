@@ -1,6 +1,8 @@
 """Tests for cross_entropy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.xent import cross_entropy, xent
 
 

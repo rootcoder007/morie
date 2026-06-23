@@ -1,6 +1,5 @@
 """Tests for morie.fn.omed1 — Mediation analysis."""
 
-import numpy as np
 from morie.fn.omed1 import otis_mediation
 
 
@@ -11,8 +10,7 @@ class TestOtisMediation:
 
     def test_has_keys(self, otis_df):
         result = otis_mediation(otis_df)
-        for k in ("total_effect", "direct_effect", "indirect_effect",
-                   "sobel_z", "sobel_pval", "prop_mediated", "n"):
+        for k in ("total_effect", "direct_effect", "indirect_effect", "sobel_z", "sobel_pval", "prop_mediated", "n"):
             assert k in result
 
     def test_decomposition(self, otis_df):

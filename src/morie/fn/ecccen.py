@@ -1,6 +1,7 @@
 """Eccentricity centrality (1 / max distance)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["eccentricity_centrality"]
@@ -34,7 +35,9 @@ def eccentricity_centrality(y, A, node):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Eccentricity centrality (1 / max distance)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Eccentricity centrality (1 / max distance)"}
+    )
 
 
 def cheatsheet():

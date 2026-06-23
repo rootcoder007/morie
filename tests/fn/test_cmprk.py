@@ -1,6 +1,7 @@
 """Tests for morie.fn.cmprk — competing risks CIF."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cmprk import competing_risks
 
 

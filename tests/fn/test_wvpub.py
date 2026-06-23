@@ -1,7 +1,7 @@
 """Tests for morie.fn.wvpub."""
 
 import numpy as np
-import pytest
+
 from morie.fn.wvpub import wvpub
 
 

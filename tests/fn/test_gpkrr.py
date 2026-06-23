@@ -1,6 +1,7 @@
 """Tests for gpkrr.gp_kernel_ridge_reg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpkrr import gp_kernel_ridge_reg
 
 
@@ -12,7 +13,7 @@ def test_gpkrr_basic():
     lam = 0.1
     result = gp_kernel_ridge_reg(X, y, X_test, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpkrr_edge():

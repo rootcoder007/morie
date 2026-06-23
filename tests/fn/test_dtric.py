@@ -1,6 +1,7 @@
 """Test dtric."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtric import dtric
 
 

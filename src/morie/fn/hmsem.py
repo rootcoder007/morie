@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Semi-supervised learning: small labeled set plus large unlabeled pool."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_semisupervised"]
@@ -36,7 +38,14 @@ def geron_semisupervised(X_l, y_l, X_u, alpha):
     n = len(X_l)
     result = float(np.mean(X_l))
     se = float(np.std(X_l, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Semi-supervised learning: small labeled set plus large unlabeled pool"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Semi-supervised learning: small labeled set plus large unlabeled pool",
+        }
+    )
 
 
 def cheatsheet():

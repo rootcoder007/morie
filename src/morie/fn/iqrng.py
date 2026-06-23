@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Interquartile range with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 from scipy.stats import iqr as _scipy_iqr
 
@@ -9,6 +11,7 @@ from scipy.stats import iqr as _scipy_iqr
 def iqrng(x: Union[Sequence[float], np.ndarray], method: str = "linear"):
     """Interquartile range = Q3 - Q1."""
     from ._richresult import RichResult
+
     a = np.asarray(x, dtype=float)
     if a.size < 4:
         raise ValueError(f"need at least 4 observations for stable IQR, got {a.size}.")
@@ -28,9 +31,8 @@ def iqrng(x: Union[Sequence[float], np.ndarray], method: str = "linear"):
             ("n", int(a.size)),
             ("Method", method),
         ],
-        interpretation=("Robust spread; values outside [Q1 - 1.5*IQR, "
-                        "Q3 + 1.5*IQR] are flagged as outliers in box-plot "
-                        "convention."),
-        payload={"value": iqr_val, "statistic": iqr_val,
-                 "q1": q1, "q3": q3, "median": median},
+        interpretation=(
+            "Robust spread; values outside [Q1 - 1.5*IQR, Q3 + 1.5*IQR] are flagged as outliers in box-plot convention."
+        ),
+        payload={"value": iqr_val, "statistic": iqr_val, "q1": q1, "q3": q3, "median": median},
     )

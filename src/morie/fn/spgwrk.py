@@ -1,5 +1,7 @@
 """GWR kernel functions: Gaussian, bisquare, tricube, boxcar."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_gwr_kernels"]
@@ -33,7 +35,14 @@ def schabenberger_gwr_kernels(distance, bandwidth, kernel_type):
     n = int(distance) if distance.ndim == 0 else len(distance)
     result = float(np.mean(distance))
     se = float(np.std(distance, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GWR kernel functions: Gaussian, bisquare, tricube, boxcar"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "GWR kernel functions: Gaussian, bisquare, tricube, boxcar",
+        }
+    )
 
 
 def cheatsheet():

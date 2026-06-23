@@ -1,6 +1,7 @@
 """Tests for alcbm.alammar_conversation_buffer_memory."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alcbm import alammar_conversation_buffer_memory
 
 
@@ -10,7 +11,7 @@ def test_alcbm_basic():
     N = 100
     result = alammar_conversation_buffer_memory(conversation, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alcbm_edge():

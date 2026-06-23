@@ -1,6 +1,7 @@
 """Test srsdm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srsdm import srsdm
 
 

@@ -34,7 +34,9 @@ def _run_cli(*extra_args: str, env_overrides: dict | None = None):
         env.update(env_overrides)
     return subprocess.run(
         [sys.executable, "-m", "morie.runner", "verify-earth-engine", *extra_args],
-        capture_output=True, text=True, env=env,
+        capture_output=True,
+        text=True,
+        env=env,
     )
 
 
@@ -55,11 +57,13 @@ def test_verify_ee_library_stage_passes_when_installed():
 
 
 def test_verify_ee_bad_keypath_exit_1():
-    r = _run_cli(env_overrides={
-        "MORIE_EE_SERVICE_ACCOUNT": "fake@example.iam.gserviceaccount.com",
-        "MORIE_EE_KEY_PATH": "/no/such/file.json",
-        "MORIE_EE_PROJECT": "test-project",
-    })
+    r = _run_cli(
+        env_overrides={
+            "MORIE_EE_SERVICE_ACCOUNT": "fake@example.iam.gserviceaccount.com",
+            "MORIE_EE_KEY_PATH": "/no/such/file.json",
+            "MORIE_EE_PROJECT": "test-project",
+        }
+    )
     assert r.returncode == 1
     assert "points at missing file" in r.stdout
 
@@ -89,7 +93,8 @@ def test_verify_ee_skip_query_passes_when_initialize_would():
 def test_verify_ee_appears_in_help():
     r = subprocess.run(
         [sys.executable, "-m", "morie.runner", "--help"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert r.returncode == 0
     assert "verify-earth-engine" in r.stdout

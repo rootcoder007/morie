@@ -1,7 +1,6 @@
 """Tests for morie.fn.svht3 -- Three-candidate spatial equilibrium"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svht3 import hotelling_3cand
 

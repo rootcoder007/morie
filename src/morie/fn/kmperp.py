@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Perplexity of a model on a token sequence."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_perplexity"]
@@ -30,7 +32,9 @@ def kamath_perplexity(log_probs):
     n = len(log_probs)
     result = float(np.mean(log_probs))
     se = float(np.std(log_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Perplexity of a model on a token sequence"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Perplexity of a model on a token sequence"}
+    )
 
 
 def cheatsheet():

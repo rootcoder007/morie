@@ -1,6 +1,7 @@
 """Tests for causmtchcm.causal_caliper_matching."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causmtchcm import causal_caliper_matching
 
 
@@ -11,7 +12,7 @@ def test_causmtchcm_basic():
     caliper = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_caliper_matching(ps, treat, caliper)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causmtchcm_edge():

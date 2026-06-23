@@ -1,6 +1,7 @@
 """Tests for km101.kamath_ch6_toxic_fraction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km101 import kamath_ch6_toxic_fraction
 
 
@@ -10,7 +11,7 @@ def test_km101_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch6_toxic_fraction(Yhat, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km101_edge():

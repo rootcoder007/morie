@@ -1,6 +1,7 @@
 """Tests for morie.fn.abrtm -- Farrington aberration detection."""
 
 import pytest
+
 from morie.fn.abrtm import farrington_aberration
 
 

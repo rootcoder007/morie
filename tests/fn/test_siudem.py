@@ -1,10 +1,10 @@
 """Tests for morie.fn.siudem — SIU demographics."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.siudem import siu_demographics
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siudem import siu_demographics
 
 
 class TestSiuDemographics:

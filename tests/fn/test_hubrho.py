@@ -1,6 +1,5 @@
 """Tests for hubrho.huber_loss."""
-import numpy as np
-import pytest
+
 from morie.fn.hubrho import huber_loss
 
 
@@ -10,7 +9,7 @@ def test_hubrho_basic():
     k = 5
     result = huber_loss(r, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hubrho_edge():

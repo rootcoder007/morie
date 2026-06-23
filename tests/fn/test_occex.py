@@ -1,6 +1,7 @@
 """Tests for morie.fn.occex -- occupational exposure."""
 
 import pytest
+
 from morie.fn.occex import occupational_exposure
 
 

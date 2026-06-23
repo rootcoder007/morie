@@ -1,6 +1,7 @@
 """Test rsknn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsknn import rsknn
 
 

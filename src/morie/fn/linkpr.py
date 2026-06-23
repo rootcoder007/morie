@@ -1,6 +1,7 @@
 """Link prediction (CN, AA, RA)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["link_prediction"]

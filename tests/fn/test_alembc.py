@@ -1,6 +1,7 @@
 """Tests for alembc.alammar_embedding_classifier."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alembc import alammar_embedding_classifier
 
 
@@ -11,7 +12,7 @@ def test_alembc_basic():
     classifier = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_embedding_classifier(embeddings, labels, classifier)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alembc_edge():

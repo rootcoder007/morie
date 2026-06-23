@@ -1,6 +1,7 @@
 """Test macur."""
+
 import numpy as np
-import pytest
+
 from morie.fn.macur import macur
 
 

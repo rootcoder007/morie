@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Cosine-similarity regression loss for SBERT: MSE between predicted and target cos-sim."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_cosine_similarity_loss"]
@@ -34,7 +36,14 @@ def alammar_cosine_similarity_loss(a, b, y_true):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cosine-similarity regression loss for SBERT: MSE between predicted and target cos-sim"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cosine-similarity regression loss for SBERT: MSE between predicted and target cos-sim",
+        }
+    )
 
 
 def cheatsheet():

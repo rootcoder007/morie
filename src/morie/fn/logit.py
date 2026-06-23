@@ -84,9 +84,7 @@ def logistic_regression(
     z_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.norm.sf(np.abs(z_vals))
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method="Logistic (IRLS)",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

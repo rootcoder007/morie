@@ -1,6 +1,7 @@
 """Ramsay E-type weight function."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ramsay_weight"]

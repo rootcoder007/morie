@@ -1,6 +1,8 @@
 """Tests for chlann."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlann import chlann
 
 
@@ -28,4 +30,5 @@ def test_chlann_no_data():
 
 def test_chlann_alias():
     from morie.fn.chlann import chlann
+
     assert chlann is chlann

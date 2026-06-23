@@ -1,6 +1,7 @@
 """Test magldr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.magldr import magldr
 
 

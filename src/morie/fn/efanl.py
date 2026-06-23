@@ -51,7 +51,7 @@ def efa_principal_axis(
         pos_eigvals = np.maximum(eigvals[:n_factors], 0)
         loadings = eigvecs[:, :n_factors] * np.sqrt(pos_eigvals)
 
-        new_comm = np.sum(loadings ** 2, axis=1)
+        new_comm = np.sum(loadings**2, axis=1)
         new_comm = np.clip(new_comm, 0.01, 0.99)
 
         if np.max(np.abs(new_comm - communalities)) < tol:
@@ -59,7 +59,7 @@ def efa_principal_axis(
             break
         communalities = new_comm
 
-    var_explained = np.sum(loadings ** 2, axis=0)
+    var_explained = np.sum(loadings**2, axis=0)
 
     return FaRes(
         loadings=loadings,

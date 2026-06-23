@@ -1,6 +1,7 @@
 """Tests for morie.fn.femeta -- fixed-effects meta-analysis."""
 
 import pytest
+
 from morie.fn.femeta import fixed_effects_meta
 
 

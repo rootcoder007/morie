@@ -1,8 +1,9 @@
 """Correlation expression involving 'transformation' (auto-extracted; see reference for full context).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["ca_chapter_11_equation_12"]
 
@@ -40,7 +41,10 @@ def ca_chapter_11_equation_12(x):
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation expression involving 'transformation' (auto-extracted; see reference for full context)."},
+            extra_payload={
+                "n": n,
+                "method": "Correlation expression involving 'transformation' (auto-extracted; see reference for full context).",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,9 +52,15 @@ def ca_chapter_11_equation_12(x):
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation expression involving 'transformation' (auto-extracted; see reference for full context).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation expression involving 'transformation' (auto-extracted; see reference for full context).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 
 def cheatsheet():
-    return "ca11e12: Correlation expression involving 'transformation' (auto-extracted; see reference for full context)."
+    return (
+        "ca11e12: Correlation expression involving 'transformation' (auto-extracted; see reference for full context)."
+    )

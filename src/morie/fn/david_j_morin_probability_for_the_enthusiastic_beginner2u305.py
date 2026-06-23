@@ -1,8 +1,8 @@
 """Dispersion expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered_305"]
 
@@ -46,4 +46,6 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2u305: Dispersion expression (auto-extracted; see ref)."
+    return (
+        "david_j_morin_probability_for_the_enthusiastic_beginner2u305: Dispersion expression (auto-extracted; see ref)."
+    )

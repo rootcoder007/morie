@@ -1,6 +1,7 @@
 """Profile-likelihood CI for GEV/GPD shape ξ."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_xi_ci_profile"]
@@ -34,7 +35,9 @@ def evt_xi_ci_profile(x, mle, level):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Profile-likelihood CI for GEV/GPD shape ξ"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Profile-likelihood CI for GEV/GPD shape ξ"}
+    )
 
 
 def cheatsheet():

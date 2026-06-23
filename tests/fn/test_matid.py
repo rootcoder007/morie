@@ -1,6 +1,7 @@
 """Test matid."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matid import matid
 
 

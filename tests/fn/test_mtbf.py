@@ -1,5 +1,7 @@
 """Tests for morie.fn.mtbf."""
+
 import numpy as np
+
 from morie.fn.mtbf import mtbf_estimate
 
 
@@ -13,6 +15,7 @@ def test_mtbf_smoke():
 
 def test_cheatsheet():
     from morie.fn.mtbf import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

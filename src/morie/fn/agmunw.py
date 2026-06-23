@@ -1,6 +1,7 @@
 """MuZero n-step value bootstrap target."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["muzero_n_step_value"]

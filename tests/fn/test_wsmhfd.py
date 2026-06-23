@@ -1,6 +1,7 @@
 """Tests for wsmhfd.wasserman_hoeffding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmhfd import wasserman_hoeffding
 
 
@@ -12,7 +13,7 @@ def test_wsmhfd_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = wasserman_hoeffding(n, t, a, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmhfd_edge():

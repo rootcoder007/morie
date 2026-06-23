@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Residual / skip connection."""
+
 from __future__ import annotations
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 import numpy as np
 
@@ -11,7 +12,7 @@ from ._richresult import RichResult
 __all__ = ["residual_connection"]
 
 
-def residual_connection(x, f: "Optional[Callable[[np.ndarray], np.ndarray]]" = None):
+def residual_connection(x, f: Callable[[np.ndarray], np.ndarray] | None = None):
     r"""Residual (identity-shortcut) connection.
 
     .. math::
@@ -43,9 +44,7 @@ def residual_connection(x, f: "Optional[Callable[[np.ndarray], np.ndarray]]" = N
     x = np.asarray(x, dtype=float)
     Fx = x if f is None else np.asarray(f(x), dtype=float)
     if Fx.shape != x.shape:
-        raise ValueError(
-            f"Residual branch shape {Fx.shape} != identity shape {x.shape}."
-        )
+        raise ValueError(f"Residual branch shape {Fx.shape} != identity shape {x.shape}.")
     y = Fx + x
     return RichResult(
         title="Residual connection",

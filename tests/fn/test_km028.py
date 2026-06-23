@@ -1,6 +1,7 @@
 """Tests for km028.kamath_ch2_alm_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km028 import kamath_ch2_alm_loss
 
 
@@ -10,7 +11,7 @@ def test_km028_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = kamath_ch2_alm_loss(z, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km028_edge():

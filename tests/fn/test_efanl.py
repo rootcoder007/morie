@@ -1,8 +1,9 @@
 """Tests for morie.fn.efanl -- Exploratory factor analysis (PAF)."""
 
 import numpy as np
-from morie.fn.efanl import efa_principal_axis, efanl
+
 from morie.fn._containers import FaRes
+from morie.fn.efanl import efa_principal_axis, efanl
 
 
 class TestEfaPrincipalAxis:

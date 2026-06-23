@@ -1,6 +1,7 @@
 """Test matcl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matcl import matcl
 
 

@@ -1,6 +1,7 @@
 """Test rsbai."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsbai import rsbai
 
 

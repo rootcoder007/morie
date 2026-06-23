@@ -1,6 +1,7 @@
 """Cox partial likelihood evaluation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cox_partial_likelihood"]

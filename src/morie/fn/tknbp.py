@@ -1,9 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Byte-pair encoding tokenization (Sennrich et al. 2016)."""
+
 from __future__ import annotations
 
 from collections import Counter
-from typing import Iterable, Sequence
+from collections.abc import Iterable
 
 from ._richresult import RichResult
 
@@ -65,14 +66,10 @@ def bpe_tokenizer(x: Iterable[str] | str, num_merges: int = 10):
     else:
         words = list(x)
     if not words:
-        return RichResult(payload={"merges": [], "vocab": set(),
-                                   "n_merges": 0, "n_vocab": 0,
-                                   "method": "BPE"})
+        return RichResult(payload={"merges": [], "vocab": set(), "n_merges": 0, "n_vocab": 0, "method": "BPE"})
 
     word_freq = Counter(words)
-    corpus: dict[tuple, int] = {
-        tuple(_word_to_symbols(w)): f for w, f in word_freq.items()
-    }
+    corpus: dict[tuple, int] = {tuple(_word_to_symbols(w)): f for w, f in word_freq.items()}
     merges: list[tuple[str, str]] = []
     for _ in range(int(num_merges)):
         pair_counts = _count_pairs(corpus)
@@ -86,8 +83,7 @@ def bpe_tokenizer(x: Iterable[str] | str, num_merges: int = 10):
     vocab = {sym for symbols in corpus for sym in symbols}
     return RichResult(
         title="Byte-Pair Encoding (Sennrich 2016)",
-        summary_lines=[("Merges learned", len(merges)),
-                       ("Vocab size", len(vocab))],
+        summary_lines=[("Merges learned", len(merges)), ("Vocab size", len(vocab))],
         payload={
             "merges": merges,
             "vocab": vocab,

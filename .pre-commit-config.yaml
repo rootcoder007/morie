@@ -1,0 +1,24 @@
+# Run `pre-commit install` once after cloning, then every commit
+# is automatically linted + formatted. Run `pre-commit run --all-files`
+# to apply on the whole tree manually.
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: '^r-package/.*/inst/.*\.ya?ml$'
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=2000']
+      - id: mixed-line-ending
+        args: ['--fix=lf']

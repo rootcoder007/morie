@@ -1,6 +1,7 @@
 """Clark-Evans aggregation index."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["clark_evans"]

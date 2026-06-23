@@ -1,7 +1,10 @@
 """Tests for probability_and_random_processes_with_one_thousand_exercises2u1693.probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_1693."""
+
 import numpy as np
-import pytest
-from morie.fn.probability_and_random_processes_with_one_thousand_exercises2u1693 import probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_1693
+
+from morie.fn.probability_and_random_processes_with_one_thousand_exercises2u1693 import (
+    probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_1693,
+)
 
 
 def test_probability_and_random_processes_with_one_thousand_exercises2u1693_basic():
@@ -9,7 +12,7 @@ def test_probability_and_random_processes_with_one_thousand_exercises2u1693_basi
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = probability_and_random_processes_with_one_thousand_exercises_chapter_2_unnumbered_1693(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_probability_and_random_processes_with_one_thousand_exercises2u1693_edge():

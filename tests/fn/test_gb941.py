@@ -1,6 +1,7 @@
 """Tests for gb941.gibbons_siegel_tukey."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb941 import gibbons_siegel_tukey
 
 
@@ -10,7 +11,7 @@ def test_gb941_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = gibbons_siegel_tukey(x, y)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb941_edge():

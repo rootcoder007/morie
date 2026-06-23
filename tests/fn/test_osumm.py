@@ -1,6 +1,7 @@
 """Tests for morie.fn.osumm — Full summary table."""
 
 import pandas as pd
+
 from morie.fn.osumm import otis_summary_table
 
 

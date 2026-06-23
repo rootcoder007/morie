@@ -1,8 +1,9 @@
 """Tests for morie.fn.speclu -- spectral clustering."""
 
 import numpy as np
-from morie.fn.speclu import rbf_spectral_cluster, speclu
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.speclu import rbf_spectral_cluster, speclu
 
 
 class TestSpeclu:

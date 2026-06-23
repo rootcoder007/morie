@@ -8,6 +8,7 @@ Kendall-tau test of x against time index t = 1..n.
 Standardised statistic Z under H0 (no trend):
     E[T] = n(n-1)/4,  Var[T] = n(n-1)(2n+5)/72.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,25 +39,32 @@ def rank_based_test(x):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 3:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "n": n,
-            "inversions": 0, "z": np.nan,
-            "method": "Mann's rank test for randomness",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "inversions": 0,
+                "z": np.nan,
+                "method": "Mann's rank test for randomness",
+            }
+        )
     t = np.arange(1, n + 1, dtype=float)
     res = stats.kendalltau(t, x)
     # Count inversions directly for the inversions payload
     inv = 0
     for i in range(n - 1):
-        inv += int(np.sum(x[i + 1:] < x[i]))
-    return RichResult(payload={
-        "statistic": float(res.statistic),
-        "p_value": float(res.pvalue),
-        "n": n,
-        "inversions": int(inv),
-        "z": float(res.statistic) * np.sqrt(9.0 * n * (n - 1) / (2.0 * (2 * n + 5))),
-        "method": "Mann's rank test for randomness (Kendall tau vs time)",
-    })
+        inv += int(np.sum(x[i + 1 :] < x[i]))
+    return RichResult(
+        payload={
+            "statistic": float(res.statistic),
+            "p_value": float(res.pvalue),
+            "n": n,
+            "inversions": int(inv),
+            "z": float(res.statistic) * np.sqrt(9.0 * n * (n - 1) / (2.0 * (2 * n + 5))),
+            "method": "Mann's rank test for randomness (Kendall tau vs time)",
+        }
+    )
 
 
 def cheatsheet():

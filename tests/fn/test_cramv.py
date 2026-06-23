@@ -1,7 +1,7 @@
 """Tests for morie.fn.cramv -- Cramer's V."""
 
-import numpy as np
 import pytest
+
 from morie.fn.cramv import cramers_v
 
 

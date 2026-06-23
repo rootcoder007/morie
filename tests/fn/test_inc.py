@@ -1,6 +1,7 @@
 """Tests for morie.fn.inc -- Incidence rate."""
 
 import pytest
+
 from morie.fn.inc import incidence_rate
 
 

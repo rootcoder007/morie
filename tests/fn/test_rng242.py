@@ -1,6 +1,7 @@
 """Tests for rng242.rangayyan_ch4_log_minimum_phase_expansion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng242 import rangayyan_ch4_log_minimum_phase_expansion
 
 
@@ -11,7 +12,7 @@ def test_rng242_basic():
     n = 100
     result = rangayyan_ch4_log_minimum_phase_expansion(alpha, z, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng242_edge():

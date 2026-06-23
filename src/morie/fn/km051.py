@@ -1,6 +1,7 @@
 """Qa trigger template.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_qa_trigger_template"]

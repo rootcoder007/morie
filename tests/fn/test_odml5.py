@@ -1,14 +1,13 @@
 """Tests for morie.fn.odml5 — OTIS DML volatility."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.odml5 import otis_dml_volatility
+
 from morie.fn._containers import ESRes
+from morie.fn.odml5 import otis_dml_volatility
 
 
 class TestOtisDmlVolatility:
-
     def test_returns_esres(self):
         rng = np.random.default_rng(42)
         n = 200

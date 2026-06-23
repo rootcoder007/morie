@@ -1,6 +1,7 @@
 """Tests for hmdpo.geron_dpo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmdpo import geron_dpo
 
 
@@ -12,7 +13,7 @@ def test_hmdpo_basic():
     beta = 0.8
     result = geron_dpo(pi, pi_ref, preferences, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmdpo_edge():

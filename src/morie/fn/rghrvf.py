@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """HRV frequency-domain metrics: VLF/LF/HF power and LF/HF ratio."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_hrv_freq_domain"]
@@ -32,7 +34,14 @@ def rangayyan_hrv_freq_domain(rr_intervals, fs_resamp):
     n = int(rr_intervals) if rr_intervals.ndim == 0 else len(rr_intervals)
     result = float(np.mean(rr_intervals))
     se = float(np.std(rr_intervals, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HRV frequency-domain metrics: VLF/LF/HF power and LF/HF ratio"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "HRV frequency-domain metrics: VLF/LF/HF power and LF/HF ratio",
+        }
+    )
 
 
 def cheatsheet():

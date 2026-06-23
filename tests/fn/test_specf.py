@@ -1,7 +1,8 @@
 """Tests for morie.fn.specf — specificity (TNR)."""
-import numpy as np
+
 import pytest
-from morie.fn.specf import specificity, specf
+
+from morie.fn.specf import specf, specificity
 
 
 def test_perfect():

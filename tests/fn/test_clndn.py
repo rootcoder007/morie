@@ -40,4 +40,5 @@ def test_perfect_discrimination():
 
 def test_cheatsheet():
     from morie.fn.clndn import cheatsheet
+
     assert "concordance" in cheatsheet().lower()

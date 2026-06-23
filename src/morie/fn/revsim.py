@@ -127,4 +127,4 @@ revsim = revised_simplex
 
 
 def cheatsheet() -> str:
-    return 'revsim() -> Solve a linear program via the revised simplex (Phase I / Phase II)'
+    return "revsim() -> Solve a linear program via the revised simplex (Phase I / Phase II)"

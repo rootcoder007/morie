@@ -1,6 +1,7 @@
 """Test hyrpn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyrpn import hyrpn
 
 

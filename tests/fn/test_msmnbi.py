@@ -1,6 +1,7 @@
 """Tests for msmnbi.msm_negative_binomial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msmnbi import msm_negative_binomial
 
 
@@ -12,7 +13,7 @@ def test_msmnbi_basic():
     alpha = 0.05
     result = msm_negative_binomial(y, treatment_history, covariate_history, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msmnbi_edge():

@@ -1,6 +1,7 @@
 """Tests for icfR.item_cf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.icfR import item_cf
 
 
@@ -12,7 +13,7 @@ def test_icfR_basic():
     k = 5
     result = item_cf(R, u, i, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_icfR_edge():

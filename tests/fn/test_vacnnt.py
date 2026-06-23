@@ -1,6 +1,7 @@
 """Tests for morie.fn.vacnnt -- vaccine NNV."""
 
 import pytest
+
 from morie.fn.vacnnt import vaccine_nnt
 
 

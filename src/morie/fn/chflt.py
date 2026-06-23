@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import SignalResult
 
-__all__ = ['chflt']
+__all__ = ["chflt"]
 
 _QUOTE = "The ripple is strong with this one. --"
 

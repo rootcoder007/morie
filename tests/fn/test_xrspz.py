@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrspz -- Spatial zero-inflated Poisson"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrspz import spatial_zip
 

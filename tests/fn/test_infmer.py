@@ -1,6 +1,7 @@
 """Tests for infmer.informer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.infmer import informer
 
 
@@ -11,7 +12,7 @@ def test_infmer_basic():
     seq_len = 100
     result = informer(X, y, seq_len)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_infmer_edge():

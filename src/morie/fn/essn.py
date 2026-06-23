@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Any, Union
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -31,7 +32,7 @@ def effective_sample_size(
     centered = x - mean_x
 
     max_lag = n - 1
-    acf = np.correlate(centered, centered, mode="full")[n - 1:]
+    acf = np.correlate(centered, centered, mode="full")[n - 1 :]
     acf = acf / acf[0] if acf[0] > 0 else acf
 
     tau = 1.0

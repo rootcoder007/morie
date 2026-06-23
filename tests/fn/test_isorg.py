@@ -1,7 +1,8 @@
 """Tests for morie.fn.isorg -- isotonic regression."""
 
 import numpy as np
-from morie.fn.isorg import isotonic_regression, isorg
+
+from morie.fn.isorg import isorg, isotonic_regression
 
 
 def test_isorg_monotone():

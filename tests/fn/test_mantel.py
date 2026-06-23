@@ -1,6 +1,10 @@
 """Tests for mantel_test."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.mantel import mantel_test
+
 
 class TestMantel:
     def test_identical(self):

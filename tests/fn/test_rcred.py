@@ -1,6 +1,8 @@
 """Tests for morie.fn.rcred -- read roll-call vote matrix."""
+
 import numpy as np
-from morie.fn.rcred import read_roll_call, rcred
+
+from morie.fn.rcred import rcred, read_roll_call
 
 
 def test_alias():

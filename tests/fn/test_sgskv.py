@@ -1,5 +1,7 @@
 """Tests for simple kriging variance."""
+
 import numpy as np
+
 from morie.fn.sgskv import sgskv
 
 

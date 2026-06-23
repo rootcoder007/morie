@@ -1,6 +1,7 @@
 """Tests for hmnmt.geron_encoder_decoder_nmt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmnmt import geron_encoder_decoder_nmt
 
 
@@ -11,7 +12,7 @@ def test_hmnmt_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_encoder_decoder_nmt(src, tgt, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmnmt_edge():

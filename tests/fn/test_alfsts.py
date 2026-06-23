@@ -1,6 +1,7 @@
 """Tests for alfsts.alphafold_structure_transition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alfsts import alphafold_structure_transition
 
 
@@ -11,7 +12,7 @@ def test_alfsts_basic():
     frames = np.random.default_rng(42).normal(0, 1, 100)
     result = alphafold_structure_transition(s, z, frames)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alfsts_edge():

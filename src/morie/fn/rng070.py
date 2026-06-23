@@ -1,6 +1,7 @@
 """Inverse discrete Fourier transform (IDFT) of an N-point spectrum.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_idft_definition"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_idft_definition(X, n, k, N):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inverse discrete Fourier transform (IDFT) of an N-point spectrum."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Inverse discrete Fourier transform (IDFT) of an N-point spectrum.",
+        }
+    )
 
 
 def cheatsheet():

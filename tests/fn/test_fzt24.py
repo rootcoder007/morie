@@ -1,6 +1,7 @@
 """Tests for fzt24.fauzi_thm2_4_mise_brdkdfe."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzt24 import fauzi_thm2_4_mise_brdkdfe
 
 
@@ -11,7 +12,7 @@ def test_fzt24_basic():
     a = np.random.default_rng(44).normal(0, 1, 100)
     result = fauzi_thm2_4_mise_brdkdfe(x, bandwidth, a)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzt24_edge():

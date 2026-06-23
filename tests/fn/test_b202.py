@@ -1,6 +1,7 @@
 """Tests for b202.burkov_lm_ch2_lm_next_token."""
+
 import numpy as np
-import pytest
+
 from morie.fn.b202 import burkov_lm_ch2_lm_next_token
 
 
@@ -10,7 +11,7 @@ def test_b202_basic():
     s = 90
     result = burkov_lm_ch2_lm_next_token(t_next, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_b202_edge():

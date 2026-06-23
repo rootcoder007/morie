@@ -1,6 +1,7 @@
 """Tests for kappac.cohens_kappa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kappac import cohens_kappa
 
 
@@ -10,7 +11,7 @@ def test_kappac_basic():
     rater2 = np.random.default_rng(42).normal(0, 1, 100)
     result = cohens_kappa(rater1, rater2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kappac_edge():

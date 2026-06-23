@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DETR set-prediction loss: Hungarian matching + classification + bounding-box."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_detr_hungarian_matching"]
@@ -36,7 +38,14 @@ def geron_detr_hungarian_matching(pred_boxes, pred_classes, gt_boxes, gt_classes
     n = len(pred_boxes)
     result = float(np.mean(pred_boxes))
     se = float(np.std(pred_boxes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DETR set-prediction loss: Hungarian matching + classification + bounding-box"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DETR set-prediction loss: Hungarian matching + classification + bounding-box",
+        }
+    )
 
 
 def cheatsheet():

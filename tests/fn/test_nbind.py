@@ -1,6 +1,7 @@
 """Test nbind."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbind import nbind
 
 

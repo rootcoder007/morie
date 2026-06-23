@@ -1,6 +1,7 @@
 """Tests for arspc.py - AR model spectrum."""
+
 import numpy as np
-import pytest
+
 from morie.fn.arspc import ar_spectrum_fn, arspc
 
 

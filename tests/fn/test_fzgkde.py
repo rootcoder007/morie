@@ -1,6 +1,7 @@
 """Tests for fzgkde.fauzi_gamma_kde."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzgkde import fauzi_gamma_kde
 
 
@@ -10,7 +11,7 @@ def test_fzgkde_basic():
     bandwidth = 0.3
     result = fauzi_gamma_kde(x, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzgkde_edge():

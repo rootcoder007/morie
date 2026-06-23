@@ -1,7 +1,9 @@
 """Tests for romgh -- hierarchical omega."""
+
 import numpy as np
-from morie.fn.romgh import omega_hierarchical_sub
+
 from morie.fn._containers import ESRes
+from morie.fn.romgh import omega_hierarchical_sub
 
 
 class TestOmegaHSub:

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FashionMNIST image classifier: CNN on 28x28 gray images."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_fashion_mnist"]
@@ -32,7 +34,14 @@ def geron_fashion_mnist(epochs, lr):
     n = len(epochs)
     result = float(np.mean(epochs))
     se = float(np.std(epochs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "FashionMNIST image classifier: CNN on 28x28 gray images"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "FashionMNIST image classifier: CNN on 28x28 gray images",
+        }
+    )
 
 
 def cheatsheet():

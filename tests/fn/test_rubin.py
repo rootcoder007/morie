@@ -1,9 +1,7 @@
 """Tests for morie.fn.rubin -- Rubin's rules for pooling MI estimates."""
 
-import math
-
-import numpy as np
 import pytest
+
 from morie.fn.rubin import rubins_rules
 
 

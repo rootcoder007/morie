@@ -1,6 +1,7 @@
 """Tests for morie.fn.suprv -- substance use prevalence."""
 
 import pytest
+
 from morie.fn.suprv import substance_prevalence
 
 

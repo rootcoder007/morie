@@ -1,6 +1,7 @@
 """Tests for mdpval.mdp_value_iteration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mdpval import mdp_value_iteration
 
 
@@ -12,7 +13,7 @@ def test_mdpval_basic():
     tol = 1e-6
     result = mdp_value_iteration(P, R, gamma, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mdpval_edge():

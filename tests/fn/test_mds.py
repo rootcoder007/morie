@@ -1,9 +1,7 @@
 """Tests for morie.fn.mds — Classical Multidimensional Scaling."""
 
-import numpy as np
-import pytest
-from morie.fn.mds import mds
 from morie.fn._containers import MdsRes
+from morie.fn.mds import mds
 
 
 class TestMds:
@@ -28,6 +26,7 @@ class TestMds:
     def test_distance_matrix_input(self, rng):
         """Accept pre-computed distance matrix."""
         from scipy.spatial.distance import pdist, squareform
+
         X = rng.standard_normal((20, 3))
         D = squareform(pdist(X))
         result = mds(D, n_dims=2, is_distance=True)

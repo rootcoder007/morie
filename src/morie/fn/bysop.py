@@ -9,10 +9,10 @@ import numpy as np
 from scipy.optimize import minimize
 from scipy.stats import norm
 
-__all__ = ['bysop']
+__all__ = ["bysop"]
 
 
-def bysop(f, bounds, n_init=10, n_iter=20, acq='ucb', kappa=2.576, full_output=False, seed=None, cdf=None):
+def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=False, seed=None, cdf=None):
     """
     Bayesian optimization for global optimization.
 
@@ -76,7 +76,8 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq='ucb', kappa=2.576, full_output=F
     for it in range(n_iter):
         # Simple GP: use kernel trick with RBF
         from scipy.spatial.distance import cdist
-        K = np.exp(-cdist(X, X, 'sqeuclidean') / (2 * 1.0))
+
+        K = np.exp(-cdist(X, X, "sqeuclidean") / (2 * 1.0))
         K += np.eye(len(X)) * 1e-6
 
         # Solve for GP weights
@@ -88,12 +89,12 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq='ucb', kappa=2.576, full_output=F
         # Acquisition function
         def acq_func(x_):
             x_ = np.atleast_1d(x_)
-            k = np.exp(-cdist(x_.reshape(1, -1), X, 'sqeuclidean') / (2 * 1.0)).ravel()
+            k = np.exp(-cdist(x_.reshape(1, -1), X, "sqeuclidean") / (2 * 1.0)).ravel()
             mu = np.dot(k, alpha)
             v = np.dot(k, np.linalg.solve(K, k))
             sigma = np.sqrt(np.abs(v))
 
-            if acq == 'ucb':
+            if acq == "ucb":
                 return -(mu - kappa * sigma)
             else:  # EI
                 y_min = np.min(y)
@@ -102,8 +103,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq='ucb', kappa=2.576, full_output=F
                 return -ei
 
         # Optimize acquisition
-        res = minimize(acq_func, x0=np.mean(bounds, axis=0), bounds=bounds,
-                      method='L-BFGS-B')
+        res = minimize(acq_func, x0=np.mean(bounds, axis=0), bounds=bounds, method="L-BFGS-B")
         x_next = res.x
         y_next = f(x_next)
 
@@ -112,9 +112,5 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq='ucb', kappa=2.576, full_output=F
 
     best_idx = np.argmin(y)
     if full_output:
-        return X[best_idx], {
-            'n_evals': len(y),
-            'converged': False,
-            'final_value': y[best_idx]
-        }
+        return X[best_idx], {"n_evals": len(y), "converged": False, "final_value": y[best_idx]}
     return X[best_idx]

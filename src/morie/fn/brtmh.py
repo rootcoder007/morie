@@ -7,7 +7,7 @@ Combines bisection, secant, and inverse quadratic interpolation.
 
 import numpy as np
 
-__all__ = ['brtmh']
+__all__ = ["brtmh"]
 
 
 def brtmh(f, a, b, tol=1e-6, max_iter=100, full_output=False):
@@ -80,11 +80,13 @@ def brtmh(f, a, b, tol=1e-6, max_iter=100, full_output=False):
             s = b - fb * (b - a) / (fb - fa)
 
         # Bisection fallback conditions
-        if ((s - b) * (3 * a - b) > 0 or
-            (mflag and np.abs(s - b) >= np.abs(b - c) / 2) or
-            (not mflag and np.abs(s - b) >= np.abs(c - d) / 2) or
-            (mflag and np.abs(b - c) < tol) or
-            (not mflag and np.abs(c - d) < tol)):
+        if (
+            (s - b) * (3 * a - b) > 0
+            or (mflag and np.abs(s - b) >= np.abs(b - c) / 2)
+            or (not mflag and np.abs(s - b) >= np.abs(c - d) / 2)
+            or (mflag and np.abs(b - c) < tol)
+            or (not mflag and np.abs(c - d) < tol)
+        ):
             s = (a + b) / 2
             mflag = True
         else:
@@ -107,17 +109,9 @@ def brtmh(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
         if np.abs(fb) < tol or (b - a) < tol:
             if full_output:
-                return b, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_residual': np.abs(fb)
-                }
+                return b, {"iterations": iteration + 1, "converged": True, "final_residual": np.abs(fb)}
             return b
 
     if full_output:
-        return b, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_residual': np.abs(fb)
-        }
+        return b, {"iterations": max_iter, "converged": False, "final_residual": np.abs(fb)}
     return b

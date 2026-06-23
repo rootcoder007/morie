@@ -3,12 +3,11 @@
 import numpy as np
 import pytest
 
-from morie.fn.pqenc import polarquant_encode
 from morie.fn.pqdec import polarquant_decode
+from morie.fn.pqenc import polarquant_encode
 
 
 class TestPolarquantDecode:
-
     def test_roundtrip(self):
         x = np.array([3.0, 4.0])
         enc = polarquant_encode(x)

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Short-time Fourier transform -- Rangayyan Ch 4."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -35,8 +36,7 @@ def rangayyan_stft(x, fs=1.0, nperseg=256, noverlap=None, window="hann"):
     nperseg = min(int(nperseg), x.size)
     if noverlap is None:
         noverlap = nperseg // 2
-    f, t, Sxx = spectrogram(x, fs=fs, window=window, nperseg=nperseg,
-                            noverlap=noverlap, scaling="density", mode="psd")
+    f, t, Sxx = spectrogram(x, fs=fs, window=window, nperseg=nperseg, noverlap=noverlap, scaling="density", mode="psd")
     res = RichResult(
         title="Short-Time Fourier Transform",
         summary_lines=[
@@ -48,8 +48,7 @@ def rangayyan_stft(x, fs=1.0, nperseg=256, noverlap=None, window="hann"):
             ("Freq bins", int(f.size)),
         ],
         interpretation=f"STFT: {t.size} frames × {f.size} freq bins.",
-        payload={"freqs": f, "times": t, "Sxx": Sxx,
-                 "nperseg": nperseg, "noverlap": int(noverlap), "fs": float(fs)},
+        payload={"freqs": f, "times": t, "Sxx": Sxx, "nperseg": nperseg, "noverlap": int(noverlap), "fs": float(fs)},
     )
     return with_describe_pointer(res, "rgstf")
 

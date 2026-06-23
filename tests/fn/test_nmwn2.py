@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmwn2 -- W-NOMINATE 2D"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmwn2 import wnominate_2d
 

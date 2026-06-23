@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.catfit import catenary_fit, catfit
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.catfit import catenary_fit, catfit
 
 
 class TestCatfit:

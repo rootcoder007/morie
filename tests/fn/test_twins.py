@@ -1,8 +1,9 @@
 """Tests for morie.fn.twins -- phase locking value."""
 
 import numpy as np
-from morie.fn.twins import phase_locking_value, twins
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.twins import phase_locking_value, twins
 
 
 class TestTwins:

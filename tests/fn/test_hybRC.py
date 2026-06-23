@@ -1,6 +1,7 @@
 """Tests for hybRC.hybrid_rec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hybRC import hybrid_rec
 
 
@@ -11,7 +12,7 @@ def test_hybRC_basic():
     alpha = 0.05
     result = hybrid_rec(scores_cf, scores_cb, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hybRC_edge():

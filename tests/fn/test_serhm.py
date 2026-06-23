@@ -1,6 +1,7 @@
 """Test serhm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.serhm import serhm
 
 

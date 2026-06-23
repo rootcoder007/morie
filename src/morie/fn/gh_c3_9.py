@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prior via quantile process: specify distribution of quantile function Q(u) = F^{-1}(u)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_quantile_prior"]
@@ -30,7 +32,14 @@ def ghosal_quantile_prior(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prior via quantile process: specify distribution of quantile function Q(u) = F^{-1}(u)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prior via quantile process: specify distribution of quantile function Q(u) = F^{-1}(u)",
+        }
+    )
 
 
 def cheatsheet():

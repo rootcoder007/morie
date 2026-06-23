@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgrvr -- Relative variogram"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgrvr import relative_vario
 
@@ -15,5 +14,5 @@ class TestRelativeVario:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = relative_vario(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = relative_vario(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

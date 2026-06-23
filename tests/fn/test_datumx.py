@@ -1,6 +1,7 @@
 """Test datumx."""
+
 import numpy as np
-import pytest
+
 from morie.fn.datumx import datumx
 
 

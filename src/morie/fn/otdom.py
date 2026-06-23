@@ -1,6 +1,7 @@
 """Joint distribution OT-based domain adaptation transform."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_domain_adaptation"]
@@ -34,7 +35,14 @@ def ot_domain_adaptation(Xs, Xt, epsilon):
     n = len(Xs)
     result = float(np.mean(Xs))
     se = float(np.std(Xs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Joint distribution OT-based domain adaptation transform"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Joint distribution OT-based domain adaptation transform",
+        }
+    )
 
 
 def cheatsheet():

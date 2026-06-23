@@ -1,6 +1,7 @@
 """Quandt likelihood ratio (sup-LR) for unknown break."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["quandt_likelihood_ratio"]
@@ -32,7 +33,9 @@ def quandt_likelihood_ratio(y, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quandt likelihood ratio (sup-LR) for unknown break"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Quandt likelihood ratio (sup-LR) for unknown break"}
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.nosco -- compare W vs DW scores."""
+
 import numpy as np
+
 from morie.fn.nosco import nominate_score_types, nosco
 
 

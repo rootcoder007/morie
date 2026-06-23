@@ -1,6 +1,7 @@
 """Admixture analysis (model-based clustering)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["admixture_seq"]
@@ -32,7 +33,9 @@ def admixture_seq(genotypes, K):
     n = len(genotypes)
     result = float(np.mean(genotypes))
     se = float(np.std(genotypes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Admixture analysis (model-based clustering)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Admixture analysis (model-based clustering)"}
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxait -- Aitchison compositional spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxait import aitchison_sp
 

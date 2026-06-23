@@ -1,6 +1,7 @@
 """Combined SAR-SEM (SARMA)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_ar_combined"]

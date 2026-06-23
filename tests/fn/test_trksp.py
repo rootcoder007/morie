@@ -1,6 +1,7 @@
 """Test trksp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trksp import trksp
 
 

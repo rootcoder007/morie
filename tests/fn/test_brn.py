@@ -1,6 +1,7 @@
 """Tests for morie.fn.brn — Brunner-Munzel test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.brn import brunner_munzel
 
 

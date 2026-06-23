@@ -1,6 +1,7 @@
 """Tests for trmwgt.trim_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trmwgt import trim_weights
 
 
@@ -10,7 +11,7 @@ def test_trmwgt_basic():
     quantile = np.random.default_rng(42).normal(0, 1, 100)
     result = trim_weights(weights, quantile)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trmwgt_edge():

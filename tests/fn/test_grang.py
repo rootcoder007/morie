@@ -1,6 +1,8 @@
 """Tests for morie.fn.grang -- Granger causality."""
+
 import numpy as np
 import pytest
+
 from morie.fn.grang import granger_test
 
 
@@ -18,4 +20,5 @@ class TestGranger:
 
     def test_cheatsheet(self):
         from morie.fn.grang import cheatsheet
+
         assert isinstance(cheatsheet(), str)

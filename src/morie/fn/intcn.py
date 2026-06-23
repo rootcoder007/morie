@@ -43,8 +43,14 @@ def intcn(
     m = len(all_times)
 
     if m == 0:
-        return {"times": np.array([]), "survival": np.array([1.0]),
-                "mass": np.array([]), "n_obs": n, "n_iter": 0, "converged": True}
+        return {
+            "times": np.array([]),
+            "survival": np.array([1.0]),
+            "mass": np.array([]),
+            "n_obs": n,
+            "n_iter": 0,
+            "converged": True,
+        }
 
     p = np.ones(m) / m
     converged = False

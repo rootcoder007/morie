@@ -1,6 +1,7 @@
 """Tests for bndcvr.bound_coverage_check."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndcvr import bound_coverage_check
 
 
@@ -12,7 +13,7 @@ def test_bndcvr_basic():
     alpha = 0.05
     result = bound_coverage_check(lower, upper, theta_true, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndcvr_edge():

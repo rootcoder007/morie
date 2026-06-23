@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcdcx — Cox PH for recidivism."""
 
-from morie.fn.rcdcx import recidivism_cox, rcdcx
+from morie.fn.rcdcx import recidivism_cox
 
 
 class TestRecidivismCox:

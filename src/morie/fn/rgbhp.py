@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Butterworth highpass filter design."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_butterworth_hp"]

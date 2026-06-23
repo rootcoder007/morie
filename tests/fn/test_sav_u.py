@@ -1,7 +1,9 @@
 """Tests for sav_u -- UA AVE."""
+
 import numpy as np
-from morie.fn.sav_u import subscale_ua_ave
+
 from morie.fn._containers import ESRes
+from morie.fn.sav_u import subscale_ua_ave
 
 
 class TestSavU:

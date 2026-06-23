@@ -1,6 +1,8 @@
 """Jacquez k-nearest-neighbour space-time test."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["jacquez_k_nn_test"]
@@ -35,7 +37,14 @@ def jacquez_k_nn_test(coords, time, k, cdf=None):
     coords = np.asarray(coords, dtype=float)
     n = len(coords)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Jacquez k-nearest-neighbour space-time test"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Jacquez k-nearest-neighbour space-time test",
+            }
+        )
     x_sorted = np.sort(coords)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(coords), scale=np.std(coords, ddof=1))
@@ -50,9 +59,16 @@ def jacquez_k_nn_test(coords, time, k, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Jacquez k-nearest-neighbour space-time test"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Jacquez k-nearest-neighbour space-time test",
+        }
+    )
 
 
 def cheatsheet():

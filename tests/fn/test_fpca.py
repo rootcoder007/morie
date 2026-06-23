@@ -1,6 +1,7 @@
 """Tests for fpca.functional_pca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fpca import functional_pca
 
 
@@ -10,7 +11,7 @@ def test_fpca_basic():
     n_components = 3
     result = functional_pca(data_functions, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fpca_edge():

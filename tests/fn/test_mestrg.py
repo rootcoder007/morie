@@ -1,6 +1,7 @@
 """Tests for mestrg.m_estimator_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mestrg import m_estimator_regression
 
 
@@ -12,7 +13,7 @@ def test_mestrg_basic():
     sigma = 1.0
     result = m_estimator_regression(y, X, psi, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mestrg_edge():

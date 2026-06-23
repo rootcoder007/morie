@@ -1,6 +1,7 @@
 """Tests for alcsl.alammar_cosine_similarity_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alcsl import alammar_cosine_similarity_loss
 
 
@@ -11,7 +12,7 @@ def test_alcsl_basic():
     y_true = np.random.default_rng(43).integers(0, 2, 100)
     result = alammar_cosine_similarity_loss(a, b, y_true)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alcsl_edge():

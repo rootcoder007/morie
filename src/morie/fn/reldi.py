@@ -18,6 +18,7 @@ probability forecasts of precipitation and temperature.
 Niculescu-Mizil, A., & Caruana, R. (2005). Predicting good
 probabilities with supervised learning. *Proceedings of ICML*, 625-632.
 """
+
 from __future__ import annotations
 
 from typing import Any

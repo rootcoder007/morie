@@ -1,6 +1,7 @@
 """Phylogenetic tree construction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["phylogenetic_tree"]

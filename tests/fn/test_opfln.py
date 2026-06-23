@@ -1,6 +1,7 @@
 """Test opfln."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opfln import opfln
 
 

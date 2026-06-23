@@ -1,6 +1,7 @@
 """Continuous inverse of the Kaplan-Meier derivative operator."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_kaplan_meier_inverse"]
@@ -38,7 +39,14 @@ def kosorok_ch2_kaplan_meier_inverse(S_0, L, F_0, a, t):
     n = len(S_0)
     result = float(np.mean(S_0))
     se = float(np.std(S_0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Continuous inverse of the Kaplan-Meier derivative operator"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Continuous inverse of the Kaplan-Meier derivative operator",
+        }
+    )
 
 
 def cheatsheet():

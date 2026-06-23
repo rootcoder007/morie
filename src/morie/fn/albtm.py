@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """BERTopic pipeline: embed -> UMAP -> HDBSCAN -> c-TF-IDF -> topic labels."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_bertopic_pipeline"]
@@ -36,7 +38,14 @@ def alammar_bertopic_pipeline(documents, embedder, reducer, cluster_model):
     n = len(documents)
     result = float(np.mean(documents))
     se = float(np.std(documents, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BERTopic pipeline: embed -> UMAP -> HDBSCAN -> c-TF-IDF -> topic labels"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "BERTopic pipeline: embed -> UMAP -> HDBSCAN -> c-TF-IDF -> topic labels",
+        }
+    )
 
 
 def cheatsheet():

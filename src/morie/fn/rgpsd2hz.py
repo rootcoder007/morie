@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Convert PSD to frequency-in-Hz units and compute bin-level features."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_psd_to_hz"]
@@ -34,7 +36,14 @@ def rangayyan_psd_to_hz(psd, N, fs):
     n = int(psd) if psd.ndim == 0 else len(psd)
     result = float(np.mean(psd))
     se = float(np.std(psd, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Convert PSD to frequency-in-Hz units and compute bin-level features"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Convert PSD to frequency-in-Hz units and compute bin-level features",
+        }
+    )
 
 
 def cheatsheet():

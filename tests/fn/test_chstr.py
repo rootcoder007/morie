@@ -1,6 +1,7 @@
 """Tests for chstr.chain_structure."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chstr import chain_structure
 
 
@@ -12,7 +13,7 @@ def test_chstr_basic():
     conditioned = np.random.default_rng(42).normal(0, 1, 100)
     result = chain_structure(A, B, C, conditioned)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_chstr_edge():

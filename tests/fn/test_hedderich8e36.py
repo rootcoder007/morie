@@ -1,6 +1,7 @@
 """Tests for hedderich8e36.hedderich_chapter_8_equation_36."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hedderich8e36 import hedderich_chapter_8_equation_36
 
 
@@ -9,7 +10,7 @@ def test_hedderich8e36_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = hedderich_chapter_8_equation_36(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_hedderich8e36_edge():

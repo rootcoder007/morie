@@ -1,6 +1,7 @@
 """Extended-Connectivity Fingerprint radius 4 (ECFP4 / Morgan radius 2)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ecfp_4_fingerprint"]
@@ -34,7 +35,14 @@ def ecfp_4_fingerprint(smiles, n_bits, radius):
     n = len(smiles)
     result = float(np.mean(smiles))
     se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Extended-Connectivity Fingerprint radius 4 (ECFP4 / Morgan radius 2)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Extended-Connectivity Fingerprint radius 4 (ECFP4 / Morgan radius 2)",
+        }
+    )
 
 
 def cheatsheet():

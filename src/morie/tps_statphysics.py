@@ -68,6 +68,7 @@ FIG = PROJECT / "data/manifest/outputs/figures/tps_statphysics"
 def _toronto_grid(nx: int = 90, ny: int = 60) -> tuple[np.ndarray, np.ndarray]:
     """Cos-corrected planar grid covering the Toronto bbox."""
     from .tps_render import project_xy
+
     lats = np.array([43.55, 43.90])
     lons = np.array([-79.65, -79.10])
     xk, yk = project_xy(lats, lons)
@@ -76,17 +77,21 @@ def _toronto_grid(nx: int = 90, ny: int = 60) -> tuple[np.ndarray, np.ndarray]:
     return gx, gy
 
 
-def sdb_reaction_diffusion(category: str = "Assault",
-                            *, sample_rows: int | None = 30_000,
-                            eta: float = 0.05,
-                            omega: float = 0.30,
-                            theta: float = 1.5,
-                            D: float = 0.10,
-                            gamma: float = 0.05,
-                            n_steps: int = 800,
-                            dt: float = 0.04,
-                            nx: int = 90, ny: int = 60,
-                            save_fig: bool = True) -> RichResult:
+def sdb_reaction_diffusion(
+    category: str = "Assault",
+    *,
+    sample_rows: int | None = 30_000,
+    eta: float = 0.05,
+    omega: float = 0.30,
+    theta: float = 1.5,
+    D: float = 0.10,
+    gamma: float = 0.05,
+    n_steps: int = 800,
+    dt: float = 0.04,
+    nx: int = 90,
+    ny: int = 60,
+    save_fig: bool = True,
+) -> RichResult:
     """Solve the Short-D'Orsogna-Brantingham 2008 reaction-diffusion
     crime hot-spot PDE on a Toronto grid, seeded by observed incidents.
 
@@ -98,14 +103,11 @@ def sdb_reaction_diffusion(category: str = "Assault",
 
     df = load_tps_dataset(category, nrows=sample_rows)
     df = df.dropna(subset=["LAT_WGS84", "LONG_WGS84"]).copy()
-    df = df[(df["LAT_WGS84"].between(43.55, 43.90))
-            & (df["LONG_WGS84"].between(-79.65, -79.10))]
+    df = df[(df["LAT_WGS84"].between(43.55, 43.90)) & (df["LONG_WGS84"].between(-79.65, -79.10))]
     if df.empty:
-        return RichResult(title=f"SDB reaction-diffusion -- {category}",
-                            warnings=[f"{category}: no in-bbox rows"])
+        return RichResult(title=f"SDB reaction-diffusion -- {category}", warnings=[f"{category}: no in-bbox rows"])
 
-    pt_x, pt_y = project_xy(df["LAT_WGS84"].to_numpy(),
-                                df["LONG_WGS84"].to_numpy())
+    pt_x, pt_y = project_xy(df["LAT_WGS84"].to_numpy(), df["LONG_WGS84"].to_numpy())
     gx, gy = _toronto_grid(nx, ny)
     dx_, dy_ = float(gx[1] - gx[0]), float(gy[1] - gy[0])
 
@@ -116,9 +118,9 @@ def sdb_reaction_diffusion(category: str = "Assault",
     rho = np.full_like(A, 0.5)
 
     def lap(F):
-        return (np.roll(F, +1, 0) + np.roll(F, -1, 0)
-                + np.roll(F, +1, 1) + np.roll(F, -1, 1) - 4 * F) \
-            / max(dx_, dy_) ** 2
+        return (np.roll(F, +1, 0) + np.roll(F, -1, 0) + np.roll(F, +1, 1) + np.roll(F, -1, 1) - 4 * F) / max(
+            dx_, dy_
+        ) ** 2
 
     def grad(F):
         # Central differences with reflective boundaries
@@ -131,8 +133,7 @@ def sdb_reaction_diffusion(category: str = "Assault",
         gxA, gyA = grad(np.log(A.clip(1e-3)))
         flux_x = -D * np.gradient(rho, dx_, axis=1) + 2.0 * rho * gxA
         flux_y = -D * np.gradient(rho, dy_, axis=0) + 2.0 * rho * gyA
-        div_flux = (np.gradient(flux_x, dx_, axis=1)
-                    + np.gradient(flux_y, dy_, axis=0))
+        div_flux = np.gradient(flux_x, dx_, axis=1) + np.gradient(flux_y, dy_, axis=0)
         dA = eta * lap(A) - omega * A + theta * rho
         drho = -div_flux - rho * A + gamma
         # Small stochastic kick keeps the lattice from freezing
@@ -147,31 +148,35 @@ def sdb_reaction_diffusion(category: str = "Assault",
 
     # Compare to DBSCAN cluster count
     from .tps_spatial_advanced import dbscan_clusters
-    rr_db = dbscan_clusters(df, ds_name=category,
-                              eps_km=0.3, min_samples=20)
+
+    rr_db = dbscan_clusters(df, ds_name=category, eps_km=0.3, min_samples=20)
     n_dbscan = int(rr_db.get("n_clusters") or 0)
 
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, axes = plt.subplots(1, 3, figsize=(13, 3.8))
-        for ax, F, t in zip(axes,
-                              [H / max(H.max(), 1.0), A, rho],
-                              ["seed (incident histogram)",
-                               "attractiveness A(x,t)",
-                               "criminal density ρ(x,t)"]):
-            im = ax.imshow(F, origin="lower",
-                            extent=[gx.min(), gx.max(), gy.min(), gy.max()],
-                            cmap="magma", aspect="equal")
+        for ax, F, t in zip(
+            axes,
+            [H / max(H.max(), 1.0), A, rho],
+            ["seed (incident histogram)", "attractiveness A(x,t)", "criminal density ρ(x,t)"],
+        ):
+            im = ax.imshow(
+                F, origin="lower", extent=[gx.min(), gx.max(), gy.min(), gy.max()], cmap="magma", aspect="equal"
+            )
             ax.set_title(t, fontsize=10)
-            ax.set_xticks([]); ax.set_yticks([])
+            ax.set_xticks([])
+            ax.set_yticks([])
             fig.colorbar(im, ax=ax, shrink=0.7)
         fig.suptitle(
             f"Short-D'Orsogna-Brantingham 2008 hotspot PDE -- {category} · "
             f"η={eta}, ω={omega}, θ={theta}, D={D}, γ={gamma} · "
             f"{n_spikes} spikes (vs {n_dbscan} DBSCAN clusters)",
-            fontsize=11, y=1.0)
+            fontsize=11,
+            y=1.0,
+        )
         fig.tight_layout()
         fig_path = FIG / f"sdb_pde_{category.lower()}.png"
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
@@ -182,9 +187,7 @@ def sdb_reaction_diffusion(category: str = "Assault",
         summary_lines=[
             ("Method", "Short-D'Orsogna-Brantingham 2008 hot-spot PDE"),
             ("Grid", f"{nx}×{ny} cos-corrected, dx≈{dx_:.2f} km"),
-            ("Parameters",
-             f"η={eta} ω={omega} θ={theta} D={D} γ={gamma} dt={dt} "
-             f"steps={n_steps}"),
+            ("Parameters", f"η={eta} ω={omega} θ={theta} D={D} γ={gamma} dt={dt} steps={n_steps}"),
             ("Steady-state spikes", n_spikes),
             ("DBSCAN clusters (eps=0.3km)", n_dbscan),
             ("Mean A", round(float(A.mean()), 4)),
@@ -216,10 +219,9 @@ def _local_max3x3(F: np.ndarray) -> np.ndarray:
     return out
 
 
-def levy_flight_alpha(category: str = "Assault",
-                       *, sample_rows: int | None = 30_000,
-                       lmin_km: float = 0.5,
-                       save_fig: bool = True) -> RichResult:
+def levy_flight_alpha(
+    category: str = "Assault", *, sample_rows: int | None = 30_000, lmin_km: float = 0.5, save_fig: bool = True
+) -> RichResult:
     """Hill-MLE Lévy exponent on step lengths between consecutive
     incidents in chronological order (proxy for offender mobility)."""
     from .tps_datasets import load_tps_dataset
@@ -227,26 +229,22 @@ def levy_flight_alpha(category: str = "Assault",
 
     df = load_tps_dataset(category, nrows=sample_rows)
     df = df.dropna(subset=["LAT_WGS84", "LONG_WGS84", "OCC_DATE"]).copy()
-    df = df[(df["LAT_WGS84"].between(43.55, 43.90))
-            & (df["LONG_WGS84"].between(-79.65, -79.10))]
+    df = df[(df["LAT_WGS84"].between(43.55, 43.90)) & (df["LONG_WGS84"].between(-79.65, -79.10))]
     df["_dt"] = pd.to_datetime(df["OCC_DATE"], errors="coerce")
     df = df.dropna(subset=["_dt"]).sort_values("_dt")
     if len(df) < 200:
-        return RichResult(title=f"Lévy α -- {category}",
-                            warnings=["too few rows for Lévy fit"])
-    xk, yk = project_xy(df["LAT_WGS84"].to_numpy(),
-                            df["LONG_WGS84"].to_numpy())
-    dx_ = np.diff(xk); dy_ = np.diff(yk)
-    steps = np.sqrt(dx_ ** 2 + dy_ ** 2)
+        return RichResult(title=f"Lévy α -- {category}", warnings=["too few rows for Lévy fit"])
+    xk, yk = project_xy(df["LAT_WGS84"].to_numpy(), df["LONG_WGS84"].to_numpy())
+    dx_ = np.diff(xk)
+    dy_ = np.diff(yk)
+    steps = np.sqrt(dx_**2 + dy_**2)
     # Hill MLE: strictly drop ties at the lower bound so log(s/lmin)=0
     # terms don't bias alpha upward. v0.9.5.6+ uses strict `>` per
     # the textbook Hill estimator (the prior `>=` slightly
     # over-estimated alpha when many values equalled the floor).
     steps = steps[steps > lmin_km]
     if steps.size < 50:
-        return RichResult(title=f"Lévy α -- {category}",
-                            warnings=[f"only {steps.size} tail steps "
-                                       f"> {lmin_km} km"])
+        return RichResult(title=f"Lévy α -- {category}", warnings=[f"only {steps.size} tail steps > {lmin_km} km"])
     # Hill-MLE: α̂ = 1 + n / Σ ln(ℓ_i / ℓ_min)
     alpha = 1 + steps.size / np.sum(np.log(steps / lmin_km))
     # Bootstrap SE
@@ -261,18 +259,18 @@ def levy_flight_alpha(category: str = "Assault",
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(6, 4))
         bins = np.logspace(np.log10(lmin_km), np.log10(steps.max()), 40)
         ax.hist(steps, bins=bins, density=True, alpha=0.55, label="empirical")
         x = np.logspace(np.log10(lmin_km), np.log10(steps.max()), 100)
         y = (alpha - 1) / lmin_km * (x / lmin_km) ** (-alpha)
-        ax.plot(x, y, "r-", lw=2,
-                  label=f"Pareto fit α={alpha:.2f}±{se:.2f}")
-        ax.set_xscale("log"); ax.set_yscale("log")
+        ax.plot(x, y, "r-", lw=2, label=f"Pareto fit α={alpha:.2f}±{se:.2f}")
+        ax.set_xscale("log")
+        ax.set_yscale("log")
         ax.set_xlabel("step length ℓ (km)")
         ax.set_ylabel("p(ℓ)")
-        ax.set_title(f"Lévy-flight tail · {category} · "
-                       f"n={steps.size:,} steps ≥ {lmin_km} km")
+        ax.set_title(f"Lévy-flight tail · {category} · n={steps.size:,} steps ≥ {lmin_km} km")
         ax.legend()
         fig_path = FIG / f"levy_alpha_{category.lower()}.png"
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
@@ -302,60 +300,61 @@ def levy_flight_alpha(category: str = "Assault",
     )
 
 
-def urban_scaling_beta(category: str = "Assault",
-                        *, year: int = 2024,
-                        save_fig: bool = True) -> RichResult:
+def urban_scaling_beta(category: str = "Assault", *, year: int = 2024, save_fig: bool = True) -> RichResult:
     """Bettencourt 2007 super-linear urban scaling on the 158 wards.
 
     Regresses log(crime per ward) on log(population per ward) -> β.
     """
     from .tps_io import load_tps
+
     df = load_tps("NeighbourhoodCrimeRates", format="geojson")
-    pop_col = next((c for c in df.columns if "POP" in c.upper()
-                    and str(year)[-2:] in c), None)
+    pop_col = next((c for c in df.columns if "POP" in c.upper() and str(year)[-2:] in c), None)
     if pop_col is None:
         pop_col = next((c for c in df.columns if "POP" in c.upper()), None)
-    cat_prefix = {"Assault": "ASSAULT", "AutoTheft": "AUTOTHEFT",
-                    "BicycleTheft": "BIKETHEFT", "BreakandEnter": "BREAKENTER",
-                    "Homicides": "HOMICIDE", "Robbery": "ROBBERY",
-                    "ShootingAndFirearmDiscarges": "SHOOTING",
-                    "TheftFromMovingVehicle": "THEFTFROMMV",
-                    "TheftOver": "THEFTOVER"}.get(category, category.upper())
+    cat_prefix = {
+        "Assault": "ASSAULT",
+        "AutoTheft": "AUTOTHEFT",
+        "BicycleTheft": "BIKETHEFT",
+        "BreakandEnter": "BREAKENTER",
+        "Homicides": "HOMICIDE",
+        "Robbery": "ROBBERY",
+        "ShootingAndFirearmDiscarges": "SHOOTING",
+        "TheftFromMovingVehicle": "THEFTFROMMV",
+        "TheftOver": "THEFTOVER",
+    }.get(category, category.upper())
     crime_col = f"{cat_prefix}_{year}"
     if pop_col is None or crime_col not in df.columns:
         return RichResult(
             title=f"Urban scaling β -- {category}",
-            warnings=[f"missing pop or {crime_col} column "
-                       f"(have pop_col={pop_col})"])
+            warnings=[f"missing pop or {crime_col} column (have pop_col={pop_col})"],
+        )
     sub = df[[pop_col, crime_col]].dropna()
     sub = sub[(sub[pop_col] > 100) & (sub[crime_col] > 0)]
     if len(sub) < 30:
-        return RichResult(title=f"Urban scaling β -- {category}",
-                            warnings=[f"only {len(sub)} usable wards"])
+        return RichResult(title=f"Urban scaling β -- {category}", warnings=[f"only {len(sub)} usable wards"])
     lx = np.log(sub[pop_col].to_numpy(dtype=float))
     ly = np.log(sub[crime_col].to_numpy(dtype=float))
     n = lx.size
     sx, sy = lx.mean(), ly.mean()
-    beta = float(np.sum((lx - sx) * (ly - sy))
-                  / np.sum((lx - sx) ** 2))
+    beta = float(np.sum((lx - sx) * (ly - sy)) / np.sum((lx - sx) ** 2))
     Y0 = float(np.exp(sy - beta * sx))
     resid = ly - (math.log(Y0) + beta * lx)
-    se_beta = float(np.sqrt(np.sum(resid ** 2) / (n - 2)
-                              / np.sum((lx - sx) ** 2)))
+    se_beta = float(np.sqrt(np.sum(resid**2) / (n - 2) / np.sum((lx - sx) ** 2)))
     r2 = float(1 - np.var(resid) / np.var(ly))
 
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.scatter(sub[pop_col], sub[crime_col], s=14, alpha=0.5,
-                    edgecolor="#1a1a1a", linewidth=0.4)
+        ax.scatter(sub[pop_col], sub[crime_col], s=14, alpha=0.5, edgecolor="#1a1a1a", linewidth=0.4)
         xfit = np.linspace(sub[pop_col].min(), sub[pop_col].max(), 80)
-        ax.plot(xfit, Y0 * xfit ** beta, "r-", lw=2,
-                  label=f"β={beta:.2f}±{se_beta:.2f}, R²={r2:.2f}")
-        ax.set_xscale("log"); ax.set_yscale("log")
-        ax.set_xlabel("ward population"); ax.set_ylabel(f"{crime_col}")
+        ax.plot(xfit, Y0 * xfit**beta, "r-", lw=2, label=f"β={beta:.2f}±{se_beta:.2f}, R²={r2:.2f}")
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xlabel("ward population")
+        ax.set_ylabel(f"{crime_col}")
         ax.set_title(f"Urban scaling · {category} · {year} · 158 wards")
         ax.legend()
         ax.grid(True, which="both", alpha=0.2)
@@ -363,9 +362,7 @@ def urban_scaling_beta(category: str = "Assault",
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
         plt.close(fig)
 
-    regime = ("super-linear (β > 1)" if beta > 1.05
-              else "sub-linear (β < 1)" if beta < 0.95
-              else "linear (β ≈ 1)")
+    regime = "super-linear (β > 1)" if beta > 1.05 else "sub-linear (β < 1)" if beta < 0.95 else "linear (β ≈ 1)"
     return RichResult(
         title=f"Urban scaling β -- {category} · {year}",
         summary_lines=[
@@ -392,8 +389,7 @@ def urban_scaling_beta(category: str = "Assault",
     )
 
 
-def lotka_volterra_police_crime(category: str = "Assault",
-                                  save_fig: bool = True) -> RichResult:
+def lotka_volterra_police_crime(category: str = "Assault", save_fig: bool = True) -> RichResult:
     """Yearly Lotka-Volterra fit: crime as prey, mass-stop / arrest as
     predator.
 
@@ -404,15 +400,14 @@ def lotka_volterra_police_crime(category: str = "Assault",
     the (α, γ) ratio and the cycle period are.
     """
     from .tps_datasets import load_tps_dataset
+
     df = load_tps_dataset(category)
     if "OCC_YEAR" not in df.columns:
-        return RichResult(title=f"Lotka-Volterra -- {category}",
-                            warnings=["no OCC_YEAR column"])
+        return RichResult(title=f"Lotka-Volterra -- {category}", warnings=["no OCC_YEAR column"])
     counts = df.groupby("OCC_YEAR").size().sort_index()
     counts = counts[counts.index >= 2014]
     if len(counts) < 5:
-        return RichResult(title=f"Lotka-Volterra -- {category}",
-                            warnings=[f"only {len(counts)} years"])
+        return RichResult(title=f"Lotka-Volterra -- {category}", warnings=[f"only {len(counts)} years"])
     x = counts.to_numpy(dtype=float)
     # Naive predator proxy: rolling 3-year mean of x (lagged response)
     y = pd.Series(x).rolling(3, min_periods=1).mean().to_numpy()
@@ -430,15 +425,15 @@ def lotka_volterra_police_crime(category: str = "Assault",
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.plot(counts.index, x, "o-", color="#d7191c",
-                  label=f"prey (x = {category} count)", lw=2)
-        ax.plot(counts.index, y, "s-", color="#2c7bb6",
-                  label="predator proxy (3-yr smoothed)", lw=2)
-        ax.set_xlabel("year"); ax.set_ylabel("count")
-        ax.set_title(f"Lotka-Volterra · {category} · α={alpha:.2f} "
-                       f"γ={gamma:.2f} T={T:.1f} yr")
-        ax.legend(); ax.grid(True, alpha=0.2)
+        ax.plot(counts.index, x, "o-", color="#d7191c", label=f"prey (x = {category} count)", lw=2)
+        ax.plot(counts.index, y, "s-", color="#2c7bb6", label="predator proxy (3-yr smoothed)", lw=2)
+        ax.set_xlabel("year")
+        ax.set_ylabel("count")
+        ax.set_title(f"Lotka-Volterra · {category} · α={alpha:.2f} γ={gamma:.2f} T={T:.1f} yr")
+        ax.legend()
+        ax.grid(True, alpha=0.2)
         fig_path = FIG / f"lotka_volterra_{category.lower()}.png"
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
         plt.close(fig)
@@ -446,8 +441,7 @@ def lotka_volterra_police_crime(category: str = "Assault",
     return RichResult(
         title=f"Lotka-Volterra -- {category}",
         summary_lines=[
-            ("Method",
-             "LV predator-prey on yearly counts (D'Orsogna & Perc 2015 §3.4)"),
+            ("Method", "LV predator-prey on yearly counts (D'Orsogna & Perc 2015 §3.4)"),
             ("Years", f"{int(counts.index.min())}–{int(counts.index.max())}"),
             ("α (prey growth)", round(alpha, 3)),
             ("β (predation rate)", round(beta_lv, 5)),
@@ -469,11 +463,18 @@ def lotka_volterra_police_crime(category: str = "Assault",
     )
 
 
-def sdb_turing_demo(*, eta: float = 0.20, omega: float = 0.033,
-                       theta: float = 0.56, D: float = 30.0,
-                       gamma: float = 0.019,
-                       n_steps: int = 6000, dt: float = 0.005,
-                       n: int = 80, save_fig: bool = True) -> RichResult:
+def sdb_turing_demo(
+    *,
+    eta: float = 0.20,
+    omega: float = 0.033,
+    theta: float = 0.56,
+    D: float = 30.0,
+    gamma: float = 0.019,
+    n_steps: int = 6000,
+    dt: float = 0.005,
+    n: int = 80,
+    save_fig: bool = True,
+) -> RichResult:
     """Canonical SDB Turing-instability demo on a *clean periodic* grid.
 
     Reproduces the localized hot-spot lattice from Short, D'Orsogna &
@@ -490,8 +491,7 @@ def sdb_turing_demo(*, eta: float = 0.20, omega: float = 0.033,
     rho += 0.02 * rho.mean() * rng.standard_normal((n, n))
 
     def lap_periodic(F):
-        return (np.roll(F, 1, 0) + np.roll(F, -1, 0)
-                + np.roll(F, 1, 1) + np.roll(F, -1, 1) - 4 * F)
+        return np.roll(F, 1, 0) + np.roll(F, -1, 0) + np.roll(F, 1, 1) + np.roll(F, -1, 1) - 4 * F
 
     def grad_periodic(F):
         gx = (np.roll(F, -1, 1) - np.roll(F, 1, 1)) / 2
@@ -499,8 +499,7 @@ def sdb_turing_demo(*, eta: float = 0.20, omega: float = 0.033,
         return gx, gy
 
     snaps = []
-    snap_steps = (max(1, n_steps // 6),
-                    max(2, n_steps // 2), n_steps - 1)
+    snap_steps = (max(1, n_steps // 6), max(2, n_steps // 2), n_steps - 1)
     for step in range(n_steps):
         gxA, gyA = grad_periodic(np.log(A.clip(1e-3)))
         flux_x = -D * grad_periodic(rho)[0] + 2 * rho * gxA
@@ -517,16 +516,19 @@ def sdb_turing_demo(*, eta: float = 0.20, omega: float = 0.033,
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))
         for ax, (step, F) in zip(axes, snaps, strict=False):
             im = ax.imshow(F, cmap="jet", origin="lower")
             ax.set_title(f"step {step}", fontsize=10)
-            ax.set_xticks([]); ax.set_yticks([])
+            ax.set_xticks([])
+            ax.set_yticks([])
             fig.colorbar(im, ax=ax, shrink=0.8)
         fig.suptitle(
-            f"Short-D'Orsogna-Brantingham 2008 · canonical Turing regime · "
-            f"η={eta} ω={omega} θ={theta} D={D} γ={gamma}",
-            fontsize=11, y=1.02)
+            f"Short-D'Orsogna-Brantingham 2008 · canonical Turing regime · η={eta} ω={omega} θ={theta} D={D} γ={gamma}",
+            fontsize=11,
+            y=1.02,
+        )
         fig.tight_layout()
         fig_path = FIG / "sdb_turing_demo.png"
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
@@ -537,9 +539,7 @@ def sdb_turing_demo(*, eta: float = 0.20, omega: float = 0.033,
     return RichResult(
         title="SDB Turing-pattern demo",
         summary_lines=[
-            ("Method",
-             "Short-D'Orsogna-Brantingham 2008 reaction-diffusion PDE "
-             "on periodic lattice"),
+            ("Method", "Short-D'Orsogna-Brantingham 2008 reaction-diffusion PDE on periodic lattice"),
             ("Grid", f"{n}×{n} periodic"),
             ("Steps", n_steps),
             ("Steady-state spikes", n_spikes),
@@ -559,10 +559,9 @@ def sdb_turing_demo(*, eta: float = 0.20, omega: float = 0.033,
     )
 
 
-def inspection_game_phase(n_temptations: int = 20,
-                            n_costs: int = 20,
-                            n_steps: int = 600,
-                            save_fig: bool = True) -> RichResult:
+def inspection_game_phase(
+    n_temptations: int = 20, n_costs: int = 20, n_steps: int = 600, save_fig: bool = True
+) -> RichResult:
     """Helbing-Szolnoki-Perc (2010) cooperator-defector-inspector
     replicator dynamics; produces the (Temptation T, Inspection cost γ)
     crime-rate phase diagram from D'Orsogna & Perc 2015 §5 / Image #5.
@@ -583,20 +582,25 @@ def inspection_game_phase(n_temptations: int = 20,
         for j, g in enumerate(gs):
             # 3-strategy replicator (C, P, O), starting near uniform
             x = np.array([0.34, 0.33, 0.33])
-            x += 0.01 * rng.standard_normal(3); x = x.clip(0); x /= x.sum()
+            x += 0.01 * rng.standard_normal(3)
+            x = x.clip(0)
+            x /= x.sum()
             for _ in range(n_steps):
                 # payoffs:  C vs C = 1, C vs P = 0, C vs O = 1
                 #           P vs C = T, P vs P = 0, P vs O = T - 1
                 #           O vs C = 1 - g, O vs P = 1 - g, O vs O = 1 - g
-                P = np.array([
-                    [1.0, 0.0, 1.0],
-                    [T,   0.0, T - 1.0],
-                    [1.0 - g, 1.0 - g, 1.0 - g],
-                ])
+                P = np.array(
+                    [
+                        [1.0, 0.0, 1.0],
+                        [T, 0.0, T - 1.0],
+                        [1.0 - g, 1.0 - g, 1.0 - g],
+                    ]
+                )
                 fit = P @ x
                 phi = float(x @ fit)
                 x = x + 0.05 * x * (fit - phi)
-                x = x.clip(0); s = x.sum()
+                x = x.clip(0)
+                s = x.sum()
                 x = x / s if s > 0 else np.array([0.34, 0.33, 0.33])
             crime[i, j] = float(x[1])
 
@@ -604,20 +608,22 @@ def inspection_game_phase(n_temptations: int = 20,
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(6.5, 4.5))
-        im = ax.imshow(crime, origin="lower", aspect="auto",
-                        extent=[gs.min(), gs.max(), Ts.min(), Ts.max()],
-                        cmap="cool")
+        im = ax.imshow(
+            crime, origin="lower", aspect="auto", extent=[gs.min(), gs.max(), Ts.min(), Ts.max()], cmap="cool"
+        )
         ax.set_xlabel("Inspection cost γ")
         ax.set_ylabel("Temptation T")
-        ax.set_title("Helbing-Szolnoki cooperator-predator-inspector "
-                       "phase diagram\nreplicator dynamics, "
-                       "steady-state defector frequency")
+        ax.set_title(
+            "Helbing-Szolnoki cooperator-predator-inspector "
+            "phase diagram\nreplicator dynamics, "
+            "steady-state defector frequency"
+        )
         fig.colorbar(im, ax=ax, label="Crime rate")
         # Mark approximate phase boundary T = 1 + γ / 2
         gline = np.linspace(gs.min(), gs.max(), 50)
-        ax.plot(gline, 1 + 0.5 * gline, "k-", linewidth=1.5,
-                  label="C ↔ P+C boundary")
+        ax.plot(gline, 1 + 0.5 * gline, "k-", linewidth=1.5, label="C ↔ P+C boundary")
         ax.legend(loc="lower left", fontsize=8)
         fig_path = FIG / "inspection_game_phase.png"
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
@@ -645,10 +651,9 @@ def inspection_game_phase(n_temptations: int = 20,
     )
 
 
-def criminal_network_graph(category: str = "Assault",
-                            *, sample_rows: int | None = 30_000,
-                            top_n_premises: int = 20,
-                            save_fig: bool = True) -> RichResult:
+def criminal_network_graph(
+    category: str = "Assault", *, sample_rows: int | None = 30_000, top_n_premises: int = 20, save_fig: bool = True
+) -> RichResult:
     """Co-occurrence network: nodes = top-N premise types, edges =
     sharing a common neighbourhood, weighted by joint incident count.
 
@@ -658,78 +663,88 @@ def criminal_network_graph(category: str = "Assault",
     PREMISES_TYPE × HOOD_158 co-incidence.
     """
     from .tps_datasets import load_tps_dataset
+
     df = load_tps_dataset(category, nrows=sample_rows)
     if "HOOD_158" not in df.columns:
-        return RichResult(title=f"Criminal network -- {category}",
-                            warnings=["missing HOOD_158"])
+        return RichResult(title=f"Criminal network -- {category}", warnings=["missing HOOD_158"])
     # Pick the best available node-attribute column. Most TPS categories
     # have PREMISES_TYPE (e.g. "Apartment", "Outside"); Homicides /
     # Shooting only have HOMICIDE_TYPE / DIVISION / LOCATION_TYPE.
-    node_col = next((c for c in
-                     ("PREMISES_TYPE", "LOCATION_TYPE",
-                      "HOMICIDE_TYPE", "OFFENCE", "DIVISION")
-                     if c in df.columns), None)
+    node_col = next(
+        (c for c in ("PREMISES_TYPE", "LOCATION_TYPE", "HOMICIDE_TYPE", "OFFENCE", "DIVISION") if c in df.columns), None
+    )
     if node_col is None:
-        return RichResult(title=f"Criminal network -- {category}",
-                            warnings=["no usable node-attribute column "
-                                       "(PREMISES_TYPE, LOCATION_TYPE, "
-                                       "HOMICIDE_TYPE, OFFENCE, DIVISION "
-                                       "all missing)"])
+        return RichResult(
+            title=f"Criminal network -- {category}",
+            warnings=[
+                "no usable node-attribute column "
+                "(PREMISES_TYPE, LOCATION_TYPE, "
+                "HOMICIDE_TYPE, OFFENCE, DIVISION "
+                "all missing)"
+            ],
+        )
     # Top categories by frequency
     top = df[node_col].value_counts().head(top_n_premises)
     top_set = set(top.index)
     sub = df[df[node_col].isin(top_set)]
     # Edge weight: count of hoods where both nodes i and j appeared
-    pivot = (sub.groupby(["HOOD_158", node_col]).size()
-                  .unstack(fill_value=0).clip(0, 1))
+    pivot = sub.groupby(["HOOD_158", node_col]).size().unstack(fill_value=0).clip(0, 1)
     co = pivot.T @ pivot
     nodes = list(co.columns)
     n = len(nodes)
     if n < 2:
-        return RichResult(title=f"Criminal network -- {category}",
-                            warnings=[f"only {n} nodes"])
+        return RichResult(title=f"Criminal network -- {category}", warnings=[f"only {n} nodes"])
 
     # Circular layout
     angles = 2 * math.pi * np.arange(n) / n
-    pos = {nodes[i]: (math.cos(angles[i]), math.sin(angles[i]))
-           for i in range(n)}
-    sizes = (top.reindex(nodes).fillna(0).to_numpy() ** 0.5)
+    pos = {nodes[i]: (math.cos(angles[i]), math.sin(angles[i])) for i in range(n)}
+    sizes = top.reindex(nodes).fillna(0).to_numpy() ** 0.5
     sizes = sizes / sizes.max() * 800 + 80
 
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
         import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(8, 8))
         # Edges
         max_w = float(co.values.max())
         for i in range(n):
             for j in range(i + 1, n):
                 w = float(co.iloc[i, j])
-                if w <= 0: continue
+                if w <= 0:
+                    continue
                 a, b = pos[nodes[i]], pos[nodes[j]]
-                ax.plot([a[0], b[0]], [a[1], b[1]],
-                          color="#444", alpha=0.05 + 0.6 * (w / max_w),
-                          linewidth=0.4 + 1.5 * (w / max_w), zorder=1)
+                ax.plot(
+                    [a[0], b[0]],
+                    [a[1], b[1]],
+                    color="#444",
+                    alpha=0.05 + 0.6 * (w / max_w),
+                    linewidth=0.4 + 1.5 * (w / max_w),
+                    zorder=1,
+                )
         # Nodes
         for i, (name, (x, y)) in enumerate(pos.items()):
-            ax.scatter(x, y, s=sizes[i], color="#bbb",
-                        edgecolor="#222", zorder=3)
+            ax.scatter(x, y, s=sizes[i], color="#bbb", edgecolor="#222", zorder=3)
             # Label outside the ring
             tx, ty = 1.18 * x, 1.18 * y
-            ax.text(tx, ty, str(name).replace("'", "’"),
-                      fontsize=7, ha="center" if abs(x) < 0.3
-                      else ("left" if x > 0 else "right"),
-                      va="center", zorder=4,
-                      bbox=dict(facecolor="white",
-                                  edgecolor="#888",
-                                  boxstyle="round,pad=0.18",
-                                  linewidth=0.5))
-        ax.set_xlim(-1.6, 1.6); ax.set_ylim(-1.6, 1.6)
-        ax.set_aspect("equal"); ax.axis("off")
-        ax.set_title(f"{category} · premise × neighbourhood "
-                       f"co-occurrence network · top {top_n_premises} premises",
-                       fontsize=11)
+            ax.text(
+                tx,
+                ty,
+                str(name).replace("'", "’"),
+                fontsize=7,
+                ha="center" if abs(x) < 0.3 else ("left" if x > 0 else "right"),
+                va="center",
+                zorder=4,
+                bbox=dict(facecolor="white", edgecolor="#888", boxstyle="round,pad=0.18", linewidth=0.5),
+            )
+        ax.set_xlim(-1.6, 1.6)
+        ax.set_ylim(-1.6, 1.6)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        ax.set_title(
+            f"{category} · premise × neighbourhood co-occurrence network · top {top_n_premises} premises", fontsize=11
+        )
         fig_path = FIG / f"network_{category.lower()}.png"
         fig.savefig(fig_path, dpi=140, bbox_inches="tight")
         plt.close(fig)
@@ -740,8 +755,7 @@ def criminal_network_graph(category: str = "Assault",
             ("Method", "Premise × neighbourhood co-occurrence network"),
             ("Nodes", n),
             ("Edges (≥1 weight)", int((co.values > 0).sum() // 2)),
-            ("Strongest edge weight (max hoods)",
-             int(co.values.max() if co.size else 0)),
+            ("Strongest edge weight (max hoods)", int(co.values.max() if co.size else 0)),
             ("Figure", str(fig_path) if fig_path else "(skipped)"),
         ],
         interpretation=(
@@ -756,22 +770,27 @@ def criminal_network_graph(category: str = "Assault",
     )
 
 
-def analyze_all(categories: list[str] | None = None,
-                  save_fig: bool = True) -> dict[str, dict[str, RichResult]]:
+def analyze_all(categories: list[str] | None = None, save_fig: bool = True) -> dict[str, dict[str, RichResult]]:
     """Run all 4 stat-phys analyses on each category."""
     if categories is None:
-        categories = ["Assault", "AutoTheft", "BicycleTheft",
-                       "BreakandEnter", "Homicides", "Robbery",
-                       "ShootingAndFirearmDiscarges",
-                       "TheftFromMovingVehicle", "TheftOver"]
+        categories = [
+            "Assault",
+            "AutoTheft",
+            "BicycleTheft",
+            "BreakandEnter",
+            "Homicides",
+            "Robbery",
+            "ShootingAndFirearmDiscarges",
+            "TheftFromMovingVehicle",
+            "TheftOver",
+        ]
     out: dict[str, dict[str, RichResult]] = {}
     for cat in categories:
         out[cat] = {
             "sdb_pde": sdb_reaction_diffusion(cat, save_fig=save_fig),
             "levy": levy_flight_alpha(cat, save_fig=save_fig),
             "urban_scaling": urban_scaling_beta(cat, save_fig=save_fig),
-            "lotka_volterra": lotka_volterra_police_crime(
-                cat, save_fig=save_fig),
+            "lotka_volterra": lotka_volterra_police_crime(cat, save_fig=save_fig),
         }
     # Persist each RichResult as txt + json
     OUT.mkdir(parents=True, exist_ok=True)
@@ -780,8 +799,8 @@ def analyze_all(categories: list[str] | None = None,
             (OUT / f"sp_{cat.lower()}_{kind}.txt").write_text(str(rr))
             try:
                 import json
-                (OUT / f"sp_{cat.lower()}_{kind}.json").write_text(
-                    json.dumps(rr.to_dict(), default=str, indent=2))
+
+                (OUT / f"sp_{cat.lower()}_{kind}.json").write_text(json.dumps(rr.to_dict(), default=str, indent=2))
             except Exception:  # noqa: BLE001
                 pass
     return out

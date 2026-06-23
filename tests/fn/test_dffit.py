@@ -1,6 +1,7 @@
 """Tests for dffit.dffits."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dffit import dffits
 
 
@@ -10,7 +11,7 @@ def test_dffit_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = dffits(y, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dffit_edge():

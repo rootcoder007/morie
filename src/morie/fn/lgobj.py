@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Logistic regression log-likelihood."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["logistic_log_likelihood"]

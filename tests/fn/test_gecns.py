@@ -1,6 +1,7 @@
 """Test gecns."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gecns import gecns
 
 

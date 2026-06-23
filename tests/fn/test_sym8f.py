@@ -1,6 +1,6 @@
 """Tests for sym8f.py - Symlet wavelet filter coefficients."""
-import numpy as np
-from morie.fn.sym8f import symlet_coeffs, sym8f
+
+from morie.fn.sym8f import sym8f, symlet_coeffs
 
 
 def test_sym8f_returns_descriptive_result():

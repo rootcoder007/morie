@@ -1,5 +1,7 @@
 """Tests for instp.py - Instantaneous phase."""
+
 import numpy as np
+
 from morie.fn.instp import instantaneous_phase, instp
 
 

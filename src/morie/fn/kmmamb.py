@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mamba selective state-space recurrence."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_mamba_ssm"]
@@ -38,7 +40,9 @@ def kamath_mamba_ssm(x, A, B, C, delta):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mamba selective state-space recurrence"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mamba selective state-space recurrence"}
+    )
 
 
 def cheatsheet():

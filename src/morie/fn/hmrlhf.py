@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reinforcement learning from human feedback (RLHF)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_rlhf"]
@@ -34,7 +36,9 @@ def geron_rlhf(policy, reward_model, prompts):
     n = len(policy)
     result = float(np.mean(policy))
     se = float(np.std(policy, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reinforcement learning from human feedback (RLHF)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Reinforcement learning from human feedback (RLHF)"}
+    )
 
 
 def cheatsheet():

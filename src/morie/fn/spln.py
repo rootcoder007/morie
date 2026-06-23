@@ -1,4 +1,5 @@
 """Cubic spline interpolation/regression."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -74,4 +75,4 @@ spln = spline_regression
 
 
 def cheatsheet() -> str:
-    return 'spline_regression({}) -> Cubic spline regression.'
+    return "spline_regression({}) -> Cubic spline regression."

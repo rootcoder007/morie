@@ -1,6 +1,7 @@
 """Tests for vinfer.variational_inference."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vinfer import variational_inference
 
 
@@ -11,7 +12,7 @@ def test_vinfer_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = variational_inference(log_p, q_family, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vinfer_edge():

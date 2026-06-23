@@ -1,6 +1,7 @@
 """Tests for wsmqtl.wasserman_empirical_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmqtl import wasserman_empirical_quantile
 
 
@@ -10,7 +11,7 @@ def test_wsmqtl_basic():
     p = 5
     result = wasserman_empirical_quantile(data, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmqtl_edge():

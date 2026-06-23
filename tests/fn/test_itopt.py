@@ -1,7 +1,7 @@
 """Tests for morie.fn.itopt — item option frequencies."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.itopt import item_option_freq
 
 

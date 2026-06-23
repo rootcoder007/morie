@@ -1,6 +1,7 @@
 """Tests for morie.fn.secrt -- Secondary attack rate."""
 
 import pytest
+
 from morie.fn.secrt import secondary_attack_rate
 
 

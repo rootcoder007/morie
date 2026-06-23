@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrlsg -- Local Getis-Ord Gi*"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrlsg import lisa_getis
 

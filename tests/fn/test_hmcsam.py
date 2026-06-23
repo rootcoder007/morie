@@ -1,6 +1,7 @@
 """Tests for hmcsam.hamiltonian_mc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmcsam import hamiltonian_mc
 
 
@@ -13,7 +14,7 @@ def test_hmcsam_basic():
     L = np.random.default_rng(42).normal(0, 1, 100)
     result = hamiltonian_mc(log_p, grad_log_p, x0, step_size, L)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmcsam_edge():

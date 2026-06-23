@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhprv -- mental health prevalence."""
 
 import pytest
+
 from morie.fn.mhprv import mental_health_prevalence
 
 

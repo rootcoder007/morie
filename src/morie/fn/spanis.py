@@ -1,5 +1,7 @@
 """Geometric anisotropy: directional variogram via affine coordinate transformation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_geometric_anisotropy"]
@@ -33,7 +35,14 @@ def schabenberger_geometric_anisotropy(coords, z, A_matrix):
     n = int(z) if z.ndim == 0 else len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Geometric anisotropy: directional variogram via affine coordinate transformation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Geometric anisotropy: directional variogram via affine coordinate transformation",
+        }
+    )
 
 
 def cheatsheet():

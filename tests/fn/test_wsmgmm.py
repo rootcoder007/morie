@@ -1,6 +1,7 @@
 """Tests for wsmgmm.wasserman_gmm_em."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmgmm import wasserman_gmm_em
 
 
@@ -10,7 +11,7 @@ def test_wsmgmm_basic():
     k = 5
     result = wasserman_gmm_em(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmgmm_edge():

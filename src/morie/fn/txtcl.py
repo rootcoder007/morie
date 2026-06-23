@@ -85,4 +85,4 @@ def text_classify(
 
 
 def cheatsheet() -> str:
-    return 'text_classify({}) -> Naive Bayes text classifier.'
+    return "text_classify({}) -> Naive Bayes text classifier."

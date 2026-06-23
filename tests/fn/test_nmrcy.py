@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmrcy -- Roll call yea/nay summary"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmrcy import roll_call_yea_nay
 

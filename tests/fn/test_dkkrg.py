@@ -1,6 +1,7 @@
 """Test dkkrg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkkrg import dkkrg
 
 

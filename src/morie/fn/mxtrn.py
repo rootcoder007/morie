@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def matrix_trace_norm(A, **kwargs) -> DescriptiveResult:
     """
     Compute matrix trace, determinant, rank, condition number, and

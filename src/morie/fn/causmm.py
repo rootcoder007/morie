@@ -1,6 +1,7 @@
 """Mahalanobis-distance matching."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_mahalanobis_match"]

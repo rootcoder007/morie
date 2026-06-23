@@ -1,6 +1,7 @@
 """Test ghclr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghclr import ghclr
 
 

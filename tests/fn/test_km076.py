@@ -1,6 +1,7 @@
 """Tests for km076.kamath_ch5_dpo_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km076 import kamath_ch5_dpo_loss
 
 
@@ -11,7 +12,7 @@ def test_km076_basic():
     beta = 0.8
     result = kamath_ch5_dpo_loss(pi_theta, pi_ref, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km076_edge():

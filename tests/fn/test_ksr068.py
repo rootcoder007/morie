@@ -1,6 +1,7 @@
 """Tests for ksr068.kosorok_ch3_cox_profile_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr068 import kosorok_ch3_cox_profile_score
 
 
@@ -14,7 +15,7 @@ def test_ksr068_basic():
     n = 100
     result = kosorok_ch3_cox_profile_score(beta, Z, Y, X, tau, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr068_edge():

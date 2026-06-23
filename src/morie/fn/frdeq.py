@@ -61,12 +61,7 @@ def frdeq(
 
     a = np.linspace(a_range[0], a_range[1], n_points)
 
-    H2 = H0 ** 2 * (
-        Omega_r * a ** (-4)
-        + Omega_m * a ** (-3)
-        + Omega_k * a ** (-2)
-        + Omega_Lambda
-    )
+    H2 = H0**2 * (Omega_r * a ** (-4) + Omega_m * a ** (-3) + Omega_k * a ** (-2) + Omega_Lambda)
     H2 = np.maximum(H2, 0.0)
     H = np.sqrt(H2)
 

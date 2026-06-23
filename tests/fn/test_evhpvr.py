@@ -1,6 +1,7 @@
 """Tests for evhpvr.evt_heffernan_tawn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evhpvr import evt_heffernan_tawn
 
 
@@ -10,7 +11,7 @@ def test_evhpvr_basic():
     u = np.random.default_rng(44).normal(0, 1, 100)
     result = evt_heffernan_tawn(X, u)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evhpvr_edge():

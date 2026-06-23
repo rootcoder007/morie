@@ -1,6 +1,7 @@
 """Test mttrc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mttrc import mttrc
 
 

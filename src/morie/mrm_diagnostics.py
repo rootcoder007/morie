@@ -33,13 +33,11 @@ Public callables:
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Optional, Sequence
 
 import numpy as np
 import pandas as pd
-from scipy import stats
-
 
 __all__ = [
     "mrm_standardised_difference",
@@ -54,6 +52,7 @@ def _logistic_propensity(D: np.ndarray, X: np.ndarray) -> np.ndarray:
     """Fit a logistic propensity model + return e(x) ∈ (0,1)."""
     try:
         from sklearn.linear_model import LogisticRegression
+
         fit = LogisticRegression(max_iter=1000).fit(X, D)
         e = fit.predict_proba(X)[:, 1]
     except Exception:
@@ -111,20 +110,22 @@ def mrm_standardised_difference(
         s_t, s_c = float(np.var(x_t, ddof=1)), float(np.var(x_c, ddof=1))
         pooled_sd = float(np.sqrt((s_t + s_c) / 2))
         smd_pct = 100.0 * (m_t - m_c) / pooled_sd if pooled_sd > 0 else float("nan")
-        rows.append({
-            "covariate": c,
-            "mean_treated": round(m_t, 4),
-            "mean_control": round(m_c, 4),
-            "pooled_sd": round(pooled_sd, 4),
-            "smd_pct": round(smd_pct, 2),
-            "imbalanced": abs(smd_pct) > 10.0 if not np.isnan(smd_pct) else None,
-        })
+        rows.append(
+            {
+                "covariate": c,
+                "mean_treated": round(m_t, 4),
+                "mean_control": round(m_c, 4),
+                "pooled_sd": round(pooled_sd, 4),
+                "smd_pct": round(smd_pct, 2),
+                "imbalanced": abs(smd_pct) > 10.0 if not np.isnan(smd_pct) else None,
+            }
+        )
     return pd.DataFrame(rows)
 
 
 @dataclass
 class BalanceResult:
-    table: pd.DataFrame    # per-covariate standardised difference
+    table: pd.DataFrame  # per-covariate standardised difference
     threshold_pct: float
     n_imbalanced: int
     overall_balanced: bool
@@ -143,13 +144,14 @@ def mrm_check_balancing(
     A design is "balanced on X" if every |SMD(X_i)| ≤ threshold (default
     10 percentage points, Austin 2009 / Rosenbaum-Rubin 1985).
     """
-    tbl = mrm_standardised_difference(data, treatment_col=treatment_col,
-                                       covariates=covariates)
+    tbl = mrm_standardised_difference(data, treatment_col=treatment_col, covariates=covariates)
     n_imbalanced = int(tbl["imbalanced"].sum())
     overall = n_imbalanced == 0
     return BalanceResult(
-        table=tbl, threshold_pct=threshold_pct,
-        n_imbalanced=n_imbalanced, overall_balanced=overall,
+        table=tbl,
+        threshold_pct=threshold_pct,
+        n_imbalanced=n_imbalanced,
+        overall_balanced=overall,
         interpretation=(
             f"{n_imbalanced}/{len(covariates)} covariates exceed "
             f"|SMD|>{threshold_pct}%; design "
@@ -160,12 +162,12 @@ def mrm_check_balancing(
 
 @dataclass
 class OverlapResult:
-    e_treated_quantiles: dict   # quantiles of e(X) in the treated group
-    e_control_quantiles: dict   # quantiles of e(X) in the control group
+    e_treated_quantiles: dict  # quantiles of e(X) in the treated group
+    e_control_quantiles: dict  # quantiles of e(X) in the control group
     common_support_lower: float  # max(min e_t, min e_c)
     common_support_upper: float  # min(max e_t, max e_c)
-    n_outside_support: int       # units with e(X) outside common support
-    positivity_violations: int   # units with e(X) < 0.01 or > 0.99
+    n_outside_support: int  # units with e(X) outside common support
+    positivity_violations: int  # units with e(X) < 0.01 or > 0.99
     interpretation: str
 
 
@@ -190,8 +192,8 @@ def mrm_check_overlap(
     n_outside = int(((e < cs_lo) | (e > cs_hi)).sum())
     pviol = int(((e < 0.01) | (e > 0.99)).sum())
     return OverlapResult(
-        e_treated_quantiles={f"q{int(q*1000)/10}": float(np.quantile(e_t, q)) for q in qs},
-        e_control_quantiles={f"q{int(q*1000)/10}": float(np.quantile(e_c, q)) for q in qs},
+        e_treated_quantiles={f"q{int(q * 1000) / 10}": float(np.quantile(e_t, q)) for q in qs},
+        e_control_quantiles={f"q{int(q * 1000) / 10}": float(np.quantile(e_c, q)) for q in qs},
         common_support_lower=round(cs_lo, 4),
         common_support_upper=round(cs_hi, 4),
         n_outside_support=n_outside,
@@ -256,14 +258,14 @@ def mrm_median_causal_effect(
         n_matched=len(pairs),
         interpretation=(
             f"Median Y(1) = {m1:.3f}, Median Y(0) = {m0:.3f}; "
-            f"median causal effect = {m1-m0:.3f} on {len(pairs)} 1:1 PS-matched pairs."
+            f"median causal effect = {m1 - m0:.3f} on {len(pairs)} 1:1 PS-matched pairs."
         ),
     )
 
 
 @dataclass
 class AssumptionsCheckResult:
-    sutva: dict             # {flag: bool, evidence: str}
+    sutva: dict  # {flag: bool, evidence: str}
     unconfoundedness: dict
     probabilistic_assignment: dict
     overall_verdict: str
@@ -293,25 +295,25 @@ def mrm_assumptions_check(
       Probabilistic assignment / positivity:
         Empirical: fraction of e(x) outside (0.01, 0.99).
     """
-    overlap = mrm_check_overlap(data, treatment_col=treatment_col,
-                                  covariates=covariates)
-    balance = mrm_check_balancing(data, treatment_col=treatment_col,
-                                    covariates=covariates)
+    overlap = mrm_check_overlap(data, treatment_col=treatment_col, covariates=covariates)
+    balance = mrm_check_balancing(data, treatment_col=treatment_col, covariates=covariates)
 
     sutva = {
         "verdict": "untestable from data",
         "evidence": "SUTVA is a design assumption; reviewer should justify it from"
-                    " context (e.g. unit-level non-interference, single treatment"
-                    " definition).  Within-cluster variance check is not run here.",
+        " context (e.g. unit-level non-interference, single treatment"
+        " definition).  Within-cluster variance check is not run here.",
     }
     unconf = {
-        "verdict": ("plausible (after adjustment)" if balance.overall_balanced
-                    else "questionable -- covariate imbalance remains"),
+        "verdict": (
+            "plausible (after adjustment)"
+            if balance.overall_balanced
+            else "questionable -- covariate imbalance remains"
+        ),
         "evidence": balance.interpretation,
     }
     pos = {
-        "verdict": ("satisfied" if overlap.positivity_violations == 0
-                    else "violated"),
+        "verdict": ("satisfied" if overlap.positivity_violations == 0 else "violated"),
         "evidence": (
             f"common support [{overlap.common_support_lower}, "
             f"{overlap.common_support_upper}]; "
@@ -324,6 +326,8 @@ def mrm_assumptions_check(
         else "one or more diagnostic flags; see fields"
     )
     return AssumptionsCheckResult(
-        sutva=sutva, unconfoundedness=unconf,
-        probabilistic_assignment=pos, overall_verdict=overall,
+        sutva=sutva,
+        unconfoundedness=unconf,
+        probabilistic_assignment=pos,
+        overall_verdict=overall,
     )

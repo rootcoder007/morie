@@ -1,4 +1,5 @@
 """Tests for annty (annuity present value)."""
+
 from morie.fn.annty import annuity_value
 
 

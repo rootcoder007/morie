@@ -1,7 +1,7 @@
 """Tests for morie.fn.trmle — Transformation model MLE."""
 
 import numpy as np
-import pytest
+
 from morie.fn.trmle import trmle
 
 

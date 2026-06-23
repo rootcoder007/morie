@@ -1,8 +1,9 @@
 """Tests for morie.fn.tpscmp — complaint rate."""
 
 import pytest
-from morie.fn.tpscmp import tps_complaint_rate
+
 from morie.fn._containers import CrimeResult
+from morie.fn.tpscmp import tps_complaint_rate
 
 
 class TestComplaintRate:

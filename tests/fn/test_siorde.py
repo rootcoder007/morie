@@ -1,6 +1,8 @@
 """Tests for siorde."""
+
 import numpy as np
 import pytest
+
 from morie.fn.siorde import siorde
 
 
@@ -28,4 +30,5 @@ def test_siorde_no_data():
 
 def test_siorde_alias():
     from morie.fn.siorde import siorde
+
     assert siorde is siorde

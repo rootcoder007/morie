@@ -48,9 +48,7 @@ def runs_test(x) -> TestResult:
     mu = 1.0 + 2.0 * n0 * n1 / n
     var = (2.0 * n0 * n1 * (2.0 * n0 * n1 - n)) / (n**2 * (n - 1.0))
     if var <= 0:
-        return TestResult(
-            test_name="Runs test", statistic=float(runs), p_value=1.0, n=n
-        )
+        return TestResult(test_name="Runs test", statistic=float(runs), p_value=1.0, n=n)
 
     z = (runs - mu) / np.sqrt(var)
     from scipy.stats import norm

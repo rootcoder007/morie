@@ -2,14 +2,14 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.gbm import gradient_boosting
 
 
 class TestGradientBoosting:
     def test_separable(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3],
-                        rng.standard_normal((30, 2)) - [3, 3]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3], rng.standard_normal((30, 2)) - [3, 3]])
         y = np.array([1.0] * 30 + [0.0] * 30)
         result = gradient_boosting(X, y, n_estimators=50, lr=0.1)
         assert "predictions" in result

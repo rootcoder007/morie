@@ -1,5 +1,7 @@
 """Tests for morie.fn.gclus."""
+
 import numpy as np
+
 from morie.fn.gclus import gclus
 
 
@@ -13,6 +15,7 @@ def test_gclus_smoke():
 
 def test_cheatsheet():
     from morie.fn.gclus import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

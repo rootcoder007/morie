@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Proximal Policy Optimization clipped surrogate objective."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ppo_clipped_objective"]
@@ -34,7 +36,14 @@ def geron_ppo_clipped_objective(ratios, advantages, eps):
     n = len(ratios)
     result = float(np.mean(ratios))
     se = float(np.std(ratios, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Proximal Policy Optimization clipped surrogate objective"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Proximal Policy Optimization clipped surrogate objective",
+        }
+    )
 
 
 def cheatsheet():

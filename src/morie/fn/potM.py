@@ -1,6 +1,7 @@
 """Peaks-over-threshold."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["peaks_over_threshold"]

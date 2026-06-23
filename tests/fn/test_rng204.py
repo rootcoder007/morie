@@ -1,6 +1,7 @@
 """Tests for rng204.rangayyan_ch4_psd_from_acf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng204 import rangayyan_ch4_psd_from_acf
 
 
@@ -12,7 +13,7 @@ def test_rng204_basic():
     tau = 0.1
     result = rangayyan_ch4_psd_from_acf(phi_xx, X, f, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng204_edge():

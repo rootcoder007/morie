@@ -14,7 +14,7 @@ __all__ = ["conv1"]
 import numpy as np
 
 
-def conv1(x, kernel, padding='valid', stride=1):
+def conv1(x, kernel, padding="valid", stride=1):
     """
     1D convolution.
 
@@ -42,20 +42,20 @@ def conv1(x, kernel, padding='valid', stride=1):
     batch, length = x.shape
     k_size = kernel.shape[0]
 
-    if padding == 'valid':
+    if padding == "valid":
         pad = 0
-    elif padding == 'same':
+    elif padding == "same":
         pad = (k_size - 1) // 2
-    elif padding == 'full':
+    elif padding == "full":
         pad = k_size - 1
     else:
         raise ValueError("padding must be 'valid', 'same', or 'full'")
 
-    x_padded = np.pad(x, ((0, 0), (pad, pad)), mode='constant')
+    x_padded = np.pad(x, ((0, 0), (pad, pad)), mode="constant")
     out_length = (x_padded.shape[1] - k_size) // stride + 1
 
     output = np.zeros((batch, out_length))
     for i in range(out_length):
-        output[:, i] = np.sum(x_padded[:, i*stride:i*stride+k_size] * kernel, axis=1)
+        output[:, i] = np.sum(x_padded[:, i * stride : i * stride + k_size] * kernel, axis=1)
 
     return output

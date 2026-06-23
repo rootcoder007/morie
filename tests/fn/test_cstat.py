@@ -1,6 +1,8 @@
 """Tests for cstat: Harrell's C-index."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cstat import cstat
 
 
@@ -18,8 +20,7 @@ def _make_data(n=100, beta=1.0, seed=0):
 def test_returns_keys():
     time, event, risk = _make_data()
     result = cstat(time, event, risk)
-    for key in ("c_statistic", "se", "ci_lower", "ci_upper",
-                "concordant", "discordant", "comparable"):
+    for key in ("c_statistic", "se", "ci_lower", "ci_upper", "concordant", "discordant", "comparable"):
         assert key in result
 
 

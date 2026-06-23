@@ -1,6 +1,7 @@
 """Tests for ksr021.kosorok_ch1_residual_empirical_distribution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr021 import kosorok_ch1_residual_empirical_distribution
 
 
@@ -13,7 +14,7 @@ def test_ksr021_basic():
     n = 100
     result = kosorok_ch1_residual_empirical_distribution(Y, Z, beta_hat, t, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr021_edge():

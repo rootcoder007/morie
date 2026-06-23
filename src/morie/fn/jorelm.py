@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Relative MAE: MAE of target model / MAE of baseline."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_relative_mae"]
@@ -34,7 +36,9 @@ def joseph_relative_mae(y_true, y_pred, y_baseline):
     n = len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Relative MAE: MAE of target model / MAE of baseline"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Relative MAE: MAE of target model / MAE of baseline"}
+    )
 
 
 def cheatsheet():

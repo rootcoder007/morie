@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DDPM simplified training loss -- MSE on predicted noise."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddpm_simple_loss"]
@@ -32,7 +34,14 @@ def geron_ddpm_simple_loss(eps, eps_pred):
     n = len(eps)
     result = float(np.mean(eps))
     se = float(np.std(eps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DDPM simplified training loss -- MSE on predicted noise"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DDPM simplified training loss -- MSE on predicted noise",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DistilBERT: distilled BERT with ~40% fewer parameters."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_distilbert"]
@@ -34,7 +36,14 @@ def geron_distilbert(teacher, student, X):
     n = len(teacher)
     result = float(np.mean(teacher))
     se = float(np.std(teacher, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DistilBERT: distilled BERT with ~40% fewer parameters"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DistilBERT: distilled BERT with ~40% fewer parameters",
+        }
+    )
 
 
 def cheatsheet():

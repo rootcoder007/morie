@@ -1,6 +1,7 @@
 """BIC = -2 l_hat + k log n."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_bic"]

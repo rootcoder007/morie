@@ -12,6 +12,7 @@ def cc_data():
     n = 300
     X = rng.standard_normal((n, 2))
     from scipy.special import expit
+
     p = expit(0.5 * X[:, 0] - 0.3 * X[:, 1])
     case = rng.binomial(1, p).astype(float)
     return np.zeros(n), X, case

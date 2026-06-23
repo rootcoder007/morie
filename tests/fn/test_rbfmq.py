@@ -1,6 +1,8 @@
 """Tests for rbfmq."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rbfmq import rbfmq
 
 
@@ -28,4 +30,5 @@ def test_rbfmq_no_data():
 
 def test_rbfmq_alias():
     from morie.fn.rbfmq import rbfmq
+
     assert rbfmq is rbfmq

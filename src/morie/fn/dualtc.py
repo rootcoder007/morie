@@ -1,6 +1,8 @@
 """Dual total correlation."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dual_total_correlation"]
@@ -8,23 +10,23 @@ __all__ = ["dual_total_correlation"]
 
 def dual_total_correlation(p):
     """
-    Dual total correlation
+       Dual total correlation
 
-    Formula: DTC = H(X1..Xn) - sum H(Xi | X_-i)
+       Formula: DTC = H(X1..Xn) - sum H(Xi | X_-i)
 
-    Parameters
-    ----------
-    p : array-like
-        Input data.
+       Parameters
+       ----------
+       p : array-like
+           Input data.
 
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+       Returns
+       -------
+       result : dict
+           Keys: estimate
 
-    References
-    ----------
- (1978)
+       References
+       ----------
+    (1978)
     """
     p = np.atleast_1d(np.asarray(p, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
@@ -32,7 +34,14 @@ def dual_total_correlation(p):
     if n < 3:
         return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Dual total correlation"})
     result = stats.spearmanr(p[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Dual total correlation"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Dual total correlation",
+        }
+    )
 
 
 def cheatsheet():

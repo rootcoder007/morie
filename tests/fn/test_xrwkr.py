@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwkr -- Kernel weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwkr import w_kernel
 

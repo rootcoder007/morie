@@ -1,6 +1,7 @@
 """HITS hub + authority scores."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["The only true wisdom is in knowing you know nothing. -- Socrates"]
@@ -30,8 +31,15 @@ def hits_hub_authority(G):
     n = len(G)
     result = float(np.mean(G))
     se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "The only true wisdom is in knowing you know nothing. -- Socrates"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "The only true wisdom is in knowing you know nothing. -- Socrates",
+        }
+    )
 
 
 def cheatsheet():
-    return 'hubsau() -> HITS hub + authority scores'
+    return "hubsau() -> HITS hub + authority scores"

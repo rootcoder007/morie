@@ -1,6 +1,7 @@
 """Tests for kmpet.kamath_pet_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmpet import kamath_pet_loss
 
 
@@ -13,7 +14,7 @@ def test_kmpet_basic():
     alpha = 0.05
     result = kamath_pet_loss(verbalizer_logits, y_true, mlm_logits, mlm_targets, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmpet_edge():

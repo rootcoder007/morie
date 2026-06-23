@@ -17,12 +17,14 @@ accurate multiclass probability estimates.
 Niculescu-Mizil, A., & Caruana, R. (2005). Predicting good probabilities
 with supervised learning. *Proceedings of ICML*, 625-632.
 """
+
 from __future__ import annotations
 
 from typing import Any
 
 import numpy as np
 from scipy.special import expit, logit
+
 from ._richresult import RichResult
 
 __all__ = ["calbt"]
@@ -100,8 +102,10 @@ def calbt(
             return -float(np.sum(y_true * np.log(p) + (1 - y_true) * np.log(1 - p)))
 
         from scipy.optimize import minimize
-        res = minimize(_nll, x0=[1.0, 0.0], method="Nelder-Mead",
-                       options={"xatol": 1e-6, "fatol": 1e-6, "maxiter": 500})
+
+        res = minimize(
+            _nll, x0=[1.0, 0.0], method="Nelder-Mead", options={"xatol": 1e-6, "fatol": 1e-6, "maxiter": 500}
+        )
         A, B = float(res.x[0]), float(res.x[1])
         calibrated = expit(A * logit(y_prob_clipped) + B)
 
@@ -189,7 +193,7 @@ def _isotonic_regression(x, y):
     result = np.empty(n)
     pos = 0
     for val, cnt in blocks:
-        result[pos: pos + cnt] = val
+        result[pos : pos + cnt] = val
         pos += cnt
 
     # Unsort

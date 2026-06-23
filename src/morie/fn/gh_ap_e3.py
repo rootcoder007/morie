@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet multiresolution analysis: scaling functions phi_{jk} and wavelets psi_{jk}."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_wavelet_mra"]
@@ -30,7 +32,14 @@ def ghosal_wavelet_mra(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wavelet multiresolution analysis: scaling functions phi_{jk} and wavelets psi_{jk}"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wavelet multiresolution analysis: scaling functions phi_{jk} and wavelets psi_{jk}",
+        }
+    )
 
 
 def cheatsheet():

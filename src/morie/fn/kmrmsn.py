@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Root-mean-square layer normalization (RMSNorm)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_rms_norm"]
@@ -34,7 +36,9 @@ def kamath_rms_norm(x, g, eps):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Root-mean-square layer normalization (RMSNorm)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Root-mean-square layer normalization (RMSNorm)"}
+    )
 
 
 def cheatsheet():

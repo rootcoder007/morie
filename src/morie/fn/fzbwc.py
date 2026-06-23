@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bandwidth condition for kernel quantile Edgeworth expansion."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_quantile_bw_condition"]
@@ -32,7 +34,14 @@ def fauzi_quantile_bw_condition(bandwidth, n):
     n = int(bandwidth) if bandwidth.ndim == 0 else len(bandwidth)
     result = float(np.mean(bandwidth))
     se = float(np.std(bandwidth, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bandwidth condition for kernel quantile Edgeworth expansion"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bandwidth condition for kernel quantile Edgeworth expansion",
+        }
+    )
 
 
 def cheatsheet():

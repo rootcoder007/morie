@@ -1,6 +1,7 @@
 """Tests for rng075.rangayyan_ch3_idft_real_imag."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng075 import rangayyan_ch3_idft_real_imag
 
 
@@ -12,7 +13,7 @@ def test_rng075_basic():
     N = 100
     result = rangayyan_ch3_idft_real_imag(X, n, k, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng075_edge():

@@ -4,6 +4,7 @@
 __all__ = ["fdisc"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -85,8 +86,7 @@ def fdisc(
         sym = True
     else:
         raise ValueError(
-            f"Unknown divergence: {divergence!r}. "
-            "Use 'kl', 'reverse_kl', 'chi2', 'hellinger', 'tv', or 'js'."
+            f"Unknown divergence: {divergence!r}. Use 'kl', 'reverse_kl', 'chi2', 'hellinger', 'tv', or 'js'."
         )
 
     return RichResult(payload={"divergence": max(val, 0.0), "type": divergence, "symmetric": sym})

@@ -1,6 +1,7 @@
 """Tests for crrcsh.cause_specific_hazard."""
+
 import numpy as np
-import pytest
+
 from morie.fn.crrcsh import cause_specific_hazard
 
 
@@ -12,7 +13,7 @@ def test_crrcsh_basic():
     cause = np.random.default_rng(42).normal(0, 1, 100)
     result = cause_specific_hazard(time, event_type, X, cause)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_crrcsh_edge():

@@ -1,6 +1,7 @@
 """Tests for volgkr.vol_garman_klass."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volgkr import vol_garman_klass
 
 
@@ -12,7 +13,7 @@ def test_volgkr_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_garman_klass(o, h, l, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volgkr_edge():

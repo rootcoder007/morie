@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """NAdam: Adam with Nesterov momentum."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_nadam"]

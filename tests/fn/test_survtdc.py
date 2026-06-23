@@ -1,6 +1,7 @@
 """Tests for survtdc.time_dep_concordance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survtdc import time_dep_concordance
 
 
@@ -12,7 +13,7 @@ def test_survtdc_basic():
     t = np.linspace(0, 10, 100)
     result = time_dep_concordance(time, event, marker, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survtdc_edge():

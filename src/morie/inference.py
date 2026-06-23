@@ -299,9 +299,7 @@ def rnorm(n: int, mean: float = 0.0, sd: float = 1.0, seed: int | None = None) -
 # ---------------------------------------------------------------------------
 
 
-def dt(
-    x: Union[float, np.ndarray], df: float, ncp: float | None = None, log: bool = False
-) -> Union[float, np.ndarray]:
+def dt(x: Union[float, np.ndarray], df: float, ncp: float | None = None, log: bool = False) -> Union[float, np.ndarray]:
     """
     Student's t-distribution probability density function.
 

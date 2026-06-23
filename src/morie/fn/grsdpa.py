@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Scaled dot-product attention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_scaled_dot_product_attention"]

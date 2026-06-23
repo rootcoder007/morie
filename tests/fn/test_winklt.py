@@ -1,6 +1,7 @@
 """Test winklt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.winklt import winklt
 
 

@@ -1,6 +1,7 @@
 """Test gcco2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcco2 import gcco2
 
 

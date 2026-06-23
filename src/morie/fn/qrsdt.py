@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['qrsdt']
+__all__ = ["qrsdt"]
+
+
 def qrsdt(
     x: np.ndarray,
     fs: float = 360.0,
@@ -55,7 +57,7 @@ def qrsdt(
     filtered = sosfiltfilt(sos, x)
 
     diff = np.diff(filtered, prepend=filtered[0])
-    squared = diff ** 2
+    squared = diff**2
 
     win = max(1, int(integration_window * fs))
     kernel = np.ones(win) / win

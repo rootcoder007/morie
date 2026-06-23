@@ -1,6 +1,7 @@
 """Test fotrsg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fotrsg import fotrsg
 
 

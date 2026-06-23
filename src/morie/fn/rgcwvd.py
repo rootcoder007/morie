@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cohen's class TFDs via kernel function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_cohen_class"]
@@ -34,7 +36,9 @@ def rangayyan_cohen_class(x, fs, kernel):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cohen's class TFDs via kernel function"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cohen's class TFDs via kernel function"}
+    )
 
 
 def cheatsheet():

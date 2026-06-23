@@ -9,6 +9,7 @@ Robinson estimator:
     3. beta_hat = (r_X' r_X)^{-1} r_X' r_Y
 SE via the heteroskedasticity-consistent (HC0) sandwich on r_X.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -70,8 +71,9 @@ def horowitz_plr_estimator(x, y, z, bandwidth=None):
         Z = Z.T
     n = y.size
     if n < 5 or X.shape[0] != n or Z.shape[0] != n:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "partially-linear (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "partially-linear (insufficient data)"}
+        )
     h = float(bandwidth) if bandwidth is not None else _silverman(Z[:, 0])
     if h <= 0:
         h = max(_silverman(Z[:, 0]), 1e-6)
@@ -86,15 +88,20 @@ def horowitz_plr_estimator(x, y, z, bandwidth=None):
         beta = np.full(X.shape[1], np.nan)
     resid = rY - rX @ beta
     bread = np.linalg.pinv(rX.T @ rX)
-    meat = rX.T @ (rX * (resid ** 2)[:, None])
+    meat = rX.T @ (rX * (resid**2)[:, None])
     cov = bread @ meat @ bread
     se = np.sqrt(np.maximum(np.diag(cov), 0))
     est = beta if beta.size > 1 else float(beta[0])
     se_v = se if beta.size > 1 else float(se[0])
-    return RichResult(payload={
-        "estimate": est, "se": se_v, "bandwidth": h, "n": n,
-        "method": "Robinson (1988) partially-linear regression",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se_v,
+            "bandwidth": h,
+            "n": n,
+            "method": "Robinson (1988) partially-linear regression",
+        }
+    )
 
 
 def cheatsheet():

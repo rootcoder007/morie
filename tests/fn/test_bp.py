@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.bp import breusch_pagan_test
+
 from morie.fn._containers import TestResult
+from morie.fn.bp import breusch_pagan_test
 
 
 class TestBreuschPagan:

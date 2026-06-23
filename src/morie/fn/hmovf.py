@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Overfitting: training error much lower than validation error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_overfitting"]
@@ -32,7 +34,14 @@ def geron_overfitting(train_err, val_err):
     n = len(train_err)
     result = float(np.mean(train_err))
     se = float(np.std(train_err, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Overfitting: training error much lower than validation error"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Overfitting: training error much lower than validation error",
+        }
+    )
 
 
 def cheatsheet():

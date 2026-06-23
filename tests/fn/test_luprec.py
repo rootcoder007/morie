@@ -1,6 +1,8 @@
 """Tests for luprec."""
+
 import numpy as np
 import pytest
+
 from morie.fn.luprec import luprec
 
 
@@ -28,4 +30,5 @@ def test_luprec_no_data():
 
 def test_luprec_alias():
     from morie.fn.luprec import luprec
+
     assert luprec is luprec

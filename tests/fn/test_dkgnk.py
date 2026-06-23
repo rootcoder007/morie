@@ -1,6 +1,7 @@
 """Test dkgnk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkgnk import dkgnk
 
 

@@ -22,15 +22,14 @@ construction. All analyses operate within fiscal year.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
 import re
-from typing import Iterable, Optional, Sequence
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 from scipy import stats
-
 
 __all__ = [
     "mrm_classify_mandela",
@@ -75,8 +74,8 @@ def mrm_otis_placement_concentration(
     year_col: str = "EndFiscalYear",
     band_col: str = "NumberPlacements_Segregation",
     count_col: str = "NumberIndividuals_Segregation",
-    gender_col: Optional[str] = None,
-    gender_keep: Optional[Iterable[str]] = None,
+    gender_col: str | None = None,
+    gender_keep: Iterable[str] | None = None,
     x_min: float = 1.0,
     top_pct: float = 0.05,
 ) -> pd.DataFrame:
@@ -110,22 +109,36 @@ def mrm_otis_placement_concentration(
             continue
         x_sorted = np.sort(x)[::-1]
         cut = max(1, int(np.ceil(top_pct * n)))
-        rows.append((
-            y, n, int(x.sum()), round(float(x.mean()), 4),
-            round(_gini(x), 4), round(_hill_mle(x, x_min), 4),
-            round(float(x_sorted[:cut].sum() / x.sum()), 4),
-        ))
-    return pd.DataFrame(rows, columns=[
-        "year", "n_individuals", "n_placements", "mean_per_individual",
-        "gini", "hill_alpha", "top_pct_share",
-    ])
+        rows.append(
+            (
+                y,
+                n,
+                int(x.sum()),
+                round(float(x.mean()), 4),
+                round(_gini(x), 4),
+                round(_hill_mle(x, x_min), 4),
+                round(float(x_sorted[:cut].sum() / x.sum()), 4),
+            )
+        )
+    return pd.DataFrame(
+        rows,
+        columns=[
+            "year",
+            "n_individuals",
+            "n_placements",
+            "mean_per_individual",
+            "gini",
+            "hill_alpha",
+            "top_pct_share",
+        ],
+    )
 
 
 def mrm_otis_seg_duration_km(
     data: pd.DataFrame,
     *,
     duration_col: str = "NumberConsecutiveDays_Segregation",
-    group_cols: Optional[Sequence[str]] = None,
+    group_cols: Sequence[str] | None = None,
     mandela_threshold: int = 15,
 ) -> pd.DataFrame:
     """KM-style summary of b01 segregation placement durations.
@@ -148,10 +161,7 @@ def mrm_otis_seg_duration_km(
         groups = [("pooled", data)]
     else:
         groups = list(data.groupby(list(group_cols)))
-        groups = [
-            ("|".join(map(str, k)) if isinstance(k, tuple) else str(k), g)
-            for k, g in groups
-        ]
+        groups = [("|".join(map(str, k)) if isinstance(k, tuple) else str(k), g) for k, g in groups]
     rows = []
     for label, sub in groups:
         d = sub[duration_col].dropna()
@@ -161,16 +171,29 @@ def mrm_otis_seg_duration_km(
             rows.append((label, 0, np.nan, np.nan, np.nan, np.nan, np.nan))
             continue
         above = d > mandela_threshold
-        rows.append((
-            label, n, round(float(d.mean()), 2), float(np.median(d)),
-            float(np.quantile(d, 0.75)),
-            round(100.0 * above.mean(), 2),
-            float(np.median(d[above])) if above.any() else np.nan,
-        ))
-    return pd.DataFrame(rows, columns=[
-        "stratum", "n", "mean_days", "median_days", "q25_days",
-        "pct_above_mandela", "median_among_above_mandela",
-    ])
+        rows.append(
+            (
+                label,
+                n,
+                round(float(d.mean()), 2),
+                float(np.median(d)),
+                float(np.quantile(d, 0.75)),
+                round(100.0 * above.mean(), 2),
+                float(np.median(d[above])) if above.any() else np.nan,
+            )
+        )
+    return pd.DataFrame(
+        rows,
+        columns=[
+            "stratum",
+            "n",
+            "mean_days",
+            "median_days",
+            "q25_days",
+            "pct_above_mandela",
+            "median_among_above_mandela",
+        ],
+    )
 
 
 def _cramer_v(observed: np.ndarray) -> float:
@@ -186,7 +209,9 @@ def mrm_otis_mortification_cooccurrence(
     data: pd.DataFrame,
     *,
     alert_cols: Sequence[str] = (
-        "MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert",
+        "MentalHealth_Alert",
+        "SuicideRisk_Alert",
+        "SuicideWatch_Alert",
     ),
 ) -> pd.DataFrame:
     """Pairwise Cramer's V of OTIS b01 alert columns."""
@@ -198,11 +223,29 @@ def mrm_otis_mortification_cooccurrence(
             a, b = bins[cols[i]], bins[cols[j]]
             tbl = pd.crosstab(a, b).values
             chi2, p, dof, _ = stats.chi2_contingency(tbl, correction=False)
-            rows.append((cols[i], cols[j], int(tbl.sum()), round(chi2, 2),
-                         int(dof), float(f"{p:.3g}"), round(_cramer_v(tbl), 4)))
-    return pd.DataFrame(rows, columns=[
-        "alert_a", "alert_b", "n", "chi2", "df", "p_value", "cramers_v",
-    ])
+            rows.append(
+                (
+                    cols[i],
+                    cols[j],
+                    int(tbl.sum()),
+                    round(chi2, 2),
+                    int(dof),
+                    float(f"{p:.3g}"),
+                    round(_cramer_v(tbl), 4),
+                )
+            )
+    return pd.DataFrame(
+        rows,
+        columns=[
+            "alert_a",
+            "alert_b",
+            "n",
+            "chi2",
+            "df",
+            "p_value",
+            "cramers_v",
+        ],
+    )
 
 
 @dataclass
@@ -297,9 +340,7 @@ def mrm_classify_mandela(
     if broader_rc:
         if not all(c in data.columns for c in alert_cols):
             raise KeyError(f"alert_cols {alert_cols} must all be in data")
-        alerts_count = sum(
-            (data[c].astype(str) == "Yes").astype(int) for c in alert_cols
-        )
+        alerts_count = sum((data[c].astype(str) == "Yes").astype(int) for c in alert_cols)
         broader_row = strict_row | ((alerts_count >= 2) & dur.notna() & (dur > threshold_days))
     else:
         broader_row = strict_row
@@ -340,13 +381,15 @@ def mrm_classify_mandela(
             n_b = n_m
 
         rate = n_m / denom if denom > 0 else float("nan")
-        rows.append({
-            "year": label, "denominator": denom, "n_mandela": n_m,
-            "rate": rate, "pct": round(100 * rate, 2) if denom > 0 else float("nan"),
-            "n_broader_rc": n_b,
-            "rate_broader": n_b / denom if denom > 0 else float("nan"),
-        })
+        rows.append(
+            {
+                "year": label,
+                "denominator": denom,
+                "n_mandela": n_m,
+                "rate": rate,
+                "pct": round(100 * rate, 2) if denom > 0 else float("nan"),
+                "n_broader_rc": n_b,
+                "rate_broader": n_b / denom if denom > 0 else float("nan"),
+            }
+        )
     return pd.DataFrame(rows)
-
-
-

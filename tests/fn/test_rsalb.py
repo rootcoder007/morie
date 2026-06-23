@@ -1,6 +1,7 @@
 """Test rsalb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsalb import rsalb
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxgrc -- Great circle distance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxgrc import great_circle
 

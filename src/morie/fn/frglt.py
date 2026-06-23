@@ -53,6 +53,7 @@ def frglt(
         cluster_idx[cluster == c] = i
 
     from .coxph import coxph
+
     cox_fit = coxph(time, event, X)
     beta = cox_fit["coefficients"].copy()
 

@@ -1,6 +1,7 @@
 """Test vmhrs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmhrs import vmhrs
 
 

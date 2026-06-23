@@ -55,8 +55,8 @@ def dirac(
     if m < 0:
         raise ValueError("Mass must be >= 0.")
 
-    E = np.sqrt(np.sum(p ** 2) * c ** 2 + (m * c ** 2) ** 2)
-    mc2 = m * c ** 2
+    E = np.sqrt(np.sum(p**2) * c**2 + (m * c**2) ** 2)
+    mc2 = m * c**2
 
     I2 = np.eye(2, dtype=complex)
     sx = np.array([[0, 1], [1, 0]], dtype=complex)

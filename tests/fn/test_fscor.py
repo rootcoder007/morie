@@ -1,5 +1,5 @@
 """Tests for f_score."""
-import pytest
+
 from morie.fn.fscor import f_score, fscor
 
 

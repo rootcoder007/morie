@@ -1,8 +1,7 @@
 """Tests for morie.fn.prek -- Precision at K."""
 
-import numpy as np
-from morie.fn.prek import precision_at_k, prek
 from morie.fn._containers import DescriptiveResult
+from morie.fn.prek import precision_at_k, prek
 
 
 class TestPrek:

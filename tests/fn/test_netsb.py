@@ -1,12 +1,9 @@
 """Tests for morie.fn.netsb — Network stability (CS coefficient)."""
 
-import numpy as np
-import pytest
 from morie.fn.netsb import network_stability
 
 
 class TestNetworkStability:
-
     def test_returns_dict(self, rng):
         X = rng.standard_normal((50, 5))
         result = network_stability(X, n_boot=20)

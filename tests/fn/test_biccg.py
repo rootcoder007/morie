@@ -1,8 +1,9 @@
 """Tests for morie.fn.biccg -- BiCGSTAB solver."""
 
 import numpy as np
-from morie.fn.biccg import bicgstab, biccg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.biccg import biccg, bicgstab
 
 
 class TestBiccg:

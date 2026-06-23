@@ -1,5 +1,7 @@
 """Tests for nugget effect estimation."""
+
 import numpy as np
+
 from morie.fn.sgnug import sgnug
 
 

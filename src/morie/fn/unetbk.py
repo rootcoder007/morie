@@ -1,6 +1,7 @@
 """U-Net encoder-decoder skip connections."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["unet_backbone"]
@@ -32,7 +33,9 @@ def unet_backbone(x, filters):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "U-Net encoder-decoder skip connections"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "U-Net encoder-decoder skip connections"}
+    )
 
 
 def cheatsheet():

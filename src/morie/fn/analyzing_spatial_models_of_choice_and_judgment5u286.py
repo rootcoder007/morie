@@ -1,8 +1,8 @@
 """Bayesian expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["analyzing_spatial_models_of_choice_and_judgment_chapter_5_unnumbered_286"]
 

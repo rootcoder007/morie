@@ -10,7 +10,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['stqft']
+__all__ = ["stqft"]
+
+
 def stqft(
     x: np.ndarray,
     fs: float = 1.0,
@@ -59,14 +61,14 @@ def stqft(
 
     for i in range(n_frames):
         start = i * hop
-        seg = x[start:start + nperseg]
+        seg = x[start : start + nperseg]
         if len(seg) < nperseg:
             seg = np.pad(seg, (0, nperseg - len(seg)))
         X = np.fft.rfft(seg * window, n=nfft)
         Xt = np.fft.rfft(seg * twindow, n=nfft)
         mag2 = np.abs(X) ** 2 + 1e-20
         inst_freq = np.real(Xt * np.conj(X)) / mag2
-        stqf[:, i] = mag2 * (1 + inst_freq ** 2)
+        stqf[:, i] = mag2 * (1 + inst_freq**2)
         times[i] = (start + nperseg / 2) / fs
 
     freqs = np.fft.rfftfreq(nfft, d=1.0 / fs)

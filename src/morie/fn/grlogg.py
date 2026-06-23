@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient of logistic-regression cost w.r.t. theta."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_logistic_cost_gradient"]
@@ -34,7 +36,9 @@ def geron_logistic_cost_gradient(X, y, theta):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient of logistic-regression cost w.r.t. theta"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Gradient of logistic-regression cost w.r.t. theta"}
+    )
 
 
 def cheatsheet():

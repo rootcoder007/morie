@@ -98,8 +98,7 @@ def sisls(
             g = (Wk @ y) / den
             return float(np.mean((y - g) ** 2))
 
-        res = minimize(obj, beta, method="L-BFGS-B",
-                       options={"maxiter": 20, "ftol": 1e-10})
+        res = minimize(obj, beta, method="L-BFGS-B", options={"maxiter": 20, "ftol": 1e-10})
         beta_new = res.x / (np.linalg.norm(res.x) + 1e-15)
         n_iter = iteration + 1
 

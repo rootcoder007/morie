@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.naifor import naive_forecast, naifor
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.naifor import naifor, naive_forecast
 
 
 class TestNaifor:

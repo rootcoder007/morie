@@ -1,6 +1,7 @@
 """Test dtrlg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtrlg import dtrlg
 
 

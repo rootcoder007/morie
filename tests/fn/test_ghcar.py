@@ -1,6 +1,7 @@
 """Test ghcar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghcar import ghcar
 
 

@@ -99,4 +99,4 @@ short = bst_operations
 
 
 def cheatsheet() -> str:
-    return 'bst_operations({}) -> Binary search tree operations.'
+    return "bst_operations({}) -> Binary search tree operations."

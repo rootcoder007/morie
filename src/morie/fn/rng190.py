@@ -1,6 +1,7 @@
 """Adaptive update rules for signal- and noise-peak running estimates in Pan-Tompkins.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_pan_tompkins_peak_classification"]
@@ -33,12 +34,27 @@ def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI, NPKI):
     PEAKI = np.atleast_1d(np.asarray(PEAKI, dtype=float))
     n = len(PEAKI)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Adaptive update rules for signal- and noise-peak running estimates in Pan-Tompkins."})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Adaptive update rules for signal- and noise-peak running estimates in Pan-Tompkins.",
+            }
+        )
     estimate = np.median(PEAKI)
     se = 1.2533 * np.std(PEAKI, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Adaptive update rules for signal- and noise-peak running estimates in Pan-Tompkins."})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Adaptive update rules for signal- and noise-peak running estimates in Pan-Tompkins.",
+        }
+    )
 
 
 def cheatsheet():

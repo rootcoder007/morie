@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdmh -- Manhattan distance matrix"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdmh import dist_manhattan
 

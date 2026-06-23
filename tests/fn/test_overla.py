@@ -1,6 +1,7 @@
 """Test overla."""
+
 import numpy as np
-import pytest
+
 from morie.fn.overla import overla
 
 

@@ -1,6 +1,7 @@
 """Tests for vbnpc.vb_nonparametric."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vbnpc import vb_nonparametric
 
 
@@ -11,7 +12,7 @@ def test_vbnpc_basic():
     alpha = 0.05
     result = vb_nonparametric(y, K_truncate, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vbnpc_edge():

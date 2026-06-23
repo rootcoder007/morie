@@ -1,6 +1,7 @@
 """AdaBoost.M1 weight update."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_adaboost"]

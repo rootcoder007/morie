@@ -1,6 +1,7 @@
 """Spearman's rho derived from a copula."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["spearmans_rho_copula"]

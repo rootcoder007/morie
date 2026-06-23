@@ -1,5 +1,7 @@
 """Tests for rlslt.py - RLS lattice adaptive filter."""
+
 import numpy as np
+
 from morie.fn.rlslt import rls_lattice_filter_fn, rlslt
 
 

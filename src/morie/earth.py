@@ -68,6 +68,7 @@ class MissingCredentialsError(RuntimeError):
 
 # ─── cache helpers ────────────────────────────────────────────────────────
 
+
 def earth_cache_dir() -> pathlib.Path:
     """Return (and create) the cache directory for earth-engine results."""
     base = os.environ.get(
@@ -123,9 +124,7 @@ def fetch_openaq(
     try:
         import httpx  # type: ignore
     except ImportError as exc:
-        raise ImportError(
-            "fetch_openaq needs httpx -- pip install httpx"
-        ) from exc
+        raise ImportError("fetch_openaq needs httpx -- pip install httpx") from exc
 
     key = _cache_key("openaq", country, city, tuple(pollutants), date_from, date_to, limit)
     cache_path = earth_cache_dir() / f"openaq_{key}.parquet"
@@ -155,15 +154,17 @@ def fetch_openaq(
         resp.raise_for_status()
         for rec in resp.json().get("results", []):
             coords = rec.get("coordinates") or {}
-            rows.append({
-                "location": rec.get("location"),
-                "latitude": coords.get("latitude"),
-                "longitude": coords.get("longitude"),
-                "parameter": rec.get("parameter"),
-                "value": rec.get("value"),
-                "unit": rec.get("unit"),
-                "datetime_utc": (rec.get("date") or {}).get("utc"),
-            })
+            rows.append(
+                {
+                    "location": rec.get("location"),
+                    "latitude": coords.get("latitude"),
+                    "longitude": coords.get("longitude"),
+                    "parameter": rec.get("parameter"),
+                    "value": rec.get("value"),
+                    "unit": rec.get("unit"),
+                    "datetime_utc": (rec.get("date") or {}).get("utc"),
+                }
+            )
 
     df = _pd.DataFrame(rows)
     if use_cache and not df.empty:
@@ -205,9 +206,7 @@ def fetch_naps(
     try:
         import httpx  # type: ignore
     except ImportError as exc:
-        raise ImportError(
-            "fetch_naps needs httpx -- pip install httpx"
-        ) from exc
+        raise ImportError("fetch_naps needs httpx -- pip install httpx") from exc
 
     key = _cache_key("naps", year, pollutant, province)
     cache_path = earth_cache_dir() / f"naps_{key}.parquet"
@@ -219,15 +218,14 @@ def fetch_naps(
         meta = client.get(pkg_url).json()
         resources = meta.get("result", {}).get("resources", [])
         match = [
-            r for r in resources
+            r
+            for r in resources
             if str(year) in (r.get("name") or "")
             and pollutant.upper() in (r.get("name") or "").upper()
             and (r.get("format") or "").upper() == "CSV"
         ]
         if not match:
-            raise FileNotFoundError(
-                f"NAPS CKAN has no {pollutant.upper()} CSV for year {year}"
-            )
+            raise FileNotFoundError(f"NAPS CKAN has no {pollutant.upper()} CSV for year {year}")
         csv_url = match[0]["url"]
         df = _pd.read_csv(csv_url, low_memory=False)
 
@@ -264,9 +262,7 @@ def _ensure_ee_initialized():
     try:
         import ee  # type: ignore
     except ImportError as exc:
-        raise ImportError(
-            "fetch_earth_engine needs earthengine-api -- pip install earthengine-api"
-        ) from exc
+        raise ImportError("fetch_earth_engine needs earthengine-api -- pip install earthengine-api") from exc
 
     sa_email = os.environ.get("MORIE_EE_SERVICE_ACCOUNT")
     key_path = os.environ.get("MORIE_EE_KEY_PATH") or os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
@@ -337,10 +333,10 @@ def fetch_earth_engine(
         coll = coll.select(band)
 
     agg_map = {
-        "mean":   ee.Reducer.mean(),
-        "max":    ee.Reducer.max(),
-        "min":    ee.Reducer.min(),
-        "sum":    ee.Reducer.sum(),
+        "mean": ee.Reducer.mean(),
+        "max": ee.Reducer.max(),
+        "min": ee.Reducer.min(),
+        "sum": ee.Reducer.sum(),
         "median": ee.Reducer.median(),
     }
     red = agg_map.get(reducer, ee.Reducer.mean())
@@ -348,7 +344,9 @@ def fetch_earth_engine(
     image = coll.mean() if reducer == "mean" else coll.reduce(red)
 
     stats = image.reduceRegion(
-        reducer=ee.Reducer.mean().combine(ee.Reducer.stdDev(), sharedInputs=True).combine(ee.Reducer.count(), sharedInputs=True),
+        reducer=ee.Reducer.mean()
+        .combine(ee.Reducer.stdDev(), sharedInputs=True)
+        .combine(ee.Reducer.count(), sharedInputs=True),
         geometry=region_ee,
         scale=scale,
         maxPixels=1e13,
@@ -412,9 +410,7 @@ def fetch_arcgis(
     try:
         from arcgis.features import FeatureLayer  # type: ignore
     except ImportError as exc:
-        raise ImportError(
-            _ARCGIS_SETUP_HELP
-        ) from exc
+        raise ImportError(_ARCGIS_SETUP_HELP) from exc
 
     layer = FeatureLayer(service_url)
     fs = layer.query(where=where, out_fields=out_fields, result_record_count=max_records)

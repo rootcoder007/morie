@@ -1,6 +1,7 @@
 """Tests for ksr052.kosorok_ch2_kaplan_meier_derivative."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr052 import kosorok_ch2_kaplan_meier_derivative
 
 
@@ -13,7 +14,7 @@ def test_ksr052_basic():
     t = np.linspace(0, 10, 100)
     result = kosorok_ch2_kaplan_meier_derivative(S_0, L, G, h, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr052_edge():

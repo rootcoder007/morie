@@ -1,6 +1,7 @@
 """Tests for causdmliv.causal_dml_iv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causdmliv import causal_dml_iv
 
 
@@ -13,7 +14,7 @@ def test_causdmliv_basic():
     n_folds = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_dml_iv(y, D, Z, X, n_folds)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causdmliv_edge():

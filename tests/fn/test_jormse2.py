@@ -1,6 +1,7 @@
 """Tests for jormse2.joseph_rmsse."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jormse2 import joseph_rmsse
 
 
@@ -12,7 +13,7 @@ def test_jormse2_basic():
     m = 10
     result = joseph_rmsse(y_true, y_pred, y_train, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jormse2_edge():

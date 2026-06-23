@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcvot."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcvot import rcvot
 
 

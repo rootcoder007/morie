@@ -1,5 +1,7 @@
 """Tests for morie.fn.gmm — Gaussian mixture model."""
+
 import numpy as np
+
 from morie.fn.gmm import gaussian_mixture
 
 

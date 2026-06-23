@@ -1,8 +1,9 @@
 """Tests for morie.fn.matnm -- Matrix norms."""
 
 import numpy as np
-from morie.fn.matnm import matrix_norms, matnm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.matnm import matnm, matrix_norms
 
 
 class TestMatnm:

@@ -72,7 +72,7 @@ def gmm_cluster(
         Nk = resp_norm.sum(axis=0)
         for j in range(k):
             weights[j] = Nk[j] / n
-            means[j] = (resp_norm[:, j:j+1].T @ X).ravel() / max(Nk[j], 1e-12)
+            means[j] = (resp_norm[:, j : j + 1].T @ X).ravel() / max(Nk[j], 1e-12)
             diff = X - means[j]
             covs[j] = (diff.T * resp_norm[:, j]) @ diff / max(Nk[j], 1e-12)
 

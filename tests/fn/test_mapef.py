@@ -1,6 +1,8 @@
 """Tests for morie.fn.mapef -- MAPE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mapef import mape
 
 
@@ -22,4 +24,5 @@ class TestMAPE:
 
     def test_cheatsheet(self):
         from morie.fn.mapef import cheatsheet
+
         assert isinstance(cheatsheet(), str)

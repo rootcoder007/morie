@@ -1,6 +1,7 @@
 """Tests for taylor.taylor_linearization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.taylor import taylor_linearization
 
 
@@ -11,7 +12,7 @@ def test_taylor_basic():
     grad = np.random.default_rng(42).normal(0, 1, 100)
     result = taylor_linearization(y, weights, grad)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_taylor_edge():

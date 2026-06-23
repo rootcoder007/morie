@@ -1,6 +1,7 @@
 """Tests for vitscn.vit_scaled_cosine."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vitscn import vit_scaled_cosine
 
 
@@ -12,7 +13,7 @@ def test_vitscn_basic():
     tau = 0.1
     result = vit_scaled_cosine(q, k, v, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vitscn_edge():

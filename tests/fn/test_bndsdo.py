@@ -1,6 +1,7 @@
 """Tests for bndsdo.bound_skewed_outcome."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndsdo import bound_skewed_outcome
 
 
@@ -11,7 +12,7 @@ def test_bndsdo_basic():
     skew = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_skewed_outcome(y, D, skew)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndsdo_edge():

@@ -1,6 +1,7 @@
 """Test masss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.masss import masss
 
 

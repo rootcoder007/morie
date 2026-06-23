@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spectral entropy for signal complexity measurement."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_spectral_entropy"]
@@ -32,7 +34,9 @@ def rangayyan_spectral_entropy(x, fs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spectral entropy for signal complexity measurement"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Spectral entropy for signal complexity measurement"}
+    )
 
 
 def cheatsheet():

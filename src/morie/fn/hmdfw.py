@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Diffusion forward process adds Gaussian noise over T steps."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_diffusion_forward"]
@@ -34,7 +36,14 @@ def geron_diffusion_forward(x0, T, beta_schedule):
     n = len(x0)
     result = float(np.mean(x0))
     se = float(np.std(x0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Diffusion forward process adds Gaussian noise over T steps"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Diffusion forward process adds Gaussian noise over T steps",
+        }
+    )
 
 
 def cheatsheet():

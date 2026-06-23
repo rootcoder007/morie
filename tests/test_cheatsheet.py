@@ -1,4 +1,5 @@
 """Tests for morie.cheatsheet — enriched per-fn help cards."""
+
 from __future__ import annotations
 
 from morie import cheatsheet as cs

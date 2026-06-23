@@ -85,4 +85,4 @@ heckm = heckman_correction
 
 
 def cheatsheet() -> str:
-    return 'heckman_correction({}) -> Heckman two-step selection model.'
+    return "heckman_correction({}) -> Heckman two-step selection model."

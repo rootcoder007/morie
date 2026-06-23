@@ -1,6 +1,7 @@
 """TMLE under missing-at-random outcome."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_missing_data"]

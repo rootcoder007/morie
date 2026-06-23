@@ -1,6 +1,7 @@
 """Tests for dssoot.bootstrap_indirect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dssoot import bootstrap_indirect
 
 
@@ -12,7 +13,7 @@ def test_dssoot_basic():
     n_boot = 100
     result = bootstrap_indirect(Y, X, M, n_boot)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dssoot_edge():

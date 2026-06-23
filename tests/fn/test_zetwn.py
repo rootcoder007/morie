@@ -1,7 +1,6 @@
 """Tests for morie.fn.zetwn -- Townsend deprivation index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zetwn import townsend_index
 

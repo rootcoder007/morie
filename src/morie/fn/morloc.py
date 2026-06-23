@@ -1,6 +1,7 @@
 """Local Moran's I (LISA) per location."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["local_morans_i"]

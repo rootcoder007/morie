@@ -1,6 +1,7 @@
 """Tests for morie.fn.cddaly -- DALY."""
 
 import pytest
+
 from morie.fn.cddaly import daly_calc
 
 

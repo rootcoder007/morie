@@ -1,6 +1,9 @@
 """Tests for partial_correlation."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.pcorr import partial_correlation
+
 
 class TestPcorr:
     def test_controlled(self):

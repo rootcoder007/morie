@@ -108,10 +108,7 @@ def effic(
     if influence_values is not None:
         influence_values = np.asarray(influence_values, dtype=float).ravel()
         if influence_values.size != n:
-            raise ValueError(
-                f"influence_values length ({influence_values.size}) must "
-                f"match scores length ({n})."
-            )
+            raise ValueError(f"influence_values length ({influence_values.size}) must match scores length ({n}).")
         achieved_var = float(np.var(influence_values, ddof=0))
     else:
         achieved_var = eff_bound

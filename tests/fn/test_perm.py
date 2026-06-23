@@ -1,8 +1,9 @@
 """Tests for morie.fn.perm -- Permutation test."""
 
 import numpy as np
-from morie.fn.perm import permutation_test, perm
+
 from morie.fn._containers import TestResult
+from morie.fn.perm import perm, permutation_test
 
 
 class TestPerm:

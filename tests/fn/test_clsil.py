@@ -1,6 +1,7 @@
 """Test clsil."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clsil import clsil
 
 

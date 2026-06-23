@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """k-means within-cluster sum of squares objective."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_kmeans_objective"]
@@ -34,7 +36,9 @@ def geron_kmeans_objective(X, centroids, labels):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "k-means within-cluster sum of squares objective"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "k-means within-cluster sum of squares objective"}
+    )
 
 
 def cheatsheet():

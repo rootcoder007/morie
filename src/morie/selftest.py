@@ -309,7 +309,7 @@ def _test_llm_detection():
 
 def _test_datasets():
     """Test built-in dataset database."""
-    from morie.data import morie_db, list_datasets
+    from morie.data import list_datasets, morie_db
 
     db_path = morie_db()
     if not db_path.exists():

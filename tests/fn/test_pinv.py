@@ -1,5 +1,7 @@
 """Tests for morie.fn.pinv — pseudoinverse."""
+
 import numpy as np
+
 from morie.fn.pinv import pseudoinverse
 
 

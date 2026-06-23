@@ -1,8 +1,9 @@
 """Tests for morie.fn.vrimx -- Varimax rotation."""
 
 import numpy as np
-from morie.fn.vrimx import varimax, vrimx
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.vrimx import varimax, vrimx
 
 
 class TestVarimax:

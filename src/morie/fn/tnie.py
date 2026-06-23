@@ -1,6 +1,7 @@
 """Total natural indirect effect."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["total_natural_indirect_effect"]

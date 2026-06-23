@@ -1,6 +1,7 @@
 """Tests for rng198.rangayyan_ch4_dot_product_discrete."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng198 import rangayyan_ch4_dot_product_discrete
 
 
@@ -11,7 +12,7 @@ def test_rng198_basic():
     N = 100
     result = rangayyan_ch4_dot_product_discrete(x, y, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng198_edge():

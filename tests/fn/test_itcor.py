@@ -1,8 +1,9 @@
 """Tests for morie.fn.itcor — corrected item-total correlations."""
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from morie.fn import itcor
 
 
@@ -11,10 +12,7 @@ def items_df():
     """5 items x 80 respondents."""
     rng = np.random.default_rng(42)
     latent = rng.standard_normal(80)
-    data = np.column_stack([
-        latent + rng.standard_normal(80) * 0.5
-        for _ in range(5)
-    ])
+    data = np.column_stack([latent + rng.standard_normal(80) * 0.5 for _ in range(5)])
     return pd.DataFrame(data, columns=[f"q{i}" for i in range(5)])
 
 

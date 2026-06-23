@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stacked autoencoder: multiple layers trained greedily or end-to-end."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_stacked_autoencoder"]
@@ -32,7 +34,14 @@ def geron_stacked_autoencoder(x, layer_weights):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stacked autoencoder: multiple layers trained greedily or end-to-end"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stacked autoencoder: multiple layers trained greedily or end-to-end",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for causscss.causal_synthetic_subset."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causscss import causal_synthetic_subset
 
 
@@ -11,7 +12,7 @@ def test_causscss_basic():
     lam = 0.1
     result = causal_synthetic_subset(X1_pre, X0_pre, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causscss_edge():

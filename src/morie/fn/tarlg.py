@@ -5,9 +5,7 @@ import numpy as np
 from ._containers import DescriptiveResult
 
 
-def tar_fit(
-    y: np.ndarray, p: int = 1, threshold: float | None = None, delay: int = 1
-) -> DescriptiveResult:
+def tar_fit(y: np.ndarray, p: int = 1, threshold: float | None = None, delay: int = 1) -> DescriptiveResult:
     r"""
     Fit a two-regime threshold autoregressive (TAR) model.
 
@@ -50,7 +48,7 @@ def tar_fit(
     resid = np.zeros(T)
     resid[low] = dep[low] - X[low] @ beta1
     resid[high] = dep[high] - X[high] @ beta2
-    sigma2 = float(np.sum(resid ** 2) / T)
+    sigma2 = float(np.sum(resid**2) / T)
     return DescriptiveResult(
         name="tar_fit",
         value=float(threshold),

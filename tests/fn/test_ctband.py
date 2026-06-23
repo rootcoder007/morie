@@ -1,6 +1,8 @@
 """Tests for ctband."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctband import ctband
 
 
@@ -28,4 +30,5 @@ def test_ctband_no_data():
 
 def test_ctband_alias():
     from morie.fn.ctband import ctband
+
     assert ctband is ctband

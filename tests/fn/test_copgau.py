@@ -1,6 +1,7 @@
 """Tests for copgau.gaussian_copula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.copgau import gaussian_copula
 
 
@@ -12,7 +13,7 @@ def test_copgau_basic():
     rho = 0.5
     result = gaussian_copula(y, u, v, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_copgau_edge():

@@ -1,6 +1,7 @@
 """Time-domain expression for a wavelet h(n) plus an echo at delay n_0.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_signal_with_echo_output"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_signal_with_echo_output(h, a, n_0, n):
     n = len(h)
     result = float(np.mean(h))
     se = float(np.std(h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Time-domain expression for a wavelet h(n) plus an echo at delay n_0."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Time-domain expression for a wavelet h(n) plus an echo at delay n_0.",
+        }
+    )
 
 
 def cheatsheet():

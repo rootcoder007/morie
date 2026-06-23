@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from morie.fn.trmwt import trimmed_weights, trmwt
 
 
@@ -31,9 +32,7 @@ class TestTrimmedWeights:
     def test_crump_zeros_extreme(self):
         rng = np.random.default_rng(42)
         n = 200
-        ps = np.concatenate([rng.uniform(0.001, 0.01, 20),
-                             rng.uniform(0.2, 0.8, 160),
-                             rng.uniform(0.99, 0.999, 20)])
+        ps = np.concatenate([rng.uniform(0.001, 0.01, 20), rng.uniform(0.2, 0.8, 160), rng.uniform(0.99, 0.999, 20)])
         w = np.ones(n)
         df = pd.DataFrame({"weight": w, "ps": ps})
         trimmed = trimmed_weights(df, method="crump")

@@ -31,10 +31,11 @@ def ljung_box(residuals: np.ndarray, lags: int = 10, fitdf: int = 0, cdf=None) -
     if n < lags + 2:
         raise ValueError(f"Need at least {lags + 2} observations, got {n}.")
     e = e - e.mean()
-    gamma0 = np.sum(e ** 2) / n
+    gamma0 = np.sum(e**2) / n
     if gamma0 < 1e-15:
         return DescriptiveResult(
-            name="ljung_box", value=0.0,
+            name="ljung_box",
+            value=0.0,
             extra={"Q": 0.0, "p_value": 1.0, "lags": lags, "n": n},
         )
     Q = 0.0
@@ -42,7 +43,7 @@ def ljung_box(residuals: np.ndarray, lags: int = 10, fitdf: int = 0, cdf=None) -
     for k in range(1, lags + 1):
         rho_k = np.sum(e[k:] * e[:-k]) / (n * gamma0)
         acf_vals.append(float(rho_k))
-        Q += rho_k ** 2 / (n - k)
+        Q += rho_k**2 / (n - k)
     Q *= n * (n + 2)
     df = max(lags - fitdf, 1)
     p_val = 1 - stats.chi2.cdf(Q, df)

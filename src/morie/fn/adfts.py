@@ -111,7 +111,7 @@ def adf_test(y, maxlag: int | None = None, regression: str = "c") -> TestResult:
             method=f"ADF (lags={maxlag}, regression='{regression}')",
             extra={"n_lags": maxlag, "critical_values": {}, "regression": regression},
         )
-    sigma2 = float(np.sum(residuals ** 2) / df_res)
+    sigma2 = float(np.sum(residuals**2) / df_res)
     try:
         XtX_inv = np.linalg.inv(X.T @ X)
     except np.linalg.LinAlgError:
@@ -128,7 +128,7 @@ def adf_test(y, maxlag: int | None = None, regression: str = "c") -> TestResult:
 
     # MacKinnon (1994) approximate critical values.
     _cv = {
-        "c":  {"1%": -3.43, "5%": -2.86, "10%": -2.57},
+        "c": {"1%": -3.43, "5%": -2.86, "10%": -2.57},
         "ct": {"1%": -3.96, "5%": -3.41, "10%": -3.13},
         "nc": {"1%": -2.57, "5%": -1.94, "10%": -1.62},
     }

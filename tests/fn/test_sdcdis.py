@@ -1,6 +1,7 @@
 """Tests for sdcdis.spatial_data_distortion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sdcdis import spatial_data_distortion
 
 
@@ -10,7 +11,7 @@ def test_sdcdis_basic():
     noise_radius = np.random.default_rng(42).normal(0, 1, 100)
     result = spatial_data_distortion(coords, noise_radius)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sdcdis_edge():

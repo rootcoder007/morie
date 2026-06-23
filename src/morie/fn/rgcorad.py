@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Coronary artery disease detection from acoustic signals."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_coronary_ad"]
@@ -34,7 +36,14 @@ def rangayyan_coronary_ad(coronary_sound, fs, order):
     n = int(coronary_sound) if coronary_sound.ndim == 0 else len(coronary_sound)
     result = float(np.mean(coronary_sound))
     se = float(np.std(coronary_sound, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Coronary artery disease detection from acoustic signals"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Coronary artery disease detection from acoustic signals",
+        }
+    )
 
 
 def cheatsheet():

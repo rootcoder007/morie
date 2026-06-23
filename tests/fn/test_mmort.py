@@ -1,6 +1,7 @@
 """Tests for morie.fn.mmort -- maternal mortality."""
 
 import pytest
+
 from morie.fn.mmort import maternal_mortality
 
 

@@ -1,6 +1,8 @@
 """Tests for tbsim."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbsim import tbsim
 
 
@@ -28,4 +30,5 @@ def test_tbsim_no_data():
 
 def test_tbsim_alias():
     from morie.fn.tbsim import tbsim
+
     assert tbsim is tbsim

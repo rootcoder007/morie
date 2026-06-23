@@ -1,6 +1,7 @@
 """Tests for spgrm.py - spectrogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spgrm import spectrogram_fn, spgrm
 
 

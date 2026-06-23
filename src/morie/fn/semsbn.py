@@ -1,6 +1,7 @@
 """Satorra-Bentler chi-square correction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sem_sb_chi_sq"]

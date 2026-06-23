@@ -1,6 +1,7 @@
 """Tests for mhmcmc.metropolis_hastings."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mhmcmc import metropolis_hastings
 
 
@@ -12,7 +13,7 @@ def test_mhmcmc_basic():
     n_iter = 50
     result = metropolis_hastings(target, proposal, x0, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mhmcmc_edge():

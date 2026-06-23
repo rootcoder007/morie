@@ -1,6 +1,7 @@
 """Tests for rng131.rangayyan_ch3_butterworth_digital_transfer_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng131 import rangayyan_ch3_butterworth_digital_transfer_function
 
 
@@ -12,7 +13,7 @@ def test_rng131_basic():
     N = 100
     result = rangayyan_ch3_butterworth_digital_transfer_function(z, a_k, G_prime, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng131_edge():

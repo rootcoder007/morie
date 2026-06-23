@@ -1,8 +1,7 @@
 """Tests for morie.fn.vctrs -- weight initialization."""
 
-import numpy as np
-from morie.fn.vctrs import weight_init, vctrs
 from morie.fn._containers import DescriptiveResult
+from morie.fn.vctrs import vctrs, weight_init
 
 
 class TestVctrs:

@@ -49,7 +49,7 @@ def abc_rejection(
         dist = float(np.sqrt(np.sum((sim - obs) ** 2)))
         total += 1
         if dist <= epsilon:
-            accepted_params.append(theta.tolist() if hasattr(theta, 'tolist') else [float(theta)])
+            accepted_params.append(theta.tolist() if hasattr(theta, "tolist") else [float(theta)])
             distances.append(dist)
 
     return {

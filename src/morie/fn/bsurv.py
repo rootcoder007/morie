@@ -80,7 +80,7 @@ def bayesian_survival(
     post_b = prior_b + total_time
 
     post_mean = post_a / post_b
-    post_var = post_a / post_b ** 2
+    post_var = post_a / post_b**2
 
     ci_lo = float(stats.gamma.ppf((1 - prob) / 2, a=post_a, scale=1.0 / post_b))
     ci_hi = float(stats.gamma.ppf(1 - (1 - prob) / 2, a=post_a, scale=1.0 / post_b))

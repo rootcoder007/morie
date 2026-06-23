@@ -79,7 +79,9 @@ def optics(
 
     i = 0
     while i < n:
-        if reach_ordered[i] > (1 - xi) * (np.median(reach_ordered[reach_ordered < np.inf]) if np.any(reach_ordered < np.inf) else 1.0):
+        if reach_ordered[i] > (1 - xi) * (
+            np.median(reach_ordered[reach_ordered < np.inf]) if np.any(reach_ordered < np.inf) else 1.0
+        ):
             i += 1
             continue
 

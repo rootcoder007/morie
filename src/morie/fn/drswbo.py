@@ -1,6 +1,7 @@
 """DR-DiD with stratified-block bootstrap CI."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_did_stratified_block"]
@@ -40,7 +41,9 @@ def dr_did_stratified_block(y, D, unit, time, X, clusters):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with stratified-block bootstrap CI"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with stratified-block bootstrap CI"}
+    )
 
 
 def cheatsheet():

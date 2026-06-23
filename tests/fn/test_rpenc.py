@@ -1,5 +1,7 @@
 """Test rotary positional encoding."""
+
 import numpy as np
+
 from morie.fn.rpenc import rpenc
 
 

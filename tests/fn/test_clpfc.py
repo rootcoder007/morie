@@ -1,6 +1,7 @@
 """Test clpfc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clpfc import clpfc
 
 

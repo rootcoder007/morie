@@ -1,5 +1,7 @@
 """Tests for morie.fn.logln."""
+
 import numpy as np
+
 from morie.fn.logln import logln
 
 
@@ -13,6 +15,7 @@ def test_logln_smoke():
 
 def test_cheatsheet():
     from morie.fn.logln import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

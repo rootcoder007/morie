@@ -1,6 +1,7 @@
 """Tests for bhltmsm.behavioral_health_msm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bhltmsm import behavioral_health_msm
 
 
@@ -12,7 +13,7 @@ def test_bhltmsm_basic():
     baseline = np.random.default_rng(42).normal(0, 1, 100)
     result = behavioral_health_msm(y, A, H, baseline)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bhltmsm_edge():

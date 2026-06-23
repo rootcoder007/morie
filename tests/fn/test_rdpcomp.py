@@ -1,6 +1,7 @@
 """Tests for rdpcomp.rdp_subsampled_composition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rdpcomp import rdp_subsampled_composition
 
 
@@ -12,7 +13,7 @@ def test_rdpcomp_basic():
     epsilon = 1e-6
     result = rdp_subsampled_composition(y, alpha, q, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdpcomp_edge():

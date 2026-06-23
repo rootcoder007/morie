@@ -1,6 +1,7 @@
 """Tests for otmarsh.ot_marginal_shift."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otmarsh import ot_marginal_shift
 
 
@@ -12,7 +13,7 @@ def test_otmarsh_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_marginal_shift(a, b, C, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otmarsh_edge():

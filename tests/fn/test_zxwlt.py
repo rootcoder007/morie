@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxwlt -- Spatial wavelet analysis"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxwlt import wavelet_spatial
 

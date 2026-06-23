@@ -1,6 +1,7 @@
 """Canadian Fire Weather Index."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["fire_weather_index"]

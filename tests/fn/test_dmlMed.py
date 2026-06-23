@@ -1,6 +1,7 @@
 """Tests for dmlMed.dml_mediation_orthogonal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dmlMed import dml_mediation_orthogonal
 
 
@@ -13,7 +14,7 @@ def test_dmlMed_basic():
     K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
     result = dml_mediation_orthogonal(Y, X, M, C, K)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dmlMed_edge():

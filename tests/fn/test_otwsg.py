@@ -1,6 +1,7 @@
 """Tests for otwsg.ot_wasserstein_gauss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otwsg import ot_wasserstein_gauss
 
 
@@ -12,7 +13,7 @@ def test_otwsg_basic():
     Sigma2 = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_wasserstein_gauss(mu1, Sigma1, mu2, Sigma2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otwsg_edge():

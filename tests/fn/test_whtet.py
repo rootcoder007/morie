@@ -1,5 +1,7 @@
 """Tests for white_heterosc_test."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.whtet import white_heterosc_test
 
 

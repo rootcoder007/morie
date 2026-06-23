@@ -8,9 +8,11 @@ REML estimation profiles beta out and maximizes the restricted
 log-likelihood over (phi, nu = tau2/sigma2); sigma2 is profiled in
 closed form (Patterson-Thompson 1971).
 """
+
 import numpy as np
 from scipy import optimize
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_mixed_model"]
@@ -50,13 +52,15 @@ def spatial_mixed_model(x, y, coords):
 
     def neg_reml(theta):
         log_phi, log_nu = theta
-        phi = np.exp(log_phi); nu = np.exp(log_nu)
+        phi = np.exp(log_phi)
+        nu = np.exp(log_nu)
         Sigma = _Sigma(D, phi, nu)
         try:
             L = np.linalg.cholesky(Sigma)
         except np.linalg.LinAlgError:
             return 1e12
-        Xw = np.linalg.solve(L, X); yw = np.linalg.solve(L, y)
+        Xw = np.linalg.solve(L, X)
+        yw = np.linalg.solve(L, y)
         XtSiX = Xw.T @ Xw
         try:
             L2 = np.linalg.cholesky(XtSiX)
@@ -68,17 +72,16 @@ def spatial_mixed_model(x, y, coords):
         sigma2 = rss / max(n - p, 1)
         logdet_Sigma = 2.0 * np.log(np.diag(L)).sum()
         logdet_XtSiX = 2.0 * np.log(np.diag(L2)).sum()
-        return 0.5 * (logdet_Sigma + logdet_XtSiX +
-                      (n - p) * np.log(2 * np.pi * sigma2) + (n - p))
+        return 0.5 * (logdet_Sigma + logdet_XtSiX + (n - p) * np.log(2 * np.pi * sigma2) + (n - p))
 
     x0 = np.array([np.log(h_max / 3.0), np.log(0.1)])
-    res = optimize.minimize(
-        neg_reml, x0, method="Nelder-Mead",
-        options={"xatol": 1e-4, "fatol": 1e-5, "maxiter": 400})
-    phi = float(np.exp(res.x[0])); nu = float(np.exp(res.x[1]))
+    res = optimize.minimize(neg_reml, x0, method="Nelder-Mead", options={"xatol": 1e-4, "fatol": 1e-5, "maxiter": 400})
+    phi = float(np.exp(res.x[0]))
+    nu = float(np.exp(res.x[1]))
     Sigma = _Sigma(D, phi, nu)
     L = np.linalg.cholesky(Sigma)
-    Xw = np.linalg.solve(L, X); yw = np.linalg.solve(L, y)
+    Xw = np.linalg.solve(L, X)
+    yw = np.linalg.solve(L, y)
     XtSiX = Xw.T @ Xw
     beta = np.linalg.solve(XtSiX, Xw.T @ yw)
     resid = yw - Xw @ beta
@@ -87,15 +90,17 @@ def spatial_mixed_model(x, y, coords):
     cov_beta = sigma2 * np.linalg.inv(XtSiX)
     se_beta = np.sqrt(np.diag(cov_beta))
 
-    return RichResult(payload={
-        "estimate": beta.tolist(),
-        "se": se_beta.tolist(),
-        "sigma2": sigma2,
-        "tau2": tau2,
-        "phi": phi,
-        "n": int(n),
-        "method": "Spatial linear mixed model (REML, exponential covariance)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.tolist(),
+            "se": se_beta.tolist(),
+            "sigma2": sigma2,
+            "tau2": tau2,
+            "phi": phi,
+            "n": int(n),
+            "method": "Spatial linear mixed model (REML, exponential covariance)",
+        }
+    )
 
 
 def cheatsheet():

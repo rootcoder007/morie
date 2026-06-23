@@ -46,12 +46,12 @@ def plank(
 
     x = h * nu / (kB * T)
     x = np.clip(x, 0, 500)
-    B = (2.0 * h * nu ** 3 / c ** 2) / (np.exp(x) - 1.0 + 1e-300)
+    B = (2.0 * h * nu**3 / c**2) / (np.exp(x) - 1.0 + 1e-300)
 
     nu_peak = 2.8214393 * kB * T / h
 
-    sigma = 2.0 * np.pi ** 5 * kB ** 4 / (15.0 * h ** 3 * c ** 2)
-    total_power = sigma * T ** 4
+    sigma = 2.0 * np.pi**5 * kB**4 / (15.0 * h**3 * c**2)
+    total_power = sigma * T**4
 
     return {
         "spectral_radiance": B,

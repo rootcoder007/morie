@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Johansen cointegration test (trace + max-eigenvalue)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -64,19 +65,23 @@ def johansen_cointegration(x, k_ar_diff=1):
     # Prefer statsmodels if available -- robust treatment of trends/lags.
     try:
         from statsmodels.tsa.vector_ar.vecm import coint_johansen
+
         jres = coint_johansen(Y, det_order=0, k_ar_diff=k_ar_diff)
         eig = np.asarray(jres.eig)
         trace = np.asarray(jres.lr1)
         cvt = np.asarray(jres.cvt)
         rank = int(np.sum(trace > cvt[:, 1]))
-        return RichResult(payload={
-            "eigenvalues": eig,
-            "trace_stat": trace,
-            "crit_values": cvt,
-            "rank": rank,
-            "n": int(T), "k": int(k),
-            "method": "Johansen trace test via statsmodels (det_order=0)",
-        })
+        return RichResult(
+            payload={
+                "eigenvalues": eig,
+                "trace_stat": trace,
+                "crit_values": cvt,
+                "rank": rank,
+                "n": int(T),
+                "k": int(k),
+                "method": "Johansen trace test via statsmodels (det_order=0)",
+            }
+        )
     except Exception:
         pass
 
@@ -85,10 +90,9 @@ def johansen_cointegration(x, k_ar_diff=1):
     # Build lagged-diff matrix Z2 and levels regressor Z1.
     Z0 = dY[k_ar_diff:]
     rows = Z0.shape[0]
-    Z1 = Y[k_ar_diff: k_ar_diff + rows]
+    Z1 = Y[k_ar_diff : k_ar_diff + rows]
     if k_ar_diff > 0:
-        Z2 = np.column_stack([dY[k_ar_diff - i - 1 : k_ar_diff - i - 1 + rows]
-                              for i in range(k_ar_diff)])
+        Z2 = np.column_stack([dY[k_ar_diff - i - 1 : k_ar_diff - i - 1 + rows] for i in range(k_ar_diff)])
         # Regress Z0 and Z1 on Z2 to get residuals R0 and R1.
         Z2c = np.column_stack([np.ones(rows), Z2])
     else:
@@ -105,17 +109,19 @@ def johansen_cointegration(x, k_ar_diff=1):
     eig = np.linalg.eigvals(M).real
     eig = np.clip(np.sort(eig)[::-1], 0.0, 1.0 - 1e-12)
     trace = np.array([-rows * np.sum(np.log(1.0 - eig[r:])) for r in range(k)])
-    cvt = np.array([_TRACE_CRIT.get(k - r, [np.nan, np.nan, np.nan])
-                    for r in range(k)])
+    cvt = np.array([_TRACE_CRIT.get(k - r, [np.nan, np.nan, np.nan]) for r in range(k)])
     rank = int(np.sum(trace > cvt[:, 1]))
-    return RichResult(payload={
-        "eigenvalues": eig,
-        "trace_stat": trace,
-        "crit_values": cvt,
-        "rank": rank,
-        "n": int(T), "k": int(k),
-        "method": "Johansen trace test (reduced-rank regression, numpy)",
-    })
+    return RichResult(
+        payload={
+            "eigenvalues": eig,
+            "trace_stat": trace,
+            "crit_values": cvt,
+            "rank": rank,
+            "n": int(T),
+            "k": int(k),
+            "method": "Johansen trace test (reduced-rank regression, numpy)",
+        }
+    )
 
 
 def cheatsheet():

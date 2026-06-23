@@ -26,7 +26,7 @@ def test_beta_negative_qcd():
 def test_alpha_s():
     g = 2.0
     r = renrg(coupling=g)
-    assert r["alpha_s"] == pytest.approx(g ** 2 / (4 * np.pi), rel=1e-10)
+    assert r["alpha_s"] == pytest.approx(g**2 / (4 * np.pi), rel=1e-10)
 
 
 def test_two_loop():

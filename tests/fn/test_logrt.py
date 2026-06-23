@@ -1,6 +1,8 @@
 """Tests for logrt: log-rank test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.logrt import logrt
 
 

@@ -1,6 +1,7 @@
 """Tests for pctmr.percentile_modified_rank."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pctmr import percentile_modified_rank
 
 
@@ -10,7 +11,7 @@ def test_pctmr_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = percentile_modified_rank(x, y)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_pctmr_edge():

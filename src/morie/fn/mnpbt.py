@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multinomial probit for spatial choice (Armstrong Ch 9)."""
+
 import numpy as np
 from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["multinomial_probit_spatial", "mnpbt"]
@@ -31,10 +33,15 @@ def multinomial_probit_spatial(x, n_draws: int = 2000, seed: int = 0):
         U = U.reshape(1, -1)
     n, J = U.shape
     if J < 2:
-        return RichResult(payload={"probs": np.ones((n, J)),
-                                   "max_alt": np.zeros(n, dtype=int),
-                                   "n_obs": n, "n_alt": J,
-                                   "method": "multinomial_probit"})
+        return RichResult(
+            payload={
+                "probs": np.ones((n, J)),
+                "max_alt": np.zeros(n, dtype=int),
+                "n_obs": n,
+                "n_alt": J,
+                "method": "multinomial_probit",
+            }
+        )
     rng = np.random.default_rng(seed)
     draws = rng.standard_normal(size=(n_draws, n, J))
     Y = U[None, :, :] + draws
@@ -49,11 +56,8 @@ def multinomial_probit_spatial(x, n_draws: int = 2000, seed: int = 0):
     max_alt = np.argmax(probs, axis=1)
     return RichResult(
         title="Multinomial probit (spatial choice)",
-        summary_lines=[("n observations", n), ("n alternatives", J),
-                       ("MC draws", int(n_draws))],
-        payload={"probs": probs, "max_alt": max_alt,
-                 "n_obs": int(n), "n_alt": int(J),
-                 "method": "multinomial_probit"},
+        summary_lines=[("n observations", n), ("n alternatives", J), ("MC draws", int(n_draws))],
+        payload={"probs": probs, "max_alt": max_alt, "n_obs": int(n), "n_alt": int(J), "method": "multinomial_probit"},
     )
 
 

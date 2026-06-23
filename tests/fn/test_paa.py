@@ -1,6 +1,7 @@
 """Tests for paa.paa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.paa import paa
 
 
@@ -10,7 +11,7 @@ def test_paa_basic():
     N = 100
     result = paa(x, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_paa_edge():

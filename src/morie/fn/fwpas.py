@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dense layer forward pass."""
+
 from __future__ import annotations
 
 import numpy as np

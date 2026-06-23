@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sparse coding given fixed dictionary (OMP/LASSO)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_dictionary_sparse"]
@@ -34,7 +36,9 @@ def rangayyan_dictionary_sparse(Y, D, sparsity_T):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sparse coding given fixed dictionary (OMP/LASSO)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sparse coding given fixed dictionary (OMP/LASSO)"}
+    )
 
 
 def cheatsheet():

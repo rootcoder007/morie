@@ -1,6 +1,7 @@
 """Kirchhoff index = total resistance."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_kirchhoff_index"]

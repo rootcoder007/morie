@@ -1,7 +1,9 @@
 """Test comb_filter (cmbfl)."""
+
 import numpy as np
-from morie.fn.cmbfl import comb_filter, cmbfl
+
 from morie.fn._containers import SignalResult
+from morie.fn.cmbfl import cmbfl, comb_filter
 
 
 class TestCombFilter:

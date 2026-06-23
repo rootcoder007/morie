@@ -21,9 +21,7 @@ class TestSlepw:
     def test_chain_rule(self):
         pxy = np.array([[0.3, 0.1], [0.2, 0.4]])
         result = slepw(pxy)
-        assert result["H_XY"] == pytest.approx(
-            result["H_X"] + result["H_Y_given_X"], abs=1e-10
-        )
+        assert result["H_XY"] == pytest.approx(result["H_X"] + result["H_Y_given_X"], abs=1e-10)
 
     def test_sum_rate(self):
         pxy = np.array([[0.4, 0.1], [0.1, 0.4]])

@@ -1,6 +1,7 @@
 """Tests for hmtd.geron_td_learning."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmtd import geron_td_learning
 
 
@@ -14,7 +15,7 @@ def test_hmtd_basic():
     gamma = 1.0
     result = geron_td_learning(V, s, r, s_next, alpha, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmtd_edge():

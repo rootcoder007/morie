@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Zero-crossing rate -- Rangayyan Ch 5."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -31,25 +32,28 @@ def rangayyan_zero_crossing(x, fs=1.0):
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 2:
-        return with_describe_pointer(RichResult(
-            title="Zero-crossing rate",
-            summary_lines=[("Length", n)],
-            payload={"zcr": float("nan"), "zcr_per_second": float("nan"),
-                     "crossings": 0, "n": n},
-        ), "rgzcr")
-    s = np.sign(x); s[s == 0] = 1.0
+        return with_describe_pointer(
+            RichResult(
+                title="Zero-crossing rate",
+                summary_lines=[("Length", n)],
+                payload={"zcr": float("nan"), "zcr_per_second": float("nan"), "crossings": 0, "n": n},
+            ),
+            "rgzcr",
+        )
+    s = np.sign(x)
+    s[s == 0] = 1.0
     crossings = int(np.sum(np.abs(np.diff(s)) > 0))
     zcr = crossings / (n - 1)
     res = RichResult(
         title="Zero-crossing rate",
         summary_lines=[
-            ("N", n), ("Crossings", crossings),
+            ("N", n),
+            ("Crossings", crossings),
             ("ZCR (per sample)", zcr),
             ("ZCR (per second)", zcr * fs),
         ],
         interpretation=f"{crossings} crossings; {zcr * fs:.3g} Hz at fs={fs}.",
-        payload={"zcr": float(zcr), "zcr_per_second": float(zcr * fs),
-                 "crossings": crossings, "n": n},
+        payload={"zcr": float(zcr), "zcr_per_second": float(zcr * fs), "crossings": crossings, "n": n},
     )
     return with_describe_pointer(res, "rgzcr")
 

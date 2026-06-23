@@ -1,4 +1,5 @@
 """Decision tree split via Gini / entropy."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -34,26 +35,27 @@ def decision_tree_split(x, y, *, criterion="gini", max_depth=None, seed=0):
     if X.ndim == 1:
         X = X.reshape(-1, 1)
     n = X.shape[0]
-    clf = DecisionTreeClassifier(criterion=criterion, max_depth=max_depth,
-                                 random_state=seed)
+    clf = DecisionTreeClassifier(criterion=criterion, max_depth=max_depth, random_state=seed)
     clf.fit(X, y)
     tree = clf.tree_
     root_feat = int(tree.feature[0])
     root_thr = float(tree.threshold[0])
     root_imp = float(tree.impurity[0])
     acc = float(clf.score(X, y))
-    return RichResult(payload={
-        "estimate": acc,
-        "train_accuracy": acc,
-        "root_feature": root_feat,
-        "root_threshold": root_thr,
-        "root_impurity": root_imp,
-        "n_leaves": int(clf.get_n_leaves()),
-        "feature_importances": clf.feature_importances_.tolist(),
-        "criterion": criterion,
-        "n": int(n),
-        "method": f"Decision tree (CART, {criterion})",
-    })
+    return RichResult(
+        payload={
+            "estimate": acc,
+            "train_accuracy": acc,
+            "root_feature": root_feat,
+            "root_threshold": root_thr,
+            "root_impurity": root_imp,
+            "n_leaves": int(clf.get_n_leaves()),
+            "feature_importances": clf.feature_importances_.tolist(),
+            "criterion": criterion,
+            "n": int(n),
+            "method": f"Decision tree (CART, {criterion})",
+        }
+    )
 
 
 def cheatsheet():

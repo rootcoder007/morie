@@ -1,7 +1,6 @@
 """Tests for morie.fn.zstbs -- Turning bands simulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zstbs import turning_bands
 

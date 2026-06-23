@@ -1,6 +1,7 @@
 """Tests for ksr028.kosorok_ch2_glivenko_cantelli_classical."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr028 import kosorok_ch2_glivenko_cantelli_classical
 
 
@@ -10,7 +11,7 @@ def test_ksr028_basic():
     F = np.random.default_rng(43).normal(0, 1, 100)
     result = kosorok_ch2_glivenko_cantelli_classical(F_n, F)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr028_edge():

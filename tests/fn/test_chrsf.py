@@ -30,12 +30,11 @@ def test_metric_inverse():
 def test_numerical_derivative():
     def sphere_metric(coords):
         r, theta = coords[0], coords[1]
-        g = np.diag([1.0, r ** 2])
+        g = np.diag([1.0, r**2])
         return g
 
     g = sphere_metric(np.array([2.0, np.pi / 4]))
-    r = chrsf(g, coords=np.array([2.0, np.pi / 4]),
-              metric_func=sphere_metric)
+    r = chrsf(g, coords=np.array([2.0, np.pi / 4]), metric_func=sphere_metric)
     assert r["christoffel"].shape == (2, 2, 2)
 
 

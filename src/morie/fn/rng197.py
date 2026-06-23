@@ -1,6 +1,7 @@
 """Squared and weighted smoothing of the second derivative for dicrotic notch detection.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_dicrotic_notch_smoothed_squared"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_dicrotic_notch_smoothed_squared(p, w, n, M):
     n = len(w)
     result = float(np.mean(w))
     se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Squared and weighted smoothing of the second derivative for dicrotic notch detection."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Squared and weighted smoothing of the second derivative for dicrotic notch detection.",
+        }
+    )
 
 
 def cheatsheet():

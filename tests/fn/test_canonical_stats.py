@@ -9,12 +9,24 @@ import numpy as np
 import pytest
 
 from morie.fn import (
-    akike, bayic, covar, iqrng, ksonebs, kurt, kwallis, mad, manwhi,
-    odds, relrsk, shapir, skew, wilcoxn,
+    akike,
+    bayic,
+    covar,
+    iqrng,
+    ksonebs,
+    kurt,
+    kwallis,
+    mad,
+    manwhi,
+    odds,
+    relrsk,
+    shapir,
+    skew,
+    wilcoxn,
 )
 
-
 # ── covar ───────────────────────────────────────────────────────────────────
+
 
 def test_covar_known_value():
     # y = 2x → cov = 2 × var(x). var([1..5]) = 2.5 → cov = 5.0
@@ -36,6 +48,7 @@ def test_covar_shape_mismatch():
 
 # ── skew ────────────────────────────────────────────────────────────────────
 
+
 def test_skew_symmetric_zero():
     rng = np.random.default_rng(0)
     a = rng.standard_normal(5000)
@@ -48,6 +61,7 @@ def test_skew_positive_tail():
 
 
 # ── kurt ────────────────────────────────────────────────────────────────────
+
 
 def test_kurt_uniform_negative():
     # Uniform integers 1..10 → platykurtic (excess < 0)
@@ -62,6 +76,7 @@ def test_kurt_normal_close_to_zero():
 
 # ── iqrng ───────────────────────────────────────────────────────────────────
 
+
 def test_iqrng_basic():
     # 1..10 → Q1=3.25, Q3=7.75, IQR=4.5
     assert iqrng(list(range(1, 11))) == pytest.approx(4.5)
@@ -73,6 +88,7 @@ def test_iqrng_constant_zero():
 
 # ── mad ─────────────────────────────────────────────────────────────────────
 
+
 def test_mad_normal_scaled():
     # MAD of 1..5: median=3, |xᵢ-3|=[2,1,0,1,2], median=1, ×1.4826 = 1.4826
     assert mad([1, 2, 3, 4, 5]) == pytest.approx(1.4826)
@@ -83,6 +99,7 @@ def test_mad_raw_no_scale():
 
 
 # ── odds ────────────────────────────────────────────────────────────────────
+
 
 def test_odds_simple():
     # [[10,5],[3,7]] → (10*7) / (5*3) = 70/15 ≈ 4.667
@@ -98,6 +115,7 @@ def test_odds_zero_cell_requires_continuity():
 
 # ── relrsk ──────────────────────────────────────────────────────────────────
 
+
 def test_relrsk_no_effect():
     # Equal proportions in both rows → RR = 1
     # RichResult comparison ops let us compare to scalar directly.
@@ -111,6 +129,7 @@ def test_relrsk_doubled():
 
 
 # ── akike + bayic ───────────────────────────────────────────────────────────
+
 
 def test_akike_known():
     # akike now returns RichResult; float() yields scalar AIC.
@@ -128,6 +147,7 @@ def test_aic_lower_for_better_likelihood():
 
 # ── manwhi ──────────────────────────────────────────────────────────────────
 
+
 def test_manwhi_distinguishes_groups():
     out = manwhi([1, 2, 3, 4, 5], [10, 11, 12, 13, 14])
     assert out["pvalue"] < 0.05
@@ -135,16 +155,16 @@ def test_manwhi_distinguishes_groups():
 
 def test_manwhi_same_distrib_high_p():
     rng = np.random.default_rng(2)
-    out = manwhi(rng.standard_normal(100).tolist(),
-                 rng.standard_normal(100).tolist())
+    out = manwhi(rng.standard_normal(100).tolist(), rng.standard_normal(100).tolist())
     assert out["pvalue"] > 0.05
 
 
 # ── kwallis ─────────────────────────────────────────────────────────────────
 
+
 def test_kwallis_distinguishes_groups():
     out = kwallis([1, 2, 3], [4, 5, 6], [7, 8, 9])
-    assert out["pvalue"] < 0.1   # small samples; clear separation
+    assert out["pvalue"] < 0.1  # small samples; clear separation
     assert out["df"] == 2
 
 
@@ -154,6 +174,7 @@ def test_kwallis_one_group_raises():
 
 
 # ── wilcoxn ─────────────────────────────────────────────────────────────────
+
 
 def test_wilcoxn_paired_difference():
     # Strong systematic difference
@@ -168,6 +189,7 @@ def test_wilcoxn_difference_input():
 
 
 # ── ksonebs ─────────────────────────────────────────────────────────────────
+
 
 def test_ksonebs_one_sample_normal():
     rng = np.random.default_rng(0)
@@ -185,6 +207,7 @@ def test_ksonebs_two_sample():
 
 
 # ── shapir ──────────────────────────────────────────────────────────────────
+
 
 def test_shapir_normal_passes():
     rng = np.random.default_rng(3)

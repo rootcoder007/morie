@@ -4,12 +4,21 @@
 # marker when the file emits a SyntaxWarning under CPython 3.12+ (invalid
 # escape sequence). This is the bulletproof fix that does not change runtime
 # behaviour.
-import warnings, glob, re, os, sys
+import glob
+import os
+import re
+import warnings
 
 FN_DIR = "/Volumes/VSR/rootcoderfiles/morie-feature/src/morie/fn"
 SKIP = {
-    "__init__.py", "_cfa_engine.py", "_containers.py", "_helpers.py",
-    "_mapq_const.py", "_otis_const.py", "_registry.py", "_richresult.py",
+    "__init__.py",
+    "_cfa_engine.py",
+    "_containers.py",
+    "_helpers.py",
+    "_mapq_const.py",
+    "_otis_const.py",
+    "_registry.py",
+    "_richresult.py",
 }
 
 

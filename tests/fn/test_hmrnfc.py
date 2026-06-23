@@ -1,6 +1,7 @@
 """Tests for hmrnfc.geron_reinforce."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmrnfc import geron_reinforce
 
 
@@ -12,7 +13,7 @@ def test_hmrnfc_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_reinforce(episodes, policy, gamma, eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmrnfc_edge():

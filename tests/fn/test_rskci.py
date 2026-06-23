@@ -1,13 +1,12 @@
 """Tests for morie.fn.rskci — risk concordance."""
 
-import pytest
 import numpy as np
-from morie.fn.rskci import risk_concordance
+
 from morie.fn._containers import ESRes
+from morie.fn.rskci import risk_concordance
 
 
 class TestRiskConcordance:
-
     def test_returns_esres(self):
         scores = np.array([5, 3, 1, 4, 2])
         times = np.array([1, 2, 5, 3, 4], dtype=float)

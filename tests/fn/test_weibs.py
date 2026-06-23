@@ -46,4 +46,5 @@ def test_with_covariates(surv_data):
 
 def test_cheatsheet():
     from morie.fn.weibs import cheatsheet
+
     assert "weibull" in cheatsheet().lower()

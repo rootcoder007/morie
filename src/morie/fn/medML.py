@@ -1,6 +1,7 @@
 """Double ML mediation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ml_mediation_dml"]

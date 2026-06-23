@@ -1,6 +1,7 @@
 """TMLE for controlled direct effect (CDE)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_controlled_direct"]
@@ -38,7 +39,9 @@ def tmle_controlled_direct(y, D, M, X, m_value):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for controlled direct effect (CDE)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TMLE for controlled direct effect (CDE)"}
+    )
 
 
 def cheatsheet():

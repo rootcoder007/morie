@@ -1,6 +1,7 @@
 """Tests for morie.fn.heqly -- QALY."""
 
 import pytest
+
 from morie.fn.heqly import quality_adjusted_ly
 
 

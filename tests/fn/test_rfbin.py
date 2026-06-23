@@ -1,6 +1,8 @@
 """Tests for rfbin."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfbin import rfbin
 
 
@@ -28,4 +30,5 @@ def test_rfbin_no_data():
 
 def test_rfbin_alias():
     from morie.fn.rfbin import rfbin
+
     assert rfbin is rfbin

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 5.6: boundary-free KS converges to standard KS under H0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm5_6_bdfree_ks_equiv"]
@@ -36,7 +38,14 @@ def fauzi_thm5_6_bdfree_ks_equiv(data, bandwidth, cdf, g_func):
     n = int(data) if data.ndim == 0 else len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 5.6: boundary-free KS converges to standard KS under H0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 5.6: boundary-free KS converges to standard KS under H0",
+        }
+    )
 
 
 def cheatsheet():

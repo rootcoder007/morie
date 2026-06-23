@@ -1,6 +1,7 @@
 """Test tssae."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tssae import tssae
 
 

@@ -1,6 +1,7 @@
 """Tests for gnnEx.gnn_explainer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gnnEx import gnn_explainer
 
 
@@ -11,7 +12,7 @@ def test_gnnEx_basic():
     node = np.random.default_rng(42).normal(0, 1, 100)
     result = gnn_explainer(model, graph, node)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gnnEx_edge():

@@ -1,6 +1,8 @@
 """Tests for sgpath."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgpath import sgpath
 
 
@@ -28,4 +30,5 @@ def test_sgpath_no_data():
 
 def test_sgpath_alias():
     from morie.fn.sgpath import sgpath
+
     assert sgpath is sgpath

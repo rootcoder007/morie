@@ -1,6 +1,7 @@
 """Tests for respwt.response_weight."""
+
 import numpy as np
-import pytest
+
 from morie.fn.respwt import response_weight
 
 
@@ -13,7 +14,7 @@ def test_respwt_basic():
     n_h = np.random.default_rng(42).normal(0, 1, 100)
     result = response_weight(y, weights, cell, r_h, n_h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_respwt_edge():

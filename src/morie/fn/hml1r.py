@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """L1 regularization adds |theta| penalty to cost."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_l1_regularization"]
@@ -32,7 +34,9 @@ def geron_l1_regularization(theta, alpha):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "L1 regularization adds |theta| penalty to cost"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "L1 regularization adds |theta| penalty to cost"}
+    )
 
 
 def cheatsheet():

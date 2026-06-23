@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GRU cell: update + reset gates, candidate state."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gru_cell"]
@@ -38,7 +40,9 @@ def geron_gru_cell(x_t, h_prev, Wz, Wr, W):
     n = len(x_t)
     result = float(np.mean(x_t))
     se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GRU cell: update + reset gates, candidate state"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "GRU cell: update + reset gates, candidate state"}
+    )
 
 
 def cheatsheet():

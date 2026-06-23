@@ -1,6 +1,7 @@
 """Tests for morie.fn.crmix — cure rate model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.crmix import cure_rate_model
 
 

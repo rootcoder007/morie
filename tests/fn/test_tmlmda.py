@@ -1,6 +1,7 @@
 """Tests for tmlmda.tmle_missing_data."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlmda import tmle_missing_data
 
 
@@ -12,7 +13,7 @@ def test_tmlmda_basic():
     missing = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_missing_data(y, D, X, missing)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlmda_edge():

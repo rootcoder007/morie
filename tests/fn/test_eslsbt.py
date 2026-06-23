@@ -1,6 +1,7 @@
 """Tests for eslsbt.esl_se_beta."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsbt import esl_se_beta
 
 
@@ -11,7 +12,7 @@ def test_eslsbt_basic():
     beta = 0.8
     result = esl_se_beta(X, y, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsbt_edge():

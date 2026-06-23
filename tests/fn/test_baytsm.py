@@ -1,6 +1,7 @@
 """Tests for baytsm.bayes_time_series."""
+
 import numpy as np
-import pytest
+
 from morie.fn.baytsm import bayes_time_series
 
 
@@ -11,7 +12,7 @@ def test_baytsm_basic():
     priors = np.random.default_rng(42).normal(0, 1, 100)
     result = bayes_time_series(y, model, priors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_baytsm_edge():

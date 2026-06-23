@@ -1,7 +1,5 @@
 """Tests for morie.fn.negct — Negative control test."""
 
-import pytest
-
 from morie.fn.negct import negative_control
 
 

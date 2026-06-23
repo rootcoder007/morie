@@ -1,11 +1,9 @@
 """Tests for morie.fn.cfabi -- bifactor CFA."""
 
-import numpy as np
 from morie.fn.cfabi import cfa_bifactor
 
 
 class TestCfaBifactor:
-
     def test_returns_fit_indices(self, mapq_df):
         result = cfa_bifactor(mapq_df)
         assert "cfi" in result

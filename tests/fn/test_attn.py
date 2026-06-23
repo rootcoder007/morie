@@ -1,6 +1,7 @@
 """Tests for morie.fn.attn — scaled dot-product attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.attn import attention
 
 

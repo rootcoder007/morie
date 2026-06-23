@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgmae -- Kriging MAE"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgmae import kriging_mae
 
@@ -14,5 +13,5 @@ class TestKrigingMae:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = kriging_mae(np.array([1.,2.,3.]), np.array([0.,1.,2.]))
+        result = kriging_mae(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
         assert hasattr(result, "statistic")

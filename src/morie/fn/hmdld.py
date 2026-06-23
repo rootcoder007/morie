@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DataLoader for mini-batch iteration with shuffling and parallel workers."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dataloader"]
@@ -34,7 +36,14 @@ def geron_dataloader(dataset, batch_size, shuffle):
     n = len(dataset)
     result = float(np.mean(dataset))
     se = float(np.std(dataset, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DataLoader for mini-batch iteration with shuffling and parallel workers"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DataLoader for mini-batch iteration with shuffling and parallel workers",
+        }
+    )
 
 
 def cheatsheet():

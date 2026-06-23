@@ -5,6 +5,7 @@ Tests H0: F_x = F_y by shuffling group labels and comparing the observed
 test statistic to its permutation distribution.  Reports a two-sided
 p-value with the standard +1/(B+1) Monte Carlo continuity correction.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -14,8 +15,7 @@ from ._richresult import RichResult
 __all__ = ["permutation_test_general"]
 
 
-def permutation_test_general(x, y, statistic=None, B: int = 5000,
-                             alternative: str = "two-sided", seed: int = 42):
+def permutation_test_general(x, y, statistic=None, B: int = 5000, alternative: str = "two-sided", seed: int = 42):
     """Two-sample permutation test.
 
     Parameters
@@ -47,10 +47,15 @@ def permutation_test_general(x, y, statistic=None, B: int = 5000,
     y = np.asarray(y, dtype=float).ravel()
     n_x, n_y = x.size, y.size
     if n_x < 1 or n_y < 1:
-        return RichResult(payload={"statistic": float("nan"),
-                                   "p_value": float("nan"),
-                                   "n_x": int(n_x), "n_y": int(n_y),
-                                   "method": "permutation (empty)"})
+        return RichResult(
+            payload={
+                "statistic": float("nan"),
+                "p_value": float("nan"),
+                "n_x": int(n_x),
+                "n_y": int(n_y),
+                "method": "permutation (empty)",
+            }
+        )
     if statistic is None:
         statistic = lambda a, b: float(np.mean(a) - np.mean(b))
     T_obs = float(statistic(x, y))
@@ -66,12 +71,17 @@ def permutation_test_general(x, y, statistic=None, B: int = 5000,
         p = (1.0 + np.sum(T_perm <= T_obs)) / (B + 1.0)
     else:
         p = (1.0 + np.sum(np.abs(T_perm) >= abs(T_obs))) / (B + 1.0)
-    return RichResult(payload={
-        "statistic": T_obs, "p_value": float(p),
-        "n_x": int(n_x), "n_y": int(n_y), "B": int(B),
-        "alternative": alternative,
-        "method": "Permutation test (Good 2005)",
-    })
+    return RichResult(
+        payload={
+            "statistic": T_obs,
+            "p_value": float(p),
+            "n_x": int(n_x),
+            "n_y": int(n_y),
+            "B": int(B),
+            "alternative": alternative,
+            "method": "Permutation test (Good 2005)",
+        }
+    )
 
 
 # CANONICAL TEST

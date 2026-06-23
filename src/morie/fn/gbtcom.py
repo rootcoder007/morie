@@ -1,6 +1,7 @@
 """GoodmanBacon 3-way TWFE composition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["goodman_bacon_3way"]

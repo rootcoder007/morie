@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.bwt import rdd_bandwidth
 
 
@@ -31,4 +32,4 @@ class TestRDDBandwidth:
 
     def test_too_few_on_side_raises(self):
         with pytest.raises(ValueError, match="5"):
-            rdd_bandwidth([1, 2, 3, 4, 5, 6, 7, 8], [1]*8, cutoff=0.0)
+            rdd_bandwidth([1, 2, 3, 4, 5, 6, 7, 8], [1] * 8, cutoff=0.0)

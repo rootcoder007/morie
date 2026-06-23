@@ -1,6 +1,7 @@
 """Tests for spgog.schabenberger_getis_ord_g."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spgog import schabenberger_getis_ord_g
 
 
@@ -11,7 +12,7 @@ def test_spgog_basic():
     d = 5
     result = schabenberger_getis_ord_g(x, coords, d)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_spgog_edge():

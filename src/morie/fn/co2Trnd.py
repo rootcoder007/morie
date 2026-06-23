@@ -1,6 +1,7 @@
 """Mauna Loa CO₂ trend (Keeling curve)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["co2_trend"]

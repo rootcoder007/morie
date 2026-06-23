@@ -1,6 +1,7 @@
 """Tests for km056.kamath_ch4_full_finetune_obj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km056 import kamath_ch4_full_finetune_obj
 
 
@@ -11,7 +12,7 @@ def test_km056_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = kamath_ch4_full_finetune_obj(Phi, x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km056_edge():

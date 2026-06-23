@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Next sentence prediction pretraining (BERT)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_next_sentence_prediction"]
@@ -32,7 +34,9 @@ def geron_next_sentence_prediction(sent_A, sent_B):
     n = len(sent_A)
     result = float(np.mean(sent_A))
     se = float(np.std(sent_A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Next sentence prediction pretraining (BERT)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Next sentence prediction pretraining (BERT)"}
+    )
 
 
 def cheatsheet():

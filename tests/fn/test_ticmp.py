@@ -1,6 +1,8 @@
 """Tests for total information content."""
+
 import numpy as np
-from morie.fn.ticmp import total_information_content, ticmp
+
+from morie.fn.ticmp import ticmp, total_information_content
 
 
 def test_positive():

@@ -1,6 +1,7 @@
 """Tests for volgvi.vol_garch_var_impl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volgvi import vol_garch_var_impl
 
 
@@ -12,7 +13,7 @@ def test_volgvi_basic():
     dist = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_garch_var_impl(mu, sigma_next, alpha, dist)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volgvi_edge():

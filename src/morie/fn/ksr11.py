@@ -9,7 +9,9 @@ We return the empirical-mean efficient score (which should be 0 at
 beta_hat) and its information-bound denominator s_resid^2 reported
 as the SE component.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_efficient_score"]
@@ -30,17 +32,20 @@ def kosorok_efficient_score(x, y):
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     n = len(x)
-    xc = x - x.mean(); yc = y - y.mean()
+    xc = x - x.mean()
+    yc = y - y.mean()
     beta_hat = float((xc @ yc) / (xc @ xc))
     resid = yc - beta_hat * xc
-    sigma2 = float((resid ** 2).sum() / (n - 2)) if n > 2 else float("nan")
+    sigma2 = float((resid**2).sum() / (n - 2)) if n > 2 else float("nan")
     s_eff = (resid * xc) / sigma2
-    return RichResult(payload={
-        "estimate": float(s_eff.mean()),
-        "se":       float(np.sqrt(sigma2)),
-        "n":        n,
-        "method":   "Efficient score for OLS beta: (resid)(x-xbar)/sigma^2",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(s_eff.mean()),
+            "se": float(np.sqrt(sigma2)),
+            "n": n,
+            "method": "Efficient score for OLS beta: (resid)(x-xbar)/sigma^2",
+        }
+    )
 
 
 def cheatsheet():

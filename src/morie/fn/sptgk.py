@@ -1,5 +1,7 @@
 """Trans-Gaussian kriging via Anamorphosis transformation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_trans_gaussian_kriging"]
@@ -37,7 +39,14 @@ def schabenberger_trans_gaussian_kriging(coords, z, target, transformation, cov_
     n = int(z) if z.ndim == 0 else len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Trans-Gaussian kriging via Anamorphosis transformation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Trans-Gaussian kriging via Anamorphosis transformation",
+        }
+    )
 
 
 def cheatsheet():

@@ -55,8 +55,8 @@ def farrington_aberration(
         mu = np.asarray(baselines, dtype=float)
 
     if overdispersion:
-        residuals = c[:len(c) // 2] - mu[:len(c) // 2]
-        phi = max(1.0, float(np.sum(residuals**2 / np.maximum(mu[:len(c) // 2], 0.5)) / max(len(residuals) - 1, 1)))
+        residuals = c[: len(c) // 2] - mu[: len(c) // 2]
+        phi = max(1.0, float(np.sum(residuals**2 / np.maximum(mu[: len(c) // 2], 0.5)) / max(len(residuals) - 1, 1)))
     else:
         phi = 1.0
 

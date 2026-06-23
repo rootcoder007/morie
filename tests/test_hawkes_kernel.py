@@ -5,6 +5,7 @@ The compiled hawkes_ll_exp_const is checked against the reference
 morie/tps_hawkes_jit.py::_ll_exp_const (same arithmetic). Requires the
 built extension.
 """
+
 import numpy as np
 import pytest
 
@@ -19,12 +20,15 @@ def _event_times(n, rate, seed):
     return np.cumsum(rng.exponential(1.0 / rate, size=n))
 
 
-@pytest.mark.parametrize("a0,eta,beta", [
-    (-1.0, 0.30, 1.5),
-    (0.5, 0.60, 0.8),
-    (-2.0, 0.10, 5.0),
-    (1.0, 0.85, 0.2),
-])
+@pytest.mark.parametrize(
+    "a0,eta,beta",
+    [
+        (-1.0, 0.30, 1.5),
+        (0.5, 0.60, 0.8),
+        (-2.0, 0.10, 5.0),
+        (1.0, 0.85, 0.2),
+    ],
+)
 def test_hawkes_ll_exp_const_parity(a0, eta, beta):
     t = _event_times(400, rate=2.0, seed=11)
     T = float(t[-1]) + 1.0
@@ -47,6 +51,7 @@ def test_hawkes_ll_exp_const_infeasible_returns_sentinel():
 def test_neg_loglik_jit_routes_through_core():
     # neg_loglik_jit's exp/constant path uses the C++ core
     from morie.tps_hawkes_jit import has_jit_path, neg_loglik_jit
+
     assert has_jit_path("exponential", "constant") is True
     t = _event_times(200, rate=1.5, seed=8)
     T = float(t[-1]) + 1.0
@@ -56,13 +61,17 @@ def test_neg_loglik_jit_routes_through_core():
     assert np.isclose(got, ref, rtol=1e-12, atol=1e-9)
 
 
-@pytest.mark.parametrize("a0,eta,alpha,lam", [
-    (-1.0, 0.30, 1.5, 2.0),
-    (0.5, 0.60, 0.8, 5.0),
-    (-2.0, 0.10, 3.0, 1.0),
-])
+@pytest.mark.parametrize(
+    "a0,eta,alpha,lam",
+    [
+        (-1.0, 0.30, 1.5, 2.0),
+        (0.5, 0.60, 0.8, 5.0),
+        (-2.0, 0.10, 3.0, 1.0),
+    ],
+)
 def test_hawkes_ll_weibull_const_parity(a0, eta, alpha, lam):
     from morie.tps_hawkes_jit import _ll_weibull_const
+
     t = _event_times(250, rate=2.0, seed=13)
     T = float(t[-1]) + 1.0
     got = core.hawkes_ll_weibull_const(t, T, a0, eta, alpha, lam)
@@ -78,8 +87,8 @@ def test_hawkes_ll_weibull_const_infeasible_returns_sentinel():
 
 
 def test_neg_loglik_jit_routes_weibull_through_core():
-    from morie.tps_hawkes_jit import _ll_weibull_const, has_jit_path
-    from morie.tps_hawkes_jit import neg_loglik_jit
+    from morie.tps_hawkes_jit import _ll_weibull_const, has_jit_path, neg_loglik_jit
+
     assert has_jit_path("weibull", "constant") is True
     t = _event_times(180, rate=1.5, seed=9)
     T = float(t[-1]) + 1.0
@@ -89,12 +98,15 @@ def test_neg_loglik_jit_routes_weibull_through_core():
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
-@pytest.mark.parametrize("a0,eta,alpha,lam", [
-    (-1.0, 0.30, 1.5, 2.0),
-    (0.5, 0.60, 0.8, 5.0),
-    (-2.0, 0.10, 3.0, 1.0),
-    (0.0, 0.40, 5.0, 0.5),
-])
+@pytest.mark.parametrize(
+    "a0,eta,alpha,lam",
+    [
+        (-1.0, 0.30, 1.5, 2.0),
+        (0.5, 0.60, 0.8, 5.0),
+        (-2.0, 0.10, 3.0, 1.0),
+        (0.0, 0.40, 5.0, 0.5),
+    ],
+)
 def test_hawkes_weibull_trunc_is_exact(a0, eta, alpha, lam):
     # the O(n*w) sliding-window form is BIT-IDENTICAL to the O(n^2)
     # version -- the truncated terms underflow to exactly zero.
@@ -105,13 +117,16 @@ def test_hawkes_weibull_trunc_is_exact(a0, eta, alpha, lam):
     assert trunc == exact
 
 
-@pytest.mark.parametrize("a0,eta,alpha,beta", [
-    (-1.0, 0.30, 1.5, 2.0),
-    (0.5, 0.60, 0.8, 5.0),
-    (-2.0, 0.10, 3.0, 1.0),
-    (0.0, 0.40, 5.0, 4.0),
-    (-1.0, 0.40, 1.0, 3.0),
-])
+@pytest.mark.parametrize(
+    "a0,eta,alpha,beta",
+    [
+        (-1.0, 0.30, 1.5, 2.0),
+        (0.5, 0.60, 0.8, 5.0),
+        (-2.0, 0.10, 3.0, 1.0),
+        (0.0, 0.40, 5.0, 4.0),
+        (-1.0, 0.40, 1.0, 3.0),
+    ],
+)
 def test_hawkes_gamma_trunc_is_exact(a0, eta, alpha, beta):
     # the O(n*w) sliding-window form is BIT-IDENTICAL to the O(n^2)
     # gamma version -- the truncated terms underflow to exactly zero.
@@ -122,13 +137,17 @@ def test_hawkes_gamma_trunc_is_exact(a0, eta, alpha, beta):
     assert trunc == exact
 
 
-@pytest.mark.parametrize("a0,eta,alpha,c", [
-    (-1.0, 0.30, 2.0, 1.0),
-    (0.5, 0.60, 3.5, 0.5),
-    (-2.0, 0.10, 1.5, 2.0),
-])
+@pytest.mark.parametrize(
+    "a0,eta,alpha,c",
+    [
+        (-1.0, 0.30, 2.0, 1.0),
+        (0.5, 0.60, 3.5, 0.5),
+        (-2.0, 0.10, 1.5, 2.0),
+    ],
+)
 def test_hawkes_ll_lomax_const_parity(a0, eta, alpha, c):
     from morie.tps_hawkes_jit import _ll_lomax_const
+
     t = _event_times(250, rate=2.0, seed=17)
     T = float(t[-1]) + 1.0
     got = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
@@ -137,8 +156,8 @@ def test_hawkes_ll_lomax_const_parity(a0, eta, alpha, c):
 
 
 def test_neg_loglik_jit_routes_lomax_through_core():
-    from morie.tps_hawkes_jit import _ll_lomax_const, has_jit_path
-    from morie.tps_hawkes_jit import neg_loglik_jit
+    from morie.tps_hawkes_jit import _ll_lomax_const, has_jit_path, neg_loglik_jit
+
     assert has_jit_path("lomax", "constant") is True
     t = _event_times(180, rate=1.5, seed=21)
     T = float(t[-1]) + 1.0
@@ -147,18 +166,21 @@ def test_neg_loglik_jit_routes_lomax_through_core():
     ref = float(_ll_lomax_const(t, T, -1.0, 0.4, 2.0, 1.0))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
     # alpha <= 1.001 -> the dispatch returns the infeasible sentinel
-    bad = neg_loglik_jit(np.array([0.0, 0.3, 1.0, 1.0]), t, T,
-                         "lomax", "constant")
+    bad = neg_loglik_jit(np.array([0.0, 0.3, 1.0, 1.0]), t, T, "lomax", "constant")
     assert bad == 1e12
 
 
-@pytest.mark.parametrize("a0,eta,alpha,beta", [
-    (-1.0, 0.30, 2.0, 1.5),
-    (0.5, 0.60, 0.8, 3.0),
-    (-2.0, 0.10, 5.0, 0.5),
-])
+@pytest.mark.parametrize(
+    "a0,eta,alpha,beta",
+    [
+        (-1.0, 0.30, 2.0, 1.5),
+        (0.5, 0.60, 0.8, 3.0),
+        (-2.0, 0.10, 5.0, 0.5),
+    ],
+)
 def test_hawkes_ll_gamma_const_parity(a0, eta, alpha, beta):
     from morie.tps_hawkes_jit import _ll_gamma_const
+
     t = _event_times(250, rate=2.0, seed=23)
     T = float(t[-1]) + 1.0
     got = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
@@ -167,8 +189,8 @@ def test_hawkes_ll_gamma_const_parity(a0, eta, alpha, beta):
 
 
 def test_neg_loglik_jit_routes_gamma_through_core():
-    from morie.tps_hawkes_jit import _ll_gamma_const, has_jit_path
-    from morie.tps_hawkes_jit import neg_loglik_jit
+    from morie.tps_hawkes_jit import _ll_gamma_const, has_jit_path, neg_loglik_jit
+
     assert has_jit_path("gamma", "constant") is True
     t = _event_times(180, rate=1.5, seed=27)
     T = float(t[-1]) + 1.0
@@ -180,102 +202,107 @@ def test_neg_loglik_jit_routes_gamma_through_core():
     assert core.hawkes_ll_gamma_const(t, T, 0.0, 0.3, 50.0, 1.5) == 1e12
 
 
-@pytest.mark.parametrize("a0,a1,a2,a3,eta,beta", [
-    (-1.0, 0.2, 0.3, -0.1, 0.30, 1.5),
-    (0.0, -0.5, 0.1, 0.4, 0.55, 0.8),
-])
+@pytest.mark.parametrize(
+    "a0,a1,a2,a3,eta,beta",
+    [
+        (-1.0, 0.2, 0.3, -0.1, 0.30, 1.5),
+        (0.0, -0.5, 0.1, 0.4, 0.55, 0.8),
+    ],
+)
 def test_hawkes_ll_exp_sin_parity(a0, a1, a2, a3, eta, beta):
     from morie.tps_hawkes_jit import _ll_exp_sin, _sin_grid
+
     t = _event_times(250, rate=2.0, seed=31)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta,
-                                 grid, grid_vals)
-    ref = float(_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta,
-                            grid, grid_vals))
+    got = core.hawkes_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta, grid, grid_vals)
+    ref = float(_ll_exp_sin(t, T, a0, a1, a2, a3, eta, beta, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
 def test_neg_loglik_jit_routes_exp_sin_through_core():
-    from morie.tps_hawkes_jit import _ll_exp_sin, _sin_grid, has_jit_path
-    from morie.tps_hawkes_jit import neg_loglik_jit
+    from morie.tps_hawkes_jit import _ll_exp_sin, _sin_grid, has_jit_path, neg_loglik_jit
+
     assert has_jit_path("exponential", "sinusoidal") is True
     t = _event_times(180, rate=1.5, seed=33)
     T = float(t[-1]) + 1.0
     theta = np.array([-1.0, 0.2, 0.3, -0.1, 0.4, 1.2])
     got = neg_loglik_jit(theta, t, T, "exponential", "sinusoidal")
     grid, grid_vals = _sin_grid(T, -1.0, 0.2, 0.3, -0.1)
-    ref = float(_ll_exp_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 1.2,
-                            grid, grid_vals))
+    ref = float(_ll_exp_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 1.2, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
-@pytest.mark.parametrize("a0,a1,a2,a3,eta,alpha,lam", [
-    (-1.0, 0.2, 0.3, -0.1, 0.30, 1.5, 2.0),
-    (0.0, -0.5, 0.1, 0.4, 0.55, 0.8, 5.0),
-])
+@pytest.mark.parametrize(
+    "a0,a1,a2,a3,eta,alpha,lam",
+    [
+        (-1.0, 0.2, 0.3, -0.1, 0.30, 1.5, 2.0),
+        (0.0, -0.5, 0.1, 0.4, 0.55, 0.8, 5.0),
+    ],
+)
 def test_hawkes_ll_weibull_sin_parity(a0, a1, a2, a3, eta, alpha, lam):
     from morie.tps_hawkes_jit import _ll_weibull_sin, _sin_grid
+
     t = _event_times(250, rate=2.0, seed=37)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam,
-                                     grid, grid_vals)
-    ref = float(_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam,
-                                grid, grid_vals))
+    got = core.hawkes_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals)
+    ref = float(_ll_weibull_sin(t, T, a0, a1, a2, a3, eta, alpha, lam, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
 def test_neg_loglik_jit_routes_weibull_sin_through_core():
-    from morie.tps_hawkes_jit import _ll_weibull_sin, _sin_grid
-    from morie.tps_hawkes_jit import has_jit_path, neg_loglik_jit
+    from morie.tps_hawkes_jit import _ll_weibull_sin, _sin_grid, has_jit_path, neg_loglik_jit
+
     assert has_jit_path("weibull", "sinusoidal") is True
     t = _event_times(180, rate=1.5, seed=39)
     T = float(t[-1]) + 1.0
     theta = np.array([-1.0, 0.2, 0.3, -0.1, 0.4, 1.5, 2.0])
     got = neg_loglik_jit(theta, t, T, "weibull", "sinusoidal")
     grid, grid_vals = _sin_grid(T, -1.0, 0.2, 0.3, -0.1)
-    ref = float(_ll_weibull_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 1.5, 2.0,
-                                grid, grid_vals))
+    ref = float(_ll_weibull_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 1.5, 2.0, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
-@pytest.mark.parametrize("a0,a1,a2,a3,eta,alpha,c", [
-    (-1.0, 0.2, 0.3, -0.1, 0.30, 2.0, 1.0),
-    (0.0, -0.5, 0.1, 0.4, 0.55, 3.5, 0.5),
-])
+@pytest.mark.parametrize(
+    "a0,a1,a2,a3,eta,alpha,c",
+    [
+        (-1.0, 0.2, 0.3, -0.1, 0.30, 2.0, 1.0),
+        (0.0, -0.5, 0.1, 0.4, 0.55, 3.5, 0.5),
+    ],
+)
 def test_hawkes_ll_lomax_sin_parity(a0, a1, a2, a3, eta, alpha, c):
     from morie.tps_hawkes_jit import _ll_lomax_sin, _sin_grid
+
     t = _event_times(250, rate=2.0, seed=41)
     T = float(t[-1]) + 1.0
     grid, grid_vals = _sin_grid(T, a0, a1, a2, a3)
-    got = core.hawkes_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c,
-                                   grid, grid_vals)
-    ref = float(_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c,
-                              grid, grid_vals))
+    got = core.hawkes_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals)
+    ref = float(_ll_lomax_sin(t, T, a0, a1, a2, a3, eta, alpha, c, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
 def test_neg_loglik_jit_routes_lomax_sin_through_core():
-    from morie.tps_hawkes_jit import _ll_lomax_sin, _sin_grid
-    from morie.tps_hawkes_jit import has_jit_path, neg_loglik_jit
+    from morie.tps_hawkes_jit import _ll_lomax_sin, _sin_grid, has_jit_path, neg_loglik_jit
+
     assert has_jit_path("lomax", "sinusoidal") is True
     t = _event_times(180, rate=1.5, seed=43)
     T = float(t[-1]) + 1.0
     theta = np.array([-1.0, 0.2, 0.3, -0.1, 0.4, 2.0, 1.0])
     got = neg_loglik_jit(theta, t, T, "lomax", "sinusoidal")
     grid, grid_vals = _sin_grid(T, -1.0, 0.2, 0.3, -0.1)
-    ref = float(_ll_lomax_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 2.0, 1.0,
-                              grid, grid_vals))
+    ref = float(_ll_lomax_sin(t, T, -1.0, 0.2, 0.3, -0.1, 0.4, 2.0, 1.0, grid, grid_vals))
     assert np.isclose(got, ref, rtol=1e-9, atol=1e-6)
 
 
 # --- sum-of-exponentials (SoE) engine, task #73 -----------------------
 
+
 def _soe_ll_reference(t, T, nu, eta, w, beta):
     """Brute-force O(n^2) reference for the SoE Hawkes likelihood:
     g(u) = sum_m w[m]*exp(-beta[m]*u)."""
     import math
+
     w = np.asarray(w, dtype=float)
     beta = np.asarray(beta, dtype=float)
     n = len(t)
@@ -295,11 +322,11 @@ def _soe_ll_reference(t, T, nu, eta, w, beta):
 def test_hawkes_ll_soe_reduces_to_exponential():
     # SoE with M=1, w=[beta], beta=[beta] is exactly the exp kernel
     import math
+
     t = _event_times(300, rate=2.0, seed=51)
     T = float(t[-1]) + 1.0
     a0, eta, beta = -1.0, 0.4, 1.5
-    soe = core.hawkes_ll_soe(t, T, math.exp(a0), eta,
-                             np.array([beta]), np.array([beta]))
+    soe = core.hawkes_ll_soe(t, T, math.exp(a0), eta, np.array([beta]), np.array([beta]))
     ref = float(_ll_exp_const(t, T, a0, eta, beta))
     assert np.isclose(soe, ref, rtol=1e-9, atol=1e-6)
 
@@ -320,12 +347,14 @@ def test_hawkes_ll_soe_matches_bruteforce(seed):
 
 # --- SoE fit of the Lomax kernel, task #73 ----------------------------
 
+
 @pytest.mark.parametrize("alpha,c", [(1.5, 1.0), (2.5, 1.0), (4.0, 2.0)])
 def test_soe_fit_lomax_kernel_accuracy(alpha, c):
     # the SoE must approximate the (completely monotone) Lomax kernel
     # over [0, horizon]; the fit reports its own verified error bound,
     # which an independent re-check on a fresh grid must confirm
     from morie.tps_hawkes_jit import soe_fit_lomax
+
     horizon = 200.0
     w, beta, err = soe_fit_lomax(alpha, c, horizon, tol=1e-8)
     assert err <= 1e-8
@@ -340,7 +369,9 @@ def test_soe_fit_lomax_likelihood_matches_exact(alpha, c):
     # hawkes_ll_soe with the fitted Lomax SoE must reproduce the exact
     # O(n^2) Lomax likelihood -- SoE perturbs the LL only at fit error
     import math
+
     from morie.tps_hawkes_jit import soe_fit_lomax
+
     t = _event_times(400, rate=2.0, seed=17)
     T = float(t[-1]) + 1.0
     a0, eta = -1.0, 0.4
@@ -354,7 +385,8 @@ def test_neg_loglik_jit_lomax_routes_through_soe():
     # at large n the lomax constant-baseline path routes through the
     # O(M*n) SoE engine; the result must still match the exact kernel
     from morie.tps_hawkes_jit import neg_loglik_jit
-    t = _event_times(1500, rate=2.0, seed=23)   # n >= _SOE_MIN_N
+
+    t = _event_times(1500, rate=2.0, seed=23)  # n >= _SOE_MIN_N
     T = float(t[-1]) + 1.0
     a0, eta, alpha, c = -1.0, 0.4, 2.5, 1.0
     theta = np.array([a0, eta, alpha, c])
@@ -366,28 +398,30 @@ def test_neg_loglik_jit_lomax_routes_through_soe():
 def test_neg_loglik_jit_lomax_small_n_stays_exact():
     # below the crossover the exact O(n^2) kernel is used verbatim
     from morie.tps_hawkes_jit import neg_loglik_jit
+
     t = _event_times(200, rate=2.0, seed=23)
     T = float(t[-1]) + 1.0
     a0, eta, alpha, c = -1.0, 0.4, 2.5, 1.0
     theta = np.array([a0, eta, alpha, c])
     routed = neg_loglik_jit(theta, t, T, "lomax", "constant")
     exact = core.hawkes_ll_lomax_const(t, T, a0, eta, alpha, c)
-    assert routed == exact   # same code path, bit-identical
+    assert routed == exact  # same code path, bit-identical
 
 
 # --- matrix-pencil exponential fitter, task #73 (gamma hybrid) --------
 
+
 def test_soe_fit_matrix_pencil_recovers_known_soe():
     # the pencil must recover an exact 3-term SoE from its samples
     from morie.tps_hawkes_jit import _soe_fit_matrix_pencil
+
     beta_true = np.array([0.3, 1.2, 4.0])
     r_true = np.array([1.0, 0.6, 0.25])
     dt = 0.05
     k = np.arange(80)
-    y = (r_true[None, :] *
-         np.exp(-beta_true[None, :] * k[:, None] * dt)).sum(axis=1)
+    y = (r_true[None, :] * np.exp(-beta_true[None, :] * k[:, None] * dt)).sum(axis=1)
     beta, res = _soe_fit_matrix_pencil(y, dt)
-    assert np.max(np.abs(beta.imag)) < 1e-6          # all poles real
+    assert np.max(np.abs(beta.imag)) < 1e-6  # all poles real
     order = np.argsort(beta.real)
     assert np.allclose(beta.real[order], beta_true, atol=1e-6)
     assert np.allclose(res.real[order], r_true, atol=1e-6)
@@ -395,10 +429,12 @@ def test_soe_fit_matrix_pencil_recovers_known_soe():
 
 # --- complex-pole SoE engine, task #73 (gamma hybrid) -----------------
 
+
 def _soe_ll_reference_cplx(t, T, nu, eta, w, beta):
     """Brute-force O(n^2) reference for the complex-pole SoE Hawkes
     likelihood: g(u) = Re(sum_m w[m]*exp(-beta[m]*u))."""
     import math
+
     w = np.asarray(w, dtype=complex)
     beta = np.asarray(beta, dtype=complex)
     n = len(t)
@@ -411,8 +447,7 @@ def _soe_ll_reference_cplx(t, T, nu, eta, w, beta):
     integral = nu * T
     for i in range(n):
         u = T - t[i]
-        integral += eta * float(
-            np.sum((w / beta) * (1.0 - np.exp(-beta * u))).real)
+        integral += eta * float(np.sum((w / beta) * (1.0 - np.exp(-beta * u))).real)
     return -(log_sum - integral)
 
 
@@ -423,9 +458,7 @@ def test_hawkes_ll_soe_cplx_reduces_to_real():
     w = np.array([0.5, 0.3, 0.15])
     beta = np.array([0.4, 1.5, 4.0])
     real = core.hawkes_ll_soe(t, T, 0.4, 0.3, w, beta)
-    cplx = core.hawkes_ll_soe_cplx(t, T, 0.4, 0.3,
-                                   w.astype(np.complex128),
-                                   beta.astype(np.complex128))
+    cplx = core.hawkes_ll_soe_cplx(t, T, 0.4, 0.3, w.astype(np.complex128), beta.astype(np.complex128))
     assert np.isclose(cplx, real, rtol=1e-12, atol=1e-9)
 
 
@@ -441,16 +474,16 @@ def test_hawkes_ll_soe_cplx_conjugate_pair_matches_bruteforce():
     assert np.isclose(got, ref, rtol=1e-8, atol=1e-6)
 
 
-@pytest.mark.parametrize("alpha,beta", [
-    (1.5, 1.0), (2.5, 1.0), (4.0, 2.0), (1.2, 0.5)])
+@pytest.mark.parametrize("alpha,beta", [(1.5, 1.0), (2.5, 1.0), (4.0, 2.0), (1.2, 0.5)])
 def test_soe_fit_gamma_tail_accuracy(alpha, beta):
     # the matrix-pencil SoE must reproduce the gamma tail past u_split,
     # with every mode decaying and the conjugate-paired sum real
     from morie.tps_hawkes_jit import soe_fit_gamma_tail
-    u_split = 2.0 * (alpha - 1.0) / beta            # 2 x the peak
+
+    u_split = 2.0 * (alpha - 1.0) / beta  # 2 x the peak
     w, beta_soe, err = soe_fit_gamma_tail(alpha, beta, u_split)
     assert err < 1e-5
-    assert np.all(beta_soe.real > 0.0)              # all modes decay
+    assert np.all(beta_soe.real > 0.0)  # all modes decay
     s = np.array([0.0, 1.0 / beta, 5.0 / beta])
     val = (w[None, :] * np.exp(-beta_soe[None, :] * s[:, None])).sum(axis=1)
     # Tolerance: ~1e-7 relative. Windows BLAS/LAPACK gives slightly looser
@@ -464,25 +497,26 @@ def test_hawkes_ll_gamma_hybrid_matches_exact(alpha, beta):
     # the hybrid (exact peak window + SoE tail) must reproduce the
     # exact O(n^2) gamma likelihood within the tail-fit tolerance
     from morie.tps_hawkes_jit import soe_fit_gamma_tail
+
     t = _event_times(400, rate=2.0, seed=29)
     T = float(t[-1]) + 1.0
     a0, eta = -1.0, 0.4
     u_split = 2.0 * (alpha - 1.0) / beta
     w, beta_soe, err = soe_fit_gamma_tail(alpha, beta, u_split)
     exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
-    hybrid = core.hawkes_ll_gamma_hybrid(t, T, a0, eta, alpha, beta,
-                                         u_split, w, beta_soe)
+    hybrid = core.hawkes_ll_gamma_hybrid(t, T, a0, eta, alpha, beta, u_split, w, beta_soe)
     assert np.isclose(hybrid, exact, rtol=1e-4)
 
 
 def test_neg_loglik_jit_gamma_routes_through_hybrid():
     # large n + slow decay -> the gamma path routes through the hybrid;
     # the result must still match the exact O(n^2) gamma likelihood
-    from morie.tps_hawkes_jit import neg_loglik_jit, _gamma_trunc_cutoff
+    from morie.tps_hawkes_jit import _gamma_trunc_cutoff, neg_loglik_jit
+
     t = _event_times(1500, rate=2.0, seed=31)
     T = float(t[-1]) + 1.0
-    a0, eta, alpha, beta = -1.0, 0.4, 2.5, 0.4       # slow decay
-    assert _gamma_trunc_cutoff(alpha, beta) >= t[-1] - t[0]   # hybrid route
+    a0, eta, alpha, beta = -1.0, 0.4, 2.5, 0.4  # slow decay
+    assert _gamma_trunc_cutoff(alpha, beta) >= t[-1] - t[0]  # hybrid route
     theta = np.array([a0, eta, alpha, beta])
     routed = neg_loglik_jit(theta, t, T, "gamma", "constant")
     exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
@@ -492,9 +526,10 @@ def test_neg_loglik_jit_gamma_routes_through_hybrid():
 def test_neg_loglik_jit_gamma_fast_decay_stays_exact():
     # fast decay -> truncation path, bit-identical to the exact kernel
     from morie.tps_hawkes_jit import neg_loglik_jit
+
     t = _event_times(1500, rate=2.0, seed=31)
     T = float(t[-1]) + 1.0
-    a0, eta, alpha, beta = -1.0, 0.4, 2.5, 5.0       # fast decay
+    a0, eta, alpha, beta = -1.0, 0.4, 2.5, 5.0  # fast decay
     theta = np.array([a0, eta, alpha, beta])
     routed = neg_loglik_jit(theta, t, T, "gamma", "constant")
     exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)

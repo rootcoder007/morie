@@ -1,4 +1,5 @@
 """Test lamport_sign."""
+
 from morie.fn._containers import CryptoResult
 from morie.fn.lamp import lamp, lamport_sign
 

@@ -81,7 +81,7 @@ def sharp_rd(
     elif kernel == "uniform":
         K = np.ones_like(u)
     elif kernel == "epanechnikov":
-        K = np.maximum(0.75 * (1 - u ** 2), 0)
+        K = np.maximum(0.75 * (1 - u**2), 0)
     else:
         raise ValueError(f"Unknown kernel: {kernel}")
 
@@ -96,7 +96,7 @@ def sharp_rd(
     beta = np.linalg.lstsq(Xw, Yw, rcond=None)[0]
 
     resid = Y_loc - X @ beta
-    ss_res = float(np.sum(K * resid ** 2))
+    ss_res = float(np.sum(K * resid**2))
     mse = ss_res / max(n - p, 1)
     try:
         cov = mse * np.linalg.inv(Xw.T @ Xw)
@@ -137,16 +137,15 @@ def _ik_bandwidth(R, Y, c):
     R_loc = R[mask] - c
     Y_loc = Y[mask]
     T_loc = (R_loc >= 0).astype(float)
-    X = np.column_stack([np.ones(mask.sum()), R_loc, T_loc, R_loc * T_loc,
-                         R_loc ** 2, R_loc ** 2 * T_loc])
+    X = np.column_stack([np.ones(mask.sum()), R_loc, T_loc, R_loc * T_loc, R_loc**2, R_loc**2 * T_loc])
     beta = np.linalg.lstsq(X, Y_loc, rcond=None)[0]
     resid = Y_loc - X @ beta
-    sigma2 = float(np.sum(resid ** 2)) / max(mask.sum() - 6, 1)
+    sigma2 = float(np.sum(resid**2)) / max(mask.sum() - 6, 1)
     m2 = abs(beta[4]) + abs(beta[5])
     if m2 < 1e-10:
         return h_pilot
     C_k = 3.4375
-    h_opt = C_k * (sigma2 / (m2 ** 2 * n)) ** (1 / 5)
+    h_opt = C_k * (sigma2 / (m2**2 * n)) ** (1 / 5)
     return float(max(h_opt, h_pilot * 0.1))
 
 

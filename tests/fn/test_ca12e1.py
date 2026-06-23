@@ -1,6 +1,7 @@
 """Tests for ca12e1.ca_chapter_12_equation_1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ca12e1 import ca_chapter_12_equation_1
 
 
@@ -9,7 +10,7 @@ def test_ca12e1_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = ca_chapter_12_equation_1(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ca12e1_edge():

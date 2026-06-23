@@ -1,6 +1,7 @@
 """Sparse attention with structured patterns."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sparse_attention"]
@@ -38,7 +39,9 @@ def sparse_attention(y, Q, K, V, S):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sparse attention with structured patterns"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sparse attention with structured patterns"}
+    )
 
 
 def cheatsheet():

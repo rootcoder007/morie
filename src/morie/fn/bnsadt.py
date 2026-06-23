@@ -1,6 +1,7 @@
 """Adversarial bound under unknown parametric family."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bound_adversarial"]
@@ -34,7 +35,9 @@ def bound_adversarial(y, D, family):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adversarial bound under unknown parametric family"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Adversarial bound under unknown parametric family"}
+    )
 
 
 def cheatsheet():

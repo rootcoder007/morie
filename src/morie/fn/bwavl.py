@@ -9,7 +9,7 @@ import numpy as np
 def bayesian_wavelet_shrinkage(
     y: np.ndarray,
     threshold: float | None = None,
-    method: str = 'universal',
+    method: str = "universal",
     rng: np.random.Generator | None = None,
 ) -> dict:
     r"""
@@ -48,7 +48,7 @@ def bayesian_wavelet_shrinkage(
 
     # Set threshold
     if threshold is None:
-        if method == 'universal':
+        if method == "universal":
             sigma = np.std(high, ddof=1)
             threshold = sigma * np.sqrt(2 * np.log(n_pairs))
         else:

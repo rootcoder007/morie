@@ -1,6 +1,7 @@
 """Tests for msm259.mvsml_deep_learning_eq_13_1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm259 import mvsml_deep_learning_eq_13_1
 
 
@@ -14,7 +15,7 @@ def test_msm259_basic():
     Fig = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_deep_learning_eq_13_1(image, of, size, Part, b, Fig)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm259_edge():

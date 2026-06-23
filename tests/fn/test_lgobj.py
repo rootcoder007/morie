@@ -1,6 +1,7 @@
 """Tests for lgobj.logistic_log_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lgobj import logistic_log_likelihood
 
 
@@ -11,7 +12,7 @@ def test_lgobj_basic():
     beta = 0.8
     result = logistic_log_likelihood(y, X, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lgobj_edge():

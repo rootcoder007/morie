@@ -1,6 +1,7 @@
 """Tests for gpsvi.gp_stochastic_vi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpsvi import gp_stochastic_vi
 
 
@@ -13,7 +14,7 @@ def test_gpsvi_basic():
     batch_size = 100
     result = gp_stochastic_vi(X, y, X_test, inducing, batch_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpsvi_edge():

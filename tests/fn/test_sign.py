@@ -1,9 +1,9 @@
 """Tests for morie.fn.sign -- Sign test."""
 
-import numpy as np
 import pytest
-from morie.fn.sign import sign_test
+
 from morie.fn._containers import TestResult
+from morie.fn.sign import sign_test
 
 
 class TestSign:

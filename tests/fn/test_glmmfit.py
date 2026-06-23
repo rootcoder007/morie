@@ -1,6 +1,8 @@
 """Tests for glmmfit."""
+
 import numpy as np
 import pytest
+
 from morie.fn.glmmfit import glmmfit
 
 
@@ -28,4 +30,5 @@ def test_glmmfit_no_data():
 
 def test_glmmfit_alias():
     from morie.fn.glmmfit import glmmfit
+
     assert glmmfit is glmmfit

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Local outlier factor (LOF) using local reachability density."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_local_outlier_factor"]
@@ -32,7 +34,14 @@ def geron_local_outlier_factor(X, n_neighbors):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Local outlier factor (LOF) using local reachability density"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Local outlier factor (LOF) using local reachability density",
+        }
+    )
 
 
 def cheatsheet():

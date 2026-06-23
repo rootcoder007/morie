@@ -1,5 +1,7 @@
 """Tests for LM spatial tests."""
+
 import numpy as np
+
 from morie.fn.sglml import sglml
 
 
@@ -9,7 +11,7 @@ def test_sglml_smoke():
     resid = rng.normal(0, 1, n)
     W = np.zeros((n, n))
     for i in range(n):
-        for j in range(max(0, i-1), min(n, i+2)):
+        for j in range(max(0, i - 1), min(n, i + 2)):
             if i != j:
                 W[i, j] = 0.5
     r = sglml(resid, W)
@@ -21,6 +23,7 @@ def test_sglml_smoke():
 
 def test_cheatsheet():
     from morie.fn.sglml import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,5 +1,7 @@
 """Tests for wvflt.py - Wavelet filtering."""
+
 import numpy as np
+
 from morie.fn.wvflt import wavelet_filter, wvflt
 
 

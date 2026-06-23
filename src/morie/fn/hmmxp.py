@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Max pooling: output maximum per pooling window."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_max_pool"]
@@ -34,7 +36,9 @@ def geron_max_pool(x, window, stride):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Max pooling: output maximum per pooling window"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Max pooling: output maximum per pooling window"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for grelas.geron_elastic_net_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grelas import geron_elastic_net_cost
 
 
@@ -13,7 +14,7 @@ def test_grelas_basic():
     r = 10
     result = geron_elastic_net_cost(X, y, theta, alpha, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grelas_edge():

@@ -1,6 +1,7 @@
 """Test gchrc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gchrc import gchrc
 
 

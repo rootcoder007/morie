@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dimensionality test for spatial voting (Armstrong Ch 7)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["dimensionality_test", "dimrd"]
@@ -28,11 +30,15 @@ def dimensionality_test(x, threshold: float = 1.0):
         S = (M + M.T) / 2
     else:
         if m < 2:
-            return RichResult(payload={"n_dims": 0,
-                                       "eigenvalues": np.array([]),
-                                       "threshold": float(threshold),
-                                       "scree_gap": np.nan,
-                                       "method": "dimensionality_test"})
+            return RichResult(
+                payload={
+                    "n_dims": 0,
+                    "eigenvalues": np.array([]),
+                    "threshold": float(threshold),
+                    "scree_gap": np.nan,
+                    "method": "dimensionality_test",
+                }
+            )
         # Use correlation matrix of items (columns); handle constant cols
         S = np.corrcoef(M, rowvar=False)
         if np.any(np.isnan(S)):
@@ -45,17 +51,19 @@ def dimensionality_test(x, threshold: float = 1.0):
     scree_gap_idx = int(np.argmax(gaps)) + 1 if gaps.size else 0
     return RichResult(
         title="Dimensionality test (Kaiser scree)",
-        summary_lines=[("n dimensions (λ > %.2f)" % threshold, n_dims),
-                       ("Largest-gap k* (scree elbow)", scree_gap_idx),
-                       ("Top eigenvalues",
-                        list(np.round(eigvals[:min(5, eigvals.size)], 4)))],
-        interpretation=(
-            f"Kaiser rule suggests {n_dims} spatial dimension(s); scree "
-            f"elbow at k* = {scree_gap_idx}."),
-        payload={"n_dims": n_dims, "eigenvalues": eigvals,
-                 "threshold": float(threshold),
-                 "scree_gap": int(scree_gap_idx),
-                 "method": "dimensionality_test"},
+        summary_lines=[
+            ("n dimensions (λ > %.2f)" % threshold, n_dims),
+            ("Largest-gap k* (scree elbow)", scree_gap_idx),
+            ("Top eigenvalues", list(np.round(eigvals[: min(5, eigvals.size)], 4))),
+        ],
+        interpretation=(f"Kaiser rule suggests {n_dims} spatial dimension(s); scree elbow at k* = {scree_gap_idx}."),
+        payload={
+            "n_dims": n_dims,
+            "eigenvalues": eigvals,
+            "threshold": float(threshold),
+            "scree_gap": int(scree_gap_idx),
+            "method": "dimensionality_test",
+        },
     )
 
 

@@ -1,6 +1,7 @@
 """Tests for rgloo.rangayyan_loo_cv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgloo import rangayyan_loo_cv
 
 
@@ -11,7 +12,7 @@ def test_rgloo_basic():
     classifier = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_loo_cv(X, y, classifier)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgloo_edge():

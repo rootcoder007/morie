@@ -68,4 +68,4 @@ spnsm = spline_smooth
 
 
 def cheatsheet() -> str:
-    return 'spline_smooth({}) -> Smoothing spline.'
+    return "spline_smooth({}) -> Smoothing spline."

@@ -1,6 +1,7 @@
 """Tests for wsmsgn.wasserman_sign_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmsgn import wasserman_sign_test
 
 
@@ -10,7 +11,7 @@ def test_wsmsgn_basic():
     theta0 = 0.0
     result = wasserman_sign_test(x, theta0)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_wsmsgn_edge():

@@ -1,6 +1,7 @@
 """Test garng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.garng import garng
 
 

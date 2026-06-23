@@ -57,7 +57,7 @@ def wls_regression(
     beta = XtWX_inv @ (X.T @ W @ y)
     fitted = X @ beta
     resid = y - fitted
-    ss_res = float(w @ (resid ** 2))
+    ss_res = float(w @ (resid**2))
     y_bar_w = np.sum(w * y) / np.sum(w)
     ss_tot = float(w @ ((y - y_bar_w) ** 2))
     r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
@@ -69,9 +69,7 @@ def wls_regression(
     t_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.t.sf(np.abs(t_vals), df=n - k)
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method="WLS",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

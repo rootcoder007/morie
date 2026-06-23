@@ -1,7 +1,6 @@
 """Tests for morie.fn.zerad -- Radiation model (mobility)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zerad import radiation_model
 

@@ -1,6 +1,7 @@
 """Kernel ridge regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kernel_ridge_regression"]

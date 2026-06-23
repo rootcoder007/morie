@@ -1,6 +1,7 @@
 """Tests for intmd4.interaction_mediation_4way."""
+
 import numpy as np
-import pytest
+
 from morie.fn.intmd4 import interaction_mediation_4way
 
 
@@ -11,7 +12,7 @@ def test_intmd4_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = interaction_mediation_4way(X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_intmd4_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svsls -- Issue salience weighted model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svsls import salience_model
 

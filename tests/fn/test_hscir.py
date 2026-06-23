@@ -1,7 +1,7 @@
 """Tests for morie.fn.hscir."""
 
 import numpy as np
-import pytest
+
 from morie.fn.hscir import hscir
 
 

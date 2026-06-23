@@ -4,6 +4,7 @@
 The data-sheet picker is tested with synthetic workbooks; no live
 CIHI download is performed here.
 """
+
 import io
 
 import pandas as pd
@@ -35,6 +36,7 @@ def test_pick_data_sheet_single_sheet():
 
 def test_cihi_entries_registered():
     from morie.data import DATASET_CATALOG
+
     for key in ("cihi820a", "cihi820b", "cihi849", "cihi885a", "cihi885b"):
         entry = DATASET_CATALOG[key]
         assert entry["fetcher"] == "morie.ingest.cihi:fetch_cihi_xlsx"

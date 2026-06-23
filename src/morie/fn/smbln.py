@@ -92,4 +92,4 @@ smbln = smd_balance
 
 
 def cheatsheet() -> str:
-    return 'smd_balance({}) -> Standardized mean difference balance check.'
+    return "smd_balance({}) -> Standardized mean difference balance check."

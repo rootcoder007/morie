@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.sent import sentence_stats, sent
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sent import sent, sentence_stats
 
 
 class TestSent:

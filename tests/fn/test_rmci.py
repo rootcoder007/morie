@@ -1,7 +1,9 @@
 """Tests for rmci — reliable change index."""
+
 import pandas as pd
-import numpy as np
+
 from morie.fn.rmci import rmci
+
 
 def test_rmci_basic(rng):
     pre = rng.normal(50, 10, 30)
@@ -12,6 +14,7 @@ def test_rmci_basic(rng):
 
 def test_cheatsheet():
     from morie.fn.rmci import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

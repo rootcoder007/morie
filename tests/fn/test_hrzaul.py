@@ -1,6 +1,7 @@
 """Tests for hrzaul.horowitz_additive_unknown_link."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzaul import horowitz_additive_unknown_link
 
 
@@ -11,7 +12,7 @@ def test_hrzaul_basic():
     bandwidth = 0.3
     result = horowitz_additive_unknown_link(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzaul_edge():

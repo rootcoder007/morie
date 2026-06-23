@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmdwn -- DW-NOMINATE dynamic estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmdwn import dwnominate
 

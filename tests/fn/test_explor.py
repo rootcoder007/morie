@@ -1,6 +1,7 @@
 """Tests for explor.intrinsic_motivation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.explor import intrinsic_motivation
 
 
@@ -11,7 +12,7 @@ def test_explor_basic():
     beta = 0.8
     result = intrinsic_motivation(env, forward_model, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_explor_edge():

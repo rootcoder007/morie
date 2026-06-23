@@ -1,6 +1,7 @@
 """Tests for msm244.mvsml_preprocessing_eq_2_1."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm244 import mvsml_preprocessing_eq_2_1
 
 
@@ -14,7 +15,7 @@ def test_msm244_basic():
     columns = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_preprocessing_eq_2_1(In, matrix, M, only, the, columns)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm244_edge():

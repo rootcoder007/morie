@@ -1,6 +1,7 @@
 """Tests for rlhfRS.rlhf_recommendation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rlhfRS import rlhf_recommendation
 
 
@@ -10,7 +11,7 @@ def test_rlhfRS_basic():
     policy = np.random.default_rng(42).normal(0, 1, 100)
     result = rlhf_recommendation(env, policy)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rlhfRS_edge():

@@ -1,6 +1,7 @@
 """Tests for bayima.importance_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bayima import importance_sampling
 
 
@@ -11,7 +12,7 @@ def test_bayima_basic():
     n = 100
     result = importance_sampling(target, proposal, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bayima_edge():

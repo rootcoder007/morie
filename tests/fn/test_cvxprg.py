@@ -1,6 +1,7 @@
 """Tests for cvxprg.boyd_proximal_grad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxprg import boyd_proximal_grad
 
 
@@ -13,7 +14,7 @@ def test_cvxprg_basic():
     t = np.linspace(0, 10, 100)
     result = boyd_proximal_grad(f, grad_f, h, x0, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxprg_edge():

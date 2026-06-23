@@ -1,6 +1,7 @@
 """Tests for morie.fn.mw -- Mann-Whitney U test."""
 
 import pytest
+
 from morie.fn.mw import mann_whitney_test
 
 

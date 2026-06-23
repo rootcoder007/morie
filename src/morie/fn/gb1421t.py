@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Phi coefficient and Cramer's V for 2x2 and rxc tables."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_phi_cramers_v"]
@@ -30,7 +32,14 @@ def gibbons_phi_cramers_v(table):
     n = int(table) if table.ndim == 0 else len(table)
     result = float(np.mean(table))
     se = float(np.std(table, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Phi coefficient and Cramer's V for 2x2 and rxc tables"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Phi coefficient and Cramer's V for 2x2 and rxc tables",
+        }
+    )
 
 
 def cheatsheet():

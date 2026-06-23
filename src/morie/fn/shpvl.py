@@ -13,6 +13,7 @@ Shapley, L. S. (1953). A value for n-person games. In H. W. Kuhn &
 A. W. Tucker (Eds.), *Contributions to the Theory of Games*, Vol. 2.
 Princeton University Press.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -90,10 +91,8 @@ def shpvl(
     shap_values = np.zeros((m, p))
 
     for i in range(m):
-        xi = X[[i]]                         # shape (1, p)
-        shap_values[i] = _kernel_shap_single(
-            predict_fn, xi, background, base_val, p, n_samples, rng
-        )
+        xi = X[[i]]  # shape (1, p)
+        shap_values[i] = _kernel_shap_single(predict_fn, xi, background, base_val, p, n_samples, rng)
 
     return {
         "shap_values": shap_values,
@@ -133,7 +132,7 @@ def _kernel_shap_single(predict_fn, xi, bg, base_val, p, n_samples, rng):
         coalitions.append(z)
         weights.append(kern)
 
-    Z = np.array(coalitions)         # (n_z, p)
+    Z = np.array(coalitions)  # (n_z, p)
     w = np.array(weights)
 
     # Evaluate model on masked inputs (marginalise missing features)
@@ -142,7 +141,7 @@ def _kernel_shap_single(predict_fn, xi, bg, base_val, p, n_samples, rng):
     for k, z_k in enumerate(Z):
         mask = z_k.astype(bool)
         # Replace masked-out features with background values
-        X_masked = np.tile(xi, (b, 1))        # (b, p)
+        X_masked = np.tile(xi, (b, 1))  # (b, p)
         X_masked[:, ~mask] = bg[:, ~mask]
         f_z[k] = predict_fn(X_masked).mean()
 

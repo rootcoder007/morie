@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gradient clipping by global norm (Pascanu et al. 2013)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -42,12 +43,14 @@ def gradient_clipping(x, max_norm: float = 1.0):
         clipped = np.asarray(x, dtype=float) * coef
     return RichResult(
         title="Gradient Clipping by Global Norm (Pascanu 2013)",
-        summary_lines=[("||g||", total_norm),
-                       ("max_norm", max_norm),
-                       ("clip_coef", coef)],
-        payload={"tensor": clipped, "clip_coef": coef,
-                 "total_norm": total_norm, "max_norm": max_norm,
-                 "method": "global-norm-clip"},
+        summary_lines=[("||g||", total_norm), ("max_norm", max_norm), ("clip_coef", coef)],
+        payload={
+            "tensor": clipped,
+            "clip_coef": coef,
+            "total_norm": total_norm,
+            "max_norm": max_norm,
+            "method": "global-norm-clip",
+        },
     )
 
 

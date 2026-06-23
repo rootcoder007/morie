@@ -1,6 +1,7 @@
 """Tests for rng070.rangayyan_ch3_idft_definition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng070 import rangayyan_ch3_idft_definition
 
 
@@ -12,7 +13,7 @@ def test_rng070_basic():
     N = 100
     result = rangayyan_ch3_idft_definition(X, n, k, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng070_edge():

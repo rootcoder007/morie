@@ -1,6 +1,7 @@
 """Tests for morrisM.morris_screening."""
+
 import numpy as np
-import pytest
+
 from morie.fn.morrisM import morris_screening
 
 
@@ -11,7 +12,7 @@ def test_morrisM_basic():
     N = 100
     result = morris_screening(model, input_dist, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_morrisM_edge():

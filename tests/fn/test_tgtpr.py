@@ -1,7 +1,6 @@
 """Tests for morie.fn.tgtpr — targeting parameter."""
 
 import numpy as np
-import pytest
 
 from morie.fn.tgtpr import tgtpr
 

@@ -1,6 +1,7 @@
 """Tests for npstm.nonparametric_tmle_survival."""
+
 import numpy as np
-import pytest
+
 from morie.fn.npstm import nonparametric_tmle_survival
 
 
@@ -12,7 +13,7 @@ def test_npstm_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = nonparametric_tmle_survival(time, event, A, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_npstm_edge():

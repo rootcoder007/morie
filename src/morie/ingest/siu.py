@@ -49,7 +49,6 @@ from __future__ import annotations
 
 import io
 import re
-from dataclasses import dataclass
 from typing import Any
 from urllib.parse import urljoin
 
@@ -72,8 +71,7 @@ class SIUError(RuntimeError):
 # Step 1 — list the published reports
 
 
-def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-                 user_agent: str = DEFAULT_USER_AGENT) -> pd.DataFrame:
+def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT) -> pd.DataFrame:
     """Fetch the SIU director's-reports index and parse it.
 
     **Known limitation (v0.5.0):** the SIU re-launched their website
@@ -108,6 +106,7 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS,
 
     # bs4 is a hard dep
     from bs4 import BeautifulSoup
+
     soup = BeautifulSoup(html, "lxml")
 
     rows: list[dict[str, Any]] = []
@@ -124,14 +123,16 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS,
         # incident date + location + allegation; try to scrape it.
         parent = a.find_parent(["tr", "li", "p", "div"])
         ptext = parent.get_text(" ", strip=True) if parent else ""
-        rows.append({
-            "report_id": rid,
-            "url": url,
-            "release_date": _scrape_date(ptext),
-            "incident_date": _scrape_incident_date(ptext),
-            "location": _scrape_location(ptext),
-            "allegation": _scrape_allegation(ptext),
-        })
+        rows.append(
+            {
+                "report_id": rid,
+                "url": url,
+                "release_date": _scrape_date(ptext),
+                "incident_date": _scrape_incident_date(ptext),
+                "location": _scrape_location(ptext),
+                "allegation": _scrape_allegation(ptext),
+            }
+        )
     if not rows:
         warnings.warn(
             "siu.list_reports() found zero PDF anchors on the SIU "
@@ -153,8 +154,9 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS,
 # Step 2 — fetch a single report's text
 
 
-def fetch_report_text(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS,
-                      user_agent: str = DEFAULT_USER_AGENT) -> str:
+def fetch_report_text(
+    url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = DEFAULT_USER_AGENT
+) -> str:
     """Download a single SIU director's-report PDF and extract its text.
 
     Uses pypdf (a soft dep declared in ``pyproject.toml`` ``test`` extras
@@ -164,8 +166,7 @@ def fetch_report_text(url: str, *, timeout: float = DEFAULT_TIMEOUT_SECONDS,
         from pypdf import PdfReader
     except ImportError as exc:
         raise SIUError(
-            "siu.fetch_report_text() needs pypdf — install with "
-            "`pip install 'morie[test]'` or `pip install pypdf`"
+            "siu.fetch_report_text() needs pypdf — install with `pip install 'morie[test]'` or `pip install pypdf`"
         ) from exc
 
     headers = {"User-Agent": user_agent}
@@ -259,7 +260,10 @@ def extract_report_fields(text: str) -> dict[str, Any]:
 # Internal scrapers for the index-page row text
 
 
-_DATE_PAT = re.compile(r"(\d{4}-\d{2}-\d{2})|(\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}\b)", re.IGNORECASE)
+_DATE_PAT = re.compile(
+    r"(\d{4}-\d{2}-\d{2})|(\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*\d{4}\b)",
+    re.IGNORECASE,
+)
 
 
 def _scrape_date(text: str) -> str | None:
@@ -307,8 +311,9 @@ def cli(args: list[str]) -> int:
     import sys
     from pathlib import Path
 
-    p = argparse.ArgumentParser(prog="morie ingest siu",
-                                description="Pull SIU director's-report index or a single report.")
+    p = argparse.ArgumentParser(
+        prog="morie ingest siu", description="Pull SIU director's-report index or a single report."
+    )
     p.add_argument("--list", action="store_true", help="Fetch the index page and emit CSV to stdout")
     p.add_argument("--report-id", help="Report id (e.g. 22-OFD-001); requires --out")
     p.add_argument("--url", help="Direct PDF URL of a single report")

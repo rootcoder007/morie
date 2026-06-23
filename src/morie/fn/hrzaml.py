@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Additive model with known non-identity link function g."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_additive_nonid_link"]
@@ -36,7 +38,14 @@ def horowitz_additive_nonid_link(x, y, bandwidth, link):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Additive model with known non-identity link function g"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Additive model with known non-identity link function g",
+        }
+    )
 
 
 def cheatsheet():

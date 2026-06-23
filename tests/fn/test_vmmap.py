@@ -1,6 +1,7 @@
 """Test vmmap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmmap import vmmap
 
 

@@ -1,6 +1,7 @@
 """Tests for hrzhot.horowitz_T_F_estimators."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzhot import horowitz_T_F_estimators
 
 
@@ -12,7 +13,7 @@ def test_hrzhot_basic():
     beta_hat = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_T_F_estimators(x, y, bandwidth, beta_hat)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzhot_edge():

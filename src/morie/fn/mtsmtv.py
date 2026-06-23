@@ -1,6 +1,7 @@
 """Combined MTS+MTR Manski-Pepper bounds."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mts_mtr_combined"]

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Levinson-Durbin recursion for efficient AR model fitting."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_levinson_durbin"]
@@ -32,7 +34,14 @@ def rangayyan_levinson_durbin(acf, order):
     n = int(acf) if acf.ndim == 0 else len(acf)
     result = float(np.mean(acf))
     se = float(np.std(acf, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Levinson-Durbin recursion for efficient AR model fitting"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Levinson-Durbin recursion for efficient AR model fitting",
+        }
+    )
 
 
 def cheatsheet():

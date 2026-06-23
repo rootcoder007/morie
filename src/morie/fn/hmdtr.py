@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tree regularization via max_depth, min_samples_split, min_samples_leaf."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_tree_regularization"]
@@ -36,7 +38,14 @@ def geron_tree_regularization(X, y, max_depth, min_samples_leaf):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Tree regularization via max_depth, min_samples_split, min_samples_leaf"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Tree regularization via max_depth, min_samples_split, min_samples_leaf",
+        }
+    )
 
 
 def cheatsheet():

@@ -82,4 +82,4 @@ strstr = stress_strain
 
 
 def cheatsheet() -> str:
-    return 'stress_strain({}) -> Material stress-strain curve analysis.'
+    return "stress_strain({}) -> Material stress-strain curve analysis."

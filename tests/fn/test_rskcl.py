@@ -1,7 +1,8 @@
 """Tests for morie.fn.rskcl — risk classification."""
 
 import pandas as pd
-from morie.fn.rskcl import risk_classify, rskcl
+
+from morie.fn.rskcl import risk_classify
 
 
 class TestRiskClassify:

@@ -1,6 +1,7 @@
 """Neural Radiance Field volume rendering."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["nerf_radiance"]
@@ -32,7 +33,9 @@ def nerf_radiance(rays, mlp):
     n = len(rays)
     result = float(np.mean(rays))
     se = float(np.std(rays, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Neural Radiance Field volume rendering"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Neural Radiance Field volume rendering"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Counterfactual notation: Y_x outcome had X been set to x by intervention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["counterfactual_notation"]
@@ -36,7 +38,14 @@ def counterfactual_notation(Y, X, x_val, u):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Counterfactual notation: Y_x outcome had X been set to x by intervention"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Counterfactual notation: Y_x outcome had X been set to x by intervention",
+        }
+    )
 
 
 def cheatsheet():

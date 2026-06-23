@@ -1,6 +1,7 @@
 """Test biwtm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.biwtm import biweight_midcorrelation
 
 

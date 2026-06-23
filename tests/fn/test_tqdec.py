@@ -1,14 +1,12 @@
 """Tests for morie.fn.tqdec — TurboQuant dequantization."""
 
 import numpy as np
-import pytest
 
-from morie.fn.tqmse import turboquant_mse
 from morie.fn.tqdec import turboquant_decode
+from morie.fn.tqmse import turboquant_mse
 
 
 class TestTurboquantDecode:
-
     def test_roundtrip(self):
         x = np.random.default_rng(42).standard_normal(16)
         enc = turboquant_mse(x, bits=4)

@@ -1,6 +1,7 @@
 """Tests for mrgdrv.martingale_concentration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mrgdrv import martingale_concentration
 
 
@@ -11,7 +12,7 @@ def test_mrgdrv_basic():
     t = np.linspace(0, 10, 100)
     result = martingale_concentration(c, n, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mrgdrv_edge():

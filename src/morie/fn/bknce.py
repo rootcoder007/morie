@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Noise-Contrastive Estimation: binary-classify data vs noise distribution q."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_noise_contrastive_estimation"]
@@ -37,12 +39,27 @@ def burkov_noise_contrastive_estimation(data_scores, noise_scores, k, q_data, q_
     data_scores = np.atleast_1d(np.asarray(data_scores, dtype=float))
     n = len(data_scores)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Noise-Contrastive Estimation: binary-classify data vs noise distribution q"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "Noise-Contrastive Estimation: binary-classify data vs noise distribution q",
+            }
+        )
     estimate = np.median(data_scores)
     se = 1.2533 * np.std(data_scores, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Noise-Contrastive Estimation: binary-classify data vs noise distribution q"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Noise-Contrastive Estimation: binary-classify data vs noise distribution q",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Empirical characteristic function for deconvolution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_empirical_cf"]
@@ -32,7 +34,9 @@ def horowitz_empirical_cf(w, tau):
     n = int(w) if w.ndim == 0 else len(w)
     result = float(np.mean(w))
     se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Empirical characteristic function for deconvolution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Empirical characteristic function for deconvolution"}
+    )
 
 
 def cheatsheet():

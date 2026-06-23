@@ -1,6 +1,7 @@
 """Tests for hrzsmsci.horowitz_sms_confidence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzsmsci import horowitz_sms_confidence
 
 
@@ -12,7 +13,7 @@ def test_hrzsmsci_basic():
     alpha = 0.05
     result = horowitz_sms_confidence(x, y, bandwidth, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzsmsci_edge():

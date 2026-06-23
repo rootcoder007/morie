@@ -65,7 +65,6 @@ import pandas as pd
 
 from .fn._richresult import RichResult
 
-
 # ── Weights ─────────────────────────────────────────────────────────
 
 
@@ -74,28 +73,28 @@ from .fn._richresult import RichResult
 # sub-offences typically classified under that TPS category.
 # Sources: Wallace et al 2009 + StatsCan 35-10-0190-01 (2023 update).
 TOTAL_CSI_WEIGHTS: dict[str, float] = {
-    "Assault":                          133.0,   # L1+L2+L3 blend
-    "AutoTheft":                         24.0,   # CCJS 2135
-    "BicycleTheft":                       8.0,   # theft under $5K (bicycle)
-    "BreakandEnter":                    130.0,   # residential + commercial blend
-    "Homicides":                       7656.0,   # 1st/2nd-degree + manslaughter blend
-    "Robbery":                          583.0,   # CCJS 1610
-    "ShootingAndFirearmDiscarges":      285.0,   # discharge firearm
-    "TheftFromMovingVehicle":            17.0,   # theft from MV (CCJS 2150)
-    "TheftOver":                         67.0,   # theft over $5K (CCJS 2110)
+    "Assault": 133.0,  # L1+L2+L3 blend
+    "AutoTheft": 24.0,  # CCJS 2135
+    "BicycleTheft": 8.0,  # theft under $5K (bicycle)
+    "BreakandEnter": 130.0,  # residential + commercial blend
+    "Homicides": 7656.0,  # 1st/2nd-degree + manslaughter blend
+    "Robbery": 583.0,  # CCJS 1610
+    "ShootingAndFirearmDiscarges": 285.0,  # discharge firearm
+    "TheftFromMovingVehicle": 17.0,  # theft from MV (CCJS 2150)
+    "TheftOver": 67.0,  # theft over $5K (CCJS 2110)
 }
 
 # Violent CSI = only violent categories receive non-zero weight.
 VIOLENT_CSI_WEIGHTS: dict[str, float] = {
-    "Assault":                          133.0,
-    "AutoTheft":                          0.0,
-    "BicycleTheft":                       0.0,
-    "BreakandEnter":                      0.0,   # B&E is property in CSI
-    "Homicides":                       7656.0,
-    "Robbery":                          583.0,   # robbery is violent
-    "ShootingAndFirearmDiscarges":      285.0,   # discharge firearm is violent
-    "TheftFromMovingVehicle":             0.0,
-    "TheftOver":                          0.0,
+    "Assault": 133.0,
+    "AutoTheft": 0.0,
+    "BicycleTheft": 0.0,
+    "BreakandEnter": 0.0,  # B&E is property in CSI
+    "Homicides": 7656.0,
+    "Robbery": 583.0,  # robbery is violent
+    "ShootingAndFirearmDiscarges": 285.0,  # discharge firearm is violent
+    "TheftFromMovingVehicle": 0.0,
+    "TheftOver": 0.0,
 }
 
 CSI_CATEGORIES = tuple(TOTAL_CSI_WEIGHTS.keys())
@@ -124,9 +123,7 @@ TORONTO_POPULATION_BY_YEAR: dict[int, int] = {
 # ── Public API ──────────────────────────────────────────────────────
 
 
-def csi_weight(category: str, *,
-               variant: CsiVariant = "total",
-               weights: dict[str, float] | None = None) -> float:
+def csi_weight(category: str, *, variant: CsiVariant = "total", weights: dict[str, float] | None = None) -> float:
     """Return the CSI weight for a TPS open-data category.
 
     Parameters
@@ -144,14 +141,16 @@ def csi_weight(category: str, *,
     return float(table.get(category, 0.0))
 
 
-def csi_per_year(counts_per_year: dict[int, dict[str, int]] | pd.DataFrame,
-                  *,
-                  variant: CsiVariant = "total",
-                  weights: dict[str, float] | None = None,
-                  population: dict[int, int] | None = None,
-                  per_capita_unit: int = 100_000,
-                  rebase_to_year: int | None = None,
-                  rebase_to_value: float = 100.0) -> pd.DataFrame:
+def csi_per_year(
+    counts_per_year: dict[int, dict[str, int]] | pd.DataFrame,
+    *,
+    variant: CsiVariant = "total",
+    weights: dict[str, float] | None = None,
+    population: dict[int, int] | None = None,
+    per_capita_unit: int = 100_000,
+    rebase_to_year: int | None = None,
+    rebase_to_value: float = 100.0,
+) -> pd.DataFrame:
     """Compute Toronto's CSI per fiscal year from per-category counts.
 
     Returns a DataFrame indexed by year with columns:
@@ -168,42 +167,37 @@ def csi_per_year(counts_per_year: dict[int, dict[str, int]] | pd.DataFrame,
     if isinstance(counts_per_year, pd.DataFrame):
         long = counts_per_year[["year", "category", "count"]].copy()
     else:
-        long = pd.DataFrame([
-            {"year": int(y), "category": c, "count": int(n)}
-            for y, cats in counts_per_year.items()
-            for c, n in cats.items()
-        ])
+        long = pd.DataFrame(
+            [
+                {"year": int(y), "category": c, "count": int(n)}
+                for y, cats in counts_per_year.items()
+                for c, n in cats.items()
+            ]
+        )
     pop = dict(population) if population is not None else dict(TORONTO_POPULATION_BY_YEAR)
-    long["weight"] = long["category"].apply(
-        lambda c: csi_weight(c, variant=variant, weights=weights))
+    long["weight"] = long["category"].apply(lambda c: csi_weight(c, variant=variant, weights=weights))
     long["weighted"] = long["count"] * long["weight"]
     grouped = long.groupby("year", as_index=True).agg(
         raw_weighted_sum=("weighted", "sum"),
         total_count=("count", "sum"),
     )
     grouped["population"] = grouped.index.map(lambda y: pop.get(int(y), np.nan))
-    grouped["csi_per_capita"] = (grouped["raw_weighted_sum"] /
-                                   grouped["population"] *
-                                   per_capita_unit)
-    grouped["simple_count_rate"] = (grouped["total_count"] /
-                                       grouped["population"] *
-                                       per_capita_unit)
+    grouped["csi_per_capita"] = grouped["raw_weighted_sum"] / grouped["population"] * per_capita_unit
+    grouped["simple_count_rate"] = grouped["total_count"] / grouped["population"] * per_capita_unit
     if rebase_to_year is not None:
         if rebase_to_year not in grouped.index:
-            raise ValueError(
-                f"rebase_to_year={rebase_to_year} not in {list(grouped.index)}")
+            raise ValueError(f"rebase_to_year={rebase_to_year} not in {list(grouped.index)}")
         anchor = float(grouped.loc[rebase_to_year, "csi_per_capita"])
-        grouped["csi_index"] = (grouped["csi_per_capita"] / anchor
-                                  * rebase_to_value)
+        grouped["csi_index"] = grouped["csi_per_capita"] / anchor * rebase_to_value
     return grouped.reset_index()
 
 
-def csi_per_neighbourhood(counts_per_hood: dict[int, dict[str, int]] |
-                                            pd.DataFrame,
-                            *,
-                            variant: CsiVariant = "total",
-                            weights: dict[str, float] | None = None,
-                            ) -> pd.DataFrame:
+def csi_per_neighbourhood(
+    counts_per_hood: dict[int, dict[str, int]] | pd.DataFrame,
+    *,
+    variant: CsiVariant = "total",
+    weights: dict[str, float] | None = None,
+) -> pd.DataFrame:
     """CSI per ward (HOOD_158).
 
     Mirrors :func:`csi_per_year` but groups by neighbourhood rather
@@ -216,13 +210,14 @@ def csi_per_neighbourhood(counts_per_hood: dict[int, dict[str, int]] |
     if isinstance(counts_per_hood, pd.DataFrame):
         long = counts_per_hood[["HOOD_158", "category", "count"]].copy()
     else:
-        long = pd.DataFrame([
-            {"HOOD_158": int(h), "category": c, "count": int(n)}
-            for h, cats in counts_per_hood.items()
-            for c, n in cats.items()
-        ])
-    long["weight"] = long["category"].apply(
-        lambda c: csi_weight(c, variant=variant, weights=weights))
+        long = pd.DataFrame(
+            [
+                {"HOOD_158": int(h), "category": c, "count": int(n)}
+                for h, cats in counts_per_hood.items()
+                for c, n in cats.items()
+            ]
+        )
+    long["weight"] = long["category"].apply(lambda c: csi_weight(c, variant=variant, weights=weights))
     long["weighted"] = long["count"] * long["weight"]
     grouped = long.groupby("HOOD_158", as_index=True).agg(
         raw_weighted_sum=("weighted", "sum"),
@@ -231,12 +226,13 @@ def csi_per_neighbourhood(counts_per_hood: dict[int, dict[str, int]] |
     return grouped.reset_index()
 
 
-def analyze_csi_from_tps_dataframes(dfs: dict[str, pd.DataFrame],
-                                      *,
-                                      year_col: str = "OCC_YEAR",
-                                      hood_col: str = "HOOD_158",
-                                      variant: CsiVariant = "total",
-                                      ) -> RichResult:
+def analyze_csi_from_tps_dataframes(
+    dfs: dict[str, pd.DataFrame],
+    *,
+    year_col: str = "OCC_YEAR",
+    hood_col: str = "HOOD_158",
+    variant: CsiVariant = "total",
+) -> RichResult:
     """High-level orchestration: take ``{category: tps_df}`` of the
     9 TPS open-data feeds and return per-year + per-ward CSI.
 
@@ -270,11 +266,11 @@ def analyze_csi_from_tps_dataframes(dfs: dict[str, pd.DataFrame],
         ("Categories included", sorted(set(dfs) & set(CSI_CATEGORIES))),
         ("Years covered", sorted(by_year["year"].astype(int).tolist())),
         ("Wards covered", int(by_hood.shape[0])),
-        ("Total weighted incidents (all years)",
-          float(by_year["raw_weighted_sum"].sum())),
-        ("Population-adjusted CSI for most-recent year",
-          (float(by_year.iloc[-1]["csi_per_capita"])
-           if not by_year.empty else None)),
+        ("Total weighted incidents (all years)", float(by_year["raw_weighted_sum"].sum())),
+        (
+            "Population-adjusted CSI for most-recent year",
+            (float(by_year.iloc[-1]["csi_per_capita"]) if not by_year.empty else None),
+        ),
     ]
     interpretation = (
         "Crime Severity Index weights each incident by the average "
@@ -292,10 +288,10 @@ def analyze_csi_from_tps_dataframes(dfs: dict[str, pd.DataFrame],
         title="Toronto Crime Severity Index -- per-year + per-ward",
         summary_lines=summary_lines,
         interpretation=interpretation,
-        payload={"by_year": by_year.to_dict(orient="records"),
-                  "by_hood": by_hood.to_dict(orient="records"),
-                  "variant": variant,
-                  "weights": dict(TOTAL_CSI_WEIGHTS
-                                    if variant == "total"
-                                    else VIOLENT_CSI_WEIGHTS)},
+        payload={
+            "by_year": by_year.to_dict(orient="records"),
+            "by_hood": by_hood.to_dict(orient="records"),
+            "variant": variant,
+            "weights": dict(TOTAL_CSI_WEIGHTS if variant == "total" else VIOLENT_CSI_WEIGHTS),
+        },
     )

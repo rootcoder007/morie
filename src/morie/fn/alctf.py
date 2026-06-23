@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Class-based TF-IDF (BERTopic): class c treated as a single document."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_c_tfidf"]
@@ -34,7 +36,14 @@ def alammar_c_tfidf(term_counts_by_class, corpus_freq, A):
     n = len(term_counts_by_class)
     result = float(np.mean(term_counts_by_class))
     se = float(np.std(term_counts_by_class, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Class-based TF-IDF (BERTopic): class c treated as a single document"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Class-based TF-IDF (BERTopic): class c treated as a single document",
+        }
+    )
 
 
 def cheatsheet():

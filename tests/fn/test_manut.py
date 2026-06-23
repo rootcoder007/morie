@@ -1,6 +1,7 @@
 """Test manut."""
+
 import numpy as np
-import pytest
+
 from morie.fn.manut import manut
 
 

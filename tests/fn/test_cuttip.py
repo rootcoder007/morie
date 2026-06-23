@@ -1,6 +1,7 @@
 """Tests for cuttip.cutting_plane."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cuttip import cutting_plane
 
 
@@ -12,7 +13,7 @@ def test_cuttip_basic():
     integer_indices = np.random.default_rng(42).normal(0, 1, 100)
     result = cutting_plane(c, A, b, integer_indices)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cuttip_edge():

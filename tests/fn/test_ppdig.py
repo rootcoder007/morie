@@ -1,6 +1,7 @@
 """Test ppdig."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppdig import ppdig
 
 

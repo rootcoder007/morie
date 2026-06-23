@@ -1,6 +1,7 @@
 """Tests for information_theory_mackay3e31.information_theory_mackay_chapter_3_equation_31."""
+
 import numpy as np
-import pytest
+
 from morie.fn.information_theory_mackay3e31 import information_theory_mackay_chapter_3_equation_31
 
 
@@ -9,7 +10,7 @@ def test_information_theory_mackay3e31_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = information_theory_mackay_chapter_3_equation_31(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_information_theory_mackay3e31_edge():

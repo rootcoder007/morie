@@ -1,6 +1,7 @@
 """Tests for morie.fn.ebac — Widmark eBAC calculation."""
 
 import pytest
+
 from morie.fn.ebac import calculate_ebac as ebac
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """One-hot encoding of categorical feature into indicator columns."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_one_hot_encoding"]
@@ -30,7 +32,14 @@ def geron_one_hot_encoding(categories):
     n = int(categories) if categories.ndim == 0 else len(categories)
     result = float(np.mean(categories))
     se = float(np.std(categories, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "One-hot encoding of categorical feature into indicator columns"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "One-hot encoding of categorical feature into indicator columns",
+        }
+    )
 
 
 def cheatsheet():

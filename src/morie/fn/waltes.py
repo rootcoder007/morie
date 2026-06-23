@@ -33,4 +33,4 @@ waltes = wald_test
 
 
 def cheatsheet() -> str:
-    return 'wald_test({}) -> Wald test.'
+    return "wald_test({}) -> Wald test."

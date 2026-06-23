@@ -1,7 +1,6 @@
 """Tests for morie.fn.svipb -- Bayesian ideal point posterior"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svipb import ideal_point_bayes
 

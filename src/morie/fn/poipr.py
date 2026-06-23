@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Penalized Poisson regression for count genomic outcomes."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["poisson_penalized_regression"]
@@ -34,7 +36,14 @@ def poisson_penalized_regression(y, X, lam):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Penalized Poisson regression for count genomic outcomes"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Penalized Poisson regression for count genomic outcomes",
+        }
+    )
 
 
 def cheatsheet():

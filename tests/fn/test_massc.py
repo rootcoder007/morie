@@ -1,6 +1,7 @@
 """Test massc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.massc import massc
 
 

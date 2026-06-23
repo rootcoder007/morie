@@ -1,6 +1,5 @@
 """Tests for rdpc.renyi_dp."""
-import numpy as np
-import pytest
+
 from morie.fn.rdpc import renyi_dp
 
 
@@ -10,7 +9,7 @@ def test_rdpc_basic():
     sigma = 1.0
     result = renyi_dp(alpha, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdpc_edge():

@@ -1,6 +1,7 @@
 """Test opcom."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opcom import opcom
 
 

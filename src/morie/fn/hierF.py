@@ -1,6 +1,7 @@
 """Hierarchical reconciliation (MinT)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hierarchical_forecast"]

@@ -1,6 +1,7 @@
 """Tests for rng238.rangayyan_ch4_complex_cepstra_sum."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng238 import rangayyan_ch4_complex_cepstra_sum
 
 
@@ -11,7 +12,7 @@ def test_rng238_basic():
     n = 100
     result = rangayyan_ch4_complex_cepstra_sum(x_hat, h_hat, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng238_edge():

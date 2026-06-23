@@ -61,6 +61,7 @@ def incubation_period(
     elif distribution == "weibull":
         shape, _, scale = stats.weibull_min.fit(data, floc=0)
         from scipy.special import gamma as gammafn
+
         mean_val = scale * gammafn(1 + 1 / shape)
         var_val = scale**2 * (gammafn(1 + 2 / shape) - gammafn(1 + 1 / shape) ** 2)
         params = {"shape": shape, "scale": scale}

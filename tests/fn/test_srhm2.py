@@ -1,6 +1,7 @@
 """Test srhm2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srhm2 import srhm2
 
 

@@ -63,4 +63,4 @@ markge = markov_generate
 
 
 def cheatsheet() -> str:
-    return 'markov_generate({}) -> Stochastic sequence generation (Markov chain).'
+    return "markov_generate({}) -> Stochastic sequence generation (Markov chain)."

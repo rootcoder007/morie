@@ -1,7 +1,7 @@
 """Tests for morie.fn.svwdm."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svwdm import svwdm
 
 

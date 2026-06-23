@@ -1,14 +1,15 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian-nonparametric classification -- probit-link GP."""
+
 import numpy as np
 from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_np_classification"]
 
 
-def ghosal_np_classification(x, y, length_scale=None, sigma_f=1.0,
-                              n_iter=300, seed=0):
+def ghosal_np_classification(x, y, length_scale=None, sigma_f=1.0, n_iter=300, seed=0):
     """Probit-link GP classifier with Laplace-approximation posterior.
 
     Model::
@@ -42,14 +43,13 @@ def ghosal_np_classification(x, y, length_scale=None, sigma_f=1.0,
     y = np.asarray(y, dtype=float).ravel()
     y_pm = 2 * y - 1  # to {-1, +1}
     n = x.shape[0]
-    sq = (np.sum(x ** 2, axis=1, keepdims=True)
-          + np.sum(x ** 2, axis=1)[None, :] - 2 * x @ x.T)
+    sq = np.sum(x**2, axis=1, keepdims=True) + np.sum(x**2, axis=1)[None, :] - 2 * x @ x.T
     sq = np.clip(sq, 0, None)
     if length_scale is None:
         d = np.sqrt(sq[np.triu_indices_from(sq, k=1)])
         length_scale = float(np.median(d[d > 0])) if d.size and (d > 0).any() else 1.0
         length_scale = max(length_scale, 1e-3)
-    K = sigma_f ** 2 * np.exp(-sq / (2 * length_scale ** 2)) + 1e-6 * np.eye(n)
+    K = sigma_f**2 * np.exp(-sq / (2 * length_scale**2)) + 1e-6 * np.eye(n)
 
     # Newton-Raphson on f for probit likelihood
     f = np.zeros(n)
@@ -81,21 +81,26 @@ def ghosal_np_classification(x, y, length_scale=None, sigma_f=1.0,
     Phi = np.clip(norm.cdf(z), 1e-12, 1 - 1e-12)
     ll = float(np.sum(np.log(Phi)))
     try:
-        log_marg = ll - 0.5 * float(f @ np.linalg.solve(K, f)) \
+        log_marg = (
+            ll
+            - 0.5 * float(f @ np.linalg.solve(K, f))
             - 0.5 * float(np.linalg.slogdet(np.eye(n) + (sW[:, None] * K) * sW[None, :])[1])
+        )
     except np.linalg.LinAlgError:
         log_marg = float("nan")
     pred = (p_hat >= 0.5).astype(int)
     accuracy = float(np.mean(pred == y))
-    return RichResult(payload={
-        "estimate": float(np.mean(p_hat)),
-        "p_hat": p_hat.tolist(),
-        "accuracy": accuracy,
-        "log_marginal": log_marg,
-        "length_scale": float(length_scale),
-        "n": n,
-        "method": "Probit-link GP classifier (Laplace)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(p_hat)),
+            "p_hat": p_hat.tolist(),
+            "accuracy": accuracy,
+            "log_marginal": log_marg,
+            "length_scale": float(length_scale),
+            "n": n,
+            "method": "Probit-link GP classifier (Laplace)",
+        }
+    )
 
 
 def cheatsheet():

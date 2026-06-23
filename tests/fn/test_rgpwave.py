@@ -1,6 +1,7 @@
 """Tests for rgpwave.rangayyan_p_wave_detect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpwave import rangayyan_p_wave_detect
 
 
@@ -11,7 +12,7 @@ def test_rgpwave_basic():
     r_peaks = np.arange(50, 1000, 50)
     result = rangayyan_p_wave_detect(ecg, fs, r_peaks)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpwave_edge():

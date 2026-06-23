@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Blackman window function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_blackman_window"]

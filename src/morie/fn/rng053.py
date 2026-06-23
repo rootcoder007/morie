@@ -1,6 +1,7 @@
 """Z-transform of a causal FIR system of length N (transfer function).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_z_transform_fir"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_z_transform_fir(h, n, z, N):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Z-transform of a causal FIR system of length N (transfer function)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Z-transform of a causal FIR system of length N (transfer function).",
+        }
+    )
 
 
 def cheatsheet():

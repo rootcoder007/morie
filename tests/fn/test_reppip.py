@@ -1,9 +1,9 @@
 """Tests for morie.fn.reppip -- data repair pipeline."""
 
 import numpy as np
-import pandas as pd
-from morie.fn.reppip import repair_pipeline, reppip
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.reppip import repair_pipeline, reppip
 
 
 class TestReppip:

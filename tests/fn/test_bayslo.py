@@ -1,6 +1,7 @@
 """Tests for bayslo.bayes_lasso."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bayslo import bayes_lasso
 
 
@@ -11,7 +12,7 @@ def test_bayslo_basic():
     lam = 0.1
     result = bayes_lasso(y, M, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bayslo_edge():

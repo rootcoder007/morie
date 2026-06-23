@@ -1,7 +1,9 @@
 """Tests for wnflt -- Wiener filter."""
+
 import numpy as np
-from morie.fn.wnflt import wiener_filter
+
 from morie.fn._containers import SignalResult
+from morie.fn.wnflt import wiener_filter
 
 
 def test_wiener_basic(signal_1khz):

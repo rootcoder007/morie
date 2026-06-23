@@ -1,6 +1,7 @@
 """Test bpe_train_merges."""
-from morie.fn.bpetm import bpe_train_merges, bpetm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bpetm import bpe_train_merges, bpetm
 
 
 class TestBpeTrainMerges:

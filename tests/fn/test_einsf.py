@@ -28,7 +28,7 @@ def test_kappa_value():
     r = einsf(R_mn, 0.0, g)
     G_val = 6.67430e-11
     c_val = 299792458.0
-    expected = 8.0 * np.pi * G_val / c_val ** 4
+    expected = 8.0 * np.pi * G_val / c_val**4
     assert r["kappa"] == pytest.approx(expected, rel=1e-10)
 
 

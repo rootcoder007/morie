@@ -1,7 +1,6 @@
 """Tests for morie.fn.msvor -- 2D Voronoi diagram"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msvor import voronoi_2d
 

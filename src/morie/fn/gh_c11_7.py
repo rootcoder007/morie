@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Riemann-Liouville process: integrated BM of order s, Holder-s paths."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_rl_process"]
@@ -30,7 +32,14 @@ def ghosal_rl_process(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Riemann-Liouville process: integrated BM of order s, Holder-s paths"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Riemann-Liouville process: integrated BM of order s, Holder-s paths",
+        }
+    )
 
 
 def cheatsheet():

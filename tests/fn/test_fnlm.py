@@ -1,6 +1,7 @@
 """Tests for fnlm.function_on_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fnlm import function_on_function
 
 
@@ -12,7 +13,7 @@ def test_fnlm_basic():
     basis_Y = np.random.default_rng(42).normal(0, 1, 100)
     result = function_on_function(X, Y, basis_X, basis_Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fnlm_edge():

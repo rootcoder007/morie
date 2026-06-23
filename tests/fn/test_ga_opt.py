@@ -1,6 +1,7 @@
 """Tests for ga_opt.genetic_algorithm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ga_opt import genetic_algorithm
 
 
@@ -11,7 +12,7 @@ def test_ga_opt_basic():
     generations = np.random.default_rng(42).normal(0, 1, 100)
     result = genetic_algorithm(f, population, generations)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ga_opt_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svsep -- Separating hyperplane"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svsep import separating_hyp
 

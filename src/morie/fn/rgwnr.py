@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_wiener_filter"]
@@ -34,7 +36,14 @@ def rangayyan_wiener_filter(x, noise_psd, signal_psd):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter)",
+        }
+    )
 
 
 def cheatsheet():

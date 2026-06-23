@@ -1,8 +1,9 @@
 """Tests for morie.fn.loggro -- logistic growth model."""
 
 import numpy as np
-from morie.fn.loggro import logistic_growth, loggro
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.loggro import loggro, logistic_growth
 
 
 class TestLoggro:

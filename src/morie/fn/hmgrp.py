@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gaussian random projection matrix scaled by 1/sqrt(d')."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gaussian_rand_projection"]
@@ -34,7 +36,14 @@ def geron_gaussian_rand_projection(X, d_out, seed):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gaussian random projection matrix scaled by 1/sqrt(d')"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gaussian random projection matrix scaled by 1/sqrt(d')",
+        }
+    )
 
 
 def cheatsheet():

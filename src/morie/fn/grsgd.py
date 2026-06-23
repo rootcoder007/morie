@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stochastic gradient descent step using a single random sample."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_stochastic_gradient_descent"]
@@ -38,7 +40,14 @@ def geron_stochastic_gradient_descent(X, y, theta, eta, n_iter):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stochastic gradient descent step using a single random sample"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stochastic gradient descent step using a single random sample",
+        }
+    )
 
 
 def cheatsheet():

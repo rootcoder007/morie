@@ -1,6 +1,7 @@
 """Test robnsn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.robnsn import robnsn
 
 

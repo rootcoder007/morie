@@ -1,5 +1,4 @@
 import sqlite3
-from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -22,22 +21,25 @@ def test_list_modules_includes_core_cpads_steps():
 def _mock_cpads_df():
     """Minimal CPADS-like DataFrame for testing without the real DB."""
     import numpy as np
+
     rng = np.random.default_rng(42)
     n = 100
-    return pd.DataFrame({
-        "SEQID": range(1, n + 1),
-        "weight": rng.uniform(0.5, 2.0, n),
-        "alcohol_past12m": rng.choice([0, 1], n),
-        "heavy_drinking_30d": rng.choice([0, 1], n),
-        "ebac_tot": rng.uniform(0, 0.1, n),
-        "ebac_legal": rng.choice([0, 1], n),
-        "cannabis_any_use": rng.choice([0, 1], n),
-        "age_group": rng.choice(["18-19", "20-22", "23-25"], n),
-        "gender": rng.choice(["Female", "Male"], n),
-        "province_region": rng.choice(["Ontario", "Quebec", "BC"], n),
-        "mental_health": rng.choice(["Good", "Fair", "Poor"], n),
-        "physical_health": rng.choice(["Good", "Fair", "Poor"], n),
-    })
+    return pd.DataFrame(
+        {
+            "SEQID": range(1, n + 1),
+            "weight": rng.uniform(0.5, 2.0, n),
+            "alcohol_past12m": rng.choice([0, 1], n),
+            "heavy_drinking_30d": rng.choice([0, 1], n),
+            "ebac_tot": rng.uniform(0, 0.1, n),
+            "ebac_legal": rng.choice([0, 1], n),
+            "cannabis_any_use": rng.choice([0, 1], n),
+            "age_group": rng.choice(["18-19", "20-22", "23-25"], n),
+            "gender": rng.choice(["Female", "Male"], n),
+            "province_region": rng.choice(["Ontario", "Quebec", "BC"], n),
+            "mental_health": rng.choice(["Good", "Fair", "Poor"], n),
+            "physical_health": rng.choice(["Good", "Fair", "Poor"], n),
+        }
+    )
 
 
 def _mock_db(tmp_path):
@@ -52,6 +54,7 @@ def _mock_db(tmp_path):
 def test_load_cpads_from_mock_db(tmp_path, monkeypatch):
     """Load CPADS from a mock SQLite DB (no LFS needed)."""
     from morie.data import load_dataset
+
     db_path = _mock_db(tmp_path)
     monkeypatch.setattr(
         "morie.data._builtin_db_connect",
@@ -68,6 +71,7 @@ def test_load_cpads_from_mock_db(tmp_path, monkeypatch):
 def test_load_multiple_datasets_mock(tmp_path, monkeypatch):
     """Verify dataset load works with mock DB."""
     from morie.data import load_dataset
+
     db_path = _mock_db(tmp_path)
     conn_factory = lambda: sqlite3.connect(str(db_path))
     monkeypatch.setattr("morie.data._builtin_db_connect", conn_factory)

@@ -1,6 +1,7 @@
 """Tests for survMd.survival_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survmd import survival_mediation
 
 
@@ -13,7 +14,7 @@ def test_survmd_basic():
     C = np.random.default_rng(42).normal(0, 1, 100)
     result = survival_mediation(T, delta, X, M, C)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survmd_edge():

@@ -1,6 +1,7 @@
 """Numbered display equation (14.2) from MVSML chapter 14.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_convolutional_nn_eq_14_2"]
@@ -40,7 +41,14 @@ def mvsml_convolutional_nn_eq_14_2(possible, to, nd, a, function, t):
     n = len(possible)
     result = float(np.mean(possible))
     se = float(np.std(possible, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (14.2) from MVSML chapter 14."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (14.2) from MVSML chapter 14.",
+        }
+    )
 
 
 def cheatsheet():

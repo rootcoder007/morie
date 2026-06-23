@@ -1,6 +1,7 @@
 """Tests for ptmcmc.parallel_tempering."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ptmcmc import parallel_tempering
 
 
@@ -12,7 +13,7 @@ def test_ptmcmc_basic():
     n_iter = 50
     result = parallel_tempering(log_p, temperatures, x0, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ptmcmc_edge():

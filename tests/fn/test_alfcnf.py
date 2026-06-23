@@ -1,6 +1,7 @@
 """Tests for alfcnf.alphafold_confidence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alfcnf import alphafold_confidence
 
 
@@ -10,7 +11,7 @@ def test_alfcnf_basic():
     s = 90
     result = alphafold_confidence(frames, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alfcnf_edge():

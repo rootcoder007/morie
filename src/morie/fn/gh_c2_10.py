@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian nonparametric Poisson regression: E[Y|x] = exp(f(x)), f ~ GP."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_np_poisson_reg"]
@@ -32,7 +34,14 @@ def ghosal_np_poisson_reg(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian nonparametric Poisson regression: E[Y|x] = exp(f(x)), f ~ GP"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bayesian nonparametric Poisson regression: E[Y|x] = exp(f(x)), f ~ GP",
+        }
+    )
 
 
 def cheatsheet():

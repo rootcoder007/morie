@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Propensity score caliper matching (restrict to within-caliper pairs)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["caliper_psm"]
@@ -34,7 +36,14 @@ def caliper_psm(e_score, T, caliper):
     n = int(e_score) if e_score.ndim == 0 else len(e_score)
     result = float(np.mean(e_score))
     se = float(np.std(e_score, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Propensity score caliper matching (restrict to within-caliper pairs)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Propensity score caliper matching (restrict to within-caliper pairs)",
+        }
+    )
 
 
 def cheatsheet():

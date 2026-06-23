@@ -1,7 +1,9 @@
 """Test bits_per_byte."""
+
 import numpy as np
-from morie.fn.bpb import bits_per_byte, bpb
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bpb import bits_per_byte, bpb
 
 
 class TestBitsPerByte:

@@ -1,6 +1,7 @@
 """Orthogonal random forest."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["orthogonal_random_forest"]

@@ -1,6 +1,7 @@
 """Ridge regression beta_hat = (X'X + lambda I)^{-1} X'y."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_ridge"]
@@ -34,7 +35,14 @@ def wasserman_ridge(X, y, lambda_):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Ridge regression beta_hat = (X'X + lambda I)^{-1} X'y"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Ridge regression beta_hat = (X'X + lambda I)^{-1} X'y",
+        }
+    )
 
 
 def cheatsheet():

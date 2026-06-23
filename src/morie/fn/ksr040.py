@@ -1,6 +1,7 @@
 """Equivalence of P-Donsker property and bootstrap consistency in probability."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_bootstrap_donsker_iff"]
@@ -32,7 +33,14 @@ def kosorok_ch2_bootstrap_donsker_iff(F, P):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Equivalence of P-Donsker property and bootstrap consistency in probability"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Equivalence of P-Donsker property and bootstrap consistency in probability",
+        }
+    )
 
 
 def cheatsheet():

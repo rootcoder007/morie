@@ -234,11 +234,30 @@ def _looks_like_equation(line: str) -> bool:
 
 
 _CHAPTER_NUM_WORDS = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-    "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15,
-    "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
-    "twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+    "twenty-one": 21,
+    "twenty-two": 22,
+    "twenty-three": 23,
+    "twenty-four": 24,
     "twenty-five": 25,
 }
 
@@ -288,8 +307,10 @@ def _decode_uni_escapes(text: str) -> str:
     raw CID glyph names like `/uni00A0` (non-breaking space) verbatim in
     extracted text. We decode them to the corresponding Unicode codepoint.
     """
+
     def _sub(m: re.Match[str]) -> str:
         return chr(int(m.group(1), 16))
+
     return _UNI_ESCAPE_RE.sub(_sub, text)
 
 
@@ -299,22 +320,22 @@ def _decode_uni_escapes(text: str) -> str:
 # known equations (logistic odds, OLS β, McFadden R²) and matching against
 # the published source.
 _CID_NAME_MAP = {
-    "/C0":   "−",      # minus sign (very common -- arithmetic + intervals)
-    "/C1":   "·",      # middle-dot multiplication
-    "/C2":   "×",      # ×
-    "/C16":  "(",      # bracket-fraction open  -> context says "( "
-    "/C17":  ")",      # bracket-fraction close -> "}/("
-    "/C18":  "{",
-    "/C19":  "}",
-    "/C20":  "<",
-    "/C21":  "≥",      # >= seen in `y /C21 0`
-    "/C22":  "≤",
-    "/C23":  "≠",
-    "/C24":  "->",
-    "/C25":  "↑",
-    "/C26":  "↓",
-    "/C32":  " ",
-    "/C138": "]",      # close bracket -- paired with `½`
+    "/C0": "−",  # minus sign (very common -- arithmetic + intervals)
+    "/C1": "·",  # middle-dot multiplication
+    "/C2": "×",  # ×
+    "/C16": "(",  # bracket-fraction open  -> context says "( "
+    "/C17": ")",  # bracket-fraction close -> "}/("
+    "/C18": "{",
+    "/C19": "}",
+    "/C20": "<",
+    "/C21": "≥",  # >= seen in `y /C21 0`
+    "/C22": "≤",
+    "/C23": "≠",
+    "/C24": "->",
+    "/C25": "↑",
+    "/C26": "↓",
+    "/C32": " ",
+    "/C138": "]",  # close bracket -- paired with `½`
     "/C139": "}",
     "/C140": ")",
 }
@@ -329,8 +350,10 @@ def _decode_cid_names(text: str) -> str:
     has 1000+ leaked `/Cnnn` tokens; leaving them in is worse than dropping
     the rare unknown ones.
     """
+
     def _sub(m: re.Match[str]) -> str:
         return _CID_NAME_MAP.get(m.group(0), "")
+
     return _CID_NAME_RE.sub(_sub, text)
 
 
@@ -338,14 +361,14 @@ def _decode_cid_names(text: str) -> str:
 # Springer Advanced Statistics in Criminology and verified against three
 # known equations (Y = β₀ + β₁x₁ + …, logistic odds, OLS β).
 _MATH_GLYPH_MAP = {
-    "¼": "=",      # equality glyph mismapped to vulgar fraction one-quarter
+    "¼": "=",  # equality glyph mismapped to vulgar fraction one-quarter
     "þ": "+",
     "Þ": ")",
     "ð": "(",
     "Ð": "(",
-    "½": "[",      # opens square bracket in formulas; rare elsewhere
-    "ı": "i",      # dotless-i normalisation (cosmetic)
-    "ﬁ": "fi",     # ligatures
+    "½": "[",  # opens square bracket in formulas; rare elsewhere
+    "ı": "i",  # dotless-i normalisation (cosmetic)
+    "ﬁ": "fi",  # ligatures
     "ﬂ": "fl",
     "ﬃ": "ffi",
     "ﬀ": "ff",
@@ -358,8 +381,8 @@ _MATH_GLYPH_RE = re.compile("|".join(re.escape(k) for k in _MATH_GLYPH_MAP))
 _DECIMAL_COLON_RE = re.compile(r"(\d):(\d)")
 
 
-_BAR_OVER_RE = re.compile(r"≤([xXyYpPzZμπρ])")          # `≤x` -> `x̄`
-_HAT_OVER_RE = re.compile(r"\bb(Y|β|p|π)\b")              # `bY` -> `Ŷ`
+_BAR_OVER_RE = re.compile(r"≤([xXyYpPzZμπρ])")  # `≤x` -> `x̄`
+_HAT_OVER_RE = re.compile(r"\bb(Y|β|p|π)\b")  # `bY` -> `Ŷ`
 COMBINING_MACRON = "̄"
 COMBINING_CIRCUMFLEX = "̂"
 
@@ -388,9 +411,9 @@ def _decode_math_glyphs(text: str) -> str:
 # single-letter tokens back into words. Inside a run, single spaces separate
 # letters of one word; spans of >=2 spaces separate distinct words.
 _LETTER_SPACED_RUN_RE = re.compile(
-    r"(?:(?<=^)|(?<=[\s.,;:!?()\[\]{}\"']))"      # left boundary
-    r"([A-Za-z](?:[ \t]{1,4}[A-Za-z]){3,})"        # 4+ single-letter tokens, runs of 1-4 spaces
-    r"(?=$|[\s.,;:!?()\[\]{}\"'])",                # right boundary
+    r"(?:(?<=^)|(?<=[\s.,;:!?()\[\]{}\"']))"  # left boundary
+    r"([A-Za-z](?:[ \t]{1,4}[A-Za-z]){3,})"  # 4+ single-letter tokens, runs of 1-4 spaces
+    r"(?=$|[\s.,;:!?()\[\]{}\"'])",  # right boundary
     re.MULTILINE,
 )
 
@@ -404,6 +427,7 @@ def _collapse_letter_spacing(text: str) -> str:
     - require at least one letter to be lowercase (to avoid matching real
       acronyms like "U S A" or "I B M")
     """
+
     def _collapse(m: re.Match[str]) -> str:
         run = m.group(1)
         if not any(c.islower() for c in run):
@@ -412,6 +436,7 @@ def _collapse_letter_spacing(text: str) -> str:
         # remaining single spaces inside each chunk.
         words = [w.replace(" ", "").replace("\t", "") for w in re.split(r"[ \t]{2,}", run)]
         return " ".join(words)
+
     return _LETTER_SPACED_RUN_RE.sub(_collapse, text)
 
 

@@ -1,6 +1,7 @@
 """Tests for socpts.second_order_cone."""
+
 import numpy as np
-import pytest
+
 from morie.fn.socpts import second_order_cone
 
 
@@ -12,7 +13,7 @@ def test_socpts_basic():
     domains = np.random.default_rng(42).normal(0, 1, 100)
     result = second_order_cone(c, A, b, domains)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_socpts_edge():

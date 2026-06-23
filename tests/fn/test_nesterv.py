@@ -1,6 +1,7 @@
 """Tests for nesterv.nesterov_accelerated."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nesterv import nesterov_accelerated
 
 
@@ -11,7 +12,7 @@ def test_nesterv_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = nesterov_accelerated(g, mu, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nesterv_edge():

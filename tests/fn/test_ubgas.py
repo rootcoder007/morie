@@ -1,6 +1,7 @@
 """Test ubgas."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubgas import ubgas
 
 

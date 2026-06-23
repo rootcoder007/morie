@@ -1,6 +1,7 @@
 """Tests for rgspres.rangayyan_spectral_resolution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgspres import rangayyan_spectral_resolution
 
 
@@ -11,7 +12,7 @@ def test_rgspres_basic():
     window_type = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_spectral_resolution(N, fs, window_type)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgspres_edge():

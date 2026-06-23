@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Numerical differentiation via finite differences."""
 
-
 from ._containers import DescriptiveResult
 
 _QUOTE = "Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius"

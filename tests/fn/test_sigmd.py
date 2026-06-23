@@ -1,5 +1,7 @@
 """Tests for morie.fn.sigmd."""
+
 import numpy as np
+
 from morie.fn.sigmd import sigmoid
 
 
@@ -13,6 +15,7 @@ def test_sigmd_smoke():
 
 def test_cheatsheet():
     from morie.fn.sigmd import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

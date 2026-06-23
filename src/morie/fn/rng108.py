@@ -1,6 +1,7 @@
 """Recursive form of the 8-point MA filter using delayed output.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_ma_8point_recursive"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_ma_8point_recursive(x, y, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Recursive form of the 8-point MA filter using delayed output."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Recursive form of the 8-point MA filter using delayed output.",
+        }
+    )
 
 
 def cheatsheet():

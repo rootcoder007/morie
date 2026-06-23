@@ -1,5 +1,7 @@
 """Tests for rank_sum_test."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.rnksm import rank_sum_test
 
 

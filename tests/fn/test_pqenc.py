@@ -7,7 +7,6 @@ from morie.fn.pqenc import polarquant_encode
 
 
 class TestPolarquantEncode:
-
     def test_magnitude(self):
         x = np.array([3.0, 4.0])
         res = polarquant_encode(x)

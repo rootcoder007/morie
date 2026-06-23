@@ -1,6 +1,8 @@
 """Tests for morie.fn.bgtet -- Breusch-Godfrey test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.bgtet import bg_test
 
 
@@ -19,4 +21,5 @@ class TestBG:
 
     def test_cheatsheet(self):
         from morie.fn.bgtet import cheatsheet
+
         assert isinstance(cheatsheet(), str)

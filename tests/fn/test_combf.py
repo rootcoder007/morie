@@ -1,9 +1,9 @@
 """Test comb_filter_signal (combf)."""
-import numpy as np
-import pytest
 
-from morie.fn.combf import comb_filter_signal, combf
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.combf import comb_filter_signal, combf
 
 
 class TestCombFilter:

@@ -54,7 +54,7 @@ def knspl(
         W = np.exp(-0.5 * (dists / bandwidth) ** 2)
     elif kernel == "epanechnikov":
         u = dists / bandwidth
-        W = np.where(u <= 1, 0.75 * (1 - u ** 2), 0.0)
+        W = np.where(u <= 1, 0.75 * (1 - u**2), 0.0)
     else:
         raise ValueError(f"Unknown kernel: {kernel}")
 

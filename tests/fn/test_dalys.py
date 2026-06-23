@@ -1,6 +1,7 @@
 """Tests for morie.fn.dalys -- DALYs."""
 
 import pytest
+
 from morie.fn.dalys import disability_adjusted_life_years, yld_from_prevalence
 
 

@@ -1,6 +1,7 @@
 """Rho critical value where mediation effect -> 0."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rho_critical_mediation"]
@@ -34,7 +35,9 @@ def rho_critical_mediation(nie, sigma_e2, sigma_e3):
     n = len(nie)
     result = float(np.mean(nie))
     se = float(np.std(nie, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rho critical value where mediation effect -> 0"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Rho critical value where mediation effect -> 0"}
+    )
 
 
 def cheatsheet():

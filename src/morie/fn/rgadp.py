@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LMS adaptive noise canceller -- Rangayyan Ch 11."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,23 +45,25 @@ def rangayyan_adaptive_filter(x, reference, mu=0.01, order=16):
     r = np.asarray(reference, dtype=float).ravel()
     if x.size != r.size:
         raise ValueError("x and reference must have equal length.")
-    M = int(order); N = x.size
+    M = int(order)
+    N = x.size
     w = np.zeros(M)
-    y = np.zeros(N); e = np.zeros(N)
+    y = np.zeros(N)
+    e = np.zeros(N)
     for n in range(M - 1, N):
-        rv = r[n - M + 1:n + 1][::-1]
+        rv = r[n - M + 1 : n + 1][::-1]
         y[n] = float(w @ rv)
         e[n] = x[n] - y[n]
         w = w + 2.0 * mu * e[n] * rv
     res = RichResult(
         title="LMS adaptive noise canceller",
         summary_lines=[
-            ("Taps", M), ("μ", float(mu)),
-            ("Residual MSE", float(np.mean(e ** 2))),
+            ("Taps", M),
+            ("μ", float(mu)),
+            ("Residual MSE", float(np.mean(e**2))),
         ],
-        interpretation=f"LMS order {M}, μ={mu}; residual MSE {float(np.mean(e ** 2)):.4g}.",
-        payload={"signal": e, "noise_estimate": y, "weights": w,
-                 "mu": float(mu), "order": M},
+        interpretation=f"LMS order {M}, μ={mu}; residual MSE {float(np.mean(e**2)):.4g}.",
+        payload={"signal": e, "noise_estimate": y, "weights": w, "mu": float(mu), "order": M},
     )
     return with_describe_pointer(res, "rgadp")
 

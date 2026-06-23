@@ -5,10 +5,13 @@ from __future__ import annotations
 
 import numpy as np
 from scipy import stats as sp
+
 from ._richresult import RichResult
 
 
-def bayesian_rci(pre: np.ndarray, post: np.ndarray, cdf=None, *, n_iter: int = 2000, sem: float | None = None, seed: int = 42) -> dict:
+def bayesian_rci(
+    pre: np.ndarray, post: np.ndarray, cdf=None, *, n_iter: int = 2000, sem: float | None = None, seed: int = 42
+) -> dict:
     """Bayesian Reliable Change Index.
 
     Computes the posterior probability that each individual's change

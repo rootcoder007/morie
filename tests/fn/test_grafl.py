@@ -1,6 +1,7 @@
 """Tests for grafl.graphlet_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grafl import graphlet_kernel
 
 
@@ -11,7 +12,7 @@ def test_grafl_basic():
     k = 5
     result = graphlet_kernel(G1, G2, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grafl_edge():

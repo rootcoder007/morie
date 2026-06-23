@@ -1,9 +1,9 @@
 """Tests for morie.fn.tsne — t-SNE."""
 
 import numpy as np
-import pytest
-from morie.fn.tsne import tsne
+
 from morie.fn._containers import TsneRes
+from morie.fn.tsne import tsne
 
 
 class TestTsne:

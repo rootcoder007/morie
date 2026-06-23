@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.stag import staggered_did
 
 
@@ -33,10 +34,7 @@ class TestStaggeredDiD:
 
     def test_no_never_treated_raises(self):
         with pytest.raises(ValueError, match="never-treated"):
-            staggered_did(
-                np.ones(10), np.arange(10), np.ones(10, dtype=int),
-                np.ones(10, dtype=int)
-            )
+            staggered_did(np.ones(10), np.arange(10), np.ones(10, dtype=int), np.ones(10, dtype=int))
 
     def test_att_gt_list_populated(self):
         rng = np.random.default_rng(42)

@@ -1,6 +1,7 @@
 """SignalP signal peptide prediction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["signal_peptide"]

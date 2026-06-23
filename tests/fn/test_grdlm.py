@@ -1,6 +1,7 @@
 """Tests for grdlm.geron_dataloader_minibatch."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grdlm import geron_dataloader_minibatch
 
 
@@ -12,7 +13,7 @@ def test_grdlm_basic():
     seed = 42
     result = geron_dataloader_minibatch(n, b, shuffle, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grdlm_edge():

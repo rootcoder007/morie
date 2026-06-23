@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DPM marginal likelihood via Polya urn sequential update."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dpm_marg"]
@@ -30,7 +32,14 @@ def ghosal_dpm_marg(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DPM marginal likelihood via Polya urn sequential update"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DPM marginal likelihood via Polya urn sequential update",
+        }
+    )
 
 
 def cheatsheet():

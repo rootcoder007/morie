@@ -1,6 +1,7 @@
 """Tests for acfP.autocorrelation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.acfP import autocorrelation
 
 
@@ -10,7 +11,7 @@ def test_acfP_basic():
     lag_max = 100
     result = autocorrelation(y, lag_max)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_acfP_edge():

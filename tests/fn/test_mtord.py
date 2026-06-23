@@ -1,9 +1,10 @@
 """Tests for morie.fn.mtord — road segment."""
 
-import pytest
 import pandas as pd
-from morie.fn.mtord import mto_road_segment
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtord import mto_road_segment
 
 
 class TestRoadSegment:

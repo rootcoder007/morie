@@ -1,6 +1,7 @@
 """Collapsed CRP Gibbs (integrate out parameters)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["crp_collapsed"]
@@ -34,7 +35,9 @@ def crp_collapsed(y, alpha, n_iter):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Collapsed CRP Gibbs (integrate out parameters)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Collapsed CRP Gibbs (integrate out parameters)"}
+    )
 
 
 def cheatsheet():

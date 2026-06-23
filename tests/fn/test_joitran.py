@@ -1,6 +1,7 @@
 """Tests for joitran.joseph_itransformer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.joitran import joseph_itransformer
 
 
@@ -11,7 +12,7 @@ def test_joitran_basic():
     transformer = np.random.default_rng(42).normal(0, 1, 100)
     result = joseph_itransformer(X, n_variates, transformer)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_joitran_edge():

@@ -1,6 +1,7 @@
 """High-dimensional TMLE with sparsity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_high_dim"]

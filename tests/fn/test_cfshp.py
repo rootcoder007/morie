@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfshp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfshp import cfshp
 
 

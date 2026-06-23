@@ -1,6 +1,7 @@
 """Test mtcon."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtcon import mtcon
 
 

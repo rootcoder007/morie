@@ -1,6 +1,7 @@
 """Multi-mediator causal mediation analysis."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["multi_mediator_causal"]
@@ -34,7 +35,9 @@ def multi_mediator_causal(X, M, Y):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-mediator causal mediation analysis"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Multi-mediator causal mediation analysis"}
+    )
 
 
 def cheatsheet():

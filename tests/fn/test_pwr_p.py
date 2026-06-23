@@ -1,6 +1,7 @@
 """Tests for morie.fn.pwr_p -- power for two-proportion z-test."""
 
 import pytest
+
 from morie.fn.pwr_p import power_prop_test
 
 

@@ -1,6 +1,7 @@
 """Test ppgey."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppgey import ppgey
 
 

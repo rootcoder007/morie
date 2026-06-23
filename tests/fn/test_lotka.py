@@ -1,5 +1,7 @@
 """Tests for morie.fn.lotka."""
+
 import numpy as np
+
 from morie.fn.lotka import lotka
 
 
@@ -13,6 +15,7 @@ def test_lotka_smoke():
 
 def test_cheatsheet():
     from morie.fn.lotka import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

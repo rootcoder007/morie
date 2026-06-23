@@ -1,6 +1,7 @@
 """Tests for msm318.mvsml_general_eq_1_2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm318 import mvsml_general_eq_1_2
 
 
@@ -14,7 +15,7 @@ def test_msm318_basic():
     Wavelengths = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_general_eq_1_2(yv, dat_F, y, n, length, Wavelengths)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm318_edge():

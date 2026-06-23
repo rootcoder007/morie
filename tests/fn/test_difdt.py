@@ -1,7 +1,9 @@
 """Tests for difdt -- Delta plot DIF."""
+
 import numpy as np
-from morie.fn.difdt import dif_delta_plot
+
 from morie.fn._containers import DIFResult
+from morie.fn.difdt import dif_delta_plot
 
 
 class TestDifDeltaPlot:

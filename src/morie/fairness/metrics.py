@@ -27,6 +27,7 @@ definitions; the predictive-policing disparity framing of the
 SciencesPo *Predictive-policing-Chicago* project (Lachérade, Szabo,
 Krikava & Aeby, 2021) and Barman & Barman, arXiv:2603.18987.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -49,6 +50,7 @@ _FOUR_FIFTHS = 0.8  # EEOC four-fifths (80%) adverse-impact threshold
 
 # ── input helpers ───────────────────────────────────────────────────
 
+
 def _as_1d(x: Any, name: str) -> np.ndarray:
     """Coerce an array-like (list / tuple / Series / ndarray) to 1-D."""
     arr = np.asarray(x)
@@ -63,15 +65,10 @@ def _check_aligned(*arrays: tuple[str, np.ndarray]) -> None:
     n = len(arrays[0][1])
     for name, arr in arrays:
         if len(arr) != n:
-            raise ValueError(
-                f"length mismatch: {arrays[0][0]} has {n} rows, "
-                f"{name} has {len(arr)}"
-            )
+            raise ValueError(f"length mismatch: {arrays[0][0]} has {n} rows, {name} has {len(arr)}")
 
 
-def _favorable_rates(
-    outcome: np.ndarray, group: np.ndarray, favorable: Any
-) -> dict[Any, tuple[int, float]]:
+def _favorable_rates(outcome: np.ndarray, group: np.ndarray, favorable: Any) -> dict[Any, tuple[int, float]]:
     """Return {group_value: (n, favourable_rate)} for each group."""
     rates: dict[Any, tuple[int, float]] = {}
     for g in _ordered_unique(group):
@@ -99,10 +96,7 @@ def _resolve_privileged(
     """Pick the reference (privileged) group, inferring it if needed."""
     if privileged is not None:
         if privileged not in rates:
-            raise ValueError(
-                f"privileged group {privileged!r} not found; "
-                f"groups present: {list(rates)}"
-            )
+            raise ValueError(f"privileged group {privileged!r} not found; groups present: {list(rates)}")
         return privileged
     # Infer: the group with the highest favourable-outcome rate is the
     # one the system treats most favourably -> use it as the reference.
@@ -135,6 +129,7 @@ def _rates_from_labels(
 
 
 # ── metrics ─────────────────────────────────────────────────────────
+
 
 def fairness_disparate_impact(
     y_pred: Any,
@@ -204,12 +199,14 @@ def fairness_disparate_impact(
         else:
             ratio = rate / base
         ratios[g] = ratio
-        table.append([
-            str(g) + (" (ref)" if g == priv else ""),
-            n,
-            round(rate, 4),
-            "—" if g == priv else round(ratio, 4),
-        ])
+        table.append(
+            [
+                str(g) + (" (ref)" if g == priv else ""),
+                n,
+                round(rate, 4),
+                "—" if g == priv else round(ratio, 4),
+            ]
+        )
 
     non_ref = {g: r for g, r in ratios.items() if g != priv}
     finite = [r for r in non_ref.values() if np.isfinite(r)]
@@ -217,10 +214,7 @@ def fairness_disparate_impact(
     adverse = bool(np.isfinite(worst) and worst < _FOUR_FIFTHS)
 
     if not np.isfinite(worst):
-        interp = (
-            "Disparate-impact ratio could not be computed (privileged "
-            "group has no favourable outcomes)."
-        )
+        interp = "Disparate-impact ratio could not be computed (privileged group has no favourable outcomes)."
     elif adverse:
         interp = (
             f"Adverse impact detected: the worst disparate-impact ratio "
@@ -243,11 +237,13 @@ def fairness_disparate_impact(
             ("Reference group", priv),
             ("Adverse impact (<0.80)", adverse),
         ],
-        tables=[{
-            "title": "Per-group favourable-outcome rates:",
-            "headers": ["group", "n", "fav. rate", "DI ratio"],
-            "rows": table,
-        }],
+        tables=[
+            {
+                "title": "Per-group favourable-outcome rates:",
+                "headers": ["group", "n", "fav. rate", "DI ratio"],
+                "rows": table,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
         payload={
@@ -312,27 +308,24 @@ def fairness_demographic_parity(
     for g, (n, rate) in rates.items():
         gap = rate - base
         gaps[g] = gap
-        table.append([
-            str(g) + (" (ref)" if g == priv else ""),
-            n,
-            round(rate, 4),
-            "—" if g == priv else round(gap, 4),
-        ])
+        table.append(
+            [
+                str(g) + (" (ref)" if g == priv else ""),
+                n,
+                round(rate, 4),
+                "—" if g == priv else round(gap, 4),
+            ]
+        )
 
     non_ref = {g: v for g, v in gaps.items() if g != priv}
     worst = max(non_ref.values(), key=abs) if non_ref else 0.0
 
-    interp = (
-        f"The largest favourable-rate gap is {worst:+.3f} "
-        f"(group rate minus the {priv!r} reference rate). "
-        + (
-            "A gap far from zero means the system grants favourable "
-            "outcomes at materially different rates across groups."
-            if abs(worst) >= 0.1 else
-            "Gaps are small; favourable-outcome rates are close to "
-            "parity, though this does not account for differences in "
-            "ground-truth base rates."
-        )
+    interp = f"The largest favourable-rate gap is {worst:+.3f} (group rate minus the {priv!r} reference rate). " + (
+        "A gap far from zero means the system grants favourable outcomes at materially different rates across groups."
+        if abs(worst) >= 0.1
+        else "Gaps are small; favourable-outcome rates are close to "
+        "parity, though this does not account for differences in "
+        "ground-truth base rates."
     )
 
     return RichResult(
@@ -341,11 +334,13 @@ def fairness_demographic_parity(
             ("Largest |gap|", worst),
             ("Reference group", priv),
         ],
-        tables=[{
-            "title": "Per-group favourable-outcome rates:",
-            "headers": ["group", "n", "fav. rate", "parity gap"],
-            "rows": table,
-        }],
+        tables=[
+            {
+                "title": "Per-group favourable-outcome rates:",
+                "headers": ["group", "n", "fav. rate", "parity gap"],
+                "rows": table,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
         payload={
@@ -424,31 +419,28 @@ def fairness_equalized_odds(
                 f"group {g!r} has no positive or no negative ground-truth "
                 f"cases; its TPR/FPR (and gaps) are partly undefined."
             )
-        table.append([
-            str(g) + (" (ref)" if g == priv else ""),
-            d["n"],
-            round(d["tpr"], 4),
-            round(d["fpr"], 4),
-            "—" if g == priv else round(tg, 4),
-            "—" if g == priv else round(fg, 4),
-        ])
+        table.append(
+            [
+                str(g) + (" (ref)" if g == priv else ""),
+                d["n"],
+                round(d["tpr"], 4),
+                round(d["fpr"], 4),
+                "—" if g == priv else round(tg, 4),
+                "—" if g == priv else round(fg, 4),
+            ]
+        )
 
-    all_gaps = [v for g, v in tpr_gaps.items() if g != priv] + \
-               [v for g, v in fpr_gaps.items() if g != priv]
+    all_gaps = [v for g, v in tpr_gaps.items() if g != priv] + [v for g, v in fpr_gaps.items() if g != priv]
     finite = [v for v in all_gaps if np.isfinite(v)]
     worst = max(finite, key=abs) if finite else float("nan")
     violation = bool(np.isfinite(worst) and abs(worst) >= 0.1)
 
-    interp = (
-        f"The largest equalized-odds gap is {worst:+.3f}. "
-        + (
-            "Error rates differ substantially across groups: the system "
-            "is not equally accurate for everyone, which is a stronger "
-            "fairness concern than an outcome-rate gap alone."
-            if violation else
-            "TPR and FPR are close across groups; the system's error "
-            "profile is roughly even."
-        )
+    interp = f"The largest equalized-odds gap is {worst:+.3f}. " + (
+        "Error rates differ substantially across groups: the system "
+        "is not equally accurate for everyone, which is a stronger "
+        "fairness concern than an outcome-rate gap alone."
+        if violation
+        else "TPR and FPR are close across groups; the system's error profile is roughly even."
     )
 
     return RichResult(
@@ -458,11 +450,13 @@ def fairness_equalized_odds(
             ("Reference group", priv),
             ("Violation (|gap|≥0.10)", violation),
         ],
-        tables=[{
-            "title": "Per-group true/false positive rates:",
-            "headers": ["group", "n", "TPR", "FPR", "ΔTPR", "ΔFPR"],
-            "rows": table,
-        }],
+        tables=[
+            {
+                "title": "Per-group true/false positive rates:",
+                "headers": ["group", "n", "TPR", "FPR", "ΔTPR", "ΔFPR"],
+                "rows": table,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
         payload={
@@ -535,13 +529,15 @@ def fairness_average_odds_difference(
     for g, d in per.items():
         val = 0.5 * ((d["fpr"] - base_fpr) + (d["tpr"] - base_tpr))
         aod[g] = val
-        table.append([
-            str(g) + (" (ref)" if g == priv else ""),
-            d["n"],
-            round(d["tpr"], 4),
-            round(d["fpr"], 4),
-            "—" if g == priv else round(val, 4),
-        ])
+        table.append(
+            [
+                str(g) + (" (ref)" if g == priv else ""),
+                d["n"],
+                round(d["tpr"], 4),
+                round(d["fpr"], 4),
+                "—" if g == priv else round(val, 4),
+            ]
+        )
 
     non_ref = {g: v for g, v in aod.items() if g != priv}
     finite = [v for v in non_ref.values() if np.isfinite(v)]
@@ -560,11 +556,13 @@ def fairness_average_odds_difference(
             ("Largest |AOD|", worst),
             ("Reference group", priv),
         ],
-        tables=[{
-            "title": "Per-group odds:",
-            "headers": ["group", "n", "TPR", "FPR", "AOD"],
-            "rows": table,
-        }],
+        tables=[
+            {
+                "title": "Per-group odds:",
+                "headers": ["group", "n", "TPR", "FPR", "AOD"],
+                "rows": table,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
         payload={
@@ -626,22 +624,19 @@ def fairness_gini(values: Any, *, group: Any = None) -> RichResult:
             gv = vals[grp == g]
             gini_g = _gini(gv)
             per_group[g] = gini_g
-            rows.append([str(g), int(gv.size), round(float(gv.mean()), 4),
-                         round(gini_g, 4)])
-        sections.append({
-            "title": "Per-group concentration:",
-            "headers": ["group", "n", "mean", "Gini"],
-            "table": rows,
-        })
-
-    interp = (
-        f"Gini = {overall:.3f}. "
-        + (
-            "The quantity is highly concentrated — a small share of "
-            "units absorbs most of it."
-            if overall >= 0.5 else
-            "The quantity is relatively evenly spread."
+            rows.append([str(g), int(gv.size), round(float(gv.mean()), 4), round(gini_g, 4)])
+        sections.append(
+            {
+                "title": "Per-group concentration:",
+                "headers": ["group", "n", "mean", "Gini"],
+                "table": rows,
+            }
         )
+
+    interp = f"Gini = {overall:.3f}. " + (
+        "The quantity is highly concentrated — a small share of units absorbs most of it."
+        if overall >= 0.5
+        else "The quantity is relatively evenly spread."
     )
 
     return RichResult(
@@ -720,21 +715,14 @@ def fairness_bias_amplification(
     bas = float(delta_parity * gini)
 
     table = [
-        [str(g) + (" (ref)" if g == priv else ""), n, round(rate, 4),
-         "—" if g == priv else round(gaps[g], 4)]
+        [str(g) + (" (ref)" if g == priv else ""), n, round(rate, 4), "—" if g == priv else round(gaps[g], 4)]
         for g, (n, rate) in rates.items()
     ]
 
-    interp = (
-        f"Bias Amplification Score = {bas:+.4f} "
-        f"(parity gap {delta_parity:+.3f} × Gini {gini:.3f}). "
-        + (
-            "Both a directional disparity and substantial cross-group "
-            "inequality are present — the system amplifies bias."
-            if abs(bas) >= 0.05 else
-            "At least one component is small, so little amplification "
-            "is indicated."
-        )
+    interp = f"Bias Amplification Score = {bas:+.4f} (parity gap {delta_parity:+.3f} × Gini {gini:.3f}). " + (
+        "Both a directional disparity and substantial cross-group inequality are present — the system amplifies bias."
+        if abs(bas) >= 0.05
+        else "At least one component is small, so little amplification is indicated."
     )
 
     return RichResult(
@@ -745,11 +733,13 @@ def fairness_bias_amplification(
             ("Gini of group rates", gini),
             ("Reference group", priv),
         ],
-        tables=[{
-            "title": "Per-group favourable-outcome rates:",
-            "headers": ["group", "n", "fav. rate", "parity gap"],
-            "rows": table,
-        }],
+        tables=[
+            {
+                "title": "Per-group favourable-outcome rates:",
+                "headers": ["group", "n", "fav. rate", "parity gap"],
+                "rows": table,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
         payload={

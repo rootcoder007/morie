@@ -1,6 +1,7 @@
 """Test gdflm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdflm import gdflm
 
 

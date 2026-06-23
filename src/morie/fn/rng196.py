@@ -1,6 +1,7 @@
 """Noncausal least-squares second derivative used to detect the dicrotic notch.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_dicrotic_notch_second_derivative"]
@@ -32,7 +33,14 @@ def rangayyan_ch4_dicrotic_notch_second_derivative(y, n):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Noncausal least-squares second derivative used to detect the dicrotic notch."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Noncausal least-squares second derivative used to detect the dicrotic notch.",
+        }
+    )
 
 
 def cheatsheet():

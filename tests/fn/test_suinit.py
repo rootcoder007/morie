@@ -1,6 +1,7 @@
 """Tests for morie.fn.suinit -- initiation age."""
 
 import pytest
+
 from morie.fn.suinit import initiation_age
 
 

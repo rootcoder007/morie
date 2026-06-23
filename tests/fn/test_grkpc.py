@@ -1,6 +1,7 @@
 """Tests for grkpc.geron_kernel_pca_rbf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grkpc import geron_kernel_pca_rbf
 
 
@@ -11,7 +12,7 @@ def test_grkpc_basic():
     d = 5
     result = geron_kernel_pca_rbf(X, gamma, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grkpc_edge():

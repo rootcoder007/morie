@@ -3,6 +3,7 @@
 __all__ = ["wdist"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -64,11 +65,15 @@ def wdist(
         dist = np.mean(np.abs(xs - ys) ** p) ** (1.0 / p)
     else:
         all_vals = np.sort(np.concatenate([xs, ys]))
-        all_vals = np.unique(np.concatenate([
-            all_vals,
-            [all_vals[0] - 1],
-            [all_vals[-1] + 1],
-        ]))
+        all_vals = np.unique(
+            np.concatenate(
+                [
+                    all_vals,
+                    [all_vals[0] - 1],
+                    [all_vals[-1] + 1],
+                ]
+            )
+        )
 
         cdf_x = np.searchsorted(xs, all_vals, side="right") / n
         cdf_y = np.searchsorted(ys, all_vals, side="right") / m

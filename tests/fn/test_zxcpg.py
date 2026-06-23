@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxcpg -- Gaussian copula spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxcpg import copula_gauss_sp
 

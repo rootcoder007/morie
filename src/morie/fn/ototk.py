@@ -1,6 +1,7 @@
 """Compute the Kantorovich dual value."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_kantorovich_dual_value"]

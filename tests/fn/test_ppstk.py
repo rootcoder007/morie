@@ -1,6 +1,7 @@
 """Test ppstk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppstk import ppstk
 
 

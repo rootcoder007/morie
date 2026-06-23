@@ -1,6 +1,7 @@
 """Test gevcf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gevcf import gevcf
 
 

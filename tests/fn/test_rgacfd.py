@@ -1,6 +1,7 @@
 """Tests for rgacfd.rangayyan_acf_distance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgacfd import rangayyan_acf_distance
 
 
@@ -11,7 +12,7 @@ def test_rgacfd_basic():
     p = 5
     result = rangayyan_acf_distance(x, seg_len, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgacfd_edge():

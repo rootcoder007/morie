@@ -42,21 +42,25 @@ def grouped_df(rng):
     a = rng.normal(10, 2, n_per)
     b = rng.normal(12, 2, n_per)
     c = rng.normal(14, 2, n_per)
-    return pd.DataFrame({
-        "value": np.concatenate([a, b, c]),
-        "group": ["A"] * n_per + ["B"] * n_per + ["C"] * n_per,
-    })
+    return pd.DataFrame(
+        {
+            "value": np.concatenate([a, b, c]),
+            "group": ["A"] * n_per + ["B"] * n_per + ["C"] * n_per,
+        }
+    )
 
 
 @pytest.fixture()
 def missing_df(rng):
     """Data with ~10% missing values."""
     n = 200
-    df = pd.DataFrame({
-        "x": rng.standard_normal(n),
-        "y": rng.standard_normal(n),
-        "z": rng.choice(["a", "b", "c"], n),
-    })
+    df = pd.DataFrame(
+        {
+            "x": rng.standard_normal(n),
+            "y": rng.standard_normal(n),
+            "z": rng.choice(["a", "b", "c"], n),
+        }
+    )
     mask = rng.random(n) < 0.1
     df.loc[mask, "x"] = np.nan
     mask2 = rng.random(n) < 0.1
@@ -68,10 +72,12 @@ def missing_df(rng):
 def contingency_df(rng):
     """Contingency table data for chi-squared / Fisher tests."""
     n = 200
-    return pd.DataFrame({
-        "group": rng.choice(["A", "B"], n, p=[0.6, 0.4]),
-        "outcome": rng.choice(["yes", "no"], n, p=[0.3, 0.7]),
-    })
+    return pd.DataFrame(
+        {
+            "group": rng.choice(["A", "B"], n, p=[0.6, 0.4]),
+            "outcome": rng.choice(["yes", "no"], n, p=[0.3, 0.7]),
+        }
+    )
 
 
 @pytest.fixture()
@@ -108,22 +114,23 @@ def otis_df(rng):
     years = [2018, 2019, 2020, 2021, 2022]
 
     ids = np.repeat(np.arange(1, n_ids + 1), records_per)
-    return pd.DataFrame({
-        "unique_individual_id": ids,
-        "end_fiscal_year": rng.choice(years, n),
-        "region": rng.choice(regions, n),
-        "age_group": rng.choice(ages, n, p=[0.3, 0.5, 0.2]),
-        "gender": rng.choice(genders, n, p=[0.8, 0.2]),
-        "alert_mental_health": rng.binomial(1, 0.25, n),
-        "alert_suicide_risk": rng.binomial(1, 0.15, n),
-        "alert_suicide_watch": rng.binomial(1, 0.05, n),
-        "facility_type": rng.choice(["Provincial Correctional Centre",
-                                     "Community Supervision"], n),
-        "sentence_days": rng.integers(30, 730, n),
-        "start_date": pd.to_datetime("2018-01-01") + pd.to_timedelta(rng.integers(0, 1500, n), unit="D"),
-        "Y": rng.standard_normal(n),
-        "D": rng.binomial(1, 0.4, n),
-    })
+    return pd.DataFrame(
+        {
+            "unique_individual_id": ids,
+            "end_fiscal_year": rng.choice(years, n),
+            "region": rng.choice(regions, n),
+            "age_group": rng.choice(ages, n, p=[0.3, 0.5, 0.2]),
+            "gender": rng.choice(genders, n, p=[0.8, 0.2]),
+            "alert_mental_health": rng.binomial(1, 0.25, n),
+            "alert_suicide_risk": rng.binomial(1, 0.15, n),
+            "alert_suicide_watch": rng.binomial(1, 0.05, n),
+            "facility_type": rng.choice(["Provincial Correctional Centre", "Community Supervision"], n),
+            "sentence_days": rng.integers(30, 730, n),
+            "start_date": pd.to_datetime("2018-01-01") + pd.to_timedelta(rng.integers(0, 1500, n), unit="D"),
+            "Y": rng.standard_normal(n),
+            "D": rng.binomial(1, 0.4, n),
+        }
+    )
 
 
 @pytest.fixture()
@@ -153,7 +160,7 @@ def mapq_binary_df(rng):
     difficulties = np.linspace(0.3, 0.8, k)
     data = {}
     for i in range(k):
-        data[f"item_{i+1}"] = rng.binomial(1, difficulties[i], n)
+        data[f"item_{i + 1}"] = rng.binomial(1, difficulties[i], n)
     return pd.DataFrame(data)
 
 
@@ -162,9 +169,7 @@ def signal_1khz(rng):
     """1 kHz sine + 50 Hz mains + noise at 8000 Hz."""
     fs = 8000
     t = np.arange(0, 1.0, 1 / fs)
-    x = (np.sin(2 * np.pi * 1000 * t)
-         + 0.5 * np.sin(2 * np.pi * 50 * t)
-         + rng.standard_normal(len(t)) * 0.1)
+    x = np.sin(2 * np.pi * 1000 * t) + 0.5 * np.sin(2 * np.pi * 50 * t) + rng.standard_normal(len(t)) * 0.1
     return x, fs
 
 

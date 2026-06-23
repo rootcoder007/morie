@@ -1,6 +1,7 @@
 """Tests for gh_c2_8.ghosal_np_normal_reg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gh_c2_8 import ghosal_np_normal_reg
 
 
@@ -10,7 +11,7 @@ def test_gh_c2_8_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = ghosal_np_normal_reg(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gh_c2_8_edge():

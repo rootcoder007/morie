@@ -1,7 +1,7 @@
 """Tests for morie.fn.scsum — sum score."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.scsum import score_sum
 
 

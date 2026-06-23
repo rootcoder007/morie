@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Penalized multinomial logistic regression (elastic net, glmnet)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["multinomial_logistic_penalized"]
@@ -36,7 +38,14 @@ def multinomial_logistic_penalized(y, X, lam, alpha):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Penalized multinomial logistic regression (elastic net, glmnet)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Penalized multinomial logistic regression (elastic net, glmnet)",
+        }
+    )
 
 
 def cheatsheet():

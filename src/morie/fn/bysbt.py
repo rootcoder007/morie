@@ -47,6 +47,7 @@ def bysbt(
     rng = np.random.default_rng(seed)
 
     if statistic is None:
+
         def statistic(data, w):
             return float(np.sum(w * data))
 

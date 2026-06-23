@@ -7,17 +7,10 @@ Solves f(x) = 0 using Newton's method with derivative information.
 
 import numpy as np
 
-__all__ = ['nwtrp']
+__all__ = ["nwtrp"]
 
 
-def nwtrp(
-    f,
-    fprime,
-    x0,
-    tol=1e-6,
-    max_iter=100,
-    full_output=False
-):
+def nwtrp(f, fprime, x0, tol=1e-6, max_iter=100, full_output=False):
     """
     Newton-Raphson root finding method.
 
@@ -73,18 +66,18 @@ def nwtrp(
             except np.linalg.LinAlgError:
                 if full_output:
                     return x, {
-                        'iterations': iteration,
-                        'converged': False,
-                        'final_residual': float(np.linalg.norm(fx)),
+                        "iterations": iteration,
+                        "converged": False,
+                        "final_residual": float(np.linalg.norm(fx)),
                     }
                 return x
         else:
             if np.any(np.abs(fpx) < 1e-14):
                 if full_output:
                     return x, {
-                        'iterations': iteration,
-                        'converged': False,
-                        'final_residual': float(np.linalg.norm(fx)),
+                        "iterations": iteration,
+                        "converged": False,
+                        "final_residual": float(np.linalg.norm(fx)),
                     }
                 return x
             step = fx / fpx
@@ -95,9 +88,9 @@ def nwtrp(
         if residual < tol:
             if full_output:
                 return x_new, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_residual': float(np.linalg.norm(np.atleast_1d(f(x_new)))),
+                    "iterations": iteration + 1,
+                    "converged": True,
+                    "final_residual": float(np.linalg.norm(np.atleast_1d(f(x_new)))),
                 }
             return x_new
 
@@ -105,8 +98,8 @@ def nwtrp(
 
     if full_output:
         return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_residual': float(np.linalg.norm(np.atleast_1d(f(x)))),
+            "iterations": max_iter,
+            "converged": False,
+            "final_residual": float(np.linalg.norm(np.atleast_1d(f(x)))),
         }
     return x

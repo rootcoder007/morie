@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Age pattern of disease burden (GBD-style)."""
 
-
 from ._containers import DescriptiveResult
 
 

@@ -1,6 +1,7 @@
 """Bayesian GEV via Metropolis with prior π(μ,σ,ξ)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_bayes_gev"]
@@ -34,7 +35,9 @@ def evt_bayes_gev(x, n_iter, prior):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian GEV via Metropolis with prior π(μ,σ,ξ)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian GEV via Metropolis with prior π(μ,σ,ξ)"}
+    )
 
 
 def cheatsheet():

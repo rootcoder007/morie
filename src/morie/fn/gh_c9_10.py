@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spline regression contraction rate: n^{-2s/(2s+1)} via sieve of splines."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_spline_crt"]
@@ -32,7 +34,14 @@ def ghosal_spline_crt(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spline regression contraction rate: n^{-2s/(2s+1)} via sieve of splines"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spline regression contraction rate: n^{-2s/(2s+1)} via sieve of splines",
+        }
+    )
 
 
 def cheatsheet():

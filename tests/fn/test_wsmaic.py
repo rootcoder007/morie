@@ -1,6 +1,7 @@
 """Tests for wsmaic.wasserman_aic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmaic import wasserman_aic
 
 
@@ -10,7 +11,7 @@ def test_wsmaic_basic():
     k = 5
     result = wasserman_aic(loglik, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmaic_edge():

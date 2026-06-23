@@ -1,5 +1,7 @@
 """Penalized quasi-likelihood (PQL) for spatial GLMM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_pql_glmm"]
@@ -37,7 +39,9 @@ def schabenberger_pql_glmm(x, y, coords, link, family):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Penalized quasi-likelihood (PQL) for spatial GLMM"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Penalized quasi-likelihood (PQL) for spatial GLMM"}
+    )
 
 
 def cheatsheet():

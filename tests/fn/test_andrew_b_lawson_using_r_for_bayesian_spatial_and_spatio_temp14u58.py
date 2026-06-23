@@ -1,7 +1,10 @@
 """Tests for andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u58.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_unnumbered_58."""
+
 import numpy as np
-import pytest
-from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u58 import andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_unnumbered_58
+
+from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u58 import (
+    andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_unnumbered_58,
+)
 
 
 def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u58_basic():
@@ -9,7 +12,7 @@ def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u58_basic
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_unnumbered_58(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u58_edge():

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+
 from ._richresult import RichResult
 
 
@@ -49,7 +50,9 @@ def validity_mtmm(
                 combos[f"{t_name}_{m_name}"] = np.asarray(data[overlap].mean(axis=1), dtype=np.float64)
 
     if len(combos) < 2:
-        return RichResult(payload={"correlation_matrix": pd.DataFrame(), "convergent_valid": False, "discriminant_valid": False})
+        return RichResult(
+            payload={"correlation_matrix": pd.DataFrame(), "convergent_valid": False, "discriminant_valid": False}
+        )
 
     names = list(combos.keys())
     X = np.column_stack([combos[n] for n in names])

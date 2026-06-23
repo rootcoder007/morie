@@ -1,6 +1,7 @@
 """Tests for otbar.ot_barycenter_fixed."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otbar import ot_barycenter_fixed
 
 
@@ -12,7 +13,7 @@ def test_otbar_basic():
     epsilon = 1e-6
     result = ot_barycenter_fixed(A, C_list, weights, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otbar_edge():

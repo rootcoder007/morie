@@ -1,8 +1,9 @@
 """Correlation equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["analyzing_spatial_models_of_choice_and_judgment_chapter_2_equation_9"]
 
@@ -40,7 +41,10 @@ def analyzing_spatial_models_of_choice_and_judgment_chapter_2_equation_9(x):
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment."},
+            extra_payload={
+                "n": n,
+                "method": "Correlation equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,7 +52,11 @@ def analyzing_spatial_models_of_choice_and_judgment_chapter_2_equation_9(x):
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation equation extracted from Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment.",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

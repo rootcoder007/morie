@@ -63,7 +63,7 @@ def spectral_clustering(
         name="SpectralClustering",
         value=km.labels,
         extra={
-            "eigenvalues": eigvals[:n_clusters + 1],
+            "eigenvalues": eigvals[: n_clusters + 1],
             "embedding": embedding,
         },
     )

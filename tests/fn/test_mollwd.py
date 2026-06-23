@@ -1,6 +1,7 @@
 """Test mollwd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mollwd import mollwd
 
 

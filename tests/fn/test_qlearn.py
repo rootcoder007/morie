@@ -1,6 +1,7 @@
 """Tests for qlearn.q_learning."""
+
 import numpy as np
-import pytest
+
 from morie.fn.qlearn import q_learning
 
 
@@ -13,7 +14,7 @@ def test_qlearn_basic():
     n_episodes = np.random.default_rng(42).normal(0, 1, 100)
     result = q_learning(env, alpha, gamma, epsilon, n_episodes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_qlearn_edge():

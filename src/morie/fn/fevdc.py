@@ -49,7 +49,7 @@ def fevd(
         contrib = np.zeros((k, k))
         for s in range(h + 1):
             ThetaP = Theta[s] @ P
-            contrib += ThetaP ** 2
+            contrib += ThetaP**2
         total_var = contrib.sum(axis=1)
         for j in range(k):
             for i in range(k):

@@ -1,6 +1,7 @@
 """l-diversity (Machanavajjhala et al)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["l_diversity_check"]

@@ -1,6 +1,7 @@
 """Tests for alfbnp.af3_protein_ligand."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alfbnp import af3_protein_ligand
 
 
@@ -10,7 +11,7 @@ def test_alfbnp_basic():
     ligand = np.random.default_rng(42).normal(0, 1, 100)
     result = af3_protein_ligand(protein, ligand)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alfbnp_edge():

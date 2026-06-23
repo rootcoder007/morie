@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_nonlinear_features"]
@@ -34,7 +36,14 @@ def rangayyan_nonlinear_features(x, m, r):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov)",
+        }
+    )
 
 
 def cheatsheet():

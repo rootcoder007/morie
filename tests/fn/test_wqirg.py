@@ -1,6 +1,8 @@
 """Test wqirg."""
+
 import numpy as np
 import pytest
+
 from morie.fn.wqirg import wqirg
 
 

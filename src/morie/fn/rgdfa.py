@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Detrended fluctuation analysis -- Rangayyan Ch 7."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -52,7 +53,7 @@ def rangayyan_dfa(x, scales=None, order=1):
             continue
         rms = []
         for k in range(nseg):
-            seg = y[k * n:(k + 1) * n]
+            seg = y[k * n : (k + 1) * n]
             t = np.arange(n)
             p = np.polyfit(t, seg, order)
             trend = np.polyval(p, t)
@@ -64,11 +65,9 @@ def rangayyan_dfa(x, scales=None, order=1):
     alpha, intercept = np.polyfit(log_n, log_F, 1)
     res = RichResult(
         title="Detrended Fluctuation Analysis",
-        summary_lines=[("α", float(alpha)), ("Order", int(order)),
-                       ("Scales", len(scales))],
+        summary_lines=[("α", float(alpha)), ("Order", int(order)), ("Scales", len(scales))],
         interpretation=f"α = {alpha:.4g}. 0.5 random, 1 1/f, >1 persistent.",
-        payload={"alpha": float(alpha), "scales": scales, "F": F,
-                 "log_scales": log_n, "log_F": log_F},
+        payload={"alpha": float(alpha), "scales": scales, "F": F, "log_scales": log_n, "log_F": log_F},
     )
     return with_describe_pointer(res, "rgdfa")
 

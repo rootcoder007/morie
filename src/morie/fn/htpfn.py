@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """High-throughput phenotyping functional predictor combining genomic + phenomic info."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["htp_functional_predictor"]
@@ -34,7 +36,14 @@ def htp_functional_predictor(y, markers, W_functional):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "High-throughput phenotyping functional predictor combining genomic + phenomic info"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "High-throughput phenotyping functional predictor combining genomic + phenomic info",
+        }
+    )
 
 
 def cheatsheet():

@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.rey_ps import poisson_regression, rey_ps
+
 from morie.fn._containers import RegressionResult
+from morie.fn.rey_ps import poisson_regression, rey_ps
 
 
 @pytest.fixture()

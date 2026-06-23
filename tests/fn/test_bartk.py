@@ -1,6 +1,8 @@
 """Tests for morie.fn.bartk — Bartik/shift-share IV."""
+
 import numpy as np
 import pytest
+
 from morie.fn.bartk import bartk
 
 
@@ -17,8 +19,7 @@ def data():
 
 def test_keys(data):
     r = bartk(*data)
-    for k in ("beta_2sls", "se", "ci_lower", "ci_upper", "first_stage_f",
-              "instrument", "L", "K", "method"):
+    for k in ("beta_2sls", "se", "ci_lower", "ci_upper", "first_stage_f", "instrument", "L", "K", "method"):
         assert k in r
 
 
@@ -56,4 +57,5 @@ def test_method(data):
 
 def test_cheatsheet():
     from morie.fn.bartk import cheatsheet
+
     assert len(cheatsheet()) > 0

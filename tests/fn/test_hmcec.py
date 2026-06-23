@@ -1,6 +1,7 @@
 """Tests for hmcec.geron_cross_entropy_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmcec import geron_cross_entropy_cost
 
 
@@ -11,7 +12,7 @@ def test_hmcec_basic():
     theta = 0.0
     result = geron_cross_entropy_cost(X, Y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmcec_edge():

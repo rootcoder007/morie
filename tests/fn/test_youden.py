@@ -1,7 +1,6 @@
 """Tests for morie.fn.youden — Youden's J index."""
-import numpy as np
 
-from morie.fn.youden import youdens_j, youden
+from morie.fn.youden import youden, youdens_j
 
 
 def test_perfect_youden():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Proportional hazards model with nonparametric baseline and parametric F."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_proportional_hazards"]
@@ -34,7 +36,14 @@ def horowitz_proportional_hazards(t, x, event):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Proportional hazards model with nonparametric baseline and parametric F"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Proportional hazards model with nonparametric baseline and parametric F",
+        }
+    )
 
 
 def cheatsheet():

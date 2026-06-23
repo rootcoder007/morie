@@ -1,6 +1,8 @@
 """Tests for tmarch."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmarch import tmarch
 
 
@@ -28,4 +30,5 @@ def test_tmarch_no_data():
 
 def test_tmarch_alias():
     from morie.fn.tmarch import tmarch
+
     assert tmarch is tmarch

@@ -1,9 +1,9 @@
 """Test complex_cepstrum (cxcep)."""
-import numpy as np
-import pytest
 
-from morie.fn.cxcep import complex_cepstrum, cxcep
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cxcep import complex_cepstrum, cxcep
 
 
 class TestComplexCepstrum:

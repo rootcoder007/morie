@@ -1,6 +1,7 @@
 """Test clkmn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clkmn import clkmn
 
 

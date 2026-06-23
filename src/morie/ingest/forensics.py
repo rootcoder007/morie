@@ -72,9 +72,7 @@ FBI_CDE_BASE = "https://api.usa.gov/crime/fbi/cde"
 FBI_CDE_SIGNUP_URL = "https://api.data.gov/signup/"
 FBI_CDE_API_KEY_ENV = "FBI_CDE_API_KEY"
 
-NAMUS_MISSING_BASE = (
-    "https://www.namus.gov/api/CaseSets/NamUs/MissingPersons/Search"
-)
+NAMUS_MISSING_BASE = "https://www.namus.gov/api/CaseSets/NamUs/MissingPersons/Search"
 
 NIST_RDS_BASE = "https://data.nist.gov/rmm/records"
 
@@ -197,14 +195,10 @@ def fetch_nibrs(
             r = c.get(url, params=params)
             if r.status_code == 401 or r.status_code == 403:
                 raise MissingAPIKeyError(
-                    f"FBI CDE rejected the API key (HTTP {r.status_code}). "
-                    f"Verify your key at {FBI_CDE_SIGNUP_URL}."
+                    f"FBI CDE rejected the API key (HTTP {r.status_code}). Verify your key at {FBI_CDE_SIGNUP_URL}."
                 )
             if r.status_code >= 400:
-                raise ForensicsError(
-                    f"FBI CDE NIBRS -> HTTP {r.status_code}: {r.text[:200]} "
-                    f"(url={url})"
-                )
+                raise ForensicsError(f"FBI CDE NIBRS -> HTTP {r.status_code}: {r.text[:200]} (url={url})")
             payload = r.json()
             # CDE wraps records in either "results" or "data"; handle both.
             batch = payload.get("results") or payload.get("data") or []
@@ -220,10 +214,7 @@ def fetch_nibrs(
             offset += len(batch)
 
     if not rows:
-        raise ForensicsError(
-            f"FBI CDE NIBRS returned zero records "
-            f"(year={year}, state={state!r}, offense={offense!r})"
-        )
+        raise ForensicsError(f"FBI CDE NIBRS returned zero records (year={year}, state={state!r}, offense={offense!r})")
     return pd.DataFrame(rows)
 
 
@@ -336,26 +327,18 @@ def fetch_namus_missing_persons(
         "predicates": [],
     }
     if state:
-        body["predicates"].append(
-            {"field": "state", "value": state.upper(), "operator": "Is"}
-        )
+        body["predicates"].append({"field": "state", "value": state.upper(), "operator": "Is"})
 
     rows: list[dict[str, Any]] = []
     with httpx.Client(timeout=timeout, headers=headers, follow_redirects=True) as c:
         while True:
             r = c.post(NAMUS_MISSING_BASE, json=body)
             if r.status_code >= 400:
-                raise ForensicsError(
-                    f"NamUs MissingPersons -> HTTP {r.status_code}: {r.text[:200]}"
-                )
+                raise ForensicsError(f"NamUs MissingPersons -> HTTP {r.status_code}: {r.text[:200]}")
             payload = r.json()
             # NamUs returns {"results": [...], "totalCount": N}; tolerate
             # either bare-list or {"data": [...]} variants.
-            batch = (
-                payload.get("results")
-                or payload.get("data")
-                or (payload if isinstance(payload, list) else [])
-            )
+            batch = payload.get("results") or payload.get("data") or (payload if isinstance(payload, list) else [])
             if not batch:
                 break
             for rec in batch:
@@ -368,9 +351,7 @@ def fetch_namus_missing_persons(
             body["skip"] += len(batch)
 
     if not rows:
-        raise ForensicsError(
-            f"NamUs MissingPersons returned zero records (state={state!r})"
-        )
+        raise ForensicsError(f"NamUs MissingPersons returned zero records (state={state!r})")
     return pd.DataFrame(rows, columns=list(NAMUS_MISSING_COLUMNS))
 
 
@@ -474,16 +455,9 @@ def fetch_nist_rds(
             params["from"] = offset
             r = c.get(NIST_RDS_BASE, params=params)
             if r.status_code >= 400:
-                raise ForensicsError(
-                    f"NIST RDS -> HTTP {r.status_code}: {r.text[:200]}"
-                )
+                raise ForensicsError(f"NIST RDS -> HTTP {r.status_code}: {r.text[:200]}")
             payload = r.json()
-            batch = (
-                payload.get("ResultData")
-                or payload.get("results")
-                or payload.get("data")
-                or []
-            )
+            batch = payload.get("ResultData") or payload.get("results") or payload.get("data") or []
             if not batch:
                 break
             for rec in batch:
@@ -499,10 +473,7 @@ def fetch_nist_rds(
             offset += len(batch)
 
     if not rows:
-        raise ForensicsError(
-            f"NIST RDS returned zero records "
-            f"(dataset_id={dataset_id!r}, query={query!r})"
-        )
+        raise ForensicsError(f"NIST RDS returned zero records (dataset_id={dataset_id!r}, query={query!r})")
     if raw:
         return pd.DataFrame(rows)
     return pd.DataFrame(rows, columns=list(NIST_RDS_COLUMNS))
@@ -523,21 +494,20 @@ def cli(args: list[str]) -> int:
         prog="morie ingest forensics",
         description="Pull US forensic open-data (NIBRS, NamUs, NIST RDS).",
     )
-    p.add_argument("--source", required=True,
-                   choices=["nibrs", "namus", "nist-rds"],
-                   help="Which forensic open-data source to pull.")
+    p.add_argument(
+        "--source",
+        required=True,
+        choices=["nibrs", "namus", "nist-rds"],
+        help="Which forensic open-data source to pull.",
+    )
     p.add_argument("--year", type=int, help="Reporting year (NIBRS).")
     p.add_argument("--state", help="Two-letter state code (NIBRS, NamUs).")
     p.add_argument("--offense", help="NIBRS offence slug.")
-    p.add_argument("--dataset-id", dest="dataset_id",
-                   help="NIST RDS dataset id (single-record lookup).")
+    p.add_argument("--dataset-id", dest="dataset_id", help="NIST RDS dataset id (single-record lookup).")
     p.add_argument("--query", help="NIST RDS free-text search phrase.")
-    p.add_argument("--api-key", dest="api_key",
-                   help=f"FBI CDE API key (or set ${FBI_CDE_API_KEY_ENV}).")
-    p.add_argument("--max", type=int, dest="max_features",
-                   help="Cap returned rows.")
-    p.add_argument("--out", type=Path,
-                   help="CSV output path (stdout if omitted).")
+    p.add_argument("--api-key", dest="api_key", help=f"FBI CDE API key (or set ${FBI_CDE_API_KEY_ENV}).")
+    p.add_argument("--max", type=int, dest="max_features", help="Cap returned rows.")
+    p.add_argument("--out", type=Path, help="CSV output path (stdout if omitted).")
     ns = p.parse_args(args)
 
     if ns.source == "nibrs":
@@ -545,16 +515,21 @@ def cli(args: list[str]) -> int:
             p.error("--year is required for --source nibrs")
             return 2
         df = fetch_nibrs(
-            year=ns.year, offense=ns.offense, state=ns.state,
-            api_key=ns.api_key, max_features=ns.max_features,
+            year=ns.year,
+            offense=ns.offense,
+            state=ns.state,
+            api_key=ns.api_key,
+            max_features=ns.max_features,
         )
     elif ns.source == "namus":
         df = fetch_namus_missing_persons(
-            state=ns.state, max_features=ns.max_features,
+            state=ns.state,
+            max_features=ns.max_features,
         )
     elif ns.source == "nist-rds":
         df = fetch_nist_rds(
-            dataset_id=ns.dataset_id, query=ns.query,
+            dataset_id=ns.dataset_id,
+            query=ns.query,
             max_features=ns.max_features,
         )
     else:  # pragma: no cover — argparse choices guard

@@ -8,7 +8,9 @@ import pandas as pd
 from scipy import stats
 
 
-def otis_cate_risk(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", risk_col: str = "Y", n_terciles: int = 3) -> pd.DataFrame:
+def otis_cate_risk(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", risk_col: str = "Y", n_terciles: int = 3
+) -> pd.DataFrame:
     """Estimate Conditional ATE by risk-score tercile.
 
     Splits the risk column into terciles and estimates ATE

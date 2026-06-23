@@ -1,6 +1,7 @@
 """Rao-Scott corrected chi-square."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rao_scott_chisq"]

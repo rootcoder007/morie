@@ -1,6 +1,7 @@
 """Test gerdx."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gerdx import gerdx
 
 

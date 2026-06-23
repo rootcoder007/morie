@@ -1,5 +1,7 @@
 """Tests for morie.fn.tfidf."""
+
 import numpy as np
+
 from morie.fn.tfidf import tfidf
 
 
@@ -13,6 +15,7 @@ def test_tfidf_smoke():
 
 def test_cheatsheet():
     from morie.fn.tfidf import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

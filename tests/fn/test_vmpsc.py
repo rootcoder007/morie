@@ -1,6 +1,7 @@
 """Test vmpsc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmpsc import vmpsc
 
 

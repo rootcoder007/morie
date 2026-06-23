@@ -1,6 +1,7 @@
 """Tests for evgevp.evt_gev_pdf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evgevp import evt_gev_pdf
 
 
@@ -12,7 +13,7 @@ def test_evgevp_basic():
     xi = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_gev_pdf(x, mu, sigma, xi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evgevp_edge():

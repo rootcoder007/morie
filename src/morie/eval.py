@@ -33,14 +33,16 @@ JSON schema:
       ]
     }
 """
+
 from __future__ import annotations
 
 import importlib
 import json
 import math
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Iterable
+from typing import Any
 
 GOLDEN_DIR = Path(__file__).parent / "fn" / "_golden"
 
@@ -181,22 +183,16 @@ def run_golden(callable_path: str, fn_name: str, source: str, cases: Iterable[Go
         fn = _load_callable(callable_path)
     except (ImportError, AttributeError) as e:
         for case in cases:
-            report.results.append(
-                CaseResult(case=case, actual=None, status="error", detail=f"import: {e}")
-            )
+            report.results.append(CaseResult(case=case, actual=None, status="error", detail=f"import: {e}"))
         return report
     for case in cases:
         try:
             actual = fn(**case.inputs)
         except Exception as e:  # noqa: BLE001 -- eval gate must capture all
-            report.results.append(
-                CaseResult(case=case, actual=None, status="error", detail=f"{type(e).__name__}: {e}")
-            )
+            report.results.append(CaseResult(case=case, actual=None, status="error", detail=f"{type(e).__name__}: {e}"))
             continue
         if _is_stub(actual):
-            report.results.append(
-                CaseResult(case=case, actual=actual, status="stub", detail="all-NaN return")
-            )
+            report.results.append(CaseResult(case=case, actual=actual, status="stub", detail="all-NaN return"))
             continue
         ok, err, detail = _compare(actual, case.expected, case.rtol, case.atol)
         report.results.append(

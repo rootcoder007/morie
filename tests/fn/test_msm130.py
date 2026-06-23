@@ -1,6 +1,7 @@
 """Tests for msm130.mvsml_categorical_count_eq_8_3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm130 import mvsml_categorical_count_eq_8_3
 
 
@@ -14,7 +15,7 @@ def test_msm130_basic():
     semi = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_categorical_count_eq_8_3(needs, to, be, symmetric, positive, semi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm130_edge():

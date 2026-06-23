@@ -1,8 +1,9 @@
 """GeneralStatistics expression (auto-extracted; see ref).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered_315"]
 
@@ -41,7 +42,11 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered
             pvalue=float("nan"),
             warnings=["n<2: insufficient data."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "GeneralStatistics expression (auto-extracted; see ref).", "p_value": float("nan")},
+            extra_payload={
+                "n": n,
+                "method": "GeneralStatistics expression (auto-extracted; see ref).",
+                "p_value": float("nan"),
+            },
         )
     x_sorted = np.sort(x)
     if cdf is None:
@@ -57,14 +62,18 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
     return hypothesis_test_result(
         test_name="GeneralStatistics expression (auto-extracted; see ref).",
         statistic=float(statistic),
         pvalue=float(p_value),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "GeneralStatistics expression (auto-extracted; see ref).", "p_value": float(p_value)},
+        extra_payload={
+            "n": n,
+            "method": "GeneralStatistics expression (auto-extracted; see ref).",
+            "p_value": float(p_value),
+        },
     )
 
 

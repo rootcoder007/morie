@@ -1,6 +1,8 @@
 """Tests for gmm_pdf."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gmmpd import gmm_pdf, gmmpd
 
 

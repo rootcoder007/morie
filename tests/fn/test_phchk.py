@@ -1,6 +1,8 @@
 """Tests for phchk: Schoenfeld residuals PH assumption check."""
+
 import numpy as np
 import pytest
+
 from morie.fn.phchk import phchk
 
 
@@ -17,8 +19,16 @@ def _make_ph_data(n=150, beta=0.5, seed=0):
 def test_returns_keys():
     time, event, X, beta = _make_ph_data()
     result = phchk(time, event, X, beta)
-    for key in ("residuals", "scaled_residuals", "event_times", "rho",
-                "chi2", "p_value", "global_chi2", "global_p_value"):
+    for key in (
+        "residuals",
+        "scaled_residuals",
+        "event_times",
+        "rho",
+        "chi2",
+        "p_value",
+        "global_chi2",
+        "global_p_value",
+    ):
         assert key in result
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hilbert-Huang spectrum (HHS) via EMD + Hilbert transform."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_hht_spectrum"]
@@ -34,7 +36,14 @@ def rangayyan_hht_spectrum(x, fs, max_imfs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hilbert-Huang spectrum (HHS) via EMD + Hilbert transform"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Hilbert-Huang spectrum (HHS) via EMD + Hilbert transform",
+        }
+    )
 
 
 def cheatsheet():

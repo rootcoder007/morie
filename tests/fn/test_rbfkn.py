@@ -1,6 +1,7 @@
 """Tests for rbfkn.rbf_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rbfkn import rbf_kernel
 
 
@@ -10,7 +11,7 @@ def test_rbfkn_basic():
     h = 0.3
     result = rbf_kernel(X, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rbfkn_edge():

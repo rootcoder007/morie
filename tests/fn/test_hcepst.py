@@ -1,7 +1,9 @@
 """Tests for hcepst — Complex cepstrum."""
+
 import numpy as np
-from morie.fn.hcepst import complex_cepstrum
+
 from morie.fn._containers import SignalResult
+from morie.fn.hcepst import complex_cepstrum
 
 
 def test_hcepst_basic(rng):

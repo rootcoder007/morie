@@ -1,7 +1,7 @@
 """Test fbm_synthesis."""
-import numpy as np
-from morie.fn.fbmsn import fbm_synthesis, fbmsn
+
 from morie.fn._containers import SignalResult
+from morie.fn.fbmsn import fbm_synthesis, fbmsn
 
 
 class TestFBMSynthesis:

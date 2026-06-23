@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwrk -- Rook contiguity weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwrk import w_rook
 

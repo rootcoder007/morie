@@ -9,7 +9,7 @@ from morie.fn.irfun import impulse_response, irfun
 def _var1_params(m: int = 2, diag_coef: float = 0.5) -> tuple:
     """Simple stable VAR(1) with diagonal AR matrix and identity sigma."""
     A = np.diag([diag_coef] * m)
-    coef = np.hstack([np.zeros((m, 1)), A])   # (m, 1+m*1)
+    coef = np.hstack([np.zeros((m, 1)), A])  # (m, 1+m*1)
     sigma_u = np.eye(m)
     return coef, sigma_u
 

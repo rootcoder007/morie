@@ -82,4 +82,4 @@ arcit = gauss_seidel
 
 
 def cheatsheet() -> str:
-    return 'gauss_seidel({}) -> System of equations solver (Gauss-Seidel).'
+    return "gauss_seidel({}) -> System of equations solver (Gauss-Seidel)."

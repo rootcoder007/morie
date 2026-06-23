@@ -1,6 +1,7 @@
 """Tests for catep.cate_estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.catep import cate_estimation
 
 
@@ -12,7 +13,7 @@ def test_catep_basic():
     estimator = np.random.default_rng(42).normal(0, 1, 100)
     result = cate_estimation(Y, T, X, estimator)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_catep_edge():

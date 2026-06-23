@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Forward-mode autodiff via dual numbers (x + x'*eps)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_forward_mode_autodiff"]
@@ -34,7 +36,9 @@ def geron_forward_mode_autodiff(x, x_prime, f):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Forward-mode autodiff via dual numbers (x + x'*eps)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Forward-mode autodiff via dual numbers (x + x'*eps)"}
+    )
 
 
 def cheatsheet():

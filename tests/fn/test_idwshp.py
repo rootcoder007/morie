@@ -1,6 +1,8 @@
 """Tests for idwshp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwshp import idwshp
 
 
@@ -28,4 +30,5 @@ def test_idwshp_no_data():
 
 def test_idwshp_alias():
     from morie.fn.idwshp import idwshp
+
     assert idwshp is idwshp

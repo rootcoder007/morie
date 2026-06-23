@@ -1,7 +1,7 @@
 """Tests for morie.fn.umgrd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umgrd import umgrd
 
 

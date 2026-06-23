@@ -7,7 +7,7 @@ Approximates derivative using finite differences without requiring fprime.
 
 import numpy as np
 
-__all__ = ['sctmh']
+__all__ = ["sctmh"]
 
 
 def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
@@ -63,11 +63,7 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
         denom = f_curr - f_prev
         if np.abs(denom) < 1e-14:
             if full_output:
-                return x_curr, {
-                    'iterations': iteration,
-                    'converged': False,
-                    'final_residual': np.abs(f_curr)
-                }
+                return x_curr, {"iterations": iteration, "converged": False, "final_residual": np.abs(f_curr)}
             return x_curr
 
         x_next = x_curr - f_curr * (x_curr - x_prev) / denom
@@ -75,11 +71,7 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
 
         if residual < tol:
             if full_output:
-                return x_next, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_residual': np.abs(f(x_next))
-                }
+                return x_next, {"iterations": iteration + 1, "converged": True, "final_residual": np.abs(f(x_next))}
             return x_next
 
         x_prev = x_curr
@@ -88,9 +80,5 @@ def sctmh(f, x0, x1, tol=1e-6, max_iter=100, full_output=False):
         f_curr = f(x_curr)
 
     if full_output:
-        return x_curr, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_residual': np.abs(f_curr)
-        }
+        return x_curr, {"iterations": max_iter, "converged": False, "final_residual": np.abs(f_curr)}
     return x_curr

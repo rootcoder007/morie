@@ -1,6 +1,7 @@
 """Semi-doubly-robust forest."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["semi_doubly_robust_forest"]

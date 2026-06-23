@@ -1,7 +1,6 @@
 """Tests for morie.fn.msprr -- Procrustes residuals"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msprr import procrustes_resid
 
@@ -14,5 +13,5 @@ class TestProcrustesResid:
         assert result.value is not None
 
     def test_output_type(self):
-        result = procrustes_resid(np.random.default_rng(0).standard_normal((5,2)))
+        result = procrustes_resid(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

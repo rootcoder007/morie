@@ -1,6 +1,7 @@
 """Tests for hmbag.geron_bagging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbag import geron_bagging
 
 
@@ -13,7 +14,7 @@ def test_hmbag_basic():
     seed = 42
     result = geron_bagging(X, y, base_estimator, n_estimators, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbag_edge():

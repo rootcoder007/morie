@@ -1,8 +1,9 @@
 """Tests for morie.fn.shkwv -- 1-D wave equation solver."""
 
 import numpy as np
-from morie.fn.shkwv import wave_equation_1d, shkwv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.shkwv import shkwv, wave_equation_1d
 
 
 class TestShkwv:

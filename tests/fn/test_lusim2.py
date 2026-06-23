@@ -1,6 +1,8 @@
 """Tests for lusim2."""
+
 import numpy as np
 import pytest
+
 from morie.fn.lusim2 import lusim2
 
 
@@ -28,4 +30,5 @@ def test_lusim2_no_data():
 
 def test_lusim2_alias():
     from morie.fn.lusim2 import lusim2
+
     assert lusim2 is lusim2

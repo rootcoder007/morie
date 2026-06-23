@@ -1,6 +1,7 @@
 """Effective sample size of weighted population."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["effective_sample_size"]
@@ -30,7 +31,9 @@ def effective_sample_size(weights):
     n = len(weights)
     result = float(np.mean(weights))
     se = float(np.std(weights, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Effective sample size of weighted population"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Effective sample size of weighted population"}
+    )
 
 
 def cheatsheet():

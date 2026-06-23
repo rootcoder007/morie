@@ -1,6 +1,7 @@
 """Tests for hmbdn.geron_bahdanau_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbdn import geron_bahdanau_attention
 
 
@@ -13,7 +14,7 @@ def test_hmbdn_basic():
     v = np.random.default_rng(44).normal(0, 1, 100)
     result = geron_bahdanau_attention(h, s_prev, W, U, v)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbdn_edge():

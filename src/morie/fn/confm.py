@@ -1,4 +1,5 @@
 """Confusion matrix with precision / recall / F1 (per class + macro)."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -26,7 +27,9 @@ def confusion_matrix_metrics(y_true, y_pred, *, labels=None):
     precision, recall, f1, macro_f1, weighted_f1, accuracy, n, method.
     """
     from sklearn.metrics import (
-        accuracy_score, confusion_matrix, precision_recall_fscore_support,
+        accuracy_score,
+        confusion_matrix,
+        precision_recall_fscore_support,
     )
 
     yt = np.asarray(y_true).ravel()
@@ -35,30 +38,43 @@ def confusion_matrix_metrics(y_true, y_pred, *, labels=None):
         labels = np.unique(np.concatenate([yt, yp]))
     cm = confusion_matrix(yt, yp, labels=labels)
     p, r, f1, _ = precision_recall_fscore_support(
-        yt, yp, labels=labels, zero_division=0,
+        yt,
+        yp,
+        labels=labels,
+        zero_division=0,
     )
     p_macro, r_macro, f1_macro, _ = precision_recall_fscore_support(
-        yt, yp, labels=labels, average="macro", zero_division=0,
+        yt,
+        yp,
+        labels=labels,
+        average="macro",
+        zero_division=0,
     )
     p_w, r_w, f1_w, _ = precision_recall_fscore_support(
-        yt, yp, labels=labels, average="weighted", zero_division=0,
+        yt,
+        yp,
+        labels=labels,
+        average="weighted",
+        zero_division=0,
     )
     acc = float(accuracy_score(yt, yp))
-    return RichResult(payload={
-        "estimate": acc,
-        "accuracy": acc,
-        "confusion_matrix": cm.tolist(),
-        "labels": list(labels),
-        "precision": p.tolist(),
-        "recall": r.tolist(),
-        "f1": f1.tolist(),
-        "macro_precision": float(p_macro),
-        "macro_recall": float(r_macro),
-        "macro_f1": float(f1_macro),
-        "weighted_f1": float(f1_w),
-        "n": int(len(yt)),
-        "method": "Confusion matrix + precision/recall/F1",
-    })
+    return RichResult(
+        payload={
+            "estimate": acc,
+            "accuracy": acc,
+            "confusion_matrix": cm.tolist(),
+            "labels": list(labels),
+            "precision": p.tolist(),
+            "recall": r.tolist(),
+            "f1": f1.tolist(),
+            "macro_precision": float(p_macro),
+            "macro_recall": float(r_macro),
+            "macro_f1": float(f1_macro),
+            "weighted_f1": float(f1_w),
+            "n": int(len(yt)),
+            "method": "Confusion matrix + precision/recall/F1",
+        }
+    )
 
 
 def cheatsheet():

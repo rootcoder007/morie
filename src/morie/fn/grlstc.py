@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LSTM cell: forget, input, cell candidate, output gates + state update."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_lstm_cell"]
@@ -50,7 +52,14 @@ def geron_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, bf, bi, bg, bo):
     n = len(x_t)
     result = float(np.mean(x_t))
     se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "LSTM cell: forget, input, cell candidate, output gates + state update"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "LSTM cell: forget, input, cell candidate, output gates + state update",
+        }
+    )
 
 
 def cheatsheet():

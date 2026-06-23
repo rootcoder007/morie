@@ -11,6 +11,7 @@ Deep Learning. MIT press.
 __all__ = ["softm"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

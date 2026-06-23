@@ -1,8 +1,10 @@
 """Tests for corrn -- Correlation dimension."""
+
 import numpy as np
 import pytest
-from morie.fn.corrn import corrn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.corrn import corrn
 
 
 def test_corrn_basic():

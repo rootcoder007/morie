@@ -1,6 +1,7 @@
 """Tests for btciqua.boot_ci_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btciqua import boot_ci_quantile
 
 
@@ -12,7 +13,7 @@ def test_btciqua_basic():
     alpha = 0.05
     result = boot_ci_quantile(x, tau, B, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btciqua_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.cfr -- case fatality rate."""
 
 import pytest
+
 from morie.fn.cfr import case_fatality_rate
 
 

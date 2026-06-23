@@ -63,9 +63,7 @@ def gmres_solve(
         res = np.linalg.norm(H[: j + 2, : j + 1] @ y - e1) / bnorm
         if res < tol:
             x = Q[:, : j + 1] @ y
-            return DescriptiveResult(
-                name="GMRES", value=float(res), extra={"x": x, "iterations": j + 1}
-            )
+            return DescriptiveResult(name="GMRES", value=float(res), extra={"x": x, "iterations": j + 1})
     y, _, _, _ = np.linalg.lstsq(H[: m + 1, :m], np.append([beta], np.zeros(m)), rcond=None)
     x = Q[:, :m] @ y
     res = float(np.linalg.norm(b - A @ x) / bnorm)

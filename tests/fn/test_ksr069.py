@@ -1,6 +1,7 @@
 """Tests for ksr069.kosorok_ch3_cox_likelihood_breslow."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr069 import kosorok_ch3_cox_likelihood_breslow
 
 
@@ -14,7 +15,7 @@ def test_ksr069_basic():
     n = 100
     result = kosorok_ch3_cox_likelihood_breslow(beta, Lambda, Z, V, d, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr069_edge():

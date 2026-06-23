@@ -1,7 +1,7 @@
 """Test transfer_function (trfnc)."""
-import numpy as np
-from morie.fn.trfnc import transfer_function, trfnc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.trfnc import transfer_function, trfnc
 
 
 class TestTransferFunction:

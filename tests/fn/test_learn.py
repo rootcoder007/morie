@@ -1,14 +1,14 @@
 """Tests for morie.fn.learn -- Learning curve."""
 
 import numpy as np
+
 from morie.fn.learn import learning_curve
 
 
 class TestLearningCurve:
     def test_basic_output(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3],
-                        rng.standard_normal((30, 2)) - [3, 3]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3], rng.standard_normal((30, 2)) - [3, 3]])
         y = np.array([1] * 30 + [0] * 30)
 
         def model_fn(X_tr, y_tr, X_te):

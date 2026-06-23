@@ -1,6 +1,7 @@
 """Test wlibd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlibd import wlibd
 
 

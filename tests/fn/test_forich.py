@@ -1,6 +1,7 @@
 """Test forich."""
+
 import numpy as np
-import pytest
+
 from morie.fn.forich import forich
 
 

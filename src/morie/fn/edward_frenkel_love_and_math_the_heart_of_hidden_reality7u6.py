@@ -1,8 +1,8 @@
 """PowerAndDesign expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbered_6"]
 
@@ -41,7 +41,12 @@ def edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbere
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "PowerAndDesign expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PowerAndDesign expression (auto-extracted; see ref).",
+        },
     )
 
 

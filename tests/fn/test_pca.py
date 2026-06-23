@@ -2,9 +2,9 @@
 
 import numpy as np
 import pandas as pd
-import pytest
-from morie.fn.pca import pca
+
 from morie.fn._containers import PcaRes
+from morie.fn.pca import pca
 
 
 class TestPca:
@@ -31,11 +31,13 @@ class TestPca:
     def test_correlated_data_first_component_dominant(self, rng):
         """Data with strong first PC should have high ratio[0]."""
         latent = rng.standard_normal(200)
-        X = np.column_stack([
-            latent + rng.standard_normal(200) * 0.1,
-            latent + rng.standard_normal(200) * 0.1,
-            rng.standard_normal(200),
-        ])
+        X = np.column_stack(
+            [
+                latent + rng.standard_normal(200) * 0.1,
+                latent + rng.standard_normal(200) * 0.1,
+                rng.standard_normal(200),
+            ]
+        )
         result = pca(X, n_components=2)
         assert result.explained_variance_ratio[0] > 0.5
 

@@ -1,6 +1,8 @@
 """First-stage IV F-statistic for weak instruments."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_iv_first_stage"]
@@ -35,7 +37,14 @@ def causal_iv_first_stage(D, Z, X_exog, cdf=None):
     D = np.asarray(D, dtype=float)
     n = len(D)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "First-stage IV F-statistic for weak instruments"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "First-stage IV F-statistic for weak instruments",
+            }
+        )
     x_sorted = np.sort(D)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(D), scale=np.std(D, ddof=1))
@@ -50,9 +59,16 @@ def causal_iv_first_stage(D, Z, X_exog, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "First-stage IV F-statistic for weak instruments"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "First-stage IV F-statistic for weak instruments",
+        }
+    )
 
 
 def cheatsheet():

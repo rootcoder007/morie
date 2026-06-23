@@ -1,8 +1,9 @@
 """Tests for morie.fn.adamm -- Adam optimizer."""
 
 import numpy as np
-from morie.fn.adamm import adam_optimize, adamm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.adamm import adam_optimize, adamm
 
 
 class TestAdamm:
@@ -10,11 +11,13 @@ class TestAdamm:
         assert adamm is adam_optimize
 
     def test_rosenbrock_2d(self):
-        f = lambda x: (1 - x[0])**2 + 100 * (x[1] - x[0]**2)**2
-        g = lambda x: np.array([
-            -2 * (1 - x[0]) - 400 * x[0] * (x[1] - x[0]**2),
-            200 * (x[1] - x[0]**2),
-        ])
+        f = lambda x: (1 - x[0]) ** 2 + 100 * (x[1] - x[0] ** 2) ** 2
+        g = lambda x: np.array(
+            [
+                -2 * (1 - x[0]) - 400 * x[0] * (x[1] - x[0] ** 2),
+                200 * (x[1] - x[0] ** 2),
+            ]
+        )
         r = adam_optimize(f, g, np.array([0.0, 0.0]), lr=0.01, maxiter=5000)
         assert isinstance(r, DescriptiveResult)
         assert r.value < 1.0

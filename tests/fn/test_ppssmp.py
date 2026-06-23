@@ -1,27 +1,32 @@
 """Tests for fn/ppssmp.py -- PPS sampling."""
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from morie.fn.ppssmp import ppssmp, pps_sample
+from morie.fn.ppssmp import pps_sample, ppssmp
 
 
 def test_ppssmp_correct_size():
     rng = np.random.default_rng(42)
-    df = pd.DataFrame({
-        "size": rng.uniform(10, 1000, size=50),
-        "name": [f"unit_{i}" for i in range(50)],
-    })
+    df = pd.DataFrame(
+        {
+            "size": rng.uniform(10, 1000, size=50),
+            "name": [f"unit_{i}" for i in range(50)],
+        }
+    )
     result = ppssmp(df, "size", 10, seed=42)
     assert len(result) == 10
 
 
 def test_ppssmp_larger_units_more_likely():
     """Units with larger sizes should appear more often across many draws."""
-    df = pd.DataFrame({
-        "size": [1, 1, 1, 1, 1000],
-        "id": range(5),
-    })
+    df = pd.DataFrame(
+        {
+            "size": [1, 1, 1, 1, 1000],
+            "id": range(5),
+        }
+    )
     # Over many single draws, unit 4 (size=1000) should dominate
     counts = np.zeros(5)
     for seed in range(100):

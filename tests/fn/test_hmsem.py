@@ -1,6 +1,7 @@
 """Tests for hmsem.geron_semisupervised."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsem import geron_semisupervised
 
 
@@ -12,7 +13,7 @@ def test_hmsem_basic():
     alpha = 0.05
     result = geron_semisupervised(X_l, y_l, X_u, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsem_edge():

@@ -1,6 +1,9 @@
 """Tests for latent_profile."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.lpa import latent_profile
+
 
 class TestLPA:
     def test_two_profiles(self):

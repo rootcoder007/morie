@@ -1,6 +1,7 @@
 """Tests for morie.fn.bpscr -- Bayesian propensity score."""
 
 import numpy as np
+
 from morie.fn.bpscr import bayesian_propensity
 
 

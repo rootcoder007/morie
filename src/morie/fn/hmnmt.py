@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Encoder-decoder for neural machine translation (seq2seq)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_encoder_decoder_nmt"]
@@ -34,7 +36,14 @@ def geron_encoder_decoder_nmt(src, tgt, model):
     n = len(src)
     result = float(np.mean(src))
     se = float(np.std(src, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Encoder-decoder for neural machine translation (seq2seq)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Encoder-decoder for neural machine translation (seq2seq)",
+        }
+    )
 
 
 def cheatsheet():

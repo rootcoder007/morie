@@ -1,6 +1,7 @@
 """Tests for hrzormsc.horowitz_ordered_max_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzormsc import horowitz_ordered_max_score
 
 
@@ -10,7 +11,7 @@ def test_hrzormsc_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = horowitz_ordered_max_score(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzormsc_edge():

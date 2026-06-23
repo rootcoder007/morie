@@ -1,6 +1,7 @@
 """TMLE for multi-state cumulative hazard contrast."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_multi_state_phc"]
@@ -36,7 +37,9 @@ def tmle_multi_state_phc(time, state, D, X):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for multi-state cumulative hazard contrast"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TMLE for multi-state cumulative hazard contrast"}
+    )
 
 
 def cheatsheet():

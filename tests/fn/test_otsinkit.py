@@ -1,6 +1,7 @@
 """Tests for otsinkit.ot_sinkhorn_iter_count."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otsinkit import ot_sinkhorn_iter_count
 
 
@@ -14,7 +15,7 @@ def test_otsinkit_basic():
     max_iter = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_sinkhorn_iter_count(a, b, C, epsilon, tol, max_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otsinkit_edge():

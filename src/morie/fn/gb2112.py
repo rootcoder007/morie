@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_block_freq_dist"]
@@ -32,7 +34,14 @@ def gibbons_block_freq_dist(m, n):
     n = int(m) if m.ndim == 0 else len(m)
     result = float(np.mean(m))
     se = float(np.std(m, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions",
+        }
+    )
 
 
 def cheatsheet():

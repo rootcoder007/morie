@@ -1,6 +1,7 @@
 """Tests for rgvagadp.rangayyan_vag_adaptive_tfd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgvagadp import rangayyan_vag_adaptive_tfd
 
 
@@ -11,7 +12,7 @@ def test_rgvagadp_basic():
     n_atoms = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_vag_adaptive_tfd(vag, fs, n_atoms)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgvagadp_edge():

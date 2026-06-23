@@ -62,6 +62,7 @@ def mdsel(
             d = Xa.shape[1]
             beta = np.linalg.solve(Xa.T @ Xa + lam * np.eye(d), Xa.T @ y_tr)
             return np.column_stack([np.ones(len(X_val)), X_val]) @ beta
+
         return fn
 
     if models is None:

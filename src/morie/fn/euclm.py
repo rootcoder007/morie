@@ -18,7 +18,7 @@ def euclidean_model(ideal_points, alternatives, *, beta: float = 1.0) -> Descrip
         Z = Z.reshape(-1, 1)
 
     diff = X[:, None, :] - Z[None, :, :]
-    dist_sq = (diff ** 2).sum(axis=-1)
+    dist_sq = (diff**2).sum(axis=-1)
     utility = -beta * dist_sq
     predicted = np.argmax(utility, axis=1)
 

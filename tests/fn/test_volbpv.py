@@ -1,6 +1,7 @@
 """Tests for volbpv.vol_bipower_variation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volbpv import vol_bipower_variation
 
 
@@ -10,7 +11,7 @@ def test_volbpv_basic():
     block_index = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_bipower_variation(r_intraday, block_index)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volbpv_edge():

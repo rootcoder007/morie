@@ -1,7 +1,9 @@
 """Tests for butthp — Butterworth highpass filter."""
+
 import numpy as np
-from morie.fn.butthp import butter_highpass
+
 from morie.fn._containers import SignalResult
+from morie.fn.butthp import butter_highpass
 
 
 def test_butthp_basic(signal_1khz):

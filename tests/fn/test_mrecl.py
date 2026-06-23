@@ -1,7 +1,6 @@
 """Tests for morie.fn.mrecl — multi-class recall."""
-import numpy as np
-import pytest
-from morie.fn.mrecl import multiclass_recall, mrecl
+
+from morie.fn.mrecl import mrecl, multiclass_recall
 
 
 def test_perfect_macro():

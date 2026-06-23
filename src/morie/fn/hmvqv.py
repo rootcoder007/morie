@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Discrete VAE (VQ-VAE): vector-quantized latents with codebook."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_vq_vae"]
@@ -38,7 +40,14 @@ def geron_vq_vae(X, codebook_size, latent_dim, epochs, lr):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discrete VAE (VQ-VAE): vector-quantized latents with codebook"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Discrete VAE (VQ-VAE): vector-quantized latents with codebook",
+        }
+    )
 
 
 def cheatsheet():

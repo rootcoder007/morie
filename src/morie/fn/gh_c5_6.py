@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variational inference for DPM: mean-field approximation q(G,theta,z) = prod q_i."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_vb_dpm"]
@@ -30,7 +32,14 @@ def ghosal_vb_dpm(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variational inference for DPM: mean-field approximation q(G,theta,z) = prod q_i"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Variational inference for DPM: mean-field approximation q(G,theta,z) = prod q_i",
+        }
+    )
 
 
 def cheatsheet():

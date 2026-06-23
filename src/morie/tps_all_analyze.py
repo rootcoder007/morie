@@ -46,10 +46,7 @@ def _safe_year_col(df: pd.DataFrame) -> str | None:
 def _vc_rows(s: pd.Series, top: int = 20) -> list[list[Any]]:
     counts = s.value_counts(dropna=False).head(top)
     total = int(counts.sum()) if counts.sum() else 1
-    return [
-        [str(idx), int(v), f"{100*v/total:.1f}%"]
-        for idx, v in counts.items()
-    ]
+    return [[str(idx), int(v), f"{100 * v / total:.1f}%"] for idx, v in counts.items()]
 
 
 def temporal_summary(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
@@ -62,31 +59,32 @@ def temporal_summary(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
     if yc and df.shape[0]:
         years = pd.to_numeric(df[yc], errors="coerce").dropna()
         if years.size:
-            summary.append(("Years covered",
-                            f"{int(years.min())}–{int(years.max())}"))
-            summary.append(("Mean per year",
-                            float(df.shape[0]) / max(1, years.nunique())))
+            summary.append(("Years covered", f"{int(years.min())}–{int(years.max())}"))
+            summary.append(("Mean per year", float(df.shape[0]) / max(1, years.nunique())))
 
     tables = []
     if yc:
-        by_year = (df.groupby(yc).size().sort_index()
-                  if df.shape[0] else pd.Series(dtype=int))
-        tables.append({
-            "title": f"Incidents by {yc}:",
-            "headers": [yc, "Count"],
-            "rows": [[int(y), int(v)] for y, v in by_year.items()],
-        })
+        by_year = df.groupby(yc).size().sort_index() if df.shape[0] else pd.Series(dtype=int)
+        tables.append(
+            {
+                "title": f"Incidents by {yc}:",
+                "headers": [yc, "Count"],
+                "rows": [[int(y), int(v)] for y, v in by_year.items()],
+            }
+        )
     for col, label in [
         ("OCC_MONTH", "Incidents by month of occurrence"),
         ("OCC_DOW", "Incidents by day of week of occurrence"),
         ("OCC_HOUR", "Incidents by hour of occurrence"),
     ]:
         if col in df.columns:
-            tables.append({
-                "title": f"{label}:",
-                "headers": [col, "Count", "Percent"],
-                "rows": _vc_rows(df[col], top=24),
-            })
+            tables.append(
+                {
+                    "title": f"{label}:",
+                    "headers": [col, "Count", "Percent"],
+                    "rows": _vc_rows(df[col], top=24),
+                }
+            )
     return RichResult(
         title=f"TPS temporal -- {ds_name}",
         summary_lines=summary,
@@ -105,37 +103,43 @@ def spatial_summary(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
         lat = pd.to_numeric(df["LAT_WGS84"], errors="coerce").dropna()
         lon = pd.to_numeric(df["LONG_WGS84"], errors="coerce").dropna()
         if lat.size and lon.size:
-            summary.append(("Latitude range",
-                            f"{lat.min():.4f}–{lat.max():.4f}"))
-            summary.append(("Longitude range",
-                            f"{lon.min():.4f}–{lon.max():.4f}"))
+            summary.append(("Latitude range", f"{lat.min():.4f}–{lat.max():.4f}"))
+            summary.append(("Longitude range", f"{lon.min():.4f}–{lon.max():.4f}"))
             summary.append(("Geocoded incidents", int(min(lat.size, lon.size))))
 
     tables = []
     if "DIVISION" in df.columns:
-        tables.append({
-            "title": "Top divisions:",
-            "headers": ["Division", "Count", "Percent"],
-            "rows": _vc_rows(df["DIVISION"], top=20),
-        })
+        tables.append(
+            {
+                "title": "Top divisions:",
+                "headers": ["Division", "Count", "Percent"],
+                "rows": _vc_rows(df["DIVISION"], top=20),
+            }
+        )
     if "NEIGHBOURHOOD_158" in df.columns:
-        tables.append({
-            "title": "Top 20 neighbourhoods (158-system):",
-            "headers": ["Neighbourhood", "Count", "Percent"],
-            "rows": _vc_rows(df["NEIGHBOURHOOD_158"], top=20),
-        })
+        tables.append(
+            {
+                "title": "Top 20 neighbourhoods (158-system):",
+                "headers": ["Neighbourhood", "Count", "Percent"],
+                "rows": _vc_rows(df["NEIGHBOURHOOD_158"], top=20),
+            }
+        )
     if "PREMISES_TYPE" in df.columns:
-        tables.append({
-            "title": "By premises type:",
-            "headers": ["Premises", "Count", "Percent"],
-            "rows": _vc_rows(df["PREMISES_TYPE"], top=20),
-        })
+        tables.append(
+            {
+                "title": "By premises type:",
+                "headers": ["Premises", "Count", "Percent"],
+                "rows": _vc_rows(df["PREMISES_TYPE"], top=20),
+            }
+        )
     if "LOCATION_TYPE" in df.columns:
-        tables.append({
-            "title": "Top 20 location types:",
-            "headers": ["Location", "Count", "Percent"],
-            "rows": _vc_rows(df["LOCATION_TYPE"], top=20),
-        })
+        tables.append(
+            {
+                "title": "Top 20 location types:",
+                "headers": ["Location", "Count", "Percent"],
+                "rows": _vc_rows(df["LOCATION_TYPE"], top=20),
+            }
+        )
     return RichResult(
         title=f"TPS spatial -- {ds_name}",
         summary_lines=summary,
@@ -153,11 +157,13 @@ def offence_summary(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
         ("CSI_CATEGORY", "CSI category distribution"),
     ]:
         if col in df.columns:
-            tables.append({
-                "title": f"{label}:",
-                "headers": [col, "Count", "Percent"],
-                "rows": _vc_rows(df[col], top=20),
-            })
+            tables.append(
+                {
+                    "title": f"{label}:",
+                    "headers": [col, "Count", "Percent"],
+                    "rows": _vc_rows(df[col], top=20),
+                }
+            )
     return RichResult(
         title=f"TPS offences -- {ds_name}",
         summary_lines=summary,
@@ -183,16 +189,14 @@ def gini_concentration(values: np.ndarray) -> float:
     return float(gini)
 
 
-def neighbourhood_concentration(df: pd.DataFrame, *,
-                                ds_name: str = "?") -> RichResult:
+def neighbourhood_concentration(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
     """How concentrated is crime across neighbourhoods?
     Uses HOOD_158 (the 158-neighbourhood scheme) by default.
     """
     if "HOOD_158" not in df.columns:
         return RichResult(
             title=f"TPS concentration -- {ds_name}",
-            warnings=["HOOD_158 column missing -- cannot compute "
-                      "neighbourhood concentration."],
+            warnings=["HOOD_158 column missing -- cannot compute neighbourhood concentration."],
         )
     hood_counts = df["HOOD_158"].value_counts()
     n_hoods = int(hood_counts.size)
@@ -206,27 +210,31 @@ def neighbourhood_concentration(df: pd.DataFrame, *,
         summary_lines=[
             ("Neighbourhoods with ≥1 incident", n_hoods),
             ("Gini coefficient (concentration)", round(g, 4)),
-            ("% incidents in top-10 neighbourhoods",
-                f"{100*p_top10:.1f}%"),
-            ("% incidents in top-20 neighbourhoods",
-                f"{100*p_top20:.1f}%"),
+            ("% incidents in top-10 neighbourhoods", f"{100 * p_top10:.1f}%"),
+            ("% incidents in top-20 neighbourhoods", f"{100 * p_top20:.1f}%"),
         ],
-        tables=[{
-            "title": "Top 20 neighbourhoods (count, cum %):",
-            "headers": ["HOOD_158", "Count", "Cum %"],
-            "rows": [[str(h), int(c),
-                      f"{100*float(cum_pct.loc[h]):.1f}%"]
-                     for h, c in hood_counts.head(20).items()],
-        }],
+        tables=[
+            {
+                "title": "Top 20 neighbourhoods (count, cum %):",
+                "headers": ["HOOD_158", "Count", "Cum %"],
+                "rows": [
+                    [str(h), int(c), f"{100 * float(cum_pct.loc[h]):.1f}%"] for h, c in hood_counts.head(20).items()
+                ],
+            }
+        ],
         interpretation=(
             f"Gini = {g:.3f} measures how unequally incidents are "
             "distributed across neighbourhoods. Higher = more "
-            f"concentrated. {100*p_top10:.0f}% of incidents fall in "
+            f"concentrated. {100 * p_top10:.0f}% of incidents fall in "
             "the top-10 neighbourhoods alone."
         ),
-        payload={"gini": g, "n_hoods": n_hoods,
-                 "p_top10": p_top10, "p_top20": p_top20,
-                 "top20": hood_counts.head(20).to_dict()},
+        payload={
+            "gini": g,
+            "n_hoods": n_hoods,
+            "p_top10": p_top10,
+            "p_top20": p_top20,
+            "top20": hood_counts.head(20).to_dict(),
+        },
     )
 
 
@@ -256,8 +264,7 @@ def crime_compare(dfs: dict[str, pd.DataFrame]) -> RichResult:
         year_table = {
             "title": "Incidents by OCC_YEAR (side-by-side):",
             "headers": ["OCC_YEAR"] + list(m.columns),
-            "rows": [[int(y)] + list(map(int, row))
-                     for y, row in m.iterrows()],
+            "rows": [[int(y)] + list(map(int, row)) for y, row in m.iterrows()],
         }
     return RichResult(
         title="TPS -- cross-category comparison",
@@ -266,9 +273,9 @@ def crime_compare(dfs: dict[str, pd.DataFrame]) -> RichResult:
             ("Total incidents (sum)", sum(df.shape[0] for df in dfs.values())),
         ],
         tables=[
-            {"title": "Total counts per category:",
-             "headers": ["Category", "Incidents"], "rows": rows},
-        ] + ([year_table] if year_table else []),
+            {"title": "Total counts per category:", "headers": ["Category", "Incidents"], "rows": rows},
+        ]
+        + ([year_table] if year_table else []),
     )
 
 
@@ -298,6 +305,7 @@ def analyze_one(name: str, df: pd.DataFrame | None = None) -> RichResult:
 def _factory(name: str):
     def _fn(df: pd.DataFrame | None = None) -> RichResult:
         return analyze_one(name, df)
+
     _fn.__name__ = f"analyze_{name.lower()}"
     _fn.__doc__ = f"Analyze TPS {name}."
     return _fn
@@ -321,8 +329,7 @@ analyze_theftover = _factory("TheftOver")
 # ── Master driver ──────────────────────────────────────────────────
 
 
-def analyze_all(out_dir: Path | None = None,
-                *, sample_rows: int | None = 50_000) -> dict[str, RichResult]:
+def analyze_all(out_dir: Path | None = None, *, sample_rows: int | None = 50_000) -> dict[str, RichResult]:
     """Run full bundle on each of the 13 TPS datasets + cross-compare.
 
     `sample_rows` caps each load at N rows for fast development; pass
@@ -341,9 +348,7 @@ def analyze_all(out_dir: Path | None = None,
             results[name] = r
             (out_dir / f"tps_{name}.txt").write_text(str(r))
             (out_dir / f"tps_{name}.json").write_text(
-                json.dumps({"n_rows": int(df.shape[0]),
-                            "n_columns": int(df.shape[1])},
-                           indent=2)
+                json.dumps({"n_rows": int(df.shape[0]), "n_columns": int(df.shape[1])}, indent=2)
             )
         except Exception as e:  # noqa: BLE001
             results[name] = RichResult(

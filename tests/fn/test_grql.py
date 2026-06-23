@@ -1,6 +1,7 @@
 """Tests for grql.geron_q_learning_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grql import geron_q_learning_update
 
 
@@ -15,7 +16,7 @@ def test_grql_basic():
     gamma = 1.0
     result = geron_q_learning_update(Q, s, a, r, s_next, alpha, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grql_edge():

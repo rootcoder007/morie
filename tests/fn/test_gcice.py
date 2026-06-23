@@ -1,6 +1,7 @@
 """Test gcice."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcice import gcice
 
 

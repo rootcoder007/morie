@@ -1,5 +1,7 @@
 """Tests for morie.fn.maxdd."""
+
 import numpy as np
+
 from morie.fn.maxdd import maxdd
 
 
@@ -13,6 +15,7 @@ def test_maxdd_smoke():
 
 def test_cheatsheet():
     from morie.fn.maxdd import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

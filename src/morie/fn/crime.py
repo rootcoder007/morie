@@ -54,4 +54,4 @@ crime = crime_rate
 
 
 def cheatsheet() -> str:
-    return 'crime_rate({}) -> Crime rate per 100K with Wilson CI.'
+    return "crime_rate({}) -> Crime rate per 100K with Wilson CI."

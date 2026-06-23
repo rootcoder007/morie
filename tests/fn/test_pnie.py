@@ -1,6 +1,7 @@
 """Tests for pnie.pure_natural_indirect_effect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pnie import pure_natural_indirect_effect
 
 
@@ -11,7 +12,7 @@ def test_pnie_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = pure_natural_indirect_effect(X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pnie_edge():

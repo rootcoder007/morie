@@ -1,6 +1,7 @@
 """Test trasg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trasg import trasg
 
 

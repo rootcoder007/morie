@@ -1,6 +1,7 @@
 """Tests for spmwst.schabenberger_moving_window."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmwst import schabenberger_moving_window
 
 
@@ -11,7 +12,7 @@ def test_spmwst_basic():
     window_size = 100
     result = schabenberger_moving_window(coords, z, window_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spmwst_edge():

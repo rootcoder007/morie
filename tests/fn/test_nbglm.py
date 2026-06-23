@@ -1,7 +1,6 @@
 """Tests for morie.fn.nbglm — Negative binomial GLM."""
 
 import numpy as np
-import pytest
 
 from morie.fn.nbglm import negbin_glm
 
@@ -41,6 +40,7 @@ def test_nbglm_alpha_zero_like_poisson():
     X = rng.standard_normal((n, 1))
     y = rng.poisson(lam=np.exp(1.0 + 0.5 * X[:, 0])).astype(float)
     from morie.fn.pois import poisson_regression
+
     pois = poisson_regression(y, X)
     nb = negbin_glm(y, X, alpha=0.001)
     assert abs(nb.coefficients["x0"] - pois.extra["coefficients"]["x0"]) < 0.3

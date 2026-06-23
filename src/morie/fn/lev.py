@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Leverage diagonal."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
+
 def lev(X: Union[Sequence, np.ndarray]) -> np.ndarray:
     """Hat-matrix diagonals (leverage values).
 

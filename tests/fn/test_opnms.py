@@ -1,6 +1,7 @@
 """Test opnms."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opnms import opnms
 
 

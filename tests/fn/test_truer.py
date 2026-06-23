@@ -1,6 +1,7 @@
 """Test truer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.truer import truer
 
 

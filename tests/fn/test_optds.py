@@ -1,5 +1,5 @@
 """Tests for morie.fn.optds."""
-import numpy as np
+
 from morie.fn.optds import optds
 
 
@@ -12,6 +12,7 @@ def test_optds_smoke():
 
 def test_cheatsheet():
     from morie.fn.optds import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

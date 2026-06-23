@@ -1,6 +1,7 @@
 """Tests for otplan.ot_plan_to_map."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otplan import ot_plan_to_map
 
 
@@ -10,7 +11,7 @@ def test_otplan_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = ot_plan_to_map(T, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otplan_edge():

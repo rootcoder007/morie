@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Motor unit mean firing rate and inter-discharge interval (IDI)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_muap_firing_rate"]
@@ -30,7 +32,14 @@ def rangayyan_muap_firing_rate(spike_times):
     n = int(spike_times) if spike_times.ndim == 0 else len(spike_times)
     result = float(np.mean(spike_times))
     se = float(np.std(spike_times, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Motor unit mean firing rate and inter-discharge interval (IDI)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Motor unit mean firing rate and inter-discharge interval (IDI)",
+        }
+    )
 
 
 def cheatsheet():

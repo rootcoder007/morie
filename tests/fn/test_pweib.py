@@ -1,6 +1,5 @@
 """Tests for morie.fn.pweib — Weibull CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.pweib import pweib

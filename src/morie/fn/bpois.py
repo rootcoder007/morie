@@ -62,7 +62,7 @@ def bayesian_poisson(
     post_a = prior_a + total
     post_b = prior_b + exposure
     post_mean = post_a / post_b
-    post_var = post_a / post_b ** 2
+    post_var = post_a / post_b**2
 
     ci_lo = float(stats.gamma.ppf((1 - prob) / 2, a=post_a, scale=1 / post_b))
     ci_hi = float(stats.gamma.ppf(1 - (1 - prob) / 2, a=post_a, scale=1 / post_b))

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Polya tree posterior contraction rate: n^{-s/(2s+1)} for s-Holder densities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_polya_tree_consist_rate"]
@@ -30,7 +32,14 @@ def ghosal_polya_tree_consist_rate(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Polya tree posterior contraction rate: n^{-s/(2s+1)} for s-Holder densities"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Polya tree posterior contraction rate: n^{-s/(2s+1)} for s-Holder densities",
+        }
+    )
 
 
 def cheatsheet():

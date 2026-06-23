@@ -1,6 +1,8 @@
 """Tests for morie.fn.aucpr — AUC-PR."""
+
 import numpy as np
 import pytest
+
 from morie.fn.aucpr import auc_pr, aucpr
 
 

@@ -1,6 +1,7 @@
 """Butterworth lowpass response indexed by DFT bin k.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_butterworth_lowpass_dft_indexed"]
@@ -34,7 +35,9 @@ def rangayyan_ch3_butterworth_lowpass_dft_indexed(k, k_c, N):
     n = len(k)
     result = float(np.mean(k))
     se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Butterworth lowpass response indexed by DFT bin k."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Butterworth lowpass response indexed by DFT bin k."}
+    )
 
 
 def cheatsheet():

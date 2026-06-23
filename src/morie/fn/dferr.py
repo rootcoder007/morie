@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Error degrees of freedom."""
 
+
 def dferr(n: int, k: int) -> int:
     """Error (residual) degrees of freedom: n − k − 1."""
     if n - k - 1 < 1:

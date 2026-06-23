@@ -1,7 +1,7 @@
 """Tests for morie.fn.ucr -- UCR offense classification."""
 
-from morie.fn.ucr import ucr_classify, ucr
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ucr import ucr, ucr_classify
 
 
 class TestUcr:

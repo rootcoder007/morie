@@ -1,6 +1,7 @@
 """Peto one-step odds ratio for sparse 2x2."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_peto_or"]
@@ -36,7 +37,9 @@ def ma_peto_or(a, b, c, d):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Peto one-step odds ratio for sparse 2x2"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Peto one-step odds ratio for sparse 2x2"}
+    )
 
 
 def cheatsheet():

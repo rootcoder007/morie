@@ -1,6 +1,8 @@
 """Test wlhme."""
+
 import numpy as np
 import pytest
+
 from morie.fn.wlhme import wlhme
 
 

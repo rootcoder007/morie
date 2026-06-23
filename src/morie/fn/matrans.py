@@ -1,6 +1,7 @@
 """Logit transform for proportion meta-analysis."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_logit_transform"]
@@ -32,7 +33,9 @@ def ma_logit_transform(p, n):
     n = len(p)
     result = float(np.mean(p))
     se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Logit transform for proportion meta-analysis"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Logit transform for proportion meta-analysis"}
+    )
 
 
 def cheatsheet():

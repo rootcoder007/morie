@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Out-of-bag (OOB) evaluation using unsampled observations per bootstrap."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_oob_score"]
@@ -34,7 +36,14 @@ def geron_oob_score(X, y, models):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Out-of-bag (OOB) evaluation using unsampled observations per bootstrap"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Out-of-bag (OOB) evaluation using unsampled observations per bootstrap",
+        }
+    )
 
 
 def cheatsheet():

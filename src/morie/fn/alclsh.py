@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Task-specific classification head over the [CLS] token hidden state."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_classification_head"]
@@ -34,7 +36,14 @@ def alammar_classification_head(h_cls, W_cls, b):
     n = len(h_cls)
     result = float(np.mean(h_cls))
     se = float(np.std(h_cls, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Task-specific classification head over the [CLS] token hidden state"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Task-specific classification head over the [CLS] token hidden state",
+        }
+    )
 
 
 def cheatsheet():

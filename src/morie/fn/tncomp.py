@@ -1,6 +1,7 @@
 """MaxMin compound-set diversity selection."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["compound_diversity"]
@@ -32,7 +33,9 @@ def compound_diversity(fps, n_pick):
     n = len(fps)
     result = float(np.mean(fps))
     se = float(np.std(fps, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MaxMin compound-set diversity selection"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MaxMin compound-set diversity selection"}
+    )
 
 
 def cheatsheet():

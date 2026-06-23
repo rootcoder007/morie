@@ -1,6 +1,7 @@
 """Tests for grdeit.geron_deit_distillation_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grdeit import geron_deit_distillation_loss
 
 
@@ -12,7 +13,7 @@ def test_grdeit_basic():
     teacher_preds = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_deit_distillation_loss(logits_cls, logits_dist, y, teacher_preds)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grdeit_edge():

@@ -1,7 +1,9 @@
 """Test willison_amp."""
+
 import numpy as np
-from morie.fn.wlamp import willison_amp, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.wlamp import alias, willison_amp
 
 
 class TestWillisonAmp:

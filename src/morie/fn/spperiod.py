@@ -1,5 +1,7 @@
 """Periodogram on rectangular lattice for spectral analysis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_periodogram"]
@@ -31,7 +33,14 @@ def schabenberger_periodogram(z_lattice, coords):
     n = int(z_lattice) if z_lattice.ndim == 0 else len(z_lattice)
     result = float(np.mean(z_lattice))
     se = float(np.std(z_lattice, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Periodogram on rectangular lattice for spectral analysis"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Periodogram on rectangular lattice for spectral analysis",
+        }
+    )
 
 
 def cheatsheet():

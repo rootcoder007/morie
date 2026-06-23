@@ -1,6 +1,7 @@
 """Tests for pdcoin.pedroni_panel_cointegration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pdcoin import pedroni_panel_cointegration
 
 
@@ -10,7 +11,7 @@ def test_pdcoin_basic():
     groups = np.random.default_rng(43).integers(0, 3, 100)
     result = pedroni_panel_cointegration(X, groups)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_pdcoin_edge():

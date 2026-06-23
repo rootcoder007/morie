@@ -1,6 +1,7 @@
 """Tests for rgsf.rangayyan_signal_features."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgsf import rangayyan_signal_features
 
 
@@ -10,7 +11,7 @@ def test_rgsf_basic():
     fs = 100.0
     result = rangayyan_signal_features(x, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgsf_edge():

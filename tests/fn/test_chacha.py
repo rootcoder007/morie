@@ -8,7 +8,6 @@ from morie.crypto._chacha import chacha20_poly1305_decrypt, chacha20_poly1305_en
 
 
 class TestChaCha20Poly1305:
-
     def test_roundtrip(self):
         key = os.urandom(32)
         nonce = os.urandom(12)

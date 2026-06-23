@@ -1,7 +1,7 @@
 """Tests for morie.fn.psgmb."""
 
 import numpy as np
-import pytest
+
 from morie.fn.psgmb import psgmb
 
 

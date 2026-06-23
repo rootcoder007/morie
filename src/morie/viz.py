@@ -937,7 +937,6 @@ def dag_plot(
 
     # Simple layered layout
     if node_positions is None:
-
         layers: list[list[str]] = []
         remaining = set(nodes)
         deg = dict(in_degree)

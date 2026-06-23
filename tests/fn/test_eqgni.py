@@ -1,9 +1,9 @@
 """Tests for morie.fn.eqgni — Gini coefficient."""
 
 import pytest
-import numpy as np
-from morie.fn.eqgni import gini_coefficient
+
 from morie.fn._containers import ESRes
+from morie.fn.eqgni import gini_coefficient
 
 
 class TestGini:

@@ -109,12 +109,10 @@ def lead_iq_loss(
     }
     if with_ci:
         lo, hi = _LANPHEAR_95CI_A
-        delta_lo = hi * np.log(bll / reference_bll)   # hi is less neg -> smaller loss
-        delta_hi = lo * np.log(bll / reference_bll)   # lo is more neg -> larger loss
-        extra["iq_loss_lower_95"] = (delta_lo.tolist() if delta_lo.size > 1
-                                     else float(delta_lo.item()))
-        extra["iq_loss_upper_95"] = (delta_hi.tolist() if delta_hi.size > 1
-                                     else float(delta_hi.item()))
+        delta_lo = hi * np.log(bll / reference_bll)  # hi is less neg -> smaller loss
+        delta_hi = lo * np.log(bll / reference_bll)  # lo is more neg -> larger loss
+        extra["iq_loss_lower_95"] = delta_lo.tolist() if delta_lo.size > 1 else float(delta_lo.item())
+        extra["iq_loss_upper_95"] = delta_hi.tolist() if delta_hi.size > 1 else float(delta_hi.item())
         extra["slope_95ci"] = _LANPHEAR_95CI_A
 
     return DescriptiveResult(name="lead_iq_loss", value=val, extra=extra)

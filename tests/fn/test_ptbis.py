@@ -1,5 +1,8 @@
 """Tests for point_biserial."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.ptbis import point_biserial
 
 

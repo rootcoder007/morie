@@ -1,6 +1,7 @@
 """Tests for spkcrs.schabenberger_cross_k_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spkcrs import schabenberger_cross_k_function
 
 
@@ -13,7 +14,7 @@ def test_spkcrs_basic():
     r = 10
     result = schabenberger_cross_k_function(points1, points2, lambda1, lambda2, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spkcrs_edge():

@@ -1,6 +1,7 @@
 """Test entsn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.entsn import entsn
 
 

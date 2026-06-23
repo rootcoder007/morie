@@ -76,4 +76,4 @@ taskm = dtw_match
 
 
 def cheatsheet() -> str:
-    return 'dtw_match({}) -> Dynamic time warping pattern matching.'
+    return "dtw_match({}) -> Dynamic time warping pattern matching."

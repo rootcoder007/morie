@@ -8,7 +8,6 @@ from morie.crypto.hybrid import hybrid_decrypt, hybrid_encrypt, keygen
 
 
 class TestHybridEncryption:
-
     @pytest.fixture(scope="class")
     def keypair(self):
         return keygen()

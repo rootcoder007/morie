@@ -1,6 +1,7 @@
 """InfoMax objective for representation learning."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["infomax_objective"]
@@ -32,7 +33,9 @@ def infomax_objective(X, T_network):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "InfoMax objective for representation learning"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "InfoMax objective for representation learning"}
+    )
 
 
 def cheatsheet():

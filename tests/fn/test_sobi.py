@@ -1,7 +1,9 @@
 """Test sobi_bss (sobi)."""
+
 import numpy as np
-from morie.fn.sobi import sobi_bss, sobi
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sobi import sobi, sobi_bss
 
 
 class TestSobi:

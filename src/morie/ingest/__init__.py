@@ -46,5 +46,6 @@ def __getattr__(name: str):  # pragma: no cover — trivial PEP 562 stub
     # infinite-recurses.  See PEP 562 "lazy submodule import" pattern.
     if name == "bigquery":
         import importlib
+
         return importlib.import_module(f"{__name__}.bigquery")
     raise AttributeError(f"module 'morie.ingest' has no attribute {name!r}")

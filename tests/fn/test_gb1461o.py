@@ -1,6 +1,7 @@
 """Tests for gb1461o.gibbons_ordered_categories."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb1461o import gibbons_ordered_categories
 
 
@@ -10,7 +11,7 @@ def test_gb1461o_basic():
     scores = np.random.default_rng(42).uniform(0, 1, 100)
     result = gibbons_ordered_categories(table, scores)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb1461o_edge():

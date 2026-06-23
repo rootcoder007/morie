@@ -96,7 +96,11 @@ def secondary_attack_rate(
 
     sar = secondary_cases / contacts
     ci_lo = _st.beta.ppf(alpha / 2, secondary_cases, contacts - secondary_cases + 1) if secondary_cases > 0 else 0.0
-    ci_hi = _st.beta.ppf(1 - alpha / 2, secondary_cases + 1, contacts - secondary_cases) if secondary_cases < contacts else 1.0
+    ci_hi = (
+        _st.beta.ppf(1 - alpha / 2, secondary_cases + 1, contacts - secondary_cases)
+        if secondary_cases < contacts
+        else 1.0
+    )
 
     return {
         "sar": float(sar),

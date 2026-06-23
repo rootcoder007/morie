@@ -1,6 +1,7 @@
 """Tests for esd.generalized_esd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esd import generalized_esd
 
 
@@ -11,7 +12,7 @@ def test_esd_basic():
     r = 10
     result = generalized_esd(x, alpha, r)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_esd_edge():

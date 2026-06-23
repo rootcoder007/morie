@@ -1,6 +1,7 @@
 """Test ubpxm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubpxm import ubpxm
 
 

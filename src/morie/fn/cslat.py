@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal (autoregressive) attention mask (Radford et al. 2019)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -33,8 +34,7 @@ def causal_attention_mask(x):
     mask[np.triu_indices(n, k=1)] = -np.inf
     return RichResult(
         title="Causal Attention Mask (Radford 2019)",
-        summary_lines=[("seq_len", n),
-                       ("allowed", int(n * (n + 1) // 2))],
+        summary_lines=[("seq_len", n), ("allowed", int(n * (n + 1) // 2))],
         payload={"tensor": mask, "n": n, "method": "causal-mask"},
     )
 

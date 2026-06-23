@@ -5,6 +5,7 @@ Returns the midranks of x.  Tied values get the mean of the ranks
 they would have received had ties been broken arbitrarily.  This
 is scipy.stats.rankdata's default ``'average'`` method.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -34,23 +35,29 @@ def midranks(x):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 1:
-        return RichResult(payload={
-            "midranks": np.array([]),
-            "n": 0, "ties": [], "tie_correction": 0.0,
-            "method": "Midranks",
-        })
+        return RichResult(
+            payload={
+                "midranks": np.array([]),
+                "n": 0,
+                "ties": [],
+                "tie_correction": 0.0,
+                "method": "Midranks",
+            }
+        )
     mr = stats.rankdata(x, method="average")
     # Compute tied groups
     vals, counts = np.unique(x, return_counts=True)
     ties = [(float(v), int(c)) for v, c in zip(vals, counts) if c > 1]
-    tie_correction = float(sum(c ** 3 - c for c in counts if c > 1))
-    return RichResult(payload={
-        "midranks": mr,
-        "n": n,
-        "ties": ties,
-        "tie_correction": tie_correction,
-        "method": "Midranks (Gibbons 5.6.2)",
-    })
+    tie_correction = float(sum(c**3 - c for c in counts if c > 1))
+    return RichResult(
+        payload={
+            "midranks": mr,
+            "n": n,
+            "ties": ties,
+            "tie_correction": tie_correction,
+            "method": "Midranks (Gibbons 5.6.2)",
+        }
+    )
 
 
 def cheatsheet():

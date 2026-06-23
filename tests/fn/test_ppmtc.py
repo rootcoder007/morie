@@ -1,6 +1,7 @@
 """Test ppmtc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmtc import ppmtc
 
 

@@ -1,8 +1,9 @@
 """Tests for morie.fn.shang -- circular harmonic analysis."""
 
 import numpy as np
-from morie.fn.shang import ring_harmonics, shang
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.shang import ring_harmonics, shang
 
 
 class TestShang:

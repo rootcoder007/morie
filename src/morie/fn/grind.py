@@ -69,4 +69,4 @@ grind = rosin_rammler
 
 
 def cheatsheet() -> str:
-    return 'rosin_rammler({}) -> Particle size distribution (Rosin-Rammler).'
+    return "rosin_rammler({}) -> Particle size distribution (Rosin-Rammler)."

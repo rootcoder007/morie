@@ -39,4 +39,4 @@ eigvc = extract_eigenvectors
 
 
 def cheatsheet() -> str:
-    return 'extract_eigenvectors({}) -> Extract top eigenvectors.'
+    return "extract_eigenvectors({}) -> Extract top eigenvectors."

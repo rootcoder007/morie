@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Johnson-Lindenstrauss lower bound on random-projection target dimension."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_johnson_lindenstrauss_bound"]
@@ -32,7 +34,14 @@ def geron_johnson_lindenstrauss_bound(n_samples, eps):
     n = int(n_samples) if n_samples.ndim == 0 else len(n_samples)
     result = float(np.mean(n_samples))
     se = float(np.std(n_samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Johnson-Lindenstrauss lower bound on random-projection target dimension"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Johnson-Lindenstrauss lower bound on random-projection target dimension",
+        }
+    )
 
 
 def cheatsheet():

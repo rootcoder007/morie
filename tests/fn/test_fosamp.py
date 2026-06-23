@@ -1,6 +1,7 @@
 """Test fosamp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fosamp import fosamp
 
 

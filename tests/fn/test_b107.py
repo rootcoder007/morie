@@ -1,6 +1,7 @@
 """Tests for b107.burkov_lm_ch1_layer2_output."""
+
 import numpy as np
-import pytest
+
 from morie.fn.b107 import burkov_lm_ch1_layer2_output
 
 
@@ -12,7 +13,7 @@ def test_b107_basic():
     phi = np.random.default_rng(42).normal(0, 1, 100)
     result = burkov_lm_ch1_layer2_output(W_2, y_1, b_2_1, phi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_b107_edge():

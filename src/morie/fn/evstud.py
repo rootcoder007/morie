@@ -1,6 +1,7 @@
 """Event-study leads + lags coefficients."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["event_study_coefficients"]

@@ -1,6 +1,7 @@
 """Aalen-Johansen cumulative incidence function."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cumulative_incidence_function"]
@@ -32,7 +33,9 @@ def cumulative_incidence_function(time, cause):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Aalen-Johansen cumulative incidence function"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Aalen-Johansen cumulative incidence function"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Error analysis via normalized confusion matrix row/column inspection."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_error_analysis"]
@@ -32,7 +34,14 @@ def geron_error_analysis(y_true, y_pred):
     n = len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Error analysis via normalized confusion matrix row/column inspection"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Error analysis via normalized confusion matrix row/column inspection",
+        }
+    )
 
 
 def cheatsheet():

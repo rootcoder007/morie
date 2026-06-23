@@ -1,6 +1,7 @@
 """Test gethl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gethl import gethl
 
 

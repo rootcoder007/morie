@@ -69,9 +69,7 @@ def chrsf(
             for nu in range(n):
                 s = 0.0
                 for sig in range(n):
-                    s += 0.5 * ginv[lam, sig] * (
-                        dg[mu, nu, sig] + dg[nu, mu, sig] - dg[sig, mu, nu]
-                    )
+                    s += 0.5 * ginv[lam, sig] * (dg[mu, nu, sig] + dg[nu, mu, sig] - dg[sig, mu, nu])
                 Gamma[lam, mu, nu] = s
 
     return {

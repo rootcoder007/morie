@@ -1,6 +1,7 @@
 """Tests for archtt.arch_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.archtt import arch_test
 
 
@@ -10,7 +11,7 @@ def test_archtt_basic():
     lags = 10
     result = arch_test(residuals, lags)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_archtt_edge():

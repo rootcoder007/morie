@@ -1,6 +1,7 @@
 """ChIP-seq peak calling (MACS2)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["chip_seq_peak"]

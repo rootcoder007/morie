@@ -1,7 +1,7 @@
 """Tests for morie.fn.cmdec."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cmdec import cmdec
 
 

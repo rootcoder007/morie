@@ -20,11 +20,9 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
-
 
 __all__ = [
     "mrm_tps_levy_scaling",
@@ -58,7 +56,7 @@ def mrm_tps_levy_scaling(
     lat_col: str = "LAT_WGS84",
     lon_col: str = "LONG_WGS84",
     min_step_km: float = 0.5,
-    x_min: Optional[float] = None,
+    x_min: float | None = None,
 ) -> LevyResult:
     """Hill-MLE exponent on TPS inter-incident step lengths (km)."""
     if x_min is None:
@@ -124,16 +122,20 @@ def mrm_tps_moran_clustering(
     num *= 2.0
     W *= 2
     if W == 0 or (z**2).sum() == 0:
-        morans_I = float("nan"); morans_z = float("nan")
+        morans_I = float("nan")
+        morans_z = float("nan")
     else:
         morans_I = float((N / W) * num / (z**2).sum())
         EI = -1.0 / (N - 1)
         var_I = 2.0 / (N - 1) ** 2
         morans_z = (morans_I - EI) / math.sqrt(var_I)
 
-    n_clusters = 0; n_noise = 0; largest = 0
+    n_clusters = 0
+    n_noise = 0
+    largest = 0
     try:
         from sklearn.cluster import DBSCAN
+
         pts = np.column_stack([lat * 111.0, lon * 111.0 * math.cos(np.deg2rad(lat.mean()))])
         labels = DBSCAN(eps=dbscan_eps, min_samples=dbscan_minpts).fit_predict(pts)
         n_clusters = int(len(set(labels)) - (1 if -1 in labels else 0))
@@ -144,8 +146,11 @@ def mrm_tps_moran_clustering(
         pass
 
     return MoranClusteringResult(
-        round(morans_I, 6), round(morans_z, 2),
-        n_clusters, n_noise, largest,
+        round(morans_I, 6),
+        round(morans_z, 2),
+        n_clusters,
+        n_noise,
+        largest,
     )
 
 
@@ -168,13 +173,17 @@ def mrm_tps_neighbourhood_recurrence_km(
         gaps = gaps[gaps >= min_gap_days]
         if gaps.size == 0:
             continue
-        rows.append({
-            "hood": hood, "n_events": int(len(sub)), "n_gaps": int(gaps.size),
-            "mean_gap_days": round(float(gaps.mean()), 2),
-            "median_gap_days": float(np.median(gaps)),
-            "p25_gap_days": float(np.quantile(gaps, 0.25)),
-            "p75_gap_days": float(np.quantile(gaps, 0.75)),
-        })
+        rows.append(
+            {
+                "hood": hood,
+                "n_events": int(len(sub)),
+                "n_gaps": int(gaps.size),
+                "mean_gap_days": round(float(gaps.mean()), 2),
+                "median_gap_days": float(np.median(gaps)),
+                "p25_gap_days": float(np.quantile(gaps, 0.25)),
+                "p75_gap_days": float(np.quantile(gaps, 0.75)),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -197,16 +206,18 @@ def mrm_tps_load_hawkes_refit(
     d = json.loads(p.read_text())
     rows = []
     for cat, e in d.items():
-        rows.append({
-            "category": cat,
-            "n_fitted": e.get("n_fitted"),
-            "T_days": round(e.get("T_days", float("nan")), 1),
-            "aic_mark": round(e["markovian"]["aic"], 1),
-            "kappa_mark": round(e["markovian"]["branching_ratio"], 3),
-            "ks_p_mark": round(e["markovian"]["ks_pvalue"], 3),
-            "aic_nm": round(e["weibull_sin"]["aic"], 1),
-            "eta_nm": round(e["weibull_sin"]["branching_ratio"], 3),
-            "ks_p_nm": round(e["weibull_sin"]["ks_pvalue"], 3),
-            "delta_aic": round(e["delta_aic"], 1),
-        })
+        rows.append(
+            {
+                "category": cat,
+                "n_fitted": e.get("n_fitted"),
+                "T_days": round(e.get("T_days", float("nan")), 1),
+                "aic_mark": round(e["markovian"]["aic"], 1),
+                "kappa_mark": round(e["markovian"]["branching_ratio"], 3),
+                "ks_p_mark": round(e["markovian"]["ks_pvalue"], 3),
+                "aic_nm": round(e["weibull_sin"]["aic"], 1),
+                "eta_nm": round(e["weibull_sin"]["branching_ratio"], 3),
+                "ks_p_nm": round(e["weibull_sin"]["ks_pvalue"], 3),
+                "delta_aic": round(e["delta_aic"], 1),
+            }
+        )
     return pd.DataFrame(rows)

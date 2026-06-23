@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spectral resolution and leakage analysis (Rayleigh criterion)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_spectral_resolution"]
@@ -34,7 +36,14 @@ def rangayyan_spectral_resolution(N, fs, window_type):
     n = int(N) if N.ndim == 0 else len(N)
     result = float(np.mean(N))
     se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spectral resolution and leakage analysis (Rayleigh criterion)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spectral resolution and leakage analysis (Rayleigh criterion)",
+        }
+    )
 
 
 def cheatsheet():

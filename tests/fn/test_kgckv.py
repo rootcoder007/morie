@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgckv -- Co-kriging variance"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgckv import cok_variance
 

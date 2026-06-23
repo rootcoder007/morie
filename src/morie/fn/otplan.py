@@ -1,6 +1,7 @@
 """Convert a soft transport plan to a barycentric map."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_plan_to_map"]
@@ -32,7 +33,9 @@ def ot_plan_to_map(T, Y):
     n = len(T)
     result = float(np.mean(T))
     se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Convert a soft transport plan to a barycentric map"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Convert a soft transport plan to a barycentric map"}
+    )
 
 
 def cheatsheet():

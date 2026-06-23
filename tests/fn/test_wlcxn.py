@@ -1,7 +1,6 @@
 """Tests for morie.fn.wlcxn — Wilcoxon survival test."""
 
 import numpy as np
-import pytest
 
 from morie.fn.wlcxn import wilcoxon_survival
 

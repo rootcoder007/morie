@@ -1,7 +1,9 @@
 """Test whitening (whtfn)."""
+
 import numpy as np
-from morie.fn.whtfn import whitening, whtfn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.whtfn import whitening, whtfn
 
 
 class TestWhtfn:

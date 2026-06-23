@@ -1,5 +1,7 @@
 """Mean-square differentiability of random field."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_ms_differentiability"]
@@ -29,7 +31,9 @@ def schabenberger_ms_differentiability(cov_func):
     n = int(cov_func) if cov_func.ndim == 0 else len(cov_func)
     result = float(np.mean(cov_func))
     se = float(np.std(cov_func, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean-square differentiability of random field"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mean-square differentiability of random field"}
+    )
 
 
 def cheatsheet():

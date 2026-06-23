@@ -1,9 +1,9 @@
 """Test alpha_trimmed_mean_filter (atmfl)."""
-import numpy as np
-import pytest
 
-from morie.fn.atmfl import alpha_trimmed_mean_filter, atmfl
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.atmfl import alpha_trimmed_mean_filter, atmfl
 
 
 class TestAlphaTrimmedMeanFilter:

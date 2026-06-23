@@ -1,6 +1,7 @@
 """Tests for wsmcb.wasserman_dkw_cb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmcb import wasserman_dkw_cb
 
 
@@ -10,7 +11,7 @@ def test_wsmcb_basic():
     alpha = 0.05
     result = wasserman_dkw_cb(data, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmcb_edge():

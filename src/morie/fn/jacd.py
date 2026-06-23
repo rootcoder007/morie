@@ -96,4 +96,4 @@ jacd = jackknife_delete_d
 
 
 def cheatsheet() -> str:
-    return 'jackknife_delete_d({}) -> Jackknife delete-d estimator.'
+    return "jackknife_delete_d({}) -> Jackknife delete-d estimator."

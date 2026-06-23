@@ -1,5 +1,5 @@
 """Tests for morie.fn.occln -- OC cutting line."""
-import numpy as np
+
 from morie.fn.occln import oc_cutting_line, occln
 
 

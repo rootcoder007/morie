@@ -1,6 +1,7 @@
 """Lower bound on the prior probability of approximating a target density p_0 in L1, used to establish that the total-variation support contains all densities absolutely continuous with respect to mu.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tailfree_strong_support_event"]
@@ -36,7 +37,14 @@ def ghosal_ch3_tailfree_strong_support_event(p, p_m, p_0, epsilon):
     n = len(p)
     result = float(np.mean(p))
     se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lower bound on the prior probability of approximating a target density p_0 in L1, used to establish that the total-variation support contains all densities absolutely continuous with respect to mu."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Lower bound on the prior probability of approximating a target density p_0 in L1, used to establish that the total-variation support contains all densities absolutely continuous with respect to mu.",
+        }
+    )
 
 
 def cheatsheet():

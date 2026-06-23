@@ -1,6 +1,7 @@
 r"""T5 template obj.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_t5_template_obj"]

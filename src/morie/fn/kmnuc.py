@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Top-p (nucleus) sampling: truncate to smallest set with cum. prob >= p."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_nucleus_sampling"]
@@ -32,7 +34,14 @@ def kamath_nucleus_sampling(logits, p):
     n = len(logits)
     result = float(np.mean(logits))
     se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Top-p (nucleus) sampling: truncate to smallest set with cum. prob >= p"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Top-p (nucleus) sampling: truncate to smallest set with cum. prob >= p",
+        }
+    )
 
 
 def cheatsheet():

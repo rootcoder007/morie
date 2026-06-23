@@ -1,6 +1,7 @@
 """Second-order cone programming."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["second_order_cone"]

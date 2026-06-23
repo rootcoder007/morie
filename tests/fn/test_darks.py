@@ -1,8 +1,7 @@
 """Tests for morie.fn.darks -- Dark energy equation of state."""
 
-import numpy as np
-from morie.fn.darks import dark_energy_eos, darks
 from morie.fn._containers import DescriptiveResult
+from morie.fn.darks import dark_energy_eos, darks
 
 
 class TestDarks:

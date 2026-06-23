@@ -1,7 +1,6 @@
 """Tests for morie.fn.svucs -- Uncovered set in 2D"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svucs import uncovered_set
 

@@ -1,6 +1,7 @@
 """Tests for omprs.py - Orthogonal Matching Pursuit decomposition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.omprs import omp_fn, omprs
 
 

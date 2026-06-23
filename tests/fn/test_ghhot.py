@@ -1,6 +1,7 @@
 """Test ghhot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghhot import ghhot
 
 

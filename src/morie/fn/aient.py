@@ -1,7 +1,6 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """AIC from entropy."""
 
-
 from ._containers import ESRes
 
 

@@ -1,6 +1,7 @@
 """Tests for euclP.polynomial_gcd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.euclP import polynomial_gcd
 
 
@@ -10,7 +11,7 @@ def test_euclP_basic():
     q = np.random.default_rng(42).normal(0, 1, 100)
     result = polynomial_gcd(p, q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_euclP_edge():

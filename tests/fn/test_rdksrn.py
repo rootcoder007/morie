@@ -1,6 +1,7 @@
 """Tests for rdksrn.sharp_rdd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rdksrn import sharp_rdd
 
 
@@ -12,7 +13,7 @@ def test_rdksrn_basic():
     bandwidth = 0.3
     result = sharp_rdd(y, x, cutoff, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdksrn_edge():

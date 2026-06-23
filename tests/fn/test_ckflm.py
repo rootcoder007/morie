@@ -1,6 +1,7 @@
 """Test ckflm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ckflm import ckflm
 
 

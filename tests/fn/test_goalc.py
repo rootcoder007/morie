@@ -1,6 +1,7 @@
 """Tests for goalc.goal_conditioned."""
+
 import numpy as np
-import pytest
+
 from morie.fn.goalc import goal_conditioned
 
 
@@ -11,7 +12,7 @@ def test_goalc_basic():
     goal_dist = np.random.default_rng(42).normal(0, 1, 100)
     result = goal_conditioned(env, policy, goal_dist)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_goalc_edge():

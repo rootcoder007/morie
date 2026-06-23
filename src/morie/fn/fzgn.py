@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """G_n(x) correction term in Edgeworth expansion for kernel quantile."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_gn_edgeworth_correction"]
@@ -36,7 +38,14 @@ def fauzi_gn_edgeworth_correction(x, sigma_n, e_moments, bandwidth):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "G_n(x) correction term in Edgeworth expansion for kernel quantile"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "G_n(x) correction term in Edgeworth expansion for kernel quantile",
+        }
+    )
 
 
 def cheatsheet():

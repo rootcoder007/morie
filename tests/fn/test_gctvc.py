@@ -1,6 +1,7 @@
 """Tests for gctvc.g_computation_time_varying."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gctvc import g_computation_time_varying
 
 
@@ -12,7 +13,7 @@ def test_gctvc_basic():
     time = np.linspace(0, 10, 100)
     result = g_computation_time_varying(y, treatment_history, covariate_history, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gctvc_edge():

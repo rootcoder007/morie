@@ -11,7 +11,9 @@ from ._containers import RegressionResult
 from ._helpers import _validate_df
 
 
-def gmm_twostep(data: pd.DataFrame, cdf=None, *, y: str = "outcome", x: list[str] | str = "x", z: list[str] | str = "z") -> RegressionResult:
+def gmm_twostep(
+    data: pd.DataFrame, cdf=None, *, y: str = "outcome", x: list[str] | str = "x", z: list[str] | str = "z"
+) -> RegressionResult:
     r"""Two-step Generalized Method of Moments (GMM) estimator.
 
     Step 1 uses identity weight matrix. Step 2 uses the optimal weight
@@ -110,7 +112,7 @@ def gmm_twostep(data: pd.DataFrame, cdf=None, *, y: str = "outcome", x: list[str
         else:
             p_dict[nm] = float("nan")
 
-    j_stat = float(n * e2 @ Z @ W2 @ Z.T @ e2 / n ** 2) if q > k else 0.0
+    j_stat = float(n * e2 @ Z @ W2 @ Z.T @ e2 / n**2) if q > k else 0.0
     j_df = q - k
     j_pval = float(1 - stats.chi2.cdf(j_stat, j_df)) if j_df > 0 else float("nan")
 

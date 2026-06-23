@@ -1,6 +1,7 @@
 """Tests for morie.fn.cstpg — custody program participation rate."""
 
 import pandas as pd
+
 from morie.fn.cstpg import custody_program_rate
 
 

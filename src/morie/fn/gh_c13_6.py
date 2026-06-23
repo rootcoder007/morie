@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Beta process sample path generation: via thinned Poisson process representation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_bp_path_gen"]
@@ -30,7 +32,14 @@ def ghosal_bp_path_gen(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Beta process sample path generation: via thinned Poisson process representation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Beta process sample path generation: via thinned Poisson process representation",
+        }
+    )
 
 
 def cheatsheet():

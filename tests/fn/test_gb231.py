@@ -1,6 +1,7 @@
 """Tests for gb231.gibbons_edf_binomial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb231 import gibbons_edf_binomial
 
 
@@ -10,7 +11,7 @@ def test_gb231_basic():
     n = 100
     result = gibbons_edf_binomial(x, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb231_edge():

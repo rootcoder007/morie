@@ -2,20 +2,23 @@
 
 import numpy as np
 import pytest
-from morie.fn.page import page_trend_test
+
 from morie.fn._containers import TestResult
+from morie.fn.page import page_trend_test
 
 
 class TestPage:
     def test_clear_trend(self):
         """Monotone increasing columns => significant L."""
-        data = np.array([
-            [1, 2, 3],
-            [2, 3, 4],
-            [1, 3, 5],
-            [2, 4, 6],
-            [1, 2, 4],
-        ])
+        data = np.array(
+            [
+                [1, 2, 3],
+                [2, 3, 4],
+                [1, 3, 5],
+                [2, 4, 6],
+                [1, 2, 4],
+            ]
+        )
         r = page_trend_test(data)
         assert isinstance(r, TestResult)
         assert r.p_value < 0.05

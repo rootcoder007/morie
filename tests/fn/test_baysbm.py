@@ -1,6 +1,7 @@
 """Tests for baysbm.bayes_b_marker."""
+
 import numpy as np
-import pytest
+
 from morie.fn.baysbm import bayes_b_marker
 
 
@@ -11,7 +12,7 @@ def test_baysbm_basic():
     pi = np.random.default_rng(42).normal(0, 1, 100)
     result = bayes_b_marker(y, M, pi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_baysbm_edge():

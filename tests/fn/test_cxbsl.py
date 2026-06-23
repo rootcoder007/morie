@@ -1,7 +1,6 @@
 """Tests for morie.fn.cxbsl — Breslow baseline hazard."""
 
 import numpy as np
-import pytest
 
 from morie.fn.cxbsl import cxbsl
 

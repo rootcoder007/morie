@@ -1,6 +1,7 @@
 """Randić connectivity index."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_randic_index"]

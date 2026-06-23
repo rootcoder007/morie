@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtcfa."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtcfa import dtcfa
 
 

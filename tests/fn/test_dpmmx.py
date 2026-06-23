@@ -1,6 +1,7 @@
 """Tests for morie.fn.dpmmx -- DP mixture model."""
 
 import numpy as np
+
 from morie.fn.dpmmx import dp_mixture_model
 
 

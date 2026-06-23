@@ -1,6 +1,7 @@
 """Tests for gb_wrc.gibbons_runs_critical."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_wrc import gibbons_runs_critical
 
 
@@ -11,7 +12,7 @@ def test_gb_wrc_basic():
     alpha = 0.05
     result = gibbons_runs_critical(n1, n2, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb_wrc_edge():

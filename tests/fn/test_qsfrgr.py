@@ -1,6 +1,7 @@
 """Tests for qsfrgr.quantile_survival_forest."""
+
 import numpy as np
-import pytest
+
 from morie.fn.qsfrgr import quantile_survival_forest
 
 
@@ -12,7 +13,7 @@ def test_qsfrgr_basic():
     quantile = np.random.default_rng(42).normal(0, 1, 100)
     result = quantile_survival_forest(time, event, X, quantile)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_qsfrgr_edge():

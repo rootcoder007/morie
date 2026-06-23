@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def mrmr_score(X, y, n_features: int = 10, **kwargs) -> DescriptiveResult:
     """
     Greedy mRMR feature selection using mutual-information proxies.

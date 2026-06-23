@@ -1,6 +1,8 @@
 """Tests for chltps."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chltps import chltps
 
 
@@ -28,4 +30,5 @@ def test_chltps_no_data():
 
 def test_chltps_alias():
     from morie.fn.chltps import chltps
+
     assert chltps is chltps

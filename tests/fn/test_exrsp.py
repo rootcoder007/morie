@@ -1,6 +1,7 @@
 """Tests for morie.fn.exrsp — exposure-response modeling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.exrsp import exposure_response
 
 
@@ -15,7 +16,7 @@ class TestExposureResponse:
     def test_knots_count(self):
         rng = np.random.default_rng(42)
         exposure = rng.uniform(0, 10, 150)
-        outcome = exposure ** 0.5 + rng.normal(0, 0.5, 150)
+        outcome = exposure**0.5 + rng.normal(0, 0.5, 150)
         res = exposure_response(exposure, outcome, n_spline_knots=5)
         assert len(res.extra["knots"]) == 5
 

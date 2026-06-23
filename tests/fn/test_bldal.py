@@ -1,5 +1,7 @@
 """Tests for bldal (Bland-Altman)."""
+
 import numpy as np
+
 from morie.fn.bldal import bland_altman
 
 
@@ -14,6 +16,7 @@ def test_bland_altman_agreement():
 
 def test_cheatsheet():
     from morie.fn.bldal import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

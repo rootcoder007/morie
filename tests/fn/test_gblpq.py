@@ -1,6 +1,7 @@
 """Tests for gblpq.gblup_equivalence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gblpq import gblup_equivalence
 
 
@@ -11,7 +12,7 @@ def test_gblpq_basic():
     G = np.eye(10)
     result = gblup_equivalence(y, Z, G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gblpq_edge():

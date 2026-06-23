@@ -1,8 +1,8 @@
 """CentralTendency expression involving 'pearson' (auto-extracted; see reference for full context).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["cb_chapter_14_equation_2"]
 
@@ -41,7 +41,12 @@ def cb_chapter_14_equation_2(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression involving 'pearson' (auto-extracted; see reference for full context)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression involving 'pearson' (auto-extracted; see reference for full context).",
+        },
     )
 
 

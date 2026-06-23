@@ -1,5 +1,7 @@
 """Tests for ssadc.py - SSA decomposition."""
+
 import numpy as np
+
 from morie.fn.ssadc import ssa_decompose_fn, ssadc
 
 

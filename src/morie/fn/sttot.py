@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from morie.fn._mapq_const import SUBSCALES
+
 from ._richresult import RichResult
 
 

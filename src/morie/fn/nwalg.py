@@ -101,4 +101,4 @@ short = needleman_wunsch
 
 
 def cheatsheet() -> str:
-    return 'nwalg() -> Perform global pairwise alignment via Needleman-Wunsch'
+    return "nwalg() -> Perform global pairwise alignment via Needleman-Wunsch"

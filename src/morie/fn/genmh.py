@@ -7,7 +7,7 @@ Population-based evolutionary approach using selection, crossover, and mutation.
 
 import numpy as np
 
-__all__ = ['genmh']
+__all__ = ["genmh"]
 
 
 def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=False, seed=None):
@@ -105,9 +105,5 @@ def genmh(f, bounds, pop_size=50, generations=100, pc=0.7, pm=0.1, full_output=F
 
     best_idx = np.argmin(fitness)
     if full_output:
-        return pop[best_idx], {
-            'generations': generations,
-            'converged': False,
-            'final_value': fitness[best_idx]
-        }
+        return pop[best_idx], {"generations": generations, "converged": False, "final_value": fitness[best_idx]}
     return pop[best_idx]

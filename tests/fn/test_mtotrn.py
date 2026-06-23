@@ -1,8 +1,8 @@
 """Tests for morie.fn.mtotrn — road safety trend."""
 
 import pytest
+
 from morie.fn.mtotrn import mto_trend
-from morie.fn._containers import DescriptiveResult
 
 
 class TestMtoTrend:

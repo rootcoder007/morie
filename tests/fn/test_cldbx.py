@@ -1,6 +1,7 @@
 """Test cldbx."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cldbx import cldbx
 
 

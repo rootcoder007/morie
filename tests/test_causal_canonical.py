@@ -18,16 +18,17 @@ Design principles:
   explaining why (e.g., "Monte-Carlo variance at n=5000 ~0.15 by the
   Chernozhukov et al. (2018) §6 numbers").
 """
+
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # DGP fixtures — shared simulators cited from the literature.
 # ---------------------------------------------------------------------------
+
 
 def _dgp_logistic_ps(
     n: int = 5000,
@@ -60,16 +61,22 @@ def _dgp_logistic_ps(
     Y0 = X @ alpha + rng.normal(scale=1.0, size=n)
     Y1 = Y0 + tau
     Y = T * Y1 + (1 - T) * Y0
-    return pd.DataFrame({
-        "Y": Y, "T": T,
-        "X1": X[:, 0], "X2": X[:, 1], "X3": X[:, 2],
-        "ps_true": ps_true,
-    })
+    return pd.DataFrame(
+        {
+            "Y": Y,
+            "T": T,
+            "X1": X[:, 0],
+            "X2": X[:, 1],
+            "X3": X[:, 2],
+            "ps_true": ps_true,
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # M1-01 · calculate_ipw_weights — known formulas
 # ---------------------------------------------------------------------------
+
 
 class TestIpwWeightsCanonical:
     """
@@ -84,46 +91,46 @@ class TestIpwWeightsCanonical:
 
     def test_raw_formula_exact(self) -> None:
         from morie.fn.ipw import calculate_ipw_weights
+
         df = _dgp_logistic_ps(n=500, seed=1)
         w = calculate_ipw_weights(df, treatment="T", ps_col="ps_true")
         t = df["T"].values
         ps = df["ps_true"].clip(0.01, 0.99).values
         expected = t / ps + (1 - t) / (1 - ps)
-        np.testing.assert_allclose(w.values, expected, rtol=1e-10,
-            err_msg="IPW raw weight formula departs from t/ps + (1-t)/(1-ps)")
+        np.testing.assert_allclose(
+            w.values, expected, rtol=1e-10, err_msg="IPW raw weight formula departs from t/ps + (1-t)/(1-ps)"
+        )
 
     def test_horvitz_thompson_balance(self) -> None:
         """Sum of treated weights should approximate n_total (and same for
         controls) when ps is correct — that's the Horvitz-Thompson balance
         property that makes IPW identify ATE."""
         from morie.fn.ipw import calculate_ipw_weights
+
         df = _dgp_logistic_ps(n=5000, seed=2)
         w = calculate_ipw_weights(df, treatment="T", ps_col="ps_true")
         n = len(df)
         sum_treated_w = float(w[df["T"] == 1].sum())
         sum_control_w = float(w[df["T"] == 0].sum())
         # Monte-Carlo: ratio should be close to 1.0, tolerance ~3% at n=5000
-        assert abs(sum_treated_w / n - 1.0) < 0.05, (
-            f"Treated IPW-sum/n = {sum_treated_w/n:.3f}, expected ~1.0")
-        assert abs(sum_control_w / n - 1.0) < 0.05, (
-            f"Control IPW-sum/n = {sum_control_w/n:.3f}, expected ~1.0")
+        assert abs(sum_treated_w / n - 1.0) < 0.05, f"Treated IPW-sum/n = {sum_treated_w / n:.3f}, expected ~1.0"
+        assert abs(sum_control_w / n - 1.0) < 0.05, f"Control IPW-sum/n = {sum_control_w / n:.3f}, expected ~1.0"
 
     def test_stabilized_expectation_one(self) -> None:
         """Stabilized weights have mean ~1 by construction (marginal prob
         numerator cancels the denominator in expectation)."""
         from morie.fn.ipw import calculate_ipw_weights
+
         df = _dgp_logistic_ps(n=5000, seed=3)
-        w = calculate_ipw_weights(df, treatment="T", ps_col="ps_true",
-                                  stabilized=True)
-        assert abs(float(w.mean()) - 1.0) < 0.05, (
-            f"Stabilized mean = {float(w.mean()):.3f}, expected ~1.0")
+        w = calculate_ipw_weights(df, treatment="T", ps_col="ps_true", stabilized=True)
+        assert abs(float(w.mean()) - 1.0) < 0.05, f"Stabilized mean = {float(w.mean()):.3f}, expected ~1.0"
 
     def test_trim_quantiles_caps_extremes(self) -> None:
         from morie.fn.ipw import calculate_ipw_weights
+
         df = _dgp_logistic_ps(n=500, seed=4)
         w_untrimmed = calculate_ipw_weights(df, treatment="T", ps_col="ps_true")
-        w_trimmed = calculate_ipw_weights(df, treatment="T", ps_col="ps_true",
-                                          trim_quantiles=(0.05, 0.95))
+        w_trimmed = calculate_ipw_weights(df, treatment="T", ps_col="ps_true", trim_quantiles=(0.05, 0.95))
         assert float(w_trimmed.max()) <= float(w_untrimmed.quantile(0.95)) + 1e-9
         assert float(w_trimmed.min()) >= float(w_untrimmed.quantile(0.05)) - 1e-9
 
@@ -131,6 +138,7 @@ class TestIpwWeightsCanonical:
 # ---------------------------------------------------------------------------
 # M1-02 · estimate_ate — IPW-weighted OLS
 # ---------------------------------------------------------------------------
+
 
 class TestEstimateAteCanonical:
     """
@@ -145,21 +153,23 @@ class TestEstimateAteCanonical:
     """
 
     def test_point_estimate_matches_truth_at_n5000(self) -> None:
-        from morie.fn.ipw import calculate_ipw_weights
         from morie.fn.ate import estimate_ate
+        from morie.fn.ipw import calculate_ipw_weights
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=5000, tau=tau_true, seed=11)
         df["w"] = calculate_ipw_weights(df, treatment="T", ps_col="ps_true")
         ate, se = estimate_ate(df, outcome="Y", treatment="T", weights_col="w")
         # Single-simulation tolerance: |ate - tau| < 3 SE (roughly 99% interval)
         assert abs(ate - tau_true) < max(3 * se, 0.15), (
-            f"ATE = {ate:.3f} (SE {se:.3f}), true τ = {tau_true}. "
-            f"Bias = {ate - tau_true:.3f} exceeds 3*SE.")
+            f"ATE = {ate:.3f} (SE {se:.3f}), true τ = {tau_true}. Bias = {ate - tau_true:.3f} exceeds 3*SE."
+        )
         assert se > 0, "HC3 SE must be positive for a non-degenerate sample."
 
     def test_bias_shrinks_with_n(self) -> None:
-        from morie.fn.ipw import calculate_ipw_weights
         from morie.fn.ate import estimate_ate
+        from morie.fn.ipw import calculate_ipw_weights
+
         tau_true = 2.0
         biases = []
         for n in (500, 5000):
@@ -173,13 +183,14 @@ class TestEstimateAteCanonical:
             biases.append(np.mean(seed_biases))
         # Bigger n should give smaller mean absolute bias. Allow some noise.
         assert biases[1] < biases[0] * 1.5, (
-            f"Expected bias to shrink with n. "
-            f"|bias(n=500)| = {biases[0]:.3f}, |bias(n=5000)| = {biases[1]:.3f}")
+            f"Expected bias to shrink with n. |bias(n=500)| = {biases[0]:.3f}, |bias(n=5000)| = {biases[1]:.3f}"
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-03 · estimate_plr (DoubleML PLR) — Chernozhukov et al. (2018)
 # ---------------------------------------------------------------------------
+
 
 class TestPlrCanonical:
     """
@@ -206,11 +217,11 @@ class TestPlrCanonical:
         n, p = 1000, 5
         theta_true = 0.5
         X = rng.normal(size=(n, p))
-        beta_m = rng.normal(scale=0.3, size=p)     # E[D|X]
-        beta_g = rng.normal(scale=0.3, size=p)     # g(X)
+        beta_m = rng.normal(scale=0.3, size=p)  # E[D|X]
+        beta_g = rng.normal(scale=0.3, size=p)  # g(X)
         D = X @ beta_m + rng.normal(scale=1.0, size=n)
         Y = theta_true * D + X @ beta_g + rng.normal(scale=1.0, size=n)
-        df = pd.DataFrame(X, columns=[f"X{i+1}" for i in range(p)])
+        df = pd.DataFrame(X, columns=[f"X{i + 1}" for i in range(p)])
         df["D"] = D
         df["Y"] = Y
 
@@ -220,11 +231,10 @@ class TestPlrCanonical:
                 data=df,
                 outcome="Y",
                 treatment="D",
-                covariates=[f"X{i+1}" for i in range(p)],
+                covariates=[f"X{i + 1}" for i in range(p)],
             )
         except TypeError:
-            pytest.skip("estimate_plr signature does not match canonical test yet — "
-                        "flagged for audit pass")
+            pytest.skip("estimate_plr signature does not match canonical test yet — flagged for audit pass")
 
         # plr.py returns a dict with keys: ate, se, ci_lower, ci_upper, pval, n_obs.
         # Accept several synonyms for forward-compat with any future rewrites.
@@ -243,13 +253,14 @@ class TestPlrCanonical:
         # √n-consistency: at n=1000 we expect |theta_hat - 0.5| < 3/√1000 ≈ 0.095
         # plus Monte-Carlo noise; allow 0.15 for a single-seed test.
         assert abs(theta_hat - theta_true) < 0.15, (
-            f"PLR θ̂ = {theta_hat:.4f}, true θ = {theta_true}. "
-            f"Bias {theta_hat - theta_true:.4f} exceeds 0.15 tolerance.")
+            f"PLR θ̂ = {theta_hat:.4f}, true θ = {theta_true}. Bias {theta_hat - theta_true:.4f} exceeds 0.15 tolerance."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-04 · estimate_att — Hajek-weighted IPW for ATT
 # ---------------------------------------------------------------------------
+
 
 class TestEstimateAttCanonical:
     """
@@ -270,6 +281,7 @@ class TestEstimateAttCanonical:
 
     def test_att_matches_tau_on_homogeneous_dgp(self) -> None:
         from morie.fn.att import estimate_att
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=5000, tau=tau_true, seed=21)
         result = estimate_att(
@@ -285,24 +297,24 @@ class TestEstimateAttCanonical:
         se = float(result["se"])
         assert se > 0, "ATT SE must be positive."
         assert abs(att - tau_true) < max(3 * se, 0.15), (
-            f"ATT = {att:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {att - tau_true:.4f} exceeds 3*SE.")
+            f"ATT = {att:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {att - tau_true:.4f} exceeds 3*SE."
+        )
 
     def test_att_ci_has_correct_width(self) -> None:
         """CI width ≈ 2 * z * SE where z = 1.96."""
         from morie.fn.att import estimate_att
+
         df = _dgp_logistic_ps(n=2000, tau=1.5, seed=22)
-        result = estimate_att(df, treatment="T", outcome="Y",
-                              covariates=["X1", "X2", "X3"], propensity_col="ps_true")
+        result = estimate_att(df, treatment="T", outcome="Y", covariates=["X1", "X2", "X3"], propensity_col="ps_true")
         width = float(result["ci_upper"]) - float(result["ci_lower"])
         expected = 2 * 1.959964 * float(result["se"])
-        np.testing.assert_allclose(width, expected, rtol=1e-4,
-            err_msg="ATT CI width doesn't match 2*z*SE.")
+        np.testing.assert_allclose(width, expected, rtol=1e-4, err_msg="ATT CI width doesn't match 2*z*SE.")
 
 
 # ---------------------------------------------------------------------------
 # M1-05 · estimate_atc — Hajek-weighted IPW for ATC
 # ---------------------------------------------------------------------------
+
 
 class TestEstimateAtcCanonical:
     """
@@ -312,6 +324,7 @@ class TestEstimateAtcCanonical:
 
     def test_atc_matches_tau_on_homogeneous_dgp(self) -> None:
         from morie.fn.atc import estimate_atc
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=5000, tau=tau_true, seed=31)
         result = estimate_atc(
@@ -327,29 +340,31 @@ class TestEstimateAtcCanonical:
         se = float(result["se"])
         assert se > 0, "ATC SE must be positive."
         assert abs(atc - tau_true) < max(3 * se, 0.15), (
-            f"ATC = {atc:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {atc - tau_true:.4f} exceeds 3*SE.")
+            f"ATC = {atc:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {atc - tau_true:.4f} exceeds 3*SE."
+        )
 
     def test_att_atc_agree_on_homogeneous_dgp(self) -> None:
         """On a homogeneous-effect DGP, ATT and ATC should both ≈ τ, and
         their difference should be within Monte-Carlo noise."""
-        from morie.fn.att import estimate_att
         from morie.fn.atc import estimate_atc
+        from morie.fn.att import estimate_att
+
         df = _dgp_logistic_ps(n=5000, tau=2.0, seed=32)
-        kw = dict(treatment="T", outcome="Y",
-                  covariates=["X1", "X2", "X3"], propensity_col="ps_true")
+        kw = dict(treatment="T", outcome="Y", covariates=["X1", "X2", "X3"], propensity_col="ps_true")
         att = float(estimate_att(df, **kw)["att"])
         atc = float(estimate_atc(df, **kw)["atc"])
         # |ATT - ATC| should be small (both estimate same τ, just different weights).
         assert abs(att - atc) < 0.30, (
             f"ATT = {att:.4f}, ATC = {atc:.4f}. Difference {att - atc:.4f} "
             f"exceeds 0.30 on homogeneous DGP — suggests one of the "
-            f"weight formulas is mis-specified.")
+            f"weight formulas is mis-specified."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-06 · estimate_aipw — double-robustness (the big invariant)
 # ---------------------------------------------------------------------------
+
 
 class TestAipwDoubleRobustness:
     """
@@ -385,6 +400,7 @@ class TestAipwDoubleRobustness:
         default logistic PS are both correctly specified → AIPW is
         consistent (basic sanity before testing double-robustness)."""
         from morie.fn.aipw import estimate_aipw
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=5000, tau=tau_true, seed=41)
         result = estimate_aipw(
@@ -400,7 +416,8 @@ class TestAipwDoubleRobustness:
         assert abs(ate - tau_true) < max(3 * se, 0.15), (
             f"AIPW ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. "
             f"Bias {ate - tau_true:.4f} exceeds 3*SE on fully correctly "
-            f"specified DGP.")
+            f"specified DGP."
+        )
 
     def test_aipw_ate_beats_naive_on_confounded_dgp(self) -> None:
         """Naive OLS of Y on T alone is biased under confounding (our DGP
@@ -408,6 +425,7 @@ class TestAipwDoubleRobustness:
         naive difference-in-means. This is a weaker but directly-testable
         form of the DR claim."""
         from morie.fn.aipw import estimate_aipw
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=5000, tau=tau_true, seed=42)
 
@@ -430,12 +448,14 @@ class TestAipwDoubleRobustness:
         assert aipw_bias < 0.5 * naive_bias, (
             f"AIPW bias ({aipw_bias:.4f}) not meaningfully smaller than "
             f"naive bias ({naive_bias:.4f}). On a confounded DGP, AIPW "
-            f"should reduce confounding bias by at least half.")
+            f"should reduce confounding bias by at least half."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-07 · force (Star-Wars naming layer): ATE difference-in-means
 # ---------------------------------------------------------------------------
+
 
 def _dgp_randomized(n: int = 5000, tau: float = 2.0, seed: int = 51) -> pd.DataFrame:
     """
@@ -454,8 +474,7 @@ def _dgp_randomized(n: int = 5000, tau: float = 2.0, seed: int = 51) -> pd.DataF
     T = rng.binomial(1, 0.5, size=n)
     Y0 = X @ alpha + rng.normal(scale=1.0, size=n)
     Y = T * tau + Y0
-    return pd.DataFrame({"outcome": Y, "treatment": T,
-                         "X1": X[:, 0], "X2": X[:, 1], "X3": X[:, 2]})
+    return pd.DataFrame({"outcome": Y, "treatment": T, "X1": X[:, 0], "X2": X[:, 1], "X3": X[:, 2]})
 
 
 class TestForceCanonical:
@@ -470,6 +489,7 @@ class TestForceCanonical:
 
     def test_force_unbiased_on_randomized_dgp(self) -> None:
         from morie.fn.force import ate_diff
+
         tau_true = 2.0
         df = _dgp_randomized(n=5000, tau=tau_true, seed=51)
         result = ate_diff(df, y="outcome", t="treatment")
@@ -478,25 +498,30 @@ class TestForceCanonical:
         assert se > 0
         assert abs(ate - tau_true) < max(3 * se, 0.15), (
             f"force ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {ate - tau_true:.4f} exceeds 3*SE on randomized DGP.")
+            f"Bias {ate - tau_true:.4f} exceeds 3*SE on randomized DGP."
+        )
 
     def test_force_welch_ci_coverage_sanity(self) -> None:
         """CI width should equal 2 * t_crit * SE (Welch-Satterthwaite df)."""
-        from morie.fn.force import ate_diff
         from scipy import stats
+
+        from morie.fn.force import ate_diff
+
         df = _dgp_randomized(n=1000, tau=1.5, seed=52)
         result = ate_diff(df, y="outcome", t="treatment", alpha=0.05)
         width = float(result.ci_upper) - float(result.ci_lower)
         se = float(result.se)
         df_w = float(result.extra["df"])
         expected = 2 * stats.t.ppf(0.975, df_w) * se
-        np.testing.assert_allclose(width, expected, rtol=1e-4,
-            err_msg="force CI width doesn't match 2 * t_crit(df_w) * SE.")
+        np.testing.assert_allclose(
+            width, expected, rtol=1e-4, err_msg="force CI width doesn't match 2 * t_crit(df_w) * SE."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-08 · estimate_double_ml — DoubleMLPLR with Random Forest nuisances
 # ---------------------------------------------------------------------------
+
 
 class TestEstimateDoubleMlCanonical:
     """
@@ -515,6 +540,7 @@ class TestEstimateDoubleMlCanonical:
 
     def test_dml_plr_returns_doubleml_object(self) -> None:
         from morie.fn.dml import estimate_double_ml
+
         df = _dgp_randomized(n=500, tau=1.0, seed=61)
         # estimate_double_ml expects T as treatment; our DGP uses "treatment"
         obj = estimate_double_ml(
@@ -537,6 +563,7 @@ class TestEstimateDoubleMlCanonical:
         Tolerance is wider (0.30) than plr.py's 0.15 test to account for
         this. If this is flaky, review the n_folds / RF max_depth tuning."""
         from morie.fn.dml import estimate_double_ml
+
         tau_true = 2.0
         df = _dgp_randomized(n=2000, tau=tau_true, seed=62)
         obj = estimate_double_ml(
@@ -552,12 +579,14 @@ class TestEstimateDoubleMlCanonical:
         assert abs(coef - tau_true) < max(3 * se, 0.30), (
             f"DML θ̂ = {coef:.4f} (SE {se:.4f}), true θ = {tau_true}. "
             f"Bias {coef - tau_true:.4f} exceeds tolerance — possibly a "
-            f"RF hyperparameter or n_folds issue, not an identification bug.")
+            f"RF hyperparameter or n_folds issue, not an identification bug."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-09 · estimate_irm — DoubleMLIRM with Random Forest nuisances
 # ---------------------------------------------------------------------------
+
 
 class TestEstimateIrmCanonical:
     """
@@ -576,6 +605,7 @@ class TestEstimateIrmCanonical:
 
     def test_irm_returns_dict_with_ate(self) -> None:
         from morie.fn.irm import estimate_irm
+
         df = _dgp_randomized(n=500, tau=1.0, seed=71)
         result = estimate_irm(
             df,
@@ -585,14 +615,16 @@ class TestEstimateIrmCanonical:
             n_folds=3,
         )
         assert isinstance(result, dict)
-        assert {"ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.keys()), \
+        assert {"ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.keys()), (
             f"IRM result missing expected keys. Got: {list(result.keys())}"
+        )
         ate = float(result["ate"])
         se = float(result["se"])
         assert np.isfinite(ate) and se > 0
 
     def test_irm_recovers_tau_on_homogeneous_dgp(self) -> None:
         from morie.fn.irm import estimate_irm
+
         tau_true = 2.0
         df = _dgp_randomized(n=2000, tau=tau_true, seed=72)
         result = estimate_irm(
@@ -605,36 +637,37 @@ class TestEstimateIrmCanonical:
         ate = float(result["ate"])
         se = float(result["se"])
         assert abs(ate - tau_true) < max(3 * se, 0.30), (
-            f"IRM ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {ate - tau_true:.4f} exceeds tolerance.")
+            f"IRM ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {ate - tau_true:.4f} exceeds tolerance."
+        )
 
     def test_irm_and_dml_agree_on_homogeneous_dgp(self) -> None:
         """On a homogeneous-effect DGP, IRM and DML-PLR both target the
         same ATE. Estimates should agree within combined SE."""
         from morie.fn.dml import estimate_double_ml
         from morie.fn.irm import estimate_irm
+
         df = _dgp_randomized(n=2000, tau=1.5, seed=73)
         kw = dict(covariates=["X1", "X2", "X3"], n_folds=3)
 
-        dml_obj = estimate_double_ml(
-            data=df, outcome="outcome", treatment="treatment", **kw)
-        irm_res = estimate_irm(
-            df, treatment="treatment", outcome="outcome", **kw)
+        dml_obj = estimate_double_ml(data=df, outcome="outcome", treatment="treatment", **kw)
+        irm_res = estimate_irm(df, treatment="treatment", outcome="outcome", **kw)
 
         dml_coef = float(dml_obj.coef[0])
         irm_ate = float(irm_res["ate"])
         # Combined SE as rough comparison scale
-        pooled_se = float(np.sqrt(float(dml_obj.se[0])**2 + float(irm_res["se"])**2))
+        pooled_se = float(np.sqrt(float(dml_obj.se[0]) ** 2 + float(irm_res["se"]) ** 2))
         diff = abs(dml_coef - irm_ate)
         assert diff < max(3 * pooled_se, 0.40), (
             f"DML-PLR and IRM disagree too much on homogeneous DGP: "
             f"DML={dml_coef:.4f}, IRM={irm_ate:.4f}, |diff|={diff:.4f}, "
-            f"3*pooled_SE={3*pooled_se:.4f}. Both should estimate the same ATE.")
+            f"3*pooled_SE={3 * pooled_se:.4f}. Both should estimate the same ATE."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-10 · iv_2sls — two-stage least squares with continuous instrument
 # ---------------------------------------------------------------------------
+
 
 def _dgp_iv_continuous(
     n: int = 3000,
@@ -682,14 +715,18 @@ class TestIv2slsCanonical:
 
     def test_iv_returns_regression_result(self) -> None:
         from morie.fn.iv import iv_2sls
+
         df = _dgp_iv_continuous(n=500, seed=81)
         result = iv_2sls(df, y="Y", d="D", z="Z")
         assert hasattr(result, "coefficients"), f"Expected RegressionResult, got {type(result)}"
-        assert "D" in result.coefficients, f"Expected 'D' coef in result.coefficients; got {list(result.coefficients.keys())}"
+        assert "D" in result.coefficients, (
+            f"Expected 'D' coef in result.coefficients; got {list(result.coefficients.keys())}"
+        )
         assert "first_stage_F" in result.extra, "First-stage F missing from extras"
 
     def test_iv_recovers_beta_on_well_identified_dgp(self) -> None:
         from morie.fn.iv import iv_2sls
+
         beta_true = 2.0
         df = _dgp_iv_continuous(n=3000, beta=beta_true, alpha_z=0.8, seed=82)
         result = iv_2sls(df, y="Y", d="D", z="Z")
@@ -698,24 +735,27 @@ class TestIv2slsCanonical:
         assert se > 0
         assert abs(beta_hat - beta_true) < max(3 * se, 0.15), (
             f"IV β̂ = {beta_hat:.4f} (SE {se:.4f}), true β = {beta_true}. "
-            f"Bias {beta_hat - beta_true:.4f} exceeds tolerance.")
+            f"Bias {beta_hat - beta_true:.4f} exceeds tolerance."
+        )
 
     def test_iv_first_stage_f_rules_out_weak_instrument(self) -> None:
         """Stock-Yogo (2005) rule of thumb: first-stage F > 10 indicates
         not-too-weak instrument. Our DGP has alpha_z=0.8, n=3000, so F
         should be well above 10."""
         from morie.fn.iv import iv_2sls
+
         df = _dgp_iv_continuous(n=3000, alpha_z=0.8, seed=83)
         result = iv_2sls(df, y="Y", d="D", z="Z")
         f_stat = float(result.extra["first_stage_F"])
         assert f_stat > 10, (
-            f"First-stage F = {f_stat:.2f}, expected > 10 for a strong "
-            f"instrument (alpha_z=0.8, n=3000).")
+            f"First-stage F = {f_stat:.2f}, expected > 10 for a strong instrument (alpha_z=0.8, n=3000)."
+        )
 
     def test_iv_matches_wald_identity_on_no_covariate(self) -> None:
         """With no exogenous covariates (only intercept), 2SLS coincides
         with the Wald ratio: β = Cov(Y,Z) / Cov(D,Z). Verify equality."""
         from morie.fn.iv import iv_2sls
+
         df = _dgp_iv_continuous(n=1000, seed=84)
         result = iv_2sls(df, y="Y", d="D", z="Z")
         beta_hat = float(result.coefficients["D"])
@@ -723,13 +763,15 @@ class TestIv2slsCanonical:
         cov_YZ = np.cov(df["Y"], df["Z"])[0, 1]
         cov_DZ = np.cov(df["D"], df["Z"])[0, 1]
         wald = cov_YZ / cov_DZ
-        np.testing.assert_allclose(beta_hat, wald, rtol=0.02,
-            err_msg=f"2SLS {beta_hat:.4f} != Wald ratio {wald:.4f} on no-covariate DGP.")
+        np.testing.assert_allclose(
+            beta_hat, wald, rtol=0.02, err_msg=f"2SLS {beta_hat:.4f} != Wald ratio {wald:.4f} on no-covariate DGP."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-11 · estimate_late — Imbens-Angrist LATE with binary instrument
 # ---------------------------------------------------------------------------
+
 
 def _dgp_binary_iv(n: int = 5000, tau: float = 1.5, seed: int = 91) -> pd.DataFrame:
     """
@@ -750,8 +792,7 @@ def _dgp_binary_iv(n: int = 5000, tau: float = 1.5, seed: int = 91) -> pd.DataFr
     rng = np.random.default_rng(seed)
     Z = rng.binomial(1, 0.5, size=n)
     type_draws = rng.choice(["c", "a", "n"], size=n, p=[0.6, 0.2, 0.2])
-    T = np.where(type_draws == "c", Z,
-        np.where(type_draws == "a", 1, 0))
+    T = np.where(type_draws == "c", Z, np.where(type_draws == "a", 1, 0))
     eps = rng.normal(size=n)
     Y0 = eps
     Y1 = Y0 + tau
@@ -780,6 +821,7 @@ class TestEstimateLateCanonical:
 
     def test_late_returns_dict(self) -> None:
         from morie.fn.late import estimate_late
+
         df = _dgp_binary_iv(n=500, seed=91)
         result = estimate_late(df, treatment="T", outcome="Y", instrument="Z")
         assert isinstance(result, dict)
@@ -788,18 +830,20 @@ class TestEstimateLateCanonical:
 
     def test_late_recovers_tau_on_binary_iv(self) -> None:
         from morie.fn.late import estimate_late
+
         tau_true = 1.5
         df = _dgp_binary_iv(n=5000, tau=tau_true, seed=92)
         result = estimate_late(df, treatment="T", outcome="Y", instrument="Z")
         late = float(result["late"])
         # Monte-Carlo tolerance at n=5000 with 60% compliers: ~0.15
         assert abs(late - tau_true) < 0.20, (
-            f"LATE = {late:.4f}, true τ = {tau_true}. "
-            f"Bias {late - tau_true:.4f} exceeds 0.20 on binary-IV DGP.")
+            f"LATE = {late:.4f}, true τ = {tau_true}. Bias {late - tau_true:.4f} exceeds 0.20 on binary-IV DGP."
+        )
 
     def test_late_matches_wald_formula(self) -> None:
         """Closed-form identity check: LATE should equal the grouped Wald ratio."""
         from morie.fn.late import estimate_late
+
         df = _dgp_binary_iv(n=5000, tau=1.5, seed=93)
         result = estimate_late(df, treatment="T", outcome="Y", instrument="Z")
         late_reported = float(result["late"])
@@ -807,13 +851,15 @@ class TestEstimateLateCanonical:
         y1, y0 = df.loc[df["Z"] == 1, "Y"].mean(), df.loc[df["Z"] == 0, "Y"].mean()
         t1, t0 = df.loc[df["Z"] == 1, "T"].mean(), df.loc[df["Z"] == 0, "T"].mean()
         wald = (y1 - y0) / (t1 - t0)
-        np.testing.assert_allclose(late_reported, wald, rtol=0.05,
-            err_msg=f"LATE {late_reported:.4f} != Wald ratio {wald:.4f}.")
+        np.testing.assert_allclose(
+            late_reported, wald, rtol=0.05, err_msg=f"LATE {late_reported:.4f} != Wald ratio {wald:.4f}."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-12 · estimate_pliv — Partial Linear IV (Chernozhukov DoubleMLPLIV)
 # ---------------------------------------------------------------------------
+
 
 def _dgp_pliv(
     n: int = 2000,
@@ -846,7 +892,7 @@ def _dgp_pliv(
     D = X @ beta_m + gamma * Z + 0.5 * U + v
     eps = rng.normal(size=n)
     Y = theta * D + X @ beta_g + U + eps
-    df = pd.DataFrame(X, columns=[f"X{i+1}" for i in range(p)])
+    df = pd.DataFrame(X, columns=[f"X{i + 1}" for i in range(p)])
     df["D"] = D
     df["Z"] = Z
     df["Y"] = Y
@@ -875,18 +921,20 @@ class TestPlivCanonical:
 
     def test_pliv_returns_dict_with_late(self) -> None:
         from morie.fn.pliv import estimate_pliv
+
         df = _dgp_pliv(n=500, seed=101)
         result = estimate_pliv(
             df,
             treatment="D",
             outcome="Y",
             instrument="Z",
-            covariates=[f"X{i+1}" for i in range(5)],
+            covariates=[f"X{i + 1}" for i in range(5)],
             n_folds=3,
         )
         assert isinstance(result, dict)
         assert {"late", "se", "ci_lower", "ci_upper", "pval", "n_obs", "method"}.issubset(result.keys()), (
-            f"PLIV result missing expected keys. Got: {list(result.keys())}")
+            f"PLIV result missing expected keys. Got: {list(result.keys())}"
+        )
         assert np.isfinite(float(result["late"]))
         assert float(result["se"]) > 0
 
@@ -898,6 +946,7 @@ class TestPlivCanonical:
         variance and the fact that we don't tune folds/regularization.
         """
         from morie.fn.pliv import estimate_pliv
+
         theta_true = 1.2
         df = _dgp_pliv(n=2000, theta=theta_true, gamma=0.9, seed=102)
         result = estimate_pliv(
@@ -905,7 +954,7 @@ class TestPlivCanonical:
             treatment="D",
             outcome="Y",
             instrument="Z",
-            covariates=[f"X{i+1}" for i in range(5)],
+            covariates=[f"X{i + 1}" for i in range(5)],
             n_folds=3,
         )
         theta_hat = float(result["late"])
@@ -916,7 +965,8 @@ class TestPlivCanonical:
         assert abs(theta_hat - theta_true) < max(3 * se, 0.20), (
             f"PLIV θ̂ = {theta_hat:.4f} (SE {se:.4f}), true θ = {theta_true}. "
             f"Bias {theta_hat - theta_true:.4f} exceeds tolerance on canonical "
-            f"linear DGP — suggests identification or nuisance-fit issue.")
+            f"linear DGP — suggests identification or nuisance-fit issue."
+        )
 
     def test_pliv_beats_naive_ols_under_endogeneity(self) -> None:
         """
@@ -927,20 +977,20 @@ class TestPlivCanonical:
         smaller than |OLS bias|.
         """
         from morie.fn.pliv import estimate_pliv
+
         theta_true = 1.2
         df = _dgp_pliv(n=2000, theta=theta_true, gamma=0.9, seed=103)
-        covs = [f"X{i+1}" for i in range(5)]
+        covs = [f"X{i + 1}" for i in range(5)]
 
         # Naive OLS of Y on D and X (no IV)
         import statsmodels.api as sm
+
         X_ols = sm.add_constant(df[["D"] + covs].astype(float))
         ols = sm.OLS(df["Y"].astype(float), X_ols).fit()
         ols_bias = abs(float(ols.params["D"]) - theta_true)
 
         # PLIV
-        result = estimate_pliv(
-            df, treatment="D", outcome="Y", instrument="Z",
-            covariates=covs, n_folds=3)
+        result = estimate_pliv(df, treatment="D", outcome="Y", instrument="Z", covariates=covs, n_folds=3)
         pliv_bias = abs(float(result["late"]) - theta_true)
 
         # PLIV bias should be meaningfully less than OLS bias.
@@ -949,12 +999,14 @@ class TestPlivCanonical:
         assert pliv_bias < 0.7 * ols_bias + 0.05, (
             f"PLIV bias {pliv_bias:.4f} not meaningfully smaller than OLS bias "
             f"{ols_bias:.4f} on a DGP with U-confounding. Expected PLIV to "
-            f"exploit Z for identification.")
+            f"exploit Z for identification."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-13 · reg_discontinuity — Sharp RDD via local linear regression
 # ---------------------------------------------------------------------------
+
 
 def _dgp_sharp_rdd(
     n: int = 4000,
@@ -980,9 +1032,9 @@ def _dgp_sharp_rdd(
     """
     rng = np.random.default_rng(seed)
     R = rng.uniform(-2, 2, size=n)
-    T = (R >= cutoff).astype(float)
+    T = (cutoff <= R).astype(float)
     # Allow a slope change above cutoff for generality (still identifies tau at R=cutoff)
-    Y0 = np.where(R < cutoff, slope_left * R, slope_right * R)
+    Y0 = np.where(cutoff > R, slope_left * R, slope_right * R)
     Y1 = Y0 + tau
     eps = rng.normal(scale=0.3, size=n)
     Y = T * Y1 + (1 - T) * Y0 + eps
@@ -1004,16 +1056,17 @@ class TestRddCanonical:
 
     def test_rdd_returns_regression_result(self) -> None:
         from morie.fn.rdd import reg_discontinuity
+
         df = _dgp_sharp_rdd(n=1000, seed=111)
         result = reg_discontinuity(df, y="outcome", r="running", cutoff=0.0)
         assert hasattr(result, "coefficients")
-        assert "LATE" in result.coefficients, (
-            f"Expected 'LATE' in coefficients, got {list(result.coefficients.keys())}")
+        assert "LATE" in result.coefficients, f"Expected 'LATE' in coefficients, got {list(result.coefficients.keys())}"
         assert "bandwidth" in result.extra
         assert "cutoff" in result.extra
 
     def test_rdd_recovers_tau_on_smooth_dgp(self) -> None:
         from morie.fn.rdd import reg_discontinuity
+
         tau_true = 1.5
         df = _dgp_sharp_rdd(n=4000, cutoff=0.0, tau=tau_true, seed=112)
         result = reg_discontinuity(df, y="outcome", r="running", cutoff=0.0)
@@ -1022,19 +1075,21 @@ class TestRddCanonical:
         assert se > 0
         assert abs(late - tau_true) < max(3 * se, 0.15), (
             f"RDD LATE = {late:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {late - tau_true:.4f} exceeds tolerance on smooth DGP.")
+            f"Bias {late - tau_true:.4f} exceeds tolerance on smooth DGP."
+        )
 
     def test_rdd_too_small_bandwidth_raises(self) -> None:
         from morie.fn.rdd import reg_discontinuity
+
         df = _dgp_sharp_rdd(n=200, seed=113)
         with pytest.raises(ValueError, match="bandwidth"):
-            reg_discontinuity(df, y="outcome", r="running",
-                              cutoff=0.0, bandwidth=0.001)
+            reg_discontinuity(df, y="outcome", r="running", cutoff=0.0, bandwidth=0.001)
 
 
 # ---------------------------------------------------------------------------
 # M1-14 · diff_in_diff — Classic 2x2 DiD with parallel trends
 # ---------------------------------------------------------------------------
+
 
 def _dgp_2x2_did(
     n_per_cell: int = 1000,
@@ -1062,8 +1117,7 @@ def _dgp_2x2_did(
     for t_val in (0, 1):
         for post_val in (0, 1):
             eps = rng.normal(scale=1.0, size=n_per_cell)
-            Y = (group_effect * t_val + time_effect * post_val
-                 + tau * (t_val * post_val) + eps)
+            Y = group_effect * t_val + time_effect * post_val + tau * (t_val * post_val) + eps
             for y in Y:
                 rows.append({"outcome": float(y), "treatment": t_val, "post": post_val})
     return pd.DataFrame(rows)
@@ -1085,6 +1139,7 @@ class TestDiDCanonical:
 
     def test_did_returns_esres(self) -> None:
         from morie.fn.did import diff_in_diff
+
         df = _dgp_2x2_did(n_per_cell=500, seed=121)
         result = diff_in_diff(df, y="outcome", t="treatment", post="post")
         assert hasattr(result, "estimate"), f"Expected ESRes, got {type(result)}"
@@ -1096,6 +1151,7 @@ class TestDiDCanonical:
 
     def test_did_recovers_tau_on_parallel_trends_dgp(self) -> None:
         from morie.fn.did import diff_in_diff
+
         tau_true = 1.2
         df = _dgp_2x2_did(n_per_cell=1000, tau=tau_true, seed=122)
         result = diff_in_diff(df, y="outcome", t="treatment", post="post")
@@ -1103,11 +1159,13 @@ class TestDiDCanonical:
         se = float(result.se)
         assert abs(did_est - tau_true) < max(3 * se, 0.15), (
             f"DiD = {did_est:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {did_est - tau_true:.4f} exceeds tolerance under parallel trends.")
+            f"Bias {did_est - tau_true:.4f} exceeds tolerance under parallel trends."
+        )
 
     def test_did_equals_four_cell_formula(self) -> None:
         """Closed-form identity: DiD = (Ȳ₁₁ − Ȳ₁₀) − (Ȳ₀₁ − Ȳ₀₀)."""
         from morie.fn.did import diff_in_diff
+
         df = _dgp_2x2_did(n_per_cell=500, tau=2.0, seed=123)
         result = diff_in_diff(df, y="outcome", t="treatment", post="post")
         reported = float(result.estimate)
@@ -1117,13 +1175,15 @@ class TestDiDCanonical:
         g01 = df.loc[(df["treatment"] == 0) & (df["post"] == 1), "outcome"].mean()
         g00 = df.loc[(df["treatment"] == 0) & (df["post"] == 0), "outcome"].mean()
         formula = (g11 - g10) - (g01 - g00)
-        np.testing.assert_allclose(reported, formula, rtol=1e-6,
-            err_msg=f"DiD {reported:.6f} != four-cell formula {formula:.6f}.")
+        np.testing.assert_allclose(
+            reported, formula, rtol=1e-6, err_msg=f"DiD {reported:.6f} != four-cell formula {formula:.6f}."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-15 · estimate_cate — T-learner / S-learner heterogeneous effects
 # ---------------------------------------------------------------------------
+
 
 def _dgp_heterogeneous(
     n: int = 4000,
@@ -1150,10 +1210,15 @@ def _dgp_heterogeneous(
     Y0 = X @ alpha + rng.normal(scale=1.0, size=n)
     Y1 = Y0 + tau_x
     Y = T * Y1 + (1 - T) * Y0
-    df = pd.DataFrame({
-        "Y": Y, "T": T,
-        "X1": X[:, 0], "X2": X[:, 1], "X3": X[:, 2],
-    })
+    df = pd.DataFrame(
+        {
+            "Y": Y,
+            "T": T,
+            "X1": X[:, 0],
+            "X2": X[:, 1],
+            "X3": X[:, 2],
+        }
+    )
     return df, tau_x
 
 
@@ -1173,9 +1238,12 @@ class TestCateCanonical:
 
     def test_cate_returns_series(self) -> None:
         from morie.fn.cate import estimate_cate
+
         df, _ = _dgp_heterogeneous(n=500, seed=131)
         result = estimate_cate(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             meta_learner="t_learner",
         )
@@ -1185,18 +1253,21 @@ class TestCateCanonical:
 
     def test_cate_mean_matches_ate(self) -> None:
         from morie.fn.cate import estimate_cate
+
         df, true_cate = _dgp_heterogeneous(n=4000, seed=132)
         ate_true = float(np.mean(true_cate))  # ≈ 1.0 by construction
         result = estimate_cate(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             meta_learner="t_learner",
         )
         ate_hat = float(result.mean())
         # RF CATE averaged over n=4000 should be close to ATE.
         assert abs(ate_hat - ate_true) < 0.20, (
-            f"Mean CATE = {ate_hat:.4f}, true ATE = {ate_true:.4f}. "
-            f"Bias {ate_hat - ate_true:.4f} exceeds 0.20.")
+            f"Mean CATE = {ate_hat:.4f}, true ATE = {ate_true:.4f}. Bias {ate_hat - ate_true:.4f} exceeds 0.20."
+        )
 
     def test_cate_correlates_with_true_tau_x(self) -> None:
         """CATE should track τ(X). With RF depth 5 and n=4000, Pearson
@@ -1204,22 +1275,28 @@ class TestCateCanonical:
         Tight correlation is hard for RF on a linear-in-X truth with
         noisy outcome, so tolerance is loose."""
         from morie.fn.cate import estimate_cate
+
         df, true_cate = _dgp_heterogeneous(n=4000, seed=133)
         result = estimate_cate(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             meta_learner="t_learner",
         )
         corr = float(np.corrcoef(result.values, true_cate)[0, 1])
         assert corr > 0.3, (
-            f"Pearson(est CATE, true τ(X)) = {corr:.3f}. Expected > 0.3 "
-            f"for an identifiable heterogeneous-effect DGP.")
+            f"Pearson(est CATE, true τ(X)) = {corr:.3f}. Expected > 0.3 for an identifiable heterogeneous-effect DGP."
+        )
 
     def test_cate_s_learner_runs(self) -> None:
         from morie.fn.cate import estimate_cate
+
         df, _ = _dgp_heterogeneous(n=500, seed=134)
         result = estimate_cate(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             meta_learner="s_learner",
         )
@@ -1229,10 +1306,13 @@ class TestCateCanonical:
 
     def test_cate_rejects_unknown_meta_learner(self) -> None:
         from morie.fn.cate import estimate_cate
+
         df, _ = _dgp_heterogeneous(n=100, seed=135)
         with pytest.raises(ValueError, match="meta_learner"):
             estimate_cate(
-                df, treatment="T", outcome="Y",
+                df,
+                treatment="T",
+                outcome="Y",
                 covariates=["X1", "X2", "X3"],
                 meta_learner="not_a_learner",
             )
@@ -1241,6 +1321,7 @@ class TestCateCanonical:
 # ---------------------------------------------------------------------------
 # M1-16 · estimate_gate — Group ATEs via AIPW within strata
 # ---------------------------------------------------------------------------
+
 
 def _dgp_grouped_tau(
     n_per_group: int = 2000,
@@ -1271,11 +1352,16 @@ def _dgp_grouped_tau(
         Y0 = X @ alpha + eps
         Y = T * (Y0 + tau_g) + (1 - T) * Y0
         for i in range(n_per_group):
-            rows.append({
-                "Y": float(Y[i]), "T": int(T[i]),
-                "X1": float(X[i, 0]), "X2": float(X[i, 1]), "X3": float(X[i, 2]),
-                "G": int(g),
-            })
+            rows.append(
+                {
+                    "Y": float(Y[i]),
+                    "T": int(T[i]),
+                    "X1": float(X[i, 0]),
+                    "X2": float(X[i, 1]),
+                    "X3": float(X[i, 2]),
+                    "G": int(g),
+                }
+            )
     return pd.DataFrame(rows)
 
 
@@ -1293,25 +1379,31 @@ class TestGateCanonical:
 
     def test_gate_returns_dataframe(self) -> None:
         from morie.fn.gate import estimate_gate
+
         df = _dgp_grouped_tau(n_per_group=300, seed=141)
         result = estimate_gate(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             group_col="G",
         )
         assert isinstance(result, pd.DataFrame)
         assert {"group", "ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.columns), (
-            f"GATE missing expected columns. Got: {list(result.columns)}")
+            f"GATE missing expected columns. Got: {list(result.columns)}"
+        )
         # One row per group
-        assert len(result) == df["G"].nunique(), (
-            f"Expected {df['G'].nunique()} rows, got {len(result)}")
+        assert len(result) == df["G"].nunique(), f"Expected {df['G'].nunique()} rows, got {len(result)}"
 
     def test_gate_recovers_group_specific_tau(self) -> None:
         from morie.fn.gate import estimate_gate
+
         tau_by_group = {0: 0.5, 1: 1.0, 2: 1.5}
         df = _dgp_grouped_tau(n_per_group=2000, tau_by_group=tau_by_group, seed=142)
         result = estimate_gate(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             group_col="G",
         )
@@ -1321,13 +1413,14 @@ class TestGateCanonical:
             se = float(row["se"])
             tau_true = tau_by_group[g]
             assert abs(ate_hat - tau_true) < max(3 * se, 0.20), (
-                f"Group {g}: GATE = {ate_hat:.4f} (SE {se:.4f}), "
-                f"true τ = {tau_true}. Bias {ate_hat - tau_true:.4f}.")
+                f"Group {g}: GATE = {ate_hat:.4f} (SE {se:.4f}), true τ = {tau_true}. Bias {ate_hat - tau_true:.4f}."
+            )
 
 
 # ---------------------------------------------------------------------------
 # M1-17 · ps_match — Propensity score nearest-neighbor matching (mando)
 # ---------------------------------------------------------------------------
+
 
 class TestPsMatchCanonical:
     """
@@ -1348,6 +1441,7 @@ class TestPsMatchCanonical:
 
     def test_mando_returns_esres_with_matched_count(self) -> None:
         from morie.fn.mando import ps_match
+
         # Rename our DGP's columns to match ps_match's defaults
         df = _dgp_logistic_ps(n=800, tau=1.5, seed=151)
         df2 = df.rename(columns={"Y": "outcome", "T": "treatment"})
@@ -1359,6 +1453,7 @@ class TestPsMatchCanonical:
 
     def test_mando_beats_naive_on_confounded_dgp(self) -> None:
         from morie.fn.mando import ps_match
+
         tau_true = 1.5
         df = _dgp_logistic_ps(n=4000, tau=tau_true, seed=152)
         df2 = df.rename(columns={"Y": "outcome", "T": "treatment"})
@@ -1373,12 +1468,14 @@ class TestPsMatchCanonical:
 
         assert matched_bias < 0.7 * naive_bias + 0.05, (
             f"Matching bias {matched_bias:.4f} not meaningfully smaller than "
-            f"naive bias {naive_bias:.4f} on confounded DGP.")
+            f"naive bias {naive_bias:.4f} on confounded DGP."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-18 · estimate_ate_gcomputation — G-computation / standardization
 # ---------------------------------------------------------------------------
+
 
 class TestGComputationCanonical:
     """
@@ -1398,9 +1495,12 @@ class TestGComputationCanonical:
 
     def test_gcomp_returns_dict(self) -> None:
         from morie.fn.g_comp import estimate_ate_gcomputation
+
         df = _dgp_logistic_ps(n=500, tau=1.0, seed=161)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             outcome_model="linear",
         )
@@ -1411,10 +1511,13 @@ class TestGComputationCanonical:
 
     def test_gcomp_recovers_tau_on_linear_dgp(self) -> None:
         from morie.fn.g_comp import estimate_ate_gcomputation
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=3000, tau=tau_true, seed=162)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y",
+            df,
+            treatment="T",
+            outcome="Y",
             covariates=["X1", "X2", "X3"],
             outcome_model="linear",
         )
@@ -1422,20 +1525,21 @@ class TestGComputationCanonical:
         se = float(result["se"])
         assert abs(ate - tau_true) < max(3 * se, 0.15), (
             f"G-computation ATE = {ate:.4f} (SE {se:.4f}), true τ = {tau_true}. "
-            f"Bias {ate - tau_true:.4f} exceeds tolerance.")
+            f"Bias {ate - tau_true:.4f} exceeds tolerance."
+        )
 
     def test_gcomp_rejects_invalid_outcome_model(self) -> None:
         from morie.fn.g_comp import estimate_ate_gcomputation
+
         df = _dgp_logistic_ps(n=100, seed=163)
         with pytest.raises(ValueError, match="outcome_model"):
-            estimate_ate_gcomputation(
-                df, treatment="T", outcome="Y",
-                covariates=["X1"], outcome_model="not_a_model")
+            estimate_ate_gcomputation(df, treatment="T", outcome="Y", covariates=["X1"], outcome_model="not_a_model")
 
 
 # ---------------------------------------------------------------------------
 # M1-19 · bdrj (backdoor_adjustment_formula) — STUB DETECTION
 # ---------------------------------------------------------------------------
+
 
 class TestBdrjStubDetection:
     """
@@ -1456,21 +1560,22 @@ class TestBdrjStubDetection:
     @pytest.mark.xfail(
         strict=True,
         reason="bdrj.py is a stub — ignores X/Y/Z, just computes mean(data). "
-               "M2 backlog: replace with actual Pearl back-door adjustment.",
+        "M2 backlog: replace with actual Pearl back-door adjustment.",
     )
     def test_bdrj_uses_all_four_inputs(self) -> None:
         """If two calls with different X/Y/Z but same `data` return the
         same value, the fn is ignoring X/Y/Z. That's the stub signature."""
         from morie.fn.bdrj import backdoor_adjustment_formula
+
         rng = np.random.default_rng(171)
         data = rng.normal(size=100)
         # Different X, Y, Z; same data.
         r1 = backdoor_adjustment_formula(
-            X=rng.normal(size=100), Y=rng.normal(size=100),
-            Z=rng.normal(size=100), data=data)
+            X=rng.normal(size=100), Y=rng.normal(size=100), Z=rng.normal(size=100), data=data
+        )
         r2 = backdoor_adjustment_formula(
-            X=rng.uniform(size=100), Y=rng.uniform(size=100),
-            Z=rng.uniform(size=100), data=data)
+            X=rng.uniform(size=100), Y=rng.uniform(size=100), Z=rng.uniform(size=100), data=data
+        )
         # A real back-door formula WOULD differ when X/Y/Z differ.
         # This stub returns same value; xfail captures that fact.
         assert r1 != r2, "bdrj should use X/Y/Z — if this passes, stub is fixed"
@@ -1479,16 +1584,15 @@ class TestBdrjStubDetection:
         """Sentinel: while bdrj is a stub, we record it in the audit
         rather than claim canonical coverage. AST-walk the body to check
         whether X/Y/Z ever get read (Name node in Load context)."""
-        import ast, inspect
+        import ast
+        import inspect
+
         from morie.fn.bdrj import backdoor_adjustment_formula
+
         src = inspect.getsource(backdoor_adjustment_formula)
         tree = ast.parse(src)
         fn = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef))
-        loads = {
-            node.id
-            for node in ast.walk(fn)
-            if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load)
-        }
+        loads = {node.id for node in ast.walk(fn) if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load)}
         # Real back-door adjustment would load X, Y, AND Z in the body.
         uses_xyz = {"X", "Y", "Z"}.issubset(loads)
         # Additionally, the stub template does `np.mean(data)` with no
@@ -1500,11 +1604,13 @@ class TestBdrjStubDetection:
         assert is_stub, (
             "bdrj.py no longer matches the stub pattern (body loads X/Y/Z "
             "or no longer uses np.mean(data)). Update the M1 audit and "
-            "write real canonical tests against Pearl (2009) §3.3.1.")
+            "write real canonical tests against Pearl (2009) §3.3.1."
+        )
 
 
 # ---------------------------------------------------------------------------
 # ---------------------------------------------------------------------------
+
 
 def _dgp_synth_control_panel(
     n_control: int = 10,
@@ -1527,7 +1633,7 @@ def _dgp_synth_control_panel(
     """
     rng = np.random.default_rng(seed)
     rows = []
-    units = ["treated"] + [f"c{i+1}" for i in range(n_control)]
+    units = ["treated"] + [f"c{i + 1}" for i in range(n_control)]
     # Time-shared shocks (so synthetic-control can recover them exactly)
     time_effects = rng.normal(scale=0.3, size=n_pre + n_post)
     for u in units:
@@ -1554,9 +1660,9 @@ class TestSynthControlCanonical:
 
     def test_sith_returns_esres_with_weights(self) -> None:
         from morie.fn import synth_control
+
         df = _dgp_synth_control_panel(n_control=5, n_pre=10, n_post=5, seed=181)
-        result = synth_control(df, y="outcome", unit="unit", time="time",
-                               treated_unit="treated", treat_time=0)
+        result = synth_control(df, y="outcome", unit="unit", time="time", treated_unit="treated", treat_time=0)
         assert hasattr(result, "estimate")
         assert "weights" in result.extra
         assert "pre_rmse" in result.extra
@@ -1566,32 +1672,33 @@ class TestSynthControlCanonical:
 
     def test_sith_weights_on_simplex(self) -> None:
         from morie.fn import synth_control
+
         df = _dgp_synth_control_panel(n_control=8, n_pre=15, n_post=5, seed=182)
-        result = synth_control(df, y="outcome", unit="unit", time="time",
-                               treated_unit="treated", treat_time=0)
+        result = synth_control(df, y="outcome", unit="unit", time="time", treated_unit="treated", treat_time=0)
         weights = np.array(list(result.extra["weights"].values()))
         assert np.all(weights >= -1e-6), f"Negative weight found: {weights.min()}"
         weight_sum = float(weights.sum())
-        np.testing.assert_allclose(weight_sum, 1.0, atol=1e-3,
-            err_msg=f"Synth weights sum to {weight_sum}, expected 1.0 (simplex).")
+        np.testing.assert_allclose(
+            weight_sum, 1.0, atol=1e-3, err_msg=f"Synth weights sum to {weight_sum}, expected 1.0 (simplex)."
+        )
 
     def test_sith_recovers_tau_on_shared_shock_panel(self) -> None:
         from morie.fn import synth_control
+
         tau_true = 2.0
-        df = _dgp_synth_control_panel(n_control=10, n_pre=20, n_post=10,
-                                      tau=tau_true, seed=183)
-        result = synth_control(df, y="outcome", unit="unit", time="time",
-                               treated_unit="treated", treat_time=0)
+        df = _dgp_synth_control_panel(n_control=10, n_pre=20, n_post=10, tau=tau_true, seed=183)
+        result = synth_control(df, y="outcome", unit="unit", time="time", treated_unit="treated", treat_time=0)
         eff = float(result.estimate)
         # Tolerance: with 10 controls and 20 pre-periods, synth can match
         # common shocks well. Allow 0.30 for noise + weight-estimation error.
         assert abs(eff - tau_true) < 0.30, (
-            f"Synth control effect = {eff:.4f}, true τ = {tau_true}. "
-            f"Bias {eff - tau_true:.4f} exceeds 0.30.")
+            f"Synth control effect = {eff:.4f}, true τ = {tau_true}. Bias {eff - tau_true:.4f} exceeds 0.30."
+        )
 
 
 # ---------------------------------------------------------------------------
 # ---------------------------------------------------------------------------
+
 
 class TestSensitivityCanonical:
     """
@@ -1612,6 +1719,7 @@ class TestSensitivityCanonical:
 
     def test_yoda_s_returns_structure(self) -> None:
         from morie.fn.yoda_s import sensitivity_analysis
+
         result = sensitivity_analysis(ate=1.0, se=0.3)  # z = 3.33, strong signal
         assert hasattr(result, "value")
         assert "table" in result.extra
@@ -1621,8 +1729,10 @@ class TestSensitivityCanonical:
     def test_yoda_s_gamma1_gives_original_pvalue(self) -> None:
         """At Γ=1 (no bias), the Rosenbaum upper p-value equals the
         standard 2-sided z-test p-value."""
-        from morie.fn.yoda_s import sensitivity_analysis
         from scipy import stats
+
+        from morie.fn.yoda_s import sensitivity_analysis
+
         ate, se = 1.0, 0.3
         result = sensitivity_analysis(ate=ate, se=se, gamma_range=(1.0, 1.0), n_gamma=1)
         row0 = result.extra["table"][0]
@@ -1635,17 +1745,19 @@ class TestSensitivityCanonical:
         """p_upper should be non-decreasing as Γ grows (larger assumed bias
         means weaker evidence of effect)."""
         from morie.fn.yoda_s import sensitivity_analysis
+
         result = sensitivity_analysis(ate=0.8, se=0.3, gamma_range=(1.0, 3.0), n_gamma=10)
         ps = [r["p_upper"] for r in result.extra["table"]]
         for a, b in zip(ps, ps[1:]):
             assert b >= a - 1e-9, (
-                f"p_upper is non-monotone in Γ: {a:.4f} -> {b:.4f}. "
-                f"Rosenbaum-bound direction violated.")
+                f"p_upper is non-monotone in Γ: {a:.4f} -> {b:.4f}. Rosenbaum-bound direction violated."
+            )
 
 
 # ---------------------------------------------------------------------------
 # M1-22 · overlap_weight (ovrla) — Li-Morgan-Zaslavsky tilting weights
 # ---------------------------------------------------------------------------
+
 
 class TestOverlapWeightCanonical:
     """
@@ -1666,6 +1778,7 @@ class TestOverlapWeightCanonical:
 
     def test_ovrla_returns_structure(self) -> None:
         from morie.fn.ovrla import overlap_weight
+
         df = _dgp_logistic_ps(n=500, seed=191)
         result = overlap_weight(
             ps_scores=df["ps_true"].values,
@@ -1680,6 +1793,7 @@ class TestOverlapWeightCanonical:
 
     def test_ovrla_beats_naive_on_confounded_dgp(self) -> None:
         from morie.fn.ovrla import overlap_weight
+
         tau_true = 2.0
         df = _dgp_logistic_ps(n=5000, tau=tau_true, seed=192)
 
@@ -1695,13 +1809,14 @@ class TestOverlapWeightCanonical:
         )
         ov_bias = abs(float(result.value) - tau_true)
         assert ov_bias < 0.7 * naive_bias + 0.05, (
-            f"Overlap-weight bias {ov_bias:.4f} not meaningfully smaller "
-            f"than naive bias {naive_bias:.4f}.")
+            f"Overlap-weight bias {ov_bias:.4f} not meaningfully smaller than naive bias {naive_bias:.4f}."
+        )
 
 
 # ---------------------------------------------------------------------------
 # M1-23 · gcomp (time-varying g-formula) — Robins (1986)
 # ---------------------------------------------------------------------------
+
 
 def _dgp_time_varying_g(
     n: int = 1000,
@@ -1730,9 +1845,7 @@ def _dgp_time_varying_g(
     for k in range(1, K):
         L[:, k, 0] = 0.5 * L[:, k - 1, 0] + 0.3 * T[:, k - 1] + rng.normal(scale=0.3, size=n)
         T[:, k] = rng.binomial(1, 0.5, size=n)
-    Y = (tau_per_period * T.sum(axis=1)
-         + 0.2 * L[:, K - 1, 0]
-         + rng.normal(size=n))
+    Y = tau_per_period * T.sum(axis=1) + 0.2 * L[:, K - 1, 0] + rng.normal(size=n)
     return {"Y": Y, "T_seq": T, "L_seq": L}
 
 
@@ -1755,9 +1868,9 @@ class TestGcompTimeVaryingCanonical:
 
     def test_gcomp_time_varying_returns_dict(self) -> None:
         from morie.fn.gcomp import gcomp
+
         data = _dgp_time_varying_g(n=400, K=3, seed=201)
-        result = gcomp(Y=data["Y"], T_seq=data["T_seq"], L_seq=data["L_seq"],
-                       regime="always_treat", n_boot=30)
+        result = gcomp(Y=data["Y"], T_seq=data["T_seq"], L_seq=data["L_seq"], regime="always_treat", n_boot=30)
         assert isinstance(result, dict)
         assert {"ate", "se", "ci_lower", "ci_upper", "n", "method"}.issubset(result.keys())
 
@@ -1765,25 +1878,26 @@ class TestGcompTimeVaryingCanonical:
         """Under 'natural' regime, the point estimate is mean(Y) (the
         observed-treatment counterfactual reduces to the empirical mean)."""
         from morie.fn.gcomp import gcomp
+
         data = _dgp_time_varying_g(n=300, K=2, seed=202)
-        result = gcomp(Y=data["Y"], T_seq=data["T_seq"], L_seq=data["L_seq"],
-                       regime="natural", n_boot=10)
+        result = gcomp(Y=data["Y"], T_seq=data["T_seq"], L_seq=data["L_seq"], regime="natural", n_boot=10)
         np.testing.assert_allclose(
-            result["ate"], float(np.mean(data["Y"])), rtol=1e-6,
-            err_msg="Natural regime should return mean(Y).")
+            result["ate"], float(np.mean(data["Y"])), rtol=1e-6, err_msg="Natural regime should return mean(Y)."
+        )
 
     def test_gcomp_recovers_total_effect(self) -> None:
         """always-treat vs never-treat contrast ≈ K * τ_per_period."""
         from morie.fn.gcomp import gcomp
+
         K, tau_per = 3, 0.5
         expected = K * tau_per  # = 1.5
         data = _dgp_time_varying_g(n=1000, K=K, tau_per_period=tau_per, seed=203)
-        result = gcomp(Y=data["Y"], T_seq=data["T_seq"], L_seq=data["L_seq"],
-                       regime="always_treat", n_boot=50)
+        result = gcomp(Y=data["Y"], T_seq=data["T_seq"], L_seq=data["L_seq"], regime="always_treat", n_boot=50)
         ate = float(result["ate"])
         se = float(result["se"])
         # Wider tolerance than single-period g_comp because sequential
         # OLS amplifies noise across time steps.
         assert abs(ate - expected) < max(3 * se, 0.50), (
             f"gcomp ATE = {ate:.4f} (SE {se:.4f}), true total effect = {expected}. "
-            f"Bias {ate - expected:.4f} exceeds tolerance on linear time-varying DGP.")
+            f"Bias {ate - expected:.4f} exceeds tolerance on linear time-varying DGP."
+        )

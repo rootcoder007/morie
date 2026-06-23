@@ -1,6 +1,7 @@
 """Additive noise model: observed signal equals desired signal plus noise.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_signal_plus_noise_model"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_signal_plus_noise_model(x, eta):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Additive noise model: observed signal equals desired signal plus noise."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Additive noise model: observed signal equals desired signal plus noise.",
+        }
+    )
 
 
 def cheatsheet():

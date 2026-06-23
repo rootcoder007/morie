@@ -1,7 +1,9 @@
 """Tests for approximate entropy."""
+
 import numpy as np
 import pytest
-from morie.fn.apent import approximate_entropy, apent
+
+from morie.fn.apent import apent, approximate_entropy
 
 
 def test_regular():

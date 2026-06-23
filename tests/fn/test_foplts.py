@@ -1,6 +1,7 @@
 """Test foplts."""
+
 import numpy as np
-import pytest
+
 from morie.fn.foplts import foplts
 
 

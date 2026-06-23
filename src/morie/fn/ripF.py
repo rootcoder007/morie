@@ -1,6 +1,7 @@
 """F (empty-space) nearest-neighbour distance function."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ripley_f_function"]
@@ -34,7 +35,9 @@ def ripley_f_function(points, window, r):
     n = len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "F (empty-space) nearest-neighbour distance function"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "F (empty-space) nearest-neighbour distance function"}
+    )
 
 
 def cheatsheet():

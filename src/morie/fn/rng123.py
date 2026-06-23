@@ -1,6 +1,7 @@
 """Squared-magnitude response of the analog Butterworth lowpass filter.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_butterworth_lowpass_squared_magnitude"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_butterworth_lowpass_squared_magnitude(Omega, Omega_c, N):
     n = len(Omega)
     result = float(np.mean(Omega))
     se = float(np.std(Omega, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Squared-magnitude response of the analog Butterworth lowpass filter."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Squared-magnitude response of the analog Butterworth lowpass filter.",
+        }
+    )
 
 
 def cheatsheet():

@@ -43,7 +43,7 @@ def bayesian_lasso(
     beta = np.zeros(p)
     sigma2 = 1.0
     tau2 = np.ones(p)
-    lam2 = lam ** 2
+    lam2 = lam**2
 
     beta_samples = np.empty((n_iter, p))
     XtX = X_arr.T @ X_arr
@@ -58,7 +58,7 @@ def bayesian_lasso(
 
         resid = y_arr - X_arr @ beta
         post_a = (n - 1 + p) / 2.0
-        post_b = 0.5 * float(resid @ resid) + 0.5 * float(np.sum(beta ** 2 / (tau2 + 1e-30)))
+        post_b = 0.5 * float(resid @ resid) + 0.5 * float(np.sum(beta**2 / (tau2 + 1e-30)))
         sigma2 = 1.0 / rng.gamma(post_a, 1.0 / (post_b + 1e-30))
 
         for j in range(p):
@@ -78,13 +78,13 @@ def bayesian_lasso(
 
 def _rinvgauss(rng, mu, lam):
     v = rng.standard_normal() ** 2
-    x = mu + (mu ** 2 * v - mu * np.sqrt(4 * mu * lam * v + mu ** 2 * v ** 2)) / (2 * lam)
+    x = mu + (mu**2 * v - mu * np.sqrt(4 * mu * lam * v + mu**2 * v**2)) / (2 * lam)
     if x <= 0:
-        x = mu ** 2 / (x + 1e-30) if x != 0 else mu
+        x = mu**2 / (x + 1e-30) if x != 0 else mu
     u = rng.uniform()
     if u <= mu / (mu + x):
         return x
-    return mu ** 2 / (x + 1e-30)
+    return mu**2 / (x + 1e-30)
 
 
 blasr = bayesian_lasso

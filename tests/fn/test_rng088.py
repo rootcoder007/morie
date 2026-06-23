@@ -1,6 +1,7 @@
 """Tests for rng088.rangayyan_ch3_ma_transfer_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng088 import rangayyan_ch3_ma_transfer_function
 
 
@@ -11,7 +12,7 @@ def test_rng088_basic():
     N = 100
     result = rangayyan_ch3_ma_transfer_function(b_k, z, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng088_edge():

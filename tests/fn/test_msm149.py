@@ -1,6 +1,7 @@
 """Tests for msm149.mvsml_categorical_count_eq_8_8."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm149 import mvsml_categorical_count_eq_8_8
 
 
@@ -14,7 +15,7 @@ def test_msm149_basic():
     Nystr = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_categorical_count_eq_8_8(can, be, substituted, the, Q, Nystr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm149_edge():

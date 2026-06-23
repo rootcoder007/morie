@@ -1,6 +1,9 @@
 """Tests for logistic_map."""
+
 import pytest
+
 from morie.fn.chaos import logistic_map
+
 
 class TestChaos:
     def test_fixed_point(self):

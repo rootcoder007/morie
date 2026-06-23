@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrgr2 -- Poisson gravity model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrgr2 import gravity_poisson
 

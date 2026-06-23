@@ -1,7 +1,6 @@
 """Tests for morie.fn.svclk -- Coalition kernel set"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svclk import coalition_kernel
 

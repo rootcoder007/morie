@@ -1,7 +1,7 @@
 """Tests for morie.fn.dteig."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dteig import dteig
 
 

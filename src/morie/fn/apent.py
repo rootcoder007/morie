@@ -30,7 +30,7 @@ def approximate_entropy(x, m: int = 2, r: float | None = None, **kwargs) -> ESRe
         raise ValueError("Tolerance r must be positive.")
 
     def _phi(dim):
-        templates = np.array([x[i:i + dim] for i in range(n - dim + 1)])
+        templates = np.array([x[i : i + dim] for i in range(n - dim + 1)])
         nt = len(templates)
         counts = np.zeros(nt)
         for i in range(nt):

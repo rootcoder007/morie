@@ -1,6 +1,8 @@
 """Tests for sgmean."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgmean import sgmean
 
 
@@ -28,4 +30,5 @@ def test_sgmean_no_data():
 
 def test_sgmean_alias():
     from morie.fn.sgmean import sgmean
+
     assert sgmean is sgmean

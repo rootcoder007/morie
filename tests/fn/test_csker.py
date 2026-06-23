@@ -1,6 +1,7 @@
 """Test csker."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csker import csker
 
 

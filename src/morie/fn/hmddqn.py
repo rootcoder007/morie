@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Double DQN: decouple action selection and evaluation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_double_dqn"]
@@ -40,7 +42,9 @@ def geron_double_dqn(env, Q, Q_target, buffer, epochs, lr):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Double DQN: decouple action selection and evaluation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Double DQN: decouple action selection and evaluation"}
+    )
 
 
 def cheatsheet():

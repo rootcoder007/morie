@@ -1,6 +1,7 @@
 """Tests for hmlof.geron_local_outlier_factor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlof import geron_local_outlier_factor
 
 
@@ -10,7 +11,7 @@ def test_hmlof_basic():
     n_neighbors = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_local_outlier_factor(X, n_neighbors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlof_edge():

@@ -1,6 +1,7 @@
 """Test ubcmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubcmp import ubcmp
 
 

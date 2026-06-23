@@ -1,6 +1,7 @@
 """Tests for evgpdc.evt_gpd_cdf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evgpdc import evt_gpd_cdf
 
 
@@ -11,7 +12,7 @@ def test_evgpdc_basic():
     xi = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_gpd_cdf(y, sigma, xi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evgpdc_edge():

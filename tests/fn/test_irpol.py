@@ -1,8 +1,7 @@
 """Test irreducible_poly."""
-import numpy as np
-import pytest
-from morie.fn.irpol import irreducible_poly
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.irpol import irreducible_poly
 
 
 class TestIrreduciblePoly:

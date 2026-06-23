@@ -1,6 +1,7 @@
 """MSM Cox marginal hazard model with IPTW."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["msm_cox_marginal"]
@@ -36,7 +37,9 @@ def msm_cox_marginal(time, event, treatment_history, covariate_history):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MSM Cox marginal hazard model with IPTW"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MSM Cox marginal hazard model with IPTW"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Roughness penalty (integrated squared second derivative) for functional smoothing."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["roughness_penalty"]
@@ -32,7 +34,14 @@ def roughness_penalty(basis, lam):
     n = int(basis) if basis.ndim == 0 else len(basis)
     result = float(np.mean(basis))
     se = float(np.std(basis, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Roughness penalty (integrated squared second derivative) for functional smoothing"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Roughness penalty (integrated squared second derivative) for functional smoothing",
+        }
+    )
 
 
 def cheatsheet():

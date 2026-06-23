@@ -1,6 +1,7 @@
 """Test gcgcm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcgcm import gcgcm
 
 

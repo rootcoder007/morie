@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ReAct loop: interleave Thought -> Action -> Observation until final answer."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_react_agent_loop"]
@@ -36,7 +38,14 @@ def alammar_react_agent_loop(query, tools, model, max_steps):
     n = len(query)
     result = float(np.mean(query))
     se = float(np.std(query, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ReAct loop: interleave Thought -> Action -> Observation until final answer"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ReAct loop: interleave Thought -> Action -> Observation until final answer",
+        }
+    )
 
 
 def cheatsheet():

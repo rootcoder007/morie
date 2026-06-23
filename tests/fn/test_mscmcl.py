@@ -1,6 +1,7 @@
 """Tests for mscmcl.matrix_completion_scm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mscmcl import matrix_completion_scm
 
 
@@ -11,7 +12,7 @@ def test_mscmcl_basic():
     lam = 0.1
     result = matrix_completion_scm(y, D, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mscmcl_edge():

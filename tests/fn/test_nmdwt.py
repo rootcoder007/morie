@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmdwt -- DW-NOMINATE trend analysis"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmdwt import dwnominate_trend
 

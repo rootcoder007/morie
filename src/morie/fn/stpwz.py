@@ -8,7 +8,9 @@ import scipy.stats as stats
 from ._containers import ESRes
 
 
-def stepped_wedge_design(clusters: int, steps: int, cluster_size: int, effect_size: float, icc: float = 0.05, alpha: float = 0.05, cdf=None) -> ESRes:
+def stepped_wedge_design(
+    clusters: int, steps: int, cluster_size: int, effect_size: float, icc: float = 0.05, alpha: float = 0.05, cdf=None
+) -> ESRes:
     """Power and design parameters for a stepped-wedge cluster trial.
 
     In a stepped-wedge design, all clusters start as controls and

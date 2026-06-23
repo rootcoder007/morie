@@ -1,6 +1,7 @@
 """Tests for hmkpsg.geron_kernel_pca_sigmoid."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmkpsg import geron_kernel_pca_sigmoid
 
 
@@ -12,7 +13,7 @@ def test_hmkpsg_basic():
     coef0 = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_kernel_pca_sigmoid(X, n_components, gamma, coef0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmkpsg_edge():

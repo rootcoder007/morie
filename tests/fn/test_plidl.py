@@ -1,7 +1,8 @@
 """Tests for morie.fn.plidl -- plot ideal and stimuli."""
 
 import numpy as np
-from morie.fn.plidl import plot_ideal_and_stimuli, plidl
+
+from morie.fn.plidl import plidl, plot_ideal_and_stimuli
 
 
 def test_plidl_smoke():

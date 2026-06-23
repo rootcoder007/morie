@@ -71,4 +71,4 @@ trusvd = svd_rank_reduce
 
 
 def cheatsheet() -> str:
-    return 'svd_rank_reduce({}) -> Matrix decomposition (destructive rank reduction).'
+    return "svd_rank_reduce({}) -> Matrix decomposition (destructive rank reduction)."

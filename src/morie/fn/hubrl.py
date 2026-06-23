@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Huber loss."""
 
+
 def hubrl(residual: float, delta: float = 1.345) -> float:
     """Huber loss: quadratic for small residuals, linear for large.
 

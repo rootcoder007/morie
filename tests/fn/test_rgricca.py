@@ -1,6 +1,7 @@
 """Tests for rgricca.rangayyan_riccati_eq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgricca import rangayyan_riccati_eq
 
 
@@ -12,7 +13,7 @@ def test_rgricca_basic():
     R = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_riccati_eq(F, H, Q, R)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgricca_edge():

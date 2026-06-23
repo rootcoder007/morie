@@ -1,6 +1,7 @@
 r"""Pass at k.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch8_pass_at_k"]

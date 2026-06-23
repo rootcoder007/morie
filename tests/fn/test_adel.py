@@ -1,8 +1,9 @@
 """Tests for morie.fn.adel — alpha if item deleted."""
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from morie.fn import adel
 
 
@@ -11,10 +12,7 @@ def items_5():
     """5-item scale, 60 respondents."""
     rng = np.random.default_rng(42)
     latent = rng.standard_normal(60)
-    data = np.column_stack([
-        latent + rng.standard_normal(60) * 0.4
-        for _ in range(5)
-    ])
+    data = np.column_stack([latent + rng.standard_normal(60) * 0.4 for _ in range(5)])
     return pd.DataFrame(data, columns=[f"q{i}" for i in range(5)])
 
 

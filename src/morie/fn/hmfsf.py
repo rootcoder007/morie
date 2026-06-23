@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Few-shot learning: small number of in-context examples."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_few_shot"]
@@ -36,7 +38,14 @@ def geron_few_shot(model, examples, query, k):
     n = len(model)
     result = float(np.mean(model))
     se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Few-shot learning: small number of in-context examples"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Few-shot learning: small number of in-context examples",
+        }
+    )
 
 
 def cheatsheet():

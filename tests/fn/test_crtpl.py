@@ -1,8 +1,9 @@
 """Tests for morie.fn.crtpl — plea rate."""
 
 import pytest
-from morie.fn.crtpl import court_plea_rate
+
 from morie.fn._containers import CrimeResult
+from morie.fn.crtpl import court_plea_rate
 
 
 class TestPleaRate:

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sample from the Dirichlet process prior predictive distribution."""
+
 from __future__ import annotations
 
 import numpy as np

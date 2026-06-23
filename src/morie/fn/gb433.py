@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kolmogorov limiting distribution of sqrt(n)*D_n."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_ks_kolmogorov_limit"]
@@ -32,7 +34,9 @@ def gibbons_ks_kolmogorov_limit(d, n):
     n = int(d) if d.ndim == 0 else len(d)
     result = float(np.mean(d))
     se = float(np.std(d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kolmogorov limiting distribution of sqrt(n)*D_n"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Kolmogorov limiting distribution of sqrt(n)*D_n"}
+    )
 
 
 def cheatsheet():

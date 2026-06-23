@@ -1,6 +1,7 @@
 """Tests for kmchin.kamath_chinchilla_compute_optimal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmchin import kamath_chinchilla_compute_optimal
 
 
@@ -11,7 +12,7 @@ def test_kmchin_basic():
     beta = 0.8
     result = kamath_chinchilla_compute_optimal(compute_budget, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmchin_edge():

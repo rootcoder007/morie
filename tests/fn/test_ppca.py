@@ -1,6 +1,9 @@
 """Tests for probabilistic_pca."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.ppca import probabilistic_pca
+
 
 class TestPPCA:
     def test_basic(self):

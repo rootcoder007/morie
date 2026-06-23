@@ -1,6 +1,7 @@
 """Tests for tagRC.tag_aware_rec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tagRC import tag_aware_rec
 
 
@@ -10,7 +11,7 @@ def test_tagRC_basic():
     alpha = 0.05
     result = tag_aware_rec(UTI, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tagRC_edge():

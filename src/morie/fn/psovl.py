@@ -74,4 +74,4 @@ psovl = ps_overlap
 
 
 def cheatsheet() -> str:
-    return 'ps_overlap({}) -> Propensity score overlap check.'
+    return "ps_overlap({}) -> Propensity score overlap check."

@@ -1,6 +1,7 @@
 """Test rssvm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rssvm import rssvm
 
 

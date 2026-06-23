@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Steady-state Riccati equation solution for Kalman gain."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_riccati_eq"]
@@ -36,7 +38,14 @@ def rangayyan_riccati_eq(F, H, Q, R):
     n = int(F) if F.ndim == 0 else len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Steady-state Riccati equation solution for Kalman gain"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Steady-state Riccati equation solution for Kalman gain",
+        }
+    )
 
 
 def cheatsheet():

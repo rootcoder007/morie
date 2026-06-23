@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """R-learner (Nie-Wager) for CATE via residualization."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["r_learner"]
@@ -40,7 +42,9 @@ def r_learner(Y, T, X, m_model, e_model, tau_model):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "R-learner (Nie-Wager) for CATE via residualization"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "R-learner (Nie-Wager) for CATE via residualization"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Jaccard similarity."""
 
+
 def jacsim(a, b) -> float:
     """Jaccard similarity for two sets: |A ∩ B| / |A ∪ B|."""
     sa, sb = set(a), set(b)

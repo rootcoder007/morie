@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 5.3: asymptotic normality of boundary-free KDFE."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm5_3_bdfree_normality"]
@@ -34,7 +36,14 @@ def fauzi_thm5_3_bdfree_normality(x, bandwidth, g_func):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 5.3: asymptotic normality of boundary-free KDFE"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 5.3: asymptotic normality of boundary-free KDFE",
+        }
+    )
 
 
 def cheatsheet():

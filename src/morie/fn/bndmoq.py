@@ -1,6 +1,7 @@
 """Quantile-equivariant bound."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bound_moment_qed"]

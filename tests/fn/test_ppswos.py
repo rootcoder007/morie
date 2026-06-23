@@ -1,6 +1,7 @@
 """Tests for ppswos.pps_without_replacement."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppswos import pps_without_replacement
 
 
@@ -10,7 +11,7 @@ def test_ppswos_basic():
     n = 100
     result = pps_without_replacement(sizes, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ppswos_edge():

@@ -69,25 +69,22 @@ def ising(
     kappa = min(abs(kappa), 1.0 - 1e-15)
 
     def integrand(theta):
-        return np.log(0.5 * (1.0 + np.sqrt(1.0 - kappa ** 2 * np.sin(theta) ** 2)))
+        return np.log(0.5 * (1.0 + np.sqrt(1.0 - kappa**2 * np.sin(theta) ** 2)))
 
     integral_val, _ = quad(integrand, 0, np.pi / 2)
 
-    f_per_site = -(kB * T) * (
-        np.log(2.0 * np.cosh(2.0 * K))
-        + (2.0 / np.pi) * integral_val
-    )
+    f_per_site = -(kB * T) * (np.log(2.0 * np.cosh(2.0 * K)) + (2.0 / np.pi) * integral_val)
 
     coth_val = np.cosh(2.0 * K) / (np.sinh(2.0 * K) + 1e-300)
     K1_kappa = np.pi / 2
     if abs(kappa) > 1e-10:
+
         def K1_integrand(theta):
-            return 1.0 / np.sqrt(1.0 - kappa ** 2 * np.sin(theta) ** 2)
+            return 1.0 / np.sqrt(1.0 - kappa**2 * np.sin(theta) ** 2)
+
         K1_kappa, _ = quad(K1_integrand, 0, np.pi / 2)
 
-    u_per_site = -J * coth_val * (
-        1.0 + (2.0 / np.pi) * (2.0 * np.tanh(2.0 * K) ** 2 - 1.0) * K1_kappa
-    )
+    u_per_site = -J * coth_val * (1.0 + (2.0 / np.pi) * (2.0 * np.tanh(2.0 * K) ** 2 - 1.0) * K1_kappa)
 
     return {
         "T_c": float(Tc),

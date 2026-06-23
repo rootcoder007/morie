@@ -1,12 +1,12 @@
 """Tests for amgen.py - ARMA process generation."""
+
 import numpy as np
-from morie.fn.amgen import arma_generate_fn, amgen
+
+from morie.fn.amgen import amgen, arma_generate_fn
 
 
 def test_amgen_returns_result():
-    result = arma_generate_fn(
-        np.array([0.5]), np.array([0.3]), sigma2=1.0, N=100, seed=42
-    )
+    result = arma_generate_fn(np.array([0.5]), np.array([0.3]), sigma2=1.0, N=100, seed=42)
     assert result.name == "arma_generate"
     assert len(result.extra["signal"]) == 100
 

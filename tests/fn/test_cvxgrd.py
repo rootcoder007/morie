@@ -1,6 +1,7 @@
 """Tests for cvxgrd.boyd_gradient_descent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxgrd import boyd_gradient_descent
 
 
@@ -12,7 +13,7 @@ def test_cvxgrd_basic():
     t = np.linspace(0, 10, 100)
     result = boyd_gradient_descent(f, grad_f, x0, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxgrd_edge():

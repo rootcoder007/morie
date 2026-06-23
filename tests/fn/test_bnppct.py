@@ -1,6 +1,7 @@
 """Tests for bnppct.bnp_percent_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bnppct import bnp_percent_quantile
 
 
@@ -10,7 +11,7 @@ def test_bnppct_basic():
     quantile = np.random.default_rng(42).normal(0, 1, 100)
     result = bnp_percent_quantile(y, quantile)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bnppct_edge():

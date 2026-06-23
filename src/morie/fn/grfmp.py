@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Feature-map total elements for a conv layer (H' x W' x C_out)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_feature_map_dim"]
@@ -34,7 +36,14 @@ def geron_feature_map_dim(H_out, W_out, C_out):
     n = len(H_out)
     result = float(np.mean(H_out))
     se = float(np.std(H_out, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Feature-map total elements for a conv layer (H' x W' x C_out)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Feature-map total elements for a conv layer (H' x W' x C_out)",
+        }
+    )
 
 
 def cheatsheet():

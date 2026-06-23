@@ -1,6 +1,7 @@
 """Argon2id password hashing."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["argon2id_kdf"]

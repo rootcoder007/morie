@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """OPTICS: ordering points to identify clustering structure at multiple densities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_optics"]
@@ -34,7 +36,14 @@ def geron_optics(X, min_samples, max_eps):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "OPTICS: ordering points to identify clustering structure at multiple densities"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "OPTICS: ordering points to identify clustering structure at multiple densities",
+        }
+    )
 
 
 def cheatsheet():

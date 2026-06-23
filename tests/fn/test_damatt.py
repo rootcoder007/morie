@@ -1,8 +1,9 @@
 """Tests for morie.fn.damatt -- vibranium damping."""
 
 import numpy as np
-from morie.fn.damatt import damped_attenuation, damatt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.damatt import damatt, damped_attenuation
 
 
 class TestDamatt:

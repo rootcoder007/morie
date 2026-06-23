@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrim2 -- SDM impacts decomposition"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrim2 import sdm_impacts
 

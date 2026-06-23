@@ -6,6 +6,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from scipy import stats
+
 from ._richresult import RichResult
 
 
@@ -39,7 +40,9 @@ def otis_effect_summary(
     n = len(data)
 
     if len(t1) < 2 or len(t0) < 2:
-        return RichResult(payload={"cohens_d": np.nan, "point_biserial_r": np.nan, "odds_ratio": np.nan, "risk_ratio": np.nan, "n": n})
+        return RichResult(
+            payload={"cohens_d": np.nan, "point_biserial_r": np.nan, "odds_ratio": np.nan, "risk_ratio": np.nan, "n": n}
+        )
 
     # Cohen's d (pooled SD)
     s_pooled = np.sqrt(((len(t1) - 1) * t1.var(ddof=1) + (len(t0) - 1) * t0.var(ddof=1)) / (len(t1) + len(t0) - 2))

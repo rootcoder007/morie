@@ -1,7 +1,9 @@
 """Tests for joint entropy."""
+
 import numpy as np
 import pytest
-from morie.fn.jntnt import joint_entropy, jntnt
+
+from morie.fn.jntnt import jntnt, joint_entropy
 
 
 def test_independent():

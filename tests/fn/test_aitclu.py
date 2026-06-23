@@ -1,6 +1,7 @@
 """Tests for aitclu.compositional_kmeans."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aitclu import compositional_kmeans
 
 
@@ -10,7 +11,7 @@ def test_aitclu_basic():
     k = 5
     result = compositional_kmeans(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_aitclu_edge():

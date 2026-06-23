@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bias-variance decomposition of expected prediction error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_bias_variance_tradeoff"]
@@ -32,7 +34,14 @@ def geron_bias_variance_tradeoff(preds, y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bias-variance decomposition of expected prediction error"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bias-variance decomposition of expected prediction error",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Gaussian process regression with squared-exponential kernel."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gaussian_process_regression"]
@@ -38,7 +39,14 @@ def gaussian_process_regression(X, y, X_test, kernel, noise):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gaussian process regression with squared-exponential kernel"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gaussian process regression with squared-exponential kernel",
+        }
+    )
 
 
 def cheatsheet():

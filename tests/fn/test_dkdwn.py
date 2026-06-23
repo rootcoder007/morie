@@ -1,6 +1,7 @@
 """Test dkdwn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkdwn import dkdwn
 
 

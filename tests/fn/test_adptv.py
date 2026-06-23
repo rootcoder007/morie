@@ -1,7 +1,5 @@
 """Tests for morie.fn.adptv — Adaptive design."""
 
-import pytest
-
 from morie.fn.adptv import adaptive_design
 
 

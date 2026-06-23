@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxwmr -- Spatial wavelet MRA"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxwmr import wavelet_mra_sp
 

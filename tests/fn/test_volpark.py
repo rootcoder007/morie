@@ -1,6 +1,7 @@
 """Tests for volpark.vol_parkinson_range."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volpark import vol_parkinson_range
 
 
@@ -10,7 +11,7 @@ def test_volpark_basic():
     low = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_parkinson_range(high, low)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volpark_edge():

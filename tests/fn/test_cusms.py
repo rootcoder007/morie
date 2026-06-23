@@ -1,6 +1,8 @@
 """Tests for morie.fn.cusms -- CUSUM test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cusms import cusum_test
 
 
@@ -19,4 +21,5 @@ class TestCUSUM:
 
     def test_cheatsheet(self):
         from morie.fn.cusms import cheatsheet
+
         assert isinstance(cheatsheet(), str)

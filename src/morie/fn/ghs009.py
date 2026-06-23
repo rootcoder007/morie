@@ -1,6 +1,7 @@
 """Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_stick_breaking_weights"]
@@ -32,7 +33,14 @@ def ghosal_ch3_stick_breaking_weights(V_l, j):
     n = len(V_l)
     result = float(np.mean(V_l))
     se = float(np.std(V_l, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms.",
+        }
+    )
 
 
 def cheatsheet():

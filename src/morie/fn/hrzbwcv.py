@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-validation bandwidth selection for single-index model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_bw_cv_sim"]
@@ -34,7 +36,14 @@ def horowitz_bw_cv_sim(x, y, beta_hat):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross-validation bandwidth selection for single-index model"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cross-validation bandwidth selection for single-index model",
+        }
+    )
 
 
 def cheatsheet():

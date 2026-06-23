@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Automatic differentiation via reverse-mode autograd."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_autograd"]
@@ -32,7 +34,9 @@ def geron_autograd(loss, params):
     n = len(loss)
     result = float(np.mean(loss))
     se = float(np.std(loss, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Automatic differentiation via reverse-mode autograd"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Automatic differentiation via reverse-mode autograd"}
+    )
 
 
 def cheatsheet():

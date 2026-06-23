@@ -7,7 +7,6 @@ from morie.fn.dqerr import dequant_error
 
 
 class TestDequantError:
-
     def test_perfect(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = dequant_error(x, x)

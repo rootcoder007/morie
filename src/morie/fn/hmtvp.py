@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transfer learning with TorchVision pretrained model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_torchvision_pretrained"]
@@ -29,7 +31,15 @@ def geron_torchvision_pretrained(model_name, n_classes):
     Géron Ch 12
     """
     n = int(n_classes) if hasattr(n_classes, "__int__") else 0
-    return RichResult(payload={"estimate": float(n), "se": np.nan, "n": n, "method": "Transfer learning with TorchVision pretrained model", "model": str(model_name)})
+    return RichResult(
+        payload={
+            "estimate": float(n),
+            "se": np.nan,
+            "n": n,
+            "method": "Transfer learning with TorchVision pretrained model",
+            "model": str(model_name),
+        }
+    )
 
 
 def cheatsheet():

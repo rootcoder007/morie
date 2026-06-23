@@ -1,6 +1,7 @@
 """Tests for grace.grace."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grace import grace
 
 
@@ -11,7 +12,7 @@ def test_grace_basic():
     aug = np.random.default_rng(42).normal(0, 1, 100)
     result = grace(G, X, aug)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grace_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ECG waveform analysis for ischemia and bundle branch block."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ecg_waveshape"]
@@ -36,7 +38,14 @@ def rangayyan_ecg_waveshape(ecg, fs, r_peaks, template):
     n = int(ecg) if ecg.ndim == 0 else len(ecg)
     result = float(np.mean(ecg))
     se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ECG waveform analysis for ischemia and bundle branch block"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ECG waveform analysis for ischemia and bundle branch block",
+        }
+    )
 
 
 def cheatsheet():

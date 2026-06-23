@@ -32,7 +32,7 @@ argument.
 
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
@@ -108,18 +108,15 @@ def synthetic_area_exposure(
 
     # 3. Multiply by population to get exposure offset
     exposure = pred_rate * area_df[area_population_col].to_numpy(dtype=float)
-    exposure_series = pd.Series(exposure, index=area_df.index,
-                                name="synthetic_exposure")
+    exposure_series = pd.Series(exposure, index=area_df.index, name="synthetic_exposure")
 
     if return_per_area_rate:
-        rate_series = pd.Series(pred_rate, index=area_df.index,
-                                name="predicted_rate")
+        rate_series = pd.Series(pred_rate, index=area_df.index, name="predicted_rate")
         return exposure_series, rate_series
     return exposure_series
 
 
-def _logistic_fit(X: np.ndarray, y: np.ndarray, max_iter: int = 200,
-                  tol: float = 1e-6) -> np.ndarray:
+def _logistic_fit(X: np.ndarray, y: np.ndarray, max_iter: int = 200, tol: float = 1e-6) -> np.ndarray:
     """Minimal-dependency logistic regression via Newton-IRLS.
 
     Returns coef of length p+1 (intercept first).  Adequate for the
@@ -132,9 +129,7 @@ def _logistic_fit(X: np.ndarray, y: np.ndarray, max_iter: int = 200,
     for _ in range(max_iter):
         eta = X_int @ beta
         # Stable sigmoid
-        mu = np.where(eta >= 0,
-                      1.0 / (1.0 + np.exp(-eta)),
-                      np.exp(eta) / (1.0 + np.exp(eta)))
+        mu = np.where(eta >= 0, 1.0 / (1.0 + np.exp(-eta)), np.exp(eta) / (1.0 + np.exp(eta)))
         # Weights for IRLS
         w = mu * (1 - mu)
         # Guard against zero-variance weight rows

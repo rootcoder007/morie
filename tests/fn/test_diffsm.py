@@ -1,6 +1,7 @@
 """Tests for diffsm.diffusion_score_matching."""
+
 import numpy as np
-import pytest
+
 from morie.fn.diffsm import diffusion_score_matching
 
 
@@ -11,7 +12,7 @@ def test_diffsm_basic():
     sigma = 1.0
     result = diffusion_score_matching(x, s_theta, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_diffsm_edge():

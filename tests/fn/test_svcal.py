@@ -1,7 +1,6 @@
 """Tests for morie.fn.svcal -- Calvert uncertainty model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svcal import calvert_model
 

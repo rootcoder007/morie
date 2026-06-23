@@ -1,6 +1,7 @@
 """Tests for rng004.rangayyan_ch3_skewness."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng004 import rangayyan_ch3_skewness
 
 
@@ -12,7 +13,7 @@ def test_rng004_basic():
     p_eta = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch3_skewness(eta, mu_eta, sigma_eta, p_eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng004_edge():

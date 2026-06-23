@@ -1,6 +1,7 @@
 """Tests for morie.fn.roccv — ROC curve."""
-import numpy as np
+
 import pytest
+
 from morie.fn.roccv import roc_curve, roccv
 
 

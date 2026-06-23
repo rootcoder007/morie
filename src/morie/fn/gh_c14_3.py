@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chinese restaurant process: seat customer n+1 at table k prop n_k/(alpha+n) or new."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_crp_def"]
@@ -30,7 +32,14 @@ def ghosal_crp_def(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Chinese restaurant process: seat customer n+1 at table k prop n_k/(alpha+n) or new"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Chinese restaurant process: seat customer n+1 at table k prop n_k/(alpha+n) or new",
+        }
+    )
 
 
 def cheatsheet():

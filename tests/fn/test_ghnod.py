@@ -1,6 +1,7 @@
 """Test ghnod."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghnod import ghnod
 
 

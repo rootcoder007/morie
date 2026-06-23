@@ -62,4 +62,4 @@ savgf = savgol_smooth
 
 
 def cheatsheet() -> str:
-    return 'savgol_smooth({}) -> Savitzky-Golay filter.'
+    return "savgol_smooth({}) -> Savitzky-Golay filter."

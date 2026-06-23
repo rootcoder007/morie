@@ -1,7 +1,7 @@
 """Tests for morie.fn.pslap."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pslap import pslap
 
 

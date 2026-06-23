@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """T-wave alternans (TWA) detection via spectral method."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_twave_alternans"]
@@ -34,7 +36,9 @@ def rangayyan_twave_alternans(ecg, fs, r_peaks):
     n = int(ecg) if ecg.ndim == 0 else len(ecg)
     result = float(np.mean(ecg))
     se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "T-wave alternans (TWA) detection via spectral method"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "T-wave alternans (TWA) detection via spectral method"}
+    )
 
 
 def cheatsheet():

@@ -4,7 +4,6 @@ from morie.fn.midif import mi_delta_fit
 
 
 class TestMiDeltaFit:
-
     def test_basic(self):
         f1 = {"cfi": 0.96, "rmsea": 0.04, "srmr": 0.05}
         f2 = {"cfi": 0.95, "rmsea": 0.05, "srmr": 0.06}

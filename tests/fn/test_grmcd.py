@@ -1,6 +1,7 @@
 """Tests for grmcd.geron_mc_dropout."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmcd import geron_mc_dropout
 
 
@@ -12,7 +13,7 @@ def test_grmcd_basic():
     p = 5
     result = geron_mc_dropout(model, x, K, p)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_grmcd_edge():

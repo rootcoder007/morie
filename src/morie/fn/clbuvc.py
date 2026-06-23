@@ -1,6 +1,7 @@
 """CLUB contrastive log-ratio upper bound."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["club_upper_bound"]
@@ -34,7 +35,9 @@ def club_upper_bound(x, y, q):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CLUB contrastive log-ratio upper bound"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "CLUB contrastive log-ratio upper bound"}
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.astpat -- A* pathfinding."""
 
 import numpy as np
-from morie.fn.astpat import astar_path, astpat
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.astpat import astar_path, astpat
 
 
 class TestAstpat:

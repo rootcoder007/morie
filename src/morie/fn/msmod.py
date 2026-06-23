@@ -14,6 +14,7 @@ structural models and causal inference in epidemiology.
 Hernan, M. A., & Robins, J. M. (2020). *Causal Inference: What If*.
 Chapman & Hall/CRC. Chapter 12.
 """
+
 from __future__ import annotations
 
 from typing import Any

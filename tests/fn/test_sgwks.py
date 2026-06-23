@@ -1,5 +1,7 @@
 """Tests for weak stationarity test."""
+
 import numpy as np
+
 from morie.fn.sgwks import sgwks
 
 

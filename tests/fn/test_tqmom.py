@@ -1,6 +1,7 @@
 """Tests for tqmom.turboquant_normal_moment."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqmom import turboquant_normal_moment
 
 
@@ -10,7 +11,7 @@ def test_tqmom_basic():
     l = np.random.default_rng(42).normal(0, 1, 100)
     result = turboquant_normal_moment(sigma, l)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqmom_edge():

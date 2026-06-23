@@ -1,6 +1,8 @@
 """Tests for stgnt."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stgnt import stgnt
 
 
@@ -28,4 +30,5 @@ def test_stgnt_no_data():
 
 def test_stgnt_alias():
     from morie.fn.stgnt import stgnt
+
     assert stgnt is stgnt

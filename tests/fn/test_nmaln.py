@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmaln -- Alpha-NOMINATE (Bayesian MCMC)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmaln import alpha_nominate
 

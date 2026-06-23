@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-trait linear mixed model with Kronecker covariance."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["multi_trait_lmm"]
@@ -36,7 +38,14 @@ def multi_trait_lmm(Y, X, Z, A):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-trait linear mixed model with Kronecker covariance"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multi-trait linear mixed model with Kronecker covariance",
+        }
+    )
 
 
 def cheatsheet():

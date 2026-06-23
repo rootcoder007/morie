@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmdw2 -- DW-NOMINATE bridging observations"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmdw2 import dwnominate_bridge
 

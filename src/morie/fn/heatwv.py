@@ -87,10 +87,7 @@ def heat_wave_detect(
     if T.ndim != 1:
         raise ValueError("daily_max_C must be 1-D (a day-indexed series).")
     if T.size < min_consecutive_days:
-        raise ValueError(
-            f"Series too short ({T.size}) for min_consecutive_days="
-            f"{min_consecutive_days}."
-        )
+        raise ValueError(f"Series too short ({T.size}) for min_consecutive_days={min_consecutive_days}.")
     if not (0 < percentile < 100):
         raise ValueError("percentile must be in (0, 100).")
     if np.any(~np.isfinite(T)):

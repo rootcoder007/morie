@@ -5,6 +5,7 @@ Wraps `arch.arch_model(..., vol='EGARCH')` when available; falls back to
 a pure-numpy MLE on Gaussian innovations so the function is usable
 without the optional `arch` dependency.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -48,20 +49,23 @@ def egarch_model(x):
     # Try the canonical `arch` package first; fall back to pure NumPy MLE.
     try:
         from arch import arch_model
+
         m = arch_model(r, mean="Zero", vol="EGARCH", p=1, o=1, q=1, dist="normal")
         fit = m.fit(disp="off", show_warning=False)
         params = fit.params
-        return RichResult(payload={
-            "omega": float(params.get("omega", np.nan)),
-            "alpha": float(params.get("alpha[1]", np.nan)),
-            "gamma": float(params.get("gamma[1]", np.nan)),
-            "beta":  float(params.get("beta[1]",  np.nan)),
-            "theta": float(params.get("gamma[1]", np.nan)),  # alias
-            "loglik": float(fit.loglikelihood),
-            "n": int(n),
-            "conditional_variance": np.asarray(fit.conditional_volatility) ** 2,
-            "method": "EGARCH(1,1) via arch.arch_model",
-        })
+        return RichResult(
+            payload={
+                "omega": float(params.get("omega", np.nan)),
+                "alpha": float(params.get("alpha[1]", np.nan)),
+                "gamma": float(params.get("gamma[1]", np.nan)),
+                "beta": float(params.get("beta[1]", np.nan)),
+                "theta": float(params.get("gamma[1]", np.nan)),  # alias
+                "loglik": float(fit.loglikelihood),
+                "n": int(n),
+                "conditional_variance": np.asarray(fit.conditional_volatility) ** 2,
+                "method": "EGARCH(1,1) via arch.arch_model",
+            }
+        )
     except Exception:
         pass
 
@@ -78,7 +82,7 @@ def egarch_model(x):
             z = r[t - 1] / np.sqrt(np.exp(log_s2[t - 1]) + 1e-12)
             log_s2[t] = omega + beta * log_s2[t - 1] + alpha * (np.abs(z) - EZ) + gamma * z
         s2 = np.exp(log_s2)
-        ll = -0.5 * np.sum(np.log(2 * np.pi * s2) + r ** 2 / s2)
+        ll = -0.5 * np.sum(np.log(2 * np.pi * s2) + r**2 / s2)
         return -ll
 
     x0 = [0.0, 0.1, 0.0, 0.9]
@@ -90,17 +94,19 @@ def egarch_model(x):
     for t in range(1, n):
         z = r[t - 1] / np.sqrt(np.exp(log_s2[t - 1]) + 1e-12)
         log_s2[t] = omega + beta * log_s2[t - 1] + alpha * (np.abs(z) - EZ) + gamma * z
-    return RichResult(payload={
-        "omega": float(omega),
-        "alpha": float(alpha),
-        "gamma": float(gamma),
-        "beta":  float(beta),
-        "theta": float(gamma),
-        "loglik": float(-fit.fun),
-        "n": int(n),
-        "conditional_variance": np.exp(log_s2),
-        "method": "EGARCH(1,1) Gaussian MLE (numpy)",
-    })
+    return RichResult(
+        payload={
+            "omega": float(omega),
+            "alpha": float(alpha),
+            "gamma": float(gamma),
+            "beta": float(beta),
+            "theta": float(gamma),
+            "loglik": float(-fit.fun),
+            "n": int(n),
+            "conditional_variance": np.exp(log_s2),
+            "method": "EGARCH(1,1) Gaussian MLE (numpy)",
+        }
+    )
 
 
 # CANONICAL TEST -------------------------------------------------------------

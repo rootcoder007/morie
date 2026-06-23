@@ -1,6 +1,7 @@
 """Test dkspr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkspr import dkspr
 
 

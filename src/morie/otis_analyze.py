@@ -32,7 +32,6 @@ import pandas as pd
 from . import otis as _o
 from .fn._richresult import RichResult
 
-
 PROJECT = _o.project_root()
 DEFAULT_OUT = PROJECT / "data/manifest/outputs/otis"
 
@@ -68,13 +67,11 @@ def load_otis(csv_path: Path | str | None = None) -> pd.DataFrame:
     return pd.read_csv(p)
 
 
-def rplace(df: pd.DataFrame, year: int, sex: str | None = None,
-           **kw: Any) -> RichResult:
+def rplace(df: pd.DataFrame, year: int, sex: str | None = None, **kw: Any) -> RichResult:
     """Regional placement analysis as RichResult."""
     r = _o.rplace(df, year=year, sex=sex, **kw)
     return RichResult(
-        title=f"OTIS regional placement -- fiscal year {year}"
-              + (f" (sex={sex})" if sex else ""),
+        title=f"OTIS regional placement -- fiscal year {year}" + (f" (sex={sex})" if sex else ""),
         summary_lines=[
             ("Year", year),
             ("Sex filter", sex or "all"),
@@ -83,18 +80,18 @@ def rplace(df: pd.DataFrame, year: int, sex: str | None = None,
             ("Total individuals (cells summed)", int(r.counts.values.sum())),
         ],
         tables=[
-            {"title": "Counts (age × region):",
-             "headers": ["age"] + list(map(str, r.counts.columns)),
-             "rows": [[idx] + list(map(int, row))
-                      for idx, row in r.counts.iterrows()]},
-            {"title": "Proportions (within age):",
-             "headers": ["age"] + list(map(str, r.props.columns)),
-             "rows": [[idx] + [f"{v*100:.1f}%" for v in row]
-                      for idx, row in r.props.iterrows()]},
+            {
+                "title": "Counts (age × region):",
+                "headers": ["age"] + list(map(str, r.counts.columns)),
+                "rows": [[idx] + list(map(int, row)) for idx, row in r.counts.iterrows()],
+            },
+            {
+                "title": "Proportions (within age):",
+                "headers": ["age"] + list(map(str, r.props.columns)),
+                "rows": [[idx] + [f"{v * 100:.1f}%" for v in row] for idx, row in r.props.iterrows()],
+            },
         ],
-        payload={"counts": r.counts.to_dict(),
-                 "props": r.props.to_dict(),
-                 "year": year, "sex": sex},
+        payload={"counts": r.counts.to_dict(), "props": r.props.to_dict(), "year": year, "sex": sex},
     )
 
 
@@ -108,12 +105,13 @@ def astcmb(df: pd.DataFrame, **kw: Any) -> RichResult:
             ("Individuals classified", int(r.data.shape[0])),
             ("Combination categories", int(summary.shape[0])),
         ],
-        tables=[{
-            "title": "Count by alert-complexity level:",
-            "headers": ["combo"] + list(map(str, summary.columns)),
-            "rows": [[idx] + list(row.tolist())
-                     for idx, row in summary.iterrows()],
-        }],
+        tables=[
+            {
+                "title": "Count by alert-complexity level:",
+                "headers": ["combo"] + list(map(str, summary.columns)),
+                "rows": [[idx] + list(row.tolist()) for idx, row in summary.iterrows()],
+            }
+        ],
         interpretation=(
             "Each individual is encoded as one of 8 combinations of "
             "(mental_health, suicide_risk, suicide_watch). a8=no alerts, "
@@ -132,18 +130,15 @@ def volat(df: pd.DataFrame, **kw: Any) -> RichResult:
             ("Individuals scored", int(r.data.shape[0])),
             ("Mean volatility", float(r.mean)),
             ("Median volatility", float(r.median)),
-            ("Min", float(r.data.iloc[:, -1].min())
-                if r.data.shape[0] else float("nan")),
-            ("Max", float(r.data.iloc[:, -1].max())
-                if r.data.shape[0] else float("nan")),
+            ("Min", float(r.data.iloc[:, -1].min()) if r.data.shape[0] else float("nan")),
+            ("Max", float(r.data.iloc[:, -1].max()) if r.data.shape[0] else float("nan")),
         ],
         interpretation=(
             "Volatility = number of distinct regions a person passed "
             "through across the OTIS observation window, normalised to "
             "[0,1]. Higher = more movement between regional facilities."
         ),
-        payload={"mean": float(r.mean), "median": float(r.median),
-                 "n": int(r.data.shape[0])},
+        payload={"mean": float(r.mean), "median": float(r.median), "n": int(r.data.shape[0])},
     )
 
 
@@ -154,17 +149,21 @@ def rctrnd(df: pd.DataFrame, **kw: Any) -> RichResult:
     return RichResult(
         title="OTIS restrictive-confinement trends over time",
         summary_lines=[
-            ("Years observed", f"{int(r['end_fiscal_year'].min())}–"
-             f"{int(r['end_fiscal_year'].max())}"
-             if "end_fiscal_year" in r.columns and r.shape[0]
-             else "n/a"),
+            (
+                "Years observed",
+                f"{int(r['end_fiscal_year'].min())}–{int(r['end_fiscal_year'].max())}"
+                if "end_fiscal_year" in r.columns and r.shape[0]
+                else "n/a",
+            ),
             ("Rows", int(r.shape[0])),
         ],
-        tables=[{
-            "title": "Restrictive-confinement counts by year:",
-            "headers": list(map(str, r.columns)),
-            "rows": [list(row.tolist()) for _, row in r.iterrows()],
-        }],
+        tables=[
+            {
+                "title": "Restrictive-confinement counts by year:",
+                "headers": list(map(str, r.columns)),
+                "rows": [list(row.tolist()) for _, row in r.iterrows()],
+            }
+        ],
         payload={"trends": r.to_dict("records")},
     )
 
@@ -178,31 +177,29 @@ def otdesc(df: pd.DataFrame, **kw: Any) -> RichResult:
     r = _o.otdesc(df, **kw)
     # otdesc returns a dict-of-DataFrames. Wrap each as a sub-table.
     tables = []
-    for key, val in (r.items() if isinstance(r, dict) else []):
+    for key, val in r.items() if isinstance(r, dict) else []:
         if isinstance(val, pd.DataFrame):
-            tables.append({
-                "title": f"{key}:",
-                "headers": list(map(str, val.columns)),
-                "rows": [list(row.tolist()) for _, row in val.iterrows()],
-            })
+            tables.append(
+                {
+                    "title": f"{key}:",
+                    "headers": list(map(str, val.columns)),
+                    "rows": [list(row.tolist()) for _, row in val.iterrows()],
+                }
+            )
     return RichResult(
         title="OTIS descriptives",
         summary_lines=[
-            ("Total individuals (unique)", int(r.get("n_total", 0))
-             if isinstance(r, dict) else 0),
-            ("Total records", int(r.get("n_records", 0))
-             if isinstance(r, dict) else 0),
+            ("Total individuals (unique)", int(r.get("n_total", 0)) if isinstance(r, dict) else 0),
+            ("Total records", int(r.get("n_records", 0)) if isinstance(r, dict) else 0),
             ("Tables emitted", len(tables)),
         ],
         tables=tables,
     )
 
 
-def otdml(df: pd.DataFrame, *, treatment: str, outcome: str,
-          covariates: list[str], **kw: Any) -> RichResult:
+def otdml(df: pd.DataFrame, *, treatment: str, outcome: str, covariates: list[str], **kw: Any) -> RichResult:
     """OTIS DML IRM (ATE/ATT) as RichResult."""
-    r = _o.otdml(df, treatment=treatment, outcome=outcome,
-                 covariates=covariates, **kw)
+    r = _o.otdml(df, treatment=treatment, outcome=outcome, covariates=covariates, **kw)
     return RichResult(
         title=f"OTIS DML {r.method}: ATE/ATT for {treatment} -> {outcome}",
         summary_lines=[
@@ -212,31 +209,38 @@ def otdml(df: pd.DataFrame, *, treatment: str, outcome: str,
             ("Covariates", ", ".join(covariates)),
             ("n", int(r.n)),
         ],
-        tables=[{
-            "title": "Causal effect estimates:",
-            "headers": ["Estimand", "Estimate", "SE", "p-value"],
-            "rows": [
-                ["ATE", f"{r.ate:.4f}", f"{r.ate_se:.4f}",
-                 f"{r.ate_pval:.4g}"],
-                ["ATT", f"{r.att:.4f}", f"{r.att_se:.4f}",
-                 f"{r.att_pval:.4g}"],
-            ],
-        }],
+        tables=[
+            {
+                "title": "Causal effect estimates:",
+                "headers": ["Estimand", "Estimate", "SE", "p-value"],
+                "rows": [
+                    ["ATE", f"{r.ate:.4f}", f"{r.ate_se:.4f}", f"{r.ate_pval:.4g}"],
+                    ["ATT", f"{r.att:.4f}", f"{r.att_se:.4f}", f"{r.att_pval:.4g}"],
+                ],
+            }
+        ],
         interpretation=(
             f"ATE = average effect of {treatment} on {outcome} across "
             "the entire OTIS population. ATT = average effect among "
             "those who actually received the treatment. p-values use "
             "the DML asymptotic-normal approximation."
         ),
-        payload={"ate": r.ate, "ate_se": r.ate_se, "ate_pval": r.ate_pval,
-                 "att": r.att, "att_se": r.att_se, "att_pval": r.att_pval,
-                 "n": int(r.n), "method": r.method},
+        payload={
+            "ate": r.ate,
+            "ate_se": r.ate_se,
+            "ate_pval": r.ate_pval,
+            "att": r.att,
+            "att_se": r.att_se,
+            "att_pval": r.att_pval,
+            "n": int(r.n),
+            "method": r.method,
+        },
     )
 
 
-def all_analyses(df: pd.DataFrame, year: int,
-                 *, sex: str | None = None,
-                 out_dir: Path | None = None) -> dict[str, RichResult]:
+def all_analyses(
+    df: pd.DataFrame, year: int, *, sex: str | None = None, out_dir: Path | None = None
+) -> dict[str, RichResult]:
     """Run rplace / astcmb / volat / rctrnd / otdesc on `df` and write to disk.
 
     `otdml` is excluded from the bundle because it requires the user

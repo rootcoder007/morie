@@ -1,6 +1,8 @@
 """Tests for gppost."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gppost import gppost
 
 
@@ -28,4 +30,5 @@ def test_gppost_no_data():
 
 def test_gppost_alias():
     from morie.fn.gppost import gppost
+
     assert gppost is gppost

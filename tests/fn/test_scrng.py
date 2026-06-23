@@ -1,7 +1,7 @@
 """Tests for morie.fn.scrng — score range check."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.scrng import score_range_check
 
 

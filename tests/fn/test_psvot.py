@@ -1,7 +1,7 @@
 """Tests for morie.fn.psvot."""
 
 import numpy as np
-import pytest
+
 from morie.fn.psvot import psvot
 
 

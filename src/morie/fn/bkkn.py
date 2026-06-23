@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kneser-Ney smoothing: absolute discount + continuation probability."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_kneser_ney"]
@@ -36,7 +38,14 @@ def burkov_kneser_ney(counts_ngram, counts_prefix, continuation_counts, d):
     n = len(counts_ngram)
     result = float(np.mean(counts_ngram))
     se = float(np.std(counts_ngram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kneser-Ney smoothing: absolute discount + continuation probability"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Kneser-Ney smoothing: absolute discount + continuation probability",
+        }
+    )
 
 
 def cheatsheet():

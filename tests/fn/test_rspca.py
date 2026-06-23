@@ -1,6 +1,7 @@
 """Test rspca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rspca import rspca
 
 

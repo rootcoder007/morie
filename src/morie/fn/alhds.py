@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """HDBSCAN density-based hierarchical clustering assignment."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_hdbscan_cluster"]
@@ -34,7 +36,14 @@ def alammar_hdbscan_cluster(X, min_cluster_size, min_samples):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "HDBSCAN density-based hierarchical clustering assignment"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "HDBSCAN density-based hierarchical clustering assignment",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.gamra -- AFT survival model."""
 
 import numpy as np
-from morie.fn.gamra import aft_model, gamra
+
 from morie.fn._containers import SurvivalResult
+from morie.fn.gamra import aft_model, gamra
 
 
 class TestGamra:

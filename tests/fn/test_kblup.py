@@ -1,6 +1,7 @@
 """Tests for kblup.kernel_blup."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kblup import kernel_blup
 
 
@@ -12,7 +13,7 @@ def test_kblup_basic():
     lam = 0.1
     result = kernel_blup(K, K_new, y, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kblup_edge():

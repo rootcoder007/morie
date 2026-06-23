@@ -1,6 +1,7 @@
 """Tests for hmsgdc.geron_sgd_classifier."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsgdc import geron_sgd_classifier
 
 
@@ -12,7 +13,7 @@ def test_hmsgdc_basic():
     n_iter = 50
     result = geron_sgd_classifier(X, y, lr, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsgdc_edge():

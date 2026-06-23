@@ -1,6 +1,7 @@
 """Tests for vitptm.vit_patch_embed."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vitptm import vit_patch_embed
 
 
@@ -11,7 +12,7 @@ def test_vitptm_basic():
     embed_dim = 2
     result = vit_patch_embed(image, patch_size, embed_dim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vitptm_edge():

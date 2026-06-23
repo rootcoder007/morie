@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Denoising diffusion implicit models (DDIM) for faster sampling."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddim"]
@@ -36,7 +38,14 @@ def geron_ddim(x_T, model, T, n_steps):
     n = len(x_T)
     result = float(np.mean(x_T))
     se = float(np.std(x_T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Denoising diffusion implicit models (DDIM) for faster sampling"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Denoising diffusion implicit models (DDIM) for faster sampling",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal (masked) 1D convolution for time-series forecasting."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_causal_1d_cnn"]
@@ -32,7 +34,14 @@ def geron_causal_1d_cnn(x, w):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Causal (masked) 1D convolution for time-series forecasting"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Causal (masked) 1D convolution for time-series forecasting",
+        }
+    )
 
 
 def cheatsheet():

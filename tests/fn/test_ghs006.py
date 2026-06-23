@@ -1,6 +1,7 @@
 """Tests for ghs006.ghosal_ch2_feller_density_approximation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs006 import ghosal_ch2_feller_density_approximation
 
 
@@ -14,7 +15,7 @@ def test_ghs006_basic():
     V = np.random.default_rng(42).normal(0, 1, 100)
     result = ghosal_ch2_feller_density_approximation(x, k, F, h_k, g_k, V)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs006_edge():

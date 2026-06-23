@@ -1,6 +1,7 @@
 """Tests for morie.fn.looic -- LOO-IC."""
 
 import numpy as np
+
 from morie.fn.looic import compute_loo
 
 

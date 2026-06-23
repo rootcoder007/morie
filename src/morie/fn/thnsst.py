@@ -1,6 +1,7 @@
 """Thiessen / Voronoi polygon partition."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["thiessen_polygons"]

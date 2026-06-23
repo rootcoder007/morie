@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Respiratory sound generation model (bronchial turbulence)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_respiratory_sound"]
@@ -34,7 +36,14 @@ def rangayyan_respiratory_sound(resp_sound, fs, flow):
     n = int(resp_sound) if resp_sound.ndim == 0 else len(resp_sound)
     result = float(np.mean(resp_sound))
     se = float(np.std(resp_sound, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Respiratory sound generation model (bronchial turbulence)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Respiratory sound generation model (bronchial turbulence)",
+        }
+    )
 
 
 def cheatsheet():

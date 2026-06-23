@@ -6,8 +6,10 @@
 Under H0, the smoothing bias is o(n^{-1/2}), so the classical
 CvM asymptotic distribution applies and we use its tabulated tail.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_cvm_smoothed"]
@@ -27,10 +29,9 @@ def _cvm_pvalue(w2):
     """Linear-interp tail probability of CvM distribution from Anderson-Darling table."""
     if w2 <= 0:
         return 1.0
-    table = [(0.347, 0.10), (0.461, 0.05), (0.581, 0.025),
-             (0.743, 0.01), (1.168, 0.001)]
+    table = [(0.347, 0.10), (0.461, 0.05), (0.581, 0.025), (0.743, 0.01), (1.168, 0.001)]
     if w2 < table[0][0]:
-        return float(0.5)
+        return 0.5
     if w2 > table[-1][0]:
         return float(table[-1][1] * 0.5)
     for i in range(len(table) - 1):
@@ -55,8 +56,7 @@ def fauzi_cvm_smoothed(x, cdf="norm", args=None, h=None):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 5:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan,
-                                    "n": n, "method": "fzcvm -- too few obs"})
+        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "fzcvm -- too few obs"})
     if h is None:
         h = float(_silverman_h(x))
 
@@ -78,13 +78,15 @@ def fauzi_cvm_smoothed(x, cdf="norm", args=None, h=None):
     w2 = float(n * np.mean((F_hat - F_ref) ** 2))
     p = _cvm_pvalue(w2 / n)  # CvM table is in the per-obs scale
 
-    return RichResult(payload={
-        "statistic": w2,
-        "p_value": p,
-        "h": h,
-        "n": n,
-        "method": "Fauzi kernel-smoothed Cramer-von Mises (Ch 5)",
-    })
+    return RichResult(
+        payload={
+            "statistic": w2,
+            "p_value": p,
+            "h": h,
+            "n": n,
+            "method": "Fauzi kernel-smoothed Cramer-von Mises (Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

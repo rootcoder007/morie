@@ -1,8 +1,9 @@
 """Tests for morie.fn.jawa -- Jackknife estimator."""
 
 import numpy as np
-from morie.fn.jawa import jackknife, jawa
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.jawa import jackknife, jawa
 
 
 class TestJawa:

@@ -1,6 +1,7 @@
 """Pareto-k shape diagnostic for PSIS-LOO."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pareto_k_diagnostic"]
@@ -30,7 +31,9 @@ def pareto_k_diagnostic(log_lik):
     n = len(log_lik)
     result = float(np.mean(log_lik))
     se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pareto-k shape diagnostic for PSIS-LOO"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pareto-k shape diagnostic for PSIS-LOO"}
+    )
 
 
 def cheatsheet():

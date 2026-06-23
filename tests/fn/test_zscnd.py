@@ -1,7 +1,6 @@
 """Tests for morie.fn.zscnd -- Conditional simulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zscnd import conditional_sim
 

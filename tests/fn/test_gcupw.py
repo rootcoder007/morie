@@ -1,6 +1,7 @@
 """Test gcupw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcupw import gcupw
 
 

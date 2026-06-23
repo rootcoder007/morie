@@ -1,6 +1,7 @@
 """Tests for morie.fn.omega2 -- Omega-squared from ANOVA."""
 
 import pytest
+
 from morie.fn.omega2 import omega_squared
 
 
@@ -14,6 +15,7 @@ class TestOmegaSquared:
     def test_smaller_than_eta2(self):
         """Omega-squared is always <= eta-squared for the same data."""
         from morie.fn.eta2 import eta_squared
+
         e2 = eta_squared(10, 2, 97)
         o2 = omega_squared(10, 2, 97, 100)
         assert o2 <= e2

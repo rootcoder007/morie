@@ -1,6 +1,7 @@
 """Tests for grpels.geron_peephole_lstm_cell."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grpels import geron_peephole_lstm_cell
 
 
@@ -22,7 +23,7 @@ def test_grpels_basic():
     bo = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_peephole_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, Uf, Ui, Uo, bf, bi, bg, bo)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grpels_edge():

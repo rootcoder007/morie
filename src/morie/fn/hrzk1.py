@@ -14,6 +14,7 @@ Asymptotic SE at a point ``x0``:
     var(f_hat(x0)) ≈ f(x0) * R(K) / (n h),
     R(K_gaussian) = 1/(2*sqrt(pi)) ≈ 0.2820948.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -63,8 +64,9 @@ def horowitz_kernel_density(x, bandwidth=None, sample=None):
         grid = np.atleast_1d(np.asarray(x, dtype=float))
     n = data.size
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "kernel-density (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "kernel-density (insufficient data)"}
+        )
     h = float(bandwidth) if bandwidth is not None else _silverman_bandwidth(data)
     if h <= 0:
         h = _silverman_bandwidth(data)
@@ -75,14 +77,21 @@ def horowitz_kernel_density(x, bandwidth=None, sample=None):
     # Asymptotic pointwise SE
     se = np.sqrt(np.maximum(f_hat, 0) * _R_K_GAUSSIAN / (n * h))
     if f_hat.size == 1:
-        est = float(f_hat[0]); se_v = float(se[0])
+        est = float(f_hat[0])
+        se_v = float(se[0])
     else:
-        est = f_hat.astype(float); se_v = se.astype(float)
-    return RichResult(payload={
-        "estimate": est, "se": se_v, "bandwidth": h, "n": n,
-        "kernel": "gaussian",
-        "method": "Rosenblatt-Parzen kernel density (Horowitz 2009, Ch 2)",
-    })
+        est = f_hat.astype(float)
+        se_v = se.astype(float)
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se_v,
+            "bandwidth": h,
+            "n": n,
+            "kernel": "gaussian",
+            "method": "Rosenblatt-Parzen kernel density (Horowitz 2009, Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

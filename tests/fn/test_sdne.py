@@ -1,6 +1,7 @@
 """Tests for sdne.sdne."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sdne import sdne
 
 
@@ -10,7 +11,7 @@ def test_sdne_basic():
     dim = np.random.default_rng(42).normal(0, 1, 100)
     result = sdne(A, dim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sdne_edge():

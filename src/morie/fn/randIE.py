@@ -1,6 +1,7 @@
 """Randomized interventional effect."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["randomized_intervention"]

@@ -1,5 +1,7 @@
 """Tests for ramsey_reset_test."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.ramsy import ramsey_reset_test
 
 

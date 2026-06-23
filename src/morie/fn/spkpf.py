@@ -41,4 +41,4 @@ spkpf = single_peaked_check
 
 
 def cheatsheet() -> str:
-    return 'single_peaked_check({}) -> Single-peaked preference check.'
+    return "single_peaked_check({}) -> Single-peaked preference check."

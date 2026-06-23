@@ -77,4 +77,4 @@ jukrat = jukes_cantor_rate
 
 
 def cheatsheet() -> str:
-    return 'jukes_cantor_rate({}) -> Mutation rate estimation (Jukes-Cantor).'
+    return "jukes_cantor_rate({}) -> Mutation rate estimation (Jukes-Cantor)."

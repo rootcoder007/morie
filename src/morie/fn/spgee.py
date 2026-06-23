@@ -85,7 +85,7 @@ def spgee(
     resid = y - mu
 
     H_inv = np.linalg.inv(H + 1e-8 * np.eye(len(beta)))
-    B = X.T @ np.diag(resid ** 2) @ X
+    B = X.T @ np.diag(resid**2) @ X
     sandwich = H_inv @ B @ H_inv
     robust_se = np.sqrt(np.diag(sandwich))
 

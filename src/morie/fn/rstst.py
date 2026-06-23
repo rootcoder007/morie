@@ -36,6 +36,7 @@ def rstst(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, t
         raise ValueError("Exactly two groups required.")
 
     from .rmstd import rmstd
+
     result = rmstd(time, event, group, tau=tau)
 
     se = result["se"]

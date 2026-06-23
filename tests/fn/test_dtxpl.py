@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtxpl."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtxpl import dtxpl
 
 

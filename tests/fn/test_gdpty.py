@@ -1,6 +1,7 @@
 """Test gdpty."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdpty import gdpty
 
 

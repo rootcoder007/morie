@@ -1,6 +1,7 @@
 """Tests for olrFn.outgoing_longwave."""
+
 import numpy as np
-import pytest
+
 from morie.fn.olrFn import outgoing_longwave
 
 
@@ -9,7 +10,7 @@ def test_olrFn_basic():
     T_s = np.random.default_rng(42).normal(0, 1, 100)
     result = outgoing_longwave(T_s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_olrFn_edge():

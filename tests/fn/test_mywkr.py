@@ -1,5 +1,7 @@
 """Tests for mywkr.py - Modified Yule-Walker ARMA estimation."""
+
 import numpy as np
+
 from morie.fn.mywkr import modified_yule_walker_arma_fn, mywkr
 
 

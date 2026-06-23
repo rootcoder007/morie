@@ -1,6 +1,7 @@
 """Tests for ddpgc.ddpg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ddpgc import ddpg
 
 
@@ -12,7 +13,7 @@ def test_ddpgc_basic():
     tau = 0.1
     result = ddpg(env, actor, critic, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ddpgc_edge():

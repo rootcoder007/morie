@@ -1,7 +1,6 @@
 """Tests for morie.fn.kglgb -- Lognormal kriging back-transform"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kglgb import lk_backtransform
 

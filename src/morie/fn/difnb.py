@@ -10,7 +10,15 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def dif_nonuniform(responses: np.ndarray | pd.DataFrame, ability: np.ndarray, group: np.ndarray | list, cdf=None, *, item_names: list[str] | None = None, alpha: float = 0.05) -> DIFResult:
+def dif_nonuniform(
+    responses: np.ndarray | pd.DataFrame,
+    ability: np.ndarray,
+    group: np.ndarray | list,
+    cdf=None,
+    *,
+    item_names: list[str] | None = None,
+    alpha: float = 0.05,
+) -> DIFResult:
     """Detect non-uniform DIF via ability x group interaction.
 
     Fits logistic: logit(P) = b0 + b1*ability + b2*group + b3*ability*group.

@@ -73,8 +73,7 @@ def cnsrd(
         return float(np.mean(np.abs(resid)))
 
     b0 = np.linalg.lstsq(X, y, rcond=None)[0]
-    res = minimize(clad_obj, b0, method="L-BFGS-B",
-                   options={"maxiter": 200})
+    res = minimize(clad_obj, b0, method="L-BFGS-B", options={"maxiter": 200})
     beta = res.x
 
     xb = X @ beta
@@ -82,7 +81,7 @@ def cnsrd(
     uncensored = censoring == 1
 
     if uncensored.sum() > p:
-        sigma2 = float(np.sum(resid[uncensored]**2) / max(uncensored.sum() - p, 1))
+        sigma2 = float(np.sum(resid[uncensored] ** 2) / max(uncensored.sum() - p, 1))
     else:
         sigma2 = float(np.mean(resid**2))
 

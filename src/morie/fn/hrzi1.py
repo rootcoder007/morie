@@ -12,6 +12,7 @@ on the index X'b.  Minimisation uses ``scipy.optimize.minimize`` from a
 warm OLS start.  Standard errors are obtained from the OLS-on-residuals
 formula in Ichimura (1993, Eq. 4.2).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -57,8 +58,14 @@ def horowitz_index_model(x, y, bandwidth=None):
         X = X.T
     n, p = X.shape
     if n < max(10, 2 * p):
-        return RichResult(payload={"estimate": np.full(p, np.nan), "se": np.full(p, np.nan),
-                                   "n": n, "method": "single-index (insufficient data)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "single-index (insufficient data)",
+            }
+        )
     # OLS warm start
     beta0, *_ = np.linalg.lstsq(X, y, rcond=None)
     nrm = np.linalg.norm(beta0)
@@ -82,8 +89,7 @@ def horowitz_index_model(x, y, bandwidth=None):
         resid = y - g_hat
         return float((resid * resid).mean())
 
-    res = minimize(objective, beta0, method="Nelder-Mead",
-                   options={"xatol": 1e-4, "fatol": 1e-5, "maxiter": 200})
+    res = minimize(objective, beta0, method="Nelder-Mead", options={"xatol": 1e-4, "fatol": 1e-5, "maxiter": 200})
     beta_hat = res.x
     nb = np.linalg.norm(beta_hat)
     if nb > 1e-12:
@@ -97,10 +103,18 @@ def horowitz_index_model(x, y, bandwidth=None):
     f0 = objective(beta_hat)
     for i in range(p):
         for j in range(p):
-            bp = beta_hat.copy(); bp[i] += eps; bp[j] += eps
-            bm = beta_hat.copy(); bm[i] -= eps; bm[j] -= eps
-            bpm = beta_hat.copy(); bpm[i] += eps; bpm[j] -= eps
-            bmp = beta_hat.copy(); bmp[i] -= eps; bmp[j] += eps
+            bp = beta_hat.copy()
+            bp[i] += eps
+            bp[j] += eps
+            bm = beta_hat.copy()
+            bm[i] -= eps
+            bm[j] -= eps
+            bpm = beta_hat.copy()
+            bpm[i] += eps
+            bpm[j] -= eps
+            bmp = beta_hat.copy()
+            bmp[i] -= eps
+            bmp[j] += eps
             H[i, j] = (objective(bp) - objective(bpm) - objective(bmp) + objective(bm)) / (4 * eps * eps)
     H = 0.5 * (H + H.T)
     try:
@@ -109,12 +123,16 @@ def horowitz_index_model(x, y, bandwidth=None):
         cov = np.full((p, p), np.nan)
     se = np.sqrt(np.maximum(np.diag(cov), 0))
 
-    return RichResult(payload={
-        "estimate": beta_hat.astype(float),
-        "se": se.astype(float),
-        "n": n, "bandwidth": h0, "loss": float(f0),
-        "method": "Ichimura (1993) single-index model",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta_hat.astype(float),
+            "se": se.astype(float),
+            "n": n,
+            "bandwidth": h0,
+            "loss": float(f0),
+            "method": "Ichimura (1993) single-index model",
+        }
+    )
 
 
 def cheatsheet():

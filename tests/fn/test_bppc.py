@@ -1,12 +1,9 @@
 """Tests for morie.fn.bppc — Posterior predictive check."""
 
-import numpy as np
-import pytest
 from morie.fn.bppc import bayesian_ppc
 
 
 class TestBayesianPpc:
-
     def test_returns_dict(self, mapq_df):
         items = [c for c in mapq_df.columns if c.startswith("EE")]
         model_fit = {

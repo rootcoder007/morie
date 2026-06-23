@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Batch normalization: z-normalize per-channel across the mini-batch, then affine scale/shift."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_batch_normalization"]
@@ -36,7 +38,14 @@ def geron_batch_normalization(X, gamma, beta, eps):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Batch normalization: z-normalize per-channel across the mini-batch, then affine scale/shift"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Batch normalization: z-normalize per-channel across the mini-batch, then affine scale/shift",
+        }
+    )
 
 
 def cheatsheet():

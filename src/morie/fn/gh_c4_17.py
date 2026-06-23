@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution of median of DP sample: quantile functional of random CDF."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dp_median"]
@@ -30,7 +32,14 @@ def ghosal_dp_median(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Distribution of median of DP sample: quantile functional of random CDF"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Distribution of median of DP sample: quantile functional of random CDF",
+        }
+    )
 
 
 def cheatsheet():

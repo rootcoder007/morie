@@ -1,6 +1,7 @@
 """TMLE for interventional natural direct effect."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_nde_interventional"]
@@ -36,7 +37,9 @@ def tmle_nde_interventional(y, D, M, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for interventional natural direct effect"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TMLE for interventional natural direct effect"}
+    )
 
 
 def cheatsheet():

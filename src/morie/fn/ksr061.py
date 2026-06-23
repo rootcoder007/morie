@@ -1,6 +1,7 @@
 """Differentiability in quadratic mean of a one-dimensional submodel with score g."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch3_differentiable_quadratic_mean"]
@@ -36,7 +37,14 @@ def kosorok_ch3_differentiable_quadratic_mean(P_t, P, g, t):
     n = len(P_t)
     result = float(np.mean(P_t))
     se = float(np.std(P_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Differentiability in quadratic mean of a one-dimensional submodel with score g"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Differentiability in quadratic mean of a one-dimensional submodel with score g",
+        }
+    )
 
 
 def cheatsheet():

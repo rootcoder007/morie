@@ -1,6 +1,7 @@
 """Free-Wilson QSAR additive scheme."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["free_wilson_qsar"]

@@ -1,6 +1,7 @@
 """Tests for morie.fn.embd — embedding similarity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.embd import embedding_similarity
 
 

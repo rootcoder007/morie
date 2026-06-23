@@ -7,7 +7,7 @@ Memory-efficient variant of BFGS for large-scale optimization.
 
 import numpy as np
 
-__all__ = ['lbfgs']
+__all__ = ["lbfgs"]
 
 
 def lbfgs(f, grad_f, x0, m=10, tol=1e-6, max_iter=1000, full_output=False):
@@ -68,11 +68,7 @@ def lbfgs(f, grad_f, x0, m=10, tol=1e-6, max_iter=1000, full_output=False):
     for iteration in range(max_iter):
         if np.linalg.norm(g) < tol:
             if full_output:
-                return x, {
-                    'iterations': iteration,
-                    'converged': True,
-                    'final_value': f(x)
-                }
+                return x, {"iterations": iteration, "converged": True, "final_value": f(x)}
             return x
 
         # Line search (backtracking)
@@ -121,9 +117,5 @@ def lbfgs(f, grad_f, x0, m=10, tol=1e-6, max_iter=1000, full_output=False):
         g = g_new
 
     if full_output:
-        return x, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x)
-        }
+        return x, {"iterations": max_iter, "converged": False, "final_value": f(x)}
     return x

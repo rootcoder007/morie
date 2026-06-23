@@ -1,5 +1,5 @@
 """Tests for min_distance_classify."""
-import numpy as np
+
 from morie.fn.minnr import min_distance_classify, minnr
 
 

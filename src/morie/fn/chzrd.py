@@ -49,6 +49,7 @@ def chzrd(
     cause_event = (event == cause).astype(float)
 
     from .coxph import coxph
+
     result = coxph(time, cause_event, X, max_iter=max_iter, tol=tol)
 
     result["cause"] = cause

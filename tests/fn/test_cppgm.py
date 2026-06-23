@@ -1,5 +1,7 @@
 """Tests for morie.fn.cppgm."""
+
 import numpy as np
+
 from morie.fn.cppgm import cppgm
 
 
@@ -13,6 +15,7 @@ def test_cppgm_smoke():
 
 def test_cheatsheet():
     from morie.fn.cppgm import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

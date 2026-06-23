@@ -1,9 +1,9 @@
 """Tests for morie.fn.kreg -- Nadaraya-Watson kernel regression."""
 
 import numpy as np
-import pytest
-from morie.fn.kreg import kernel_regression, kreg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.kreg import kernel_regression, kreg
 
 
 class TestKreg:
@@ -12,7 +12,7 @@ class TestKreg:
 
     def test_quadratic(self):
         x = np.linspace(-3, 3, 50)
-        y = x ** 2
+        y = x**2
         x_pred = np.array([0.0, 1.0, 2.0])
         result = kernel_regression(x, y, x_pred, bandwidth=0.5)
         assert isinstance(result, DescriptiveResult)

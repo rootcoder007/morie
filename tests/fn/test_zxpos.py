@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxpos -- Possibilistic spatial clustering"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxpos import possibilistic_sp
 

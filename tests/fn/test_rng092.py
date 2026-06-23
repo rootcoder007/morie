@@ -1,6 +1,7 @@
 """Tests for rng092.rangayyan_ch3_hann_transfer_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng092 import rangayyan_ch3_hann_transfer_function
 
 
@@ -9,7 +10,7 @@ def test_rng092_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = rangayyan_ch3_hann_transfer_function(z)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng092_edge():

@@ -1,6 +1,7 @@
 """Tests for rgampd.rangayyan_amplitude_demod."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgampd import rangayyan_amplitude_demod
 
 
@@ -10,7 +11,7 @@ def test_rgampd_basic():
     fs = 100.0
     result = rangayyan_amplitude_demod(x, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgampd_edge():

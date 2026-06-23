@@ -1,6 +1,7 @@
 """Test vmjbs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmjbs import vmjbs
 
 

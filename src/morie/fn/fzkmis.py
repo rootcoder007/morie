@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MISE of standard KDFE."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_kdfe_mise"]

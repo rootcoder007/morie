@@ -3,7 +3,8 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.nuis import nuisance_estimate, nuis
+
+from morie.fn.nuis import nuis, nuisance_estimate
 
 
 class TestNuisance:

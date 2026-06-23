@@ -6,6 +6,7 @@ installed.  The substantive check trains the GAN on a known Gaussian
 and verifies it recovers the distribution's mean — data standardisation
 makes that deterministic enough for a non-flaky test.
 """
+
 import numpy as np
 import pytest
 
@@ -54,19 +55,18 @@ def test_gan_bad_input_shape_raises():
 
 # ── CTGANDebiaser ───────────────────────────────────────────────────
 
+
 def test_ctgan_debias_reduces_disparity():
     # biased data: disparate-impact ratio ~0.4
     df = simulate_biased_crime_data(n=4000, bias=0.6, base_rate=0.4, seed=3)
-    di0 = float(fairness_disparate_impact(
-        df["detected"], df["group"], privileged="A"))
+    di0 = float(fairness_disparate_impact(df["detected"], df["group"], privileged="A"))
     assert di0 < 0.6, f"fixture should be biased (DIR={di0:.3f})"
 
     deb = CTGANDebiaser(seed=0).fit(
-        df, outcome_col="detected", feature_cols=["risk_score"],
-        group_col="group", steps=800)
+        df, outcome_col="detected", feature_cols=["risk_score"], group_col="group", steps=800
+    )
     syn = deb.debias(4000, privileged="A", seed=1)
-    di1 = float(fairness_disparate_impact(
-        syn["detected"], syn["group"], privileged="A"))
+    di1 = float(fairness_disparate_impact(syn["detected"], syn["group"], privileged="A"))
     # rebalanced conditioning moves the DIR toward parity
     assert di1 > 0.85, f"debiasing did not reduce disparity (DIR={di1:.3f})"
 
@@ -74,8 +74,8 @@ def test_ctgan_debias_reduces_disparity():
 def test_ctgan_debias_columns_and_size():
     df = simulate_biased_crime_data(n=800, bias=0.4, seed=5)
     deb = CTGANDebiaser(seed=0).fit(
-        df, outcome_col="detected", feature_cols=["risk_score"],
-        group_col="group", steps=200)
+        df, outcome_col="detected", feature_cols=["risk_score"], group_col="group", steps=200
+    )
     syn = deb.debias(123, privileged="A", seed=2)
     assert len(syn) == 123
     assert set(syn.columns) == {"group", "detected", "risk_score"}
@@ -89,8 +89,8 @@ def test_ctgan_debias_before_fit_raises():
 def test_ctgan_unknown_privileged_raises():
     df = simulate_biased_crime_data(n=400, seed=6)
     deb = CTGANDebiaser(seed=0).fit(
-        df, outcome_col="detected", feature_cols=["risk_score"],
-        group_col="group", steps=100)
+        df, outcome_col="detected", feature_cols=["risk_score"], group_col="group", steps=100
+    )
     with pytest.raises(ValueError):
         deb.debias(10, privileged="Atlantis")
 
@@ -98,5 +98,4 @@ def test_ctgan_unknown_privileged_raises():
 def test_ctgan_no_feature_columns_raises():
     df = simulate_biased_crime_data(n=400, seed=7)
     with pytest.raises(ValueError):
-        CTGANDebiaser().fit(df, outcome_col="detected", feature_cols=[],
-                            group_col="group")
+        CTGANDebiaser().fit(df, outcome_col="detected", feature_cols=[], group_col="group")

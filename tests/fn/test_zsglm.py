@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsglm -- Spatial GLMM simulation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsglm import spatial_glmm_sim
 

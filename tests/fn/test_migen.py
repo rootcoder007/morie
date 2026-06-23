@@ -4,7 +4,6 @@ from morie.fn.migen import mi_by_gender
 
 
 class TestMiByGender:
-
     def test_returns_four_levels(self, mapq_df):
         result = mi_by_gender(mapq_df)
         assert len(result) == 4

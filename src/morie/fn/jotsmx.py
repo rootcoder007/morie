@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TSMixer: MLP-only architecture mixing across time and features alternately."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_tsmixer"]
@@ -34,7 +36,14 @@ def joseph_tsmixer(x, n_blocks, hidden_dim):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TSMixer: MLP-only architecture mixing across time and features alternately"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TSMixer: MLP-only architecture mixing across time and features alternately",
+        }
+    )
 
 
 def cheatsheet():

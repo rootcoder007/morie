@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Joint distribution of R1 and R2 (runs of type 1 and 2) under randomness."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_runs_joint_dist"]
@@ -36,7 +38,14 @@ def gibbons_runs_joint_dist(r1, r2, n1, n2):
     n = int(r1) if r1.ndim == 0 else len(r1)
     result = float(np.mean(r1))
     se = float(np.std(r1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Joint distribution of R1 and R2 (runs of type 1 and 2) under randomness"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Joint distribution of R1 and R2 (runs of type 1 and 2) under randomness",
+        }
+    )
 
 
 def cheatsheet():

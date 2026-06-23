@@ -1,7 +1,6 @@
 """Tests for morie.fn.svppm -- Party manifesto scaling (Wordscores)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svppm import party_manifesto
 

@@ -1,7 +1,9 @@
 """Test elliptic_filter (elflt)."""
+
 import numpy as np
-from morie.fn.elflt import elliptic_filter, elflt
+
 from morie.fn._containers import SignalResult
+from morie.fn.elflt import elflt, elliptic_filter
 
 
 class TestEllipticFilter:

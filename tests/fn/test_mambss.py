@@ -1,6 +1,7 @@
 """Tests for mambss.mamba_ssm_step."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mambss import mamba_ssm_step
 
 
@@ -14,7 +15,7 @@ def test_mambss_basic():
     D = np.random.default_rng(42).normal(0, 1, 100)
     result = mamba_ssm_step(y, x, A, B, C, D)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mambss_edge():

@@ -1,10 +1,13 @@
 """Test greedy decoding."""
+
 import numpy as np
+
 from morie.fn.greed import greed
 
 
 def test_greed_basic():
     """Test basic greedy decoding."""
+
     def step_fn(tokens):
         return np.random.randn(100)
 
@@ -20,6 +23,7 @@ def test_greed_basic():
 
 def test_greed_temperature():
     """Test temperature parameter."""
+
     def step_fn(tokens):
         return np.array([1.0] * 10)
 

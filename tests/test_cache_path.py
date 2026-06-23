@@ -5,6 +5,7 @@ Regression guard: the cache must resolve to a per-user, always-writable
 location and must never depend on the install directory or a phantom
 ``/Volumes/data`` path (the old `_project_root()` parents[5] bug).
 """
+
 from pathlib import Path
 
 from morie.data import _resolve_cache_path, _user_cache_dir, morie_db

@@ -1,6 +1,7 @@
 """Length transformation used to detect P, QRS, and T waves across multiple ECG channels.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_length_transformation"]
@@ -36,7 +37,14 @@ def rangayyan_ch4_length_transformation(x, N, w, t):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Length transformation used to detect P, QRS, and T waves across multiple ECG channels."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Length transformation used to detect P, QRS, and T waves across multiple ECG channels.",
+        }
+    )
 
 
 def cheatsheet():

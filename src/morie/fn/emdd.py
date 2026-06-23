@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import ESRes
+
+
 def earth_mover_dist(p, q, **kwargs) -> ESRes:
     """
     Compute the Earth Mover's Distance (Wasserstein-1) between two

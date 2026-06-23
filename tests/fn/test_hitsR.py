@@ -1,6 +1,7 @@
 """Tests for hitsR.hits_at_k."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hitsR import hits_at_k
 
 
@@ -11,7 +12,7 @@ def test_hitsR_basic():
     k = 5
     result = hits_at_k(pred_rank, relevant, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hitsR_edge():

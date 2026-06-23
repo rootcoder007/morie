@@ -1,12 +1,14 @@
 """Test idft_compute (idft)."""
+
 import numpy as np
-from morie.fn.idft import idft_compute, idft
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.idft import idft, idft_compute
 
 
 class TestIdft:
     def test_basic(self):
-        X = np.array([4.0+0j, 0.0+0j, 0.0+0j, 0.0+0j])
+        X = np.array([4.0 + 0j, 0.0 + 0j, 0.0 + 0j, 0.0 + 0j])
         result = idft_compute(X)
         assert isinstance(result, DescriptiveResult)
         assert result.name == "idft_compute"

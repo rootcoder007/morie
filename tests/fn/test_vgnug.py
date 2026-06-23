@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgnug -- Nugget effect estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgnug import nugget_est
 

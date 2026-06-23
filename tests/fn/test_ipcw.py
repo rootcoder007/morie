@@ -46,4 +46,5 @@ def test_censoring_bounded(surv_data):
 
 def test_cheatsheet():
     from morie.fn.ipcw import cheatsheet
+
     assert "censoring" in cheatsheet().lower()

@@ -1,6 +1,7 @@
 """Hopcroft-Karp bipartite max matching."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bipartite_matching"]

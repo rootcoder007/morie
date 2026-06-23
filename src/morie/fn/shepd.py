@@ -40,4 +40,4 @@ shepd = shepard_diagram
 
 
 def cheatsheet() -> str:
-    return 'shepard_diagram({}) -> Shepard diagram data.'
+    return "shepard_diagram({}) -> Shepard diagram data."

@@ -1,6 +1,7 @@
 """Test clssmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clssmp import clssmp
 
 

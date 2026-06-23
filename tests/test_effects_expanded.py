@@ -22,12 +22,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from morie.effects import estimate_ate_gcomputation, e_value
-
+from morie.effects import e_value, estimate_ate_gcomputation
 
 # ===========================================================================
 # Helpers
 # ===========================================================================
+
 
 def _make_linear_treatment_data(
     n: int = 300,
@@ -71,6 +71,7 @@ def _make_binary_outcome_data(
 # G-computation ATE tests
 # ===========================================================================
 
+
 class TestEstimateAteGcomputation:
     """
     Tests for estimate_ate_gcomputation.
@@ -88,7 +89,10 @@ class TestEstimateAteGcomputation:
         """Linear G-computation should return a complete result dict."""
         df = _make_linear_treatment_data(n=300)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
             outcome_model="linear",
         )
         assert isinstance(result, dict)
@@ -102,7 +106,10 @@ class TestEstimateAteGcomputation:
         """ATE must be a finite float."""
         df = _make_linear_treatment_data(n=300)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
         assert math.isfinite(result["ate"])
 
@@ -114,17 +121,21 @@ class TestEstimateAteGcomputation:
         """
         df = _make_linear_treatment_data(n=300, true_ate=2.0, seed=42)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
-        assert abs(result["ate"] - 2.0) < 0.3, (
-            f"ATE estimate {result['ate']:.3f} too far from true value 2.0"
-        )
+        assert abs(result["ate"] - 2.0) < 0.3, f"ATE estimate {result['ate']:.3f} too far from true value 2.0"
 
     def test_se_is_positive(self):
         """Standard error must be strictly positive."""
         df = _make_linear_treatment_data(n=200)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
         assert result["se"] > 0
 
@@ -132,7 +143,10 @@ class TestEstimateAteGcomputation:
         """CI must be a valid interval."""
         df = _make_linear_treatment_data(n=200)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
         assert result["ci_lower"] < result["ci_upper"]
 
@@ -140,7 +154,10 @@ class TestEstimateAteGcomputation:
         """n_obs should reflect complete-case count."""
         df = _make_linear_treatment_data(n=150)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
         assert result["n_obs"] == 150
 
@@ -151,7 +168,10 @@ class TestEstimateAteGcomputation:
         """
         df = _make_binary_outcome_data(n=400)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
             outcome_model="logistic",
         )
         assert math.isfinite(result["ate"])
@@ -166,7 +186,10 @@ class TestEstimateAteGcomputation:
         """outcome_model key should reflect the specified model."""
         df = _make_binary_outcome_data(n=200)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
             outcome_model="logistic",
         )
         assert result["outcome_model"] == "logistic"
@@ -175,7 +198,10 @@ class TestEstimateAteGcomputation:
         df = _make_linear_treatment_data(n=50)
         with pytest.raises(ValueError, match="outcome_model must be one of"):
             estimate_ate_gcomputation(
-                df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+                df,
+                treatment="T",
+                outcome="Y",
+                covariates=["X1", "X2"],
                 outcome_model="poisson",
             )
 
@@ -183,7 +209,10 @@ class TestEstimateAteGcomputation:
         df = _make_linear_treatment_data(n=50)
         with pytest.raises(ValueError, match="Columns missing"):
             estimate_ate_gcomputation(
-                df, treatment="T", outcome="Y", covariates=["nonexistent_col"],
+                df,
+                treatment="T",
+                outcome="Y",
+                covariates=["nonexistent_col"],
             )
 
     def test_too_few_observations_raises(self):
@@ -191,7 +220,10 @@ class TestEstimateAteGcomputation:
         df = _make_linear_treatment_data(n=5)
         with pytest.raises(ValueError, match="at least 10"):
             estimate_ate_gcomputation(
-                df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+                df,
+                treatment="T",
+                outcome="Y",
+                covariates=["X1", "X2"],
             )
 
     def test_reproducibility_with_fixed_seed_in_bootstrap(self):
@@ -201,10 +233,16 @@ class TestEstimateAteGcomputation:
         """
         df = _make_linear_treatment_data(n=100)
         r1 = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
         r2 = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
         assert r1["ate"] == r2["ate"]
         assert r1["se"] == r2["se"]
@@ -216,16 +254,18 @@ class TestEstimateAteGcomputation:
         """
         df = _make_linear_treatment_data(n=400, true_ate=5.0, seed=0)
         result = estimate_ate_gcomputation(
-            df, treatment="T", outcome="Y", covariates=["X1", "X2"],
+            df,
+            treatment="T",
+            outcome="Y",
+            covariates=["X1", "X2"],
         )
-        assert result["ate"] > 0, (
-            f"Expected positive ATE for positive treatment effect, got {result['ate']:.3f}"
-        )
+        assert result["ate"] > 0, f"Expected positive ATE for positive treatment effect, got {result['ate']:.3f}"
 
 
 # ===========================================================================
 # E-value tests
 # ===========================================================================
+
 
 class TestEValue:
     """
@@ -260,9 +300,7 @@ class TestEValue:
         e1 = e_value(ate=1.0, se=1.0)
         e2 = e_value(ate=2.0, se=1.0)
         e3 = e_value(ate=3.0, se=1.0)
-        assert e1 < e2 < e3, (
-            f"E-values not monotone: {e1:.3f}, {e2:.3f}, {e3:.3f}"
-        )
+        assert e1 < e2 < e3, f"E-values not monotone: {e1:.3f}, {e2:.3f}, {e3:.3f}"
 
     def test_symmetry(self):
         """E-value depends on |ATE - null|, so sign of deviation doesn't matter."""
@@ -314,6 +352,7 @@ class TestEValue:
 # Additional inference function smoke tests
 # ===========================================================================
 
+
 class TestHypothesisTestingSmoke:
     """
     Smoke tests for key hypothesis testing functions imported from inference.
@@ -323,6 +362,7 @@ class TestHypothesisTestingSmoke:
 
     def test_two_sample_t_test(self):
         from morie.inference import two_sample_t_test
+
         rng = np.random.default_rng(0)
         x1 = rng.normal(0, 1, 50)
         x2 = rng.normal(1, 1, 50)
@@ -334,6 +374,7 @@ class TestHypothesisTestingSmoke:
 
     def test_one_sample_t_test(self):
         from morie.inference import one_sample_t_test
+
         rng = np.random.default_rng(1)
         x = rng.normal(5, 1, 30)
         result = one_sample_t_test(x, mu0=5.0)
@@ -342,6 +383,7 @@ class TestHypothesisTestingSmoke:
 
     def test_chi_square_test_1d(self):
         from morie.inference import chi_square_test
+
         observed = [10, 20, 15, 25]
         result = chi_square_test(observed)
         assert "chi2" in result
@@ -349,6 +391,7 @@ class TestHypothesisTestingSmoke:
 
     def test_shapiro_wilk_test(self):
         from morie.inference import shapiro_wilk_test
+
         rng = np.random.default_rng(0)
         x = rng.normal(0, 1, 100)
         result = shapiro_wilk_test(x)
@@ -362,6 +405,7 @@ class TestHypothesisTestingSmoke:
         Cohen's d should equal 2.0 exactly.
         """
         from morie.inference import cohens_d
+
         x1 = np.array([3.0, 4.0, 5.0, 6.0, 7.0])
         x2 = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
         d = cohens_d(x1, x2)
@@ -372,6 +416,7 @@ class TestHypothesisTestingSmoke:
     def test_proportion_ci_wilson_contains_true_p(self):
         """Wilson CI should contain the true proportion for a large sample."""
         from morie.inference import proportion_ci
+
         # 500/1000 = 0.5 (true proportion)
         lo, hi = proportion_ci(500, 1000, method="wilson")
         assert lo < 0.5 < hi
@@ -379,12 +424,14 @@ class TestHypothesisTestingSmoke:
     def test_power_t_test_solve_for_n(self):
         """power_t_test with delta=0.5, power=0.80 should give n > 1."""
         from morie.inference import power_t_test
+
         n = power_t_test(delta=0.5, power=0.80)
         assert n > 1
 
     def test_power_t_test_solve_for_power(self):
         """power_t_test with n=50, delta=0.5 should give power in (0, 1)."""
         from morie.inference import power_t_test
+
         power = power_t_test(n=50, delta=0.5)
         assert 0 < power < 1
 
@@ -393,6 +440,7 @@ class TestHypothesisTestingSmoke:
         Two groups with large mean difference should yield a small p-value.
         """
         from morie.inference import anova_one_way
+
         rng = np.random.default_rng(0)
         g1 = rng.normal(0, 1, 30)
         g2 = rng.normal(5, 1, 30)
@@ -403,6 +451,7 @@ class TestHypothesisTestingSmoke:
     def test_odds_ratio_ci_2x2(self):
         """OR for a table with no association should be near 1."""
         from morie.inference import odds_ratio_ci
+
         tbl = [[10, 10], [10, 10]]
         result = odds_ratio_ci(tbl)
         assert abs(result["odds_ratio"] - 1.0) < 1e-10
@@ -410,6 +459,7 @@ class TestHypothesisTestingSmoke:
 
     def test_risk_ratio_ci_2x2(self):
         from morie.inference import risk_ratio_ci
+
         # Equal risks: RR should be 1
         tbl = [[50, 50], [50, 50]]
         result = risk_ratio_ci(tbl)
@@ -420,6 +470,7 @@ class TestHypothesisTestingSmoke:
         A table where row and column are independent should yield V near 0.
         """
         from morie.inference import cramers_v
+
         # Perfect independence: proportional rows
         tbl = [[50, 50], [50, 50]]
         v = cramers_v(tbl)
@@ -428,14 +479,16 @@ class TestHypothesisTestingSmoke:
     def test_spearman_rho_monotone(self):
         """Perfect monotone relationship should give rho = 1.0."""
         from morie.inference import spearman_rho
+
         x = np.arange(1, 21)
-        y = x ** 2  # monotone increasing
+        y = x**2  # monotone increasing
         result = spearman_rho(x, y)
         assert abs(result["rho"] - 1.0) < 1e-10
 
     def test_kendall_tau_perfect_concordance(self):
         """Perfectly concordant ranking should give tau = 1.0."""
         from morie.inference import kendall_tau
+
         x = [1, 2, 3, 4, 5]
         y = [2, 4, 6, 8, 10]
         result = kendall_tau(x, y)

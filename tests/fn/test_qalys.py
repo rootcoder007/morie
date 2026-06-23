@@ -1,6 +1,7 @@
 """Tests for morie.fn.qalys -- QALY computation."""
 
 import pytest
+
 from morie.fn.qalys import qaly_computation
 
 

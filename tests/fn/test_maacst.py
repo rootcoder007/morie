@@ -1,6 +1,7 @@
 """Test maacst."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maacst import maacst
 
 

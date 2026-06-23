@@ -8,6 +8,7 @@ semiparametric mixture chapter):
 
 estimated by Expectation-Maximisation with k-means warm start.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -33,8 +34,7 @@ def horowitz_mixture_model(y, k=2, maxiter=200, tol=1e-6, seed=0):
     y = np.asarray(y, dtype=float).ravel()
     n = y.size
     if n < max(10, 3 * k):
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                   "method": "mixture-EM (insufficient data)"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "mixture-EM (insufficient data)"})
     k = max(2, int(k))
     rng = np.random.default_rng(seed)
     # k-means style warm start via quantile init
@@ -45,8 +45,7 @@ def horowitz_mixture_model(y, k=2, maxiter=200, tol=1e-6, seed=0):
     ll_prev = -np.inf
     for it in range(maxiter):
         # E-step
-        comps = np.column_stack([pi[j] * _gauss_pdf(y, mu[j], sigma[j])
-                                 for j in range(k)])
+        comps = np.column_stack([pi[j] * _gauss_pdf(y, mu[j], sigma[j]) for j in range(k)])
         denom = comps.sum(axis=1, keepdims=True)
         denom = np.where(denom > 0, denom, 1e-12)
         gamma = comps / denom
@@ -61,13 +60,16 @@ def horowitz_mixture_model(y, k=2, maxiter=200, tol=1e-6, seed=0):
         if abs(ll - ll_prev) < tol:
             break
         ll_prev = ll
-    return RichResult(payload={
-        "estimate": {"pi": pi.astype(float), "mu": mu.astype(float),
-                     "sigma": sigma.astype(float)},
-        "log_likelihood": ll_prev,
-        "n": n, "k": k, "iters": it + 1,
-        "method": f"{k}-component Gaussian mixture EM",
-    })
+    return RichResult(
+        payload={
+            "estimate": {"pi": pi.astype(float), "mu": mu.astype(float), "sigma": sigma.astype(float)},
+            "log_likelihood": ll_prev,
+            "n": n,
+            "k": k,
+            "iters": it + 1,
+            "method": f"{k}-component Gaussian mixture EM",
+        }
+    )
 
 
 def cheatsheet():

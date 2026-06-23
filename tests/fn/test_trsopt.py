@@ -1,6 +1,7 @@
 """Tests for trsopt.trust_region_subproblem."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trsopt import trust_region_subproblem
 
 
@@ -11,7 +12,7 @@ def test_trsopt_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = trust_region_subproblem(g, H, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trsopt_edge():

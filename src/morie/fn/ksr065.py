@@ -1,6 +1,7 @@
 """General defining equation for the efficient influence function via score and information operators."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch3_efficient_influence_general"]
@@ -36,7 +37,14 @@ def kosorok_ch3_efficient_influence_general(A, psi_tilde, chi_tilde, eta):
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "General defining equation for the efficient influence function via score and information operators"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "General defining equation for the efficient influence function via score and information operators",
+        }
+    )
 
 
 def cheatsheet():

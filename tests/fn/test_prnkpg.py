@@ -1,6 +1,7 @@
 """Tests for prnkpg.pagerank."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prnkpg import pagerank
 
 
@@ -10,7 +11,7 @@ def test_prnkpg_basic():
     damping = np.random.default_rng(42).normal(0, 1, 100)
     result = pagerank(G, damping)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prnkpg_edge():

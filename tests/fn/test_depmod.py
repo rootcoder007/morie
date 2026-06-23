@@ -1,8 +1,9 @@
 """Tests for morie.fn.depmod -- resource depletion model."""
 
 import numpy as np
-from morie.fn.depmod import depletion_model, depmod
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.depmod import depletion_model, depmod
 
 
 class TestDepmod:

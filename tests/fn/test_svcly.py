@@ -1,7 +1,6 @@
 """Tests for morie.fn.svcly -- Yolk of spatial game"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svcly import coalition_yolk
 

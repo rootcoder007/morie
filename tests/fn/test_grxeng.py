@@ -1,6 +1,7 @@
 """Tests for grxeng.geron_softmax_cost_gradient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grxeng import geron_softmax_cost_gradient
 
 
@@ -11,7 +12,7 @@ def test_grxeng_basic():
     theta = 0.0
     result = geron_softmax_cost_gradient(X, Y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grxeng_edge():

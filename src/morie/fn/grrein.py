@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """REINFORCE policy gradient update (Monte Carlo)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_reinforce_policy_gradient"]
@@ -36,7 +38,9 @@ def geron_reinforce_policy_gradient(theta, log_probs, returns_G, alpha):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "REINFORCE policy gradient update (Monte Carlo)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "REINFORCE policy gradient update (Monte Carlo)"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for btiseq.boot_iter_calibrated."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btiseq import boot_iter_calibrated
 
 
@@ -13,7 +14,7 @@ def test_btiseq_basic():
     alpha = 0.05
     result = boot_iter_calibrated(x, stat, B, iters, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btiseq_edge():

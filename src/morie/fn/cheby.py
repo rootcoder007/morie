@@ -46,4 +46,4 @@ cheby = chebyshev_dist
 
 
 def cheatsheet() -> str:
-    return 'chebyshev_dist({}) -> Chebyshev (L-infinity) distance.'
+    return "chebyshev_dist({}) -> Chebyshev (L-infinity) distance."

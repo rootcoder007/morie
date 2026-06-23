@@ -60,11 +60,13 @@ def bwreg(
         eval_points = np.asarray(eval_points, dtype=float).ravel()
 
     if kernel == "gaussian":
+
         def K(u):
-            return np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+            return np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
     elif kernel == "epanechnikov":
+
         def K(u):
-            return np.where(np.abs(u) <= 1, 0.75 * (1 - u ** 2), 0.0)
+            return np.where(np.abs(u) <= 1, 0.75 * (1 - u**2), 0.0)
     else:
         raise ValueError(f"kernel must be 'gaussian' or 'epanechnikov', got '{kernel}'.")
 

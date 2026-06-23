@@ -1,7 +1,6 @@
 """Tests for morie.fn.ze2sf -- Two-step floating catchment area"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ze2sf import two_step_fca
 

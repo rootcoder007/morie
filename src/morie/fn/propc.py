@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prophet-style additive decomposition (Taylor & Letham 2018)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -64,17 +65,19 @@ def prophet_components(x, period=12):
     seasonal = F @ fcoef
     residual = detrended - seasonal
 
-    return RichResult(payload={
-        "trend": trend,
-        "seasonal": seasonal,
-        "residual": residual,
-        "slope": float(slope),
-        "intercept": float(intercept),
-        "fourier_terms": fcoef,
-        "period": int(period),
-        "n": int(n),
-        "method": "Prophet-style linear-trend + Fourier(K=5) seasonality",
-    })
+    return RichResult(
+        payload={
+            "trend": trend,
+            "seasonal": seasonal,
+            "residual": residual,
+            "slope": float(slope),
+            "intercept": float(intercept),
+            "fourier_terms": fcoef,
+            "period": int(period),
+            "n": int(n),
+            "method": "Prophet-style linear-trend + Fourier(K=5) seasonality",
+        }
+    )
 
 
 def cheatsheet():

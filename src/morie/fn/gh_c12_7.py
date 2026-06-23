@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_strict_sbvm"]
@@ -30,7 +32,14 @@ def ghosal_strict_sbvm(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,9 @@
 """Test babai_cvp."""
+
 import numpy as np
-import pytest
-from morie.fn.babai import babai_cvp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.babai import babai_cvp
 
 
 class TestBabaiCvp:

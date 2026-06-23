@@ -1,7 +1,9 @@
 """Test magnitude_spectrum (magsp)."""
+
 import numpy as np
-from morie.fn.magsp import magnitude_spectrum, magsp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.magsp import magnitude_spectrum, magsp
 
 
 class TestMagsp:

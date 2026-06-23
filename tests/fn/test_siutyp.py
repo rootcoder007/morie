@@ -1,8 +1,9 @@
 """Tests for morie.fn.siutyp — SIU by type."""
 
 import pytest
-from morie.fn.siutyp import siu_by_type
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siutyp import siu_by_type
 
 
 class TestSiuByType:

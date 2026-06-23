@@ -1,7 +1,6 @@
 """Tests for morie.fn.msrsq -- MDS R-squared goodness of fit"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msrsq import mds_rsq
 
@@ -14,5 +13,5 @@ class TestMdsRsq:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_rsq(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_rsq(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

@@ -48,7 +48,9 @@ def test_negative_pop_total_raises():
     """X_population_total <= 0 should raise ValueError."""
     with pytest.raises(ValueError, match="X_population_total"):
         ratio_estimator(
-            np.array([1.0]), np.array([1.0]), np.array([1.0]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([1.0]),
             X_population_total=-100.0,
         )
 
@@ -57,6 +59,8 @@ def test_length_mismatch_raises():
     """Different length inputs should raise ValueError."""
     with pytest.raises(ValueError, match="same length"):
         ratio_estimator(
-            np.array([1.0, 2.0]), np.array([1.0]),
-            np.array([1.0, 1.0]), X_population_total=100.0,
+            np.array([1.0, 2.0]),
+            np.array([1.0]),
+            np.array([1.0, 1.0]),
+            X_population_total=100.0,
         )

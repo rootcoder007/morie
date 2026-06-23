@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrimp -- SAR direct/indirect/total impacts"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrimp import sar_impacts
 

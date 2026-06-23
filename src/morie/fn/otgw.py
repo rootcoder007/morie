@@ -1,6 +1,7 @@
 """Gromov-Wasserstein distance between metric measure spaces."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_gromov_wasserstein"]
@@ -38,7 +39,14 @@ def ot_gromov_wasserstein(Cx, Cy, a, b, max_iter):
     n = len(Cx)
     result = float(np.mean(Cx))
     se = float(np.std(Cx, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gromov-Wasserstein distance between metric measure spaces"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gromov-Wasserstein distance between metric measure spaces",
+        }
+    )
 
 
 def cheatsheet():

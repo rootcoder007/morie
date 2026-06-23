@@ -8,6 +8,7 @@ kernel tests land alongside later phases.
 Requires the compiled extension -- runs under an installed or editable
 (scikit-build-core) install, not a bare PYTHONPATH=src checkout.
 """
+
 import array
 
 import pytest

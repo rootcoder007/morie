@@ -1,6 +1,7 @@
 """Test foreld."""
+
 import numpy as np
-import pytest
+
 from morie.fn.foreld import foreld
 
 

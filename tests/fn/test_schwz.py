@@ -1,6 +1,5 @@
 """Tests for morie.fn.schwz -- Schwarzschild metric."""
 
-import numpy as np
 import pytest
 
 from morie.fn.schwz import schwz
@@ -20,7 +19,7 @@ def test_metric_shape():
 
 def test_solar_schwarzschild_radius():
     r = schwz(r=1e7, M=1.989e30)
-    rs_expected = 2 * 6.67430e-11 * 1.989e30 / 299792458.0 ** 2
+    rs_expected = 2 * 6.67430e-11 * 1.989e30 / 299792458.0**2
     assert r["r_schwarzschild"] == pytest.approx(rs_expected, rel=1e-6)
 
 

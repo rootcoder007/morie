@@ -1,6 +1,7 @@
 """Tests for esllle.esl_lle."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esllle import esl_lle
 
 
@@ -10,7 +11,7 @@ def test_esllle_basic():
     k = 5
     result = esl_lle(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esllle_edge():

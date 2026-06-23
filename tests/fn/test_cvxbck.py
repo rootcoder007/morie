@@ -1,6 +1,7 @@
 """Tests for cvxbck.boyd_backtracking."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxbck import boyd_backtracking
 
 
@@ -14,7 +15,7 @@ def test_cvxbck_basic():
     beta = 0.8
     result = boyd_backtracking(f, grad, x, dx, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxbck_edge():

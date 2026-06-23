@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BLIP image-text matching + contrastive objectives."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_blip_itm_itc"]
@@ -36,7 +38,9 @@ def geron_blip_itm_itc(image_emb, text_emb, caption_logits, caption_targets):
     n = len(image_emb)
     result = float(np.mean(image_emb))
     se = float(np.std(image_emb, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BLIP image-text matching + contrastive objectives"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "BLIP image-text matching + contrastive objectives"}
+    )
 
 
 def cheatsheet():

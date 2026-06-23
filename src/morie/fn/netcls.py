@@ -1,6 +1,7 @@
 """Closeness centrality of a node."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["closeness_centrality"]

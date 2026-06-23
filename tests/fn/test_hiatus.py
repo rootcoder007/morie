@@ -1,6 +1,7 @@
 """Tests for hiatus.hiatus_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hiatus import hiatus_model
 
 
@@ -13,7 +14,7 @@ def test_hiatus_basic():
     cross_immunity = np.random.default_rng(42).normal(0, 1, 100)
     result = hiatus_model(S, I1, I2, R, cross_immunity)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hiatus_edge():

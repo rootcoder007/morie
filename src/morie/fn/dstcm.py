@@ -37,4 +37,4 @@ dstcm = distance_comparison
 
 
 def cheatsheet() -> str:
-    return 'distance_comparison({}) -> Distance comparison stats.'
+    return "distance_comparison({}) -> Distance comparison stats."

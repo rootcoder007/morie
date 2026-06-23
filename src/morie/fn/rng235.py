@@ -1,6 +1,7 @@
 """Complex logarithm converts the product Y(omega)=X(omega)H(omega) into a sum.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_complex_log_of_product"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_complex_log_of_product(X, H, omega):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Complex logarithm converts the product Y(omega)=X(omega)H(omega) into a sum."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Complex logarithm converts the product Y(omega)=X(omega)H(omega) into a sum.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,8 @@
 """Tests for pcg_filter."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.pcgflt import pcg_filter
 
 
@@ -18,9 +21,9 @@ class TestPcgFilter:
         out_band = np.sin(2 * np.pi * 10 * t)
         x = in_band + out_band
         r = pcg_filter(x, fs)
-        power_out = np.mean(r.filtered ** 2)
-        power_in = np.mean(in_band ** 2)
-        assert power_out < np.mean(x ** 2)
+        power_out = np.mean(r.filtered**2)
+        power_in = np.mean(in_band**2)
+        assert power_out < np.mean(x**2)
         assert power_out == pytest.approx(power_in, abs=0.1)
 
     def test_name(self):

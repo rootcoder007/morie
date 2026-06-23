@@ -1,6 +1,7 @@
 r"""Gender projection reg.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_gender_projection_reg"]

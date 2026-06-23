@@ -1,27 +1,30 @@
 """Tests for morie.fn.netcm — Community detection."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netcm import network_communities
 
 
 class TestNetworkCommunities:
-
     def test_returns_dict(self):
-        A = np.array([[0, 1, 0, 0], [1, 0, 0, 0],
-                       [0, 0, 0, 1], [0, 0, 1, 0]], dtype=float)
+        A = np.array([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]], dtype=float)
         result = network_communities(A, n_communities=2)
         assert "labels" in result
         assert "n_communities" in result
 
     def test_two_clear_communities(self):
         # Two disconnected cliques
-        A = np.array([[0, 1, 1, 0, 0, 0],
-                       [1, 0, 1, 0, 0, 0],
-                       [1, 1, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 1, 1],
-                       [0, 0, 0, 1, 0, 1],
-                       [0, 0, 0, 1, 1, 0]], dtype=float)
+        A = np.array(
+            [
+                [0, 1, 1, 0, 0, 0],
+                [1, 0, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 0, 1],
+                [0, 0, 0, 1, 1, 0],
+            ],
+            dtype=float,
+        )
         result = network_communities(A, n_communities=2)
         labels = list(result["labels"].values())
         # First 3 should be same community, last 3 same community
@@ -30,8 +33,7 @@ class TestNetworkCommunities:
         assert labels[0] != labels[3]
 
     def test_modularity_method(self):
-        A = np.array([[0, 1, 0, 0], [1, 0, 0, 0],
-                       [0, 0, 0, 1], [0, 0, 1, 0]], dtype=float)
+        A = np.array([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]], dtype=float)
         result = network_communities(A, method="modularity")
         assert result["method"] == "modularity"
 

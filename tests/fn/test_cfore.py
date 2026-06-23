@@ -1,6 +1,8 @@
 """Tests for morie.fn.cfore — Causal forest CATE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cfore import cfore
 
 
@@ -57,4 +59,5 @@ def test_heterogeneity_detected(data):
 
 def test_cheatsheet():
     from morie.fn.cfore import cheatsheet
+
     assert len(cheatsheet()) > 0

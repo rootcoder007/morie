@@ -1,8 +1,9 @@
 """Association expression (auto-extracted; see ref).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_318"]
 
@@ -48,7 +49,11 @@ def springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnum
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Association expression (auto-extracted; see ref).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Association expression (auto-extracted; see ref).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

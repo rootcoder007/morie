@@ -55,7 +55,7 @@ def rda(
         covs[c] = np.cov(Xc, rowvar=False, ddof=1)
         priors[c] = Xc.shape[0] / n
         Sw += (Xc.shape[0] - 1) * covs[c]
-    Sw /= (n - len(classes))
+    Sw /= n - len(classes)
 
     m = Xt.shape[0]
     log_posts = np.zeros((m, len(classes)))
@@ -69,11 +69,7 @@ def rda(
         cov_inv = np.linalg.inv(Sigma_c)
         _, logdet = np.linalg.slogdet(Sigma_c)
         diff = Xt - means[c]
-        log_posts[:, j] = (
-            -0.5 * np.sum(diff @ cov_inv * diff, axis=1)
-            - 0.5 * logdet
-            + np.log(priors[c])
-        )
+        log_posts[:, j] = -0.5 * np.sum(diff @ cov_inv * diff, axis=1) - 0.5 * logdet + np.log(priors[c])
 
     preds = classes[np.argmax(log_posts, axis=1)]
 

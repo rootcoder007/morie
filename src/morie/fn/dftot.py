@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Total degrees of freedom."""
 
+
 def dftot(n: int) -> int:
     """Total degrees of freedom: n − 1."""
     if n < 2:

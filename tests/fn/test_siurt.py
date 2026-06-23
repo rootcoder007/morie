@@ -1,8 +1,9 @@
 """Tests for morie.fn.siurt — SIU case rate."""
 
 import pytest
-from morie.fn.siurt import siu_case_rate
+
 from morie.fn._containers import CrimeResult
+from morie.fn.siurt import siu_case_rate
 
 
 class TestSiuCaseRate:

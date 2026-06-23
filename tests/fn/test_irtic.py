@@ -1,6 +1,7 @@
 """Tests for irtic — item characteristic curve."""
-import numpy as np
+
 from morie.fn.irtic import irtic
+
 
 def test_irtic_basic():
     params = {"item1": {"a": 1.0, "b": 0.0}}
@@ -11,6 +12,7 @@ def test_irtic_basic():
 
 def test_cheatsheet():
     from morie.fn.irtic import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

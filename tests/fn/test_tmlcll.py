@@ -1,6 +1,7 @@
 """Tests for tmlcll.tmle_cross_lagged."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlcll import tmle_cross_lagged
 
 
@@ -12,7 +13,7 @@ def test_tmlcll_basic():
     time = np.linspace(0, 10, 100)
     result = tmle_cross_lagged(y, D, X, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlcll_edge():

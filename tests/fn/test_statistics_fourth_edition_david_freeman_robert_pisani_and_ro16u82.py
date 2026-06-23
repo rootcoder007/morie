@@ -1,7 +1,10 @@
 """Tests for statistics_fourth_edition_david_freeman_robert_pisani_and_ro16u82.statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_16_unnumbered_82."""
+
 import numpy as np
-import pytest
-from morie.fn.statistics_fourth_edition_david_freeman_robert_pisani_and_ro16u82 import statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_16_unnumbered_82
+
+from morie.fn.statistics_fourth_edition_david_freeman_robert_pisani_and_ro16u82 import (
+    statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_16_unnumbered_82,
+)
 
 
 def test_statistics_fourth_edition_david_freeman_robert_pisani_and_ro16u82_basic():
@@ -9,7 +12,7 @@ def test_statistics_fourth_edition_david_freeman_robert_pisani_and_ro16u82_basic
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_16_unnumbered_82(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_statistics_fourth_edition_david_freeman_robert_pisani_and_ro16u82_edge():

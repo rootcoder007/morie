@@ -1,6 +1,10 @@
 """Tests for least_trimmed_sq."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.lts import least_trimmed_sq
+
 
 class TestLTS:
     def test_linear(self):

@@ -1,6 +1,7 @@
 """Tests for graut.geron_autograd_chain_rule."""
+
 import numpy as np
-import pytest
+
 from morie.fn.graut import geron_autograd_chain_rule
 
 
@@ -10,7 +11,7 @@ def test_graut_basic():
     grad_output = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_autograd_chain_rule(graph, grad_output)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_graut_edge():

@@ -1,6 +1,7 @@
 """Tests for prtnst.partition_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prtnst import partition_test
 
 
@@ -11,7 +12,7 @@ def test_prtnst_basic():
     alpha = 0.05
     result = partition_test(y, groups, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_prtnst_edge():

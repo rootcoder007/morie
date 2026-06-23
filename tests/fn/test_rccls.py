@@ -1,7 +1,7 @@
 """Tests for morie.fn.rccls."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rccls import rccls
 
 

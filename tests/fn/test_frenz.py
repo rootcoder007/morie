@@ -1,8 +1,9 @@
 """Tests for morie.fn.frenz -- Lyapunov exponent."""
 
 import numpy as np
-from morie.fn.frenz import lyapunov_exponent, frenz
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.frenz import frenz, lyapunov_exponent
 
 
 class TestFrenz:
@@ -13,7 +14,7 @@ class TestFrenz:
         x = np.zeros(2000)
         x[0] = 0.1
         for i in range(1, len(x)):
-            x[i] = 3.9 * x[i-1] * (1 - x[i-1])
+            x[i] = 3.9 * x[i - 1] * (1 - x[i - 1])
         r = lyapunov_exponent(x, embed_dim=3, lag=1)
         assert isinstance(r, DescriptiveResult)
         assert np.isfinite(r.value)

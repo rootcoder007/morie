@@ -1,8 +1,9 @@
 """Tests for morie.fn.bndmt -- Banded matrix solver."""
 
 import numpy as np
-from morie.fn.bndmt import banded_solve, bndmt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bndmt import banded_solve, bndmt
 
 
 class TestBndmt:

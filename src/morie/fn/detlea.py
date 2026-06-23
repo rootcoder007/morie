@@ -103,4 +103,4 @@ detlea = detect_leakage
 
 
 def cheatsheet() -> str:
-    return 'detlea() -> Detect potential data leakage by identifying features with'
+    return "detlea() -> Detect potential data leakage by identifying features with"

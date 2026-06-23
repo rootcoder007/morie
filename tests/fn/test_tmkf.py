@@ -1,6 +1,8 @@
 """Tests for tmkf."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmkf import tmkf
 
 
@@ -28,4 +30,5 @@ def test_tmkf_no_data():
 
 def test_tmkf_alias():
     from morie.fn.tmkf import tmkf
+
     assert tmkf is tmkf

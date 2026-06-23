@@ -1,6 +1,7 @@
 """Test cosim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cosim import cosim
 
 

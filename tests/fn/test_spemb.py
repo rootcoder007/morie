@@ -1,5 +1,7 @@
 """Tests for morie.fn.spemb."""
+
 import numpy as np
+
 from morie.fn.spemb import spemb
 
 
@@ -13,6 +15,7 @@ def test_spemb_smoke():
 
 def test_cheatsheet():
     from morie.fn.spemb import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

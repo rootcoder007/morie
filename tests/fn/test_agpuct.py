@@ -1,6 +1,7 @@
 """Tests for agpuct.alphazero_puct."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agpuct import alphazero_puct
 
 
@@ -12,7 +13,7 @@ def test_agpuct_basic():
     c_puct = np.random.default_rng(42).normal(0, 1, 100)
     result = alphazero_puct(P, N, Q, c_puct)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_agpuct_edge():

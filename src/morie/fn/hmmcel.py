@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Memory cell abstraction: internal state carries information through time."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_memory_cell"]
@@ -34,7 +36,14 @@ def geron_memory_cell(c_prev, x_t, f):
     n = len(c_prev)
     result = float(np.mean(c_prev))
     se = float(np.std(c_prev, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Memory cell abstraction: internal state carries information through time"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Memory cell abstraction: internal state carries information through time",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtcvg."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtcvg import dtcvg
 
 

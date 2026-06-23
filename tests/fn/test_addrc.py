@@ -1,5 +1,7 @@
 """Tests for addrc (full adder)."""
+
 import numpy as np
+
 from morie.fn.addrc import full_adder
 
 

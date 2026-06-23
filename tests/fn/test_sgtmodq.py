@@ -1,6 +1,7 @@
 """Tests for sgtmodq.sgt_modularity_q."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtmodq import sgt_modularity_q
 
 
@@ -10,7 +11,7 @@ def test_sgtmodq_basic():
     labels = np.random.default_rng(43).integers(0, 2, 100)
     result = sgt_modularity_q(A, labels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtmodq_edge():

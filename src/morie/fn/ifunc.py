@@ -86,19 +86,11 @@ def ifunc(
 
     if functional == "ate":
         psi = float(np.mean(mu1 - mu0))
-        ic = (
-            T * (Y - mu1) / ps
-            - (1 - T) * (Y - mu0) / (1 - ps)
-            + mu1 - mu0 - psi
-        )
+        ic = T * (Y - mu1) / ps - (1 - T) * (Y - mu0) / (1 - ps) + mu1 - mu0 - psi
     elif functional == "att":
         p1 = float(np.mean(T))
         psi = float(np.mean(T * (Y - mu0)) / p1)
-        ic = (
-            T * (Y - mu0) / p1
-            - (1 - T) * ps * (Y - mu0) / ((1 - ps) * p1)
-            - psi
-        )
+        ic = T * (Y - mu0) / p1 - (1 - T) * ps * (Y - mu0) / ((1 - ps) * p1) - psi
     elif functional == "mean":
         psi = float(np.mean(Y))
         ic = Y - psi
@@ -122,6 +114,7 @@ def ifunc(
 
 def _logistic_predict(X, y):
     from scipy import special
+
     beta = np.zeros(X.shape[1])
     for _ in range(25):
         p = special.expit(X @ beta)

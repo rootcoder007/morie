@@ -1,7 +1,9 @@
 """Test colored_noise_gen (clrns)."""
+
 import numpy as np
-from morie.fn.clrns import colored_noise_gen, clrns
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.clrns import clrns, colored_noise_gen
 
 
 class TestColoredNoise:

@@ -1,7 +1,7 @@
 """Tests for morie.fn.pskde."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pskde import pskde
 
 

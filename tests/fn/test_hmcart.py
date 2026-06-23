@@ -1,6 +1,7 @@
 """Tests for hmcart.geron_cart_algorithm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmcart import geron_cart_algorithm
 
 
@@ -12,7 +13,7 @@ def test_hmcart_basic():
     max_depth = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_cart_algorithm(X, y, criterion, max_depth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmcart_edge():

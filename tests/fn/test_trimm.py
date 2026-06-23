@@ -1,6 +1,10 @@
 """Tests for trimmed_mean."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.trimm import trimmed_mean
+
 
 class TestTrimm:
     def test_symmetric(self):

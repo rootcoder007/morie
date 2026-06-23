@@ -22,33 +22,25 @@ def synth_iv_data():
 
 
 def test_returns_dict_with_late(synth_iv_data):
-    result = estimate_late(
-        synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument"
-    )
+    result = estimate_late(synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument")
     assert isinstance(result, dict)
     assert "late" in result
     assert "se" in result
 
 
 def test_late_is_finite(synth_iv_data):
-    result = estimate_late(
-        synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument"
-    )
+    result = estimate_late(synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument")
     assert np.isfinite(result["late"])
 
 
 def test_has_expected_keys(synth_iv_data):
-    result = estimate_late(
-        synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument"
-    )
+    result = estimate_late(synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument")
     for key in ("late", "se", "ci", "f_stat", "n", "method"):
         assert key in result
 
 
 def test_n_matches(synth_iv_data):
-    result = estimate_late(
-        synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument"
-    )
+    result = estimate_late(synth_iv_data, treatment="treatment", outcome="outcome", instrument="instrument")
     assert result["n"] == len(synth_iv_data)
 
 

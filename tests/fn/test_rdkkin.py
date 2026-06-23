@@ -1,6 +1,7 @@
 """Tests for rdkkin.kink_rdd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rdkkin import kink_rdd
 
 
@@ -12,7 +13,7 @@ def test_rdkkin_basic():
     bandwidth = 0.3
     result = kink_rdd(y, x, cutoff, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdkkin_edge():

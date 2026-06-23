@@ -1,6 +1,7 @@
 """Tests for mxenv.multi_env_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mxenv import multi_env_model
 
 
@@ -12,7 +13,7 @@ def test_mxenv_basic():
     G = np.eye(10)
     result = multi_env_model(y, markers, env, G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mxenv_edge():

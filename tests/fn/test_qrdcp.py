@@ -1,8 +1,9 @@
 """Tests for morie.fn.qrdcp -- QR decomposition."""
 
 import numpy as np
-from morie.fn.qrdcp import qr_decomposition, qrdcp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.qrdcp import qr_decomposition, qrdcp
 
 
 class TestQrdcp:

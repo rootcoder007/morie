@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EEG rhythm band classification (delta/theta/alpha/beta/gamma)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_eeg_rhythms"]
@@ -32,7 +34,14 @@ def rangayyan_eeg_rhythms(eeg, fs):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "EEG rhythm band classification (delta/theta/alpha/beta/gamma)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "EEG rhythm band classification (delta/theta/alpha/beta/gamma)",
+        }
+    )
 
 
 def cheatsheet():

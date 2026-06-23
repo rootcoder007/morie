@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SwiGLU gated activation (Shazeer 2020)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -46,10 +47,8 @@ def swiglu_activation(x, W=None, V=None, b=None, c=None):
     out = gate * up
     return RichResult(
         title="SwiGLU Activation (Shazeer 2020)",
-        summary_lines=[("shape", out.shape),
-                       ("mean", float(np.mean(out)))],
-        payload={"tensor": out, "gate": gate, "up": up,
-                 "method": "SwiGLU"},
+        summary_lines=[("shape", out.shape), ("mean", float(np.mean(out)))],
+        payload={"tensor": out, "gate": gate, "up": up, "method": "SwiGLU"},
     )
 
 

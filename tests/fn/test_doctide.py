@@ -1,6 +1,7 @@
 """Tests for doctide.de_chaisemartin_dhaultfoeuille."""
+
 import numpy as np
-import pytest
+
 from morie.fn.doctide import de_chaisemartin_dhaultfoeuille
 
 
@@ -12,7 +13,7 @@ def test_doctide_basic():
     time = np.linspace(0, 10, 100)
     result = de_chaisemartin_dhaultfoeuille(y, D, unit, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_doctide_edge():

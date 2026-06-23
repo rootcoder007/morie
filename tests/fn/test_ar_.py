@@ -1,6 +1,7 @@
 """Tests for morie.fn.ar_ -- Attack rate (cumulative incidence)."""
 
 import pytest
+
 from morie.fn.ar_ import attack_rate
 
 

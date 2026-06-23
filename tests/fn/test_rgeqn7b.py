@@ -1,6 +1,7 @@
 """Tests for rgeqn7b.rangayyan_ch7_arma_error."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgeqn7b import rangayyan_ch7_arma_error
 
 
@@ -11,7 +12,7 @@ def test_rgeqn7b_basic():
     a_coeffs = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch7_arma_error(x, b_coeffs, a_coeffs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgeqn7b_edge():

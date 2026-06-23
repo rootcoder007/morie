@@ -1,6 +1,7 @@
 """Parameter-stability plot for GPD threshold choice."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_param_stability"]
@@ -32,7 +33,9 @@ def evt_param_stability(x, u_grid):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Parameter-stability plot for GPD threshold choice"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Parameter-stability plot for GPD threshold choice"}
+    )
 
 
 def cheatsheet():

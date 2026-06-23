@@ -1,6 +1,7 @@
 """Test rstcw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rstcw import rstcw
 
 

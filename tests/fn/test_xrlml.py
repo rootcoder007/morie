@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrlml -- LM test for spatial lag"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrlml import lm_lag
 

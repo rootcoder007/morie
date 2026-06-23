@@ -1,7 +1,6 @@
 """Tests for morie.fn.zerka -- Adaptive bandwidth relative risk"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zerka import risk_adaptive_bw
 

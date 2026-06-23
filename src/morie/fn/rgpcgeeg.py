@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PCG-EEG coupling analysis for auditory evoked response."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pcg_eeg_coupling"]
@@ -34,7 +36,14 @@ def rangayyan_pcg_eeg_coupling(pcg, eeg, fs):
     n = int(pcg) if pcg.ndim == 0 else len(pcg)
     result = float(np.mean(pcg))
     se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PCG-EEG coupling analysis for auditory evoked response"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PCG-EEG coupling analysis for auditory evoked response",
+        }
+    )
 
 
 def cheatsheet():

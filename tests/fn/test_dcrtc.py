@@ -1,14 +1,14 @@
 """Test dicrotic_notch_detect (dcrtc)."""
-import numpy as np
-import pytest
 
-from morie.fn.dcrtc import dicrotic_notch_detect, dcrtc
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.dcrtc import dcrtc, dicrotic_notch_detect
 
 
 class TestDicroticNotchDetect:
     def test_basic(self):
-        t = np.arange(0, 2, 1/125)
+        t = np.arange(0, 2, 1 / 125)
         pulse = np.sin(2 * np.pi * 1.0 * t) + 0.3 * np.sin(2 * np.pi * 3.0 * t)
         result = dicrotic_notch_detect(pulse, fs=125.0)
         assert isinstance(result, DescriptiveResult)

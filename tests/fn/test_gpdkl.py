@@ -1,6 +1,7 @@
 """Tests for gpdkl.deep_kernel_gp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpdkl import deep_kernel_gp
 
 
@@ -12,7 +13,7 @@ def test_gpdkl_basic():
     nn = np.random.default_rng(42).normal(0, 1, 100)
     result = deep_kernel_gp(X, y, X_test, nn)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpdkl_edge():

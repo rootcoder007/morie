@@ -1,6 +1,7 @@
 """Test gesvc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gesvc import gesvc
 
 

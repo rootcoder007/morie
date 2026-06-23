@@ -1,13 +1,13 @@
 """Tests for morie.fn.cstfr — custody facility rate."""
 
-import pytest
 import numpy as np
-from morie.fn.cstfr import custody_facility_rate
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cstfr import custody_facility_rate
 
 
 class TestCustodyFacilityRate:
-
     def test_returns_descriptive(self):
         counts = np.array([5, 10, 15])
         pops = np.array([100, 200, 300])

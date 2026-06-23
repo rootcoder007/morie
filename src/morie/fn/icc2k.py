@@ -1,6 +1,7 @@
 """ICC(2,k) two-way random average rater."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["icc_two_way_random_avg"]
@@ -38,7 +39,16 @@ def icc_two_way_random_avg(y, subject, rater):
     se = 1.2533 * np.std(y, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "ICC(2,k) two-way random average rater"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "ICC(2,k) two-way random average rater",
+        }
+    )
 
 
 def cheatsheet():

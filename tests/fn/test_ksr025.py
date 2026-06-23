@@ -1,6 +1,7 @@
 """Tests for ksr025.kosorok_ch1_penalized_loglikelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr025 import kosorok_ch1_penalized_loglikelihood
 
 
@@ -13,7 +14,7 @@ def test_ksr025_basic():
     n = 100
     result = kosorok_ch1_penalized_loglikelihood(beta, eta, X, lambda_n, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr025_edge():

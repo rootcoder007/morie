@@ -1,6 +1,5 @@
 """Tests for morie.fn.gibbs -- Gibbs sampler for bivariate normal."""
 
-import numpy as np
 from morie.fn.gibbs import gibbs_bivariate_normal
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stiennon et al. summarization-from-human-feedback pipeline loss."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_summarize_from_feedback"]
@@ -38,7 +40,14 @@ def kamath_summarize_from_feedback(preferences, rewards, pi_logprobs, ref_logpro
     n = len(preferences)
     result = float(np.mean(preferences))
     se = float(np.std(preferences, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stiennon et al. summarization-from-human-feedback pipeline loss"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stiennon et al. summarization-from-human-feedback pipeline loss",
+        }
+    )
 
 
 def cheatsheet():

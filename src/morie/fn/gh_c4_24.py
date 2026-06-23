@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rubin's Bayesian bootstrap: posterior of DP at alpha->0 is Dirichlet(1,...,1) on observed."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_bayes_boot"]
@@ -30,7 +32,14 @@ def ghosal_bayes_boot(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rubin's Bayesian bootstrap: posterior of DP at alpha->0 is Dirichlet(1,...,1) on observed"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Rubin's Bayesian bootstrap: posterior of DP at alpha->0 is Dirichlet(1,...,1) on observed",
+        }
+    )
 
 
 def cheatsheet():

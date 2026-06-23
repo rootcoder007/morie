@@ -1,5 +1,5 @@
 """Tests for morsw.py - Generalized Morse wavelet."""
-import numpy as np
+
 from morie.fn.morsw import morse_wavelet, morsw
 
 

@@ -1,6 +1,5 @@
 """Tests for rng090.rangayyan_ch3_hann_impulse_response."""
-import numpy as np
-import pytest
+
 from morie.fn.rng090 import rangayyan_ch3_hann_impulse_response
 
 
@@ -9,7 +8,7 @@ def test_rng090_basic():
     n = 100
     result = rangayyan_ch3_hann_impulse_response(n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng090_edge():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.vtseq."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vtseq import vtseq
 
 

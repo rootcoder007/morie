@@ -1,5 +1,7 @@
 """Tests for morie.fn.irthx -- heteroskedastic IRT."""
+
 import numpy as np
+
 from morie.fn.irthx import irt_heteroskedastic, irthx
 
 

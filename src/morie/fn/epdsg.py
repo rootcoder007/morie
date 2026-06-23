@@ -56,6 +56,7 @@ def epidemic_curve_fit(
     inc_pos = inc[t > 0]
 
     if distribution == "lognormal":
+
         def _model(params):
             amp, mu, sigma = params
             if sigma <= 0 or amp <= 0:
@@ -65,14 +66,13 @@ def epidemic_curve_fit(
 
         mu0 = np.log(float(t[np.argmax(inc)]) + 1)
         x0 = [total, mu0, 0.5]
-        res = minimize(_model, x0, method="Nelder-Mead",
-                       options={"maxiter": 5000, "xatol": 1e-8})
+        res = minimize(_model, x0, method="Nelder-Mead", options={"maxiter": 5000, "xatol": 1e-8})
         amp, mu, sigma = res.x
         fitted = amp * _st.lognorm.pdf(t, s=abs(sigma), scale=np.exp(mu))
-        params = {"amplitude": float(amp), "mu": float(mu),
-                  "sigma": float(abs(sigma))}
+        params = {"amplitude": float(amp), "mu": float(mu), "sigma": float(abs(sigma))}
 
     elif distribution == "gamma":
+
         def _model(params):
             amp, a, scale = params
             if a <= 0 or scale <= 0 or amp <= 0:
@@ -82,12 +82,10 @@ def epidemic_curve_fit(
 
         pk = float(t[np.argmax(inc)]) + 1
         x0 = [total, 2.0, pk / 2]
-        res = minimize(_model, x0, method="Nelder-Mead",
-                       options={"maxiter": 5000, "xatol": 1e-8})
+        res = minimize(_model, x0, method="Nelder-Mead", options={"maxiter": 5000, "xatol": 1e-8})
         amp, a, scale = res.x
         fitted = abs(amp) * _st.gamma.pdf(t, a=abs(a), scale=abs(scale))
-        params = {"amplitude": float(abs(amp)), "shape": float(abs(a)),
-                  "scale": float(abs(scale))}
+        params = {"amplitude": float(abs(amp)), "shape": float(abs(a)), "scale": float(abs(scale))}
     else:
         raise ValueError("distribution must be 'lognormal' or 'gamma'.")
 

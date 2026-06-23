@@ -1,12 +1,11 @@
 """Tests for morie.fn.bomg — Bayesian McDonald's omega."""
 
 import numpy as np
-import pytest
+
 from morie.fn.bomg import bayesian_omega
 
 
 class TestBayesianOmega:
-
     def test_returns_dict(self, mapq_df):
         items = [c for c in mapq_df.columns if c.startswith("EE")]
         result = bayesian_omega(mapq_df[items], n_iter=200)

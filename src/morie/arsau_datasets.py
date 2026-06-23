@@ -90,13 +90,12 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Optional
+from typing import Any
 
 import pandas as pd
 
 from morie._datapaths import resolve_data_dir
 from morie.dataset_dictionary import (
-    ColumnSpec,
     DatasetSchema,
     parse_ckan_sidecar,
 )
@@ -120,7 +119,7 @@ class ArsauDataset:
     csv_filename: str
     """Filename of the CSV under ``<arsau_root>/<year_or_range>/``."""
 
-    sidecar_filename: Optional[str]
+    sidecar_filename: str | None
     """Filename of the matching CKAN sidecar JSON, or ``None`` if the
     ministry did not publish one (e.g. the 2023 weapon-records file)."""
 
@@ -141,7 +140,7 @@ class ArsauDataset:
     def csv_path(self, root: Path) -> Path:
         return root / self.year_or_range / self.csv_filename
 
-    def sidecar_path(self, root: Path) -> Optional[Path]:
+    def sidecar_path(self, root: Path) -> Path | None:
         if self.sidecar_filename is None:
             return None
         return root / self.year_or_range / self.sidecar_filename
@@ -227,8 +226,7 @@ ARSAU_REGISTRY: dict[tuple[str, str], ArsauDataset] = {
             "incident-type attributes."
         ),
         description_fr=(
-            "2023 Ontario, enregistrements principaux du recours à la "
-            "force policière: une ligne par incident."
+            "2023 Ontario, enregistrements principaux du recours à la force policière: une ligne par incident."
         ),
     ),
     ("2023", "probe_cycle_records"): ArsauDataset(
@@ -244,10 +242,7 @@ ARSAU_REGISTRY: dict[tuple[str, str], ArsauDataset] = {
             "per Conducted Energy Weapon probe-cycle (a high-resolution "
             "telemetry slice of CEW deployments)."
         ),
-        description_fr=(
-            "Enregistrements 2023 du cycle de sonde de l'arme à énergie "
-            "dirigée, une ligne par cycle."
-        ),
+        description_fr=("Enregistrements 2023 du cycle de sonde de l'arme à énergie dirigée, une ligne par cycle."),
     ),
     ("2023", "weapon_records"): ArsauDataset(
         year_or_range="2023",
@@ -317,13 +312,8 @@ ARSAU_REGISTRY: dict[tuple[str, str], ArsauDataset] = {
         expected_rows=972,
         expected_cols=3,
         is_valid=True,
-        description_en=(
-            "2024 Ontario CEW probe-cycle records, one row per cycle."
-        ),
-        description_fr=(
-            "Enregistrements 2024 du cycle de sonde CEW, une ligne par "
-            "cycle."
-        ),
+        description_en=("2024 Ontario CEW probe-cycle records, one row per cycle."),
+        description_fr=("Enregistrements 2024 du cycle de sonde CEW, une ligne par cycle."),
     ),
     ("2024", "weapon_records"): ArsauDataset(
         year_or_range="2024",
@@ -456,8 +446,8 @@ def _load_one_entry(
 
     df = pd.read_csv(csv_path, low_memory=False)
 
-    sidecar_dict: Optional[dict] = None
-    schema: Optional[DatasetSchema] = None
+    sidecar_dict: dict | None = None
+    schema: DatasetSchema | None = None
     sc_path = entry.sidecar_path(root)
     if sc_path is not None and sc_path.exists():
         sidecar_dict = read_sidecar(sc_path)
@@ -467,10 +457,7 @@ def _load_one_entry(
 
     warnings: list[str] = []
     if not entry.is_valid:
-        warnings.append(
-            "Ministry-flagged invalid data — do not use for comparative "
-            "or quantitative analysis."
-        )
+        warnings.append("Ministry-flagged invalid data — do not use for comparative or quantitative analysis.")
 
     # Sanity check on shape vs registry expectations.
     if df.shape[0] != entry.expected_rows:
@@ -480,10 +467,7 @@ def _load_one_entry(
             f"refreshed upstream since this registry was built."
         )
     if df.shape[1] != entry.expected_cols:
-        warnings.append(
-            f"CSV has {df.shape[1]} columns; registry expected "
-            f"{entry.expected_cols}."
-        )
+        warnings.append(f"CSV has {df.shape[1]} columns; registry expected {entry.expected_cols}.")
 
     if language.lower().startswith("fr"):
         interp = (
@@ -504,10 +488,7 @@ def _load_one_entry(
 
     return RichResult(
         title=f"ARSAU {entry.year_or_range} {entry.kind}",
-        call=(
-            f"arsau_load_{entry.kind}(year={entry.year_or_range!r}, "
-            f"language={language!r})"
-        ),
+        call=(f"arsau_load_{entry.kind}(year={entry.year_or_range!r}, language={language!r})"),
         summary_lines=[
             ("Year/range", entry.year_or_range),
             ("Kind", entry.kind),
@@ -547,9 +528,7 @@ def _coerce_year_key(year: str | int, *, range_ok: bool = False) -> str:
         normalised = s.replace("to", "-").replace("_", "-")
         if normalised in ARSAU_YEARS:
             return normalised
-    raise ValueError(
-        f"Unknown ARSAU year {year!r}. Valid keys: {ARSAU_YEARS}."
-    )
+    raise ValueError(f"Unknown ARSAU year {year!r}. Valid keys: {ARSAU_YEARS}.")
 
 
 def arsau_load_main_records(
@@ -801,22 +780,22 @@ def arsau_available_datasets(
         key = _coerce_year_key(year, range_ok=True)
         entries = [e for k, e in ARSAU_REGISTRY.items() if k[0] == key]
         if not entries:
-            raise ValueError(
-                f"No ARSAU datasets registered for year {year!r}."
-            )
+            raise ValueError(f"No ARSAU datasets registered for year {year!r}.")
 
     rows: list[list[Any]] = []
     for e in entries:
         desc = e.description_fr if language.lower().startswith("fr") else e.description_en
-        rows.append([
-            e.year_or_range,
-            e.kind,
-            e.csv_filename,
-            "yes" if e.is_valid else "INVALID",
-            e.expected_rows,
-            e.expected_cols,
-            desc[:80] + ("…" if len(desc) > 80 else ""),
-        ])
+        rows.append(
+            [
+                e.year_or_range,
+                e.kind,
+                e.csv_filename,
+                "yes" if e.is_valid else "INVALID",
+                e.expected_rows,
+                e.expected_cols,
+                desc[:80] + ("…" if len(desc) > 80 else ""),
+            ]
+        )
 
     if language.lower().startswith("fr"):
         interp = (
@@ -838,11 +817,13 @@ def arsau_available_datasets(
             ("Entries", len(entries)),
             ("Year filter", str(year) if year else "(none)"),
         ],
-        tables=[{
-            "title": "Registered datasets",
-            "headers": ["year", "kind", "csv", "valid", "rows", "cols", "description"],
-            "rows": rows,
-        }],
+        tables=[
+            {
+                "title": "Registered datasets",
+                "headers": ["year", "kind", "csv", "valid", "rows", "cols", "description"],
+                "rows": rows,
+            }
+        ],
         interpretation=interp,
         payload={
             "n": len(entries),
@@ -890,8 +871,7 @@ def arsau_describe(
     key = _coerce_year_key(year, range_ok=True)
     if (key, kind) not in ARSAU_REGISTRY:
         raise ValueError(
-            f"ARSAU has no {kind!r} entry for {key!r}. Use "
-            f"arsau_available_datasets() to list valid combinations."
+            f"ARSAU has no {kind!r} entry for {key!r}. Use arsau_available_datasets() to list valid combinations."
         )
     entry = ARSAU_REGISTRY[(key, kind)]
 
@@ -902,9 +882,9 @@ def arsau_describe(
     except FileNotFoundError:
         root = None
 
-    sidecar_dict: Optional[dict] = None
-    schema: Optional[DatasetSchema] = None
-    preview_df: Optional[pd.DataFrame] = None
+    sidecar_dict: dict | None = None
+    schema: DatasetSchema | None = None
+    preview_df: pd.DataFrame | None = None
     csv_present = False
 
     if root is not None:
@@ -913,7 +893,7 @@ def arsau_describe(
             csv_present = True
             try:
                 preview_df = pd.read_csv(csv_path, nrows=n_preview_rows, low_memory=False)
-            except Exception as exc:  # noqa: BLE001
+            except Exception:  # noqa: BLE001
                 preview_df = None
         sc_path = entry.sidecar_path(root)
         if sc_path is not None and sc_path.exists():
@@ -927,36 +907,35 @@ def arsau_describe(
         col_rows: list[list[Any]] = []
         for col in schema.columns[:30]:
             col_rows.append([col.name, col.dtype, col.raw_type or "", (col.source_notes or "")[:60]])
-        sections.append({
-            "title": f"CKAN sidecar schema (first 30 of {len(schema.columns)})",
-            "headers": ["column", "dtype", "ckan_type", "notes"],
-            "table": col_rows,
-        })
+        sections.append(
+            {
+                "title": f"CKAN sidecar schema (first 30 of {len(schema.columns)})",
+                "headers": ["column", "dtype", "ckan_type", "notes"],
+                "table": col_rows,
+            }
+        )
     if preview_df is not None:
         # Trim to 8 columns wide for readability in the rendered output.
         preview_cols = list(preview_df.columns[:8])
         preview_rows = [
-            [str(preview_df.iloc[i][c]) if c in preview_df.columns else ""
-             for c in preview_cols]
+            [str(preview_df.iloc[i][c]) if c in preview_df.columns else "" for c in preview_cols]
             for i in range(min(n_preview_rows, len(preview_df)))
         ]
-        sections.append({
-            "title": f"CSV preview (first {len(preview_rows)} rows, {len(preview_cols)} of "
-                     f"{entry.expected_cols} cols)",
-            "headers": preview_cols,
-            "table": preview_rows,
-        })
+        sections.append(
+            {
+                "title": f"CSV preview (first {len(preview_rows)} rows, {len(preview_cols)} of "
+                f"{entry.expected_cols} cols)",
+                "headers": preview_cols,
+                "table": preview_rows,
+            }
+        )
 
     warnings: list[str] = []
     if not entry.is_valid:
-        warnings.append(
-            "Ministry-flagged invalid data — do not use for "
-            "comparative or quantitative analysis."
-        )
+        warnings.append("Ministry-flagged invalid data — do not use for comparative or quantitative analysis.")
     if not csv_present:
         warnings.append(
-            f"CSV not present on disk under {root!s}; describe() is "
-            f"showing registry + sidecar-only information."
+            f"CSV not present on disk under {root!s}; describe() is showing registry + sidecar-only information."
         )
 
     if language.lower().startswith("fr"):

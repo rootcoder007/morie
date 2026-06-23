@@ -1,5 +1,7 @@
 """Tests for morie.fn.zipfl."""
+
 import numpy as np
+
 from morie.fn.zipfl import zipf_law_fit
 
 
@@ -13,6 +15,7 @@ def test_zipfl_smoke():
 
 def test_cheatsheet():
     from morie.fn.zipfl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

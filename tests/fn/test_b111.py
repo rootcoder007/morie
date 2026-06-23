@@ -1,6 +1,7 @@
 """Tests for b111.burkov_lm_ch1_bce_gradients."""
+
 import numpy as np
-import pytest
+
 from morie.fn.b111 import burkov_lm_ch1_bce_gradients
 
 
@@ -13,7 +14,7 @@ def test_b111_basic():
     j = np.random.default_rng(42).normal(0, 1, 100)
     result = burkov_lm_ch1_bce_gradients(y_hat, y, x, N, j)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_b111_edge():

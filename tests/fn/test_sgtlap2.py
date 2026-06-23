@@ -1,6 +1,7 @@
 """Tests for sgtlap2.sgt_laplacian_eigenmaps."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtlap2 import sgt_laplacian_eigenmaps
 
 
@@ -10,7 +11,7 @@ def test_sgtlap2_basic():
     k = 5
     result = sgt_laplacian_eigenmaps(A, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtlap2_edge():

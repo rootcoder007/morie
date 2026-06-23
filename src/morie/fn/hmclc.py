@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Classification + localization: predict class and bounding box."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_classification_localization"]
@@ -32,7 +34,14 @@ def geron_classification_localization(image, model):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Classification + localization: predict class and bounding box"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Classification + localization: predict class and bounding box",
+        }
+    )
 
 
 def cheatsheet():

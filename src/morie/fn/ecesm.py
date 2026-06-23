@@ -17,6 +17,7 @@ calibration of modern neural networks.
 Kumar, A., Liang, P., & Ma, T. (2019). Verified uncertainty
 calibration. *Advances in NeurIPS*, 32.
 """
+
 from __future__ import annotations
 
 from typing import Any

@@ -99,4 +99,4 @@ anoiso = anomaly_isolation
 
 
 def cheatsheet() -> str:
-    return 'anomaly_isolation({}) -> Anomaly detection (isolation-forest style).'
+    return "anomaly_isolation({}) -> Anomaly detection (isolation-forest style)."

@@ -1,6 +1,7 @@
 """Test gccnv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gccnv import gccnv
 
 

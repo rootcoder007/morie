@@ -1,7 +1,6 @@
 """Tests for morie.fn.msin2 -- INDSCAL subject weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msin2 import indscal_weights
 

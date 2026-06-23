@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.mtrpr import mtrpr
 
 
@@ -12,10 +13,7 @@ def _make_data(n=30, p=20, t=2, seed=42):
     pf = np.clip(pf, 0.01, 0.99)
     M = Z - 2.0 * pf
     G = (M @ M.T) / (2.0 * np.sum(pf * (1 - pf)))
-    Y = np.column_stack([
-        G @ rng.standard_normal(n) * 0.5 + rng.standard_normal(n) * 0.3
-        for _ in range(t)
-    ])
+    Y = np.column_stack([G @ rng.standard_normal(n) * 0.5 + rng.standard_normal(n) * 0.3 for _ in range(t)])
     return Y, G
 
 

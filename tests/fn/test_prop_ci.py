@@ -1,6 +1,7 @@
 """Tests for morie.fn.prop_ci -- proportion confidence interval."""
 
 import pytest
+
 from morie.fn.prop_ci import proportion_ci
 
 

@@ -1,6 +1,7 @@
 """Imai-Keele-Tingley sequential ignorability mediation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_mediation_imai"]
@@ -38,7 +39,9 @@ def causal_mediation_imai(X, M, Y, T, B):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Imai-Keele-Tingley sequential ignorability mediation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Imai-Keele-Tingley sequential ignorability mediation"}
+    )
 
 
 def cheatsheet():

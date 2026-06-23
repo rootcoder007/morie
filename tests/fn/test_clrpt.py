@@ -1,6 +1,5 @@
 """Tests for morie.fn.clrpt — classification report."""
-import numpy as np
-import pytest
+
 from morie.fn.clrpt import classification_report, clrpt
 
 

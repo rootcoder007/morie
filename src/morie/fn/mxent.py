@@ -76,8 +76,9 @@ def mxent(
         return c_values - f_values @ p
 
     lam0 = np.zeros(n_constraints)
-    result = minimize(neg_entropy, lam0, jac=neg_entropy_grad,
-                      method="L-BFGS-B", options={"maxiter": 1000, "ftol": tol})
+    result = minimize(
+        neg_entropy, lam0, jac=neg_entropy_grad, method="L-BFGS-B", options={"maxiter": 1000, "ftol": tol}
+    )
 
     lambdas = result.x
     log_unnorm = -f_values.T @ lambdas

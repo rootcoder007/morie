@@ -1,6 +1,8 @@
 """Tests for stkint."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stkint import stkint
 
 
@@ -28,4 +30,5 @@ def test_stkint_no_data():
 
 def test_stkint_alias():
     from morie.fn.stkint import stkint
+
     assert stkint is stkint

@@ -1,7 +1,7 @@
 """Tests for morie.fn.cnsrd — Semiparametric censored regression."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cnsrd import cnsrd
 
 

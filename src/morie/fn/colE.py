@@ -1,6 +1,7 @@
 """Cold-start handling."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cold_start_user"]

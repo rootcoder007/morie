@@ -1,6 +1,7 @@
 """Tests for hmrfc.geron_random_forest."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmrfc import geron_random_forest
 
 
@@ -13,7 +14,7 @@ def test_hmrfc_basic():
     seed = 42
     result = geron_random_forest(X, y, n_estimators, max_features, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmrfc_edge():

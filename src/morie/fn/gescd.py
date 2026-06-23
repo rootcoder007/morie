@@ -13,6 +13,7 @@ Hauser, A., & Buhlmann, P. (2012). Characterization and greedy
 learning of interventional Markov equivalence classes of directed
 acyclic graphs. *JMLR*, 13, 2409-2464.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -79,7 +80,7 @@ def gescd(
             resid_var = float(np.dot(resid, resid) / n)
         resid_var = max(resid_var, 1e-12)
         ll = -n / 2.0 * (np.log(resid_var) + _LOG2PI + 1.0)
-        k = len(parents) + 1              # parents + noise variance
+        k = len(parents) + 1  # parents + noise variance
         return ll - penalty / 2.0 * k * np.log(n)
 
     def _total_score() -> float:

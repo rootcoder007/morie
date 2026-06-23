@@ -39,7 +39,7 @@ def lempel_ziv_complexity(x, threshold: float | None = None, **kwargs) -> ESRes:
         sub = s[i + 1 : i + k + 1] if i + k + 1 <= n else ""
         if s[i + k : i + k + 1] == "" or sub == "":
             break
-        if s[i + k] in s[i:i + k]:
+        if s[i + k] in s[i : i + k]:
             k += 1
             kmax = max(kmax, k)
         else:

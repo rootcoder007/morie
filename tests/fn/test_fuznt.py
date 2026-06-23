@@ -1,6 +1,8 @@
 """Tests for fuzzy entropy."""
+
 import numpy as np
-from morie.fn.fuznt import fuzzy_entropy, fuznt
+
+from morie.fn.fuznt import fuznt, fuzzy_entropy
 
 
 def test_basic():

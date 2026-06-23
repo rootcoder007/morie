@@ -1,6 +1,7 @@
 """OpenFold MSA-pair head."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["openfold_msa_pair"]

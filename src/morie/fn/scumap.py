@@ -1,6 +1,7 @@
 """UMAP for single-cell embedding."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["umap_singlecell"]

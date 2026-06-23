@@ -1,7 +1,7 @@
 """Tests for morie.fn.wndwm -- Window functions."""
 
-from morie.fn.wndwm import window_function, wndwm
 from morie.fn._containers import DescriptiveResult
+from morie.fn.wndwm import window_function, wndwm
 
 
 class TestWndwm:

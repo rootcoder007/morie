@@ -1,6 +1,8 @@
 """Tests for gpani."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpani import gpani
 
 
@@ -28,4 +30,5 @@ def test_gpani_no_data():
 
 def test_gpani_alias():
     from morie.fn.gpani import gpani
+
     assert gpani is gpani

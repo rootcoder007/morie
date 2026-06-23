@@ -94,13 +94,13 @@ def double_debias(
         Y_tilde[te] = Y[te] - _ridge(X[tr], Y[tr], X[te])
         T_tilde[te] = T_arr[te] - _ridge(X[tr], T_arr[tr], X[te])
 
-    denom = float(np.sum(T_tilde ** 2))
+    denom = float(np.sum(T_tilde**2))
     if denom < 1e-15:
         raise ValueError("Treatment residual variance near zero after partialling")
 
     theta = float(np.sum(T_tilde * Y_tilde) / denom)
     resid = Y_tilde - theta * T_tilde
-    se = float(np.sqrt(np.sum(T_tilde ** 2 * resid ** 2) / denom ** 2))
+    se = float(np.sqrt(np.sum(T_tilde**2 * resid**2) / denom**2))
 
     z = stats.norm.ppf(1 - alpha / 2)
     return ESRes(

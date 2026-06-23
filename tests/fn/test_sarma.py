@@ -1,6 +1,8 @@
 """Tests for morie.fn.sarma — seasonal ARMA."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sarma import seasonal_arma
 
 
@@ -9,7 +11,7 @@ class TestSeasonalARMA:
         rng = np.random.default_rng(42)
         y = rng.standard_normal(120)
         for t in range(12, 120):
-            y[t] += 0.5 * y[t-12]
+            y[t] += 0.5 * y[t - 12]
         res = seasonal_arma(y, order=(0, 0), seasonal_order=(1, 0, 12))
         assert "sar" in res.extra
 

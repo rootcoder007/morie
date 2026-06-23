@@ -1,6 +1,7 @@
 """Tests for rgepidet.rangayyan_epilepsy_detect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgepidet import rangayyan_epilepsy_detect
 
 
@@ -11,7 +12,7 @@ def test_rgepidet_basic():
     dictionary_size = 100
     result = rangayyan_epilepsy_detect(eeg, fs, dictionary_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgepidet_edge():

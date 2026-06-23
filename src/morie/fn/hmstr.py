@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stratified sampling preserves class/strata proportions in each split."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_stratified_sampling"]
@@ -36,7 +38,14 @@ def geron_stratified_sampling(X, y, stratum, n_total):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stratified sampling preserves class/strata proportions in each split"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stratified sampling preserves class/strata proportions in each split",
+        }
+    )
 
 
 def cheatsheet():

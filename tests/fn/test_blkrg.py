@@ -7,7 +7,6 @@ from morie.fn.blkrg import blkrg
 
 
 class TestBlkrg:
-
     def test_prediction_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

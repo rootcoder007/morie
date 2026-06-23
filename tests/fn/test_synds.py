@@ -1,7 +1,7 @@
 """Tests for morie.fn.synds -- Syndromic surveillance."""
 
 import pytest
-import numpy as np
+
 from morie.fn.synds import syndromic_surveillance
 
 

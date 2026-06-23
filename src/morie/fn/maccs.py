@@ -1,6 +1,7 @@
 """MACCS 166-bit structural keys."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["maccs_keys"]

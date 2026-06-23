@@ -1,5 +1,7 @@
 """Tests for morie.fn.theta — Watterson's theta."""
+
 import pytest
+
 from morie.fn.theta import watterson_theta
 
 

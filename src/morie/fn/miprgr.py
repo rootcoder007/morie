@@ -1,6 +1,7 @@
 """Mixed-integer LP branch + bound."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mip_branch_bound"]

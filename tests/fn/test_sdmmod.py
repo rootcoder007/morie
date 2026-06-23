@@ -1,6 +1,7 @@
 """Tests for sdmmod.spatial_durbin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sdmmod import spatial_durbin
 
 
@@ -11,7 +12,7 @@ def test_sdmmod_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = spatial_durbin(y, X, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sdmmod_edge():

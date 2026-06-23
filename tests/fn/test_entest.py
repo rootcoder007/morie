@@ -1,6 +1,7 @@
 """Tests for entest.entropy_knn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.entest import entropy_knn
 
 
@@ -10,7 +11,7 @@ def test_entest_basic():
     k = 5
     result = entropy_knn(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_entest_edge():

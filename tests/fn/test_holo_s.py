@@ -1,6 +1,5 @@
 """Tests for morie.fn.holo_s -- scatter plot."""
 
-import numpy as np
 import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")

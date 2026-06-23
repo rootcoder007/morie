@@ -1,5 +1,7 @@
 """Tests for morie.fn.amci — A-M confidence intervals."""
+
 import numpy as np
+
 from morie.fn.amci import amci
 
 
@@ -15,6 +17,7 @@ def test_amci_smoke():
 
 def test_cheatsheet():
     from morie.fn.amci import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

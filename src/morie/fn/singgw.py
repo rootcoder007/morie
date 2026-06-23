@@ -1,6 +1,7 @@
 """Single-step GBLUP (ssGBLUP)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["single_step_gblup"]

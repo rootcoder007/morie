@@ -1,8 +1,9 @@
 """Tests for morie.fn.lsbemb -- LSB steganography."""
 
 import numpy as np
-from morie.fn.lsbemb import lsb_embed, lsb_extract, lsbemb
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lsbemb import lsb_embed, lsb_extract, lsbemb
 
 
 class TestLsbemb:

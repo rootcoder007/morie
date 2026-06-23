@@ -1,6 +1,7 @@
 """Test ppnnd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppnnd import ppnnd
 
 

@@ -1,5 +1,7 @@
 """Test cntrl."""
+
 import pytest
+
 from morie.fn.cntrl import central_charge
 
 

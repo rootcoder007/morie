@@ -1,6 +1,7 @@
 """Tests for tmlcds.tmle_cdrs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlcds import tmle_cdrs
 
 
@@ -11,7 +12,7 @@ def test_tmlcds_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = tmle_cdrs(y, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlcds_edge():

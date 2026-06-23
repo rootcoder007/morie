@@ -1,6 +1,8 @@
 """Tests for normalized redundancy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.normr import normalized_redundancy, normr
 
 

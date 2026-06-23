@@ -1,6 +1,7 @@
 """Chebyshev center of polyhedron."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boyd_chebyshev_center"]

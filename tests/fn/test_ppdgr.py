@@ -1,6 +1,7 @@
 """Test ppdgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppdgr import ppdgr
 
 

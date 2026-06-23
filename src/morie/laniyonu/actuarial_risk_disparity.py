@@ -61,7 +61,6 @@ from ..mrm_primitives.score_net_residual import (
     score_net_residual,
 )
 
-
 # Canonical outcome registry — maps user-facing outcome label to
 # (kind, default-column-name).  Kept here so callers can override the
 # column name without re-typing the "is this ordinal or binary" logic.
@@ -90,6 +89,7 @@ class ActuarialRiskDisparityResult:
     populated for stage-1 (ordinal) runs.  When ``split_by_gender=False``
     the gender stratum is ``"pooled"``.
     """
+
     outcome: str
     outcome_kind: Literal["ordinal", "binary"]
     outcome_col: str
@@ -98,9 +98,7 @@ class ActuarialRiskDisparityResult:
     gender_col: str
     ordinal_result: dict[str, ThresholdSpecificOrdinalResult] | None = None
     residual_result: ScoreNetResidualResult | None = None
-    per_threshold_logodds: dict[tuple[str, str, str], float] = field(
-        default_factory=dict
-    )
+    per_threshold_logodds: dict[tuple[str, str, str], float] = field(default_factory=dict)
     proportional_odds_lr_stat: float | None = None
     proportional_odds_lr_df: int | None = None
     proportional_odds_p: float | None = None
@@ -113,7 +111,9 @@ class ActuarialRiskDisparityResult:
         return self.residual_result.coefficients.get(race_col)
 
     def bias_concentrated_at_low_medium(
-        self, race_col: str, gender_stratum: str = "pooled",
+        self,
+        race_col: str,
+        gender_stratum: str = "pooled",
         ratio_threshold: float = 1.5,
     ) -> bool | None:
         """True iff |β_threshold1| / |β_threshold2| >= ratio_threshold.
@@ -155,8 +155,7 @@ class ActuarialRiskDisparityResult:
                             "assumption is empirically wrong here."
                         )
         if self.residual_result is not None:
-            lines.append("  Stage-2 (score-net-residual): "
-                         + self.residual_result.interpretation)
+            lines.append("  Stage-2 (score-net-residual): " + self.residual_result.interpretation)
         if self.note:
             lines.append(f"  Note: {self.note}")
         # Output-vs-predictive-validity caveat, every time.
@@ -171,8 +170,7 @@ class ActuarialRiskDisparityResult:
 def actuarial_risk_disparity(
     df: pd.DataFrame,
     *,
-    outcome: Literal["static", "dynamic", "osl", "reintegration",
-                     "parole", "housing"],
+    outcome: Literal["static", "dynamic", "osl", "reintegration", "parole", "housing"],
     race_cols: list[str],
     gender_col: str = "gender",
     score_col: str | None = None,
@@ -272,23 +270,18 @@ def actuarial_risk_disparity(
         col = outcome_col or _BINARY_OUTCOMES[outcome]
     else:
         raise ValueError(
-            f"unknown outcome {outcome!r}; expected one of "
-            f"{sorted(set(_ORDINAL_OUTCOMES) | set(_BINARY_OUTCOMES))}"
+            f"unknown outcome {outcome!r}; expected one of {sorted(set(_ORDINAL_OUTCOMES) | set(_BINARY_OUTCOMES))}"
         )
 
-    missing = [c for c in [col, gender_col, *race_cols, *control_cols]
-               if c not in df.columns]
+    missing = [c for c in [col, gender_col, *race_cols, *control_cols] if c not in df.columns]
     if missing:
-        raise KeyError(
-            f"actuarial_risk_disparity: columns missing from df: {missing}"
-        )
+        raise KeyError(f"actuarial_risk_disparity: columns missing from df: {missing}")
 
     # ── Stage 1: ordinal risk-score audit ──────────────────────────
     if kind == "ordinal":
         if score_col is not None:
             warnings.warn(
-                "score_col is ignored for ordinal outcomes "
-                f"({outcome!r}); the score IS the outcome here.",
+                f"score_col is ignored for ordinal outcomes ({outcome!r}); the score IS the outcome here.",
                 UserWarning,
                 stacklevel=2,
             )
@@ -349,8 +342,7 @@ def _run_ordinal_stage(
             sub = df[df[gender_col] == g]
             if len(sub) < 30:
                 warnings.warn(
-                    f"gender stratum {g!r} has only {len(sub)} rows; "
-                    "skipping (need n >= 30 for stable ordinal fit).",
+                    f"gender stratum {g!r} has only {len(sub)} rows; skipping (need n >= 30 for stable ordinal fit).",
                     UserWarning,
                     stacklevel=3,
                 )
@@ -369,14 +361,10 @@ def _run_ordinal_stage(
                 for rc in race_cols:
                     if rc in res.covariate_names:
                         i = res.covariate_names.index(rc)
-                        per_thresh[(stratum_label, thresh_label, rc)] = (
-                            float(res.coefficients[k, i])
-                        )
+                        per_thresh[(stratum_label, thresh_label, rc)] = float(res.coefficients[k, i])
     else:
         # Pool genders, one-hot the gender column, fold into covariates.
-        gender_dummies = pd.get_dummies(
-            df[gender_col], prefix=gender_col, drop_first=True
-        ).astype(float)
+        gender_dummies = pd.get_dummies(df[gender_col], prefix=gender_col, drop_first=True).astype(float)
         df_aug = pd.concat([df, gender_dummies], axis=1)
         covariate_cols = [*race_cols, *gender_dummies.columns, *control_cols]
         res = threshold_specific_ordinal(
@@ -391,17 +379,19 @@ def _run_ordinal_stage(
             for rc in race_cols:
                 if rc in res.covariate_names:
                     i = res.covariate_names.index(rc)
-                    per_thresh[("pooled", thresh_label, rc)] = (
-                        float(res.coefficients[k, i])
-                    )
+                    per_thresh[("pooled", thresh_label, rc)] = float(res.coefficients[k, i])
 
     # PO-LR test summary: take the worst-p across strata as the
     # diagnostic (one rejection is enough to motivate threshold-specific).
-    lr_stats = [(r.proportional_odds_lr_stat, r.proportional_odds_lr_df,
-                 r.proportional_odds_lr_stat is not None
-                 and r.proportional_odds_p is not None and r.proportional_odds_p)
-                for r in results.values()
-                if r.proportional_odds_lr_stat is not None]
+    lr_stats = [
+        (
+            r.proportional_odds_lr_stat,
+            r.proportional_odds_lr_df,
+            r.proportional_odds_lr_stat is not None and r.proportional_odds_p is not None and r.proportional_odds_p,
+        )
+        for r in results.values()
+        if r.proportional_odds_lr_stat is not None
+    ]
     if lr_stats:
         # pick the stratum with the smallest p (strongest PO violation)
         worst = min(lr_stats, key=lambda t: t[2] if t[2] is not False else 1.0)
@@ -425,12 +415,9 @@ def _run_ordinal_stage(
         ordinal_result=results,
         residual_result=None,
         per_threshold_logodds=per_thresh,
-        proportional_odds_lr_stat=(float(worst_stat)
-                                   if worst_stat is not None else None),
-        proportional_odds_lr_df=(int(worst_df)
-                                 if worst_df is not None else None),
-        proportional_odds_p=(float(worst_p)
-                             if worst_p not in (None, False) else None),
+        proportional_odds_lr_stat=(float(worst_stat) if worst_stat is not None else None),
+        proportional_odds_lr_df=(int(worst_df) if worst_df is not None else None),
+        proportional_odds_p=(float(worst_p) if worst_p not in (None, False) else None),
         note=note,
     )
 
@@ -471,8 +458,7 @@ def _run_residual_stage(
             sub = df[df[gender_col] == g]
             if len(sub) < 30:
                 warnings.warn(
-                    f"gender stratum {g!r} has only {len(sub)} rows; "
-                    "skipping (need n >= 30 for stable bootstrap).",
+                    f"gender stratum {g!r} has only {len(sub)} rows; skipping (need n >= 30 for stable bootstrap).",
                     UserWarning,
                     stacklevel=3,
                 )
@@ -495,8 +481,8 @@ def _run_residual_stage(
             n_total += res_g.n_obs
 
         interp = (
-            f"Stratified by {gender_col}: " +
-            ", ".join(f"{k}={v:+.4f}" for k, v in combined_coefs.items())
+            f"Stratified by {gender_col}: "
+            + ", ".join(f"{k}={v:+.4f}" for k, v in combined_coefs.items())
             + ".  Mean score coefficient across strata: "
             f"{(float(np.mean(score_coefs)) if score_coefs else float('nan')):+.4f}."
         )
@@ -505,15 +491,12 @@ def _run_residual_stage(
             coefficients=combined_coefs,
             std_errors=combined_ses,
             n_obs=n_total,
-            score_coefficient=(float(np.mean(score_coefs))
-                               if score_coefs else float("nan")),
+            score_coefficient=(float(np.mean(score_coefs)) if score_coefs else float("nan")),
             interpretation=interp,
         )
         n_obs = n_total
     else:
-        gender_dummies = pd.get_dummies(
-            df[gender_col], prefix=gender_col, drop_first=True
-        ).astype(float)
+        gender_dummies = pd.get_dummies(df[gender_col], prefix=gender_col, drop_first=True).astype(float)
         df_aug = pd.concat([df, gender_dummies], axis=1)
         sensitive_cols = [*race_cols, *gender_dummies.columns]
         residual = score_net_residual(

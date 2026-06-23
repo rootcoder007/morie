@@ -1,6 +1,8 @@
 """Tests for morie.fn.mnksb — Manski bounds."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mnksb import mnksb
 
 
@@ -53,4 +55,5 @@ def test_width_nonneg(data):
 
 def test_cheatsheet():
     from morie.fn.mnksb import cheatsheet
+
     assert len(cheatsheet()) > 0

@@ -1,6 +1,7 @@
 """Callaway-Sant'Anna ATT(g,t) under staggered adoption."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_did_callaway_sa"]
@@ -34,7 +35,9 @@ def causal_did_callaway_sa(Y_panel, G_first_treat, X_baseline):
     n = len(Y_panel)
     result = float(np.mean(Y_panel))
     se = float(np.std(Y_panel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Callaway-Sant'Anna ATT(g,t) under staggered adoption"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Callaway-Sant'Anna ATT(g,t) under staggered adoption"}
+    )
 
 
 def cheatsheet():

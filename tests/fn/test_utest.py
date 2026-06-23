@@ -1,7 +1,7 @@
 """Tests for morie.fn.utest -- Mann-Whitney alias."""
 
-from morie.fn.utest import utest, mann_whitney
 from morie.fn.mw import mann_whitney_test
+from morie.fn.utest import mann_whitney, utest
 
 
 class TestUtest:

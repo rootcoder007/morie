@@ -1,6 +1,8 @@
 """Correlation coefficient as normalized dot product of two signals.."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_correlation_coefficient_normalized_dot"]
@@ -34,9 +36,23 @@ def rangayyan_ch4_correlation_coefficient_normalized_dot(x, y, N):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Correlation coefficient as normalized dot product of two signals."})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Correlation coefficient as normalized dot product of two signals.",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Correlation coefficient as normalized dot product of two signals."})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Correlation coefficient as normalized dot product of two signals.",
+        }
+    )
 
 
 def cheatsheet():

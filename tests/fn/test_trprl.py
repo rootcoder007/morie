@@ -1,9 +1,10 @@
 """Test trapezoidal_integrate (trprl)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.trprl import trapezoidal_integrate, trprl
 from morie.fn._containers import DescriptiveResult
+from morie.fn.trprl import trapezoidal_integrate, trprl
 
 
 class TestTrapezoidalIntegrate:

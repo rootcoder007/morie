@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dicrotic notch detection in carotid pulse waveform."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_dicrotic_notch"]
@@ -32,7 +34,9 @@ def rangayyan_dicrotic_notch(pulse, fs):
     n = int(pulse) if pulse.ndim == 0 else len(pulse)
     result = float(np.mean(pulse))
     se = float(np.std(pulse, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dicrotic notch detection in carotid pulse waveform"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Dicrotic notch detection in carotid pulse waveform"}
+    )
 
 
 def cheatsheet():

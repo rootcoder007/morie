@@ -63,4 +63,4 @@ wndwm = window_function
 
 
 def cheatsheet() -> str:
-    return 'window_function({}) -> Window functions.'
+    return "window_function({}) -> Window functions."

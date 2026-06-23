@@ -1,6 +1,8 @@
 """Tests for idwgrd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.idwgrd import idwgrd
 
 
@@ -28,4 +30,5 @@ def test_idwgrd_no_data():
 
 def test_idwgrd_alias():
     from morie.fn.idwgrd import idwgrd
+
     assert idwgrd is idwgrd

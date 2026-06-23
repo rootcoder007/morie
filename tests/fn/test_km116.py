@@ -1,6 +1,7 @@
 """Tests for km116.kamath_ch8_brevity_penalty."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km116 import kamath_ch8_brevity_penalty
 
 
@@ -10,7 +11,7 @@ def test_km116_basic():
     r = 10
     result = kamath_ch8_brevity_penalty(c, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km116_edge():

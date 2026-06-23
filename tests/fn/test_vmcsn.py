@@ -1,6 +1,7 @@
 """Test vmcsn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmcsn import vmcsn
 
 

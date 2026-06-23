@@ -1,6 +1,7 @@
 """Orthogonal/double-robust score (Neyman-orthogonal)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_dr_orthogonal"]
@@ -38,7 +39,9 @@ def causal_dr_orthogonal(y, T, ps, m1, m0):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Orthogonal/double-robust score (Neyman-orthogonal)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Orthogonal/double-robust score (Neyman-orthogonal)"}
+    )
 
 
 def cheatsheet():

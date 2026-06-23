@@ -1,7 +1,7 @@
 """Tests for morie.fn.shahas -- SHA-256 hash."""
 
-from morie.fn.shahas import sha256_hash, shahas
 from morie.fn._containers import DescriptiveResult
+from morie.fn.shahas import sha256_hash, shahas
 
 
 class TestShahas:

@@ -1,6 +1,7 @@
 """Test vmprl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmprl import vmprl
 
 

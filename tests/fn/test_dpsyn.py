@@ -1,6 +1,7 @@
 """Tests for dpsyn.dp_synthetic_data."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpsyn import dp_synthetic_data
 
 
@@ -10,7 +11,7 @@ def test_dpsyn_basic():
     epsilon = 1e-6
     result = dp_synthetic_data(X, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpsyn_edge():

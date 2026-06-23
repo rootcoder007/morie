@@ -1,6 +1,7 @@
 """Tests for morie.fn.cif — cumulative incidence function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cif import cumulative_incidence
 
 

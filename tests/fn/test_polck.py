@@ -1,4 +1,5 @@
 """Tests for morie.fn.polck — polarity check."""
+
 from morie.fn.polck import polck
 
 

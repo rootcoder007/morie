@@ -1,6 +1,7 @@
 """Total energy of a signal via Parseval's theorem.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_signal_total_energy"]
@@ -36,7 +37,9 @@ def rangayyan_ch4_signal_total_energy(x, X, t, f):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Total energy of a signal via Parseval's theorem."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Total energy of a signal via Parseval's theorem."}
+    )
 
 
 def cheatsheet():

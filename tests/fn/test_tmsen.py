@@ -1,6 +1,8 @@
 """Tests for tmsen."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmsen import tmsen
 
 
@@ -28,4 +30,5 @@ def test_tmsen_no_data():
 
 def test_tmsen_alias():
     from morie.fn.tmsen import tmsen
+
     assert tmsen is tmsen

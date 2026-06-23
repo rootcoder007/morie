@@ -1,9 +1,9 @@
 """Test median_filter_signal (medf)."""
-import numpy as np
-import pytest
 
-from morie.fn.medf import median_filter_signal, medf
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.medf import medf, median_filter_signal
 
 
 class TestMedianFilter:

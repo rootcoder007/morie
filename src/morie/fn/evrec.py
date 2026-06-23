@@ -1,6 +1,7 @@
 """Number of upper records in an iid sequence."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_record_count"]
@@ -30,7 +31,9 @@ def evt_record_count(x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Number of upper records in an iid sequence"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Number of upper records in an iid sequence"}
+    )
 
 
 def cheatsheet():

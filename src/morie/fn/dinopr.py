@@ -1,6 +1,7 @@
 """DINO self-distillation loss."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dino_self_distill"]

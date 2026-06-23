@@ -1,6 +1,7 @@
 """Equivalent characterisation of weak convergence via bounded Lipschitz functions."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_weak_convergence_lipschitz"]
@@ -32,7 +33,14 @@ def kosorok_ch2_weak_convergence_lipschitz(X_n, X):
     n = len(X_n)
     result = float(np.mean(X_n))
     se = float(np.std(X_n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Equivalent characterisation of weak convergence via bounded Lipschitz functions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Equivalent characterisation of weak convergence via bounded Lipschitz functions",
+        }
+    )
 
 
 def cheatsheet():

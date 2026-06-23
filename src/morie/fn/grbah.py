@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bahdanau additive attention: score, softmax, context."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_bahdanau_attention"]
@@ -38,7 +40,9 @@ def geron_bahdanau_attention(decoder_state, encoder_states, Wh, Ws, v):
     n = len(decoder_state)
     result = float(np.mean(decoder_state))
     se = float(np.std(decoder_state, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bahdanau additive attention: score, softmax, context"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bahdanau additive attention: score, softmax, context"}
+    )
 
 
 def cheatsheet():

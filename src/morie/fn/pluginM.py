@@ -1,6 +1,7 @@
 """Plug-in g-computation NIE."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["plug_in_mediation"]

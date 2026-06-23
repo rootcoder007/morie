@@ -22,9 +22,9 @@ from ._containers import DescriptiveResult
 #
 # Conversion: 1 ppb O3 ≈ 1.96 µg/m³ at 25°C / 1 atm.
 _O3_ACUTE_RR_PER_10_PPB: dict[str, tuple[float, tuple[float, float]]] = {
-    "all_cause":     (1.0052, (1.0027, 1.0077)),
-    "cardiovascular":(1.0064, (1.0031, 1.0098)),
-    "respiratory":   (1.0080, (1.0040, 1.0120)),
+    "all_cause": (1.0052, (1.0027, 1.0077)),
+    "cardiovascular": (1.0064, (1.0031, 1.0098)),
+    "respiratory": (1.0080, (1.0040, 1.0120)),
 }
 
 _PPB_TO_UGM3 = 1.96  # at 25°C, 1 atm
@@ -95,10 +95,7 @@ def o3_acute_rr(
     """
     key = outcome.lower().strip().replace(" ", "_").replace("-", "_")
     if key not in _O3_ACUTE_RR_PER_10_PPB:
-        raise KeyError(
-            f"Unknown outcome {outcome!r}. Available: "
-            f"{sorted(_O3_ACUTE_RR_PER_10_PPB)}"
-        )
+        raise KeyError(f"Unknown outcome {outcome!r}. Available: {sorted(_O3_ACUTE_RR_PER_10_PPB)}")
     rr10, (lo10, hi10) = _O3_ACUTE_RR_PER_10_PPB[key]
 
     C = np.atleast_1d(np.asarray(concentration, dtype=float))
@@ -106,9 +103,7 @@ def o3_acute_rr(
 
     u = unit.lower().strip().replace("µ", "u")
     if u not in ("ppb", "ug/m3", "ug/m^3"):
-        raise ValueError(
-            f"unit must be 'ppb' or 'ug/m3', got {unit!r}."
-        )
+        raise ValueError(f"unit must be 'ppb' or 'ug/m3', got {unit!r}.")
     if u != "ppb":
         # Convert µg/m³ -> ppb before applying the per-10-ppb scaling
         C = C / _PPB_TO_UGM3

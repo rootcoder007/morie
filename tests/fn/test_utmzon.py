@@ -1,6 +1,7 @@
 """Test utmzon."""
+
 import numpy as np
-import pytest
+
 from morie.fn.utmzon import utmzon
 
 

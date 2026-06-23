@@ -9,8 +9,11 @@ For a symmetric kernel g(x1,x2):
     sigma1^2 = Var g_1(X),
     Var(U_n) = (4/n) sigma1^2 + O(1/n^2).
 """
-import numpy as np
+
 from itertools import combinations
+
+import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_h_decomposition"]
@@ -22,13 +25,11 @@ def _default_kernel(a, b):
 
 
 def fauzi_h_decomposition(x, kernel=None, max_pairs=2000, rng=None):
-    """H-decomposition of a degree-2 U-statistic.
-    """
+    """H-decomposition of a degree-2 U-statistic."""
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 4:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "fzhdc -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzhdc -- too few obs"})
     if kernel is None:
         kernel = _default_kernel
     if rng is None:
@@ -59,8 +60,10 @@ def fauzi_h_decomposition(x, kernel=None, max_pairs=2000, rng=None):
     g1 = np.zeros(n)
     counts = np.zeros(n)
     for (i, j), v in zip(pairs, g_vals):
-        g1[i] += v; counts[i] += 1
-        g1[j] += v; counts[j] += 1
+        g1[i] += v
+        counts[i] += 1
+        g1[j] += v
+        counts[j] += 1
     counts[counts == 0] = 1
     g1 = g1 / counts - theta
     sigma1_sq = float(np.var(g1, ddof=1))
@@ -68,15 +71,17 @@ def fauzi_h_decomposition(x, kernel=None, max_pairs=2000, rng=None):
     var_U = 4.0 * sigma1_sq / n
     se_U = float(np.sqrt(max(var_U, 0.0)))
 
-    return RichResult(payload={
-        "estimate": theta,
-        "sigma1_sq": sigma1_sq,
-        "sigma2_sq": sigma2,
-        "se": se_U,
-        "n": n,
-        "n_pairs": len(pairs),
-        "method": "Fauzi H-decomposition of degree-2 U-statistic (Ch 5)",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "sigma1_sq": sigma1_sq,
+            "sigma2_sq": sigma2,
+            "se": se_U,
+            "n": n,
+            "n_pairs": len(pairs),
+            "method": "Fauzi H-decomposition of degree-2 U-statistic (Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

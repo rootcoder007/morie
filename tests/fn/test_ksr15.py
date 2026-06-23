@@ -1,6 +1,7 @@
 """Tests for ksr15.kosorok_one_step_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr15 import kosorok_one_step_estimator
 
 
@@ -10,7 +11,7 @@ def test_ksr15_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = kosorok_one_step_estimator(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr15_edge():

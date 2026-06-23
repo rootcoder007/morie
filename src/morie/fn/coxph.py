@@ -6,7 +6,9 @@ from __future__ import annotations
 import numpy as np
 
 
-def coxph(time: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, max_iter: int = 100, tol: float = 1e-8) -> dict:
+def coxph(
+    time: np.ndarray, event: np.ndarray, X: np.ndarray, cdf=None, *, max_iter: int = 100, tol: float = 1e-8
+) -> dict:
     r"""
     Cox proportional hazards regression via Newton-Raphson.
 

@@ -1,6 +1,7 @@
 """Test encos."""
+
 import numpy as np
-import pytest
+
 from morie.fn.encos import encos
 
 

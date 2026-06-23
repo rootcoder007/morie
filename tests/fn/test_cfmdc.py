@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfmdc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfmdc import cfmdc
 
 

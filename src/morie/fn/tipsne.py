@@ -1,6 +1,7 @@
 """Tipping-point analysis for missingness."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tipping_point_sensitivity"]
@@ -34,7 +35,9 @@ def tipping_point_sensitivity(y, D, missing_indicator):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Tipping-point analysis for missingness"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Tipping-point analysis for missingness"}
+    )
 
 
 def cheatsheet():

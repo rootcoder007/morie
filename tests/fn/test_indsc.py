@@ -1,5 +1,5 @@
 """Test indsc."""
-import numpy as np
+
 from morie.fn.indsc import indscal_mds
 
 

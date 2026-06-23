@@ -1,6 +1,6 @@
 """Tests for morie.fn.oocls — Optimal classification."""
+
 import numpy as np
-import pytest
 
 from morie.fn.oocls import oocls
 
@@ -14,6 +14,7 @@ def test_oocls_smoke():
 
 def test_cheatsheet():
     from morie.fn.oocls import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

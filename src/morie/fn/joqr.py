@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Quantile regression: minimize pinball loss at target quantile."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_quantile_regression"]
@@ -34,7 +36,14 @@ def joseph_quantile_regression(X, y, tau):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantile regression: minimize pinball loss at target quantile"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Quantile regression: minimize pinball loss at target quantile",
+        }
+    )
 
 
 def cheatsheet():

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["lokde"]
@@ -83,7 +84,7 @@ def lokde(
         x_eval = np.asarray(x_eval, dtype=float).ravel()
 
     u_pilot = (x_eval[:, None] - data[None, :]) / bw
-    pilot = np.exp(-0.5 * u_pilot ** 2).mean(axis=1) / (bw * np.sqrt(2 * np.pi))
+    pilot = np.exp(-0.5 * u_pilot**2).mean(axis=1) / (bw * np.sqrt(2 * np.pi))
     pilot = np.maximum(pilot, 1e-300)
     log_pilot = np.log(pilot)
 
@@ -92,7 +93,7 @@ def lokde(
         w = np.exp(-0.5 * ((x_eval - x0) / bw) ** 2)
         w /= w.sum() + 1e-300
         dx = x_eval - x0
-        X = np.column_stack([dx ** j for j in range(degree + 1)])
+        X = np.column_stack([dx**j for j in range(degree + 1)])
         Xw = X * w[:, None]
         try:
             beta = np.linalg.lstsq(Xw, log_pilot * w, rcond=None)[0]

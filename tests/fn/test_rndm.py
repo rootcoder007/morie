@@ -1,7 +1,6 @@
 """Tests for morie.fn.rndm — Block randomization."""
 
 import numpy as np
-import pytest
 
 from morie.fn.rndm import randomization
 

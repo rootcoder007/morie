@@ -1,6 +1,7 @@
 """Tests for miefcl.multiple_imputation_combine."""
+
 import numpy as np
-import pytest
+
 from morie.fn.miefcl import multiple_imputation_combine
 
 
@@ -11,7 +12,7 @@ def test_miefcl_basic():
     m = 10
     result = multiple_imputation_combine(estimates_list, ses_list, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_miefcl_edge():

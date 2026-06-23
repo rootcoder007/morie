@@ -98,7 +98,7 @@ def gee_regression(
                     for jj in range(ii + 1, ni):
                         alpha_est += ri[ii] * ri[jj] / np.sqrt(Vi_diag[ii] * Vi_diag[jj])
                 n_pairs = ni * (ni - 1) / 2
-                alpha_est /= (n_pairs + 1e-12)
+                alpha_est /= n_pairs + 1e-12
                 alpha_est = np.clip(alpha_est, -0.99, 0.99)
                 R = np.eye(ni) * (1 - alpha_est) + alpha_est
                 Vi = np.diag(np.sqrt(Vi_diag)) @ R @ np.diag(np.sqrt(Vi_diag))
@@ -132,9 +132,7 @@ def gee_regression(
 
     mu_f = _link(X @ beta)
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method=f"GEE ({family}, {corr_structure})",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

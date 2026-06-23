@@ -1,6 +1,7 @@
 """Tests for rgvagkn.rangayyan_vag_knee_cartilage."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgvagkn import rangayyan_vag_knee_cartilage
 
 
@@ -10,7 +11,7 @@ def test_rgvagkn_basic():
     fs = 100.0
     result = rangayyan_vag_knee_cartilage(vag, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgvagkn_edge():

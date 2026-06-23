@@ -1,6 +1,7 @@
 """Tests for agscho.alphazero_search_horizon."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agscho import alphazero_search_horizon
 
 
@@ -10,7 +11,7 @@ def test_agscho_basic():
     state = np.random.default_rng(42).normal(0, 1, 100)
     result = alphazero_search_horizon(depth_limit, state)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_agscho_edge():

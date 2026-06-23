@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rotary positional embedding (RoPE): rotate query/key by angle m*theta_i."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_rotary_positional_embedding"]
@@ -34,7 +36,14 @@ def kamath_rotary_positional_embedding(q, positions, base):
     n = len(q)
     result = float(np.mean(q))
     se = float(np.std(q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rotary positional embedding (RoPE): rotate query/key by angle m*theta_i"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Rotary positional embedding (RoPE): rotate query/key by angle m*theta_i",
+        }
+    )
 
 
 def cheatsheet():

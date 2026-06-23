@@ -1,7 +1,9 @@
 """Test centroidal_time."""
+
 import numpy as np
-from morie.fn.cntrt import centroidal_time, cntrt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cntrt import centroidal_time, cntrt
 
 
 class TestCentroidalTime:

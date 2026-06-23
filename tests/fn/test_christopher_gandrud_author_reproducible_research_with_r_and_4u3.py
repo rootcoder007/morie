@@ -1,7 +1,10 @@
 """Life is really simple, but we insist on making it complicated. — Confucius"""
+
 import numpy as np
-import pytest
-from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u3 import christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_3
+
+from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u3 import (
+    christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_3,
+)
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u3_basic():
@@ -9,7 +12,7 @@ def test_christopher_gandrud_author_reproducible_research_with_r_and_4u3_basic()
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_3(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u3_edge():

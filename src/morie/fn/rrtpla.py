@@ -139,4 +139,4 @@ rrtpla = rrt_plan
 
 
 def cheatsheet() -> str:
-    return 'rrtpla() -> Rapidly-exploring Random Tree (RRT) path planner in 2-D'
+    return "rrtpla() -> Rapidly-exploring Random Tree (RRT) path planner in 2-D"

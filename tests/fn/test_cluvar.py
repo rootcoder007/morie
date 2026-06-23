@@ -1,6 +1,7 @@
 """Tests for cluvar.cluster_variance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cluvar import cluster_variance
 
 
@@ -10,7 +11,7 @@ def test_cluvar_basic():
     cluster = np.random.default_rng(42).normal(0, 1, 100)
     result = cluster_variance(y, cluster)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cluvar_edge():

@@ -1,12 +1,12 @@
 """Tests for morie.fn.cfami -- CFA modification indices."""
 
 import pandas as pd
-from morie.fn.cfami import cfa_modindex
+
 from morie.fn._mapq_const import SUBSCALES
+from morie.fn.cfami import cfa_modindex
 
 
 class TestCfaModIndex:
-
     def test_returns_dataframe(self, mapq_df):
         result = cfa_modindex(mapq_df, SUBSCALES)
         assert isinstance(result, pd.DataFrame)

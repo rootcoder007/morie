@@ -1,6 +1,7 @@
 """Tests for sacc.sac."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sacc import sac
 
 
@@ -12,7 +13,7 @@ def test_sacc_basic():
     alpha = 0.05
     result = sac(env, actor, critic, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sacc_edge():

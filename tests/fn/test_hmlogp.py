@@ -1,6 +1,7 @@
 """Tests for hmlogp.geron_logistic_probability."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlogp import geron_logistic_probability
 
 
@@ -10,7 +11,7 @@ def test_hmlogp_basic():
     theta = 0.0
     result = geron_logistic_probability(X, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlogp_edge():

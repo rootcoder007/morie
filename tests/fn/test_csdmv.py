@@ -1,6 +1,7 @@
 """Test csdmv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csdmv import csdmv
 
 

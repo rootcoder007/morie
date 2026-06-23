@@ -1,6 +1,7 @@
 """Fourier transform of the integral of x(t) including DC term.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_fourier_of_integral"]
@@ -32,7 +33,14 @@ def rangayyan_ch3_fourier_of_integral(X, omega):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fourier transform of the integral of x(t) including DC term."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fourier transform of the integral of x(t) including DC term.",
+        }
+    )
 
 
 def cheatsheet():

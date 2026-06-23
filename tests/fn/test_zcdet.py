@@ -1,7 +1,9 @@
 """Test zero_cross_detect (zcdet)."""
+
 import numpy as np
-from morie.fn.zcdet import zero_cross_detect, zcdet
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.zcdet import zcdet, zero_cross_detect
 
 
 class TestZeroCrossDetect:

@@ -1,6 +1,7 @@
 """Tests for volcc.vol_christoffersen_cc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volcc import vol_christoffersen_cc
 
 
@@ -10,7 +11,7 @@ def test_volcc_basic():
     alpha = 0.05
     result = vol_christoffersen_cc(hits, alpha)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_volcc_edge():

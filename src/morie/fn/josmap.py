@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Symmetric Mean Absolute Percentage Error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_smape"]
@@ -32,7 +34,9 @@ def joseph_smape(y_true, y_pred):
     n = len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Symmetric Mean Absolute Percentage Error"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Symmetric Mean Absolute Percentage Error"}
+    )
 
 
 def cheatsheet():

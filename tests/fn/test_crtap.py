@@ -1,8 +1,9 @@
 """Tests for morie.fn.crtap — appeal rate."""
 
 import pytest
-from morie.fn.crtap import court_appeal_rate
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.crtap import court_appeal_rate
 
 
 class TestAppealRate:

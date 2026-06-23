@@ -1,7 +1,8 @@
 """Tests for morie.fn.palps — Parallel analysis."""
+
 import numpy as np
 
-from morie.fn.palps import parallel_analysis, palps
+from morie.fn.palps import palps, parallel_analysis
 
 
 def test_correlated_suggests_factors():

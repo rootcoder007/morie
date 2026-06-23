@@ -79,4 +79,4 @@ rlts = lts_regression
 
 
 def cheatsheet() -> str:
-    return 'lts_regression({}) -> Least trimmed squares regression.'
+    return "lts_regression({}) -> Least trimmed squares regression."

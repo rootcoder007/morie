@@ -1,6 +1,7 @@
 """Tests for icrf.item_characteristic_curve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.icrf import item_characteristic_curve
 
 
@@ -13,7 +14,7 @@ def test_icrf_basic():
     c = np.random.default_rng(42).normal(0, 1, 100)
     result = item_characteristic_curve(y, theta, a, b, c)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_icrf_edge():

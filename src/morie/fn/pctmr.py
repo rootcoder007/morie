@@ -13,6 +13,7 @@ Score function:
 with q in (0, 0.5).  Statistic T = sum_{i in X} a_i.  Variance under
 H0 is m*n/(N*(N-1)) * sum a_i^2.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -42,11 +43,17 @@ def percentile_modified_rank(x, y, q: float = 0.25):
     m, n = int(x.size), int(y.size)
     N = m + n
     if m < 2 or n < 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "z": np.nan,
-            "n": N, "m": m, "q": float(q),
-            "method": "Percentile-modified rank test",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "z": np.nan,
+                "n": N,
+                "m": m,
+                "q": float(q),
+                "method": "Percentile-modified rank test",
+            }
+        )
     if not (0.0 < q < 0.5):
         raise ValueError("q must lie strictly between 0 and 0.5")
     pooled = np.concatenate([x, y])
@@ -55,19 +62,21 @@ def percentile_modified_rank(x, y, q: float = 0.25):
     lower_cut = q * (N + 1.0)
     a = np.maximum(R - upper_cut, 0.0) - np.maximum(lower_cut - R, 0.0)
     T = float(a[:m].sum())
-    sum_a2 = float((a ** 2).sum())
+    sum_a2 = float((a**2).sum())
     Var_T = (m * n / float(N * (N - 1))) * sum_a2
     z = T / np.sqrt(Var_T) if Var_T > 0 else np.nan
     p = 2.0 * (1.0 - stats.norm.cdf(abs(z))) if np.isfinite(z) else np.nan
-    return RichResult(payload={
-        "statistic": T,
-        "p_value": float(p),
-        "z": float(z),
-        "n": N,
-        "m": m,
-        "q": float(q),
-        "method": "Percentile-modified rank (Gastwirth) test",
-    })
+    return RichResult(
+        payload={
+            "statistic": T,
+            "p_value": float(p),
+            "z": float(z),
+            "n": N,
+            "m": m,
+            "q": float(q),
+            "method": "Percentile-modified rank (Gastwirth) test",
+        }
+    )
 
 
 def cheatsheet():

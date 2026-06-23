@@ -1,6 +1,7 @@
 """Tests for dpcov.dp_covariance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpcov import dp_covariance
 
 
@@ -11,7 +12,7 @@ def test_dpcov_basic():
     epsilon = 1e-6
     result = dp_covariance(X, C, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpcov_edge():

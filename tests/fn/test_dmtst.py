@@ -1,6 +1,7 @@
 """Tests for morie.fn.dmtst -- Diebold-Mariano test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dmtst import dm_test
 
 
@@ -22,4 +23,5 @@ class TestDM:
 
     def test_cheatsheet(self):
         from morie.fn.dmtst import cheatsheet
+
         assert isinstance(cheatsheet(), str)

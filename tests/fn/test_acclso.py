@@ -1,6 +1,7 @@
 """Tests for acclso.accelerated_lasso."""
+
 import numpy as np
-import pytest
+
 from morie.fn.acclso import accelerated_lasso
 
 
@@ -12,7 +13,7 @@ def test_acclso_basic():
     steps = np.random.default_rng(42).normal(0, 1, 100)
     result = accelerated_lasso(X, y, lam, steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_acclso_edge():

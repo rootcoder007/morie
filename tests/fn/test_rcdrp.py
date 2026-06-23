@@ -1,6 +1,7 @@
 """Tests for morie.fn.rcdrp -- drop influential votes."""
 
 import numpy as np
+
 from morie.fn.rcdrp import drop_influential_votes, rcdrp
 
 

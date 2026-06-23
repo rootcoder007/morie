@@ -10,6 +10,7 @@ wired into :data:`morie.data.DATASET_CATALOG` through the ``fetcher``
 mechanism, so ``morie.load_dataset()`` can fetch a CIHI indicator
 table on demand.
 """
+
 from __future__ import annotations
 
 import io
@@ -34,8 +35,7 @@ def _pick_data_sheet(xl, **read_excel_kwargs):
     return best_df
 
 
-def fetch_cihi_xlsx(url: str, *, sheet: Any = None, timeout: float = 120.0,
-                    **read_excel_kwargs: Any):
+def fetch_cihi_xlsx(url: str, *, sheet: Any = None, timeout: float = 120.0, **read_excel_kwargs: Any):
     """Download a CIHI indicator ``.xlsx`` data table and return a DataFrame.
 
     Parameters

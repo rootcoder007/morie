@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Sliding-window attention: token i attends to [i-W, i] only."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_sliding_window_attention"]
@@ -36,7 +38,14 @@ def alammar_sliding_window_attention(Q, K, V, window_size):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sliding-window attention: token i attends to [i-W, i] only"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sliding-window attention: token i attends to [i-W, i] only",
+        }
+    )
 
 
 def cheatsheet():

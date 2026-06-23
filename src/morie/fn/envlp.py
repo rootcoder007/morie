@@ -61,4 +61,4 @@ def envelope(
 
 
 def cheatsheet() -> str:
-    return 'envelope({}) -> Signal envelope via Hilbert transform.'
+    return "envelope({}) -> Signal envelope via Hilbert transform."

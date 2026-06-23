@@ -1,6 +1,7 @@
 """Tests for rqtmpl.qtl_mapping."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rqtmpl import qtl_mapping
 
 
@@ -11,7 +12,7 @@ def test_rqtmpl_basic():
     positions = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = qtl_mapping(y, markers, positions)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rqtmpl_edge():

@@ -1,6 +1,7 @@
 """Tau-leap stochastic SIR."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tau_leap_sim"]

@@ -1,6 +1,7 @@
 """T-period return level under POT/GPD."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_return_level_pot"]

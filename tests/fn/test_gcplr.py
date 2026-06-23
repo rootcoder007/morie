@@ -1,6 +1,7 @@
 """Test gcplr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcplr import gcplr
 
 

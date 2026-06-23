@@ -1,5 +1,7 @@
 """Test multi-head attention."""
+
 import numpy as np
+
 from morie.fn.mhatt import mhatt
 
 

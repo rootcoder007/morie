@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal LM next-token cross-entropy loss (GPT-style)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_causal_lm_loss"]
@@ -32,7 +34,9 @@ def kamath_causal_lm_loss(logits, targets):
     n = len(logits)
     result = float(np.mean(logits))
     se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Causal LM next-token cross-entropy loss (GPT-style)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Causal LM next-token cross-entropy loss (GPT-style)"}
+    )
 
 
 def cheatsheet():

@@ -29,70 +29,75 @@ import pytest
 # Module imports
 # ---------------------------------------------------------------------------
 from morie.did import (
-    did_2x2,
-    event_study,
-    bacon_decomposition,
-    staggered_did,
-    did_doubly_robust,
-    placebo_test_time,
+    BaconDecomposition,
     DiDResult,
     EventStudyResult,
-    BaconDecomposition,
+    bacon_decomposition,
+    did_2x2,
+    did_doubly_robust,
+    event_study,
+    placebo_test_time,
+    staggered_did,
 )
 from morie.iv import (
-    tsls,
-    wald_estimator,
+    DiagnosticResult,
+    IVResult,
+    anderson_rubin_test,
     first_stage_diagnostics,
     sargan_test,
-    anderson_rubin_test,
-    IVResult,
-    DiagnosticResult,
-)
-from morie.rdd import (
-    sharp_rdd,
-    fuzzy_rdd,
-    mccrary_test,
-    bandwidth_ik,
-    rd_plot_data,
-    RDDResult,
-    BandwidthResult,
-    DensityTestResult,
+    tsls,
+    wald_estimator,
 )
 from morie.matching import (
-    match_nearest_neighbor,
-    estimate_propensity_score,
+    BalanceResult,
+    MatchResult,
+    TreatmentEffectResult,
     balance_diagnostics,
     estimate_att_matched,
+    estimate_propensity_score,
+    match_nearest_neighbor,
     rosenbaum_bounds,
-    MatchResult,
-    BalanceResult,
-    TreatmentEffectResult,
+)
+from morie.rdd import (
+    BandwidthResult,
+    DensityTestResult,
+    RDDResult,
+    bandwidth_ik,
+    fuzzy_rdd,
+    mccrary_test,
+    rd_plot_data,
+    sharp_rdd,
 )
 from morie.sensitivity import (
-    e_value_rr,
-    e_value_or,
-    rosenbaum_bounds as sensitivity_rosenbaum_bounds,
-    omitted_variable_bias,
-    manski_bounds,
     EValueResult,
-    RosenbaumBounds as SensitivityRosenbaumBounds,
-    OmittedVariableBias as OVBResult,
-    tipping_point_analysis,
     TippingPointResult,
+    e_value_or,
+    e_value_rr,
+    manski_bounds,
+    omitted_variable_bias,
+    tipping_point_analysis,
+)
+from morie.sensitivity import (
+    OmittedVariableBias as OVBResult,
+)
+from morie.sensitivity import (
+    RosenbaumBounds as SensitivityRosenbaumBounds,
+)
+from morie.sensitivity import (
+    rosenbaum_bounds as sensitivity_rosenbaum_bounds,
 )
 from morie.survival import (
-    kaplan_meier,
-    cox_ph,
-    logrank_test,
-    exponential_model,
-    weibull_model,
-    restricted_mean_survival_time,
-    SurvivalCurve,
     CoxResult,
     LogRankResult,
     ParametricSurvivalResult,
+    SurvivalCurve,
+    cox_ph,
+    exponential_model,
+    kaplan_meier,
+    logrank_test,
+    restricted_mean_survival_time,
+    weibull_model,
 )
-
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -120,18 +125,14 @@ class TestDiD:
         """Generate a 2x2 DiD panel with a known treatment effect."""
         treatment = np.repeat([0, 1], n // 2)
         post = np.tile([0, 1], n // 2)
-        y = (
-            1.0
-            + 0.5 * treatment
-            + 0.3 * post
-            + true_effect * treatment * post
-            + rng.normal(0, 1, n)
+        y = 1.0 + 0.5 * treatment + 0.3 * post + true_effect * treatment * post + rng.normal(0, 1, n)
+        return pd.DataFrame(
+            {
+                "outcome": y,
+                "treatment": treatment,
+                "post": post,
+            }
         )
-        return pd.DataFrame({
-            "outcome": y,
-            "treatment": treatment,
-            "post": post,
-        })
 
     def test_did_2x2_returns_didresult(self, rng):
         df = self._make_did_data(rng)
@@ -143,14 +144,10 @@ class TestDiD:
         true_effect = 3.0
         df = self._make_did_data(rng, n=400, true_effect=true_effect)
         res = did_2x2(df, "outcome", "treatment", "post")
-        assert abs(res.estimate - true_effect) < 0.5, (
-            f"DiD estimate {res.estimate:.2f} far from true {true_effect}"
-        )
+        assert abs(res.estimate - true_effect) < 0.5, f"DiD estimate {res.estimate:.2f} far from true {true_effect}"
         assert res.ci_lower < true_effect < res.ci_upper
         ci_width = res.ci_upper - res.ci_lower
-        assert ci_width < 2.0, (
-            f"DiD CI width {ci_width:.2f} is too wide — estimate is uninformative"
-        )
+        assert ci_width < 2.0, f"DiD CI width {ci_width:.2f} is too wide — estimate is uninformative"
 
     def test_did_2x2_with_covariates(self, rng):
         df = self._make_did_data(rng)
@@ -172,15 +169,18 @@ class TestDiD:
         df = self._make_did_data(rng, n=400, true_effect=2.0)
         df["x1"] = rng.normal(0, 1, len(df))
         res = did_doubly_robust(
-            df, "outcome", "treatment", "post",
-            covariates=["x1"], n_bootstrap=50, seed=RNG_SEED,
+            df,
+            "outcome",
+            "treatment",
+            "post",
+            covariates=["x1"],
+            n_bootstrap=50,
+            seed=RNG_SEED,
         )
         assert isinstance(res, DiDResult)
         assert res.method == "did_doubly_robust"
         # Should be in the right ballpark (true effect = 2.0)
-        assert abs(res.estimate - 2.0) < 1.5, (
-            f"DR-DiD estimate {res.estimate:.2f} too far from true value 2.0"
-        )
+        assert abs(res.estimate - 2.0) < 1.5, f"DR-DiD estimate {res.estimate:.2f} too far from true value 2.0"
 
     def test_event_study_returns_result(self, rng):
         n_units = 40
@@ -193,14 +193,23 @@ class TestDiD:
             for t in range(n_periods):
                 post = 1 if (g == 1 and t >= treatment_time_val) else 0
                 y = 1.0 + 0.5 * g + 0.1 * t + 2.0 * post + rng.normal(0, 0.5)
-                records.append({
-                    "unit": u, "time": t, "outcome": y,
-                    "treatment_time": tt,
-                })
+                records.append(
+                    {
+                        "unit": u,
+                        "time": t,
+                        "outcome": y,
+                        "treatment_time": tt,
+                    }
+                )
         df = pd.DataFrame(records)
         res = event_study(
-            df, "outcome", "unit", "time", "treatment_time",
-            leads=3, lags=3,
+            df,
+            "outcome",
+            "unit",
+            "time",
+            "treatment_time",
+            leads=3,
+            lags=3,
         )
         assert isinstance(res, EventStudyResult)
         assert isinstance(res.coefficients, pd.DataFrame)
@@ -221,9 +230,14 @@ class TestDiD:
             for t in range(n_periods):
                 treat = 1 if (g_time != np.inf and t >= g_time) else 0
                 y = 1.0 + 0.2 * t + 1.5 * treat + rng.normal(0, 0.5)
-                records.append({
-                    "unit": u, "time": t, "outcome": y, "treat": treat,
-                })
+                records.append(
+                    {
+                        "unit": u,
+                        "time": t,
+                        "outcome": y,
+                        "treat": treat,
+                    }
+                )
         df = pd.DataFrame(records)
         res = bacon_decomposition(df, "outcome", "treat", "unit", "time")
         assert isinstance(res, BaconDecomposition)
@@ -244,8 +258,12 @@ class TestDiD:
             records.append(chunk)
         panel = pd.concat(records, ignore_index=True)
         res = placebo_test_time(
-            panel, "outcome", "treatment", "time",
-            true_treatment_time=3, placebo_times=[1, 2],
+            panel,
+            "outcome",
+            "treatment",
+            "time",
+            true_treatment_time=3,
+            placebo_times=[1, 2],
         )
         assert isinstance(res, pd.DataFrame)
         assert "estimate" in res.columns
@@ -264,14 +282,23 @@ class TestDiD:
             for t in range(n_periods):
                 treat = 1 if (g_time != np.inf and t >= g_time) else 0
                 y = 1.0 + 0.2 * t + 1.5 * treat + rng.normal(0, 0.5)
-                records.append({
-                    "unit": u, "time": t, "outcome": y,
-                    "treatment_time": g_time,
-                })
+                records.append(
+                    {
+                        "unit": u,
+                        "time": t,
+                        "outcome": y,
+                        "treatment_time": g_time,
+                    }
+                )
         df = pd.DataFrame(records)
         res = staggered_did(
-            df, "outcome", "unit", "time", "treatment_time",
-            n_bootstrap=30, seed=RNG_SEED,
+            df,
+            "outcome",
+            "unit",
+            "time",
+            "treatment_time",
+            n_bootstrap=30,
+            seed=RNG_SEED,
         )
         assert isinstance(res, dict)
         assert "group_time" in res
@@ -319,9 +346,7 @@ class TestIV:
         # Find the endogenous variable coefficient by name
         endog_idx = res.variable_names.index("d")
         beta_hat = float(res.coefficients[endog_idx])
-        assert abs(beta_hat - true_beta) < 1.0, (
-            f"2SLS estimate {beta_hat:.2f} far from {true_beta}"
-        )
+        assert abs(beta_hat - true_beta) < 1.0, f"2SLS estimate {beta_hat:.2f} far from {true_beta}"
 
     def test_tsls_with_exogenous(self, rng):
         df = self._make_iv_data(rng)
@@ -420,9 +445,7 @@ class TestRDD:
         true_jump = 3.0
         df = self._make_rdd_data(rng, n=500, true_jump=true_jump)
         res = sharp_rdd(df, "outcome", "running", cutoff=0.0, bandwidth=1.5)
-        assert abs(res.estimate - true_jump) < 1.5, (
-            f"Sharp RDD estimate {res.estimate:.2f} far from {true_jump}"
-        )
+        assert abs(res.estimate - true_jump) < 1.5, f"Sharp RDD estimate {res.estimate:.2f} far from {true_jump}"
 
     def test_sharp_rdd_auto_bandwidth(self, rng):
         df = self._make_rdd_data(rng)
@@ -504,10 +527,14 @@ class TestMatching:
         ps_true = 1 / (1 + np.exp(-(0.5 * x1 + 0.3 * x2)))
         treatment = rng.binomial(1, ps_true)
         y = 1.0 + 2.0 * treatment + 0.8 * x1 + rng.normal(0, 1, n)
-        return pd.DataFrame({
-            "outcome": y, "treatment": treatment,
-            "x1": x1, "x2": x2,
-        })
+        return pd.DataFrame(
+            {
+                "outcome": y,
+                "treatment": treatment,
+                "x1": x1,
+                "x2": x2,
+            }
+        )
 
     def test_estimate_propensity_score_returns_series(self, rng):
         df = self._make_matching_data(rng)
@@ -544,9 +571,7 @@ class TestMatching:
         df = self._make_matching_data(rng, n=400)
         bal_before = balance_diagnostics(df, "treatment", ["x1", "x2"])
         match_res = match_nearest_neighbor(df, "treatment", ["x1", "x2"])
-        bal_after = balance_diagnostics(
-            match_res.matched_data, "treatment", ["x1", "x2"]
-        )
+        bal_after = balance_diagnostics(match_res.matched_data, "treatment", ["x1", "x2"])
         # After matching, balance should improve or at least not be terrible
         assert bal_after.overall_balance <= bal_before.overall_balance + 0.2
 
@@ -554,7 +579,10 @@ class TestMatching:
         df = self._make_matching_data(rng)
         match_res = match_nearest_neighbor(df, "treatment", ["x1", "x2"])
         att = estimate_att_matched(
-            df, "outcome", "treatment", match_res.match_pairs,
+            df,
+            "outcome",
+            "treatment",
+            match_res.match_pairs,
         )
         assert isinstance(att, TreatmentEffectResult)
         assert att.estimand == "ATT"
@@ -566,7 +594,10 @@ class TestMatching:
         df = self._make_matching_data(rng)
         match_res = match_nearest_neighbor(df, "treatment", ["x1", "x2"])
         bounds = rosenbaum_bounds(
-            df, "outcome", "treatment", match_res.match_pairs,
+            df,
+            "outcome",
+            "treatment",
+            match_res.match_pairs,
         )
         assert isinstance(bounds, pd.DataFrame)
         assert "gamma" in bounds.columns
@@ -647,8 +678,11 @@ class TestSensitivity:
 
     def test_omitted_variable_bias_returns_result(self):
         res = omitted_variable_bias(
-            estimate=0.5, se=0.1, dof=100,
-            r2_yd_x=0.15, partial_r2_treatment=0.15,
+            estimate=0.5,
+            se=0.1,
+            dof=100,
+            r2_yd_x=0.15,
+            partial_r2_treatment=0.15,
         )
         assert isinstance(res, OVBResult)
         assert res.rv_q >= 0
@@ -657,8 +691,11 @@ class TestSensitivity:
 
     def test_omitted_variable_bias_with_benchmarks(self):
         res = omitted_variable_bias(
-            estimate=0.5, se=0.1, dof=100,
-            r2_yd_x=0.15, partial_r2_treatment=0.15,
+            estimate=0.5,
+            se=0.1,
+            dof=100,
+            r2_yd_x=0.15,
+            partial_r2_treatment=0.15,
             benchmark_covariates={"age": 0.05, "income": 0.10},
         )
         assert "age" in res.benchmark_bounds
@@ -678,7 +715,10 @@ class TestSensitivity:
 
     def test_tipping_point_analysis_returns_result(self):
         res = tipping_point_analysis(
-            estimate=0.5, se=0.15, n_treated=100, n_control=100,
+            estimate=0.5,
+            se=0.15,
+            n_treated=100,
+            n_control=100,
         )
         assert isinstance(res, TippingPointResult)
         assert res.original_estimate == 0.5
@@ -823,10 +863,13 @@ class TestSurvival:
         assert res["tau"] > 0
         assert res["rmst"] > 0
 
-    @pytest.mark.parametrize("model_fn,dist_name", [
-        (exponential_model, "Exponential"),
-        (weibull_model, "Weibull"),
-    ])
+    @pytest.mark.parametrize(
+        "model_fn,dist_name",
+        [
+            (exponential_model, "Exponential"),
+            (weibull_model, "Weibull"),
+        ],
+    )
     def test_parametric_models_aic_bic(self, rng, model_fn, dist_name):
         time, event = self._make_survival_data(rng)
         res = model_fn(time, event)

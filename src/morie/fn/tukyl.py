@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tukey biweight loss."""
 
+
 def tukyl(residual: float, c: float = 4.685) -> float:
     """Tukey biweight (bisquare) loss.
 

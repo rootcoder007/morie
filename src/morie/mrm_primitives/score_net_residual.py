@@ -37,9 +37,10 @@ import pandas as pd
 @dataclass
 class ScoreNetResidualResult:
     """Stage-2 audit coefficients."""
+
     sensitive_attribute_names: list[str]
-    coefficients: dict[str, float]               # name -> stage-2 coefficient
-    std_errors: dict[str, float]                 # name -> bootstrap SE
+    coefficients: dict[str, float]  # name -> stage-2 coefficient
+    std_errors: dict[str, float]  # name -> bootstrap SE
     n_obs: int
     score_coefficient: float
     interpretation: str
@@ -52,8 +53,7 @@ class ScoreNetResidualResult:
             return False
         z = abs(b / se)
         # Quick approx: |z| >= 1.96 for alpha=0.05; 2.58 for alpha=0.01
-        critical = 1.959964 if alpha == 0.05 else (2.575829 if alpha == 0.01 else
-                                                    abs(_norm_ppf(1 - alpha / 2)))
+        critical = 1.959964 if alpha == 0.05 else (2.575829 if alpha == 0.01 else abs(_norm_ppf(1 - alpha / 2)))
         return z >= critical
 
 
@@ -111,8 +111,7 @@ def score_net_residual(
     # Actually: _fit prepends a 1 column; so coef[0]=intercept, coef[1]=score,
     # coef[2..1+len(sensitive)] = sensitive coefs.
     sensitive_idx = list(range(2, 2 + len(sensitive_cols)))
-    coefs_dict = {name: float(coef[i])
-                  for name, i in zip(sensitive_cols, sensitive_idx)}
+    coefs_dict = {name: float(coef[i]) for name, i in zip(sensitive_cols, sensitive_idx)}
 
     if bootstrap_replicates > 0:
         rng = np.random.default_rng(random_state)
@@ -124,8 +123,7 @@ def score_net_residual(
             except (ValueError, np.linalg.LinAlgError):
                 boot_coefs[b] = np.nan
         ses = np.nanstd(boot_coefs, axis=0)
-        se_dict = {name: float(ses[i])
-                   for name, i in zip(sensitive_cols, sensitive_idx)}
+        se_dict = {name: float(ses[i]) for name, i in zip(sensitive_cols, sensitive_idx)}
     else:
         se_dict = {name: float("nan") for name in sensitive_cols}
 
@@ -138,7 +136,8 @@ def score_net_residual(
         bias_lines.append(f"{name}={b:+.4f}({se:.4f}){marker}")
     interp = (
         f"Residual sensitive-attribute coefficients net of score "
-        f"({score_col}, β={score_coef:+.4f}): " + ", ".join(bias_lines)
+        f"({score_col}, β={score_coef:+.4f}): "
+        + ", ".join(bias_lines)
         + ".  * = |β|/SE >= 1.96.  Significant residual = institution "
         "is not using the score uniformly across groups."
     )
@@ -163,6 +162,7 @@ def _fit(X: np.ndarray, y: np.ndarray, family: str) -> np.ndarray:
         return np.linalg.lstsq(X_int, y, rcond=None)[0]
     if family == "logit":
         from .synthetic_exposure import _logistic_fit
+
         return _logistic_fit(X, y)
     raise ValueError(f"unknown family {family!r}; expected 'logit' or 'linear'")
 
@@ -171,28 +171,46 @@ def _norm_ppf(p: float) -> float:
     """Beasley-Springer approximation to the inverse normal CDF.
     Used only when caller passes alpha != 0.05 or 0.01.
     """
-    a = [-3.969683028665376e+01, 2.209460984245205e+02,
-         -2.759285104469687e+02, 1.383577518672690e+02,
-         -3.066479806614716e+01, 2.506628277459239e+00]
-    b = [-5.447609879822406e+01, 1.615858368580409e+02,
-         -1.556989798598866e+02, 6.680131188771972e+01,
-         -1.328068155288572e+01]
-    c = [-7.784894002430293e-03, -3.223964580411365e-01,
-         -2.400758277161838e+00, -2.549732539343734e+00,
-          4.374664141464968e+00, 2.938163982698783e+00]
-    d = [7.784695709041462e-03, 3.224671290700398e-01,
-         2.445134137142996e+00, 3.754408661907416e+00]
+    a = [
+        -3.969683028665376e01,
+        2.209460984245205e02,
+        -2.759285104469687e02,
+        1.383577518672690e02,
+        -3.066479806614716e01,
+        2.506628277459239e00,
+    ]
+    b = [
+        -5.447609879822406e01,
+        1.615858368580409e02,
+        -1.556989798598866e02,
+        6.680131188771972e01,
+        -1.328068155288572e01,
+    ]
+    c = [
+        -7.784894002430293e-03,
+        -3.223964580411365e-01,
+        -2.400758277161838e00,
+        -2.549732539343734e00,
+        4.374664141464968e00,
+        2.938163982698783e00,
+    ]
+    d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e00, 3.754408661907416e00]
     p_low = 0.02425
     p_high = 1.0 - p_low
     if 0.0 < p < p_low:
         q = (-2 * np.log(p)) ** 0.5
-        return (((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5]) / \
-               ((((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1)
+        return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1
+        )
     if p_low <= p <= p_high:
         q = p - 0.5
         r = q * q
-        return (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5])*q / \
-               (((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1)
+        return (
+            (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5])
+            * q
+            / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+        )
     q = (-2 * np.log(1 - p)) ** 0.5
-    return -(((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5]) / \
-            ((((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1)
+    return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+        (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1
+    )

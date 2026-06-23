@@ -86,4 +86,4 @@ def nmf(
 
 
 def cheatsheet() -> str:
-    return 'nmf({}) -> Non-negative Matrix Factorization.'
+    return "nmf({}) -> Non-negative Matrix Factorization."

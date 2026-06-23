@@ -48,4 +48,4 @@ dispr = disparity_fit
 
 
 def cheatsheet() -> str:
-    return 'disparity_fit({}) -> Disparity fit via isotonic regression.'
+    return "disparity_fit({}) -> Disparity fit via isotonic regression."

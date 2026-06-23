@@ -1,7 +1,6 @@
 """Tests for morie.fn.svmxu -- Mixed-norm spatial utility"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svmxu import mixed_utility
 

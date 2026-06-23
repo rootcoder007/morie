@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.sirsd import sirs_demographics
 
 
@@ -18,7 +19,7 @@ class TestSIRSD:
 
     def test_r0_formula(self):
         res = sirs_demographics(beta=0.5, gamma=0.2, xi=0.01, mu=0.01)
-        assert res.R0 == pytest.approx(0.5 / (0.2 + 0.01), rel=1e-6)
+        assert pytest.approx(0.5 / (0.2 + 0.01), rel=1e-6) == res.R0
 
     def test_model_label(self):
         res = sirs_demographics(beta=0.3, gamma=0.1, xi=0.01)

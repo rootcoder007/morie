@@ -1,6 +1,7 @@
 """ICC(1,1) one-way random effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["icc_one_way"]

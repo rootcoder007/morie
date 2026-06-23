@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Three-step counterfactual inference: abduction, modification, prediction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["abduction_modification_prediction"]
@@ -36,7 +38,14 @@ def abduction_modification_prediction(evidence, do_X, Y, scm):
     n = int(evidence) if evidence.ndim == 0 else len(evidence)
     result = float(np.mean(evidence))
     se = float(np.std(evidence, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Three-step counterfactual inference: abduction, modification, prediction"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Three-step counterfactual inference: abduction, modification, prediction",
+        }
+    )
 
 
 def cheatsheet():

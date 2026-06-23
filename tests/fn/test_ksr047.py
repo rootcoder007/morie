@@ -1,6 +1,7 @@
 """Tests for ksr047.kosorok_ch2_kaplan_meier_self_consistency."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr047 import kosorok_ch2_kaplan_meier_self_consistency
 
 
@@ -13,7 +14,7 @@ def test_ksr047_basic():
     t = np.linspace(0, 10, 100)
     result = kosorok_ch2_kaplan_meier_self_consistency(S, S_0, L, G, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr047_edge():

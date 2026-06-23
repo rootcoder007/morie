@@ -107,7 +107,7 @@ def _check_freeapi() -> tuple[bool, str]:
 def _check_datasets() -> tuple[bool, str]:
     """Check built-in MORIE datasets database."""
     try:
-        from .data import morie_db, list_datasets
+        from .data import list_datasets, morie_db
 
         db_path = morie_db()
         if not db_path.exists():
@@ -317,9 +317,8 @@ def _heal(results: dict[str, Any]) -> bool:
     print("Healing -- attempting to fix failed checks ...")
 
     cache_dir = os.path.join(
-        os.environ.get("XDG_CACHE_HOME")
-        or os.path.join(os.path.expanduser("~"), ".cache"),
-        "morie")
+        os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache"), "morie"
+    )
     try:
         os.makedirs(cache_dir, exist_ok=True)
         print(f"  [ok]   cache directory ready: {cache_dir}")
@@ -332,25 +331,20 @@ def _heal(results: dict[str, Any]) -> bool:
             continue
         label = check["label"]
         if label.startswith("import "):
-            pkg = label[len("import "):]
+            pkg = label[len("import ") :]
             pip_name = _PIP_NAME.get(pkg, pkg)
             print(f"  ...    installing {pip_name} via pip ...")
-            rc = subprocess.run(
-                [sys.executable, "-m", "pip", "install", pip_name]
-            ).returncode
+            rc = subprocess.run([sys.executable, "-m", "pip", "install", pip_name]).returncode
             print(f"  [{'ok' if rc == 0 else 'fail'}]   pip install {pip_name}")
             fixed_any = fixed_any or rc == 0
         elif label == "morie version":
             print("  [hint] run `morie update` to upgrade morie itself.")
         elif label == "Built-in datasets":
-            print("  [hint] reinstall to restore the built-in DB: "
-                  "pip install --force-reinstall morie")
+            print("  [hint] reinstall to restore the built-in DB: pip install --force-reinstall morie")
         elif label == "R (Rscript)":
-            print("  [hint] install R from https://www.r-project.org/ "
-                  "(optional -- only the R bridge needs it).")
+            print("  [hint] install R from https://www.r-project.org/ (optional -- only the R bridge needs it).")
         else:
-            print(f"  [hint] {label}: optional component -- configure it "
-                  "only if you need that feature.")
+            print(f"  [hint] {label}: optional component -- configure it only if you need that feature.")
 
     if fixed_any:
         importlib.invalidate_caches()

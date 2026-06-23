@@ -1,14 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Paired t-test with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 from scipy.stats import ttest_rel
 
 
-def paired(x: Union[Sequence, np.ndarray],
-           y: Union[Sequence, np.ndarray]):
+def paired(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
     """Paired t-test on matched x, y samples.
 
     Returns a ``RichResult``. Access ``.statistic``, ``.pvalue``, or
@@ -20,19 +20,21 @@ def paired(x: Union[Sequence, np.ndarray],
     Wilcox (2017) ch.6; Wooditch et al. (2021) ch.11.
     """
     from ._richresult import hypothesis_test_result
+
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)
     if a.shape != b.shape:
-        raise ValueError("x and y must be paired (same length); got "
-                         f"x:{a.shape}, y:{b.shape}.")
+        raise ValueError(f"x and y must be paired (same length); got x:{a.shape}, y:{b.shape}.")
     diff = a - b
     res = ttest_rel(a, b)
 
     warnings = []
     if a.size < 10:
-        warnings.append(f"small sample (n={a.size}); paired-t assumes diffs "
-                        "are approximately Normal -- consider `wilcoxn` "
-                        "(signed-rank) as a robust alternative.")
+        warnings.append(
+            f"small sample (n={a.size}); paired-t assumes diffs "
+            "are approximately Normal -- consider `wilcoxn` "
+            "(signed-rank) as a robust alternative."
+        )
 
     return hypothesis_test_result(
         test_name="Paired t-test",

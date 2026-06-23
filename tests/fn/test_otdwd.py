@@ -1,6 +1,7 @@
 """Tests for otdwd.ot_doubly_stoch_proj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otdwd import ot_doubly_stoch_proj
 
 
@@ -10,7 +11,7 @@ def test_otdwd_basic():
     max_iter = np.random.default_rng(42).normal(0, 1, 100)
     result = ot_doubly_stoch_proj(K, max_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otdwd_edge():

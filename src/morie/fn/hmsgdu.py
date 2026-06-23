@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SGD update using single random sample."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sgd_update"]

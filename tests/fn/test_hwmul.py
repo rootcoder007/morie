@@ -1,6 +1,7 @@
 """Tests for hwmul.holt_winters_mult."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hwmul import holt_winters_mult
 
 
@@ -13,7 +14,7 @@ def test_hwmul_basic():
     gamma = 1.0
     result = holt_winters_mult(y, period, alpha, beta, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hwmul_edge():

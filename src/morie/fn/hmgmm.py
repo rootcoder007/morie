@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gaussian mixture model fit via EM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gaussian_mixture"]

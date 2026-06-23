@@ -18,11 +18,11 @@ from __future__ import annotations
 
 import numpy as np
 
+from morie.fn.bglup import bayes_cpi_genomic
 from morie.fn.blasf import bayesian_lasso_full
 from morie.fn.brdgf import bayes_ridge_gibbs
-from morie.fn.bglup import bayes_cpi_genomic
-from morie.fn.dlgen import deep_learning_genomic
 from morie.fn.cnnge import cnn_genomic
+from morie.fn.dlgen import deep_learning_genomic
 from morie.fn.rnnge import rnn_genomic
 from morie.fn.trfge import transformer_genomic
 
@@ -49,6 +49,7 @@ def _genomic_fixture(n: int = 15, m: int = 6):
 # ---------------------------------------------------------------------------
 # Bayesian regression callables (Gibbs samplers)
 # ---------------------------------------------------------------------------
+
 
 def test_blasf_deterministic_seed_reproducible():
     X, y = _regression_fixture()
@@ -86,6 +87,7 @@ def test_bglup_deterministic_seed_reproducible():
 # ---------------------------------------------------------------------------
 # Deep-learning callables (init draws from rng, training is deterministic GD)
 # ---------------------------------------------------------------------------
+
 
 def test_dlgen_deterministic_seed_reproducible():
     x, y, M = _genomic_fixture()

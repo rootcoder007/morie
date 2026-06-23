@@ -48,9 +48,7 @@ def bayesian_binomial(
 
     from scipy.special import betaln
 
-    log_ml = float(
-        betaln(post_a, post_b) - betaln(prior_a, prior_b)
-    )
+    log_ml = float(betaln(post_a, post_b) - betaln(prior_a, prior_b))
 
     return {
         "posterior_a": float(post_a),

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """T-wave detection in ECG."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_t_wave_detect"]

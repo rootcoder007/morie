@@ -1,6 +1,7 @@
 """Tests for reglmd.regression_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.reglmd import regression_estimator
 
 
@@ -12,7 +13,7 @@ def test_reglmd_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = regression_estimator(y, x, X, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_reglmd_edge():

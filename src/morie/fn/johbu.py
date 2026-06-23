@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bottom-up reconciliation: sum base-level forecasts to aggregate levels."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_bottom_up_reconciliation"]
@@ -32,7 +34,14 @@ def joseph_bottom_up_reconciliation(y_hat_bottom, S):
     n = len(y_hat_bottom)
     result = float(np.mean(y_hat_bottom))
     se = float(np.std(y_hat_bottom, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bottom-up reconciliation: sum base-level forecasts to aggregate levels"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bottom-up reconciliation: sum base-level forecasts to aggregate levels",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for scumap.umap_singlecell."""
+
 import numpy as np
-import pytest
+
 from morie.fn.scumap import umap_singlecell
 
 
@@ -11,7 +12,7 @@ def test_scumap_basic():
     min_dist = np.random.default_rng(42).normal(0, 1, 100)
     result = umap_singlecell(X, n_neighbors, min_dist)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_scumap_edge():

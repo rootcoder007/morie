@@ -1,7 +1,9 @@
 """Tests for vcont -- content validity ratio."""
+
 import numpy as np
-from morie.fn.vcont import content_validity_ratio
+
 from morie.fn._containers import ESRes
+from morie.fn.vcont import content_validity_ratio
 
 
 class TestContentValidity:

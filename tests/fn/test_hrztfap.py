@@ -1,6 +1,7 @@
 """Tests for hrztfap.horowitz_T_F_asymp_props."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrztfap import horowitz_T_F_asymp_props
 
 
@@ -11,7 +12,7 @@ def test_hrztfap_basic():
     bandwidth = 0.3
     result = horowitz_T_F_asymp_props(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrztfap_edge():

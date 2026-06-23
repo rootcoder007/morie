@@ -38,7 +38,7 @@ def correlation_entropy(x, m_max: int = 10, r: float | None = None, **kwargs) ->
         n_embed = n - m + 1
         if n_embed < 3:
             break
-        embedded = np.array([x[i:i + m] for i in range(n_embed)])
+        embedded = np.array([x[i : i + m] for i in range(n_embed)])
         count = 0
         for i in range(n_embed):
             dists = np.max(np.abs(embedded[i] - embedded), axis=1)

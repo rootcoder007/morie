@@ -1,6 +1,7 @@
 """Two-strain hiatus epidemic."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hiatus_model"]

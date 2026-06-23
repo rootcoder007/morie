@@ -81,4 +81,4 @@ iview = image_info_result
 
 
 def cheatsheet() -> str:
-    return 'view_image({}) -> Image viewer and info.'
+    return "view_image({}) -> Image viewer and info."

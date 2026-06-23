@@ -1,6 +1,7 @@
 """Tests for stsmod.state_space_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.stsmod import state_space_model
 
 
@@ -14,7 +15,7 @@ def test_stsmod_basic():
     R = np.random.default_rng(42).normal(0, 1, 100)
     result = state_space_model(y, Z, T, H, Q, R)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_stsmod_edge():

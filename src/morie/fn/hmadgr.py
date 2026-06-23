@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AdaGrad: per-parameter learning rates scaled by historical gradients."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_adagrad"]
@@ -36,7 +38,14 @@ def geron_adagrad(grads, s, eta, eps):
     n = len(grads)
     result = float(np.mean(grads))
     se = float(np.std(grads, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AdaGrad: per-parameter learning rates scaled by historical gradients"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AdaGrad: per-parameter learning rates scaled by historical gradients",
+        }
+    )
 
 
 def cheatsheet():

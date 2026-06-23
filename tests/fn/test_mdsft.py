@@ -1,6 +1,6 @@
 """Tests for morie.fn.mdsft — MDS fit statistics."""
+
 import numpy as np
-import pytest
 
 from morie.fn.mdsft import mdsft
 
@@ -13,6 +13,7 @@ def test_mdsft_smoke():
 
 def test_cheatsheet():
     from morie.fn.mdsft import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

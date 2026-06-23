@@ -1,7 +1,9 @@
 """Test spectral_flatness (spflm)."""
+
 import numpy as np
-from morie.fn.spflm import spectral_flatness, spflm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spflm import spectral_flatness, spflm
 
 
 class TestSpflm:

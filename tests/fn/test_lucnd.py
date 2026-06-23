@@ -1,6 +1,8 @@
 """Tests for lucnd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.lucnd import lucnd
 
 
@@ -28,4 +30,5 @@ def test_lucnd_no_data():
 
 def test_lucnd_alias():
     from morie.fn.lucnd import lucnd
+
     assert lucnd is lucnd

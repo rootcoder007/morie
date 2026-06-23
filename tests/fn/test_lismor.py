@@ -1,6 +1,7 @@
 """Tests for lismor.local_morans_i."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lismor import local_morans_i
 
 
@@ -10,7 +11,7 @@ def test_lismor_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = local_morans_i(x, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lismor_edge():

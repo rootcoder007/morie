@@ -1,6 +1,8 @@
 """Tests for siprob."""
+
 import numpy as np
 import pytest
+
 from morie.fn.siprob import siprob
 
 
@@ -28,4 +30,5 @@ def test_siprob_no_data():
 
 def test_siprob_alias():
     from morie.fn.siprob import siprob
+
     assert siprob is siprob

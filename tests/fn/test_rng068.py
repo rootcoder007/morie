@@ -1,6 +1,7 @@
 """Tests for rng068.rangayyan_ch3_dft_K_samples."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng068 import rangayyan_ch3_dft_K_samples
 
 
@@ -13,7 +14,7 @@ def test_rng068_basic():
     N = 100
     result = rangayyan_ch3_dft_K_samples(x, n, k, K, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng068_edge():

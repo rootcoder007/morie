@@ -30,4 +30,4 @@ dst2s = distance_to_squared
 
 
 def cheatsheet() -> str:
-    return 'distance_to_squared({}) -> Distance to squared element-wise.'
+    return "distance_to_squared({}) -> Distance to squared element-wise."

@@ -1,8 +1,9 @@
 """Tests for morie.fn.tpscl — clearance rate."""
 
 import pytest
-from morie.fn.tpscl import tps_clearance_rate
+
 from morie.fn._containers import CrimeResult
+from morie.fn.tpscl import tps_clearance_rate
 
 
 class TestClearanceRate:

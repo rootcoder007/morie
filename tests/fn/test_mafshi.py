@@ -1,6 +1,7 @@
 """Tests for mafshi.ma_fishers_z_inverse."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mafshi import ma_fishers_z_inverse
 
 
@@ -9,7 +10,7 @@ def test_mafshi_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = ma_fishers_z_inverse(z)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_mafshi_edge():

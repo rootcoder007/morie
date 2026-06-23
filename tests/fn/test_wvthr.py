@@ -1,5 +1,7 @@
 """Tests for wvthr.py - Wavelet threshold selection."""
+
 import numpy as np
+
 from morie.fn.wvthr import wavelet_threshold, wvthr
 
 

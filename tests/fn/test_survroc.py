@@ -1,6 +1,7 @@
 """Tests for survroc.time_dep_roc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survroc import time_dep_roc
 
 
@@ -12,7 +13,7 @@ def test_survroc_basic():
     t = np.linspace(0, 10, 100)
     result = time_dep_roc(time, event, marker, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survroc_edge():

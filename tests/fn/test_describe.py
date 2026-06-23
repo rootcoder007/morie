@@ -16,13 +16,17 @@ def test_describe_loads_full_md_for_welcht():
     # All 9 sections should be parsed
     section_titles = {s["title"] for s in r.sections}
     expected = {
-        "WHAT IT DOES", "WHEN TO USE", "WHEN NOT TO USE",
-        "ASSUMPTIONS", "FORMULA", "INPUTS / OUTPUTS",
-        "WORKED EXAMPLE", "COMMON MISTAKES", "REFERENCES",
+        "WHAT IT DOES",
+        "WHEN TO USE",
+        "WHEN NOT TO USE",
+        "ASSUMPTIONS",
+        "FORMULA",
+        "INPUTS / OUTPUTS",
+        "WORKED EXAMPLE",
+        "COMMON MISTAKES",
+        "REFERENCES",
     }
-    assert expected.issubset(section_titles), (
-        f"missing sections: {expected - section_titles}"
-    )
+    assert expected.issubset(section_titles), f"missing sections: {expected - section_titles}"
 
 
 def test_describe_full_text_contains_section_headers():
@@ -62,25 +66,81 @@ def test_describe_first_batch_authored():
     output with all 9 standard sections."""
     authored = (
         # First batch (round 1)
-        "welcht", "paired", "manwhi", "kwallis", "shapir", "cohend",
+        "welcht",
+        "paired",
+        "manwhi",
+        "kwallis",
+        "shapir",
+        "cohend",
         # Second batch (round 2)
-        "wilcoxn", "kentau", "spearm", "fishex", "mcnem", "aurroc",
-        "kmsurv", "logrnk",
+        "wilcoxn",
+        "kentau",
+        "spearm",
+        "fishex",
+        "mcnem",
+        "aurroc",
+        "kmsurv",
+        "logrnk",
         # Third batch (round 3) — descriptive stats + GoF + info criteria
-        "covar", "skew", "kurt", "iqrng", "mad", "akike", "bayic",
-        "mcfadr", "ksonebs", "anddrl",
+        "covar",
+        "skew",
+        "kurt",
+        "iqrng",
+        "mad",
+        "akike",
+        "bayic",
+        "mcfadr",
+        "ksonebs",
+        "anddrl",
         # Fourth batch (round 4) — models + multivariate
-        "rdgr", "lasr", "elnetr", "pcaprx", "kmeans2", "mlenrm", "mlepoi",
-        "mahalan", "hotelt2", "glmpoi",
+        "rdgr",
+        "lasr",
+        "elnetr",
+        "pcaprx",
+        "kmeans2",
+        "mlenrm",
+        "mlepoi",
+        "mahalan",
+        "hotelt2",
+        "glmpoi",
         # Fifth batch (round 5) — multi-test + Bayesian + info + power + distance
-        "bonfer", "holm", "bhfdr", "priorbt", "bayesf", "hpdint",
-        "kldivg", "tventr", "powtt2", "npowtt", "wasdst", "diffd",
+        "bonfer",
+        "holm",
+        "bhfdr",
+        "priorbt",
+        "bayesf",
+        "hpdint",
+        "kldivg",
+        "tventr",
+        "powtt2",
+        "npowtt",
+        "wasdst",
+        "diffd",
         # Sixth batch (round 6) — effect sizes + categorical + spatial + calibration
-        "cohensh", "hedgeg", "glassd", "etasq", "omeg2", "tschpr",
-        "morani", "gearyc", "brierl", "logloss", "mcc", "yindex",
+        "cohensh",
+        "hedgeg",
+        "glassd",
+        "etasq",
+        "omeg2",
+        "tschpr",
+        "morani",
+        "gearyc",
+        "brierl",
+        "logloss",
+        "mcc",
+        "yindex",
         # Seventh batch (round 7) — model-fit + econometrics + remaining
-        "rsq", "lrtst", "kentau", "spearm", "somerd", "gkgam", "dwtest",
-        "ljbox", "bptest", "waldjt", "wald",
+        "rsq",
+        "lrtst",
+        "kentau",
+        "spearm",
+        "somerd",
+        "gkgam",
+        "dwtest",
+        "ljbox",
+        "bptest",
+        "waldjt",
+        "wald",
     )
     for name in authored:
         r = describe(name)

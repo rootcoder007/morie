@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pitman efficiency: ratio of sample sizes for identical power in large-sample limit."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_pitman_efficiency"]
@@ -34,7 +36,14 @@ def gibbons_pitman_efficiency(T1, T2, theta0):
     n = int(T1) if T1.ndim == 0 else len(T1)
     result = float(np.mean(T1))
     se = float(np.std(T1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pitman efficiency: ratio of sample sizes for identical power in large-sample limit"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pitman efficiency: ratio of sample sizes for identical power in large-sample limit",
+        }
+    )
 
 
 def cheatsheet():

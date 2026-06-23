@@ -1,7 +1,7 @@
 """Test lr_finder."""
-import numpy as np
-from morie.fn.lrinf import lr_finder, lrinf
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lrinf import lr_finder, lrinf
 
 
 class TestLrFinder:
@@ -20,6 +20,7 @@ class TestLrFinder:
 
     def test_mismatched_length(self):
         import pytest
+
         with pytest.raises(ValueError):
             lr_finder([1.0, 2.0], [1e-3])
 

@@ -1,7 +1,9 @@
 """Test teager_energy_fn."""
+
 import numpy as np
-from morie.fn.teagr import teager_energy_fn, alias
+
 from morie.fn._containers import SignalResult
+from morie.fn.teagr import alias, teager_energy_fn
 
 
 class TestTeagerEnergyFn:

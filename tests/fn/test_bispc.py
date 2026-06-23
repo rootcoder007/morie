@@ -1,6 +1,8 @@
 """Tests for bispc.py - Bispectrum estimation."""
+
 import numpy as np
-from morie.fn.bispc import bispectrum_fn, bispc
+
+from morie.fn.bispc import bispc, bispectrum_fn
 
 
 def test_bispc_returns_descriptive_result():

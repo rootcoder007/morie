@@ -1,6 +1,7 @@
 """Test rscls."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rscls import rscls
 
 

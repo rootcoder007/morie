@@ -1,6 +1,7 @@
 """Tests for morie.fn.cgd — conjugate gradient descent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cgd import conjugate_gradient
 
 

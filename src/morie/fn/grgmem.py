@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Single EM step for Gaussian mixture: E-step responsibilities + M-step updates."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gmm_em_step"]
@@ -36,7 +38,14 @@ def geron_gmm_em_step(X, pi, means, covars):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Single EM step for Gaussian mixture: E-step responsibilities + M-step updates"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Single EM step for Gaussian mixture: E-step responsibilities + M-step updates",
+        }
+    )
 
 
 def cheatsheet():

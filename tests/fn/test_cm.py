@@ -1,7 +1,7 @@
 """Tests for morie.fn.cm -- Confusion matrix."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cm import confusion_matrix
 
 

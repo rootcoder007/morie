@@ -1,7 +1,7 @@
 """Tests for morie.fn.paslg."""
 
 import numpy as np
-import pytest
+
 from morie.fn.paslg import paslg
 
 

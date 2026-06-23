@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nadaraya-Watson kernel regression with Gaussian kernel."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -56,4 +57,4 @@ kreg = kernel_regression
 
 
 def cheatsheet() -> str:
-    return 'kernel_regression({}) -> Nadaraya-Watson kernel regression.'
+    return "kernel_regression({}) -> Nadaraya-Watson kernel regression."

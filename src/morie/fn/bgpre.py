@@ -45,7 +45,7 @@ def bayesian_gp_regression(
 
     def _rbf(A, B):
         sq = np.sum((A[:, None, :] - B[None, :, :]) ** 2, axis=2)
-        return signal_var * np.exp(-sq / (2 * length_scale ** 2))
+        return signal_var * np.exp(-sq / (2 * length_scale**2))
 
     K = _rbf(Xtr, Xtr) + noise_var * np.eye(len(Xtr))
     K_s = _rbf(Xtr, Xte)
@@ -59,11 +59,7 @@ def bayesian_gp_regression(
     pred_cov = K_ss - v.T @ v
     pred_var = np.diag(pred_cov)
 
-    log_ml = (
-        -0.5 * float(ytr @ alpha)
-        - float(np.sum(np.log(np.diag(L))))
-        - 0.5 * len(ytr) * np.log(2 * np.pi)
-    )
+    log_ml = -0.5 * float(ytr @ alpha) - float(np.sum(np.log(np.diag(L)))) - 0.5 * len(ytr) * np.log(2 * np.pi)
 
     return {
         "pred_mean": pred_mean.tolist(),

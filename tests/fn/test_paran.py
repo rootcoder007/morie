@@ -1,7 +1,7 @@
 """Tests for morie.fn.paran — Horn's parallel analysis."""
 
-import pytest
 import numpy as np
+
 from morie.fn import paran
 
 
@@ -12,10 +12,7 @@ class TestParan:
         """Should return an integer >= 1."""
         rng = np.random.default_rng(42)
         latent = rng.standard_normal(100)
-        data = np.column_stack([
-            latent + rng.standard_normal(100) * 0.3
-            for _ in range(5)
-        ])
+        data = np.column_stack([latent + rng.standard_normal(100) * 0.3 for _ in range(5)])
         result = paran(data, nsim=50, seed=42)
         assert isinstance(result, int)
         assert result >= 1
@@ -24,10 +21,7 @@ class TestParan:
         """Strong single-factor data should suggest 1 factor."""
         rng = np.random.default_rng(42)
         latent = rng.standard_normal(200)
-        data = np.column_stack([
-            latent + rng.standard_normal(200) * 0.2
-            for _ in range(4)
-        ])
+        data = np.column_stack([latent + rng.standard_normal(200) * 0.2 for _ in range(4)])
         result = paran(data, nsim=50, seed=42)
         assert result == 1
 
@@ -36,13 +30,15 @@ class TestParan:
         rng = np.random.default_rng(42)
         f1 = rng.standard_normal(300)
         f2 = rng.standard_normal(300)
-        data = np.column_stack([
-            f1 + rng.standard_normal(300) * 0.2,
-            f1 + rng.standard_normal(300) * 0.2,
-            f1 + rng.standard_normal(300) * 0.2,
-            f2 + rng.standard_normal(300) * 0.2,
-            f2 + rng.standard_normal(300) * 0.2,
-            f2 + rng.standard_normal(300) * 0.2,
-        ])
+        data = np.column_stack(
+            [
+                f1 + rng.standard_normal(300) * 0.2,
+                f1 + rng.standard_normal(300) * 0.2,
+                f1 + rng.standard_normal(300) * 0.2,
+                f2 + rng.standard_normal(300) * 0.2,
+                f2 + rng.standard_normal(300) * 0.2,
+                f2 + rng.standard_normal(300) * 0.2,
+            ]
+        )
         result = paran(data, nsim=100, seed=42)
         assert result >= 2

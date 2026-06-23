@@ -1,6 +1,7 @@
 """Test opmxm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opmxm import opmxm
 
 

@@ -1,6 +1,7 @@
 """Numbered display equation (9.6) from MVSML chapter 9.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_ridge_lasso_elastic_eq_9_6"]
@@ -40,7 +41,14 @@ def mvsml_ridge_lasso_elastic_eq_9_6(distance, margin, M, hyperplane, h0, xT):
     n = len(distance)
     result = float(np.mean(distance))
     se = float(np.std(distance, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (9.6) from MVSML chapter 9."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (9.6) from MVSML chapter 9.",
+        }
+    )
 
 
 def cheatsheet():

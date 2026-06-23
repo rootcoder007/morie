@@ -1,6 +1,7 @@
 """H² index for heterogeneity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_higgins_h2"]

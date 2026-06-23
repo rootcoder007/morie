@@ -1,6 +1,7 @@
 """Test gccwv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gccwv import gccwv
 
 

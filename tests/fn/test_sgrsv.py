@@ -1,4 +1,5 @@
 """Tests for relative structured variability."""
+
 from morie.fn.sgrsv import sgrsv
 
 

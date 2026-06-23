@@ -95,20 +95,22 @@ class TestHasRawColumns:
 class TestCanonicalizeFrame:
     def _raw_frame(self, n: int = 20) -> pd.DataFrame:
         rng = np.random.default_rng(42)
-        return pd.DataFrame({
-            "wtpumf": rng.random(n),
-            "alc05": rng.choice([1, 2, 98, 99], size=n),
-            "alc12_30d_prev_total": rng.choice([0, 1], size=n),
-            "alc12_30d_prev": rng.choice([0, 1], size=n),
-            "can05": rng.choice([1, 2, 98, 99], size=n),
-            "age_groups": rng.choice([1, 2, 3, 98], size=n),
-            "dvdemq01": rng.choice([1, 2, 98], size=n),
-            "region": rng.choice([1, 2, 3, 4, 5], size=n),
-            "hwbq02": rng.choice([1, 2, 3, 4, 98], size=n),
-            "hwbq01": rng.choice([1, 2, 3, 4, 98], size=n),
-            "ebac_tot": rng.random(n) * 10,
-            "ebac_legal": rng.random(n) * 5,
-        })
+        return pd.DataFrame(
+            {
+                "wtpumf": rng.random(n),
+                "alc05": rng.choice([1, 2, 98, 99], size=n),
+                "alc12_30d_prev_total": rng.choice([0, 1], size=n),
+                "alc12_30d_prev": rng.choice([0, 1], size=n),
+                "can05": rng.choice([1, 2, 98, 99], size=n),
+                "age_groups": rng.choice([1, 2, 3, 98], size=n),
+                "dvdemq01": rng.choice([1, 2, 98], size=n),
+                "region": rng.choice([1, 2, 3, 4, 5], size=n),
+                "hwbq02": rng.choice([1, 2, 3, 4, 98], size=n),
+                "hwbq01": rng.choice([1, 2, 3, 4, 98], size=n),
+                "ebac_tot": rng.random(n) * 10,
+                "ebac_legal": rng.random(n) * 5,
+            }
+        )
 
     def test_produces_canonical_columns(self):
         raw = self._raw_frame()

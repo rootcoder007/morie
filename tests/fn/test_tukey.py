@@ -1,6 +1,10 @@
 """Tests for tukey_biweight."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.tukey import tukey_biweight
+
 
 class TestTukey:
     def test_normal(self):

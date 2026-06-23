@@ -1,6 +1,7 @@
 """Test opred."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opred import opred
 
 

@@ -1,6 +1,7 @@
 """SAM image encoder (ViT-H)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sam_image_encoder"]

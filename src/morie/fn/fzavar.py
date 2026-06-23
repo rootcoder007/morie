@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Asymptotic variance of sample quantile."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_quantile_asymp_var"]
@@ -32,7 +34,9 @@ def fauzi_quantile_asymp_var(data, p):
     n = int(data) if data.ndim == 0 else len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Asymptotic variance of sample quantile"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Asymptotic variance of sample quantile"}
+    )
 
 
 def cheatsheet():

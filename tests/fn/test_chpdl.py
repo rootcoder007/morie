@@ -1,7 +1,9 @@
 """Tests for chpdl -- Chirplet decomposition."""
+
 import numpy as np
-from morie.fn.chpdl import chpdl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.chpdl import chpdl
 
 
 def test_chpdl_basic():

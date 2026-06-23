@@ -1,6 +1,7 @@
 """Tests for awltrn.augmented_owl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.awltrn import augmented_owl
 
 
@@ -13,7 +14,7 @@ def test_awltrn_basic():
     Q = np.random.default_rng(42).normal(0, 1, 100)
     result = augmented_owl(y, D, W, pi, Q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_awltrn_edge():

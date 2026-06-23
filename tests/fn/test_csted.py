@@ -1,13 +1,13 @@
 """Tests for morie.fn.csted — custody education."""
 
-import pytest
 import pandas as pd
-from morie.fn.csted import custody_education
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.csted import custody_education
 
 
 class TestCustodyEducation:
-
     def test_returns_descriptive(self):
         df = pd.DataFrame({"edu_enrolled": [1, 1, 0, 1], "edu_completed": [1, 0, 0, 1]})
         result = custody_education(df)

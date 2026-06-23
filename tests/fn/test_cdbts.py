@@ -1,6 +1,8 @@
 """Tests for cdbts."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cdbts import cdbts
 
 
@@ -28,4 +30,5 @@ def test_cdbts_no_data():
 
 def test_cdbts_alias():
     from morie.fn.cdbts import cdbts
+
     assert cdbts is cdbts

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Instance-based learning: predict by measuring similarity to stored examples."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_instance_based"]
@@ -36,7 +38,14 @@ def geron_instance_based(X_train, y_train, x_query, k):
     n = len(X_train)
     result = float(np.mean(X_train))
     se = float(np.std(X_train, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Instance-based learning: predict by measuring similarity to stored examples"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Instance-based learning: predict by measuring similarity to stored examples",
+        }
+    )
 
 
 def cheatsheet():

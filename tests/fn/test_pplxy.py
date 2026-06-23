@@ -1,7 +1,9 @@
 """Test perplexity."""
+
 import numpy as np
-from morie.fn.pplxy import perplexity, pplxy
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pplxy import perplexity, pplxy
 
 
 class TestPerplexity:

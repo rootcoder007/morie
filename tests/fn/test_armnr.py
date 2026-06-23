@@ -1,5 +1,7 @@
 """Tests for armnr.py - ARMA Newton-Raphson estimation."""
+
 import numpy as np
+
 from morie.fn.armnr import arma_newton_raphson_fn, armnr
 
 

@@ -2,14 +2,14 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.rforc import random_forest
 
 
 class TestRandomForest:
     def test_basic_classification(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3],
-                        rng.standard_normal((30, 2)) - [3, 3]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [3, 3], rng.standard_normal((30, 2)) - [3, 3]])
         y = np.array([1] * 30 + [0] * 30)
         result = random_forest(X, y, n_trees=5, max_depth=3)
         assert "predictions" in result

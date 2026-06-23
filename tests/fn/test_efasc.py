@@ -1,11 +1,11 @@
 """Tests for morie.fn.efasc -- factor scores."""
 
 import numpy as np
+
 from morie.fn.efasc import efa_scores
 
 
 class TestEfaScores:
-
     def test_regression_shape(self, mapq_df):
         items = [c for c in mapq_df.columns if c not in ("gender", "age_group")]
         X = mapq_df[items].to_numpy(dtype=np.float64)

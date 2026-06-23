@@ -1,8 +1,9 @@
 """Tests for morie.fn.durbin — Durbin-Watson statistic."""
+
 import numpy as np
 import pytest
 
-from morie.fn.durbin import durbin_watson, durbin
+from morie.fn.durbin import durbin, durbin_watson
 
 
 def test_random_residuals_near_two():

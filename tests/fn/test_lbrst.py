@@ -1,5 +1,8 @@
 """Tests for lilliefors_test."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.lbrst import lilliefors_test
 
 

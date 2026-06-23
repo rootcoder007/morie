@@ -1,6 +1,7 @@
 """Tests for rng227.rangayyan_ch4_matched_filter_optimal_H_eeg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng227 import rangayyan_ch4_matched_filter_optimal_H_eeg
 
 
@@ -12,7 +13,7 @@ def test_rng227_basic():
     t_0 = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch4_matched_filter_optimal_H_eeg(X, K, f, t_0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng227_edge():

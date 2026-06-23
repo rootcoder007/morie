@@ -1,6 +1,7 @@
 """Event-study coefficients with relative-time dummies."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_did_eventstudy"]
@@ -32,7 +33,9 @@ def causal_did_eventstudy(Y_panel, K_event_time):
     n = len(Y_panel)
     result = float(np.mean(Y_panel))
     se = float(np.std(Y_panel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Event-study coefficients with relative-time dummies"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Event-study coefficients with relative-time dummies"}
+    )
 
 
 def cheatsheet():

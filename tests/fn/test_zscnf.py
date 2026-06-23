@@ -1,7 +1,6 @@
 """Tests for morie.fn.zscnf -- Filled contour generation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zscnf import contour_fill
 

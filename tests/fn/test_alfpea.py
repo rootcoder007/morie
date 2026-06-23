@@ -1,6 +1,7 @@
 """Tests for alfpea.alphafold_pae_predict."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alfpea import alphafold_pae_predict
 
 
@@ -10,7 +11,7 @@ def test_alfpea_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = alphafold_pae_predict(s, z)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alfpea_edge():

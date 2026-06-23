@@ -10,6 +10,7 @@ coverage ``F(X_(s)) - F(X_(r))`` for the extreme order statistics
 
 Returns each coverage's expected value E[U_i] = 1/(n+1).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -41,13 +42,15 @@ def one_sample_coverage(x):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 2:
-        return RichResult(payload={
-            "coverages": np.array([]),
-            "cumulative": np.nan,
-            "expected": np.nan,
-            "n": n,
-            "method": "One-sample coverage probability",
-        })
+        return RichResult(
+            payload={
+                "coverages": np.array([]),
+                "cumulative": np.nan,
+                "expected": np.nan,
+                "n": n,
+                "method": "One-sample coverage probability",
+            }
+        )
     xs = np.sort(x)
     # Empirical placements on the (n+1)-interval grid: rank/(n+1)
     ranks = (np.arange(1, n + 1)) / (n + 1.0)
@@ -55,15 +58,17 @@ def one_sample_coverage(x):
     coverages = np.diff(np.concatenate([[0.0], ranks, [1.0]]))
     cumulative = float(ranks[-1] - ranks[0])  # = (n-1)/(n+1)
     expected = 1.0 / (n + 1.0)
-    return RichResult(payload={
-        "coverages": coverages,
-        "cumulative": cumulative,
-        "expected": float(expected),
-        "n": n,
-        "sample_min": float(xs[0]),
-        "sample_max": float(xs[-1]),
-        "method": "One-sample coverage probability",
-    })
+    return RichResult(
+        payload={
+            "coverages": coverages,
+            "cumulative": cumulative,
+            "expected": float(expected),
+            "n": n,
+            "sample_min": float(xs[0]),
+            "sample_max": float(xs[-1]),
+            "method": "One-sample coverage probability",
+        }
+    )
 
 
 def cheatsheet():

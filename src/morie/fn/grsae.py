@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sparse autoencoder: reconstruction + L1 penalty on hidden activations."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sparse_autoencoder"]
@@ -36,7 +38,14 @@ def geron_sparse_autoencoder(x, hidden, decoded, lam):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sparse autoencoder: reconstruction + L1 penalty on hidden activations"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sparse autoencoder: reconstruction + L1 penalty on hidden activations",
+        }
+    )
 
 
 def cheatsheet():

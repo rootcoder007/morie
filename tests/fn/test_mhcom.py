@@ -1,7 +1,8 @@
 """Tests for morie.fn.mhcom -- comorbidity index."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn.mhcom import comorbidity_index
 
 

@@ -1,7 +1,9 @@
 """Test lms_filter (lmsfl)."""
+
 import numpy as np
-from morie.fn.lmsfl import lms_filter, lmsfl
+
 from morie.fn._containers import SignalResult
+from morie.fn.lmsfl import lms_filter, lmsfl
 
 
 class TestLmsFilter:

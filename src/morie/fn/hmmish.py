@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mish activation: z * tanh(softplus(z))."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mish"]
@@ -30,7 +32,9 @@ def geron_mish(z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mish activation: z * tanh(softplus(z))"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mish activation: z * tanh(softplus(z))"}
+    )
 
 
 def cheatsheet():

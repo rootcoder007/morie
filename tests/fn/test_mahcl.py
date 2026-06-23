@@ -1,6 +1,7 @@
 """Test mahcl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mahcl import mahcl
 
 

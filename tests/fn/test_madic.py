@@ -1,6 +1,7 @@
 """Test madic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.madic import madic
 
 

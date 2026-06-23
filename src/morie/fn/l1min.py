@@ -7,7 +7,9 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-_QUOTE = "You have power over your mind -- not outside events. Realize this, and you will find strength. -- Marcus Aurelius"
+_QUOTE = (
+    "You have power over your mind -- not outside events. Realize this, and you will find strength. -- Marcus Aurelius"
+)
 
 
 def l1_minimize(A, b, lambda_: float = 0.1, max_iter: int = 500, tol: float = 1e-6, **kwargs) -> DescriptiveResult:

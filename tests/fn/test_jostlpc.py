@@ -1,6 +1,7 @@
 """Tests for jostlpc.joseph_stl_decomposition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jostlpc import joseph_stl_decomposition
 
 
@@ -12,7 +13,7 @@ def test_jostlpc_basic():
     trend_window = np.random.default_rng(42).normal(0, 1, 100)
     result = joseph_stl_decomposition(y, period, seasonal_window, trend_window)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jostlpc_edge():

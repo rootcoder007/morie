@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
+
 from ._richresult import RichResult
 
 

@@ -11,7 +11,7 @@ class TestSISModel:
         res = sis_model(beta=0.3, gamma=0.1)
         assert res.model == "SIS"
         assert res.R is None
-        assert res.R0 == pytest.approx(3.0)
+        assert pytest.approx(3.0) == res.R0
 
     def test_population_conserved(self):
         res = sis_model(beta=0.4, gamma=0.2, n_steps=500)

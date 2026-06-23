@@ -47,10 +47,12 @@ def wtbst(
     rng = np.random.default_rng(seed)
 
     if statistic is None:
+
         def statistic(data, w):
             return float(np.sum(w * data) / np.sum(w))
 
     if weight_func is None:
+
         def weight_func(rng_, n_):
             return rng_.exponential(1.0, size=n_)
 

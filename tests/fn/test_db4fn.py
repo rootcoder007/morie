@@ -1,5 +1,5 @@
 """Tests for db4fn.py - Daubechies wavelet filter coefficients."""
-import numpy as np
+
 from morie.fn.db4fn import daubechies_coeffs, db4fn
 
 

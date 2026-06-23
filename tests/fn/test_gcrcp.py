@@ -1,6 +1,7 @@
 """Test gcrcp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcrcp import gcrcp
 
 

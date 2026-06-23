@@ -1,5 +1,7 @@
 """Tests for morie.fn.grpht."""
+
 import numpy as np
+
 from morie.fn.grpht import graph_from_edges
 
 
@@ -13,6 +15,7 @@ def test_grpht_smoke():
 
 def test_cheatsheet():
     from morie.fn.grpht import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

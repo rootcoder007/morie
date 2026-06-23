@@ -1,6 +1,7 @@
 """Tests for morie.fn.orisk — Univariate risk factor table."""
 
 import pandas as pd
+
 from morie.fn.orisk import otis_risk_table
 
 

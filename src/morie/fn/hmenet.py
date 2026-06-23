@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Elastic net cost combining L1 and L2 with ratio r."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_elastic_net"]
@@ -38,7 +40,9 @@ def geron_elastic_net(X, y, theta, alpha, r):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Elastic net cost combining L1 and L2 with ratio r"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Elastic net cost combining L1 and L2 with ratio r"}
+    )
 
 
 def cheatsheet():

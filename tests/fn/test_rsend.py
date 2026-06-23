@@ -1,6 +1,7 @@
 """Test rsend."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsend import rsend
 
 

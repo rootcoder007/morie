@@ -1,6 +1,7 @@
 """Haebara equating (item-by-item ICC matching)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["equating_haebara"]
@@ -38,7 +39,9 @@ def equating_haebara(y, b_R, b_F, a_R, a_F):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Haebara equating (item-by-item ICC matching)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Haebara equating (item-by-item ICC matching)"}
+    )
 
 
 def cheatsheet():

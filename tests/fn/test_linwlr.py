@@ -1,6 +1,7 @@
 """Tests for linwlr.linear_weighted_learner."""
+
 import numpy as np
-import pytest
+
 from morie.fn.linwlr import linear_weighted_learner
 
 
@@ -12,7 +13,7 @@ def test_linwlr_basic():
     propensity = np.random.default_rng(42).normal(0, 1, 100)
     result = linear_weighted_learner(y, A, W, propensity)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_linwlr_edge():

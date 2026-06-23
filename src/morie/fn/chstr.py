@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chain (mediation) structure A->B->C: information flows, B is mediator."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["chain_structure"]
@@ -36,7 +38,14 @@ def chain_structure(A, B, C, conditioned):
     n = int(A) if A.ndim == 0 else len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Chain (mediation) structure A->B->C: information flows, B is mediator"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Chain (mediation) structure A->B->C: information flows, B is mediator",
+        }
+    )
 
 
 def cheatsheet():

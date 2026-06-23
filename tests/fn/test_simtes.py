@@ -1,8 +1,7 @@
 """Tests for morie.fn.simtes -- Simultaneous hypothesis test."""
 
-import numpy as np
-from morie.fn.simtes import simultaneous_test, simtes
 from morie.fn._containers import TestResult
+from morie.fn.simtes import simtes, simultaneous_test
 
 
 class TestSimtes:

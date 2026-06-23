@@ -1,6 +1,9 @@
 """Tests for hotelling_t2."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.hotl import hotelling_t2
+
 
 class TestHotelling:
     def test_different(self):

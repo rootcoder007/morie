@@ -1,6 +1,7 @@
 """Test gaaspc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gaaspc import gaaspc
 
 

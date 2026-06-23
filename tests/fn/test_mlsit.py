@@ -1,7 +1,8 @@
 """Tests for morie.fn.mlsit -- MLSMU6 single iteration."""
 
 import numpy as np
-from morie.fn.mlsit import mlsmu6_single_iteration, mlsit
+
+from morie.fn.mlsit import mlsit, mlsmu6_single_iteration
 
 
 def test_mlsit_smoke():

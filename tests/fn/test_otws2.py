@@ -1,6 +1,7 @@
 """Tests for otws2.ot_wasserstein_p_1d."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otws2 import ot_wasserstein_p_1d
 
 
@@ -11,7 +12,7 @@ def test_otws2_basic():
     p = 5
     result = ot_wasserstein_p_1d(x, y, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otws2_edge():

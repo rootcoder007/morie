@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwds -- Distance-band weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwds import w_distance
 

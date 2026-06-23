@@ -71,7 +71,7 @@ def pitman_yor_process(
         weights.append(w_k)
         log_weights.append(np.log(w_k) if w_k > 0 else -np.inf)
 
-        prod_one_minus_v *= (1.0 - v_k)
+        prod_one_minus_v *= 1.0 - v_k
         k += 1
 
         if w_k < cutoff or prod_one_minus_v < cutoff:

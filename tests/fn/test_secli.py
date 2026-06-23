@@ -1,6 +1,7 @@
 """Test secli."""
+
 import numpy as np
-import pytest
+
 from morie.fn.secli import secli
 
 

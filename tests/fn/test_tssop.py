@@ -1,6 +1,7 @@
 """Test tssop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tssop import tssop
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svdgn -- Deegan-Packel power index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svdgn import deegan_packel
 

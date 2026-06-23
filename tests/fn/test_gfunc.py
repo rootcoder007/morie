@@ -1,5 +1,7 @@
 """Tests for morie.fn.gfunc — pair correlation."""
+
 import numpy as np
+
 from morie.fn.gfunc import pair_correlation
 
 

@@ -1,7 +1,9 @@
 """Test rr_variability (rrvar)."""
+
 import numpy as np
-from morie.fn.rrvar import rr_variability, rrvar
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rrvar import rr_variability, rrvar
 
 
 class TestRrVariability:

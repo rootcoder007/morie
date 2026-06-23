@@ -1,9 +1,9 @@
 """Tests for morie.fn.dbscn — DBSCAN clustering."""
 
 import numpy as np
-import pytest
-from morie.fn.dbscn import dbscn
+
 from morie.fn._containers import DbscnRes
+from morie.fn.dbscn import dbscn
 
 
 class TestDbscn:

@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Autocovariance at lag k."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
+
 def autocov(x: Union[Sequence, np.ndarray], k: int = 1) -> float:
     """Sample autocovariance at lag k.
 
@@ -13,4 +17,4 @@ def autocov(x: Union[Sequence, np.ndarray], k: int = 1) -> float:
     if k < 0 or k >= n:
         raise ValueError("require 0 ≤ k < n.")
     mu = a.mean()
-    return float(((a[:n - k] - mu) * (a[k:] - mu)).sum() / n)
+    return float(((a[: n - k] - mu) * (a[k:] - mu)).sum() / n)

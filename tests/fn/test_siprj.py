@@ -1,7 +1,7 @@
 """Tests for morie.fn.siprj — Single-index projection pursuit."""
 
 import numpy as np
-import pytest
+
 from morie.fn.siprj import siprj
 
 
@@ -19,7 +19,7 @@ def test_returns_dict():
 def test_beta_normalized():
     rng = np.random.default_rng(42)
     X = rng.standard_normal((80, 2))
-    y = X[:, 0]**2 + rng.normal(0, 0.1, 80)
+    y = X[:, 0] ** 2 + rng.normal(0, 0.1, 80)
     result = siprj(y, X, max_iter=5)
     assert abs(np.linalg.norm(result["beta"]) - 1.0) < 1e-4
 

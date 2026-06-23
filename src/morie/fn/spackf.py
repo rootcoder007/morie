@@ -1,6 +1,8 @@
 """Spatial autocorrelation function rho(h) = C(h)/C(0)."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_autocorrelation_function"]
@@ -32,9 +34,23 @@ def schabenberger_autocorrelation_function(coords, z):
     y = np.asarray(z, dtype=float)
     n = min(len(z), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Spatial autocorrelation function rho(h) = C(h)/C(0)"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Spatial autocorrelation function rho(h) = C(h)/C(0)",
+            }
+        )
     result = stats.spearmanr(z[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Spatial autocorrelation function rho(h) = C(h)/C(0)"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Spatial autocorrelation function rho(h) = C(h)/C(0)",
+        }
+    )
 
 
 def cheatsheet():

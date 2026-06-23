@@ -1,15 +1,17 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DP-mixture density estimate (collapsed Gibbs)."""
+
 import numpy as np
-from scipy.stats import norm, t as student_t
+from scipy.stats import norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dpmixture_density"]
 
 
-def ghosal_dpmixture_density(x, alpha=1.0, sigma=None, grid=None,
-                              n_iter=120, burn=40, seed=0,
-                              deterministic_seed: int | None = None):
+def ghosal_dpmixture_density(
+    x, alpha=1.0, sigma=None, grid=None, n_iter=120, burn=40, seed=0, deterministic_seed: int | None = None
+):
     """Posterior-mean density under a DP mixture of normals.
 
     Model::
@@ -59,16 +61,20 @@ def ghosal_dpmixture_density(x, alpha=1.0, sigma=None, grid=None,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("ghdpm", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n == 0:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": 0,
-            "method": "DP-mixture density (empty input)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": 0,
+                "method": "DP-mixture density (empty input)",
+            }
+        )
     if sigma is None:
         # Silverman's rule of thumb bandwidth as the within-cluster sd
         s = float(np.std(x, ddof=1)) if n > 1 else 1.0
@@ -85,7 +91,7 @@ def ghosal_dpmixture_density(x, alpha=1.0, sigma=None, grid=None,
     # Conjugate predictive for a new cluster: marginalising mu out of
     # N(mu, sigma^2) with mu ~ N(m0, s0^2) yields N(m0, sigma^2 + s0^2).
     def new_cluster_logp(xi):
-        return norm.logpdf(xi, loc=m0, scale=np.sqrt(sigma ** 2 + s0 ** 2))
+        return norm.logpdf(xi, loc=m0, scale=np.sqrt(sigma**2 + s0**2))
 
     # Posterior of mu_k given members x_S of cluster k:
     #   mu_k | x_S ~ N(m_post, v_post)
@@ -93,14 +99,14 @@ def ghosal_dpmixture_density(x, alpha=1.0, sigma=None, grid=None,
     #   m_post      = v_post (m0/s0^2 + sum_S x / sigma^2)
     def cluster_post(xs):
         nk = len(xs)
-        v = 1.0 / (1.0 / s0 ** 2 + nk / sigma ** 2)
-        m = v * (m0 / s0 ** 2 + np.sum(xs) / sigma ** 2)
+        v = 1.0 / (1.0 / s0**2 + nk / sigma**2)
+        m = v * (m0 / s0**2 + np.sum(xs) / sigma**2)
         return m, v
 
     # Predictive density of x_i given cluster k (marginal over mu_k)
     def in_cluster_logp(xi, xs):
         m, v = cluster_post(xs)
-        return norm.logpdf(xi, loc=m, scale=np.sqrt(v + sigma ** 2))
+        return norm.logpdf(xi, loc=m, scale=np.sqrt(v + sigma**2))
 
     labels = np.zeros(n, dtype=int)
     k_chain = []
@@ -132,26 +138,25 @@ def ghosal_dpmixture_density(x, alpha=1.0, sigma=None, grid=None,
             for k in uniq:
                 xs = x[labels == k]
                 m, v = cluster_post(xs)
-                f += (len(xs) / (alpha + n)) * norm.pdf(
-                    grid, loc=m, scale=np.sqrt(v + sigma ** 2))
-            f += (alpha / (alpha + n)) * norm.pdf(
-                grid, loc=m0, scale=np.sqrt(sigma ** 2 + s0 ** 2))
+                f += (len(xs) / (alpha + n)) * norm.pdf(grid, loc=m, scale=np.sqrt(v + sigma**2))
+            f += (alpha / (alpha + n)) * norm.pdf(grid, loc=m0, scale=np.sqrt(sigma**2 + s0**2))
             f_chain.append(f)
             k_chain.append(len(uniq))
 
     density = np.mean(np.asarray(f_chain), axis=0)
-    estimate = float(np.trapezoid(density * grid, grid) /
-                     max(np.trapezoid(density, grid), 1e-12))
-    return RichResult(payload={
-        "estimate": estimate,
-        "grid": grid.tolist(),
-        "density": density.tolist(),
-        "k_post": float(np.mean(k_chain)),
-        "n": n,
-        "alpha": float(alpha),
-        "sigma": float(sigma),
-        "method": "DP-mixture density via collapsed Gibbs (Neal 2000 Alg 3)",
-    })
+    estimate = float(np.trapezoid(density * grid, grid) / max(np.trapezoid(density, grid), 1e-12))
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "grid": grid.tolist(),
+            "density": density.tolist(),
+            "k_post": float(np.mean(k_chain)),
+            "n": n,
+            "alpha": float(alpha),
+            "sigma": float(sigma),
+            "method": "DP-mixture density via collapsed Gibbs (Neal 2000 Alg 3)",
+        }
+    )
 
 
 def cheatsheet():

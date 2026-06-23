@@ -1,6 +1,7 @@
 """Local DP planar / k-RR mechanism."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["local_dp_planar_mechanism"]

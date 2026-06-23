@@ -1,6 +1,7 @@
 """Test gcadp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcadp import gcadp
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fine-tuning via TRL (Transformer Reinforcement Learning) library."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_trl_finetune"]
@@ -34,7 +36,14 @@ def geron_trl_finetune(model, dataset, method):
     n = len(model)
     result = float(np.mean(model))
     se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fine-tuning via TRL (Transformer Reinforcement Learning) library"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fine-tuning via TRL (Transformer Reinforcement Learning) library",
+        }
+    )
 
 
 def cheatsheet():

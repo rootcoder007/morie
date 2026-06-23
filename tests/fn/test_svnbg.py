@@ -1,7 +1,6 @@
 """Tests for morie.fn.svnbg -- Nash bargaining in spatial game"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svnbg import nash_bargain_sp
 

@@ -1,6 +1,7 @@
 """Test ppare."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppare import ppare
 
 

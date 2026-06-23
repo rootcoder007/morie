@@ -53,7 +53,7 @@ def rhat_diagnostic(
 
     if chains_arr.ndim == 1:
         mid = len(chains_arr) // 2
-        chains_arr = np.array([chains_arr[:mid], chains_arr[mid: 2 * mid]])
+        chains_arr = np.array([chains_arr[:mid], chains_arr[mid : 2 * mid]])
 
     m, n = chains_arr.shape
     if m < 2:

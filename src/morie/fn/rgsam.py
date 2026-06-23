@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sample entropy -- Rangayyan Ch 7."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -36,23 +37,28 @@ def rangayyan_sample_entropy(x, m=2, r=None):
     N = x.size
     if r is None:
         r = 0.2 * x.std(ddof=0)
-    r = float(r); m = int(m)
-    if N <= m + 1:
+    r = float(r)
+    m = int(m)
+    if m + 1 >= N:
         raise ValueError("Need len(x) > m + 1.")
 
     def _matches(mm: int) -> int:
-        templates = np.array([x[i:i + mm] for i in range(N - mm + 1)])
+        templates = np.array([x[i : i + mm] for i in range(N - mm + 1)])
         d = np.abs(templates[:, None, :] - templates[None, :, :]).max(axis=2)
         mask = np.triu(np.ones_like(d, dtype=bool), k=1)
         return int(np.sum((d <= r) & mask))
 
-    B = _matches(m); A = _matches(m + 1)
+    B = _matches(m)
+    A = _matches(m + 1)
     sampen = float("inf") if (A == 0 or B == 0) else float(-np.log(A / B))
     res = RichResult(
         title="Sample entropy",
         summary_lines=[
-            ("m", m), ("r", r), ("N", N),
-            ("B (matches m)", B), ("A (matches m+1)", A),
+            ("m", m),
+            ("r", r),
+            ("N", N),
+            ("B (matches m)", B),
+            ("A (matches m+1)", A),
             ("SampEn", sampen),
         ],
         interpretation=f"SampEn = {sampen:.4g}. Higher -> more irregular.",

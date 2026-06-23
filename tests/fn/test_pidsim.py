@@ -1,7 +1,7 @@
 """Tests for morie.fn.pidsim -- PID control simulation."""
 
-from morie.fn.pidsim import pid_simulate, pidsim
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pidsim import pid_simulate, pidsim
 
 
 class TestPidsim:

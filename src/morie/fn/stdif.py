@@ -7,7 +7,16 @@ import numpy as np
 from ._containers import SpatialResult
 
 
-def spatial_did(y: np.ndarray, treated: np.ndarray, post: np.ndarray, coords: np.ndarray, X: np.ndarray | None = None, W: np.ndarray | None = None, bandwidth: float | None = None, cdf=None) -> SpatialResult:
+def spatial_did(
+    y: np.ndarray,
+    treated: np.ndarray,
+    post: np.ndarray,
+    coords: np.ndarray,
+    X: np.ndarray | None = None,
+    W: np.ndarray | None = None,
+    bandwidth: float | None = None,
+    cdf=None,
+) -> SpatialResult:
     r"""Spatiotemporal difference-in-differences estimator.
 
     Extends the standard DiD to account for spatial dependence by

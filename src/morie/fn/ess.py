@@ -8,6 +8,7 @@ __all__ = ["effective_sample_size", "ess"]
 from typing import Any, Union
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

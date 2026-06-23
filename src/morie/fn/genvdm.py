@@ -1,6 +1,7 @@
 """D-study decision-making."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["d_study_decision"]

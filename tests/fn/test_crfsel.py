@@ -1,6 +1,7 @@
 """Tests for crfsel.causal_forest_selection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.crfsel import causal_forest_selection
 
 
@@ -12,7 +13,7 @@ def test_crfsel_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = causal_forest_selection(forest, X, D, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_crfsel_edge():

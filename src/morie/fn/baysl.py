@@ -60,7 +60,7 @@ def baysl(
     if n != len(y):
         raise ValueError("Z rows must match length of y.")
 
-    ztz = np.sum(Z ** 2, axis=0)
+    ztz = np.sum(Z**2, axis=0)
     g = np.zeros(p)
     var_e = np.var(y) * 0.5
     tau2 = np.ones(p)
@@ -94,7 +94,7 @@ def baysl(
         lambda_sq = rng.gamma(shape_lam, 1.0 / rate_lam)
 
         shape_e = (n - 2.0) / 2.0
-        scale_e = np.sum(e ** 2) / 2.0
+        scale_e = np.sum(e**2) / 2.0
         if shape_e > 0:
             var_e = scale_e / rng.gamma(shape_e)
 

@@ -1,6 +1,5 @@
 """Tests for morie.fn.punf — uniform CDF."""
 
-import numpy as np
 import pytest
 
 from morie.fn.punf import punif

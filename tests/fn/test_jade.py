@@ -1,7 +1,9 @@
 """Test jade_ica (jade)."""
+
 import numpy as np
-from morie.fn.jade import jade_ica, jade
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.jade import jade, jade_ica
 
 
 class TestJade:

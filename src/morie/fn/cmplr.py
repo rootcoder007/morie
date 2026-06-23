@@ -87,9 +87,7 @@ def complier_ate(
     var_t1 = T_arr[z1].var(ddof=1) / n1
     var_t0 = T_arr[z0].var(ddof=1) / n0
 
-    se = float(np.sqrt(
-        (var_y1 + var_y0 + cace ** 2 * (var_t1 + var_t0)) / itt_t ** 2
-    ))
+    se = float(np.sqrt((var_y1 + var_y0 + cace**2 * (var_t1 + var_t0)) / itt_t**2))
 
     z_crit = stats.norm.ppf(1 - alpha / 2)
     compliance_rate = float(itt_t)

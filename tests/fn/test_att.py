@@ -20,38 +20,28 @@ def synth_data():
 
 
 def test_returns_dict(synth_data):
-    result = estimate_att(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_att(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert isinstance(result, dict)
 
 
 def test_att_is_finite(synth_data):
-    result = estimate_att(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_att(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert np.isfinite(result["att"])
     assert np.isfinite(result["se"])
 
 
 def test_n_treated_matches(synth_data):
-    result = estimate_att(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_att(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     expected_n_treated = int(synth_data["treatment"].sum())
     assert result["n_treated"] == expected_n_treated
 
 
 def test_has_expected_keys(synth_data):
-    result = estimate_att(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_att(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     for key in ("att", "se", "ci_lower", "ci_upper", "n", "n_treated", "n_control", "method"):
         assert key in result
 
 
 def test_ci_brackets_att(synth_data):
-    result = estimate_att(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_att(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert result["ci_lower"] <= result["att"] <= result["ci_upper"]

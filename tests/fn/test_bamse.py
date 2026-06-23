@@ -1,6 +1,8 @@
 """Tests for morie.fn.bamse -- posterior standard errors."""
+
 import numpy as np
-from morie.fn.bamse import bayesian_se_from_posterior, bamse
+
+from morie.fn.bamse import bamse, bayesian_se_from_posterior
 
 
 def test_alias():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.codeg -- Wigner semicircle law."""
 
-from morie.fn.codeg import wigner_semicircle, codeg
 from morie.fn._containers import DescriptiveResult
+from morie.fn.codeg import codeg, wigner_semicircle
 
 
 class TestCodeg:

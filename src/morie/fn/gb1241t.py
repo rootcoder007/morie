@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Coefficient of concordance W with correction for ties."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_concordance_w_ties"]
@@ -30,7 +32,14 @@ def gibbons_concordance_w_ties(rankings):
     n = int(rankings) if rankings.ndim == 0 else len(rankings)
     result = float(np.mean(rankings))
     se = float(np.std(rankings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Coefficient of concordance W with correction for ties"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Coefficient of concordance W with correction for ties",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,8 @@
 """CentralTendency expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["jay_cummings_proofs_a_long_form_mathematics_textbook_the_lon_chapter_7_unnumbered_29"]
 
@@ -41,7 +41,12 @@ def jay_cummings_proofs_a_long_form_mathematics_textbook_the_lon_chapter_7_unnum
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression (auto-extracted; see ref).",
+        },
     )
 
 

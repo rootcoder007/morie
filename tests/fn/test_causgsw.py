@@ -1,6 +1,7 @@
 """Tests for causgsw.causal_generalisability_smd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causgsw import causal_generalisability_smd
 
 
@@ -10,7 +11,7 @@ def test_causgsw_basic():
     X_pop = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_generalisability_smd(X_trial, X_pop)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causgsw_edge():

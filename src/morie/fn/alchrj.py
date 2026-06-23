@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Preference-pair data template: (prompt, chosen, rejected)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_chosen_rejected_template"]
@@ -34,7 +36,14 @@ def alammar_chosen_rejected_template(prompts, chosen, rejected):
     n = len(prompts)
     result = float(np.mean(prompts))
     se = float(np.std(prompts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Preference-pair data template: (prompt, chosen, rejected)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Preference-pair data template: (prompt, chosen, rejected)",
+        }
+    )
 
 
 def cheatsheet():

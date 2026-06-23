@@ -1,7 +1,8 @@
 """Tests for morie.fn.ufr2 -- unfolding R-squared."""
 
 import numpy as np
-from morie.fn.ufr2 import unfolding_r_squared, ufr2
+
+from morie.fn.ufr2 import ufr2, unfolding_r_squared
 
 
 def test_ufr2_perfect():

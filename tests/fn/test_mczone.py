@@ -1,6 +1,8 @@
 """Tests for mczone."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mczone import mczone
 
 
@@ -28,4 +30,5 @@ def test_mczone_no_data():
 
 def test_mczone_alias():
     from morie.fn.mczone import mczone
+
     assert mczone is mczone

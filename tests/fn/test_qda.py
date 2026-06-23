@@ -1,7 +1,8 @@
 """Tests for qda.py - Quadratic Discriminant Analysis."""
+
 import numpy as np
-import pytest
-from morie.fn.qda import qda_fn, qda
+
+from morie.fn.qda import qda, qda_fn
 
 
 def _two_class_data():
@@ -9,7 +10,7 @@ def _two_class_data():
     X0 = rng.standard_normal((30, 2)) + np.array([0, 0])
     X1 = rng.standard_normal((30, 2)) + np.array([5, 5])
     X = np.vstack([X0, X1])
-    y = np.array([0]*30 + [1]*30)
+    y = np.array([0] * 30 + [1] * 30)
     return X, y
 
 

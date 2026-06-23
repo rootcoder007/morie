@@ -61,8 +61,7 @@ def gngsv(
             k = Q ** (-2)
             w = np.sign(Q) * z
             u = k * np.exp(abs(Q) * w)
-            ll_event = (np.log(abs(Q)) + k * np.log(k) - gammaln(k) +
-                        k * abs(Q) * w - u - np.log(sigma) - log_t)
+            ll_event = np.log(abs(Q)) + k * np.log(k) - gammaln(k) + k * abs(Q) * w - u - np.log(sigma) - log_t
             surv = np.where(Q > 0, 1 - gammainc(k, u), gammainc(k, u))
             surv = np.clip(surv, 1e-300, 1)
             ll_cens = np.log(surv)
@@ -74,8 +73,7 @@ def gngsv(
     x0[0] = np.mean(log_t)
     x0[1] = np.log(np.std(log_t) + 1e-6)
     x0[2] = 1.0
-    result = minimize(neg_loglik, x0, method="Nelder-Mead",
-                      options={"maxiter": 5000})
+    result = minimize(neg_loglik, x0, method="Nelder-Mead", options={"maxiter": 5000})
 
     mu = result.x[0]
     sigma = np.exp(result.x[1])

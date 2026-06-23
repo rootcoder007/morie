@@ -41,4 +41,5 @@ def test_shape_positive(cure_data):
 
 def test_cheatsheet():
     from morie.fn.mxcrk import cheatsheet
+
     assert "cure" in cheatsheet().lower()

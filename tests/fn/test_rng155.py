@@ -1,6 +1,7 @@
 """Tests for rng155.rangayyan_ch3_lms_filter_output."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng155 import rangayyan_ch3_lms_filter_output
 
 
@@ -12,7 +13,7 @@ def test_rng155_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = rangayyan_ch3_lms_filter_output(r, w_k, n, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng155_edge():

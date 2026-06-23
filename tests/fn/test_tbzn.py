@@ -1,6 +1,8 @@
 """Tests for tbzn."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbzn import tbzn
 
 
@@ -28,4 +30,5 @@ def test_tbzn_no_data():
 
 def test_tbzn_alias():
     from morie.fn.tbzn import tbzn
+
     assert tbzn is tbzn

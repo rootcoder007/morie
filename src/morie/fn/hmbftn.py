@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fine-tune BERT on a downstream classification task."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_bert_finetune"]
@@ -38,7 +40,9 @@ def geron_bert_finetune(bert, X, y, epochs, lr):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fine-tune BERT on a downstream classification task"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Fine-tune BERT on a downstream classification task"}
+    )
 
 
 def cheatsheet():

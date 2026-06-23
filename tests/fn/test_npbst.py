@@ -64,4 +64,5 @@ def test_reproducible(sample_data):
 
 def test_cheatsheet():
     from morie.fn.npbst import cheatsheet
+
     assert "bootstrap" in cheatsheet().lower()

@@ -1,6 +1,7 @@
 """Tests for eslnln.esl_elastic_net."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslnln import esl_elastic_net
 
 
@@ -12,7 +13,7 @@ def test_eslnln_basic():
     alpha = 0.05
     result = esl_elastic_net(X, y, lambda_, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslnln_edge():

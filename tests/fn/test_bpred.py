@@ -1,6 +1,7 @@
 """Tests for morie.fn.bpred -- Bayesian predictive distribution."""
 
 import numpy as np
+
 from morie.fn.bpred import bayesian_predictive
 
 

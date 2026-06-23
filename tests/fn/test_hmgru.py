@@ -1,6 +1,7 @@
 """Tests for hmgru.geron_gru."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmgru import geron_gru
 
 
@@ -11,7 +12,7 @@ def test_hmgru_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = geron_gru(x_t, h_prev, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmgru_edge():

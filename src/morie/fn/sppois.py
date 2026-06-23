@@ -1,5 +1,7 @@
 """Poisson process: independent counts, N(A)~Pois(lam*|A|)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_poisson_process"]
@@ -31,7 +33,14 @@ def schabenberger_poisson_process(lam, region):
     n = int(lam) if lam.ndim == 0 else len(lam)
     result = float(np.mean(lam))
     se = float(np.std(lam, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Poisson process: independent counts, N(A)~Pois(lam*|A|)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Poisson process: independent counts, N(A)~Pois(lam*|A|)",
+        }
+    )
 
 
 def cheatsheet():

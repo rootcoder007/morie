@@ -1,8 +1,9 @@
 """Tests for morie.fn.tpspr — patrol efficiency."""
 
 import pytest
-from morie.fn.tpspr import tps_patrol_efficiency
+
 from morie.fn._containers import ESRes
+from morie.fn.tpspr import tps_patrol_efficiency
 
 
 class TestPatrolEfficiency:

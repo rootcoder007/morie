@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reward-model training loss over preference pairs (BT negative log-likelihood)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_reward_model_training_loss"]
@@ -32,7 +34,14 @@ def kamath_reward_model_training_loss(scores_w, scores_l):
     n = len(scores_w)
     result = float(np.mean(scores_w))
     se = float(np.std(scores_w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reward-model training loss over preference pairs (BT negative log-likelihood)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Reward-model training loss over preference pairs (BT negative log-likelihood)",
+        }
+    )
 
 
 def cheatsheet():

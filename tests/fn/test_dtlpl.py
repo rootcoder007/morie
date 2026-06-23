@@ -1,6 +1,7 @@
 """Test dtlpl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtlpl import dtlpl
 
 

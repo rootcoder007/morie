@@ -1,7 +1,9 @@
 """Test envelope_detect (envdt)."""
+
 import numpy as np
-from morie.fn.envdt import envelope_detect, envdt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.envdt import envdt, envelope_detect
 
 
 class TestEnvelopeDetect:

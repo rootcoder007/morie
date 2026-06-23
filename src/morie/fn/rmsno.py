@@ -13,6 +13,7 @@ In NeurIPS.
 __all__ = ["rmsno"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

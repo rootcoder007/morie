@@ -1,7 +1,7 @@
 """Tests for morie.fn.vaces -- vaccine efficacy (Greenwood/exact)."""
 
-import numpy as np
 import pytest
+
 from morie.fn.vaces import vaccine_efficacy_exact
 
 

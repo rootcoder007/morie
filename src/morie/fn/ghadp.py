@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adaptive posterior contraction over a range of smoothnesses."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_adaptation"]
@@ -41,15 +43,17 @@ def ghosal_adaptation(x, betas=None, d=1):
     betas = np.asarray(betas, dtype=float)
     rates = n ** (-betas / (2.0 * betas + d))
     best = int(np.argmin(rates))
-    return RichResult(payload={
-        "estimate": float(rates[best]),
-        "betas": betas.tolist(),
-        "rates": rates.tolist(),
-        "best_beta": float(betas[best]),
-        "n": n,
-        "d": int(d),
-        "method": "Adaptive posterior contraction over Holder grid",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(rates[best]),
+            "betas": betas.tolist(),
+            "rates": rates.tolist(),
+            "best_beta": float(betas[best]),
+            "n": n,
+            "d": int(d),
+            "method": "Adaptive posterior contraction over Holder grid",
+        }
+    )
 
 
 def cheatsheet():

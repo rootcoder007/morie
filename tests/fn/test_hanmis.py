@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.hanmis import handle_missing, hanmis
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hanmis import handle_missing, hanmis
 
 
 class TestHanmis:
@@ -11,10 +12,12 @@ class TestHanmis:
         assert hanmis is handle_missing
 
     def test_summary(self):
-        df = pd.DataFrame({
-            "a": [1.0, np.nan, 3.0],
-            "b": [np.nan, np.nan, 1.0],
-        })
+        df = pd.DataFrame(
+            {
+                "a": [1.0, np.nan, 3.0],
+                "b": [np.nan, np.nan, 1.0],
+            }
+        )
         result = handle_missing(df, method="summary")
         assert isinstance(result, DescriptiveResult)
         assert result.value["total_missing"] == 3
@@ -30,10 +33,12 @@ class TestHanmis:
         assert abs(imputed["x"].iloc[1] - 3.0) < 0.01
 
     def test_drop(self):
-        df = pd.DataFrame({
-            "a": [1.0, np.nan, 3.0],
-            "b": [4.0, 5.0, 6.0],
-        })
+        df = pd.DataFrame(
+            {
+                "a": [1.0, np.nan, 3.0],
+                "b": [4.0, 5.0, 6.0],
+            }
+        )
         result = handle_missing(df, method="drop")
         assert result.extra["rows_before"] == 3
         assert result.extra["rows_after"] == 2

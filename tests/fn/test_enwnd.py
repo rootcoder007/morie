@@ -1,6 +1,7 @@
 """Test enwnd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enwnd import enwnd
 
 

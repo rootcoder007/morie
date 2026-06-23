@@ -33,6 +33,7 @@ def gcthm(x: np.ndarray, cdf=None, *, cdf_func: callable | None = None, alpha: f
 
     if cdf_func is None:
         from scipy.stats import norm
+
         cdf_func = norm.cdf
 
     n = x.size

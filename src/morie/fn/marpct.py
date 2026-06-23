@@ -1,6 +1,7 @@
 """R² for moderator in random-effects meta-regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_percent_heterogeneity_R2"]
@@ -32,7 +33,9 @@ def ma_percent_heterogeneity_R2(tau2_full, tau2_null):
     n = len(tau2_full)
     result = float(np.mean(tau2_full))
     se = float(np.std(tau2_full, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "R² for moderator in random-effects meta-regression"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "R² for moderator in random-effects meta-regression"}
+    )
 
 
 def cheatsheet():

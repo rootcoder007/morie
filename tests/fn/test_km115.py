@@ -1,6 +1,7 @@
 """Tests for km115.kamath_ch8_bleu_n_geom_mean."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km115 import kamath_ch8_bleu_n_geom_mean
 
 
@@ -10,7 +11,7 @@ def test_km115_basic():
     N = 100
     result = kamath_ch8_bleu_n_geom_mean(p_n, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km115_edge():

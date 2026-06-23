@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ToxiGen-based toxicity classifier score for a generation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_toxigen_score"]
@@ -32,7 +34,14 @@ def kamath_toxigen_score(text, classifier):
     n = len(text)
     result = float(np.mean(text))
     se = float(np.std(text, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ToxiGen-based toxicity classifier score for a generation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ToxiGen-based toxicity classifier score for a generation",
+        }
+    )
 
 
 def cheatsheet():

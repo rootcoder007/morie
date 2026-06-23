@@ -1,7 +1,9 @@
 """Test hjorth_params."""
+
 import numpy as np
-from morie.fn.hjrth import hjorth_params, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hjrth import alias, hjorth_params
 
 
 class TestHjorthParams:

@@ -1,6 +1,7 @@
 """Test tsscn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsscn import tsscn
 
 

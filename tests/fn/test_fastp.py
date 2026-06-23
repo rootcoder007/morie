@@ -1,5 +1,7 @@
 """Tests for morie.fn.fastp."""
+
 import numpy as np
+
 from morie.fn.fastp import fast_pca
 
 
@@ -13,6 +15,7 @@ def test_fastp_smoke():
 
 def test_cheatsheet():
     from morie.fn.fastp import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

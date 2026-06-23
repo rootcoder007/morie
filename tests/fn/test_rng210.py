@@ -1,6 +1,7 @@
 """Tests for rng210.rangayyan_ch4_noise_psd_at_output."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng210 import rangayyan_ch4_noise_psd_at_output
 
 
@@ -11,7 +12,7 @@ def test_rng210_basic():
     f = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch4_noise_psd_at_output(P_eta_i, H, f)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng210_edge():

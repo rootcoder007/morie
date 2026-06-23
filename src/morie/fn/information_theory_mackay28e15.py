@@ -1,8 +1,8 @@
 """Bayesian equation extracted from Information theory MacKay.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["information_theory_mackay_chapter_28_equation_15"]
 
@@ -41,7 +41,12 @@ def information_theory_mackay_chapter_28_equation_15(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian equation extracted from Information theory MacKay."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bayesian equation extracted from Information theory MacKay.",
+        },
     )
 
 

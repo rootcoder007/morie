@@ -4,7 +4,6 @@ from morie.fn.mi_st import mi_strict
 
 
 class TestMiStrict:
-
     def test_returns_expected_keys(self, mapq_df):
         result = mi_strict(mapq_df, "gender")
         for key in ("level", "fit", "delta_fit", "passed"):

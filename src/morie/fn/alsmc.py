@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """SimCSE: two dropout passes of the same sentence as positive pair."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_simcse_dropout_aug"]
@@ -34,7 +36,14 @@ def alammar_simcse_dropout_aug(embeddings_dropout1, embeddings_dropout2, tau):
     n = len(embeddings_dropout1)
     result = float(np.mean(embeddings_dropout1))
     se = float(np.std(embeddings_dropout1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SimCSE: two dropout passes of the same sentence as positive pair"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "SimCSE: two dropout passes of the same sentence as positive pair",
+        }
+    )
 
 
 def cheatsheet():

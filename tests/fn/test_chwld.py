@@ -1,6 +1,7 @@
 """Tests for chwld.py - Choi-Williams distribution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chwld import choi_williams_fn, chwld
 
 

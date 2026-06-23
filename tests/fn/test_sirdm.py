@@ -1,6 +1,7 @@
 """Tests for morie.fn.sirdm -- SIR with age-structured demographics."""
 
 import pytest
+
 from morie.fn.sirdm import sir_age_demographics
 
 

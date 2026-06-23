@@ -1,8 +1,9 @@
 """CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["cb_chapter_14_equation_1"]
 
@@ -40,7 +41,10 @@ def cb_chapter_14_equation_1(x):
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context)."},
+            extra_payload={
+                "n": n,
+                "method": "CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,9 +52,15 @@ def cb_chapter_14_equation_1(x):
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 
 def cheatsheet():
-    return "cb14e1: CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context)."
+    return (
+        "cb14e1: CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context)."
+    )

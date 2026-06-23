@@ -1,7 +1,8 @@
 """Tests for morie.fn.hazard — Hazard rate."""
+
 import numpy as np
 
-from morie.fn.hazard import hazard_rate, hazard
+from morie.fn.hazard import hazard, hazard_rate
 
 
 def test_hazard_nonnegative():

@@ -1,6 +1,7 @@
 """Tests for lcfsdq.lc_first_sd_query."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lcfsdq import lc_first_sd_query
 
 
@@ -10,7 +11,7 @@ def test_lcfsdq_basic():
     coords = np.random.default_rng(42).uniform(0, 1, (100, 2))
     result = lc_first_sd_query(x, coords)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lcfsdq_edge():

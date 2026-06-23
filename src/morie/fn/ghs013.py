@@ -1,6 +1,7 @@
 """Posterior Dirichlet distribution of the first k weights after marginalizing over the remaining cells, depending only on (N_1, ..., N_k).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_countable_dirichlet_posterior_k"]
@@ -36,7 +37,14 @@ def ghosal_ch3_countable_dirichlet_posterior_k(alpha_j, N_j, k, n):
     n = len(alpha_j)
     result = float(np.mean(alpha_j))
     se = float(np.std(alpha_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Posterior Dirichlet distribution of the first k weights after marginalizing over the remaining cells, depending only on (N_1, ..., N_k)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Posterior Dirichlet distribution of the first k weights after marginalizing over the remaining cells, depending only on (N_1, ..., N_k).",
+        }
+    )
 
 
 def cheatsheet():

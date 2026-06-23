@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TFT: gated residual networks + variable selection + LSTM encoder + multi-head attention."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_temporal_fusion_transformer"]
@@ -36,7 +38,14 @@ def joseph_temporal_fusion_transformer(static, observed, known, horizon):
     n = len(static)
     result = float(np.mean(static))
     se = float(np.std(static, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TFT: gated residual networks + variable selection + LSTM encoder + multi-head attention"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TFT: gated residual networks + variable selection + LSTM encoder + multi-head attention",
+        }
+    )
 
 
 def cheatsheet():

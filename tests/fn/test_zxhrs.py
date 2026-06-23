@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxhrs -- Hierarchical spatial (nested)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxhrs import hier_spatial_fe
 

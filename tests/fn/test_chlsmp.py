@@ -1,6 +1,8 @@
 """Tests for chlsmp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlsmp import chlsmp
 
 
@@ -28,4 +30,5 @@ def test_chlsmp_no_data():
 
 def test_chlsmp_alias():
     from morie.fn.chlsmp import chlsmp
+
     assert chlsmp is chlsmp

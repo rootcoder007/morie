@@ -1,7 +1,7 @@
 """Tests for morie.fn.eladef -- elastic deformation field."""
 
-from morie.fn.eladef import elastic_deformation, eladef
 from morie.fn._containers import DescriptiveResult
+from morie.fn.eladef import eladef, elastic_deformation
 
 
 class TestEladef:

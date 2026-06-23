@@ -33,7 +33,7 @@ def rmsfe_calc(actual: np.ndarray, forecast: np.ndarray) -> DescriptiveResult:
     if n == 0:
         raise ValueError("Empty arrays.")
     errors = a - f
-    val = float(np.sqrt(np.mean(errors ** 2)))
+    val = float(np.sqrt(np.mean(errors**2)))
     return DescriptiveResult(
         name="rmsfe",
         value=val,

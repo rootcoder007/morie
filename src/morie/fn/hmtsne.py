@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """t-SNE: KL divergence between joint probabilities in high- and low-dim."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_tsne"]
@@ -36,7 +38,14 @@ def geron_tsne(X, n_components, perplexity, seed):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "t-SNE: KL divergence between joint probabilities in high- and low-dim"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "t-SNE: KL divergence between joint probabilities in high- and low-dim",
+        }
+    )
 
 
 def cheatsheet():

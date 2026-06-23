@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Barron's predictive consistency: KL from predictive to true density goes to 0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_pred_consist"]
@@ -30,7 +32,14 @@ def ghosal_pred_consist(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Barron's predictive consistency: KL from predictive to true density goes to 0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Barron's predictive consistency: KL from predictive to true density goes to 0",
+        }
+    )
 
 
 def cheatsheet():

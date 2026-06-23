@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Positivity (overlap) assumption: every unit has non-zero probability of treatment."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["positivity_assumption"]
@@ -32,7 +34,14 @@ def positivity_assumption(T, X):
     n = int(T) if T.ndim == 0 else len(T)
     result = float(np.mean(T))
     se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Positivity (overlap) assumption: every unit has non-zero probability of treatment"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Positivity (overlap) assumption: every unit has non-zero probability of treatment",
+        }
+    )
 
 
 def cheatsheet():

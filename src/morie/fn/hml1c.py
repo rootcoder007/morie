@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """1cycle policy: warm up then anneal the learning rate."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_one_cycle"]
@@ -36,7 +38,9 @@ def geron_one_cycle(t, T, lr_max, lr_min):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "1cycle policy: warm up then anneal the learning rate"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "1cycle policy: warm up then anneal the learning rate"}
+    )
 
 
 def cheatsheet():

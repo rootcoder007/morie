@@ -1,6 +1,7 @@
 """Test mtdia."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtdia import mtdia
 
 

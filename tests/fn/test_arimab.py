@@ -1,6 +1,7 @@
 """Tests for arimab.arima_box_jenkins."""
+
 import numpy as np
-import pytest
+
 from morie.fn.arimab import arima_box_jenkins
 
 
@@ -12,7 +13,7 @@ def test_arimab_basic():
     q = np.random.default_rng(42).normal(0, 1, 100)
     result = arima_box_jenkins(y, p, d, q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_arimab_edge():

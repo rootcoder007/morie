@@ -1,7 +1,6 @@
 """Tests for morie.fn.msans -- MDS anisotropy measure"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msans import mds_aniso
 
@@ -14,5 +13,5 @@ class TestMdsAniso:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_aniso(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_aniso(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

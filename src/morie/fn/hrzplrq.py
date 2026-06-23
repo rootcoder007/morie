@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Partially linear quantile model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_plr_quantile"]

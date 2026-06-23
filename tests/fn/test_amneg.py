@@ -1,5 +1,5 @@
 """Tests for morie.fn.amneg — A-M negative weights."""
-import numpy as np
+
 from morie.fn.amneg import amneg
 
 
@@ -12,6 +12,7 @@ def test_amneg_smoke():
 
 def test_cheatsheet():
     from morie.fn.amneg import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

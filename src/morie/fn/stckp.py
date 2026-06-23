@@ -35,7 +35,7 @@ def stick_breaking(
     prod = 1.0
     for k in range(K):
         weights[k] = V[k] * prod
-        prod *= (1 - V[k])
+        prod *= 1 - V[k]
 
     return {
         "weights": weights.tolist(),

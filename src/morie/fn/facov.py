@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Factor analytic covariance structure for multi-environment trials."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["factor_analytic_covariance"]
@@ -32,7 +34,14 @@ def factor_analytic_covariance(n_env, n_factors):
     n = int(n_env) if n_env.ndim == 0 else len(n_env)
     result = float(np.mean(n_env))
     se = float(np.std(n_env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Factor analytic covariance structure for multi-environment trials"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Factor analytic covariance structure for multi-environment trials",
+        }
+    )
 
 
 def cheatsheet():

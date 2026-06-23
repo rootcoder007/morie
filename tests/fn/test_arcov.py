@@ -1,6 +1,7 @@
 """Tests for arcov.py - AR covariance estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.arcov import ar_covariance_fn, arcov
 
 

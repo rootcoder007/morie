@@ -1,6 +1,7 @@
 """YOLOX decoupled head."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["yolo_decoupled_head"]

@@ -1,6 +1,8 @@
 """Tests for pdf_estimate."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pdfen import pdf_estimate, pdfen
 
 

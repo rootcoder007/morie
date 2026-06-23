@@ -31,6 +31,7 @@ def eproc(x: np.ndarray, eval_points: np.ndarray | None = None, cdf=None, *, cdf
 
     if cdf_func is None:
         from scipy.stats import norm
+
         cdf_func = norm.cdf
 
     n = x.size

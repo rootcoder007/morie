@@ -1,7 +1,7 @@
 """Tests for morie.fn.eladv."""
 
 import numpy as np
-import pytest
+
 from morie.fn.eladv import eladv
 
 

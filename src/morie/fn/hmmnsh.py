@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean-shift: mode-seeking via kernel density gradient ascent."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mean_shift"]
@@ -32,7 +34,14 @@ def geron_mean_shift(X, bandwidth):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean-shift: mode-seeking via kernel density gradient ascent"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mean-shift: mode-seeking via kernel density gradient ascent",
+        }
+    )
 
 
 def cheatsheet():

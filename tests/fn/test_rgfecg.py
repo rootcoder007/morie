@@ -1,6 +1,7 @@
 """Tests for rgfecg.rangayyan_fetal_ecg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgfecg import rangayyan_fetal_ecg
 
 
@@ -12,7 +13,7 @@ def test_rgfecg_basic():
     order = 4
     result = rangayyan_fetal_ecg(abdominal, maternal_ref, mu, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgfecg_edge():

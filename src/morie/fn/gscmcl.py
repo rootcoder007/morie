@@ -1,6 +1,7 @@
 """Generalized Synthetic Control with interactive fixed effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["generalized_synthetic_control"]
@@ -38,7 +39,14 @@ def generalized_synthetic_control(y, D, unit, time, r):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Generalized Synthetic Control with interactive fixed effects"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Generalized Synthetic Control with interactive fixed effects",
+        }
+    )
 
 
 def cheatsheet():

@@ -68,4 +68,4 @@ decomp = seasonal_decompose
 
 
 def cheatsheet() -> str:
-    return 'seasonal_decompose({}) -> Seasonal decomposition.'
+    return "seasonal_decompose({}) -> Seasonal decomposition."

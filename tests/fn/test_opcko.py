@@ -1,6 +1,7 @@
 """Test opcko."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opcko import opcko
 
 

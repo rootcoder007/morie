@@ -1,6 +1,7 @@
 """Bias correction for exposure misclassification."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["exposure_misclass_bias"]
@@ -34,7 +35,9 @@ def exposure_misclass_bias(A_obs, Se, Sp):
     n = len(A_obs)
     result = float(np.mean(A_obs))
     se = float(np.std(A_obs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bias correction for exposure misclassification"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bias correction for exposure misclassification"}
+    )
 
 
 def cheatsheet():

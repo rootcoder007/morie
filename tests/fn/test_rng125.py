@@ -1,6 +1,7 @@
 """Tests for rng125.rangayyan_ch3_butterworth_pole_positions."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng125 import rangayyan_ch3_butterworth_pole_positions
 
 
@@ -11,7 +12,7 @@ def test_rng125_basic():
     k = 5
     result = rangayyan_ch3_butterworth_pole_positions(Omega_c, N, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng125_edge():

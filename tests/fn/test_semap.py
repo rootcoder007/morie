@@ -1,8 +1,9 @@
 """Tests for morie.fn.semap -- Sammon mapping."""
 
 import numpy as np
-from morie.fn.semap import sammon_mapping, semap
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.semap import sammon_mapping, semap
 
 
 class TestSammonMapping:

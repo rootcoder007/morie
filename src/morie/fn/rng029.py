@@ -1,6 +1,7 @@
 """Decomposition of a signal into weighted delta functions via sifting.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_signal_as_delta_decomposition"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_signal_as_delta_decomposition(x, alpha, t):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Decomposition of a signal into weighted delta functions via sifting."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Decomposition of a signal into weighted delta functions via sifting.",
+        }
+    )
 
 
 def cheatsheet():

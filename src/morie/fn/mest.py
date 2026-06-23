@@ -63,12 +63,17 @@ def mest(
     eps = 1e-5
     if scalar:
         grads = np.array([(rho(x[i], theta_hat + eps) - rho(x[i], theta_hat - eps)) / (2 * eps) for i in range(n)])
-        B = float(np.mean(grads ** 2))
-        hess_vals = np.array([(rho(x[i], theta_hat + eps) - 2 * rho(x[i], theta_hat) + rho(x[i], theta_hat - eps)) / eps ** 2 for i in range(n)])
+        B = float(np.mean(grads**2))
+        hess_vals = np.array(
+            [
+                (rho(x[i], theta_hat + eps) - 2 * rho(x[i], theta_hat) + rho(x[i], theta_hat - eps)) / eps**2
+                for i in range(n)
+            ]
+        )
         A = float(np.mean(hess_vals))
         if abs(A) < 1e-12:
             A = 1.0
-        var = B / (A ** 2 * n)
+        var = B / (A**2 * n)
         se = float(np.sqrt(max(var, 0)))
         z = stats.norm.ppf(1.0 - alpha / 2.0)
         return {
@@ -97,7 +102,18 @@ def mest(
                 ek = np.zeros(d)
                 ej[j] = eps
                 ek[k] = eps
-                A[j, k] = np.mean([(rho(x[i], theta_hat + ej + ek) - rho(x[i], theta_hat + ej - ek) - rho(x[i], theta_hat - ej + ek) + rho(x[i], theta_hat - ej - ek)) / (4 * eps ** 2) for i in range(n)])
+                A[j, k] = np.mean(
+                    [
+                        (
+                            rho(x[i], theta_hat + ej + ek)
+                            - rho(x[i], theta_hat + ej - ek)
+                            - rho(x[i], theta_hat - ej + ek)
+                            + rho(x[i], theta_hat - ej - ek)
+                        )
+                        / (4 * eps**2)
+                        for i in range(n)
+                    ]
+                )
         try:
             A_inv = np.linalg.inv(A)
         except np.linalg.LinAlgError:

@@ -1,6 +1,7 @@
 """Test dtcir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtcir import dtcir
 
 

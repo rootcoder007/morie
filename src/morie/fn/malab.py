@@ -1,6 +1,7 @@
 """L'Abbé plot data: control vs experimental risks."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_labbe_plot"]
@@ -36,7 +37,9 @@ def ma_labbe_plot(a, b, c, d):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "L'Abbé plot data: control vs experimental risks"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "L'Abbé plot data: control vs experimental risks"}
+    )
 
 
 def cheatsheet():

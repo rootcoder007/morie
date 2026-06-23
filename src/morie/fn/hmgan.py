@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Generative adversarial network: generator vs discriminator minimax."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gan"]
@@ -40,7 +42,14 @@ def geron_gan(X, G, D, z_dim, epochs, lr):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Generative adversarial network: generator vs discriminator minimax"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Generative adversarial network: generator vs discriminator minimax",
+        }
+    )
 
 
 def cheatsheet():

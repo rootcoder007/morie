@@ -1,6 +1,7 @@
 """Tests for sgtwh.sgt_wiener_index."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtwh import sgt_wiener_index
 
 
@@ -9,7 +10,7 @@ def test_sgtwh_basic():
     A = np.random.default_rng(42).normal(0, 1, (10, 10))
     result = sgt_wiener_index(A)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_sgtwh_edge():

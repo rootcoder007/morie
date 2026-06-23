@@ -1,6 +1,7 @@
 """Leiden refinement after Louvain (Traag-Waltman-van Eck)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_leiden_step"]
@@ -32,7 +33,14 @@ def sgt_leiden_step(A, labels):
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Leiden refinement after Louvain (Traag-Waltman-van Eck)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Leiden refinement after Louvain (Traag-Waltman-van Eck)",
+        }
+    )
 
 
 def cheatsheet():

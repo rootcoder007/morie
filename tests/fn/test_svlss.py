@@ -1,7 +1,6 @@
 """Tests for morie.fn.svlss -- Spatial loss function (quadratic/city-block)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svlss import loss_function
 

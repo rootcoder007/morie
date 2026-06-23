@@ -1,6 +1,7 @@
 """Graphormer (centrality + spatial encoding)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["graphormer"]
@@ -32,7 +33,9 @@ def graphormer(G, X):
     n = len(G)
     result = float(np.mean(G))
     se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Graphormer (centrality + spatial encoding)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Graphormer (centrality + spatial encoding)"}
+    )
 
 
 def cheatsheet():

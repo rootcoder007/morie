@@ -44,4 +44,5 @@ def test_single_group_raises():
 
 def test_cheatsheet():
     from morie.fn.trent import cheatsheet
+
     assert "trend" in cheatsheet().lower()

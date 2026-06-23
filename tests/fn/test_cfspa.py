@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfspa."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfspa import cfspa
 
 

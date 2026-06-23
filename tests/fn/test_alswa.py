@@ -1,6 +1,7 @@
 """Tests for alswa.alammar_sliding_window_attention."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alswa import alammar_sliding_window_attention
 
 
@@ -12,7 +13,7 @@ def test_alswa_basic():
     window_size = 100
     result = alammar_sliding_window_attention(Q, K, V, window_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alswa_edge():

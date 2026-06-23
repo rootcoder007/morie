@@ -1,5 +1,7 @@
 """Fact 3.4: l-th absolute moment of N(0, sigma^2)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_normal_moment"]
@@ -31,7 +33,9 @@ def turboquant_normal_moment(sigma, l):
     n = len(sigma)
     result = float(np.mean(sigma))
     se = float(np.std(sigma, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fact 3.4: l-th absolute moment of N(0, sigma^2)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Fact 3.4: l-th absolute moment of N(0, sigma^2)"}
+    )
 
 
 def cheatsheet():

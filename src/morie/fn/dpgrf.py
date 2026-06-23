@@ -1,6 +1,7 @@
 """DP grouped random field."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_grouped_random_field"]

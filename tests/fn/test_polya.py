@@ -21,6 +21,7 @@ def test_polya_seed_reproducible():
 
 def test_cheatsheet():
     from morie.fn.polya import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

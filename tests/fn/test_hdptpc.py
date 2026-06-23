@@ -1,6 +1,7 @@
 """Tests for hdptpc.hdp_topic_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hdptpc import hdp_topic_model
 
 
@@ -11,7 +12,7 @@ def test_hdptpc_basic():
     alpha = 0.05
     result = hdp_topic_model(docs, gamma, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hdptpc_edge():

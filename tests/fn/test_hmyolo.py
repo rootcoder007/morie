@@ -1,6 +1,7 @@
 """Tests for hmyolo.geron_yolo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmyolo import geron_yolo
 
 
@@ -10,7 +11,7 @@ def test_hmyolo_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_yolo(image, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmyolo_edge():

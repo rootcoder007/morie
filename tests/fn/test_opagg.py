@@ -1,6 +1,7 @@
 """Test opagg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opagg import opagg
 
 

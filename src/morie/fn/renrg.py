@@ -56,23 +56,23 @@ def renrg(
     N = n_colors
     CA = float(N)
     TF = 0.5
-    CF = (N ** 2 - 1.0) / (2.0 * N)
+    CF = (N**2 - 1.0) / (2.0 * N)
     nf = n_flavors
 
-    b0 = (11.0 / 3.0 * CA - 4.0 / 3.0 * TF * nf) / (16.0 * np.pi ** 2)
-    beta_1 = -b0 * coupling ** 3
+    b0 = (11.0 / 3.0 * CA - 4.0 / 3.0 * TF * nf) / (16.0 * np.pi**2)
+    beta_1 = -b0 * coupling**3
 
     b1 = None
     beta_val = beta_1
 
     if loop_order >= 2:
-        b1_num = (34.0 / 3.0 * CA ** 2 - 20.0 / 3.0 * CA * TF * nf - 4.0 * CF * TF * nf)
-        b1 = b1_num / (16.0 * np.pi ** 2) ** 2
-        beta_val = beta_1 - b1 * coupling ** 5
+        b1_num = 34.0 / 3.0 * CA**2 - 20.0 / 3.0 * CA * TF * nf - 4.0 * CF * TF * nf
+        b1 = b1_num / (16.0 * np.pi**2) ** 2
+        beta_val = beta_1 - b1 * coupling**5
 
     asymptotic = b0 > 0
 
-    alpha_s = coupling ** 2 / (4.0 * np.pi)
+    alpha_s = coupling**2 / (4.0 * np.pi)
 
     result = {
         "beta": float(beta_val),

@@ -1,6 +1,7 @@
 """Tests for percn.perceptron_activation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.percn import perceptron_activation
 
 
@@ -11,7 +12,7 @@ def test_percn_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = perceptron_activation(X, w, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_percn_edge():

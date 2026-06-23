@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.kfocv import kfold_cv, kfocv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.kfocv import kfocv, kfold_cv
 
 
 class TestKfocv:

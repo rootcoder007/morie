@@ -1,6 +1,7 @@
 """Tests for shanen.shannon_entropy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.shanen import shannon_entropy
 
 
@@ -10,7 +11,7 @@ def test_shanen_basic():
     base = np.random.default_rng(42).normal(0, 1, 100)
     result = shannon_entropy(y, base)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_shanen_edge():

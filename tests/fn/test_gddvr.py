@@ -1,6 +1,7 @@
 """Test gddvr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gddvr import gddvr
 
 

@@ -1,6 +1,7 @@
 """Test trmod."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trmod import trmod
 
 

@@ -1,6 +1,7 @@
 """Tests for prphet.prophet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prphet import prophet
 
 
@@ -12,7 +13,7 @@ def test_prphet_basic():
     changepoints = np.random.default_rng(42).normal(0, 1, 100)
     result = prophet(ds, y, holidays, changepoints)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prphet_edge():

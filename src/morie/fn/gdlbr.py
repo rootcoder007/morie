@@ -32,4 +32,4 @@ gdlbr = gdlbr
 
 
 def cheatsheet() -> str:
-    return 'gdlbr() -> Gdlbr'
+    return "gdlbr() -> Gdlbr"

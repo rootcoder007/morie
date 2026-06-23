@@ -1,6 +1,7 @@
 """Linear Gaussian state-space model."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["state_space_model"]

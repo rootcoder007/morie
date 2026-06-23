@@ -91,8 +91,7 @@ def wind_chill(
         extra={
             "wind_chill_C": W.tolist() if W.size > 1 else float(W.item()),
             "classification": classes if W.size > 1 else classes[0],
-            "in_envelope": in_envelope.tolist()
-                if in_envelope.size > 1 else bool(in_envelope.item()),
+            "in_envelope": in_envelope.tolist() if in_envelope.size > 1 else bool(in_envelope.item()),
         },
     )
 

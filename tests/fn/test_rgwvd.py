@@ -1,6 +1,7 @@
 """Tests for rgwvd.rangayyan_wigner_ville."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgwvd import rangayyan_wigner_ville
 
 
@@ -10,7 +11,7 @@ def test_rgwvd_basic():
     fs = 100.0
     result = rangayyan_wigner_ville(x, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgwvd_edge():

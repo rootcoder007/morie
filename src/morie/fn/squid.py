@@ -85,4 +85,4 @@ squid = threat_score
 
 
 def cheatsheet() -> str:
-    return 'threat_score({}) -> Threat scoring model.'
+    return "threat_score({}) -> Threat scoring model."

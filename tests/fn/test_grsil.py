@@ -1,6 +1,7 @@
 """Tests for grsil.geron_silhouette_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grsil import geron_silhouette_score
 
 
@@ -10,7 +11,7 @@ def test_grsil_basic():
     labels = np.random.default_rng(43).integers(0, 2, 100)
     result = geron_silhouette_score(X, labels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grsil_edge():

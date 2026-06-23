@@ -1,6 +1,6 @@
 """Tests for morie.fn.evtdn — event density."""
+
 import numpy as np
-import pytest
 
 from morie.fn.evtdn import event_density, evtdn
 

@@ -65,9 +65,7 @@ def admxp(
         f = Q @ P
         f = np.clip(f, 1e-10, 1.0 - 1e-10)
 
-        ll = np.sum(
-            Z * np.log(f) + (2.0 - Z) * np.log(1.0 - f)
-        )
+        ll = np.sum(Z * np.log(f) + (2.0 - Z) * np.log(1.0 - f))
 
         if abs(ll - prev_ll) < tol:
             break
@@ -75,20 +73,16 @@ def admxp(
 
         w = np.zeros((n, K, p))
         for k in range(K):
-            num = Q[:, k:k+1] * P[k:k+1, :]
+            num = Q[:, k : k + 1] * P[k : k + 1, :]
             denom = f
             w[:, k, :] = num / np.maximum(denom, 1e-10)
 
         for k in range(K):
-            P[k, :] = np.sum(w[:, k, :] * Z, axis=0) / np.maximum(
-                np.sum(w[:, k, :] * 2.0, axis=0), 1e-10
-            )
+            P[k, :] = np.sum(w[:, k, :] * Z, axis=0) / np.maximum(np.sum(w[:, k, :] * 2.0, axis=0), 1e-10)
         P = np.clip(P, 0.01, 0.99)
 
         for i in range(n):
-            Q[i, :] = np.sum(w[i, :, :] * Z[i, :], axis=1) + np.sum(
-                w[i, :, :] * (2.0 - Z[i, :]), axis=1
-            )
+            Q[i, :] = np.sum(w[i, :, :] * Z[i, :], axis=1) + np.sum(w[i, :, :] * (2.0 - Z[i, :]), axis=1)
             Q[i, :] = np.maximum(Q[i, :], 1e-10)
             Q[i, :] /= np.sum(Q[i, :])
 

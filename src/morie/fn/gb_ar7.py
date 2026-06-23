@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE of Wilcoxon signed-rank vs t under logistic distribution: pi^2/9."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_logistic"]
@@ -30,7 +32,14 @@ def gibbons_are_logistic(distribution):
     n = int(distribution) if distribution.ndim == 0 else len(distribution)
     result = float(np.mean(distribution))
     se = float(np.std(distribution, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ARE of Wilcoxon signed-rank vs t under logistic distribution: pi^2/9"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ARE of Wilcoxon signed-rank vs t under logistic distribution: pi^2/9",
+        }
+    )
 
 
 def cheatsheet():

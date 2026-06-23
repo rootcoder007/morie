@@ -1,8 +1,9 @@
 """Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_15"]
 
@@ -40,7 +41,10 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_1
             pvalue=float("nan"),
             warnings=["n<3: insufficient pairs for correlation."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."},
+            extra_payload={
+                "n": n,
+                "method": "Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
+            },
         )
     result = stats.spearmanr(x[:n], y[:n])
     return hypothesis_test_result(
@@ -48,7 +52,11 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_1
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

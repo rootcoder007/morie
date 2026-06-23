@@ -1,6 +1,7 @@
 """First and second moments of the Polya-tree density p(x) for a canonical Polya tree process with absolutely-continuous realizations.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_polya_tree_density_moments"]
@@ -32,7 +33,14 @@ def ghosal_ch3_polya_tree_density_moments(alpha, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "First and second moments of the Polya-tree density p(x) for a canonical Polya tree process with absolutely-continuous realizations."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "First and second moments of the Polya-tree density p(x) for a canonical Polya tree process with absolutely-continuous realizations.",
+        }
+    )
 
 
 def cheatsheet():

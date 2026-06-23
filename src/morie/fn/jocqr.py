@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CQR: conformalize quantile-regression output using calibration residuals."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_conformalized_quantile_regression"]
@@ -36,7 +38,14 @@ def joseph_conformalized_quantile_regression(calibration_y, calibration_q_lo, ca
     n = len(calibration_y)
     result = float(np.mean(calibration_y))
     se = float(np.std(calibration_y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "CQR: conformalize quantile-regression output using calibration residuals"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CQR: conformalize quantile-regression output using calibration residuals",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,15 +1,21 @@
 """Empirical spatiotemporal autocovariance C(h, u)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["spatiotemporal_autocovariance"]
 
 
-def spatiotemporal_autocovariance(x, coords, times,
-                                  n_spatial_bins: int = 6,
-                                  n_temporal_bins: int = 6,
-                                  max_spatial: float | None = None,
-                                  max_temporal: float | None = None):
+def spatiotemporal_autocovariance(
+    x,
+    coords,
+    times,
+    n_spatial_bins: int = 6,
+    n_temporal_bins: int = 6,
+    max_spatial: float | None = None,
+    max_temporal: float | None = None,
+):
     """
     Empirical spatiotemporal autocovariance.
 
@@ -44,10 +50,11 @@ def spatiotemporal_autocovariance(x, coords, times,
         raise ValueError("shape mismatch among x, coords, times")
     xbar = x.mean()
     dx = coords[:, None, :] - coords[None, :, :]
-    sd = np.sqrt((dx ** 2).sum(axis=2))
+    sd = np.sqrt((dx**2).sum(axis=2))
     td = np.abs(t[:, None] - t[None, :])
     iu = np.triu_indices(n, k=1)
-    sd_f = sd[iu]; td_f = td[iu]
+    sd_f = sd[iu]
+    td_f = td[iu]
     prods = (x[iu[0]] - xbar) * (x[iu[1]] - xbar)
     if max_spatial is None:
         max_spatial = float(sd_f.max() / 2.0) if sd_f.max() > 0 else 1.0
@@ -59,22 +66,23 @@ def spatiotemporal_autocovariance(x, coords, times,
     counts = np.zeros_like(C, dtype=int)
     for i in range(n_spatial_bins):
         for j in range(n_temporal_bins):
-            m = (sd_f > s_edges[i]) & (sd_f <= s_edges[i + 1]) & \
-                (td_f > t_edges[j]) & (td_f <= t_edges[j + 1])
+            m = (sd_f > s_edges[i]) & (sd_f <= s_edges[i + 1]) & (td_f > t_edges[j]) & (td_f <= t_edges[j + 1])
             k = int(m.sum())
             counts[i, j] = k
             if k > 0:
                 C[i, j] = float(prods[m].mean())
-    return RichResult(payload={
-        "estimate": {
-            "C": C.tolist(),
-            "spatial_bins": (0.5 * (s_edges[:-1] + s_edges[1:])).tolist(),
-            "temporal_bins": (0.5 * (t_edges[:-1] + t_edges[1:])).tolist(),
-            "counts": counts.tolist(),
-        },
-        "n": int(n),
-        "method": "Empirical spatiotemporal autocovariance",
-    })
+    return RichResult(
+        payload={
+            "estimate": {
+                "C": C.tolist(),
+                "spatial_bins": (0.5 * (s_edges[:-1] + s_edges[1:])).tolist(),
+                "temporal_bins": (0.5 * (t_edges[:-1] + t_edges[1:])).tolist(),
+                "counts": counts.tolist(),
+            },
+            "n": int(n),
+            "method": "Empirical spatiotemporal autocovariance",
+        }
+    )
 
 
 def cheatsheet():

@@ -97,4 +97,4 @@ mmddis = mmd_distance
 
 
 def cheatsheet() -> str:
-    return 'mmd_distance({}) -> Domain adaptation via MMD.'
+    return "mmd_distance({}) -> Domain adaptation via MMD."

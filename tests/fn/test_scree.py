@@ -1,7 +1,8 @@
 """Tests for morie.fn.scree -- scree plot data."""
 
 import numpy as np
-from morie.fn.scree import scree_plot_data, scree
+
+from morie.fn.scree import scree, scree_plot_data
 
 
 def test_scree_smoke():

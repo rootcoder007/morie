@@ -1,8 +1,9 @@
 """Tests for morie.fn.polfea -- polynomial feature expansion."""
 
 import numpy as np
-from morie.fn.polfea import polynomial_features, polfea
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.polfea import polfea, polynomial_features
 
 
 class TestPolfea:

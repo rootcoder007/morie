@@ -1,6 +1,7 @@
 """Tests for lda.lda_topic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lda import lda_topic
 
 
@@ -12,7 +13,7 @@ def test_lda_basic():
     beta = 0.8
     result = lda_topic(docs, K, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lda_edge():

@@ -1,6 +1,7 @@
 """Tests for alreact.alammar_react_agent_loop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alreact import alammar_react_agent_loop
 
 
@@ -12,7 +13,7 @@ def test_alreact_basic():
     max_steps = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_react_agent_loop(query, tools, model, max_steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alreact_edge():

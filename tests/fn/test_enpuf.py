@@ -1,6 +1,7 @@
 """Test enpuf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enpuf import enpuf
 
 

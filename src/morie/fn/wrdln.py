@@ -49,4 +49,4 @@ wrdln = word_length_stats
 
 
 def cheatsheet() -> str:
-    return 'word_length_stats({}) -> Word length distribution statistics.'
+    return "word_length_stats({}) -> Word length distribution statistics."

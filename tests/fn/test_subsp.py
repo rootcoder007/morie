@@ -52,4 +52,5 @@ def test_invalid_alpha(sample_data):
 
 def test_cheatsheet():
     from morie.fn.subsp import cheatsheet
+
     assert "subsampling" in cheatsheet().lower()

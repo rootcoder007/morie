@@ -1,6 +1,7 @@
 """Relation between power cepstrum and complex cepstrum.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_power_cepstrum_relation_to_complex"]
@@ -32,7 +33,14 @@ def rangayyan_ch4_power_cepstrum_relation_to_complex(y_hat, n):
     n = len(y_hat)
     result = float(np.mean(y_hat))
     se = float(np.std(y_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Relation between power cepstrum and complex cepstrum."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Relation between power cepstrum and complex cepstrum.",
+        }
+    )
 
 
 def cheatsheet():

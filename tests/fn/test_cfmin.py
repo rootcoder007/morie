@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfmin."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfmin import cfmin
 
 

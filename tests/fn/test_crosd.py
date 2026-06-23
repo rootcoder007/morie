@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.crosd import croston_method, crosd
+from morie.fn.crosd import crosd, croston_method
 
 
 def test_returns_descriptive_result():

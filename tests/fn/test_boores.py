@@ -1,8 +1,9 @@
 """Tests for morie.fn.boores -- bootstrap resampling."""
 
 import numpy as np
-from morie.fn.boores import bootstrap_resample, boores
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.boores import boores, bootstrap_resample
 
 
 class TestBoores:

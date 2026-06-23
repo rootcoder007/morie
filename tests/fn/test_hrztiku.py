@@ -1,6 +1,7 @@
 """Tests for hrztiku.horowitz_tikhonov_unknown_T."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrztiku import horowitz_tikhonov_unknown_T
 
 
@@ -13,7 +14,7 @@ def test_hrztiku_basic():
     alpha = 0.05
     result = horowitz_tikhonov_unknown_T(x, y, w, bandwidth, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrztiku_edge():

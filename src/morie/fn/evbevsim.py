@@ -1,6 +1,7 @@
 """Simulate from a bivariate extreme-value copula."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_bv_evd_sim"]
@@ -32,7 +33,9 @@ def evt_bv_evd_sim(alpha, n):
     n = len(alpha)
     result = float(np.mean(alpha))
     se = float(np.std(alpha, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Simulate from a bivariate extreme-value copula"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Simulate from a bivariate extreme-value copula"}
+    )
 
 
 def cheatsheet():

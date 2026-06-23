@@ -1,7 +1,7 @@
 """Tests for morie.fn.agseq."""
 
 import numpy as np
-import pytest
+
 from morie.fn.agseq import agseq
 
 

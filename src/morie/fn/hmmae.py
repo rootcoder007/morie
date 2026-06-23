@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean absolute error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mae"]

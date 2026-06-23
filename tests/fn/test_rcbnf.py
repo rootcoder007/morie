@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcbnf."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcbnf import rcbnf
 
 

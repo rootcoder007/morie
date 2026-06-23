@@ -1,6 +1,7 @@
 """Prophet -- piecewise trend + Fourier seasonal + holidays."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["prophet"]
@@ -36,7 +37,14 @@ def prophet(ds, y, holidays, changepoints):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prophet -- piecewise trend + Fourier seasonal + holidays"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prophet -- piecewise trend + Fourier seasonal + holidays",
+        }
+    )
 
 
 def cheatsheet():

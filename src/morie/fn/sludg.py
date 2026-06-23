@@ -82,4 +82,4 @@ sludg = herschel_bulkley
 
 
 def cheatsheet() -> str:
-    return 'herschel_bulkley({}) -> Rheological flow model (Herschel-Bulkley).'
+    return "herschel_bulkley({}) -> Rheological flow model (Herschel-Bulkley)."

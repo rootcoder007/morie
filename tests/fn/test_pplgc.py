@@ -1,6 +1,7 @@
 """Test pplgc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pplgc import pplgc
 
 

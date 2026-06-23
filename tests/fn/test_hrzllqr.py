@@ -1,6 +1,7 @@
 """Tests for hrzllqr.horowitz_local_linear_quantile."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzllqr import horowitz_local_linear_quantile
 
 
@@ -12,7 +13,7 @@ def test_hrzllqr_basic():
     tau = 0.1
     result = horowitz_local_linear_quantile(x, y, bandwidth, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzllqr_edge():

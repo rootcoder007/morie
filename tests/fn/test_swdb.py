@@ -1,8 +1,9 @@
 """Tests for morie.fn.swdb -- Solar System demo dataset loader."""
 
 import pytest
-from morie.fn.swdb import load_solar_system, load_solar_system_result, swdb
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.swdb import load_solar_system, load_solar_system_result, swdb
 
 
 class TestSwdb:

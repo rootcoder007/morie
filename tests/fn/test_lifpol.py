@@ -1,8 +1,9 @@
 """Tests for morie.fn.lifpol -- lift-drag polar."""
 
 import numpy as np
-from morie.fn.lifpol import lift_drag_polar, lifpol
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lifpol import lifpol, lift_drag_polar
 
 
 class TestLifpol:
@@ -11,7 +12,7 @@ class TestLifpol:
 
     def test_basic_polar(self):
         cl = np.linspace(-0.5, 1.5, 50)
-        cd = 0.02 + 0.04 * cl ** 2
+        cd = 0.02 + 0.04 * cl**2
         r = lift_drag_polar(cl, cd)
         assert isinstance(r, DescriptiveResult)
         assert r.value > 0
@@ -19,6 +20,6 @@ class TestLifpol:
 
     def test_ld_max_positive(self):
         cl = np.linspace(0.1, 2.0, 30)
-        cd = 0.01 + 0.05 * cl ** 2
+        cd = 0.01 + 0.05 * cl**2
         r = lift_drag_polar(cl, cd)
         assert r.value > 5

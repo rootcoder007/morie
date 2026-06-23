@@ -1,7 +1,7 @@
 """Test freq_response_at (ztfrq)."""
-import numpy as np
-from morie.fn.ztfrq import freq_response_at, ztfrq
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ztfrq import freq_response_at, ztfrq
 
 
 class TestFreqResponseAt:

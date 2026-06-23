@@ -7,7 +7,9 @@ import numpy as np
 import scipy.stats as stats
 
 
-def pchisq(x: Union[float, np.ndarray], df: float, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def pchisq(
+    x: Union[float, np.ndarray], df: float, lower_tail: bool = True, log: bool = False, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Chi-squared distribution CDF.
 

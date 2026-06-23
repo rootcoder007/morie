@@ -14,6 +14,7 @@ Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
 Newey, W., & Robins, J. (2018). Double/debiased machine learning.
 *The Econometrics Journal*, 21(1), C1-C68.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -91,18 +92,14 @@ def drlea(
     mu0 = Xa @ beta0
 
     # AIPW pseudo-outcome
-    pseudo = (
-        mu1 - mu0
-        + T * (Y - mu1) / ps
-        - (1.0 - T) * (Y - mu0) / (1.0 - ps)
-    )
+    pseudo = mu1 - mu0 + T * (Y - mu1) / ps - (1.0 - T) * (Y - mu0) / (1.0 - ps)
 
     # Stage 2: regress pseudo-outcome on X for CATE
     gamma = np.linalg.lstsq(Xa, pseudo, rcond=None)[0]
     cate = Xa @ gamma
 
-    ate = float(np.mean(pseudo))          # unbiased ATE from pseudo-outcomes
-    se_ic = pseudo - ate                  # influence function residuals
+    ate = float(np.mean(pseudo))  # unbiased ATE from pseudo-outcomes
+    se_ic = pseudo - ate  # influence function residuals
     se = float(np.std(se_ic, ddof=1) / np.sqrt(n))
     z = _norm.ppf(1.0 - alpha / 2.0)
 

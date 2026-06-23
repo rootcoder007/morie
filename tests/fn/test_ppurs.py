@@ -1,8 +1,9 @@
 """Tests for morie.fn.ppurs -- Projection pursuit."""
 
 import numpy as np
-from morie.fn.ppurs import projection_pursuit, ppurs
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ppurs import ppurs, projection_pursuit
 
 
 class TestProjectionPursuit:

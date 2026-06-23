@@ -1,6 +1,7 @@
 """Test nbiso."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nbiso import nbiso
 
 

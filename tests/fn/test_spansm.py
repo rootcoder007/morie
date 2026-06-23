@@ -1,6 +1,7 @@
 """Tests for spansm.schabenberger_anselin_local_moran."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spansm import schabenberger_anselin_local_moran
 
 
@@ -10,7 +11,7 @@ def test_spansm_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = schabenberger_anselin_local_moran(x, w)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_spansm_edge():

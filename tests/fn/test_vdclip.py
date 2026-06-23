@@ -1,6 +1,8 @@
 """Tests for vdclip."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdclip import vdclip
 
 
@@ -28,4 +30,5 @@ def test_vdclip_no_data():
 
 def test_vdclip_alias():
     from morie.fn.vdclip import vdclip
+
     assert vdclip is vdclip

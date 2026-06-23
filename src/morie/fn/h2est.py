@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Narrow-sense heritability from LMM variance components."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["heritability_lmm"]
@@ -32,7 +34,14 @@ def heritability_lmm(sigma_g2, sigma_e2):
     n = int(sigma_g2) if sigma_g2.ndim == 0 else len(sigma_g2)
     result = float(np.mean(sigma_g2))
     se = float(np.std(sigma_g2, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Narrow-sense heritability from LMM variance components"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Narrow-sense heritability from LMM variance components",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for matnK.matern_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.matnK import matern_kernel
 
 
@@ -11,7 +12,7 @@ def test_matnK_basic():
     rho = 0.5
     result = matern_kernel(d, nu, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_matnK_edge():

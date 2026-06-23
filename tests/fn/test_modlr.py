@@ -1,5 +1,7 @@
 """Test modlr."""
+
 import pytest
+
 from morie.fn.modlr import modular_form
 
 

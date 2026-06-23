@@ -71,8 +71,7 @@ def posterior_predictive_check(
     if isinstance(test_statistic, str):
         if test_statistic not in stat_map:
             raise ValueError(
-                f"Unknown test_statistic '{test_statistic}'. "
-                f"Use one of {list(stat_map.keys())} or a callable."
+                f"Unknown test_statistic '{test_statistic}'. Use one of {list(stat_map.keys())} or a callable."
             )
         stat_fn = stat_map[test_statistic]
     else:

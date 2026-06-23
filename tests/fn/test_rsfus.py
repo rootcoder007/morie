@@ -1,6 +1,7 @@
 """Test rsfus."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsfus import rsfus
 
 

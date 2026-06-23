@@ -81,4 +81,4 @@ simtes = simultaneous_test
 
 
 def cheatsheet() -> str:
-    return 'simultaneous_test({}) -> SHAZAM simultaneous hypothesis test.'
+    return "simultaneous_test({}) -> SHAZAM simultaneous hypothesis test."

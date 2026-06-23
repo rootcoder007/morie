@@ -79,12 +79,14 @@ def llker(
 
     if bandwidth is None:
         from morie.fn.nwker import _silverman_bw
+
         bandwidth = _silverman_bw(x)
 
     if bandwidth <= 0:
         raise ValueError(f"Bandwidth must be positive, got {bandwidth}.")
 
     from morie.fn.nwker import _get_kernel
+
     k_fn = _get_kernel(kernel)
 
     m = len(x_eval)
@@ -101,8 +103,8 @@ def llker(
             slope[j] = np.nan
             continue
         s1 = (w * dx).sum()
-        s2 = (w * dx ** 2).sum()
-        denom = sw * s2 - s1 ** 2
+        s2 = (w * dx**2).sum()
+        denom = sw * s2 - s1**2
         if abs(denom) < 1e-15:
             y_hat[j] = (w * y).sum() / sw
             slope[j] = 0.0

@@ -1,6 +1,7 @@
 """Tests for rng164.rangayyan_ch3_rls_normal_equation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng164 import rangayyan_ch3_rls_normal_equation
 
 
@@ -12,7 +13,7 @@ def test_rng164_basic():
     n = 100
     result = rangayyan_ch3_rls_normal_equation(Phi, w_tilde, Theta, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng164_edge():

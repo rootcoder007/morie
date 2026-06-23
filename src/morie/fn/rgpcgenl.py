@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Synchronized averaging of PCG envelopes (S1/S2 intensity analysis)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pcg_envelope_avg"]
@@ -34,7 +36,14 @@ def rangayyan_pcg_envelope_avg(pcg, ecg, fs):
     n = int(pcg) if pcg.ndim == 0 else len(pcg)
     result = float(np.mean(pcg))
     se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Synchronized averaging of PCG envelopes (S1/S2 intensity analysis)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Synchronized averaging of PCG envelopes (S1/S2 intensity analysis)",
+        }
+    )
 
 
 def cheatsheet():

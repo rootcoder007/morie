@@ -1,6 +1,7 @@
 """Tests for aitdrl.dirichlet_loglik."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aitdrl import dirichlet_loglik
 
 
@@ -10,7 +11,7 @@ def test_aitdrl_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = dirichlet_loglik(alpha, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_aitdrl_edge():

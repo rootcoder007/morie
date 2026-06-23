@@ -1,7 +1,7 @@
 """Tests for morie.fn.eldiv."""
 
 import numpy as np
-import pytest
+
 from morie.fn.eldiv import eldiv
 
 

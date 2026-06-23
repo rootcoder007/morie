@@ -1,6 +1,7 @@
 """Tests for km058.kamath_ch4_lora_forward."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km058 import kamath_ch4_lora_forward
 
 
@@ -12,7 +13,7 @@ def test_km058_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch4_lora_forward(W_0, B, A, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km058_edge():

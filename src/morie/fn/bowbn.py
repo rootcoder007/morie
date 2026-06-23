@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bow-ban (no self-loops): DAG acyclicity condition ensuring no cycles."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bow_ban_theorem"]
@@ -30,7 +32,14 @@ def bow_ban_theorem(graph):
     n = int(graph) if graph.ndim == 0 else len(graph)
     result = float(np.mean(graph))
     se = float(np.std(graph, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bow-ban (no self-loops): DAG acyclicity condition ensuring no cycles"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bow-ban (no self-loops): DAG acyclicity condition ensuring no cycles",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for rglindf.rangayyan_linear_discrim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rglindf import rangayyan_linear_discrim
 
 
@@ -12,7 +13,7 @@ def test_rglindf_basic():
     w0 = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_linear_discrim(X, y, w, w0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rglindf_edge():

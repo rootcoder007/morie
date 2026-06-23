@@ -1,6 +1,7 @@
 """Tests for macohd.ma_cohens_d."""
+
 import numpy as np
-import pytest
+
 from morie.fn.macohd import ma_cohens_d
 
 
@@ -14,7 +15,7 @@ def test_macohd_basic():
     n2 = np.random.default_rng(42).normal(0, 1, 100)
     result = ma_cohens_d(m1, m2, s1, s2, n1, n2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_macohd_edge():

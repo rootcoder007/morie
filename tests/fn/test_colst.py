@@ -1,6 +1,7 @@
 """Tests for colst.collider_structure."""
+
 import numpy as np
-import pytest
+
 from morie.fn.colst import collider_structure
 
 
@@ -12,7 +13,7 @@ def test_colst_basic():
     conditioned = np.random.default_rng(42).normal(0, 1, 100)
     result = collider_structure(A, B, C, conditioned)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_colst_edge():

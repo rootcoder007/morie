@@ -1,7 +1,6 @@
 """Tests for morie.fn.mssm2 -- SMACOF 2D MDS"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mssm2 import smacof_2d
 

@@ -77,10 +77,14 @@ def mxkde(
         resp /= resp_sum
 
         ll = np.sum(np.log(np.maximum(resp.sum(axis=1) * resp_sum.ravel() / resp_sum.ravel(), 1e-300)))
-        ll = np.sum(np.log(np.maximum(
-            sum(pi_k[k] * stats.norm.pdf(x, mu[k], sigma[k]) for k in range(K)),
-            1e-300,
-        )))
+        ll = np.sum(
+            np.log(
+                np.maximum(
+                    sum(pi_k[k] * stats.norm.pdf(x, mu[k], sigma[k]) for k in range(K)),
+                    1e-300,
+                )
+            )
+        )
 
         n_iter = iteration + 1
         if abs(ll - ll_old) < tol:

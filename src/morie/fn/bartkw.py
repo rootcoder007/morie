@@ -1,6 +1,7 @@
 """Bartlett (triangular) kernel weights."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bartlett_kernel_weights"]

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Self-RAG: emit reflection tokens deciding to retrieve / grade relevance / check support."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_self_rag"]
@@ -32,7 +34,14 @@ def kamath_self_rag(context, reflection_model):
     n = len(context)
     result = float(np.mean(context))
     se = float(np.std(context, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Self-RAG: emit reflection tokens deciding to retrieve / grade relevance / check support"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Self-RAG: emit reflection tokens deciding to retrieve / grade relevance / check support",
+        }
+    )
 
 
 def cheatsheet():

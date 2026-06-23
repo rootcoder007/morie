@@ -50,12 +50,7 @@ def hubbl(
     Omega_k = 1.0 - Omega_m - Omega_r - Omega_Lambda
 
     def E(zz):
-        return np.sqrt(
-            Omega_r * (1 + zz) ** 4
-            + Omega_m * (1 + zz) ** 3
-            + Omega_k * (1 + zz) ** 2
-            + Omega_Lambda
-        )
+        return np.sqrt(Omega_r * (1 + zz) ** 4 + Omega_m * (1 + zz) ** 3 + Omega_k * (1 + zz) ** 2 + Omega_Lambda)
 
     H_z = H0 * E(z)
 

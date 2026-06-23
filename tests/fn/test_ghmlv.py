@@ -1,6 +1,7 @@
 """Test ghmlv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghmlv import ghmlv
 
 

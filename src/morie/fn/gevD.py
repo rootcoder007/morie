@@ -1,6 +1,7 @@
 """Generalized extreme value distribution."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gev_distribution"]
@@ -34,7 +35,9 @@ def gev_distribution(mu, sigma, xi):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Generalized extreme value distribution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Generalized extreme value distribution"}
+    )
 
 
 def cheatsheet():

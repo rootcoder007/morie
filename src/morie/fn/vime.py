@@ -1,6 +1,7 @@
 """Empirical orthogonal functions (EOFs)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["empirical_orthogonal_func"]

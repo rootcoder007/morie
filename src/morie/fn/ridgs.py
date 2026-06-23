@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ridge regression closed-form solution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ridge_solution"]

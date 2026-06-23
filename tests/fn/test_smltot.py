@@ -1,6 +1,7 @@
 """Tests for smltot.survey_total."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smltot import survey_total
 
 
@@ -10,7 +11,7 @@ def test_smltot_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = survey_total(y, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smltot_edge():

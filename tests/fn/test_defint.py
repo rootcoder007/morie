@@ -1,6 +1,7 @@
 """Tests for defint.definite_integral."""
+
 import numpy as np
-import pytest
+
 from morie.fn.defint import definite_integral
 
 
@@ -12,7 +13,7 @@ def test_defint_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = definite_integral(expr, x, a, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_defint_edge():

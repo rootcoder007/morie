@@ -1,8 +1,9 @@
 """Correlation expression (auto-extracted; see ref).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_381"]
 
@@ -48,7 +49,11 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered
         statistic=float(result.statistic),
         pvalue=float(result.pvalue),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Correlation expression (auto-extracted; see ref).", "p_value": float(result.pvalue)},
+        extra_payload={
+            "n": n,
+            "method": "Correlation expression (auto-extracted; see ref).",
+            "p_value": float(result.pvalue),
+        },
     )
 
 

@@ -1,7 +1,7 @@
 """Test poles_zeros (plzro)."""
-import numpy as np
-from morie.fn.plzro import poles_zeros, plzro
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.plzro import plzro, poles_zeros
 
 
 class TestPolesZeros:

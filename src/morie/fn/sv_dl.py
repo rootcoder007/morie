@@ -1,6 +1,7 @@
 """Structural variant calling (delly/manta)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["structural_variant"]
@@ -32,7 +33,9 @@ def structural_variant(bam, reference):
     n = len(bam)
     result = float(np.mean(bam))
     se = float(np.std(bam, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Structural variant calling (delly/manta)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Structural variant calling (delly/manta)"}
+    )
 
 
 def cheatsheet():

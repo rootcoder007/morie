@@ -1,6 +1,7 @@
 """Tests for hrzade.horowitz_average_derivative."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzade import horowitz_average_derivative
 
 
@@ -11,7 +12,7 @@ def test_hrzade_basic():
     bandwidth = 0.3
     result = horowitz_average_derivative(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzade_edge():

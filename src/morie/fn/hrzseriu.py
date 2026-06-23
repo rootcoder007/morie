@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Series truncation for NPIV when T is unknown."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_series_unknown_T"]
@@ -38,7 +40,9 @@ def horowitz_series_unknown_T(x, y, w, K, basis):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Series truncation for NPIV when T is unknown"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Series truncation for NPIV when T is unknown"}
+    )
 
 
 def cheatsheet():

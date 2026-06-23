@@ -1,6 +1,8 @@
 """Tests for morie.fn.dwtst -- Durbin-Watson statistic."""
+
 import numpy as np
 import pytest
+
 from morie.fn.dwtst import durbin_watson
 
 
@@ -17,4 +19,5 @@ class TestDW:
 
     def test_cheatsheet(self):
         from morie.fn.dwtst import cheatsheet
+
         assert isinstance(cheatsheet(), str)

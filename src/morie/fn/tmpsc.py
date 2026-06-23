@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Temperature scaling for logits (Hinton et al. 2015)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -36,10 +37,8 @@ def temperature_scaling(x, T: float = 1.0):
     H = -np.sum(np.where(p > 0, p * np.log(p), 0.0), axis=-1)
     return RichResult(
         title="Temperature-Scaled Softmax (Hinton 2015)",
-        summary_lines=[("T", T),
-                       ("entropy_mean", float(np.mean(H)))],
-        payload={"tensor": p, "entropy": H, "T": T,
-                 "method": "temperature-softmax"},
+        summary_lines=[("T", T), ("entropy_mean", float(np.mean(H)))],
+        payload={"tensor": p, "entropy": H, "T": T, "method": "temperature-softmax"},
     )
 
 

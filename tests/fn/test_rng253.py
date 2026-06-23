@@ -1,6 +1,7 @@
 """Tests for rng253.rangayyan_ch4_power_cepstrum_definition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng253 import rangayyan_ch4_power_cepstrum_definition
 
 
@@ -11,7 +12,7 @@ def test_rng253_basic():
     n = 100
     result = rangayyan_ch4_power_cepstrum_definition(Y, z, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng253_edge():

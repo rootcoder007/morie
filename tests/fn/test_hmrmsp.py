@@ -1,6 +1,7 @@
 """Tests for hmrmsp.geron_rmsprop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmrmsp import geron_rmsprop
 
 
@@ -13,7 +14,7 @@ def test_hmrmsp_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_rmsprop(grads, s, beta, eta, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmrmsp_edge():

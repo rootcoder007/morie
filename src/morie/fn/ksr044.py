@@ -1,6 +1,7 @@
 """Taylor-style upper and lower bounds on F(xi_p) used in quantile delta-method proof."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_quantile_taylor_bounds"]
@@ -38,7 +39,14 @@ def kosorok_ch2_quantile_taylor_bounds(F, h, t_n, xi_pn, eps_pn):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Taylor-style upper and lower bounds on F(xi_p) used in quantile delta-method proof"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Taylor-style upper and lower bounds on F(xi_p) used in quantile delta-method proof",
+        }
+    )
 
 
 def cheatsheet():

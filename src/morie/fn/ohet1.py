@@ -9,7 +9,9 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_het_region(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", region_col: str = "region") -> dict:
+def otis_het_region(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", region_col: str = "region"
+) -> dict:
     """Test for heterogeneous treatment effects across regions.
 
     Fits Y = a + b*D + c*region + d*(D*region) + e and tests

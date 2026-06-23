@@ -1,6 +1,7 @@
 """Mediated interaction term in 4-way decomp."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mediated_interaction"]
@@ -34,7 +35,9 @@ def mediated_interaction(Y, X, M):
     n = len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mediated interaction term in 4-way decomp"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Mediated interaction term in 4-way decomp"}
+    )
 
 
 def cheatsheet():

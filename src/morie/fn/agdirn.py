@@ -1,6 +1,7 @@
 """Dirichlet exploration noise at MCTS root."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_dirichlet_noise"]
@@ -34,7 +35,9 @@ def alphazero_dirichlet_noise(p, alpha, eps):
     n = len(p)
     result = float(np.mean(p))
     se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dirichlet exploration noise at MCTS root"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Dirichlet exploration noise at MCTS root"}
+    )
 
 
 def cheatsheet():

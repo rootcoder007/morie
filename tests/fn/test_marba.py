@@ -1,6 +1,7 @@
 """Tests for marba.ma_smd_var_correlated_designs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.marba import ma_smd_var_correlated_designs
 
 
@@ -11,7 +12,7 @@ def test_marba_basic():
     rho = 0.5
     result = ma_smd_var_correlated_designs(g, n, rho)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_marba_edge():

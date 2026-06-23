@@ -79,4 +79,4 @@ tobit = tobit_model
 
 
 def cheatsheet() -> str:
-    return 'tobit_model({}) -> Tobit censored regression.'
+    return "tobit_model({}) -> Tobit censored regression."

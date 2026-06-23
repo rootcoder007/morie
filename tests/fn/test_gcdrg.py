@@ -1,6 +1,7 @@
 """Test gcdrg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcdrg import gcdrg
 
 

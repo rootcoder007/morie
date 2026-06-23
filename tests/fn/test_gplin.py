@@ -1,6 +1,8 @@
 """Tests for gplin."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gplin import gplin
 
 
@@ -28,4 +30,5 @@ def test_gplin_no_data():
 
 def test_gplin_alias():
     from morie.fn.gplin import gplin
+
     assert gplin is gplin

@@ -1,5 +1,7 @@
 """Test cross-entropy loss."""
+
 import numpy as np
+
 from morie.fn.xenty import xenty
 
 

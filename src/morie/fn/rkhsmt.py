@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-trait Bayesian kernel regression with shared kernel matrix."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rkhs_multitrait"]
@@ -34,7 +36,14 @@ def rkhs_multitrait(Y, K, n_iter):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-trait Bayesian kernel regression with shared kernel matrix"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multi-trait Bayesian kernel regression with shared kernel matrix",
+        }
+    )
 
 
 def cheatsheet():

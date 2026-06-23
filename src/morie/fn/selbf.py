@@ -64,4 +64,4 @@ selbf = selection_bias_factor
 
 
 def cheatsheet() -> str:
-    return 'selection_bias_factor({}) -> Selection bias factor.'
+    return "selection_bias_factor({}) -> Selection bias factor."

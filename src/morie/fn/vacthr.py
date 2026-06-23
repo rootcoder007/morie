@@ -1,6 +1,7 @@
 """Critical vaccination threshold for herd immunity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vaccination_threshold"]
@@ -30,7 +31,9 @@ def vaccination_threshold(R0):
     n = len(R0)
     result = float(np.mean(R0))
     se = float(np.std(R0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Critical vaccination threshold for herd immunity"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Critical vaccination threshold for herd immunity"}
+    )
 
 
 def cheatsheet():

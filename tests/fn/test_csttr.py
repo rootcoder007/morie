@@ -1,6 +1,7 @@
 """Tests for morie.fn.csttr — custody transfer rate."""
 
 import pandas as pd
+
 from morie.fn.csttr import custody_transfer_rate
 
 

@@ -10,7 +10,15 @@ from scipy import stats as sp
 from morie.fn._cfa_engine import get_mapq_structure
 
 
-def mi_latent_means(data: pd.DataFrame, group_col: str, structure: dict[str, list[str]] | None = None, cdf=None, *, items: list[str] | None = None, reference_group: str | None = None) -> dict:
+def mi_latent_means(
+    data: pd.DataFrame,
+    group_col: str,
+    structure: dict[str, list[str]] | None = None,
+    cdf=None,
+    *,
+    items: list[str] | None = None,
+    reference_group: str | None = None,
+) -> dict:
     """Latent mean differences between groups.
 
     Approximated via subscale mean differences (valid under scalar invariance).

@@ -1,6 +1,7 @@
 """Sun-Abraham heterogeneous-treatment DID."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sun_abraham_did"]
@@ -38,7 +39,9 @@ def sun_abraham_did(y, D, unit, time, cohort):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sun-Abraham heterogeneous-treatment DID"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sun-Abraham heterogeneous-treatment DID"}
+    )
 
 
 def cheatsheet():

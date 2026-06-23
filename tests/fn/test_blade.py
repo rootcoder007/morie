@@ -1,8 +1,9 @@
 """Tests for morie.fn.blade -- Canny edge detection."""
 
 import numpy as np
-from morie.fn.blade import edge_detect, blade
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.blade import blade, edge_detect
 
 
 class TestBlade:

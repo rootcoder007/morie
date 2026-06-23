@@ -1,7 +1,9 @@
 """Test spectral_rolloff (sprof)."""
+
 import numpy as np
-from morie.fn.sprof import spectral_rolloff, sprof
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sprof import spectral_rolloff, sprof
 
 
 class TestSprof:

@@ -52,4 +52,4 @@ kfocv = kfold_cv
 
 
 def cheatsheet() -> str:
-    return 'kfold_cv({}) -> K-fold cross-validation.'
+    return "kfold_cv({}) -> K-fold cross-validation."

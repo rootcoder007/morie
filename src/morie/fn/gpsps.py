@@ -1,6 +1,7 @@
 """GP spectral mixture kernel."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gp_spectral_mixture"]

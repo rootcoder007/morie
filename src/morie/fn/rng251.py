@@ -1,6 +1,7 @@
 """Power-series expansion of the log echo term (a < 1).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_log_echo_power_series_expansion"]
@@ -36,7 +37,9 @@ def rangayyan_ch4_log_echo_power_series_expansion(a, n_0, omega, H_hat):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Power-series expansion of the log echo term (a < 1)."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Power-series expansion of the log echo term (a < 1)."}
+    )
 
 
 def cheatsheet():

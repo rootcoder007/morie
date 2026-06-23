@@ -6,6 +6,8 @@ from __future__ import annotations
 import numpy as np
 
 from ._containers import ESRes
+
+
 def accuracy(y_true, y_pred, **kwargs) -> ESRes:
     """
     Compute classification accuracy.

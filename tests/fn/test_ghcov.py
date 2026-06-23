@@ -1,6 +1,7 @@
 """Test ghcov."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghcov import ghcov
 
 

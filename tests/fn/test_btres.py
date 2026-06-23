@@ -1,6 +1,7 @@
 """Tests for btres.boot_residual_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btres import boot_residual_regression
 
 
@@ -11,7 +12,7 @@ def test_btres_basic():
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = boot_residual_regression(X, y, B)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btres_edge():

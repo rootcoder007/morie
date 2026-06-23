@@ -1,6 +1,7 @@
 """Tests for sarsa.sarsa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sarsa import sarsa
 
 
@@ -13,7 +14,7 @@ def test_sarsa_basic():
     n_episodes = np.random.default_rng(42).normal(0, 1, 100)
     result = sarsa(env, alpha, gamma, epsilon, n_episodes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sarsa_edge():

@@ -1,6 +1,7 @@
 """Test splfn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.splfn import splfn
 
 

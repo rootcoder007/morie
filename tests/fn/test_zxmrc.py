@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxmrc -- Mercator projection"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxmrc import mercator_proj
 

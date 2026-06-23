@@ -1,6 +1,7 @@
 """Exponential mechanism for DP categorical selection."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_exponential_mechanism"]
@@ -38,7 +39,9 @@ def dp_exponential_mechanism(y, candidates, utility, epsilon, sensitivity):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exponential mechanism for DP categorical selection"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Exponential mechanism for DP categorical selection"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """DDIM deterministic sampler."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ddim_step"]

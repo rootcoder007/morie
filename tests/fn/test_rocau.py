@@ -1,6 +1,7 @@
 """Tests for rocau.roc_auc_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rocau import roc_auc_score
 
 
@@ -10,7 +11,7 @@ def test_rocau_basic():
     y_score = np.random.default_rng(42).normal(0, 1, 100)
     result = roc_auc_score(y_true, y_score)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rocau_edge():

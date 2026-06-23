@@ -38,6 +38,7 @@ def _probe_library() -> tuple[bool, str]:
         import importlib.metadata as md
 
         import ee  # type: ignore  # noqa: F401
+
         try:
             ver = md.version("earthengine-api")
         except md.PackageNotFoundError:
@@ -49,24 +50,16 @@ def _probe_library() -> tuple[bool, str]:
 
 def _probe_credentials() -> tuple[bool, str]:
     sa = os.environ.get("MORIE_EE_SERVICE_ACCOUNT")
-    key = os.environ.get("MORIE_EE_KEY_PATH") or os.environ.get(
-        "GOOGLE_APPLICATION_CREDENTIALS"
-    )
-    project = os.environ.get("MORIE_EE_PROJECT") or os.environ.get(
-        "GOOGLE_CLOUD_PROJECT"
-    )
+    key = os.environ.get("MORIE_EE_KEY_PATH") or os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+    project = os.environ.get("MORIE_EE_PROJECT") or os.environ.get("GOOGLE_CLOUD_PROJECT")
     if sa and key and project:
         if not os.path.exists(key):
             return False, f"MORIE_EE_KEY_PATH points at missing file: {key}"
         return True, f"service account {sa} @ {project} (key at {key})"
     if project:
-        return True, (
-            f"user OAuth flow (project={project}; no SA configured -- "
-            "will attempt interactive ADC)"
-        )
+        return True, (f"user OAuth flow (project={project}; no SA configured -- will attempt interactive ADC)")
     return False, (
-        "no GCP project configured. Set MORIE_EE_PROJECT or "
-        "GOOGLE_CLOUD_PROJECT. See howto/earth_engine_auth.md."
+        "no GCP project configured. Set MORIE_EE_PROJECT or GOOGLE_CLOUD_PROJECT. See howto/earth_engine_auth.md."
     )
 
 
@@ -77,7 +70,7 @@ def _probe_initialize() -> tuple[bool, str]:
         ee = _ensure_ee_initialized()
     except MissingCredentialsError as exc:
         return False, f"MissingCredentialsError: {exc}"
-    except Exception as exc:   # pragma: no cover - surface the raw error
+    except Exception as exc:  # pragma: no cover - surface the raw error
         return False, f"{type(exc).__name__}: {exc}"
     # ee.Initialize() succeeded -- return a hint about the auth mode.
     try:
@@ -91,21 +84,13 @@ def _probe_query() -> tuple[bool, str]:
     """Run a 1-pixel fetch to confirm quota + dataset access."""
     try:
         import ee  # type: ignore
+
         # Small, cheap image. Uses Sentinel-5P NO2 -- which the Toronto
         # MRP pipeline actually uses -- so this tests the relevant path.
         ic = ee.ImageCollection("COPERNICUS/S5P/OFFL/L3_NO2")
-        img = (
-            ic.filterDate("2024-01-01", "2024-01-15")
-            .select("NO2_column_number_density")
-            .mean()
-        )
+        img = ic.filterDate("2024-01-01", "2024-01-15").select("NO2_column_number_density").mean()
         pt = ee.Geometry.Point([-79.3832, 43.6532])  # Toronto
-        val = (
-            img.reduceRegion(
-                reducer=ee.Reducer.mean(), geometry=pt, scale=1000
-            )
-            .getInfo()
-        )
+        val = img.reduceRegion(reducer=ee.Reducer.mean(), geometry=pt, scale=1000).getInfo()
         if val:
             return True, f"fetched NO2 sample over Toronto -- {val}"
         return True, "fetched (empty sample -- cloud-cover window?); quota ok"
@@ -136,9 +121,13 @@ def handle_verify_earth_engine(args: argparse.Namespace) -> int:
         return 1
 
     if args.skip_query:
-        results.append(_result_row(
-            "query", True, "skipped (--skip-query)",
-        ))
+        results.append(
+            _result_row(
+                "query",
+                True,
+                "skipped (--skip-query)",
+            )
+        )
         _emit(results, as_json=args.json)
         return 0
 

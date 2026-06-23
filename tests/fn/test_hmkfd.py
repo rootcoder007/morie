@@ -1,6 +1,7 @@
 """Tests for hmkfd.geron_kfold."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmkfd import geron_kfold
 
 
@@ -12,7 +13,7 @@ def test_hmkfd_basic():
     seed = 42
     result = geron_kfold(X, y, k, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmkfd_edge():

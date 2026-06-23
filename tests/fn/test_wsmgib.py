@@ -1,6 +1,7 @@
 """Tests for wsmgib.wasserman_gibbs_sampler."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmgib import wasserman_gibbs_sampler
 
 
@@ -11,7 +12,7 @@ def test_wsmgib_basic():
     n = 100
     result = wasserman_gibbs_sampler(target, x0, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmgib_edge():

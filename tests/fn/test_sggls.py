@@ -1,5 +1,7 @@
 """Tests for GLS spatial."""
+
 import numpy as np
+
 from morie.fn.sggls import sggls
 
 
@@ -17,6 +19,7 @@ def test_sggls_smoke():
 
 def test_cheatsheet():
     from morie.fn.sggls import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

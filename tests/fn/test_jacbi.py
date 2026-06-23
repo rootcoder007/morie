@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.jacbi import jacobi_solve, jacbi
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.jacbi import jacbi, jacobi_solve
 
 
 class TestJacbi:

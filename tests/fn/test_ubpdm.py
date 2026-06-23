@@ -1,6 +1,7 @@
 """Test ubpdm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubpdm import ubpdm
 
 

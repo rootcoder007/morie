@@ -1,7 +1,6 @@
 """Tests for morie.fn.msref -- Reflection of configuration"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msref import reflect_config
 

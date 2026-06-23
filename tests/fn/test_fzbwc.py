@@ -1,6 +1,5 @@
 """Tests for fzbwc.fauzi_quantile_bw_condition."""
-import numpy as np
-import pytest
+
 from morie.fn.fzbwc import fauzi_quantile_bw_condition
 
 
@@ -10,7 +9,7 @@ def test_fzbwc_basic():
     n = 100
     result = fauzi_quantile_bw_condition(bandwidth, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzbwc_edge():

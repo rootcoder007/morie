@@ -1,6 +1,6 @@
 """Tests for morie.fn.smcuf — SMACOF unfolding."""
+
 import numpy as np
-import pytest
 
 from morie.fn.smcuf import smcuf
 
@@ -13,6 +13,7 @@ def test_smcuf_smoke():
 
 def test_cheatsheet():
     from morie.fn.smcuf import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

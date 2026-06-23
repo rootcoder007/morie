@@ -1,6 +1,7 @@
 """TMLE under right-censoring with inverse-probability-of-censoring weighting."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_censoring"]
@@ -38,7 +39,14 @@ def tmle_censoring(time, event, censor, treatment, covariates):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE under right-censoring with inverse-probability-of-censoring weighting"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TMLE under right-censoring with inverse-probability-of-censoring weighting",
+        }
+    )
 
 
 def cheatsheet():

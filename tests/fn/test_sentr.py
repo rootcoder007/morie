@@ -1,7 +1,9 @@
 """Test sample_entropy (sentr)."""
+
 import numpy as np
-from morie.fn.sentr import sample_entropy, sentr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sentr import sample_entropy, sentr
 
 
 class TestSampleEntropy:

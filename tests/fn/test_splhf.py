@@ -1,7 +1,8 @@
 """Tests for morie.fn.splhf — Spearman-Brown split-half reliability."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn import splhf
 
 
@@ -10,10 +11,7 @@ def correlated_items():
     """6 items x 100 respondents from a single latent factor."""
     rng = np.random.default_rng(42)
     latent = rng.standard_normal(100)
-    return np.column_stack([
-        latent + rng.standard_normal(100) * 0.3
-        for _ in range(6)
-    ])
+    return np.column_stack([latent + rng.standard_normal(100) * 0.3 for _ in range(6)])
 
 
 class TestSplhf:

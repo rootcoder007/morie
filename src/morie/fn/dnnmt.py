@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-output DNN for multi-trait genomic prediction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["dnn_multitrait"]
@@ -36,7 +38,9 @@ def dnn_multitrait(X, Y, layers, heads):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-output DNN for multi-trait genomic prediction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Multi-output DNN for multi-trait genomic prediction"}
+    )
 
 
 def cheatsheet():

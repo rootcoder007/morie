@@ -1,6 +1,7 @@
 """Gradient vector of the cross-entropy cost function with respect to the parameter vector for class k.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_cross_entropy_gradient_vector"]
@@ -36,8 +37,17 @@ def geron_ch4_cross_entropy_gradient_vector(X, Y, Theta, k):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gradient vector of the cross-entropy cost function with respect to the parameter vector for class k."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Gradient vector of the cross-entropy cost function with respect to the parameter vector for class k.",
+        }
+    )
 
 
 def cheatsheet():
-    return "grn024: Gradient vector of the cross-entropy cost function with respect to the parameter vector for class k."
+    return (
+        "grn024: Gradient vector of the cross-entropy cost function with respect to the parameter vector for class k."
+    )

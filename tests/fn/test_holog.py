@@ -1,5 +1,7 @@
 """Test holog."""
+
 import pytest
+
 from morie.fn.holog import holographic_entropy
 
 

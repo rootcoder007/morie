@@ -1,6 +1,6 @@
 """Tests for morie.fn.cjrit — Bayesian IRT for roll call."""
+
 import numpy as np
-import pytest
 
 from morie.fn.cjrit import cjrit
 
@@ -13,6 +13,7 @@ def test_cjrit_smoke():
 
 def test_cheatsheet():
     from morie.fn.cjrit import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

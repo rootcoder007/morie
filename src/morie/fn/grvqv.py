@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """VQ-VAE codebook + commitment loss with straight-through estimator."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_vq_vae_codebook_loss"]
@@ -37,12 +39,27 @@ def geron_vq_vae_codebook_loss(x, z_e, z_q, codebook, beta):
     x = np.atleast_1d(np.asarray(x, dtype=float))
     n = len(x)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "VQ-VAE codebook + commitment loss with straight-through estimator"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "VQ-VAE codebook + commitment loss with straight-through estimator",
+            }
+        )
     estimate = np.median(x)
     se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "VQ-VAE codebook + commitment loss with straight-through estimator"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "VQ-VAE codebook + commitment loss with straight-through estimator",
+        }
+    )
 
 
 def cheatsheet():

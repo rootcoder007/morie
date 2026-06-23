@@ -1,7 +1,9 @@
 """Tests for diffl -- DIF flag summary."""
-from morie.fn.diffl import dif_flag_summary
-from morie.fn._containers import DIFResult, DescriptiveResult
+
 import pandas as pd
+
+from morie.fn._containers import DescriptiveResult, DIFResult
+from morie.fn.diffl import dif_flag_summary
 
 
 class TestDifFlagSummary:

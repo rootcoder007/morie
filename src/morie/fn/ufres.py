@@ -35,4 +35,4 @@ ufres = unfolding_residuals
 
 
 def cheatsheet() -> str:
-    return 'unfolding_residuals({}) -> Unfolding residuals.'
+    return "unfolding_residuals({}) -> Unfolding residuals."

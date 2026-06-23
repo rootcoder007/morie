@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer's V contingency measure for general r x c table."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_cramers_contingency"]
@@ -30,7 +32,14 @@ def gibbons_cramers_contingency(table):
     n = int(table) if table.ndim == 0 else len(table)
     result = float(np.mean(table))
     se = float(np.std(table, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cramer's V contingency measure for general r x c table"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cramer's V contingency measure for general r x c table",
+        }
+    )
 
 
 def cheatsheet():

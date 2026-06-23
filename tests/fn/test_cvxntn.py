@@ -1,6 +1,7 @@
 """Tests for cvxntn.boyd_newton."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxntn import boyd_newton
 
 
@@ -10,7 +11,7 @@ def test_cvxntn_basic():
     hess = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_newton(grad, hess)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxntn_edge():

@@ -1,6 +1,7 @@
 """Tests for hmpd.geron_padding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmpd import geron_padding
 
 
@@ -11,7 +12,7 @@ def test_hmpd_basic():
     pad_w = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_padding(x, pad_h, pad_w)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmpd_edge():

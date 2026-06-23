@@ -1,6 +1,7 @@
 """TMLE for optimal individualized treatment rule."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_individual_regime"]
@@ -36,7 +37,9 @@ def tmle_individual_regime(y, D, W, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for optimal individualized treatment rule"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "TMLE for optimal individualized treatment rule"}
+    )
 
 
 def cheatsheet():

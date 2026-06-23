@@ -1,5 +1,7 @@
 """Tests for morie.fn.kmpp — k-means++."""
+
 import numpy as np
+
 from morie.fn.kmpp import kmeans_pp
 
 

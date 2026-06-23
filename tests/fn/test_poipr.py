@@ -1,6 +1,7 @@
 """Tests for poipr.poisson_penalized_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.poipr import poisson_penalized_regression
 
 
@@ -11,7 +12,7 @@ def test_poipr_basic():
     lam = 0.1
     result = poisson_penalized_regression(y, X, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_poipr_edge():

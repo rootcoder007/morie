@@ -1,6 +1,7 @@
 """Tests for detfdt.detrended_fluctuation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.detfdt import detrended_fluctuation
 
 
@@ -10,7 +11,7 @@ def test_detfdt_basic():
     scales = np.random.default_rng(42).normal(0, 1, 100)
     result = detrended_fluctuation(y, scales)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_detfdt_edge():

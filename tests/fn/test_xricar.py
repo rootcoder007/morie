@@ -1,7 +1,6 @@
 """Tests for morie.fn.xricar -- Intrinsic CAR (ICAR)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xricar import icar_model
 

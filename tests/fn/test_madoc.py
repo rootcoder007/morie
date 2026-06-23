@@ -1,6 +1,7 @@
 """Test madoc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.madoc import madoc
 
 

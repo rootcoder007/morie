@@ -1,6 +1,7 @@
 """Tests for morie.fn.ppc -- posterior predictive check."""
 
 import numpy as np
+
 from morie.fn.ppc import posterior_predictive_check
 
 

@@ -1,6 +1,7 @@
 """Tests for ksr18.kosorok_nelson_aalen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr18 import kosorok_nelson_aalen
 
 
@@ -10,7 +11,7 @@ def test_ksr18_basic():
     event = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_nelson_aalen(t, event)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr18_edge():

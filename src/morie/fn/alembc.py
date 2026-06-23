@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Embedding-based classifier: logistic regression / SVM on top of frozen embeddings."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_embedding_classifier"]
@@ -34,7 +36,14 @@ def alammar_embedding_classifier(embeddings, labels, classifier):
     n = len(embeddings)
     result = float(np.mean(embeddings))
     se = float(np.std(embeddings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Embedding-based classifier: logistic regression / SVM on top of frozen embeddings"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Embedding-based classifier: logistic regression / SVM on top of frozen embeddings",
+        }
+    )
 
 
 def cheatsheet():

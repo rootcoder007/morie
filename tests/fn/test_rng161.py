@@ -1,6 +1,7 @@
 """Tests for rng161.rangayyan_ch3_lms_variable_step."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng161 import rangayyan_ch3_lms_variable_step
 
 
@@ -13,7 +14,7 @@ def test_rng161_basic():
     n = 100
     result = rangayyan_ch3_lms_variable_step(w, mu, e, r, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng161_edge():

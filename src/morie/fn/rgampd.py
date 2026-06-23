@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Amplitude demodulation (envelope via Hilbert transform)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_amplitude_demod"]
@@ -32,7 +34,14 @@ def rangayyan_amplitude_demod(x, fs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Amplitude demodulation (envelope via Hilbert transform)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Amplitude demodulation (envelope via Hilbert transform)",
+        }
+    )
 
 
 def cheatsheet():

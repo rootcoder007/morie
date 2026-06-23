@@ -1,7 +1,9 @@
 """Tests for hhtrf -- Hilbert-Huang Transform (full spectrum)."""
+
 import numpy as np
-from morie.fn.hhtrf import hilbert_huang_spectrum
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hhtrf import hilbert_huang_spectrum
 
 
 def test_hht_basic():

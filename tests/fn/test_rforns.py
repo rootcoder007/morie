@@ -1,6 +1,8 @@
 """Tests for rforns."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rforns import rforns
 
 
@@ -28,4 +30,5 @@ def test_rforns_no_data():
 
 def test_rforns_alias():
     from morie.fn.rforns import rforns
+
     assert rforns is rforns

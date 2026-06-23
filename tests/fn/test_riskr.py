@@ -1,6 +1,7 @@
 """Tests for riskr.risch_integration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.riskr import risch_integration
 
 
@@ -10,7 +11,7 @@ def test_riskr_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = risch_integration(expr, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_riskr_edge():

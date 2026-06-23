@@ -1,6 +1,7 @@
 """Tests for specClust.spectral_clustering."""
+
 import numpy as np
-import pytest
+
 from morie.fn.specClust import spectral_clustering
 
 
@@ -10,7 +11,7 @@ def test_specClust_basic():
     k = 5
     result = spectral_clustering(A, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_specClust_edge():

@@ -1,6 +1,7 @@
 """Test irrgen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.irrgen import irrgen
 
 

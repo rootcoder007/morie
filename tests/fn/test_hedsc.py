@@ -1,6 +1,7 @@
 """Tests for morie.fn.hedsc -- discount rate."""
 
 import pytest
+
 from morie.fn.hedsc import discount_rate
 
 

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.olswt import ols_weighted, olswt
+
 from morie.fn._containers import RegressionResult
+from morie.fn.olswt import ols_weighted, olswt
 
 
 class TestOLSWeighted:

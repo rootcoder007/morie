@@ -1,6 +1,7 @@
 """Tests for bluerg.blue_gls."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bluerg import blue_gls
 
 
@@ -11,7 +12,7 @@ def test_bluerg_basic():
     V = np.random.default_rng(42).normal(0, 1, 100)
     result = blue_gls(y, X, V)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bluerg_edge():

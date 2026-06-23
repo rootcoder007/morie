@@ -1,6 +1,7 @@
 """Tests for depthH.halfspace_depth."""
+
 import numpy as np
-import pytest
+
 from morie.fn.depthH import halfspace_depth
 
 
@@ -10,7 +11,7 @@ def test_depthH_basic():
     theta = 0.0
     result = halfspace_depth(X, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_depthH_edge():

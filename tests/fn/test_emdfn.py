@@ -1,6 +1,7 @@
 """Tests for emdfn.py - Empirical Mode Decomposition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.emdfn import emd_fn, emdfn
 
 

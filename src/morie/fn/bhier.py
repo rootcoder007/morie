@@ -60,8 +60,8 @@ def bayesian_hierarchical(
             mean_j = (n_j[j] * y_bar[j] / sigma2 + mu / tau2) / prec_j
             theta[j] = rng.normal(mean_j, 1.0 / np.sqrt(prec_j))
 
-        prec_mu = J / tau2 + 1.0 / prior_sigma0 ** 2
-        mean_mu = (np.sum(theta) / tau2 + prior_mu0 / prior_sigma0 ** 2) / prec_mu
+        prec_mu = J / tau2 + 1.0 / prior_sigma0**2
+        mean_mu = (np.sum(theta) / tau2 + prior_mu0 / prior_sigma0**2) / prec_mu
         mu = rng.normal(mean_mu, 1.0 / np.sqrt(prec_mu))
 
         post_a_tau = prior_tau_a + J / 2.0

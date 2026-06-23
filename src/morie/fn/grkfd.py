@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-fold cross-validation index generator."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_kfold_cv"]
@@ -39,7 +41,9 @@ def geron_kfold_cv(n, K, shuffle, seed):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "K-fold cross-validation index generator"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "K-fold cross-validation index generator"}
+    )
 
 
 def cheatsheet():

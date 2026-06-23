@@ -1,6 +1,8 @@
 """Tests for rstml: restricted mean survival time."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rstml import rstml
 
 
@@ -59,7 +61,7 @@ def test_two_group_rmst_diff():
     T1 = rng.exponential(2.0, size=n)
     C = rng.exponential(5.0, size=2 * n)
     time = np.concatenate([np.minimum(T0, C[:n]), np.minimum(T1, C[n:])])
-    event = np.concatenate([(T0 <= C[:n]).astype(float), (T1 <= C[n:]).astype(float)])
+    event = np.concatenate([(C[:n] >= T0).astype(float), (C[n:] >= T1).astype(float)])
     group = np.array([0] * n + [1] * n)
     result = rstml(time, event, group=group)
     assert "rmst_diff" in result
@@ -74,7 +76,7 @@ def test_two_group_pvalue():
     T1 = rng.exponential(2.0, size=n)
     C = rng.exponential(5.0, size=2 * n)
     time = np.concatenate([np.minimum(T0, C[:n]), np.minimum(T1, C[n:])])
-    event = np.concatenate([(T0 <= C[:n]).astype(float), (T1 <= C[n:]).astype(float)])
+    event = np.concatenate([(C[:n] >= T0).astype(float), (C[n:] >= T1).astype(float)])
     group = np.array([0] * n + [1] * n)
     result = rstml(time, event, group=group)
     assert result["p_value"] < 0.05

@@ -1,6 +1,7 @@
 """Test srqml."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srqml import srqml
 
 

@@ -1,6 +1,7 @@
 """Tests for rgnmf.rangayyan_nmf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgnmf import rangayyan_nmf
 
 
@@ -12,7 +13,7 @@ def test_rgnmf_basic():
     tol = 1e-6
     result = rangayyan_nmf(V, r, max_iter, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgnmf_edge():

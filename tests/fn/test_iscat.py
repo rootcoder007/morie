@@ -1,7 +1,7 @@
 """Tests for morie.fn.iscat."""
 
 import numpy as np
-import pytest
+
 from morie.fn.iscat import iscat
 
 

@@ -5,6 +5,7 @@ from typing import Union
 
 import numpy as np
 import scipy.stats as stats
+
 from ._richresult import RichResult
 
 

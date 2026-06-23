@@ -1,6 +1,7 @@
 r"""Numbered display equation (9.25) from MVSML chapter 9.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_ridge_lasso_elastic_eq_9_25"]
@@ -40,7 +41,14 @@ def mvsml_ridge_lasso_elastic_eq_9_25(y, The, last, version, of, the):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (9.25) from MVSML chapter 9."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (9.25) from MVSML chapter 9.",
+        }
+    )
 
 
 def cheatsheet():

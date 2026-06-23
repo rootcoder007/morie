@@ -96,4 +96,4 @@ dvstr = ensemble_stack
 
 
 def cheatsheet() -> str:
-    return 'ensemble_stack({}) -> Ensemble stacking.'
+    return "ensemble_stack({}) -> Ensemble stacking."

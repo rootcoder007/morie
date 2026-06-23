@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Binary nonparametric monotone regression consistency."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_mono_reg_con"]
@@ -32,7 +34,9 @@ def ghosal_mono_reg_con(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Binary nonparametric monotone regression consistency"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Binary nonparametric monotone regression consistency"}
+    )
 
 
 def cheatsheet():

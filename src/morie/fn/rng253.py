@@ -1,6 +1,7 @@
 """Definition of the power cepstrum as squared inverse z-transform of log|Y(z)|^2.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_power_cepstrum_definition"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_power_cepstrum_definition(Y, z, n):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Definition of the power cepstrum as squared inverse z-transform of log|Y(z)|^2."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Definition of the power cepstrum as squared inverse z-transform of log|Y(z)|^2.",
+        }
+    )
 
 
 def cheatsheet():

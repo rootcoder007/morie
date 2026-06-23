@@ -1,6 +1,6 @@
 """Tests for morie.fn.adpthr — adaptive threshold detection."""
+
 import numpy as np
-import pytest
 
 from morie.fn.adpthr import adaptive_threshold_detect, adpthr
 

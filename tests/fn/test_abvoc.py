@@ -1,6 +1,7 @@
 """Test abvoc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.abvoc import abvoc
 
 

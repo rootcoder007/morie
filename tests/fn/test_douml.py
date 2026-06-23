@@ -1,17 +1,17 @@
 """Tests for morie.fn.douml -- Double ML alias (Count Dooku)."""
 
-import pytest
-
 
 class TestDouml:
     def test_is_callable(self):
         """dooku should be a callable alias for estimate_double_ml."""
         from morie.fn.douml import double_ml
+
         assert callable(double_ml)
 
     def test_runs_on_binary_df(self, binary_df):
         """Double ML should run and return a fitted DoubleMLPLR object."""
         from morie.fn.douml import double_ml
+
         result = double_ml(
             data=binary_df,
             outcome="outcome",
@@ -26,6 +26,7 @@ class TestDouml:
     def test_ate_near_true(self, binary_df):
         """ATE estimate should be in a reasonable range (true effect ~ 0.5)."""
         from morie.fn.douml import double_ml
+
         result = double_ml(
             data=binary_df,
             outcome="outcome",

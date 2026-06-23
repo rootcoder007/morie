@@ -1,6 +1,7 @@
 """Test qnest."""
+
 import numpy as np
-import pytest
+
 from morie.fn.qnest import qn_estimator
 
 

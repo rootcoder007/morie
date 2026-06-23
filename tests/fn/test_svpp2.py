@@ -1,7 +1,6 @@
 """Tests for morie.fn.svpp2 -- Party position 2D (Laver-Hunt)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svpp2 import party_pos_2d
 

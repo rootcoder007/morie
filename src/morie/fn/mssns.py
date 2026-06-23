@@ -82,4 +82,4 @@ mssns = missing_sensitivity_analysis
 
 
 def cheatsheet() -> str:
-    return 'mssns() -> Assess MDS stress across different missing data percentages'
+    return "mssns() -> Assess MDS stress across different missing data percentages"

@@ -1,5 +1,5 @@
 """Tests for Boltzmann acceptance."""
-import numpy as np
+
 from morie.fn.sgblz import sgblz
 
 

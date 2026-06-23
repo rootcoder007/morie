@@ -2,6 +2,8 @@
 """t critical value."""
 
 from scipy.stats import t as _t
+
+
 def tcrit(df: int, alpha: float = 0.05, two_sided: bool = True) -> float:
     """Two-sided t critical value at significance α with df."""
     if df < 1 or not 0 < alpha < 1:

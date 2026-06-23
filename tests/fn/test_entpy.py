@@ -1,6 +1,8 @@
 """Tests for morie.fn.entpy — Shannon entropy."""
+
 import numpy as np
 import pytest
+
 from morie.fn.entpy import entropy
 
 

@@ -1,6 +1,7 @@
 """Test forstr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.forstr import forstr
 
 

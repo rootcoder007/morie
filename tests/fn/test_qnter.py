@@ -1,7 +1,9 @@
 """Test quantization_error (qnter)."""
+
 import numpy as np
-from morie.fn.qnter import quantization_error, qnter
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.qnter import qnter, quantization_error
 
 
 class TestQuantizationError:

@@ -1,6 +1,7 @@
 """Tests for dprrep.randomized_response_dp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dprrep import randomized_response_dp
 
 
@@ -11,7 +12,7 @@ def test_dprrep_basic():
     epsilon = 1e-6
     result = randomized_response_dp(y, truth, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dprrep_edge():

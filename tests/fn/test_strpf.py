@@ -1,4 +1,5 @@
 """Test strpf."""
+
 from morie.fn.strpf import string_partition
 
 
@@ -10,5 +11,6 @@ def test_strpf_basic():
 
 def test_strpf_invalid():
     import pytest
+
     with pytest.raises(ValueError):
         string_partition(tau=-0.5j)

@@ -1,6 +1,8 @@
 """Tests for morie.fn.adfrr -- Augmented Dickey-Fuller test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.adfrr import adf_test
 
 
@@ -23,4 +25,5 @@ class TestADF:
 
     def test_cheatsheet(self):
         from morie.fn.adfrr import cheatsheet
+
         assert isinstance(cheatsheet(), str)

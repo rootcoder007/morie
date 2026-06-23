@@ -1,13 +1,11 @@
 """Tests for morie.fn.jllem — JL lemma dimension bound."""
 
-import numpy as np
 import pytest
 
 from morie.fn.jllem import jl_lemma_bound
 
 
 class TestJlLemmaBound:
-
     def test_basic(self):
         res = jl_lemma_bound(1000, eps=0.1)
         assert res.value > 0

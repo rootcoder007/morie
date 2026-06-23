@@ -1,5 +1,7 @@
 """Tests for morie.fn.dirml — Directional spatial model."""
+
 import numpy as np
+
 from morie.fn.dirml import dirml
 
 

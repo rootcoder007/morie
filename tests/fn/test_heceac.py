@@ -1,6 +1,7 @@
 """Tests for morie.fn.heceac -- CEAC."""
 
 import numpy as np
+
 from morie.fn.heceac import ceac
 
 

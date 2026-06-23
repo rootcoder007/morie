@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kruskal-Wallis H with tie correction factor."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_kw_ties"]
@@ -30,7 +32,9 @@ def gibbons_kw_ties(groups):
     n = int(groups) if groups.ndim == 0 else len(groups)
     result = float(np.mean(groups))
     se = float(np.std(groups, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kruskal-Wallis H with tie correction factor"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Kruskal-Wallis H with tie correction factor"}
+    )
 
 
 def cheatsheet():

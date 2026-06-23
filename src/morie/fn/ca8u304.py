@@ -1,8 +1,8 @@
 """CentralTendency expression involving 'difference' (auto-extracted; see reference for full context).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_8_unnumbered_304"]
 
@@ -41,9 +41,16 @@ def ca_chapter_8_unnumbered_304(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression involving 'difference' (auto-extracted; see reference for full context)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression involving 'difference' (auto-extracted; see reference for full context).",
+        },
     )
 
 
 def cheatsheet():
-    return "ca8u304: CentralTendency expression involving 'difference' (auto-extracted; see reference for full context)."
+    return (
+        "ca8u304: CentralTendency expression involving 'difference' (auto-extracted; see reference for full context)."
+    )

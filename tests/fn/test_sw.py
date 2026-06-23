@@ -1,7 +1,7 @@
 """Tests for morie.fn.sw -- Shapiro-Wilk test for normality."""
 
-import numpy as np
 import pytest
+
 from morie.fn.sw import shapiro_wilk_test
 
 

@@ -1,8 +1,8 @@
 """Spatial expression (auto-extracted; see reference).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["stochastic_physics_section_2_unnumbered_3"]
 

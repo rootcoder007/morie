@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exchangeability (unconfoundedness/ignorability): treatment independent of potential outcomes given covariates."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["exchangeability_assumption"]
@@ -36,7 +38,14 @@ def exchangeability_assumption(Y, T, X, dag):
     n = int(Y) if Y.ndim == 0 else len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Exchangeability (unconfoundedness/ignorability): treatment independent of potential outcomes given covariates"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Exchangeability (unconfoundedness/ignorability): treatment independent of potential outcomes given covariates",
+        }
+    )
 
 
 def cheatsheet():

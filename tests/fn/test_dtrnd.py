@@ -1,7 +1,9 @@
 """Test detrend_signal (dtrnd)."""
+
 import numpy as np
-from morie.fn.dtrnd import detrend_signal, dtrnd
+
 from morie.fn._containers import SignalResult
+from morie.fn.dtrnd import detrend_signal, dtrnd
 
 
 class TestDetrendSignal:

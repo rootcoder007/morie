@@ -1,6 +1,7 @@
 """Tests for tmltvc.tmle_time_varying_confound."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmltvc import tmle_time_varying_confound
 
 
@@ -12,7 +13,7 @@ def test_tmltvc_basic():
     time = np.linspace(0, 10, 100)
     result = tmle_time_varying_confound(y, D_t, L_t, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmltvc_edge():

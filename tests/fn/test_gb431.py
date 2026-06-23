@@ -1,6 +1,7 @@
 """Tests for gb431.gibbons_ks_dist_free."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb431 import gibbons_ks_dist_free
 
 
@@ -11,7 +12,7 @@ def test_gb431_basic():
     n = 100
     result = gibbons_ks_dist_free(x, F0, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb431_edge():

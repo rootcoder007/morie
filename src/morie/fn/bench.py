@@ -10,7 +10,9 @@ from scipy.stats import norm
 from ._containers import ESRes
 
 
-def benchmark_dose(doses: np.ndarray | list, responses: np.ndarray | list, cdf=None, *, bmr: float = 0.10, alpha: float = 0.05) -> ESRes:
+def benchmark_dose(
+    doses: np.ndarray | list, responses: np.ndarray | list, cdf=None, *, bmr: float = 0.10, alpha: float = 0.05
+) -> ESRes:
     """
     Estimate the Benchmark Dose (BMD) and its lower confidence limit (BMDL).
 

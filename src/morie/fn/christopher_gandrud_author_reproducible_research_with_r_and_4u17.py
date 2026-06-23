@@ -1,8 +1,8 @@
 """CentralTendency expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["Hope in reality is the worst of all evils because it prolongs the torments of man. -- Friedrich Nietzsche"]
 
@@ -41,9 +41,14 @@ def christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnum
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression (auto-extracted; see ref).",
+        },
     )
 
 
 def cheatsheet():
-    return 'christopher_gandrud_author_reproducible_research_with_r_and_4u17() -> CentralTendency expression (auto-extracted; see ref)'
+    return "christopher_gandrud_author_reproducible_research_with_r_and_4u17() -> CentralTendency expression (auto-extracted; see ref)"

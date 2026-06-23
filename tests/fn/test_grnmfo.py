@@ -1,6 +1,7 @@
 """Tests for grnmfo.geron_nmf_objective."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grnmfo import geron_nmf_objective
 
 
@@ -11,7 +12,7 @@ def test_grnmfo_basic():
     H = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_nmf_objective(X, W, H)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grnmfo_edge():

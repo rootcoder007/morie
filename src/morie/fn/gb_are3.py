@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE values for double exponential distribution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_dbl_exp"]
@@ -30,7 +32,9 @@ def gibbons_are_dbl_exp(distribution):
     n = int(distribution) if distribution.ndim == 0 else len(distribution)
     result = float(np.mean(distribution))
     se = float(np.std(distribution, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ARE values for double exponential distribution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "ARE values for double exponential distribution"}
+    )
 
 
 def cheatsheet():

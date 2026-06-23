@@ -1,6 +1,7 @@
 """Tests for bxprc.box_pierce_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bxprc import box_pierce_test
 
 
@@ -10,7 +11,7 @@ def test_bxprc_basic():
     lags = 10
     result = box_pierce_test(x, lags)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_bxprc_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.hedsa -- DSA."""
 
 import pytest
+
 from morie.fn.hedsa import deterministic_sensitivity
 
 
@@ -18,6 +19,7 @@ class TestDSA:
 
 def test_cheatsheet():
     from morie.fn.hedsa import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

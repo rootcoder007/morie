@@ -1,6 +1,7 @@
 """Mean-mean equating coefficients."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["equating_mean_mean"]

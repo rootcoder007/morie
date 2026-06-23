@@ -1,6 +1,7 @@
 """Tests for dpmed.dp_median."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpmed import dp_median
 
 
@@ -10,7 +11,7 @@ def test_dpmed_basic():
     epsilon = 1e-6
     result = dp_median(x, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpmed_edge():

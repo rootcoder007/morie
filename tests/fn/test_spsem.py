@@ -1,6 +1,7 @@
 """Tests for spsem.schabenberger_spatial_error_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spsem import schabenberger_spatial_error_model
 
 
@@ -11,7 +12,7 @@ def test_spsem_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = schabenberger_spatial_error_model(x, y, w)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_spsem_edge():

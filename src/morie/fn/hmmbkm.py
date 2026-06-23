@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mini-batch k-means: update centers using small random batches."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_minibatch_kmeans"]
@@ -36,7 +38,14 @@ def geron_minibatch_kmeans(X, n_clusters, batch_size, seed):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mini-batch k-means: update centers using small random batches"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mini-batch k-means: update centers using small random batches",
+        }
+    )
 
 
 def cheatsheet():

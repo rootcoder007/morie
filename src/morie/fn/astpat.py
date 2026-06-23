@@ -123,4 +123,4 @@ astpat = astar_path
 
 
 def cheatsheet() -> str:
-    return 'astar_path({}) -> A* pathfinding algorithm.'
+    return "astar_path({}) -> A* pathfinding algorithm."

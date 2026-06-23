@@ -1,6 +1,7 @@
 """Discrete-time Fourier transform obtained by evaluating z-transform on the unit circle.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_dtft_via_z"]
@@ -38,7 +39,14 @@ def rangayyan_ch3_dtft_via_z(x, n, omega, T, N):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Discrete-time Fourier transform obtained by evaluating z-transform on the unit circle."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Discrete-time Fourier transform obtained by evaluating z-transform on the unit circle.",
+        }
+    )
 
 
 def cheatsheet():

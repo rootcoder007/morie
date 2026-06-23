@@ -1,8 +1,8 @@
 """Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9"]
 
@@ -41,7 +41,12 @@ def shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equat
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
+        },
     )
 
 

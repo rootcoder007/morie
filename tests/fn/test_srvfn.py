@@ -1,6 +1,7 @@
 """Tests for morie.fn.srvfn -- Survival function from life table."""
 
 import pytest
+
 from morie.fn.srvfn import survival_function
 
 

@@ -1,6 +1,8 @@
 """Test arfit."""
+
 import numpy as np
 import pytest
+
 from morie.fn.arfit import arfit
 
 
@@ -12,7 +14,7 @@ def test_arfit_basic():
     y = np.zeros(200)
     y[0] = eps[0]
     for t in range(1, 200):
-        y[t] = 0.7 * y[t-1] + eps[t]
+        y[t] = 0.7 * y[t - 1] + eps[t]
 
     r = arfit(y, p=1)
     assert isinstance(r.ar_coeff, np.ndarray)
@@ -43,7 +45,7 @@ def test_arfit_higher_order():
     y[0] = eps[0]
     y[1] = eps[1]
     for t in range(2, 300):
-        y[t] = 0.5 * y[t-1] - 0.2 * y[t-2] + eps[t]
+        y[t] = 0.5 * y[t - 1] - 0.2 * y[t - 2] + eps[t]
 
     r = arfit(y, p=2)
     assert r.ar_coeff.shape == (2,)

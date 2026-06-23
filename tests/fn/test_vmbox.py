@@ -1,6 +1,7 @@
 """Test vmbox."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmbox import vmbox
 
 

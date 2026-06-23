@@ -1,6 +1,7 @@
 """Tests for morie.fn.psafs -- Population attributable fraction."""
 
 import pytest
+
 from morie.fn.psafs import population_attributable_fraction
 
 

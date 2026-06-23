@@ -1,6 +1,7 @@
 """Test ppclp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppclp import ppclp
 
 

@@ -19,12 +19,11 @@ Reference:
 from __future__ import annotations
 
 import math
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable, Optional
 
 import numpy as np
 import pandas as pd
-
 
 __all__ = [
     "ScanCluster",
@@ -70,10 +69,7 @@ def _poisson_lrt(n_obs: int, n_in: int, n_exp: float, n_tot: int) -> float:
     exp_out = n_tot - n_exp
     if obs_out == 0 or exp_out <= 0:
         return 0.0
-    return (
-        n_obs * math.log(n_obs / n_exp)
-        + obs_out * math.log(obs_out / exp_out)
-    )
+    return n_obs * math.log(n_obs / n_exp) + obs_out * math.log(obs_out / exp_out)
 
 
 def mrm_tps_kulldorff_scan(
@@ -169,7 +165,11 @@ def mrm_tps_kulldorff_scan(
         r = radii_km[ri]
         t_start = pd.Timestamp(np.datetime64(int(ti_start), "D"))
         t_end = pd.Timestamp(np.datetime64(int(ti_start + window_days), "D"))
-        n_exp = n_space * (n_in_cyl / max(1, int((t == t).sum()))) if False else n_space * window_days / max(1, t.max() - t.min())
+        n_exp = (
+            n_space * (n_in_cyl / max(1, int((t == t).sum())))
+            if False
+            else n_space * window_days / max(1, t.max() - t.min())
+        )
         rr = n_in_cyl / n_exp if n_exp > 0 else float("nan")
         return ScanCluster(
             center_lat=float(lat[ci]),

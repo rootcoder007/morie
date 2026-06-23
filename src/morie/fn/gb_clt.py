@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Central Limit Theorem: sqrt(n)*(Xbar - mu)/sigma -> N(0,1)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_clt"]
@@ -37,7 +39,14 @@ def gibbons_clt(n, mu, sigma):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Central Limit Theorem: sqrt(n)*(Xbar - mu)/sigma -> N(0,1)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Central Limit Theorem: sqrt(n)*(Xbar - mu)/sigma -> N(0,1)",
+        }
+    )
 
 
 def cheatsheet():

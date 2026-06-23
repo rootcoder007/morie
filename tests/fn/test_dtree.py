@@ -1,7 +1,9 @@
 """Test decision_tree (dtree)."""
+
 import numpy as np
-from morie.fn.dtree import decision_tree, dtree
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.dtree import decision_tree, dtree
 
 
 class TestDtree:

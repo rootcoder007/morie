@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """BayesR: mixture of normals prior with different variance classes."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_r_prior"]
@@ -36,7 +38,14 @@ def bayes_r_prior(y, X, pi, sigma_classes):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BayesR: mixture of normals prior with different variance classes"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "BayesR: mixture of normals prior with different variance classes",
+        }
+    )
 
 
 def cheatsheet():

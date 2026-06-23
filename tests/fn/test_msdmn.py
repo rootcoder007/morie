@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdmn -- Minkowski distance matrix"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdmn import dist_mink
 

@@ -110,4 +110,4 @@ blade = edge_detect
 
 
 def cheatsheet() -> str:
-    return 'edge_detect({}) -> Edge detection (Canny variant).'
+    return "edge_detect({}) -> Edge detection (Canny variant)."

@@ -1,6 +1,7 @@
 """Tests for hrzrank.horowitz_semipar_rank."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzrank import horowitz_semipar_rank
 
 
@@ -10,7 +11,7 @@ def test_hrzrank_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = horowitz_semipar_rank(x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzrank_edge():

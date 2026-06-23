@@ -1,5 +1,7 @@
 """Tests for morie.fn.ocslt — OC scaling."""
+
 import numpy as np
+
 from morie.fn.ocslt import ocslt
 
 

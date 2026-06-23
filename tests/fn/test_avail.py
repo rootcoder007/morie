@@ -1,4 +1,5 @@
 """Tests for avail (system availability)."""
+
 from morie.fn.avail import availability
 
 

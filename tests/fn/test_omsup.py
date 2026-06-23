@@ -1,8 +1,9 @@
 """Tests for morie.fn.omsup -- minimax optimization."""
 
 import numpy as np
-from morie.fn.omsup import minimax_solve, omsup
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.omsup import minimax_solve, omsup
 
 
 class TestOmsup:

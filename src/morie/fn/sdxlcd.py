@@ -1,6 +1,7 @@
 """Stable Diffusion XL UNet."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sdxl_unet"]

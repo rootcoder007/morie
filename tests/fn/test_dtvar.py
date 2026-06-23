@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtvar."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtvar import dtvar
 
 

@@ -1,6 +1,7 @@
 """Tests for sntmod.sequential_target_models."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sntmod import sequential_target_models
 
 
@@ -12,7 +13,7 @@ def test_sntmod_basic():
     time = np.linspace(0, 10, 100)
     result = sequential_target_models(y, treatment_history, covariate_history, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sntmod_edge():

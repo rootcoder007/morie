@@ -1,6 +1,7 @@
 """Tests for bivand20137u265.bivand2013_chapter_7_unnumbered_265."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bivand20137u265 import bivand2013_chapter_7_unnumbered_265
 
 
@@ -9,7 +10,7 @@ def test_bivand20137u265_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = bivand2013_chapter_7_unnumbered_265(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_bivand20137u265_edge():

@@ -1,6 +1,7 @@
 """Cramer-Rao lower bound Var(T) >= 1/(n I(theta))."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_cramer_rao"]
@@ -34,7 +35,9 @@ def wasserman_cramer_rao(theta, n, I):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cramer-Rao lower bound Var(T) >= 1/(n I(theta))"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cramer-Rao lower bound Var(T) >= 1/(n I(theta))"}
+    )
 
 
 def cheatsheet():

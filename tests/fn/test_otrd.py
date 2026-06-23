@@ -1,6 +1,7 @@
 """Tests for morie.fn.otrd — OTIS trend summary."""
 
 import pandas as pd
+
 from morie.fn.otrd import otis_trend_summary
 
 

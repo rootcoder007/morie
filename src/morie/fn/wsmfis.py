@@ -1,6 +1,7 @@
 """Fisher information I(theta) = -E[d^2 l / d theta^2]."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_fisher_info"]
@@ -32,7 +33,9 @@ def wasserman_fisher_info(f, theta):
     n = len(f)
     result = float(np.mean(f))
     se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fisher information I(theta) = -E[d^2 l / d theta^2]"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Fisher information I(theta) = -E[d^2 l / d theta^2]"}
+    )
 
 
 def cheatsheet():

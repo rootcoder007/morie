@@ -1,6 +1,8 @@
 """Tests for morie.fn.cohrc -- Coherence function."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cohrc import coherence
 
 
@@ -17,4 +19,5 @@ class TestCoherence:
 
     def test_cheatsheet(self):
         from morie.fn.cohrc import cheatsheet
+
         assert isinstance(cheatsheet(), str)

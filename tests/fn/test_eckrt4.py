@@ -1,6 +1,7 @@
 """Test eckrt4."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eckrt4 import eckrt4
 
 

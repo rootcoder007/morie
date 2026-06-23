@@ -909,7 +909,9 @@ if _TEXTUAL_AVAILABLE:
             if topic == "overview":
                 log.write("[bold cyan]MORIE Overview[/bold cyan]")
                 log.write("")
-                log.write("MORIE (Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation) is a")
+                log.write(
+                    "MORIE (Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation) is a"
+                )
                 log.write("terminal-first scientific computing IDE for epidemiological")
                 log.write("and statistical modeling.")
                 log.write("")
@@ -3670,7 +3672,7 @@ if _TEXTUAL_AVAILABLE:
                                     csv_str = val.to_csv(index=False)
                                     csv_escaped = csv_str.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
                                     r_cmd = (
-                                        f'{var_name} <- read.csv('
+                                        f"{var_name} <- read.csv("
                                         f'textConnection("{csv_escaped}"), stringsAsFactors=FALSE)'
                                     )
                             except ImportError:
@@ -4758,7 +4760,9 @@ if _TEXTUAL_AVAILABLE:
         """MORIE Terminal IDE -- Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation."""
 
         TITLE = "MORIE"
-        SUB_TITLE = "Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation"
+        SUB_TITLE = (
+            "Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation"
+        )
 
         ENABLE_COMMAND_PALETTE = False
 
@@ -5067,9 +5071,7 @@ if _TEXTUAL_AVAILABLE:
             # Cap LLM detection at 2 seconds -- if Ollama isn't running,
             # don't make the user wait on a TCP timeout (default 30s+).
             try:
-                info = await asyncio.wait_for(
-                    asyncio.to_thread(detect_model_display), timeout=2.0
-                )
+                info = await asyncio.wait_for(asyncio.to_thread(detect_model_display), timeout=2.0)
             except (asyncio.TimeoutError, Exception):
                 info = {"inner": "offline", "outer": "no-llm"}
 

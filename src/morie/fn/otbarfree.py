@@ -1,6 +1,7 @@
 """Free-support Wasserstein barycenter via fixed-point."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_barycenter_free"]
@@ -36,7 +37,9 @@ def ot_barycenter_free(X_list, weights, n_supp, max_iter):
     n = len(X_list)
     result = float(np.mean(X_list))
     se = float(np.std(X_list, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Free-support Wasserstein barycenter via fixed-point"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Free-support Wasserstein barycenter via fixed-point"}
+    )
 
 
 def cheatsheet():

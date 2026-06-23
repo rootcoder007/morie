@@ -1,9 +1,8 @@
 """Tests for morie.fn.eqplm — Palma ratio."""
 
 import pytest
-import numpy as np
+
 from morie.fn.eqplm import palma_ratio
-from morie.fn._containers import ESRes
 
 
 class TestPalma:

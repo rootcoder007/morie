@@ -72,7 +72,7 @@ def pensp(
     def _basis(xv):
         cols = [np.ones_like(xv)]
         for d in range(1, degree + 1):
-            cols.append(xv ** d)
+            cols.append(xv**d)
         for kn in knots:
             cols.append(np.maximum(xv - kn, 0) ** degree)
         return np.column_stack(cols)
@@ -97,7 +97,7 @@ def pensp(
         denom = (1 - tr_H / n) ** 2
         if denom <= 0:
             return np.inf
-        return float(np.mean(resid ** 2) / denom)
+        return float(np.mean(resid**2) / denom)
 
     if penalty is None:
         candidates = np.logspace(-4, 6, 50)

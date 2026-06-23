@@ -1,6 +1,7 @@
 """ViT-2 log-scaled attention."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vit2_log_attention"]

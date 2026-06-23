@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """N-gram maximum-likelihood probability (uninsmoothed)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_ngram_mle"]
@@ -32,7 +34,9 @@ def burkov_ngram_mle(counts_ngram, counts_prefix):
     n = len(counts_ngram)
     result = float(np.mean(counts_ngram))
     se = float(np.std(counts_ngram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "N-gram maximum-likelihood probability (uninsmoothed)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "N-gram maximum-likelihood probability (uninsmoothed)"}
+    )
 
 
 def cheatsheet():

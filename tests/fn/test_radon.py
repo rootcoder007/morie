@@ -22,7 +22,7 @@ def test_radon_at_epa_action_level():
     # 4 pCi/L (EPA action), never-smoker → 0.0028 lifetime (0.28%)
     r = radon(4.0, smoker=False)
     assert r.value == pytest.approx(4 * 7e-4, abs=1e-7)
-    assert r.extra["above_epa_action_level"] is False   # = action level, not above
+    assert r.extra["above_epa_action_level"] is False  # = action level, not above
     # At 5 pCi/L it would be above
     r_above = radon(5.0, smoker=False)
     assert r_above.extra["above_epa_action_level"] is True

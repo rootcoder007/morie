@@ -1,7 +1,9 @@
 """Test entropy_hist."""
+
 import numpy as np
-from morie.fn.enhst import entropy_hist, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.enhst import alias, entropy_hist
 
 
 class TestEntropyHist:

@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgunt -- Universal kriging trend"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgunt import uk_trend
 

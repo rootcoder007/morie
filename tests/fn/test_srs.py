@@ -1,9 +1,10 @@
 """Tests for fn/srs.py -- Simple random sample."""
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from morie.fn.srs import srs, simple_random_sample
+from morie.fn.srs import simple_random_sample, srs
 
 
 def test_srs_correct_size():

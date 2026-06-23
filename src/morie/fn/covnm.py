@@ -43,9 +43,11 @@ def covnm(
     n = points.shape[0]
 
     if metric == "l2":
+
         def dist_fn(a, b):
             return np.sqrt(np.sum((a - b) ** 2, axis=-1))
     elif metric == "sup":
+
         def dist_fn(a, b):
             return np.max(np.abs(a - b), axis=-1)
     else:

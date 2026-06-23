@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Image-Text Matching (ITM) binary head on top of contrastive encoders."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_image_text_matching"]
@@ -36,7 +38,14 @@ def kamath_image_text_matching(image_emb, text_emb, W, b):
     n = len(image_emb)
     result = float(np.mean(image_emb))
     se = float(np.std(image_emb, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Image-Text Matching (ITM) binary head on top of contrastive encoders"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Image-Text Matching (ITM) binary head on top of contrastive encoders",
+        }
+    )
 
 
 def cheatsheet():

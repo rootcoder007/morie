@@ -20,11 +20,9 @@ MA-thesis "210-day TTR" claim should have been.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 import pandas as pd
-
 
 __all__ = [
     "mrm_siu_case_to_decision_km",
@@ -42,9 +40,14 @@ class SIUCaseDecisionResult:
 def _summarise(gap, cens, label) -> dict:
     if gap.size == 0:
         return {
-            "stratum": label, "n": 0, "n_censored": 0,
-            "median_days": np.nan, "mean_days": np.nan,
-            "p25_days": np.nan, "p75_days": np.nan, "max_days": np.nan,
+            "stratum": label,
+            "n": 0,
+            "n_censored": 0,
+            "median_days": np.nan,
+            "mean_days": np.nan,
+            "p25_days": np.nan,
+            "p75_days": np.nan,
+            "max_days": np.nan,
         }
     return {
         "stratum": label,
@@ -86,7 +89,9 @@ def mrm_siu_case_to_decision_km(
 
     observed = keep_inc & (dec.notna() | censor_open_cases)
     ok = observed.values & np.isfinite(gap.values) & (gap.values >= 0)
-    gap_v = gap.values[ok]; svc_v = svc.values[ok]; cens_v = censored[ok]
+    gap_v = gap.values[ok]
+    svc_v = svc.values[ok]
+    cens_v = censored[ok]
 
     pooled = pd.DataFrame([_summarise(gap_v, cens_v, "pooled")])
 
@@ -108,7 +113,7 @@ def mrm_siu_per_service_rate(
     *,
     service_col: str = "police_service",
     incident_col: str = "date_of_incident_iso",
-    stratify_col: Optional[str] = None,
+    stratify_col: str | None = None,
 ) -> pd.DataFrame:
     """Per-police-service case counts by year (and optional stratum)."""
     df = data.copy()
@@ -137,9 +142,13 @@ def mrm_siu_outcome_classifier(
     df = data.copy()
     if outcome_col not in df.columns:
         for alt in [
-            "director_decision", "outcome", "decision",
-            "director_decision_outcome", "director_decision_text",
-            "charges_recommended", "directors_decision_reasonable",
+            "director_decision",
+            "outcome",
+            "decision",
+            "director_decision_outcome",
+            "director_decision_text",
+            "charges_recommended",
+            "directors_decision_reasonable",
         ]:
             if alt in df.columns:
                 outcome_col = alt
@@ -150,9 +159,7 @@ def mrm_siu_outcome_classifier(
     svc = df[service_col].astype(str)
     ok = (out.str.len() > 0) & (out != "nan") & (svc.str.len() > 0) & (svc != "nan")
     tbl = (
-        pd.crosstab(svc[ok], out[ok])
-        .reset_index()
-        .melt(id_vars=service_col, var_name="outcome", value_name="n_cases")
+        pd.crosstab(svc[ok], out[ok]).reset_index().melt(id_vars=service_col, var_name="outcome", value_name="n_cases")
     )
     totals = tbl.groupby(service_col)["n_cases"].transform("sum")
     tbl["share_within_service"] = (tbl["n_cases"] / totals).round(4)

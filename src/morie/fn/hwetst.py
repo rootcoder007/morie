@@ -1,6 +1,8 @@
 """Hardy-Weinberg equilibrium test."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hardy_weinberg"]
@@ -31,7 +33,9 @@ def hardy_weinberg(genotypes, cdf=None):
     genotypes = np.asarray(genotypes, dtype=float)
     n = len(genotypes)
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Hardy-Weinberg equilibrium test"})
+        return RichResult(
+            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Hardy-Weinberg equilibrium test"}
+        )
     x_sorted = np.sort(genotypes)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(genotypes), scale=np.std(genotypes, ddof=1))
@@ -46,9 +50,16 @@ def hardy_weinberg(genotypes, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Hardy-Weinberg equilibrium test"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Hardy-Weinberg equilibrium test",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.engine_bridge — C kernel bridge with Accelerate.framework."""
 
 import numpy as np
-import pytest
 
 from morie.engine_bridge import (
     argmax,
@@ -25,7 +24,7 @@ class TestRMSNorm:
         x = rng.standard_normal(256).astype(np.float32)
         w = np.ones(256, dtype=np.float32)
         out = rmsnorm(x, w)
-        rms = np.sqrt(np.mean(out ** 2))
+        rms = np.sqrt(np.mean(out**2))
         assert abs(rms - 1.0) < 0.01
 
     def test_weight_scaling(self):
@@ -33,7 +32,7 @@ class TestRMSNorm:
         w = np.array([2.0, 2.0], dtype=np.float32)
         out = rmsnorm(x, w)
         # With unit weight, rms(out) = 1; with w=2, rms(out) = 2
-        rms = np.sqrt(np.mean(out ** 2))
+        rms = np.sqrt(np.mean(out**2))
         assert abs(rms - 2.0) < 0.01
 
     def test_preserves_shape(self):

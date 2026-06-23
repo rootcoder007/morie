@@ -8,7 +8,9 @@ With y omitted we solve psi(x; theta) = x - theta = 0 (the sample
 mean).  With y supplied we solve psi(x, y; beta) = x(y - beta x) = 0
 (centred OLS slope), both with sandwich SE.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_z_estimator"]
@@ -31,24 +33,30 @@ def kosorok_z_estimator(x, y=None):
         n = len(x)
         theta = float(x.mean())
         psi = x - theta
-        v = float((psi ** 2).mean())
+        v = float((psi**2).mean())
         se = float(np.sqrt(v / n)) if n > 0 else float("nan")
         method = "Z-estimator: psi(x;theta) = x - theta"
         est = theta
     else:
         y = np.asarray(y, dtype=float)
         n = len(x)
-        xc = x - x.mean(); yc = y - y.mean()
+        xc = x - x.mean()
+        yc = y - y.mean()
         beta = float((xc @ yc) / (xc @ xc))
         resid = yc - beta * xc
-        A = float((xc ** 2).mean())
-        B = float(((xc ** 2) * (resid ** 2)).mean())
-        se = float(np.sqrt(B / (A ** 2) / n))
+        A = float((xc**2).mean())
+        B = float(((xc**2) * (resid**2)).mean())
+        se = float(np.sqrt(B / (A**2) / n))
         method = "Z-estimator: psi(x,y;beta) = x(y - beta x)"
         est = beta
-    return RichResult(payload={
-        "estimate": est, "se": se, "n": n, "method": method,
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "n": n,
+            "method": method,
+        }
+    )
 
 
 def cheatsheet():

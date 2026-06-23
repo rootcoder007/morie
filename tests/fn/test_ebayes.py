@@ -1,6 +1,7 @@
 """Tests for ebayes.empirical_bayes_shrinkage."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ebayes import empirical_bayes_shrinkage
 
 
@@ -12,7 +13,7 @@ def test_ebayes_basic():
     sigma2_e = np.random.default_rng(42).normal(0, 1, 100)
     result = empirical_bayes_shrinkage(y, cluster, sigma2_u, sigma2_e)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ebayes_edge():

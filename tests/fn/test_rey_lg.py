@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.rey_lg import logistic_regression, rey_lg
+
 from morie.fn._containers import RegressionResult
+from morie.fn.rey_lg import logistic_regression, rey_lg
 
 
 @pytest.fixture()
@@ -14,6 +15,7 @@ def logistic_data():
     n = 300
     x = rng.normal(0, 1, n)
     from scipy.special import expit
+
     p = expit(-1 + 2 * x)
     y = rng.binomial(1, p, n).astype(float)
     return pd.DataFrame({"y": y, "x": x})

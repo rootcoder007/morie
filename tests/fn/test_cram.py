@@ -1,5 +1,4 @@
 """Tests for morie.fn.cram — alias for Cramer's V."""
-import numpy as np
 
 from morie.fn.cram import cram
 
@@ -13,5 +12,6 @@ def test_cram_is_callable():
 
 def test_cram_same_as_cramv():
     from morie.fn.cramv import cramers_v
+
     table = [[5, 15], [25, 35]]
     assert cram(table) == cramers_v(table)

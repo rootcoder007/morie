@@ -40,10 +40,11 @@ TPS_DATA_DIR = PROJECT / "data/datasets/TPS"
 @dataclass(frozen=True, slots=True)
 class TpsDataset:
     """One TPS open-data category."""
-    name: str               # e.g. "Assault"
+
+    name: str  # e.g. "Assault"
     description: str
-    primary_date: str       # OCC_DATE / REPORT_DATE
-    has_geometry: bool      # most do via LAT/LONG_WGS84
+    primary_date: str  # OCC_DATE / REPORT_DATE
+    has_geometry: bool  # most do via LAT/LONG_WGS84
 
     @property
     def csv_dir(self) -> Path:
@@ -67,78 +68,115 @@ def _r(d: TpsDataset) -> None:
     TPS_REGISTRY[d.name] = d
 
 
-_r(TpsDataset(
-    name="Assault",
-    description="Reported assault incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="AutoTheft",
-    description="Reported auto-theft incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="BicycleTheft",
-    description="Reported bicycle thefts in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="BreakandEnter",
-    description="Reported break-and-enter incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="CommunitySafetyIndicators",
-    description="Toronto community-safety composite indicators",
-    primary_date="REPORT_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="HateCrimes",
-    description="Reported hate-crime incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="Homicides",
-    description="Reported homicide incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="IntimatePartnerAndFamilyViolence",
-    description="Reported intimate-partner and family violence in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="NeighbourhoodCrimeRates",
-    description="Per-neighbourhood crime rates (annualised, "
-                "by HOOD_158)",
-    primary_date="REPORT_YEAR", has_geometry=True,
-))
-_r(TpsDataset(
-    name="Robbery",
-    description="Reported robbery incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="ShootingAndFirearmDiscarges",
-    description="Reported shooting and firearm-discharge incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="TheftFromMovingVehicle",
-    description="Reported theft-from-moving-vehicle incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
-_r(TpsDataset(
-    name="TheftOver",
-    description="Reported theft-over-$5000 incidents in Toronto",
-    primary_date="OCC_DATE", has_geometry=True,
-))
+_r(
+    TpsDataset(
+        name="Assault",
+        description="Reported assault incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="AutoTheft",
+        description="Reported auto-theft incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="BicycleTheft",
+        description="Reported bicycle thefts in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="BreakandEnter",
+        description="Reported break-and-enter incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="CommunitySafetyIndicators",
+        description="Toronto community-safety composite indicators",
+        primary_date="REPORT_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="HateCrimes",
+        description="Reported hate-crime incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="Homicides",
+        description="Reported homicide incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="IntimatePartnerAndFamilyViolence",
+        description="Reported intimate-partner and family violence in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="NeighbourhoodCrimeRates",
+        description="Per-neighbourhood crime rates (annualised, by HOOD_158)",
+        primary_date="REPORT_YEAR",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="Robbery",
+        description="Reported robbery incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="ShootingAndFirearmDiscarges",
+        description="Reported shooting and firearm-discharge incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="TheftFromMovingVehicle",
+        description="Reported theft-from-moving-vehicle incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
+_r(
+    TpsDataset(
+        name="TheftOver",
+        description="Reported theft-over-$5000 incidents in Toronto",
+        primary_date="OCC_DATE",
+        has_geometry=True,
+    )
+)
 
 
-def load_tps_dataset(name: str,
-                     csv_filename: str | None = None,
-                     nrows: int | None = None,
-                     *, format: str | None = None) -> pd.DataFrame:
+def load_tps_dataset(
+    name: str, csv_filename: str | None = None, nrows: int | None = None, *, format: str | None = None
+) -> pd.DataFrame:
     """Load one TPS dataset by category name.
 
     `name` is case-insensitive. Pass `nrows=N` for a quick sample
@@ -150,23 +188,19 @@ def load_tps_dataset(name: str,
     Geometric formats attach a ``geometry`` column (Python coord lists).
     See ``morie.tps_io.load_tps`` for details.
     """
-    canonical = next((k for k in TPS_REGISTRY if k.lower() == name.lower()),
-                     None)
+    canonical = next((k for k in TPS_REGISTRY if k.lower() == name.lower()), None)
     if canonical is None:
-        raise KeyError(
-            f"unknown TPS dataset {name!r}. valid: "
-            f"{sorted(TPS_REGISTRY.keys())}"
-        )
+        raise KeyError(f"unknown TPS dataset {name!r}. valid: {sorted(TPS_REGISTRY.keys())}")
     if format is not None and format.lower() != "csv":
         from .tps_io import load_tps
+
         df = load_tps(canonical, format=format, nrows=nrows)
     else:
         meta = TPS_REGISTRY[canonical]
         p = meta.csv_path(csv_filename)
         if not p.exists():
             raise FileNotFoundError(
-                f"TPS {canonical} CSV not found at {p}. "
-                "Verify data/datasets/TPS/<Category>/CSV/ has the export."
+                f"TPS {canonical} CSV not found at {p}. Verify data/datasets/TPS/<Category>/CSV/ has the export."
             )
         df = pd.read_csv(p, nrows=nrows)
     # Tolerant column-name normalisation for sensitivity-redacted feeds
@@ -194,7 +228,4 @@ def load_tps_dataset(name: str,
 
 def list_tps_datasets() -> list[tuple[str, str, str]]:
     """List all TPS datasets as (name, description, primary_date_col)."""
-    return [
-        (d.name, d.description, d.primary_date)
-        for d in sorted(TPS_REGISTRY.values(), key=lambda x: x.name)
-    ]
+    return [(d.name, d.description, d.primary_date) for d in sorted(TPS_REGISTRY.values(), key=lambda x: x.name)]

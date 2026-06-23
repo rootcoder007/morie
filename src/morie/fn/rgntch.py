@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Notch filter for powerline interference removal (50/60 Hz)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_notch_filter"]
@@ -34,7 +36,14 @@ def rangayyan_notch_filter(notch_freq, bandwidth, fs):
     n = int(notch_freq) if notch_freq.ndim == 0 else len(notch_freq)
     result = float(np.mean(notch_freq))
     se = float(np.std(notch_freq, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Notch filter for powerline interference removal (50/60 Hz)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Notch filter for powerline interference removal (50/60 Hz)",
+        }
+    )
 
 
 def cheatsheet():

@@ -19,8 +19,10 @@ We implement the standard order-4 Gaussian-based kernel
 where phi is the standard normal density.  Its second moment is 0
 and fourth moment is -3.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_higher_order_kernel"]
@@ -49,8 +51,7 @@ def fauzi_higher_order_kernel(x, t=None, h=None, order=4):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "fzhok -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzhok -- too few obs"})
     if order != 4:
         raise NotImplementedError("only order=4 implemented (Wand-Jones eq 2.8)")
     if t is None:
@@ -65,16 +66,18 @@ def fauzi_higher_order_kernel(x, t=None, h=None, order=4):
     mu4_K4 = -3.0
     R_K4 = 27.0 / (32.0 * np.sqrt(np.pi))  # integral K_4^2
 
-    return RichResult(payload={
-        "estimate": f_hat,
-        "h": h,
-        "t": t,
-        "order": order,
-        "mu_r": mu4_K4,
-        "R_K": R_K4,
-        "n": n,
-        "method": "Fauzi higher-order (4) kernel density (Ch 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": f_hat,
+            "h": h,
+            "t": t,
+            "order": order,
+            "mu_r": mu4_K4,
+            "R_K": R_K4,
+            "n": n,
+            "method": "Fauzi higher-order (4) kernel density (Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

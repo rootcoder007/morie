@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtcmp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtcmp import dtcmp
 
 

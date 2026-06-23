@@ -36,8 +36,8 @@ def transfer_entropy(x, y, k: int = 1, bins: int = 20, **kwargs) -> ESRes:
     y = y[:n]
 
     x_now = x[k:]
-    x_past = x[:n - k]
-    y_past = y[:n - k]
+    x_past = x[: n - k]
+    y_past = y[: n - k]
 
     def _h(data):
         hist, _ = np.histogramdd(data, bins=bins)

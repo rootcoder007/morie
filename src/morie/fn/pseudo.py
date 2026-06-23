@@ -1,6 +1,7 @@
 """Path-specific effects (PSE)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["path_specific_effect"]

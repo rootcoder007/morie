@@ -1,6 +1,7 @@
 """Tests for copgmb.gumbel_copula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.copgmb import gumbel_copula
 
 
@@ -12,7 +13,7 @@ def test_copgmb_basic():
     theta = 0.0
     result = gumbel_copula(y, u, v, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_copgmb_edge():

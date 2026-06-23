@@ -1,6 +1,7 @@
 """Tests for ttypc.typical_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ttypc import typical_sampling
 
 
@@ -10,7 +11,7 @@ def test_ttypc_basic():
     tau = 0.1
     result = typical_sampling(logits, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ttypc_edge():

@@ -1,6 +1,8 @@
 """Tests for tbreal."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbreal import tbreal
 
 
@@ -28,4 +30,5 @@ def test_tbreal_no_data():
 
 def test_tbreal_alias():
     from morie.fn.tbreal import tbreal
+
     assert tbreal is tbreal

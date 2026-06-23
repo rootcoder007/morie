@@ -83,4 +83,4 @@ thnsm = snap_estimator
 
 
 def cheatsheet() -> str:
-    return 'snap_estimator({}) -> Random half-sampling estimator.'
+    return "snap_estimator({}) -> Random half-sampling estimator."

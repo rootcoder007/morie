@@ -1,8 +1,9 @@
 """Tests for morie.fn.optms -- Wasserstein optimal transport."""
 
 import numpy as np
-from morie.fn.optms import optimal_transport, optms
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.optms import optimal_transport, optms
 
 
 class TestOptms:

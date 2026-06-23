@@ -1,6 +1,7 @@
 """Tests for flowmin.min_cut."""
+
 import numpy as np
-import pytest
+
 from morie.fn.flowmin import min_cut
 
 
@@ -9,7 +10,7 @@ def test_flowmin_basic():
     A = np.random.default_rng(42).normal(0, 1, (10, 10))
     result = min_cut(A)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_flowmin_edge():

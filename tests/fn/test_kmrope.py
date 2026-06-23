@@ -1,6 +1,7 @@
 """Tests for kmrope.kamath_rotary_positional_embedding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmrope import kamath_rotary_positional_embedding
 
 
@@ -11,7 +12,7 @@ def test_kmrope_basic():
     base = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_rotary_positional_embedding(q, positions, base)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmrope_edge():

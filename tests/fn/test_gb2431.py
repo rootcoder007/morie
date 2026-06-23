@@ -1,6 +1,7 @@
 """Tests for gb2431.gibbons_binomial_beta_link."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb2431 import gibbons_binomial_beta_link
 
 
@@ -11,7 +12,7 @@ def test_gb2431_basic():
     n = 100
     result = gibbons_binomial_beta_link(t, r, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb2431_edge():

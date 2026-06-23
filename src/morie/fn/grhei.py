@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """He initialization (for ReLU-family activations)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_he_init"]
@@ -30,7 +32,9 @@ def geron_he_init(fan_in):
     n = int(fan_in) if fan_in.ndim == 0 else len(fan_in)
     result = float(np.mean(fan_in))
     se = float(np.std(fan_in, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "He initialization (for ReLU-family activations)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "He initialization (for ReLU-family activations)"}
+    )
 
 
 def cheatsheet():

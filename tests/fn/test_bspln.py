@@ -1,6 +1,7 @@
 """Tests for morie.fn.bspln -- Bayesian spline."""
 
 import numpy as np
+
 from morie.fn.bspln import bayesian_spline
 
 

@@ -1,6 +1,7 @@
 """Tests for wsmkbw.wasserman_kde_bandwidth."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmkbw import wasserman_kde_bandwidth
 
 
@@ -9,7 +10,7 @@ def test_wsmkbw_basic():
     data = np.random.default_rng(42).normal(0, 1, 100)
     result = wasserman_kde_bandwidth(data)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmkbw_edge():

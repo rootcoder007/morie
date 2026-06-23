@@ -1,6 +1,8 @@
 """Tests for stfit."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stfit import stfit
 
 
@@ -28,4 +30,5 @@ def test_stfit_no_data():
 
 def test_stfit_alias():
     from morie.fn.stfit import stfit
+
     assert stfit is stfit

@@ -8,7 +8,15 @@ import numpy as np
 from ._containers import DescriptiveResult
 
 
-def probability_resample(data: np.ndarray | list[float], cdf=None, *, target_quantile: float = 0.5, n_resamples: int = 1000, size: int | None = None, seed: int | None = None) -> DescriptiveResult:
+def probability_resample(
+    data: np.ndarray | list[float],
+    cdf=None,
+    *,
+    target_quantile: float = 0.5,
+    n_resamples: int = 1000,
+    size: int | None = None,
+    seed: int | None = None,
+) -> DescriptiveResult:
     """Estimate a target quantile via bootstrap resampling with BCa correction.
 
     Generates *n_resamples* bootstrap samples, computes the target quantile
@@ -92,4 +100,4 @@ prores = probability_resample
 
 
 def cheatsheet() -> str:
-    return 'probability_resample({}) -> Probability manipulation via resampling.'
+    return "probability_resample({}) -> Probability manipulation via resampling."

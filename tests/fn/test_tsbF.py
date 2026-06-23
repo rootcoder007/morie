@@ -1,6 +1,7 @@
 """Tests for tsbF.tsb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsbF import tsb
 
 
@@ -11,7 +12,7 @@ def test_tsbF_basic():
     beta = 0.8
     result = tsb(y, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tsbF_edge():

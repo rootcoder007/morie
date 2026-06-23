@@ -1,6 +1,7 @@
 """Lowpass transfer function used in the Pan-Tompkins QRS detector.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_pan_tompkins_lowpass_transfer"]
@@ -30,7 +31,14 @@ def rangayyan_ch4_pan_tompkins_lowpass_transfer(z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Lowpass transfer function used in the Pan-Tompkins QRS detector."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Lowpass transfer function used in the Pan-Tompkins QRS detector.",
+        }
+    )
 
 
 def cheatsheet():

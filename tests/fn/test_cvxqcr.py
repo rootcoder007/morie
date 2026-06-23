@@ -1,6 +1,7 @@
 """Tests for cvxqcr.boyd_quadratic_constraint."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxqcr import boyd_quadratic_constraint
 
 
@@ -13,7 +14,7 @@ def test_cvxqcr_basic():
     r = 10
     result = boyd_quadratic_constraint(P0, q0, P, q, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxqcr_edge():

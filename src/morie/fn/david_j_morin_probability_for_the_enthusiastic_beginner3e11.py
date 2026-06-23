@@ -1,8 +1,8 @@
 """Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_11"]
 
@@ -41,7 +41,12 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_1
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
+        },
     )
 
 

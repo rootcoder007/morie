@@ -1,6 +1,7 @@
 """Tests for alndcg.alammar_ndcg_at_k."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alndcg import alammar_ndcg_at_k
 
 
@@ -10,7 +11,7 @@ def test_alndcg_basic():
     k = 5
     result = alammar_ndcg_at_k(relevances, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alndcg_edge():

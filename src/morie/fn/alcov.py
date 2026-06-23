@@ -77,7 +77,7 @@ def alcove_model(
 
             for dim in range(d):
                 grad = -specificity * np.sign(exemplars[:, dim] - xi[dim]) * activations
-                alpha_grad = (grad @ W @ error)
+                alpha_grad = grad @ W @ error
                 alpha[dim] += lr_attn * alpha_grad
             alpha = np.maximum(alpha, 0.0)
             a_sum = alpha.sum()

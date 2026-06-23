@@ -1,5 +1,7 @@
 """Tests for kde_smooth."""
+
 import numpy as np
+
 from morie.fn.kdesm import kde_smooth, kdesm
 
 

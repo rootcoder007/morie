@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Contrastive learning: pull positives close, push negatives far."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_contrastive_learning"]
@@ -32,7 +34,14 @@ def geron_contrastive_learning(embeddings, positives):
     n = len(embeddings)
     result = float(np.mean(embeddings))
     se = float(np.std(embeddings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Contrastive learning: pull positives close, push negatives far"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Contrastive learning: pull positives close, push negatives far",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for atrope.rotary_position_embedding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.atrope import rotary_position_embedding
 
 
@@ -12,7 +13,7 @@ def test_atrope_basic():
     theta = 0.0
     result = rotary_position_embedding(y, q, m, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_atrope_edge():

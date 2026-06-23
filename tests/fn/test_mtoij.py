@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtoij — injury severity."""
 
 import pytest
-from morie.fn.mtoij import mto_injury_severity
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtoij import mto_injury_severity
 
 
 class TestInjurySeverity:

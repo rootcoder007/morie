@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ERP artifact removal via synchronized averaging."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_erp_artifact_remove"]
@@ -32,7 +34,9 @@ def rangayyan_erp_artifact_remove(erp_epochs, fs):
     n = int(erp_epochs) if erp_epochs.ndim == 0 else len(erp_epochs)
     result = float(np.mean(erp_epochs))
     se = float(np.std(erp_epochs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ERP artifact removal via synchronized averaging"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "ERP artifact removal via synchronized averaging"}
+    )
 
 
 def cheatsheet():

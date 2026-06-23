@@ -10,7 +10,12 @@ import scipy.stats as stats
 from ._containers import ESRes
 
 
-def fixed_effects_meta(estimates: Union[np.ndarray, list[float]], standard_errors: Union[np.ndarray, list[float]], confidence: float = 0.95, cdf=None) -> ESRes:
+def fixed_effects_meta(
+    estimates: Union[np.ndarray, list[float]],
+    standard_errors: Union[np.ndarray, list[float]],
+    confidence: float = 0.95,
+    cdf=None,
+) -> ESRes:
     """Fixed-effects (inverse-variance weighted) meta-analytic pooling.
 
     Parameters

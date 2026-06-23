@@ -1,6 +1,7 @@
 """Support vector classifier (soft margin)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_svc"]
@@ -34,7 +35,9 @@ def esl_svc(X, y, C):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Support vector classifier (soft margin)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Support vector classifier (soft margin)"}
+    )
 
 
 def cheatsheet():

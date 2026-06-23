@@ -75,9 +75,7 @@ def ols_regression(
     f_stat = f_num / f_den if f_den > 0 else 0.0
     f_pval = float(_st.f.sf(f_stat, k - 1, n - k)) if k > 1 else 1.0
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
 
     return RegressionResult(
         method="OLS",

@@ -7,12 +7,12 @@ from morie.fn.adagr import adagr
 
 def test_quadratic_minimization():
     """Adagrad should reduce f(x) = sum(x^2) toward 0."""
-    f = lambda x: np.sum(x ** 2)
+    f = lambda x: np.sum(x**2)
     g = lambda x: 2.0 * x
     x0 = np.array([5.0, 5.0])
     result = adagr(f, g, x0, learning_rate=0.5, max_iter=2000)
     assert isinstance(result, np.ndarray)
-    assert np.sum(result ** 2) < np.sum(x0 ** 2)
+    assert np.sum(result**2) < np.sum(x0**2)
 
 
 def test_returns_ndarray():

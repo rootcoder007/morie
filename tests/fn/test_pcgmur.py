@@ -1,7 +1,9 @@
 """Tests for pcgmur — PCG murmur detection score."""
+
 import numpy as np
-from morie.fn.pcgmur import pcg_murmur_score
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.pcgmur import pcg_murmur_score
 
 
 def test_pcgmur_basic(rng):
@@ -10,7 +12,7 @@ def test_pcgmur_basic(rng):
     s1 = np.zeros_like(t)
     for i in range(0, len(t), int(0.8 * fs)):
         w = min(len(t), i + int(0.05 * fs))
-        s1[i:w] = np.sin(2 * np.pi * 50 * t[:w - i])
+        s1[i:w] = np.sin(2 * np.pi * 50 * t[: w - i])
     result = pcg_murmur_score(s1 + rng.standard_normal(len(t)) * 0.01, fs)
     assert isinstance(result, DescriptiveResult)
     assert 0 <= result.value <= 1

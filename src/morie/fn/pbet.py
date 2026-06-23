@@ -7,7 +7,9 @@ import numpy as np
 import scipy.stats as stats
 
 
-def pbeta(x: Union[float, np.ndarray], alpha: float, beta: float, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def pbeta(
+    x: Union[float, np.ndarray], alpha: float, beta: float, lower_tail: bool = True, log: bool = False, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Beta distribution CDF.
 

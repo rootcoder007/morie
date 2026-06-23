@@ -34,7 +34,7 @@ def recurrence_entropy(x, m: int = 2, delay: int = 1, eps: float | None = None, 
         raise ValueError("eps must be positive.")
 
     n_embed = n - (m - 1) * delay
-    embedded = np.array([x[i:i + m * delay:delay] for i in range(n_embed)])
+    embedded = np.array([x[i : i + m * delay : delay] for i in range(n_embed)])
 
     diag_lengths: list[int] = []
     for offset in range(1, n_embed):
@@ -55,6 +55,7 @@ def recurrence_entropy(x, m: int = 2, delay: int = 1, eps: float | None = None, 
         return ESRes(measure="recurrence_entropy", estimate=0.0, n=n, extra={"n_diag_lines": 0})
 
     from collections import Counter
+
     counts = Counter(diag_lengths)
     total = sum(counts.values())
     h = 0.0

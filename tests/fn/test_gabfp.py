@@ -1,6 +1,7 @@
 """Test gabfp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gabfp import gabfp
 
 

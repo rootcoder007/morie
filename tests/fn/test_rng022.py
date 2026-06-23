@@ -1,6 +1,7 @@
 """Tests for rng022.rangayyan_ch3_correlation_coefficient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng022 import rangayyan_ch3_correlation_coefficient
 
 
@@ -11,7 +12,7 @@ def test_rng022_basic():
     sigma_y = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch3_correlation_coefficient(C_xy, sigma_x, sigma_y)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_rng022_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.sar -- Secondary Attack Rate."""
 
 import pytest
+
 from morie.fn.sar import secondary_attack_rate
 
 

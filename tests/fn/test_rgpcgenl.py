@@ -1,6 +1,7 @@
 """Tests for rgpcgenl.rangayyan_pcg_envelope_avg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgpcgenl import rangayyan_pcg_envelope_avg
 
 
@@ -11,7 +12,7 @@ def test_rgpcgenl_basic():
     fs = 100.0
     result = rangayyan_pcg_envelope_avg(pcg, ecg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgpcgenl_edge():

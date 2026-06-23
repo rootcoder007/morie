@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sparse random projection matrix with {-1,0,+1} entries."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_sparse_rand_projection"]
@@ -36,7 +38,14 @@ def geron_sparse_rand_projection(X, d_out, density, seed):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sparse random projection matrix with {-1,0,+1} entries"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sparse random projection matrix with {-1,0,+1} entries",
+        }
+    )
 
 
 def cheatsheet():

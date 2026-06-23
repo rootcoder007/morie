@@ -1,7 +1,7 @@
 """Tests for morie.fn.cmchr."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cmchr import cmchr
 
 

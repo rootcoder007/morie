@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RAGAS answer relevance: cosine between reverse-generated questions and original."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ragas_answer_relevance"]
@@ -34,7 +36,14 @@ def kamath_ragas_answer_relevance(answer, original_question, model):
     n = len(answer)
     result = float(np.mean(answer))
     se = float(np.std(answer, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RAGAS answer relevance: cosine between reverse-generated questions and original"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "RAGAS answer relevance: cosine between reverse-generated questions and original",
+        }
+    )
 
 
 def cheatsheet():

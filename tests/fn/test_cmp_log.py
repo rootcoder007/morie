@@ -20,19 +20,21 @@ def _make_cpads_frame(rng, n=200):
     p_outcome = 0.2 + 0.15 * treatment
     outcome = rng.binomial(1, p_outcome, size=n)
     weight = rng.uniform(0.5, 3.0, size=n)
-    return pd.DataFrame({
-        "weight": weight,
-        "alcohol_past12m": rng.integers(0, 2, size=n),
-        "heavy_drinking_30d": outcome,
-        "ebac_tot": rng.uniform(0, 0.15, size=n),
-        "ebac_legal": rng.integers(0, 2, size=n),
-        "cannabis_any_use": treatment,
-        "age_group": age,
-        "gender": gender,
-        "province_region": province,
-        "mental_health": mental,
-        "physical_health": physical,
-    })
+    return pd.DataFrame(
+        {
+            "weight": weight,
+            "alcohol_past12m": rng.integers(0, 2, size=n),
+            "heavy_drinking_30d": outcome,
+            "ebac_tot": rng.uniform(0, 0.15, size=n),
+            "ebac_legal": rng.integers(0, 2, size=n),
+            "cannabis_any_use": treatment,
+            "age_group": age,
+            "gender": gender,
+            "province_region": province,
+            "mental_health": mental,
+            "physical_health": physical,
+        }
+    )
 
 
 @pytest.fixture()
@@ -58,7 +60,7 @@ def test_nested_model_has_fewer_params(cmp_data):
     n_params = summary["n_parameters"].tolist()
     for i in range(1, len(n_params)):
         assert n_params[i] >= n_params[i - 1], (
-            f"Model {i} has fewer params ({n_params[i]}) than Model {i-1} ({n_params[i-1]})"
+            f"Model {i} has fewer params ({n_params[i]}) than Model {i - 1} ({n_params[i - 1]})"
         )
 
 

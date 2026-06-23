@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgdsh -- Disjunctive kriging Hermite polynomials"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgdsh import dk_hermite
 

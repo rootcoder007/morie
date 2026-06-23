@@ -1,7 +1,6 @@
 """Tests for morie.fn.zscnt -- Contour line generation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zscnt import contour_lines
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsidp -- IDW power parameter optimization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsidp import idw_power
 

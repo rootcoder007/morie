@@ -6,6 +6,7 @@
 with Phi the standard normal CDF acting as the smoothing kernel; n^(2/5)
 convergence rate and normal-theory SEs.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,12 +39,16 @@ def horowitz_smoothed_maximum_score(x, y, bandwidth=None):
         X = X.T
     n, p = X.shape
     if n < max(10, 2 * p):
-        return RichResult(payload={"estimate": np.full(p, np.nan),
-                                   "se": np.full(p, np.nan), "n": n,
-                                   "method": "smoothed-max-score (insufficient data)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "smoothed-max-score (insufficient data)",
+            }
+        )
     y_signed = 2 * y - 1
-    h = float(bandwidth) if bandwidth is not None else max(
-        _silverman((X @ np.ones(p)) / np.sqrt(p)), 1e-3)
+    h = float(bandwidth) if bandwidth is not None else max(_silverman((X @ np.ones(p)) / np.sqrt(p)), 1e-3)
     y_signed = 2 * y - 1
 
     def loss(b):
@@ -74,8 +79,7 @@ def horowitz_smoothed_maximum_score(x, y, bandwidth=None):
     if beta0[0] < 0:
         beta0 = -beta0
 
-    res = minimize(loss, beta0, jac=grad, method="BFGS",
-                   options={"gtol": 1e-6, "maxiter": 200})
+    res = minimize(loss, beta0, jac=grad, method="BFGS", options={"gtol": 1e-6, "maxiter": 200})
     beta_hat = res.x / max(np.linalg.norm(res.x), 1e-12)
     if beta_hat[0] < 0:
         beta_hat = -beta_hat
@@ -91,12 +95,15 @@ def horowitz_smoothed_maximum_score(x, y, bandwidth=None):
         cov = np.full((p, p), np.nan)
     se = np.sqrt(np.maximum(np.diag(cov), 0))
 
-    return RichResult(payload={
-        "estimate": beta_hat.astype(float),
-        "se": se.astype(float),
-        "bandwidth": h, "n": n,
-        "method": "Horowitz (1992) smoothed maximum-score",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta_hat.astype(float),
+            "se": se.astype(float),
+            "bandwidth": h,
+            "n": n,
+            "method": "Horowitz (1992) smoothed maximum-score",
+        }
+    )
 
 
 def cheatsheet():

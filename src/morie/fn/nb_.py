@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fit a Gaussian Naive Bayes model."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -96,4 +97,4 @@ nb_ = naive_bayes
 
 
 def cheatsheet() -> str:
-    return 'naive_bayes_fit({}) -> Gaussian Naive Bayes (pure numpy).'
+    return "naive_bayes_fit({}) -> Gaussian Naive Bayes (pure numpy)."

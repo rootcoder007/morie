@@ -1,8 +1,9 @@
 """Tests for morie.fn.copha -- Cophenetic correlation."""
 
 import numpy as np
-from morie.fn.copha import cophenetic_correlation, copha
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.copha import copha, cophenetic_correlation
 
 
 class TestCopheneticCorrelation:

@@ -1,6 +1,8 @@
 """Tests for morie.fn.notrs — NOTEARS DAG learning."""
+
 import numpy as np
 import pytest
+
 from morie.fn.notrs import notrs
 
 
@@ -52,4 +54,5 @@ def test_sparser_with_higher_lambda(data):
 
 def test_cheatsheet():
     from morie.fn.notrs import cheatsheet
+
     assert len(cheatsheet()) > 0

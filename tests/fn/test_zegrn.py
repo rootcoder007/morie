@@ -1,7 +1,6 @@
 """Tests for morie.fn.zegrn -- Spatial gradient estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zegrn import gradient_spatial
 

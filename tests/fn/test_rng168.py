@@ -1,6 +1,7 @@
 """Tests for rng168.rangayyan_ch3_rls_theta_recursion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng168 import rangayyan_ch3_rls_theta_recursion
 
 
@@ -13,7 +14,7 @@ def test_rng168_basic():
     n = 100
     result = rangayyan_ch3_rls_theta_recursion(Theta, r, x, lam, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_rng168_edge():

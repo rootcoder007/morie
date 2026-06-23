@@ -1,6 +1,7 @@
 """Tests for morie.fn.mi — mutual information estimation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mi import mutual_info
 
 

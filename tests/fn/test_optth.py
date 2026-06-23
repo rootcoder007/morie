@@ -1,6 +1,7 @@
 """Tests for morie.fn.optth — optimal threshold selection."""
-import numpy as np
+
 import pytest
+
 from morie.fn.optth import optimal_threshold, optth
 
 

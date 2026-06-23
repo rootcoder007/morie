@@ -10,9 +10,11 @@ model
 Other links (binomial/poisson/...) need PQL or full Laplace -- those
 are deferred to v0.3.0 (see ``NotImplementedError`` branch).
 """
+
 import numpy as np
 from scipy import optimize
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_glm"]
@@ -46,8 +48,7 @@ def spatial_glm(x, y, coords, family: str = "gaussian"):
         sigma2, tau2, phi, n, method
     """
     if family != "gaussian":
-        raise NotImplementedError(
-            f"sglm: family={family!r} needs PQL or Laplace; tracker for v0.3.0")
+        raise NotImplementedError(f"sglm: family={family!r} needs PQL or Laplace; tracker for v0.3.0")
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:
         X = X.reshape(-1, 1)
@@ -82,12 +83,16 @@ def spatial_glm(x, y, coords, family: str = "gaussian"):
     # 1-D search over log(phi)
     h_max = float(D.max())
     res = optimize.minimize_scalar(
-        neg_ll, bounds=(np.log(max(h_max / 100.0, 1e-3)), np.log(max(h_max * 3.0, 1.0))),
-        method="bounded", options={"xatol": 1e-4})
+        neg_ll,
+        bounds=(np.log(max(h_max / 100.0, 1e-3)), np.log(max(h_max * 3.0, 1.0))),
+        method="bounded",
+        options={"xatol": 1e-4},
+    )
     phi = float(np.exp(res.x))
     R = _R_phi(D, phi) + 1e-8 * np.eye(n)
     L = np.linalg.cholesky(R)
-    Xw = np.linalg.solve(L, X); yw = np.linalg.solve(L, y)
+    Xw = np.linalg.solve(L, X)
+    yw = np.linalg.solve(L, y)
     XtRinvX = Xw.T @ Xw
     beta = np.linalg.solve(XtRinvX, Xw.T @ yw)
     resid = yw - Xw @ beta
@@ -95,15 +100,17 @@ def spatial_glm(x, y, coords, family: str = "gaussian"):
     cov_beta = sigma2 * np.linalg.inv(XtRinvX)
     se_beta = np.sqrt(np.diag(cov_beta))
 
-    return RichResult(payload={
-        "estimate": beta.tolist(),
-        "se": se_beta.tolist(),
-        "sigma2": sigma2,
-        "phi": phi,
-        "tau2": 0.0,  # absorbed via nugget=1e-8; flag this in docs
-        "n": int(n),
-        "method": "Spatial GLM (Gaussian, exponential covariance, ML)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.tolist(),
+            "se": se_beta.tolist(),
+            "sigma2": sigma2,
+            "phi": phi,
+            "tau2": 0.0,  # absorbed via nugget=1e-8; flag this in docs
+            "n": int(n),
+            "method": "Spatial GLM (Gaussian, exponential covariance, ML)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test srbnb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srbnb import srbnb
 
 

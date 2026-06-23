@@ -1,6 +1,7 @@
 """Tests for morie.fn.odm_a — Demographic profile per age group."""
 
 import pandas as pd
+
 from morie.fn.odm_a import otis_demo_age
 
 

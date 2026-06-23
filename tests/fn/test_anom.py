@@ -1,5 +1,7 @@
 """Tests for alpha-NOMINATE."""
+
 import numpy as np
+
 from morie.fn.anom import anom
 
 
@@ -14,6 +16,7 @@ def test_anom_smoke():
 
 def test_cheatsheet():
     from morie.fn.anom import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

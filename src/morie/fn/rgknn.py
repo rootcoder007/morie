@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-nearest neighbor (k-NN) classifier."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_knn_classifier"]

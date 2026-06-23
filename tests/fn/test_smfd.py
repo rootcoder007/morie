@@ -1,6 +1,7 @@
 """Tests for smfd.smooth_functional_data."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smfd import smooth_functional_data
 
 
@@ -11,7 +12,7 @@ def test_smfd_basic():
     lam = 0.1
     result = smooth_functional_data(Y, argvals, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smfd_edge():

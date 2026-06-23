@@ -58,7 +58,7 @@ def stick_breaking_weights(
         w_k = v_k * prod_one_minus_v
         weights.append(w_k)
 
-        prod_one_minus_v *= (1.0 - v_k)
+        prod_one_minus_v *= 1.0 - v_k
         k += 1
 
         if w_k < cutoff or prod_one_minus_v < cutoff:

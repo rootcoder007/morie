@@ -1,6 +1,7 @@
 """Test foptch."""
+
 import numpy as np
-import pytest
+
 from morie.fn.foptch import foptch
 
 

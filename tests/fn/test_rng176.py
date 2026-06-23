@@ -1,6 +1,7 @@
 """Tests for rng176.rangayyan_ch4_qrs_first_derivative_balda."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng176 import rangayyan_ch4_qrs_first_derivative_balda
 
 
@@ -10,7 +11,7 @@ def test_rng176_basic():
     n = 100
     result = rangayyan_ch4_qrs_first_derivative_balda(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng176_edge():

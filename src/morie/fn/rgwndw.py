@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Window functions: Hamming, Hann, Blackman for spectral leakage control."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_window_functions"]
@@ -32,7 +34,14 @@ def rangayyan_window_functions(N, window_type):
     n = int(N) if N.ndim == 0 else len(N)
     result = float(np.mean(N))
     se = float(np.std(N, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Window functions: Hamming, Hann, Blackman for spectral leakage control"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Window functions: Hamming, Hann, Blackman for spectral leakage control",
+        }
+    )
 
 
 def cheatsheet():

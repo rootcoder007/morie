@@ -1,6 +1,7 @@
 """Tests for hmauc.geron_auc_roc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmauc import geron_auc_roc
 
 
@@ -10,7 +11,7 @@ def test_hmauc_basic():
     scores = np.random.default_rng(42).uniform(0, 1, 100)
     result = geron_auc_roc(y_true, scores)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmauc_edge():

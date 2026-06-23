@@ -1,6 +1,7 @@
 """Output of two LSI systems in series equals input convolved with combined response.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_lsi_series_total"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_lsi_series_total(x, h_1, h_2, n):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Output of two LSI systems in series equals input convolved with combined response."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Output of two LSI systems in series equals input convolved with combined response.",
+        }
+    )
 
 
 def cheatsheet():

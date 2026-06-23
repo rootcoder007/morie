@@ -1,6 +1,7 @@
 """Test vmexp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmexp import vmexp
 
 

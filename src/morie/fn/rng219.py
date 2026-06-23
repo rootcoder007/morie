@@ -1,6 +1,7 @@
 """Triangle inequality for two vectors.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_triangle_inequality_vectors"]

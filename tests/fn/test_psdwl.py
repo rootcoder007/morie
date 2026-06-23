@@ -1,7 +1,9 @@
 """Tests for psdwl -- Welch PSD."""
+
 import numpy as np
-from morie.fn.psdwl import psdwl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.psdwl import psdwl
 
 
 def test_psdwl_basic(signal_1khz):

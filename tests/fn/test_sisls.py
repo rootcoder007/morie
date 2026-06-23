@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.sisls import sisls
 
 
@@ -9,7 +10,7 @@ def test_returns_dict():
     rng = np.random.default_rng(42)
     n = 100
     X = rng.standard_normal((n, 3))
-    y = (X @ np.array([1, 0.5, 0]))**2 + rng.normal(0, 0.3, n)
+    y = (X @ np.array([1, 0.5, 0])) ** 2 + rng.normal(0, 0.3, n)
     result = sisls(y, X, max_iter=10)
     assert isinstance(result, dict)
     for key in ("beta", "index", "g_hat", "n_iter", "converged", "n_obs"):

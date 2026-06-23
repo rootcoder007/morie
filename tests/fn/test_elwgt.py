@@ -1,7 +1,7 @@
 """Tests for morie.fn.elwgt."""
 
 import numpy as np
-import pytest
+
 from morie.fn.elwgt import elwgt
 
 

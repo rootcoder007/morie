@@ -1,6 +1,7 @@
 """Tests for hmcrg.hierarchical_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmcrg import hierarchical_model
 
 
@@ -10,7 +11,7 @@ def test_hmcrg_basic():
     group = np.random.default_rng(42).normal(0, 1, 100)
     result = hierarchical_model(y, group)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmcrg_edge():

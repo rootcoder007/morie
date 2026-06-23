@@ -2,6 +2,8 @@
 """n factorial as integer."""
 
 import math
+
+
 def nfact(n: int) -> int:
     """n! -- factorial."""
     if n < 0:

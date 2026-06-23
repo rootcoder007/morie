@@ -1,6 +1,7 @@
 """Standard empirical distribution function indexed by t in R."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_empirical_distribution_function"]
@@ -34,7 +35,14 @@ def kosorok_ch2_empirical_distribution_function(X, t, n):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Standard empirical distribution function indexed by t in R"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Standard empirical distribution function indexed by t in R",
+        }
+    )
 
 
 def cheatsheet():

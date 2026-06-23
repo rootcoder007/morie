@@ -1,6 +1,8 @@
 """Tests for stexp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stexp import stexp
 
 
@@ -28,4 +30,5 @@ def test_stexp_no_data():
 
 def test_stexp_alias():
     from morie.fn.stexp import stexp
+
     assert stexp is stexp

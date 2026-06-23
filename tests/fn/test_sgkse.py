@@ -1,5 +1,7 @@
 """Tests for standardized prediction error."""
+
 import numpy as np
+
 from morie.fn.sgkse import sgkse
 
 
@@ -14,6 +16,7 @@ def test_sgkse_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgkse import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,7 @@
 """Tests for rfcomp.robust_factor_analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rfcomp import robust_factor_analysis
 
 
@@ -10,7 +11,7 @@ def test_rfcomp_basic():
     k = 5
     result = robust_factor_analysis(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rfcomp_edge():

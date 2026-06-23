@@ -1,8 +1,10 @@
 """Tests for glmft — Generalized linear model fitting."""
+
 import numpy as np
 import pytest
-from morie.fn.glmft import glm_fit
+
 from morie.fn._containers import RegressionResult
+from morie.fn.glmft import glm_fit
 
 
 def test_glmft_gaussian(rng):

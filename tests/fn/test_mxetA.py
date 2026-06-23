@@ -1,6 +1,7 @@
 """Tests for mxetA.max_exceedance_curve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mxetA import max_exceedance_curve
 
 
@@ -10,7 +11,7 @@ def test_mxetA_basic():
     range = np.random.default_rng(42).normal(0, 1, 100)
     result = max_exceedance_curve(coords, range)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mxetA_edge():

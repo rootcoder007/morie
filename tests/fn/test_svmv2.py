@@ -1,7 +1,6 @@
 """Tests for morie.fn.svmv2 -- Median voter in 2D (Plott conditions)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svmv2 import median_voter_2d
 

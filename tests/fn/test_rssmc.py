@@ -1,6 +1,7 @@
 """Test rssmc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rssmc import rssmc
 
 

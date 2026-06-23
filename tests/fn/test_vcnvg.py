@@ -1,15 +1,13 @@
 """Tests for morie.fn.vcnvg — Convergent validity."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vcnvg import validity_convergent
 
 
 class TestValidityConvergent:
-
     def test_returns_dict(self, mapq_df):
-        subscales = {"EE": [f"EE{i}" for i in range(1, 6)],
-                     "EA": [f"EA{i}" for i in range(1, 6)]}
+        subscales = {"EE": [f"EE{i}" for i in range(1, 6)], "EA": [f"EA{i}" for i in range(1, 6)]}
         result = validity_convergent(mapq_df, subscales)
         assert isinstance(result, dict)
         assert "EE" in result and "EA" in result

@@ -7,7 +7,6 @@ from morie.fn.qjlcs import qjl_cosine_sim
 
 
 class TestQjlCosineSim:
-
     def test_identical_vectors(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = qjl_cosine_sim(x, x, d_proj=256)

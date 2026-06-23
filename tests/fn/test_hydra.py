@@ -1,6 +1,7 @@
 """Test hydra."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hydra import hydra
 
 

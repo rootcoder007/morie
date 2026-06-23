@@ -1,6 +1,8 @@
 """Tests for tmwav."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tmwav import tmwav
 
 
@@ -28,4 +30,5 @@ def test_tmwav_no_data():
 
 def test_tmwav_alias():
     from morie.fn.tmwav import tmwav
+
     assert tmwav is tmwav

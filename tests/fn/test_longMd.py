@@ -1,6 +1,7 @@
 """Tests for longMd.longitudinal_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.longMd import longitudinal_mediation
 
 
@@ -12,7 +13,7 @@ def test_longMd_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = longitudinal_mediation(panel, X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_longMd_edge():

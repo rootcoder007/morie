@@ -1,6 +1,7 @@
 """Test soseq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.soseq import soseq
 
 

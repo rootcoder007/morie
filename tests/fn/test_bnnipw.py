@@ -1,6 +1,7 @@
 """Tests for bnnipw.bound_no_iv_proxy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bnnipw import bound_no_iv_proxy
 
 
@@ -11,7 +12,7 @@ def test_bnnipw_basic():
     Z_proxy = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_no_iv_proxy(y, D, Z_proxy)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bnnipw_edge():

@@ -1,6 +1,7 @@
 """Tests for ksr063.kosorok_ch3_cox_efficient_score_beta."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr063 import kosorok_ch3_cox_efficient_score_beta
 
 
@@ -14,7 +15,7 @@ def test_ksr063_basic():
     tau = 0.1
     result = kosorok_ch3_cox_efficient_score_beta(Z, Y, beta, Lambda, M, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr063_edge():

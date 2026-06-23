@@ -9,7 +9,9 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_ipw_placement(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", covariates: list[str] | None = None) -> dict:
+def otis_ipw_placement(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", covariates: list[str] | None = None
+) -> dict:
     """Estimate ATE via Inverse Probability Weighting.
 
     Propensity scores estimated via linear probability model (OLS).

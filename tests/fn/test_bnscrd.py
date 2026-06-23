@@ -1,6 +1,7 @@
 """Tests for bnscrd.bound_causal_rd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bnscrd import bound_causal_rd
 
 
@@ -11,7 +12,7 @@ def test_bnscrd_basic():
     cutoff = 10.0
     result = bound_causal_rd(y, x, cutoff)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bnscrd_edge():

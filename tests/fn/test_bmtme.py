@@ -1,6 +1,7 @@
 """Tests for bmtme.bmtme_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bmtme import bmtme_model
 
 
@@ -12,7 +13,7 @@ def test_bmtme_basic():
     n_iter = 50
     result = bmtme_model(Y, markers, env_labels, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bmtme_edge():

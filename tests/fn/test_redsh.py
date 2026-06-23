@@ -1,6 +1,5 @@
 """Tests for morie.fn.redsh -- cosmological redshift."""
 
-import numpy as np
 import pytest
 
 from morie.fn.redsh import redsh
@@ -9,8 +8,7 @@ from morie.fn.redsh import redsh
 def test_returns_dict():
     r = redsh(z=1.0)
     assert isinstance(r, dict)
-    for k in ("z", "scale_factor_ratio", "velocity_approx_km_s",
-              "velocity_relativistic_km_s"):
+    for k in ("z", "scale_factor_ratio", "velocity_approx_km_s", "velocity_relativistic_km_s"):
         assert k in r
 
 

@@ -1,6 +1,7 @@
 """Tests for hexgrd.hexagonal_grid."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hexgrd import hexagonal_grid
 
 
@@ -11,7 +12,7 @@ def test_hexgrd_basic():
     cell_size = 100
     result = hexagonal_grid(coords, values, cell_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hexgrd_edge():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.cpelt."""
+
 import numpy as np
+
 from morie.fn.cpelt import cpelt
 
 
@@ -13,6 +15,7 @@ def test_cpelt_smoke():
 
 def test_cheatsheet():
     from morie.fn.cpelt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

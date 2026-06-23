@@ -1,10 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bootstrap percentile CI."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
-def bsperc(boot_estimates: Union[Sequence[float], np.ndarray],
-           conf: float = 0.95) -> tuple:
+
+
+def bsperc(boot_estimates: Union[Sequence[float], np.ndarray], conf: float = 0.95) -> tuple:
     """Percentile bootstrap confidence interval (lo, hi).
 
     Crude but widely-used. Pass output of `bsboot()`.

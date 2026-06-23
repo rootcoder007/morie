@@ -1,6 +1,7 @@
 """Tests for evvarpot.evt_pot_var."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evvarpot import evt_pot_var
 
 
@@ -13,7 +14,7 @@ def test_evvarpot_basic():
     p = 5
     result = evt_pot_var(u, sigma, xi, zeta_u, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evvarpot_edge():

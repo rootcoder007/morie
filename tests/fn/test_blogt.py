@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.blogt import bayesian_logistic
 
 

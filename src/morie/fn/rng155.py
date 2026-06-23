@@ -1,6 +1,7 @@
 """Adaptive FIR filter output in LMS framework using reference input r(n).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_lms_filter_output"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_lms_filter_output(r, w_k, n, M):
     n = len(r)
     result = float(np.mean(r))
     se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive FIR filter output in LMS framework using reference input r(n)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Adaptive FIR filter output in LMS framework using reference input r(n).",
+        }
+    )
 
 
 def cheatsheet():

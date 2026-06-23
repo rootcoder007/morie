@@ -1,6 +1,7 @@
 """Theta method (M3 winner)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["theta_method"]

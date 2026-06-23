@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-trait GBLUP."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -10,8 +11,7 @@ from .gmatv import grm_vanraden
 __all__ = ["multi_trait_gblup"]
 
 
-def multi_trait_gblup(x, y, markers, Sigma_g: np.ndarray | None = None,
-                      Sigma_e: np.ndarray | None = None):
+def multi_trait_gblup(x, y, markers, Sigma_g: np.ndarray | None = None, Sigma_e: np.ndarray | None = None):
     """Multi-trait GBLUP via vec-stacked mixed-model equations.
 
     Model::
@@ -87,11 +87,13 @@ def multi_trait_gblup(x, y, markers, Sigma_g: np.ndarray | None = None,
             ("t (traits)", t),
             ("mean(G_hat)", estimate),
         ],
-        sections=[{
-            "title": "Sigma_g (genetic covariance)",
-            "headers": [f"t{i+1}" for i in range(t)],
-            "table": [[float(v) for v in row] for row in Sigma_g],
-        }],
+        sections=[
+            {
+                "title": "Sigma_g (genetic covariance)",
+                "headers": [f"t{i + 1}" for i in range(t)],
+                "table": [[float(v) for v in row] for row in Sigma_g],
+            }
+        ],
         payload={
             "estimate": estimate,
             "G_hat": G_hat,

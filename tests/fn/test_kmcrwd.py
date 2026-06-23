@@ -1,6 +1,7 @@
 """Tests for kmcrwd.kamath_crowspairs_bias."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmcrwd import kamath_crowspairs_bias
 
 
@@ -10,7 +11,7 @@ def test_kmcrwd_basic():
     anti_pll = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_crowspairs_bias(stereo_pll, anti_pll)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmcrwd_edge():

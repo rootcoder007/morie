@@ -1,6 +1,7 @@
 """Tests for hrznls.horowitz_nls_sim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrznls import horowitz_nls_sim
 
 
@@ -11,7 +12,7 @@ def test_hrznls_basic():
     bandwidth = 0.3
     result = horowitz_nls_sim(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrznls_edge():

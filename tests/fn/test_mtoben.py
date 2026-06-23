@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtoben — benefit cost."""
 
 import pytest
-from morie.fn.mtoben import mto_benefit_cost
+
 from morie.fn._containers import ESRes
+from morie.fn.mtoben import mto_benefit_cost
 
 
 class TestBenefitCost:

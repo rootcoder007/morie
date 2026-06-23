@@ -1,6 +1,7 @@
 """Tests for ocrwit.ocr_wit_layout."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ocrwit import ocr_wit_layout
 
 
@@ -11,7 +12,7 @@ def test_ocrwit_basic():
     bboxes = np.random.default_rng(42).normal(0, 1, 100)
     result = ocr_wit_layout(image, ocr_tokens, bboxes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ocrwit_edge():

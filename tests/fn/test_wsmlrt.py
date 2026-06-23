@@ -1,6 +1,7 @@
 """Tests for wsmlrt.wasserman_lrt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmlrt import wasserman_lrt
 
 
@@ -11,7 +12,7 @@ def test_wsmlrt_basic():
     theta0 = 0.0
     result = wasserman_lrt(data, f, theta0)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_wsmlrt_edge():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svbrd -- Borda count in spatial model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svbrd import borda_spatial
 

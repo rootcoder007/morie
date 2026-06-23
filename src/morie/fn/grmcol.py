@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mode-collapse metric: fraction of real-distribution modes missed by generator samples."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_gan_mode_collapse_metric"]
@@ -32,7 +34,14 @@ def geron_gan_mode_collapse_metric(samples, true_modes):
     n = len(samples)
     result = float(np.mean(samples))
     se = float(np.std(samples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mode-collapse metric: fraction of real-distribution modes missed by generator samples"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mode-collapse metric: fraction of real-distribution modes missed by generator samples",
+        }
+    )
 
 
 def cheatsheet():

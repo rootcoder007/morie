@@ -64,11 +64,13 @@ def npsel(
         raise ValueError(f"n_folds must be >= 2, got {n_folds}.")
 
     if kernel == "gaussian":
+
         def K(u):
-            return np.exp(-0.5 * u ** 2) / np.sqrt(2 * np.pi)
+            return np.exp(-0.5 * u**2) / np.sqrt(2 * np.pi)
     else:
+
         def K(u):
-            return np.where(np.abs(u) <= 1, 0.75 * (1 - u ** 2), 0.0)
+            return np.where(np.abs(u) <= 1, 0.75 * (1 - u**2), 0.0)
 
     h_rot = 1.06 * np.std(x, ddof=1) * n ** (-0.2)
     h_rot = max(h_rot, 1e-6)

@@ -1,5 +1,8 @@
 """Tests for robust_pca_pp."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.rbpca import robust_pca_pp
 
 

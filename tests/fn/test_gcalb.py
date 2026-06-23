@@ -1,6 +1,7 @@
 """Test gcalb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcalb import gcalb
 
 

@@ -1,6 +1,7 @@
 """Tests for tldepu.upper_tail_dependence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tldepu import upper_tail_dependence
 
 
@@ -11,7 +12,7 @@ def test_tldepu_basic():
     theta = 0.0
     result = upper_tail_dependence(y, copula, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tldepu_edge():

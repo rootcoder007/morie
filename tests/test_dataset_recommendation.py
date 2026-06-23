@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests for missing-dataset recommendations -- morie.dataset_recommendation
 and the recommendations surfaced by check_datasets()."""
+
 from morie.data import DATASET_CATALOG, check_datasets, dataset_recommendation
 
 

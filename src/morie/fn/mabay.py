@@ -1,6 +1,7 @@
 """Bayesian random-effects via Metropolis on (μ, log τ)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_bayes_random_effects"]
@@ -34,7 +35,9 @@ def ma_bayes_random_effects(yi, vi, n_iter):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian random-effects via Metropolis on (μ, log τ)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian random-effects via Metropolis on (μ, log τ)"}
+    )
 
 
 def cheatsheet():

@@ -13,6 +13,7 @@ In EMNLP (pp. 6897-6912).
 __all__ = ["greed"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 

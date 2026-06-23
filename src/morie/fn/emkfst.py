@@ -1,6 +1,7 @@
 """EM for state-space parameters."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["em_state_space"]

@@ -1,6 +1,7 @@
 """Tests for morie.fn.opair — Pairwise group comparisons."""
 
 import pandas as pd
+
 from morie.fn.opair import otis_pairwise_compare
 
 

@@ -1,6 +1,7 @@
 """Tests for wsmpca.wasserman_pca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmpca import wasserman_pca
 
 
@@ -10,7 +11,7 @@ def test_wsmpca_basic():
     k = 5
     result = wasserman_pca(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmpca_edge():

@@ -1,6 +1,7 @@
 """Tests for dinmlt.dino_multicrop."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dinmlt import dino_multicrop
 
 
@@ -11,7 +12,7 @@ def test_dinmlt_basic():
     local_size = 100
     result = dino_multicrop(image, global_size, local_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dinmlt_edge():

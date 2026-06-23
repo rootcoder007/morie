@@ -33,4 +33,4 @@ tpsuof = tps_use_of_force
 
 
 def cheatsheet() -> str:
-    return 'tpsuof() -> TPS use of force'
+    return "tpsuof() -> TPS use of force"

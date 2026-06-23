@@ -1,8 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Empirical-Bayes hyper-parameter selection for a DP prior."""
+
 import numpy as np
-from scipy.special import gammaln
 from scipy.optimize import minimize_scalar
+from scipy.special import gammaln
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_empirical_bayes"]
@@ -51,10 +53,13 @@ def ghosal_empirical_bayes(x, alpha_grid=None):
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 2:
-        return RichResult(payload={
-            "estimate": float("nan"), "n": n,
-            "method": "Empirical Bayes (n<2)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "n": n,
+                "method": "Empirical Bayes (n<2)",
+            }
+        )
     K_n = int(np.unique(x).size)
     # Avoid degenerate K=n by treating continuous data as if "binned" at
     # the bandwidth of the data -- informative only if there are ties.
@@ -75,13 +80,15 @@ def ghosal_empirical_bayes(x, alpha_grid=None):
         idx = int(np.argmax(ll_grid))
         a_hat = float(ag[idx])
         ll = float(ll_grid[idx])
-    return RichResult(payload={
-        "estimate": a_hat,
-        "K_n": int(K_n),
-        "log_lik_at_estimate": ll,
-        "n": n,
-        "method": "Empirical-Bayes alpha for DP (Antoniak 1974 MLE)",
-    })
+    return RichResult(
+        payload={
+            "estimate": a_hat,
+            "K_n": int(K_n),
+            "log_lik_at_estimate": ll,
+            "n": n,
+            "method": "Empirical-Bayes alpha for DP (Antoniak 1974 MLE)",
+        }
+    )
 
 
 def cheatsheet():

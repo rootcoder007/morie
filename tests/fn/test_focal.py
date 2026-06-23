@@ -1,5 +1,7 @@
 """Test focal loss."""
+
 import numpy as np
+
 from morie.fn.focal import focal
 
 

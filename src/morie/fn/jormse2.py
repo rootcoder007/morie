@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Root Mean Squared Scaled Error -- scale by in-sample naive RMSE."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_rmsse"]
@@ -36,7 +38,14 @@ def joseph_rmsse(y_true, y_pred, y_train, m):
     n = len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Root Mean Squared Scaled Error -- scale by in-sample naive RMSE"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Root Mean Squared Scaled Error -- scale by in-sample naive RMSE",
+        }
+    )
 
 
 def cheatsheet():

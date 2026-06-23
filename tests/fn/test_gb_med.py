@@ -1,6 +1,7 @@
 """Tests for gb_med.gibbons_median_dist."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_med import gibbons_median_dist
 
 
@@ -10,7 +11,7 @@ def test_gb_med_basic():
     n = 100
     result = gibbons_median_dist(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb_med_edge():

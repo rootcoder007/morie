@@ -1,5 +1,7 @@
 """Tests for exponential variogram."""
+
 import numpy as np
+
 from morie.fn.sgexp import sgexp
 
 

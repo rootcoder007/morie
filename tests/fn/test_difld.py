@@ -1,6 +1,7 @@
 """Tests for difld -- Lord's chi-square DIF."""
-from morie.fn.difld import dif_lord_chisq
+
 from morie.fn._containers import DIFResult
+from morie.fn.difld import dif_lord_chisq
 
 
 class TestDifLord:

@@ -1,6 +1,7 @@
 """Tests for cfst.causal_forest."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cfst import causal_forest
 
 
@@ -13,7 +14,7 @@ def test_cfst_basic():
     min_node_size = 100
     result = causal_forest(Y, T, X, n_trees, min_node_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cfst_edge():

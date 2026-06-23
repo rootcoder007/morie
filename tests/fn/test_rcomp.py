@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.rcomp import rademacher_complexity
 
 

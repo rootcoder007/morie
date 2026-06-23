@@ -1,6 +1,7 @@
 """Hepatic intrinsic clearance prediction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["clearance_intrinsic"]
@@ -32,7 +33,9 @@ def clearance_intrinsic(smiles, species):
     n = len(smiles)
     result = float(np.mean(smiles))
     se = float(np.std(smiles, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hepatic intrinsic clearance prediction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Hepatic intrinsic clearance prediction"}
+    )
 
 
 def cheatsheet():

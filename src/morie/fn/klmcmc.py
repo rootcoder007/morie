@@ -1,6 +1,7 @@
 """KL-based MCMC convergence."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kl_mcmc_diagnostic"]

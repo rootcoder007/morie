@@ -1,6 +1,7 @@
 """Tests for copcla.clayton_copula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.copcla import clayton_copula
 
 
@@ -12,7 +13,7 @@ def test_copcla_basic():
     theta = 0.0
     result = clayton_copula(y, u, v, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_copcla_edge():

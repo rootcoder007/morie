@@ -8,7 +8,7 @@ General-purpose iterative algorithm for maximum likelihood with latent variables
 import numpy as np
 from scipy.stats import multivariate_normal
 
-__all__ = ['emfit']
+__all__ = ["emfit"]
 
 
 def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=False):
@@ -95,20 +95,14 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
             llh += np.sum(resp[:, k] * np.log(weights[k] * mvn.pdf(X) + 1e-10))
 
         if np.abs(llh - llh_prev) < tol:
-            params = {'means': means, 'covars': covars, 'weights': weights, 'llh': llh}
+            params = {"means": means, "covars": covars, "weights": weights, "llh": llh}
             if full_output:
-                return params, {
-                    'iterations': it + 1,
-                    'converged': True
-                }
-            return params, {'iterations': it + 1, 'converged': True}
+                return params, {"iterations": it + 1, "converged": True}
+            return params, {"iterations": it + 1, "converged": True}
 
         llh_prev = llh
 
-    params = {'means': means, 'covars': covars, 'weights': weights, 'llh': llh}
+    params = {"means": means, "covars": covars, "weights": weights, "llh": llh}
     if full_output:
-        return params, {
-            'iterations': max_iter,
-            'converged': False
-        }
-    return params, {'iterations': max_iter, 'converged': False}
+        return params, {"iterations": max_iter, "converged": False}
+    return params, {"iterations": max_iter, "converged": False}

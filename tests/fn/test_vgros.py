@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgros -- Variogram rose diagram"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgros import vario_rose
 
@@ -15,5 +14,5 @@ class TestVarioRose:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_rose(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_rose(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

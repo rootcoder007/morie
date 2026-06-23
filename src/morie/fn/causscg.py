@@ -1,6 +1,7 @@
 """Generalised synthetic control via interactive fixed effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_generalised_sc"]
@@ -36,7 +37,14 @@ def causal_generalised_sc(Y_panel, treated_idx, treat_time, r):
     n = len(Y_panel)
     result = float(np.mean(Y_panel))
     se = float(np.std(Y_panel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Generalised synthetic control via interactive fixed effects"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Generalised synthetic control via interactive fixed effects",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.cfhrt."""
 
 import numpy as np
-import pytest
+
 from morie.fn.cfhrt import cfhrt
 
 

@@ -1,14 +1,17 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Relative risk for 2x2 with R-style verbose result."""
 
-from typing import Sequence, Union
 import math
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
 def relrsk(table_2x2: Union[Sequence, np.ndarray]):
     """Relative risk for [[a,b],[c,d]]."""
     from ._richresult import RichResult
+
     t = np.asarray(table_2x2, dtype=float)
     if t.shape != (2, 2):
         raise ValueError(f"table must be 2x2, got {t.shape}.")
@@ -18,9 +21,10 @@ def relrsk(table_2x2: Union[Sequence, np.ndarray]):
         raise ValueError("unexposed risk is zero - RR undefined.")
     rr = float(p_exposed / p_unexposed)
     log_rr = math.log(rr) if rr > 0 else float("-inf")
-    n_exp = t[0, 0] + t[0, 1]; n_unexp = t[1, 0] + t[1, 1]
+    n_exp = t[0, 0] + t[0, 1]
+    n_unexp = t[1, 0] + t[1, 1]
     if rr > 0 and t[0, 0] > 0 and t[1, 0] > 0:
-        se = math.sqrt(1/t[0,0] - 1/n_exp + 1/t[1,0] - 1/n_unexp)
+        se = math.sqrt(1 / t[0, 0] - 1 / n_exp + 1 / t[1, 0] - 1 / n_unexp)
         ci_lo = math.exp(log_rr - 1.96 * se)
         ci_hi = math.exp(log_rr + 1.96 * se)
     else:
@@ -36,9 +40,15 @@ def relrsk(table_2x2: Union[Sequence, np.ndarray]):
             ("n exposed", int(n_exp)),
             ("n unexposed", int(n_unexp)),
         ],
-        interpretation=(f"RR = {rr:.3g}; significant if 95% CI excludes 1.0. "
-                        "RR > OR for rare events; RR ~ OR for very rare events."),
-        payload={"value": rr, "statistic": rr,
-                 "risk_exposed": p_exposed, "risk_unexposed": p_unexposed,
-                 "ci_lo": ci_lo, "ci_hi": ci_hi},
+        interpretation=(
+            f"RR = {rr:.3g}; significant if 95% CI excludes 1.0. RR > OR for rare events; RR ~ OR for very rare events."
+        ),
+        payload={
+            "value": rr,
+            "statistic": rr,
+            "risk_exposed": p_exposed,
+            "risk_unexposed": p_unexposed,
+            "ci_lo": ci_lo,
+            "ci_hi": ci_hi,
+        },
     )

@@ -1,5 +1,7 @@
 """Tests for morie.fn.lssmo."""
+
 import numpy as np
+
 from morie.fn.lssmo import lssmo
 
 
@@ -13,6 +15,7 @@ def test_lssmo_smoke():
 
 def test_cheatsheet():
     from morie.fn.lssmo import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -10,7 +10,16 @@ from scipy import stats as sp
 from morie.fn._containers import DIFResult
 
 
-def dif_purification(responses: np.ndarray | pd.DataFrame, group: np.ndarray | list, cdf=None, *, initial_anchor: list[int] | None = None, max_rounds: int = 10, alpha: float = 0.05, item_names: list[str] | None = None) -> DIFResult:
+def dif_purification(
+    responses: np.ndarray | pd.DataFrame,
+    group: np.ndarray | list,
+    cdf=None,
+    *,
+    initial_anchor: list[int] | None = None,
+    max_rounds: int = 10,
+    alpha: float = 0.05,
+    item_names: list[str] | None = None,
+) -> DIFResult:
     """Iterative DIF purification procedure.
 
     Starts with anchor items, tests each item for DIF, removes

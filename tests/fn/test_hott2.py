@@ -1,8 +1,9 @@
 """Tests for morie.fn.hott2 -- Hotelling's T-squared test."""
 
 import numpy as np
-from morie.fn.hott2 import hotelling_t2, hott2
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hott2 import hotelling_t2, hott2
 
 
 class TestHotellingT2:

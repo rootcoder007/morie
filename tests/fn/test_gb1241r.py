@@ -1,6 +1,7 @@
 """Tests for gb1241r.gibbons_concordance_rho_link."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb1241r import gibbons_concordance_rho_link
 
 
@@ -10,7 +11,7 @@ def test_gb1241r_basic():
     k = 5
     result = gibbons_concordance_rho_link(W, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb1241r_edge():

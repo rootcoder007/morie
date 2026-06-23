@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Project future disease burden."""
 
-
 from ._containers import DescriptiveResult
 
 

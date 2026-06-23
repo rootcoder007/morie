@@ -1,6 +1,7 @@
 """Test snsim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.snsim import snsim
 
 

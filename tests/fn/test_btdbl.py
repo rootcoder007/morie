@@ -1,6 +1,7 @@
 """Tests for btdbl.boot_double."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btdbl import boot_double
 
 
@@ -13,7 +14,7 @@ def test_btdbl_basic():
     alpha = 0.05
     result = boot_double(x, stat, B, Bp, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btdbl_edge():

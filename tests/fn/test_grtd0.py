@@ -1,6 +1,7 @@
 """Tests for grtd0.geron_td_zero_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grtd0 import geron_td_zero_update
 
 
@@ -14,7 +15,7 @@ def test_grtd0_basic():
     gamma = 1.0
     result = geron_td_zero_update(V, state, next_state, reward, alpha, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grtd0_edge():

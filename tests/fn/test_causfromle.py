@@ -1,6 +1,7 @@
 """Tests for causfromle.causal_e_value."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causfromle import causal_e_value
 
 
@@ -9,7 +10,7 @@ def test_causfromle_basic():
     RR = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_e_value(RR)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causfromle_edge():

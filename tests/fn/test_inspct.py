@@ -15,13 +15,15 @@ def test_alias_is_same_function():
 @pytest.fixture()
 def stat_csv(tmp_path):
     """Create a temporary CSV with statistical output."""
-    df = pd.DataFrame({
-        "estimate": [1.5, 2.3, -0.4],
-        "se": [0.3, 0.5, 0.2],
-        "p_value": [0.01, 0.05, 0.80],
-        "ci_lower": [0.9, 1.3, -0.8],
-        "ci_upper": [2.1, 3.3, 0.0],
-    })
+    df = pd.DataFrame(
+        {
+            "estimate": [1.5, 2.3, -0.4],
+            "se": [0.3, 0.5, 0.2],
+            "p_value": [0.01, 0.05, 0.80],
+            "ci_lower": [0.9, 1.3, -0.8],
+            "ci_upper": [2.1, 3.3, 0.0],
+        }
+    )
     path = tmp_path / "results.csv"
     df.to_csv(path, index=False)
     return path

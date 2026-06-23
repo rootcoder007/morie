@@ -1,6 +1,8 @@
 """Tests for stmat."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stmat import stmat
 
 
@@ -28,4 +30,5 @@ def test_stmat_no_data():
 
 def test_stmat_alias():
     from morie.fn.stmat import stmat
+
     assert stmat is stmat

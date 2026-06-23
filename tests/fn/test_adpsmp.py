@@ -1,6 +1,7 @@
 """Test adpsmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.adpsmp import adpsmp
 
 

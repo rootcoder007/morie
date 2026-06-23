@@ -1,6 +1,7 @@
 """Test csptl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csptl import csptl
 
 

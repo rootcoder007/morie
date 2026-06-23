@@ -1,6 +1,7 @@
 """Pairs bootstrap CI for quantile regression coefficients."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_quantile_regression"]
@@ -38,7 +39,14 @@ def boot_quantile_regression(X, y, tau, B, alpha):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pairs bootstrap CI for quantile regression coefficients"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pairs bootstrap CI for quantile regression coefficients",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for tvsbn.tversky_similarity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tvsbn import tversky_similarity
 
 
@@ -12,7 +13,7 @@ def test_tvsbn_basic():
     beta = 0.8
     result = tversky_similarity(fp_a, fp_b, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tvsbn_edge():

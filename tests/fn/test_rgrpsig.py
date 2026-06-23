@@ -1,6 +1,7 @@
 """Tests for rgrpsig.rangayyan_resp_signal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgrpsig import rangayyan_resp_signal
 
 
@@ -11,7 +12,7 @@ def test_rgrpsig_basic():
     fs_out = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_resp_signal(ecg, r_peaks, fs_out)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgrpsig_edge():

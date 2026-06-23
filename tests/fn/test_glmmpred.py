@@ -1,6 +1,8 @@
 """Tests for glmmpred."""
+
 import numpy as np
 import pytest
+
 from morie.fn.glmmpred import glmmpred
 
 
@@ -28,4 +30,5 @@ def test_glmmpred_no_data():
 
 def test_glmmpred_alias():
     from morie.fn.glmmpred import glmmpred
+
     assert glmmpred is glmmpred

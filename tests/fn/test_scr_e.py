@@ -1,7 +1,9 @@
 """Tests for scr_e -- EE composite reliability."""
+
 import numpy as np
-from morie.fn.scr_e import subscale_ee_composite_rel
+
 from morie.fn._containers import ESRes
+from morie.fn.scr_e import subscale_ee_composite_rel
 
 
 class TestScrE:

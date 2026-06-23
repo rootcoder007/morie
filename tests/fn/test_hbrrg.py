@@ -1,5 +1,8 @@
 """Tests for huber_regression."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.hbrrg import huber_regression
 
 

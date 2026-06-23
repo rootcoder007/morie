@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from morie.fn.vrfy import vrfy, verify_statistical_output
+from morie.fn.vrfy import verify_statistical_output, vrfy
 from morie.inspector import VerificationReport
 
 
@@ -15,13 +15,15 @@ def test_alias_is_same_function():
 @pytest.fixture()
 def valid_csv(tmp_path):
     """CSV with valid statistical output."""
-    df = pd.DataFrame({
-        "estimate": [1.5, 2.3, -0.4],
-        "se": [0.3, 0.5, 0.2],
-        "p_value": [0.01, 0.05, 0.80],
-        "ci_lower": [0.9, 1.3, -0.8],
-        "ci_upper": [2.1, 3.3, 0.0],
-    })
+    df = pd.DataFrame(
+        {
+            "estimate": [1.5, 2.3, -0.4],
+            "se": [0.3, 0.5, 0.2],
+            "p_value": [0.01, 0.05, 0.80],
+            "ci_lower": [0.9, 1.3, -0.8],
+            "ci_upper": [2.1, 3.3, 0.0],
+        }
+    )
     path = tmp_path / "valid.csv"
     df.to_csv(path, index=False)
     return path
@@ -30,10 +32,12 @@ def valid_csv(tmp_path):
 @pytest.fixture()
 def bad_pval_csv(tmp_path):
     """CSV with an out-of-range p-value."""
-    df = pd.DataFrame({
-        "estimate": [1.0],
-        "p_value": [1.5],  # invalid: > 1
-    })
+    df = pd.DataFrame(
+        {
+            "estimate": [1.0],
+            "p_value": [1.5],  # invalid: > 1
+        }
+    )
     path = tmp_path / "bad_pval.csv"
     df.to_csv(path, index=False)
     return path
@@ -76,10 +80,12 @@ def test_negative_se_fails(tmp_path):
 
 def test_ci_order_check(tmp_path):
     """CI with lower > upper causes a check failure."""
-    df = pd.DataFrame({
-        "ci_lower": [5.0],
-        "ci_upper": [1.0],
-    })
+    df = pd.DataFrame(
+        {
+            "ci_lower": [5.0],
+            "ci_upper": [1.0],
+        }
+    )
     path = tmp_path / "bad_ci.csv"
     df.to_csv(path, index=False)
     result = vrfy(path)

@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.stdd import staggered_did, stdd
+
 from morie.fn._containers import ESRes
+from morie.fn.stdd import staggered_did, stdd
 
 
 def _make_panel(n_units=20, n_times=10, treat_effect=3.0, seed=42):
@@ -41,9 +42,6 @@ class TestStaggeredDiD:
         assert result.extra["n_cohorts"] == 2
 
     def test_no_valid_cohorts_raises(self):
-        df = pd.DataFrame({
-            "unit": [1, 1], "time": [1, 2],
-            "outcome": [1.0, 2.0], "treat_time": [np.inf, np.inf]
-        })
+        df = pd.DataFrame({"unit": [1, 1], "time": [1, 2], "outcome": [1.0, 2.0], "treat_time": [np.inf, np.inf]})
         with pytest.raises(ValueError, match="No valid"):
             staggered_did(df)

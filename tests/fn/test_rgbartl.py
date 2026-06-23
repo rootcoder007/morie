@@ -1,6 +1,7 @@
 """Tests for rgbartl.rangayyan_bartlett_psd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgbartl import rangayyan_bartlett_psd
 
 
@@ -11,7 +12,7 @@ def test_rgbartl_basic():
     nseg = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_bartlett_psd(x, fs, nseg)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgbartl_edge():

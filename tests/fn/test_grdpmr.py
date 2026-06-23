@@ -1,6 +1,7 @@
 """Tests for grdpmr.geron_ddpm_reverse_step."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grdpmr import geron_ddpm_reverse_step
 
 
@@ -14,7 +15,7 @@ def test_grdpmr_basic():
     sigma = 1.0
     result = geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grdpmr_edge():

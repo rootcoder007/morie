@@ -1,6 +1,7 @@
 """Emissions inventory (sector × fuel × EF)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["emissions_inventory"]
@@ -32,7 +33,9 @@ def emissions_inventory(activity, ef):
     n = len(activity)
     result = float(np.mean(activity))
     se = float(np.std(activity, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Emissions inventory (sector × fuel × EF)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Emissions inventory (sector × fuel × EF)"}
+    )
 
 
 def cheatsheet():

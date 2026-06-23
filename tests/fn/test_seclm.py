@@ -1,6 +1,7 @@
 """Test seclm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.seclm import seclm
 
 

@@ -1,6 +1,7 @@
 """Tests for rgemdimf.rangayyan_emd_imf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgemdimf import rangayyan_emd_imf
 
 
@@ -11,7 +12,7 @@ def test_rgemdimf_basic():
     tol = 1e-6
     result = rangayyan_emd_imf(x, max_iter, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgemdimf_edge():

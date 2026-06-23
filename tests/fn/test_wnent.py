@@ -1,6 +1,7 @@
 """Tests for Wiener entropy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wnent import wiener_entropy, wnent
 
 

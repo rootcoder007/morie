@@ -9,6 +9,7 @@ via L-BFGS-B with profile starts.  Returns (mu, sigma, xi) and the
 inverse-Hessian SEs.  Uses scipy.stats.genextreme as the workhorse so
 parity is preserved with R::extRemes / R::ismev.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -39,41 +40,62 @@ def extreme_value_gev(x):
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 5:
-        return RichResult(payload={"estimate": float("nan"), "n": int(n),
-                                   "method": "GEV (n<5)"})
+        return RichResult(payload={"estimate": float("nan"), "n": int(n), "method": "GEV (n<5)"})
     c, loc, scale = stats.genextreme.fit(x)
     xi = float(-c)
     mu = float(loc)
     sigma = float(scale)
     loglik = float(np.sum(stats.genextreme.logpdf(x, c=c, loc=loc, scale=scale)))
+
     # observed information via numerical hessian of -loglik
     def nll(params):
         mu_, sig_, xi_ = params
         if sig_ <= 0:
             return np.inf
         return -np.sum(stats.genextreme.logpdf(x, c=-xi_, loc=mu_, scale=sig_))
+
     eps = 1e-4
     p0 = np.array([mu, sigma, xi])
     H = np.zeros((3, 3))
     for i in range(3):
         for j in range(3):
-            pp = p0.copy(); pp[i] += eps; pp[j] += eps; f_pp = nll(pp)
-            pm = p0.copy(); pm[i] += eps; pm[j] -= eps; f_pm = nll(pm)
-            mp = p0.copy(); mp[i] -= eps; mp[j] += eps; f_mp = nll(mp)
-            mm = p0.copy(); mm[i] -= eps; mm[j] -= eps; f_mm = nll(mm)
-            H[i, j] = (f_pp - f_pm - f_mp + f_mm) / (4 * eps ** 2)
+            pp = p0.copy()
+            pp[i] += eps
+            pp[j] += eps
+            f_pp = nll(pp)
+            pm = p0.copy()
+            pm[i] += eps
+            pm[j] -= eps
+            f_pm = nll(pm)
+            mp = p0.copy()
+            mp[i] -= eps
+            mp[j] += eps
+            f_mp = nll(mp)
+            mm = p0.copy()
+            mm[i] -= eps
+            mm[j] -= eps
+            f_mm = nll(mm)
+            H[i, j] = (f_pp - f_pm - f_mp + f_mm) / (4 * eps**2)
     try:
         cov = np.linalg.inv(H)
         ses = np.sqrt(np.maximum(np.diag(cov), 0.0))
     except np.linalg.LinAlgError:
         ses = np.full(3, np.nan)
-    return RichResult(payload={
-        "mu": mu, "sigma": sigma, "xi": xi,
-        "se_mu": float(ses[0]), "se_sigma": float(ses[1]), "se_xi": float(ses[2]),
-        "loglik": loglik, "estimate": mu, "se": float(ses[0]),
-        "n": int(n),
-        "method": "GEV MLE (Coles 2001)",
-    })
+    return RichResult(
+        payload={
+            "mu": mu,
+            "sigma": sigma,
+            "xi": xi,
+            "se_mu": float(ses[0]),
+            "se_sigma": float(ses[1]),
+            "se_xi": float(ses[2]),
+            "loglik": loglik,
+            "estimate": mu,
+            "se": float(ses[0]),
+            "n": int(n),
+            "method": "GEV MLE (Coles 2001)",
+        }
+    )
 
 
 # CANONICAL TEST

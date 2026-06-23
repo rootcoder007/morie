@@ -1,6 +1,7 @@
 """Tests for grcfm.geron_confusion_matrix."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grcfm import geron_confusion_matrix
 
 
@@ -11,7 +12,7 @@ def test_grcfm_basic():
     n_classes = 3
     result = geron_confusion_matrix(y_true, y_pred, n_classes)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grcfm_edge():

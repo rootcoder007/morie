@@ -72,4 +72,4 @@ rlms = lms_regression
 
 
 def cheatsheet() -> str:
-    return 'rlms() -> Least Median of Squares (LMS) regression'
+    return "rlms() -> Least Median of Squares (LMS) regression"

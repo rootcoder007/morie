@@ -1,6 +1,7 @@
 """Tests for wsmwld.wasserman_wald."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmwld import wasserman_wald
 
 
@@ -11,7 +12,7 @@ def test_wsmwld_basic():
     theta0 = 0.0
     result = wasserman_wald(data, f, theta0)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_wsmwld_edge():

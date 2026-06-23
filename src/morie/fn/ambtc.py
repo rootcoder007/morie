@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bootstrapped standard errors for Aldrich-McKelvey scaling."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["am_bootstrap_se"]
@@ -32,7 +34,14 @@ def am_bootstrap_se(survey_data, B):
     n = int(survey_data) if survey_data.ndim == 0 else len(survey_data)
     result = float(np.mean(survey_data))
     se = float(np.std(survey_data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bootstrapped standard errors for Aldrich-McKelvey scaling"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bootstrapped standard errors for Aldrich-McKelvey scaling",
+        }
+    )
 
 
 def cheatsheet():

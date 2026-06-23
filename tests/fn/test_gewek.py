@@ -1,6 +1,7 @@
 """Tests for morie.fn.gewek -- Geweke diagnostic."""
 
 import numpy as np
+
 from morie.fn.gewek import geweke_diagnostic
 
 

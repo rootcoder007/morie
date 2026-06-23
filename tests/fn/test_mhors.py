@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhors -- Mantel-Haenszel OR."""
 
 import pytest
+
 from morie.fn.mhors import mantel_haenszel_or
 
 

@@ -1,6 +1,7 @@
 """Test ppmnl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmnl import ppmnl
 
 

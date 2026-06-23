@@ -1,8 +1,8 @@
 """PowerAndDesign expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["hedderich_chapter_9_unnumbered_1390"]
 
@@ -41,7 +41,12 @@ def hedderich_chapter_9_unnumbered_1390(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "PowerAndDesign expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PowerAndDesign expression (auto-extracted; see ref).",
+        },
     )
 
 

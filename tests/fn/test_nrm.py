@@ -1,6 +1,7 @@
 """Tests for nrm.nominal_response_bock."""
+
 import numpy as np
-import pytest
+
 from morie.fn.nrm import nominal_response_bock
 
 
@@ -12,7 +13,7 @@ def test_nrm_basic():
     c_k = np.random.default_rng(42).normal(0, 1, 100)
     result = nominal_response_bock(y, theta, a_k, c_k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_nrm_edge():

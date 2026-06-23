@@ -1,7 +1,7 @@
 """Tests for morie.fn.hoeff -- Hoeffding concentration inequality."""
 
-import numpy as np
 import pytest
+
 from morie.fn.hoeff import hoeffding_bound
 
 

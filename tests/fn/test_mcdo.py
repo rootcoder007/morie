@@ -1,7 +1,8 @@
 """Tests for morie.fn.mcdo — McDonald's omega."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn import mcdo
 from morie.fn._containers import OmgRes
 
@@ -11,10 +12,7 @@ def correlated_items():
     """5 items x 100 respondents from a single latent factor."""
     rng = np.random.default_rng(42)
     latent = rng.standard_normal(100)
-    return np.column_stack([
-        latent + rng.standard_normal(100) * 0.3
-        for _ in range(5)
-    ])
+    return np.column_stack([latent + rng.standard_normal(100) * 0.3 for _ in range(5)])
 
 
 class TestMcdo:

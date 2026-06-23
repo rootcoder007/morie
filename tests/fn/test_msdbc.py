@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdbc -- Double centering matrix B"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdbc import double_center
 

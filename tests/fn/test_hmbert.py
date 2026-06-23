@@ -1,6 +1,7 @@
 """Tests for hmbert.geron_bert."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbert import geron_bert
 
 
@@ -12,7 +13,7 @@ def test_hmbert_basic():
     d_model = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_bert(X, n_layers, n_heads, d_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbert_edge():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.clfrt — Classification rate."""
+
 import numpy as np
+
 from morie.fn.clfrt import clfrt
 
 

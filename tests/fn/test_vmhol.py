@@ -1,6 +1,7 @@
 """Test vmhol."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmhol import vmhol
 
 

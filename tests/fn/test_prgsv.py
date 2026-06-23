@@ -1,9 +1,10 @@
 """Tests for morie.fn.prgsv — program survival."""
 
-import pytest
 import numpy as np
-from morie.fn.prgsv import program_survival
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.prgsv import program_survival
 
 
 class TestProgramSurvival:

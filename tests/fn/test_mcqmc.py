@@ -1,6 +1,8 @@
 """Tests for mcqmc."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcqmc import mcqmc
 
 
@@ -28,4 +30,5 @@ def test_mcqmc_no_data():
 
 def test_mcqmc_alias():
     from morie.fn.mcqmc import mcqmc
+
     assert mcqmc is mcqmc

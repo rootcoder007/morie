@@ -1,6 +1,6 @@
 """Tests for morie.fn.mlscv -- MLSMU6 convergence check."""
 
-from morie.fn.mlscv import mlsmu6_convergence_check, mlscv
+from morie.fn.mlscv import mlscv, mlsmu6_convergence_check
 
 
 def test_mlscv_converged():

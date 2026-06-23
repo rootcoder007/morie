@@ -1,5 +1,7 @@
 """Tests for morie.fn.pi_ — nucleotide diversity."""
+
 import pytest
+
 from morie.fn.pi_ import nucleotide_diversity
 
 

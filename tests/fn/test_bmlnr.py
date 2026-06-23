@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.bmlnr import bayesian_linear_regression
 
 

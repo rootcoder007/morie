@@ -1,6 +1,7 @@
 """Tests for mdppol.mdp_policy_iteration."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mdppol import mdp_policy_iteration
 
 
@@ -11,7 +12,7 @@ def test_mdppol_basic():
     gamma = 1.0
     result = mdp_policy_iteration(P, R, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mdppol_edge():

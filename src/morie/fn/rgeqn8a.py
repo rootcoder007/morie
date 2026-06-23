@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adaptive threshold for SEM-based segmentation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch8_sem_threshold"]
@@ -32,7 +34,9 @@ def rangayyan_ch8_sem_threshold(sem_trace, k):
     n = int(sem_trace) if sem_trace.ndim == 0 else len(sem_trace)
     result = float(np.mean(sem_trace))
     se = float(np.std(sem_trace, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive threshold for SEM-based segmentation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive threshold for SEM-based segmentation"}
+    )
 
 
 def cheatsheet():

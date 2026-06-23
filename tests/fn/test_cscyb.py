@@ -1,6 +1,7 @@
 """Test cscyb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cscyb import cscyb
 
 

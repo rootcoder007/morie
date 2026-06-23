@@ -11,7 +11,9 @@ import numpy as np
 
 from ._containers import SignalResult
 
-__all__ = ['medfl']
+__all__ = ["medfl"]
+
+
 def medfl(
     x: np.ndarray,
     fs: float = 1.0,

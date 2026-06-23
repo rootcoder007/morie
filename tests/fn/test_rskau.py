@@ -1,6 +1,6 @@
 """Tests for morie.fn.rskau — AUC for risk score."""
 
-from morie.fn.rskau import risk_auc, rskau
+from morie.fn.rskau import risk_auc
 
 
 class TestRiskAUC:

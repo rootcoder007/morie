@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_beta_proc_def"]
@@ -30,7 +32,14 @@ def ghosal_beta_proc_def(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function",
+        }
+    )
 
 
 def cheatsheet():

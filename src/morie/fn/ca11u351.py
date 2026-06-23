@@ -1,8 +1,8 @@
 """Multilevel expression involving 'variable' (auto-extracted; see reference for full context).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_11_unnumbered_351"]
 
@@ -41,7 +41,12 @@ def ca_chapter_11_unnumbered_351(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Multilevel expression involving 'variable' (auto-extracted; see reference for full context)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multilevel expression involving 'variable' (auto-extracted; see reference for full context).",
+        },
     )
 
 

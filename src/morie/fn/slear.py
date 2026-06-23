@@ -12,6 +12,7 @@ machine learning. *PNAS*, 116(10), 4156-4165.
 Nie, X., & Wager, S. (2021). Quasi-oracle estimation of heterogeneous
 treatment effects. *Biometrika*, 108(2), 299-319.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -91,6 +92,7 @@ def slear(
     ate = float(np.mean(cate))
     se = float(np.std(cate, ddof=1) / np.sqrt(n))
     from scipy.stats import norm as _norm
+
     z = _norm.ppf(1.0 - alpha / 2.0)
 
     return {

@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Convolutional layer: cross-correlation with learnable kernels."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_convolutional_layer"]
@@ -40,9 +42,23 @@ def geron_convolutional_layer(x, kernel, stride, padding):
         y = np.atleast_1d(np.asarray(kernel, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Convolutional layer: cross-correlation with learnable kernels"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Convolutional layer: cross-correlation with learnable kernels",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Convolutional layer: cross-correlation with learnable kernels"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Convolutional layer: cross-correlation with learnable kernels",
+        }
+    )
 
 
 def cheatsheet():

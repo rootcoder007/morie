@@ -1,6 +1,7 @@
 """Kalman-filter approximation for SV(1)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_stochastic_kalman"]

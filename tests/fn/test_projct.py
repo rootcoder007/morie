@@ -1,6 +1,7 @@
 """Test projct."""
+
 import numpy as np
-import pytest
+
 from morie.fn.projct import projct
 
 

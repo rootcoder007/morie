@@ -1,7 +1,7 @@
 """Tests for morie.fn.rclag."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rclag import rclag
 
 

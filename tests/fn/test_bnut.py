@@ -1,6 +1,5 @@
 """Tests for morie.fn.bnut -- NUTS sampler."""
 
-import numpy as np
 from morie.fn.bnut import nuts_sampler
 
 

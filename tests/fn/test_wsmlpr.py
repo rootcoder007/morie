@@ -1,6 +1,7 @@
 """Tests for wsmlpr.wasserman_local_polynomial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmlpr import wasserman_local_polynomial
 
 
@@ -13,7 +14,7 @@ def test_wsmlpr_basic():
     p = 5
     result = wasserman_local_polynomial(x, x_data, y_data, h, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmlpr_edge():

@@ -1,6 +1,7 @@
 """Tests for svycox.survey_cox."""
+
 import numpy as np
-import pytest
+
 from morie.fn.svycox import survey_cox
 
 
@@ -12,7 +13,7 @@ def test_svycox_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = survey_cox(time, event, X, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_svycox_edge():

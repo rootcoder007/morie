@@ -1,6 +1,7 @@
 """Finite-population correction (1 - n/N)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["finite_population_corr"]
@@ -32,7 +33,9 @@ def finite_population_corr(n, N):
     n = len(n)
     result = float(np.mean(n))
     se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Finite-population correction (1 - n/N)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Finite-population correction (1 - n/N)"}
+    )
 
 
 def cheatsheet():

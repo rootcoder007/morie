@@ -46,16 +46,16 @@ def schwz(
     """
     if M <= 0:
         raise ValueError("Mass must be positive.")
-    rs = 2.0 * G * M / (c ** 2)
+    rs = 2.0 * G * M / (c**2)
     if r <= rs:
         raise ValueError(f"r must be > Schwarzschild radius {rs:.6e} m.")
 
     f = 1.0 - rs / r
     g = np.zeros((4, 4))
-    g[0, 0] = -f * c ** 2
+    g[0, 0] = -f * c**2
     g[1, 1] = 1.0 / f
-    g[2, 2] = r ** 2
-    g[3, 3] = r ** 2 * np.sin(theta) ** 2
+    g[2, 2] = r**2
+    g[3, 3] = r**2 * np.sin(theta) ** 2
 
     return {
         "metric": g,

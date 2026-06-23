@@ -15,7 +15,9 @@ __all__ = ["logrt"]
 import numpy as np
 
 
-def logrt(time: np.ndarray, event: np.ndarray, group: np.ndarray, rho: float = 0.0, strata: np.ndarray = None, cdf=None) -> dict:
+def logrt(
+    time: np.ndarray, event: np.ndarray, group: np.ndarray, rho: float = 0.0, strata: np.ndarray = None, cdf=None
+) -> dict:
     """
     Log-rank test (and weighted variants) for comparing survival curves
     across two or more groups.
@@ -139,9 +141,9 @@ def logrt(time: np.ndarray, event: np.ndarray, group: np.ndarray, rho: float = 0
                 U[i] += w_j * (d_gk[i + 1] - e_gk[i + 1])
                 for j2 in range(k - 1):
                     if i == j2:
-                        V[i, i] += w_j ** 2 * n_gk[i + 1] * (n_j - n_gk[i + 1]) * d_j * (n_j - d_j) / (n_j ** 2 * (n_j - 1))
+                        V[i, i] += w_j**2 * n_gk[i + 1] * (n_j - n_gk[i + 1]) * d_j * (n_j - d_j) / (n_j**2 * (n_j - 1))
                     else:
-                        V[i, j2] -= w_j ** 2 * n_gk[i + 1] * n_gk[j2 + 1] * d_j * (n_j - d_j) / (n_j ** 2 * (n_j - 1))
+                        V[i, j2] -= w_j**2 * n_gk[i + 1] * n_gk[j2 + 1] * d_j * (n_j - d_j) / (n_j**2 * (n_j - 1))
 
     df = k - 1
     try:

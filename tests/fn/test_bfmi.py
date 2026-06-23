@@ -1,6 +1,7 @@
 """Tests for morie.fn.bfmi -- BFMI diagnostic."""
 
 import numpy as np
+
 from morie.fn.bfmi import bayesian_fmi
 
 

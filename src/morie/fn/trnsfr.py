@@ -1,6 +1,7 @@
 """Transfer-learning MSM across cohorts."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["transfer_learning_msm"]

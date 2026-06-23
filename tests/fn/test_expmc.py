@@ -1,6 +1,7 @@
 """Tests for expmc.exponential_mechanism."""
+
 import numpy as np
-import pytest
+
 from morie.fn.expmc import exponential_mechanism
 
 
@@ -12,7 +13,7 @@ def test_expmc_basic():
     epsilon = 1e-6
     result = exponential_mechanism(candidates, utility, sensitivity, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_expmc_edge():

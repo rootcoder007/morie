@@ -1,6 +1,7 @@
 """Runs declustering for serially dependent exceedances."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_declustering_runs"]
@@ -34,7 +35,9 @@ def evt_declustering_runs(x, u, r):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Runs declustering for serially dependent exceedances"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Runs declustering for serially dependent exceedances"}
+    )
 
 
 def cheatsheet():

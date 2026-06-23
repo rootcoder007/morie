@@ -1,6 +1,7 @@
 """Test gdswg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdswg import gdswg
 
 

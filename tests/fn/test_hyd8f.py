@@ -1,6 +1,7 @@
 """Test hyd8f."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyd8f import hyd8f
 
 

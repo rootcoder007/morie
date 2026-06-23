@@ -1,6 +1,7 @@
 """Test ghsrv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghsrv import ghsrv
 
 

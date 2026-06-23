@@ -1,6 +1,7 @@
 """Entropic regulariser term in entropic OT objective."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_entropy_regulariser"]
@@ -32,7 +33,9 @@ def ot_entropy_regulariser(T, epsilon):
     n = len(T)
     result = float(np.mean(T))
     se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Entropic regulariser term in entropic OT objective"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Entropic regulariser term in entropic OT objective"}
+    )
 
 
 def cheatsheet():

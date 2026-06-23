@@ -1,6 +1,8 @@
 """Tests for map_estimate."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mapst import map_estimate, mapst
 
 

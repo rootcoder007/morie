@@ -109,4 +109,4 @@ nntra = nn_train
 
 
 def cheatsheet() -> str:
-    return 'nntra() -> Train a single-hidden-layer neural network (binary classification)'
+    return "nntra() -> Train a single-hidden-layer neural network (binary classification)"

@@ -1,6 +1,8 @@
 """Tests for morie.fn.shpvl — Kernel SHAP values."""
+
 import numpy as np
 import pytest
+
 from morie.fn.shpvl import shpvl
 
 
@@ -11,8 +13,10 @@ def setup():
     X_bg = rng.standard_normal((n_bg, p))
     X_explain = rng.standard_normal((5, p))
     beta = np.array([3.0, -1.0, 0.5])
+
     def predict_fn(Xp):
         return Xp @ beta
+
     return predict_fn, X_explain, X_bg
 
 
@@ -62,4 +66,5 @@ def test_most_important_feature(setup):
 
 def test_cheatsheet():
     from morie.fn.shpvl import cheatsheet
+
     assert len(cheatsheet()) > 0

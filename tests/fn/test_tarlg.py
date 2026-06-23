@@ -1,6 +1,8 @@
 """Tests for morie.fn.tarlg -- Threshold AR."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tarlg import tar_fit
 
 
@@ -18,4 +20,5 @@ class TestTAR:
 
     def test_cheatsheet(self):
         from morie.fn.tarlg import cheatsheet
+
         assert isinstance(cheatsheet(), str)

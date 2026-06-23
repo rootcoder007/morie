@@ -1,8 +1,9 @@
 """Tests for morie.fn.powfit -- power law fit."""
 
 import numpy as np
-from morie.fn.powfit import power_law_fit, powfit
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.powfit import power_law_fit, powfit
 
 
 class TestPowfit:
@@ -11,7 +12,7 @@ class TestPowfit:
 
     def test_exact_power_law(self):
         x = np.arange(1, 50, dtype=float)
-        y = 2.5 * x ** 1.5
+        y = 2.5 * x**1.5
         r = power_law_fit(x, y)
         assert isinstance(r, DescriptiveResult)
         assert abs(r.value["b"] - 1.5) < 0.1

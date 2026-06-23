@@ -1,6 +1,7 @@
 """Konfound robustness % bias to invalidate."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["konfound"]
@@ -36,7 +37,9 @@ def konfound(est, se, n, threshold):
     n = len(est)
     result = float(np.mean(est))
     se = float(np.std(est, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Konfound robustness % bias to invalidate"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Konfound robustness % bias to invalidate"}
+    )
 
 
 def cheatsheet():

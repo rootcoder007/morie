@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsgpp -- GP prediction"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsgpp import gp_predict
 

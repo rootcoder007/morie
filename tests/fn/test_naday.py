@@ -1,6 +1,7 @@
 """Tests for naday.nadaraya_watson."""
+
 import numpy as np
-import pytest
+
 from morie.fn.naday import nadaraya_watson
 
 
@@ -11,7 +12,7 @@ def test_naday_basic():
     h = 0.3
     result = nadaraya_watson(x, y, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_naday_edge():

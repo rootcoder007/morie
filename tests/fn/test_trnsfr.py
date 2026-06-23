@@ -1,6 +1,7 @@
 """Tests for trnsfr.transfer_learning_msm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trnsfr import transfer_learning_msm
 
 
@@ -12,7 +13,7 @@ def test_trnsfr_basic():
     cohort = np.random.default_rng(42).normal(0, 1, 100)
     result = transfer_learning_msm(y, A, H, cohort)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trnsfr_edge():

@@ -1,5 +1,7 @@
 """Tests for morie.fn.drpot."""
+
 import numpy as np
+
 from morie.fn.drpot import dropout
 
 
@@ -13,6 +15,7 @@ def test_drpot_smoke():
 
 def test_cheatsheet():
     from morie.fn.drpot import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

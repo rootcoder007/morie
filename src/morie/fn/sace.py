@@ -88,7 +88,7 @@ def sace(
     if trim_frac > 0:
         n_trim = int(np.ceil(trim_frac * len(y_t1)))
         sorted_idx = np.argsort(y_t1)
-        keep_idx = sorted_idx[:len(y_t1) - n_trim]
+        keep_idx = sorted_idx[: len(y_t1) - n_trim]
         y_t1_trimmed = y_t1[keep_idx]
     else:
         y_t1_trimmed = y_t1
@@ -97,10 +97,7 @@ def sace(
         raise ValueError("Too few treated survivors after trimming")
 
     est = float(y_t1_trimmed.mean() - y_t0.mean())
-    se = float(np.sqrt(
-        y_t1_trimmed.var(ddof=1) / len(y_t1_trimmed)
-        + y_t0.var(ddof=1) / len(y_t0)
-    ))
+    se = float(np.sqrt(y_t1_trimmed.var(ddof=1) / len(y_t1_trimmed) + y_t0.var(ddof=1) / len(y_t0)))
     z = stats.norm.ppf(1 - alpha / 2)
     return ESRes(
         measure="SACE (trimming)",

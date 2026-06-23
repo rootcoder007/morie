@@ -1,5 +1,7 @@
 """Tests for morie.fn.rcode — recode responses."""
+
 import numpy as np
+
 from morie.fn.rcode import rcode
 
 
@@ -14,6 +16,7 @@ def test_rcode_smoke():
 
 def test_cheatsheet():
     from morie.fn.rcode import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

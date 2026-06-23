@@ -1,7 +1,7 @@
 """Tests for morie.fn.elsal."""
 
 import numpy as np
-import pytest
+
 from morie.fn.elsal import elsal
 
 

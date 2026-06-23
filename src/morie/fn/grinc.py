@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """In-context / few-shot learning: prepend K examples to the prompt."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_in_context_learning"]
@@ -32,7 +34,14 @@ def geron_in_context_learning(examples, query):
     n = len(examples)
     result = float(np.mean(examples))
     se = float(np.std(examples, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "In-context / few-shot learning: prepend K examples to the prompt"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "In-context / few-shot learning: prepend K examples to the prompt",
+        }
+    )
 
 
 def cheatsheet():

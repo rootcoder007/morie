@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.f1_ import f1_score
 
 

@@ -1,6 +1,7 @@
 """Tests for hmwrst.geron_warm_restarts."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmwrst import geron_warm_restarts
 
 
@@ -13,7 +14,7 @@ def test_hmwrst_basic():
     eta_min = 0
     result = geron_warm_restarts(t, T0, factor, eta_max, eta_min)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmwrst_edge():

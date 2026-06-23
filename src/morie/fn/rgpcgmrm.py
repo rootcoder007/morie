@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Murmur presence detection in PCG via spectral analysis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pcg_murmur_detect"]
@@ -34,7 +36,14 @@ def rangayyan_pcg_murmur_detect(pcg, ecg, fs):
     n = int(pcg) if pcg.ndim == 0 else len(pcg)
     result = float(np.mean(pcg))
     se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Murmur presence detection in PCG via spectral analysis"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Murmur presence detection in PCG via spectral analysis",
+        }
+    )
 
 
 def cheatsheet():

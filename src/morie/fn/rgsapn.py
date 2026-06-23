@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sleep apnea detection via ECG-derived respiration + SpO2 fusion."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_sleep_apnea"]
@@ -34,7 +36,14 @@ def rangayyan_sleep_apnea(ecg, spo2, fs):
     n = int(ecg) if ecg.ndim == 0 else len(ecg)
     result = float(np.mean(ecg))
     se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sleep apnea detection via ECG-derived respiration + SpO2 fusion"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sleep apnea detection via ECG-derived respiration + SpO2 fusion",
+        }
+    )
 
 
 def cheatsheet():

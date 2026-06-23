@@ -1,6 +1,7 @@
 """Test rscnf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rscnf import rscnf
 
 

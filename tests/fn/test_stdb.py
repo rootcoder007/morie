@@ -1,8 +1,7 @@
 """Tests for morie.fn.stdb -- standardized regression coefficients."""
 
-import numpy as np
 import pandas as pd
-import pytest
+
 from morie.fn.stdb import standardized_coefficients
 
 

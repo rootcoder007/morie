@@ -1,5 +1,7 @@
 """Tests for lsf.py - Line Spectral Frequencies."""
+
 import numpy as np
+
 from morie.fn.lsf import line_spectral_freq_fn, lsf
 
 

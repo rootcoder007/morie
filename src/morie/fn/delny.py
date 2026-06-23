@@ -44,4 +44,4 @@ delny = delaunay_simple
 
 
 def cheatsheet() -> str:
-    return 'delny() -> Compute a Delaunay triangulation of 2-D points'
+    return "delny() -> Compute a Delaunay triangulation of 2-D points"

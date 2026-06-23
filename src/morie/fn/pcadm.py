@@ -1,4 +1,5 @@
 """PCA via SVD for dimension reduction."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -35,17 +36,19 @@ def pca_dimension_reduction(x, *, n_components=None, seed=0):
     k = n_components if n_components is not None else min(n, p)
     pca = PCA(n_components=k, random_state=seed, svd_solver="full")
     scores = pca.fit_transform(X)
-    return RichResult(payload={
-        "estimate": float(pca.explained_variance_ratio_[0]),
-        "components": pca.components_.tolist(),
-        "explained_variance": pca.explained_variance_.tolist(),
-        "explained_variance_ratio": pca.explained_variance_ratio_.tolist(),
-        "singular_values": pca.singular_values_.tolist(),
-        "scores": scores.tolist(),
-        "n_components": int(k),
-        "n": int(n),
-        "method": "PCA via SVD",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(pca.explained_variance_ratio_[0]),
+            "components": pca.components_.tolist(),
+            "explained_variance": pca.explained_variance_.tolist(),
+            "explained_variance_ratio": pca.explained_variance_ratio_.tolist(),
+            "singular_values": pca.singular_values_.tolist(),
+            "scores": scores.tolist(),
+            "n_components": int(k),
+            "n": int(n),
+            "method": "PCA via SVD",
+        }
+    )
 
 
 def cheatsheet():

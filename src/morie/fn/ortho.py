@@ -76,7 +76,7 @@ def orthogonal_score(
     V = T_arr - E
     Y_tilde = Y - M
 
-    denom = float(np.sum(V ** 2))
+    denom = float(np.sum(V**2))
     if denom < 1e-15:
         raise ValueError("Degenerate: V = T - e_hat is near zero for all obs")
 

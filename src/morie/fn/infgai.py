@@ -85,4 +85,4 @@ infgai = information_gain
 
 
 def cheatsheet() -> str:
-    return 'information_gain({}) -> Information gain / mutual information.'
+    return "information_gain({}) -> Information gain / mutual information."

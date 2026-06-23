@@ -1,6 +1,7 @@
 """Tests for funBoot.functional_bootstrap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.funBoot import functional_bootstrap
 
 
@@ -10,7 +11,7 @@ def test_funBoot_basic():
     n_boot = 100
     result = functional_bootstrap(Y, n_boot)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_funBoot_edge():

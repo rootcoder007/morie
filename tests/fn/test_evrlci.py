@@ -1,6 +1,7 @@
 """Tests for evrlci.evt_return_level_ci."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evrlci import evt_return_level_ci
 
 
@@ -13,7 +14,7 @@ def test_evrlci_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = evt_return_level_ci(mu, sigma, xi, Sigma_hat, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evrlci_edge():

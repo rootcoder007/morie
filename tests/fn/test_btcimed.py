@@ -1,6 +1,7 @@
 """Tests for btcimed.boot_ci_median."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btcimed import boot_ci_median
 
 
@@ -11,7 +12,7 @@ def test_btcimed_basic():
     alpha = 0.05
     result = boot_ci_median(x, B, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btcimed_edge():

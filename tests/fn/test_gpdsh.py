@@ -1,6 +1,7 @@
 """Tests for gpdsh.gp_density_shift."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpdsh import gp_density_shift
 
 
@@ -11,7 +12,7 @@ def test_gpdsh_basic():
     tau = 0.1
     result = gp_density_shift(y_stream, window, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpdsh_edge():

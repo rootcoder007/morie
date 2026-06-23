@@ -1,6 +1,8 @@
 """Spatial autoregressive lag model (SAR lag, ML)."""
+
 import numpy as np
 from scipy import optimize
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_ar_lag"]
@@ -51,8 +53,7 @@ def spatial_ar_lag(x, y, w):
             return 1e12
         return 0.5 * n * np.log(2 * np.pi * sigma2) - logdetA + 0.5 * n
 
-    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded",
-                                   options={"xatol": 1e-5})
+    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded", options={"xatol": 1e-5})
     rho = float(res.x)
     Wy = W @ y
     # OLS of (y - rho Wy) on X
@@ -63,14 +64,16 @@ def spatial_ar_lag(x, y, w):
     cov_beta = sigma2 * XtX_inv
     se_beta = np.sqrt(np.maximum(np.diag(cov_beta), 0.0))
 
-    return RichResult(payload={
-        "estimate": beta.tolist(),
-        "se": se_beta.tolist(),
-        "rho": rho,
-        "sigma2": sigma2,
-        "n": int(n),
-        "method": "SAR lag (ML, concentrated log-likelihood)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.tolist(),
+            "se": se_beta.tolist(),
+            "rho": rho,
+            "sigma2": sigma2,
+            "n": int(n),
+            "method": "SAR lag (ML, concentrated log-likelihood)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 """Tests for gpfit."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpfit import gpfit
 
 
@@ -28,4 +30,5 @@ def test_gpfit_no_data():
 
 def test_gpfit_alias():
     from morie.fn.gpfit import gpfit
+
     assert gpfit is gpfit

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MinT reconciliation: trace-minimizing weighted least-squares reconciliation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_mint_reconciliation"]
@@ -34,7 +36,14 @@ def joseph_mint_reconciliation(y_hat, S, W):
     n = len(y_hat)
     result = float(np.mean(y_hat))
     se = float(np.std(y_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MinT reconciliation: trace-minimizing weighted least-squares reconciliation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "MinT reconciliation: trace-minimizing weighted least-squares reconciliation",
+        }
+    )
 
 
 def cheatsheet():

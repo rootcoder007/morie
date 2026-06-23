@@ -1,6 +1,7 @@
 """Tests for tmlrbt.tmle_robust."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlrbt import tmle_robust
 
 
@@ -12,7 +13,7 @@ def test_tmlrbt_basic():
     trim = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_robust(y, D, X, trim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlrbt_edge():

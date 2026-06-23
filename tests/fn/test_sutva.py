@@ -1,6 +1,7 @@
 """Tests for sutva.sutva_assumption."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sutva import sutva_assumption
 
 
@@ -10,7 +11,7 @@ def test_sutva_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = sutva_assumption(Y, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sutva_edge():

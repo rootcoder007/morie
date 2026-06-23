@@ -1,6 +1,8 @@
 """Tests for morie.fn.plcut -- cutting lines plot data."""
+
 import numpy as np
-from morie.fn.plcut import plot_cutting_lines_data, plcut
+
+from morie.fn.plcut import plcut, plot_cutting_lines_data
 
 
 def test_alias():

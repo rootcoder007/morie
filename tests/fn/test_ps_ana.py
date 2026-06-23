@@ -17,13 +17,15 @@ def synth_data():
     t = rng.binomial(1, prob)
     y = 0.5 * t + 0.3 * x1 + rng.standard_normal(n) * 0.5
     y_bin = (y > 0.3).astype(int)
-    return pd.DataFrame({
-        "x1": x1,
-        "x2": x2,
-        "treatment": t,
-        "outcome": y_bin,
-        "weight": rng.uniform(0.5, 2.0, n),
-    })
+    return pd.DataFrame(
+        {
+            "x1": x1,
+            "x2": x2,
+            "treatment": t,
+            "outcome": y_bin,
+            "weight": rng.uniform(0.5, 2.0, n),
+        }
+    )
 
 
 def test_returns_dict_with_expected_keys(synth_data):

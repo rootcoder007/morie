@@ -1,5 +1,7 @@
 """Tests for morie.fn.fmea."""
+
 import numpy as np
+
 from morie.fn.fmea import fmea
 
 
@@ -8,7 +10,7 @@ def test_fmea_smoke():
     result = fmea(
         severity=rng.integers(1, 11, size=10),
         occurrence=rng.integers(1, 11, size=10),
-        detection=rng.integers(1, 11, size=10)
+        detection=rng.integers(1, 11, size=10),
     )
     assert result is not None
     assert hasattr(result, "name")
@@ -17,6 +19,7 @@ def test_fmea_smoke():
 
 def test_cheatsheet():
     from morie.fn.fmea import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

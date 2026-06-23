@@ -1,6 +1,7 @@
 """Tests for drlp1.dr_lp_did."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drlp1 import dr_lp_did
 
 
@@ -13,7 +14,7 @@ def test_drlp1_basic():
     horizon = np.random.default_rng(42).normal(0, 1, 100)
     result = dr_lp_did(y, D, unit, time, horizon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drlp1_edge():

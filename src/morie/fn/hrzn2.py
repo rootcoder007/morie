@@ -10,6 +10,7 @@ quotient with a sinc kernel:
 
 We implement this with FFT and a Laplace-noise default (phi_U(t) = 1/(1 + sigma^2 t^2)).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -19,8 +20,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_deconvolution"]
 
 
-def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None,
-                            noise="laplace"):
+def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None, noise="laplace"):
     """Fourier-deconvolution density estimator.
 
     Parameters
@@ -39,8 +39,7 @@ def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None,
     y = np.asarray(y, dtype=float).ravel()
     n = y.size
     if n < 30:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                   "method": "deconvolution (insufficient data)"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "deconvolution (insufficient data)"})
     if bandwidth is None:
         h = max(1.5 * np.std(y, ddof=1) * n ** (-1.0 / 7.0), 1e-3)
     else:
@@ -61,22 +60,33 @@ def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None,
         phi_U = 1.0 / (1.0 + (sigma_u * T) ** 2)
     # Sinc-Fourier kernel  phi_K(t h) = (1 - (t h)^2)^3 for |t h| <= 1, else 0
     th = T * h
-    phi_K = np.where(np.abs(th) <= 1, (1 - th ** 2) ** 3, 0.0)
+    phi_K = np.where(np.abs(th) <= 1, (1 - th**2) ** 3, 0.0)
     # Inverse Fourier integral evaluated on `grid` by numerical quadrature
-    integrand = phi_K * phi_Y / np.maximum(np.abs(phi_U), 1e-10) * \
-        np.sign(phi_U + 0j).conj() / np.maximum(np.abs(phi_U), 1e-10) * np.abs(phi_U)
+    integrand = (
+        phi_K
+        * phi_Y
+        / np.maximum(np.abs(phi_U), 1e-10)
+        * np.sign(phi_U + 0j).conj()
+        / np.maximum(np.abs(phi_U), 1e-10)
+        * np.abs(phi_U)
+    )
     # simpler: integrand = phi_K * phi_Y / phi_U
     integrand = phi_K * phi_Y / np.where(np.abs(phi_U) > 1e-10, phi_U, np.inf)
     f_hat = np.zeros(grid.size)
     for i, x0 in enumerate(grid):
         f_hat[i] = float(np.real(np.exp(-1j * T * x0) @ integrand)) * dt / (2 * np.pi)
     f_hat = np.maximum(f_hat, 0)  # numerical-noise floor
-    return RichResult(payload={
-        "estimate": f_hat.astype(float),
-        "grid": grid.astype(float),
-        "bandwidth": h, "sigma_u": float(sigma_u), "noise": noise, "n": n,
-        "method": "Fourier deconvolution density (sinc-kernel)",
-    })
+    return RichResult(
+        payload={
+            "estimate": f_hat.astype(float),
+            "grid": grid.astype(float),
+            "bandwidth": h,
+            "sigma_u": float(sigma_u),
+            "noise": noise,
+            "n": n,
+            "method": "Fourier deconvolution density (sinc-kernel)",
+        }
+    )
 
 
 def cheatsheet():

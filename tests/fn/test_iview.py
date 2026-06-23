@@ -1,16 +1,17 @@
 """Tests for morie.fn.iview -- Image viewer and info."""
 
+import os
 import struct
 import tempfile
-import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from morie.fn.iview import view_image, image_info, iview
+from morie.fn.iview import image_info, iview, view_image
 
 
 def _make_minimal_png(path: str) -> None:
     """Write a minimal valid 1x1 PNG file."""
     import zlib
+
     sig = b"\x89PNG\r\n\x1a\n"
     ihdr_data = struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0)
     ihdr_crc = zlib.crc32(b"IHDR" + ihdr_data) & 0xFFFFFFFF
@@ -27,8 +28,10 @@ def _make_minimal_png(path: str) -> None:
 
 class TestIview:
     def test_view_image_calls_open(self):
-        with patch("morie.fn.iview.subprocess.run") as mock_run, \
-             patch("morie.fn.iview.os.path.isfile", return_value=True):
+        with (
+            patch("morie.fn.iview.subprocess.run") as mock_run,
+            patch("morie.fn.iview.os.path.isfile", return_value=True),
+        ):
             view_image("/tmp/fake.png")
             mock_run.assert_called_once()
 

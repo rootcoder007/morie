@@ -1,6 +1,8 @@
 """Tests for stcfn."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stcfn import stcfn
 
 
@@ -28,4 +30,5 @@ def test_stcfn_no_data():
 
 def test_stcfn_alias():
     from morie.fn.stcfn import stcfn
+
     assert stcfn is stcfn

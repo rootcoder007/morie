@@ -1,8 +1,9 @@
 """Tests for morie.fn.simul -- simulation goodness of fit."""
 
 import numpy as np
-from morie.fn.simul import simulation_gof, simul
+
 from morie.fn._containers import TestResult
+from morie.fn.simul import simul, simulation_gof
 
 
 class TestSimul:

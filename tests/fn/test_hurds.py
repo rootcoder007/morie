@@ -1,7 +1,6 @@
 """Tests for morie.fn.hurds — Hurdle model."""
 
 import numpy as np
-import pytest
 
 from morie.fn.hurds import hurdle_model
 

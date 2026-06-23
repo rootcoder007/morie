@@ -1,4 +1,5 @@
 """Mini-batch gradient descent for linear regression."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -43,22 +44,24 @@ def mini_batch_gradient(x, y, *, lr=0.01, n_epochs=200, batch_size=32, seed=0):
     for _ in range(n_epochs):
         idx = rng.permutation(n)
         for start in range(0, n, batch_size):
-            j = idx[start:start + batch_size]
+            j = idx[start : start + batch_size]
             xb, yb = X1[j], y[j]
             grad = (2.0 / len(j)) * xb.T @ (xb @ theta - yb)
             theta = theta - lr * grad
     loss = float(np.mean((X1 @ theta - y) ** 2))
     ref = LinearRegression().fit(X, y)
     ref_coef = np.concatenate([[ref.intercept_], ref.coef_])
-    return RichResult(payload={
-        "estimate": theta.tolist(),
-        "reference_ols": ref_coef.tolist(),
-        "n_epochs": int(n_epochs),
-        "batch_size": int(batch_size),
-        "loss": loss,
-        "n": int(n),
-        "method": "Mini-batch SGD (linear regression)",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta.tolist(),
+            "reference_ols": ref_coef.tolist(),
+            "n_epochs": int(n_epochs),
+            "batch_size": int(batch_size),
+            "loss": loss,
+            "n": int(n),
+            "method": "Mini-batch SGD (linear regression)",
+        }
+    )
 
 
 def cheatsheet():

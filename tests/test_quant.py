@@ -11,16 +11,12 @@ Validates mathematical correctness against paper bounds:
 
 from __future__ import annotations
 
-import math
-
 import numpy as np
 import pytest
 
 from morie.quant import (
-    TQBlock,
     compress_kv_cache,
     decompress_kv_cache,
-    dequantize_angles,
     inner_product_distortion_bound,
     inverse_polar,
     lloyd_max_codebook,
@@ -30,7 +26,6 @@ from morie.quant import (
     qjl_decode,
     qjl_encode,
     qjl_projection_matrix,
-    quantize_angles,
     rotation_matrix,
     turboquant_mse,
     turboquant_mse_decode,
@@ -39,7 +34,6 @@ from morie.quant import (
     unpack_indices,
     verify_orthogonal,
 )
-
 
 # ---------------------------------------------------------------------------
 # Rotation matrix
@@ -216,9 +210,9 @@ class TestTurboQuantMSE:
         rng = np.random.default_rng(42)
         x = rng.standard_normal(64)
 
-        mse_2 = np.mean((x - turboquant_mse_decode(turboquant_mse(x, bits=2)))**2)
-        mse_3 = np.mean((x - turboquant_mse_decode(turboquant_mse(x, bits=3)))**2)
-        mse_4 = np.mean((x - turboquant_mse_decode(turboquant_mse(x, bits=4)))**2)
+        mse_2 = np.mean((x - turboquant_mse_decode(turboquant_mse(x, bits=2))) ** 2)
+        mse_3 = np.mean((x - turboquant_mse_decode(turboquant_mse(x, bits=3))) ** 2)
+        mse_4 = np.mean((x - turboquant_mse_decode(turboquant_mse(x, bits=4))) ** 2)
 
         assert mse_4 < mse_3 < mse_2
 
@@ -370,12 +364,8 @@ class TestKVCache:
         keys = rng.standard_normal((4, 32))
         values = rng.standard_normal((4, 32))
 
-        key_blocks, val_blocks = compress_kv_cache(
-            keys, values, bits=3, method="prod"
-        )
-        keys_hat, values_hat = decompress_kv_cache(
-            key_blocks, val_blocks, method="prod"
-        )
+        key_blocks, val_blocks = compress_kv_cache(keys, values, bits=3, method="prod")
+        keys_hat, values_hat = decompress_kv_cache(key_blocks, val_blocks, method="prod")
         assert keys_hat.shape == keys.shape
 
 

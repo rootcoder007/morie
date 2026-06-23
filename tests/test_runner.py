@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from morie.runner import build_parser, execute_pipeline, main
 
 _RTESTS_DIR = Path(__file__).resolve().parents[1] / "rtests"

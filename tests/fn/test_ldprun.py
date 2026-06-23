@@ -1,6 +1,7 @@
 """Tests for ldprun.ld_pruning."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ldprun import ld_pruning
 
 
@@ -11,7 +12,7 @@ def test_ldprun_basic():
     window = np.random.default_rng(42).normal(0, 1, 100)
     result = ld_pruning(genotypes, r2_threshold, window)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ldprun_edge():

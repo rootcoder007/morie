@@ -1,6 +1,7 @@
 """Tests for hmaen.geron_autoencoder."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmaen import geron_autoencoder
 
 
@@ -10,7 +11,7 @@ def test_hmaen_basic():
     bottleneck = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_autoencoder(X, bottleneck)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmaen_edge():

@@ -1,6 +1,7 @@
 """Tests for frmlD.formal_derivative."""
+
 import numpy as np
-import pytest
+
 from morie.fn.frmlD import formal_derivative
 
 
@@ -9,7 +10,7 @@ def test_frmlD_basic():
     poly = np.random.default_rng(42).normal(0, 1, 100)
     result = formal_derivative(poly)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_frmlD_edge():

@@ -48,8 +48,7 @@ def mafit(y, q=1, method="cml"):
     y = y - np.mean(y)
 
     # Compute sample ACF
-    acov = np.array([np.mean(y[:-k] * y[k:]) if k > 0 else np.mean(y**2)
-                     for k in range(q + 1)])
+    acov = np.array([np.mean(y[:-k] * y[k:]) if k > 0 else np.mean(y**2) for k in range(q + 1)])
     rho = acov / acov[0]
 
     # Initial estimate from method of moments
@@ -63,12 +62,11 @@ def mafit(y, q=1, method="cml"):
         sigma2 = np.mean(y**2)
         eps = np.copy(y)
         for t in range(q, len(y)):
-            eps[t] = y[t] - np.sum(theta * eps[t-q:t][::-1])
-        return -np.sum(eps[q:]**2) / (2 * sigma2)
+            eps[t] = y[t] - np.sum(theta * eps[t - q : t][::-1])
+        return -np.sum(eps[q:] ** 2) / (2 * sigma2)
 
     if method == "cml":
-        result = minimize(lambda th: -cml_loglik(th, y, q), theta_init,
-                         method="BFGS")
+        result = minimize(lambda th: -cml_loglik(th, y, q), theta_init, method="BFGS")
         theta = result.x
         loglik = -result.fun
     else:
@@ -77,15 +75,15 @@ def mafit(y, q=1, method="cml"):
     # Residual variance via backsubstitution
     eps = np.copy(y)
     for t in range(q, len(y)):
-        eps[t] = y[t] - np.sum(theta * eps[t-q:t][::-1])
-    sigma2 = np.mean(eps[q:]**2)
+        eps[t] = y[t] - np.sum(theta * eps[t - q : t][::-1])
+    sigma2 = np.mean(eps[q:] ** 2)
 
     # ACF of MA(q)
     acf_ma = np.zeros(q + 1)
     acf_ma[0] = 1.0
     denominator = 1 + np.sum(theta**2)
     for k in range(1, q + 1):
-        acf_ma[k] = (-theta[k-1] + np.sum(theta[:k-1] * theta[k-1::-1])) / denominator
+        acf_ma[k] = (-theta[k - 1] + np.sum(theta[: k - 1] * theta[k - 1 :: -1])) / denominator
 
     return TimeSeriesResult(
         name=short,

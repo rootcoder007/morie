@@ -44,11 +44,10 @@ Used by:
 
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 import numpy as np
 import pandas as pd
-
 
 __all__ = ["mrm_otis_mandela_spectrum"]
 
@@ -156,10 +155,7 @@ def mrm_otis_mandela_spectrum(
                 elif denom == "individual_cumulative":
                     sub = df.loc[ymask]
                     cum = sub.groupby(id_col)["_dur"].sum()
-                    ids_m = (
-                        df.loc[elig]
-                          .groupby(id_col)["_dur"].sum()
-                    )
+                    ids_m = df.loc[elig].groupby(id_col)["_dur"].sum()
                     cum_long = cum > threshold_days
                     # restrict cum_long to ids that had alert-proxy-active placements
                     cum_long_proxy = cum_long.index.isin(ids_m.index) & cum_long.values
@@ -185,11 +181,18 @@ def mrm_otis_mandela_spectrum(
                     durband_col = "Aggregate_Duration"
                     if durband_col not in sub.columns:
                         continue
-                    above = sub[durband_col].astype(str).map(
-                        lambda b: ("Greater than" in b) or any(
-                            int(x) > threshold_days
-                            for x in __import__("re").findall(r"\d+", b)
-                            if int(x) > threshold_days
+                    above = (
+                        sub[durband_col]
+                        .astype(str)
+                        .map(
+                            lambda b: (
+                                ("Greater than" in b)
+                                or any(
+                                    int(x) > threshold_days
+                                    for x in __import__("re").findall(r"\d+", b)
+                                    if int(x) > threshold_days
+                                )
+                            )
                         )
                     )
                     n_m = int(sub.loc[above, n_d_col].sum())
@@ -197,14 +200,16 @@ def mrm_otis_mandela_spectrum(
                     raise ValueError(f"unknown denominator {denom!r}")
 
                 rate = (n_m / n_d) if n_d > 0 else float("nan")
-                rows.append({
-                    "year": label,
-                    "denominator": denom,
-                    "contact_proxy": proxy,
-                    "n_eligible": n_d,
-                    "n_mandela": n_m,
-                    "rate": round(rate, 6) if not np.isnan(rate) else rate,
-                    "pct": round(100 * rate, 2) if not np.isnan(rate) else rate,
-                })
+                rows.append(
+                    {
+                        "year": label,
+                        "denominator": denom,
+                        "contact_proxy": proxy,
+                        "n_eligible": n_d,
+                        "n_mandela": n_m,
+                        "rate": round(rate, 6) if not np.isnan(rate) else rate,
+                        "pct": round(100 * rate, 2) if not np.isnan(rate) else rate,
+                    }
+                )
 
     return pd.DataFrame(rows)

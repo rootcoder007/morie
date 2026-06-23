@@ -95,7 +95,7 @@ def plmod(
 
     theta = np.linalg.solve(dtd, d_tilde.T @ y_tilde)
     resid = y_tilde - d_tilde @ theta
-    sigma2 = float(np.sum(resid ** 2) / (n - p))
+    sigma2 = float(np.sum(resid**2) / (n - p))
     var_theta = sigma2 * np.linalg.inv(dtd)
 
     se = np.sqrt(np.diag(var_theta))

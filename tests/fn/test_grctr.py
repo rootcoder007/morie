@@ -1,6 +1,7 @@
 """Tests for grctr.geron_contrastive_infonce."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grctr import geron_contrastive_infonce
 
 
@@ -12,7 +13,7 @@ def test_grctr_basic():
     tau = 0.1
     result = geron_contrastive_infonce(anchors, positives, negatives, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grctr_edge():

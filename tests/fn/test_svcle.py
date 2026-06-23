@@ -1,7 +1,6 @@
 """Tests for morie.fn.svcle -- Coalition equilibrium (Schofield)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svcle import coalition_equil
 

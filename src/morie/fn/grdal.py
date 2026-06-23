@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DALL-E autoregressive text-to-image token modeling."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dalle_autoregressive_token"]
@@ -32,7 +34,9 @@ def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix):
     n = len(text_tokens)
     result = float(np.mean(text_tokens))
     se = float(np.std(text_tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DALL-E autoregressive text-to-image token modeling"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DALL-E autoregressive text-to-image token modeling"}
+    )
 
 
 def cheatsheet():

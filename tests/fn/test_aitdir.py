@@ -1,6 +1,7 @@
 """Tests for aitdir.dirichlet_density."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aitdir import dirichlet_density
 
 
@@ -10,7 +11,7 @@ def test_aitdir_basic():
     alpha = 0.05
     result = dirichlet_density(x, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_aitdir_edge():

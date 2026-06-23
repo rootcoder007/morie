@@ -1,6 +1,7 @@
 """Test marov."""
+
 import numpy as np
-import pytest
+
 from morie.fn.marov import marov
 
 

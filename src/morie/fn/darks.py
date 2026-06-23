@@ -81,4 +81,4 @@ darks = dark_energy_eos
 
 
 def cheatsheet() -> str:
-    return 'dark_energy_eos({}) -> Dark energy equation of state.'
+    return "dark_energy_eos({}) -> Dark energy equation of state."

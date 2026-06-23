@@ -1,6 +1,7 @@
 """Tests for rng197.rangayyan_ch4_dicrotic_notch_smoothed_squared."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng197 import rangayyan_ch4_dicrotic_notch_smoothed_squared
 
 
@@ -12,7 +13,7 @@ def test_rng197_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = rangayyan_ch4_dicrotic_notch_smoothed_squared(p, w, n, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng197_edge():

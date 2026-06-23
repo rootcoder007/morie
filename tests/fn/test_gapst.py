@@ -1,5 +1,7 @@
 """Tests for morie.fn.gapst."""
+
 import numpy as np
+
 from morie.fn.gapst import gapst
 
 
@@ -13,6 +15,7 @@ def test_gapst_smoke():
 
 def test_cheatsheet():
     from morie.fn.gapst import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

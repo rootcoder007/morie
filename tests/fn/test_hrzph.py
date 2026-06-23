@@ -1,6 +1,7 @@
 """Tests for hrzph.horowitz_proportional_hazards."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzph import horowitz_proportional_hazards
 
 
@@ -11,7 +12,7 @@ def test_hrzph_basic():
     event = np.random.default_rng(42).normal(0, 1, 100)
     result = horowitz_proportional_hazards(t, x, event)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzph_edge():

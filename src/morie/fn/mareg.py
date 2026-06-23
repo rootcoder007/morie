@@ -1,6 +1,7 @@
 """Random-effects meta-regression on study-level moderators."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_meta_regression"]
@@ -34,7 +35,14 @@ def ma_meta_regression(yi, vi, X):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Random-effects meta-regression on study-level moderators"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Random-effects meta-regression on study-level moderators",
+        }
+    )
 
 
 def cheatsheet():

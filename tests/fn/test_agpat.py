@@ -1,6 +1,7 @@
 """Test agpat."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agpat import agpat
 
 

@@ -1,6 +1,7 @@
 """Tests for lof.local_outlier_factor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lof import local_outlier_factor
 
 
@@ -10,7 +11,7 @@ def test_lof_basic():
     k = 5
     result = local_outlier_factor(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lof_edge():

@@ -1,5 +1,7 @@
 """Tests for average covariance block."""
+
 import numpy as np
+
 from morie.fn.sgavgc import sgavgc
 
 
@@ -13,6 +15,7 @@ def test_sgavgc_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgavgc import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

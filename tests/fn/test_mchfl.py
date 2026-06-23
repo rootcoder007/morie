@@ -1,7 +1,9 @@
 """Tests for mchfl -- Matched filter."""
+
 import numpy as np
-from morie.fn.mchfl import matched_filter
+
 from morie.fn._containers import SignalResult
+from morie.fn.mchfl import matched_filter
 
 
 def test_matched_filter_basic():
@@ -10,7 +12,7 @@ def test_matched_filter_basic():
     t = np.arange(0, 0.1, 1 / fs)
     template = np.sin(2 * np.pi * 50 * t)
     x = np.zeros(1000)
-    x[300:300 + len(template)] = template
+    x[300 : 300 + len(template)] = template
     x += rng.standard_normal(len(x)) * 0.1
     result = matched_filter(x, template, fs)
     assert isinstance(result, SignalResult)

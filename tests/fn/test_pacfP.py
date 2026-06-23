@@ -1,6 +1,7 @@
 """Tests for pacfP.partial_autocorrelation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pacfP import partial_autocorrelation
 
 
@@ -10,7 +11,7 @@ def test_pacfP_basic():
     lag_max = 100
     result = partial_autocorrelation(y, lag_max)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_pacfP_edge():

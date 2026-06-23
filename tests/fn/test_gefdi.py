@@ -1,6 +1,7 @@
 """Test gefdi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gefdi import gefdi
 
 

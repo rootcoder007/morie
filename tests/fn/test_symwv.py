@@ -1,5 +1,5 @@
 """Tests for symwv.py - Symlet wavelet."""
-import numpy as np
+
 from morie.fn.symwv import symlet_wavelet, symwv
 
 
@@ -17,6 +17,7 @@ def test_sym_has_filters():
 
 def test_sym_invalid_order():
     import pytest
+
     with pytest.raises(ValueError):
         symlet_wavelet(99)
 

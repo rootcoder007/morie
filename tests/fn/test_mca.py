@@ -1,7 +1,9 @@
 """Test morphological_ca (mca)."""
+
 import numpy as np
-from morie.fn.mca import morphological_ca, mca
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mca import mca, morphological_ca
 
 
 class TestMca:

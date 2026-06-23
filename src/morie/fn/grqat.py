@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """QAT: simulate quantization in the forward pass and straight-through in the backward."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_quantization_aware_training"]
@@ -34,7 +36,14 @@ def geron_quantization_aware_training(x, s, bits):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "QAT: simulate quantization in the forward pass and straight-through in the backward"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "QAT: simulate quantization in the forward pass and straight-through in the backward",
+        }
+    )
 
 
 def cheatsheet():

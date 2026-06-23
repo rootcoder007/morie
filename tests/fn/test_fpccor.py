@@ -1,6 +1,7 @@
 """Tests for fpccor.functional_correlation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fpccor import functional_correlation
 
 
@@ -10,7 +11,7 @@ def test_fpccor_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = functional_correlation(X, Y)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_fpccor_edge():

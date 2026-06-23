@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Perceiver: cross-attention to learned latents from high-dim inputs."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_perceiver"]
@@ -34,7 +36,14 @@ def geron_perceiver(x, latents, n_iter):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Perceiver: cross-attention to learned latents from high-dim inputs"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Perceiver: cross-attention to learned latents from high-dim inputs",
+        }
+    )
 
 
 def cheatsheet():

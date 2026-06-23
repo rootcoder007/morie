@@ -1,6 +1,7 @@
 """Tests for mcsec.mcmc_standard_error."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mcsec import mcmc_standard_error
 
 
@@ -9,7 +10,7 @@ def test_mcsec_basic():
     chains = np.random.default_rng(42).normal(0, 1, 100)
     result = mcmc_standard_error(chains)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mcsec_edge():

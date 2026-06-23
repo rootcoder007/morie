@@ -1,5 +1,7 @@
 """Test raman."""
+
 import pytest
+
 from morie.fn.raman import ramanujan_tau
 
 

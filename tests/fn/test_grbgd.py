@@ -1,6 +1,7 @@
 """Tests for grbgd.geron_batch_gradient_descent."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grbgd import geron_batch_gradient_descent
 
 
@@ -13,7 +14,7 @@ def test_grbgd_basic():
     n_iter = 50
     result = geron_batch_gradient_descent(X, y, theta, eta, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grbgd_edge():

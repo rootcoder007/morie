@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean and variance of the empirical distribution function S_n(x)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_edf_mean_var"]
@@ -32,7 +34,14 @@ def gibbons_edf_mean_var(x, n):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean and variance of the empirical distribution function S_n(x)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Mean and variance of the empirical distribution function S_n(x)",
+        }
+    )
 
 
 def cheatsheet():

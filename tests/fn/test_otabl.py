@@ -1,6 +1,7 @@
 """Tests for morie.fn.otabl — Table 1 (baseline characteristics)."""
 
 import pandas as pd
+
 from morie.fn.otabl import otis_table1
 
 

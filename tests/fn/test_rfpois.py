@@ -1,6 +1,8 @@
 """Tests for rfpois."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfpois import rfpois
 
 
@@ -28,4 +30,5 @@ def test_rfpois_no_data():
 
 def test_rfpois_alias():
     from morie.fn.rfpois import rfpois
+
     assert rfpois is rfpois

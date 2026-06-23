@@ -1,6 +1,7 @@
 """Tests for grhbb.geron_hebb_rule."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grhbb import geron_hebb_rule
 
 
@@ -13,7 +14,7 @@ def test_grhbb_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_hebb_rule(x, y_true, y_pred, w, eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grhbb_edge():

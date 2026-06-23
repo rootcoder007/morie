@@ -1,8 +1,9 @@
 """Tests for morie.fn.spln -- Cubic spline regression."""
 
 import numpy as np
-from morie.fn.spln import spline_regression, spln
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spln import spline_regression, spln
 
 
 class TestSpln:
@@ -18,6 +19,6 @@ class TestSpln:
 
     def test_returns_predicted(self):
         x = np.linspace(0, 1, 30)
-        y = x ** 2
+        y = x**2
         result = spline_regression(x, y)
         assert len(result.extra["predicted"]) == 30

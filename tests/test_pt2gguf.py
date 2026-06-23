@@ -5,7 +5,6 @@ import pytest
 
 from morie.pt2gguf import _map_tensor_name
 
-
 # ---------------------------------------------------------------------------
 # TestTensorNameMapping — no torch required
 # ---------------------------------------------------------------------------
@@ -75,6 +74,7 @@ class TestTensorNameMapping:
 # Helpers for round-trip tests
 # ---------------------------------------------------------------------------
 
+
 def _fake_tokenizer_info():
     """Return a minimal tokenizer dict for monkeypatching."""
     return {
@@ -86,8 +86,7 @@ def _fake_tokenizer_info():
     }
 
 
-def _build_fake_checkpoint(tmp_path, n_layer=2, n_head=2, n_kv_head=2,
-                           n_embd=64, vocab_size=256, sequence_len=128):
+def _build_fake_checkpoint(tmp_path, n_layer=2, n_head=2, n_kv_head=2, n_embd=64, vocab_size=256, sequence_len=128):
     """Create a fake autoresearch .pt checkpoint with torch.save().
 
     Returns (checkpoint_path, config, state_dict_numpy) where
@@ -159,8 +158,8 @@ class TestGGUFRoundTrip:
 
         # Mock tokenizer loading to avoid needing a real pickle
         import morie.pt2gguf as pt2gguf_mod
-        monkeypatch.setattr(pt2gguf_mod, "_load_autoresearch_tokenizer",
-                            lambda _dir: _fake_tokenizer_info())
+
+        monkeypatch.setattr(pt2gguf_mod, "_load_autoresearch_tokenizer", lambda _dir: _fake_tokenizer_info())
 
         pt2gguf_mod.convert(
             checkpoint_path=str(ckpt_path),
@@ -170,6 +169,7 @@ class TestGGUFRoundTrip:
         )
 
         from morie.gguf_loader import GGUFModel
+
         model = GGUFModel(gguf_path)
 
         yield model, config, np_dict
@@ -297,14 +297,19 @@ class TestTurboQuantRoundTrip:
         pytest.importorskip("scipy")  # turboquant_mse needs scipy
 
         ckpt_path, config, np_dict = _build_fake_checkpoint(
-            tmp_path, n_layer=2, n_head=2, n_kv_head=2,
-            n_embd=64, vocab_size=256, sequence_len=128,
+            tmp_path,
+            n_layer=2,
+            n_head=2,
+            n_kv_head=2,
+            n_embd=64,
+            vocab_size=256,
+            sequence_len=128,
         )
         gguf_path = tmp_path / "test_tq3.gguf"
 
         import morie.pt2gguf as pt2gguf_mod
-        monkeypatch.setattr(pt2gguf_mod, "_load_autoresearch_tokenizer",
-                            lambda _dir: _fake_tokenizer_info())
+
+        monkeypatch.setattr(pt2gguf_mod, "_load_autoresearch_tokenizer", lambda _dir: _fake_tokenizer_info())
 
         pt2gguf_mod.convert(
             checkpoint_path=str(ckpt_path),
@@ -314,6 +319,7 @@ class TestTurboQuantRoundTrip:
         )
 
         from morie.gguf_loader import GGUFModel
+
         model = GGUFModel(gguf_path)
 
         yield model, config, np_dict

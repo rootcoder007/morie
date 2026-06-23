@@ -1,7 +1,6 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayes theorem."""
 
-
 from ._containers import ESRes
 
 _QUOTE = "Everything flows. -- Heraclitus"

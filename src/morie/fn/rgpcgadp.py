@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adaptive segmentation of PCG signals via SEM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pcg_adaptive_seg"]
@@ -34,7 +36,9 @@ def rangayyan_pcg_adaptive_seg(pcg, fs, ar_order):
     n = int(pcg) if pcg.ndim == 0 else len(pcg)
     result = float(np.mean(pcg))
     se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive segmentation of PCG signals via SEM"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive segmentation of PCG signals via SEM"}
+    )
 
 
 def cheatsheet():

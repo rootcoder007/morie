@@ -1,6 +1,7 @@
 """Tests for hdpmix.hierarchical_dp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hdpmix import hierarchical_dp
 
 
@@ -12,7 +13,7 @@ def test_hdpmix_basic():
     alpha = 0.05
     result = hierarchical_dp(y, groups, gamma, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hdpmix_edge():

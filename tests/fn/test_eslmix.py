@@ -1,6 +1,7 @@
 """Tests for eslmix.esl_gaussian_mixture."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslmix import esl_gaussian_mixture
 
 
@@ -10,7 +11,7 @@ def test_eslmix_basic():
     k = 5
     result = esl_gaussian_mixture(X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslmix_edge():

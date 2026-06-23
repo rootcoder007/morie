@@ -1,7 +1,6 @@
 """Tests for morie.fn.svbnk -- Banks set computation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svbnk import banks_set
 

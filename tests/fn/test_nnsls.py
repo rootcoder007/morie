@@ -1,8 +1,9 @@
 """Tests for morie.fn.nnsls -- Non-negative least squares."""
 
 import numpy as np
-from morie.fn.nnsls import nnls, nnsls
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.nnsls import nnls, nnsls
 
 
 class TestNnsls:

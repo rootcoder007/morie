@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Contingency coefficient C = sqrt(Q/(Q+n))."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_contingency_coeff"]
@@ -30,7 +32,9 @@ def gibbons_contingency_coeff(table):
     n = int(table) if table.ndim == 0 else len(table)
     result = float(np.mean(table))
     se = float(np.std(table, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Contingency coefficient C = sqrt(Q/(Q+n))"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Contingency coefficient C = sqrt(Q/(Q+n))"}
+    )
 
 
 def cheatsheet():

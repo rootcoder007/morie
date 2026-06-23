@@ -4,6 +4,7 @@
 __all__ = ["rtdst"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -66,8 +67,7 @@ def rtdst(
     d_max = np.max(distortion_matrix)
 
     if target_distortion >= d_max:
-        return {"rate": 0.0, "distortion": target_distortion,
-                "optimal_mapping": np.ones((n, m)) / m}
+        return {"rate": 0.0, "distortion": target_distortion, "optimal_mapping": np.ones((n, m)) / m}
 
     s_val = -5.0
     q_hat = np.ones(m) / m
@@ -93,8 +93,6 @@ def rtdst(
     for i in range(n):
         for j in range(m):
             if joint[i, j] > eps:
-                mi += joint[i, j] * np.log2(
-                    joint[i, j] / (pmf[i] * marg[j] + eps)
-                )
+                mi += joint[i, j] * np.log2(joint[i, j] / (pmf[i] * marg[j] + eps))
 
     return RichResult(payload={"rate": max(mi, 0.0), "distortion": expected_d, "optimal_mapping": cond})

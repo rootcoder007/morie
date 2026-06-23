@@ -1,6 +1,7 @@
 """Bound under monotone outcome response."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bound_monot_outcome"]

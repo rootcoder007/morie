@@ -1,7 +1,9 @@
 """Tests for gbrwv -- Gabor-Wigner distribution."""
+
 import numpy as np
-from morie.fn.gbrwv import gbrwv
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gbrwv import gbrwv
 
 
 def test_gbrwv_basic():

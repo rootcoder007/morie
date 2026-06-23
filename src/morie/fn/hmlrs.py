@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Learning rate schedule used with SGD: eta_t = eta_0 / (t + t_0)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_learning_rate_schedule"]
@@ -34,7 +36,14 @@ def geron_learning_rate_schedule(t, eta0, t0):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Learning rate schedule used with SGD: eta_t = eta_0 / (t + t_0)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Learning rate schedule used with SGD: eta_t = eta_0 / (t + t_0)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for ccelO.categorical_crossentropy_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ccelO import categorical_crossentropy_loss
 
 
@@ -10,7 +11,7 @@ def test_ccelO_basic():
     p = 5
     result = categorical_crossentropy_loss(y, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ccelO_edge():

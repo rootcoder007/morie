@@ -1,7 +1,6 @@
 """Tests for morie.fn.msprc -- Procrustes correlation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msprc import procrustes_corr
 
@@ -14,5 +13,5 @@ class TestProcrustesCorr:
         assert result.value is not None
 
     def test_output_type(self):
-        result = procrustes_corr(np.random.default_rng(0).standard_normal((5,2)))
+        result = procrustes_corr(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

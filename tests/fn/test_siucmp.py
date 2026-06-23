@@ -1,8 +1,9 @@
 """Tests for morie.fn.siucmp — SIU comparison."""
 
 import pytest
-from morie.fn.siucmp import siu_comparison
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.siucmp import siu_comparison
 
 
 class TestSiuComparison:

@@ -1,6 +1,7 @@
 """Conditional mutual information I(X;Y|Z)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["conditional_mi"]
@@ -30,7 +31,9 @@ def conditional_mi(pxyz):
     n = len(pxyz)
     result = float(np.mean(pxyz))
     se = float(np.std(pxyz, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conditional mutual information I(X;Y|Z)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Conditional mutual information I(X;Y|Z)"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test dklmc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dklmc import dklmc
 
 

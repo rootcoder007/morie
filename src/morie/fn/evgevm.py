@@ -1,6 +1,7 @@
 """MLE of GEV parameters from block maxima."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_gev_mle"]
@@ -32,7 +33,9 @@ def evt_gev_mle(x, init):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MLE of GEV parameters from block maxima"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MLE of GEV parameters from block maxima"}
+    )
 
 
 def cheatsheet():

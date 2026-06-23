@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhsmp -- Metropolis-Hastings sampler."""
 
 import numpy as np
+
 from morie.fn.mhsmp import metropolis_hastings
 
 
@@ -16,9 +17,7 @@ def test_correct_shape():
 
 
 def test_burn_in_and_thin():
-    result = metropolis_hastings(
-        lambda x: -0.5 * float(x @ x), [0.0], n_iter=1000, burn_in=200, thin=2
-    )
+    result = metropolis_hastings(lambda x: -0.5 * float(x @ x), [0.0], n_iter=1000, burn_in=200, thin=2)
     assert result["samples"].shape == (400, 1)
 
 
@@ -28,9 +27,7 @@ def test_acceptance_rate_reasonable():
 
 
 def test_samples_near_target_mean():
-    result = metropolis_hastings(
-        lambda x: -0.5 * float(x @ x), [0.0], n_iter=10000, burn_in=2000
-    )
+    result = metropolis_hastings(lambda x: -0.5 * float(x @ x), [0.0], n_iter=10000, burn_in=2000)
     assert abs(np.mean(result["samples"])) < 0.5
 
 

@@ -1,6 +1,7 @@
 """Tests for rgroc.rangayyan_roc_curve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgroc import rangayyan_roc_curve
 
 
@@ -10,7 +11,7 @@ def test_rgroc_basic():
     y_scores = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_roc_curve(y_true, y_scores)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgroc_edge():

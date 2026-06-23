@@ -1,6 +1,7 @@
 """Profile HMM database search."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["profile_hmm_search"]

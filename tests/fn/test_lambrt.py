@@ -1,6 +1,7 @@
 """Test lambrt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lambrt import lambrt
 
 

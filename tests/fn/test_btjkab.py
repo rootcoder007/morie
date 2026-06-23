@@ -1,6 +1,7 @@
 """Tests for btjkab.boot_jackknife_after_boot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.btjkab import boot_jackknife_after_boot
 
 
@@ -11,7 +12,7 @@ def test_btjkab_basic():
     B_idx = np.random.default_rng(42).normal(0, 1, 100)
     result = boot_jackknife_after_boot(x, theta_b, B_idx)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_btjkab_edge():

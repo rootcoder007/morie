@@ -1,6 +1,7 @@
 """Tests for grmse.geron_linreg_mse_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmse import geron_linreg_mse_cost
 
 
@@ -11,7 +12,7 @@ def test_grmse_basic():
     theta = 0.0
     result = geron_linreg_mse_cost(X, y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grmse_edge():

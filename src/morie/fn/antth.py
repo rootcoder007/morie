@@ -9,6 +9,7 @@ estimator is::
 which is unbiased and has variance no larger than crude MC when ``f`` is
 monotone in U.  Returns variance-reduction ratio vs the crude estimator.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -55,14 +56,18 @@ def antithetic_variates(x=None, f=None, N: int = 1000, seed: int = 42):
     se_av = float(paired.std(ddof=1) / np.sqrt(n))
     est_crude = float(fu.mean())
     var_crude = float(fu.var(ddof=1) / n)
-    var_av = se_av ** 2
+    var_av = se_av**2
     ratio = float(var_av / var_crude) if var_crude > 0 else float("nan")
-    return RichResult(payload={
-        "estimate": est_av, "estimate_crude": est_crude,
-        "se": se_av, "var_ratio_av_over_crude": ratio,
-        "n_pairs": int(n),
-        "method": "Antithetic variates (Hammersley & Morton 1956)",
-    })
+    return RichResult(
+        payload={
+            "estimate": est_av,
+            "estimate_crude": est_crude,
+            "se": se_av,
+            "var_ratio_av_over_crude": ratio,
+            "n_pairs": int(n),
+            "method": "Antithetic variates (Hammersley & Morton 1956)",
+        }
+    )
 
 
 # CANONICAL TEST

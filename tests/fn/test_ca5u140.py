@@ -1,6 +1,7 @@
 """Tests for ca5u140.ca_chapter_5_unnumbered_140."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ca5u140 import ca_chapter_5_unnumbered_140
 
 
@@ -9,7 +10,7 @@ def test_ca5u140_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = ca_chapter_5_unnumbered_140(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_ca5u140_edge():

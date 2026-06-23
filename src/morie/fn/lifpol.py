@@ -79,4 +79,4 @@ lifpol = lift_drag_polar
 
 
 def cheatsheet() -> str:
-    return 'lift_drag_polar({}) -> Lift-drag polar.'
+    return "lift_drag_polar({}) -> Lift-drag polar."

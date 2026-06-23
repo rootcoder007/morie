@@ -1,7 +1,7 @@
 """Tests for morie.fn.vtpar."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vtpar import vtpar
 
 

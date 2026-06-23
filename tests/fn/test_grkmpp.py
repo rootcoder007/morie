@@ -1,6 +1,7 @@
 """Tests for grkmpp.geron_kmeans_pp_seeding."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grkmpp import geron_kmeans_pp_seeding
 
 
@@ -11,7 +12,7 @@ def test_grkmpp_basic():
     seed = 42
     result = geron_kmeans_pp_seeding(X, k, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grkmpp_edge():

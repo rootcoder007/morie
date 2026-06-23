@@ -1,6 +1,7 @@
 """Joint robust location-scale (e.g. M-step + MAD)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["location_scale_estimator"]
@@ -30,7 +31,9 @@ def location_scale_estimator(x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Joint robust location-scale (e.g. M-step + MAD)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Joint robust location-scale (e.g. M-step + MAD)"}
+    )
 
 
 def cheatsheet():

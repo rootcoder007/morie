@@ -1,6 +1,7 @@
 """Test gcacd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcacd import gcacd
 
 

@@ -1,6 +1,7 @@
 """Tests for morie.fn.cdccm -- Charlson comorbidity index."""
 
 import pytest
+
 from morie.fn.cdccm import charlson_comorbidity
 
 

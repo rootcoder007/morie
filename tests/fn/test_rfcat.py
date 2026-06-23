@@ -1,6 +1,8 @@
 """Tests for rfcat."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfcat import rfcat
 
 
@@ -28,4 +30,5 @@ def test_rfcat_no_data():
 
 def test_rfcat_alias():
     from morie.fn.rfcat import rfcat
+
     assert rfcat is rfcat

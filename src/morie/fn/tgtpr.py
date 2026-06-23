@@ -58,7 +58,7 @@ def tgtpr(
             Q_star = special.expit(Q_logit + epsilon * H)
             Q_star = np.clip(Q_star, 1e-8, 1 - 1e-8)
             score = np.sum(H * (Y - Q_star))
-            info = np.sum(H ** 2 * Q_star * (1 - Q_star))
+            info = np.sum(H**2 * Q_star * (1 - Q_star))
             if abs(info) < 1e-12:
                 break
             step = score / info
@@ -71,7 +71,7 @@ def tgtpr(
         for it in range(max_iter):
             Q_star = Q_init + epsilon * H
             score = np.sum(H * (Y - Q_star))
-            info = np.sum(H ** 2)
+            info = np.sum(H**2)
             if abs(info) < 1e-12:
                 break
             step = score / info
@@ -87,7 +87,7 @@ def tgtpr(
         "epsilon": float(epsilon),
         "Q_star": Q_final,
         "converged": converged,
-        "n_iter": it + 1 if 'it' in dir() else 0,
+        "n_iter": it + 1 if "it" in dir() else 0,
         "n": n,
     }
 

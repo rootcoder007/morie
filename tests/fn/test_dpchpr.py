@@ -1,6 +1,7 @@
 """Tests for dpchpr.dp_changepoint."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpchpr import dp_changepoint
 
 
@@ -10,7 +11,7 @@ def test_dpchpr_basic():
     alpha = 0.05
     result = dp_changepoint(y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpchpr_edge():

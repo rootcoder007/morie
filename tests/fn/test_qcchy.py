@@ -1,7 +1,7 @@
 """Tests for morie.fn.qcchy -- Cauchy quantile."""
 
-import numpy as np
 import pytest
+
 from morie.fn.qcchy import qcchy
 
 

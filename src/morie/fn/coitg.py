@@ -50,8 +50,8 @@ def eg_coint(y1: np.ndarray, y2: np.ndarray, max_lag: int | None = None, cdf=Non
         Xr = np.column_stack(regs)
         b = np.linalg.lstsq(Xr, dep, rcond=None)[0]
         e = dep - Xr @ b
-        sig2 = float(np.sum(e ** 2) / (T - len(b)))
-        aic = T * np.log(np.sum(e ** 2) / T) + 2 * len(b)
+        sig2 = float(np.sum(e**2) / (T - len(b)))
+        aic = T * np.log(np.sum(e**2) / T) + 2 * len(b)
         if aic < best_aic:
             best_aic = aic
             se = float(np.sqrt(max(sig2 * np.linalg.inv(Xr.T @ Xr)[0, 0], 1e-20)))

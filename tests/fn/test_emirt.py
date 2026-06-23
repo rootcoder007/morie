@@ -1,5 +1,5 @@
 """Test emirt."""
-import numpy as np
+
 from morie.fn.emirt import em_irt_estimate
 
 

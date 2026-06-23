@@ -1,7 +1,7 @@
 """Tests for morie.fn.srcod -- AST depth analysis."""
 
-from morie.fn.srcod import ast_depth, srcod
 from morie.fn._containers import DescriptiveResult
+from morie.fn.srcod import ast_depth, srcod
 
 
 class TestSrcod:

@@ -1,6 +1,7 @@
 """Tests for fzt14.fauzi_thm1_4_asympnorm_mgkde."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzt14 import fauzi_thm1_4_asympnorm_mgkde
 
 
@@ -10,7 +11,7 @@ def test_fzt14_basic():
     bandwidth = 0.3
     result = fauzi_thm1_4_asympnorm_mgkde(x, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzt14_edge():

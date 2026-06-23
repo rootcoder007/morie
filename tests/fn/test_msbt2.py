@@ -1,7 +1,6 @@
 """Tests for morie.fn.msbt2 -- MDS bootstrap confidence"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msbt2 import mds_bootstrap
 
@@ -14,5 +13,5 @@ class TestMdsBootstrap:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_bootstrap(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_bootstrap(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

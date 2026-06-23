@@ -1,6 +1,7 @@
 """Nelson skewed-GED-EGARCH."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_nelson_skew_garch"]

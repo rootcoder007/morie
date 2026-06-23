@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FlashAttention: IO-aware exact attention with tiling and recomputation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius"]
@@ -36,8 +38,15 @@ def geron_flash_attention(Q, K, V, block_size):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Look well into thyself; there is a source which will always spring up. -- Marcus Aurelius",
+        }
+    )
 
 
 def cheatsheet():
-    return 'hmfa() -> FlashAttention: IO-aware exact attention with tiling and recomputation'
+    return "hmfa() -> FlashAttention: IO-aware exact attention with tiling and recomputation"

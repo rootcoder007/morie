@@ -1,6 +1,7 @@
 """Integrated GARCH (alpha + beta = 1)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["igarch_integrated"]

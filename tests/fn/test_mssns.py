@@ -1,6 +1,7 @@
 """Tests for morie.fn.mssns -- missing sensitivity analysis."""
 
 import numpy as np
+
 from morie.fn.mssns import missing_sensitivity_analysis, mssns
 
 

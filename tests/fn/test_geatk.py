@@ -1,6 +1,7 @@
 """Test geatk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geatk import geatk
 
 

@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-correlation function (CCF) between two signals."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ccf"]
@@ -35,9 +37,23 @@ def rangayyan_ccf(x, y, max_lag):
     y = np.asarray(y, dtype=float)
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Cross-correlation function (CCF) between two signals"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Cross-correlation function (CCF) between two signals",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Cross-correlation function (CCF) between two signals"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Cross-correlation function (CCF) between two signals",
+        }
+    )
 
 
 def cheatsheet():

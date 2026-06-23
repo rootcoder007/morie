@@ -1,6 +1,8 @@
 """Non-stationary covariance estimation (moving-window deformation-style)."""
+
 import numpy as np
 from scipy.spatial.distance import cdist
+
 from ._richresult import RichResult
 
 __all__ = ["nonstationary_covariance"]
@@ -48,22 +50,24 @@ def nonstationary_covariance(x, coords, bandwidth: float | None = None):
     wsum = K.sum(axis=1)
     mu_local = (K @ x) / np.where(wsum > 0, wsum, 1.0)
     dev = x - mu_local
-    var_local = (K @ (dev ** 2)) / np.where(wsum > 0, wsum, 1.0)
+    var_local = (K @ (dev**2)) / np.where(wsum > 0, wsum, 1.0)
     sigma_local = np.sqrt(np.maximum(var_local, 1e-12))
     # Standardised residuals
     eps = dev / sigma_local
     # Empirical correlation of standardised residuals smoothed by K
     rho = K * np.outer(eps, eps) / (np.sqrt(np.outer(wsum, wsum)) + 1e-12)
     C = np.outer(sigma_local, sigma_local) * rho
-    return RichResult(payload={
-        "estimate": {
-            "sigma_local": sigma_local.tolist(),
-            "C_matrix": C.tolist(),
-            "bandwidth": float(bandwidth),
-        },
-        "n": int(n),
-        "method": "Non-stationary covariance (moving-window kernel)",
-    })
+    return RichResult(
+        payload={
+            "estimate": {
+                "sigma_local": sigma_local.tolist(),
+                "C_matrix": C.tolist(),
+                "bandwidth": float(bandwidth),
+            },
+            "n": int(n),
+            "method": "Non-stationary covariance (moving-window kernel)",
+        }
+    )
 
 
 def cheatsheet():

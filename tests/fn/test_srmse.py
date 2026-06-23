@@ -1,7 +1,9 @@
 """Test root_mean_squared_error (srmse)."""
+
 import numpy as np
-from morie.fn.srmse import root_mean_squared_error, srmse
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.srmse import root_mean_squared_error, srmse
 
 
 class TestRMSE:

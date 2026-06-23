@@ -1,13 +1,14 @@
 """Test gauss_quadrature (gqadr)."""
+
 import numpy as np
 
-from morie.fn.gqadr import gauss_quadrature, gqadr
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gqadr import gauss_quadrature, gqadr
 
 
 class TestGaussQuadrature:
     def test_polynomial(self):
-        result = gauss_quadrature(lambda x: x ** 2, 0.0, 1.0, n=5)
+        result = gauss_quadrature(lambda x: x**2, 0.0, 1.0, n=5)
         assert isinstance(result, DescriptiveResult)
         assert result.name == "gauss_quadrature"
         assert np.isclose(result.value, 1.0 / 3.0, atol=1e-12)

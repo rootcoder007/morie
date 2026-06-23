@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.sace import sace as sace_fn
+
 from morie.fn._containers import ESRes
+from morie.fn.sace import sace as sace_fn
 
 
 class TestSACE:

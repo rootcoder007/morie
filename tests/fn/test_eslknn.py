@@ -1,6 +1,7 @@
 """Tests for eslknn.esl_knn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslknn import esl_knn
 
 
@@ -11,7 +12,7 @@ def test_eslknn_basic():
     k = 5
     result = esl_knn(X, y, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslknn_edge():

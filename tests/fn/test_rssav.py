@@ -1,6 +1,7 @@
 """Test rssav."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rssav import rssav
 
 

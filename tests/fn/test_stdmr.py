@@ -1,6 +1,7 @@
 """Tests for morie.fn.stdmr -- Standardized mortality ratio."""
 
 import pytest
+
 from morie.fn.stdmr import standardized_mortality_ratio
 
 

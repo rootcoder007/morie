@@ -58,8 +58,8 @@ def negbin_glm(
     for _ in range(max_iter):
         eta = X @ beta
         mu = np.exp(np.clip(eta, -20, 20))
-        v = mu + alpha * mu ** 2
-        W = mu ** 2 / (v + 1e-12)
+        v = mu + alpha * mu**2
+        W = mu**2 / (v + 1e-12)
         z = eta + (y - mu) / (mu + 1e-12)
         XtWX = (X * W[:, None]).T @ X
         XtWz = (X * W[:, None]).T @ z
@@ -74,17 +74,19 @@ def negbin_glm(
 
     mu_f = np.exp(np.clip(X @ beta, -20, 20))
     r_nb = 1.0 / (alpha + 1e-12)
-    ll = float(np.sum(
-        special.gammaln(y + r_nb)
-        - special.gammaln(r_nb)
-        - special.gammaln(y + 1)
-        + r_nb * np.log(r_nb / (r_nb + mu_f + 1e-12))
-        + y * np.log(mu_f / (r_nb + mu_f + 1e-12) + 1e-300)
-    ))
+    ll = float(
+        np.sum(
+            special.gammaln(y + r_nb)
+            - special.gammaln(r_nb)
+            - special.gammaln(y + 1)
+            + r_nb * np.log(r_nb / (r_nb + mu_f + 1e-12))
+            + y * np.log(mu_f / (r_nb + mu_f + 1e-12) + 1e-300)
+        )
+    )
     aic = -2.0 * ll + 2 * k
 
-    v_f = mu_f + alpha * mu_f ** 2
-    W_f = mu_f ** 2 / (v_f + 1e-12)
+    v_f = mu_f + alpha * mu_f**2
+    W_f = mu_f**2 / (v_f + 1e-12)
     XtWX = (X * W_f[:, None]).T @ X
     try:
         cov = np.linalg.inv(XtWX)
@@ -95,9 +97,7 @@ def negbin_glm(
     z_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.norm.sf(np.abs(z_vals))
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method=f"NegBin GLM (alpha={alpha})",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

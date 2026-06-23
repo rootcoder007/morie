@@ -1,6 +1,8 @@
 """Anisotropy detection by comparison of directional variograms."""
+
 import numpy as np
 from scipy import stats as _scistats
+
 from ._richresult import RichResult
 
 __all__ = ["anisotropy_test"]
@@ -53,10 +55,14 @@ def anisotropy_test(x, coords, n_dirs: int = 4, tol_deg: float = 22.5):
         raise ValueError(f"coords rows ({coords.shape[0]}) must match x ({n})")
     if coords.shape[1] == 1:
         # Anisotropy is undefined in 1D -- return null result
-        return RichResult(payload={
-            "statistic": 0.0, "p_value": 1.0, "n": int(n),
-            "method": "Anisotropy test (1D: trivially isotropic)",
-        })
+        return RichResult(
+            payload={
+                "statistic": 0.0,
+                "p_value": 1.0,
+                "n": int(n),
+                "method": "Anisotropy test (1D: trivially isotropic)",
+            }
+        )
     tol_rad = np.deg2rad(tol_deg)
     angles = np.linspace(0.0, np.pi, n_dirs, endpoint=False)
 
@@ -70,20 +76,26 @@ def anisotropy_test(x, coords, n_dirs: int = 4, tol_deg: float = 22.5):
         groups.append(diffs2)
         means.append(0.5 * diffs2.mean())
     if len(groups) < 2:
-        return RichResult(payload={
-            "statistic": float("nan"), "p_value": float("nan"),
-            "n": int(n), "method": "Anisotropy test (insufficient pairs)",
-        })
+        return RichResult(
+            payload={
+                "statistic": float("nan"),
+                "p_value": float("nan"),
+                "n": int(n),
+                "method": "Anisotropy test (insufficient pairs)",
+            }
+        )
     # Levene's test on squared-differences -- robust to non-normality
     stat, p = _scistats.levene(*groups, center="median")
-    return RichResult(payload={
-        "statistic": float(stat),
-        "p_value": float(p),
-        "directional_gamma": [float(m) for m in means],
-        "directions_deg": [float(np.rad2deg(a)) for a in angles[:len(means)]],
-        "n": int(n),
-        "method": f"Anisotropy test (Levene across {n_dirs} directions)",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(stat),
+            "p_value": float(p),
+            "directional_gamma": [float(m) for m in means],
+            "directions_deg": [float(np.rad2deg(a)) for a in angles[: len(means)]],
+            "n": int(n),
+            "method": f"Anisotropy test (Levene across {n_dirs} directions)",
+        }
+    )
 
 
 def cheatsheet():

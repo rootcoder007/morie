@@ -1,6 +1,7 @@
 """Symmetric Sinkhorn divergence S_ε(μ,ν)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_sinkhorn_divergence"]
@@ -40,7 +41,9 @@ def ot_sinkhorn_divergence(a, b, Cab, Caa, Cbb, epsilon):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Symmetric Sinkhorn divergence S_ε(μ,ν)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Symmetric Sinkhorn divergence S_ε(μ,ν)"}
+    )
 
 
 def cheatsheet():

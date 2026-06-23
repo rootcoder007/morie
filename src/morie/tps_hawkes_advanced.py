@@ -57,8 +57,7 @@ def _ensure_dirs() -> None:
 # ── Kernel densities and CDFs ───────────────────────────────────────
 
 
-def _kernel_density(u: np.ndarray, kind: KernelKind,
-                    psi: tuple[float, ...]) -> np.ndarray:
+def _kernel_density(u: np.ndarray, kind: KernelKind, psi: tuple[float, ...]) -> np.ndarray:
     """Normalised excitation density g̃(u) at lags u ≥ 0.
 
     Parameters
@@ -75,31 +74,24 @@ def _kernel_density(u: np.ndarray, kind: KernelKind,
     if kind == "gamma":
         alpha, beta = psi
         # density: β^α u^{α-1} e^{-β u} / Γ(α)
-        log_d = (alpha * math.log(beta)
-                 + (alpha - 1) * np.log(np.maximum(u, 1e-300))
-                 - beta * u
-                 - math.lgamma(alpha))
+        log_d = alpha * math.log(beta) + (alpha - 1) * np.log(np.maximum(u, 1e-300)) - beta * u - math.lgamma(alpha)
         return np.exp(log_d)
     if kind == "weibull":
         alpha, lam = psi
         x = u / lam
-        return (alpha / lam) * np.power(np.maximum(x, 1e-300),
-                                         alpha - 1) * np.exp(-np.power(x, alpha))
+        return (alpha / lam) * np.power(np.maximum(x, 1e-300), alpha - 1) * np.exp(-np.power(x, alpha))
     if kind == "lomax":
         # v0.9.5.6+: scipy.stats.lomax convention.
         # density: alpha * c^alpha * (u+c)^{-(alpha+1)} for alpha > 0, c > 0.
         # Pre-v0.9.5.6 used the (alpha-1) shifted form which gave
         # zero density at alpha = 1 and required alpha > 1.
         alpha, c = psi
-        log_d = (math.log(alpha)
-                 + alpha * math.log(c)
-                 - (alpha + 1.0) * np.log(u + c))
+        log_d = math.log(alpha) + alpha * math.log(c) - (alpha + 1.0) * np.log(u + c)
         return np.exp(log_d)
     raise ValueError(f"unknown kernel kind: {kind}")
 
 
-def _kernel_cdf(u: np.ndarray, kind: KernelKind,
-                psi: tuple[float, ...]) -> np.ndarray:
+def _kernel_cdf(u: np.ndarray, kind: KernelKind, psi: tuple[float, ...]) -> np.ndarray:
     """Cumulative ∫_0^u g̃(v) dv, used to evaluate ∫_{t_i}^T g(t-t_i) dt."""
     u = np.asarray(u, dtype=float)
     if kind == "exponential":
@@ -125,8 +117,7 @@ def _n_kernel_params(kind: KernelKind) -> int:
 # ── Baselines and their integrals ───────────────────────────────────
 
 
-def _baseline(t: np.ndarray, kind: BaselineKind, alpha: tuple[float, ...],
-              T: float) -> np.ndarray:
+def _baseline(t: np.ndarray, kind: BaselineKind, alpha: tuple[float, ...], T: float) -> np.ndarray:
     """Baseline intensity ν(t) on [0, T] in events / day.
 
     ``"constant"``  ->  ν(t) = exp(a₀)  (one parameter, log-link).
@@ -139,14 +130,13 @@ def _baseline(t: np.ndarray, kind: BaselineKind, alpha: tuple[float, ...],
         return np.full_like(t, math.exp(a0))
     if kind == "sinusoidal":
         a0, a1, a2, a3 = alpha
-        return np.exp(a0 + a1 * (t / max(T, 1.0))
-                       + a2 * np.sin(2 * math.pi * t / 365.25)
-                       + a3 * np.cos(2 * math.pi * t / 365.25))
+        return np.exp(
+            a0 + a1 * (t / max(T, 1.0)) + a2 * np.sin(2 * math.pi * t / 365.25) + a3 * np.cos(2 * math.pi * t / 365.25)
+        )
     raise ValueError(f"unknown baseline kind: {kind}")
 
 
-def _baseline_integral(T: float, kind: BaselineKind,
-                       alpha: tuple[float, ...]) -> float:
+def _baseline_integral(T: float, kind: BaselineKind, alpha: tuple[float, ...]) -> float:
     """∫_0^T ν(t) dt -- closed form for constant, trapezoidal otherwise."""
     if kind == "constant":
         (a0,) = alpha
@@ -165,23 +155,23 @@ def _n_baseline_params(kind: BaselineKind) -> int:
 # ── Negative log-likelihood ─────────────────────────────────────────
 
 
-def _split_theta(theta: np.ndarray, kernel_kind: KernelKind,
-                 baseline_kind: BaselineKind
-                 ) -> tuple[tuple[float, ...], float, tuple[float, ...]]:
+def _split_theta(
+    theta: np.ndarray, kernel_kind: KernelKind, baseline_kind: BaselineKind
+) -> tuple[tuple[float, ...], float, tuple[float, ...]]:
     """θ -> (α-baseline, η-branching-ratio, ψ-kernel)."""
     nb = _n_baseline_params(baseline_kind)
     nk = _n_kernel_params(kernel_kind)
     if theta.size != nb + 1 + nk:
-        raise ValueError(f"expected {nb+1+nk} params, got {theta.size}")
+        raise ValueError(f"expected {nb + 1 + nk} params, got {theta.size}")
     a = tuple(theta[:nb])
     eta = float(theta[nb])
-    psi = tuple(theta[nb + 1:])
+    psi = tuple(theta[nb + 1 :])
     return a, eta, psi
 
 
-def _neg_loglik_general(theta: np.ndarray, t: np.ndarray, T: float,
-                        kernel_kind: KernelKind,
-                        baseline_kind: BaselineKind) -> float:
+def _neg_loglik_general(
+    theta: np.ndarray, t: np.ndarray, T: float, kernel_kind: KernelKind, baseline_kind: BaselineKind
+) -> float:
     """Negative log-likelihood for a general non-stationary Hawkes process.
 
     Uses the form
@@ -207,7 +197,7 @@ def _neg_loglik_general(theta: np.ndarray, t: np.ndarray, T: float,
     nk = _n_kernel_params(kernel_kind)
     a = tuple(theta[:nb])
     eta = float(theta[nb])
-    psi = tuple(theta[nb + 1:])
+    psi = tuple(theta[nb + 1 :])
 
     # box constraints
     if eta <= 1e-6 or eta >= 0.999:
@@ -226,24 +216,20 @@ def _neg_loglik_general(theta: np.ndarray, t: np.ndarray, T: float,
             lam_i = nu_at_t[0]
         else:
             lags = t[i] - t[:i]
-            lam_i = nu_at_t[i] + eta * np.sum(_kernel_density(lags,
-                                                                kernel_kind,
-                                                                psi))
+            lam_i = nu_at_t[i] + eta * np.sum(_kernel_density(lags, kernel_kind, psi))
         if lam_i <= 0:
             return 1e12
         log_sum += math.log(lam_i)
 
     # ∫_0^T λ(s) ds
-    integral = _baseline_integral(T, baseline_kind, a) \
-        + eta * float(np.sum(_kernel_cdf(T - t, kernel_kind, psi)))
+    integral = _baseline_integral(T, baseline_kind, a) + eta * float(np.sum(_kernel_cdf(T - t, kernel_kind, psi)))
     return -(log_sum - integral)
 
 
 # ── Initial-guess heuristics ────────────────────────────────────────
 
 
-def _x0(kernel_kind: KernelKind, baseline_kind: BaselineKind,
-        n: int, T: float, mean_dt: float) -> np.ndarray:
+def _x0(kernel_kind: KernelKind, baseline_kind: BaselineKind, n: int, T: float, mean_dt: float) -> np.ndarray:
     rate = max(n / T, 1e-3)
     if baseline_kind == "constant":
         a = [math.log(rate * 0.6)]
@@ -264,10 +250,9 @@ def _x0(kernel_kind: KernelKind, baseline_kind: BaselineKind,
 # ── Public fit + GoF ────────────────────────────────────────────────
 
 
-def fit_hawkes_general(t: np.ndarray, T: float,
-                        kernel_kind: KernelKind = "exponential",
-                        baseline_kind: BaselineKind = "constant"
-                        ) -> dict:
+def fit_hawkes_general(
+    t: np.ndarray, T: float, kernel_kind: KernelKind = "exponential", baseline_kind: BaselineKind = "constant"
+) -> dict:
     """MLE of a non-stationary Hawkes process.
 
     Returns a dict with ``theta``, ``nll``, ``aic``, ``bic``,
@@ -299,11 +284,14 @@ def fit_hawkes_general(t: np.ndarray, T: float,
         bounds += [(0.1, 15.0), (0.05, 25.0)]  # alpha, beta
     elif kernel_kind == "lomax":
         bounds += [(1.05, 30.0), (1e-3, 100.0)]  # alpha, c
-    res = minimize(_neg_loglik_general, x0,
-                    args=(t, T, kernel_kind, baseline_kind),
-                    method="L-BFGS-B",
-                    bounds=bounds,
-                    options={"maxiter": 1000, "ftol": 1e-9})
+    res = minimize(
+        _neg_loglik_general,
+        x0,
+        args=(t, T, kernel_kind, baseline_kind),
+        method="L-BFGS-B",
+        bounds=bounds,
+        options={"maxiter": 1000, "ftol": 1e-9},
+    )
     theta = res.x
     nll = float(res.fun)
     a, eta, psi = _split_theta(theta, kernel_kind, baseline_kind)
@@ -334,9 +322,9 @@ def fit_hawkes_general(t: np.ndarray, T: float,
     }
 
 
-def _time_rescaling_residuals(theta: np.ndarray, t: np.ndarray, T: float,
-                               kernel_kind: KernelKind,
-                               baseline_kind: BaselineKind) -> np.ndarray:
+def _time_rescaling_residuals(
+    theta: np.ndarray, t: np.ndarray, T: float, kernel_kind: KernelKind, baseline_kind: BaselineKind
+) -> np.ndarray:
     """Return U_i = 1 - exp(-(Λ(t_i) - Λ(t_{i-1}))) ∈ [0, 1].
 
     Under correct specification U_i ∼ Uniform(0,1) iid (Brown et al.
@@ -345,21 +333,18 @@ def _time_rescaling_residuals(theta: np.ndarray, t: np.ndarray, T: float,
     nb = _n_baseline_params(baseline_kind)
     a = tuple(theta[:nb])
     eta = float(theta[nb])
-    psi = tuple(theta[nb + 1:])
+    psi = tuple(theta[nb + 1 :])
 
     n = t.size
     # Λ(t_i) = ∫_0^{t_i} ν(s) ds + η Σ_{j<i} F̃(t_i - t_j)
     bl_grid = np.linspace(0.0, float(T), max(256, int(T) + 1))
     bl_vals = _baseline(bl_grid, baseline_kind, a, T)
-    cum_baseline = np.concatenate(([0.0], np.cumsum(0.5 *
-                                                     (bl_vals[1:] + bl_vals[:-1])
-                                                     * np.diff(bl_grid))))
+    cum_baseline = np.concatenate(([0.0], np.cumsum(0.5 * (bl_vals[1:] + bl_vals[:-1]) * np.diff(bl_grid))))
 
     def Lambda_at(ti: float) -> float:
         bl = float(np.interp(ti, bl_grid, cum_baseline))
         prior = t[t < ti]
-        excite = eta * float(np.sum(_kernel_cdf(ti - prior,
-                                                  kernel_kind, psi)))
+        excite = eta * float(np.sum(_kernel_cdf(ti - prior, kernel_kind, psi)))
         return bl + excite
 
     inc = np.empty(n)
@@ -398,11 +383,14 @@ def _events_to_days(df: pd.DataFrame, max_n: int) -> tuple[np.ndarray, float]:
     return t, float(t[-1])
 
 
-def hawkes_advanced_fit(df: pd.DataFrame, *,
-                         kernel: KernelKind = "gamma",
-                         baseline: BaselineKind = "sinusoidal",
-                         ds_name: str = "?",
-                         max_n: int = 5000) -> RichResult:
+def hawkes_advanced_fit(
+    df: pd.DataFrame,
+    *,
+    kernel: KernelKind = "gamma",
+    baseline: BaselineKind = "sinusoidal",
+    ds_name: str = "?",
+    max_n: int = 5000,
+) -> RichResult:
     """Fit a single (kernel, baseline) combination with figures.
 
     A sibling to ``morie.tps_stochastic.hawkes_temporal_fit`` which is
@@ -411,36 +399,33 @@ def hawkes_advanced_fit(df: pd.DataFrame, *,
     from .tps_stochastic import _try_savefig
 
     if "OCC_DATE" not in df.columns and "REPORT_DATE" not in df.columns:
-        return RichResult(title=f"Hawkes-{kernel}/{baseline} -- {ds_name}",
-                          warnings=["no OCC_DATE or REPORT_DATE column"])
+        return RichResult(
+            title=f"Hawkes-{kernel}/{baseline} -- {ds_name}", warnings=["no OCC_DATE or REPORT_DATE column"]
+        )
     t, T = _events_to_days(df, max_n)
     if t.size < 100:
-        return RichResult(title=f"Hawkes-{kernel}/{baseline} -- {ds_name}",
-                          warnings=[f"only {t.size} timestamps"])
+        return RichResult(title=f"Hawkes-{kernel}/{baseline} -- {ds_name}", warnings=[f"only {t.size} timestamps"])
 
-    result = fit_hawkes_general(t, T, kernel_kind=kernel,
-                                  baseline_kind=baseline)
+    result = fit_hawkes_general(t, T, kernel_kind=kernel, baseline_kind=baseline)
 
     # QQ figure
     fig_path = None
     try:
         import matplotlib.pyplot as plt
+
         u = np.array(result["rescaled_uniforms"])
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))
         sps.probplot(u, dist="uniform", plot=ax[0])
-        ax[0].set_title(f"{ds_name} -- Q-Q vs Uniform "
-                         f"(KS p = {result['ks_pvalue']:.3f})")
+        ax[0].set_title(f"{ds_name} -- Q-Q vs Uniform (KS p = {result['ks_pvalue']:.3f})")
         # density vs empirical
-        ax[1].hist(u, bins=30, color="#3584e4", alpha=0.7,
-                    density=True, label="empirical U_i")
+        ax[1].hist(u, bins=30, color="#3584e4", alpha=0.7, density=True, label="empirical U_i")
         ax[1].axhline(1.0, color="#e66100", ls="--", label="Uniform(0,1)")
         ax[1].set_xlim(0, 1)
         ax[1].legend()
         ax[1].set_title(f"{kernel}/{baseline} kernel")
         fig.suptitle(f"Time-rescaling residuals -- {ds_name}")
         plt.tight_layout()
-        fig_path = _try_savefig(
-            f"hawkes_qq_{kernel}_{baseline}_{ds_name}.png", fig)
+        fig_path = _try_savefig(f"hawkes_qq_{kernel}_{baseline}_{ds_name}.png", fig)
     except Exception:
         pass
 
@@ -465,11 +450,9 @@ def hawkes_advanced_fit(df: pd.DataFrame, *,
     interp = (
         f"Branching ratio η = {eta:.3f} -> mean {eta:.2f} offspring "
         f"per event. "
-        + ("Process is stationary (η < 1)."
-           if eta < 1 else "Process is EXPLOSIVE (η ≥ 1).")
+        + ("Process is stationary (η < 1)." if eta < 1 else "Process is EXPLOSIVE (η ≥ 1).")
         + " Time-rescaling KS p = "
-        + ("strong fit; "
-           if result["ks_pvalue"] >= 0.05 else "fit is rejected; ")
+        + ("strong fit; " if result["ks_pvalue"] >= 0.05 else "fit is rejected; ")
         + f"residuals {'consistent with' if result['ks_pvalue'] >= 0.05 else 'depart from'} Uniform(0,1)."
     )
     payload = dict(result)
@@ -482,12 +465,14 @@ def hawkes_advanced_fit(df: pd.DataFrame, *,
     )
 
 
-def compare_hawkes_kernels(df: pd.DataFrame, *,
-                             ds_name: str = "?",
-                             max_n: int = 4000,
-                             baselines: tuple[BaselineKind, ...] = BASELINES,
-                             kernels: tuple[KernelKind, ...] = KERNELS
-                             ) -> RichResult:
+def compare_hawkes_kernels(
+    df: pd.DataFrame,
+    *,
+    ds_name: str = "?",
+    max_n: int = 4000,
+    baselines: tuple[BaselineKind, ...] = BASELINES,
+    kernels: tuple[KernelKind, ...] = KERNELS,
+) -> RichResult:
     """Fit every (kernel, baseline) combination and rank by AIC.
 
     Mirrors Section 5 (numerical examples) of Kwan-Chen-Dunsmuir 2024:
@@ -495,50 +480,57 @@ def compare_hawkes_kernels(df: pd.DataFrame, *,
     the non-Markovian non-stationary models are everything else.
     """
     if "OCC_DATE" not in df.columns and "REPORT_DATE" not in df.columns:
-        return RichResult(title=f"Hawkes comparison -- {ds_name}",
-                          warnings=["no OCC_DATE or REPORT_DATE column"])
+        return RichResult(title=f"Hawkes comparison -- {ds_name}", warnings=["no OCC_DATE or REPORT_DATE column"])
     t, T = _events_to_days(df, max_n)
     if t.size < 100:
-        return RichResult(title=f"Hawkes comparison -- {ds_name}",
-                          warnings=[f"only {t.size} timestamps"])
+        return RichResult(title=f"Hawkes comparison -- {ds_name}", warnings=[f"only {t.size} timestamps"])
 
     rows = []
     for k in kernels:
         for b in baselines:
             try:
-                fit = fit_hawkes_general(t, T,
-                                          kernel_kind=k, baseline_kind=b)
-                rows.append({
-                    "kernel": k, "baseline": b,
-                    "k_params": fit["k_params"],
-                    "nll": round(fit["nll"], 1),
-                    "aic": round(fit["aic"], 1),
-                    "bic": round(fit["bic"], 1),
-                    "branching_ratio": round(fit["branching_ratio"], 3),
-                    "ks_pvalue": round(fit["ks_pvalue"], 4),
-                    "markovian": (k == "exponential"),
-                    "stationary_baseline": (b == "constant"),
-                })
+                fit = fit_hawkes_general(t, T, kernel_kind=k, baseline_kind=b)
+                rows.append(
+                    {
+                        "kernel": k,
+                        "baseline": b,
+                        "k_params": fit["k_params"],
+                        "nll": round(fit["nll"], 1),
+                        "aic": round(fit["aic"], 1),
+                        "bic": round(fit["bic"], 1),
+                        "branching_ratio": round(fit["branching_ratio"], 3),
+                        "ks_pvalue": round(fit["ks_pvalue"], 4),
+                        "markovian": (k == "exponential"),
+                        "stationary_baseline": (b == "constant"),
+                    }
+                )
             except Exception as exc:  # noqa: BLE001
-                rows.append({
-                    "kernel": k, "baseline": b, "error": str(exc),
-                })
+                rows.append(
+                    {
+                        "kernel": k,
+                        "baseline": b,
+                        "error": str(exc),
+                    }
+                )
 
     fitted = [r for r in rows if "error" not in r]
     fitted.sort(key=lambda r: r["aic"])
     best = fitted[0] if fitted else None
-    summary = [("Combinations fitted", len(fitted)),
-                ("Combinations failed", len(rows) - len(fitted))]
+    summary = [("Combinations fitted", len(fitted)), ("Combinations failed", len(rows) - len(fitted))]
     if best is not None:
         summary += [
-            ("Best (lowest AIC)",
-              f"{best['kernel']} / {best['baseline']}"),
-            ("Δ AIC vs Markovian classical",
-              round(
-                  next((r["aic"] for r in fitted
-                        if r["kernel"] == "exponential"
-                        and r["baseline"] == "constant"),
-                       float("nan")) - best["aic"], 1)),
+            ("Best (lowest AIC)", f"{best['kernel']} / {best['baseline']}"),
+            (
+                "Δ AIC vs Markovian classical",
+                round(
+                    next(
+                        (r["aic"] for r in fitted if r["kernel"] == "exponential" and r["baseline"] == "constant"),
+                        float("nan"),
+                    )
+                    - best["aic"],
+                    1,
+                ),
+            ),
         ]
     interp = (
         "Comparison of the eight (kernel × baseline) combinations. "
@@ -557,16 +549,16 @@ def compare_hawkes_kernels(df: pd.DataFrame, *,
     )
 
 
-def hawkes_markovian_vs_nonmarkovian(df: pd.DataFrame, *,
-                                       ds_name: str = "?",
-                                       max_n: int = 4000) -> RichResult:
+def hawkes_markovian_vs_nonmarkovian(df: pd.DataFrame, *, ds_name: str = "?", max_n: int = 4000) -> RichResult:
     """Focused 2-way comparison: classical exp/const vs gamma/sinusoidal.
 
     The two endpoints of the Kwan-Chen-Dunsmuir framework -- quickest to
     run on the dashboard.
     """
     return compare_hawkes_kernels(
-        df, ds_name=ds_name, max_n=max_n,
+        df,
+        ds_name=ds_name,
+        max_n=max_n,
         kernels=("exponential", "gamma"),
         baselines=("constant", "sinusoidal"),
     )

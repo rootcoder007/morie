@@ -1,8 +1,9 @@
 """Tests for morie.fn.blckw -- SNR degradation."""
 
 import numpy as np
-from morie.fn.blckw import snr_degradation, blckw
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.blckw import blckw, snr_degradation
 
 
 class TestBlckw:

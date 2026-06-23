@@ -1,5 +1,7 @@
 """GLS for spatial data with known Sigma."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_gls_spatial"]

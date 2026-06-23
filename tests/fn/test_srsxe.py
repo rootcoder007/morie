@@ -1,6 +1,7 @@
 """Test srsxe."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srsxe import srsxe
 
 

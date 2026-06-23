@@ -1,6 +1,7 @@
 """Inverse distance weighting interpolation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["inverse_distance_weighting"]
@@ -36,7 +37,9 @@ def inverse_distance_weighting(coords, values, s_predict, power):
     n = len(values)
     result = float(np.mean(values))
     se = float(np.std(values, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inverse distance weighting interpolation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Inverse distance weighting interpolation"}
+    )
 
 
 def cheatsheet():

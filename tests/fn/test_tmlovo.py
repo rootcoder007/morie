@@ -1,6 +1,7 @@
 """Tests for tmlovo.tmle_outcome_only_regr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlovo import tmle_outcome_only_regr
 
 
@@ -11,7 +12,7 @@ def test_tmlovo_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = tmle_outcome_only_regr(y, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlovo_edge():

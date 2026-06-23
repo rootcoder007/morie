@@ -1,7 +1,7 @@
 """Tests for morie.fn.paldet -- Palindrome detection."""
 
-from morie.fn.paldet import palindrome_detect, paldet
 from morie.fn._containers import DescriptiveResult
+from morie.fn.paldet import paldet, palindrome_detect
 
 
 class TestPaldet:

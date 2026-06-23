@@ -1,6 +1,7 @@
 """Tests for mamh.ma_mantel_haenszel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mamh import ma_mantel_haenszel
 
 
@@ -12,7 +13,7 @@ def test_mamh_basic():
     d = 5
     result = ma_mantel_haenszel(a, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mamh_edge():

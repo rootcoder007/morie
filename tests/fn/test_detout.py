@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.detout import detect_outliers, detout
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.detout import detect_outliers, detout
 
 
 class TestDetout:

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zemch -- Maternal-child health mapping"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zemch import maternal_child_map
 

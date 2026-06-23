@@ -1,6 +1,7 @@
 """Test wqrec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wqrec import wqrec
 
 

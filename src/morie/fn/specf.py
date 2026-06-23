@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spectral density estimation (Welch periodogram)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -51,38 +52,49 @@ def spectral_density(x, fs=1.0, nperseg=None):
 
     try:
         from scipy import signal as sps
+
         f, S = sps.welch(r, fs=fs, nperseg=nperseg)
-        return RichResult(payload={
-            "frequencies": f, "psd": S,
-            "n_segments": int(max(1, (n - nperseg) // (nperseg // 2) + 1)),
-            "nperseg": int(nperseg), "fs": float(fs), "n": int(n),
-            "method": "Welch PSD via scipy.signal.welch",
-        })
+        return RichResult(
+            payload={
+                "frequencies": f,
+                "psd": S,
+                "n_segments": int(max(1, (n - nperseg) // (nperseg // 2) + 1)),
+                "nperseg": int(nperseg),
+                "fs": float(fs),
+                "n": int(n),
+                "method": "Welch PSD via scipy.signal.welch",
+            }
+        )
     except Exception:
         pass
 
     # Pure-NumPy Welch with Hann window, 50% overlap.
     step = max(nperseg // 2, 1)
     win = 0.5 - 0.5 * np.cos(2 * np.pi * np.arange(nperseg) / max(nperseg - 1, 1))
-    U = float(np.sum(win ** 2))
+    U = float(np.sum(win**2))
     nfreq = nperseg // 2 + 1
     S = np.zeros(nfreq)
     nseg = 0
     start = 0
     while start + nperseg <= n:
-        seg = (r[start:start + nperseg] - r[start:start + nperseg].mean()) * win
+        seg = (r[start : start + nperseg] - r[start : start + nperseg].mean()) * win
         F = np.fft.rfft(seg)
         S += np.abs(F) ** 2
         nseg += 1
         start += step
-    S /= (nseg * U * fs)
+    S /= nseg * U * fs
     freqs = np.fft.rfftfreq(nperseg, d=1.0 / fs)
-    return RichResult(payload={
-        "frequencies": freqs, "psd": S,
-        "n_segments": int(nseg), "nperseg": int(nperseg),
-        "fs": float(fs), "n": int(n),
-        "method": "Welch PSD (Hann window, 50% overlap, numpy)",
-    })
+    return RichResult(
+        payload={
+            "frequencies": freqs,
+            "psd": S,
+            "n_segments": int(nseg),
+            "nperseg": int(nperseg),
+            "fs": float(fs),
+            "n": int(n),
+            "method": "Welch PSD (Hann window, 50% overlap, numpy)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for grimp.geron_simple_imputer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grimp import geron_simple_imputer
 
 
@@ -10,7 +11,7 @@ def test_grimp_basic():
     strategy = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_simple_imputer(X, strategy)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grimp_edge():

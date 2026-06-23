@@ -1,6 +1,8 @@
 """Tests for tbnbnd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.tbnbnd import tbnbnd
 
 
@@ -28,4 +30,5 @@ def test_tbnbnd_no_data():
 
 def test_tbnbnd_alias():
     from morie.fn.tbnbnd import tbnbnd
+
     assert tbnbnd is tbnbnd

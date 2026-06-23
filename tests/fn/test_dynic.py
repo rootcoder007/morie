@@ -1,6 +1,8 @@
 """Tests for morie.fn.dynic -- Dynamic linear model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.dynic import dlm_fit
 
 
@@ -23,4 +25,5 @@ class TestDLM:
 
     def test_cheatsheet(self):
         from morie.fn.dynic import cheatsheet
+
         assert isinstance(cheatsheet(), str)

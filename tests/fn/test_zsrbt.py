@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsrbt -- Thin plate spline RBF"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsrbt import rbf_thinplate
 

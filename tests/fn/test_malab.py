@@ -1,6 +1,7 @@
 """Tests for malab.ma_labbe_plot."""
+
 import numpy as np
-import pytest
+
 from morie.fn.malab import ma_labbe_plot
 
 
@@ -12,7 +13,7 @@ def test_malab_basic():
     d = 5
     result = ma_labbe_plot(a, b, c, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_malab_edge():

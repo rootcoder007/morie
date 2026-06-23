@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Asymmetric cost matrix for clinical decision making."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch10_cost_matrix"]
@@ -34,7 +36,9 @@ def rangayyan_ch10_cost_matrix(cost_matrix, confusion_matrix, priors):
     n = int(cost_matrix) if cost_matrix.ndim == 0 else len(cost_matrix)
     result = float(np.mean(cost_matrix))
     se = float(np.std(cost_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Asymmetric cost matrix for clinical decision making"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Asymmetric cost matrix for clinical decision making"}
+    )
 
 
 def cheatsheet():

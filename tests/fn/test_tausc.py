@@ -1,5 +1,8 @@
 """Tests for tau_scale."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.tausc import tau_scale
 
 

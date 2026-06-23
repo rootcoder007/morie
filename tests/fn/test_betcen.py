@@ -1,6 +1,7 @@
 """Tests for betcen.betweenness_centrality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.betcen import betweenness_centrality
 
 
@@ -9,7 +10,7 @@ def test_betcen_basic():
     G = np.eye(10)
     result = betweenness_centrality(G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_betcen_edge():

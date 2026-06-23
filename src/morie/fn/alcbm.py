@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Conversation buffer memory: maintain a rolling window of the last N turns."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_conversation_buffer_memory"]
@@ -32,7 +34,14 @@ def alammar_conversation_buffer_memory(conversation, N):
     n = len(conversation)
     result = float(np.mean(conversation))
     se = float(np.std(conversation, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Conversation buffer memory: maintain a rolling window of the last N turns"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Conversation buffer memory: maintain a rolling window of the last N turns",
+        }
+    )
 
 
 def cheatsheet():

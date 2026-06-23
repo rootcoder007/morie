@@ -1,6 +1,7 @@
 """Pointwise almost sure convergence of empirical to true distribution function."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_law_large_numbers_pointwise"]
@@ -34,7 +35,14 @@ def kosorok_ch2_law_large_numbers_pointwise(F_n, F, t):
     n = len(F_n)
     result = float(np.mean(F_n))
     se = float(np.std(F_n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pointwise almost sure convergence of empirical to true distribution function"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pointwise almost sure convergence of empirical to true distribution function",
+        }
+    )
 
 
 def cheatsheet():

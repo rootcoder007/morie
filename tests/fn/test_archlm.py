@@ -1,6 +1,7 @@
 """Tests for archlm.arch_lm_engle."""
+
 import numpy as np
-import pytest
+
 from morie.fn.archlm import arch_lm_engle
 
 
@@ -10,7 +11,7 @@ def test_archlm_basic():
     lags = 10
     result = arch_lm_engle(x, lags)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_archlm_edge():

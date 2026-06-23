@@ -8,4 +8,4 @@ compute_design_weights = _fn
 
 
 def cheatsheet() -> str:
-    return 'dsgwt() -> Inverse-probability design weights for stratified samples.'
+    return "dsgwt() -> Inverse-probability design weights for stratified samples."

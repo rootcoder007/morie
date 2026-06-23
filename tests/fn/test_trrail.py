@@ -1,6 +1,7 @@
 """Test trrail."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trrail import trrail
 
 

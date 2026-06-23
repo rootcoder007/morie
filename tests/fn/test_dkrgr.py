@@ -1,6 +1,7 @@
 """Test dkrgr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkrgr import dkrgr
 
 

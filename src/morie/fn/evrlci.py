@@ -1,6 +1,7 @@
 """Delta-method CI for a return level z_T."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_return_level_ci"]
@@ -38,7 +39,9 @@ def evt_return_level_ci(mu, sigma, xi, Sigma_hat, T):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Delta-method CI for a return level z_T"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Delta-method CI for a return level z_T"}
+    )
 
 
 def cheatsheet():

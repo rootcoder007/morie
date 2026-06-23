@@ -1,6 +1,8 @@
 """Tests for morie.fn.fzinf."""
+
 import numpy as np
 import pytest
+
 from morie.fn.fzinf import fzinf
 
 
@@ -15,6 +17,7 @@ def test_fzinf_smoke():
 
 def test_cheatsheet():
     from morie.fn.fzinf import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

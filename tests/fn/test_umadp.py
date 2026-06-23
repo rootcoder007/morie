@@ -1,7 +1,7 @@
 """Tests for morie.fn.umadp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umadp import umadp
 
 

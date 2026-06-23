@@ -1,6 +1,8 @@
 """Tests for morie.fn.garch — GARCH(1,1)."""
+
 import numpy as np
 import pytest
+
 from morie.fn.garch import garch_fit
 
 

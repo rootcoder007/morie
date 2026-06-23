@@ -1,6 +1,7 @@
 """Tests for wsmmcm.wasserman_mcmc_metropolis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmmcm import wasserman_mcmc_metropolis
 
 
@@ -12,7 +13,7 @@ def test_wsmmcm_basic():
     n = 100
     result = wasserman_mcmc_metropolis(target, proposal, x0, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmmcm_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Glorot (Xavier) initialization for sigmoid/tanh networks."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_glorot_init"]
@@ -34,7 +36,14 @@ def geron_glorot_init(fan_in, fan_out, seed):
     n = len(fan_in)
     result = float(np.mean(fan_in))
     se = float(np.std(fan_in, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Glorot (Xavier) initialization for sigmoid/tanh networks"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Glorot (Xavier) initialization for sigmoid/tanh networks",
+        }
+    )
 
 
 def cheatsheet():

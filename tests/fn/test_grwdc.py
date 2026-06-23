@@ -1,6 +1,7 @@
 """Tests for grwdc.geron_adamw_decoupled_weight_decay."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grwdc import geron_adamw_decoupled_weight_decay
 
 
@@ -18,7 +19,7 @@ def test_grwdc_basic():
     lam = 0.1
     result = geron_adamw_decoupled_weight_decay(theta, grad, m, s, t, eta, b1, b2, eps, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grwdc_edge():

@@ -1,6 +1,7 @@
 """Tests for spcrhk.schabenberger_cressie_hawkins."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spcrhk import schabenberger_cressie_hawkins
 
 
@@ -11,7 +12,7 @@ def test_spcrhk_basic():
     lag_bins = np.random.default_rng(42).normal(0, 1, 100)
     result = schabenberger_cressie_hawkins(coords, z, lag_bins)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spcrhk_edge():

@@ -1,6 +1,7 @@
 """Test dtmvn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtmvn import dtmvn
 
 

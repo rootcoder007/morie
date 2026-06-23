@@ -1,6 +1,7 @@
 """SABR Hagan-Kumar-Lesniewski implied volatility."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_sabr_implied"]
@@ -42,7 +43,9 @@ def vol_sabr_implied(F, K, T, alpha, beta, rho, nu):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SABR Hagan-Kumar-Lesniewski implied volatility"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SABR Hagan-Kumar-Lesniewski implied volatility"}
+    )
 
 
 def cheatsheet():

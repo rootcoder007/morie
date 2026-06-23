@@ -1,6 +1,7 @@
 """Tests for alcap.alammar_image_captioning_pipeline."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alcap import alammar_image_captioning_pipeline
 
 
@@ -12,7 +13,7 @@ def test_alcap_basic():
     llm = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_image_captioning_pipeline(img, visual_encoder, projector, llm)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alcap_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """BIC score for DAG structure scoring in GES."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bic_score_dag"]
@@ -32,7 +34,9 @@ def bic_score_dag(dag, data):
     n = int(data) if data.ndim == 0 else len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BIC score for DAG structure scoring in GES"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "BIC score for DAG structure scoring in GES"}
+    )
 
 
 def cheatsheet():

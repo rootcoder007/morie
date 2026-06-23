@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Inverse STFT signal reconstruction from spectrogram."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_istft"]
@@ -34,7 +36,9 @@ def rangayyan_istft(stft, window, hop):
     n = int(stft) if stft.ndim == 0 else len(stft)
     result = float(np.mean(stft))
     se = float(np.std(stft, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Inverse STFT signal reconstruction from spectrogram"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Inverse STFT signal reconstruction from spectrogram"}
+    )
 
 
 def cheatsheet():

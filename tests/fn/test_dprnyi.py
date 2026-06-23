@@ -1,6 +1,7 @@
 """Tests for dprnyi.renyi_dp_composition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dprnyi import renyi_dp_composition
 
 
@@ -11,7 +12,7 @@ def test_dprnyi_basic():
     alpha = 0.05
     result = renyi_dp_composition(y, epsilons, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dprnyi_edge():

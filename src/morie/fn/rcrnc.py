@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['rcrnc']
+__all__ = ["rcrnc"]
 
 _QUOTE = "History repeats itself. -- C-3PO"
 
@@ -49,7 +49,7 @@ def rcrnc(
     if N < 5:
         raise ValueError("Signal too short.")
 
-    Y = np.array([x[i:i + (m - 1) * tau + 1:tau] for i in range(N)])
+    Y = np.array([x[i : i + (m - 1) * tau + 1 : tau] for i in range(N)])
 
     dist = np.zeros((N, N))
     for i in range(N):

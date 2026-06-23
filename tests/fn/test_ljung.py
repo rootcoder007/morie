@@ -1,7 +1,8 @@
 """Tests for morie.fn.ljung — Ljung-Box test."""
+
 import numpy as np
 
-from morie.fn.ljung import ljung_box, ljung
+from morie.fn.ljung import ljung, ljung_box
 
 
 def test_white_noise_not_rejected():

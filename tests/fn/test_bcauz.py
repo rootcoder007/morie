@@ -1,6 +1,7 @@
 """Tests for morie.fn.bcauz -- Bayesian ATE."""
 
 import numpy as np
+
 from morie.fn.bcauz import bayesian_ate
 
 

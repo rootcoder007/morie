@@ -1,8 +1,10 @@
 """Tests for rcrnc -- Recurrence quantification analysis."""
+
 import numpy as np
 import pytest
-from morie.fn.rcrnc import rcrnc
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rcrnc import rcrnc
 
 
 def test_rcrnc_basic():

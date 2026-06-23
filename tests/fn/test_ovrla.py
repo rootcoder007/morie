@@ -1,6 +1,10 @@
 """Tests for overlap_weight."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.ovrla import overlap_weight
+
 
 class TestOverlap:
     def test_ate_direction(self):
@@ -14,7 +18,7 @@ class TestOverlap:
 
     def test_balanced(self):
         ps = np.full(100, 0.5)
-        t = np.array([0]*50 + [1]*50, dtype=float)
+        t = np.array([0] * 50 + [1] * 50, dtype=float)
         y = t * 2
         r = overlap_weight(ps, t, y)
         assert r.value == pytest.approx(2.0, abs=0.1)

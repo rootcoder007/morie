@@ -98,6 +98,7 @@ def hzrat(
 
     # Fit Cox model via partial likelihood
     from morie.fn.cxphr import cxphr
+
     result = cxphr(time, event, X, ties=ties)
 
     beta = result["beta"]

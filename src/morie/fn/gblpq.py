@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GBLUP-rrBLUP equivalence theorem."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gblup_equivalence"]

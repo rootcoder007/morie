@@ -1,6 +1,7 @@
 """YaRN scaling combining NTK + interpolation + ramp."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["yarn_context_scaling"]
@@ -42,7 +43,9 @@ def yarn_context_scaling(y, q, m, theta, s, beta_fast, beta_slow):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "YaRN scaling combining NTK + interpolation + ramp"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "YaRN scaling combining NTK + interpolation + ramp"}
+    )
 
 
 def cheatsheet():

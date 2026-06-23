@@ -1,6 +1,4 @@
 """Tests for morie.fn.durdt — duration-based event filtering."""
-import numpy as np
-import pytest
 
 from morie.fn.durdt import duration_detect, durdt
 

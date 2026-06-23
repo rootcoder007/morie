@@ -1,13 +1,12 @@
 """Tests for morie.fn.odm_p — OTIS demo proportion."""
 
-import pytest
 import pandas as pd
-from morie.fn.odm_p import otis_demo_proportion
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.odm_p import otis_demo_proportion
 
 
 class TestOtisDemoProportion:
-
     def test_returns_descriptive(self):
         df = pd.DataFrame({"group": ["A", "A", "B", "B", "C"]})
         result = otis_demo_proportion(df)

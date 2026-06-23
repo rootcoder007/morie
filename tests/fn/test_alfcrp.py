@@ -1,6 +1,7 @@
 """Tests for alfcrp.alphafold_cropping."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alfcrp import alphafold_cropping
 
 
@@ -10,7 +11,7 @@ def test_alfcrp_basic():
     crop_size = 100
     result = alphafold_cropping(sequence, crop_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alfcrp_edge():

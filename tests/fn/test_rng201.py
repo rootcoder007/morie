@@ -1,6 +1,7 @@
 """Tests for rng201.rangayyan_ch4_ccf_continuous_with_delay."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng201 import rangayyan_ch4_ccf_continuous_with_delay
 
 
@@ -12,7 +13,7 @@ def test_rng201_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch4_ccf_continuous_with_delay(x, y, tau, t)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_rng201_edge():

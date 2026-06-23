@@ -1,6 +1,7 @@
 """Tests for rdfzzy.fuzzy_rdd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rdfzzy import fuzzy_rdd
 
 
@@ -13,7 +14,7 @@ def test_rdfzzy_basic():
     bandwidth = 0.3
     result = fuzzy_rdd(y, x, D, cutoff, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdfzzy_edge():

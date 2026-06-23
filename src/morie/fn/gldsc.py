@@ -7,7 +7,7 @@ Iteratively brackets the minimum of a unimodal function.
 
 import numpy as np
 
-__all__ = ['gldsc']
+__all__ = ["gldsc"]
 
 
 def gldsc(f, a, b, tol=1e-6, max_iter=100, full_output=False):
@@ -64,11 +64,7 @@ def gldsc(f, a, b, tol=1e-6, max_iter=100, full_output=False):
         if (b - a) < tol:
             if full_output:
                 x_min = (a + b) / 2
-                return x_min, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f(x_min)
-                }
+                return x_min, {"iterations": iteration + 1, "converged": True, "final_value": f(x_min)}
             return (a + b) / 2
 
         if f1 < f2:
@@ -86,9 +82,5 @@ def gldsc(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
     x_min = (a + b) / 2
     if full_output:
-        return x_min, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f(x_min)
-        }
+        return x_min, {"iterations": max_iter, "converged": False, "final_value": f(x_min)}
     return x_min

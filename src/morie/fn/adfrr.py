@@ -49,8 +49,8 @@ def adf_test(y: np.ndarray, max_lag: int | None = None, cdf=None) -> Descriptive
         X = np.column_stack(regs)
         beta = np.linalg.lstsq(X, dep, rcond=None)[0]
         resid = dep - X @ beta
-        sig2 = float(np.sum(resid ** 2) / (T - len(beta)))
-        aic = T * np.log(np.sum(resid ** 2) / T) + 2 * len(beta)
+        sig2 = float(np.sum(resid**2) / (T - len(beta)))
+        aic = T * np.log(np.sum(resid**2) / T) + 2 * len(beta)
         if aic < best_aic:
             best_aic = aic
             best_lag = lag

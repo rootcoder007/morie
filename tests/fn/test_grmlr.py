@@ -1,6 +1,7 @@
 """Tests for grmlr.geron_regression_mlp_output."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmlr import geron_regression_mlp_output
 
 
@@ -11,7 +12,7 @@ def test_grmlr_basic():
     b_out = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_regression_mlp_output(a_last, W_out, b_out)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grmlr_edge():

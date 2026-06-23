@@ -1,6 +1,7 @@
 """Tests for rng074.rangayyan_ch3_dft_real_imag_decomposition."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng074 import rangayyan_ch3_dft_real_imag_decomposition
 
 
@@ -12,7 +13,7 @@ def test_rng074_basic():
     N = 100
     result = rangayyan_ch3_dft_real_imag_decomposition(x, n, k, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng074_edge():

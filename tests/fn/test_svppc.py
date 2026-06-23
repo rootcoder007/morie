@@ -1,7 +1,6 @@
 """Tests for morie.fn.svppc -- Congressional party position"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svppc import party_congress
 

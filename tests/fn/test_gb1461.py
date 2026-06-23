@@ -1,6 +1,7 @@
 """Tests for gb1461.gibbons_multinomial_gof."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb1461 import gibbons_multinomial_gof
 
 
@@ -11,7 +12,7 @@ def test_gb1461_basic():
     n = 100
     result = gibbons_multinomial_gof(observed, expected_probs, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb1461_edge():

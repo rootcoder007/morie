@@ -1,6 +1,7 @@
 """Test gcqbo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcqbo import gcqbo
 
 

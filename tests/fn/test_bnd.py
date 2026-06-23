@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.bnd import manski_bounds
 
 

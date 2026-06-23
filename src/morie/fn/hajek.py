@@ -8,4 +8,4 @@ hajek_mean = _fn
 
 
 def cheatsheet() -> str:
-    return 'hajek() -> Hajek estimator for population mean.'
+    return "hajek() -> Hajek estimator for population mean."

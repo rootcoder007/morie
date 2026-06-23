@@ -1,6 +1,8 @@
 """Tests for rfbrow."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfbrow import rfbrow
 
 
@@ -28,4 +30,5 @@ def test_rfbrow_no_data():
 
 def test_rfbrow_alias():
     from morie.fn.rfbrow import rfbrow
+
     assert rfbrow is rfbrow

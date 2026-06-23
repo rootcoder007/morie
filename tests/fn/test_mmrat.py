@@ -1,6 +1,7 @@
 """Tests for morie.fn.mmrat -- Maternal mortality ratio."""
 
 import pytest
+
 from morie.fn.mmrat import maternal_mortality_ratio
 
 

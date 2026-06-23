@@ -1,6 +1,5 @@
 """Tests for volrm.vol_riskmetrics."""
-import numpy as np
-import pytest
+
 from morie.fn.volrm import vol_riskmetrics
 
 
@@ -10,7 +9,7 @@ def test_volrm_basic():
     lam = 0.1
     result = vol_riskmetrics(r, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volrm_edge():

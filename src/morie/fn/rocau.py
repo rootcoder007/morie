@@ -1,4 +1,5 @@
 """ROC curve and AUC computation."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -28,7 +29,8 @@ def roc_auc_score(y_true, y_score):
     RichResult with payload: estimate (AUC), auc, fpr, tpr, thresholds,
     n, n_positive, n_negative, method.
     """
-    from sklearn.metrics import roc_auc_score as _roc_auc, roc_curve
+    from sklearn.metrics import roc_auc_score as _roc_auc
+    from sklearn.metrics import roc_curve
 
     yt = np.asarray(y_true).ravel()
     ys = np.asarray(y_score, dtype=float).ravel()
@@ -39,17 +41,19 @@ def roc_auc_score(y_true, y_score):
     yt_b = (yt == pos).astype(int)
     auc = float(_roc_auc(yt_b, ys))
     fpr, tpr, thr = roc_curve(yt_b, ys)
-    return RichResult(payload={
-        "estimate": auc,
-        "auc": auc,
-        "fpr": fpr.tolist(),
-        "tpr": tpr.tolist(),
-        "thresholds": thr.tolist(),
-        "n": int(len(yt)),
-        "n_positive": int(np.sum(yt_b == 1)),
-        "n_negative": int(np.sum(yt_b == 0)),
-        "method": "ROC AUC (Mann-Whitney U probability)",
-    })
+    return RichResult(
+        payload={
+            "estimate": auc,
+            "auc": auc,
+            "fpr": fpr.tolist(),
+            "tpr": tpr.tolist(),
+            "thresholds": thr.tolist(),
+            "n": int(len(yt)),
+            "n_positive": int(np.sum(yt_b == 1)),
+            "n_negative": int(np.sum(yt_b == 0)),
+            "method": "ROC AUC (Mann-Whitney U probability)",
+        }
+    )
 
 
 def cheatsheet():

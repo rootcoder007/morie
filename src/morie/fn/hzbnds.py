@@ -1,6 +1,7 @@
 """Horowitz-Manski bounds under missing data."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_manski_bounds"]
@@ -36,7 +37,9 @@ def horowitz_manski_bounds(y, R, y_min, y_max):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Horowitz-Manski bounds under missing data"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Horowitz-Manski bounds under missing data"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transfer learning: reuse pretrained model, fine-tune on new task."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_transfer_learning"]
@@ -36,7 +38,14 @@ def geron_transfer_learning(pretrained_model, X, y, n_frozen):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Transfer learning: reuse pretrained model, fine-tune on new task"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Transfer learning: reuse pretrained model, fine-tune on new task",
+        }
+    )
 
 
 def cheatsheet():

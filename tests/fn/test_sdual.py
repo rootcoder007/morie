@@ -1,5 +1,7 @@
 """Test sdual."""
+
 import pytest
+
 from morie.fn.sdual import s_duality
 
 

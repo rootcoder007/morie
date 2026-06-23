@@ -7,7 +7,6 @@ from morie.fn.stprd import stprd
 
 
 class TestStprd:
-
     def test_prediction_output(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (15, 2))

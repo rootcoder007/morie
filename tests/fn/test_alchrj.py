@@ -1,6 +1,7 @@
 """Tests for alchrj.alammar_chosen_rejected_template."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alchrj import alammar_chosen_rejected_template
 
 
@@ -11,7 +12,7 @@ def test_alchrj_basic():
     rejected = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_chosen_rejected_template(prompts, chosen, rejected)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alchrj_edge():

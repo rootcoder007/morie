@@ -1,6 +1,7 @@
 """Tests for jrqbq.jarque_bera."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jrqbq import jarque_bera
 
 
@@ -9,7 +10,7 @@ def test_jrqbq_basic():
     resid = np.random.default_rng(42).normal(0, 1, 100)
     result = jarque_bera(resid)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jrqbq_edge():

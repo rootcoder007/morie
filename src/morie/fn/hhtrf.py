@@ -15,6 +15,8 @@ from scipy.interpolate import CubicSpline
 from scipy.signal import hilbert
 
 from ._containers import DescriptiveResult
+
+
 def _sift_imf(x: np.ndarray, max_iter: int = 300, sd_tol: float = 0.05) -> np.ndarray:
     """Extract one IMF via sifting."""
     h = x.copy()
@@ -29,7 +31,7 @@ def _sift_imf(x: np.ndarray, max_iter: int = 300, sd_tol: float = 0.05) -> np.nd
         mean_env = (upper + lower) / 2
         prev = h.copy()
         h = h - mean_env
-        sd = np.sum((prev - h) ** 2) / (np.sum(prev ** 2) + 1e-12)
+        sd = np.sum((prev - h) ** 2) / (np.sum(prev**2) + 1e-12)
         if sd < sd_tol:
             break
     return h
@@ -98,12 +100,8 @@ def hilbert_huang_spectrum(
             break
         imfs.append(imf)
         residue = residue - imf
-        max_idx = np.where(
-            (residue[1:-1] > residue[:-2]) & (residue[1:-1] > residue[2:])
-        )[0] + 1
-        min_idx = np.where(
-            (residue[1:-1] < residue[:-2]) & (residue[1:-1] < residue[2:])
-        )[0] + 1
+        max_idx = np.where((residue[1:-1] > residue[:-2]) & (residue[1:-1] > residue[2:]))[0] + 1
+        min_idx = np.where((residue[1:-1] < residue[:-2]) & (residue[1:-1] < residue[2:]))[0] + 1
         if len(max_idx) < 2 or len(min_idx) < 2:
             break
 

@@ -56,7 +56,7 @@ def fstfr(
 
     n_total = np.sum(ns)
     n_bar = n_total / K
-    nc = (n_total - np.sum(ns ** 2) / n_total) / (K - 1)
+    nc = (n_total - np.sum(ns**2) / n_total) / (K - 1)
 
     per_locus_fst = []
     a_sum = 0.0

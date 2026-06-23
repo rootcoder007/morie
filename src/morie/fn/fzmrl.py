@@ -12,8 +12,10 @@ integrates.  Asymptotically:
 
 with sigma_m^2(t) computed via the Yang (1978) plug-in.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_mrl_asymptotic"]
@@ -30,13 +32,11 @@ def _silverman_h(x):
 
 
 def fauzi_mrl_asymptotic(x, t=None, h=None):
-    """Kernel MRL estimate at ``t`` with asymptotic SE.
-    """
+    """Kernel MRL estimate at ``t`` with asymptotic SE."""
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                    "method": "fzmrl -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "fzmrl -- too few obs"})
     if t is None:
         t = float(np.median(x))
     if h is None:
@@ -44,31 +44,33 @@ def fauzi_mrl_asymptotic(x, t=None, h=None):
 
     S_t = float(np.mean(_sps.norm.sf((t - x) / h)))
     if S_t <= 0:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan,
-                                    "S_hat": S_t, "n": n, "t": t,
-                                    "method": "fzmrl -- S(t)=0"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "S_hat": S_t, "n": n, "t": t, "method": "fzmrl -- S(t)=0"}
+        )
 
     diffs = x - t
     above = diffs > 0
     if not above.any():
-        return RichResult(payload={"estimate": 0.0, "se": np.nan,
-                                    "S_hat": S_t, "n": n, "t": t,
-                                    "method": "fzmrl -- no x>t"})
+        return RichResult(
+            payload={"estimate": 0.0, "se": np.nan, "S_hat": S_t, "n": n, "t": t, "method": "fzmrl -- no x>t"}
+        )
     m_hat = float(np.mean(diffs[above]))
     second = float(np.mean((diffs[above]) ** 2))
     sigma2 = (second - m_hat * m_hat) / S_t
     sigma2 = max(sigma2, 0.0)
     se = float(np.sqrt(sigma2 / n))
 
-    return RichResult(payload={
-        "estimate": m_hat,
-        "se": se,
-        "S_hat": S_t,
-        "t": t,
-        "h": h,
-        "n": n,
-        "method": "Fauzi kernel MRL asymptotic (Ch 4)",
-    })
+    return RichResult(
+        payload={
+            "estimate": m_hat,
+            "se": se,
+            "S_hat": S_t,
+            "t": t,
+            "h": h,
+            "n": n,
+            "method": "Fauzi kernel MRL asymptotic (Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

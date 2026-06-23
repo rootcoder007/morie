@@ -14,8 +14,10 @@ follows from the Cornish-Fisher inverse-Edgeworth.
 This function returns the Edgeworth-corrected tail probability and the
 Cornish-Fisher correction to the Gaussian critical value.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_edgeworth_quantile"]
@@ -33,8 +35,7 @@ def fauzi_edgeworth_quantile(x, z=1.96, p=0.5):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 5:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "fzedg -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzedg -- too few obs"})
 
     # Indicator I{X<=Q(p)} has variance p(1-p), third central moment
     # p(1-p)(1-2p), so standardised skewness γ1 = (1-2p)/sqrt(p(1-p)).
@@ -48,18 +49,20 @@ def fauzi_edgeworth_quantile(x, z=1.96, p=0.5):
 
     cf_correction = (skew / 6.0) * (z * z - 1.0) / np.sqrt(n)
 
-    return RichResult(payload={
-        "estimate": corrected,
-        "normal_approx": float(Phi_z),
-        "edgeworth_correction": float(correction),
-        "cornish_fisher_correction": float(cf_correction),
-        "skew": float(skew),
-        "p1z": float(p1z),
-        "z": z,
-        "p": p,
-        "n": n,
-        "method": "Fauzi Edgeworth expansion for kernel quantile (Ch 3)",
-    })
+    return RichResult(
+        payload={
+            "estimate": corrected,
+            "normal_approx": float(Phi_z),
+            "edgeworth_correction": float(correction),
+            "cornish_fisher_correction": float(cf_correction),
+            "skew": float(skew),
+            "p1z": float(p1z),
+            "z": z,
+            "p": p,
+            "n": n,
+            "method": "Fauzi Edgeworth expansion for kernel quantile (Ch 3)",
+        }
+    )
 
 
 def cheatsheet():

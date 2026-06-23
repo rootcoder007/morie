@@ -1,6 +1,7 @@
 """Tests for kapco.kappa_coefficient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kapco import kappa_coefficient
 
 
@@ -10,7 +11,7 @@ def test_kapco_basic():
     y_pred = np.random.default_rng(44).normal(0, 1, 100)
     result = kappa_coefficient(y_true, y_pred)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kapco_edge():

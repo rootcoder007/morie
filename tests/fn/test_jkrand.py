@@ -1,6 +1,7 @@
 """Tests for jkrand.jackknife_repl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jkrand import jackknife_repl
 
 
@@ -9,7 +10,7 @@ def test_jkrand_basic():
     theta_replicates = np.random.default_rng(42).normal(0, 1, 100)
     result = jackknife_repl(theta_replicates)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jkrand_edge():

@@ -1,6 +1,7 @@
 """Tests for hmt5.geron_t5."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmt5 import geron_t5
 
 
@@ -10,7 +11,7 @@ def test_hmt5_basic():
     tgt = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_t5(src, tgt)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmt5_edge():

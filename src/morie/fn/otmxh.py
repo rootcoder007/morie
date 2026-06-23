@@ -1,6 +1,7 @@
 """W_2 between Gaussian mixtures via OT on components."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_mixture_w2"]
@@ -40,7 +41,9 @@ def ot_mixture_w2(mus1, Sigmas1, w1, mus2, Sigmas2, w2):
     n = len(mus1)
     result = float(np.mean(mus1))
     se = float(np.std(mus1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "W_2 between Gaussian mixtures via OT on components"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "W_2 between Gaussian mixtures via OT on components"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """DR-DiD for staggered adoption."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_staggered_design"]

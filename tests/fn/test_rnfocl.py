@@ -1,6 +1,8 @@
 """Tests for rnfocl."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnfocl import rnfocl
 
 
@@ -28,4 +30,5 @@ def test_rnfocl_no_data():
 
 def test_rnfocl_alias():
     from morie.fn.rnfocl import rnfocl
+
     assert rnfocl is rnfocl

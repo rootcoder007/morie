@@ -1,7 +1,6 @@
 """Tests for morie.fn.svqta -- Quota game equilibrium"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svqta import quota_game
 

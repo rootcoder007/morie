@@ -1,5 +1,7 @@
 """Tests for morie.fn.emmax -- EM maximization step."""
+
 import numpy as np
+
 from morie.fn.emmax import em_maximization_step, emmax
 
 

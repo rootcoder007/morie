@@ -1,6 +1,8 @@
 """Tests for stukrg."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stukrg import stukrg
 
 
@@ -28,4 +30,5 @@ def test_stukrg_no_data():
 
 def test_stukrg_alias():
     from morie.fn.stukrg import stukrg
+
     assert stukrg is stukrg

@@ -1,6 +1,7 @@
 """Rotating token envelope: KEK in HSM, DEK per-row."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rotating_token_envelope"]
@@ -34,7 +35,9 @@ def rotating_token_envelope(payload, kek_id, dek_lifetime):
     n = len(payload)
     result = float(np.mean(payload))
     se = float(np.std(payload, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rotating token envelope: KEK in HSM, DEK per-row"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Rotating token envelope: KEK in HSM, DEK per-row"}
+    )
 
 
 def cheatsheet():

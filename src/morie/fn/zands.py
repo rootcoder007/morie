@@ -44,7 +44,7 @@ def za_test(y: np.ndarray, trim: float = 0.15) -> DescriptiveResult:
         X = np.column_stack([np.ones(T), y[:-1], np.arange(1, T + 1), DU, DT])
         beta = np.linalg.lstsq(X, dep, rcond=None)[0]
         resid = dep - X @ beta
-        sig2 = float(np.sum(resid ** 2) / (T - X.shape[1]))
+        sig2 = float(np.sum(resid**2) / (T - X.shape[1]))
         se = float(np.sqrt(max(sig2 * np.linalg.inv(X.T @ X)[1, 1], 1e-20)))
         t_stat = float(beta[1] / se)
         if t_stat < best_t:

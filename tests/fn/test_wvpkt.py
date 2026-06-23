@@ -1,5 +1,7 @@
 """Tests for wvpkt.py - Wavelet packet decomposition."""
+
 import numpy as np
+
 from morie.fn.wvpkt import wavelet_packets, wvpkt
 
 

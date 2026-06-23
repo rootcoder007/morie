@@ -1,6 +1,7 @@
 """Test rsacc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsacc import rsacc
 
 

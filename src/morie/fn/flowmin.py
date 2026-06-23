@@ -1,6 +1,7 @@
 """Stoer-Wagner min-cut."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["min_cut"]

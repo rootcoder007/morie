@@ -1,7 +1,8 @@
 """Tests for morie.fn.recal — recall (sensitivity / TPR)."""
-import numpy as np
+
 import pytest
-from morie.fn.recal import recall, recal
+
+from morie.fn.recal import recal, recall
 
 
 def test_perfect():

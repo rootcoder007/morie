@@ -15,6 +15,8 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 
 from ._containers import DescriptiveResult
+
+
 def _count_zero_crossings(x: np.ndarray) -> int:
     """Count zero crossings in signal *x*."""
     return int(np.sum(np.diff(np.sign(x)) != 0))
@@ -104,7 +106,7 @@ def emd(
             prev = h.copy()
             h = h - mean_env
 
-            sd = np.sum((prev - h) ** 2) / (np.sum(prev ** 2) + 1e-12)
+            sd = np.sum((prev - h) ** 2) / (np.sum(prev**2) + 1e-12)
             if sd < sd_threshold:
                 break
 
@@ -115,12 +117,8 @@ def emd(
         sift_counts.append(n_sifts)
         residue = residue - h
 
-        max_idx = np.where(
-            (residue[1:-1] > residue[:-2]) & (residue[1:-1] > residue[2:])
-        )[0] + 1
-        min_idx = np.where(
-            (residue[1:-1] < residue[:-2]) & (residue[1:-1] < residue[2:])
-        )[0] + 1
+        max_idx = np.where((residue[1:-1] > residue[:-2]) & (residue[1:-1] > residue[2:]))[0] + 1
+        min_idx = np.where((residue[1:-1] < residue[:-2]) & (residue[1:-1] < residue[2:]))[0] + 1
         if len(max_idx) < 2 or len(min_idx) < 2:
             break
 

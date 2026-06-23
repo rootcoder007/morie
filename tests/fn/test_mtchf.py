@@ -1,9 +1,9 @@
 """Test matched_filter_detect (mtchf)."""
-import numpy as np
-import pytest
 
-from morie.fn.mtchf import matched_filter_detect, mtchf
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.mtchf import matched_filter_detect, mtchf
 
 
 class TestMatchedFilter:

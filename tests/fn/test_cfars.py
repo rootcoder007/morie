@@ -1,12 +1,12 @@
 """Tests for morie.fn.cfars -- CFA residual matrix."""
 
 import numpy as np
-from morie.fn.cfars import cfa_residuals
+
 from morie.fn._mapq_const import SUBSCALES
+from morie.fn.cfars import cfa_residuals
 
 
 class TestCfaResiduals:
-
     def test_returns_square_matrix(self, mapq_df):
         result = cfa_residuals(mapq_df, SUBSCALES)
         assert isinstance(result, np.ndarray)

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prefix tuning: learned prefix vectors prepended to keys/values at every layer."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_prefix_tuning"]
@@ -36,7 +38,14 @@ def kamath_prefix_tuning(prefix_K, prefix_V, K_input, V_input):
     n = len(prefix_K)
     result = float(np.mean(prefix_K))
     se = float(np.std(prefix_K, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prefix tuning: learned prefix vectors prepended to keys/values at every layer"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prefix tuning: learned prefix vectors prepended to keys/values at every layer",
+        }
+    )
 
 
 def cheatsheet():

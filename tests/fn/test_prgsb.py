@@ -1,21 +1,24 @@
 """Tests for morie.fn.prgsb — program subgroup."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.prgsb import program_subgroup
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.prgsb import program_subgroup
 
 
 class TestProgramSubgroup:
     def test_basic(self):
         rng = np.random.default_rng(42)
         n = 200
-        df = pd.DataFrame({
-            "outcome": rng.normal(0, 1, n),
-            "treatment": rng.binomial(1, 0.5, n),
-            "subgroup": rng.choice(["A", "B"], n),
-        })
+        df = pd.DataFrame(
+            {
+                "outcome": rng.normal(0, 1, n),
+                "treatment": rng.binomial(1, 0.5, n),
+                "subgroup": rng.choice(["A", "B"], n),
+            }
+        )
         df.loc[df["treatment"] == 1, "outcome"] += 2.0
         r = program_subgroup(df)
         assert isinstance(r, DescriptiveResult)

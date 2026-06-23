@@ -1,6 +1,7 @@
 """Test gdrel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdrel import gdrel
 
 

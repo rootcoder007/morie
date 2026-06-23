@@ -1,6 +1,7 @@
 """Higgins' I² heterogeneity index."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_higgins_i2"]

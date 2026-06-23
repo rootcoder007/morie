@@ -1,12 +1,11 @@
 """Tests for morie.fn.netst — Node strength centrality."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netst import network_strength
 
 
 class TestNetworkStrength:
-
     def test_returns_dict(self):
         A = np.array([[0, 0.5, 0.3], [0.5, 0, 0.2], [0.3, 0.2, 0]])
         result = network_strength(A)

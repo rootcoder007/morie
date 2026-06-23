@@ -1,5 +1,7 @@
 """Tests for morie.fn.ldlt."""
+
 import numpy as np
+
 from morie.fn.ldlt import ldlt_factorize
 
 
@@ -15,6 +17,7 @@ def test_ldlt_smoke():
 
 def test_cheatsheet():
     from morie.fn.ldlt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

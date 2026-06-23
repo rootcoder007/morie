@@ -1,6 +1,7 @@
 """Parametric bootstrap from a fitted distribution."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_parametric"]
@@ -38,7 +39,9 @@ def boot_parametric(theta_hat, rvs_fn, stat, B, n):
     n = len(theta_hat)
     result = float(np.mean(theta_hat))
     se = float(np.std(theta_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Parametric bootstrap from a fitted distribution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Parametric bootstrap from a fitted distribution"}
+    )
 
 
 def cheatsheet():

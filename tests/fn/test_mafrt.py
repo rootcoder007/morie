@@ -1,6 +1,7 @@
 """Tests for mafrt.ma_freeman_tukey."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mafrt import ma_freeman_tukey
 
 
@@ -10,7 +11,7 @@ def test_mafrt_basic():
     n = 100
     result = ma_freeman_tukey(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mafrt_edge():

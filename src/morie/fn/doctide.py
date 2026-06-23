@@ -1,6 +1,7 @@
 """de Chaisemartin-D'Haultfoeuille heterogeneous DID."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["de_chaisemartin_dhaultfoeuille"]
@@ -36,7 +37,9 @@ def de_chaisemartin_dhaultfoeuille(y, D, unit, time):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "de Chaisemartin-D'Haultfoeuille heterogeneous DID"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "de Chaisemartin-D'Haultfoeuille heterogeneous DID"}
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,9 @@
 """Test adaboost_bio (adbst)."""
+
 import numpy as np
-from morie.fn.adbst import adaboost_bio, adbst
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.adbst import adaboost_bio, adbst
 
 
 class TestAdbst:

@@ -1,6 +1,7 @@
 """Tests for eslsoc.esl_self_organize."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsoc import esl_self_organize
 
 
@@ -11,7 +12,7 @@ def test_eslsoc_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_self_organize(X, grid, eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsoc_edge():

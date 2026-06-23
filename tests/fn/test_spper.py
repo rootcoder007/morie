@@ -7,7 +7,6 @@ from morie.fn.spper import spper
 
 
 class TestSpper:
-
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

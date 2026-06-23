@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptipo -- Inhomogeneous Poisson process"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptipo import inhom_poisson
 

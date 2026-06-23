@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Two-model mixture for adaptation: mixture of parametric and nonparametric prior."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_two_model_adp"]
@@ -30,7 +32,14 @@ def ghosal_two_model_adp(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Two-model mixture for adaptation: mixture of parametric and nonparametric prior"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Two-model mixture for adaptation: mixture of parametric and nonparametric prior",
+        }
+    )
 
 
 def cheatsheet():

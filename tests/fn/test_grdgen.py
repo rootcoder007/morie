@@ -1,6 +1,7 @@
 """Test grdgen."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grdgen import grdgen
 
 

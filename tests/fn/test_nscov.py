@@ -7,7 +7,6 @@ from morie.fn.nscov import nscov
 
 
 class TestNscov:
-
     def test_output_shape(self):
         coords = np.array([[0, 0], [1, 0], [0, 1], [1, 1]], dtype=float)
         result = nscov(coords)

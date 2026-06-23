@@ -60,7 +60,7 @@ class TestMORIEApp:
         assert "dataset" in app.SCREENS
 
     def test_app_has_bindings(self):
-        from morie.tui import MORIEApp, HomeScreen
+        from morie.tui import HomeScreen, MORIEApp
 
         app = MORIEApp()
         app_keys = [b.key for b in app.BINDINGS]
@@ -128,6 +128,7 @@ class TestScreenClasses:
 
     def test_repl_screen_user_shell(self):
         import os
+
         from morie.tui import ReplScreen
 
         screen = ReplScreen(lang="auto")
@@ -182,14 +183,25 @@ class TestLanguageDetection:
         from morie.tui import ReplScreen
 
         ambiguous = {
-            "c(", "TRUE", "FALSE", "NULL", "NA", "function(",
-            "if (", "for (", "while (", "filter(", "select(",
-            "summary(", "plot(", "arrange(", "mutate(", "group_by(",
+            "c(",
+            "TRUE",
+            "FALSE",
+            "NULL",
+            "NA",
+            "function(",
+            "if (",
+            "for (",
+            "while (",
+            "filter(",
+            "select(",
+            "summary(",
+            "plot(",
+            "arrange(",
+            "mutate(",
+            "group_by(",
         }
         for pat in ambiguous:
-            assert pat not in ReplScreen._R_PATTERNS, (
-                f"'{pat}' should not be in _R_PATTERNS (ambiguous with Python)"
-            )
+            assert pat not in ReplScreen._R_PATTERNS, f"'{pat}' should not be in _R_PATTERNS (ambiguous with Python)"
 
 
 # ---------------------------------------------------------------------------
@@ -200,6 +212,7 @@ class TestLanguageDetection:
 class TestReplHelpers:
     def test_helper_functions_injected(self):
         import code as code_module
+
         from morie.tui import ReplScreen
 
         screen = ReplScreen(lang="auto")
@@ -252,6 +265,7 @@ class TestStatScreen:
 class TestReplScreenAsync:
     def test_python_execution(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -272,6 +286,7 @@ class TestReplScreenAsync:
 
     def test_shell_via_bang_prefix(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -291,6 +306,7 @@ class TestReplScreenAsync:
 
     def test_mode_switch_and_history(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -312,6 +328,7 @@ class TestReplScreenAsync:
 
     def test_view_helper_works(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -336,6 +353,7 @@ class TestReplScreenAsync:
 
     def test_ls_helper_works(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -359,6 +377,7 @@ class TestReplScreenAsync:
 
     def test_r_autodetect(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -379,6 +398,7 @@ class TestReplScreenAsync:
 
     def test_ambiguous_stays_python(self):
         import asyncio
+
         from morie.tui import MORIEApp
 
         async def _test():
@@ -414,6 +434,7 @@ class TestSummaryHelper:
     def test_summary_with_dataframe_arg(self):
         """summary(df) should not raise ValueError about truth value."""
         import pandas as pd
+
         from morie.tui import ReplScreen
 
         screen = ReplScreen()
@@ -425,6 +446,7 @@ class TestSummaryHelper:
 
     def test_summary_with_string_arg(self):
         import pandas as pd
+
         from morie.tui import ReplScreen
 
         screen = ReplScreen()
@@ -451,21 +473,25 @@ class TestSummaryHelper:
 class TestAliases:
     def test_alias_map_populated(self):
         from morie.stat_commands import ALIAS_MAP
+
         assert len(ALIAS_MAP) > 50
 
     def test_resolve_by_alias(self):
         from morie.stat_commands import resolve
+
         cmd = resolve("ttest1")
         assert cmd is not None
         assert cmd.name == "one_sample_ttest"
 
     def test_all_aliases_have_valid_canonical(self):
         from morie.stat_commands import ALIAS_MAP, COMMAND_REGISTRY
+
         for alias, canonical in ALIAS_MAP.items():
             assert canonical in COMMAND_REGISTRY, f"Alias '{alias}' → '{canonical}' missing"
 
     def test_handler_repl_callable(self):
         from morie.stat_commands import COMMAND_REGISTRY
+
         for name, cmd in list(COMMAND_REGISTRY.items())[:20]:
             assert callable(cmd.handler_repl), f"'{name}' handler_repl not callable"
 
@@ -478,14 +504,17 @@ class TestAliases:
 class TestStatCommandsRegistry:
     def test_registry_has_600_plus_commands(self):
         from morie.stat_commands import COMMAND_REGISTRY
+
         assert len(COMMAND_REGISTRY) >= 600
 
     def test_all_categories_populated(self):
         from morie.stat_commands import CATEGORIES
+
         assert len(CATEGORIES) >= 10
 
     def test_commands_by_category_works(self):
         from morie.stat_commands import commands_by_category
+
         cats = commands_by_category()
         total = sum(len(cmds) for cmds in cats.values())
         assert total >= 600
@@ -499,6 +528,7 @@ class TestStatCommandsRegistry:
 class TestVendoredFreeAPI:
     def test_import(self):
         from morie.fam import OllamaFreeAPI
+
         client = OllamaFreeAPI()
         assert hasattr(client, "chat")
         assert hasattr(client, "stream_chat")
@@ -506,6 +536,7 @@ class TestVendoredFreeAPI:
 
     def test_list_models_returns_list(self):
         from morie.fam import OllamaFreeAPI
+
         client = OllamaFreeAPI()
         models = client.list_models()
         assert isinstance(models, list)
@@ -513,6 +544,7 @@ class TestVendoredFreeAPI:
 
     def test_list_families(self):
         from morie.fam import OllamaFreeAPI
+
         client = OllamaFreeAPI()
         families = client.list_families()
         assert isinstance(families, list)
@@ -520,6 +552,7 @@ class TestVendoredFreeAPI:
 
     def test_build_payload_structure(self):
         from morie.fam import OllamaFreeAPI
+
         client = OllamaFreeAPI()
         payload = client._build_payload("gpt-oss:20b", "test prompt", num_predict=10000)
         assert payload["model"] == "gpt-oss:20b"
@@ -529,6 +562,7 @@ class TestVendoredFreeAPI:
 
     def test_get_model_servers_returns_list(self):
         from morie.fam import OllamaFreeAPI
+
         client = OllamaFreeAPI()
         models = client.list_models()
         if models:
@@ -546,7 +580,9 @@ class TestAllCommandsValid:
 
     def test_all_commands_have_backend_functions(self):
         import importlib
+
         from morie.stat_commands import COMMAND_REGISTRY
+
         broken = []
         for name, cmd in COMMAND_REGISTRY.items():
             if not cmd.module:
@@ -562,8 +598,10 @@ class TestAllCommandsValid:
 
     def test_all_handlers_callable(self):
         from morie.stat_commands import COMMAND_REGISTRY
+
         not_callable = [
-            name for name, cmd in COMMAND_REGISTRY.items()
+            name
+            for name, cmd in COMMAND_REGISTRY.items()
             if not callable(cmd.handler_repl) or not callable(cmd.handler_stat)
         ]
         assert not not_callable, f"Not callable: {not_callable[:10]}"
@@ -579,21 +617,44 @@ class TestReplNamespaceInjection:
 
     def test_hardcoded_helpers_injected(self):
         from morie.tui import ReplScreen
+
         screen = ReplScreen()
         screen._inject_repl_helpers()
         ns = screen._py_console_ns
         hardcoded = [
-            "load", "head", "tail", "shape", "cols", "describe", "summary",
-            "view", "ls", "who", "clear", "ttest", "corr", "chi2", "anova",
-            "ate", "evalue", "propensity", "ipw", "freq", "crosstab",
-            "modules", "run_module", "version", "help_repl",
+            "load",
+            "head",
+            "tail",
+            "shape",
+            "cols",
+            "describe",
+            "summary",
+            "view",
+            "ls",
+            "who",
+            "clear",
+            "ttest",
+            "corr",
+            "chi2",
+            "anova",
+            "ate",
+            "evalue",
+            "propensity",
+            "ipw",
+            "freq",
+            "crosstab",
+            "modules",
+            "run_module",
+            "version",
+            "help_repl",
         ]
         missing = [h for h in hardcoded if h not in ns]
         assert not missing, f"Missing helpers: {missing}"
 
     def test_registry_commands_injected(self):
-        from morie.tui import ReplScreen
         from morie.stat_commands import COMMAND_REGISTRY
+        from morie.tui import ReplScreen
+
         screen = ReplScreen()
         screen._inject_repl_helpers()
         ns = screen._py_console_ns
@@ -602,8 +663,9 @@ class TestReplNamespaceInjection:
         assert not missing, f"Missing registry commands: {missing[:10]}"
 
     def test_aliases_injected(self):
-        from morie.tui import ReplScreen
         from morie.stat_commands import ALIAS_MAP
+        from morie.tui import ReplScreen
+
         screen = ReplScreen()
         screen._inject_repl_helpers()
         ns = screen._py_console_ns
@@ -613,6 +675,7 @@ class TestReplNamespaceInjection:
 
     def test_total_callable_count(self):
         from morie.tui import ReplScreen
+
         screen = ReplScreen()
         screen._inject_repl_helpers()
         ns = screen._py_console_ns
@@ -632,24 +695,57 @@ class TestAliasExecution:
         """All helpers with required args should show usage when called with none."""
         import numpy as np
         import pandas as pd
+
         from morie.tui import ReplScreen
 
         screen = ReplScreen()
         screen._inject_repl_helpers()
         ns = screen._py_console_ns
-        ns["df"] = pd.DataFrame({
-            "x": np.random.randn(50),
-            "group": np.random.choice([0, 1], 50),
-        })
+        ns["df"] = pd.DataFrame(
+            {
+                "x": np.random.randn(50),
+                "group": np.random.choice([0, 1], 50),
+            }
+        )
 
         no_arg_funcs = [
-            "ttest", "ttest2", "chi2", "corr", "anova", "spearman",
-            "mannwhitney", "ks_test", "paired_t", "bootstrap_ci",
-            "effect_size", "propensity", "ipw", "kaplan_meier", "cox",
-            "logrank", "did", "rdd", "iv_tsls", "match", "vif",
-            "odds_ratio", "nnt", "rosenbaum", "jackknife", "permtest",
-            "event_study", "fuzzy_rdd", "freq", "unique", "value_counts",
-            "crosstab", "pivot", "groupby", "power", "ebac", "evalue",
+            "ttest",
+            "ttest2",
+            "chi2",
+            "corr",
+            "anova",
+            "spearman",
+            "mannwhitney",
+            "ks_test",
+            "paired_t",
+            "bootstrap_ci",
+            "effect_size",
+            "propensity",
+            "ipw",
+            "kaplan_meier",
+            "cox",
+            "logrank",
+            "did",
+            "rdd",
+            "iv_tsls",
+            "match",
+            "vif",
+            "odds_ratio",
+            "nnt",
+            "rosenbaum",
+            "jackknife",
+            "permtest",
+            "event_study",
+            "fuzzy_rdd",
+            "freq",
+            "unique",
+            "value_counts",
+            "crosstab",
+            "pivot",
+            "groupby",
+            "power",
+            "ebac",
+            "evalue",
         ]
         crashed = []
         for name in no_arg_funcs:
@@ -669,6 +765,7 @@ class TestAliasExecution:
     def test_registry_aliases_show_usage_not_crash(self):
         """Registry aliases should gracefully handle no-arg calls."""
         from morie.tui import ReplScreen
+
         screen = ReplScreen()
         screen._inject_repl_helpers()
         ns = screen._py_console_ns
@@ -698,7 +795,8 @@ class TestPolyglotBridge:
 
     def test_assignment_regex_extracts_names(self):
         import re
-        pattern = re.compile(r'(\w+)\s*<-')
+
+        pattern = re.compile(r"(\w+)\s*<-")
         assert pattern.findall("x <- 42") == ["x"]
         assert pattern.findall("mean_age <- mean(cpads$age)") == ["mean_age"]
         assert pattern.findall("v <- c(1,2,3)") == ["v"]
@@ -707,5 +805,6 @@ class TestPolyglotBridge:
 
     def test_polyglot_flag_default_off(self):
         from morie.tui import ReplScreen
+
         screen = ReplScreen()
         assert screen._polyglot is False

@@ -88,4 +88,4 @@ short = rbf_interp
 
 
 def cheatsheet() -> str:
-    return 'rbf_interp({}) -> Radial basis function interpolation.'
+    return "rbf_interp({}) -> Radial basis function interpolation."

@@ -17,9 +17,9 @@ def test_wndchl_environment_canada_reference():
 
 
 def test_wndchl_classification_ranges():
-    low = wndchl(-5.0, 10.0)          # mild, should be > -28
+    low = wndchl(-5.0, 10.0)  # mild, should be > -28
     # T=-15, v=25 → W ≈ -25 (low risk boundary)
-    mod = wndchl(-20.0, 25.0)         # approaches the -28 boundary
+    mod = wndchl(-20.0, 25.0)  # approaches the -28 boundary
     # T=-30, v=40 → W ≈ -47.5 (10-min range)
     risk10 = wndchl(-30.0, 40.0)
     # T=-40, v=50 → W ≈ -60 (<-55 = < 2 min)
@@ -28,8 +28,7 @@ def test_wndchl_classification_ranges():
     assert low.extra["classification"] == "low risk"
     assert mod.extra["classification"] in ("low risk", "frostbite 30 min")
     assert risk10.extra["classification"] == "frostbite 10 min"
-    assert risk_extreme.extra["classification"] in ("frostbite 5 min",
-                                                     "frostbite < 2 min")
+    assert risk_extreme.extra["classification"] in ("frostbite 5 min", "frostbite < 2 min")
 
 
 def test_wndchl_outside_envelope_returns_T():

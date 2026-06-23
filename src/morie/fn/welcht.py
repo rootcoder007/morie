@@ -1,14 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Welch's t-test (unequal variances) with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 from scipy.stats import ttest_ind
 
 
-def welcht(x: Union[Sequence, np.ndarray],
-           y: Union[Sequence, np.ndarray]):
+def welcht(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):
     """Welch's two-sample t-test (unequal variances assumed).
 
     Returns a ``RichResult`` -- print it for an R-style verbose summary,
@@ -23,6 +23,7 @@ def welcht(x: Union[Sequence, np.ndarray],
     Wilcox (2017) ch.6; Hedderich et al. (2023) ch.7.
     """
     from ._richresult import hypothesis_test_result
+
     a = np.asarray(x, dtype=float)
     b = np.asarray(y, dtype=float)
     res = ttest_ind(a, b, equal_var=False)

@@ -1,6 +1,7 @@
 """Tests for morie.fn.prs — polygenic risk score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prs import polygenic_risk_score
 
 

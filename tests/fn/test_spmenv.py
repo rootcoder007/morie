@@ -1,6 +1,7 @@
 """Tests for spmenv.schabenberger_moran_expectation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmenv import schabenberger_moran_expectation
 
 
@@ -10,7 +11,7 @@ def test_spmenv_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = schabenberger_moran_expectation(x, w)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spmenv_edge():

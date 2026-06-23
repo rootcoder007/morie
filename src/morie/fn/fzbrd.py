@@ -9,8 +9,10 @@ of the KDFE.  Given two bandwidths h and c*h (c>1):
 This kills the leading h^2 bias term, leaving an O(h^4) residual at
 the cost of a slight variance inflation by factor (c^4 + 1)/(c^2 - 1)^2.
 """
+
 import numpy as np
 from scipy import stats as _sps
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_bias_reduced_kdfe"]
@@ -47,8 +49,7 @@ def fauzi_bias_reduced_kdfe(x, t=None, h=None, c=2.0):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "BR-KDFE -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "BR-KDFE -- too few obs"})
     if t is None:
         t = float(np.median(x))
     if h is None:
@@ -62,20 +63,22 @@ def fauzi_bias_reduced_kdfe(x, t=None, h=None, c=2.0):
 
     # Variance inflation factor for the BR estimator (approx)
     var_F = F_h * (1.0 - F_h) / n
-    var_inflate = (c ** 4 + 1.0) / (c * c - 1.0) ** 2
+    var_inflate = (c**4 + 1.0) / (c * c - 1.0) ** 2
     se = np.sqrt(var_F * var_inflate)
 
-    return RichResult(payload={
-        "estimate": F_br,
-        "F_h": F_h,
-        "F_ch": F_ch,
-        "se": se,
-        "h": h,
-        "c": c,
-        "t": t,
-        "n": n,
-        "method": "Fauzi bias-reduced KDFE (Ch 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": F_br,
+            "F_h": F_h,
+            "F_ch": F_ch,
+            "se": se,
+            "h": h,
+            "c": c,
+            "t": t,
+            "n": n,
+            "method": "Fauzi bias-reduced KDFE (Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

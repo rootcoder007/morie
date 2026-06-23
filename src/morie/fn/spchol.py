@@ -1,5 +1,7 @@
 """Cholesky decomposition simulation of Gaussian random fields."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_cholesky_sim"]
@@ -31,7 +33,14 @@ def schabenberger_cholesky_sim(mu, cov_matrix):
     n = int(mu) if mu.ndim == 0 else len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cholesky decomposition simulation of Gaussian random fields"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cholesky decomposition simulation of Gaussian random fields",
+        }
+    )
 
 
 def cheatsheet():

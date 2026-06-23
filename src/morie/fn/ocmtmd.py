@@ -1,6 +1,7 @@
 """Outcome-model diagnostic for MSM."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["outcome_model_diagnostic"]

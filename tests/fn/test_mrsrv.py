@@ -1,6 +1,8 @@
 """Tests for mrsrv: martingale residuals for Cox model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mrsrv import mrsrv
 
 
@@ -66,5 +68,4 @@ def test_censored_residuals_leq_zero():
 
 def test_negative_time_raises():
     with pytest.raises(ValueError):
-        mrsrv(np.array([-1.0, 2.0]), np.array([1, 0]),
-              np.array([[1.0], [0.0]]), np.array([0.5]))
+        mrsrv(np.array([-1.0, 2.0]), np.array([1, 0]), np.array([[1.0], [0.0]]), np.array([0.5]))

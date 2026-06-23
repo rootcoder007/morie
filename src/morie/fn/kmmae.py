@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multimodal masked autoencoder: reconstruct masked patches across modalities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_multimodal_mae"]
@@ -34,7 +36,14 @@ def kamath_multimodal_mae(x_visible, x_masked_true, masks):
     n = len(x_visible)
     result = float(np.mean(x_visible))
     se = float(np.std(x_visible, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multimodal masked autoencoder: reconstruct masked patches across modalities"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multimodal masked autoencoder: reconstruct masked patches across modalities",
+        }
+    )
 
 
 def cheatsheet():

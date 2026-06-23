@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Evenly split Polya tree: canonical Polya tree PT*(alpha, a_m) with equal partitions."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_evsplit_pt"]
@@ -30,7 +32,14 @@ def ghosal_evsplit_pt(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Evenly split Polya tree: canonical Polya tree PT*(alpha, a_m) with equal partitions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Evenly split Polya tree: canonical Polya tree PT*(alpha, a_m) with equal partitions",
+        }
+    )
 
 
 def cheatsheet():

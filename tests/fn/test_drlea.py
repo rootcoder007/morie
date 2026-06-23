@@ -1,6 +1,8 @@
 """Tests for morie.fn.drlea — DR-learner CATE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.drlea import drlea
 
 
@@ -58,4 +60,5 @@ def test_method(data):
 
 def test_cheatsheet():
     from morie.fn.drlea import cheatsheet
+
     assert len(cheatsheet()) > 0

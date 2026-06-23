@@ -74,4 +74,4 @@ ckmra = cochran_mantel
 
 
 def cheatsheet() -> str:
-    return 'cochran_mantel({}) -> Cochran-Mantel-Haenszel test.'
+    return "cochran_mantel({}) -> Cochran-Mantel-Haenszel test."

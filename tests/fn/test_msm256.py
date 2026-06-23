@@ -1,6 +1,7 @@
 """Tests for msm256.mvsml_reproducing_kernel_eq_10_17."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm256 import mvsml_reproducing_kernel_eq_10_17
 
 
@@ -14,7 +15,7 @@ def test_msm256_basic():
     This = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_reproducing_kernel_eq_10_17(w, h, kp, t, ikxip, This)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm256_edge():

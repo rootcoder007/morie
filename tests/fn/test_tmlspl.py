@@ -1,6 +1,7 @@
 """Tests for tmlspl.tmle_spillover."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlspl import tmle_spillover
 
 
@@ -13,7 +14,7 @@ def test_tmlspl_basic():
     exposure_summary = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_spillover(y, D, X, network, exposure_summary)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlspl_edge():

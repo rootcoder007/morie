@@ -1,6 +1,7 @@
 """Tests for km134.kamath_ch9_clip_text_to_image."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km134 import kamath_ch9_clip_text_to_image
 
 
@@ -12,7 +13,7 @@ def test_km134_basic():
     N = 100
     result = kamath_ch9_clip_text_to_image(L, V, sigma, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km134_edge():

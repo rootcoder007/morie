@@ -1,6 +1,7 @@
 """Tests for manh2h.ma_network_node_split."""
+
 import numpy as np
-import pytest
+
 from morie.fn.manh2h import ma_network_node_split
 
 
@@ -12,7 +13,7 @@ def test_manh2h_basic():
     edge = np.random.default_rng(42).normal(0, 1, 100)
     result = ma_network_node_split(yi, vi, design, edge)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_manh2h_edge():

@@ -1,6 +1,7 @@
 """Tests for eslrdg.esl_ridge."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslrdg import esl_ridge
 
 
@@ -11,7 +12,7 @@ def test_eslrdg_basic():
     lambda_ = np.random.default_rng(42).normal(0, 1, 100)
     result = esl_ridge(X, y, lambda_)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslrdg_edge():

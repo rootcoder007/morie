@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-encoder re-ranking: joint query+doc scored by a transformer."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_cross_encoder_rerank"]
@@ -34,7 +36,14 @@ def kamath_cross_encoder_rerank(q, docs, model):
     n = len(q)
     result = float(np.mean(q))
     se = float(np.std(q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross-encoder re-ranking: joint query+doc scored by a transformer"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Cross-encoder re-ranking: joint query+doc scored by a transformer",
+        }
+    )
 
 
 def cheatsheet():

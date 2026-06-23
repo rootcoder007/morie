@@ -1,6 +1,7 @@
 """Tests for grrmsp.geron_rmsprop_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grrmsp import geron_rmsprop_update
 
 
@@ -14,7 +15,7 @@ def test_grrmsp_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_rmsprop_update(theta, grad, s, eta, rho, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grrmsp_edge():

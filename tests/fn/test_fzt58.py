@@ -1,6 +1,7 @@
 """Tests for fzt58.fauzi_thm5_8_smoothed_convergence."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzt58 import fauzi_thm5_8_smoothed_convergence
 
 
@@ -11,7 +12,7 @@ def test_fzt58_basic():
     theta = 0.0
     result = fauzi_thm5_8_smoothed_convergence(data, bandwidth, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzt58_edge():

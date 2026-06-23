@@ -1,6 +1,7 @@
 """Tests for dnnmt.dnn_multitrait."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dnnmt import dnn_multitrait
 
 
@@ -12,7 +13,7 @@ def test_dnnmt_basic():
     heads = np.random.default_rng(42).normal(0, 1, 100)
     result = dnn_multitrait(X, Y, layers, heads)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dnnmt_edge():

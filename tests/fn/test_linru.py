@@ -1,4 +1,5 @@
 """Tests for morie.fn.linru — linear utility."""
+
 from morie.fn.linru import linru
 
 

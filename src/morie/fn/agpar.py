@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Party unity score per legislator: how often votes with party majority."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["party_unity_score"]
@@ -32,7 +34,14 @@ def party_unity_score(vote_matrix, party_id):
     n = int(vote_matrix) if vote_matrix.ndim == 0 else len(vote_matrix)
     result = float(np.mean(vote_matrix))
     se = float(np.std(vote_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Party unity score per legislator: how often votes with party majority"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Party unity score per legislator: how often votes with party majority",
+        }
+    )
 
 
 def cheatsheet():

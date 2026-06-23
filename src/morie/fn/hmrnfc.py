@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """REINFORCE algorithm: sample trajectories, update theta by advantage."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_reinforce"]
@@ -36,7 +38,14 @@ def geron_reinforce(episodes, policy, gamma, eta):
     n = len(episodes)
     result = float(np.mean(episodes))
     se = float(np.std(episodes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "REINFORCE algorithm: sample trajectories, update theta by advantage"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "REINFORCE algorithm: sample trajectories, update theta by advantage",
+        }
+    )
 
 
 def cheatsheet():

@@ -103,6 +103,7 @@ def environmental_justice_index(
             sw = w[idx].sum()
             return float((x[idx] * w[idx]).sum() / sw) if sw > 0 else float("nan")
     else:
+
         def _m(x: np.ndarray, idx: np.ndarray) -> float:
             return float(x[idx].mean()) if idx.sum() > 0 else float("nan")
 

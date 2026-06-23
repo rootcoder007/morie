@@ -1,15 +1,17 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hotelling T^2 (one-sample) with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 from scipy.stats import f as _f
 
 
-def hotelt2(X: Union[Sequence, np.ndarray],
-            mu0: Union[Sequence, np.ndarray]):
+def hotelt2(X: Union[Sequence, np.ndarray], mu0: Union[Sequence, np.ndarray]):
     """Hotelling T^2 for testing mu = mu0."""
     from ._richresult import hypothesis_test_result
+
     X = np.asarray(X, dtype=float)
     mu0 = np.asarray(mu0, dtype=float)
     n, p = X.shape
@@ -28,12 +30,18 @@ def hotelt2(X: Union[Sequence, np.ndarray],
         warnings.append(f"n={n} small relative to p={p}; multivariate normality critical.")
     return hypothesis_test_result(
         test_name="Hotelling T^2 (one-sample multivariate)",
-        statistic=f_stat, df=(p, n - p), pvalue=p_val,
-        extra_summary=[("T^2 statistic", t2), ("F-equivalent", f_stat),
-                       ("df1 (between)", p), ("df2 (within)", n - p),
-                       ("n", n), ("p (variables)", p),
-                       ("Mean diff norm", float(np.linalg.norm(diff)))],
+        statistic=f_stat,
+        df=(p, n - p),
+        pvalue=p_val,
+        extra_summary=[
+            ("T^2 statistic", t2),
+            ("F-equivalent", f_stat),
+            ("df1 (between)", p),
+            ("df2 (within)", n - p),
+            ("n", n),
+            ("p (variables)", p),
+            ("Mean diff norm", float(np.linalg.norm(diff))),
+        ],
         warnings=warnings,
-        extra_payload={"T2": t2, "F": f_stat, "df1": p, "df2": n - p,
-                       "xbar": xbar.tolist(), "mu0": mu0.tolist()},
+        extra_payload={"T2": t2, "F": f_stat, "df1": p, "df2": n - p, "xbar": xbar.tolist(), "mu0": mu0.tolist()},
     )

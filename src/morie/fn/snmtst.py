@@ -1,6 +1,7 @@
 """DR-DiD sensitivity to parallel-trends violation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sensitivity_did"]
@@ -36,7 +37,9 @@ def sensitivity_did(y, D, X, M):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD sensitivity to parallel-trends violation"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD sensitivity to parallel-trends violation"}
+    )
 
 
 def cheatsheet():

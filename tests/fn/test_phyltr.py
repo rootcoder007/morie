@@ -1,6 +1,7 @@
 """Tests for phyltr.phylogenetic_tree_nj."""
+
 import numpy as np
-import pytest
+
 from morie.fn.phyltr import phylogenetic_tree_nj
 
 
@@ -9,7 +10,7 @@ def test_phyltr_basic():
     distance_matrix = np.random.default_rng(42).normal(0, 1, (10, 10))
     result = phylogenetic_tree_nj(distance_matrix)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_phyltr_edge():

@@ -1,6 +1,7 @@
 """Tests for gb_ksc.gibbons_ks_cvm_comparison."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_ksc import gibbons_ks_cvm_comparison
 
 
@@ -10,7 +11,7 @@ def test_gb_ksc_basic():
     F0 = np.random.default_rng(42).normal(0, 1, 100)
     result = gibbons_ks_cvm_comparison(x, F0)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb_ksc_edge():

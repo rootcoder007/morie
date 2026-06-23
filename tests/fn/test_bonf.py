@@ -1,6 +1,7 @@
 """Tests for morie.fn.bonf -- Bonferroni correction."""
 
 import pytest
+
 from morie.fn.bonf import bonferroni_correction
 
 

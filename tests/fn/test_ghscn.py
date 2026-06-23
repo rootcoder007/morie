@@ -1,6 +1,7 @@
 """Test ghscn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghscn import ghscn
 
 

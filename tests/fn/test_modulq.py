@@ -1,6 +1,7 @@
 """Tests for modulq.modularity_q."""
+
 import numpy as np
-import pytest
+
 from morie.fn.modulq import modularity_q
 
 
@@ -10,7 +11,7 @@ def test_modulq_basic():
     communities = np.random.default_rng(42).normal(0, 1, 100)
     result = modularity_q(G, communities)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_modulq_edge():

@@ -76,7 +76,7 @@ def expsv(
         for i in range(p):
             e_i = np.zeros(1 + p)
             e_i[1 + i] = eps
-            hess[i] = (neg_loglik(result.x + e_i) - 2 * neg_loglik(result.x) + neg_loglik(result.x - e_i)) / eps ** 2
+            hess[i] = (neg_loglik(result.x + e_i) - 2 * neg_loglik(result.x) + neg_loglik(result.x - e_i)) / eps**2
         se = 1.0 / np.sqrt(np.maximum(hess, 1e-10))
     except Exception:
         se = np.full(p, np.nan)

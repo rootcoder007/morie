@@ -195,13 +195,16 @@ class TestKDE:
         peak_x = x_eval[peak_idx]
         assert abs(peak_x) < 0.5, f"Peak at {peak_x}"
 
-    @pytest.mark.parametrize("kernel_type", [
-        KERNEL_GAUSSIAN,
-        KERNEL_EPANECHNIKOV,
-        KERNEL_UNIFORM,
-        KERNEL_TRIANGULAR,
-        KERNEL_BIWEIGHT,
-    ])
+    @pytest.mark.parametrize(
+        "kernel_type",
+        [
+            KERNEL_GAUSSIAN,
+            KERNEL_EPANECHNIKOV,
+            KERNEL_UNIFORM,
+            KERNEL_TRIANGULAR,
+            KERNEL_BIWEIGHT,
+        ],
+    )
     def test_all_kernels_nonnegative(self, normal_data, kernel_type):
         x_eval = np.linspace(-4, 4, 50)
         density = kde(normal_data, x_eval, 0.5, kernel_type=kernel_type)

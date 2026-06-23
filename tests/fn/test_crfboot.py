@@ -1,6 +1,7 @@
 """Tests for crfboot.causal_forest_bootstrap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.crfboot import causal_forest_bootstrap
 
 
@@ -13,7 +14,7 @@ def test_crfboot_basic():
     min_node = np.random.default_rng(42).normal(0, 1, 100)
     result = causal_forest_bootstrap(y, D, X, B, min_node)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_crfboot_edge():

@@ -1,6 +1,7 @@
 """Tests for tmlhte.tmle_heterogeneous."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlhte import tmle_heterogeneous
 
 
@@ -12,7 +13,7 @@ def test_tmlhte_basic():
     strata = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_heterogeneous(y, treatment, W, strata)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlhte_edge():

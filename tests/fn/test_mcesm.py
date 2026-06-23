@@ -1,6 +1,8 @@
 """Tests for morie.fn.mcesm — Maximum calibration error."""
+
 import numpy as np
 import pytest
+
 from morie.fn.mcesm import mcesm
 
 
@@ -15,8 +17,17 @@ def data():
 
 def test_keys(data):
     r = mcesm(*data)
-    for k in ("mce", "worst_bin_idx", "worst_bin_center", "worst_acc",
-              "worst_conf", "bin_gaps", "bin_counts", "n", "method"):
+    for k in (
+        "mce",
+        "worst_bin_idx",
+        "worst_bin_center",
+        "worst_acc",
+        "worst_conf",
+        "bin_gaps",
+        "bin_counts",
+        "n",
+        "method",
+    ):
         assert k in r
 
 
@@ -31,6 +42,7 @@ def test_mce_geq_ece():
     y = rng.binomial(1, p).astype(float)
     r_mce = mcesm(y, p)
     from morie.fn.ecesm import ecesm
+
     r_ece = ecesm(y, p)
     assert r_mce["mce"] >= r_ece["ece"] - 1e-8
 
@@ -61,4 +73,5 @@ def test_n_correct(data):
 
 def test_cheatsheet():
     from morie.fn.mcesm import cheatsheet
+
     assert len(cheatsheet()) > 0

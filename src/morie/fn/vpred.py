@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 from scipy import stats as sp
+
 from ._richresult import RichResult
 
 
@@ -58,7 +59,9 @@ def validity_predictive(
         if n < 3:
             return RichResult(payload={"r_squared": np.nan, "n": n, "method": method})
         r, p = sp.pearsonr(s, y)
-        return RichResult(payload={"r_squared": float(r**2), "r": float(r), "p_value": float(p), "n": n, "method": method})
+        return RichResult(
+            payload={"r_squared": float(r**2), "r": float(r), "p_value": float(p), "n": n, "method": method}
+        )
 
 
 def cheatsheet() -> str:

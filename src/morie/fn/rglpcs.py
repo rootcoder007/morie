@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LPC synthesis filter for signal reconstruction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_lpc_synthesis"]
@@ -34,7 +36,9 @@ def rangayyan_lpc_synthesis(lpc_coeffs, gain, excitation):
     n = int(lpc_coeffs) if lpc_coeffs.ndim == 0 else len(lpc_coeffs)
     result = float(np.mean(lpc_coeffs))
     se = float(np.std(lpc_coeffs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "LPC synthesis filter for signal reconstruction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "LPC synthesis filter for signal reconstruction"}
+    )
 
 
 def cheatsheet():

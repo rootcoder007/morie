@@ -1,5 +1,7 @@
 """Spatio-temporal semivariogram."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_st_variogram"]

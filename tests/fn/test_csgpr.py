@@ -1,6 +1,7 @@
 """Test csgpr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csgpr import csgpr
 
 

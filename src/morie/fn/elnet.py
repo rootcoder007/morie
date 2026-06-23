@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Soft-thresholding operator."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -92,4 +93,4 @@ elnet = elastic_net
 
 
 def cheatsheet() -> str:
-    return '_soft_threshold({}) -> Elastic net regression.'
+    return "_soft_threshold({}) -> Elastic net regression."

@@ -1,5 +1,7 @@
 """Tests for morie.fn.combn."""
+
 import numpy as np
+
 from morie.fn.combn import combn
 
 
@@ -13,6 +15,7 @@ def test_combn_smoke():
 
 def test_cheatsheet():
     from morie.fn.combn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

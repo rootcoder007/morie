@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power spectral density via Welch's method -- Rangayyan Ch 4."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,8 +45,7 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
     x = np.asarray(x, dtype=float)
     if nperseg is None:
         nperseg = min(x.size, 256)
-    freqs, pxx = welch(x, fs=fs, nperseg=nperseg, noverlap=noverlap,
-                       window=window, scaling="density")
+    freqs, pxx = welch(x, fs=fs, nperseg=nperseg, noverlap=noverlap, window=window, scaling="density")
     peak_idx = int(np.argmax(pxx))
     res = RichResult(
         title="Power spectral density (Welch)",
@@ -57,10 +57,7 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
             ("Peak power", float(pxx[peak_idx])),
             ("Total power", float(np.trapz(pxx, freqs))),
         ],
-        interpretation=(
-            f"PSD peaks at {freqs[peak_idx]:.3g} Hz; total band power "
-            f"{float(np.trapz(pxx, freqs)):.4g}."
-        ),
+        interpretation=(f"PSD peaks at {freqs[peak_idx]:.3g} Hz; total band power {float(np.trapz(pxx, freqs)):.4g}."),
         payload={
             "freqs": freqs,
             "psd": pxx,

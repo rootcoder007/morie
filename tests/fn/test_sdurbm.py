@@ -1,6 +1,7 @@
 """Tests for sdurbm.spatial_durbin_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sdurbm import spatial_durbin_model
 
 
@@ -11,7 +12,7 @@ def test_sdurbm_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = spatial_durbin_model(y, X, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sdurbm_edge():

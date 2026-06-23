@@ -1,7 +1,7 @@
 """Tests for morie.fn.ppsal."""
 
 import numpy as np
-import pytest
+
 from morie.fn.ppsal import ppsal
 
 

@@ -1,6 +1,7 @@
 """Tests for pesdol.pesaran_shin_dols."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pesdol import pesaran_shin_dols
 
 
@@ -11,7 +12,7 @@ def test_pesdol_basic():
     p = 5
     result = pesaran_shin_dols(y, X, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pesdol_edge():

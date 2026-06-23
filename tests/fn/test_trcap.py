@@ -1,6 +1,7 @@
 """Test trcap."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trcap import trcap
 
 

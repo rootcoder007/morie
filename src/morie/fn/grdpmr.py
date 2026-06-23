@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DDPM reverse (denoising) step: sample from p_theta(x_{t-1} | x_t)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddpm_reverse_step"]
@@ -40,7 +42,14 @@ def geron_ddpm_reverse_step(x_t, t, eps_pred, alpha, alpha_bar, sigma):
     n = len(x_t)
     result = float(np.mean(x_t))
     se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DDPM reverse (denoising) step: sample from p_theta(x_{t-1} | x_t)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DDPM reverse (denoising) step: sample from p_theta(x_{t-1} | x_t)",
+        }
+    )
 
 
 def cheatsheet():

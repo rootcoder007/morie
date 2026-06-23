@@ -1,6 +1,7 @@
 """Test ghfca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghfca import ghfca
 
 

@@ -1,5 +1,7 @@
 """Test mthry."""
+
 import pytest
+
 from morie.fn.mthry import m_theory_dimension
 
 

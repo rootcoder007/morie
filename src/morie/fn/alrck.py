@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Recall@k -- fraction of relevant items in the top-k retrieved set."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_recall_at_k"]
@@ -34,7 +36,14 @@ def alammar_recall_at_k(retrieved, relevant, k):
     n = len(retrieved)
     result = float(np.mean(retrieved))
     se = float(np.std(retrieved, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Recall@k -- fraction of relevant items in the top-k retrieved set"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Recall@k -- fraction of relevant items in the top-k retrieved set",
+        }
+    )
 
 
 def cheatsheet():

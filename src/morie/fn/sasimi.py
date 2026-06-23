@@ -1,6 +1,7 @@
 """Tanimoto similarity between fingerprints."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tanimoto_similarity"]
@@ -32,7 +33,9 @@ def tanimoto_similarity(fp_a, fp_b):
     n = len(fp_a)
     result = float(np.mean(fp_a))
     se = float(np.std(fp_a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Tanimoto similarity between fingerprints"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Tanimoto similarity between fingerprints"}
+    )
 
 
 def cheatsheet():

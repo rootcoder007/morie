@@ -1,6 +1,8 @@
 """Tests for stprod."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stprod import stprod
 
 
@@ -28,4 +30,5 @@ def test_stprod_no_data():
 
 def test_stprod_alias():
     from morie.fn.stprod import stprod
+
     assert stprod is stprod

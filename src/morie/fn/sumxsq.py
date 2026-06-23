@@ -1,6 +1,10 @@
 """Σxᵢ² -- sum of squares (atomic primitive)."""
-from typing import Sequence, Union
+
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
 
 def sumxsq(x: Union[Sequence[float], np.ndarray]) -> float:
     """Σᵢ xᵢ² -- uncorrected sum of squares.

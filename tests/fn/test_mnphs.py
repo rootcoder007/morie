@@ -1,7 +1,9 @@
 """Test minimum_phase_correspondent."""
+
 import numpy as np
-from morie.fn.mnphs import minimum_phase_correspondent, mnphs
+
 from morie.fn._containers import SignalResult
+from morie.fn.mnphs import minimum_phase_correspondent, mnphs
 
 
 class TestMinimumPhaseCorrespondent:

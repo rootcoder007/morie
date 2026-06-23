@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TiDE: dense-encoder MLP forecaster (Time-series Dense Encoder)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_tide_encoder"]
@@ -34,7 +36,14 @@ def joseph_tide_encoder(past, covariates, horizon):
     n = len(past)
     result = float(np.mean(past))
     se = float(np.std(past, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TiDE: dense-encoder MLP forecaster (Time-series Dense Encoder)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TiDE: dense-encoder MLP forecaster (Time-series Dense Encoder)",
+        }
+    )
 
 
 def cheatsheet():

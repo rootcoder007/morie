@@ -1,6 +1,7 @@
 """Tests for rpnlt.roughness_penalty."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rpnlt import roughness_penalty
 
 
@@ -10,7 +11,7 @@ def test_rpnlt_basic():
     lam = 0.1
     result = roughness_penalty(basis, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rpnlt_edge():

@@ -1,8 +1,9 @@
 """Tests for morie.fn.otd — OTIS descriptive statistics."""
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from morie.fn.otd import otdesc as otd
 
 
@@ -11,15 +12,18 @@ def desc_df():
     """Synthetic OTIS data for descriptive statistics."""
     rng = np.random.default_rng(42)
     n = 120
-    return pd.DataFrame({
-        "unique_individual_id": [f"P{i % 40:04d}" for i in range(n)],
-        "end_fiscal_year": rng.choice([2020, 2021], n),
-        "region_at_time_of_placement": rng.choice(
-            ["Central", "Eastern", "Western"], n,
-        ),
-        "age_category": rng.choice(["18 to 24", "25 to 49", "50+"], n),
-        "gender": rng.choice(["Male", "Female"], n),
-    })
+    return pd.DataFrame(
+        {
+            "unique_individual_id": [f"P{i % 40:04d}" for i in range(n)],
+            "end_fiscal_year": rng.choice([2020, 2021], n),
+            "region_at_time_of_placement": rng.choice(
+                ["Central", "Eastern", "Western"],
+                n,
+            ),
+            "age_category": rng.choice(["18 to 24", "25 to 49", "50+"], n),
+            "gender": rng.choice(["Male", "Female"], n),
+        }
+    )
 
 
 class TestOtdesc:

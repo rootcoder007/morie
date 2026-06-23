@@ -1,6 +1,7 @@
 """Tests for km089.kamath_ch6_sgs_invariance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km089 import kamath_ch6_sgs_invariance
 
 
@@ -11,7 +12,7 @@ def test_km089_basic():
     psi = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch6_sgs_invariance(Yhat_i, Yhat_j, psi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km089_edge():

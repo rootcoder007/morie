@@ -1,6 +1,7 @@
 """Test alphsh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alphsh import alphsh
 
 

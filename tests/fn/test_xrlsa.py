@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrlsa -- Local Moran's I (LISA)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrlsa import lisa_local
 

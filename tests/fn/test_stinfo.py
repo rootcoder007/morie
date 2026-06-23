@@ -1,6 +1,8 @@
 """Tests for stinfo."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stinfo import stinfo
 
 
@@ -28,4 +30,5 @@ def test_stinfo_no_data():
 
 def test_stinfo_alias():
     from morie.fn.stinfo import stinfo
+
     assert stinfo is stinfo

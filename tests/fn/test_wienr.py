@@ -1,9 +1,9 @@
 """Test wiener_filter (wienr)."""
-import numpy as np
-import pytest
 
-from morie.fn.wienr import wiener_filter, wienr
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.wienr import wiener_filter, wienr
 
 
 class TestWienerFilter:

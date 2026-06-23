@@ -1,6 +1,7 @@
 """Tests for offlrl.offline_rl_cql."""
+
 import numpy as np
-import pytest
+
 from morie.fn.offlrl import offline_rl_cql
 
 
@@ -10,7 +11,7 @@ def test_offlrl_basic():
     alpha = 0.05
     result = offline_rl_cql(dataset, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_offlrl_edge():

@@ -1,6 +1,7 @@
 """Test aflstk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aflstk import aflstk
 
 

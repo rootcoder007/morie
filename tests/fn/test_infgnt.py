@@ -1,6 +1,7 @@
 """Tests for infgnt.information_geometry."""
+
 import numpy as np
-import pytest
+
 from morie.fn.infgnt import information_geometry
 
 
@@ -10,7 +11,7 @@ def test_infgnt_basic():
     theta = 0.0
     result = information_geometry(log_p, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_infgnt_edge():

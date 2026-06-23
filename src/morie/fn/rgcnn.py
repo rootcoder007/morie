@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """1D CNN for biomedical signal classification."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_cnn_signal"]
@@ -36,7 +38,9 @@ def rangayyan_cnn_signal(x, filters, kernel_sizes, n_classes):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "1D CNN for biomedical signal classification"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "1D CNN for biomedical signal classification"}
+    )
 
 
 def cheatsheet():

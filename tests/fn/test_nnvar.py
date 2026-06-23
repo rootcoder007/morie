@@ -1,6 +1,8 @@
 """Tests for nnvar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.nnvar import nnvar
 
 
@@ -28,4 +30,5 @@ def test_nnvar_no_data():
 
 def test_nnvar_alias():
     from morie.fn.nnvar import nnvar
+
     assert nnvar is nnvar

@@ -6,6 +6,7 @@ import pytest
 
 try:
     import doubleml  # noqa: F401
+
     _HAS_DOUBLEML = True
 except ImportError:
     _HAS_DOUBLEML = False
@@ -28,31 +29,23 @@ def synth_data():
 
 
 def test_returns_dict_with_ate(synth_data):
-    result = estimate_irm(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_irm(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert isinstance(result, dict)
     assert "ate" in result
 
 
 def test_ate_is_finite(synth_data):
-    result = estimate_irm(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_irm(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert np.isfinite(result["ate"])
     assert np.isfinite(result["se"])
 
 
 def test_has_expected_keys(synth_data):
-    result = estimate_irm(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_irm(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     for key in ("ate", "se", "ci_lower", "ci_upper", "n", "method"):
         assert key in result
 
 
 def test_ci_brackets_ate(synth_data):
-    result = estimate_irm(
-        synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"]
-    )
+    result = estimate_irm(synth_data, treatment="treatment", outcome="outcome", covariates=["x1", "x2"])
     assert result["ci_lower"] <= result["ate"] <= result["ci_upper"]

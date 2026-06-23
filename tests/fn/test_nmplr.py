@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmplr -- Legislative polarization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmplr import leg_polarize
 

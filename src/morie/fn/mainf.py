@@ -1,6 +1,7 @@
 """Cook's distance + DFFITS for meta-regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_influence_diagnostics"]
@@ -34,7 +35,9 @@ def ma_influence_diagnostics(yi, vi, X):
     n = len(yi)
     result = float(np.mean(yi))
     se = float(np.std(yi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cook's distance + DFFITS for meta-regression"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cook's distance + DFFITS for meta-regression"}
+    )
 
 
 def cheatsheet():

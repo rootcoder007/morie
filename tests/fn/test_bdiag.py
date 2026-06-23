@@ -1,7 +1,6 @@
 """Tests for morie.fn.bdiag — MCMC diagnostics."""
 
 import numpy as np
-import pytest
 
 from morie.fn.bdiag import mcmc_diagnostics
 

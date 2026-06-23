@@ -1,6 +1,7 @@
 """Least trimmed squares regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["least_trimmed_squares"]

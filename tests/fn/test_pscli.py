@@ -1,6 +1,7 @@
 """Tests for pscli.pscl_ideal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pscli import pscl_ideal
 
 
@@ -11,7 +12,7 @@ def test_pscli_basic():
     n_iter = 50
     result = pscl_ideal(rollcall_obj, n_dims, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pscli_edge():

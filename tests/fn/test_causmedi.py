@@ -1,6 +1,7 @@
 """Tests for causmedi.causal_mediation_imai."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causmedi import causal_mediation_imai
 
 
@@ -13,7 +14,7 @@ def test_causmedi_basic():
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = causal_mediation_imai(X, M, Y, T, B)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causmedi_edge():

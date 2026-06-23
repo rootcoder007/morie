@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonparametric IV model: Y=g(X)+U, E[U|W]=0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_npiv_model"]
@@ -34,7 +36,9 @@ def horowitz_npiv_model(x, y, w):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nonparametric IV model: Y=g(X)+U, E[U|W]=0"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Nonparametric IV model: Y=g(X)+U, E[U|W]=0"}
+    )
 
 
 def cheatsheet():

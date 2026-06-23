@@ -1,12 +1,11 @@
 """Tests for morie.fn.netdn — Network density."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netdn import network_density
 
 
 class TestNetworkDensity:
-
     def test_complete_graph(self):
         A = np.ones((4, 4)) - np.eye(4)
         assert network_density(A) == 1.0

@@ -1,6 +1,7 @@
 """Test gchad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gchad import gchad
 
 

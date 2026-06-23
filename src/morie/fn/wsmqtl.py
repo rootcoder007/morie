@@ -1,6 +1,7 @@
 """Empirical quantile q_p = F_n^{-1}(p)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_empirical_quantile"]

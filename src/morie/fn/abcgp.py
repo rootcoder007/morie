@@ -1,6 +1,7 @@
 """ABC with GP emulator surrogate."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["abc_gp_emulator"]

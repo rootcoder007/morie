@@ -1,6 +1,7 @@
 """Eigenvector centrality (largest eigenvector of A)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["eigenvector_centrality"]
@@ -32,7 +33,9 @@ def eigenvector_centrality(y, A):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Eigenvector centrality (largest eigenvector of A)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Eigenvector centrality (largest eigenvector of A)"}
+    )
 
 
 def cheatsheet():

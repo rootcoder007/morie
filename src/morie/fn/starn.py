@@ -57,7 +57,7 @@ def starn(
 
     k_params = len(coeffs)
     n_obs = len(y)
-    rss = float(np.sum(residuals ** 2))
+    rss = float(np.sum(residuals**2))
     sigma2 = rss / max(n_obs - k_params, 1)
     aic = n_obs * np.log(sigma2 + 1e-12) + 2 * k_params
 

@@ -40,4 +40,5 @@ def test_baseline_positive(surv_data):
 
 def test_cheatsheet():
     from morie.fn.phreg import cheatsheet
+
     assert "piecewise" in cheatsheet().lower()

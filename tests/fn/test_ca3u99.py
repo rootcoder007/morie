@@ -1,6 +1,7 @@
 """Tests for ca3u99.ca_chapter_3_unnumbered_99."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ca3u99 import ca_chapter_3_unnumbered_99
 
 
@@ -9,7 +10,7 @@ def test_ca3u99_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = ca_chapter_3_unnumbered_99(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_ca3u99_edge():

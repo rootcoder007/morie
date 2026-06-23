@@ -1,7 +1,9 @@
 """Tests for scpct -- percentile norms."""
+
 import numpy as np
-from morie.fn.scpct import percentile_norms
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.scpct import percentile_norms
 
 
 class TestPercentileNorms:

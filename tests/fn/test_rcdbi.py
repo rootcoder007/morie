@@ -1,13 +1,13 @@
 """Tests for morie.fn.rcdbi — recidivism burden."""
 
-import pytest
 import numpy as np
-from morie.fn.rcdbi import recidivism_burden
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.rcdbi import recidivism_burden
 
 
 class TestRecidivismBurden:
-
     def test_returns_esres(self):
         counts = np.array([10, 5, 3])
         weights = np.array([1.0, 2.0, 3.0])

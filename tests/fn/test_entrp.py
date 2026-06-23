@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.entrp import entrp, MetricEntropyResult
+from morie.fn.entrp import MetricEntropyResult, entrp
 
 
 def test_returns_result_type():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_missing_data_imputation_ts"]
@@ -34,7 +36,14 @@ def joseph_missing_data_imputation_ts(y, strategy, m):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Time-series-aware missing imputation (forward-fill / linear / seasonal-mean)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for hmstrn.history_adjusted_msm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmstrn import history_adjusted_msm
 
 
@@ -13,7 +14,7 @@ def test_hmstrn_basic():
     regime = np.random.default_rng(42).normal(0, 1, 100)
     result = history_adjusted_msm(y, treatment_history, covariate_history, time, regime)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmstrn_edge():

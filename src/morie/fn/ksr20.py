@@ -5,7 +5,9 @@ P(C > t) is estimated by Kaplan-Meier on (t_i, 1 - delta_i), i.e.
 treating censorings as the events.  Returns the KM-of-censoring at
 t_max with Greenwood SE.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_censoring_survival"]
@@ -31,7 +33,8 @@ def kosorok_censoring_survival(t, event):
     # Censoring counting process: c_i = 1 - delta_i.
     c = 1 - e
     order = np.argsort(t, kind="mergesort")
-    t = t[order]; c = c[order]
+    t = t[order]
+    c = c[order]
     S = 1.0
     var_factor = 0.0
     i = 0
@@ -42,16 +45,18 @@ def kosorok_censoring_survival(t, event):
         d = int(c[i:j].sum())
         Y = n - i
         if d > 0:
-            S *= (1.0 - d / Y)
-            var_factor += d / (Y * (Y - d)) if Y > d else 0.0
+            S *= 1.0 - d / Y
+            var_factor += d / (Y * (Y - d)) if d < Y else 0.0
         i = j
     se = float(S * np.sqrt(var_factor)) if var_factor >= 0 else float("nan")
-    return RichResult(payload={
-        "estimate": float(S),
-        "se":       se,
-        "n":        n,
-        "method":   "Kaplan-Meier of censoring (Greenwood SE) at t_max",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(S),
+            "se": se,
+            "n": n,
+            "method": "Kaplan-Meier of censoring (Greenwood SE) at t_max",
+        }
+    )
 
 
 def cheatsheet():

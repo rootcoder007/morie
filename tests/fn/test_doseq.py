@@ -1,6 +1,7 @@
 """Tests for morie.fn.doseq -- Dose-response analysis."""
 
 import pytest
+
 from morie.fn.doseq import dose_response
 
 

@@ -1,7 +1,9 @@
 """Tests for burgp -- Burg AR spectral estimation."""
+
 import numpy as np
-from morie.fn.burgp import burg_psd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.burgp import burg_psd
 
 
 def test_burg_basic(signal_1khz):

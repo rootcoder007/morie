@@ -1,7 +1,6 @@
 """Tests for morie.fn.msshd -- Shepard disparities"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msshd import shepard_dist
 

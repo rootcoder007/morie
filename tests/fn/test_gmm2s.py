@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.gmm2s import gmm_twostep, gmm2s
+
 from morie.fn._containers import RegressionResult
+from morie.fn.gmm2s import gmm2s, gmm_twostep
 
 
 class TestGMM2Step:

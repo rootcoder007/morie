@@ -1,7 +1,6 @@
 """Tests for morie.fn.svlgv -- Logit spatial voting probability"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svlgv import logit_vote
 

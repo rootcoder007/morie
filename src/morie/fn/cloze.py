@@ -55,4 +55,4 @@ cloze = cloze_score
 
 
 def cheatsheet() -> str:
-    return 'cloze_score({}) -> Cloze test scoring.'
+    return "cloze_score({}) -> Cloze test scoring."

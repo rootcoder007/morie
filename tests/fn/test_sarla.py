@@ -1,6 +1,7 @@
 """Tests for sarla.spatial_ar_lag."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sarla import spatial_ar_lag
 
 
@@ -11,7 +12,7 @@ def test_sarla_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = spatial_ar_lag(x, y, w)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sarla_edge():

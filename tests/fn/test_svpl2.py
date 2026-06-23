@@ -1,7 +1,6 @@
 """Tests for morie.fn.svpl2 -- 2D spatial polarization"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svpl2 import polarization_2d
 

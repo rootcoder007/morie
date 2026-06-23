@@ -1,6 +1,7 @@
 """Tests for sscompv.survival_competing_validation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sscompv import survival_competing_validation
 
 
@@ -11,7 +12,7 @@ def test_sscompv_basic():
     predicted_F = np.random.default_rng(42).normal(0, 1, 100)
     result = survival_competing_validation(time, event_type, predicted_F)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sscompv_edge():

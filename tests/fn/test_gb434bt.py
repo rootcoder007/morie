@@ -1,6 +1,7 @@
 """Tests for gb434bt.gibbons_ks_bt_formula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb434bt import gibbons_ks_bt_formula
 
 
@@ -10,7 +11,7 @@ def test_gb434bt_basic():
     n = 100
     result = gibbons_ks_bt_formula(c, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb434bt_edge():

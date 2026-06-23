@@ -1,7 +1,7 @@
 """Tests for morie.fn.wvswg."""
 
 import numpy as np
-import pytest
+
 from morie.fn.wvswg import wvswg
 
 

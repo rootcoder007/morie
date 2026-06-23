@@ -1,6 +1,7 @@
 """Test vmnst."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmnst import vmnst
 
 

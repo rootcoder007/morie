@@ -1,4 +1,5 @@
 """Test susyq."""
+
 from morie.fn.susyq import susy_algebra
 
 

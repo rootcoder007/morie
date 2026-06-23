@@ -85,11 +85,11 @@ def kmsem(
         n_j = np.sum(t_sorted >= tj)
         d_j = np.sum((t_sorted == tj) & (e_sorted == 1))
         if n_j > 0:
-            s *= (1 - d_j / n_j)
+            s *= 1 - d_j / n_j
             if n_j > d_j:
                 cum_hazard_var += d_j / (n_j * (n_j - d_j))
         surv[j] = s
-        var_s = s ** 2 * cum_hazard_var
+        var_s = s**2 * cum_hazard_var
         se_arr[j] = np.sqrt(max(var_s, 0))
 
         if s > 0 and s < 1 and se_arr[j] > 0:

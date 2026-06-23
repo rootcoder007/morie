@@ -1,14 +1,17 @@
 """Tests for morie.fn.mtoped — pedestrian."""
 
-import pytest
 import pandas as pd
-from morie.fn.mtoped import mto_pedestrian
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtoped import mto_pedestrian
 
 
 class TestPedestrian:
     def test_basic(self):
-        df = pd.DataFrame({"pedestrian_involved": [1, 0, 1, 0, 1], "severity": ["Fatal", "Minor", "Serious", "Minor", "Minor"]})
+        df = pd.DataFrame(
+            {"pedestrian_involved": [1, 0, 1, 0, 1], "severity": ["Fatal", "Minor", "Serious", "Minor", "Minor"]}
+        )
         r = mto_pedestrian(df)
         assert isinstance(r, DescriptiveResult)
         assert r.value == pytest.approx(3.0)

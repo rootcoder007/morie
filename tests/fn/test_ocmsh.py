@@ -1,5 +1,7 @@
 """Tests for morie.fn.ocmsh -- OC Coombs mesh."""
+
 import numpy as np
+
 from morie.fn.ocmsh import oc_coombs_mesh, ocmsh
 
 

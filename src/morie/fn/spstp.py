@@ -1,5 +1,7 @@
 """Spatio-temporal point process: intensity function lambda(s,t)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_st_point_process"]
@@ -33,7 +35,14 @@ def schabenberger_st_point_process(points, region, time_interval):
     n = int(points) if points.ndim == 0 else len(points)
     result = float(np.mean(points))
     se = float(np.std(points, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spatio-temporal point process: intensity function lambda(s,t)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Spatio-temporal point process: intensity function lambda(s,t)",
+        }
+    )
 
 
 def cheatsheet():

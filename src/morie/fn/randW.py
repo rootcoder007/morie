@@ -1,6 +1,7 @@
 """Random walk graph kernel."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["random_walk_kernel"]

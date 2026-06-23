@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtocl — collision rate."""
 
 import pytest
-from morie.fn.mtocl import mto_collision_rate
+
 from morie.fn._containers import CrimeResult
+from morie.fn.mtocl import mto_collision_rate
 
 
 class TestCollisionRate:

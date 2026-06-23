@@ -98,4 +98,4 @@ pidsim = pid_simulate
 
 
 def cheatsheet() -> str:
-    return 'pid_simulate({}) -> Cybernetic control system simulation.'
+    return "pid_simulate({}) -> Cybernetic control system simulation."

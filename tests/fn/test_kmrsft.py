@@ -1,6 +1,7 @@
 """Tests for kmrsft.kamath_rejection_sampling_finetune."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmrsft import kamath_rejection_sampling_finetune
 
 
@@ -12,7 +13,7 @@ def test_kmrsft_basic():
     k = 5
     result = kamath_rejection_sampling_finetune(prompts, samples, rewards, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmrsft_edge():

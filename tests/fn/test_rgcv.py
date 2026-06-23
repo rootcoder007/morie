@@ -1,6 +1,7 @@
 """Tests for rgcv -- generalizability coefficient."""
-from morie.fn.rgcv import generalizability_coeff
+
 from morie.fn._containers import ESRes
+from morie.fn.rgcv import generalizability_coeff
 
 
 class TestGeneralizability:

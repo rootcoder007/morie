@@ -1,6 +1,7 @@
 """Tests for rngnrm.qk_norm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rngnrm import rngnrm as qk_norm
 
 
@@ -12,7 +13,7 @@ def test_rngnrm_basic():
     s = 90
     result = qk_norm(y, Q, K, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rngnrm_edge():

@@ -4,12 +4,22 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kcvms"]
 
 
-def kcvms(data: np.ndarray, cdf=None, *, cdf_func: str = "normal", bw: float | None = None, n_grid: int = 1024, n_boot: int = 999, seed: int = 42) -> dict:
+def kcvms(
+    data: np.ndarray,
+    cdf=None,
+    *,
+    cdf_func: str = "normal",
+    bw: float | None = None,
+    n_grid: int = 1024,
+    n_boot: int = 999,
+    seed: int = 42,
+) -> dict:
     r"""
     Cramer-von Mises test using a kernel-smoothed CDF.
 

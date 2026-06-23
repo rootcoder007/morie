@@ -85,9 +85,7 @@ def bkfit(
     for it in range(1, max_iter + 1):
         max_change = 0.0
         for j in range(p):
-            partial_resid = Y - intercept - sum(
-                components[k] for k in range(p) if k != j
-            )
+            partial_resid = Y - intercept - sum(components[k] for k in range(p) if k != j)
             new_j = _smooth(X[:, j], partial_resid)
             new_j -= np.mean(new_j)
             change = np.max(np.abs(new_j - components[j]))

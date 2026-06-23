@@ -1,6 +1,7 @@
 """Tests for rgnl.rangayyan_nonlinear_features."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgnl import rangayyan_nonlinear_features
 
 
@@ -11,7 +12,7 @@ def test_rgnl_basic():
     r = 10
     result = rangayyan_nonlinear_features(x, m, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgnl_edge():

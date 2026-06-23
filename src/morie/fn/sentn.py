@@ -146,4 +146,4 @@ def sentiment_lexicon(
 
 
 def cheatsheet() -> str:
-    return 'sentiment_lexicon({}) -> Lexicon-based sentiment analysis.'
+    return "sentiment_lexicon({}) -> Lexicon-based sentiment analysis."

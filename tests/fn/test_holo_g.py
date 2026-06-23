@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.holo_g import geo_summary, holo_g
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.holo_g import geo_summary, holo_g
 
 
 class TestHoloG:

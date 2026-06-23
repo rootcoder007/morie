@@ -23,7 +23,7 @@ def test_pmgbrd_matches_gemm_rr_at_single_point():
     # PAF = (RR - 1) / RR; deaths = PAF * baseline * pop.
     # Verify all three pieces agree with independent pmgemm call.
     conc = 25.0
-    pop  = 50_000
+    pop = 50_000
     rate = 0.008
     r = pmgbrd(conc, pop, rate, outcome="ncd_lri")
     expected_rr = pm_gemm_rr(conc, outcome="ncd_lri").value
@@ -50,7 +50,7 @@ def test_pmgbrd_linear_in_baseline_rate():
 def test_pmgbrd_array_per_unit_deaths():
     # Per-FSA loop: 3 units with different C and pop.
     concs = np.array([8.0, 12.0, 15.0])
-    pops  = np.array([25_000, 30_000, 20_000])
+    pops = np.array([25_000, 30_000, 20_000])
     r = pmgbrd(concs, pops, 0.008, outcome="ncd_lri")
     dpu = r.extra["deaths_per_unit"]
     assert len(dpu) == 3
@@ -76,9 +76,7 @@ def test_pmgbrd_saturation_above_100():
     # PAF at 100 (it'd be much more for a linear model).
     r_100 = pmgbrd(100.0, 1_000_000, 0.008).extra["paf"]
     r_300 = pmgbrd(300.0, 1_000_000, 0.008).extra["paf"]
-    assert r_300 < 2 * r_100, (
-        f"PAF not saturating: r_100={r_100:.3f} r_300={r_300:.3f}"
-    )
+    assert r_300 < 2 * r_100, f"PAF not saturating: r_100={r_100:.3f} r_300={r_300:.3f}"
 
 
 def test_pmgbrd_outcome_switch_changes_answer():
@@ -86,7 +84,7 @@ def test_pmgbrd_outcome_switch_changes_answer():
     # moderate C (≳ 20 µg/m³ where GEMM LC slope exceeds NCD+LRI).
     c = 60.0
     r_ncd = pmgbrd(c, 100_000, 0.008, outcome="ncd_lri")
-    r_lc  = pmgbrd(c, 100_000, 0.008, outcome="lung_cancer")
+    r_lc = pmgbrd(c, 100_000, 0.008, outcome="lung_cancer")
     assert r_lc.value > r_ncd.value
 
 

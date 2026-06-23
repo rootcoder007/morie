@@ -1,7 +1,9 @@
 """Tests for pcgenv — PCG Shannon-energy envelope."""
+
 import numpy as np
-from morie.fn.pcgenv import pcg_envelope
+
 from morie.fn._containers import SignalResult
+from morie.fn.pcgenv import pcg_envelope
 
 
 def test_pcgenv_basic(rng):

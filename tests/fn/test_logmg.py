@@ -1,7 +1,9 @@
 """Test log_magnitude_spectrum (logmg)."""
+
 import numpy as np
-from morie.fn.logmg import log_magnitude_spectrum, logmg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.logmg import log_magnitude_spectrum, logmg
 
 
 class TestLogmg:

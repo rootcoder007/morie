@@ -1,6 +1,7 @@
 """Test gcveg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcveg import gcveg
 
 

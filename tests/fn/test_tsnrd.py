@@ -1,6 +1,7 @@
 """Tests for tsnrd.tsne_reduction."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsnrd import tsne_reduction
 
 
@@ -8,11 +9,11 @@ def test_tsnrd_basic():
     """Test basic functionality."""
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
     result = tsne_reduction(x)
-    assert 'estimate' in result
-    assert abs(result['estimate'] - 3.0) < 0.01
+    assert "estimate" in result
+    assert abs(result["estimate"] - 3.0) < 0.01
 
 
 def test_tsnrd_edge():
     """Test edge cases."""
     result = tsne_reduction(np.array([42.0]))
-    assert result['n'] == 1
+    assert result["n"] == 1

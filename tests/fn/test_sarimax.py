@@ -1,6 +1,7 @@
 """Tests for sarimax.sarimax."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sarimax import sarimax
 
 
@@ -17,7 +18,7 @@ def test_sarimax_basic():
     s = 90
     result = sarimax(y, X, p, d, q, P, D, Q, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sarimax_edge():

@@ -1,6 +1,7 @@
 """Hierarchical DP density estimation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hierarchical_dp_density"]
@@ -40,7 +41,16 @@ def hierarchical_dp_density(y, groups, gamma, alpha):
     se = 1.2533 * np.std(y, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "Hierarchical DP density estimation"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "Hierarchical DP density estimation",
+        }
+    )
 
 
 def cheatsheet():

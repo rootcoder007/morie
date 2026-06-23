@@ -1,6 +1,7 @@
 """SAM-2 mask propagation across video."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sam2_video_propagation"]

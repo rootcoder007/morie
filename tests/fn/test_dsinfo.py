@@ -2,7 +2,7 @@
 
 import pytest
 
-from morie.fn.dsinfo import dsinfo, dataset_info
+from morie.fn.dsinfo import dataset_info, dsinfo
 
 
 def test_alias_is_same_function():

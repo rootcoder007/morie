@@ -68,4 +68,4 @@ srcod = ast_depth
 
 
 def cheatsheet() -> str:
-    return 'ast_depth({}) -> AST depth analysis.'
+    return "ast_depth({}) -> AST depth analysis."

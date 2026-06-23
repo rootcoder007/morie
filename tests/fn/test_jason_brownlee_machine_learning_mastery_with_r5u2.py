@@ -1,7 +1,10 @@
 """Tests for jason_brownlee_machine_learning_mastery_with_r5u2.jason_brownlee_machine_learning_mastery_with_r_chapter_5_unnumbered_2."""
+
 import numpy as np
-import pytest
-from morie.fn.jason_brownlee_machine_learning_mastery_with_r5u2 import jason_brownlee_machine_learning_mastery_with_r_chapter_5_unnumbered_2
+
+from morie.fn.jason_brownlee_machine_learning_mastery_with_r5u2 import (
+    jason_brownlee_machine_learning_mastery_with_r_chapter_5_unnumbered_2,
+)
 
 
 def test_jason_brownlee_machine_learning_mastery_with_r5u2_basic():
@@ -9,7 +12,7 @@ def test_jason_brownlee_machine_learning_mastery_with_r5u2_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = jason_brownlee_machine_learning_mastery_with_r_chapter_5_unnumbered_2(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_jason_brownlee_machine_learning_mastery_with_r5u2_edge():

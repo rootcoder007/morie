@@ -1,6 +1,7 @@
 """Approximation error bound when truncating a basis expansion at J terms, decaying as a power of 1/J governed by regularity alpha and dimension k.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch2_basis_truncation_error"]
@@ -36,7 +37,14 @@ def ghosal_ch2_basis_truncation_error(f, J, alpha, k):
     n = len(f)
     result = float(np.mean(f))
     se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Approximation error bound when truncating a basis expansion at J terms, decaying as a power of 1/J governed by regularity alpha and dimension k."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Approximation error bound when truncating a basis expansion at J terms, decaying as a power of 1/J governed by regularity alpha and dimension k.",
+        }
+    )
 
 
 def cheatsheet():

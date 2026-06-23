@@ -1,6 +1,7 @@
 """Tests for singgw.single_step_gblup."""
+
 import numpy as np
-import pytest
+
 from morie.fn.singgw import single_step_gblup
 
 
@@ -13,7 +14,7 @@ def test_singgw_basic():
     G = np.eye(10)
     result = single_step_gblup(y, X, Z, A, G)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_singgw_edge():

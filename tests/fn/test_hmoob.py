@@ -1,6 +1,7 @@
 """Tests for hmoob.geron_oob_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmoob import geron_oob_score
 
 
@@ -11,7 +12,7 @@ def test_hmoob_basic():
     models = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_oob_score(X, y, models)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmoob_edge():

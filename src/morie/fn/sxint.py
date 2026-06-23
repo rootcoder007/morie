@@ -8,7 +8,9 @@ from scipy.stats import chi2 as _chi2
 from ._containers import GenomicsResult
 
 
-def sxint(y: np.ndarray, genotypes: np.ndarray, sex: np.ndarray, cdf=None, *, covariates: np.ndarray | None = None) -> GenomicsResult:
+def sxint(
+    y: np.ndarray, genotypes: np.ndarray, sex: np.ndarray, cdf=None, *, covariates: np.ndarray | None = None
+) -> GenomicsResult:
     """Test for gene-by-sex interaction (GxSex).
 
     Compares a full model (with GxSex interaction) to a reduced
@@ -59,7 +61,7 @@ def sxint(y: np.ndarray, genotypes: np.ndarray, sex: np.ndarray, cdf=None, *, co
         try:
             beta = np.linalg.lstsq(X, y_vec, rcond=None)[0]
         except np.linalg.LinAlgError:
-            return np.sum(y_vec ** 2)
+            return np.sum(y_vec**2)
         return float(np.sum((y_vec - X @ beta) ** 2))
 
     rss_reduced = _rss(X_reduced, y)

@@ -1,5 +1,7 @@
 """Tests for morie.fn.imblr."""
+
 import numpy as np
+
 from morie.fn.imblr import imblr
 
 
@@ -13,6 +15,7 @@ def test_imblr_smoke():
 
 def test_cheatsheet():
     from morie.fn.imblr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

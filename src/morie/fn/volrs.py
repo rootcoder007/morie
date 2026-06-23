@@ -1,6 +1,7 @@
 """Rogers-Satchell drift-independent OHLC volatility."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_rogers_satchell"]
@@ -36,7 +37,9 @@ def vol_rogers_satchell(o, h, l, c):
     n = len(o)
     result = float(np.mean(o))
     se = float(np.std(o, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rogers-Satchell drift-independent OHLC volatility"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Rogers-Satchell drift-independent OHLC volatility"}
+    )
 
 
 def cheatsheet():

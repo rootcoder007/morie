@@ -1,7 +1,9 @@
 """Test oos_predict."""
+
 import numpy as np
-from morie.fn.oospr import oos_predict, oospr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.oospr import oos_predict, oospr
 
 
 class TestOosPredict:

@@ -1,6 +1,7 @@
 """Tests for morie.fn.ihsoc -- social determinants."""
 
 import pytest
+
 from morie.fn.ihsoc import social_determinants
 
 

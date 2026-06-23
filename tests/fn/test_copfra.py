@@ -1,6 +1,7 @@
 """Tests for copfra.frank_copula."""
+
 import numpy as np
-import pytest
+
 from morie.fn.copfra import frank_copula
 
 
@@ -12,7 +13,7 @@ def test_copfra_basic():
     theta = 0.0
     result = frank_copula(y, u, v, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_copfra_edge():

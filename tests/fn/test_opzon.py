@@ -1,6 +1,7 @@
 """Test opzon."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opzon import opzon
 
 

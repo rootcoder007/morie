@@ -1,6 +1,7 @@
 """Tests for morie.fn.bgpcl -- Bayesian GP classification."""
 
 import numpy as np
+
 from morie.fn.bgpcl import bayesian_gp_classification
 
 

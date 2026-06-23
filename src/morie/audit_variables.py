@@ -34,8 +34,8 @@ Public callables
 from __future__ import annotations
 
 from collections import Counter
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Optional
 
 from morie.dataset_dictionary import (
     DatasetSchema,
@@ -51,7 +51,6 @@ from morie.variable_taxonomy import (
     classify_schema,
 )
 
-
 # Names of columns that the existing analyzers actually exercise.
 # Used to compute the "coverage" % of the variable surface.
 #
@@ -59,27 +58,34 @@ from morie.variable_taxonomy import (
 # src/morie/arsau_analyze.py.
 ANALYZED_COLUMNS_OTIS: set[str] = {
     # b01 — segregation detailed
-    "UniqueIndividual_ID",                  # placement_concentration
-    "NumberConsecutiveDays_Segregation",    # seg_duration_km
-    "MentalHealth_Alert",                   # mortification_cooccurrence
+    "UniqueIndividual_ID",  # placement_concentration
+    "NumberConsecutiveDays_Segregation",  # seg_duration_km
+    "MentalHealth_Alert",  # mortification_cooccurrence
     "SuicideRisk_Alert",
     "SuicideWatch_Alert",
-    "Region_AtTimeOfPlacement",             # region_locality
+    "Region_AtTimeOfPlacement",  # region_locality
     "Region_MostRecentPlacement",
 }
 ANALYZED_COLUMNS_ARSAU: set[str] = {
     # main
-    "PoliceService", "IncidentType", "PoliceServiceType",
+    "PoliceService",
+    "IncidentType",
+    "PoliceServiceType",
     "OPP_PoliceService_Region",
     # individual
-    "Race", "Gender", "AgeCategory",
+    "Race",
+    "Gender",
+    "AgeCategory",
     "IndivInjuries_PhysicalInjuries",
     # weapon
-    "Weapon", "Location",
+    "Weapon",
+    "Location",
     # probe
     "CEW_CartridgeProbe_CartridgeProbeCycles_Cyc",
     # detailed (2020-2022)
-    "POLICE_SERVICE", "ASSIGNMENT_TYPE", "REPORTING_YEAR",
+    "POLICE_SERVICE",
+    "ASSIGNMENT_TYPE",
+    "REPORTING_YEAR",
 }
 
 
@@ -122,22 +128,13 @@ def _audit_report(
     n_uncovered = n_total - n_analyzed
     coverage_pct = (n_analyzed / n_total * 100) if n_total else 0.0
 
-    cross_year_unsafe = [
-        t for t in taxonomies if not t.cross_year_safe
-    ]
+    cross_year_unsafe = [t for t in taxonomies if not t.cross_year_safe]
     identifiers = [t for t in taxonomies if t.role == Role.IDENTIFIER]
     outcomes = [t for t in taxonomies if t.role == Role.OUTCOME]
 
-    level_table = [
-        [lvl, level_counts.get(lvl, 0)]
-        for lvl in [e.value for e in LevelOfMeasurement]
-    ]
-    role_table = [
-        [r, role_counts.get(r, 0)] for r in [e.value for e in Role]
-    ]
-    card_table = [
-        [c, card_counts.get(c, 0)] for c in [e.value for e in Cardinality]
-    ]
+    level_table = [[lvl, level_counts.get(lvl, 0)] for lvl in [e.value for e in LevelOfMeasurement]]
+    role_table = [[r, role_counts.get(r, 0)] for r in [e.value for e in Role]]
+    card_table = [[c, card_counts.get(c, 0)] for c in [e.value for e in Cardinality]]
 
     interp = (
         f"Audited {n_total} variable(s) across {len(schemas)} {domain.upper()} "
@@ -167,30 +164,29 @@ def _audit_report(
         },
     ]
     if cross_year_unsafe:
-        sections.append({
-            "title": "Cross-year-UNSAFE variables (do not join across fiscal years)",
-            "headers": ["dataset", "column", "notes"],
-            "table": [
-                [t.dataset_name, t.column_name, t.notes or ""]
-                for t in cross_year_unsafe
-            ],
-        })
+        sections.append(
+            {
+                "title": "Cross-year-UNSAFE variables (do not join across fiscal years)",
+                "headers": ["dataset", "column", "notes"],
+                "table": [[t.dataset_name, t.column_name, t.notes or ""] for t in cross_year_unsafe],
+            }
+        )
     if identifiers:
-        sections.append({
-            "title": "Identifier columns (joins / grouping only)",
-            "headers": ["dataset", "column"],
-            "table": [
-                [t.dataset_name, t.column_name] for t in identifiers[:30]
-            ],
-        })
+        sections.append(
+            {
+                "title": "Identifier columns (joins / grouping only)",
+                "headers": ["dataset", "column"],
+                "table": [[t.dataset_name, t.column_name] for t in identifiers[:30]],
+            }
+        )
     if outcomes:
-        sections.append({
-            "title": "Outcome columns (candidate y for modelling)",
-            "headers": ["dataset", "column"],
-            "table": [
-                [t.dataset_name, t.column_name] for t in outcomes
-            ],
-        })
+        sections.append(
+            {
+                "title": "Outcome columns (candidate y for modelling)",
+                "headers": ["dataset", "column"],
+                "table": [[t.dataset_name, t.column_name] for t in outcomes],
+            }
+        )
 
     return RichResult(
         title=f"morie variable-coverage audit — {domain.upper()}",
@@ -235,7 +231,9 @@ def audit_otis_variables(
     schemas = load_otis_dictionary(data_dir=data_dir)
     taxonomies = _collect_all_taxonomies(schemas)
     return _audit_report(
-        domain="otis", schemas=schemas, taxonomies=taxonomies,
+        domain="otis",
+        schemas=schemas,
+        taxonomies=taxonomies,
     )
 
 
@@ -267,7 +265,9 @@ def audit_arsau_variables(
             )
     taxonomies = _collect_all_taxonomies(all_schemas)
     return _audit_report(
-        domain="arsau", schemas=all_schemas, taxonomies=taxonomies,
+        domain="arsau",
+        schemas=all_schemas,
+        taxonomies=taxonomies,
     )
 
 
@@ -319,8 +319,9 @@ def write_audit_markdown(
         r = audit[domain]
         lines.append(f"\n## {domain.upper()}\n")
         lines.append(f"- **Datasets:** {len(r.payload.get('taxonomies', []))} variables across the dictionary entries")
-        lines.append(f"- **Currently analysed:** {r.payload['n_analyzed']} / {r.payload['n']} "
-                     f"({r.payload['coverage_pct']:.1f}%)")
+        lines.append(
+            f"- **Currently analysed:** {r.payload['n_analyzed']} / {r.payload['n']} ({r.payload['coverage_pct']:.1f}%)"
+        )
         lines.append(f"- **Cross-year-unsafe:** {len(r.payload['cross_year_unsafe'])}")
         lines.append(f"- **Identifier columns:** {len(r.payload['identifiers'])}")
         lines.append(f"- **Outcome columns:** {len(r.payload['outcomes'])}")
@@ -336,8 +337,7 @@ def write_audit_markdown(
         lines.append("### Per-variable detail")
         lines.append("")
         lines.append(
-            "| dataset | column | level | role | cardinality | "
-            "cross_year_safe | analyzed? | recommended summary |"
+            "| dataset | column | level | role | cardinality | cross_year_safe | analyzed? | recommended summary |"
         )
         lines.append("|---|---|---|---|---|---|---|---|")
         analyzed = _coverage_set(domain)

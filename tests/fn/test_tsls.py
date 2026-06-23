@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.tsls import two_stage_ls, tsls
+
 from morie.fn._containers import RegressionResult
+from morie.fn.tsls import tsls, two_stage_ls
 
 
 class TestTSLS:

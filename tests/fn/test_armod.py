@@ -1,6 +1,8 @@
 """Tests for morie.fn.armod -- AR(p) model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.armod import ar_fit
 
 
@@ -25,4 +27,5 @@ class TestARFit:
 
     def test_cheatsheet(self):
         from morie.fn.armod import cheatsheet
+
         assert isinstance(cheatsheet(), str)

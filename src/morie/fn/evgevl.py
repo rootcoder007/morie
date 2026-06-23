@@ -1,6 +1,7 @@
 """Log-likelihood of a GEV sample."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_gev_loglik"]

@@ -1,6 +1,7 @@
 """SSE-PT sequential rec with personalization."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ssepta_seq"]
@@ -32,7 +33,9 @@ def ssepta_seq(seqs, K):
     n = len(seqs)
     result = float(np.mean(seqs))
     se = float(np.std(seqs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SSE-PT sequential rec with personalization"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SSE-PT sequential rec with personalization"}
+    )
 
 
 def cheatsheet():

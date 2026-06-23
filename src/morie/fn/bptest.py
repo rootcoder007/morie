@@ -1,16 +1,19 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Breusch-Pagan heteroscedasticity test with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 from scipy.stats import chi2
 
 
-def bptest(residuals: Union[Sequence, np.ndarray],
-           X: Union[Sequence, np.ndarray]):
+def bptest(residuals: Union[Sequence, np.ndarray], X: Union[Sequence, np.ndarray]):
     """Breusch-Pagan test - is residual variance a function of X?"""
     from ._richresult import hypothesis_test_result
-    e = np.asarray(residuals, dtype=float); X = np.asarray(X, dtype=float)
+
+    e = np.asarray(residuals, dtype=float)
+    X = np.asarray(X, dtype=float)
     n, p = X.shape
     if e.size != n:
         raise ValueError(f"residuals length ({e.size}) != X rows ({n}).")
@@ -24,9 +27,13 @@ def bptest(residuals: Union[Sequence, np.ndarray],
     lm = float(n * r2)
     return hypothesis_test_result(
         test_name="Breusch-Pagan test for heteroscedasticity",
-        statistic=lm, df=p, pvalue=float(1 - chi2.cdf(lm, p)),
+        statistic=lm,
+        df=p,
+        pvalue=float(1 - chi2.cdf(lm, p)),
         extra_summary=[
-            ("R^2 of e^2 on X", r2), ("LM = n * R^2", lm),
-            ("n observations", n), ("Predictors in X", p),
+            ("R^2 of e^2 on X", r2),
+            ("LM = n * R^2", lm),
+            ("n observations", n),
+            ("Predictors in X", p),
         ],
     )

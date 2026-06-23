@@ -1,14 +1,15 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Semiparametric Bernstein–von Mises diagnostic."""
+
 import numpy as np
-from scipy.stats import norm, kstest
+from scipy.stats import kstest, norm
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_bernstein_von_mises"]
 
 
-def ghosal_bernstein_von_mises(x, theta0=None, B=500, seed=0,
-                                 deterministic_seed: int | None = None):
+def ghosal_bernstein_von_mises(x, theta0=None, B=500, seed=0, deterministic_seed: int | None = None):
     """Bernstein–von Mises diagnostic for the mean functional.
 
     The BvM theorem (Ghosal Ch 11) says
@@ -49,16 +50,21 @@ def ghosal_bernstein_von_mises(x, theta0=None, B=500, seed=0,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("ghbvm", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 2:
-        return RichResult(payload={
-            "estimate": float("nan"), "se": float("nan"), "n": n,
-            "method": "BvM (n<2)",
-        })
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "se": float("nan"),
+                "n": n,
+                "method": "BvM (n<2)",
+            }
+        )
     theta_hat = float(np.mean(x))
     s = float(np.std(x, ddof=1))
     theta_draws = np.empty(B)
@@ -75,18 +81,20 @@ def ghosal_bernstein_von_mises(x, theta0=None, B=500, seed=0,
     else:
         wald = float("nan")
         wald_p = float("nan")
-    return RichResult(payload={
-        "estimate": theta_mean,
-        "se": theta_sd,
-        "theta_hat": theta_hat,
-        "z_ks_stat": float(ks.statistic),
-        "z_ks_pvalue": float(ks.pvalue),
-        "wald": float(wald),
-        "wald_pvalue": float(wald_p),
-        "n": n,
-        "B": int(B),
-        "method": "BvM for mean functional (Bayesian bootstrap)",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta_mean,
+            "se": theta_sd,
+            "theta_hat": theta_hat,
+            "z_ks_stat": float(ks.statistic),
+            "z_ks_pvalue": float(ks.pvalue),
+            "wald": float(wald),
+            "wald_pvalue": float(wald_p),
+            "n": n,
+            "B": int(B),
+            "method": "BvM for mean functional (Bayesian bootstrap)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for survrsf.random_survival_forest."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survrsf import random_survival_forest
 
 
@@ -12,7 +13,7 @@ def test_survrsf_basic():
     n_trees = np.random.default_rng(42).normal(0, 1, 100)
     result = random_survival_forest(time, event, X, n_trees)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survrsf_edge():

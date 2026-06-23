@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrgwc -- GWR local coefficients"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrgwc import gwr_coefficients
 

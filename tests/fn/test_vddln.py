@@ -1,6 +1,8 @@
 """Tests for vddln."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vddln import vddln
 
 
@@ -28,4 +30,5 @@ def test_vddln_no_data():
 
 def test_vddln_alias():
     from morie.fn.vddln import vddln
+
     assert vddln is vddln

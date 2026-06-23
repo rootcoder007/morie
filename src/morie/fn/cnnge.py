@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CNN for genomic prediction -- NumPy Conv1D + dense, deterministic."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -16,15 +17,24 @@ def _conv1d(M, W, b, stride: int = 1):
     out_len = (m - k) // stride + 1
     out = np.zeros((n, out_len, f))
     for s in range(out_len):
-        seg = M[:, s * stride:s * stride + k]
+        seg = M[:, s * stride : s * stride + k]
         out[:, s, :] = seg @ W + b
     return out
 
 
-def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
-                hidden: int = 8, n_epochs: int = 150, lr: float = 1e-2,
-                l2: float = 1e-3, seed: int = 0,
-                deterministic_seed: int | None = None):
+def cnn_genomic(
+    x,
+    y,
+    markers,
+    n_filters: int = 8,
+    kernel: int = 3,
+    hidden: int = 8,
+    n_epochs: int = 150,
+    lr: float = 1e-2,
+    l2: float = 1e-3,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """1D convolutional genomic predictor (NumPy).
 
     Architecture::
@@ -57,6 +67,7 @@ def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("cnnge", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -69,7 +80,8 @@ def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
     if kernel > m:
         kernel = max(1, m)
     # Standardise
-    M_mean = M.mean(axis=0); M_sd = M.std(axis=0)
+    M_mean = M.mean(axis=0)
+    M_sd = M.std(axis=0)
     M_sd = np.where(M_sd > 0, M_sd, 1.0)
     Ms = (M - M_mean) / M_sd
     Wc = rng.normal(0, 1.0 / np.sqrt(kernel), size=(kernel, n_filters))
@@ -81,9 +93,9 @@ def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
 
     losses = []
     for _ in range(n_epochs):
-        z = _conv1d(Ms, Wc, bc)          # (n, L, f)
-        a = np.maximum(z, 0)             # ReLU
-        p = a.mean(axis=1)               # (n, f)
+        z = _conv1d(Ms, Wc, bc)  # (n, L, f)
+        a = np.maximum(z, 0)  # ReLU
+        p = a.mean(axis=1)  # (n, f)
         h_pre = p @ W1 + b1
         h = np.tanh(h_pre)
         y_hat = h @ w2 + b2
@@ -93,10 +105,10 @@ def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
         dw2 = h.T @ dy + l2 * w2
         db2 = float(dy.sum())
         dh = np.outer(dy, w2)
-        dh_pre = dh * (1.0 - h ** 2)
+        dh_pre = dh * (1.0 - h**2)
         dW1 = p.T @ dh_pre + l2 * W1
         db1 = dh_pre.sum(axis=0)
-        dp = dh_pre @ W1.T              # (n, f)
+        dp = dh_pre @ W1.T  # (n, f)
         # Backprop through mean-pool
         L = a.shape[1]
         da = np.repeat(dp[:, None, :], L, axis=1) / L
@@ -105,21 +117,25 @@ def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
         dWc = np.zeros_like(Wc)
         dbc = dz.sum(axis=(0, 1))
         for s in range(L):
-            seg = Ms[:, s:s + kernel]
+            seg = Ms[:, s : s + kernel]
             dWc += seg.T @ dz[:, s, :]
         dWc += l2 * Wc
         # Step
-        Wc -= lr * dWc; bc -= lr * dbc
-        W1 -= lr * dW1; b1 -= lr * db1
-        w2 -= lr * dw2; b2 -= lr * db2
-        losses.append(float(np.mean(resid ** 2)))
+        Wc -= lr * dWc
+        bc -= lr * dbc
+        W1 -= lr * dW1
+        b1 -= lr * db1
+        w2 -= lr * dw2
+        b2 -= lr * db2
+        losses.append(float(np.mean(resid**2)))
     # Final
     z = _conv1d(Ms, Wc, bc)
-    a = np.maximum(z, 0); p = a.mean(axis=1)
+    a = np.maximum(z, 0)
+    p = a.mean(axis=1)
     h = np.tanh(p @ W1 + b1)
     y_hat = h @ w2 + b2
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="CNN genomic predictor (Conv1D + GAP + dense)",
         summary_lines=[
@@ -136,14 +152,16 @@ def cnn_genomic(x, y, markers, n_filters: int = 8, kernel: int = 3,
             "y_hat": y_hat,
             "W_conv": Wc,
             "b_conv": bc,
-            "W1": W1, "b1": b1, "w2": w2, "b2": b2,
+            "W1": W1,
+            "b1": b1,
+            "w2": w2,
+            "b2": b2,
             "loss_curve": np.asarray(losses),
             "se": se,
             "n": n,
             "method": "Conv1D genomic predictor (NumPy)",
         },
-        warnings=["NumPy CNN: small kernel + GAP for stability; use "
-                  "keras/torch for production."],
+        warnings=["NumPy CNN: small kernel + GAP for stability; use keras/torch for production."],
     )
 
 

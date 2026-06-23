@@ -1,6 +1,7 @@
 """Tests for grgbm.geron_gradient_boosting_residual."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grgbm import geron_gradient_boosting_residual
 
 
@@ -11,7 +12,7 @@ def test_grgbm_basic():
     F_prev = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_gradient_boosting_residual(X, y, F_prev)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grgbm_edge():

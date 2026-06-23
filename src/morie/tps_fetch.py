@@ -19,34 +19,22 @@ import json
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from typing import Iterable, Optional
 
-
-__all__ = ["TPS_LAYER_URLS", "fetch_tps_category", "fetch_tps_dataframe",
-           "list_tps_categories"]
+__all__ = ["TPS_LAYER_URLS", "fetch_tps_category", "fetch_tps_dataframe", "list_tps_categories"]
 
 
 # Per-category ArcGIS REST FeatureServer layer URLs (layer 0 by convention).
 # These are the public layer roots; the /query endpoint is appended per call.
 TPS_LAYER_URLS: dict[str, str] = {
-    "Assault":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Assault_Open_Data/FeatureServer/0",
-    "AutoTheft":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Auto_Theft_Open_Data/FeatureServer/0",
-    "BicycleTheft":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Bicycle_Thefts_Open_Data/FeatureServer/0",
-    "BreakAndEnter":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Break_and_Enter_Open_Data/FeatureServer/0",
-    "Homicides":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0",
-    "Robbery":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Robbery_Open_Data/FeatureServer/0",
-    "ShootingAndFirearmDiscarges":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0",
-    "TheftFromMV":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0",
-    "TheftOver":
-        "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_Over_Open_Data/FeatureServer/0",
+    "Assault": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Assault_Open_Data/FeatureServer/0",
+    "AutoTheft": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Auto_Theft_Open_Data/FeatureServer/0",
+    "BicycleTheft": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Bicycle_Thefts_Open_Data/FeatureServer/0",
+    "BreakAndEnter": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Break_and_Enter_Open_Data/FeatureServer/0",
+    "Homicides": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Homicides_Open_Data_ASR_RC_TBL_002/FeatureServer/0",
+    "Robbery": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Robbery_Open_Data/FeatureServer/0",
+    "ShootingAndFirearmDiscarges": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Shooting_and_Firearm_Discharges_Open_Data/FeatureServer/0",
+    "TheftFromMV": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_From_Motor_Vehicle_Open_Data/FeatureServer/0",
+    "TheftOver": "https://services.arcgis.com/S9th0jAJ7bqgIRjw/arcgis/rest/services/Theft_Over_Open_Data/FeatureServer/0",
 }
 
 
@@ -95,10 +83,7 @@ def fetch_tps_category(
         urllib.error.URLError: on network failure.
     """
     if category not in TPS_LAYER_URLS:
-        raise ValueError(
-            f"Unknown TPS category {category!r}. "
-            f"Known: {', '.join(list_tps_categories())}"
-        )
+        raise ValueError(f"Unknown TPS category {category!r}. Known: {', '.join(list_tps_categories())}")
 
     out_dir = Path(cache_dir).expanduser()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -109,11 +94,10 @@ def fetch_tps_category(
     base = TPS_LAYER_URLS[category]
     offset = 0
     rows: list[dict] = []
-    fieldnames: Optional[list[str]] = None
+    fieldnames: list[str] | None = None
 
     while True:
-        page = _arcgis_query(base, where=where, offset=offset,
-                             max_records=max_records_per_page)
+        page = _arcgis_query(base, where=where, offset=offset, max_records=max_records_per_page)
         feats = page.get("features", [])
         if not feats:
             break

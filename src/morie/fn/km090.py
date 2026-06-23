@@ -1,6 +1,7 @@
 r"""Co occurrence bias.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_co_occurrence_bias"]

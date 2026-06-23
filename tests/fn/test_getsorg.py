@@ -1,6 +1,7 @@
 """Tests for getsorg.getis_ord_g."""
+
 import numpy as np
-import pytest
+
 from morie.fn.getsorg import getis_ord_g
 
 
@@ -10,7 +11,7 @@ def test_getsorg_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = getis_ord_g(x, W)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_getsorg_edge():

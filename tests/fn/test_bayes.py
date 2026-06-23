@@ -1,6 +1,8 @@
 """Tests for bayes_theorem."""
+
 import pytest
-from morie.fn.bayes import bayes_theorem, bayes
+
+from morie.fn.bayes import bayes, bayes_theorem
 
 
 def test_basic():

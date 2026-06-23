@@ -34,7 +34,7 @@ def guskr(u: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         Analysis*. Chapman & Hall. Table 3.1.
     """
     u = np.asarray(u, dtype=float)
-    result = np.exp(-0.5 * u ** 2) / np.sqrt(2.0 * np.pi)
+    result = np.exp(-0.5 * u**2) / np.sqrt(2.0 * np.pi)
     return float(result) if result.ndim == 0 else result
 
 

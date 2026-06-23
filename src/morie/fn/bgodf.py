@@ -83,7 +83,7 @@ def bg_test(y, lags: int = 1, x=None, cdf=None) -> TestResult:
     except np.linalg.LinAlgError:
         resid_aux = resid
 
-    ss_res = float(np.sum(resid_aux ** 2))
+    ss_res = float(np.sum(resid_aux**2))
     ss_tot = float(np.sum((resid - resid.mean()) ** 2))
     r2 = 1.0 - ss_res / ss_tot if ss_tot > 0.0 else 0.0
     r2 = float(np.clip(r2, 0.0, 1.0))

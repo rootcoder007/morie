@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rejection-sampling fine-tuning: retain top-k per-prompt samples by reward, SFT on them."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_rejection_sampling_finetune"]
@@ -36,7 +38,14 @@ def kamath_rejection_sampling_finetune(prompts, samples, rewards, k):
     n = len(prompts)
     result = float(np.mean(prompts))
     se = float(np.std(prompts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rejection-sampling fine-tuning: retain top-k per-prompt samples by reward, SFT on them"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Rejection-sampling fine-tuning: retain top-k per-prompt samples by reward, SFT on them",
+        }
+    )
 
 
 def cheatsheet():

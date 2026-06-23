@@ -30,12 +30,11 @@ References:
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Iterable, Sequence
 
 import numpy as np
 import pandas as pd
-
 
 __all__ = [
     "LISAResult",
@@ -52,7 +51,7 @@ class LISAResult:
     global_moran_I: float
     permutations: int
     knn_k: int
-    table: pd.DataFrame   # per-polygon: id, lat, lon, x, z, lag_z, I_local, quadrant, p_value
+    table: pd.DataFrame  # per-polygon: id, lat, lon, x, z, lag_z, I_local, quadrant, p_value
     quadrants_all: dict
     quadrants_significant_p05: dict
     n_significant_p05: int
@@ -72,7 +71,7 @@ def _knn_weights(lat: np.ndarray, lon: np.ndarray, k: int) -> np.ndarray:
     W = np.zeros((n, n))
     for i in range(n):
         d = _haversine_km(lat[i], lon[i], lat, lon)
-        nn = np.argsort(d)[1:k + 1]
+        nn = np.argsort(d)[1 : k + 1]
         W[i, nn] = 1.0 / k
     return W
 
@@ -119,7 +118,7 @@ def mrm_tps_lisa(
     z = (x - x.mean()) / x.std(ddof=0)
     lag = W @ z
     I_local = z * lag
-    I_global = float(I_local.sum() / (z ** 2).sum())
+    I_global = float(I_local.sum() / (z**2).sum())
 
     # Quadrants
     quad = np.empty(n, dtype=object)
@@ -136,17 +135,23 @@ def mrm_tps_lisa(
         p_local += (np.abs(z * lp) >= np.abs(I_local)).astype(int)
     p_local = (p_local + 1) / (n_permutations + 1)
 
-    out = pd.DataFrame({
-        "id":         df[id_col].to_numpy() if id_col else range(n),
-        "lat":        lat, "lon": lon, "x": x, "z": z,
-        "lag_z":      lag, "I_local": I_local,
-        "quadrant":   quad, "p_value": p_local,
-        "significant_p05": p_local <= 0.05,
-    })
+    out = pd.DataFrame(
+        {
+            "id": df[id_col].to_numpy() if id_col else range(n),
+            "lat": lat,
+            "lon": lon,
+            "x": x,
+            "z": z,
+            "lag_z": lag,
+            "I_local": I_local,
+            "quadrant": quad,
+            "p_value": p_local,
+            "significant_p05": p_local <= 0.05,
+        }
+    )
 
     quads_all = {q: int((quad == q).sum()) for q in ("HH", "HL", "LH", "LL")}
-    quads_sig = {q: int(((quad == q) & (p_local <= 0.05)).sum())
-                 for q in ("HH", "HL", "LH", "LL")}
+    quads_sig = {q: int(((quad == q) & (p_local <= 0.05)).sum()) for q in ("HH", "HL", "LH", "LL")}
 
     return LISAResult(
         n_polygons=int(n),
@@ -189,14 +194,19 @@ def mrm_tps_polygon_moran_per_year(
     for c in year_cols:
         # Try to parse year out of the column name
         import re
+
         m = re.search(r"\d{4}", c)
         year = int(m.group(0)) if m else c
 
         try:
             res = mrm_tps_lisa(
-                data, count_col=c,
-                lat_col=lat_col, lon_col=lon_col,
-                k=k, n_permutations=n_permutations, seed=seed,
+                data,
+                count_col=c,
+                lat_col=lat_col,
+                lon_col=lon_col,
+                k=k,
+                n_permutations=n_permutations,
+                seed=seed,
             )
         except ValueError:
             continue
@@ -213,16 +223,18 @@ def mrm_tps_polygon_moran_per_year(
         gt = 0
         for _ in range(n_permutations):
             zp = rng.permutation(z)
-            I_perm = (zp * (W @ zp)).sum() / (zp ** 2).sum()
+            I_perm = (zp * (W @ zp)).sum() / (zp**2).sum()
             if abs(I_perm) >= abs(I_obs):
                 gt += 1
         p_global = (gt + 1) / (n_permutations + 1)
 
-        rows.append({
-            "year": year,
-            "n_events": int(x.sum()),
-            "moran_I": I_obs,
-            "global_p_value": round(p_global, 4),
-        })
+        rows.append(
+            {
+                "year": year,
+                "n_events": int(x.sum()),
+                "moran_I": I_obs,
+                "global_p_value": round(p_global, 4),
+            }
+        )
 
     return pd.DataFrame(rows)

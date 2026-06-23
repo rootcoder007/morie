@@ -1,6 +1,7 @@
 """Tests for yldyear.yld_calculation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.yldyear import yld_calculation
 
 
@@ -11,7 +12,7 @@ def test_yldyear_basic():
     duration = np.random.default_rng(42).normal(0, 1, 100)
     result = yld_calculation(prevalence, disability, duration)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_yldyear_edge():

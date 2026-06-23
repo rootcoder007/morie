@@ -1,8 +1,9 @@
 """Test bandwidth_limit (bwlmt)."""
+
 import pytest
 
-from morie.fn.bwlmt import bandwidth_limit, bwlmt
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bwlmt import bandwidth_limit, bwlmt
 
 
 class TestBandwidthLimit:

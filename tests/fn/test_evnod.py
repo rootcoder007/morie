@@ -1,9 +1,9 @@
 """Test even_odd_decompose (evnod)."""
-import numpy as np
-import pytest
 
-from morie.fn.evnod import even_odd_decompose, evnod
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.evnod import even_odd_decompose, evnod
 
 
 class TestEvenOddDecompose:

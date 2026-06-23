@@ -1,6 +1,7 @@
 """Tests for eslsis.esl_sis_screening."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslsis import esl_sis_screening
 
 
@@ -11,7 +12,7 @@ def test_eslsis_basic():
     d = 5
     result = esl_sis_screening(X, y, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslsis_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Vocal tract transfer function extraction via homomorphic deconvolution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_vocal_tract"]
@@ -34,7 +36,14 @@ def rangayyan_vocal_tract(speech, fs, n_coeff):
     n = int(speech) if speech.ndim == 0 else len(speech)
     result = float(np.mean(speech))
     se = float(np.std(speech, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Vocal tract transfer function extraction via homomorphic deconvolution"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Vocal tract transfer function extraction via homomorphic deconvolution",
+        }
+    )
 
 
 def cheatsheet():

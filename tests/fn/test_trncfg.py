@@ -1,6 +1,7 @@
 """Tests for trncfg.truncated_cf_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trncfg import truncated_cf_estimator
 
 
@@ -12,7 +13,7 @@ def test_trncfg_basic():
     trim = np.random.default_rng(42).normal(0, 1, 100)
     result = truncated_cf_estimator(y, D, X, trim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_trncfg_edge():

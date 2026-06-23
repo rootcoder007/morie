@@ -1,6 +1,8 @@
 """Tests for stflt.py - Subband filter."""
+
 import numpy as np
-from morie.fn.stflt import subband_filter, stflt
+
+from morie.fn.stflt import stflt, subband_filter
 
 
 def test_subband_returns_result():
@@ -24,6 +26,7 @@ def test_subband_detail_band():
 
 def test_subband_invalid_band():
     import pytest
+
     x = np.random.default_rng(42).standard_normal(128)
     with pytest.raises(ValueError):
         subband_filter(x, level=2, band=99)

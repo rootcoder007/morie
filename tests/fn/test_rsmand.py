@@ -1,6 +1,7 @@
 """Tests for rsmand.rating_scale_andrich."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsmand import rating_scale_andrich
 
 
@@ -12,7 +13,7 @@ def test_rsmand_basic():
     tau_j = np.random.default_rng(42).normal(0, 1, 100)
     result = rating_scale_andrich(y, theta, b, tau_j)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rsmand_edge():

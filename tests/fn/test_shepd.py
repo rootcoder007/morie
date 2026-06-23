@@ -1,6 +1,7 @@
 """Tests for morie.fn.shepd -- Shepard diagram."""
 
 import numpy as np
+
 from morie.fn.shepd import shepard_diagram, shepd
 
 

@@ -1,5 +1,7 @@
 """Tests for morie.fn.nuc — nucleotide frequency."""
+
 import pytest
+
 from morie.fn.nuc import nucleotide_freq
 
 

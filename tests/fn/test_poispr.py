@@ -1,6 +1,7 @@
 """Tests for poispr.poisson_predictive."""
+
 import numpy as np
-import pytest
+
 from morie.fn.poispr import poisson_predictive
 
 
@@ -11,7 +12,7 @@ def test_poispr_basic():
     beta = 0.8
     result = poisson_predictive(counts, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_poispr_edge():

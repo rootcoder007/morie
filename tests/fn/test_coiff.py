@@ -1,6 +1,6 @@
 """Tests for coiff.py - Coiflet wavelet filter coefficients."""
-import numpy as np
-from morie.fn.coiff import coiflet_coeffs, coiff
+
+from morie.fn.coiff import coiff, coiflet_coeffs
 
 
 def test_coiff_returns_descriptive_result():

@@ -4,7 +4,6 @@ from morie.fn.mi_cf import mi_configural
 
 
 class TestMiConfigural:
-
     def test_returns_expected_keys(self, mapq_df):
         result = mi_configural(mapq_df, "gender")
         for key in ("level", "groups", "fit", "group_fits", "passed"):

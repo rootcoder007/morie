@@ -1,6 +1,7 @@
 """Tests for volgo.vol_garch_orthogonal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volgo import vol_garch_orthogonal
 
 
@@ -10,7 +11,7 @@ def test_volgo_basic():
     k = 5
     result = vol_garch_orthogonal(R_panel, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volgo_edge():

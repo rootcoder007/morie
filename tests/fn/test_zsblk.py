@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsblk -- Spatial block bootstrap"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsblk import block_bootstrap
 

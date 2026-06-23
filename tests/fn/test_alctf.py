@@ -1,6 +1,7 @@
 """Tests for alctf.alammar_c_tfidf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alctf import alammar_c_tfidf
 
 
@@ -11,7 +12,7 @@ def test_alctf_basic():
     A = np.random.default_rng(42).normal(0, 1, (10, 10))
     result = alammar_c_tfidf(term_counts_by_class, corpus_freq, A)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alctf_edge():

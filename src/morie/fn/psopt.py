@@ -7,11 +7,10 @@ Population of particles move through search space with velocity updates.
 
 import numpy as np
 
-__all__ = ['psopt']
+__all__ = ["psopt"]
 
 
-def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5,
-          full_output=False, seed=None):
+def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5, full_output=False, seed=None):
     """
     Particle swarm optimization (PSO) for global optimization.
 
@@ -82,9 +81,7 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5,
         for i in range(n_particles):
             r1 = np.random.rand(n_vars)
             r2 = np.random.rand(n_vars)
-            v[i] = (w * v[i] +
-                   c1 * r1 * (pbest[i] - x[i]) +
-                   c2 * r2 * (gbest - x[i]))
+            v[i] = w * v[i] + c1 * r1 * (pbest[i] - x[i]) + c2 * r2 * (gbest - x[i])
 
             x[i] = x[i] + v[i]
             x[i] = np.clip(x[i], bounds[:, 0], bounds[:, 1])
@@ -99,9 +96,5 @@ def psopt(f, bounds, n_particles=30, generations=100, w=0.7, c1=1.5, c2=1.5,
                 fgbest = fbest[i]
 
     if full_output:
-        return gbest, {
-            'generations': generations,
-            'converged': False,
-            'final_value': fgbest
-        }
+        return gbest, {"generations": generations, "converged": False, "final_value": fgbest}
     return gbest

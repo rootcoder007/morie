@@ -1,6 +1,7 @@
 """Tests for morie.fn.sudur -- substance duration."""
 
 import pytest
+
 from morie.fn.sudur import substance_duration
 
 

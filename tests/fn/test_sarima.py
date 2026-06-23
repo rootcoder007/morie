@@ -1,6 +1,7 @@
 """Tests for sarima.seasonal_arima."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sarima import seasonal_arima
 
 
@@ -16,7 +17,7 @@ def test_sarima_basic():
     s = 90
     result = seasonal_arima(y, p, d, q, P, D, Q, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sarima_edge():

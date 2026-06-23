@@ -1,7 +1,6 @@
 """Tests for morie.fn.zepol -- Pollution surface estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zepol import pollution_surface
 

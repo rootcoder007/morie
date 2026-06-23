@@ -31,12 +31,12 @@ def empirical_bayes(
     theta_hat = np.asarray(estimates, dtype=float).ravel()
     se = np.asarray(standard_errors, dtype=float).ravel()
     k = len(theta_hat)
-    sigma2 = se ** 2
+    sigma2 = se**2
 
     def neg_marginal_ll(log_tau2):
         tau2 = np.exp(log_tau2)
         V = sigma2 + tau2
-        ll = -0.5 * np.sum(np.log(V) + theta_hat ** 2 / V)
+        ll = -0.5 * np.sum(np.log(V) + theta_hat**2 / V)
         return -ll
 
     res = minimize_scalar(neg_marginal_ll, bounds=(-10, 20), method="bounded")

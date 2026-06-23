@@ -1,5 +1,7 @@
 """Tests for somers_d."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.somrd import somers_d
 
 

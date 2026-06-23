@@ -1,7 +1,7 @@
 """Tests for morie.fn.mpfrg."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mpfrg import mpfrg
 
 

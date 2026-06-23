@@ -1,6 +1,7 @@
 """Test gcsnw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcsnw import gcsnw
 
 

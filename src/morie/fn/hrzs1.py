@@ -13,6 +13,7 @@ Two-step semiparametric estimator (Powell-Newey-Vella):
        step is degenerate.
     3. Final OLS of Y on [X, lambda_hat(p_hat)] for the selected sample.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -57,8 +58,9 @@ def horowitz_sample_selection(x, y, z, d):
         Z = Z.T
     n = y.size
     if n < 20 or X.shape[0] != n or Z.shape[0] != n:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "sample-selection (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "sample-selection (insufficient data)"}
+        )
 
     # Step 1: probit selection
     Zc = Z if np.all(Z[:, 0] == 1.0) else np.column_stack([np.ones(n), Z])
@@ -76,24 +78,28 @@ def horowitz_sample_selection(x, y, z, d):
     # Step 2: OLS on selected sub-sample with [Xc, mills] as regressors
     sel = d > 0.5
     if sel.sum() < max(10, Xc.shape[1] + 2):
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "sample-selection (too few selected)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "sample-selection (too few selected)"}
+        )
     M = np.column_stack([Xc[sel], mills[sel].reshape(-1, 1)])
     yy = y[sel]
     coef, *_ = np.linalg.lstsq(M, yy, rcond=None)
-    beta = coef[:Xc.shape[1]]
+    beta = coef[: Xc.shape[1]]
     rho_sigma = float(coef[-1])
     resid = yy - M @ coef
-    sigma2 = float((resid ** 2).mean())
+    sigma2 = float((resid**2).mean())
     cov = sigma2 * np.linalg.pinv(M.T @ M)
     se = np.sqrt(np.maximum(np.diag(cov), 0))
-    return RichResult(payload={
-        "estimate": beta.astype(float),
-        "se": se[:Xc.shape[1]].astype(float),
-        "selection_correction": rho_sigma,
-        "n": n, "n_selected": int(sel.sum()),
-        "method": "Semiparametric Heckman/Powell-Newey-Vella sample selection",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.astype(float),
+            "se": se[: Xc.shape[1]].astype(float),
+            "selection_correction": rho_sigma,
+            "n": n,
+            "n_selected": int(sel.sum()),
+            "method": "Semiparametric Heckman/Powell-Newey-Vella sample selection",
+        }
+    )
 
 
 def cheatsheet():
@@ -106,7 +112,8 @@ if __name__ == "__main__":  # pragma: no cover
     n = 800
     z = rng.standard_normal(n)
     x = rng.standard_normal(n)
-    u = rng.standard_normal(n); v = 0.7 * u + 0.7 * rng.standard_normal(n)
+    u = rng.standard_normal(n)
+    v = 0.7 * u + 0.7 * rng.standard_normal(n)
     d = (1.0 + 0.5 * z + v > 0).astype(float)
     y_star = 2.0 + 1.5 * x + u
     y = y_star * d

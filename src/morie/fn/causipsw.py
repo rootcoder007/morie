@@ -1,6 +1,7 @@
 """ATT inverse probability of treatment weights."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_iptw_attweights"]
@@ -32,7 +33,9 @@ def causal_iptw_attweights(treat, ps):
     n = len(treat)
     result = float(np.mean(treat))
     se = float(np.std(treat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ATT inverse probability of treatment weights"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "ATT inverse probability of treatment weights"}
+    )
 
 
 def cheatsheet():

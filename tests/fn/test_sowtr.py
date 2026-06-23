@@ -1,6 +1,7 @@
 """Test sowtr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sowtr import sowtr
 
 

@@ -1,6 +1,7 @@
 """Tests for otpot.ot_pot_log_potentials."""
+
 import numpy as np
-import pytest
+
 from morie.fn.otpot import ot_pot_log_potentials
 
 
@@ -11,7 +12,7 @@ def test_otpot_basic():
     epsilon = 1e-6
     result = ot_pot_log_potentials(u, v, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_otpot_edge():

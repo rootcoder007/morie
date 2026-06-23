@@ -1,6 +1,7 @@
 """Fairness-aware reranker."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["fairness_rec"]

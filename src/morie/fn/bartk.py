@@ -18,6 +18,7 @@ Borusyak, K., Hull, P., & Jaravel, X. (2022). Quasi-experimental
 shift-share research designs. *Review of Economic Studies*, 89(1),
 181-213.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -82,7 +83,7 @@ def bartk(
         raise ValueError("shifts length must equal shares.shape[1].")
 
     # Construct Bartik instrument
-    Z = shares @ shifts                  # (L,)
+    Z = shares @ shifts  # (L,)
 
     # Endog variable: total employment growth approximated as
     # the fitted value from shifts (in practice supplied externally;

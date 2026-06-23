@@ -1,6 +1,7 @@
 """Test maalk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maalk import maalk
 
 

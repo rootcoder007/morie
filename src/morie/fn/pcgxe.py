@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Principal component based GxE dimension reduction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["pc_gxe_reduction"]
@@ -32,7 +34,9 @@ def pc_gxe_reduction(GxE_matrix, k):
     n = int(GxE_matrix) if GxE_matrix.ndim == 0 else len(GxE_matrix)
     result = float(np.mean(GxE_matrix))
     se = float(np.std(GxE_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Principal component based GxE dimension reduction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Principal component based GxE dimension reduction"}
+    )
 
 
 def cheatsheet():

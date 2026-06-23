@@ -1,6 +1,7 @@
 """Nakagawa-Schielzeth marginal R^2 (fixed only) for LMM."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["nakagawa_marginal_r2"]
@@ -36,7 +37,14 @@ def nakagawa_marginal_r2(y, X, Z, cluster):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nakagawa-Schielzeth marginal R^2 (fixed only) for LMM"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Nakagawa-Schielzeth marginal R^2 (fixed only) for LMM",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test trspb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trspb import trspb
 
 

@@ -1,6 +1,7 @@
 """Tests for hrzich.horowitz_ichimura_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzich import horowitz_ichimura_estimator
 
 
@@ -11,7 +12,7 @@ def test_hrzich_basic():
     bandwidth = 0.3
     result = horowitz_ichimura_estimator(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzich_edge():

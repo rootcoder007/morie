@@ -1,6 +1,7 @@
 """Double-weighting (calibration + nonresponse)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rake_double_weights"]
@@ -32,7 +33,9 @@ def rake_double_weights(w_nr, w_cal):
     n = len(w_nr)
     result = float(np.mean(w_nr))
     se = float(np.std(w_nr, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Double-weighting (calibration + nonresponse)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Double-weighting (calibration + nonresponse)"}
+    )
 
 
 def cheatsheet():

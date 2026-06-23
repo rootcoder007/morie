@@ -1,6 +1,7 @@
 """Test mardm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mardm import mardia_test
 
 

@@ -1,6 +1,7 @@
 """Tests for aitzmu.compositional_zero_multreplace."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aitzmu import compositional_zero_multreplace
 
 
@@ -10,7 +11,7 @@ def test_aitzmu_basic():
     delta = np.random.default_rng(42).normal(0, 1, 100)
     result = compositional_zero_multreplace(X, delta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_aitzmu_edge():

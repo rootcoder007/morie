@@ -1,6 +1,7 @@
 """Continuous-time Fourier transform with frequency variable omega in rad/s.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_fourier_transform_omega"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_fourier_transform_omega(x, t, omega):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Continuous-time Fourier transform with frequency variable omega in rad/s."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Continuous-time Fourier transform with frequency variable omega in rad/s.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Adaptive noise canceler (ANC) structure."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_anc"]
@@ -36,7 +38,9 @@ def rangayyan_anc(primary, reference, mu, order):
     n = int(primary) if primary.ndim == 0 else len(primary)
     result = float(np.mean(primary))
     se = float(np.std(primary, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adaptive noise canceler (ANC) structure"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive noise canceler (ANC) structure"}
+    )
 
 
 def cheatsheet():

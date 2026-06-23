@@ -1,5 +1,7 @@
 """Tests for morie.fn.gdpgr."""
+
 import numpy as np
+
 from morie.fn.gdpgr import gdp_growth
 
 
@@ -13,6 +15,7 @@ def test_gdpgr_smoke():
 
 def test_cheatsheet():
     from morie.fn.gdpgr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,8 +1,9 @@
 """Tests for morie.fn.ssim1 -- SSIM."""
 
 import numpy as np
-from morie.fn.ssim1 import ssim, ssim1
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ssim1 import ssim, ssim1
 
 
 class TestSsim1:

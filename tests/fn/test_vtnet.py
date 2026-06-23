@@ -1,7 +1,7 @@
 """Tests for morie.fn.vtnet."""
 
 import numpy as np
-import pytest
+
 from morie.fn.vtnet import vtnet
 
 

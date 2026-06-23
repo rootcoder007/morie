@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptcox -- Cox (doubly stochastic) process"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptcox import cox_process
 

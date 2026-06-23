@@ -1,6 +1,7 @@
 """Score matching for diffusion models."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["diffusion_score_matching"]

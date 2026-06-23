@@ -68,9 +68,7 @@ def gls_regression(
     ss_res = float(resid @ resid)
     r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
 
-    names = (["(Intercept)"] if add_intercept else []) + [
-        f"x{j}" for j in range(p_raw)
-    ]
+    names = (["(Intercept)"] if add_intercept else []) + [f"x{j}" for j in range(p_raw)]
     return RegressionResult(
         method="GLS",
         coefficients={nm: float(b) for nm, b in zip(names, beta)},

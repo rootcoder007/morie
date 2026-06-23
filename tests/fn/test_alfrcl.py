@@ -1,6 +1,7 @@
 """Tests for alfrcl.alphafold_recycle_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alfrcl import alphafold_recycle_loss
 
 
@@ -11,7 +12,7 @@ def test_alfrcl_basic():
     clamp = np.random.default_rng(42).normal(0, 1, 100)
     result = alphafold_recycle_loss(frames_pred, frames_true, clamp)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alfrcl_edge():

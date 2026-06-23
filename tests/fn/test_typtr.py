@@ -1,5 +1,7 @@
 """Tests for morie.fn.typtr."""
+
 import numpy as np
+
 from morie.fn.typtr import typtr
 
 
@@ -13,6 +15,7 @@ def test_typtr_smoke():
 
 def test_cheatsheet():
     from morie.fn.typtr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

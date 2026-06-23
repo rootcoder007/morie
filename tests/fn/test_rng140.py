@@ -1,6 +1,7 @@
 """Tests for rng140.rangayyan_ch3_estimation_error_vector_form."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng140 import rangayyan_ch3_estimation_error_vector_form
 
 
@@ -12,7 +13,7 @@ def test_rng140_basic():
     n = 100
     result = rangayyan_ch3_estimation_error_vector_form(d, w, x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng140_edge():

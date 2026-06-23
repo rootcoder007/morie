@@ -1,6 +1,7 @@
 """Test opsa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opsa import opsa
 
 

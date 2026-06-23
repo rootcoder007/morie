@@ -1,6 +1,7 @@
 """Tests for hmbftn.geron_bert_finetune."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbftn import geron_bert_finetune
 
 
@@ -13,7 +14,7 @@ def test_hmbftn_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_bert_finetune(bert, X, y, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbftn_edge():

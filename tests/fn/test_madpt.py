@@ -1,6 +1,7 @@
 """Test madpt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.madpt import madpt
 
 

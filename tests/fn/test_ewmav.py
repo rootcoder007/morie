@@ -1,5 +1,7 @@
 """Tests for morie.fn.ewmav."""
+
 import numpy as np
+
 from morie.fn.ewmav import ewmav
 
 
@@ -13,6 +15,7 @@ def test_ewmav_smoke():
 
 def test_cheatsheet():
     from morie.fn.ewmav import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,5 +1,5 @@
 """Test sgmwc."""
-import numpy as np
+
 from morie.fn.sgmwc import moving_window_cov
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwrs -- Row-standardize weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwrs import w_row_std
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Apple MPS hardware acceleration (Metal Performance Shaders)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_mps_acceleration"]
@@ -30,7 +32,14 @@ def geron_mps_acceleration(tensor):
     n = len(tensor)
     result = float(np.mean(tensor))
     se = float(np.std(tensor, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Apple MPS hardware acceleration (Metal Performance Shaders)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Apple MPS hardware acceleration (Metal Performance Shaders)",
+        }
+    )
 
 
 def cheatsheet():

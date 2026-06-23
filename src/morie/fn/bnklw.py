@@ -89,8 +89,7 @@ def bnklw(
 
     b0 = np.zeros(p)
     b0[0] = 1.0
-    res = minimize(neg_ll, b0, method="L-BFGS-B",
-                   options={"maxiter": 200})
+    res = minimize(neg_ll, b0, method="L-BFGS-B", options={"maxiter": 200})
     beta = res.x / (np.linalg.norm(res.x) + 1e-15)
 
     idx = X @ beta

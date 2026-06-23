@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variational autoencoder ELBO loss (Kingma & Welling 2014)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -60,7 +61,7 @@ def vae_elbo(x, x_recon, mu, log_var, reduction: str = "mean"):
     else:
         recon = np.atleast_1d(recon.sum())
 
-    kl = -0.5 * (1.0 + log_var - mu ** 2 - np.exp(log_var))
+    kl = -0.5 * (1.0 + log_var - mu**2 - np.exp(log_var))
     if kl.ndim > 1:
         kl = kl.sum(axis=tuple(range(1, kl.ndim)))
     else:
@@ -80,8 +81,7 @@ def vae_elbo(x, x_recon, mu, log_var, reduction: str = "mean"):
 
     return RichResult(
         title="VAE ELBO",
-        summary_lines=[("ELBO", elbo), ("Recon loss", recon_loss),
-                       ("KL divergence", kl_div), ("reduction", reduction)],
+        summary_lines=[("ELBO", elbo), ("Recon loss", recon_loss), ("KL divergence", kl_div), ("reduction", reduction)],
         payload={
             "elbo": elbo,
             "estimate": elbo,

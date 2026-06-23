@@ -1,6 +1,7 @@
 """Test gdyrm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdyrm import gdyrm
 
 

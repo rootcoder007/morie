@@ -1,6 +1,7 @@
 """Tests for adamO.adam_optimizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.adamO import adam_optimizer
 
 
@@ -14,7 +15,7 @@ def test_adamO_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = adam_optimizer(theta, grad, lr, beta1, beta2, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_adamO_edge():

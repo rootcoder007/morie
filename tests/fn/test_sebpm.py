@@ -1,6 +1,7 @@
 """Test sebpm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sebpm import sebpm
 
 

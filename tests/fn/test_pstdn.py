@@ -1,5 +1,7 @@
 """Tests for morie.fn.pstdn -- posterior density."""
+
 import numpy as np
+
 from morie.fn.pstdn import posterior_density_data, pstdn
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DPM of normal kernel contraction: near-optimal rate with log correction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_dpm_norm_crt"]
@@ -30,7 +32,14 @@ def ghosal_dpm_norm_crt(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DPM of normal kernel contraction: near-optimal rate with log correction"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DPM of normal kernel contraction: near-optimal rate with log correction",
+        }
+    )
 
 
 def cheatsheet():

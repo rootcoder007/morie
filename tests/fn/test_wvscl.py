@@ -1,5 +1,7 @@
 """Tests for wvscl.py - Wavelet scalogram."""
+
 import numpy as np
+
 from morie.fn.wvscl import wavelet_scalogram, wvscl
 
 

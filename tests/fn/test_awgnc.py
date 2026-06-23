@@ -38,4 +38,4 @@ class TestAwgnc:
 
     def test_db_to_linear_consistency(self):
         result = awgnc(snr_db=3.0)
-        assert result["snr_linear"] == pytest.approx(10 ** 0.3, abs=1e-6)
+        assert result["snr_linear"] == pytest.approx(10**0.3, abs=1e-6)

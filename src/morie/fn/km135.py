@@ -1,6 +1,7 @@
 """Clip contrastive total.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_clip_contrastive_total"]

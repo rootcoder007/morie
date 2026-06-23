@@ -82,6 +82,7 @@ def tmlse(
 
 def _logistic_predict(X, y):
     from scipy.special import expit
+
     beta = np.zeros(X.shape[1])
     for _ in range(25):
         p = expit(X @ beta)

@@ -1,7 +1,6 @@
 """Tests for morie.fn.svsl2 -- Two-issue salience model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svsl2 import salience_2issue
 

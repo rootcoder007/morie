@@ -7,6 +7,7 @@ Returns the local intercept ``a_hat(x)`` (the estimate of m(x)) plus an
 asymptotic pointwise SE.  Uses a Gaussian kernel and Silverman bandwidth
 when not supplied.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -40,8 +41,9 @@ def horowitz_local_linear(x, y, bandwidth=None, grid=None):
     y = np.asarray(y, dtype=float).ravel()
     n = x.size
     if n < 3 or y.size != n:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "local-linear (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "local-linear (insufficient data)"}
+        )
     h = float(bandwidth) if bandwidth is not None else _silverman_bandwidth(x)
     if h <= 0:
         h = _silverman_bandwidth(x)
@@ -52,7 +54,9 @@ def horowitz_local_linear(x, y, bandwidth=None, grid=None):
         u = (x - x0) / h
         w = np.exp(-0.5 * u * u)
         if w.sum() <= 1e-12:
-            m_hat[i] = np.nan; se[i] = np.nan; continue
+            m_hat[i] = np.nan
+            se[i] = np.nan
+            continue
         X = np.column_stack([np.ones(n), x - x0])
         WX = X * w[:, None]
         XtWX = X.T @ WX
@@ -64,16 +68,22 @@ def horowitz_local_linear(x, y, bandwidth=None, grid=None):
         resid = y - X @ beta
         sigma2 = float((w * resid * resid).sum() / max(w.sum(), 1e-12))
         f_hat = w.sum() / (n * h * np.sqrt(2 * np.pi))
-        se[i] = np.sqrt(max(sigma2, 0) * _R_K_GAUSSIAN /
-                        (n * h * max(f_hat, 1e-12)))
+        se[i] = np.sqrt(max(sigma2, 0) * _R_K_GAUSSIAN / (n * h * max(f_hat, 1e-12)))
     if m_hat.size == 1:
-        est = float(m_hat[0]); se_v = float(se[0])
+        est = float(m_hat[0])
+        se_v = float(se[0])
     else:
-        est = m_hat.astype(float); se_v = se.astype(float)
-    return RichResult(payload={
-        "estimate": est, "se": se_v, "bandwidth": h, "n": n,
-        "method": "Local-linear regression (Gaussian kernel)",
-    })
+        est = m_hat.astype(float)
+        se_v = se.astype(float)
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se_v,
+            "bandwidth": h,
+            "n": n,
+            "method": "Local-linear regression (Gaussian kernel)",
+        }
+    )
 
 
 def cheatsheet():

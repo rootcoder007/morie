@@ -1,6 +1,7 @@
 """Tests for bdmnsl.bound_monot_selection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bdmnsl import bound_monot_selection
 
 
@@ -11,7 +12,7 @@ def test_bdmnsl_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = bound_monot_selection(y, D, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bdmnsl_edge():

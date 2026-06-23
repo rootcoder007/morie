@@ -1,6 +1,7 @@
 """Tests for kmlb.kamath_moe_load_balance_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmlb import kamath_moe_load_balance_loss
 
 
@@ -12,7 +13,7 @@ def test_kmlb_basic():
     alpha = 0.05
     result = kamath_moe_load_balance_loss(fractions, gate_means, N, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmlb_edge():

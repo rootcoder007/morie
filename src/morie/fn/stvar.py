@@ -1,15 +1,21 @@
 """Empirical spatiotemporal variogram gamma(h, u)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["spatiotemporal_variogram"]
 
 
-def spatiotemporal_variogram(x, coords, times,
-                             n_spatial_bins: int = 6,
-                             n_temporal_bins: int = 6,
-                             max_spatial: float | None = None,
-                             max_temporal: float | None = None):
+def spatiotemporal_variogram(
+    x,
+    coords,
+    times,
+    n_spatial_bins: int = 6,
+    n_temporal_bins: int = 6,
+    max_spatial: float | None = None,
+    max_temporal: float | None = None,
+):
     """
     Empirical spatiotemporal semivariogram
 
@@ -39,10 +45,11 @@ def spatiotemporal_variogram(x, coords, times,
     if coords.shape[0] != n or t.size != n:
         raise ValueError("shape mismatch among x, coords, times")
     dx = coords[:, None, :] - coords[None, :, :]
-    sd = np.sqrt((dx ** 2).sum(axis=2))
+    sd = np.sqrt((dx**2).sum(axis=2))
     td = np.abs(t[:, None] - t[None, :])
     iu = np.triu_indices(n, k=1)
-    sd_f = sd[iu]; td_f = td[iu]
+    sd_f = sd[iu]
+    td_f = td[iu]
     diffs2 = (x[iu[0]] - x[iu[1]]) ** 2
     if max_spatial is None:
         max_spatial = float(sd_f.max() / 2.0) if sd_f.max() > 0 else 1.0
@@ -54,22 +61,23 @@ def spatiotemporal_variogram(x, coords, times,
     counts = np.zeros_like(gamma, dtype=int)
     for i in range(n_spatial_bins):
         for j in range(n_temporal_bins):
-            m = (sd_f > s_edges[i]) & (sd_f <= s_edges[i + 1]) & \
-                (td_f > t_edges[j]) & (td_f <= t_edges[j + 1])
+            m = (sd_f > s_edges[i]) & (sd_f <= s_edges[i + 1]) & (td_f > t_edges[j]) & (td_f <= t_edges[j + 1])
             k = int(m.sum())
             counts[i, j] = k
             if k > 0:
                 gamma[i, j] = 0.5 * diffs2[m].mean()
-    return RichResult(payload={
-        "estimate": {
-            "gamma": gamma.tolist(),
-            "spatial_bins": (0.5 * (s_edges[:-1] + s_edges[1:])).tolist(),
-            "temporal_bins": (0.5 * (t_edges[:-1] + t_edges[1:])).tolist(),
-            "counts": counts.tolist(),
-        },
-        "n": int(n),
-        "method": "Empirical spatiotemporal variogram",
-    })
+    return RichResult(
+        payload={
+            "estimate": {
+                "gamma": gamma.tolist(),
+                "spatial_bins": (0.5 * (s_edges[:-1] + s_edges[1:])).tolist(),
+                "temporal_bins": (0.5 * (t_edges[:-1] + t_edges[1:])).tolist(),
+                "counts": counts.tolist(),
+            },
+            "n": int(n),
+            "method": "Empirical spatiotemporal variogram",
+        }
+    )
 
 
 def cheatsheet():

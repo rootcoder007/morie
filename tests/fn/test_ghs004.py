@@ -1,6 +1,7 @@
 """Tests for ghs004.ghosal_ch2_exponential_link_density."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghs004 import ghosal_ch2_exponential_link_density
 
 
@@ -11,7 +12,7 @@ def test_ghs004_basic():
     mu = 0.0
     result = ghosal_ch2_exponential_link_density(f, x, mu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ghs004_edge():

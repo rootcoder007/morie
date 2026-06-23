@@ -1,6 +1,7 @@
 """Tests for mtsmtv.mts_mtr_combined."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtsmtv import mts_mtr_combined
 
 
@@ -12,7 +13,7 @@ def test_mtsmtv_basic():
     y_max = 100
     result = mts_mtr_combined(y, D, y_min, y_max)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mtsmtv_edge():

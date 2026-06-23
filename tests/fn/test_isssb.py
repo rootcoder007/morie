@@ -1,5 +1,7 @@
 """Tests for morie.fn.isssb — issue subset extract."""
+
 import numpy as np
+
 from morie.fn.isssb import isssb
 
 
@@ -13,6 +15,7 @@ def test_isssb_smoke():
 
 def test_cheatsheet():
     from morie.fn.isssb import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

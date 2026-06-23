@@ -13,6 +13,7 @@ Rosenbaum, P. R., & Rubin, D. B. (1984). Reducing bias in observational
 studies using subclassification on the propensity score. *Journal of the
 American Statistical Association*, 79(387), 516-524.
 """
+
 from __future__ import annotations
 
 from typing import Any

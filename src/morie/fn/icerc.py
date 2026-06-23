@@ -15,6 +15,7 @@ plots of individual conditional expectation.
 Friedman, J. H. (2001). Greedy function approximation: A gradient
 boosting machine. *Annals of Statistics*, 29(5), 1189-1232.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable

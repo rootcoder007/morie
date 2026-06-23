@@ -1,6 +1,7 @@
 """Tests for morie.fn.cstdy — custody days per individual."""
 
 import pandas as pd
+
 from morie.fn.cstdy import custody_days
 
 

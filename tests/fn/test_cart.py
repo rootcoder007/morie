@@ -1,6 +1,8 @@
 """Tests for morie.fn.cart — CART decision tree."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cart import decision_tree
 
 

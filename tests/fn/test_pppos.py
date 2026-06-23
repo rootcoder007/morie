@@ -1,7 +1,7 @@
 """Tests for morie.fn.pppos."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pppos import pppos
 
 

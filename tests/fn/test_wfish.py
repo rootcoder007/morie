@@ -1,5 +1,7 @@
 """Tests for Wordfish scaling."""
+
 import numpy as np
+
 from morie.fn.wfish import wfish
 
 
@@ -14,6 +16,7 @@ def test_wfish_smoke():
 
 def test_cheatsheet():
     from morie.fn.wfish import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

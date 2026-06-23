@@ -1,6 +1,7 @@
 """Tests for morie.fn.cmprg — compliance by region."""
 
 import pandas as pd
+
 from morie.fn.cmprg import compliance_by_region
 
 

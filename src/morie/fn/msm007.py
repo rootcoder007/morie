@@ -1,6 +1,7 @@
 """Numbered display equation (4.9) from MVSML chapter 4.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_overfitting_resampling_eq_4_9"]
@@ -40,7 +41,14 @@ def mvsml_overfitting_resampling_eq_4_9(proportion, of, true, positives, that, a
     n = len(proportion)
     result = float(np.mean(proportion))
     se = float(np.std(proportion, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (4.9) from MVSML chapter 4."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (4.9) from MVSML chapter 4.",
+        }
+    )
 
 
 def cheatsheet():

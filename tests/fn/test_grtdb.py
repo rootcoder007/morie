@@ -1,6 +1,7 @@
 """Tests for grtdb.geron_transformer_decoder_block."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grtdb import geron_transformer_decoder_block
 
 
@@ -11,7 +12,7 @@ def test_grtdb_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = geron_transformer_decoder_block(x, encoder_output, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grtdb_edge():

@@ -1,8 +1,8 @@
 """Tests for morie.fn.dbldt — double-threshold detection."""
-import numpy as np
-import pytest
 
-from morie.fn.dbldt import double_threshold, dbldt
+import numpy as np
+
+from morie.fn.dbldt import dbldt, double_threshold
 
 
 def test_single_event():

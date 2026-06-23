@@ -1,17 +1,14 @@
 """Tests for morie.fn.rskgp — risk group profile."""
 
-import pytest
-import numpy as np
 import pandas as pd
-from morie.fn.rskgp import risk_group_profile
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.rskgp import risk_group_profile
 
 
 class TestRiskGroupProfile:
-
     def test_returns_descriptive(self):
-        df = pd.DataFrame({"risk_level": ["Low", "Med", "High", "Low", "Med", "High"],
-                           "age": [25, 30, 35, 28, 40, 45]})
+        df = pd.DataFrame({"risk_level": ["Low", "Med", "High", "Low", "Med", "High"], "age": [25, 30, 35, 28, 40, 45]})
         result = risk_group_profile(df)
         assert isinstance(result, DescriptiveResult)
         assert result.extra["n_groups"] == 3

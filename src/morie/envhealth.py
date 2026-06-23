@@ -38,6 +38,7 @@ References (module-level):
         measurement of inequalities in health." Social Science &
         Medicine, 33(5), 545-557.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -50,9 +51,11 @@ import pandas as pd
 # Result dataclasses
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class CRFResult:
     """Concentration-response function result for a single exposure level."""
+
     rr: float
     log_rr: float
     reference_conc: float
@@ -65,6 +68,7 @@ class CRFResult:
 @dataclass
 class BurdenResult:
     """Population-level pollution burden attribution result."""
+
     paf: float
     attributable_cases: float
     baseline_cases: float
@@ -80,6 +84,7 @@ class BurdenResult:
 @dataclass
 class EquityResult:
     """Concentration-index result for exposure × income."""
+
     concentration_index: float
     interpretation: str
     n_quintiles: int
@@ -91,6 +96,7 @@ class EquityResult:
 # ---------------------------------------------------------------------------
 # Concentration-response functions
 # ---------------------------------------------------------------------------
+
 
 def concentration_response_pm25(
     exposure: float | np.ndarray,
@@ -135,8 +141,7 @@ def concentration_response_pm25(
         "stroke": (1.46, 0.13, 0.61),
     }
     if outcome not in ier_params:
-        raise ValueError(
-            f"Unknown outcome {outcome!r}. Available: {list(ier_params)}")
+        raise ValueError(f"Unknown outcome {outcome!r}. Available: {list(ier_params)}")
     alpha, gamma, delta = ier_params[outcome]
 
     z = np.asarray(exposure, dtype=float)
@@ -163,7 +168,9 @@ def concentration_response_pm25(
         pollutant="PM2.5",
         citation="Burnett et al. (2014) EHP 122(4):397-403",
         extra={
-            "alpha": alpha, "gamma": gamma, "delta": delta,
+            "alpha": alpha,
+            "gamma": gamma,
+            "delta": delta,
             "outcome": outcome,
             "rr_per_unit": rr_out if not scalar else None,
         },
@@ -218,8 +225,8 @@ def concentration_response_no2(
     if beta_per_10 is None:
         if outcome not in beta_lookup:
             raise ValueError(
-                f"Unknown outcome {outcome!r}. Available: {list(beta_lookup)} "
-                f"or pass beta_per_10 explicitly.")
+                f"Unknown outcome {outcome!r}. Available: {list(beta_lookup)} or pass beta_per_10 explicitly."
+            )
         beta = beta_lookup[outcome]
     else:
         beta = float(beta_per_10)
@@ -258,6 +265,7 @@ def concentration_response_no2(
 # ---------------------------------------------------------------------------
 # Attribution
 # ---------------------------------------------------------------------------
+
 
 def attributable_fraction(rr: float, exposure_prevalence: float) -> float:
     """Population Attributable Fraction (PAF) from a risk ratio.
@@ -305,6 +313,7 @@ def attributable_fraction(rr: float, exposure_prevalence: float) -> float:
 # ---------------------------------------------------------------------------
 # Health-impact assessment (BenMAP-style)
 # ---------------------------------------------------------------------------
+
 
 def mortality_displaced(
     exposure_delta: float,
@@ -359,6 +368,7 @@ def mortality_displaced(
 # End-to-end burden pipeline
 # ---------------------------------------------------------------------------
 
+
 def burden_of_pollution(
     exposure_mean: float,
     exposure_prevalence: float,
@@ -404,12 +414,14 @@ def burden_of_pollution(
     """
     if pollutant == "PM2.5":
         crf = concentration_response_pm25(
-            exposure_mean, outcome=outcome,
+            exposure_mean,
+            outcome=outcome,
             reference_conc=reference_conc if reference_conc is not None else 5.8,
         )
     elif pollutant == "NO2":
         crf = concentration_response_no2(
-            exposure_mean, outcome=outcome,
+            exposure_mean,
+            outcome=outcome,
             reference_conc=reference_conc if reference_conc is not None else 10.0,
         )
     else:
@@ -430,7 +442,8 @@ def burden_of_pollution(
         pollutant=pollutant,
         citation=crf.citation + "; Rothman et al. (2008) §5",
         extra={
-            "rr": crf.rr, "log_rr": crf.log_rr,
+            "rr": crf.rr,
+            "log_rr": crf.log_rr,
             "outcome": outcome,
         },
     )
@@ -439,6 +452,7 @@ def burden_of_pollution(
 # ---------------------------------------------------------------------------
 # DML-based sensitivity wrapper
 # ---------------------------------------------------------------------------
+
 
 def exposure_response_sensitivity(
     data: pd.DataFrame,
@@ -523,7 +537,8 @@ def exposure_response_sensitivity(
     if len(boot_ates) < 10:
         raise RuntimeError(
             f"Only {len(boot_ates)} successful bootstrap fits; need >=10. "
-            f"Inspect the PLR convergence on your resamples.")
+            f"Inspect the PLR convergence on your resamples."
+        )
 
     se_boot = float(np.std(boot_ates, ddof=1))
     ci_low = float(np.percentile(boot_ates, 2.5))
@@ -543,6 +558,7 @@ def exposure_response_sensitivity(
 # ---------------------------------------------------------------------------
 # Equity analysis
 # ---------------------------------------------------------------------------
+
 
 def pollution_equity_analysis(
     data: pd.DataFrame,
@@ -607,11 +623,15 @@ def pollution_equity_analysis(
     ci = 2.0 * cov_hR / mu
 
     if ci < -0.01:
-        interp = (f"CI = {ci:.4f}. Pro-poor exposure burden: lower-income "
-                  f"individuals bear disproportionately higher pollution.")
+        interp = (
+            f"CI = {ci:.4f}. Pro-poor exposure burden: lower-income "
+            f"individuals bear disproportionately higher pollution."
+        )
     elif ci > 0.01:
-        interp = (f"CI = {ci:.4f}. Pro-rich exposure burden: higher-income "
-                  f"individuals bear disproportionately higher pollution.")
+        interp = (
+            f"CI = {ci:.4f}. Pro-rich exposure burden: higher-income "
+            f"individuals bear disproportionately higher pollution."
+        )
     else:
         interp = f"CI = {ci:.4f}. Exposure distributed approximately evenly across income."
 
@@ -628,6 +648,7 @@ def pollution_equity_analysis(
 # ---------------------------------------------------------------------------
 # FSA-level stratified burden
 # ---------------------------------------------------------------------------
+
 
 def burden_by_fsa(
     fsa_table: pd.DataFrame,
@@ -682,19 +703,20 @@ def burden_by_fsa(
             pollutant=pollutant,
             outcome=outcome,
         )
-        rows.append({
-            fsa_col: row[fsa_col],
-            exposure_col: float(row[exposure_col]),
-            population_col: int(row[population_col]),
-            baseline_rate_col: float(row[baseline_rate_col]),
-            "rr": result.extra["rr"],
-            "paf": result.paf,
-            "attributable_cases": result.attributable_cases,
-            "baseline_cases": result.baseline_cases,
-        })
+        rows.append(
+            {
+                fsa_col: row[fsa_col],
+                exposure_col: float(row[exposure_col]),
+                population_col: int(row[population_col]),
+                baseline_rate_col: float(row[baseline_rate_col]),
+                "rr": result.extra["rr"],
+                "paf": result.paf,
+                "attributable_cases": result.attributable_cases,
+                "baseline_cases": result.baseline_cases,
+            }
+        )
 
-    return pd.DataFrame(rows).sort_values(
-        "attributable_cases", ascending=False).reset_index(drop=True)
+    return pd.DataFrame(rows).sort_values("attributable_cases", ascending=False).reset_index(drop=True)
 
 
 def cheatsheet() -> str:

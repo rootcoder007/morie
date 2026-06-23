@@ -9,7 +9,9 @@ construction.  The useful object is the *standardised* empirical
 process Z_n(f) = sqrt(n)*(P_n(f) - mu0) under a hypothesised mu0,
 which is what we compute alongside the asymptotic SE sigma/sqrt(n).
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_empirical_process"]
@@ -40,10 +42,14 @@ def kosorok_empirical_process(x, f=None, mu0=0.0):
     pn = float(np.mean(fx))
     estimate = float(np.sqrt(n) * (pn - mu0))
     se = float(np.std(fx, ddof=1)) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": estimate, "se": se, "n": n,
-        "method": "Empirical process G_n(f) = sqrt(n)(P_n - P)(f)",
-    })
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "se": se,
+            "n": n,
+            "method": "Empirical process G_n(f) = sqrt(n)(P_n - P)(f)",
+        }
+    )
 
 
 def cheatsheet():

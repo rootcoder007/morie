@@ -1,6 +1,7 @@
 """Jensen-Shannon divergence between two closed compositions."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["compositional_jsd"]
@@ -32,7 +33,14 @@ def compositional_jsd(p, q):
     n = len(p)
     result = float(np.mean(p))
     se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Jensen-Shannon divergence between two closed compositions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Jensen-Shannon divergence between two closed compositions",
+        }
+    )
 
 
 def cheatsheet():

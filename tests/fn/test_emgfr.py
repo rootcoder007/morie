@@ -1,7 +1,9 @@
 """Tests for emgfr -- EMG median/mean frequency."""
+
 import numpy as np
-from morie.fn.emgfr import emgfr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.emgfr import emgfr
 
 
 def test_emgfr_basic():

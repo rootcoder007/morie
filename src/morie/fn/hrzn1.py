@@ -12,6 +12,7 @@ SE from bootstrap (small replication count for speed).
 Fallback: when n < threshold or the conditioning is degenerate, the
 function reduces to linear 2SLS (a degenerate special case of NPIV).
 """
+
 from __future__ import annotations
 
 import math
@@ -38,8 +39,7 @@ def _hermite_basis(t, J):
     return H
 
 
-def horowitz_nonparametric_iv(x, y, z, J=5, alpha=1e-3, grid=None,
-                               _bootstrap=True):
+def horowitz_nonparametric_iv(x, y, z, J=5, alpha=1e-3, grid=None, _bootstrap=True):
     """Tikhonov-regularised series NPIV (Hermite basis).
 
     Parameters
@@ -62,15 +62,18 @@ def horowitz_nonparametric_iv(x, y, z, J=5, alpha=1e-3, grid=None,
         # Fall back to 2SLS as a degenerate parametric case.
         Xc = np.column_stack([np.ones(n), x]) if x.size == n else np.array([])
         if Xc.size == 0:
-            return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                       "method": "NPIV (insufficient data)"})
+            return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "NPIV (insufficient data)"})
         Zc = np.column_stack([np.ones(n), z])
         Pz = Zc @ np.linalg.pinv(Zc.T @ Zc) @ Zc.T
         beta = np.linalg.pinv(Xc.T @ Pz @ Xc) @ (Xc.T @ Pz @ y)
-        return RichResult(payload={
-            "estimate": float(beta[1]), "se": np.nan,
-            "n": n, "method": "NPIV fallback: linear 2SLS",
-        })
+        return RichResult(
+            payload={
+                "estimate": float(beta[1]),
+                "se": np.nan,
+                "n": n,
+                "method": "NPIV fallback: linear 2SLS",
+            }
+        )
     # Normalise to standard scale for stable Hermite series
     x_s = (x - x.mean()) / max(x.std(ddof=1), 1e-6)
     z_s = (z - z.mean()) / max(z.std(ddof=1), 1e-6)
@@ -88,8 +91,7 @@ def horowitz_nonparametric_iv(x, y, z, J=5, alpha=1e-3, grid=None,
         rhs = M.T @ inv_BzBz @ BzY
         coef = np.linalg.solve(A, rhs)
     except np.linalg.LinAlgError:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "NPIV (singular)"})
+        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "NPIV (singular)"})
     if grid is None:
         grid = np.linspace(x.min(), x.max(), 21)
     grid = np.asarray(grid, dtype=float).ravel()
@@ -104,22 +106,24 @@ def horowitz_nonparametric_iv(x, y, z, J=5, alpha=1e-3, grid=None,
         for b in range(B):
             idx = rng.integers(0, n, size=n)
             try:
-                sub = horowitz_nonparametric_iv(x[idx], y[idx], z[idx], J=J,
-                                                alpha=alpha, grid=grid,
-                                                _bootstrap=False)
+                sub = horowitz_nonparametric_iv(x[idx], y[idx], z[idx], J=J, alpha=alpha, grid=grid, _bootstrap=False)
                 boot[b] = np.asarray(sub["estimate"], dtype=float)
             except Exception:
                 boot[b] = g_hat
         se = boot.std(axis=0, ddof=1)
     else:
         se = np.full(grid.size, np.nan)
-    return RichResult(payload={
-        "estimate": g_hat.astype(float),
-        "se": se.astype(float),
-        "grid": grid.astype(float),
-        "J": J, "alpha": alpha, "n": n,
-        "method": "Series-Tikhonov NPIV on Hermite basis",
-    })
+    return RichResult(
+        payload={
+            "estimate": g_hat.astype(float),
+            "se": se.astype(float),
+            "grid": grid.astype(float),
+            "J": J,
+            "alpha": alpha,
+            "n": n,
+            "method": "Series-Tikhonov NPIV on Hermite basis",
+        }
+    )
 
 
 def cheatsheet():
@@ -132,7 +136,7 @@ if __name__ == "__main__":  # pragma: no cover
     n = 1000
     z = rng.standard_normal(n)
     x = 0.7 * z + 0.5 * rng.standard_normal(n)
-    y = x ** 2 + 0.3 * rng.standard_normal(n)
+    y = x**2 + 0.3 * rng.standard_normal(n)
     res = horowitz_nonparametric_iv(x, y, z, grid=[0.0, 1.0, 2.0])
     print(res)
     # g(x) = x^2 at 0, 1, 2  -> roughly 0, 1, 4

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prosthetic heart valve evaluation via PCG spectral analysis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_prosthetic_valve"]
@@ -32,7 +34,14 @@ def rangayyan_prosthetic_valve(pcg, fs):
     n = int(pcg) if pcg.ndim == 0 else len(pcg)
     result = float(np.mean(pcg))
     se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prosthetic heart valve evaluation via PCG spectral analysis"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prosthetic heart valve evaluation via PCG spectral analysis",
+        }
+    )
 
 
 def cheatsheet():

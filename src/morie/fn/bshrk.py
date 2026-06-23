@@ -60,14 +60,14 @@ def bayesian_horseshoe(
 
         resid = y_arr - X_arr @ beta
         post_a = (n + p) / 2.0 + 1
-        post_b = 0.5 * float(resid @ resid) + 0.5 * float(np.sum(beta ** 2 / (lambda2 * tau2 + 1e-30)))
+        post_b = 0.5 * float(resid @ resid) + 0.5 * float(np.sum(beta**2 / (lambda2 * tau2 + 1e-30)))
         sigma2 = 1.0 / rng.gamma(post_a, 1.0 / post_b)
 
         for j in range(p):
             rate = beta[j] ** 2 / (2 * sigma2 * tau2 + 1e-30) + 1.0 / (nu[j] + 1e-30)
             lambda2[j] = 1.0 / rng.gamma(1.0, 1.0 / (rate + 1e-30))
 
-        rate_tau = np.sum(beta ** 2 / (lambda2 * sigma2 + 1e-30)) / 2.0 + 1.0 / (xi + 1e-30)
+        rate_tau = np.sum(beta**2 / (lambda2 * sigma2 + 1e-30)) / 2.0 + 1.0 / (xi + 1e-30)
         tau2 = 1.0 / rng.gamma((p + 1) / 2.0, 1.0 / (rate_tau + 1e-30))
 
         for j in range(p):

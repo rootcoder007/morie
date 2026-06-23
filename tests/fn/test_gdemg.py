@@ -1,6 +1,7 @@
 """Test gdemg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdemg import gdemg
 
 

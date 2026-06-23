@@ -31,7 +31,7 @@ from scipy import optimize
 def _boxcox_transform(y: np.ndarray, lam: float) -> np.ndarray:
     if abs(lam) < 1e-8:
         return np.log(y)
-    return (y ** lam - 1.0) / lam
+    return (y**lam - 1.0) / lam
 
 
 def bcxgm(
@@ -88,13 +88,13 @@ def bcxgm(
 
     params0 = np.zeros(1 + p_aug)
     params0[0] = lambda_init
-    beta_init = np.linalg.lstsq(
-        Xd, _boxcox_transform(Y, lambda_init), rcond=None
-    )[0]
+    beta_init = np.linalg.lstsq(Xd, _boxcox_transform(Y, lambda_init), rcond=None)[0]
     params0[1:] = beta_init
 
     res = optimize.minimize(
-        _gmm_obj, params0, method="Nelder-Mead",
+        _gmm_obj,
+        params0,
+        method="Nelder-Mead",
         options={"maxiter": 2000, "xatol": 1e-8},
     )
 
@@ -103,12 +103,12 @@ def bcxgm(
 
     y_t = _boxcox_transform(Y, lambda_hat)
     resid = y_t - Xd @ beta
-    sigma2 = float(np.sum(resid ** 2) / max(n - p_aug - 1, 1))
+    sigma2 = float(np.sum(resid**2) / max(n - p_aug - 1, 1))
 
     eps_lam = 1e-5
     g_plus = _gmm_obj(res.x + eps_lam * np.eye(len(res.x))[0])
     g_minus = _gmm_obj(res.x - eps_lam * np.eye(len(res.x))[0])
-    hess_lam = (g_plus - 2 * res.fun + g_minus) / eps_lam ** 2
+    hess_lam = (g_plus - 2 * res.fun + g_minus) / eps_lam**2
     se_lambda = float(np.sqrt(1.0 / max(abs(hess_lam) * n, 1e-12)))
 
     XtX_inv = np.linalg.inv(Xd.T @ Xd + 1e-10 * np.eye(p_aug))

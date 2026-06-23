@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GBLUP with the VanRaden genomic relationship matrix."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -73,10 +74,12 @@ def gblup_full(x, y, markers, lambda_gblup: float | None = None):
     G_inv = np.linalg.inv(G)
     p = X.shape[1]
     # Mixed-model coefficient matrix
-    C = np.block([
-        [X.T @ X,           X.T               ],
-        [X,                 np.eye(n) + lam * G_inv],
-    ])
+    C = np.block(
+        [
+            [X.T @ X, X.T],
+            [X, np.eye(n) + lam * G_inv],
+        ]
+    )
     rhs = np.concatenate([X.T @ y, y])
     sol = np.linalg.solve(C, rhs)
     beta = sol[:p]
@@ -84,7 +87,7 @@ def gblup_full(x, y, markers, lambda_gblup: float | None = None):
     # Residual / SE
     y_hat = X @ beta + g_hat
     resid = y - y_hat
-    sigma_e2 = float(np.sum(resid ** 2) / max(n - p, 1))
+    sigma_e2 = float(np.sum(resid**2) / max(n - p, 1))
     se = float(np.sqrt(sigma_e2))
     estimate = float(np.mean(g_hat))  # population-mean BV; full vector in g_hat
     return RichResult(

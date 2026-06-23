@@ -1,7 +1,6 @@
 """Tests for morie.fn.mssmr -- Replicated SMACOF"""
 
 import numpy as np
-import pytest
 
 from morie.fn.mssmr import smacof_replicate
 

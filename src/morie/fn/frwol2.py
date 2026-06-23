@@ -1,6 +1,7 @@
 """Frank-Wolfe / conditional gradient."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["frank_wolfe"]

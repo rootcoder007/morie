@@ -65,7 +65,7 @@ def weibs(
         for i in range(len(result.x)):
             e_i = np.zeros(len(result.x))
             e_i[i] = eps
-            h[i] = (neg_loglik(result.x + e_i) - 2 * neg_loglik(result.x) + neg_loglik(result.x - e_i)) / eps ** 2
+            h[i] = (neg_loglik(result.x + e_i) - 2 * neg_loglik(result.x) + neg_loglik(result.x - e_i)) / eps**2
         se = 1.0 / np.sqrt(np.maximum(h[2:], 1e-10)) if p > 0 else np.array([])
     except Exception:
         se = np.full(p, np.nan)

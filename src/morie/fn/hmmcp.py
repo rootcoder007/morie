@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Model Context Protocol (MCP) for LLM tool integration."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_model_context_protocol"]
@@ -32,7 +34,14 @@ def geron_model_context_protocol(server, client):
     n = len(server)
     result = float(np.mean(server))
     se = float(np.std(server, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Model Context Protocol (MCP) for LLM tool integration"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Model Context Protocol (MCP) for LLM tool integration",
+        }
+    )
 
 
 def cheatsheet():

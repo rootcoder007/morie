@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian Ridge Regression prior and posterior (BRR/Bayesian GBLUP)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["brr_prior_posterior"]
@@ -40,7 +42,14 @@ def brr_prior_posterior(y, X, a_b, b_b, a_e, b_e):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian Ridge Regression prior and posterior (BRR/Bayesian GBLUP)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bayesian Ridge Regression prior and posterior (BRR/Bayesian GBLUP)",
+        }
+    )
 
 
 def cheatsheet():

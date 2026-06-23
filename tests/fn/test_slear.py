@@ -1,6 +1,8 @@
 """Tests for morie.fn.slear — S-learner CATE."""
+
 import numpy as np
 import pytest
+
 from morie.fn.slear import slear
 
 
@@ -63,4 +65,5 @@ def test_n_correct(data):
 
 def test_cheatsheet():
     from morie.fn.slear import cheatsheet
+
     assert isinstance(cheatsheet(), str) and len(cheatsheet()) > 0

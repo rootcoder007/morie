@@ -1,6 +1,7 @@
 """Tests for sgtsbnd.sgt_sbm_detect_threshold."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtsbnd import sgt_sbm_detect_threshold
 
 
@@ -11,7 +12,7 @@ def test_sgtsbnd_basic():
     k = 5
     result = sgt_sbm_detect_threshold(a, b, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtsbnd_edge():

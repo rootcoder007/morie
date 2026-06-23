@@ -1,6 +1,7 @@
 """Stick-breaking weights for DP."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["stick_breaking_weights"]

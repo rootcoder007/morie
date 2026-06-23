@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Softmax over a vector."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
+
 def softmx(x: Union[Sequence[float], np.ndarray]) -> np.ndarray:
     """Softmax: σᵢ(x) = exp(xᵢ) / Σⱼ exp(xⱼ).
 

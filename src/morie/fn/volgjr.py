@@ -1,6 +1,7 @@
 """Glosten-Jagannathan-Runkle GARCH with leverage."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_gjr_garch"]
@@ -32,7 +33,9 @@ def vol_gjr_garch(r, init):
     n = len(r)
     result = float(np.mean(r))
     se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Glosten-Jagannathan-Runkle GARCH with leverage"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Glosten-Jagannathan-Runkle GARCH with leverage"}
+    )
 
 
 def cheatsheet():

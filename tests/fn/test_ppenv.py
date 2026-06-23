@@ -1,6 +1,7 @@
 """Test ppenv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppenv import ppenv
 
 

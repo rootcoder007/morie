@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.jt import jonckheere_terpstra_test
+
 from morie.fn._containers import TestResult
+from morie.fn.jt import jonckheere_terpstra_test
 
 
 class TestJT:

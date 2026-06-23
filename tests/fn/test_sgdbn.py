@@ -1,5 +1,7 @@
 """Tests for spatial Durbin model."""
+
 import numpy as np
+
 from morie.fn.sgdbn import sgdbn
 
 
@@ -9,7 +11,7 @@ def test_sgdbn_smoke():
     X = np.column_stack([np.ones(n), rng.uniform(0, 5, n)])
     W = np.zeros((n, n))
     for i in range(n):
-        for j in range(max(0, i-2), min(n, i+3)):
+        for j in range(max(0, i - 2), min(n, i + 3)):
             if i != j:
                 W[i, j] = 1.0
     rs = W.sum(axis=1, keepdims=True)
@@ -24,6 +26,7 @@ def test_sgdbn_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgdbn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

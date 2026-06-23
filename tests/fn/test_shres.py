@@ -1,6 +1,7 @@
 """Tests for shres.schoenfeld_residual."""
+
 import numpy as np
-import pytest
+
 from morie.fn.shres import schoenfeld_residual
 
 
@@ -11,7 +12,7 @@ def test_shres_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = schoenfeld_residual(time, event, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_shres_edge():

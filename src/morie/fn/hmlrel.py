@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Leaky ReLU: small negative slope prevents dead neurons."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_leaky_relu"]
@@ -32,7 +34,14 @@ def geron_leaky_relu(z, alpha):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Leaky ReLU: small negative slope prevents dead neurons"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Leaky ReLU: small negative slope prevents dead neurons",
+        }
+    )
 
 
 def cheatsheet():

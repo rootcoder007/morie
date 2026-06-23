@@ -1,6 +1,7 @@
 """Tests for ibdmtx.ibd_matrix."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ibdmtx import ibd_matrix
 
 
@@ -10,7 +11,7 @@ def test_ibdmtx_basic():
     map = np.random.default_rng(42).normal(0, 1, 100)
     result = ibd_matrix(genotypes, map)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ibdmtx_edge():

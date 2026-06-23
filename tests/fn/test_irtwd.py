@@ -1,7 +1,7 @@
 """Tests for morie.fn.irtwd — Wright map."""
 
-import numpy as np
 import pandas as pd
+
 from morie.fn.irtwd import irt_wright_map
 
 

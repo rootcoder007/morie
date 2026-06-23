@@ -1,12 +1,14 @@
 """Tests for morie.fn.grwrt -- population growth rate."""
 
 import pytest
+
 from morie.fn.grwrt import population_growth_rate
 
 
 class TestPopGrowthRate:
     def test_doubling(self):
         import numpy as np
+
         res = population_growth_rate(pop_start=1000, pop_end=2000, years=10)
         assert res.estimate == pytest.approx(np.log(2) / 10)
 

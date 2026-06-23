@@ -1,6 +1,7 @@
 """Tests for kmap.kamath_autoprompt_gradient_search."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmap import kamath_autoprompt_gradient_search
 
 
@@ -11,7 +12,7 @@ def test_kmap_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_autoprompt_gradient_search(template, dataset, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmap_edge():

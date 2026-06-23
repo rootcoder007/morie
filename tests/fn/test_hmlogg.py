@@ -1,6 +1,7 @@
 """Tests for hmlogg.geron_logistic_gradient."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlogg import geron_logistic_gradient
 
 
@@ -11,7 +12,7 @@ def test_hmlogg_basic():
     theta = 0.0
     result = geron_logistic_gradient(X, y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlogg_edge():

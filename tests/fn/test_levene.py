@@ -1,7 +1,5 @@
 """Tests for morie.fn.levene -- Levene's test for equality of variances."""
 
-import numpy as np
-import pytest
 from morie.fn.levene import levene_test
 
 

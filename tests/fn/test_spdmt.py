@@ -1,8 +1,9 @@
 """Tests for morie.fn.spdmt -- Sparse diagonal matrix operations."""
 
 import numpy as np
-from morie.fn.spdmt import sparse_diagonal, spdmt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.spdmt import sparse_diagonal, spdmt
 
 
 class TestSpdmt:

@@ -1,6 +1,7 @@
 """Test vmind."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmind import vmind
 
 

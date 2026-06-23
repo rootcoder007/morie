@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def prime_sieve(n: int, **kwargs) -> DescriptiveResult:
     r"""
     Generate all primes up to *n* using the Sieve of Eratosthenes.

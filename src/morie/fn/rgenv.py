@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hilbert-transform envelope -- Rangayyan Ch 5."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -43,9 +44,7 @@ def rangayyan_envelope(x):
             ("Envelope max", float(env.max())),
         ],
         interpretation=f"Analytic envelope mean {env.mean():.4g}, peak {env.max():.4g}.",
-        payload={"envelope": env, "analytic": z,
-                 "instantaneous_phase": phase,
-                 "instantaneous_freq": inst_freq},
+        payload={"envelope": env, "analytic": z, "instantaneous_phase": phase, "instantaneous_freq": inst_freq},
     )
     return with_describe_pointer(res, "rgenv")
 

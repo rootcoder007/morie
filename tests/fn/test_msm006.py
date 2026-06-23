@@ -1,6 +1,7 @@
 """Tests for msm006.mvsml_general_eq_1_5."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm006 import mvsml_general_eq_1_5
 
 
@@ -14,7 +15,7 @@ def test_msm006_basic():
     the = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_general_eq_1_5(eij, where, P5, i, represents, the)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm006_edge():

@@ -1,6 +1,7 @@
 """Test tsfor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tsfor import tsfor
 
 

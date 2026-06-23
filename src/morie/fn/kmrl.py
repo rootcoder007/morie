@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kmrl"]
 
 
-def kmrl(data: np.ndarray, x_eval: np.ndarray | None = None, cdf=None, *, bw: float | None = None, n_grid: int = 256) -> dict:
+def kmrl(
+    data: np.ndarray, x_eval: np.ndarray | None = None, cdf=None, *, bw: float | None = None, n_grid: int = 256
+) -> dict:
     r"""
     Kernel mean residual life (MRL) estimator.
 

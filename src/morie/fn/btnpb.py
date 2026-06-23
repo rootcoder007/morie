@@ -1,6 +1,7 @@
 """Non-overlapping block bootstrap for time series."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_nonoverlap_block"]
@@ -36,7 +37,9 @@ def boot_nonoverlap_block(x, block_len, stat, B):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Non-overlapping block bootstrap for time series"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Non-overlapping block bootstrap for time series"}
+    )
 
 
 def cheatsheet():

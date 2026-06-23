@@ -1,5 +1,7 @@
 """Spherical semivariogram model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_spherical_variogram"]

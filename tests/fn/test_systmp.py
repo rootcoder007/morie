@@ -1,6 +1,7 @@
 """Tests for systmp.systematic_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.systmp import systematic_sampling
 
 
@@ -11,7 +12,7 @@ def test_systmp_basic():
     n = 100
     result = systematic_sampling(y, N, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_systmp_edge():

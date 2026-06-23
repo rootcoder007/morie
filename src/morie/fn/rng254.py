@@ -1,6 +1,7 @@
 """Power cepstrum of a convolution as sum of component power cepstra (cross-term neglected).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_power_cepstrum_sum"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_power_cepstrum_sum(x_hat_p, h_hat_p, n):
     n = len(x_hat_p)
     result = float(np.mean(x_hat_p))
     se = float(np.std(x_hat_p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Power cepstrum of a convolution as sum of component power cepstra (cross-term neglected)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Power cepstrum of a convolution as sum of component power cepstra (cross-term neglected).",
+        }
+    )
 
 
 def cheatsheet():

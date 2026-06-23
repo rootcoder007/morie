@@ -6,15 +6,13 @@ stats books (Wooditch 2021, Weisburd et al 2022).
 
 from __future__ import annotations
 
-import math
-
 import numpy as np
 import pytest
 
 from morie.fn import cohend, gkgam, kentau, mcfadr, s2var, somerd, spearm, xbar
 
-
 # ── xbar ────────────────────────────────────────────────────────────────────
+
 
 def test_xbar_basic():
     assert xbar([1, 2, 3, 4, 5]) == 3.0
@@ -31,6 +29,7 @@ def test_xbar_empty_raises():
 
 # ── s2var ───────────────────────────────────────────────────────────────────
 
+
 def test_s2var_unbiased():
     # 1..5: mean=3, ssq=10, /(n-1)=4 → 2.5
     assert s2var([1, 2, 3, 4, 5]) == pytest.approx(2.5)
@@ -42,6 +41,7 @@ def test_s2var_singleton_raises():
 
 
 # ── cohend ──────────────────────────────────────────────────────────────────
+
 
 def test_cohend_known_value():
     # Two equal-variance groups, mean diff 1, sd 1 → d ≈ 1
@@ -65,6 +65,7 @@ def test_cohend_zero_pooled_sd_raises():
 
 # ── mcfadr ──────────────────────────────────────────────────────────────────
 
+
 def test_mcfadr_basic():
     # Full LL = -150, null LL = -200 → 1 - 150/200 = 0.25
     # mcfadr now returns RichResult; float(...) gives the scalar R².
@@ -83,6 +84,7 @@ def test_mcfadr_null_zero_raises():
 
 # ── somerd ──────────────────────────────────────────────────────────────────
 
+
 def test_somerd_perfect_concordance():
     out = somerd([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
     assert out["statistic"] == pytest.approx(1.0)
@@ -94,6 +96,7 @@ def test_somerd_perfect_discordance():
 
 
 # ── kentau ──────────────────────────────────────────────────────────────────
+
 
 def test_kentau_perfect_concordance():
     out = kentau([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
@@ -107,10 +110,11 @@ def test_kentau_perfect_discordance():
 
 # ── spearm ──────────────────────────────────────────────────────────────────
 
+
 def test_spearm_monotonic_nonlinear():
     # Strictly monotonic but nonlinear → ρ = 1
     x = list(range(10))
-    y = [v ** 2 for v in x]
+    y = [v**2 for v in x]
     out = spearm(x, y)
     assert out["statistic"] == pytest.approx(1.0)
 
@@ -121,6 +125,7 @@ def test_spearm_negative_correlation():
 
 
 # ── gkgam ───────────────────────────────────────────────────────────────────
+
 
 def test_gkgam_perfect_concordance():
     # gkgam now returns RichResult; float() yields scalar gamma.

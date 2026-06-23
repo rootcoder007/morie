@@ -1,6 +1,7 @@
 """DR-DiD with negative control outcome."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_did_neg_control"]

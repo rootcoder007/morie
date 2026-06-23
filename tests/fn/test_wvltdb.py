@@ -1,6 +1,7 @@
 """Tests for wvltdb.db_wavelet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wvltdb import db_wavelet
 
 
@@ -11,7 +12,7 @@ def test_wvltdb_basic():
     levels = [0.5, 1.0, 1.5, 2.0]
     result = db_wavelet(y, n, levels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wvltdb_edge():

@@ -95,4 +95,4 @@ bneop = birth_death_process
 
 
 def cheatsheet() -> str:
-    return 'birth_death_process({}) -> Birth-death process.'
+    return "birth_death_process({}) -> Birth-death process."

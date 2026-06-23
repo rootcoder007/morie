@@ -1,6 +1,7 @@
 """Tests for rgbbnorm.rangayyan_ecg_bbb_normal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgbbnorm import rangayyan_ecg_bbb_normal
 
 
@@ -12,7 +13,7 @@ def test_rgbbnorm_basic():
     labels = np.random.default_rng(43).integers(0, 2, 100)
     result = rangayyan_ecg_bbb_normal(ecg, fs, r_peaks, labels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgbbnorm_edge():

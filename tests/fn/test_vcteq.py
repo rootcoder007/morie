@@ -1,8 +1,9 @@
 """Tests for morie.fn.vcteq — victim equity."""
 
 import pytest
-from morie.fn.vcteq import victim_equity
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.vcteq import victim_equity
 
 
 class TestVictimEquity:

@@ -1,6 +1,7 @@
 """Test focnph."""
+
 import numpy as np
-import pytest
+
 from morie.fn.focnph import focnph
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Sampling decoding: draw from the softmax distribution."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["alammar_sampling_decoding"]
@@ -32,7 +34,14 @@ def alammar_sampling_decoding(logits, seed):
     n = len(logits)
     result = float(np.mean(logits))
     se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sampling decoding: draw from the softmax distribution"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sampling decoding: draw from the softmax distribution",
+        }
+    )
 
 
 def cheatsheet():

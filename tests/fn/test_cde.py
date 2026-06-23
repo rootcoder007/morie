@@ -1,6 +1,7 @@
 """Tests for cde.controlled_direct_effect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cde import controlled_direct_effect
 
 
@@ -12,7 +13,7 @@ def test_cde_basic():
     m = 10
     result = controlled_direct_effect(Y, X, M, m)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cde_edge():

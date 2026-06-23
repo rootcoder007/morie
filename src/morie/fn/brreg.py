@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian ridge regression (RR-BLUP) for marker effects."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -65,7 +66,7 @@ def bayesian_ridge_regression(x, y, lam: float | None = None):
     intercept = y_mean
     y_hat = Xc @ beta + intercept
     resid = y - y_hat
-    sigma2 = float(np.sum(resid ** 2) / max(n - 1, 1))
+    sigma2 = float(np.sum(resid**2) / max(n - 1, 1))
     # SE from posterior covariance: sigma2 * (X'X + lam I)^{-1}
     cov_beta = sigma2 * np.linalg.inv(A)
     se = np.sqrt(np.clip(np.diag(cov_beta), 0, None))

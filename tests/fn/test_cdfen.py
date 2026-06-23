@@ -1,5 +1,5 @@
 """Tests for cdf_estimate."""
-import numpy as np
+
 from morie.fn.cdfen import cdf_estimate, cdfen
 
 

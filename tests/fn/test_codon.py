@@ -1,5 +1,7 @@
 """Tests for morie.fn.codon — codon usage."""
+
 import pytest
+
 from morie.fn.codon import codon_usage
 
 

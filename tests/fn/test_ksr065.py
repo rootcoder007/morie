@@ -1,6 +1,7 @@
 """Tests for ksr065.kosorok_ch3_efficient_influence_general."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr065 import kosorok_ch3_efficient_influence_general
 
 
@@ -12,7 +13,7 @@ def test_ksr065_basic():
     eta = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch3_efficient_influence_general(A, psi_tilde, chi_tilde, eta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr065_edge():

@@ -1,4 +1,5 @@
 """Tests for morie.fn.fctvt — factor convert levels."""
+
 from morie.fn.fctvt import fctvt
 
 

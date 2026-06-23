@@ -1,6 +1,8 @@
 """Tests for morie.fn.gescd — GES causal discovery."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gescd import gescd
 
 
@@ -70,4 +72,5 @@ def test_sparsity_higher_lambda(data):
 
 def test_cheatsheet():
     from morie.fn.gescd import cheatsheet
+
     assert len(cheatsheet()) > 0

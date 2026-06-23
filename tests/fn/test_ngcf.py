@@ -1,6 +1,7 @@
 """Tests for ngcf.ngcf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ngcf import ngcf
 
 
@@ -11,7 +12,7 @@ def test_ngcf_basic():
     layers = np.random.default_rng(42).normal(0, 1, 100)
     result = ngcf(R, K, layers)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ngcf_edge():

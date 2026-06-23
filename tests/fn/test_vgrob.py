@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgrob -- Robust semivariogram (Cressie-Hawkins)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgrob import vario_robust
 
@@ -15,5 +14,5 @@ class TestVarioRobust:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_robust(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_robust(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Parkinson's disease monitoring via multimodal signal analysis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_parkinson_multimodal"]
@@ -36,7 +38,14 @@ def rangayyan_parkinson_multimodal(eeg, emg, gait, fs):
     n = int(eeg) if eeg.ndim == 0 else len(eeg)
     result = float(np.mean(eeg))
     se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Parkinson's disease monitoring via multimodal signal analysis"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Parkinson's disease monitoring via multimodal signal analysis",
+        }
+    )
 
 
 def cheatsheet():

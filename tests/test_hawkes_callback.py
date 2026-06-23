@@ -4,6 +4,7 @@
 A user-supplied triggering kernel, JIT-compiled to a native function
 pointer, is called inside morie's C++ Hawkes loop. Requires the built
 extension and numba (the morie[callbacks] extra)."""
+
 import math
 
 import numpy as np

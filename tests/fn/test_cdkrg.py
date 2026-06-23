@@ -1,6 +1,8 @@
 """Tests for cdkrg."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cdkrg import cdkrg
 
 
@@ -28,4 +30,5 @@ def test_cdkrg_no_data():
 
 def test_cdkrg_alias():
     from morie.fn.cdkrg import cdkrg
+
     assert cdkrg is cdkrg

@@ -1,6 +1,7 @@
 """Test time_duration (tmdur)."""
-from morie.fn.tmdur import time_duration, tmdur
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tmdur import time_duration, tmdur
 
 
 class TestTmdur:

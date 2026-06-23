@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Partial correlation via Kendall's tau controlling for third variable."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_rank_corr_partial"]
@@ -35,9 +37,23 @@ def gibbons_rank_corr_partial(x, y, z):
     y = np.asarray(y, dtype=float)
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Partial correlation via Kendall's tau controlling for third variable"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Partial correlation via Kendall's tau controlling for third variable",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Partial correlation via Kendall's tau controlling for third variable"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Partial correlation via Kendall's tau controlling for third variable",
+        }
+    )
 
 
 def cheatsheet():

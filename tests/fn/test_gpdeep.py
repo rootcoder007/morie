@@ -1,6 +1,8 @@
 """Tests for gpdeep."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpdeep import gpdeep
 
 
@@ -28,4 +30,5 @@ def test_gpdeep_no_data():
 
 def test_gpdeep_alias():
     from morie.fn.gpdeep import gpdeep
+
     assert gpdeep is gpdeep

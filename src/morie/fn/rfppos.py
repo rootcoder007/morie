@@ -1,6 +1,7 @@
 """Reactive pose filter -- covalent inhibitor docking."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["reactive_pose_filter"]
@@ -32,7 +33,9 @@ def reactive_pose_filter(pose, cys_residue):
     n = len(pose)
     result = float(np.mean(pose))
     se = float(np.std(pose, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reactive pose filter -- covalent inhibitor docking"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Reactive pose filter -- covalent inhibitor docking"}
+    )
 
 
 def cheatsheet():

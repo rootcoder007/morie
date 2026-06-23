@@ -1,6 +1,7 @@
 """Test ghbym."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghbym import ghbym
 
 

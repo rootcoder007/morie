@@ -1,6 +1,7 @@
 """Tests for vargm.empirical_variogram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vargm import empirical_variogram
 
 
@@ -11,7 +12,7 @@ def test_vargm_basic():
     lags = 10
     result = empirical_variogram(coords, z, lags)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vargm_edge():

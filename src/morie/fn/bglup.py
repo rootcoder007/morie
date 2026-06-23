@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BayesCπ: spike-and-slab variable selection for genomic prediction."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,9 +10,9 @@ from ._richresult import RichResult
 __all__ = ["bayes_cpi_genomic"]
 
 
-def bayes_cpi_genomic(x, y, n_iter: int = 300, burn: int = 100,
-                      pi_init: float = 0.1, seed: int = 0,
-                      deterministic_seed: int | None = None):
+def bayes_cpi_genomic(
+    x, y, n_iter: int = 300, burn: int = 100, pi_init: float = 0.1, seed: int = 0, deterministic_seed: int | None = None
+):
     """BayesCπ -- Habier, Fernando & Garrick (2011).
 
     Model::
@@ -50,6 +51,7 @@ def bayes_cpi_genomic(x, y, n_iter: int = 300, burn: int = 100,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("bglup", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -58,7 +60,8 @@ def bayes_cpi_genomic(x, y, n_iter: int = 300, burn: int = 100,
     if X.ndim == 1:
         X = X.reshape(-1, 1)
     n, p = X.shape
-    y_mean = float(np.mean(y)); yc = y - y_mean
+    y_mean = float(np.mean(y))
+    yc = y - y_mean
     Xc = X - X.mean(axis=0)
     var_y = float(np.var(yc, ddof=1)) if n > 1 else 1.0
     sigma_b2 = var_y / max(p, 1)
@@ -87,7 +90,7 @@ def bayes_cpi_genomic(x, y, n_iter: int = 300, burn: int = 100,
             # Bayes factor for delta=1 vs delta=0
             # Marginal likelihood ratio:
             #   log BF = 0.5 * log(1/(sigma_b2*v)) + 0.5 * v * mean_j^2
-            log_bf = 0.5 * np.log(1.0 / max(sigma_b2 * v, 1e-30)) + 0.5 * v * mean_j ** 2
+            log_bf = 0.5 * np.log(1.0 / max(sigma_b2 * v, 1e-30)) + 0.5 * v * mean_j**2
             log_pi = np.log(max(pi_in, 1e-30))
             log_1mpi = np.log(max(1 - pi_in, 1e-30))
             log_p1 = log_pi + log_bf
@@ -110,7 +113,7 @@ def bayes_cpi_genomic(x, y, n_iter: int = 300, burn: int = 100,
         sigma_b2 = max(sigma_b2, 1e-12)
         # Update sigma^2 (scaled-inv-chi^2)
         df_post_e = df_e + n
-        scale_post_e = (S_e * df_e + np.sum(r ** 2)) / df_post_e
+        scale_post_e = (S_e * df_e + np.sum(r**2)) / df_post_e
         sigma2 = scale_post_e * df_post_e / max(rng.chisquare(df_post_e), 1e-8)
         sigma2 = max(sigma2, 1e-12)
         if it >= burn:
@@ -150,8 +153,7 @@ def bayes_cpi_genomic(x, y, n_iter: int = 300, burn: int = 100,
             "p": p,
             "method": "BayesCπ Gibbs (Habier-Fernando-Kizilkaya-Garrick)",
         },
-        warnings=["Short chain (default 300 iters / 100 burn) -- for "
-                  "publication posteriors use BGLR with ≥10k iters."],
+        warnings=["Short chain (default 300 iters / 100 burn) -- for publication posteriors use BGLR with ≥10k iters."],
     )
 
 

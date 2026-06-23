@@ -68,4 +68,4 @@ kern = kde
 
 
 def cheatsheet() -> str:
-    return 'kde({}) -> Gaussian KDE.'
+    return "kde({}) -> Gaussian KDE."

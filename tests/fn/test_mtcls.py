@@ -1,6 +1,7 @@
 """Test mtcls."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtcls import mtcls
 
 

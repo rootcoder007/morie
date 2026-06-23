@@ -1,6 +1,7 @@
 """Chained imputation for missing covariates."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["chained_imputation"]
@@ -36,7 +37,9 @@ def chained_imputation(time, event, X, mi_iter):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Chained imputation for missing covariates"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Chained imputation for missing covariates"}
+    )
 
 
 def cheatsheet():

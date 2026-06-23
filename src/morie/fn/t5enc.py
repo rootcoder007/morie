@@ -1,6 +1,7 @@
 """T5 encoder-decoder."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["t5"]

@@ -43,9 +43,14 @@ def jnpnt(
 
     if d < 4:
         return {
-            "n_joinpoints": 0, "joinpoints": np.array([]),
-            "slopes": np.array([0.0]), "intercepts": np.array([np.log(d / np.sum(time) + 1e-300)]),
-            "bic": np.inf, "log_likelihood": 0.0, "n_obs": n, "n_events": int(d),
+            "n_joinpoints": 0,
+            "joinpoints": np.array([]),
+            "slopes": np.array([0.0]),
+            "intercepts": np.array([np.log(d / np.sum(time) + 1e-300)]),
+            "bic": np.inf,
+            "log_likelihood": 0.0,
+            "n_obs": n,
+            "n_events": int(d),
         }
 
     def fit_model(jp_list):
@@ -58,7 +63,7 @@ def jnpnt(
             for seg in range(k):
                 lo, hi = breaks[seg], breaks[seg + 1]
                 mask_event = (event_times > lo) & (event_times <= hi)
-                mask_risk = (time > lo)
+                mask_risk = time > lo
                 a, b = p[2 * seg], p[2 * seg + 1]
                 t_ev = event_times[mask_event]
                 if len(t_ev) > 0:
@@ -70,8 +75,7 @@ def jnpnt(
                 ll -= lam_int / (abs(b) + 1e-10)
             return -ll if np.isfinite(ll) else 1e20
 
-        result = minimize(neg_ll, params, method="Nelder-Mead",
-                          options={"maxiter": 3000})
+        result = minimize(neg_ll, params, method="Nelder-Mead", options={"maxiter": 3000})
         npar = 2 * k
         ll = -result.fun
         bic = -2 * ll + npar * np.log(n)
@@ -91,6 +95,7 @@ def jnpnt(
         else:
             candidates = np.percentile(event_times, np.linspace(10, 90, min(10, d)))
             from itertools import combinations
+
             for jp in combinations(candidates, njp):
                 ll, bic, slopes, intercepts = fit_model(list(jp))
                 if bic < best_bic:

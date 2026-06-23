@@ -1,6 +1,7 @@
 """Test ppthm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppthm import ppthm
 
 

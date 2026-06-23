@@ -1,5 +1,7 @@
 """Tests for morie.fn.kfunc — Ripley's K."""
+
 import numpy as np
+
 from morie.fn.kfunc import ripley_k
 
 
@@ -13,4 +15,4 @@ class TestRipleyK:
         pts = np.random.default_rng(42).uniform(0, 10, (30, 2))
         res = ripley_k(pts, n_distances=10)
         K = res.extra["K"]
-        assert all(K[i] <= K[i+1] + 1e-10 for i in range(len(K)-1))
+        assert all(K[i] <= K[i + 1] + 1e-10 for i in range(len(K) - 1))

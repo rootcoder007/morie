@@ -1,6 +1,8 @@
 """Tests for sysid.py - System identification."""
+
 import numpy as np
-from morie.fn.sysid import system_identify_fn, sysid
+
+from morie.fn.sysid import sysid, system_identify_fn
 
 
 def test_sysid_returns_result():

@@ -1,6 +1,7 @@
 """MAFFT FFT-NS-2 / L-INS-i alignment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mafft_alignment"]

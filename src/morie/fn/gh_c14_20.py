@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_probit_sbp"]
@@ -30,7 +32,14 @@ def ghosal_probit_sbp(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zecrs -- Carstairs deprivation index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zecrs import carstairs_index
 

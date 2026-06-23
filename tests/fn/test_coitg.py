@@ -1,6 +1,8 @@
 """Tests for morie.fn.coitg -- Engle-Granger cointegration."""
+
 import numpy as np
 import pytest
+
 from morie.fn.coitg import eg_coint
 
 
@@ -18,4 +20,5 @@ class TestEGCoint:
 
     def test_cheatsheet(self):
         from morie.fn.coitg import cheatsheet
+
         assert isinstance(cheatsheet(), str)

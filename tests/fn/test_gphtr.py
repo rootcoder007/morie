@@ -1,6 +1,7 @@
 """Tests for gphtr.gp_heteroscedastic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gphtr import gp_heteroscedastic
 
 
@@ -11,7 +12,7 @@ def test_gphtr_basic():
     X_test = np.random.default_rng(43).normal(0, 1, 30)
     result = gp_heteroscedastic(X, y, X_test)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gphtr_edge():

@@ -1,6 +1,7 @@
 """Test maklp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maklp import maklp
 
 

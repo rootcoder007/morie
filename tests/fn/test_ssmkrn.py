@@ -1,6 +1,7 @@
 """Tests for ssmkrn.s4_ssm_kernel."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ssmkrn import s4_ssm_kernel
 
 
@@ -14,7 +15,7 @@ def test_ssmkrn_basic():
     L = np.random.default_rng(42).normal(0, 1, 100)
     result = s4_ssm_kernel(y, x, A, B, C, L)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ssmkrn_edge():

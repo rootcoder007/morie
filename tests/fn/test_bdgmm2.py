@@ -1,6 +1,7 @@
 """Tests for bdgmm2.bound_gmm_alt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bdgmm2 import bound_gmm_alt
 
 
@@ -12,7 +13,7 @@ def test_bdgmm2_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_gmm_alt(y, X, moments, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bdgmm2_edge():

@@ -1,9 +1,10 @@
 """Tests for morie.fn.tpsrs — response time."""
 
-import pytest
 import numpy as np
-from morie.fn.tpsrs import tps_response_time
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.tpsrs import tps_response_time
 
 
 class TestResponseTime:

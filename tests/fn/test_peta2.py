@@ -1,8 +1,9 @@
 """Tests for morie.fn.peta2 -- Partial eta-squared."""
 
 import pytest
-from morie.fn.peta2 import partial_eta_squared
+
 from morie.fn._containers import ESRes
+from morie.fn.peta2 import partial_eta_squared
 
 
 class TestPartialEtaSquared:

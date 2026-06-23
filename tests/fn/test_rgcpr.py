@@ -1,6 +1,7 @@
 """Tests for rgcpr.rangayyan_cpr_analysis."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgcpr import rangayyan_cpr_analysis
 
 
@@ -10,7 +11,7 @@ def test_rgcpr_basic():
     fs = 100.0
     result = rangayyan_cpr_analysis(ecg, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgcpr_edge():

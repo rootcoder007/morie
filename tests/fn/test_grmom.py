@@ -1,6 +1,7 @@
 """Tests for grmom.geron_momentum_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmom import geron_momentum_update
 
 
@@ -13,7 +14,7 @@ def test_grmom_basic():
     beta = 0.8
     result = geron_momentum_update(theta, grad, v, eta, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grmom_edge():

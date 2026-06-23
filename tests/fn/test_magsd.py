@@ -1,6 +1,7 @@
 """Tests for magsd.ma_glass_delta."""
+
 import numpy as np
-import pytest
+
 from morie.fn.magsd import ma_glass_delta
 
 
@@ -13,7 +14,7 @@ def test_magsd_basic():
     n2 = np.random.default_rng(42).normal(0, 1, 100)
     result = ma_glass_delta(m1, m2, s_ctrl, n1, n2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_magsd_edge():

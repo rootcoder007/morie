@@ -1,6 +1,8 @@
 """Tests for rnmrph."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnmrph import rnmrph
 
 
@@ -28,4 +30,5 @@ def test_rnmrph_no_data():
 
 def test_rnmrph_alias():
     from morie.fn.rnmrph import rnmrph
+
     assert rnmrph is rnmrph

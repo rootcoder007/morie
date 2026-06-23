@@ -1,6 +1,7 @@
 """Tests for bicg.bayesian_information_criterion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bicg import bayesian_information_criterion
 
 
@@ -11,7 +12,7 @@ def test_bicg_basic():
     n_obs = np.random.default_rng(42).normal(0, 1, 100)
     result = bayesian_information_criterion(log_lik, n_params, n_obs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bicg_edge():

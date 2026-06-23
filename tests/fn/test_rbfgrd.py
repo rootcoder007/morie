@@ -1,6 +1,8 @@
 """Tests for rbfgrd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rbfgrd import rbfgrd
 
 
@@ -28,4 +30,5 @@ def test_rbfgrd_no_data():
 
 def test_rbfgrd_alias():
     from morie.fn.rbfgrd import rbfgrd
+
     assert rbfgrd is rbfgrd

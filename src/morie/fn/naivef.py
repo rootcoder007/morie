@@ -1,6 +1,7 @@
 """Naive ŷ_{t+h}=y_t."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["naive_forecast"]

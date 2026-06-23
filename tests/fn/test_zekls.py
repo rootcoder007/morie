@@ -1,7 +1,6 @@
 """Tests for morie.fn.zekls -- Circular scan statistic"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zekls import scan_circular
 
@@ -13,5 +12,5 @@ class TestScanCircular:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = scan_circular(np.array([1,2,3,4,5]))
+        result = scan_circular(np.array([1, 2, 3, 4, 5]))
         assert hasattr(result, "statistic")

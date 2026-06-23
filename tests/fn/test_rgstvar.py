@@ -1,6 +1,7 @@
 """Tests for rgstvar.rangayyan_tvlsi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgstvar import rangayyan_tvlsi
 
 
@@ -12,7 +13,7 @@ def test_rgstvar_basic():
     window = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_tvlsi(x, y, fs, window)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgstvar_edge():

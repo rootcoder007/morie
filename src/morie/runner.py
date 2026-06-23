@@ -230,7 +230,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run MORIE environment diagnostics",
     )
     doctor_cmd.add_argument(
-        "--fix", action="store_true",
+        "--fix",
+        action="store_true",
         help="Attempt to remediate failed checks (install missing deps, etc.)",
     )
 
@@ -240,7 +241,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Check PyPI for a newer morie release and optionally install it",
     )
     update_cmd.add_argument(
-        "-y", "--yes", action="store_true",
+        "-y",
+        "--yes",
+        action="store_true",
         help="Install the update without prompting",
     )
 
@@ -429,6 +432,7 @@ def build_parser() -> argparse.ArgumentParser:
     # ── verify-pollution (W6 pollution-health CLI) ─────────────────────
     try:
         from morie.verify_pollution import register_subparser as _vp_register
+
         _vp_register(subparsers)
     except ImportError:
         pass
@@ -436,6 +440,7 @@ def build_parser() -> argparse.ArgumentParser:
     # ── verify-earth-engine (EE auth smoke check) ──────────────────────
     try:
         from morie.verify_earth_engine import register_subparser as _vee_register
+
         _vee_register(subparsers)
     except ImportError:
         pass
@@ -480,10 +485,12 @@ def build_parser() -> argparse.ArgumentParser:
         "generate-template",
         help="Write a methods+results scaffold for your first paper",
     )
-    template_cmd.add_argument("--module", default="power-design",
-                              help="Module name to scaffold methods for (default: power-design)")
-    template_cmd.add_argument("--out", type=Path, default=Path("first-paper.md"),
-                              help="Output markdown path (default: first-paper.md)")
+    template_cmd.add_argument(
+        "--module", default="power-design", help="Module name to scaffold methods for (default: power-design)"
+    )
+    template_cmd.add_argument(
+        "--out", type=Path, default=Path("first-paper.md"), help="Output markdown path (default: first-paper.md)"
+    )
 
     # ── pull: one-line CLI shortcuts to named morie.datasets loaders ───
     # This is the non-coder entry point.  Users never have to write
@@ -497,21 +504,21 @@ def build_parser() -> argparse.ArgumentParser:
     pull_cmd.add_argument(
         "dataset",
         choices=[
-            "tps-major", "tps-shootings", "tps-homicide",
+            "tps-major",
+            "tps-shootings",
+            "tps-homicide",
             "tps-layers",
-            "tps-major-toy",     # bundled synthetic 500-row frame
-            "cpads",             # real PUMF if present, else synth
-            "otis-a01-toy",      # bundled synthetic 800-row frame
-            "siu-toy",           # bundled synthetic director's report text
+            "tps-major-toy",  # bundled synthetic 500-row frame
+            "cpads",  # real PUMF if present, else synth
+            "otis-a01-toy",  # bundled synthetic 800-row frame
+            "siu-toy",  # bundled synthetic director's report text
             "siu-index",
         ],
         help="Named dataset to pull",
     )
     pull_cmd.add_argument("--year", type=int, help="Filter to a single year (TPS only)")
-    pull_cmd.add_argument("--max", type=int, dest="max_features",
-                          help="Cap rows fetched (TPS only)")
-    pull_cmd.add_argument("--out", type=Path,
-                          help="Output CSV path (stdout if omitted)")
+    pull_cmd.add_argument("--max", type=int, dest="max_features", help="Cap rows fetched (TPS only)")
+    pull_cmd.add_argument("--out", type=Path, help="Output CSV path (stdout if omitted)")
 
     return parser
 
@@ -527,9 +534,11 @@ def _load_dotenv_if_present() -> None:
     MORIE_SKIP_DOTENV=1 so this loader becomes a no-op -- otherwise
     a .env with valid keys would defeat the purge."""
     import os
+
     if os.environ.get("MORIE_SKIP_DOTENV") == "1":
         return
     from pathlib import Path
+
     candidates = [
         Path.cwd() / ".env",
         Path(__file__).resolve().parents[5] / ".env",  # dev/sphinx/project/.env
@@ -568,8 +577,6 @@ def _friendly_error(exc: BaseException) -> str | None:
     Centralised here so fresh users never see a bare Python stack on the
     most-hit failure modes.
     """
-    import errno
-    import os
 
     msg = str(exc)
     cls = type(exc).__name__
@@ -775,6 +782,7 @@ def _main_impl() -> int:
 
     if args.command == "serve":
         from .perseus_relay import serve
+
         serve(port=args.port, token=args.token, bind=args.bind)
         return 0
 
@@ -867,23 +875,28 @@ def _main_impl() -> int:
 
     if args.command == "verify-pollution":
         from .verify_pollution import handle_verify_pollution
+
         return handle_verify_pollution(args)
 
     if args.command == "verify-earth-engine":
         from .verify_earth_engine import handle_verify_earth_engine
+
         return handle_verify_earth_engine(args)
 
     if args.command == "tutorial":
         from .tutorial import run as _run_tutorial
+
         return _run_tutorial()
 
     if args.command == "cheatsheet":
         from .explain import print_cheatsheet
+
         print_cheatsheet()
         return 0
 
     if args.command == "explain":
         from .explain import describe
+
         print(describe(args.filename))
         return 0
 
@@ -892,12 +905,14 @@ def _main_impl() -> int:
         # source repo at templates/first-paper.md, mirrored into the
         # wheel as morie/data/first-paper.md).
         from importlib.resources import as_file, files
+
         try:
             with as_file(files("morie").joinpath("data/first-paper.md")) as src:
                 content = src.read_text(encoding="utf-8")
         except FileNotFoundError:
             # Fallback: try the project-tree path (dev install)
             from pathlib import Path as _P
+
             src = _P(__file__).resolve().parents[2] / "templates" / "first-paper.md"
             content = src.read_text(encoding="utf-8")
         # Light placeholder substitution
@@ -913,12 +928,12 @@ def _main_impl() -> int:
         # Resolves a name like "tps-major" into the matching morie.datasets
         # function and writes its DataFrame to disk (or stdout).
         import morie.datasets as md
+
         try:
             if args.dataset == "tps-major":
                 df = md.tps_major_crime(year=args.year, max_features=args.max_features)
             elif args.dataset == "tps-major-toy":
-                df = md.tps_major_crime(year=args.year, max_features=args.max_features,
-                                        offline=True)
+                df = md.tps_major_crime(year=args.year, max_features=args.max_features, offline=True)
             elif args.dataset == "tps-shootings":
                 df = md.tps_shootings(year=args.year, max_features=args.max_features)
             elif args.dataset == "tps-homicide":
@@ -933,8 +948,8 @@ def _main_impl() -> int:
                 # Single-row "DataFrame" carrying the synthetic report text
                 # for parity with the other pull verbs.
                 import pandas as _pd
-                df = _pd.DataFrame([{"report_id": "24-OFD-001",
-                                     "text": md.siu_report_text(offline=True)}])
+
+                df = _pd.DataFrame([{"report_id": "24-OFD-001", "text": md.siu_report_text(offline=True)}])
             elif args.dataset == "siu-index":
                 df = md.siu_director_reports()
             else:
@@ -1441,7 +1456,9 @@ def _handle_percy(args: argparse.Namespace) -> int:
         host_part = pi.split("@")[-1] if "@" in pi else pi
         base_url = f"http://{host_part}:11434"
 
-    agent = create_agent(model=model, base_url=base_url, provider=provider, cloud_url=cloud_url, cloud_token=cloud_token)
+    agent = create_agent(
+        model=model, base_url=base_url, provider=provider, cloud_url=cloud_url, cloud_token=cloud_token
+    )
     model_name = getattr(agent, "_model", "freeapi")
     print(f"Perseus [{model_name}] ready.\n")
 

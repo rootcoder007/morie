@@ -1,7 +1,10 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner2u6.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered_6."""
+
 import numpy as np
-import pytest
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner2u6 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered_6
+
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner2u6 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered_6,
+)
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2u6_basic():
@@ -9,7 +12,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner2u6_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_unnumbered_6(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner2u6_edge():

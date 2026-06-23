@@ -1,6 +1,7 @@
 """Test ghtrd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghtrd import ghtrd
 
 

@@ -1,6 +1,8 @@
 """Tests for morie.fn.stldc -- STL decomposition."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stldc import stl_decompose
 
 
@@ -19,4 +21,5 @@ class TestSTL:
 
     def test_cheatsheet(self):
         from morie.fn.stldc import cheatsheet
+
         assert isinstance(cheatsheet(), str)

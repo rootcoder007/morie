@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cardiac electrophysiology tissue/organ-level model."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_cardiac_elecphys"]
@@ -38,7 +40,9 @@ def rangayyan_cardiac_elecphys(mesh, sigma_i, sigma_e, C_m, I_ion):
     n = int(mesh) if mesh.ndim == 0 else len(mesh)
     result = float(np.mean(mesh))
     se = float(np.std(mesh, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cardiac electrophysiology tissue/organ-level model"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cardiac electrophysiology tissue/organ-level model"}
+    )
 
 
 def cheatsheet():

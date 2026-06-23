@@ -1,5 +1,7 @@
 """Tests for morie.fn.prest -- PRE statistic."""
+
 import numpy as np
+
 from morie.fn.prest import pre_statistic, prest
 
 

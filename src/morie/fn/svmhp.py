@@ -1,5 +1,7 @@
 """SVM maximum margin hyperplane (hard margin)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["svm_hyperplane"]
@@ -31,7 +33,9 @@ def svm_hyperplane(X, y):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "SVM maximum margin hyperplane (hard margin)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "SVM maximum margin hyperplane (hard margin)"}
+    )
 
 
 def cheatsheet():

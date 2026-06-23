@@ -21,15 +21,15 @@ from ._containers import DescriptiveResult
 
 _DBP_MCL: dict[str, dict[str, tuple[float, str]]] = {
     "us": {
-        "tthm":      (80.0, "µg/L"),
-        "haa5":      (60.0, "µg/L"),
-        "bromate":   (10.0, "µg/L"),
-        "chlorite":  (1000.0, "µg/L"),
+        "tthm": (80.0, "µg/L"),
+        "haa5": (60.0, "µg/L"),
+        "bromate": (10.0, "µg/L"),
+        "chlorite": (1000.0, "µg/L"),
     },
     "ca": {
-        "tthm":     (100.0, "µg/L"),
-        "haa5":     (80.0, "µg/L"),
-        "bromate":  (10.0, "µg/L"),
+        "tthm": (100.0, "µg/L"),
+        "haa5": (80.0, "µg/L"),
+        "bromate": (10.0, "µg/L"),
     },
 }
 
@@ -102,9 +102,7 @@ def dbp_compliance(
 
     for k in conc:
         if k not in mcl_table:
-            raise KeyError(
-                f"Unknown DBP {k!r} for {c}. Recognized: {list(mcl_table)}"
-            )
+            raise KeyError(f"Unknown DBP {k!r} for {c}. Recognized: {list(mcl_table)}")
 
     ratios: dict[str, float] = {}
     per_compliance: dict[str, bool] = {}
@@ -118,9 +116,7 @@ def dbp_compliance(
         ok = ratio <= 1.0
         per_compliance[species + "_compliance"] = ok
         if not ok:
-            violations.append(
-                f"{species.upper()} {v:.1f} {unit} > MCL {mcl:.1f} {unit}"
-            )
+            violations.append(f"{species.upper()} {v:.1f} {unit} > MCL {mcl:.1f} {unit}")
 
     max_ratio = max(ratios.values()) if ratios else 0.0
     compliant_overall = max_ratio <= 1.0
@@ -137,8 +133,7 @@ def dbp_compliance(
             "country": c,
             "mcls": {k: v[0] for k, v in mcl_table.items()},
             "units": {k: v[1] for k, v in mcl_table.items()},
-            "source": ("US EPA Stage 2 DBPR 2006" if c.startswith("u")
-                        else "Health Canada 2020 TTHMs/HAA5"),
+            "source": ("US EPA Stage 2 DBPR 2006" if c.startswith("u") else "Health Canada 2020 TTHMs/HAA5"),
         },
     )
 

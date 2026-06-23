@@ -1,6 +1,7 @@
 """Tests for spmidw.schabenberger_idw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spmidw import schabenberger_idw
 
 
@@ -12,7 +13,7 @@ def test_spmidw_basic():
     power = np.random.default_rng(42).normal(0, 1, 100)
     result = schabenberger_idw(coords, z, target, power)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spmidw_edge():

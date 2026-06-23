@@ -1,6 +1,7 @@
 """Test opgwo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opgwo import opgwo
 
 

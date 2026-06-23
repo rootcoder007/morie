@@ -1,5 +1,7 @@
 """Tests for morie.fn.polar."""
+
 import numpy as np
+
 from morie.fn.polar import polar_decompose
 
 
@@ -13,6 +15,7 @@ def test_polar_smoke():
 
 def test_cheatsheet():
     from morie.fn.polar import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

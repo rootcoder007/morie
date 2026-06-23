@@ -1,6 +1,7 @@
 """Test dkstk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dkstk import dkstk
 
 

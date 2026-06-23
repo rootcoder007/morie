@@ -1,5 +1,7 @@
 """Tests for rssgm.py - Reassigned spectrogram."""
+
 import numpy as np
+
 from morie.fn.rssgm import reassigned_spectrogram, rssgm
 
 

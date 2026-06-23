@@ -1,6 +1,7 @@
 """PSIS-LOO importance weight smoothing."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["pareto_smoothed_importance_sampling"]

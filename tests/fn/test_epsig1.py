@@ -1,6 +1,7 @@
 """Tests for epsig1.em_algorithm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.epsig1 import em_algorithm
 
 
@@ -12,7 +13,7 @@ def test_epsig1_basic():
     steps = np.random.default_rng(42).normal(0, 1, 100)
     result = em_algorithm(log_lik, Q, x0, steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_epsig1_edge():

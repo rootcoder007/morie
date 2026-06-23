@@ -1,6 +1,7 @@
 """GAN trained to detect anomalies."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["adversarial_anomaly"]

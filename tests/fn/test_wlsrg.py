@@ -12,7 +12,7 @@ def test_wls_recovers_coefficients():
     X = rng.standard_normal((n, 1))
     sigma = 0.5 + 2.0 * np.abs(X[:, 0])
     y = 1.0 + 3.0 * X[:, 0] + rng.standard_normal(n) * sigma
-    w = 1.0 / (sigma ** 2)
+    w = 1.0 / (sigma**2)
     res = wls_regression(y, X, w)
     assert abs(res.coefficients["(Intercept)"] - 1.0) < 0.5
     assert abs(res.coefficients["x0"] - 3.0) < 0.5
@@ -25,6 +25,7 @@ def test_wls_equal_weights_matches_ols():
     y = 2.0 + X[:, 0] + rng.standard_normal(n) * 0.5
     w = np.ones(n)
     from morie.fn.olsrg import ols_regression
+
     ols = ols_regression(y, X)
     wls = wls_regression(y, X, w)
     np.testing.assert_allclose(

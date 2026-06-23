@@ -1,17 +1,15 @@
 """Tests for morie.fn.odm_t — OTIS demo trend."""
 
-import pytest
-import numpy as np
 import pandas as pd
-from morie.fn.odm_t import otis_demo_trend
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.odm_t import otis_demo_trend
 
 
 class TestOtisDemoTrend:
-
     def test_returns_descriptive(self):
-        df = pd.DataFrame({"group": ["A", "B", "A", "B", "A", "B"],
-                           "period": [1, 1, 1, 2, 2, 2]})
+        df = pd.DataFrame({"group": ["A", "B", "A", "B", "A", "B"], "period": [1, 1, 1, 2, 2, 2]})
         result = otis_demo_trend(df)
         assert isinstance(result, DescriptiveResult)
 

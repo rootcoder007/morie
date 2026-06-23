@@ -1,6 +1,7 @@
 """Tests for morie.fn.bic2b -- BIC-based Bayes factor."""
 
 import math
+
 from morie.fn.bic2b import bayes_factor_bic
 
 

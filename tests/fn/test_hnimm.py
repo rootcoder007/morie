@@ -1,6 +1,7 @@
 """Tests for morie.fn.hnimm -- herd immunity threshold."""
 
 import pytest
+
 from morie.fn.hnimm import herd_immunity_threshold
 
 

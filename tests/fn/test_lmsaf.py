@@ -1,9 +1,9 @@
 """Test lms_adaptive_filter (lmsaf)."""
-import numpy as np
-import pytest
 
-from morie.fn.lmsaf import lms_adaptive_filter, lmsaf
+import numpy as np
+
 from morie.fn._containers import SignalResult
+from morie.fn.lmsaf import lms_adaptive_filter, lmsaf
 
 
 class TestLmsAdaptiveFilter:

@@ -1,6 +1,7 @@
 """Tests for pcasnps.pca_snps."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pcasnps import pca_snps
 
 
@@ -10,7 +11,7 @@ def test_pcasnps_basic():
     n_components = 3
     result = pca_snps(genotypes, n_components)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pcasnps_edge():

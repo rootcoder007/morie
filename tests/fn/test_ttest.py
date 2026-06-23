@@ -1,7 +1,7 @@
 """Tests for morie.fn.ttest -- t-test alias."""
 
-from morie.fn.ttest import ttest, t_test
 from morie.fn.t2smp import two_sample_t_test
+from morie.fn.ttest import t_test, ttest
 
 
 class TestTtest:

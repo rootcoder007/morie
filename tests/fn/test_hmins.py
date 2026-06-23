@@ -1,6 +1,7 @@
 """Tests for hmins.geron_instance_based."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmins import geron_instance_based
 
 
@@ -12,7 +13,7 @@ def test_hmins_basic():
     k = 5
     result = geron_instance_based(X_train, y_train, x_query, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmins_edge():

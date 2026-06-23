@@ -1,6 +1,7 @@
 """Tests for hmipca.geron_incremental_pca."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmipca import geron_incremental_pca
 
 
@@ -11,7 +12,7 @@ def test_hmipca_basic():
     batch_size = 100
     result = geron_incremental_pca(X_iter, n_components, batch_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmipca_edge():

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["awkde"]
@@ -76,7 +77,7 @@ def awkde(
         x_eval = np.asarray(x_eval, dtype=float).ravel()
 
     u_pilot = (data[:, None] - data[None, :]) / bw
-    pilot_at_data = np.exp(-0.5 * u_pilot ** 2).mean(axis=1) / (bw * np.sqrt(2 * np.pi))
+    pilot_at_data = np.exp(-0.5 * u_pilot**2).mean(axis=1) / (bw * np.sqrt(2 * np.pi))
     pilot_at_data = np.maximum(pilot_at_data, 1e-300)
 
     log_g = np.mean(np.log(pilot_at_data))
@@ -88,7 +89,7 @@ def awkde(
     for i in range(n):
         hi = local_bw[i]
         u = (x_eval - data[i]) / hi
-        density += np.exp(-0.5 * u ** 2) / (hi * np.sqrt(2 * np.pi))
+        density += np.exp(-0.5 * u**2) / (hi * np.sqrt(2 * np.pi))
     density /= n
 
     return RichResult(payload={"x_eval": x_eval, "density": density, "bw": bw, "alpha": alpha})

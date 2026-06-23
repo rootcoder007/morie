@@ -1,6 +1,7 @@
 """Tests for km150.kamath_ch9_flamingo_dataset_mix."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km150 import kamath_ch9_flamingo_dataset_mix
 
 
@@ -12,7 +13,7 @@ def test_km150_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = kamath_ch9_flamingo_dataset_mix(D_m, lambda_m, x, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km150_edge():

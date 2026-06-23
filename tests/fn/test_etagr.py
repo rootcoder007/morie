@@ -1,6 +1,7 @@
 """Tests for morie.fn.etagr -- Etiologic fraction."""
 
 import pytest
+
 from morie.fn.etagr import etiologic_fraction
 
 

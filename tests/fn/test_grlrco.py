@@ -1,6 +1,7 @@
 """Tests for grlrco.geron_lr_cosine_annealing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grlrco import geron_lr_cosine_annealing
 
 
@@ -12,7 +13,7 @@ def test_grlrco_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = geron_lr_cosine_annealing(eta_min, eta_max, t, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grlrco_edge():

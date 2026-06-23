@@ -1,8 +1,9 @@
 """Tests for morie.fn.paropt -- multi-objective Pareto optimization."""
 
 import numpy as np
-from morie.fn.paropt import pareto_optimize, paropt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.paropt import pareto_optimize, paropt
 
 
 class TestParopt:

@@ -60,4 +60,4 @@ short = batch_norm
 
 
 def cheatsheet() -> str:
-    return 'batch_norm({}) -> Batch normalization.'
+    return "batch_norm({}) -> Batch normalization."

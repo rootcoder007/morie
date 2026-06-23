@@ -1,6 +1,7 @@
 """Tests for rlear.r_learner."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rlear import r_learner
 
 
@@ -14,7 +15,7 @@ def test_rlear_basic():
     tau_model = np.random.default_rng(42).normal(0, 1, 100)
     result = r_learner(Y, T, X, m_model, e_model, tau_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rlear_edge():

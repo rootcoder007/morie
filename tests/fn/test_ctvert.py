@@ -1,6 +1,8 @@
 """Tests for ctvert."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctvert import ctvert
 
 
@@ -28,4 +30,5 @@ def test_ctvert_no_data():
 
 def test_ctvert_alias():
     from morie.fn.ctvert import ctvert
+
     assert ctvert is ctvert

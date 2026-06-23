@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['cwtsc']
+__all__ = ["cwtsc"]
 
 _QUOTE = "Knowing others is intelligence; knowing yourself is true wisdom. -- Lao Tzu"
 
@@ -63,7 +63,7 @@ def cwtsc(
     for i, s in enumerate(scales):
         half = int(min(5 * s * fs, n // 2))
         tau = np.arange(-half, half + 1) / fs
-        psi = (np.pi ** -0.25) * np.exp(1j * omega0 * tau / s) * np.exp(-tau ** 2 / (2 * s ** 2))
+        psi = (np.pi**-0.25) * np.exp(1j * omega0 * tau / s) * np.exp(-(tau**2) / (2 * s**2))
         psi /= np.sqrt(s)
         coeffs[i] = np.convolve(x, psi, mode="same")[:n]
 

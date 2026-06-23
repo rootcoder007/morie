@@ -1,5 +1,7 @@
 """Tests for morie.fn.bbss — Blackbox sum of squares."""
+
 import numpy as np
+
 from morie.fn.bbss import bbss
 
 
@@ -13,6 +15,7 @@ def test_bbss_smoke():
 
 def test_cheatsheet():
     from morie.fn.bbss import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

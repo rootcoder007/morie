@@ -1,6 +1,8 @@
 """Tests for sghist."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sghist import sghist
 
 
@@ -28,4 +30,5 @@ def test_sghist_no_data():
 
 def test_sghist_alias():
     from morie.fn.sghist import sghist
+
     assert sghist is sghist

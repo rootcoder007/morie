@@ -1,9 +1,10 @@
 """Test coherence_spectrum (cohsp)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.cohsp import coherence_spectrum, cohsp
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cohsp import coherence_spectrum, cohsp
 
 
 class TestCoherenceSpectrum:

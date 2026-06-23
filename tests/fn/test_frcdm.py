@@ -1,6 +1,8 @@
 """Tests for fractal dimension."""
+
 import numpy as np
 import pytest
+
 from morie.fn.frcdm import fractal_dimension, frcdm
 
 

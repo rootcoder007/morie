@@ -1,5 +1,7 @@
 """Tests for prflt.py - Polyphase filter."""
+
 import numpy as np
+
 from morie.fn.prflt import polyphase_filter, prflt
 
 

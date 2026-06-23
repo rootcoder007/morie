@@ -69,4 +69,4 @@ prek = precision_at_k
 
 
 def cheatsheet() -> str:
-    return 'precision_at_k({}) -> Precision at K metric.'
+    return "precision_at_k({}) -> Precision at K metric."

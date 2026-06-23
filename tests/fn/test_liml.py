@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.liml import liml_estimator, liml
+
 from morie.fn._containers import RegressionResult
+from morie.fn.liml import liml, liml_estimator
 
 
 class TestLIML:

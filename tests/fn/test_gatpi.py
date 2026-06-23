@@ -1,6 +1,7 @@
 """Test gatpi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gatpi import gatpi
 
 

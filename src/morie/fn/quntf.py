@@ -11,6 +11,7 @@ formula
 
 with ``f`` estimated by a Gaussian kernel (Silverman's rule bandwidth).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -37,8 +38,7 @@ def quantile_function(x, taus=None):
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 2:
-        return RichResult(payload={"estimate": float("nan"), "n": int(n),
-                                   "method": "Quantile fn (n<2)"})
+        return RichResult(payload={"estimate": float("nan"), "n": int(n), "method": "Quantile fn (n<2)"})
     if taus is None:
         taus = np.array([0.10, 0.25, 0.50, 0.75, 0.90])
     taus = np.asarray(taus, dtype=float)
@@ -50,17 +50,19 @@ def quantile_function(x, taus=None):
     if h <= 0:
         h = sd if sd > 0 else 1.0
     # kernel density estimate at each quantile
-    fhat = np.array([
-        np.mean(np.exp(-0.5 * ((x - qi) / h) ** 2) / (h * np.sqrt(2 * np.pi)))
-        for qi in q
-    ])
-    se = np.sqrt(taus * (1 - taus) / (n * fhat ** 2))
-    return RichResult(payload={
-        "taus": taus, "quantiles": q, "se": se,
-        "estimate": float(q[len(q) // 2]),
-        "bandwidth": float(h), "n": int(n),
-        "method": "Empirical quantile function (Parzen 1979)",
-    })
+    fhat = np.array([np.mean(np.exp(-0.5 * ((x - qi) / h) ** 2) / (h * np.sqrt(2 * np.pi))) for qi in q])
+    se = np.sqrt(taus * (1 - taus) / (n * fhat**2))
+    return RichResult(
+        payload={
+            "taus": taus,
+            "quantiles": q,
+            "se": se,
+            "estimate": float(q[len(q) // 2]),
+            "bandwidth": float(h),
+            "n": int(n),
+            "method": "Empirical quantile function (Parzen 1979)",
+        }
+    )
 
 
 # CANONICAL TEST

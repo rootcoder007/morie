@@ -1,6 +1,7 @@
 """Tests for kmrrf.kamath_reciprocal_rank_fusion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmrrf import kamath_reciprocal_rank_fusion
 
 
@@ -10,7 +11,7 @@ def test_kmrrf_basic():
     k = 5
     result = kamath_reciprocal_rank_fusion(rankings, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmrrf_edge():

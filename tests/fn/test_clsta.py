@@ -1,6 +1,7 @@
 """Test clsta."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clsta import clsta
 
 

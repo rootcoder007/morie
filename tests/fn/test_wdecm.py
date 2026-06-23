@@ -1,7 +1,9 @@
 """Test weight_decay."""
+
 import numpy as np
-from morie.fn.wdecm import weight_decay, wdecm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.wdecm import wdecm, weight_decay
 
 
 class TestWeightDecay:

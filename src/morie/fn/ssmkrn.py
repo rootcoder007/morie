@@ -1,6 +1,7 @@
 """S4 structured state-space kernel."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["s4_ssm_kernel"]

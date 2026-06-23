@@ -1,6 +1,7 @@
 """Tests for ksr027.kosorok_ch2_law_large_numbers_pointwise."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr027 import kosorok_ch2_law_large_numbers_pointwise
 
 
@@ -11,7 +12,7 @@ def test_ksr027_basic():
     t = np.linspace(0, 10, 100)
     result = kosorok_ch2_law_large_numbers_pointwise(F_n, F, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr027_edge():

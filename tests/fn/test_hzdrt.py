@@ -1,6 +1,7 @@
 """Tests for morie.fn.hzdrt -- Hazard rate from life table."""
 
 import pytest
+
 from morie.fn.hzdrt import hazard_rate
 
 

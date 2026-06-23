@@ -17,24 +17,27 @@ def synthetic_df():
     """Small synthetic dataset for testing."""
     np.random.seed(42)
     n = 200
-    return pd.DataFrame({
-        "outcome": np.random.randn(n) + np.random.choice([0, 1], n) * 0.5,
-        "treatment": np.random.choice([0, 1], n),
-        "post": np.random.choice([0, 1], n),
-        "running": np.random.randn(n),
-        "time": np.tile(np.arange(20), 10),
-        "unit": np.repeat(np.arange(10), 20),
-        "x1": np.random.randn(n),
-        "x2": np.random.randn(n),
-        "x3": np.random.randn(n),
-        "event": np.random.choice([0, 1], n, p=[0.6, 0.4]),
-        "weight": np.random.uniform(0.5, 2.0, n),
-    })
+    return pd.DataFrame(
+        {
+            "outcome": np.random.randn(n) + np.random.choice([0, 1], n) * 0.5,
+            "treatment": np.random.choice([0, 1], n),
+            "post": np.random.choice([0, 1], n),
+            "running": np.random.randn(n),
+            "time": np.tile(np.arange(20), 10),
+            "unit": np.repeat(np.arange(10), 20),
+            "x1": np.random.randn(n),
+            "x2": np.random.randn(n),
+            "x3": np.random.randn(n),
+            "event": np.random.choice([0, 1], n, p=[0.6, 0.4]),
+            "weight": np.random.uniform(0.5, 2.0, n),
+        }
+    )
 
 
 class TestDiD:
     def test_did_2x2_returns_result(self, synthetic_df):
         from morie.did import did_2x2
+
         result = did_2x2(synthetic_df, "outcome", "treatment", "post")
         # Check actual attributes from DiDResult dataclass
         assert hasattr(result, "estimate"), "DiDResult must have estimate"
@@ -46,6 +49,7 @@ class TestDiD:
 class TestRDD:
     def test_sharp_rdd_returns_result(self, synthetic_df):
         from morie.rdd import sharp_rdd
+
         result = sharp_rdd(synthetic_df, "outcome", "running", cutoff=0.0)
         assert hasattr(result, "estimate"), "RDDResult must have estimate"
         assert isinstance(result.estimate, float)
@@ -54,20 +58,22 @@ class TestRDD:
 class TestSurvival:
     def test_kaplan_meier_returns_result(self, synthetic_df):
         from morie.survival import kaplan_meier
+
         time_vals = np.abs(synthetic_df["running"].values) + 0.1
         event_vals = synthetic_df["event"].values
         result = kaplan_meier(time_vals, event_vals)
         # Check it has survival data
         assert result is not None
-        assert hasattr(result, "survival_times") or hasattr(result, "times") or hasattr(result, "survival_probabilities")
+        assert (
+            hasattr(result, "survival_times") or hasattr(result, "times") or hasattr(result, "survival_probabilities")
+        )
 
 
 class TestMatching:
     def test_nearest_neighbor_matching_runs(self, synthetic_df):
         from morie.matching import match_nearest_neighbor
-        result = match_nearest_neighbor(
-            synthetic_df, "treatment", ["x1", "x2"]
-        )
+
+        result = match_nearest_neighbor(synthetic_df, "treatment", ["x1", "x2"])
         assert result is not None
         assert hasattr(result, "n_matched") or hasattr(result, "matched_data")
 
@@ -75,6 +81,7 @@ class TestMatching:
 class TestMissing:
     def test_littles_mcar_returns_result(self, synthetic_df):
         from morie.missing import littles_mcar_test
+
         df = synthetic_df[["x1", "x2", "x3"]].copy()
         # Introduce some missing values
         mask = np.random.random(len(df)) < 0.1
@@ -88,6 +95,7 @@ class TestMissing:
 class TestBootstrapMethods:
     def test_bootstrap_ci_bounds(self):
         from morie.bootstrap_methods import bootstrap
+
         np.random.seed(42)
         data = np.random.randn(100)
         result = bootstrap(data, np.mean, n_boot=500, ci_method="percentile")
@@ -100,6 +108,7 @@ class TestBootstrapMethods:
 class TestMultipleTesting:
     def test_bh_correction_output(self):
         from morie.multiple_testing import benjamini_hochberg
+
         p_values = np.array([0.01, 0.04, 0.03, 0.20, 0.50])
         result = benjamini_hochberg(p_values)
         assert hasattr(result, "adjusted")
@@ -113,6 +122,7 @@ class TestMultipleTesting:
 class TestEffectSizes:
     def test_cohens_d_returns_estimate(self):
         from morie.effect_sizes import cohens_d
+
         np.random.seed(42)
         x = np.random.randn(50)
         y = np.random.randn(50) + 0.5
@@ -122,6 +132,7 @@ class TestEffectSizes:
 
     def test_hedges_g_returns_estimate(self):
         from morie.effect_sizes import hedges_g
+
         np.random.seed(42)
         x = np.random.randn(50)
         y = np.random.randn(50) + 0.5
@@ -132,6 +143,7 @@ class TestEffectSizes:
 class TestSensitivity:
     def test_e_value_positive(self):
         from morie.sensitivity import e_value_rr
+
         result = e_value_rr(2.5, ci_lower=1.1)
         assert hasattr(result, "e_value_point")
         assert result.e_value_point > 1.0, "E-value must exceed 1 for RR > 1"
@@ -141,6 +153,7 @@ class TestSensitivity:
 class TestDiagnostics:
     def test_collinearity_diagnostics_runs(self, synthetic_df):
         from morie.diagnostics import collinearity_diagnostics
+
         X = synthetic_df[["x1", "x2", "x3"]].values
         result = collinearity_diagnostics(X, column_names=["x1", "x2", "x3"])
         assert hasattr(result, "vif")
@@ -150,6 +163,7 @@ class TestDiagnostics:
 class TestStatistics:
     def test_one_sample_ttest_detects_shift(self):
         from morie.statistics import one_sample_ttest
+
         np.random.seed(42)
         data = np.random.randn(50) + 1.0  # shifted mean
         result = one_sample_ttest(data, mu0=0)
@@ -159,6 +173,7 @@ class TestStatistics:
 
     def test_pearson_detects_correlation(self):
         from morie.statistics import pearson_correlation
+
         np.random.seed(42)
         x = np.random.randn(100)
         y = x + np.random.randn(100) * 0.5  # strong positive correlation

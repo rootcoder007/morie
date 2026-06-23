@@ -1,6 +1,7 @@
 """Tests for morie.fn.cdmrt -- cause-specific mortality."""
 
 import pytest
+
 from morie.fn.cdmrt import cause_specific_mortality
 
 

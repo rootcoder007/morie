@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Structural causal model (SCM) definition: (U, V, F) triple."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["scm_definition"]
@@ -34,7 +36,14 @@ def scm_definition(exogenous, endogenous, equations):
     n = int(exogenous) if exogenous.ndim == 0 else len(exogenous)
     result = float(np.mean(exogenous))
     se = float(np.std(exogenous, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Structural causal model (SCM) definition: (U, V, F) triple"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Structural causal model (SCM) definition: (U, V, F) triple",
+        }
+    )
 
 
 def cheatsheet():

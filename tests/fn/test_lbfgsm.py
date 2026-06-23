@@ -1,6 +1,7 @@
 """Tests for lbfgsm.lbfgs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.lbfgsm import lbfgs
 
 
@@ -13,7 +14,7 @@ def test_lbfgsm_basic():
     steps = np.random.default_rng(42).normal(0, 1, 100)
     result = lbfgs(f, grad_f, x0, m, steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_lbfgsm_edge():

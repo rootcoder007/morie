@@ -1,6 +1,7 @@
 """Tests for ksr049.kosorok_ch2_z_master_linearization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr049 import kosorok_ch2_z_master_linearization
 
 
@@ -14,7 +15,7 @@ def test_ksr049_basic():
     n = 100
     result = kosorok_ch2_z_master_linearization(Psi_dot, Psi_n, Psi, theta_n, theta_0, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr049_edge():

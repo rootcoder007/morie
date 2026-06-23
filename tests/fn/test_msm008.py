@@ -1,6 +1,7 @@
 """Tests for msm008.mvsml_overfitting_resampling_eq_4_10."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm008 import mvsml_overfitting_resampling_eq_4_10
 
 
@@ -14,7 +15,7 @@ def test_msm008_basic():
     of = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_overfitting_resampling_eq_4_10(that, the, speci, city, proportion, of)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm008_edge():

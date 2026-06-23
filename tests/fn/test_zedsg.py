@@ -1,7 +1,6 @@
 """Tests for morie.fn.zedsg -- Poisson-Gamma disease mapping"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zedsg import disease_map_gamma
 

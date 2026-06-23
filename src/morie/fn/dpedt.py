@@ -1,6 +1,7 @@
 """DP exchangeable predictive distribution."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_exchangeable_distribution"]
@@ -32,7 +33,9 @@ def dp_exchangeable_distribution(partition, alpha):
     n = len(partition)
     result = float(np.mean(partition))
     se = float(np.std(partition, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DP exchangeable predictive distribution"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DP exchangeable predictive distribution"}
+    )
 
 
 def cheatsheet():

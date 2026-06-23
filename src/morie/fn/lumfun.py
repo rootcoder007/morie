@@ -62,4 +62,4 @@ lumfun = luminosity_function
 
 
 def cheatsheet() -> str:
-    return 'luminosity_function({}) -> Stellar luminosity function.'
+    return "luminosity_function({}) -> Stellar luminosity function."

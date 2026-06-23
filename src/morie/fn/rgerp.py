@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Event-related potential (ERP) latency and amplitude features."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_erp_features"]
@@ -32,7 +34,14 @@ def rangayyan_erp_features(erp, fs):
     n = int(erp) if erp.ndim == 0 else len(erp)
     result = float(np.mean(erp))
     se = float(np.std(erp, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Event-related potential (ERP) latency and amplitude features"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Event-related potential (ERP) latency and amplitude features",
+        }
+    )
 
 
 def cheatsheet():

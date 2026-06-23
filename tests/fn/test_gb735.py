@@ -1,6 +1,7 @@
 """Tests for gb735.gibbons_linrank_sym_equal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb735 import gibbons_linrank_sym_equal
 
 
@@ -11,7 +12,7 @@ def test_gb735_basic():
     n = 100
     result = gibbons_linrank_sym_equal(a, m, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gb735_edge():

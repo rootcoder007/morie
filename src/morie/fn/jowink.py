@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Winkler interval score: penalize narrow intervals + miscoverage."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_winkler_interval_score"]
@@ -36,7 +38,14 @@ def joseph_winkler_interval_score(y, l, u, alpha):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Winkler interval score: penalize narrow intervals + miscoverage"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Winkler interval score: penalize narrow intervals + miscoverage",
+        }
+    )
 
 
 def cheatsheet():

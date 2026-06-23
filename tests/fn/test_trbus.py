@@ -1,6 +1,7 @@
 """Test trbus."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trbus import trbus
 
 

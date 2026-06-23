@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Separability index: ratio of between-class to within-class scatter."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_separability_index"]
@@ -32,7 +34,14 @@ def rangayyan_separability_index(X, y):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Separability index: ratio of between-class to within-class scatter"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Separability index: ratio of between-class to within-class scatter",
+        }
+    )
 
 
 def cheatsheet():

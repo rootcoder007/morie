@@ -1,7 +1,7 @@
 """Tests for morie.fn.d -- Cohen's d effect size."""
 
-import numpy as np
 import pytest
+
 from morie.fn.d import cohens_d
 
 

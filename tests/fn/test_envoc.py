@@ -1,6 +1,7 @@
 """Test envoc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.envoc import envoc
 
 

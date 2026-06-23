@@ -1,5 +1,8 @@
 """Tests for median_abs_dev."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.medab import median_abs_dev
 
 

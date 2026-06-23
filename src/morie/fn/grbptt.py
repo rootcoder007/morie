@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Backpropagation through time: unroll the RNN and apply standard backprop."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_backprop_through_time"]
@@ -34,7 +36,14 @@ def geron_backprop_through_time(loss_grads, hiddens, inputs):
     n = len(loss_grads)
     result = float(np.mean(loss_grads))
     se = float(np.std(loss_grads, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Backpropagation through time: unroll the RNN and apply standard backprop"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Backpropagation through time: unroll the RNN and apply standard backprop",
+        }
+    )
 
 
 def cheatsheet():

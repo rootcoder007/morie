@@ -1,6 +1,7 @@
 """Breslow baseline cumulative hazard."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["cox_breslow_step"]

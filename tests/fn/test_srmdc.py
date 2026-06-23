@@ -39,4 +39,5 @@ def test_auc_bounded(disc_data):
 
 def test_cheatsheet():
     from morie.fn.srmdc import cheatsheet
+
     assert "discrimination" in cheatsheet().lower()

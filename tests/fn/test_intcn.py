@@ -1,7 +1,6 @@
 """Tests for morie.fn.intcn -- Interval censoring (Turnbull)."""
 
 import numpy as np
-import pytest
 
 from morie.fn.intcn import intcn
 
@@ -39,4 +38,5 @@ def test_right_censored():
 
 def test_cheatsheet():
     from morie.fn.intcn import cheatsheet
+
     assert "interval" in cheatsheet().lower()

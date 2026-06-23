@@ -1,7 +1,8 @@
 """Tests for tfdft.py - TFD feature extraction."""
+
 import numpy as np
-import pytest
-from morie.fn.tfdft import tfdft_fn, tfdft
+
+from morie.fn.tfdft import tfdft, tfdft_fn
 
 
 def test_tfdft_returns_descriptive_result():

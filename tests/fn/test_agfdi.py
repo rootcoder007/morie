@@ -1,6 +1,7 @@
 """Test agfdi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agfdi import agfdi
 
 

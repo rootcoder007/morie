@@ -1,6 +1,7 @@
 """Test srbtb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srbtb import srbtb
 
 

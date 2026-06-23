@@ -1,6 +1,7 @@
 """Bayesian GLM via Stan/JAGS."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bayesian_glm"]

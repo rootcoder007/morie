@@ -11,7 +11,9 @@ import numpy as np
 from scipy import stats
 
 
-def geweke_diagnostic(samples: Union[list, np.ndarray], cdf=None, *, first_frac: float = 0.1, last_frac: float = 0.5) -> dict[str, Any]:
+def geweke_diagnostic(
+    samples: Union[list, np.ndarray], cdf=None, *, first_frac: float = 0.1, last_frac: float = 0.5
+) -> dict[str, Any]:
     """
     Geweke (1992) convergence diagnostic.
 
@@ -68,10 +70,7 @@ def geweke_diagnostic(samples: Union[list, np.ndarray], cdf=None, *, first_frac:
         n_batches = m // batch_size
         if n_batches < 2:
             return float(np.var(arr, ddof=1) / m) + 1e-30
-        batch_means = np.array([
-            np.mean(arr[i * batch_size:(i + 1) * batch_size])
-            for i in range(n_batches)
-        ])
+        batch_means = np.array([np.mean(arr[i * batch_size : (i + 1) * batch_size]) for i in range(n_batches)])
         return float(batch_size * np.var(batch_means, ddof=1) / m) + 1e-30
 
     var_a = _spectral_var(a)

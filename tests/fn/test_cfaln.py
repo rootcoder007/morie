@@ -1,12 +1,12 @@
 """Tests for morie.fn.cfaln -- CFA standardized loadings."""
 
 import pandas as pd
-from morie.fn.cfaln import cfa_loadings
+
 from morie.fn._mapq_const import SUBSCALES
+from morie.fn.cfaln import cfa_loadings
 
 
 class TestCfaLoadings:
-
     def test_returns_dataframe(self, mapq_df):
         result = cfa_loadings(mapq_df, SUBSCALES)
         assert isinstance(result, pd.DataFrame)

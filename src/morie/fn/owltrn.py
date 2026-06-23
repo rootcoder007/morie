@@ -1,6 +1,7 @@
 """Outcome-weighted learning for optimal regime."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["outcome_weighted_learning"]
@@ -36,7 +37,9 @@ def outcome_weighted_learning(y, D, W, pi):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Outcome-weighted learning for optimal regime"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Outcome-weighted learning for optimal regime"}
+    )
 
 
 def cheatsheet():

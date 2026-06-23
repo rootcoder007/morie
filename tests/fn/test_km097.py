@@ -1,6 +1,7 @@
 """Tests for km097.kamath_ch6_ear_entropy_reg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km097 import kamath_ch6_ear_entropy_reg
 
 
@@ -11,7 +12,7 @@ def test_km097_basic():
     lam = 0.1
     result = kamath_ch6_ear_entropy_reg(A, L, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km097_edge():

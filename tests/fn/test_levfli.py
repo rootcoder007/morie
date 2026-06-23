@@ -1,8 +1,9 @@
 """Tests for morie.fn.levfli -- Levy flight."""
 
 import numpy as np
-from morie.fn.levfli import levy_flight, levfli
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.levfli import levfli, levy_flight
 
 
 class TestLevfli:

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DINO: self-distillation with no labels for visual representation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dino"]
@@ -34,7 +36,14 @@ def geron_dino(images, student, teacher):
     n = len(images)
     result = float(np.mean(images))
     se = float(np.std(images, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DINO: self-distillation with no labels for visual representation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DINO: self-distillation with no labels for visual representation",
+        }
+    )
 
 
 def cheatsheet():

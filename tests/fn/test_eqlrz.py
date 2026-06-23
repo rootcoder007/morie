@@ -1,8 +1,9 @@
 """Tests for morie.fn.eqlrz — Lorenz curve."""
 
 import pytest
-from morie.fn.eqlrz import lorenz_curve
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.eqlrz import lorenz_curve
 
 
 class TestLorenz:

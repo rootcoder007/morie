@@ -1,6 +1,7 @@
 """Advantage actor-critic (synchronous A2C)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["a2c"]
@@ -36,7 +37,9 @@ def a2c(env, actor, critic, n_steps):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Advantage actor-critic (synchronous A2C)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Advantage actor-critic (synchronous A2C)"}
+    )
 
 
 def cheatsheet():

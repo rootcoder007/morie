@@ -4,7 +4,6 @@ from morie.fn.sconv import subscale_convergent
 
 
 class TestSubscaleConvergent:
-
     def test_returns_all_subscales(self, mapq_df):
         result = subscale_convergent(mapq_df)
         assert set(result.keys()) == {"EE", "EA", "UA", "ER"}

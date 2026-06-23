@@ -1,6 +1,5 @@
 """Tests for morie.fn.hubbl -- Hubble parameter."""
 
-import numpy as np
 import pytest
 
 from morie.fn.hubbl import hubbl

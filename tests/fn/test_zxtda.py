@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxtda -- Persistent homology spatial"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxtda import tda_persistent
 

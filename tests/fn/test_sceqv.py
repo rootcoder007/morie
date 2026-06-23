@@ -1,7 +1,7 @@
 """Tests for morie.fn.sceqv — score equating."""
 
-import numpy as np
 import pytest
+
 from morie.fn.sceqv import score_equate
 
 

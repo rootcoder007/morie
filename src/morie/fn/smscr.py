@@ -28,7 +28,9 @@ import numpy as np
 from scipy import optimize, stats
 
 
-def smscr(Y: np.ndarray, X: np.ndarray, cdf=None, *, bandwidth: float | None = None, random_state: int = 42) -> dict[str, Any]:
+def smscr(
+    Y: np.ndarray, X: np.ndarray, cdf=None, *, bandwidth: float | None = None, random_state: int = 42
+) -> dict[str, Any]:
     r"""Smoothed maximum score estimator for binary response.
 
     Parameters
@@ -71,8 +73,7 @@ def smscr(Y: np.ndarray, X: np.ndarray, cdf=None, *, bandwidth: float | None = N
     for _ in range(20):
         b0 = rng.standard_normal(p)
         b0 /= np.linalg.norm(b0) + 1e-12
-        res = optimize.minimize(neg_score, b0, method="Nelder-Mead",
-                                options={"maxiter": 500, "xatol": 1e-6})
+        res = optimize.minimize(neg_score, b0, method="Nelder-Mead", options={"maxiter": 500, "xatol": 1e-6})
         if best_res is None or res.fun < best_res.fun:
             best_res = res
 

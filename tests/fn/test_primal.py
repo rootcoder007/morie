@@ -1,6 +1,7 @@
 """Tests for primal.primal_dual."""
+
 import numpy as np
-import pytest
+
 from morie.fn.primal import primal_dual
 
 
@@ -13,7 +14,7 @@ def test_primal_basic():
     sigma = 1.0
     result = primal_dual(F, G, K, tau, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_primal_edge():

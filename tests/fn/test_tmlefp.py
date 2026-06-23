@@ -1,6 +1,7 @@
 """Tests for tmlefp.tmle_effective_pi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlefp import tmle_effective_pi
 
 
@@ -12,7 +13,7 @@ def test_tmlefp_basic():
     trim = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_effective_pi(y, D, X, trim)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlefp_edge():

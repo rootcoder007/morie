@@ -1,6 +1,8 @@
 """Tests for kmcnf: KM confidence intervals."""
+
 import numpy as np
 import pytest
+
 from morie.fn.kmcnf import kmcnf
 
 
@@ -16,8 +18,16 @@ def _make_data(n=200, rate=0.5, censor_rate=0.2, seed=0):
 def test_returns_keys():
     time, event = _make_data()
     result = kmcnf(time, event)
-    for key in ("time_points", "survival", "n_risk", "n_event",
-                "ci_lower", "ci_upper", "greenwood_var", "median_survival"):
+    for key in (
+        "time_points",
+        "survival",
+        "n_risk",
+        "n_event",
+        "ci_lower",
+        "ci_upper",
+        "greenwood_var",
+        "median_survival",
+    ):
         assert key in result
 
 

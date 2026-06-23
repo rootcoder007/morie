@@ -1,6 +1,7 @@
 """Test gcmjo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcmjo import gcmjo
 
 

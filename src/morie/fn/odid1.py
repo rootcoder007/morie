@@ -9,7 +9,16 @@ from numpy.linalg import lstsq
 from scipy import stats
 
 
-def otis_did_policy(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", group_col: str = "region", time_col: str = "end_fiscal_year", post_year: int = 2020, treatment_group: str | None = None) -> dict:
+def otis_did_policy(
+    df: pd.DataFrame,
+    cdf=None,
+    *,
+    outcome: str = "Y",
+    group_col: str = "region",
+    time_col: str = "end_fiscal_year",
+    post_year: int = 2020,
+    treatment_group: str | None = None,
+) -> dict:
     """Estimate DiD effect of a policy change.
 
     Uses a 2x2 DiD design: pre/post period x treatment/control group.

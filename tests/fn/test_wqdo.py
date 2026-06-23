@@ -1,6 +1,7 @@
 """Test wqdo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wqdo import wqdo
 
 

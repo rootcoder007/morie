@@ -1,6 +1,7 @@
 """Test maacf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maacf import maacf
 
 

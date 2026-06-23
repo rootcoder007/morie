@@ -1,6 +1,7 @@
 """TMLE under time-varying confounding (non-longitudinal sequential)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_time_varying_confound"]
@@ -36,7 +37,14 @@ def tmle_time_varying_confound(y, D_t, L_t, time):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE under time-varying confounding (non-longitudinal sequential)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "TMLE under time-varying confounding (non-longitudinal sequential)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.zegra -- Gravity-based accessibility"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zegra import gravity_access
 

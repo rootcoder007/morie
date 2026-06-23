@@ -1,6 +1,7 @@
 """Tests for besagl.besag_York_Mollie."""
+
 import numpy as np
-import pytest
+
 from morie.fn.besagl import besag_York_Mollie
 
 
@@ -12,7 +13,7 @@ def test_besagl_basic():
     adjacency = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]])
     result = besag_York_Mollie(counts, X, offset, adjacency)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_besagl_edge():

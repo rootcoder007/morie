@@ -1,5 +1,7 @@
 """Theoretical MSE distortion bound for TurboQuant at b bits."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_mse_distortion_bound"]
@@ -29,7 +31,14 @@ def turboquant_mse_distortion_bound(bits):
     n = len(bits)
     result = float(np.mean(bits))
     se = float(np.std(bits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theoretical MSE distortion bound for TurboQuant at b bits"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theoretical MSE distortion bound for TurboQuant at b bits",
+        }
+    )
 
 
 def cheatsheet():

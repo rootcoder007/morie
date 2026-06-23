@@ -1,6 +1,7 @@
 """Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch1_bayes_formula"]
@@ -36,7 +37,14 @@ def ghosal_ch1_bayes_formula(B, X, p_theta, Pi):
     n = len(B)
     result = float(np.mean(B))
     se = float(np.std(B, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space.",
+        }
+    )
 
 
 def cheatsheet():

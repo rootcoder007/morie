@@ -1,4 +1,5 @@
 """Tests for morie.fn.dirvt — directional voting."""
+
 from morie.fn.dirvt import dirvt
 
 
@@ -11,6 +12,7 @@ def test_dirvt_smoke():
 
 def test_cheatsheet():
     from morie.fn.dirvt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -1,6 +1,7 @@
 """Tests for bndlmm.bound_linear_min_max."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndlmm import bound_linear_min_max
 
 
@@ -10,7 +11,7 @@ def test_bndlmm_basic():
     moments = np.random.default_rng(42).normal(0, 1, 100)
     result = bound_linear_min_max(theta, moments)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndlmm_edge():

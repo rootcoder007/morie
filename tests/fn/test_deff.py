@@ -1,4 +1,5 @@
 """Tests for fn/deff.py -- Design effect (DEFF)."""
+
 import numpy as np
 
 from morie.fn.deff import deff, design_effect

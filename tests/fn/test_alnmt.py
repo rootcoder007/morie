@@ -1,5 +1,5 @@
 """Test alnmt."""
-import numpy as np
+
 from morie.fn.alnmt import alpha_nominate_score
 
 

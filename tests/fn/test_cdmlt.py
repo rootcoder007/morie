@@ -1,6 +1,8 @@
 """Tests for cdmlt."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cdmlt import cdmlt
 
 
@@ -28,4 +30,5 @@ def test_cdmlt_no_data():
 
 def test_cdmlt_alias():
     from morie.fn.cdmlt import cdmlt
+
     assert cdmlt is cdmlt

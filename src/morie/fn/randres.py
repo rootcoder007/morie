@@ -1,6 +1,7 @@
 """Warner classic randomized response (sensitive yes/no)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["randomized_response"]
@@ -34,7 +35,14 @@ def randomized_response(y, truth, p):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Warner classic randomized response (sensitive yes/no)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Warner classic randomized response (sensitive yes/no)",
+        }
+    )
 
 
 def cheatsheet():

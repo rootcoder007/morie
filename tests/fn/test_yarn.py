@@ -1,6 +1,7 @@
 """Tests for yarn.yarn_context_scaling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.yarn import yarn_context_scaling
 
 
@@ -15,7 +16,7 @@ def test_yarn_basic():
     beta_slow = np.random.default_rng(42).normal(0, 1, 100)
     result = yarn_context_scaling(y, q, m, theta, s, beta_fast, beta_slow)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_yarn_edge():

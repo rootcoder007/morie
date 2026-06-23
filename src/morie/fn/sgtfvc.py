@@ -1,6 +1,7 @@
 """Fiedler vector -- eigenvector for λ_2."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_fiedler_vector"]

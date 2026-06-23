@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """2D convolution forward pass (valid, cross-correlation convention)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -47,7 +48,7 @@ def conv2d_forward(x, w, b=0.0, stride: int = 1, padding: int = 0):
         x = np.pad(x, ((padding, padding), (padding, padding)))
     H, W = x.shape
     Kh, Kw = w.shape
-    if H < Kh or W < Kw:
+    if Kh > H or Kw > W:
         raise ValueError(f"Input {(H, W)} smaller than kernel {(Kh, Kw)}.")
     out_h = (H - Kh) // stride + 1
     out_w = (W - Kw) // stride + 1
@@ -56,9 +57,13 @@ def conv2d_forward(x, w, b=0.0, stride: int = 1, padding: int = 0):
     y = np.einsum("ijkl,kl->ij", windows, w) + b
     return RichResult(
         title="Conv2D forward",
-        summary_lines=[("input shape", x.shape), ("kernel shape", (Kh, Kw)),
-                       ("output shape", (out_h, out_w)), ("stride", stride),
-                       ("padding", padding)],
+        summary_lines=[
+            ("input shape", x.shape),
+            ("kernel shape", (Kh, Kw)),
+            ("output shape", (out_h, out_w)),
+            ("stride", stride),
+            ("padding", padding),
+        ],
         payload={
             "y": y,
             "estimate": y,

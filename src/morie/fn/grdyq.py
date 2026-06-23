@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dynamic quantization: weights statically INT8, activations quantized per-batch at runtime."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_dynamic_quantization"]
@@ -32,7 +34,14 @@ def geron_dynamic_quantization(x, w):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dynamic quantization: weights statically INT8, activations quantized per-batch at runtime"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Dynamic quantization: weights statically INT8, activations quantized per-batch at runtime",
+        }
+    )
 
 
 def cheatsheet():

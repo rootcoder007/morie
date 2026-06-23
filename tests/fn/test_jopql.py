@@ -1,6 +1,7 @@
 """Tests for jopql.joseph_pinball_quantile_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jopql import joseph_pinball_quantile_loss
 
 
@@ -11,7 +12,7 @@ def test_jopql_basic():
     tau = 0.1
     result = joseph_pinball_quantile_loss(y, q, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jopql_edge():

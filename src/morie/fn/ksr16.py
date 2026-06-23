@@ -5,7 +5,9 @@ IF(x, y) = I_eff^{-1} S_eff(x, y) = (y - ybar - beta_hat (x - xbar))
 * (x - xbar) / Var(X).  Returns the empirical mean of IF (0 by
 construction).
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_influence_function"]
@@ -16,16 +18,19 @@ def kosorok_influence_function(x, y):
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     n = len(x)
-    xc = x - x.mean(); yc = y - y.mean()
+    xc = x - x.mean()
+    yc = y - y.mean()
     var_x = float(xc @ xc / n)
     beta_hat = float((xc @ yc) / (xc @ xc))
     resid = yc - beta_hat * xc
     IF = (resid * xc) / var_x
-    return RichResult(payload={
-        "estimate": float(IF.mean()),
-        "n":        n,
-        "method":   "Influence function: (resid)(x-xbar)/Var(X)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(IF.mean()),
+            "n": n,
+            "method": "Influence function: (resid)(x-xbar)/Var(X)",
+        }
+    )
 
 
 def cheatsheet():

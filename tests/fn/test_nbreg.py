@@ -1,6 +1,9 @@
 """Tests for negbin_regression."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.nbreg import negbin_regression
+
 
 class TestNegBin:
     def test_basic(self):

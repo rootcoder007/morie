@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgeqv -- Kriging equivalence to GLS"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgeqv import kriging_equiv
 
@@ -14,5 +13,5 @@ class TestKrigingEquiv:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = kriging_equiv(np.array([1.,2.,3.]), np.array([0.,1.,2.]))
+        result = kriging_equiv(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
         assert hasattr(result, "statistic")

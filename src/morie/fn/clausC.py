@@ -1,6 +1,7 @@
 """Clausius-Clapeyron scaling."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["clausius_clapeyron"]

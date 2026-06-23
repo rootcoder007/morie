@@ -1,6 +1,8 @@
 """Tests for morie.fn.qq_ — QQ plot data."""
+
 import numpy as np
 import pytest
+
 from morie.fn.qq_ import qq_plot_data
 
 

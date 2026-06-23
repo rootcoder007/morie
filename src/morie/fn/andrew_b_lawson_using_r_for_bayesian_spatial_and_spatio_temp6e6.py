@@ -1,8 +1,8 @@
 """Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_6"]
 
@@ -41,7 +41,12 @@ def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equat
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Logistic equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
+        },
     )
 
 

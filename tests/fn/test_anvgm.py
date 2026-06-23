@@ -7,7 +7,6 @@ from morie.fn.anvgm import anvgm
 
 
 class TestAnvgm:
-
     def test_output_shape(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (30, 2))

@@ -1,6 +1,7 @@
 """Tests for rkmeans.trimmed_kmeans."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rkmeans import trimmed_kmeans
 
 
@@ -11,7 +12,7 @@ def test_rkmeans_basic():
     alpha = 0.05
     result = trimmed_kmeans(X, k, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rkmeans_edge():

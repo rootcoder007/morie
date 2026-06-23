@@ -1,13 +1,11 @@
 """Tests for morie.fn.pqcmp — PolarQuant full compression."""
 
 import numpy as np
-import pytest
 
 from morie.fn.pqcmp import polar_compress
 
 
 class TestPolarCompress:
-
     def test_returns_result(self):
         x = np.random.default_rng(42).standard_normal(64)
         res = polar_compress(x, bits_mag=8, bits_dir=4)

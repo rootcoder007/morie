@@ -1,6 +1,7 @@
 """Tests for thinpls.thin_plate_spline."""
+
 import numpy as np
-import pytest
+
 from morie.fn.thinpls import thin_plate_spline
 
 
@@ -12,7 +13,7 @@ def test_thinpls_basic():
     lam = 0.1
     result = thin_plate_spline(x, y, z, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_thinpls_edge():

@@ -1,6 +1,7 @@
 """Test fodiv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fodiv import fodiv
 
 

@@ -1,5 +1,7 @@
 """EstimateScores inner loop: reconstruct attention scores from QJL keys."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["turboquant_estimate_scores"]
@@ -34,12 +36,27 @@ def turboquant_estimate_scores(q, k_tildes, norms, S):
     q = np.atleast_1d(np.asarray(q, dtype=float))
     n = len(q)
     if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "EstimateScores inner loop: reconstruct attention scores from QJL keys"})
+        return RichResult(
+            payload={
+                "estimate": np.nan,
+                "n": 0,
+                "method": "EstimateScores inner loop: reconstruct attention scores from QJL keys",
+            }
+        )
     estimate = np.median(q)
     se = 1.2533 * np.std(q, ddof=1) / np.sqrt(n)
     ci_lower = estimate - 1.96 * se
     ci_upper = estimate + 1.96 * se
-    return RichResult(payload={"estimate": float(estimate), "se": float(se), "ci_lower": float(ci_lower), "ci_upper": float(ci_upper), "n": n, "method": "EstimateScores inner loop: reconstruct attention scores from QJL keys"})
+    return RichResult(
+        payload={
+            "estimate": float(estimate),
+            "se": float(se),
+            "ci_lower": float(ci_lower),
+            "ci_upper": float(ci_upper),
+            "n": n,
+            "method": "EstimateScores inner loop: reconstruct attention scores from QJL keys",
+        }
+    )
 
 
 def cheatsheet():

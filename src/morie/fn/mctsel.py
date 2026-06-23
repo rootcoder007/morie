@@ -1,6 +1,7 @@
 """MCTS selection phase via UCT or PUCT."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mcts_selection"]

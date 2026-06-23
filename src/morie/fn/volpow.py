@@ -1,6 +1,7 @@
 """Power variation of order p of intraday returns."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_power_variation"]
@@ -32,7 +33,9 @@ def vol_power_variation(r_intraday, p):
     n = len(r_intraday)
     result = float(np.mean(r_intraday))
     se = float(np.std(r_intraday, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Power variation of order p of intraday returns"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Power variation of order p of intraday returns"}
+    )
 
 
 def cheatsheet():

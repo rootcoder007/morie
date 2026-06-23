@@ -1,5 +1,7 @@
 """Tests for winsorized_mean."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.wmean import winsorized_mean
 
 

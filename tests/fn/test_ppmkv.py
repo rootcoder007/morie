@@ -1,6 +1,7 @@
 """Test ppmkv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmkv import ppmkv
 
 

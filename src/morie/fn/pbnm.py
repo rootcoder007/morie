@@ -7,7 +7,9 @@ import numpy as np
 import scipy.stats as stats
 
 
-def pbinom(x: Union[int, np.ndarray], size: int, prob: float, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def pbinom(
+    x: Union[int, np.ndarray], size: int, prob: float, lower_tail: bool = True, log: bool = False, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Binomial distribution CDF.
 

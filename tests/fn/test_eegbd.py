@@ -22,6 +22,7 @@ class TestEegBd:
 
 def test_cheatsheet():
     from morie.fn.eegbd import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

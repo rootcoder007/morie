@@ -1,6 +1,7 @@
 """Pairwise squared-Euclidean cost matrix."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_cost_pairwise"]
@@ -32,7 +33,9 @@ def ot_cost_pairwise(X, Y):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pairwise squared-Euclidean cost matrix"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pairwise squared-Euclidean cost matrix"}
+    )
 
 
 def cheatsheet():

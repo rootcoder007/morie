@@ -1,6 +1,7 @@
 """Tests for alffap.alphafold_fape_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alffap import alphafold_fape_loss
 
 
@@ -12,7 +13,7 @@ def test_alffap_basic():
     x_true = np.random.default_rng(42).normal(0, 1, 100)
     result = alphafold_fape_loss(frames_pred, frames_true, x, x_true)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alffap_edge():

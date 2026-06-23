@@ -1,6 +1,7 @@
 """Tests for morie.fn.waic -- WAIC."""
 
 import numpy as np
+
 from morie.fn.waic import compute_waic
 
 

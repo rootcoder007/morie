@@ -1,6 +1,7 @@
 """Tests for stefan.stefan_boltzmann."""
+
 import numpy as np
-import pytest
+
 from morie.fn.stefan import stefan_boltzmann
 
 
@@ -10,7 +11,7 @@ def test_stefan_basic():
     emissivity = np.random.default_rng(42).normal(0, 1, 100)
     result = stefan_boltzmann(T, emissivity)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_stefan_edge():

@@ -1,6 +1,7 @@
 """Multilevel (1-1-1, 2-1-1) mediation."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["multilevel_mediation"]

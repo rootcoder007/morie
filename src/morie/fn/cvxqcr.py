@@ -1,6 +1,7 @@
 """Quadratically constrained QP."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boyd_quadratic_constraint"]

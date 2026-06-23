@@ -1,6 +1,7 @@
 """Tests for rng033.rangayyan_ch3_causal_convolution_alt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng033 import rangayyan_ch3_causal_convolution_alt
 
 
@@ -12,7 +13,7 @@ def test_rng033_basic():
     tau = 0.1
     result = rangayyan_ch3_causal_convolution_alt(x, h, t, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng033_edge():

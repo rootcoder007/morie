@@ -1,6 +1,7 @@
 """Tests for poissp.poisson_spatial_glm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.poissp import poisson_spatial_glm
 
 
@@ -12,7 +13,7 @@ def test_poissp_basic():
     W = np.random.default_rng(42).normal(0, 1, 100)
     result = poisson_spatial_glm(counts, X, offset, W)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_poissp_edge():

@@ -1,6 +1,7 @@
 """Tests for reldge.reliability_gebv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.reldge import reliability_gebv
 
 
@@ -9,7 +10,7 @@ def test_reldge_basic():
     fit = np.random.default_rng(42).normal(0, 1, 100)
     result = reliability_gebv(fit)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_reldge_edge():

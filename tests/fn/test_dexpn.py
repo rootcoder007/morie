@@ -1,6 +1,8 @@
 """Tests for morie.fn.dexpn -- Double exponential smoothing."""
+
 import numpy as np
 import pytest
+
 from morie.fn.dexpn import des
 
 
@@ -17,4 +19,5 @@ class TestDES:
 
     def test_cheatsheet(self):
         from morie.fn.dexpn import cheatsheet
+
         assert isinstance(cheatsheet(), str)

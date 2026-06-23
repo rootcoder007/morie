@@ -1,6 +1,7 @@
 """Tests for km127.kamath_ch8_geval_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km127 import kamath_ch8_geval_score
 
 
@@ -10,7 +11,7 @@ def test_km127_basic():
     p = 5
     result = kamath_ch8_geval_score(s_i, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km127_edge():

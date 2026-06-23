@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variance of Mann-Whitney U under null hypothesis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_mw_var"]
@@ -32,7 +34,9 @@ def gibbons_mw_var(m, n):
     n = int(m) if m.ndim == 0 else len(m)
     result = float(np.mean(m))
     se = float(np.std(m, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variance of Mann-Whitney U under null hypothesis"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Variance of Mann-Whitney U under null hypothesis"}
+    )
 
 
 def cheatsheet():

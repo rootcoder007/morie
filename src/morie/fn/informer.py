@@ -1,6 +1,7 @@
 """Informer for long-horizon forecasting."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["informer_long_horizon"]

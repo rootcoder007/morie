@@ -1,6 +1,7 @@
 """Test sogrv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sogrv import sogrv
 
 

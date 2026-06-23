@@ -1,6 +1,7 @@
 """Test fftsi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fftsi import fftsi
 
 

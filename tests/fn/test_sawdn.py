@@ -1,6 +1,7 @@
 """Test sawdn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sawdn import sawdn
 
 

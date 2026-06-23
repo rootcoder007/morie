@@ -1,6 +1,7 @@
 """DiffPool -- differentiable graph pooling."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["diffpool"]
@@ -34,7 +35,9 @@ def diffpool(A, X, K_clusters):
     n = len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DiffPool -- differentiable graph pooling"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DiffPool -- differentiable graph pooling"}
+    )
 
 
 def cheatsheet():

@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import DescriptiveResult
 
-__all__ = ['hrvar']
+__all__ = ["hrvar"]
 
 _QUOTE = "Real knowledge is to know the extent of one's ignorance. -- Confucius"
 
@@ -42,7 +42,7 @@ def hrvar(
     mean_rr = float(np.mean(rr))
     sdnn = float(np.std(rr, ddof=1))
     diffs = np.diff(rr)
-    rmssd = float(np.sqrt(np.mean(diffs ** 2)))
+    rmssd = float(np.sqrt(np.mean(diffs**2)))
     pnnx = float(np.mean(np.abs(diffs) > pnn_threshold))
     mean_hr = 60.0 / mean_rr if mean_rr > 0 else 0.0
 

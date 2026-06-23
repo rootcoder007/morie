@@ -1,5 +1,7 @@
 """Tests for morie.fn.gwreg — GWR."""
+
 import numpy as np
+
 from morie.fn.gwreg import gwr
 
 

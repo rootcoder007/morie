@@ -1,7 +1,9 @@
 """Test linear_convolution (lncon)."""
+
 import numpy as np
-from morie.fn.lncon import linear_convolution, lncon
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lncon import linear_convolution, lncon
 
 
 class TestLncon:

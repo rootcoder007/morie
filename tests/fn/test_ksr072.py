@@ -1,6 +1,7 @@
 """Tests for ksr072.kosorok_ch3_z_estimator_efficiency_master."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr072 import kosorok_ch3_z_estimator_efficiency_master
 
 
@@ -14,7 +15,7 @@ def test_ksr072_basic():
     n = 100
     result = kosorok_ch3_z_estimator_efficiency_master(theta_n, theta, eta, I_tilde, Z, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr072_edge():

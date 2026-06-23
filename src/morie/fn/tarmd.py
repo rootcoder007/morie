@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Threshold autoregressive (TAR) model (Tong 1990)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -49,18 +50,15 @@ def threshold_autoregression(x, p=1, d=1, n_grid=50):
     n = y.size
     start = max(p, d)
     if n - start < 4 * (p + 1):
-        raise ValueError(
-            f"Series too short for SETAR(p={p}, d={d}); have {n}.")
+        raise ValueError(f"Series too short for SETAR(p={p}, d={d}); have {n}.")
     Y = y[start:]
-    X = np.column_stack(
-        [np.ones(Y.size)] + [y[start - i : n - i] for i in range(1, p + 1)]
-    )
+    X = np.column_stack([np.ones(Y.size)] + [y[start - i : n - i] for i in range(1, p + 1)])
     Z = y[start - d : n - d]  # threshold variable
     q_lo, q_hi = np.quantile(Z, [0.15, 0.85])
     grid = np.linspace(q_lo, q_hi, n_grid)
     best = (np.inf, np.nan, None, None, None)
     for c in grid:
-        mask_lo = Z <= c
+        mask_lo = c >= Z
         mask_hi = ~mask_lo
         if mask_lo.sum() < 2 * (p + 1) or mask_hi.sum() < 2 * (p + 1):
             continue
@@ -68,22 +66,25 @@ def threshold_autoregression(x, p=1, d=1, n_grid=50):
         phi_hi, *_ = np.linalg.lstsq(X[mask_hi], Y[mask_hi], rcond=None)
         res_lo = Y[mask_lo] - X[mask_lo] @ phi_lo
         res_hi = Y[mask_hi] - X[mask_hi] @ phi_hi
-        sse = float(np.sum(res_lo ** 2) + np.sum(res_hi ** 2))
+        sse = float(np.sum(res_lo**2) + np.sum(res_hi**2))
         if sse < best[0]:
             best = (sse, c, phi_lo, phi_hi, (int(mask_lo.sum()), int(mask_hi.sum())))
     sse, c, phi_lo, phi_hi, sizes = best
     if phi_lo is None:
         raise ValueError("Could not find admissible threshold grid point.")
-    return RichResult(payload={
-        "threshold": float(c),
-        "phi_lower": np.asarray(phi_lo),
-        "phi_upper": np.asarray(phi_hi),
-        "p": int(p), "d": int(d),
-        "regime_sizes": sizes,
-        "sse": float(sse),
-        "n": int(n),
-        "method": f"SETAR(p={p}, d={d}) via grid-search OLS",
-    })
+    return RichResult(
+        payload={
+            "threshold": float(c),
+            "phi_lower": np.asarray(phi_lo),
+            "phi_upper": np.asarray(phi_hi),
+            "p": int(p),
+            "d": int(d),
+            "regime_sizes": sizes,
+            "sse": float(sse),
+            "n": int(n),
+            "method": f"SETAR(p={p}, d={d}) via grid-search OLS",
+        }
+    )
 
 
 def cheatsheet():

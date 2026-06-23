@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Life satisfaction = theta0 + theta1 * GDP_per_capita (introductory example)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_linear_regression_life"]
@@ -34,7 +36,14 @@ def geron_linear_regression_life(gdp, theta0, theta1):
     n = len(gdp)
     result = float(np.mean(gdp))
     se = float(np.std(gdp, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Life satisfaction = theta0 + theta1 * GDP_per_capita (introductory example)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Life satisfaction = theta0 + theta1 * GDP_per_capita (introductory example)",
+        }
+    )
 
 
 def cheatsheet():

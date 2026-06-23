@@ -1,4 +1,5 @@
 """Tests for morie.fn.evtcl — event clustering."""
+
 import numpy as np
 import pytest
 

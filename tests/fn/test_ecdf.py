@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.ecdf import ecdf, ECDFResult
+from morie.fn.ecdf import ECDFResult, ecdf
 
 
 @pytest.fixture()

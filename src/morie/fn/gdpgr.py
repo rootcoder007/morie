@@ -54,4 +54,4 @@ short = gdp_growth
 
 
 def cheatsheet() -> str:
-    return 'gdp_growth({}) -> GDP growth rate and trend.'
+    return "gdp_growth({}) -> GDP growth rate and trend."

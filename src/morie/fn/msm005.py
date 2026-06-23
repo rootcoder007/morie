@@ -1,6 +1,7 @@
 """Numbered display equation (1.4) from MVSML chapter 1.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_general_eq_1_4"]
@@ -40,7 +41,14 @@ def mvsml_general_eq_1_4(mental, effects, Two, drawbacks, of, the):
     n = len(mental)
     result = float(np.mean(mental))
     se = float(np.std(mental, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (1.4) from MVSML chapter 1."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (1.4) from MVSML chapter 1.",
+        }
+    )
 
 
 def cheatsheet():

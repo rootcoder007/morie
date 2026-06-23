@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsvm -- Spatial SVM"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsvm import spatial_svm
 

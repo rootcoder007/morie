@@ -25,24 +25,24 @@ Demo:
 from __future__ import annotations
 
 import sys
+from collections.abc import Iterable
 from contextlib import contextmanager
-from typing import Iterable
-
 
 try:
     from rich.console import Console
+    from rich.live import Live
+    from rich.panel import Panel
     from rich.progress import (
         BarColumn,
+        MofNCompleteColumn,
         Progress,
         SpinnerColumn,
         TextColumn,
         TimeElapsedColumn,
         TimeRemainingColumn,
-        MofNCompleteColumn,
     )
     from rich.table import Table
-    from rich.live import Live
-    from rich.panel import Panel
+
     _HAS_RICH = True
 except ImportError:
     _HAS_RICH = False
@@ -131,25 +131,31 @@ def streaming_table(columns: Iterable[str], *, title: str = ""):
         for c in cols:
             table.add_column(c)
         with Live(table, refresh_per_second=10):
+
             def _add(*row):
                 table.add_row(*[str(x) for x in row])
+
             yield _add
     else:
         print(" | ".join(cols))
+
         def _add(*row):
             print(" | ".join(str(x) for x in row))
+
         yield _add
 
 
 def morie_banner() -> None:
     """Print a one-shot MORIE banner at the start of a CLI session."""
     if _HAS_RICH:
-        Console().print(Panel.fit(
-            "[bold cyan]MORIE[/bold cyan] -- Multi-domain Open Research\n"
-            "and Inferential Estimation\n"
-            "[dim]v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie[/dim]",
-            border_style="cyan",
-        ))
+        Console().print(
+            Panel.fit(
+                "[bold cyan]MORIE[/bold cyan] -- Multi-domain Open Research\n"
+                "and Inferential Estimation\n"
+                "[dim]v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie[/dim]",
+                border_style="cyan",
+            )
+        )
     else:
         print("MORIE -- Multi-domain Open Research and Inferential Estimation")
         print("v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie")

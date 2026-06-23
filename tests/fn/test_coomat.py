@@ -1,8 +1,9 @@
 """Tests for morie.fn.coomat -- co-occurrence matrix analysis."""
 
 import numpy as np
-from morie.fn.coomat import cooccurrence_matrix, coomat
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.coomat import cooccurrence_matrix, coomat
 
 
 class TestCoomat:

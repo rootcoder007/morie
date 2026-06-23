@@ -78,14 +78,10 @@ def dmxlr(
                         / ((1 + theta) * (1 + 2 * theta))
                     )
                 else:
-                    return (
-                        2 * (theta + (1 - theta) * f1)
-                        * (theta + (1 - theta) * f2)
-                        / ((1 + theta) * (1 + 2 * theta))
-                    )
+                    return 2 * (theta + (1 - theta) * f1) * (theta + (1 - theta) * f2) / ((1 + theta) * (1 + 2 * theta))
             else:
                 if a1 == a2:
-                    return f1 ** 2
+                    return f1**2
                 return 2 * f1 * f2
 
         n_unknown = n_contributors - 1

@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TGARCH / GJR-GARCH(1,1) -- threshold GARCH with asymmetric news impact."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,21 +45,27 @@ def tgarch_model(x):
 
     try:
         from arch import arch_model
+
         m = arch_model(r, mean="Zero", vol="GARCH", p=1, o=1, q=1, dist="normal")
         fit = m.fit(disp="off", show_warning=False)
         params = fit.params
         omega = float(params.get("omega", np.nan))
         alpha = float(params.get("alpha[1]", np.nan))
         gamma = float(params.get("gamma[1]", np.nan))
-        beta  = float(params.get("beta[1]",  np.nan))
-        return RichResult(payload={
-            "omega": omega, "alpha": alpha, "gamma": gamma, "beta": beta,
-            "persistence": alpha + 0.5 * gamma + beta,
-            "loglik": float(fit.loglikelihood),
-            "conditional_variance": np.asarray(fit.conditional_volatility) ** 2,
-            "n": int(n),
-            "method": "GJR-GARCH(1,1) via arch.arch_model",
-        })
+        beta = float(params.get("beta[1]", np.nan))
+        return RichResult(
+            payload={
+                "omega": omega,
+                "alpha": alpha,
+                "gamma": gamma,
+                "beta": beta,
+                "persistence": alpha + 0.5 * gamma + beta,
+                "loglik": float(fit.loglikelihood),
+                "conditional_variance": np.asarray(fit.conditional_volatility) ** 2,
+                "n": int(n),
+                "method": "GJR-GARCH(1,1) via arch.arch_model",
+            }
+        )
     except Exception:
         pass
 
@@ -72,7 +79,7 @@ def tgarch_model(x):
             I = 1.0 if r[t - 1] < 0 else 0.0
             s2[t] = omega + (alpha + gamma * I) * r[t - 1] ** 2 + beta * s2[t - 1]
             s2[t] = max(s2[t], 1e-12)
-        return 0.5 * np.sum(np.log(2 * np.pi * s2) + r ** 2 / s2)
+        return 0.5 * np.sum(np.log(2 * np.pi * s2) + r**2 / s2)
 
     var_r = float(np.var(r))
     fit = optimize.minimize(
@@ -87,15 +94,19 @@ def tgarch_model(x):
     for t in range(1, n):
         I = 1.0 if r[t - 1] < 0 else 0.0
         s2[t] = omega + (alpha + gamma * I) * r[t - 1] ** 2 + beta * s2[t - 1]
-    return RichResult(payload={
-        "omega": float(omega), "alpha": float(alpha),
-        "gamma": float(gamma), "beta": float(beta),
-        "persistence": float(alpha + 0.5 * gamma + beta),
-        "loglik": float(-fit.fun),
-        "conditional_variance": s2,
-        "n": int(n),
-        "method": "GJR-GARCH(1,1) Gaussian MLE (numpy)",
-    })
+    return RichResult(
+        payload={
+            "omega": float(omega),
+            "alpha": float(alpha),
+            "gamma": float(gamma),
+            "beta": float(beta),
+            "persistence": float(alpha + 0.5 * gamma + beta),
+            "loglik": float(-fit.fun),
+            "conditional_variance": s2,
+            "n": int(n),
+            "method": "GJR-GARCH(1,1) Gaussian MLE (numpy)",
+        }
+    )
 
 
 # CANONICAL TEST: r ~ AR(1)/GJR-GARCH innovations, n=200; gamma should

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.g import hedges_g
+
 from morie.fn.d import cohens_d
+from morie.fn.g import hedges_g
 
 
 class TestHedgesG:

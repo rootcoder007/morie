@@ -1,6 +1,7 @@
 """Tests for shewh.shewhart."""
+
 import numpy as np
-import pytest
+
 from morie.fn.shewh import shewhart
 
 
@@ -11,7 +12,7 @@ def test_shewh_basic():
     sigma = 1.0
     result = shewhart(x, mu, sigma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_shewh_edge():

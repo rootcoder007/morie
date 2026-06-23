@@ -1,6 +1,6 @@
 """Tests for morie.fn.tmplb — template library matching."""
+
 import numpy as np
-import pytest
 
 from morie.fn.tmplb import template_library, tmplb
 

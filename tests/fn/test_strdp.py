@@ -1,6 +1,8 @@
 """Tests for morie.fn.strdp — Stratified propensity score."""
+
 import numpy as np
 import pytest
+
 from morie.fn.strdp import strdp
 
 
@@ -17,8 +19,7 @@ def data():
 
 def test_keys(data):
     r = strdp(*data)
-    for k in ("ate", "se", "ci_lower", "ci_upper", "stratum_effects",
-              "stratum_ns", "propensity", "n", "method"):
+    for k in ("ate", "se", "ci_lower", "ci_upper", "stratum_effects", "stratum_ns", "propensity", "n", "method"):
         assert k in r
 
 
@@ -55,4 +56,5 @@ def test_method(data):
 
 def test_cheatsheet():
     from morie.fn.strdp import cheatsheet
+
     assert len(cheatsheet()) > 0

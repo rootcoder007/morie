@@ -70,6 +70,7 @@ def avgde(
         raise ValueError("Need at least 10 observations.")
 
     from morie.fn.nwker import _get_kernel, _silverman_bw
+
     k_fn = _get_kernel(kernel)
 
     if bandwidth is None:

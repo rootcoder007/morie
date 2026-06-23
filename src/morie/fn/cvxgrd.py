@@ -1,6 +1,7 @@
 """Gradient descent step."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boyd_gradient_descent"]

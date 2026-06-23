@@ -1,5 +1,7 @@
 """Tests for morie.fn.stgwr."""
+
 import numpy as np
+
 from morie.fn.stgwr import gtwr
 
 
@@ -18,6 +20,7 @@ def test_stgwr_smoke():
 
 def test_cheatsheet():
     from morie.fn.stgwr import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

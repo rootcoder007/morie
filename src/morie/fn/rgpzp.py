@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pole-zero plot from transfer function coefficients."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_pole_zero_plot"]
@@ -32,7 +34,9 @@ def rangayyan_pole_zero_plot(b, a):
     n = int(b) if b.ndim == 0 else len(b)
     result = float(np.mean(b))
     se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pole-zero plot from transfer function coefficients"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pole-zero plot from transfer function coefficients"}
+    )
 
 
 def cheatsheet():

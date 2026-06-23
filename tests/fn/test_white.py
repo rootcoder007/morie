@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.white import white_test
+
 from morie.fn._containers import TestResult
+from morie.fn.white import white_test
 
 
 class TestWhite:

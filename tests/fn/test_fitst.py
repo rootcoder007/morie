@@ -1,5 +1,5 @@
 """Tests for morie.fn.fitst -- correct classification rate."""
-import numpy as np
+
 from morie.fn.fitst import fit_statistic_correct, fitst
 
 

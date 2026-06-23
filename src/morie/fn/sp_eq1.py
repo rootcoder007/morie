@@ -1,8 +1,8 @@
 """GeneralStochastic equation from D'Orsogna & Perc review.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["stochastic_physics_equation_1"]
 
@@ -41,7 +41,12 @@ def stochastic_physics_equation_1(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "GeneralStochastic equation from D'Orsogna & Perc review."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "GeneralStochastic equation from D'Orsogna & Perc review.",
+        },
     )
 
 

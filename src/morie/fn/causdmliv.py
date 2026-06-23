@@ -1,6 +1,7 @@
 """Double ML for instrumental variables."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_dml_iv"]

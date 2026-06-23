@@ -1,6 +1,7 @@
 """Tests for hmlntr.geron_layer_normalization."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlntr import geron_layer_normalization
 
 
@@ -12,7 +13,7 @@ def test_hmlntr_basic():
     eps = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_layer_normalization(x, gamma, beta, eps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlntr_edge():

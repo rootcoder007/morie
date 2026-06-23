@@ -1,14 +1,15 @@
 """Tests for morie.fn.pfcrc -- preference circles."""
 
 import numpy as np
-from morie.fn.pfcrc import preference_circles, pfcrc
+
+from morie.fn.pfcrc import pfcrc, preference_circles
 
 
 def test_pfcrc_smoke():
     r = pfcrc([0, 0], 1.0, n_points=50)
     assert r.name == "preference_circles"
     assert r.value.shape == (50, 2)
-    dists = np.sqrt(np.sum(r.value ** 2, axis=1))
+    dists = np.sqrt(np.sum(r.value**2, axis=1))
     assert np.allclose(dists, 1.0, atol=1e-10)
 
 

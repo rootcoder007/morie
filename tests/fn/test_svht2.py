@@ -1,7 +1,6 @@
 """Tests for morie.fn.svht2 -- Two-party Hotelling spatial competition"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svht2 import hotelling_2party
 

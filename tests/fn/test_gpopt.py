@@ -1,11 +1,12 @@
 """Tests for morie.fn.gpopt -- GP Bayesian optimization."""
 
 import numpy as np
+
 from morie.fn.gpopt import gp_optimize
 
 
 def _sphere(x):
-    return float(np.sum(x ** 2))
+    return float(np.sum(x**2))
 
 
 def test_returns_dict():

@@ -1,7 +1,7 @@
 """Tests for morie.fn.d2nnt -- Convert Cohen's d to NNT."""
 
 import numpy as np
-import pytest
+
 from morie.fn.d2nnt import d_to_nnt
 
 

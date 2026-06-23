@@ -60,7 +60,7 @@ def ldscr(
 
     if intercept_fixed is not None:
         y = chi2 - intercept_fixed
-        slope = float(np.sum(ld * y) / np.sum(ld ** 2))
+        slope = float(np.sum(ld * y) / np.sum(ld**2))
         intercept = intercept_fixed
         resid = y - slope * ld
     else:
@@ -73,7 +73,7 @@ def ldscr(
     M = p
     h2 = slope * M / n_gwas
 
-    mse = np.sum(resid ** 2) / max(p - 2, 1)
+    mse = np.sum(resid**2) / max(p - 2, 1)
     ld_var = np.var(ld)
     se_slope = np.sqrt(mse / (p * ld_var)) if ld_var > 0 else float("nan")
     se_h2 = se_slope * M / n_gwas

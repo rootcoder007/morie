@@ -41,4 +41,4 @@ swchr = solar_body_summary
 
 
 def cheatsheet() -> str:
-    return 'swchr() -> Summary statistics for Solar System body data'
+    return "swchr() -> Summary statistics for Solar System body data"

@@ -1,6 +1,7 @@
 """Tests for prophe.facebook_prophet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.prophe import facebook_prophet
 
 
@@ -11,7 +12,7 @@ def test_prophe_basic():
     seasonality = np.random.default_rng(42).normal(0, 1, 100)
     result = facebook_prophet(y, date, seasonality)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_prophe_edge():

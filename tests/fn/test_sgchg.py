@@ -1,5 +1,7 @@
 """Tests for sign_change_test."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.sgchg import sign_change_test
 
 

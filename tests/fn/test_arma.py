@@ -1,4 +1,5 @@
 """Tests for morie.fn.arma — ARIMA model fitting."""
+
 import numpy as np
 
 from morie.fn.arma import arima_fit, arma

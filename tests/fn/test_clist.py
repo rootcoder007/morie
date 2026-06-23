@@ -1,9 +1,8 @@
 """Tests for morie.fn.clist — cache list."""
 
 import pandas as pd
-import pytest
 
-from morie.fn.clist import clist, cache_list
+from morie.fn.clist import cache_list, clist
 from morie.fn.cstor import cstor
 
 

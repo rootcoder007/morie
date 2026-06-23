@@ -1,6 +1,7 @@
 """Test sinusd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sinusd import sinusd
 
 

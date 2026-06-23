@@ -1,6 +1,8 @@
 """Tests for vdadj."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdadj import vdadj
 
 
@@ -28,4 +30,5 @@ def test_vdadj_no_data():
 
 def test_vdadj_alias():
     from morie.fn.vdadj import vdadj
+
     assert vdadj is vdadj

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fork (common cause) structure A<-B->C: B is confounder."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fork_structure"]
@@ -36,7 +38,14 @@ def fork_structure(A, B, C, conditioned):
     n = int(A) if A.ndim == 0 else len(A)
     result = float(np.mean(A))
     se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fork (common cause) structure A<-B->C: B is confounder"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fork (common cause) structure A<-B->C: B is confounder",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,12 +1,11 @@
 """Tests for morie.fn.netcl — Node closeness centrality."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netcl import network_closeness
 
 
 class TestNetworkCloseness:
-
     def test_returns_dict(self):
         A = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]], dtype=float)
         result = network_closeness(A)

@@ -1,8 +1,9 @@
 """Tests for morie.fn.eps2 -- Epsilon-squared (Kelley, 1935)."""
 
 import pytest
-from morie.fn.eps2 import epsilon_squared
+
 from morie.fn._containers import ESRes
+from morie.fn.eps2 import epsilon_squared
 
 
 class TestEpsilonSquared:

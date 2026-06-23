@@ -358,6 +358,7 @@ def load_cpads_analysis_data(
         if auto_map and column_mapping is None:
             from .cpads import CPADS_REQUIRED_VARIABLES
             from .schema import infer_mapping
+
             column_mapping, scores = infer_mapping(raw, canonical=CPADS_REQUIRED_VARIABLES)
             warnings.warn(
                 "morie: auto_map=True inferred column mapping "
@@ -368,6 +369,7 @@ def load_cpads_analysis_data(
             )
         if column_mapping:
             from .schema import apply_mapping
+
             raw = apply_mapping(raw, column_mapping)
         return canonicalize_cpads_frame(raw)
 

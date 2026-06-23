@@ -1,6 +1,7 @@
 """Tests for hmlrpt.geron_linreg_pytorch."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlrpt import geron_linreg_pytorch
 
 
@@ -12,7 +13,7 @@ def test_hmlrpt_basic():
     lr = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_linreg_pytorch(X, y, epochs, lr)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlrpt_edge():

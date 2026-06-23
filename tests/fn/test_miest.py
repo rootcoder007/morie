@@ -1,11 +1,11 @@
 """Tests for morie.fn.miest -- MI effect sizes."""
 
 import pandas as pd
+
 from morie.fn.miest import mi_effect_size
 
 
 class TestMiEffectSize:
-
     def test_returns_dataframe(self):
         fits = [
             {"level": "configural", "delta_fit": {}},

@@ -1,6 +1,7 @@
 """Tests for ksr033.kosorok_ch2_uniform_covering_number."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr033 import kosorok_ch2_uniform_covering_number
 
 
@@ -11,7 +12,7 @@ def test_ksr033_basic():
     r = 10
     result = kosorok_ch2_uniform_covering_number(F, eps, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr033_edge():

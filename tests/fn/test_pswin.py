@@ -1,7 +1,7 @@
 """Tests for morie.fn.pswin."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pswin import pswin
 
 

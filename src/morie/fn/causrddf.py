@@ -1,6 +1,7 @@
 """Fuzzy RDD via Wald ratio of jumps."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_rdd_fuzzy"]

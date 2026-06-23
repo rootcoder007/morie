@@ -1,9 +1,10 @@
 """Test simpson_integrate (smpsn)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.smpsn import simpson_integrate, smpsn
 from morie.fn._containers import DescriptiveResult
+from morie.fn.smpsn import simpson_integrate, smpsn
 
 
 class TestSimpsonIntegrate:
@@ -16,7 +17,7 @@ class TestSimpsonIntegrate:
 
     def test_quadratic(self):
         t = np.linspace(0, 1, 101)
-        x = t ** 2
+        x = t**2
         result = simpson_integrate(x, dx=0.01)
         assert np.isclose(result.value, 1.0 / 3.0, atol=1e-5)
 

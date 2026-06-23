@@ -1,8 +1,9 @@
 """Tests for morie.fn.oblmn -- Oblimin rotation."""
 
 import numpy as np
-from morie.fn.oblmn import oblimin, oblmn
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.oblmn import oblimin, oblmn
 
 
 class TestOblimin:

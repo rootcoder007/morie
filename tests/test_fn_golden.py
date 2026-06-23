@@ -7,6 +7,7 @@ xfail-style: they fail strict mode but pass loose mode.
 Strict mode is governed by env var MORIE_GOLDEN_STRICT=1 — set in CI
 once enough fn are filled out that drift becomes meaningful.
 """
+
 from __future__ import annotations
 
 import os

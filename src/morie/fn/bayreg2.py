@@ -1,6 +1,7 @@
 """Bayesian robust regression (Student-t)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_robust"]
@@ -34,7 +35,9 @@ def bayes_robust(y, X, nu_prior):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian robust regression (Student-t)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayesian robust regression (Student-t)"}
+    )
 
 
 def cheatsheet():

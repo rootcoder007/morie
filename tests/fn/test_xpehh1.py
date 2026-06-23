@@ -1,6 +1,7 @@
 """Tests for xpehh1.xpehh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.xpehh1 import xpehh
 
 
@@ -10,7 +11,7 @@ def test_xpehh1_basic():
     haplotypes_p2 = np.random.default_rng(42).normal(0, 1, 100)
     result = xpehh(haplotypes_p1, haplotypes_p2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_xpehh1_edge():

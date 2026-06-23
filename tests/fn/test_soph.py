@@ -1,6 +1,7 @@
 """Test soph."""
+
 import numpy as np
-import pytest
+
 from morie.fn.soph import soph
 
 

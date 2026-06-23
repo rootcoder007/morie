@@ -1,6 +1,7 @@
 """Tests for vqgenc.vqgan_encode."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vqgenc import vqgan_encode
 
 
@@ -10,7 +11,7 @@ def test_vqgenc_basic():
     codebook = np.random.default_rng(42).normal(0, 1, 100)
     result = vqgan_encode(image, codebook)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_vqgenc_edge():

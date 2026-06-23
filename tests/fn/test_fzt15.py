@@ -1,6 +1,7 @@
 """Tests for fzt15.fauzi_thm1_5_consistency_mgkde."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fzt15 import fauzi_thm1_5_consistency_mgkde
 
 
@@ -10,7 +11,7 @@ def test_fzt15_basic():
     bandwidth = 0.3
     result = fauzi_thm1_5_consistency_mgkde(x, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fzt15_edge():

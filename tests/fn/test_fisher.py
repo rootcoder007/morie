@@ -1,6 +1,7 @@
 """Tests for morie.fn.fisher -- Fisher's exact test."""
 
 import pytest
+
 from morie.fn.fisher import fisher_exact_test
 
 

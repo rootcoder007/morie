@@ -1,6 +1,7 @@
 """Decomposition of a signal into even and odd parts.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_even_odd_decomposition"]
@@ -34,7 +35,9 @@ def rangayyan_ch3_even_odd_decomposition(x_e, x_o, n):
     n = len(x_e)
     result = float(np.mean(x_e))
     se = float(np.std(x_e, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Decomposition of a signal into even and odd parts."})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Decomposition of a signal into even and odd parts."}
+    )
 
 
 def cheatsheet():

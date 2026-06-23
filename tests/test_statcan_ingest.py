@@ -5,6 +5,7 @@ The live download (a ~567 MB StatCan PUMF zip) is not exercised here;
 these tests cover the zip/CSV extraction logic with synthetic archives
 and confirm the catalog wiring.
 """
+
 import zipfile
 
 import pytest
@@ -28,11 +29,14 @@ def test_csv_from_zip_reads_first_csv(tmp_path):
 
 
 def test_csv_from_zip_named_member(tmp_path):
-    z = _make_zip(tmp_path, {
-        "readme.txt": "ignore me",
-        "first.csv": "x\n1\n",
-        "second.csv": "y,z\n9,8\n",
-    })
+    z = _make_zip(
+        tmp_path,
+        {
+            "readme.txt": "ignore me",
+            "first.csv": "x\n1\n",
+            "second.csv": "y,z\n9,8\n",
+        },
+    )
     df = _csv_from_zip(z, member="second.csv")
     assert list(df.columns) == ["y", "z"]
 
@@ -51,6 +55,7 @@ def test_csv_from_zip_bad_member_raises(tmp_path):
 
 def test_cchs22_registered_in_catalog():
     from morie.data import DATASET_CATALOG
+
     entry = DATASET_CATALOG["cchs22"]
     assert entry["fetcher"] == "morie.ingest.statcan:fetch_statcan_csv"
     assert entry["fetcher_args"]["url"].endswith("2022_CSV.zip")

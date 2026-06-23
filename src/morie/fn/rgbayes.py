@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayes minimum-error classifier."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_bayes_classifier"]

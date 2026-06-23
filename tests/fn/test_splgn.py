@@ -1,7 +1,7 @@
 """Tests for morie.fn.splgn -- NASA-TLX."""
 
-from morie.fn.splgn import nasa_tlx, splgn
 from morie.fn._containers import DescriptiveResult
+from morie.fn.splgn import nasa_tlx, splgn
 
 
 class TestSplgn:

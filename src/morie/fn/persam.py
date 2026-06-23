@@ -72,4 +72,4 @@ def permutation_two_sample(
 
 
 def cheatsheet() -> str:
-    return 'persam() -> Two-sample permutation test for equality of distributions'
+    return "persam() -> Two-sample permutation test for equality of distributions"

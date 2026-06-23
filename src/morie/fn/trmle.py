@@ -81,13 +81,25 @@ def trmle(
         for k in range(n_basis):
             if deg > 0:
                 if k < deg:
-                    dlam += gamma[k] * deg * (
-                        bernstein_basis(y_scaled, max(k - 1, 0), max(deg - 1, 0)) * (1 if k > 0 else 0)
-                        - bernstein_basis(y_scaled, k, max(deg - 1, 0))
-                    ) if deg > 0 else 0
-            dlam_k = gamma[k] * deg * _comb(deg - 1, min(k, deg - 1)) * (
-                y_scaled ** max(k - 1, 0) * (1 - y_scaled) ** max(deg - 1 - max(k - 1, 0), 0)
-            ) / y_range if deg > 0 else gamma[k] / y_range
+                    dlam += (
+                        gamma[k]
+                        * deg
+                        * (
+                            bernstein_basis(y_scaled, max(k - 1, 0), max(deg - 1, 0)) * (1 if k > 0 else 0)
+                            - bernstein_basis(y_scaled, k, max(deg - 1, 0))
+                        )
+                        if deg > 0
+                        else 0
+                    )
+            dlam_k = (
+                gamma[k]
+                * deg
+                * _comb(deg - 1, min(k, deg - 1))
+                * (y_scaled ** max(k - 1, 0) * (1 - y_scaled) ** max(deg - 1 - max(k - 1, 0), 0))
+                / y_range
+                if deg > 0
+                else gamma[k] / y_range
+            )
             dlam += dlam_k
 
         dlam = np.maximum(dlam, 1e-15)
@@ -98,8 +110,7 @@ def trmle(
     b0_gamma = np.zeros(n_basis)
     params0 = np.concatenate([b0_beta, b0_gamma])
 
-    res = minimize(neg_ll, params0, method="L-BFGS-B",
-                   options={"maxiter": 300, "ftol": 1e-8})
+    res = minimize(neg_ll, params0, method="L-BFGS-B", options={"maxiter": 300, "ftol": 1e-8})
 
     beta = res.x[:p]
     gamma = np.cumsum(np.exp(res.x[p:]))
@@ -110,6 +121,7 @@ def trmle(
 
     try:
         from scipy.optimize import approx_fprime
+
         H = np.zeros((p, p))
         for i in range(p):
             ei = np.zeros(len(res.x))

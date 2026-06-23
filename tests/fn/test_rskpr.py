@@ -1,7 +1,8 @@
 """Tests for morie.fn.rskpr — risk profile by subgroups."""
 
 import pandas as pd
-from morie.fn.rskpr import risk_profile, rskpr
+
+from morie.fn.rskpr import risk_profile
 
 
 class TestRiskProfile:

@@ -1,6 +1,7 @@
 """Test gcaer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcaer import gcaer
 
 

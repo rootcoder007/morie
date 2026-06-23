@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrgrv -- Gravity spatial interaction"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrgrv import gravity_model
 

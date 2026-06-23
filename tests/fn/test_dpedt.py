@@ -1,6 +1,7 @@
 """Tests for dpedt.dp_exchangeable_distribution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpedt import dp_exchangeable_distribution
 
 
@@ -10,7 +11,7 @@ def test_dpedt_basic():
     alpha = 0.05
     result = dp_exchangeable_distribution(partition, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpedt_edge():

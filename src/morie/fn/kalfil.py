@@ -98,4 +98,4 @@ kalfil = kalman_filter
 
 
 def cheatsheet() -> str:
-    return 'kalman_filter({}) -> Kalman filter tracking.'
+    return "kalman_filter({}) -> Kalman filter tracking."

@@ -6,7 +6,7 @@ Probabilistically accepts uphill moves to escape local minima.
 
 import numpy as np
 
-__all__ = ['simag']
+__all__ = ["simag"]
 
 
 def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_output=False, seed=None):
@@ -89,9 +89,5 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
         T *= cooling_rate
 
     if full_output:
-        return x_best, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f_best
-        }
+        return x_best, {"iterations": max_iter, "converged": False, "final_value": f_best}
     return x_best

@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def fuzzy_inference(
     rules,
     inputs,

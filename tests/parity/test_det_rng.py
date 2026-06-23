@@ -9,6 +9,7 @@ Verifies:
   * r_seed() is stable, deterministic, and within R's int32 range.
   * sha_digest_hex() returns a 64-char lowercase hex string.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -17,7 +18,6 @@ import sys
 import types
 
 import numpy as np
-import pytest
 from scipy import stats
 
 # Load morie._det_rng directly to avoid hitting the package __init__ which
@@ -28,9 +28,7 @@ if "morie" not in sys.modules:
     pkg.__path__ = [BASE]
     sys.modules["morie"] = pkg
 
-_spec = importlib.util.spec_from_file_location(
-    "morie._det_rng", os.path.join(BASE, "_det_rng.py")
-)
+_spec = importlib.util.spec_from_file_location("morie._det_rng", os.path.join(BASE, "_det_rng.py"))
 _det_rng = importlib.util.module_from_spec(_spec)
 sys.modules["morie._det_rng"] = _det_rng
 _spec.loader.exec_module(_det_rng)
@@ -41,6 +39,7 @@ sha_digest_hex = _det_rng.sha_digest_hex
 
 
 # ----- reproducibility -----------------------------------------------------
+
 
 def test_from_seed_reproducible_same_call():
     """Two calls to from_seed(name, seed) yield identical first-10 draws."""
@@ -75,6 +74,7 @@ def test_from_seed_first_10_pinned():
 
 
 # ----- independence across names ------------------------------------------
+
 
 def test_different_names_uniformly_distributed():
     """Each named stream is itself ~Uniform(0, 1)."""
@@ -116,6 +116,7 @@ def test_different_seeds_same_name_independent():
 
 # ----- r_seed contract -----------------------------------------------------
 
+
 def test_r_seed_in_int32_range():
     """r_seed must fit in R's signed int32 (and be positive)."""
     for name in ("foo", "ksr07_bootstrap", "trfge"):
@@ -141,6 +142,7 @@ def test_r_seed_distinct_for_distinct_inputs():
 
 # ----- sha_digest_hex contract --------------------------------------------
 
+
 def test_sha_digest_hex_format():
     """SHA-256 hex digest is 64 lowercase hex chars."""
     h = sha_digest_hex("foo", 42)
@@ -162,6 +164,7 @@ def test_sha_digest_hex_known_value():
 
 
 # ----- Py<->R seed-derivation parity (no R needed) -------------------------
+
 
 def test_r_seed_pinned_value():
     """r_seed('foo', 42) is pinned to a specific value.

@@ -1,6 +1,7 @@
 """Tests for hmrad.geron_reverse_autodiff."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmrad import geron_reverse_autodiff
 
 
@@ -10,7 +11,7 @@ def test_hmrad_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_reverse_autodiff(f, x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmrad_edge():

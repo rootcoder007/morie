@@ -116,11 +116,7 @@ def drctr(
         mu1_te = np.column_stack([np.ones((n_te, 1)), X_te, np.ones(n_te)]) @ beta_out
         mu0_te = np.column_stack([np.zeros((n_te, 1)), X_te, np.ones(n_te)]) @ beta_out
 
-        ic_k = (
-            mu1_te - mu0_te
-            + T_te * (Y_te - mu1_te) / ps_te
-            - (1 - T_te) * (Y_te - mu0_te) / (1 - ps_te)
-        )
+        ic_k = mu1_te - mu0_te + T_te * (Y_te - mu1_te) / ps_te - (1 - T_te) * (Y_te - mu0_te) / (1 - ps_te)
 
         ic_all[test_mask] = ic_k
         fold_estimates.append(float(np.mean(ic_k)))

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nernst equilibrium potential for ionic species."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_nernst_potential"]
@@ -36,7 +38,9 @@ def rangayyan_nernst_potential(T, z, conc_out, conc_in):
     n = int(z) if z.ndim == 0 else len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nernst equilibrium potential for ionic species"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Nernst equilibrium potential for ionic species"}
+    )
 
 
 def cheatsheet():

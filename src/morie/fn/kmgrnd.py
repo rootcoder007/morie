@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Groundedness reward: fraction of answer tokens supported by retrieved context."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_groundedness_reward"]
@@ -32,7 +34,14 @@ def kamath_groundedness_reward(y_tokens, ctx_tokens):
     n = len(y_tokens)
     result = float(np.mean(y_tokens))
     se = float(np.std(y_tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Groundedness reward: fraction of answer tokens supported by retrieved context"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Groundedness reward: fraction of answer tokens supported by retrieved context",
+        }
+    )
 
 
 def cheatsheet():

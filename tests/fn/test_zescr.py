@@ -1,7 +1,6 @@
 """Tests for morie.fn.zescr -- Spatial cure rate model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zescr import spatial_cure_rate
 

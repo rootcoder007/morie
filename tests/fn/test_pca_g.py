@@ -1,6 +1,8 @@
 """Tests for morie.fn.pca_g — genotype PCA."""
+
 import numpy as np
 import pytest
+
 from morie.fn.pca_g import pca_genotype
 
 

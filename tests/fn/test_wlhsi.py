@@ -1,6 +1,7 @@
 """Test wlhsi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlhsi import wlhsi
 
 

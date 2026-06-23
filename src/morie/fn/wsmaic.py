@@ -1,6 +1,7 @@
 """AIC = -2 l_hat + 2 k."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["wasserman_aic"]

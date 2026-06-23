@@ -1,6 +1,9 @@
 """Tests for least_median_sq."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.lms import least_median_sq
+
 
 class TestLMS:
     def test_basic(self):

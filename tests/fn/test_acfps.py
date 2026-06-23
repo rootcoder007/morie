@@ -1,6 +1,7 @@
 """Tests for acfps.py - ACF from PSD."""
+
 import numpy as np
-import pytest
+
 from morie.fn.acfps import acf_from_psd_fn, acfps
 
 

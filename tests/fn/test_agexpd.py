@@ -1,6 +1,7 @@
 """Tests for agexpd.alphazero_expand."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agexpd import alphazero_expand
 
 
@@ -10,7 +11,7 @@ def test_agexpd_basic():
     policy_net = np.random.default_rng(42).normal(0, 1, 100)
     result = alphazero_expand(state, policy_net)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_agexpd_edge():

@@ -1,6 +1,5 @@
 """Tests for morie.fn.remeta -- random-effects meta-analysis."""
 
-import pytest
 from morie.fn.remeta import random_effects_meta
 
 

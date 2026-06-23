@@ -1,7 +1,6 @@
 """Tests for morie.fn.svcm2 -- 2D committee decision"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svcm2 import committee_2d
 

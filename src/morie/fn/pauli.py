@@ -4,6 +4,7 @@
 __all__ = ["pauli"]
 
 import numpy as np
+
 from ._richresult import RichResult
 
 
@@ -72,11 +73,7 @@ def pauli(
     elif operator == "minus":
         return RichResult(payload={"operator": sm})
     elif operator == "n_dot_sigma":
-        n_sig = (
-            np.sin(theta) * np.cos(phi) * sx
-            + np.sin(theta) * np.sin(phi) * sy
-            + np.cos(theta) * sz
-        )
+        n_sig = np.sin(theta) * np.cos(phi) * sx + np.sin(theta) * np.sin(phi) * sy + np.cos(theta) * sz
         eigenvalues = np.linalg.eigvalsh(n_sig)
         return {
             "operator": n_sig,

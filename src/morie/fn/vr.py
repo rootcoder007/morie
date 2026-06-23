@@ -10,7 +10,9 @@ from ._containers import ESRes
 from ._helpers import _arr
 
 
-def variance_ratio(x: Union[np.ndarray, pd.Series, list], y: Union[np.ndarray, pd.Series, list], confidence: float = 0.95, cdf=None) -> ESRes:
+def variance_ratio(
+    x: Union[np.ndarray, pd.Series, list], y: Union[np.ndarray, pd.Series, list], confidence: float = 0.95, cdf=None
+) -> ESRes:
     """Variance ratio (F-test for equality of variances).
 
     Parameters

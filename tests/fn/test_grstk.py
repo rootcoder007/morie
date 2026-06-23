@@ -1,6 +1,7 @@
 """Tests for grstk.geron_stacking_predictor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grstk import geron_stacking_predictor
 
 
@@ -10,7 +11,7 @@ def test_grstk_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = geron_stacking_predictor(base_preds, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grstk_edge():

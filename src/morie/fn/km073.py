@@ -1,6 +1,7 @@
 r"""Pref sigmoid form.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_pref_sigmoid_form"]

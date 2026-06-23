@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """i.i.d. contraction in L1: rate from entropy integral and prior mass."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_contraction_rate_iid"]
@@ -30,7 +32,14 @@ def ghosal_contraction_rate_iid(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "i.i.d. contraction in L1: rate from entropy integral and prior mass"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "i.i.d. contraction in L1: rate from entropy integral and prior mass",
+        }
+    )
 
 
 def cheatsheet():

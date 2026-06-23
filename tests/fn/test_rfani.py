@@ -1,6 +1,8 @@
 """Tests for rfani."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfani import rfani
 
 
@@ -28,4 +30,5 @@ def test_rfani_no_data():
 
 def test_rfani_alias():
     from morie.fn.rfani import rfani
+
     assert rfani is rfani

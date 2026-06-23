@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Akaike information criterion for cluster-number selection."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_aic"]
@@ -32,7 +34,14 @@ def geron_aic(log_lik, k):
     n = len(log_lik)
     result = float(np.mean(log_lik))
     se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Akaike information criterion for cluster-number selection"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Akaike information criterion for cluster-number selection",
+        }
+    )
 
 
 def cheatsheet():

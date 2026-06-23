@@ -1,6 +1,7 @@
 """Tests for diripr.dirichlet_multinomial."""
+
 import numpy as np
-import pytest
+
 from morie.fn.diripr import dirichlet_multinomial
 
 
@@ -10,7 +11,7 @@ def test_diripr_basic():
     alpha = 0.05
     result = dirichlet_multinomial(counts, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_diripr_edge():

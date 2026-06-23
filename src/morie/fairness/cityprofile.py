@@ -16,6 +16,7 @@ This is the generalisation step the SciencesPo
 Aeby, 2021) did not need — that study was Chicago-only.  morie keeps
 the *method* and drops the city assumption.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -88,8 +89,7 @@ _REGISTRY: dict[str, CityProfile] = {
         outcome_col="outcome",
         population_col="population",
         group_col="group",
-        notes="Identity profile — the DataFrame already uses the "
-              "canonical column names.",
+        notes="Identity profile — the DataFrame already uses the canonical column names.",
     ),
 }
 
@@ -106,10 +106,7 @@ def register_city(profile: CityProfile, *, overwrite: bool = False) -> None:
     """
     key = profile.name.strip().lower()
     if key in _REGISTRY and not overwrite:
-        raise ValueError(
-            f"city {key!r} is already registered; pass overwrite=True "
-            f"to replace it"
-        )
+        raise ValueError(f"city {key!r} is already registered; pass overwrite=True to replace it")
     _REGISTRY[key] = profile
 
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rate of convergence n^{-1/2} for beta in single-index models."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_rate_beta_estimation"]
@@ -34,7 +36,14 @@ def horowitz_rate_beta_estimation(x, y, bandwidth):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rate of convergence n^{-1/2} for beta in single-index models"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Rate of convergence n^{-1/2} for beta in single-index models",
+        }
+    )
 
 
 def cheatsheet():

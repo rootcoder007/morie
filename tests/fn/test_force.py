@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.force import ate_diff, force
+
 from morie.fn._containers import ESRes
+from morie.fn.force import ate_diff, force
 
 
 class TestForce:

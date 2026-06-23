@@ -1,6 +1,7 @@
 """Test agnp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agnp import agnp
 
 

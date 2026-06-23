@@ -1,6 +1,7 @@
 """Tests for rng208.rangayyan_ch4_matched_filter_output_inverse_ft."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng208 import rangayyan_ch4_matched_filter_output_inverse_ft
 
 
@@ -13,7 +14,7 @@ def test_rng208_basic():
     t = np.linspace(0, 10, 100)
     result = rangayyan_ch4_matched_filter_output_inverse_ft(X, H, omega, f, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng208_edge():

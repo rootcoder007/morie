@@ -1,8 +1,9 @@
 """Tests for morie.fn.hotrd -- Newton's method convergence."""
 
 import numpy as np
-from morie.fn.hotrd import newton_convergence, hotrd
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hotrd import hotrd, newton_convergence
 
 
 class TestHotrd:
@@ -12,7 +13,7 @@ class TestHotrd:
     def test_sqrt2(self):
         r = newton_convergence(
             f=lambda x: x**2 - 2,
-            fprime=lambda x: 2*x,
+            fprime=lambda x: 2 * x,
             x0=1.5,
         )
         assert isinstance(r, DescriptiveResult)
@@ -21,7 +22,7 @@ class TestHotrd:
     def test_convergence_order(self):
         r = newton_convergence(
             f=lambda x: x**3 - 1,
-            fprime=lambda x: 3*x**2,
+            fprime=lambda x: 3 * x**2,
             x0=2.0,
         )
         assert r.extra["n_iter"] < 20

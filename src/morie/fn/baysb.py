@@ -69,7 +69,7 @@ def baysb(
         scale_prior = np.var(y) / n_qtl * (df_prior - 2.0) / df_prior
         scale_prior = max(scale_prior, 1e-8)
 
-    ztz = np.sum(Z ** 2, axis=0)
+    ztz = np.sum(Z**2, axis=0)
 
     g = np.zeros(p)
     var_e = np.var(y) * 0.5
@@ -89,10 +89,7 @@ def baysb(
             mean_slab = rhs / lhs_slab
             var_slab = var_e / lhs_slab
 
-            log_bf_slab = (
-                0.5 * np.log(var_e / (var_m[j] * lhs_slab + 1e-30))
-                + 0.5 * mean_slab ** 2 / var_slab
-            )
+            log_bf_slab = 0.5 * np.log(var_e / (var_m[j] * lhs_slab + 1e-30)) + 0.5 * mean_slab**2 / var_slab
             log_odds = np.log(max(1 - pi, 1e-12)) - np.log(max(pi, 1e-12)) + log_bf_slab
             prob_in = 1.0 / (1.0 + np.exp(-np.clip(log_odds, -500, 500)))
 
@@ -111,7 +108,7 @@ def baysb(
                 var_m[j] = scale_post / rng.gamma(shape)
 
         shape_e = (n - 2.0) / 2.0
-        scale_e = np.sum(e ** 2) / 2.0
+        scale_e = np.sum(e**2) / 2.0
         if shape_e > 0:
             var_e = scale_e / rng.gamma(shape_e)
 

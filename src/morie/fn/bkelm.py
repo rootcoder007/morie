@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_elman_rnn"]
@@ -42,7 +44,14 @@ def burkov_elman_rnn(x_t, h_prev, Wh, Wx, Wy, bh, by):
     n = len(x_t)
     result = float(np.mean(x_t))
     se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)",
+        }
+    )
 
 
 def cheatsheet():

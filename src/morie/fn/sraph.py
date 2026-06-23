@@ -110,4 +110,4 @@ sraph = validate_inputs
 
 
 def cheatsheet() -> str:
-    return 'validate_inputs({}) -> Input validation / sanitization metrics.'
+    return "validate_inputs({}) -> Input validation / sanitization metrics."

@@ -1,6 +1,7 @@
 """Tests for grauc.geron_auc_roc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grauc import geron_auc_roc
 
 
@@ -10,7 +11,7 @@ def test_grauc_basic():
     y_scores = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_auc_roc(y_true, y_scores)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grauc_edge():

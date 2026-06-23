@@ -6,9 +6,7 @@ import numpy as np
 from ._containers import DescriptiveResult
 
 
-def des(
-    y: np.ndarray, alpha: float = 0.3, beta: float = 0.1, h: int = 1
-) -> DescriptiveResult:
+def des(y: np.ndarray, alpha: float = 0.3, beta: float = 0.1, h: int = 1) -> DescriptiveResult:
     r"""
     Double exponential smoothing (Holt's linear trend).
 

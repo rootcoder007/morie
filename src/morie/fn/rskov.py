@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
+
 from ._richresult import RichResult
 
 
@@ -38,7 +39,9 @@ def risk_overlap(
     tmp = df[[score_col, group_col]].dropna()
     groups = tmp[group_col].unique()
     if len(groups) < 2:
-        return RichResult(payload={"ks_stat": np.nan, "ks_p": np.nan, "overlap_coeff": np.nan, "n_group0": len(tmp), "n_group1": 0})
+        return RichResult(
+            payload={"ks_stat": np.nan, "ks_p": np.nan, "overlap_coeff": np.nan, "n_group0": len(tmp), "n_group1": 0}
+        )
 
     g0 = tmp.loc[tmp[group_col] == groups[0], score_col].values
     g1 = tmp.loc[tmp[group_col] == groups[1], score_col].values

@@ -1,4 +1,5 @@
 """Tests for morie.fn.plurl — Plurality voting."""
+
 from morie.fn.plurl import plurl
 
 

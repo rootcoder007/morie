@@ -1,6 +1,7 @@
 """Tests for hmstr.geron_stratified_sampling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmstr import geron_stratified_sampling
 
 
@@ -12,7 +13,7 @@ def test_hmstr_basic():
     n_total = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_stratified_sampling(X, y, stratum, n_total)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmstr_edge():

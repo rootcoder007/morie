@@ -1,8 +1,9 @@
 """Tests for morie.fn.mtexp -- Matrix exponential."""
 
 import numpy as np
-from morie.fn.mtexp import matrix_exp, mtexp
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtexp import matrix_exp, mtexp
 
 
 class TestMtexp:

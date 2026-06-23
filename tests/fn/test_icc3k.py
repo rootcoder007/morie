@@ -1,6 +1,7 @@
 """Tests for icc3k.icc_two_way_mixed_avg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.icc3k import icc_two_way_mixed_avg
 
 
@@ -11,7 +12,7 @@ def test_icc3k_basic():
     rater = np.random.default_rng(42).normal(0, 1, 100)
     result = icc_two_way_mixed_avg(y, subject, rater)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_icc3k_edge():

@@ -1,7 +1,10 @@
 """Tests for cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u10.cornelius_llewellyn_j_harrington_donna_a_social_justice_appr_chapter_7_unnumbered_10."""
+
 import numpy as np
-import pytest
-from morie.fn.cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u10 import cornelius_llewellyn_j_harrington_donna_a_social_justice_appr_chapter_7_unnumbered_10
+
+from morie.fn.cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u10 import (
+    cornelius_llewellyn_j_harrington_donna_a_social_justice_appr_chapter_7_unnumbered_10,
+)
 
 
 def test_cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u10_basic():
@@ -9,7 +12,7 @@ def test_cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u10_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = cornelius_llewellyn_j_harrington_donna_a_social_justice_appr_chapter_7_unnumbered_10(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u10_edge():

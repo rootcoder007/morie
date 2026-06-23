@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variance of Spearman rho under null hypothesis."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_spearman_rho_var"]
@@ -33,7 +35,9 @@ def gibbons_spearman_rho_var(n):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variance of Spearman rho under null hypothesis"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Variance of Spearman rho under null hypothesis"}
+    )
 
 
 def cheatsheet():

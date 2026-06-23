@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FlashAttention (IO-aware tiled softmax; Dao et al. 2022)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["flash_attention"]
 
 
-def flash_attention(Q, K=None, V=None, block_size: int = 32,
-                    mask=None):
+def flash_attention(Q, K=None, V=None, block_size: int = 32, mask=None):
     """Tiled scaled-dot-product attention with the online-softmax
     recurrence used by FlashAttention.
 
@@ -59,8 +59,7 @@ def flash_attention(Q, K=None, V=None, block_size: int = 32,
     return RichResult(
         title="FlashAttention (Dao 2022)",
         summary_lines=[("N", N), ("d", d), ("block_size", block_size)],
-        payload={"tensor": out, "block_size": block_size,
-                 "method": "flash-attention"},
+        payload={"tensor": out, "block_size": block_size, "method": "flash-attention"},
     )
 
 

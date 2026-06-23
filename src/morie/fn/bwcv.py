@@ -68,6 +68,7 @@ def bwcv(
         raise ValueError(f"Unknown method '{method}'. Choose from {valid_methods}.")
 
     from morie.fn.nwker import _get_kernel, _silverman_bw
+
     k_fn = _get_kernel(kernel)
     h_ref = _silverman_bw(x)
 
@@ -90,6 +91,7 @@ def bwcv(
             y_hat_loo = (w * y[None, :]).sum(axis=1) / denom
             return float(np.mean((y - y_hat_loo) ** 2))
     else:
+
         def cv_obj(h):
             if h <= 0:
                 return 1e30
@@ -99,7 +101,7 @@ def bwcv(
             f_all = w.sum(axis=1) / (n * h)
             np.fill_diagonal(w, 0.0)
             f_loo = w.sum(axis=1) / ((n - 1) * h)
-            return float(np.mean(f_all ** 2) - 2 * np.mean(f_loo))
+            return float(np.mean(f_all**2) - 2 * np.mean(f_loo))
 
     result = minimize_scalar(cv_obj, bounds=bw_range, method="bounded")
     return {

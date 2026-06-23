@@ -61,4 +61,4 @@ winmea = winsorized_mean
 
 
 def cheatsheet() -> str:
-    return 'winmea() -> Winsorized mean: replace extreme values at both tails then average'
+    return "winmea() -> Winsorized mean: replace extreme values at both tails then average"

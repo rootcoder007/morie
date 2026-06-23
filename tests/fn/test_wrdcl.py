@@ -1,5 +1,7 @@
 """Tests for morie.fn.wrdcl."""
+
 import numpy as np
+
 from morie.fn.wrdcl import word_cloud_data
 
 
@@ -13,6 +15,7 @@ def test_wrdcl_smoke():
 
 def test_cheatsheet():
     from morie.fn.wrdcl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

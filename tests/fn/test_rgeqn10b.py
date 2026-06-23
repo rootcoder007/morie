@@ -1,6 +1,7 @@
 """Tests for rgeqn10b.rangayyan_ch10_roc_optimal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgeqn10b import rangayyan_ch10_roc_optimal
 
 
@@ -12,7 +13,7 @@ def test_rgeqn10b_basic():
     priors = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch10_roc_optimal(fpr, tpr, cost_matrix, priors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgeqn10b_edge():

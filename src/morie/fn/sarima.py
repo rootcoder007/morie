@@ -1,6 +1,7 @@
 """SARIMA(p,d,q)(P,D,Q)_s."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["seasonal_arima"]

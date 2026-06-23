@@ -1,7 +1,7 @@
 """Tests for morie.fn.svlut."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svlut import svlut
 
 

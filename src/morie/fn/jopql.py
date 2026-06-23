@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pinball (quantile) loss for quantile tau."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_pinball_quantile_loss"]
@@ -34,7 +36,9 @@ def joseph_pinball_quantile_loss(y, q, tau):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pinball (quantile) loss for quantile tau"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pinball (quantile) loss for quantile tau"}
+    )
 
 
 def cheatsheet():

@@ -13,9 +13,6 @@ All emit RichResult.
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
-
 import numpy as np
 import pandas as pd
 
@@ -32,17 +29,14 @@ def _hood_counts(df: pd.DataFrame, col: str = "HOOD_158") -> pd.Series:
     return s.value_counts()
 
 
-def yoy_panel(categories: list[str] | None = None,
-              *, sample_rows: int | None = 50_000) -> RichResult:
+def yoy_panel(categories: list[str] | None = None, *, sample_rows: int | None = 50_000) -> RichResult:
     """Side-by-side year-over-year panel across TPS categories."""
     cats = categories or sorted(TPS_REGISTRY.keys())
     series = {}
     for cat in cats:
         try:
             df = load_tps_dataset(cat, nrows=sample_rows)
-            yc = "OCC_YEAR" if "OCC_YEAR" in df.columns else (
-                "REPORT_YEAR" if "REPORT_YEAR" in df.columns else None
-            )
+            yc = "OCC_YEAR" if "OCC_YEAR" in df.columns else ("REPORT_YEAR" if "REPORT_YEAR" in df.columns else None)
             if yc:
                 s = df.groupby(yc).size()
                 s = s[(s.index >= 1990) & (s.index <= 2030)]
@@ -62,19 +56,23 @@ def yoy_panel(categories: list[str] | None = None,
             ("Years", f"{int(panel.index.min())}–{int(panel.index.max())}"),
             ("Total category-years", int(panel.shape[0] * panel.shape[1])),
         ],
-        tables=[{
-            "title": "Incidents per OCC_YEAR (rows) × Category (cols):",
-            "headers": ["OCC_YEAR"] + list(panel.columns),
-            "rows": [[int(y)] + list(map(int, row))
-                     for y, row in panel.iterrows()],
-        }],
+        tables=[
+            {
+                "title": "Incidents per OCC_YEAR (rows) × Category (cols):",
+                "headers": ["OCC_YEAR"] + list(panel.columns),
+                "rows": [[int(y)] + list(map(int, row)) for y, row in panel.iterrows()],
+            }
+        ],
     )
 
 
-def composite_index(categories: list[str] | None = None,
-                    *, sample_rows: int | None = 50_000,
-                    weights: dict[str, float] | None = None,
-                    top_n: int = 25) -> RichResult:
+def composite_index(
+    categories: list[str] | None = None,
+    *,
+    sample_rows: int | None = 50_000,
+    weights: dict[str, float] | None = None,
+    top_n: int = 25,
+) -> RichResult:
     """Build a composite per-neighbourhood crime-risk index.
 
     For each category, count incidents per HOOD_158, z-standardise
@@ -111,9 +109,12 @@ def composite_index(categories: list[str] | None = None,
     w = weights or {c: 1.0 for c in panel.columns}
     weight_vec = np.array([w.get(c, 0.0) for c in panel.columns])
     composite = panel.values @ weight_vec
-    out = pd.DataFrame({
-        "hood": panel.index, "composite": composite,
-    }).sort_values("composite", ascending=False)
+    out = pd.DataFrame(
+        {
+            "hood": panel.index,
+            "composite": composite,
+        }
+    ).sort_values("composite", ascending=False)
     return RichResult(
         title="TPS -- composite crime-risk index per neighbourhood",
         summary_lines=[
@@ -121,20 +122,20 @@ def composite_index(categories: list[str] | None = None,
             ("Neighbourhoods scored", int(panel.shape[0])),
             ("Mean weight", round(float(weight_vec.mean()), 3)),
             ("Mean composite", round(float(composite.mean()), 3)),
-            ("Max composite",
-                round(float(composite.max()), 3)),
+            ("Max composite", round(float(composite.max()), 3)),
         ],
-        tables=[{
-            "title": f"Top {top_n} neighbourhoods (highest composite):",
-            "headers": ["HOOD_158", "Composite z-sum"],
-            "rows": [[str(r.hood), round(float(r.composite), 3)]
-                     for r in out.head(top_n).itertuples()],
-        }, {
-            "title": f"Bottom {top_n} neighbourhoods (lowest composite):",
-            "headers": ["HOOD_158", "Composite z-sum"],
-            "rows": [[str(r.hood), round(float(r.composite), 3)]
-                     for r in out.tail(top_n)[::-1].itertuples()],
-        }],
+        tables=[
+            {
+                "title": f"Top {top_n} neighbourhoods (highest composite):",
+                "headers": ["HOOD_158", "Composite z-sum"],
+                "rows": [[str(r.hood), round(float(r.composite), 3)] for r in out.head(top_n).itertuples()],
+            },
+            {
+                "title": f"Bottom {top_n} neighbourhoods (lowest composite):",
+                "headers": ["HOOD_158", "Composite z-sum"],
+                "rows": [[str(r.hood), round(float(r.composite), 3)] for r in out.tail(top_n)[::-1].itertuples()],
+            },
+        ],
         interpretation=(
             "Composite is the unweighted (or weighted) sum of "
             "z-standardised counts across all loaded TPS categories. "
@@ -142,14 +143,13 @@ def composite_index(categories: list[str] | None = None,
             "the included crime types; near-zero = average; negative = "
             "below-average exposure across categories."
         ),
-        payload={"used": used,
-                 "ranking": out.head(50).to_dict("records")},
+        payload={"used": used, "ranking": out.head(50).to_dict("records")},
     )
 
 
-def bivariate_morans_i(cat_a: str, cat_b: str,
-                       *, sample_rows: int | None = 50_000,
-                       k_neighbours: int = 5) -> RichResult:
+def bivariate_morans_i(
+    cat_a: str, cat_b: str, *, sample_rows: int | None = 50_000, k_neighbours: int = 5
+) -> RichResult:
     """Bivariate Moran's I -- does category A's count in a hood
     correlate with category B's count in NEIGHBOURING hoods?
     """
@@ -166,8 +166,11 @@ def bivariate_morans_i(cat_a: str, cat_b: str,
     a = a.loc[common].astype(float)
     b = b.loc[common].astype(float)
     # Centroid per hood from category A's lat/lon (close enough)
-    cents = (df_a.dropna(subset=["HOOD_158", "LAT_WGS84", "LONG_WGS84"])
-                  .groupby("HOOD_158")[["LAT_WGS84", "LONG_WGS84"]].mean())
+    cents = (
+        df_a.dropna(subset=["HOOD_158", "LAT_WGS84", "LONG_WGS84"])
+        .groupby("HOOD_158")[["LAT_WGS84", "LONG_WGS84"]]
+        .mean()
+    )
     cents = cents.loc[cents.index.intersection(common)]
     coords = cents[["LAT_WGS84", "LONG_WGS84"]].values
     n = coords.shape[0]
@@ -207,10 +210,8 @@ def bivariate_morans_i(cat_a: str, cat_b: str,
             ("Bivariate Moran's I_AB", round(I_ab, 4)),
             ("Pearson r (non-spatial)", round(r, 4)),
             ("k-nearest neighbours", min(k_neighbours, n - 1)),
-            ("z-A range",
-                f"{z_a.min():.2f} … {z_a.max():.2f}"),
-            ("z-B range",
-                f"{z_b.min():.2f} … {z_b.max():.2f}"),
+            ("z-A range", f"{z_a.min():.2f} … {z_a.max():.2f}"),
+            ("z-B range", f"{z_b.min():.2f} … {z_b.max():.2f}"),
         ],
         interpretation=(
             f"I_AB={I_ab:+.3f}, Pearson r={r:+.3f}. Positive I_AB means "
@@ -234,8 +235,7 @@ def category_correlation_matrix(*, sample_rows: int | None = 50_000) -> RichResu
         except Exception:
             pass
     if not series:
-        return RichResult(title="TPS correlation matrix",
-                          warnings=["no data"])
+        return RichResult(title="TPS correlation matrix", warnings=["no data"])
     panel = pd.concat(series, axis=1).fillna(0).astype(float)
     corr = panel.corr().round(3)
     return RichResult(
@@ -244,10 +244,11 @@ def category_correlation_matrix(*, sample_rows: int | None = 50_000) -> RichResu
             ("Categories", len(series)),
             ("Hoods (union)", int(panel.shape[0])),
         ],
-        tables=[{
-            "title": "Pearson r between per-hood counts (categories ↔ categories):",
-            "headers": [""] + list(corr.columns),
-            "rows": [[idx] + [float(v) for v in row]
-                     for idx, row in corr.iterrows()],
-        }],
+        tables=[
+            {
+                "title": "Pearson r between per-hood counts (categories ↔ categories):",
+                "headers": [""] + list(corr.columns),
+                "rows": [[idx] + [float(v) for v in row] for idx, row in corr.iterrows()],
+            }
+        ],
     )

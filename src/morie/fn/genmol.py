@@ -1,6 +1,7 @@
 """VAE/diffusion generative chemistry sampler."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["generative_chemistry"]
@@ -34,7 +35,9 @@ def generative_chemistry(model, n_samples, conditions):
     n = len(model)
     result = float(np.mean(model))
     se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "VAE/diffusion generative chemistry sampler"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "VAE/diffusion generative chemistry sampler"}
+    )
 
 
 def cheatsheet():

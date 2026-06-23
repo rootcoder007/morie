@@ -1,6 +1,8 @@
 """Tests for chlbnd."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlbnd import chlbnd
 
 
@@ -28,4 +30,5 @@ def test_chlbnd_no_data():
 
 def test_chlbnd_alias():
     from morie.fn.chlbnd import chlbnd
+
     assert chlbnd is chlbnd

@@ -1,24 +1,25 @@
 """Tests for morie.fn.cfa — Confirmatory Factor Analysis."""
 
-import numpy as np
 import pandas as pd
-import pytest
-from morie.fn.cfa import cfa
+
 from morie.fn._containers import CfaRes
+from morie.fn.cfa import cfa
 
 
 def _make_two_factor_data(rng, n=300):
     """Generate data with clear 2-factor structure."""
     f1 = rng.standard_normal(n)
     f2 = rng.standard_normal(n)
-    df = pd.DataFrame({
-        "a1": f1 + rng.standard_normal(n) * 0.3,
-        "a2": f1 + rng.standard_normal(n) * 0.3,
-        "a3": f1 + rng.standard_normal(n) * 0.3,
-        "b1": f2 + rng.standard_normal(n) * 0.3,
-        "b2": f2 + rng.standard_normal(n) * 0.3,
-        "b3": f2 + rng.standard_normal(n) * 0.3,
-    })
+    df = pd.DataFrame(
+        {
+            "a1": f1 + rng.standard_normal(n) * 0.3,
+            "a2": f1 + rng.standard_normal(n) * 0.3,
+            "a3": f1 + rng.standard_normal(n) * 0.3,
+            "b1": f2 + rng.standard_normal(n) * 0.3,
+            "b2": f2 + rng.standard_normal(n) * 0.3,
+            "b3": f2 + rng.standard_normal(n) * 0.3,
+        }
+    )
     return df
 
 

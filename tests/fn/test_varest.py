@@ -1,6 +1,7 @@
 """Tests for varest.vector_autoregression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.varest import vector_autoregression
 
 
@@ -10,7 +11,7 @@ def test_varest_basic():
     p = 5
     result = vector_autoregression(Y, p)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_varest_edge():

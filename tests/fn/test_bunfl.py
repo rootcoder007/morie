@@ -1,6 +1,6 @@
 """Tests for morie.fn.bunfl — Bayesian unfolding."""
+
 import numpy as np
-import pytest
 
 from morie.fn.bunfl import bunfl
 
@@ -13,6 +13,7 @@ def test_bunfl_smoke():
 
 def test_cheatsheet():
     from morie.fn.bunfl import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

@@ -21,11 +21,13 @@ class TestGFormula:
     def test_returns_ci(self):
         rng = np.random.default_rng(42)
         n = 200
-        df = pd.DataFrame({
-            "Y": rng.normal(size=n),
-            "A": rng.choice([0, 1], n),
-            "x": rng.normal(size=n),
-        })
+        df = pd.DataFrame(
+            {
+                "Y": rng.normal(size=n),
+                "A": rng.choice([0, 1], n),
+                "x": rng.normal(size=n),
+            }
+        )
         res = g_formula(df, outcome="Y", treatment="A")
         assert res.ci_lower <= res.ci_upper
 

@@ -1,6 +1,7 @@
 """MSE-optimal bandwidth selector for RDD."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mse_optimal_bandwidth_rdd"]
@@ -34,7 +35,9 @@ def mse_optimal_bandwidth_rdd(y, x, cutoff):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MSE-optimal bandwidth selector for RDD"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MSE-optimal bandwidth selector for RDD"}
+    )
 
 
 def cheatsheet():

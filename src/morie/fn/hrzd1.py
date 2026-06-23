@@ -6,6 +6,7 @@
 Cox partial-likelihood estimator via Newton-Raphson; SE from the
 observed information matrix.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -24,12 +25,18 @@ def horowitz_duration_model(t, x, event):
         X = X.T
     n, p = X.shape
     if n < max(10, 2 * p) or t.size != n or event.size != n:
-        return RichResult(payload={"estimate": np.full(p, np.nan),
-                                   "se": np.full(p, np.nan), "n": n,
-                                   "method": "Cox PH (insufficient data)"})
+        return RichResult(
+            payload={
+                "estimate": np.full(p, np.nan),
+                "se": np.full(p, np.nan),
+                "n": n,
+                "method": "Cox PH (insufficient data)",
+            }
+        )
     # Sort by descending time (so cumulative sum runs over risk set)
     order = np.argsort(-t)
-    Xs = X[order]; ev = event[order]
+    Xs = X[order]
+    ev = event[order]
     beta = np.zeros(p)
     for _ in range(50):
         eta = Xs @ beta
@@ -39,7 +46,7 @@ def horowitz_duration_model(t, x, event):
         # risk-set sums S0[j] = sum_{i: t_i >= t_j} exp(eta_i)
         # Because we sorted descending, this is cumulative sum:
         S0 = np.cumsum(ehb)
-        S1 = np.cumsum(Xs * ehb[:, None], axis=0)        # (n, p)
+        S1 = np.cumsum(Xs * ehb[:, None], axis=0)  # (n, p)
         # S2 only along diagonal direction; compute as cumulative outer
         # to avoid O(n^2). We compute the full p x p Hessian update:
         # Hessian = sum_j ev_j * (S2/S0 - (S1/S0)(S1/S0)')
@@ -50,8 +57,7 @@ def horowitz_duration_model(t, x, event):
         # Score and Hessian only over events
         diff = Xs - mean_X
         score = (ev[:, None] * diff).sum(axis=0)
-        var_X = S2 / np.maximum(S0[:, None, None], 1e-12) \
-            - mean_X[:, :, None] * mean_X[:, None, :]
+        var_X = S2 / np.maximum(S0[:, None, None], 1e-12) - mean_X[:, :, None] * mean_X[:, None, :]
         # Observed information = -Hess(log-PL) = ∑ ev * var_X  (positive-definite)
         info = (ev[:, None, None] * var_X).sum(axis=0)
         try:
@@ -70,12 +76,15 @@ def horowitz_duration_model(t, x, event):
     except np.linalg.LinAlgError:
         cov = np.full((p, p), np.nan)
     se = np.sqrt(np.maximum(np.diag(cov), 0))
-    return RichResult(payload={
-        "estimate": beta.astype(float) if beta.size > 1 else float(beta[0]),
-        "se": se.astype(float) if se.size > 1 else float(se[0]),
-        "n": n, "n_events": int(event.sum()),
-        "method": "Cox proportional hazards (partial likelihood)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta.astype(float) if beta.size > 1 else float(beta[0]),
+            "se": se.astype(float) if se.size > 1 else float(se[0]),
+            "n": n,
+            "n_events": int(event.sum()),
+            "method": "Cox proportional hazards (partial likelihood)",
+        }
+    )
 
 
 def cheatsheet():

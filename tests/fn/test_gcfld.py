@@ -1,6 +1,7 @@
 """Test gcfld."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcfld import gcfld
 
 

@@ -66,4 +66,5 @@ def test_dimension_mismatch():
 
 def test_cheatsheet():
     from morie.fn.npsel import cheatsheet
+
     assert "model selection" in cheatsheet().lower()

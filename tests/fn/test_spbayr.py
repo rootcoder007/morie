@@ -1,6 +1,7 @@
 """Tests for spbayr.schabenberger_bayesian_hierarchical."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spbayr import schabenberger_bayesian_hierarchical
 
 
@@ -12,7 +13,7 @@ def test_spbayr_basic():
     prior_spec = np.random.default_rng(42).normal(0, 1, 100)
     result = schabenberger_bayesian_hierarchical(y, x, w, prior_spec)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spbayr_edge():

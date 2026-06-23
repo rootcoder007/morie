@@ -1,5 +1,7 @@
 """Binomial point process: n points independently uniform on region A."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_binomial_process"]
@@ -34,7 +36,14 @@ def schabenberger_binomial_process(n, region):
         data = rng.standard_normal(max(n, 2))
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Binomial point process: n points independently uniform on region A"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Binomial point process: n points independently uniform on region A",
+        }
+    )
 
 
 def cheatsheet():

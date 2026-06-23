@@ -1,7 +1,8 @@
 """Tests for morie.fn.sntmd — sentence by group."""
 
 import pandas as pd
-from morie.fn.sntmd import sentence_by_group, sntmd
+
+from morie.fn.sntmd import sentence_by_group
 
 
 class TestSentenceByGroup:

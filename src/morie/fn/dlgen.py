@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Deep-learning genomic prediction (single-hidden-layer MLP, NumPy)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,9 +10,17 @@ from ._richresult import RichResult
 __all__ = ["deep_learning_genomic"]
 
 
-def deep_learning_genomic(x, y, markers, hidden: int = 16, n_epochs: int = 200,
-                          lr: float = 1e-2, l2: float = 1e-3, seed: int = 0,
-                          deterministic_seed: int | None = None):
+def deep_learning_genomic(
+    x,
+    y,
+    markers,
+    hidden: int = 16,
+    n_epochs: int = 200,
+    lr: float = 1e-2,
+    l2: float = 1e-3,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """Single-hidden-layer MLP genomic predictor -- NumPy implementation.
 
     Architecture::
@@ -50,6 +59,7 @@ def deep_learning_genomic(x, y, markers, hidden: int = 16, n_epochs: int = 200,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("dlgen", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -66,7 +76,8 @@ def deep_learning_genomic(x, y, markers, hidden: int = 16, n_epochs: int = 200,
         Xa = np.zeros((n, 0))
     q = Xa.shape[1] if Xa.size else 0
     # Standardise markers for stable training
-    M_mean = M.mean(axis=0); M_sd = M.std(axis=0)
+    M_mean = M.mean(axis=0)
+    M_sd = M.std(axis=0)
     M_sd = np.where(M_sd > 0, M_sd, 1.0)
     Ms = (M - M_mean) / M_sd
     # Init
@@ -87,7 +98,7 @@ def deep_learning_genomic(x, y, markers, hidden: int = 16, n_epochs: int = 200,
         dw2 = h.T @ dy + l2 * w2
         db2 = float(np.sum(dy))
         dh = np.outer(dy, w2)
-        dz1 = dh * (1.0 - h ** 2)
+        dz1 = dh * (1.0 - h**2)
         dW1 = Ms.T @ dz1 + l2 * W1
         db1 = dz1.sum(axis=0)
         if q:
@@ -99,12 +110,12 @@ def deep_learning_genomic(x, y, markers, hidden: int = 16, n_epochs: int = 200,
         b2 -= lr * db2
         if q:
             gamma -= lr * dgamma
-        losses.append(float(np.mean(resid ** 2)))
+        losses.append(float(np.mean(resid**2)))
     # Final predictions
     h = np.tanh(Ms @ W1 + b1)
     y_hat = h @ w2 + b2 + (Xa @ gamma if q else 0.0)
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="Deep-learning genomic predictor (MLP-1H)",
         summary_lines=[
@@ -128,8 +139,7 @@ def deep_learning_genomic(x, y, markers, hidden: int = 16, n_epochs: int = 200,
             "n": n,
             "method": "Single-hidden-layer MLP (NumPy)",
         },
-        warnings=["NumPy implementation: for production-grade DL use "
-                  "keras/torch on GPU."],
+        warnings=["NumPy implementation: for production-grade DL use keras/torch on GPU."],
     )
 
 

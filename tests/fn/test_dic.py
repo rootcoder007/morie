@@ -1,5 +1,5 @@
 """Test dic."""
-import pytest
+
 from morie.fn.dic import deviance_info_criterion
 
 

@@ -1,6 +1,7 @@
 """Tests for msm015.mvsml_linear_mixed_models_eq_5_3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm015 import mvsml_linear_mixed_models_eq_5_3
 
 
@@ -14,7 +15,7 @@ def test_msm015_basic():
     et = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_linear_mixed_models_eq_5_3(derived, re, ectance, information, Krause, et)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm015_edge():

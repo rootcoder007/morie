@@ -1,6 +1,7 @@
 """Tests for hrzlew.horowitz_lewbel_estimator."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzlew import horowitz_lewbel_estimator
 
 
@@ -12,7 +13,7 @@ def test_hrzlew_basic():
     bandwidth = 0.3
     result = horowitz_lewbel_estimator(x, y, z, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzlew_edge():

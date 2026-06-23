@@ -1,6 +1,8 @@
 """Tests for sgpost."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgpost import sgpost
 
 
@@ -28,4 +30,5 @@ def test_sgpost_no_data():
 
 def test_sgpost_alias():
     from morie.fn.sgpost import sgpost
+
     assert sgpost is sgpost

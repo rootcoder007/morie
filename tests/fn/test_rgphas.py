@@ -1,6 +1,7 @@
 """Tests for rgphas.rangayyan_phase_response."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgphas import rangayyan_phase_response
 
 
@@ -11,7 +12,7 @@ def test_rgphas_basic():
     fs = 100.0
     result = rangayyan_phase_response(b, a, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgphas_edge():

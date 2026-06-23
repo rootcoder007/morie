@@ -1,6 +1,8 @@
 """Tests for stpor."""
+
 import numpy as np
 import pytest
+
 from morie.fn.stpor import stpor
 
 
@@ -28,4 +30,5 @@ def test_stpor_no_data():
 
 def test_stpor_alias():
     from morie.fn.stpor import stpor
+
     assert stpor is stpor

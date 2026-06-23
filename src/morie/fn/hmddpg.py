@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Deep deterministic policy gradient (DDPG)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ddpg"]
@@ -38,7 +40,9 @@ def geron_ddpg(env, actor, critic, epochs, lr):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Deep deterministic policy gradient (DDPG)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Deep deterministic policy gradient (DDPG)"}
+    )
 
 
 def cheatsheet():

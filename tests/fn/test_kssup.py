@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.kssup import ks_supremum, kssup
+
 from morie.fn._containers import TestResult
+from morie.fn.kssup import ks_supremum, kssup
 
 
 class TestKssup:

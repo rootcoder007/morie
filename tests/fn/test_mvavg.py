@@ -1,7 +1,9 @@
 """Test moving_average (mvavg)."""
+
 import numpy as np
-from morie.fn.mvavg import moving_average, mvavg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mvavg import moving_average, mvavg
 
 
 class TestMovingAverage:

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """YaRN NTK-aware RoPE rescaling for context-window extrapolation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_yarn_context_extrapolation"]
@@ -34,7 +36,14 @@ def kamath_yarn_context_extrapolation(theta, scale, d):
     n = len(theta)
     result = float(np.mean(theta))
     se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "YaRN NTK-aware RoPE rescaling for context-window extrapolation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "YaRN NTK-aware RoPE rescaling for context-window extrapolation",
+        }
+    )
 
 
 def cheatsheet():

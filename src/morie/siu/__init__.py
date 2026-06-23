@@ -21,11 +21,11 @@ Public API:
     SIU_COLUMNS                              # 45-col canonical schema
 """
 
-from ._schema import SIU_COLUMNS, BLANK_ROW
-from ._scraper import scrape_drid, scrape_range
-from ._parser import parse_html, parse_news_html
-from ._writer import write_csv, write_jsonl
 from . import analyze
+from ._parser import parse_html, parse_news_html
+from ._schema import BLANK_ROW, SIU_COLUMNS
+from ._scraper import scrape_drid, scrape_range
+from ._writer import write_csv, write_jsonl
 
 __all__ = [
     "SIU_COLUMNS",

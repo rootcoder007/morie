@@ -1,6 +1,7 @@
 """Test vmmad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmmad import vmmad
 
 

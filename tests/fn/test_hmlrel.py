@@ -1,6 +1,7 @@
 """Tests for hmlrel.geron_leaky_relu."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlrel import geron_leaky_relu
 
 
@@ -10,7 +11,7 @@ def test_hmlrel_basic():
     alpha = 0.05
     result = geron_leaky_relu(z, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlrel_edge():

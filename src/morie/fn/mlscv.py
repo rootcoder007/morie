@@ -36,4 +36,4 @@ mlscv = mlsmu6_convergence_check
 
 
 def cheatsheet() -> str:
-    return 'mlsmu6_convergence_check({}) -> MLSMU6 convergence check.'
+    return "mlsmu6_convergence_check({}) -> MLSMU6 convergence check."

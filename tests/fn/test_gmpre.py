@@ -1,5 +1,7 @@
 """Tests for morie.fn.gmpre — Geometric mean probability."""
+
 import numpy as np
+
 from morie.fn.gmpre import gmpre
 
 

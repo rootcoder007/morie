@@ -71,10 +71,7 @@ def vaccine_efficacy_exact(
 
     ve = (1 - rr) * 100
 
-    se_log_rr = np.sqrt(
-        1 / max(cases_vacc, 0.5) - 1 / n_vacc
-        + 1 / max(cases_ctrl, 0.5) - 1 / n_ctrl
-    )
+    se_log_rr = np.sqrt(1 / max(cases_vacc, 0.5) - 1 / n_vacc + 1 / max(cases_ctrl, 0.5) - 1 / n_ctrl)
     z = _st.norm.ppf(1 - alpha / 2)
     rr_lo_g = rr * np.exp(-z * se_log_rr)
     rr_hi_g = rr * np.exp(z * se_log_rr)

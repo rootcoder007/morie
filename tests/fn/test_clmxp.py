@@ -1,6 +1,7 @@
 """Test clmxp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clmxp import clmxp
 
 

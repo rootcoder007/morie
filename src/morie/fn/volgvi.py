@@ -1,6 +1,7 @@
 """Implied VaR from a GARCH(1,1) one-step ahead."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vol_garch_var_impl"]
@@ -36,7 +37,9 @@ def vol_garch_var_impl(mu, sigma_next, alpha, dist):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Implied VaR from a GARCH(1,1) one-step ahead"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Implied VaR from a GARCH(1,1) one-step ahead"}
+    )
 
 
 def cheatsheet():

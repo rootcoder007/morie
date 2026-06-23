@@ -1,6 +1,7 @@
 """Tests for bigtm.bigram_topic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bigtm import bigram_topic
 
 
@@ -10,7 +11,7 @@ def test_bigtm_basic():
     K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
     result = bigram_topic(docs, K)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bigtm_edge():

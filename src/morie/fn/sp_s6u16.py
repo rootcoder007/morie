@@ -1,8 +1,8 @@
 """Stochastic expression (auto-extracted; see reference).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["stochastic_physics_section_6_unnumbered_16"]
 
@@ -41,7 +41,12 @@ def stochastic_physics_section_6_unnumbered_16(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "Stochastic expression (auto-extracted; see reference)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stochastic expression (auto-extracted; see reference).",
+        },
     )
 
 

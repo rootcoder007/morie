@@ -1,6 +1,7 @@
 """Intrinsic motivation / curiosity reward."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["intrinsic_motivation"]
@@ -34,7 +35,9 @@ def intrinsic_motivation(env, forward_model, beta):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Intrinsic motivation / curiosity reward"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Intrinsic motivation / curiosity reward"}
+    )
 
 
 def cheatsheet():

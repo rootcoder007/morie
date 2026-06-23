@@ -7,7 +7,7 @@ Iteratively narrows an interval [a, b] where f changes sign.
 
 import numpy as np
 
-__all__ = ['bsctn']
+__all__ = ["bsctn"]
 
 
 def bsctn(f, a, b, tol=1e-6, max_iter=100, full_output=False):
@@ -65,11 +65,7 @@ def bsctn(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
         if np.abs(fc) < tol or (b - a) / 2.0 < tol:
             if full_output:
-                return c, {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_residual': np.abs(fc)
-                }
+                return c, {"iterations": iteration + 1, "converged": True, "final_residual": np.abs(fc)}
             return c
 
         if fa * fc < 0:
@@ -81,9 +77,5 @@ def bsctn(f, a, b, tol=1e-6, max_iter=100, full_output=False):
 
     if full_output:
         c = (a + b) / 2.0
-        return c, {
-            'iterations': max_iter,
-            'converged': False,
-            'final_residual': np.abs(f(c))
-        }
+        return c, {"iterations": max_iter, "converged": False, "final_residual": np.abs(f(c))}
     return (a + b) / 2.0

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pool-adjacent-violators isotonic regression for nonmetric MDS disparities."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["isotonic_regression_disparity"]
@@ -32,7 +34,14 @@ def isotonic_regression_disparity(D, delta_rank):
     n = int(D) if D.ndim == 0 else len(D)
     result = float(np.mean(D))
     se = float(np.std(D, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pool-adjacent-violators isotonic regression for nonmetric MDS disparities"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Pool-adjacent-violators isotonic regression for nonmetric MDS disparities",
+        }
+    )
 
 
 def cheatsheet():

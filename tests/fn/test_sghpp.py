@@ -1,5 +1,7 @@
 """Tests for homogeneous Poisson process."""
+
 import numpy as np
+
 from morie.fn.sghpp import sghpp
 
 

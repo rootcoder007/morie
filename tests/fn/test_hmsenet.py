@@ -1,6 +1,7 @@
 """Tests for hmsenet.geron_senet."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsenet import geron_senet
 
 
@@ -10,7 +11,7 @@ def test_hmsenet_basic():
     r = 10
     result = geron_senet(x, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsenet_edge():

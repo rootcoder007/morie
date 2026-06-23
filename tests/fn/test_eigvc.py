@@ -1,7 +1,8 @@
 """Tests for morie.fn.eigvc -- extract eigenvectors."""
 
 import numpy as np
-from morie.fn.eigvc import extract_eigenvectors, eigvc
+
+from morie.fn.eigvc import eigvc, extract_eigenvectors
 
 
 def test_eigvc_smoke():

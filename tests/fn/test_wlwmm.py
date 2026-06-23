@@ -1,6 +1,7 @@
 """Tests for wlwmm.wlw_marginal_model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlwmm import wlw_marginal_model
 
 
@@ -12,7 +13,7 @@ def test_wlwmm_basic():
     occurrence = np.random.default_rng(42).normal(0, 1, 100)
     result = wlw_marginal_model(time, event, X, occurrence)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wlwmm_edge():

@@ -72,7 +72,9 @@ def _local_fallback_response(question: str, context: str | None = None) -> str:
     return "\n\n".join(sections)
 
 
-def _try_agent(question: str, *, stream: bool = False, model: str | None = None, provider: str | None = None) -> dict[str, Any] | None:
+def _try_agent(
+    question: str, *, stream: bool = False, model: str | None = None, provider: str | None = None
+) -> dict[str, Any] | None:
     """Try the agentic path (Ollama native or FreeAPI text-based). Returns None if unavailable."""
     try:
         from .agent import create_agent

@@ -1,6 +1,7 @@
 """Test csfrg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csfrg import csfrg
 
 

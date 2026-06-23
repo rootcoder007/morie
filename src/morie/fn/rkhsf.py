@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RKHS regression with a Gaussian kernel for genomic prediction."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,7 +45,7 @@ def rkhs_full(x, y, markers, h: float | None = None, lam: float = 1.0):
     M = np.asarray(markers, dtype=float)
     if M.ndim != 2 or M.shape[0] != n:
         raise ValueError("`markers` must be (n × m) with n matching len(y)")
-    sq_norm = np.sum(M ** 2, axis=1)
+    sq_norm = np.sum(M**2, axis=1)
     D2 = sq_norm[:, None] + sq_norm[None, :] - 2.0 * (M @ M.T)
     D2 = np.maximum(D2, 0.0)
     if h is None:
@@ -66,7 +67,7 @@ def rkhs_full(x, y, markers, h: float | None = None, lam: float = 1.0):
     f_hat = K @ alpha
     y_hat = X @ beta + f_hat
     resid = y - y_hat
-    se = float(np.sqrt(np.sum(resid ** 2) / max(n - X.shape[1], 1)))
+    se = float(np.sqrt(np.sum(resid**2) / max(n - X.shape[1], 1)))
     estimate = float(np.mean(f_hat))
     return RichResult(
         title="RKHS (Gaussian kernel) regression",

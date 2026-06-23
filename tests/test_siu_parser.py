@@ -9,8 +9,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from morie.siu import (
     BLANK_ROW,
     SIU_COLUMNS,
@@ -20,13 +18,12 @@ from morie.siu import (
 )
 from morie.siu._normalize import (
     find_case_number,
+    normalise_sex,
+    normalise_yes_no,
     parse_date,
     parse_drid_from_url,
     parse_nrid_from_url,
-    normalise_sex,
-    normalise_yes_no,
 )
-
 
 # Synthetic minimal HTML matching the SIU page conventions.
 SAMPLE_HTML = """
@@ -74,8 +71,7 @@ def test_schema_has_45_cols():
 
 
 def test_parse_html_extracts_case_number():
-    row = parse_html(SAMPLE_HTML, drid=80,
-                     source_url="https://www.siu.on.ca/en/directors_report_details.php?drid=80")
+    row = parse_html(SAMPLE_HTML, drid=80, source_url="https://www.siu.on.ca/en/directors_report_details.php?drid=80")
     assert row["case_number"] == "17-PVI-371"
     assert row["drid"] == 80
     assert row["nrid"] == 4494
@@ -128,6 +124,7 @@ def test_parse_html_missing_fields_become_none():
 
 
 # ── normalize unit tests ──────────────────────────────────────────────────
+
 
 def test_find_case_number_label_form():
     assert find_case_number("Case Number: 17-PVI-371") == "17-PVI-371"
@@ -189,9 +186,11 @@ def test_normalise_yes_no():
 
 # ── writer tests ──────────────────────────────────────────────────────────
 
+
 def test_write_csv_round_trip(tmp_path: Path):
-    rows = [parse_html(SAMPLE_HTML, drid=80,
-                        source_url="https://www.siu.on.ca/en/directors_report_details.php?drid=80")]
+    rows = [
+        parse_html(SAMPLE_HTML, drid=80, source_url="https://www.siu.on.ca/en/directors_report_details.php?drid=80")
+    ]
     out = tmp_path / "siu.csv"
     n = write_csv(rows, out)
     assert n == 1
@@ -238,7 +237,8 @@ def _load_real_drid(drid: int) -> dict:
     fixture = (FIXTURES / f"drid_{drid}_rendered.txt").read_text()
     html = f"<html><body><main>{fixture}</main></body></html>"
     return parse_html(
-        html, drid=drid,
+        html,
+        drid=drid,
         source_url=f"https://www.siu.on.ca/en/directors_report_details.php?drid={drid}",
     )
 
@@ -291,8 +291,7 @@ def test_real_drid_80_narrative_excludes_navigation_chrome():
     row = _load_real_drid(80)
     nf = row["narrative_full"] or ""
     # body section starts with Mandate engaged or similar
-    assert nf.lstrip().startswith(("Mandate engaged", "The Investigation",
-                                    "Notification of the SIU"))
+    assert nf.lstrip().startswith(("Mandate engaged", "The Investigation", "Notification of the SIU"))
     # MH/race indicator should NOT include nav-menu phrases for drid=80
     # which has no actual MH/race content in its narrative.
     assert "First Nations" not in (row["mental_health_or_race_indications"] or "")
@@ -306,8 +305,7 @@ def test_real_drid_80_does_not_leak_toc_into_section_extraction():
     December 22, 2017" — if our slicer picks the TOC entry, the date
     won't be found."""
     row = _load_real_drid(80)
-    assert row["date_of_incident_iso"] == "2017-12-22", \
-        "incident date came from Incident Narrative section, not TOC"
+    assert row["date_of_incident_iso"] == "2017-12-22", "incident date came from Incident Narrative section, not TOC"
 
 
 # ── Real-fixture tests: drid=5074 (post-2019 modern format) ────────────
@@ -315,6 +313,7 @@ def test_real_drid_80_does_not_leak_toc_into_section_extraction():
 # uses the post-Special-Investigations-Unit-Act-2019 format with
 # renamed sections: "Subject Official" (was "Subject Officers"),
 # "Witness Officials" (was "Witness Officers").
+
 
 def test_real_drid_5074_modern_format_canonical_fields():
     """drid=5074 ↔ Case 26-OCI-016 ↔ NRPS, Director Joseph Martino.
@@ -372,7 +371,8 @@ def _load_real_nrid(nrid: int) -> dict:
     fixture = (FIXTURES / f"nrid_{nrid}_rendered.txt").read_text()
     html = f"<html><body><main>{fixture}</main></body></html>"
     return parse_news_html(
-        html, nrid=nrid,
+        html,
+        nrid=nrid,
         source_url=f"https://www.siu.on.ca/en/news_template.php?nrid={nrid}",
     )
 

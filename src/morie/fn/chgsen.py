@@ -1,6 +1,7 @@
 """Change-of-variance sensitivity."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["change_of_variance"]

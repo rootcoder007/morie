@@ -1,6 +1,7 @@
 """Tests for wsmcrl.wasserman_cramer_rao."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmcrl import wasserman_cramer_rao
 
 
@@ -11,7 +12,7 @@ def test_wsmcrl_basic():
     I = np.random.default_rng(42).normal(0, 1, 100)
     result = wasserman_cramer_rao(theta, n, I)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmcrl_edge():

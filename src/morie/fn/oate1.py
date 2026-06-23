@@ -8,7 +8,9 @@ import pandas as pd
 from scipy import stats
 
 
-def otis_ate_region(df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", region_col: str = "region") -> pd.DataFrame:
+def otis_ate_region(
+    df: pd.DataFrame, cdf=None, *, outcome: str = "Y", treatment: str = "D", region_col: str = "region"
+) -> pd.DataFrame:
     """Estimate naive ATE (difference in means) within each region.
 
     Parameters

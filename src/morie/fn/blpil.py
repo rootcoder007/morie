@@ -83,4 +83,4 @@ blpil = naive_baseline
 
 
 def cheatsheet() -> str:
-    return 'blpil() -> Naive baseline predictor for benchmarking ML models'
+    return "blpil() -> Naive baseline predictor for benchmarking ML models"

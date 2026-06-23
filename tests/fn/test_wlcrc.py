@@ -1,6 +1,7 @@
 """Test wlcrc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlcrc import wlcrc
 
 

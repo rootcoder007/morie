@@ -1,8 +1,9 @@
 """Tests for morie.fn.cancr -- Canonical correlation analysis."""
 
 import numpy as np
-from morie.fn.cancr import canonical_correlation, cancr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cancr import cancr, canonical_correlation
 
 
 class TestCanonicalCorrelation:

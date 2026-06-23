@@ -1,6 +1,7 @@
 """Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tailfree_max_bound"]
@@ -34,7 +35,14 @@ def ghosal_ch3_tailfree_max_bound(V, m, r):
     n = len(V)
     result = float(np.mean(V))
     se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m.",
+        }
+    )
 
 
 def cheatsheet():

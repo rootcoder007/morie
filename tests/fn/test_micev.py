@@ -1,6 +1,9 @@
 """Tests for mice_impute."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.micev import mice_impute
+
 
 class TestMICE:
     def test_basic(self):

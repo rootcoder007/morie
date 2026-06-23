@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hybrid retrieval: weighted fusion of dense and sparse scores."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_hybrid_retrieval_fusion"]
@@ -34,7 +36,14 @@ def kamath_hybrid_retrieval_fusion(s_dense, s_sparse, lam):
     n = len(s_dense)
     result = float(np.mean(s_dense))
     se = float(np.std(s_dense, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hybrid retrieval: weighted fusion of dense and sparse scores"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Hybrid retrieval: weighted fusion of dense and sparse scores",
+        }
+    )
 
 
 def cheatsheet():

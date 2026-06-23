@@ -1,7 +1,6 @@
 """Tests for morie.fn.svhtm -- Multi-candidate Hotelling model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svhtm import hotelling_multi
 

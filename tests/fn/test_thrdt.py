@@ -1,7 +1,9 @@
 """Test threshold_detect."""
+
 import numpy as np
-from morie.fn.thrdt import threshold_detect, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.thrdt import alias, threshold_detect
 
 
 class TestThresholdDetect:

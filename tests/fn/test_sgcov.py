@@ -1,5 +1,7 @@
 """Tests for spatial covariance function."""
+
 import numpy as np
+
 from morie.fn.sgcov import sgcov
 
 

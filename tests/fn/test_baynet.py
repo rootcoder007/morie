@@ -1,6 +1,7 @@
 """Tests for baynet.bayes_network."""
+
 import numpy as np
-import pytest
+
 from morie.fn.baynet import bayes_network
 
 
@@ -12,7 +13,7 @@ def test_baynet_basic():
     query = np.random.default_rng(42).normal(0, 1, 100)
     result = bayes_network(graph, cpts, evidence, query)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_baynet_edge():

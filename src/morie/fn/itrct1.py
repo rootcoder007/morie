@@ -1,6 +1,7 @@
 """DR-DiD with treatment × covariate interaction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["interaction_did"]
@@ -36,7 +37,9 @@ def interaction_did(y, D, V, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with treatment × covariate interaction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "DR-DiD with treatment × covariate interaction"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for grridn.geron_ridge_normal_equation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grridn import geron_ridge_normal_equation
 
 
@@ -11,7 +12,7 @@ def test_grridn_basic():
     alpha = 0.05
     result = geron_ridge_normal_equation(X, y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grridn_edge():

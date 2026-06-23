@@ -1,6 +1,7 @@
 """Test clsng."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clsng import clsng
 
 

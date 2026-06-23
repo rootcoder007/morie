@@ -1,4 +1,5 @@
 """Tests for morie.fn.spdst — spatial distance."""
+
 from morie.fn.spdst import spdst
 
 

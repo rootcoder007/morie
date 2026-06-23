@@ -10,7 +10,15 @@ from ._containers import RegressionResult
 from ._helpers import _validate_df
 
 
-def two_stage_ls(data: pd.DataFrame, cdf=None, *, y: str = "outcome", x_endog: list[str] | str = "x_endog", x_exog: list[str] | None = None, z: list[str] | str = "z") -> RegressionResult:
+def two_stage_ls(
+    data: pd.DataFrame,
+    cdf=None,
+    *,
+    y: str = "outcome",
+    x_endog: list[str] | str = "x_endog",
+    x_exog: list[str] | None = None,
+    z: list[str] | str = "z",
+) -> RegressionResult:
     r"""Two-stage least squares (2SLS) with first-stage F and Hausman test.
 
     Stage 1: Regress each endogenous variable on all instruments + exogenous:

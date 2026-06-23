@@ -18,6 +18,7 @@ Daniel, R. M., Cousens, S. N., De Stavola, B. L., Kenward, M. G.,
 & Sterne, J. A. C. (2013). Methods for dealing with time-dependent
 confounding. *Statistics in Medicine*, 32(9), 1584-1618.
 """
+
 from __future__ import annotations
 
 from typing import Any

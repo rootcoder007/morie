@@ -1,6 +1,7 @@
 """Tests for rdmcbw.mse_optimal_bandwidth_rdd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rdmcbw import mse_optimal_bandwidth_rdd
 
 
@@ -11,7 +12,7 @@ def test_rdmcbw_basic():
     cutoff = 10.0
     result = mse_optimal_bandwidth_rdd(y, x, cutoff)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rdmcbw_edge():

@@ -1,6 +1,7 @@
 """Tests for rrblpr.rr_blup."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rrblpr import rr_blup
 
 
@@ -11,7 +12,7 @@ def test_rrblpr_basic():
     lam = 0.1
     result = rr_blup(y, M, lam)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rrblpr_edge():

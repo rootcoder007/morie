@@ -1,6 +1,8 @@
 """Tests for chlsph."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlsph import chlsph
 
 
@@ -28,4 +30,5 @@ def test_chlsph_no_data():
 
 def test_chlsph_alias():
     from morie.fn.chlsph import chlsph
+
     assert chlsph is chlsph

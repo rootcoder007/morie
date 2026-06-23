@@ -1,6 +1,7 @@
 """Tests for frwol2.frank_wolfe."""
+
 import numpy as np
-import pytest
+
 from morie.fn.frwol2 import frank_wolfe
 
 
@@ -13,7 +14,7 @@ def test_frwol2_basic():
     steps = np.random.default_rng(42).normal(0, 1, 100)
     result = frank_wolfe(f, grad_f, domain, x0, steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_frwol2_edge():

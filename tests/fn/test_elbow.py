@@ -1,14 +1,14 @@
 """Tests for morie.fn.elbow -- Elbow method for optimal k."""
 
 import numpy as np
+
 from morie.fn.elbow import elbow_method
 
 
 class TestElbowMethod:
     def test_two_clusters(self):
         rng = np.random.default_rng(42)
-        X = np.vstack([rng.standard_normal((30, 2)) + [5, 5],
-                        rng.standard_normal((30, 2)) - [5, 5]])
+        X = np.vstack([rng.standard_normal((30, 2)) + [5, 5], rng.standard_normal((30, 2)) - [5, 5]])
         result = elbow_method(X, max_k=6)
         assert "k_values" in result
         assert "inertias" in result

@@ -1,6 +1,8 @@
 """Tests for spcpow."""
+
 import numpy as np
 import pytest
+
 from morie.fn.spcpow import spcpow
 
 
@@ -28,4 +30,5 @@ def test_spcpow_no_data():
 
 def test_spcpow_alias():
     from morie.fn.spcpow import spcpow
+
     assert spcpow is spcpow

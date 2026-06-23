@@ -1,6 +1,7 @@
 """Test undsmp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.undsmp import undsmp
 
 

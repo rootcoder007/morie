@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kqant"]
 
 
-def kqant(data: np.ndarray, probs: np.ndarray | None = None, cdf=None, *, bw: float | None = None, n_grid: int = 1024) -> dict:
+def kqant(
+    data: np.ndarray, probs: np.ndarray | None = None, cdf=None, *, bw: float | None = None, n_grid: int = 1024
+) -> dict:
     r"""
     Kernel quantile estimator.
 

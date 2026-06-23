@@ -1,9 +1,9 @@
 """Test t_wave_detect (twave)."""
-import numpy as np
-import pytest
 
-from morie.fn.twave import t_wave_detect, twave
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.twave import t_wave_detect, twave
 
 
 class TestTWaveDetect:

@@ -35,7 +35,7 @@ def svd_entropy(x, m: int = 10, delay: int = 1, **kwargs) -> ESRes:
     if n_embed < 2:
         raise ValueError(f"Need at least {(m - 1) * delay + 2} observations.")
 
-    embedded = np.array([x[i:i + m * delay:delay] for i in range(n_embed)])
+    embedded = np.array([x[i : i + m * delay : delay] for i in range(n_embed)])
     sv = np.linalg.svd(embedded, compute_uv=False)
     sv_norm = sv / sv.sum()
     sv_norm = sv_norm[sv_norm > 0]

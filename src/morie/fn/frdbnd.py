@@ -1,6 +1,7 @@
 """Fréchet-Hoeffding bounds on joint distribution of potential outcomes."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["frechet_hoeffding_bounds"]
@@ -32,7 +33,14 @@ def frechet_hoeffding_bounds(F_0, F_1):
     n = len(F_0)
     result = float(np.mean(F_0))
     se = float(np.std(F_0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fréchet-Hoeffding bounds on joint distribution of potential outcomes"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Fréchet-Hoeffding bounds on joint distribution of potential outcomes",
+        }
+    )
 
 
 def cheatsheet():

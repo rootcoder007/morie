@@ -1,6 +1,7 @@
 """Low-rank Sinkhorn approximating T = U V^T."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_low_rank_sinkhorn"]
@@ -40,7 +41,9 @@ def ot_low_rank_sinkhorn(a, b, C, rank, epsilon, max_iter):
     n = len(a)
     result = float(np.mean(a))
     se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Low-rank Sinkhorn approximating T = U V^T"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Low-rank Sinkhorn approximating T = U V^T"}
+    )
 
 
 def cheatsheet():

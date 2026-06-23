@@ -1,7 +1,9 @@
 """Tests for hdecon — Homomorphic deconvolution."""
+
 import numpy as np
-from morie.fn.hdecon import homomorphic_deconvolve
+
 from morie.fn._containers import SignalResult
+from morie.fn.hdecon import homomorphic_deconvolve
 
 
 def test_hdecon_basic(rng):

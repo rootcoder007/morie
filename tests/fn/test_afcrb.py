@@ -1,6 +1,7 @@
 """Test afcrb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afcrb import afcrb
 
 

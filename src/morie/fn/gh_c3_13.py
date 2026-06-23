@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Polya urn characterization of Polya tree process."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_polya_urn_pt"]
@@ -30,7 +32,9 @@ def ghosal_polya_urn_pt(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Polya urn characterization of Polya tree process"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Polya urn characterization of Polya tree process"}
+    )
 
 
 def cheatsheet():

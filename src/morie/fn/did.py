@@ -67,4 +67,4 @@ did = diff_in_diff
 
 
 def cheatsheet() -> str:
-    return 'diff_in_diff({}) -> Difference-in-differences.'
+    return "diff_in_diff({}) -> Difference-in-differences."

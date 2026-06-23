@@ -1,6 +1,7 @@
 """Semiparametric linear regression model with bounded covariates and conditional mean-zero residuals."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch1_linear_regression_model"]
@@ -36,7 +37,14 @@ def kosorok_ch1_linear_regression_model(Y, Z, beta, e):
     n = len(Y)
     result = float(np.mean(Y))
     se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Semiparametric linear regression model with bounded covariates and conditional mean-zero residuals"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Semiparametric linear regression model with bounded covariates and conditional mean-zero residuals",
+        }
+    )
 
 
 def cheatsheet():

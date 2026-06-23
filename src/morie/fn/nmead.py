@@ -7,19 +7,10 @@ Derivative-free optimization using a dynamic simplex in n dimensions.
 
 import numpy as np
 
-__all__ = ['nmead']
+__all__ = ["nmead"]
 
 
-def nmead(
-    f,
-    x0,
-    alpha=1.0,
-    beta=0.5,
-    gamma=2.0,
-    tol=1e-8,
-    max_iter=5000,
-    full_output=False
-):
+def nmead(f, x0, alpha=1.0, beta=0.5, gamma=2.0, tol=1e-8, max_iter=5000, full_output=False):
     """
     Nelder-Mead simplex method for unconstrained minimization.
 
@@ -84,11 +75,7 @@ def nmead(
         diameter = float(np.max(np.linalg.norm(simplex - simplex[0], axis=1)))
         if variance < tol and diameter < tol:
             if full_output:
-                return simplex[0], {
-                    'iterations': iteration + 1,
-                    'converged': True,
-                    'final_value': f_vals[0]
-                }
+                return simplex[0], {"iterations": iteration + 1, "converged": True, "final_value": f_vals[0]}
             return simplex[0]
 
         # Centroid of best n points
@@ -125,9 +112,5 @@ def nmead(
 
     if full_output:
         best_idx = np.argmin(f_vals)
-        return simplex[best_idx], {
-            'iterations': max_iter,
-            'converged': False,
-            'final_value': f_vals[best_idx]
-        }
+        return simplex[best_idx], {"iterations": max_iter, "converged": False, "final_value": f_vals[best_idx]}
     return simplex[np.argmin(f_vals)]

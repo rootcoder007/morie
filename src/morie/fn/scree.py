@@ -64,4 +64,4 @@ scree = scree_plot_data
 
 
 def cheatsheet() -> str:
-    return 'scree_plot_data({}) -> Scree plot data for MDS dimensionality.'
+    return "scree_plot_data({}) -> Scree plot data for MDS dimensionality."

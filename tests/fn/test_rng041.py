@@ -1,6 +1,7 @@
 """Tests for rng041.rangayyan_ch3_lsi_series_intermediate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng041 import rangayyan_ch3_lsi_series_intermediate
 
 
@@ -11,7 +12,7 @@ def test_rng041_basic():
     n = 100
     result = rangayyan_ch3_lsi_series_intermediate(x, h_1, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng041_edge():

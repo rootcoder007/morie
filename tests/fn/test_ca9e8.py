@@ -1,6 +1,7 @@
 """Tests for ca9e8.ca_chapter_9_equation_8."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ca9e8 import ca_chapter_9_equation_8
 
 
@@ -9,7 +10,7 @@ def test_ca9e8_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = ca_chapter_9_equation_8(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_ca9e8_edge():

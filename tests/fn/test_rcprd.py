@@ -1,6 +1,7 @@
 """Tests for morie.fn.rcprd -- predicted choice."""
 
 import numpy as np
+
 from morie.fn.rcprd import predicted_choice, rcprd
 
 

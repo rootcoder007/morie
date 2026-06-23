@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hyperparameter tuning: optimize over discrete grid or random samples."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_hyperparameter_tuning"]
@@ -34,7 +36,14 @@ def geron_hyperparameter_tuning(param_grid, X, y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hyperparameter tuning: optimize over discrete grid or random samples"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Hyperparameter tuning: optimize over discrete grid or random samples",
+        }
+    )
 
 
 def cheatsheet():

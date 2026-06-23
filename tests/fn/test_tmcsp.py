@@ -1,6 +1,7 @@
 """Test tmcsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmcsp import tmcsp
 
 

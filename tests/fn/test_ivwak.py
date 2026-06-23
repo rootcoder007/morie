@@ -1,6 +1,7 @@
 """Tests for morie.fn.ivwak — instrumental variable weak test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ivwak import iv_weak_test
 
 

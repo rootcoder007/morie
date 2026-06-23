@@ -7,7 +7,7 @@ Solves equality and inequality constrained problems via iterative quadratic prog
 import numpy as np
 from scipy.optimize import minimize
 
-__all__ = ['sqpmh']
+__all__ = ["sqpmh"]
 
 
 def sqpmh(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, full_output=False):
@@ -62,18 +62,9 @@ def sqpmh(f, grad_f, constraints, x0, tol=1e-6, max_iter=100, full_output=False)
 
     # Use scipy's SLSQP (which implements SQP internally)
     result = minimize(
-        f,
-        x,
-        method='SLSQP',
-        jac=grad_f,
-        constraints=constraints,
-        options={'ftol': tol, 'maxiter': max_iter}
+        f, x, method="SLSQP", jac=grad_f, constraints=constraints, options={"ftol": tol, "maxiter": max_iter}
     )
 
     if full_output:
-        return result.x, {
-            'iterations': result.nit,
-            'converged': result.success,
-            'final_value': result.fun
-        }
+        return result.x, {"iterations": result.nit, "converged": result.success, "final_value": result.fun}
     return result.x

@@ -1,6 +1,7 @@
 """Tests for survbri.brier_score."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survbri import brier_score
 
 
@@ -12,7 +13,7 @@ def test_survbri_basic():
     t_grid = np.random.default_rng(42).normal(0, 1, 100)
     result = brier_score(time, event, predicted_S, t_grid)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survbri_edge():

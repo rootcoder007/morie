@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sparse representation of biomedical signals in learned dictionary."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_sparse_rep"]
@@ -36,7 +38,14 @@ def rangayyan_sparse_rep(x, D, lambda_or_sparsity, method):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sparse representation of biomedical signals in learned dictionary"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Sparse representation of biomedical signals in learned dictionary",
+        }
+    )
 
 
 def cheatsheet():

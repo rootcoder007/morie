@@ -1,6 +1,7 @@
 """Tests for sortP.sortpool."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sortP import sortpool
 
 
@@ -11,7 +12,7 @@ def test_sortP_basic():
     k = 5
     result = sortpool(A, X, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sortP_edge():

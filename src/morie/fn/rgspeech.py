@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Speech signal formant and pitch extraction."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_speech_features"]
@@ -34,7 +36,9 @@ def rangayyan_speech_features(speech, fs, order):
     n = int(speech) if speech.ndim == 0 else len(speech)
     result = float(np.mean(speech))
     se = float(np.std(speech, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Speech signal formant and pitch extraction"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Speech signal formant and pitch extraction"}
+    )
 
 
 def cheatsheet():

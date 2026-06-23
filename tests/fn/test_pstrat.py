@@ -1,17 +1,20 @@
 """Tests for fn/pstrat.py -- Post-stratification weights."""
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from morie.fn.pstrat import pstrat, poststratification_weights
+from morie.fn.pstrat import poststratification_weights, pstrat
 
 
 def test_pstrat_returns_series():
     rng = np.random.default_rng(42)
-    df = pd.DataFrame({
-        "stratum": rng.choice(["A", "B", "C"], size=100),
-        "y": rng.normal(0, 1, size=100),
-    })
+    df = pd.DataFrame(
+        {
+            "stratum": rng.choice(["A", "B", "C"], size=100),
+            "y": rng.normal(0, 1, size=100),
+        }
+    )
     pop_counts = {"A": 5000, "B": 3000, "C": 2000}
     result = pstrat(df, "stratum", pop_counts)
     assert isinstance(result, pd.Series)

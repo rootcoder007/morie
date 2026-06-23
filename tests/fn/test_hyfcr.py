@@ -1,6 +1,7 @@
 """Test hyfcr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hyfcr import hyfcr
 
 

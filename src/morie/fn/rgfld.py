@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fisher linear discriminant analysis (LDA)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_fisher_lda"]
@@ -32,7 +34,9 @@ def rangayyan_fisher_lda(X, y):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Fisher linear discriminant analysis (LDA)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Fisher linear discriminant analysis (LDA)"}
+    )
 
 
 def cheatsheet():

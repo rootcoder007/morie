@@ -1,6 +1,7 @@
 """Tests for evtsthr.evt_threshold_select_lvar."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evtsthr import evt_threshold_select_lvar
 
 
@@ -10,7 +11,7 @@ def test_evtsthr_basic():
     u_grid = np.random.default_rng(42).normal(0, 1, 100)
     result = evt_threshold_select_lvar(x, u_grid)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evtsthr_edge():

@@ -1,6 +1,7 @@
 """Tests for pinsk1.pinsker_inequality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pinsk1 import pinsker_inequality
 
 
@@ -10,7 +11,7 @@ def test_pinsk1_basic():
     q = np.random.default_rng(42).normal(0, 1, 100)
     result = pinsker_inequality(p, q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pinsk1_edge():

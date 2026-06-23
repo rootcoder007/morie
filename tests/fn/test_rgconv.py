@@ -1,6 +1,7 @@
 """Tests for rgconv.rangayyan_linear_convolution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgconv import rangayyan_linear_convolution
 
 
@@ -10,7 +11,7 @@ def test_rgconv_basic():
     h = 0.3
     result = rangayyan_linear_convolution(x, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgconv_edge():

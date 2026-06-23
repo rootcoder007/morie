@@ -1,7 +1,7 @@
 """Tests for moods (Mood's test for scale)."""
 
 import numpy as np
-import pytest
+
 from morie.fn.moods import moods
 
 

@@ -1,7 +1,10 @@
 """Tests for law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe10u5.law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_10_unnumbered_5."""
+
 import numpy as np
-import pytest
-from morie.fn.law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe10u5 import law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_10_unnumbered_5
+
+from morie.fn.law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe10u5 import (
+    law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_10_unnumbered_5,
+)
 
 
 def test_law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe10u5_basic():
@@ -9,7 +12,7 @@ def test_law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe10u5_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_10_unnumbered_5(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe10u5_edge():

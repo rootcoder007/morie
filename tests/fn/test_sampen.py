@@ -1,7 +1,9 @@
 """Tests for sampen — Sample entropy."""
+
 import numpy as np
-from morie.fn.sampen import sample_entropy
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.sampen import sample_entropy
 
 
 def test_sampen_basic(rng):

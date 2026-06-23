@@ -1,13 +1,14 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gaussian-process regression -- squared-exponential kernel."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_gp_squared_exponential"]
 
 
-def ghosal_gp_squared_exponential(x, y, length_scale=None, sigma_f=1.0,
-                                    noise=None, x_star=None):
+def ghosal_gp_squared_exponential(x, y, length_scale=None, sigma_f=1.0, noise=None, x_star=None):
     """Posterior mean of a Gaussian process with SE kernel.
 
     Kernel::
@@ -54,8 +55,7 @@ def ghosal_gp_squared_exponential(x, y, length_scale=None, sigma_f=1.0,
     x_star = np.asarray(x_star, dtype=float)
     if x_star.ndim == 1:
         x_star = x_star[:, None]
-    sq = np.sum(x ** 2, axis=1, keepdims=True) + \
-        np.sum(x ** 2, axis=1)[None, :] - 2 * x @ x.T
+    sq = np.sum(x**2, axis=1, keepdims=True) + np.sum(x**2, axis=1)[None, :] - 2 * x @ x.T
     sq = np.clip(sq, 0, None)
     if length_scale is None:
         d = np.sqrt(sq[np.triu_indices_from(sq, k=1)])
@@ -66,30 +66,31 @@ def ghosal_gp_squared_exponential(x, y, length_scale=None, sigma_f=1.0,
         noise = max(noise, 1e-3)
 
     def kernel(a, b):
-        sq_ab = (np.sum(a ** 2, axis=1, keepdims=True)
-                 + np.sum(b ** 2, axis=1)[None, :] - 2 * a @ b.T)
+        sq_ab = np.sum(a**2, axis=1, keepdims=True) + np.sum(b**2, axis=1)[None, :] - 2 * a @ b.T
         sq_ab = np.clip(sq_ab, 0, None)
-        return sigma_f ** 2 * np.exp(-sq_ab / (2 * length_scale ** 2))
+        return sigma_f**2 * np.exp(-sq_ab / (2 * length_scale**2))
 
-    K = kernel(x, x) + noise ** 2 * np.eye(n)
+    K = kernel(x, x) + noise**2 * np.eye(n)
     K_s = kernel(x_star, x)
-    K_ss_diag = sigma_f ** 2 * np.ones(x_star.shape[0])
+    K_ss_diag = sigma_f**2 * np.ones(x_star.shape[0])
     L = np.linalg.cholesky(K + 1e-8 * np.eye(n))
     alpha = np.linalg.solve(L.T, np.linalg.solve(L, y))
     mu = K_s @ alpha
     v = np.linalg.solve(L, K_s.T)
-    var = K_ss_diag - np.sum(v ** 2, axis=0)
+    var = K_ss_diag - np.sum(v**2, axis=0)
     sd = np.sqrt(np.clip(var, 0, None))
-    return RichResult(payload={
-        "estimate": float(np.mean(mu)),
-        "se": float(np.mean(sd)),
-        "mu": mu.tolist(),
-        "sd": sd.tolist(),
-        "length_scale": float(length_scale),
-        "noise": float(noise),
-        "n": n,
-        "method": "GP regression (squared-exponential kernel)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(mu)),
+            "se": float(np.mean(sd)),
+            "mu": mu.tolist(),
+            "sd": sd.tolist(),
+            "length_scale": float(length_scale),
+            "noise": float(noise),
+            "n": n,
+            "method": "GP regression (squared-exponential kernel)",
+        }
+    )
 
 
 def cheatsheet():

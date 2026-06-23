@@ -1,6 +1,7 @@
 """Tests for bvtrA.bias_variance_tradeoff."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bvtrA import bias_variance_tradeoff
 
 
@@ -11,7 +12,7 @@ def test_bvtrA_basic():
     noise_var = np.random.default_rng(42).normal(0, 1, 100)
     result = bias_variance_tradeoff(y_true, y_pred, noise_var)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bvtrA_edge():

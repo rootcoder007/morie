@@ -1,14 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wald single-coefficient test with R-style verbose result."""
 
-import math
-from scipy.stats import norm, chi2
+from scipy.stats import chi2, norm
 
 
-def wald(estimate: float, std_error: float,
-         null_value: float = 0.0, test: str = "z"):
+def wald(estimate: float, std_error: float, null_value: float = 0.0, test: str = "z"):
     """Wald test for H0: theta = theta0."""
     from ._richresult import hypothesis_test_result
+
     if std_error <= 0:
         raise ValueError(f"std_error must be positive, got {std_error}.")
     z = (estimate - null_value) / std_error
@@ -25,7 +24,8 @@ def wald(estimate: float, std_error: float,
         raise ValueError(f"unknown test mode: {test!r}; use 'z' or 'chi2'.")
     return hypothesis_test_result(
         test_name=f"Wald test ({test})",
-        statistic=float(stat_val), pvalue=float(p),
+        statistic=float(stat_val),
+        pvalue=float(p),
         extra_summary=[
             (stat_label, stat_val),
             ("Estimate", estimate),

@@ -1,6 +1,8 @@
 """Tests for sipost."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sipost import sipost
 
 
@@ -28,4 +30,5 @@ def test_sipost_no_data():
 
 def test_sipost_alias():
     from morie.fn.sipost import sipost
+
     assert sipost is sipost

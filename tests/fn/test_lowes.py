@@ -1,8 +1,9 @@
 """Tests for morie.fn.lowes -- LOWESS smoother."""
 
 import numpy as np
-from morie.fn.lowes import lowess, lowes
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.lowes import lowes, lowess
 
 
 class TestLowes:

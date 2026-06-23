@@ -1,6 +1,7 @@
 """Test mls."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mls import mls
 
 

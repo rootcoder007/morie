@@ -1,9 +1,8 @@
 """Tests for morie.fn.rinsp — render inspection."""
 
 import pandas as pd
-import pytest
 
-from morie.fn.rinsp import rinsp, render_inspection
+from morie.fn.rinsp import render_inspection, rinsp
 from morie.inspector import InspectionResult
 
 

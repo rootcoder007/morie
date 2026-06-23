@@ -4,7 +4,6 @@ from morie.fn.sttot import subscale_total_corr
 
 
 class TestSubscaleTotalCorr:
-
     def test_returns_all_subscales(self, mapq_df):
         result = subscale_total_corr(mapq_df)
         assert set(result.keys()) == {"EE", "EA", "UA", "ER"}

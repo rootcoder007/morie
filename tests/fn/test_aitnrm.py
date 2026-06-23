@@ -1,6 +1,7 @@
 """Tests for aitnrm.aitchison_norm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.aitnrm import aitchison_norm
 
 
@@ -9,7 +10,7 @@ def test_aitnrm_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = aitchison_norm(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_aitnrm_edge():

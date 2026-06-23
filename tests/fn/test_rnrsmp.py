@@ -1,6 +1,8 @@
 """Tests for rnrsmp."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnrsmp import rnrsmp
 
 
@@ -28,4 +30,5 @@ def test_rnrsmp_no_data():
 
 def test_rnrsmp_alias():
     from morie.fn.rnrsmp import rnrsmp
+
     assert rnrsmp is rnrsmp

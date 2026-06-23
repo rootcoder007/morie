@@ -42,4 +42,4 @@ inits = initial_start_values
 
 
 def cheatsheet() -> str:
-    return 'initial_start_values({}) -> Initial start values for MDS.'
+    return "initial_start_values({}) -> Initial start values for MDS."

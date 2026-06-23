@@ -1,6 +1,7 @@
 """Test mtmod."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtmod import mtmod
 
 

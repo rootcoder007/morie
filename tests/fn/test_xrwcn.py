@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwcn -- Weights connectivity check"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwcn import w_connected
 

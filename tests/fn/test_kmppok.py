@@ -1,6 +1,7 @@
 """Tests for kmppok.kamath_ppo_rlhf_objective."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmppok import kamath_ppo_rlhf_objective
 
 
@@ -12,7 +13,7 @@ def test_kmppok_basic():
     beta = 0.8
     result = kamath_ppo_rlhf_objective(rewards, logp_theta, logp_ref, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmppok_edge():

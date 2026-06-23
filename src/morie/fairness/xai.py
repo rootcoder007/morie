@@ -18,6 +18,7 @@ on permutation importance; Friedman on partial dependence; Apley &
 Zhu on ALE; Štrumbelj & Kononenko / Lundberg & Lee on Shapley
 sampling); no code copied.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -50,9 +51,7 @@ def _names(feature_names: Any, d: int) -> list[str]:
         return [f"x{j}" for j in range(d)]
     names = list(feature_names)
     if len(names) != d:
-        raise ValueError(
-            f"feature_names has {len(names)} entries; X has {d} columns"
-        )
+        raise ValueError(f"feature_names has {len(names)} entries; X has {d} columns")
     return names
 
 
@@ -70,9 +69,7 @@ def _resolve(feature: Any, names: list[str]) -> int:
 def _predict(predict_fn: Callable, X: np.ndarray) -> np.ndarray:
     out = np.asarray(predict_fn(X), dtype=float).reshape(-1)
     if out.shape[0] != X.shape[0]:
-        raise ValueError(
-            "predict_fn must return one prediction per row of X"
-        )
+        raise ValueError("predict_fn must return one prediction per row of X")
     return out
 
 
@@ -135,8 +132,7 @@ def xai_permutation_importance(
         for _ in range(int(n_repeats)):
             Xp = X.copy()
             Xp[:, j] = X[rng.permutation(n), j]
-            deltas.append(float(np.mean(np.abs(_predict(predict_fn, Xp)
-                                                - base))))
+            deltas.append(float(np.mean(np.abs(_predict(predict_fn, Xp) - base))))
         importances[names[j]] = float(np.mean(deltas))
 
     ranking = sorted(importances, key=lambda k: importances[k], reverse=True)
@@ -149,8 +145,7 @@ def xai_permutation_importance(
             if p not in importances:
                 raise ValueError(f"protected feature {p!r} not in features")
             protected_ranks[p] = ranking.index(p) + 1
-        flagged = [p for p, r in protected_ranks.items()
-                   if r <= max(1, d // 3)]
+        flagged = [p for p, r in protected_ranks.items() if r <= max(1, d // 3)]
         if flagged:
             warnings.append(
                 f"protected attribute(s) {flagged} rank in the top third "
@@ -158,28 +153,27 @@ def xai_permutation_importance(
                 f"protected characteristic, a direct bias signal."
             )
 
-    table = [[nm, round(importances[nm], 5),
-              ("protected" if nm in protected_ranks else "")]
-             for nm in ranking]
+    table = [[nm, round(importances[nm], 5), ("protected" if nm in protected_ranks else "")] for nm in ranking]
     interp = (
         f"The model relies most on {ranking[0]!r} "
         f"(importance {top:.4f}). "
-        + ("Protected attributes appear high in the ranking — see the "
-           "warning above." if warnings else
-           "No protected attribute ranks in the top third.")
-        if ranking else "No features to rank."
+        + (
+            "Protected attributes appear high in the ranking — see the warning above."
+            if warnings
+            else "No protected attribute ranks in the top third."
+        )
+        if ranking
+        else "No features to rank."
     )
     return RichResult(
         title="Permutation Feature Importance",
-        summary_lines=[("Top feature", ranking[0] if ranking else None),
-                       ("Top importance", top)],
-        tables=[{"title": "Feature importance (high → low):",
-                 "headers": ["feature", "importance", "flag"],
-                 "rows": table}],
+        summary_lines=[("Top feature", ranking[0] if ranking else None), ("Top importance", top)],
+        tables=[
+            {"title": "Feature importance (high → low):", "headers": ["feature", "importance", "flag"], "rows": table}
+        ],
         warnings=warnings,
         interpretation=interp,
-        payload={"value": top, "importances": importances,
-                 "ranking": ranking, "protected_ranks": protected_ranks},
+        payload={"value": top, "importances": importances, "ranking": ranking, "protected_ranks": protected_ranks},
     )
 
 
@@ -217,16 +211,17 @@ def xai_partial_dependence(
     rng_val = float(pd_vals.max() - pd_vals.min())
     return RichResult(
         title=f"Partial Dependence — {names[j]}",
-        summary_lines=[("Feature", names[j]),
-                       ("PD range", rng_val),
-                       ("PD at min", float(pd_vals[0])),
-                       ("PD at max", float(pd_vals[-1]))],
+        summary_lines=[
+            ("Feature", names[j]),
+            ("PD range", rng_val),
+            ("PD at min", float(pd_vals[0])),
+            ("PD at max", float(pd_vals[-1])),
+        ],
         interpretation=(
             f"As {names[j]!r} sweeps its observed range, the model's "
             f"average prediction moves over a span of {rng_val:.4f}."
         ),
-        payload={"value": rng_val, "feature": names[j],
-                 "grid": grid, "pd": pd_vals},
+        payload={"value": rng_val, "feature": names[j], "grid": grid, "pd": pd_vals},
     )
 
 
@@ -284,17 +279,13 @@ def xai_ale(
     bin_centers = edges
     return RichResult(
         title=f"Accumulated Local Effects — {names[j]}",
-        summary_lines=[("Feature", names[j]),
-                       ("Bins", k),
-                       ("ALE range", float(ale.max() - ale.min()))],
+        summary_lines=[("Feature", names[j]), ("Bins", k), ("ALE range", float(ale.max() - ale.min()))],
         interpretation=(
             f"The accumulated local effect of {names[j]!r} spans "
             f"{float(ale.max() - ale.min()):.4f} across its range, "
             f"correlation-robustly."
         ),
-        payload={"value": float(ale.max() - ale.min()),
-                 "feature": names[j], "bin_centers": bin_centers,
-                 "ale": ale},
+        payload={"value": float(ale.max() - ale.min()), "feature": names[j], "bin_centers": bin_centers, "ale": ale},
     )
 
 
@@ -335,17 +326,14 @@ def xai_ceteris_paribus(
     swing = float(profile.max() - profile.min())
     return RichResult(
         title=f"Ceteris-Paribus Profile — {names[j]}",
-        summary_lines=[("Feature", names[j]),
-                       ("Instance prediction", base),
-                       ("Profile swing", swing)],
+        summary_lines=[("Feature", names[j]), ("Instance prediction", base), ("Profile swing", swing)],
         interpretation=(
             f"Holding this instance fixed and varying {names[j]!r} alone, "
             f"the prediction swings by {swing:.4f}. A large swing on a "
             f"protected feature means the decision would change purely on "
             f"that characteristic."
         ),
-        payload={"value": swing, "feature": names[j],
-                 "grid": grid, "profile": profile, "base": base},
+        payload={"value": swing, "feature": names[j], "grid": grid, "profile": profile, "base": base},
     )
 
 
@@ -391,7 +379,7 @@ def xai_shap_values(
         # local-accuracy identity (Σ SHAP = f(x) − E[f]) exact.
         rows = np.tile(background[:, None, :], (1, d + 1, 1))
         for k in range(d):
-            rows[:, k + 1:, perm[k]] = x[perm[k]]
+            rows[:, k + 1 :, perm[k]] = x[perm[k]]
         preds = _predict(predict_fn, rows.reshape(nb * (d + 1), d))
         preds = preds.reshape(nb, d + 1)
         contrib[perm] += np.diff(preds, axis=1).mean(axis=0)
@@ -406,17 +394,17 @@ def xai_shap_values(
     table = [[nm, round(shap_map[nm], 5)] for nm in order]
     return RichResult(
         title="SHAP Feature Attributions (sampling estimator)",
-        summary_lines=[("Most influential feature", order[0]),
-                       ("Its SHAP value", top),
-                       ("Prediction", fx),
-                       ("Background mean", base)],
-        tables=[{"title": "SHAP values (by magnitude):",
-                 "headers": ["feature", "SHAP value"], "rows": table}],
+        summary_lines=[
+            ("Most influential feature", order[0]),
+            ("Its SHAP value", top),
+            ("Prediction", fx),
+            ("Background mean", base),
+        ],
+        tables=[{"title": "SHAP values (by magnitude):", "headers": ["feature", "SHAP value"], "rows": table}],
         interpretation=(
             f"For this instance the prediction {fx:.4f} departs from the "
             f"background mean {base:.4f}; {order[0]!r} contributes the "
             f"most ({top:+.4f}). The SHAP values sum to that departure."
         ),
-        payload={"value": top, "shap_values": shap_map,
-                 "ranking": order, "prediction": fx, "background_mean": base},
+        payload={"value": top, "shap_values": shap_map, "ranking": order, "prediction": fx, "background_mean": base},
     )

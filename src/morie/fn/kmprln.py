@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pre-LayerNorm transformer block (stable training)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_pre_ln_transformer"]
@@ -34,7 +36,9 @@ def kamath_pre_ln_transformer(x, attn_fn, ffn_fn):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pre-LayerNorm transformer block (stable training)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Pre-LayerNorm transformer block (stable training)"}
+    )
 
 
 def cheatsheet():

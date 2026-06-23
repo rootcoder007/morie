@@ -1,6 +1,8 @@
 """Tests for morie.fn.cpi."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cpi import cpi_inflation
 
 
@@ -34,6 +36,7 @@ def test_cpi_positive():
 
 def test_cheatsheet():
     from morie.fn.cpi import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

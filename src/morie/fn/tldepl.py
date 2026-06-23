@@ -1,6 +1,7 @@
 """Lower tail dependence coefficient."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["lower_tail_dependence"]

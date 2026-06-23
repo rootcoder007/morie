@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Repetition penalty for generation (Keskar et al. 2019, CTRL)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -36,8 +37,7 @@ def repetition_penalty(x, generated, alpha: float = 1.2):
     if alpha == 1.0:
         return RichResult(
             title="Repetition Penalty (Keskar 2019)",
-            payload={"tensor": z, "penalised_idx": np.array([], int),
-                     "alpha": alpha, "method": "rep-penalty"},
+            payload={"tensor": z, "penalised_idx": np.array([], int), "alpha": alpha, "method": "rep-penalty"},
         )
     idx = np.unique(np.asarray(list(generated), dtype=int))
     idx = idx[(idx >= 0) & (idx < z.size)]
@@ -46,8 +46,7 @@ def repetition_penalty(x, generated, alpha: float = 1.2):
     return RichResult(
         title="Repetition Penalty (Keskar 2019)",
         summary_lines=[("alpha", alpha), ("n_penalised", idx.size)],
-        payload={"tensor": z, "penalised_idx": idx, "alpha": alpha,
-                 "method": "rep-penalty"},
+        payload={"tensor": z, "penalised_idx": idx, "alpha": alpha, "method": "rep-penalty"},
     )
 
 

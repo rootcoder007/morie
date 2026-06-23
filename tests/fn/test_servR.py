@@ -1,6 +1,7 @@
 """Tests for servR.serendipity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.servR import serendipity
 
 
@@ -11,7 +12,7 @@ def test_servR_basic():
     relevant = np.random.default_rng(42).normal(0, 1, 100)
     result = serendipity(pred, baseline, relevant)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_servR_edge():

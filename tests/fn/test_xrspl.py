@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrspl -- Spatial logit model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrspl import spatial_logit
 

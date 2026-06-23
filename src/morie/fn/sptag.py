@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spatial agreement scores between legislators (Armstrong Ch 8)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_agreement", "sptag"]
@@ -25,9 +27,9 @@ def spatial_agreement(x):
         M = M.reshape(-1, 1)
     n, m = M.shape
     if n < 2:
-        return RichResult(payload={"agreement": np.eye(n),
-                                   "mean_agreement": np.nan, "n": n,
-                                   "m": m, "method": "spatial_agreement"})
+        return RichResult(
+            payload={"agreement": np.eye(n), "mean_agreement": np.nan, "n": n, "m": m, "method": "spatial_agreement"}
+        )
     A = np.eye(n)
     valid = ~np.isnan(M)
     for i in range(n):
@@ -45,11 +47,8 @@ def spatial_agreement(x):
     mean_a = float(np.nanmean(off)) if off.size else np.nan
     return RichResult(
         title="Pairwise vote agreement (Armstrong Ch 8)",
-        summary_lines=[("Mean off-diagonal agreement", mean_a),
-                       ("n legislators", n), ("m votes", m)],
-        payload={"agreement": A, "mean_agreement": mean_a,
-                 "n": int(n), "m": int(m),
-                 "method": "spatial_agreement"},
+        summary_lines=[("Mean off-diagonal agreement", mean_a), ("n legislators", n), ("m votes", m)],
+        payload={"agreement": A, "mean_agreement": mean_a, "n": int(n), "m": int(m), "method": "spatial_agreement"},
     )
 
 

@@ -1,4 +1,5 @@
 """Test goppa_code."""
+
 from morie.fn._containers import CryptoResult
 from morie.fn.goppa import goppa, goppa_code
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PIT-based random number generation from arbitrary continuous CDF."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_pit_rng"]
@@ -32,7 +34,14 @@ def gibbons_pit_rng(U, F_inv):
     n = int(U) if U.ndim == 0 else len(U)
     result = float(np.mean(U))
     se = float(np.std(U, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PIT-based random number generation from arbitrary continuous CDF"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PIT-based random number generation from arbitrary continuous CDF",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Split-sample DR-DiD."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_did_split_sample"]

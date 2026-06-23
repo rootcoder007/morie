@@ -11,7 +11,7 @@ import numpy as np
 
 from ._containers import SignalResult
 
-__all__ = ['emgrm']
+__all__ = ["emgrm"]
 
 _QUOTE = "Strength in every muscle. --"
 
@@ -42,7 +42,7 @@ def emgrm(
     n = len(x)
 
     rms = np.zeros(n)
-    x2 = x ** 2
+    x2 = x**2
     cumsum = np.cumsum(x2)
     cumsum = np.insert(cumsum, 0, 0)
 

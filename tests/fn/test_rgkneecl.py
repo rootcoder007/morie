@@ -1,6 +1,7 @@
 """Tests for rgkneecl.rangayyan_knee_classify."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgkneecl import rangayyan_knee_classify
 
 
@@ -11,7 +12,7 @@ def test_rgkneecl_basic():
     labels = np.random.default_rng(43).integers(0, 2, 100)
     result = rangayyan_knee_classify(vag, fs, labels)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgkneecl_edge():

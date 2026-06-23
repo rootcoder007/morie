@@ -1,7 +1,6 @@
 """Tests for morie.fn.zeitv -- Travel time catchment"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zeitv import travel_time_catch
 

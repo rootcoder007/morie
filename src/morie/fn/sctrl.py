@@ -115,8 +115,7 @@ def synthetic_control(
     w0 = np.ones(n_ctrl) / n_ctrl
     bounds = [(0, 1)] * n_ctrl
     constraints = {"type": "eq", "fun": lambda w: w.sum() - 1}
-    result = minimize(obj, w0, method="SLSQP", bounds=bounds,
-                      constraints=constraints)
+    result = minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=constraints)
     w_star = result.x
 
     Y_treat_post = panel.loc[treated_unit, post_times].to_numpy(dtype=float)
@@ -143,8 +142,7 @@ def synthetic_control(
         w0_p = np.ones(len(other_idx)) / len(other_idx)
         bounds_p = [(0, 1)] * len(other_idx)
         cons_p = {"type": "eq", "fun": lambda w: w.sum() - 1}
-        res_p = minimize(pbo_obj, w0_p, method="SLSQP", bounds=bounds_p,
-                         constraints=cons_p)
+        res_p = minimize(pbo_obj, w0_p, method="SLSQP", bounds=bounds_p, constraints=cons_p)
 
         Y_pbo_post = panel.loc[cu, post_times].to_numpy(dtype=float)
         Y_others_post = Y_ctrl_post[other_idx]

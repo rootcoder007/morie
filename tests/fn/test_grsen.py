@@ -1,6 +1,7 @@
 """Tests for grsen.geron_senet_squeeze_excite."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grsen import geron_senet_squeeze_excite
 
 
@@ -11,7 +12,7 @@ def test_grsen_basic():
     W2 = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_senet_squeeze_excite(X, W1, W2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grsen_edge():

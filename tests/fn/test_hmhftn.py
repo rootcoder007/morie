@@ -1,6 +1,7 @@
 """Tests for hmhftn.geron_hf_trainer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmhftn import geron_hf_trainer
 
 
@@ -12,7 +13,7 @@ def test_hmhftn_basic():
     eval_ds = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_hf_trainer(model, args, train_ds, eval_ds)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmhftn_edge():

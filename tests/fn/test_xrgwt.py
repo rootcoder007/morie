@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrgwt -- GWR local t-values"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrgwt import gwr_tvalues
 

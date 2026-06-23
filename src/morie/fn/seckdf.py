@@ -1,6 +1,7 @@
 """HKDF (RFC 5869) extract + expand."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["hkdf_extract_expand"]

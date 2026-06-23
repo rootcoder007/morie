@@ -1,5 +1,7 @@
 """Tests for arspd.py - AR spectrum."""
+
 import numpy as np
+
 from morie.fn.arspd import ar_spectrum_fn, arspd
 
 

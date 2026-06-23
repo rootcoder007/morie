@@ -7,7 +7,6 @@ from morie.fn.mvkov import mvkov
 
 
 class TestMvkov:
-
     def test_output_length(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (15, 2))

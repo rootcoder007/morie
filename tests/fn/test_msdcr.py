@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdcr -- Correlation distance matrix"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdcr import dist_correlation
 

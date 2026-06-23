@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_donsker_class"]
@@ -30,7 +32,14 @@ def ghosal_donsker_class(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test rsshd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rsshd import rsshd
 
 

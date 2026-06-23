@@ -1,6 +1,7 @@
 """Tests for esllsc.esl_lda_disc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esllsc import esl_lda_disc
 
 
@@ -10,7 +11,7 @@ def test_esllsc_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = esl_lda_disc(X, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esllsc_edge():

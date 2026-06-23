@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.iar import indirect_age_adjustment
 
 

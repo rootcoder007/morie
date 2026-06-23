@@ -1,6 +1,7 @@
 """Tests for iccC.icc_consistency."""
+
 import numpy as np
-import pytest
+
 from morie.fn.iccC import icc_consistency
 
 
@@ -11,7 +12,7 @@ def test_iccC_basic():
     rater = np.random.default_rng(42).normal(0, 1, 100)
     result = icc_consistency(y, subject, rater)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_iccC_edge():

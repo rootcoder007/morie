@@ -2,11 +2,11 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.vface import validity_face_content
 
 
 class TestValidityFaceContent:
-
     def test_perfect_ratings(self):
         items = ["a", "b", "c"]
         ratings = np.array([[4, 4, 4], [3, 4, 3], [4, 3, 4]])

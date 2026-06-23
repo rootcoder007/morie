@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrspr -- Spatial panel random effects"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrspr import spatial_panel_re
 

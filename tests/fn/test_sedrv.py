@@ -1,6 +1,7 @@
 """Test sedrv."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sedrv import sedrv
 
 

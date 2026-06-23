@@ -1,6 +1,7 @@
 """SNP-BLUP additive prediction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["snp_blup"]

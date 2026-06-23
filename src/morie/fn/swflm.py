@@ -38,4 +38,4 @@ swflm = solar_mission_summary
 
 
 def cheatsheet() -> str:
-    return 'swflm() -> Summary statistics for Solar System mission data'
+    return "swflm() -> Summary statistics for Solar System mission data"

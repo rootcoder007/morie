@@ -1,5 +1,7 @@
 """Tests for morie.fn.imhst."""
+
 import numpy as np
+
 from morie.fn.imhst import imhst
 
 
@@ -13,6 +15,7 @@ def test_imhst_smoke():
 
 def test_cheatsheet():
     from morie.fn.imhst import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

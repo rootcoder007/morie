@@ -1,7 +1,6 @@
 """Tests for morie.fn.msplt -- MDS polarity detection"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msplt import mds_polarity
 
@@ -14,5 +13,5 @@ class TestMdsPolarity:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_polarity(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_polarity(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

@@ -1,6 +1,7 @@
 """Test vmkbs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmkbs import vmkbs
 
 

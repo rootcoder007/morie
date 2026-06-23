@@ -1,6 +1,7 @@
 """Test ppiso."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppiso import ppiso
 
 

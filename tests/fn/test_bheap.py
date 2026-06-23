@@ -1,5 +1,7 @@
 """Tests for bheap (binary heap)."""
+
 import numpy as np
+
 from morie.fn.bheap import binary_heap
 
 

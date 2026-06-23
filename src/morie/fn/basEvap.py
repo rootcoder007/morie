@@ -1,6 +1,7 @@
 """Penman-Monteith reference ET."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["penman_monteith"]

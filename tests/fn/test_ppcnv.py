@@ -1,7 +1,7 @@
 """Tests for morie.fn.ppcnv."""
 
 import numpy as np
-import pytest
+
 from morie.fn.ppcnv import ppcnv
 
 

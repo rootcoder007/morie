@@ -1,6 +1,7 @@
 """Time-dependent Brier score."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["brier_score"]

@@ -81,4 +81,4 @@ ucr = ucr_classify
 
 
 def cheatsheet() -> str:
-    return 'ucr_classify({}) -> UCR offense classification.'
+    return "ucr_classify({}) -> UCR offense classification."

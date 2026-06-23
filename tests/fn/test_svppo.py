@@ -1,7 +1,6 @@
 """Tests for morie.fn.svppo -- Party position estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svppo import party_position
 

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GLR threshold selection for change detection at given FAR."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch8_glr_threshold"]
@@ -32,7 +34,14 @@ def rangayyan_ch8_glr_threshold(alpha, dof):
     n = int(alpha) if alpha.ndim == 0 else len(alpha)
     result = float(np.mean(alpha))
     se = float(np.std(alpha, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GLR threshold selection for change detection at given FAR"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "GLR threshold selection for change detection at given FAR",
+        }
+    )
 
 
 def cheatsheet():

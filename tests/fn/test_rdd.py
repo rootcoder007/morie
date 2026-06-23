@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.rdd import reg_discontinuity, rdd
+
 from morie.fn._containers import RegressionResult
+from morie.fn.rdd import rdd, reg_discontinuity
 
 
 class TestRDD:

@@ -16,6 +16,7 @@ For incomplete rankings (each ranker ranks a subset), W is
 computed pairwise with available rankers per pair, weighted by
 the count of common objects (Friedman-Kendall approach).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -44,18 +45,28 @@ def concordance_incomplete(x):
     """
     X = np.asarray(x, dtype=float)
     if X.ndim != 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "df": np.nan,
-            "n": 0, "k": 0,
-            "method": "Kendall's W (incomplete rankings)",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "df": np.nan,
+                "n": 0,
+                "k": 0,
+                "method": "Kendall's W (incomplete rankings)",
+            }
+        )
     n, k = X.shape
     if n < 2 or k < 2:
-        return RichResult(payload={
-            "statistic": np.nan, "p_value": np.nan, "df": n - 1,
-            "n": n, "k": k,
-            "method": "Kendall's W (incomplete rankings)",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "df": n - 1,
+                "n": n,
+                "k": k,
+                "method": "Kendall's W (incomplete rankings)",
+            }
+        )
 
     # Rank within each column (ranker), preserving NaN.
     R = np.full_like(X, np.nan, dtype=float)
@@ -74,7 +85,7 @@ def concordance_incomplete(x):
     if np.all(ki == k):
         Rbar = np.mean(Ri)
         S = float(np.sum((Ri - Rbar) ** 2))
-        W = 12.0 * S / (k ** 2 * (n ** 3 - n))
+        W = 12.0 * S / (k**2 * (n**3 - n))
     else:
         # Incomplete: normalise by per-object ranker count
         expected = (n + 1.0) / 2.0  # expected mean rank
@@ -87,21 +98,23 @@ def concordance_incomplete(x):
                 S += float(np.sum((ri - expected) ** 2))
                 norm += ri.size
         # Approximate W via the ratio of actual to max possible variance
-        max_S = norm * ((n ** 2 - 1) / 12.0)
+        max_S = norm * ((n**2 - 1) / 12.0)
         W = float(S / max_S) if max_S > 0 else np.nan
 
     df = n - 1
     chi2 = k * (n - 1) * W if np.isfinite(W) else np.nan
     p = float(1.0 - stats.chi2.cdf(chi2, df)) if np.isfinite(chi2) else np.nan
-    return RichResult(payload={
-        "statistic": float(W),
-        "p_value": p,
-        "df": df,
-        "chi2": float(chi2),
-        "n": n,
-        "k": k,
-        "method": "Kendall's coefficient of concordance W (incomplete rankings)",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(W),
+            "p_value": p,
+            "df": df,
+            "chi2": float(chi2),
+            "n": n,
+            "k": k,
+            "method": "Kendall's coefficient of concordance W (incomplete rankings)",
+        }
+    )
 
 
 def cheatsheet():

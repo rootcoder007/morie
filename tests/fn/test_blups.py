@@ -1,6 +1,7 @@
 """Tests for blups.blup_random_slope."""
+
 import numpy as np
-import pytest
+
 from morie.fn.blups import blup_random_slope
 
 
@@ -14,7 +15,7 @@ def test_blups_basic():
     sigma2_e = np.random.default_rng(42).normal(0, 1, 100)
     result = blup_random_slope(y, X, Z, cluster, D, sigma2_e)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_blups_edge():

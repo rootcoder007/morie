@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsls -- Spatial LASSO"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsls import spatial_lasso
 

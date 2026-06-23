@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Finite-dimensional Dirichlet distribution: Dir(alpha_1..alpha_k) on simplex S_k."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_fin_dir_def"]
@@ -30,7 +32,14 @@ def ghosal_fin_dir_def(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Finite-dimensional Dirichlet distribution: Dir(alpha_1..alpha_k) on simplex S_k"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Finite-dimensional Dirichlet distribution: Dir(alpha_1..alpha_k) on simplex S_k",
+        }
+    )
 
 
 def cheatsheet():

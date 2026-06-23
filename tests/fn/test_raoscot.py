@@ -1,6 +1,7 @@
 """Tests for raoscot.rao_scott_chisq."""
+
 import numpy as np
-import pytest
+
 from morie.fn.raoscot import rao_scott_chisq
 
 
@@ -11,7 +12,7 @@ def test_raoscot_basic():
     design = np.random.default_rng(42).normal(0, 1, 100)
     result = rao_scott_chisq(table, weights, design)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_raoscot_edge():

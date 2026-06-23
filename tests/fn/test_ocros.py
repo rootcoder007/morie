@@ -1,6 +1,7 @@
 """Tests for morie.fn.ocros — OTIS cross-tabulation."""
 
 import pandas as pd
+
 from morie.fn.ocros import otis_crosstab
 
 

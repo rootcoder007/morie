@@ -1,12 +1,11 @@
 """Tests for morie.fn.bfsc — Bayesian factor scores."""
 
 import numpy as np
-import pytest
+
 from morie.fn.bfsc import bayesian_factor_scores
 
 
 class TestBayesianFactorScores:
-
     def test_returns_dict(self, mapq_df):
         items = [c for c in mapq_df.columns if c.startswith("EE")]
         loadings = np.array([[0.7], [0.6], [0.8], [0.5], [0.7]])

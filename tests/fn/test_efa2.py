@@ -4,7 +4,6 @@ from morie.fn.efa2 import efa_nfactors
 
 
 class TestEfaNfactors:
-
     def test_parallel_analysis(self, mapq_df):
         items = [c for c in mapq_df.columns if c not in ("gender", "age_group")]
         result = efa_nfactors(mapq_df[items])

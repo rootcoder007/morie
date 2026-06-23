@@ -1,6 +1,7 @@
 """Harmonic mean marginal likelihood (cautionary)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["harmonic_mean_estimator"]
@@ -30,7 +31,9 @@ def harmonic_mean_estimator(log_lik):
     n = len(log_lik)
     result = float(np.mean(log_lik))
     se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Harmonic mean marginal likelihood (cautionary)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Harmonic mean marginal likelihood (cautionary)"}
+    )
 
 
 def cheatsheet():

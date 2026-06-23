@@ -1,6 +1,7 @@
 """Minimum mean-squared error achievable by the Wiener filter.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_minimum_mse"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_minimum_mse(sigma_d, Theta, Phi):
     n = len(sigma_d)
     result = float(np.mean(sigma_d))
     se = float(np.std(sigma_d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Minimum mean-squared error achievable by the Wiener filter."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Minimum mean-squared error achievable by the Wiener filter.",
+        }
+    )
 
 
 def cheatsheet():

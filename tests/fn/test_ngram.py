@@ -1,5 +1,7 @@
 """Tests for morie.fn.ngram."""
+
 import numpy as np
+
 from morie.fn.ngram import ngram_freq
 
 
@@ -13,6 +15,7 @@ def test_ngram_smoke():
 
 def test_cheatsheet():
     from morie.fn.ngram import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

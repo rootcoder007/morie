@@ -1,6 +1,7 @@
 """Tests for cvxstd.boyd_steepest_desc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cvxstd import boyd_steepest_desc
 
 
@@ -10,7 +11,7 @@ def test_cvxstd_basic():
     norm = np.random.default_rng(42).normal(0, 1, 100)
     result = boyd_steepest_desc(grad, norm)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cvxstd_edge():

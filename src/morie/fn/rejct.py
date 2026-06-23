@@ -1,6 +1,7 @@
 """Rejection point of redescending ψ."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rejection_point"]

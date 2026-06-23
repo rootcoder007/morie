@@ -1,6 +1,7 @@
 """Test gastrm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gastrm import gastrm
 
 

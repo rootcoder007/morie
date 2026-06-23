@@ -1,5 +1,7 @@
 """Tests for liftw.py - Lifting scheme DWT."""
+
 import numpy as np
+
 from morie.fn.liftw import lifting_dwt, liftw
 
 

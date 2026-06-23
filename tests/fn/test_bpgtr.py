@@ -1,5 +1,8 @@
 """Tests for breusch_pagan_test."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.bpgtr import breusch_pagan_test
 
 

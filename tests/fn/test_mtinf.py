@@ -1,6 +1,7 @@
 """Test mtinf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtinf import mtinf
 
 

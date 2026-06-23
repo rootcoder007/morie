@@ -1,6 +1,8 @@
 """Tests for morie.fn.varm -- VAR model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.varm import var_fit
 
 
@@ -18,4 +20,5 @@ class TestVAR:
 
     def test_cheatsheet(self):
         from morie.fn.varm import cheatsheet
+
         assert isinstance(cheatsheet(), str)

@@ -1,6 +1,7 @@
 """Test mtcrw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtcrw import mtcrw
 
 

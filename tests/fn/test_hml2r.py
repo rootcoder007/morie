@@ -1,6 +1,5 @@
 """Tests for hml2r.geron_l2_regularization."""
-import numpy as np
-import pytest
+
 from morie.fn.hml2r import geron_l2_regularization
 
 
@@ -10,7 +9,7 @@ def test_hml2r_basic():
     alpha = 0.05
     result = geron_l2_regularization(theta, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hml2r_edge():

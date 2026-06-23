@@ -1,6 +1,8 @@
 """Tests for rnagg."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rnagg import rnagg
 
 
@@ -28,4 +30,5 @@ def test_rnagg_no_data():
 
 def test_rnagg_alias():
     from morie.fn.rnagg import rnagg
+
     assert rnagg is rnagg

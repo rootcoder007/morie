@@ -1,6 +1,7 @@
 """Test gcrcf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcrcf import gcrcf
 
 

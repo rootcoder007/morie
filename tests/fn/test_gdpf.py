@@ -1,6 +1,7 @@
 """Tests for gdpf.gaussian_dp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdpf import gaussian_dp
 
 
@@ -10,7 +11,7 @@ def test_gdpf_basic():
     mu = 0.0
     result = gaussian_dp(mech, mu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gdpf_edge():

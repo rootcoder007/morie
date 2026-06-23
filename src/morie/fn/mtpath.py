@@ -1,6 +1,7 @@
 """Meta-path analysis on heterogeneous network."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["meta_path"]
@@ -34,7 +35,9 @@ def meta_path(G, node_types, metapath):
     n = len(G)
     result = float(np.mean(G))
     se = float(np.std(G, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Meta-path analysis on heterogeneous network"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Meta-path analysis on heterogeneous network"}
+    )
 
 
 def cheatsheet():

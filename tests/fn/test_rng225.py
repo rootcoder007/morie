@@ -1,6 +1,7 @@
 """Tests for rng225.rangayyan_ch4_composite_signal_in_terms_of_g."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng225 import rangayyan_ch4_composite_signal_in_terms_of_g
 
 
@@ -10,7 +11,7 @@ def test_rng225_basic():
     n = 100
     result = rangayyan_ch4_composite_signal_in_terms_of_g(g, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_rng225_edge():

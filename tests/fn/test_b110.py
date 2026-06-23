@@ -1,6 +1,7 @@
 """Tests for b110.burkov_lm_ch1_dataset_bce."""
+
 import numpy as np
-import pytest
+
 from morie.fn.b110 import burkov_lm_ch1_dataset_bce
 
 
@@ -11,7 +12,7 @@ def test_b110_basic():
     N = 100
     result = burkov_lm_ch1_dataset_bce(y_hat, y, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_b110_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tree of Thoughts: explore a tree of partial reasoning steps with search."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_tree_of_thoughts"]
@@ -36,7 +38,14 @@ def kamath_tree_of_thoughts(problem, branch_factor, max_depth, model):
     n = len(problem)
     result = float(np.mean(problem))
     se = float(np.std(problem, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Tree of Thoughts: explore a tree of partial reasoning steps with search"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Tree of Thoughts: explore a tree of partial reasoning steps with search",
+        }
+    )
 
 
 def cheatsheet():

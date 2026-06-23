@@ -1,6 +1,7 @@
 """Tests for fwlfwd.fully_corrective_fw."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fwlfwd import fully_corrective_fw
 
 
@@ -12,7 +13,7 @@ def test_fwlfwd_basic():
     x0 = np.random.default_rng(42).normal(0, 1, 100)
     result = fully_corrective_fw(f, grad_f, domain, x0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fwlfwd_edge():

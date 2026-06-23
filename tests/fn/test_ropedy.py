@@ -1,6 +1,7 @@
 """Tests for ropedy.rope_ntk_dynamic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ropedy import rope_ntk_dynamic
 
 
@@ -14,7 +15,7 @@ def test_ropedy_basic():
     L_train = np.random.default_rng(42).normal(0, 1, 100)
     result = rope_ntk_dynamic(y, q, m, theta, L_new, L_train)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ropedy_edge():

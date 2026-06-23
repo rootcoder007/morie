@@ -1,6 +1,7 @@
 """Test gestrt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gestrt import gestrt
 
 

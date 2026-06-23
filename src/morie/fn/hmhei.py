@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """He initialization for ReLU networks."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_he_init"]

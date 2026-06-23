@@ -1,9 +1,10 @@
 """Test heart_rate_from_rr (hrrr)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.hrrr import heart_rate_from_rr, hrrr
 from morie.fn._containers import DescriptiveResult
+from morie.fn.hrrr import heart_rate_from_rr, hrrr
 
 
 class TestHeartRateFromRR:

@@ -36,8 +36,9 @@ import pandas as pd
 # ----------------------------------------------------------------------
 
 
-def tps_major_crime(*, year: int | None = None, max_features: int | None = None,
-                    include_geometry: bool = False, offline: bool = False) -> pd.DataFrame:
+def tps_major_crime(
+    *, year: int | None = None, max_features: int | None = None, include_geometry: bool = False, offline: bool = False
+) -> pd.DataFrame:
     """Toronto Police Service "Major Crime Indicators" feed.
 
     Parameters
@@ -63,6 +64,7 @@ def tps_major_crime(*, year: int | None = None, max_features: int | None = None,
     if offline:
         import warnings
         from pathlib import Path
+
         path = Path(__file__).resolve().parent / "data" / "tps_major_crime_synthetic.csv"
         warnings.warn(
             "morie.datasets.tps_major_crime(offline=True): using the bundled "
@@ -80,6 +82,7 @@ def tps_major_crime(*, year: int | None = None, max_features: int | None = None,
         return df
 
     from .ingest.tps import LAYER_REGISTRY, fetch_feature_layer
+
     where = f"OCC_YEAR = {year}" if year is not None else "1=1"
     return fetch_feature_layer(
         LAYER_REGISTRY["major-crime"],
@@ -104,6 +107,7 @@ def otis_a01(*, offline: bool = True) -> pd.DataFrame:
     """
     import warnings
     from pathlib import Path
+
     path = Path(__file__).resolve().parent / "data" / "otis_a01_synthetic.csv"
     if offline:
         warnings.warn(
@@ -124,22 +128,23 @@ def otis_a01(*, offline: bool = True) -> pd.DataFrame:
 def tps_shootings(*, year: int | None = None, max_features: int | None = None) -> pd.DataFrame:
     """TPS Shooting and Firearm Discharges feed."""
     from .ingest.tps import LAYER_REGISTRY, fetch_feature_layer
+
     where = f"OCC_YEAR = {year}" if year is not None else "1=1"
-    return fetch_feature_layer(LAYER_REGISTRY["shooting-firearms"], where=where,
-                               max_features=max_features)
+    return fetch_feature_layer(LAYER_REGISTRY["shooting-firearms"], where=where, max_features=max_features)
 
 
 def tps_homicide(*, year: int | None = None, max_features: int | None = None) -> pd.DataFrame:
     """TPS Homicides feed."""
     from .ingest.tps import LAYER_REGISTRY, fetch_feature_layer
+
     where = f"OCC_YEAR = {year}" if year is not None else "1=1"
-    return fetch_feature_layer(LAYER_REGISTRY["homicide"], where=where,
-                               max_features=max_features)
+    return fetch_feature_layer(LAYER_REGISTRY["homicide"], where=where, max_features=max_features)
 
 
 def tps_layers() -> pd.DataFrame:
     """List all TPS open-data layers shipped with morie."""
     from .ingest.tps import discover_layers
+
     return discover_layers()
 
 
@@ -168,6 +173,7 @@ def cpads() -> pd.DataFrame:
     physical_health).
     """
     from .modules import load_cpads_analysis_data
+
     return load_cpads_analysis_data()
 
 
@@ -185,6 +191,7 @@ def siu_director_reports() -> pd.DataFrame:
     known PDF URL.
     """
     from .ingest.siu import list_reports
+
     return list_reports()
 
 
@@ -202,10 +209,12 @@ def siu_report_text(url: str | None = None, *, offline: bool = False) -> str:
     """
     if offline:
         from pathlib import Path
+
         return (Path(__file__).resolve().parent / "data" / "siu_24-OFD-001_synthetic.txt").read_text()
     if url is None:
         raise ValueError("siu_report_text: provide url=... or offline=True")
     from .ingest.siu import fetch_report_text
+
     return fetch_report_text(url)
 
 
@@ -217,6 +226,7 @@ def siu_report_fields(text_or_url: str) -> dict[str, Any]:
     PDF URL (fetches first).
     """
     from .ingest.siu import extract_report_fields, fetch_report_text
+
     if text_or_url.startswith(("http://", "https://")):
         text_or_url = fetch_report_text(text_or_url)
     return extract_report_fields(text_or_url)
@@ -232,16 +242,31 @@ def siu_report_fields(text_or_url: str) -> dict[str, Any]:
 # offline fallback can synthesise a frame with the same columns even
 # when the bundled CSV doesn't ship every field.
 _CHICAGO_CRIME_COLUMNS: tuple[str, ...] = (
-    "id", "case_number", "date", "block", "iucr", "primary_type",
-    "description", "location_description", "arrest", "domestic",
-    "beat", "district", "ward", "community_area", "fbi_code",
-    "x_coordinate", "y_coordinate", "year", "updated_on",
-    "latitude", "longitude",
+    "id",
+    "case_number",
+    "date",
+    "block",
+    "iucr",
+    "primary_type",
+    "description",
+    "location_description",
+    "arrest",
+    "domestic",
+    "beat",
+    "district",
+    "ward",
+    "community_area",
+    "fbi_code",
+    "x_coordinate",
+    "y_coordinate",
+    "year",
+    "updated_on",
+    "latitude",
+    "longitude",
 )
 
 
-def chicago_crime(*, year: int | None = None, max_features: int | None = None,
-                  offline: bool = False) -> pd.DataFrame:
+def chicago_crime(*, year: int | None = None, max_features: int | None = None, offline: bool = False) -> pd.DataFrame:
     """City of Chicago "Crimes — 2001 to Present" feed.
 
     Schema (Socrata column names, preserved verbatim):
@@ -273,6 +298,7 @@ def chicago_crime(*, year: int | None = None, max_features: int | None = None,
     if offline:
         import warnings
         from pathlib import Path
+
         path = Path(__file__).resolve().parent / "data" / "chicago_crime_synthetic.csv"
         warnings.warn(
             "morie.datasets.chicago_crime(offline=True): using the bundled "
@@ -296,6 +322,7 @@ def chicago_crime(*, year: int | None = None, max_features: int | None = None,
         return df
 
     from .ingest.chicago import fetch_crime
+
     return fetch_crime(year=year, max_features=max_features)
 
 
@@ -328,8 +355,9 @@ _NYC_SQF_RESOURCES: dict[int, str] = {
 _NYC_SQF_DEFAULT_YEAR = max(_NYC_SQF_RESOURCES)
 
 
-def nyc_stop_and_frisk(*, year: int | None = None, max_features: int | None = None,
-                       offline: bool = False) -> pd.DataFrame:
+def nyc_stop_and_frisk(
+    *, year: int | None = None, max_features: int | None = None, offline: bool = False
+) -> pd.DataFrame:
     """NYPD Stop, Question and Frisk (SQF) microdata via NYC OpenData.
 
     NYC publishes SQF as a separate Socrata resource per release year.
@@ -355,6 +383,7 @@ def nyc_stop_and_frisk(*, year: int | None = None, max_features: int | None = No
     if offline:
         import warnings
         from pathlib import Path
+
         path = Path(__file__).resolve().parent / "data" / "nyc_sqf_synthetic.csv"
         warnings.warn(
             "morie.datasets.nyc_stop_and_frisk(offline=True): using the "
@@ -381,6 +410,7 @@ def nyc_stop_and_frisk(*, year: int | None = None, max_features: int | None = No
             f"morie.ingest.chicago.fetch_socrata() for older releases."
         )
     from .ingest.chicago import fetch_socrata
+
     return fetch_socrata(
         _NYC_SQF_RESOURCES[chosen_year],
         max_features=max_features,
@@ -392,10 +422,16 @@ def nyc_stop_and_frisk(*, year: int | None = None, max_features: int | None = No
 # ----------------------------------------------------------------------
 
 
-def bigquery(project: str, dataset: str, table: str, *,
-             where: str | None = None, limit: int | None = None,
-             select: str = "*",
-             billing_project: str | None = None) -> pd.DataFrame:
+def bigquery(
+    project: str,
+    dataset: str,
+    table: str,
+    *,
+    where: str | None = None,
+    limit: int | None = None,
+    select: str = "*",
+    billing_project: str | None = None,
+) -> pd.DataFrame:
     """Pull a BigQuery table (or filtered slice) as a DataFrame.
 
     Lightweight wrapper around :mod:`morie.ingest.bigquery` for the
@@ -429,9 +465,14 @@ def bigquery(project: str, dataset: str, table: str, *,
     the HADES-LLM Pi-rendered architecture.
     """
     from .ingest.bigquery import fetch_table
+
     return fetch_table(
-        project=project, dataset=dataset, table=table,
-        where=where, limit=limit, select=select,
+        project=project,
+        dataset=dataset,
+        table=table,
+        where=where,
+        limit=limit,
+        select=select,
         billing_project=billing_project,
     )
 
@@ -451,6 +492,7 @@ def ckan_search(portal: str, query: str, *, rows: int = 50) -> pd.DataFrame:
       - ``https://data.ontario.ca``         — Ontario provincial
     """
     from .ingest.ckan import search_packages
+
     return search_packages(portal, query, rows=rows)
 
 
@@ -460,6 +502,7 @@ def ckan_package(portal: str, package_id: str) -> dict[str, pd.DataFrame]:
     Returns a mapping ``{resource_name: DataFrame}``.
     """
     from .ingest.ckan import fetch_package_csvs
+
     return fetch_package_csvs(portal, package_id)
 
 
@@ -540,13 +583,15 @@ def nibrs(
         return df
 
     if year is None:
-        raise ValueError(
-            "morie.datasets.nibrs: year=... is required unless offline=True"
-        )
+        raise ValueError("morie.datasets.nibrs: year=... is required unless offline=True")
 
     from .ingest.forensics import fetch_nibrs
+
     return fetch_nibrs(
-        year=year, offense=offense, state=state, api_key=api_key,
+        year=year,
+        offense=offense,
+        state=state,
+        api_key=api_key,
         max_features=max_features,
     )
 
@@ -578,9 +623,7 @@ def namus_missing_persons(
     weight_kg_max, first_name, last_name, city, circumstances.
     """
     if offline:
-        df = _forensics_synthetic(
-            "namus_missing_persons", kind="namus_missing_persons"
-        )
+        df = _forensics_synthetic("namus_missing_persons", kind="namus_missing_persons")
         if state is not None and "state" in df.columns:
             df = df[df["state"].astype(str).str.upper() == state.upper()].reset_index(drop=True)
         if max_features is not None:
@@ -588,6 +631,7 @@ def namus_missing_persons(
         return df
 
     from .ingest.forensics import fetch_namus_missing_persons
+
     return fetch_namus_missing_persons(state=state, max_features=max_features)
 
 
@@ -630,8 +674,11 @@ def nist_rds(
         return df
 
     from .ingest.forensics import fetch_nist_rds
+
     return fetch_nist_rds(
-        dataset_id=dataset_id, query=query, max_features=max_features,
+        dataset_id=dataset_id,
+        query=query,
+        max_features=max_features,
     )
 
 

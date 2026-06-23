@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """AR prediction error (residual energy)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch7_ar_prediction_err"]

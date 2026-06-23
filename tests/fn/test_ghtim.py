@@ -1,6 +1,7 @@
 """Test ghtim."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghtim import ghtim
 
 

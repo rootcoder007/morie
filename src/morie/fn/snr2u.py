@@ -1,6 +1,7 @@
 """Snijders-Bosker R^2 level-2 (between)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["snijders_bosker_r2_level2"]

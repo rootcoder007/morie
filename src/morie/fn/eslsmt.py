@@ -1,6 +1,7 @@
 """Smoothing spline RSS+lambda penalty."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_smoothing_spline"]

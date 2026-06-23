@@ -8,7 +8,15 @@ import numpy as np
 __all__ = ["mxinq"]
 
 
-def mxinq(x: np.ndarray, cdf=None, *, cdf_func: callable | None = None, n_boot: int = 500, alpha: float = 0.05, seed: int | None = None) -> dict:
+def mxinq(
+    x: np.ndarray,
+    cdf=None,
+    *,
+    cdf_func: callable | None = None,
+    n_boot: int = 500,
+    alpha: float = 0.05,
+    seed: int | None = None,
+) -> dict:
     r"""
     Compute maximal inequality bounds for the empirical process.
 
@@ -41,6 +49,7 @@ def mxinq(x: np.ndarray, cdf=None, *, cdf_func: callable | None = None, n_boot: 
 
     if cdf_func is None:
         from scipy.stats import norm
+
         cdf_func = norm.cdf
 
     rng = np.random.default_rng(seed)

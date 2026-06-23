@@ -1,6 +1,7 @@
 """Tests for smplsz.sample_size_calc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smplsz import sample_size_calc
 
 
@@ -11,7 +12,7 @@ def test_smplsz_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = sample_size_calc(p, e, z)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smplsz_edge():

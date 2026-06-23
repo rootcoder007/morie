@@ -58,8 +58,6 @@ def lradp(
     if learning_rate_min >= learning_rate_max:
         raise ValueError("learning_rate_min must be < learning_rate_max")
 
-    lr = learning_rate_min + 0.5 * (learning_rate_max - learning_rate_min) * (
-        1 + np.cos(np.pi * t / t_max)
-    )
+    lr = learning_rate_min + 0.5 * (learning_rate_max - learning_rate_min) * (1 + np.cos(np.pi * t / t_max))
 
     return float(lr)

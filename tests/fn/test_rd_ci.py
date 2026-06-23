@@ -1,6 +1,7 @@
 """Tests for morie.fn.rd_ci -- risk difference with confidence interval."""
 
 import pytest
+
 from morie.fn.rd_ci import risk_difference_ci
 
 

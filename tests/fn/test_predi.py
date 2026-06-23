@@ -1,6 +1,5 @@
 """Tests for morie.fn.predi -- prediction interval from random-effects meta."""
 
-import pytest
 from morie.fn.predi import prediction_interval
 
 
@@ -18,6 +17,7 @@ class TestPredictionInterval:
     def test_wider_than_ci(self):
         """Prediction interval should be wider than the pooled CI."""
         from morie.fn.remeta import random_effects_meta
+
         ests = [0.5, 0.8, 0.3]
         ses = [0.1, 0.2, 0.15]
         result = random_effects_meta(ests, ses)
@@ -28,6 +28,7 @@ class TestPredictionInterval:
     def test_contains_pooled(self):
         """Prediction interval should contain the pooled estimate."""
         from morie.fn.remeta import random_effects_meta
+
         ests = [0.5, 0.6, 0.7]
         ses = [0.1, 0.1, 0.1]
         pooled = random_effects_meta(ests, ses).estimate

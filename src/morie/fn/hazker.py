@@ -81,4 +81,4 @@ hazker = hazard_kernel
 
 
 def cheatsheet() -> str:
-    return 'hazard_kernel({}) -> Hazard function estimation.'
+    return "hazard_kernel({}) -> Hazard function estimation."

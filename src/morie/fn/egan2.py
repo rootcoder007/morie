@@ -1,6 +1,7 @@
 """Egan drug-like filter (PSA + LogP)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["egan_filter"]

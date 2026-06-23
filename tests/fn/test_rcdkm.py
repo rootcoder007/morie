@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcdkm — Kaplan-Meier survival curve."""
 
-from morie.fn.rcdkm import recidivism_km, rcdkm
+from morie.fn.rcdkm import recidivism_km
 
 
 class TestRecidivismKM:

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_cad_pipeline"]
@@ -36,7 +38,14 @@ def rangayyan_cad_pipeline(signals, labels, classifier, cv_k):
     n = int(signals) if signals.ndim == 0 else len(signals)
     result = float(np.mean(signals))
     se = float(np.std(signals, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate",
+        }
+    )
 
 
 def cheatsheet():

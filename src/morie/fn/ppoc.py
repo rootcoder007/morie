@@ -1,6 +1,7 @@
 """Proximal policy optimization (clipped surrogate)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ppo"]
@@ -34,7 +35,9 @@ def ppo(env, policy, clip_eps):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Proximal policy optimization (clipped surrogate)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Proximal policy optimization (clipped surrogate)"}
+    )
 
 
 def cheatsheet():

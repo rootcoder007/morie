@@ -9,6 +9,7 @@ The observed sample ``x`` is used only to set the sample size n;
 the simulation distribution is independent of x by design (this
 is the *power function*, not a post-hoc test).
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -52,19 +53,24 @@ def wilcoxon_power(
     x = np.asarray(x, dtype=float).ravel()
     n = int(x.size)
     if n < 5:
-        return RichResult(payload={
-            "statistic": np.nan, "n": n, "effect_size": float(effect_size),
-            "alpha": float(alpha), "nsim": int(nsim), "se": np.nan,
-            "method": "Wilcoxon signed-rank power (Monte Carlo)",
-        })
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "n": n,
+                "effect_size": float(effect_size),
+                "alpha": float(alpha),
+                "nsim": int(nsim),
+                "se": np.nan,
+                "method": "Wilcoxon signed-rank power (Monte Carlo)",
+            }
+        )
     rng = np.random.default_rng(seed)
     rejections = 0
     # zero-mean=0 method to handle small-sample exact for n<=25, else approx
     for _ in range(int(nsim)):
         sample = rng.normal(loc=effect_size, scale=1.0, size=n)
         try:
-            res = stats.wilcoxon(sample, alternative="two-sided",
-                                 zero_method="wilcox", correction=False)
+            res = stats.wilcoxon(sample, alternative="two-sided", zero_method="wilcox", correction=False)
             if res.pvalue < alpha:
                 rejections += 1
         except ValueError:
@@ -72,15 +78,17 @@ def wilcoxon_power(
             pass
     power = rejections / float(nsim)
     se = float(np.sqrt(power * (1.0 - power) / nsim))
-    return RichResult(payload={
-        "statistic": float(power),
-        "n": n,
-        "effect_size": float(effect_size),
-        "alpha": float(alpha),
-        "nsim": int(nsim),
-        "se": se,
-        "method": "Wilcoxon signed-rank power (Monte Carlo)",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(power),
+            "n": n,
+            "effect_size": float(effect_size),
+            "alpha": float(alpha),
+            "nsim": int(nsim),
+            "se": se,
+            "method": "Wilcoxon signed-rank power (Monte Carlo)",
+        }
+    )
 
 
 def cheatsheet():

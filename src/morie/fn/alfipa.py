@@ -1,6 +1,7 @@
 """Invariant Point Attention (AlphaFold2) for structure update."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphafold_invariant_point"]
@@ -38,7 +39,14 @@ def alphafold_invariant_point(s_i, q, k, v, frames):
     n = len(s_i)
     result = float(np.mean(s_i))
     se = float(np.std(s_i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Invariant Point Attention (AlphaFold2) for structure update"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Invariant Point Attention (AlphaFold2) for structure update",
+        }
+    )
 
 
 def cheatsheet():

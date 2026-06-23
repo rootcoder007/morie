@@ -1,6 +1,7 @@
 """Test trpkd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trpkd import trpkd
 
 

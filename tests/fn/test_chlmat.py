@@ -1,6 +1,8 @@
 """Tests for chlmat."""
+
 import numpy as np
 import pytest
+
 from morie.fn.chlmat import chlmat
 
 
@@ -28,4 +30,5 @@ def test_chlmat_no_data():
 
 def test_chlmat_alias():
     from morie.fn.chlmat import chlmat
+
     assert chlmat is chlmat

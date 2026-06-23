@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtscr."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtscr import dtscr
 
 

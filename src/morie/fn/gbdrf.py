@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GBD risk factor attribution (population attributable fraction)."""
 
-
 from ._containers import DescriptiveResult
 
 

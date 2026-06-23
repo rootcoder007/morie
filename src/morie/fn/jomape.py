@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean Absolute Percentage Error."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_mape"]

@@ -1,9 +1,9 @@
 """Test wiener_hopf_solve (wnhpf)."""
-import numpy as np
-import pytest
 
-from morie.fn.wnhpf import wiener_hopf_solve, wnhpf
+import numpy as np
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.wnhpf import wiener_hopf_solve, wnhpf
 
 
 class TestWienerHopfSolve:

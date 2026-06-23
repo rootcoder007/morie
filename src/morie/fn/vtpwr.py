@@ -1,8 +1,11 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Banzhaf and Shapley-Shubik voting-power indices (Armstrong Ch 10)."""
-import numpy as np
+
 from itertools import combinations
 from math import factorial
+
+import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["voting_power_index", "vtpwr"]
@@ -30,10 +33,15 @@ def voting_power_index(x, quota=None):
     w = np.asarray(x, dtype=float).ravel()
     n = int(w.size)
     if n == 0:
-        return RichResult(payload={"banzhaf": np.array([]),
-                                   "shapley_shubik": np.array([]),
-                                   "quota": np.nan, "weights": w,
-                                   "method": "voting_power_index"})
+        return RichResult(
+            payload={
+                "banzhaf": np.array([]),
+                "shapley_shubik": np.array([]),
+                "quota": np.nan,
+                "weights": w,
+                "method": "voting_power_index",
+            }
+        )
     total = float(w.sum())
     if quota is None:
         quota = total / 2.0 + 1e-9  # strict majority
@@ -48,11 +56,9 @@ def voting_power_index(x, quota=None):
             tot_in = w[mask].sum()
             for i in range(n):
                 if mask[i]:
-                    swings[i] += (tot_in >= quota
-                                  and (tot_in - w[i]) < quota)
+                    swings[i] += tot_in >= quota and (tot_in - w[i]) < quota
                 else:
-                    swings[i] += ((tot_in + w[i]) >= quota
-                                  and tot_in < quota)
+                    swings[i] += (tot_in + w[i]) >= quota and tot_in < quota
         banzhaf = swings / max(swings.sum(), 1)
         # Shapley-Shubik via permutation MC
         ss = np.zeros(n)
@@ -69,9 +75,13 @@ def voting_power_index(x, quota=None):
         return RichResult(
             title="Voting power indices (MC, n > 20)",
             summary_lines=[("quota q", quota), ("n voters", n)],
-            payload={"banzhaf": banzhaf, "shapley_shubik": shapley,
-                     "quota": quota, "weights": w,
-                     "method": "voting_power_index_mc"},
+            payload={
+                "banzhaf": banzhaf,
+                "shapley_shubik": shapley,
+                "quota": quota,
+                "weights": w,
+                "method": "voting_power_index_mc",
+            },
         )
     # Exact Banzhaf
     swings = np.zeros(n)
@@ -90,6 +100,7 @@ def voting_power_index(x, quota=None):
     shapley = np.zeros(n)
     if n <= 10:
         from itertools import permutations
+
         n_perm = factorial(n)
         for order in permutations(range(n)):
             cum = 0.0
@@ -110,17 +121,22 @@ def voting_power_index(x, quota=None):
                 for S in combinations(others, s):
                     vS = float(w[list(S)].sum()) if S else 0.0
                     if vS < quota <= vS + w[i]:
-                        shapley[i] += (factorial(s)
-                                       * factorial(n - s - 1)
-                                       / factorial(n))
+                        shapley[i] += factorial(s) * factorial(n - s - 1) / factorial(n)
     return RichResult(
         title="Voting power indices (exact)",
-        summary_lines=[("quota q", quota), ("n voters", n),
-                       ("Banzhaf β", list(np.round(banzhaf, 4))),
-                       ("Shapley-Shubik φ", list(np.round(shapley, 4)))],
-        payload={"banzhaf": banzhaf, "shapley_shubik": shapley,
-                 "quota": quota, "weights": w,
-                 "method": "voting_power_index_exact"},
+        summary_lines=[
+            ("quota q", quota),
+            ("n voters", n),
+            ("Banzhaf β", list(np.round(banzhaf, 4))),
+            ("Shapley-Shubik φ", list(np.round(shapley, 4))),
+        ],
+        payload={
+            "banzhaf": banzhaf,
+            "shapley_shubik": shapley,
+            "quota": quota,
+            "weights": w,
+            "method": "voting_power_index_exact",
+        },
     )
 
 

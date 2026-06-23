@@ -2,14 +2,20 @@
 
 import pytest
 
-from morie.fn.pfashi import pfashi, pfas_hazard_index
+from morie.fn.pfashi import pfas_hazard_index, pfashi
 
 
 def test_pfashi_clean_sample_is_compliant():
-    r = pfashi({
-        "pfoa": 1.0, "pfos": 1.0,
-        "pfhxs": 2.0, "hfpo-da": 2.0, "pfna": 2.0, "pfbs": 100.0,
-    })
+    r = pfashi(
+        {
+            "pfoa": 1.0,
+            "pfos": 1.0,
+            "pfhxs": 2.0,
+            "hfpo-da": 2.0,
+            "pfna": 2.0,
+            "pfbs": 100.0,
+        }
+    )
     # HQs: 2/10 + 2/10 + 2/10 + 100/2000 = 0.2+0.2+0.2+0.05 = 0.65
     assert r.value == pytest.approx(0.65)
     assert r.extra["compliant"] is True
@@ -35,14 +41,13 @@ def test_pfashi_hi_boundary_exactly_1():
     # PFHxS = 10 ppt gives HQ = 1.0 exactly → compliant (≤ 1)
     r = pfashi({"pfhxs": 10.0})
     assert r.value == pytest.approx(1.0)
-    assert r.extra["compliant"] is True   # HI ≤ 1 is compliant
+    assert r.extra["compliant"] is True  # HI ≤ 1 is compliant
 
 
 def test_pfashi_genx_is_hfpoda_synonym():
     r1 = pfashi({"hfpo-da": 5.0})
     r2 = pfashi({"genx": 5.0})
-    assert r1.extra["per_compound_hq"]["hfpo-da"] \
-        == pytest.approx(r2.extra["per_compound_hq"]["hfpo-da"])
+    assert r1.extra["per_compound_hq"]["hfpo-da"] == pytest.approx(r2.extra["per_compound_hq"]["hfpo-da"])
 
 
 def test_pfashi_case_insensitive_keys():

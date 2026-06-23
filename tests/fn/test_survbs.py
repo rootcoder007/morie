@@ -1,6 +1,7 @@
 """Tests for survbs.survival_bootstrap_se."""
+
 import numpy as np
-import pytest
+
 from morie.fn.survbs import survival_bootstrap_se
 
 
@@ -11,7 +12,7 @@ def test_survbs_basic():
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = survival_bootstrap_se(time, event, B)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_survbs_edge():

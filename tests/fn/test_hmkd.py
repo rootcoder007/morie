@@ -1,6 +1,7 @@
 """Tests for hmkd.geron_knowledge_distillation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmkd import geron_knowledge_distillation
 
 
@@ -14,7 +15,7 @@ def test_hmkd_basic():
     alpha = 0.05
     result = geron_knowledge_distillation(teacher, student, X, y, T, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmkd_edge():

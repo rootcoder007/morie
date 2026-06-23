@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Modified gamma KDE via self-elimination technique."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_modified_gamma_kde"]
@@ -34,7 +36,9 @@ def fauzi_modified_gamma_kde(x, bandwidth, a):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Modified gamma KDE via self-elimination technique"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Modified gamma KDE via self-elimination technique"}
+    )
 
 
 def cheatsheet():

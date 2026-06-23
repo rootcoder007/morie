@@ -1,6 +1,7 @@
 """Tests for npbcl.np_bayes_clustering."""
+
 import numpy as np
-import pytest
+
 from morie.fn.npbcl import np_bayes_clustering
 
 
@@ -10,7 +11,7 @@ def test_npbcl_basic():
     alpha = 0.05
     result = np_bayes_clustering(y, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_npbcl_edge():

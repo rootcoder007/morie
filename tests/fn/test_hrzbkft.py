@@ -1,6 +1,7 @@
 """Tests for hrzbkft.horowitz_backfitting."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzbkft import horowitz_backfitting
 
 
@@ -11,7 +12,7 @@ def test_hrzbkft_basic():
     bandwidth = 0.3
     result = horowitz_backfitting(x, y, bandwidth)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzbkft_edge():

@@ -1,6 +1,7 @@
 """Test pcorp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pcorp import partial_correlation
 
 

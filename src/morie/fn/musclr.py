@@ -1,6 +1,7 @@
 """MUSCLE multiple sequence alignment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["muscle_msa"]

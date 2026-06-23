@@ -1,6 +1,7 @@
 """Tests for morie.fn.cmpag — compliance by age."""
 
 import pandas as pd
+
 from morie.fn.cmpag import compliance_by_age
 
 

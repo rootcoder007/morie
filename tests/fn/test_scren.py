@@ -1,7 +1,7 @@
 """Tests for morie.fn.scren -- screening test performance."""
 
-import numpy as np
 import pytest
+
 from morie.fn.scren import screening_performance
 
 

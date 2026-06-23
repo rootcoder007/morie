@@ -1,6 +1,7 @@
 """AlphaZero+AlphaFold synergy: drug-target docking via RL."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphazero_alphafold_synergy"]
@@ -32,7 +33,14 @@ def alphazero_alphafold_synergy(protein, ligand_pool):
     n = len(protein)
     result = float(np.mean(protein))
     se = float(np.std(protein, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero+AlphaFold synergy: drug-target docking via RL"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "AlphaZero+AlphaFold synergy: drug-target docking via RL",
+        }
+    )
 
 
 def cheatsheet():

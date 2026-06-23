@@ -1,6 +1,5 @@
 """Tests for pollR.pollards_rho."""
-import numpy as np
-import pytest
+
 from morie.fn.pollR import pollards_rho
 
 
@@ -9,7 +8,7 @@ def test_pollR_basic():
     n = 100
     result = pollards_rho(n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pollR_edge():

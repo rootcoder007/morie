@@ -1,6 +1,7 @@
 """Wavelet-based anomaly."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["discrete_wavelet_anomaly"]

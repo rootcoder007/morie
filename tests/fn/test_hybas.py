@@ -1,6 +1,7 @@
 """Test hybas."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hybas import hybas
 
 

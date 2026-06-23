@@ -1,11 +1,11 @@
 """Tests for morie.fn.sitdl -- per-item detail within subscale."""
 
 import pandas as pd
+
 from morie.fn.sitdl import subscale_item_detail
 
 
 class TestSubscaleItemDetail:
-
     def test_returns_dataframe(self, mapq_df):
         result = subscale_item_detail(mapq_df, "EE")
         assert isinstance(result, pd.DataFrame)

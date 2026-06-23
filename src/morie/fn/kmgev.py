@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """G-Eval: GPT-4 based evaluation using a prompted rubric and probabilistic score aggregation."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_g_eval"]
@@ -36,7 +38,14 @@ def kamath_g_eval(x, y, rubric, model):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "G-Eval: GPT-4 based evaluation using a prompted rubric and probabilistic score aggregation"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "G-Eval: GPT-4 based evaluation using a prompted rubric and probabilistic score aggregation",
+        }
+    )
 
 
 def cheatsheet():

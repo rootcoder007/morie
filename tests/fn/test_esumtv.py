@@ -1,6 +1,7 @@
 """Tests for esumtv.effective_resistance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esumtv import effective_resistance
 
 
@@ -11,7 +12,7 @@ def test_esumtv_basic():
     v = np.random.default_rng(44).normal(0, 1, 100)
     result = effective_resistance(G, u, v)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esumtv_edge():

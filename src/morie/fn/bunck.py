@@ -82,15 +82,14 @@ def bunching(
     counts, edges = np.histogram(R, bins=bins)
     midpoints = 0.5 * (edges[:-1] + edges[1:])
 
-    excluded_mask = ((midpoints >= excluded_range[0]) &
-                     (midpoints <= excluded_range[1]))
+    excluded_mask = (midpoints >= excluded_range[0]) & (midpoints <= excluded_range[1])
     included_mask = ~excluded_mask
 
     if included_mask.sum() < poly_order + 1:
         raise ValueError("Too few bins outside excluded range")
 
     z_norm = (midpoints - cutoff) / (bin_width * 10)
-    X_poly = np.column_stack([z_norm ** k for k in range(poly_order + 1)])
+    X_poly = np.column_stack([z_norm**k for k in range(poly_order + 1)])
 
     X_incl = X_poly[included_mask]
     c_incl = counts[included_mask]

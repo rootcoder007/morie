@@ -1,6 +1,7 @@
 """Test vmlin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmlin import vmlin
 
 

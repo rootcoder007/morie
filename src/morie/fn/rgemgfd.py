@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rangayyan EMG fractal dim."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_emg_fractal_dim"]
@@ -12,8 +14,15 @@ def rangayyan_emg_fractal_dim(emg, force, fs, kmax):
     n = int(emg) if emg.ndim == 0 else len(emg)
     result = float(np.mean(emg))
     se = float(np.std(emg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "A journey of a thousand miles begins with a single step. -- Lao Tzu"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "A journey of a thousand miles begins with a single step. -- Lao Tzu",
+        }
+    )
 
 
 def cheatsheet():
-    return 'rgemgfd() -> Rangayyan EMG fractal dim'
+    return "rgemgfd() -> Rangayyan EMG fractal dim"

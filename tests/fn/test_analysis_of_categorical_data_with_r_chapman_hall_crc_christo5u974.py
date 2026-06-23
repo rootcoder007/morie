@@ -1,7 +1,10 @@
 """Tests for analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u974.analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_974."""
+
 import numpy as np
-import pytest
-from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u974 import analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_974
+
+from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u974 import (
+    analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_974,
+)
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u974_basic():
@@ -9,7 +12,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u974_basic
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_974(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u974_edge():

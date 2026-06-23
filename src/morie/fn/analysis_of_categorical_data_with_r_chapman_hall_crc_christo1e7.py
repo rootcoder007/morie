@@ -1,8 +1,8 @@
 """ContingencyTables equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_7"]
 
@@ -41,7 +41,12 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equat
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "ContingencyTables equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ContingencyTables equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
+        },
     )
 
 

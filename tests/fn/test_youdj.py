@@ -1,6 +1,7 @@
 """Tests for morie.fn.youdj — Youden's J statistic."""
-import numpy as np
+
 import pytest
+
 from morie.fn.youdj import youdens_j, youdj
 
 

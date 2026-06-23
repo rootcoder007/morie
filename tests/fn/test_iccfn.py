@@ -1,5 +1,5 @@
 """Tests for morie.fn.iccfn -- ICC curve data."""
-import numpy as np
+
 from morie.fn.iccfn import icc_curve_data, iccfn
 
 

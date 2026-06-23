@@ -1,6 +1,8 @@
 """Tests for morie.fn.quadr — quadrat test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.quadr import quadrat_test
 
 

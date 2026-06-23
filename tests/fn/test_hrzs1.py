@@ -1,6 +1,7 @@
 """Tests for hrzs1.horowitz_sample_selection."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzs1 import horowitz_sample_selection
 
 
@@ -12,7 +13,7 @@ def test_hrzs1_basic():
     d = 5
     result = horowitz_sample_selection(x, y, z, d)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzs1_edge():

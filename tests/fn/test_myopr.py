@@ -1,7 +1,9 @@
 """Test myopulse_rate_fn."""
+
 import numpy as np
-from morie.fn.myopr import myopulse_rate_fn, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.myopr import alias, myopulse_rate_fn
 
 
 class TestMyopulseRateFn:

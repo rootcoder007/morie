@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.anotwo import anova_twoway, anotwo
+
 from morie.fn._containers import TestResult
+from morie.fn.anotwo import anotwo, anova_twoway
 
 
 @pytest.fixture()
@@ -52,10 +53,12 @@ class TestAnotwo:
 
     def test_custom_column_names(self):
         rng = np.random.default_rng(42)
-        df = pd.DataFrame({
-            "outcome": rng.normal(0, 1, 60),
-            "group": np.repeat(["A", "B", "C"], 20),
-            "cond": np.tile(["X", "Y"], 30),
-        })
+        df = pd.DataFrame(
+            {
+                "outcome": rng.normal(0, 1, 60),
+                "group": np.repeat(["A", "B", "C"], 20),
+                "cond": np.tile(["X", "Y"], 30),
+            }
+        )
         result = anova_twoway(df, y="outcome", a="group", b="cond")
         assert isinstance(result, TestResult)

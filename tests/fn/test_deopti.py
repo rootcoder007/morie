@@ -1,6 +1,7 @@
 """Tests for deopti.differential_evolution."""
+
 import numpy as np
-import pytest
+
 from morie.fn.deopti import differential_evolution
 
 
@@ -12,7 +13,7 @@ def test_deopti_basic():
     CR = np.random.default_rng(42).normal(0, 1, 100)
     result = differential_evolution(f, population, F, CR)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_deopti_edge():

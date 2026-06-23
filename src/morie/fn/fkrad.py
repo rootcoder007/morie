@@ -62,4 +62,4 @@ fkrad = flesch_kincaid
 
 
 def cheatsheet() -> str:
-    return 'flesch_kincaid({}) -> Flesch-Kincaid readability grade level.'
+    return "flesch_kincaid({}) -> Flesch-Kincaid readability grade level."

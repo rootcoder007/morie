@@ -1,6 +1,7 @@
 """Test grtcrc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grtcrc import grtcrc
 
 

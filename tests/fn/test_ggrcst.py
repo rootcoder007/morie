@@ -1,6 +1,7 @@
 """Tests for ggrcst.granger_causality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ggrcst import granger_causality
 
 
@@ -11,7 +12,7 @@ def test_ggrcst_basic():
     p = 5
     result = granger_causality(x, y, p)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_ggrcst_edge():

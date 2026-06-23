@@ -1,5 +1,7 @@
 """Tests for Mantel test."""
+
 import numpy as np
+
 from morie.fn.sgmnt import sgmnt
 
 
@@ -20,6 +22,7 @@ def test_sgmnt_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgmnt import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

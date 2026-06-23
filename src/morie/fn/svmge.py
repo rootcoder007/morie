@@ -1,4 +1,5 @@
 """SVM regression (epsilon-SVR with RBF kernel) for genomic prediction."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -8,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["svm_genomic"]
 
 
-def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1,
-                gamma: float | str = "scale"):
+def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1, gamma: float | str = "scale"):
     """Support-vector regression for genomic prediction.
 
     Model::
@@ -56,6 +56,7 @@ def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1,
     method_used = "sklearn SVR (epsilon-SVR, RBF)"
     try:
         from sklearn.svm import SVR
+
         svr = SVR(C=C, epsilon=epsilon, gamma=gamma, kernel="rbf").fit(feats, y)
         y_hat = svr.predict(feats)
         support_idx = svr.support_
@@ -69,7 +70,7 @@ def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1,
             gamma_v = 1.0 / (M.shape[1] * var_m)
         else:
             gamma_v = float(gamma)
-        sq_norm = np.sum(feats ** 2, axis=1)
+        sq_norm = np.sum(feats**2, axis=1)
         D2 = sq_norm[:, None] + sq_norm[None, :] - 2.0 * (feats @ feats.T)
         K = np.exp(-gamma_v * np.maximum(D2, 0))
         intercept = float(np.mean(y))
@@ -78,7 +79,7 @@ def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1,
         y_hat = K @ alpha + intercept
         support_idx = np.where(np.abs(alpha) > 1e-6)[0]
     resid = y - y_hat
-    se = float(np.sqrt(np.mean(resid ** 2)))
+    se = float(np.sqrt(np.mean(resid**2)))
     return RichResult(
         title="SVM (epsilon-SVR, RBF) genomic predictor",
         summary_lines=[

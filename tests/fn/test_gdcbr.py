@@ -1,6 +1,7 @@
 """Test gdcbr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdcbr import gdcbr
 
 

@@ -1,6 +1,7 @@
 r"""Reward kl penalty.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch5_reward_kl_penalty"]

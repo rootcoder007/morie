@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prefix-LM attention mask: bidirectional over prefix, causal over completion."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_prefix_lm_mask"]
@@ -32,7 +34,14 @@ def kamath_prefix_lm_mask(prefix_len, total_len):
     n = len(prefix_len)
     result = float(np.mean(prefix_len))
     se = float(np.std(prefix_len, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prefix-LM attention mask: bidirectional over prefix, causal over completion"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prefix-LM attention mask: bidirectional over prefix, causal over completion",
+        }
+    )
 
 
 def cheatsheet():

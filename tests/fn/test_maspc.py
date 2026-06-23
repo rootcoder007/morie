@@ -1,6 +1,7 @@
 """Test maspc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.maspc import maspc
 
 

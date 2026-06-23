@@ -1,6 +1,7 @@
 """DP logistic regression (output / objective perturbation)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dp_logistic"]
@@ -36,7 +37,14 @@ def dp_logistic(X, y, epsilon, method):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "DP logistic regression (output / objective perturbation)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "DP logistic regression (output / objective perturbation)",
+        }
+    )
 
 
 def cheatsheet():

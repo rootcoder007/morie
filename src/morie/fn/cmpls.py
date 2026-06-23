@@ -33,6 +33,7 @@ def computable_complexity(data: bytes | str, **kwargs) -> ESRes:
         theoretical_min = len(raw)
     else:
         import math
+
         theoretical_min = len(raw) * math.log2(alphabet_size) / 8.0
     ratio = len(compressed) / max(theoretical_min, 1.0)
     return ESRes(

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PPG waveform feature extraction (systolic peak, dicrotic notch, diastolic peak)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ppg_features"]
@@ -32,7 +34,14 @@ def rangayyan_ppg_features(ppg, fs):
     n = int(ppg) if ppg.ndim == 0 else len(ppg)
     result = float(np.mean(ppg))
     se = float(np.std(ppg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "PPG waveform feature extraction (systolic peak, dicrotic notch, diastolic peak)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "PPG waveform feature extraction (systolic peak, dicrotic notch, diastolic peak)",
+        }
+    )
 
 
 def cheatsheet():

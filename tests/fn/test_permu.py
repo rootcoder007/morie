@@ -1,5 +1,7 @@
 """Tests for morie.fn.permu."""
+
 import numpy as np
+
 from morie.fn.permu import permu
 
 
@@ -13,6 +15,7 @@ def test_permu_smoke():
 
 def test_cheatsheet():
     from morie.fn.permu import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

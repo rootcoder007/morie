@@ -26,13 +26,12 @@ Each returns a tidy dict / dataclass with the canonical fields
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Iterable, Optional, Sequence
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 from scipy import stats
-
 
 __all__ = [
     "TwoTreatmentResult",
@@ -48,7 +47,7 @@ __all__ = [
 
 @dataclass
 class TwoTreatmentResult:
-    estimate: float       # difference in means
+    estimate: float  # difference in means
     se: float
     t_statistic: float
     df: float
@@ -95,9 +94,7 @@ def mrm_two_treatment_test(
     sd_b = float(b.std(ddof=1)) if n_b > 1 else float("nan")
     se = float(np.sqrt(sd_a**2 / n_a + sd_b**2 / n_b))
     # Welch-Satterthwaite df
-    df = (sd_a**2 / n_a + sd_b**2 / n_b) ** 2 / (
-        (sd_a**2 / n_a) ** 2 / (n_a - 1) + (sd_b**2 / n_b) ** 2 / (n_b - 1)
-    )
+    df = (sd_a**2 / n_a + sd_b**2 / n_b) ** 2 / ((sd_a**2 / n_a) ** 2 / (n_a - 1) + (sd_b**2 / n_b) ** 2 / (n_b - 1))
     z = stats.t.ppf(1 - alpha / 2, df)
     ci_lo, ci_hi = diff - z * se, diff + z * se
 
@@ -130,7 +127,7 @@ class AnovaOneWayResult:
     df_within: int
     means: dict
     n_per_group: dict
-    tukey_hsd: pd.DataFrame   # pairwise contrasts: pair, mean_diff, ci_lower, ci_upper, p_adj
+    tukey_hsd: pd.DataFrame  # pairwise contrasts: pair, mean_diff, ci_lower, ci_upper, p_adj
     interpretation: str
 
 
@@ -152,9 +149,9 @@ def mrm_anova_oneway(
     # Tukey HSD via statsmodels (optional; if unavailable use Bonferroni-corrected pairwise t)
     try:
         from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
         tk = pairwise_tukeyhsd(df[response_col].values, df[group_col].values, alpha=alpha)
-        tk_df = pd.DataFrame(data=tk._results_table.data[1:],
-                             columns=tk._results_table.data[0])
+        tk_df = pd.DataFrame(data=tk._results_table.data[1:], columns=tk._results_table.data[0])
     except Exception:
         # fallback: Bonferroni-corrected pairwise Welch t
         rows = []
@@ -164,13 +161,15 @@ def mrm_anova_oneway(
             for j in range(i + 1, n_groups):
                 a, b = groups.iloc[i], groups.iloc[j]
                 t = stats.ttest_ind(a, b, equal_var=False)
-                rows.append({
-                    "group1": names[i],
-                    "group2": names[j],
-                    "meandiff": float(a.mean() - b.mean()),
-                    "p-adj": min(1.0, t.pvalue * n_pairs),
-                    "reject": (t.pvalue * n_pairs) < alpha,
-                })
+                rows.append(
+                    {
+                        "group1": names[i],
+                        "group2": names[j],
+                        "meandiff": float(a.mean() - b.mean()),
+                        "p-adj": min(1.0, t.pvalue * n_pairs),
+                        "reject": (t.pvalue * n_pairs) < alpha,
+                    }
+                )
         tk_df = pd.DataFrame(rows)
 
     means = {g: float(v.mean()) for g, v in groups.items()}
@@ -196,9 +195,9 @@ def mrm_anova_oneway(
 
 @dataclass
 class Factorial2kResult:
-    main_effects: dict     # factor -> effect estimate
-    interaction_effects: dict   # tuple of factor names -> effect
-    half_normal_coords: pd.DataFrame   # for Daniel's plot
+    main_effects: dict  # factor -> effect estimate
+    interaction_effects: dict  # tuple of factor names -> effect
+    half_normal_coords: pd.DataFrame  # for Daniel's plot
     n: int
     k: int
     interpretation: str
@@ -244,6 +243,7 @@ def mrm_factorial_2k(
 
     # Interactions: product of factor columns
     from itertools import combinations
+
     inter = {}
     for r in range(2, k + 1):
         for combo in combinations(range(k), r):
@@ -256,15 +256,14 @@ def mrm_factorial_2k(
     all_effects = {**{c: main[c] for c in factor_cols}, **inter}
     sorted_pairs = sorted(all_effects.items(), key=lambda p: abs(p[1]))
     n_eff = len(sorted_pairs)
-    half_n = pd.DataFrame({
-        "effect_name": [p[0] for p in sorted_pairs],
-        "effect_magnitude": [abs(p[1]) for p in sorted_pairs],
-        "quantile": [(i + 0.5) / n_eff for i in range(n_eff)],
-        "half_normal_quantile": [
-            stats.norm.ppf(0.5 + 0.5 * (i + 0.5) / n_eff)
-            for i in range(n_eff)
-        ],
-    })
+    half_n = pd.DataFrame(
+        {
+            "effect_name": [p[0] for p in sorted_pairs],
+            "effect_magnitude": [abs(p[1]) for p in sorted_pairs],
+            "quantile": [(i + 0.5) / n_eff for i in range(n_eff)],
+            "half_normal_quantile": [stats.norm.ppf(0.5 + 0.5 * (i + 0.5) / n_eff) for i in range(n_eff)],
+        }
+    )
 
     msg = (
         f"2^{k} factorial on n={len(y)}. {len(main)} main effects + "
@@ -325,6 +324,7 @@ def mrm_causal_design(
     if estimator == "ipw" and len(covariates) > 0:
         # logistic propensity then Hájek IPW
         from sklearn.linear_model import LogisticRegression
+
         X = df[list(covariates)].to_numpy(dtype=float)
         e = LogisticRegression(max_iter=1000).fit(X, D).predict_proba(X)[:, 1]
         e = np.clip(e, 1e-6, 1 - 1e-6)

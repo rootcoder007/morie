@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet denoising -- Rangayyan Ch 10."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -57,9 +58,14 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
                 title="Wavelet denoising (fallback)",
                 summary_lines=[("N", x.size), ("Mode", "MA-fallback")],
                 warnings=warnings_list,
-                payload={"signal": y, "threshold": float("nan"),
-                         "sigma": float("nan"), "wavelet": wavelet,
-                         "level": 0, "mode": "MA-fallback"},
+                payload={
+                    "signal": y,
+                    "threshold": float("nan"),
+                    "sigma": float("nan"),
+                    "wavelet": wavelet,
+                    "level": 0,
+                    "mode": "MA-fallback",
+                },
             ),
             "rgwav",
         )
@@ -86,9 +92,7 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
             ("Mode", mode),
         ],
         warnings=warnings_list,
-        interpretation=(
-            f"Denoised with {wavelet} at {level} levels, T={T:.4g}."
-        ),
+        interpretation=(f"Denoised with {wavelet} at {level} levels, T={T:.4g}."),
         payload={
             "signal": y,
             "threshold": float(T),

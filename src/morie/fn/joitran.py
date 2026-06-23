@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """iTransformer: inverted attention -- variates as tokens, time as feature dim."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_itransformer"]
@@ -34,7 +36,14 @@ def joseph_itransformer(X, n_variates, transformer):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "iTransformer: inverted attention -- variates as tokens, time as feature dim"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "iTransformer: inverted attention -- variates as tokens, time as feature dim",
+        }
+    )
 
 
 def cheatsheet():

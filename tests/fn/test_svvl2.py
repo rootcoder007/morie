@@ -1,7 +1,6 @@
 """Tests for morie.fn.svvl2 -- 2D valence spatial model"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svvl2 import valence_2d
 

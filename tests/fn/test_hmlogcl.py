@@ -1,6 +1,7 @@
 """Tests for hmlogcl.geron_logistic_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlogcl import geron_logistic_cost
 
 
@@ -11,7 +12,7 @@ def test_hmlogcl_basic():
     theta = 0.0
     result = geron_logistic_cost(X, y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlogcl_edge():

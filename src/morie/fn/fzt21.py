@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 2.1: geometric combination of expected KDFE has O(h^4) bias."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm2_1_expected_kdfe"]
@@ -34,7 +36,14 @@ def fauzi_thm2_1_expected_kdfe(x, bandwidth, a):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 2.1: geometric combination of expected KDFE has O(h^4) bias"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 2.1: geometric combination of expected KDFE has O(h^4) bias",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,9 @@
 """Test form_factor_fn."""
+
 import numpy as np
-from morie.fn.frmfc import form_factor_fn, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.frmfc import alias, form_factor_fn
 
 
 class TestFormFactorFn:

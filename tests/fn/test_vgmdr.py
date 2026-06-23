@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgmdr -- Madogram estimator"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgmdr import madogram
 

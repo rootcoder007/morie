@@ -1,6 +1,7 @@
 """Tests for mcmpp.mcmcpack_irt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mcmpp import mcmcpack_irt
 
 
@@ -12,7 +13,7 @@ def test_mcmpp_basic():
     n_iter = 50
     result = mcmcpack_irt(votes, n_dims, burnin, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mcmpp_edge():

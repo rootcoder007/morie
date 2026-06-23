@@ -1,6 +1,7 @@
 """Tests for hmmod.geron_model_based."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmmod import geron_model_based
 
 
@@ -10,7 +11,7 @@ def test_hmmod_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = geron_model_based(X, y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmmod_edge():

@@ -1,6 +1,7 @@
 """Tests for evdec.evt_declustering_runs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.evdec import evt_declustering_runs
 
 
@@ -11,7 +12,7 @@ def test_evdec_basic():
     r = 10
     result = evt_declustering_runs(x, u, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_evdec_edge():

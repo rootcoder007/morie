@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordinary least squares closed-form solution (sklearn-backed)."""
+
 import numpy as np
 
 from ._richresult import RichResult
@@ -53,12 +54,14 @@ def linear_regression_ols(x, y):
     except np.linalg.LinAlgError:
         se = np.full(p + 1, np.nan)
 
-    return RichResult(payload={
-        "estimate": coef.tolist(),
-        "se": se.tolist(),
-        "n": int(n),
-        "method": "OLS via closed-form normal equations",
-    })
+    return RichResult(
+        payload={
+            "estimate": coef.tolist(),
+            "se": se.tolist(),
+            "n": int(n),
+            "method": "OLS via closed-form normal equations",
+        }
+    )
 
 
 def cheatsheet():

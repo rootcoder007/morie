@@ -1,6 +1,7 @@
 """Test gefin."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gefin import gefin
 
 

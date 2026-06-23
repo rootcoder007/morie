@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.chles import cholesky_solve, chles
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.chles import chles, cholesky_solve
 
 
 class TestChles:

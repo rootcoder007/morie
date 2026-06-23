@@ -1,7 +1,6 @@
 """Tests for morie.fn.svplr -- 1D ideological polarization index"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svplr import polarization_1d
 

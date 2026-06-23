@@ -1,6 +1,6 @@
 """Tests for morie.fn.pkdet — advanced peak detection."""
+
 import numpy as np
-import pytest
 
 from morie.fn.pkdet import peak_detect_advanced, pkdet
 

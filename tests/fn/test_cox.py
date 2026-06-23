@@ -1,7 +1,8 @@
 """Tests for morie.fn.cox — Cox proportional hazards."""
+
 import numpy as np
 
-from morie.fn.cox import cox_ph, cox
+from morie.fn.cox import cox, cox_ph
 
 
 def test_cox_positive_hazard_ratio():

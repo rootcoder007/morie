@@ -1,6 +1,7 @@
 """Tests for morie.fn.ihgap -- health gap."""
 
 import pytest
+
 from morie.fn.ihgap import health_gap
 
 

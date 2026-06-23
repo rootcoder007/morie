@@ -42,4 +42,5 @@ def test_n_strata(strat_data):
 
 def test_cheatsheet():
     from morie.fn.strtf import cheatsheet
+
     assert "stratified" in cheatsheet().lower()

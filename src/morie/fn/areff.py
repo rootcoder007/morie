@@ -1,7 +1,6 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Asymptotic relative efficiency (ARE) for nonparametric tests."""
 
-
 __all__ = ["areff"]
 
 

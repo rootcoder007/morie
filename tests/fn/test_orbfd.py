@@ -1,5 +1,7 @@
 """Test orbfd."""
+
 import pytest
+
 from morie.fn.orbfd import orbifold_spectrum
 
 

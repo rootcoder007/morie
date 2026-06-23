@@ -1,6 +1,7 @@
 """Tests for hmnadm.geron_nadam."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmnadm import geron_nadam
 
 
@@ -15,7 +16,7 @@ def test_hmnadm_basic():
     t = np.linspace(0, 10, 100)
     result = geron_nadam(grads, m, v, b1, b2, eta, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmnadm_edge():

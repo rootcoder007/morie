@@ -8,4 +8,4 @@ pps_sample = _fn
 
 
 def cheatsheet() -> str:
-    return 'ppssmp() -> Ppssmp'
+    return "ppssmp() -> Ppssmp"

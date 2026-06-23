@@ -1,6 +1,7 @@
 """Tests for motfom.motif_fimo."""
+
 import numpy as np
-import pytest
+
 from morie.fn.motfom import motif_fimo
 
 
@@ -10,7 +11,7 @@ def test_motfom_basic():
     pwm = np.random.default_rng(42).normal(0, 1, 100)
     result = motif_fimo(sequence, pwm)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_motfom_edge():

@@ -1,6 +1,7 @@
 """Tests for albtm.alammar_bertopic_pipeline."""
+
 import numpy as np
-import pytest
+
 from morie.fn.albtm import alammar_bertopic_pipeline
 
 
@@ -12,7 +13,7 @@ def test_albtm_basic():
     cluster_model = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_bertopic_pipeline(documents, embedder, reducer, cluster_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_albtm_edge():

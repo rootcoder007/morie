@@ -1,6 +1,7 @@
 """Tests for shrpd.shepard_diagram."""
+
 import numpy as np
-import pytest
+
 from morie.fn.shrpd import shepard_diagram
 
 
@@ -10,7 +11,7 @@ def test_shrpd_basic():
     D_config = np.random.default_rng(42).normal(0, 1, 100)
     result = shepard_diagram(delta, D_config)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_shrpd_edge():

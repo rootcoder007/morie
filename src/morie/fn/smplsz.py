@@ -1,6 +1,7 @@
 """Sample-size calculation for proportion."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sample_size_calc"]
@@ -34,7 +35,9 @@ def sample_size_calc(p, e, z):
     n = len(z)
     result = float(np.mean(z))
     se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sample-size calculation for proportion"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sample-size calculation for proportion"}
+    )
 
 
 def cheatsheet():

@@ -57,10 +57,7 @@ def var_model(Y, p: int = 1) -> DescriptiveResult:
         raise ValueError(f"p must be >= 1, got {p}.")
     n_params_per_eq = 1 + m * p
     if n - p <= n_params_per_eq:
-        raise ValueError(
-            f"Need n - p > 1 + m*p = {n_params_per_eq}; "
-            f"got n={n}, p={p}, n-p={n - p}."
-        )
+        raise ValueError(f"Need n - p > 1 + m*p = {n_params_per_eq}; got n={n}, p={p}, n-p={n - p}.")
 
     # Build regressor matrix Z: (n-p) x (1 + m*p).
     # Z[t] = [1, Y[t-1]', ..., Y[t-p]']
@@ -98,7 +95,7 @@ def var_model(Y, p: int = 1) -> DescriptiveResult:
         name="var_model",
         value=float(aic),
         extra={
-            "coef": B.T.copy(),       # (m, 1+m*p): row i = equation i
+            "coef": B.T.copy(),  # (m, 1+m*p): row i = equation i
             "sigma_u": sigma_u.copy(),
             "residuals": resid.copy(),
             "aic": aic,

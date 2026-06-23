@@ -1,7 +1,7 @@
 """Tests for morie.fn.svdir."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svdir import svdir
 
 

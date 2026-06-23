@@ -1,6 +1,7 @@
 """Bulk effective sample size for posterior."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["effective_sample_size_bulk"]
@@ -30,7 +31,9 @@ def effective_sample_size_bulk(chains):
     n = len(chains)
     result = float(np.mean(chains))
     se = float(np.std(chains, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bulk effective sample size for posterior"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bulk effective sample size for posterior"}
+    )
 
 
 def cheatsheet():

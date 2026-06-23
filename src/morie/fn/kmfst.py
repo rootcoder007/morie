@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """FastText word representation: sum of subword n-gram embeddings."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_fasttext_subword"]
@@ -36,7 +38,14 @@ def kamath_fasttext_subword(word, ngram_embeddings, n_min, n_max):
     n = len(word)
     result = float(np.mean(word))
     se = float(np.std(word, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "FastText word representation: sum of subword n-gram embeddings"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "FastText word representation: sum of subword n-gram embeddings",
+        }
+    )
 
 
 def cheatsheet():

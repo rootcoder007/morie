@@ -1,6 +1,7 @@
 """Tests for bleuS.bleu."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bleuS import bleu
 
 
@@ -11,7 +12,7 @@ def test_bleuS_basic():
     max_n = np.random.default_rng(42).normal(0, 1, 100)
     result = bleu(candidate, references, max_n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bleuS_edge():

@@ -1,6 +1,7 @@
 """Test ubcmm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ubcmm import ubcmm
 
 

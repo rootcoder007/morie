@@ -1,8 +1,9 @@
 """Tests for morie.fn.w -- Cohen's w for chi-squared."""
 
 import pytest
-from morie.fn.w import cohens_w
+
 from morie.fn._containers import ESRes
+from morie.fn.w import cohens_w
 
 
 class TestCohensW:

@@ -1,7 +1,7 @@
 """Tests for morie.fn.pslin."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pslin import pslin
 
 

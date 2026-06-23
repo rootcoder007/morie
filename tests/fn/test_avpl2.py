@@ -1,5 +1,7 @@
 """Test 2D average pooling."""
+
 import numpy as np
+
 from morie.fn.avpl2 import avpl2
 
 

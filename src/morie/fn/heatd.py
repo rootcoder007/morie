@@ -94,4 +94,4 @@ heatd = heat_density
 
 
 def cheatsheet() -> str:
-    return 'heat_density({}) -> 2D kernel density for heatmaps.'
+    return "heat_density({}) -> 2D kernel density for heatmaps."

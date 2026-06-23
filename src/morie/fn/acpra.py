@@ -1,6 +1,7 @@
 """MCMC acceptance rate diagnostic."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["acceptance_rate_diagnostic"]

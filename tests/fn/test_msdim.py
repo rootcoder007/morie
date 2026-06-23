@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdim -- MDS dimensionality selection"""
 
 import numpy as np
-import pytest
 
 from morie.fn.msdim import mds_dims
 
@@ -14,5 +13,5 @@ class TestMdsDims:
         assert result.value is not None
 
     def test_output_type(self):
-        result = mds_dims(np.random.default_rng(0).standard_normal((5,2)))
+        result = mds_dims(np.random.default_rng(0).standard_normal((5, 2)))
         assert hasattr(result, "value")

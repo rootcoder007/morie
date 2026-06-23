@@ -1,6 +1,7 @@
 """Tests for tqoutl.turboquant_outlier_channel_split."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqoutl import turboquant_outlier_channel_split
 
 
@@ -10,7 +11,7 @@ def test_tqoutl_basic():
     outlier_threshold = np.random.default_rng(42).normal(0, 1, 100)
     result = turboquant_outlier_channel_split(channels, outlier_threshold)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqoutl_edge():

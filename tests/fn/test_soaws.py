@@ -1,6 +1,7 @@
 """Test soaws."""
+
 import numpy as np
-import pytest
+
 from morie.fn.soaws import soaws
 
 

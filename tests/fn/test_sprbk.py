@@ -1,5 +1,7 @@
 """Tests for morie.fn.sprbk."""
+
 import numpy as np
+
 from morie.fn.sprbk import spring_mass
 
 
@@ -13,6 +15,7 @@ def test_sprbk_smoke():
 
 def test_cheatsheet():
     from morie.fn.sprbk import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

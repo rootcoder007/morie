@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Diffusion reverse process denoises from x_T back to x_0."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_diffusion_reverse"]
@@ -34,7 +36,14 @@ def geron_diffusion_reverse(x_T, model, T):
     n = len(x_T)
     result = float(np.mean(x_T))
     se = float(np.std(x_T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Diffusion reverse process denoises from x_T back to x_0"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Diffusion reverse process denoises from x_T back to x_0",
+        }
+    )
 
 
 def cheatsheet():

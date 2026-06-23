@@ -1,6 +1,8 @@
 """Tests for sbcrc."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sbcrc import sbcrc
 
 
@@ -28,4 +30,5 @@ def test_sbcrc_no_data():
 
 def test_sbcrc_alias():
     from morie.fn.sbcrc import sbcrc
+
     assert sbcrc is sbcrc

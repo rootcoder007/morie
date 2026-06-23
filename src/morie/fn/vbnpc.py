@@ -1,6 +1,7 @@
 """Variational Bayes for DP/HDP."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["vb_nonparametric"]

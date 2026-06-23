@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrfgt -- Getis spatial filtering"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrfgt import getis_filter
 

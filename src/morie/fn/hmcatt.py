@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-attention: Q from decoder, K/V from encoder."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_cross_attention"]
@@ -38,7 +40,9 @@ def geron_cross_attention(dec_h, enc_h, W_Q, W_K, W_V):
     n = len(dec_h)
     result = float(np.mean(dec_h))
     se = float(np.std(dec_h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross-attention: Q from decoder, K/V from encoder"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cross-attention: Q from decoder, K/V from encoder"}
+    )
 
 
 def cheatsheet():

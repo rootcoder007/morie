@@ -3,19 +3,17 @@
 from __future__ import annotations
 
 import pandas as pd
-import numpy as np
 import pytest
 
 from morie.inspector import (
     InspectionResult,
     VerificationCheck,
     VerificationReport,
-    inspect_output,
     inspect_directory,
-    verify_statistical_output,
+    inspect_output,
     verify_directory,
+    verify_statistical_output,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -25,16 +23,18 @@ from morie.inspector import (
 @pytest.fixture
 def good_csv(tmp_path):
     """CSV with valid statistical output."""
-    df = pd.DataFrame({
-        "term": ["intercept", "treatment", "age"],
-        "estimate": [0.5, 1.2, -0.3],
-        "se": [0.1, 0.2, 0.05],
-        "p_value": [0.001, 0.04, 0.5],
-        "ci_lower": [0.3, 0.8, -0.4],
-        "ci_upper": [0.7, 1.6, -0.2],
-        "odds_ratio": [1.6, 3.3, 0.7],
-        "n": [500, 500, 500],
-    })
+    df = pd.DataFrame(
+        {
+            "term": ["intercept", "treatment", "age"],
+            "estimate": [0.5, 1.2, -0.3],
+            "se": [0.1, 0.2, 0.05],
+            "p_value": [0.001, 0.04, 0.5],
+            "ci_lower": [0.3, 0.8, -0.4],
+            "ci_upper": [0.7, 1.6, -0.2],
+            "odds_ratio": [1.6, 3.3, 0.7],
+            "n": [500, 500, 500],
+        }
+    )
     path = tmp_path / "good_output.csv"
     df.to_csv(path, index=False)
     return path
@@ -43,16 +43,18 @@ def good_csv(tmp_path):
 @pytest.fixture
 def bad_csv(tmp_path):
     """CSV with invalid statistical values."""
-    df = pd.DataFrame({
-        "term": ["a", "b"],
-        "estimate": [1.0, 2.0],
-        "se": [0.1, -0.5],           # negative SE
-        "p_value": [0.05, 1.5],      # p > 1
-        "ci_lower": [0.8, 2.5],      # lower > upper for row b
-        "ci_upper": [1.2, 1.5],
-        "odds_ratio": [2.7, -0.5],   # negative OR
-        "n": [100, 100],
-    })
+    df = pd.DataFrame(
+        {
+            "term": ["a", "b"],
+            "estimate": [1.0, 2.0],
+            "se": [0.1, -0.5],  # negative SE
+            "p_value": [0.05, 1.5],  # p > 1
+            "ci_lower": [0.8, 2.5],  # lower > upper for row b
+            "ci_upper": [1.2, 1.5],
+            "odds_ratio": [2.7, -0.5],  # negative OR
+            "n": [100, 100],
+        }
+    )
     path = tmp_path / "bad_output.csv"
     df.to_csv(path, index=False)
     return path
@@ -61,12 +63,14 @@ def bad_csv(tmp_path):
 @pytest.fixture
 def rsq_csv(tmp_path):
     """CSV with R-squared and AIC columns."""
-    df = pd.DataFrame({
-        "model": ["null", "full"],
-        "r_squared": [0.0, 0.45],
-        "aic": [1200.5, 980.3],
-        "bic": [1210.0, 1000.1],
-    })
+    df = pd.DataFrame(
+        {
+            "model": ["null", "full"],
+            "r_squared": [0.0, 0.45],
+            "aic": [1200.5, 980.3],
+            "bic": [1210.0, 1000.1],
+        }
+    )
     path = tmp_path / "model_fit.csv"
     df.to_csv(path, index=False)
     return path
@@ -241,10 +245,12 @@ class TestVerifyEdgeCases:
         assert all(isinstance(r, VerificationReport) for r in reports)
 
     def test_nan_in_estimates(self, tmp_path):
-        df = pd.DataFrame({
-            "estimate": [1.0, float("nan")],
-            "p_value": [0.05, 0.1],
-        })
+        df = pd.DataFrame(
+            {
+                "estimate": [1.0, float("nan")],
+                "p_value": [0.05, 0.1],
+            }
+        )
         path = tmp_path / "nan_est.csv"
         df.to_csv(path, index=False)
         report = verify_statistical_output(path)

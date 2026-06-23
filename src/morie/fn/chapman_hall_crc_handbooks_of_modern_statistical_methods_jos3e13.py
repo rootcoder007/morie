@@ -1,8 +1,9 @@
 """Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_3_equation_13"]
 
@@ -41,7 +42,11 @@ def chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_3_equat
             pvalue=float("nan"),
             warnings=["n<2: insufficient data."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.", "p_value": float("nan")},
+            extra_payload={
+                "n": n,
+                "method": "Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.",
+                "p_value": float("nan"),
+            },
         )
     x_sorted = np.sort(x)
     if cdf is None:
@@ -57,14 +62,18 @@ def chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_3_equat
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
     return hypothesis_test_result(
         test_name="Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.",
         statistic=float(statistic),
         pvalue=float(p_value),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.", "p_value": float(p_value)},
+        extra_payload={
+            "n": n,
+            "method": "Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.",
+            "p_value": float(p_value),
+        },
     )
 
 

@@ -1,6 +1,7 @@
 """Bootstrap variance of the sample mean."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_var_mean"]

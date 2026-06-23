@@ -1,7 +1,6 @@
 """Tests for morie.fn.zeenb -- Ecological NB regression"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zeenb import ecological_nb
 

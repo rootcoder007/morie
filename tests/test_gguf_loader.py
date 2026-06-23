@@ -1,23 +1,21 @@
 """Tests for morie.gguf_loader — GGUF model file parser."""
 
 import struct
-import tempfile
-from pathlib import Path
 
 import numpy as np
 import pytest
 
 from morie.gguf_loader import (
+    _GGUF_TYPE_FLOAT32,
+    _GGUF_TYPE_INT32,
+    _GGUF_TYPE_STRING,
+    _GGUF_TYPE_UINT32,
     GGML_TYPE_F16,
     GGML_TYPE_F32,
     GGML_TYPE_Q8_0,
     GGUF_MAGIC,
     GGUFModel,
     TensorInfo,
-    _GGUF_TYPE_FLOAT32,
-    _GGUF_TYPE_INT32,
-    _GGUF_TYPE_STRING,
-    _GGUF_TYPE_UINT32,
 )
 
 

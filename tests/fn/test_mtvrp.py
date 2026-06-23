@@ -1,6 +1,7 @@
 """Test mtvrp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtvrp import mtvrp
 
 

@@ -1,6 +1,6 @@
 """Tests for hellinger_dist."""
-import pytest
-from morie.fn.helld import hellinger_dist, helld
+
+from morie.fn.helld import helld, hellinger_dist
 
 
 def test_same():

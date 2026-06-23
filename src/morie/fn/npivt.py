@@ -91,9 +91,7 @@ def npivt(
     A /= col_norms[None, :]
 
     AtA = A.T @ A
-    h_hat = np.linalg.solve(
-        AtA + alpha_reg * np.eye(n_basis), A.T @ r
-    )
+    h_hat = np.linalg.solve(AtA + alpha_reg * np.eye(n_basis), A.T @ r)
     h_hat /= col_norms
 
     return {

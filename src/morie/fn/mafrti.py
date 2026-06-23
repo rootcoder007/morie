@@ -1,6 +1,7 @@
 """Back-transform from Freeman-Tukey double arcsine to p."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ma_freeman_tukey_inverse"]
@@ -32,7 +33,14 @@ def ma_freeman_tukey_inverse(ft, n_harmonic):
     n = len(ft)
     result = float(np.mean(ft))
     se = float(np.std(ft, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Back-transform from Freeman-Tukey double arcsine to p"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Back-transform from Freeman-Tukey double arcsine to p",
+        }
+    )
 
 
 def cheatsheet():

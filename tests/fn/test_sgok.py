@@ -1,5 +1,7 @@
 """Tests for ordinary kriging."""
+
 import numpy as np
+
 from morie.fn.sgok import sgok
 
 

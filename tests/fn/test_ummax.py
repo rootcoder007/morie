@@ -1,7 +1,7 @@
 """Tests for morie.fn.ummax."""
 
 import numpy as np
-import pytest
+
 from morie.fn.ummax import ummax
 
 

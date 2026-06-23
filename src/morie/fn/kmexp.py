@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Canary exposure: rank of a canary string among candidate strings by model PLL."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_memorization_exposure"]
@@ -32,7 +34,14 @@ def kamath_memorization_exposure(canary_ll, candidate_lls):
     n = len(canary_ll)
     result = float(np.mean(canary_ll))
     se = float(np.std(canary_ll, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Canary exposure: rank of a canary string among candidate strings by model PLL"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Canary exposure: rank of a canary string among candidate strings by model PLL",
+        }
+    )
 
 
 def cheatsheet():

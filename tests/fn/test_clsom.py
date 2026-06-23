@@ -1,6 +1,7 @@
 """Test clsom."""
+
 import numpy as np
-import pytest
+
 from morie.fn.clsom import clsom
 
 

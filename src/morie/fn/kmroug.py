@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ROUGE-N recall: n-gram recall of hypothesis against reference."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_rouge_n"]
@@ -34,7 +36,14 @@ def kamath_rouge_n(hypothesis, reference, n):
     n = len(hypothesis)
     result = float(np.mean(hypothesis))
     se = float(np.std(hypothesis, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "ROUGE-N recall: n-gram recall of hypothesis against reference"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ROUGE-N recall: n-gram recall of hypothesis against reference",
+        }
+    )
 
 
 def cheatsheet():

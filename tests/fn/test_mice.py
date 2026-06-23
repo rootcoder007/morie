@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from morie.fn.mice import mice_impute
 
 
@@ -26,10 +27,12 @@ class TestMICE:
         """Imputed column means should be close to the true mean."""
         n = 500
         true_mean = 5.0
-        df = pd.DataFrame({
-            "a": rng.normal(true_mean, 1, n),
-            "b": rng.standard_normal(n),
-        })
+        df = pd.DataFrame(
+            {
+                "a": rng.normal(true_mean, 1, n),
+                "b": rng.standard_normal(n),
+            }
+        )
         mask = rng.random(n) < 0.15
         df.loc[mask, "a"] = np.nan
         results = mice_impute(df, m=5, n_iter=10)

@@ -1,5 +1,5 @@
 """Test sgcrh."""
-import numpy as np
+
 from morie.fn.sgcrh import cressie_hawkins
 
 

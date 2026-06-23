@@ -77,4 +77,4 @@ mlsit = mlsmu6_single_iteration
 
 
 def cheatsheet() -> str:
-    return 'mlsmu6_single_iteration({}) -> MLSMU6 single ALS iteration.'
+    return "mlsmu6_single_iteration({}) -> MLSMU6 single ALS iteration."

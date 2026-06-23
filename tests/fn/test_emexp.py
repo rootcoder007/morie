@@ -1,5 +1,7 @@
 """Tests for morie.fn.emexp -- EM expectation step."""
+
 import numpy as np
+
 from morie.fn.emexp import em_expectation_step, emexp
 
 

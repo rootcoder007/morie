@@ -1,6 +1,7 @@
 """Outer almost-sure bootstrap consistency for Donsker classes with bounded second moment of envelope."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_bootstrap_donsker_almost_sure"]
@@ -32,7 +33,14 @@ def kosorok_ch2_bootstrap_donsker_almost_sure(F, P):
     n = len(F)
     result = float(np.mean(F))
     se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Outer almost-sure bootstrap consistency for Donsker classes with bounded second moment of envelope"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Outer almost-sure bootstrap consistency for Donsker classes with bounded second moment of envelope",
+        }
+    )
 
 
 def cheatsheet():

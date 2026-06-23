@@ -1,6 +1,7 @@
 r"""Linear function defining the simplest one-feature model with weight w and bias b.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["burkov_lm_ch1_linear_function"]
@@ -34,7 +35,14 @@ def burkov_lm_ch1_linear_function(x, w, b):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear function defining the simplest one-feature model with weight w and bias b."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Linear function defining the simplest one-feature model with weight w and bias b.",
+        }
+    )
 
 
 def cheatsheet():

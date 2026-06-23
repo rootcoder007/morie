@@ -1,6 +1,7 @@
 """Tests for rgemd.rangayyan_emd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgemd import rangayyan_emd
 
 
@@ -11,7 +12,7 @@ def test_rgemd_basic():
     tol = 1e-6
     result = rangayyan_emd(x, max_imfs, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgemd_edge():

@@ -1,6 +1,7 @@
 """Tests for blockMx.block_maxima."""
+
 import numpy as np
-import pytest
+
 from morie.fn.blockMx import block_maxima
 
 
@@ -10,7 +11,7 @@ def test_blockMx_basic():
     block_size = 100
     result = block_maxima(y, block_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_blockMx_edge():

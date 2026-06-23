@@ -13,8 +13,6 @@ Linux Security Module userspace daemon at `daemon/morie_lsm.py`.
 from __future__ import annotations
 
 import warnings
-from typing import Iterable
-
 
 __all__ = [
     "GPL_COMPATIBLE_LICENSES",
@@ -26,12 +24,19 @@ __all__ = [
 # Per the FSF's GPL-compatible-licence list (https://www.gnu.org/licenses/license-list.html)
 # Identifiers below match SPDX (https://spdx.org/licenses/).
 GPL_COMPATIBLE_LICENSES: tuple[str, ...] = (
-    "GPL-2.0-only", "GPL-2.0-or-later",
-    "GPL-3.0-only", "GPL-3.0-or-later",
-    "LGPL-2.1-only", "LGPL-2.1-or-later",
-    "LGPL-3.0-only", "LGPL-3.0-or-later",
+    "GPL-2.0-only",
+    "GPL-2.0-or-later",
+    "GPL-3.0-only",
+    "GPL-3.0-or-later",
+    "LGPL-2.1-only",
+    "LGPL-2.1-or-later",
+    "LGPL-3.0-only",
+    "LGPL-3.0-or-later",
     "Apache-2.0",  # GPL-3 compatible; NOT GPL-2 compatible.
-    "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC",
+    "MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
     "MPL-2.0",
     "CC0-1.0",
     "Unlicense",
@@ -46,7 +51,7 @@ def morie_license_metadata() -> dict[str, str]:
         "spdx": "GPL-2.0-only",
         "fsf_libre": "yes",
         "osi_approved": "yes",
-        "kernel_compatible": "yes (MODULE_LICENSE(\"GPL v2\") accepts this)",
+        "kernel_compatible": 'yes (MODULE_LICENSE("GPL v2") accepts this)',
     }
 
 

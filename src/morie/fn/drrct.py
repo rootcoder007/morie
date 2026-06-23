@@ -1,6 +1,7 @@
 """DR-DiD with RCT side data."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dr_rct_assisted_did"]

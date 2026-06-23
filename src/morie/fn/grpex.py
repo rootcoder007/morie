@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prioritized experience replay importance-sampling weight."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_prioritized_experience_weight"]
@@ -36,7 +38,14 @@ def geron_prioritized_experience_weight(priorities, N, alpha, beta):
     n = len(priorities)
     result = float(np.mean(priorities))
     se = float(np.std(priorities, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prioritized experience replay importance-sampling weight"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prioritized experience replay importance-sampling weight",
+        }
+    )
 
 
 def cheatsheet():

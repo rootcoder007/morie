@@ -1,6 +1,7 @@
 """MuZero recurrent inference (g function)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["muzero_recurrent_inf"]
@@ -34,7 +35,9 @@ def muzero_recurrent_inf(state, action, g):
     n = len(state)
     result = float(np.mean(state))
     se = float(np.std(state, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MuZero recurrent inference (g function)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "MuZero recurrent inference (g function)"}
+    )
 
 
 def cheatsheet():

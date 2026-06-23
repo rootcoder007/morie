@@ -67,4 +67,4 @@ gaubea = gaussian_beam
 
 
 def cheatsheet() -> str:
-    return 'gaussian_beam({}) -> Gaussian beam optics.'
+    return "gaussian_beam({}) -> Gaussian beam optics."

@@ -1,6 +1,7 @@
 """Tests for hmext.geron_extra_trees."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmext import geron_extra_trees
 
 
@@ -13,7 +14,7 @@ def test_hmext_basic():
     seed = 42
     result = geron_extra_trees(X, y, n_estimators, max_features, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmext_edge():

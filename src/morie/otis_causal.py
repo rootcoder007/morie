@@ -136,15 +136,13 @@ from __future__ import annotations
 
 import math
 import warnings
-from dataclasses import dataclass, field, asdict
-from typing import Literal
+from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
 from scipy import stats as sps
 
 from .fn._richresult import RichResult
-
 
 # ── Estimator return type ──────────────────────────────────────────
 
@@ -162,8 +160,7 @@ class CausalEstimate:
 
     @property
     def ate_ci95(self) -> tuple[float, float]:
-        return (self.ate - 1.96 * self.ate_se,
-                self.ate + 1.96 * self.ate_se)
+        return (self.ate - 1.96 * self.ate_se, self.ate + 1.96 * self.ate_se)
 
 
 # ── Utilities ──────────────────────────────────────────────────────
@@ -186,8 +183,7 @@ def _design_matrix(data: pd.DataFrame, covariates: list[str]) -> np.ndarray:
     return X.to_numpy()
 
 
-def _logit_fit(X: np.ndarray, d: np.ndarray, ridge: float = 1e-3,
-                max_iter: int = 50, tol: float = 1e-6) -> np.ndarray:
+def _logit_fit(X: np.ndarray, d: np.ndarray, ridge: float = 1e-3, max_iter: int = 50, tol: float = 1e-6) -> np.ndarray:
     """Newton-Raphson MLE for logistic regression with light ridge.
 
     Avoids a sklearn dependency.  Ridge stabilises perfect-separation
@@ -221,12 +217,15 @@ def _propensity_clip(e: np.ndarray, eps: float = 0.02) -> np.ndarray:
 # ── IPW (Hájek) ─────────────────────────────────────────────────────
 
 
-def otis_ipw(df: pd.DataFrame, *,
-              treatment: str, outcome: str,
-              covariates: list[str],
-              eps: float = 0.02,
-              propensity_calibration: str = "none",
-              ) -> CausalEstimate:
+def otis_ipw(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    eps: float = 0.02,
+    propensity_calibration: str = "none",
+) -> CausalEstimate:
     """Hájek-stabilised IPW estimator of the ATE on OTIS data.
 
     Estimates the propensity by logistic regression and weights
@@ -283,13 +282,17 @@ def otis_ipw(df: pd.DataFrame, *,
 # ── AIPW (cross-fitted, RRZ 1994 / DR ATE) ─────────────────────────
 
 
-def otis_aipw(df: pd.DataFrame, *,
-               treatment: str, outcome: str,
-               covariates: list[str],
-               n_folds: int = 5, seed: int = 123,
-               eps: float = 0.02,
-               propensity_calibration: str = "none",
-               ) -> CausalEstimate:
+def otis_aipw(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    n_folds: int = 5,
+    seed: int = 123,
+    eps: float = 0.02,
+    propensity_calibration: str = "none",
+) -> CausalEstimate:
     """Augmented IPW (Robins-Rotnitzky-Zhao) ATE on OTIS data.
 
     Uses ``n_folds`` cross-fitting: nuisance models (propensity,
@@ -340,18 +343,14 @@ def otis_aipw(df: pd.DataFrame, *,
         e_hat = _propensity_clip(e_hat, eps=eps)
 
     # Doubly-robust influence function
-    psi = (mu1_hat - mu0_hat
-           + d * (y - mu1_hat) / e_hat
-           - (1 - d) * (y - mu0_hat) / (1 - e_hat))
+    psi = mu1_hat - mu0_hat + d * (y - mu1_hat) / e_hat - (1 - d) * (y - mu0_hat) / (1 - e_hat)
     ate = float(psi.mean())
     se = float(psi.std(ddof=1) / math.sqrt(n))
     z = ate / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
 
-    notes = [f"cross-fit folds={n_folds}",
-             f"calibration={propensity_calibration}"]
-    n_clipped = int(((e_hat <= eps + 1e-9)
-                       | (e_hat >= 1 - eps - 1e-9)).sum())
+    notes = [f"cross-fit folds={n_folds}", f"calibration={propensity_calibration}"]
+    n_clipped = int(((e_hat <= eps + 1e-9) | (e_hat >= 1 - eps - 1e-9)).sum())
     if n_clipped > 0:
         notes.append(f"{n_clipped} propensities clipped")
     diag = _propensity_diagnostics(e_hat, d)
@@ -359,12 +358,9 @@ def otis_aipw(df: pd.DataFrame, *,
     return CausalEstimate("AIPW", ate, se, pval, n, n_treated, p_treat, notes)
 
 
-
-def otis_gcomputation(df: pd.DataFrame, *,
-                      treatment: str, outcome: str,
-                      covariates: list[str],
-                      n_bootstrap: int = 200,
-                      seed: int = 123) -> CausalEstimate:
+def otis_gcomputation(
+    df: pd.DataFrame, *, treatment: str, outcome: str, covariates: list[str], n_bootstrap: int = 200, seed: int = 123
+) -> CausalEstimate:
     """Parametric g-computation (Robins 1986) of the ATE on OTIS data.
 
     Fits an outcome regression $\\\\hat\\\\mu(d, X)$ via OLS, then computes
@@ -420,17 +416,13 @@ def otis_gcomputation(df: pd.DataFrame, *,
     z = ate / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z)))) if se > 0 else float("nan")
 
-    notes = [f"bootstrap={n_bootstrap}",
-             f"valid_bootstrap_replicates={boot_ates.size}"]
-    return CausalEstimate("g-computation", ate, se, pval,
-                            n, n_treated, p_treat, notes)
+    notes = [f"bootstrap={n_bootstrap}", f"valid_bootstrap_replicates={boot_ates.size}"]
+    return CausalEstimate("g-computation", ate, se, pval, n, n_treated, p_treat, notes)
 
 
-def otis_psm_subclass(df: pd.DataFrame, *,
-                      treatment: str, outcome: str,
-                      covariates: list[str],
-                      n_strata: int = 5,
-                      eps: float = 0.02) -> CausalEstimate:
+def otis_psm_subclass(
+    df: pd.DataFrame, *, treatment: str, outcome: str, covariates: list[str], n_strata: int = 5, eps: float = 0.02
+) -> CausalEstimate:
     """Propensity-score stratification (Rosenbaum & Rubin 1983).
 
     Splits the sample into ``n_strata`` strata by propensity-score
@@ -491,28 +483,38 @@ def otis_psm_subclass(df: pd.DataFrame, *,
 
     valid = ~np.isnan(deltas)
     if not valid.any():
-        return CausalEstimate("PSM-subclass", float("nan"), float("nan"),
-                                1.0, n, n_treated, p_treat,
-                                notes=[f"no valid strata (n_strata={n_strata})"])
+        return CausalEstimate(
+            "PSM-subclass",
+            float("nan"),
+            float("nan"),
+            1.0,
+            n,
+            n_treated,
+            p_treat,
+            notes=[f"no valid strata (n_strata={n_strata})"],
+        )
     w = weights[valid] / weights[valid].sum()
     ate = float((w * deltas[valid]).sum())
-    se = float(np.sqrt(((w ** 2) * vars_[valid]).sum()))
+    se = float(np.sqrt(((w**2) * vars_[valid]).sum()))
     z = ate / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
 
     notes = [f"strata={n_strata}", f"valid_strata={int(valid.sum())}"]
     if n_dropped > 0:
         notes.append(f"{n_dropped} units in single-arm strata dropped")
-    return CausalEstimate("PSM-subclass", ate, se, pval,
-                            n, n_treated, p_treat, notes)
+    return CausalEstimate("PSM-subclass", ate, se, pval, n, n_treated, p_treat, notes)
 
 
-
-def otis_atc(df: pd.DataFrame, *,
-             treatment: str, outcome: str,
-             covariates: list[str],
-             n_folds: int = 5, seed: int = 123,
-             eps: float = 0.02) -> CausalEstimate:
+def otis_atc(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    n_folds: int = 5,
+    seed: int = 123,
+    eps: float = 0.02,
+) -> CausalEstimate:
     """AIPW-flavoured Average Treatment effect on the Controls (ATC).
 
     The IF for ATC = E[Y(1) - Y(0) | D = 0] is
@@ -558,25 +560,26 @@ def otis_atc(df: pd.DataFrame, *,
     #   atc = (1/n_d0) * sum_i (1-D_i) * (mu_1(X_i) - Y_i)
     #         + sum_i D_i * (1-e(X_i))/e(X_i) * (Y_i - mu_1(X_i)) / n_d0
     # We use the Robins-style efficient form below.
-    psi = ((1 - d) * (mu1_hat - mu0_hat)
-            + d * ((1 - e_hat) / e_hat) * (y - mu1_hat)
-            - (1 - d) * (y - mu0_hat)) / p_d0
+    psi = ((1 - d) * (mu1_hat - mu0_hat) + d * ((1 - e_hat) / e_hat) * (y - mu1_hat) - (1 - d) * (y - mu0_hat)) / p_d0
     atc = float(psi.mean())
     se = float(psi.std(ddof=1) / math.sqrt(n))
     z = atc / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
-    notes = [f"cross-fit folds={n_folds}",
-             f"control n={int((1-d).sum())}",
-             f"E[Y(1)-Y(0) | D=0]"]
+    notes = [f"cross-fit folds={n_folds}", f"control n={int((1 - d).sum())}", "E[Y(1)-Y(0) | D=0]"]
     return CausalEstimate("ATC", atc, se, pval, n, n_treated, p_treat, notes)
 
 
-def otis_plr(df: pd.DataFrame, *,
-             treatment: str, outcome: str,
-             covariates: list[str],
-             n_folds: int = 3, seed: int = 123,
-             ml_outcome: str = "rf",
-             ml_treatment: str = "rf") -> CausalEstimate:
+def otis_plr(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    n_folds: int = 3,
+    seed: int = 123,
+    ml_outcome: str = "rf",
+    ml_treatment: str = "rf",
+) -> CausalEstimate:
     """Partially Linear Regression DML (Chernozhukov et al. 2018).
 
     Fits the structural model
@@ -605,8 +608,8 @@ def otis_plr(df: pd.DataFrame, *,
     HAS_RF = False
     if ml_outcome == "rf" or ml_treatment == "rf":
         try:
-            from sklearn.ensemble import (RandomForestRegressor,
-                                            RandomForestClassifier)
+            from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
             HAS_RF = True
         except ImportError:
             HAS_RF = False
@@ -620,18 +623,14 @@ def otis_plr(df: pd.DataFrame, *,
         test = folds[k]
         train = np.setdiff1d(np.arange(n), test)
         if HAS_RF and ml_outcome == "rf":
-            reg_g = RandomForestRegressor(
-                n_estimators=500, max_depth=5,
-                random_state=seed + k, n_jobs=-1)
+            reg_g = RandomForestRegressor(n_estimators=500, max_depth=5, random_state=seed + k, n_jobs=-1)
             reg_g.fit(X[train], y[train])
             g_hat[test] = reg_g.predict(X[test])
         else:
             beta_g, *_ = np.linalg.lstsq(X[train], y[train], rcond=None)
             g_hat[test] = X[test] @ beta_g
         if HAS_RF and ml_treatment == "rf":
-            reg_m = RandomForestClassifier(
-                n_estimators=500, max_depth=5,
-                random_state=seed + k * 7, n_jobs=-1)
+            reg_m = RandomForestClassifier(n_estimators=500, max_depth=5, random_state=seed + k * 7, n_jobs=-1)
             reg_m.fit(X[train], d[train].astype(int))
             m_hat[test] = reg_m.predict_proba(X[test])[:, 1]
         else:
@@ -642,29 +641,29 @@ def otis_plr(df: pd.DataFrame, *,
     # Residualised regression
     y_resid = y - g_hat
     d_resid = d - m_hat
-    var_d = float((d_resid ** 2).mean())
+    var_d = float((d_resid**2).mean())
     if var_d < 1e-12:
-        return CausalEstimate("PLR", float("nan"), float("nan"), 1.0,
-                                n, n_treated, p_treat,
-                                notes=["zero residual variance in D"])
+        return CausalEstimate(
+            "PLR", float("nan"), float("nan"), 1.0, n, n_treated, p_treat, notes=["zero residual variance in D"]
+        )
     theta = float((d_resid * y_resid).mean() / var_d)
     # Sandwich SE on the score psi_i = (Y_i - g - theta * (D_i - m)) * (D_i - m)
     psi = (y_resid - theta * d_resid) * d_resid
-    sigma2 = float((psi ** 2).mean())
-    se = float(math.sqrt(sigma2 / (n * var_d ** 2)))
+    sigma2 = float((psi**2).mean())
+    se = float(math.sqrt(sigma2 / (n * var_d**2)))
     z = theta / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
-    notes = [f"cross-fit folds={n_folds}",
-             f"residual var(D|X)={var_d:.4f}",
-             "homogeneous-effect assumption (θ constant)",
-             f"ml_outcome={ml_outcome if HAS_RF else 'ols'}",
-             f"ml_treatment={ml_treatment if HAS_RF else 'logit'}"]
-    return CausalEstimate("PLR", theta, se, pval, n, n_treated, p_treat,
-                            notes)
+    notes = [
+        f"cross-fit folds={n_folds}",
+        f"residual var(D|X)={var_d:.4f}",
+        "homogeneous-effect assumption (θ constant)",
+        f"ml_outcome={ml_outcome if HAS_RF else 'ols'}",
+        f"ml_treatment={ml_treatment if HAS_RF else 'logit'}",
+    ]
+    return CausalEstimate("PLR", theta, se, pval, n, n_treated, p_treat, notes)
 
 
-def _calibrate_propensity(p_raw: np.ndarray, d: np.ndarray, *,
-                            method: str = "platt") -> np.ndarray:
+def _calibrate_propensity(p_raw: np.ndarray, d: np.ndarray, *, method: str = "platt") -> np.ndarray:
     """Calibrate raw propensities to better match observed D rates.
 
     Parameters
@@ -713,18 +712,20 @@ def _propensity_diagnostics(p: np.ndarray, d: np.ndarray) -> dict:
     eps = 1e-12
     p_c = np.clip(p, eps, 1 - eps)
     log_loss = float(-(d * np.log(p_c) + (1 - d) * np.log(1 - p_c)).mean())
-    return {"brier": brier, "obs_prevalence": obs,
-            "predicted_prevalence": pred, "log_loss": log_loss}
+    return {"brier": brier, "obs_prevalence": obs, "predicted_prevalence": pred, "log_loss": log_loss}
 
 
-
-def otis_aipw_superlearner(df: pd.DataFrame, *,
-                            treatment: str, outcome: str,
-                            covariates: list[str],
-                            n_folds: int = 5, seed: int = 123,
-                            eps: float = 0.02,
-                            propensity_calibration: str = "none",
-                            ) -> CausalEstimate:
+def otis_aipw_superlearner(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    n_folds: int = 5,
+    seed: int = 123,
+    eps: float = 0.02,
+    propensity_calibration: str = "none",
+) -> CausalEstimate:
     """SuperLearner-stacked AIPW (cross-fitted convex stack of learners).
 
     Stacks four learners -- random forest, ridge, OLS/logistic, mean --
@@ -742,21 +743,26 @@ def otis_aipw_superlearner(df: pd.DataFrame, *,
       Super Learner. Stat. Appl. Genet. Mol. Biol. 6(1): Article 25.
     """
     try:
-        from sklearn.ensemble import (RandomForestRegressor,
-                                        RandomForestClassifier)
-        from sklearn.linear_model import (Ridge, LogisticRegression)
+        from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+        from sklearn.linear_model import LogisticRegression, Ridge
     except ImportError:
         # Fall back to plain AIPW with a note
-        result = otis_aipw(df, treatment=treatment, outcome=outcome,
-                            covariates=covariates, n_folds=n_folds,
-                            seed=seed, eps=eps,
-                            propensity_calibration=propensity_calibration)
-        result.notes = ["sklearn unavailable -- fell back to plain AIPW",
-                         *result.notes]
+        result = otis_aipw(
+            df,
+            treatment=treatment,
+            outcome=outcome,
+            covariates=covariates,
+            n_folds=n_folds,
+            seed=seed,
+            eps=eps,
+            propensity_calibration=propensity_calibration,
+        )
+        result.notes = ["sklearn unavailable -- fell back to plain AIPW", *result.notes]
         return result
 
     try:
         import xgboost as xgb
+
         HAS_XGB = True
     except ImportError:
         HAS_XGB = False
@@ -775,28 +781,41 @@ def otis_aipw_superlearner(df: pd.DataFrame, *,
     # Define learner factories
     def _outcome_learners():
         out = [
-            ("rf", RandomForestRegressor(n_estimators=300, max_depth=5,
-                                            random_state=seed, n_jobs=-1)),
+            ("rf", RandomForestRegressor(n_estimators=300, max_depth=5, random_state=seed, n_jobs=-1)),
             ("ridge", Ridge(alpha=1.0)),
         ]
         if HAS_XGB:
-            out.append(("xgb", xgb.XGBRegressor(
-                n_estimators=300, max_depth=4, learning_rate=0.05,
-                random_state=seed, n_jobs=-1, verbosity=0)))
+            out.append(
+                (
+                    "xgb",
+                    xgb.XGBRegressor(
+                        n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed, n_jobs=-1, verbosity=0
+                    ),
+                )
+            )
         return out
 
     def _propensity_learners():
         out = [
-            ("rf", RandomForestClassifier(n_estimators=300, max_depth=5,
-                                              random_state=seed, n_jobs=-1)),
-            ("logit", LogisticRegression(max_iter=200, solver="lbfgs",
-                                              C=1.0)),
+            ("rf", RandomForestClassifier(n_estimators=300, max_depth=5, random_state=seed, n_jobs=-1)),
+            ("logit", LogisticRegression(max_iter=200, solver="lbfgs", C=1.0)),
         ]
         if HAS_XGB:
-            out.append(("xgb", xgb.XGBClassifier(
-                n_estimators=300, max_depth=4, learning_rate=0.05,
-                random_state=seed, n_jobs=-1, verbosity=0,
-                use_label_encoder=False, eval_metric="logloss")))
+            out.append(
+                (
+                    "xgb",
+                    xgb.XGBClassifier(
+                        n_estimators=300,
+                        max_depth=4,
+                        learning_rate=0.05,
+                        random_state=seed,
+                        n_jobs=-1,
+                        verbosity=0,
+                        use_label_encoder=False,
+                        eval_metric="logloss",
+                    ),
+                )
+            )
         return out
 
     # Cross-fit each learner separately, then stack.
@@ -832,16 +851,14 @@ def otis_aipw_superlearner(df: pd.DataFrame, *,
             for dval, mu_oof in ((1, mu1_oof), (0, mu0_oof)):
                 mask = train[d[train] == dval]
                 if mask.size < 5:
-                    mu_oof[test, j] = (y[mask].mean()
-                                        if mask.size else y[train].mean())
+                    mu_oof[test, j] = y[mask].mean() if mask.size else y[train].mean()
                     continue
                 try:
                     m = type(model)(**model.get_params())
                     m.fit(X[mask], y[mask])
                     mu_oof[test, j] = m.predict(X[test])
                 except Exception:  # noqa: BLE001
-                    mu_oof[test, j] = (y[mask].mean()
-                                        if mask.size else y[train].mean())
+                    mu_oof[test, j] = y[mask].mean() if mask.size else y[train].mean()
 
     # Mean predictions for "mean" baseline learner
     mu_mean = float(y.mean())
@@ -861,6 +878,7 @@ def otis_aipw_superlearner(df: pd.DataFrame, *,
         # Solve constrained NNLS via simple grid + projection (fallback)
         try:
             from scipy.optimize import nnls
+
             w, _ = nnls(Pm, ym)
             if w.sum() > 0:
                 return w / w.sum()
@@ -883,35 +901,38 @@ def otis_aipw_superlearner(df: pd.DataFrame, *,
         e_hat = _propensity_clip(e_hat, eps=eps)
 
     # Doubly-robust score
-    psi = (mu1_hat - mu0_hat
-           + d * (y - mu1_hat) / e_hat
-           - (1 - d) * (y - mu0_hat) / (1 - e_hat))
+    psi = mu1_hat - mu0_hat + d * (y - mu1_hat) / e_hat - (1 - d) * (y - mu0_hat) / (1 - e_hat)
     ate = float(psi.mean())
     se = float(psi.std(ddof=1) / math.sqrt(n))
     z = ate / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
 
     learners_used = [name for name, _ in out_learn] + ["mean"]
-    notes = [f"cross-fit folds={n_folds}",
-             f"learners={','.join(learners_used)}",
-             f"calibration={propensity_calibration}"]
+    notes = [
+        f"cross-fit folds={n_folds}",
+        f"learners={','.join(learners_used)}",
+        f"calibration={propensity_calibration}",
+    ]
     diag = _propensity_diagnostics(e_hat, d)
     notes.append(f"Brier={diag['brier']:.3f}")
     notes.append(f"weights mu1={[round(float(x), 2) for x in w_mu1]}")
-    return CausalEstimate("SuperLearner-AIPW", ate, se, pval,
-                            n, n_treated, p_treat, notes)
+    return CausalEstimate("SuperLearner-AIPW", ate, se, pval, n, n_treated, p_treat, notes)
 
 
 # ── Propensity-score matching (1:k NN with caliper) ───────────────
 
 
-def otis_psm(df: pd.DataFrame, *,
-              treatment: str, outcome: str,
-              covariates: list[str],
-              k: int = 1,
-              caliper_sd: float | None = 0.2,
-              with_replacement: bool = False,
-              eps: float = 0.02) -> CausalEstimate:
+def otis_psm(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    k: int = 1,
+    caliper_sd: float | None = 0.2,
+    with_replacement: bool = False,
+    eps: float = 0.02,
+) -> CausalEstimate:
     """1:k nearest-neighbour propensity-score matching on logit(e(X)).
 
     Estimates the average treatment effect on the treated (ATT) by
@@ -955,9 +976,9 @@ def otis_psm(df: pd.DataFrame, *,
     control_idx = np.where(d == 0)[0]
 
     if treated_idx.size == 0 or control_idx.size == 0:
-        return CausalEstimate("PSM", float("nan"), float("nan"), 1.0,
-                                n, n_treated, p_treat,
-                                notes=["no treated or no control"])
+        return CausalEstimate(
+            "PSM", float("nan"), float("nan"), 1.0, n, n_treated, p_treat, notes=["no treated or no control"]
+        )
 
     # Greedy 1:k NN matching on logit(e), in random order to avoid
     # systematic bias from input ordering.
@@ -984,22 +1005,23 @@ def otis_psm(df: pd.DataFrame, *,
         matches.append((int(t), [int(control_idx[v]) for v in valid]))
 
     if not matches:
-        return CausalEstimate("PSM", float("nan"), float("nan"), 1.0,
-                                n, n_treated, p_treat,
-                                notes=[f"no matches under caliper={caliper}"])
+        return CausalEstimate(
+            "PSM", float("nan"), float("nan"), 1.0, n, n_treated, p_treat, notes=[f"no matches under caliper={caliper}"]
+        )
 
     # Per-pair difference (matched-control mean averaged over k)
-    diffs = np.array([y[t] - np.mean(y[ctrls])
-                       for t, ctrls in matches], dtype=np.float64)
+    diffs = np.array([y[t] - np.mean(y[ctrls]) for t, ctrls in matches], dtype=np.float64)
     att = float(diffs.mean())
     se = float(diffs.std(ddof=1) / math.sqrt(diffs.size)) if diffs.size > 1 else 0.0
     z = att / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
 
-    notes = [f"k={k}", f"caliper={caliper_sd}*SD(logit e)" if caliper_sd
-              else "no caliper",
-              f"matched={len(matches)}/{n_treated}",
-              "no replacement" if not with_replacement else "with replacement"]
+    notes = [
+        f"k={k}",
+        f"caliper={caliper_sd}*SD(logit e)" if caliper_sd else "no caliper",
+        f"matched={len(matches)}/{n_treated}",
+        "no replacement" if not with_replacement else "with replacement",
+    ]
     if n_caliper_drop:
         notes.append(f"{n_caliper_drop} treated dropped at caliper")
     return CausalEstimate("PSM", att, se, pval, n, n_treated, p_treat, notes)
@@ -1036,12 +1058,15 @@ def _smd(x: np.ndarray, d: np.ndarray, w: np.ndarray | None = None) -> float:
     return float((m_t - m_c) / pooled)
 
 
-def otis_balance(df: pd.DataFrame, *,
-                  treatment: str,
-                  covariates: list[str],
-                  outcome: str | None = None,
-                  caliper_sd: float | None = 0.2,
-                  eps: float = 0.02) -> pd.DataFrame:
+def otis_balance(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    covariates: list[str],
+    outcome: str | None = None,
+    caliper_sd: float | None = 0.2,
+    eps: float = 0.02,
+) -> pd.DataFrame:
     """Per-covariate standardised mean differences before / after
     weighting / matching.
 
@@ -1107,20 +1132,21 @@ def otis_balance(df: pd.DataFrame, *,
             smd_psm = _smd(x[mask], d[mask])
         else:
             smd_psm = float("nan")
-        rows.append({"covariate": name,
-                      "smd_raw": round(smd_raw, 4),
-                      "smd_ipw": round(smd_ipw, 4),
-                      "smd_psm": round(smd_psm, 4)})
+        rows.append(
+            {
+                "covariate": name,
+                "smd_raw": round(smd_raw, 4),
+                "smd_ipw": round(smd_ipw, 4),
+                "smd_psm": round(smd_psm, 4),
+            }
+        )
     return pd.DataFrame(rows)
 
 
 # ── Overlap (common-support) diagnostics ───────────────────────────
 
 
-def otis_overlap(df: pd.DataFrame, *,
-                  treatment: str,
-                  covariates: list[str],
-                  eps: float = 0.02) -> dict:
+def otis_overlap(df: pd.DataFrame, *, treatment: str, covariates: list[str], eps: float = 0.02) -> dict:
     """Propensity-score overlap diagnostics.
 
     Returns a dict with min/max propensity per group, fraction inside
@@ -1142,8 +1168,7 @@ def otis_overlap(df: pd.DataFrame, *,
     h_t, _ = np.histogram(e_t, bins=bins, density=True)
     h_c, _ = np.histogram(e_c, bins=bins, density=True)
     bw = bins[1] - bins[0]
-    hellinger = float(np.sqrt(0.5 * np.sum(
-        (np.sqrt(h_t * bw) - np.sqrt(h_c * bw)) ** 2)))
+    hellinger = float(np.sqrt(0.5 * np.sum((np.sqrt(h_t * bw) - np.sqrt(h_c * bw)) ** 2)))
 
     return {
         "min_e_treated": float(e_t.min()),
@@ -1176,18 +1201,16 @@ def _cluster_se(scores: np.ndarray, cluster: np.ndarray) -> float:
     scores = np.asarray(scores, dtype=float).ravel()
     cluster = np.asarray(cluster).ravel()
     if scores.size != cluster.size:
-        raise ValueError(f"scores ({scores.size}) and cluster "
-                          f"({cluster.size}) length mismatch")
+        raise ValueError(f"scores ({scores.size}) and cluster ({cluster.size}) length mismatch")
     n = scores.size
     # Group sum of scores per cluster
     df_cl = pd.DataFrame({"s": scores, "g": cluster})
     grp = df_cl.groupby("g", sort=False)["s"].sum().to_numpy()
-    var = float(np.sum(grp ** 2)) / (n ** 2)
+    var = float(np.sum(grp**2)) / (n**2)
     return math.sqrt(max(var, 0.0))
 
 
-def _multiway_cluster_se(scores: np.ndarray,
-                          clusters: list[np.ndarray]) -> float:
+def _multiway_cluster_se(scores: np.ndarray, clusters: list[np.ndarray]) -> float:
     """Cameron-Gelbach-Miller multi-way cluster-robust SE.
 
     For a list of cluster vectors (e.g. [id_array, region_array]),
@@ -1209,24 +1232,28 @@ def _multiway_cluster_se(scores: np.ndarray,
         v_ab = _cluster_se(scores, intersect) ** 2
         return math.sqrt(max(v_a + v_b - v_ab, 0.0))
     # 3+ way: fall back to first axis with a warning emit
-    warnings.warn(f"multiway clustering with {len(clusters)} dims "
-                   "not implemented; using first axis only")
+    warnings.warn(f"multiway clustering with {len(clusters)} dims not implemented; using first axis only")
     return _cluster_se(scores, clusters[0])
 
 
 # ── IRM-DML (Interactive Regression Model) ─────────────────────────
 
 
-def otis_irm_dml(df: pd.DataFrame, *,
-                  treatment: str, outcome: str,
-                  covariates: list[str],
-                  cluster_cols: list[str] | str | None = None,
-                  n_folds: int = 3, seed: int = 123,
-                  eps: float = 0.02,
-                  ml_outcome: str = "rf",
-                  ml_propensity: str = "rf",
-                  match_first: bool = False,
-                  match_caliper_sd: float | None = 0.2) -> dict:
+def otis_irm_dml(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    cluster_cols: list[str] | str | None = None,
+    n_folds: int = 3,
+    seed: int = 123,
+    eps: float = 0.02,
+    ml_outcome: str = "rf",
+    ml_propensity: str = "rf",
+    match_first: bool = False,
+    match_caliper_sd: float | None = 0.2,
+) -> dict:
     """Interactive-Regression-Model DML, matching DoubleML in R.
 
     Computes both the ATE (population average treatment effect) and
@@ -1260,12 +1287,10 @@ def otis_irm_dml(df: pd.DataFrame, *,
         SD(logit(ê)), then fit IRM-DML on the matched subset only.
         Mirrors the MatchIt-then-DML pipeline in notez1a.qmd.
     """
-    _cl_for_select = ([cluster_cols] if isinstance(cluster_cols, str)
-                        else list(cluster_cols or []))
+    _cl_for_select = [cluster_cols] if isinstance(cluster_cols, str) else list(cluster_cols or [])
     # Dedupe column selection: cluster cols may overlap covariates; pandas
     # would otherwise return a duplicated column DataFrame on lookup.
-    _cols = list(dict.fromkeys([treatment, outcome, *covariates,
-                                  *_cl_for_select]))
+    _cols = list(dict.fromkeys([treatment, outcome, *covariates, *_cl_for_select]))
     data = df[_cols].dropna().copy()
 
     if match_first:
@@ -1277,8 +1302,7 @@ def otis_irm_dml(df: pd.DataFrame, *,
         e_all = _propensity_clip(1.0 / (1.0 + np.exp(-eta)), eps=eps)
         logit_e = np.log(e_all / (1 - e_all))
         sd_logit = float(logit_e.std(ddof=1))
-        caliper = (match_caliper_sd * sd_logit
-                    if match_caliper_sd is not None else None)
+        caliper = match_caliper_sd * sd_logit if match_caliper_sd is not None else None
         rng_m = np.random.default_rng(seed + 7)
         treated_idx = np.where(d_all == 1)[0]
         control_idx = np.where(d_all == 0)[0]
@@ -1297,8 +1321,7 @@ def otis_irm_dml(df: pd.DataFrame, *,
             kept.append(int(t))
             kept.append(int(control_idx[nearest]))
         if not kept:
-            raise RuntimeError(
-                "match_first: no treated unit had a control inside the caliper")
+            raise RuntimeError("match_first: no treated unit had a control inside the caliper")
         data = data.iloc[sorted(set(kept))].reset_index(drop=True)
 
     d = _binarise(data[treatment]).astype(np.float64)
@@ -1310,8 +1333,8 @@ def otis_irm_dml(df: pd.DataFrame, *,
 
     if ml_outcome == "rf" or ml_propensity == "rf":
         try:
-            from sklearn.ensemble import (RandomForestRegressor,
-                                            RandomForestClassifier)
+            from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
             HAS_RF = True
         except ImportError:
             HAS_RF = False
@@ -1329,9 +1352,7 @@ def otis_irm_dml(df: pd.DataFrame, *,
         train = np.setdiff1d(np.arange(n), test)
         # Propensity
         if HAS_RF and ml_propensity == "rf":
-            clf = RandomForestClassifier(
-                n_estimators=500, max_depth=5,
-                random_state=seed + k, n_jobs=-1)
+            clf = RandomForestClassifier(n_estimators=500, max_depth=5, random_state=seed + k, n_jobs=-1)
             clf.fit(X[train], d[train])
             e_hat[test] = clf.predict_proba(X[test])[:, 1]
         else:
@@ -1343,37 +1364,30 @@ def otis_irm_dml(df: pd.DataFrame, *,
         for dval, mu in ((1, mu1_hat), (0, mu0_hat)):
             mask = train[d[train] == dval]
             if mask.size < X.shape[1] + 2:
-                mu[test] = (y[mask].mean()
-                             if mask.size else y[train].mean())
+                mu[test] = y[mask].mean() if mask.size else y[train].mean()
                 continue
             if HAS_RF and ml_outcome == "rf":
-                reg = RandomForestRegressor(
-                    n_estimators=500, max_depth=5,
-                    random_state=seed + k * 13, n_jobs=-1)
+                reg = RandomForestRegressor(n_estimators=500, max_depth=5, random_state=seed + k * 13, n_jobs=-1)
                 reg.fit(X[mask], y[mask])
                 mu[test] = reg.predict(X[test])
             else:
-                beta_y, *_ = np.linalg.lstsq(X[mask], y[mask],
-                                                rcond=None)
+                beta_y, *_ = np.linalg.lstsq(X[mask], y[mask], rcond=None)
                 mu[test] = X[test] @ beta_y
 
     # ATE
-    psi_ate = (mu1_hat - mu0_hat
-                + d * (y - mu1_hat) / e_hat
-                - (1 - d) * (y - mu0_hat) / (1 - e_hat))
+    psi_ate = mu1_hat - mu0_hat + d * (y - mu1_hat) / e_hat - (1 - d) * (y - mu0_hat) / (1 - e_hat)
     ate = float(psi_ate.mean())
 
     # ATTE -- efficient influence function for E[Y(1)-Y(0)|D=1]
     p_d = max(p_treat, 1e-9)
-    psi_atte = (d * (y - mu0_hat)
-                  - e_hat * (1 - d) * (y - mu0_hat) / (1 - e_hat)) / p_d
+    psi_atte = (d * (y - mu0_hat) - e_hat * (1 - d) * (y - mu0_hat) / (1 - e_hat)) / p_d
     atte = float(psi_atte.mean())
 
     # ATC -- efficient influence function for E[Y(1)-Y(0)|D=0]
     p_d0 = max(1.0 - p_treat, 1e-9)
-    psi_atc = ((1 - d) * (mu1_hat - mu0_hat)
-                + d * ((1 - e_hat) / e_hat) * (y - mu1_hat)
-                - (1 - d) * (y - mu0_hat)) / p_d0
+    psi_atc = (
+        (1 - d) * (mu1_hat - mu0_hat) + d * ((1 - e_hat) / e_hat) * (y - mu1_hat) - (1 - d) * (y - mu0_hat)
+    ) / p_d0
     atc = float(psi_atc.mean())
 
     # Variance -- cluster-robust if requested
@@ -1383,15 +1397,13 @@ def otis_irm_dml(df: pd.DataFrame, *,
         se_atc = float(psi_atc.std(ddof=1) / math.sqrt(n))
         se_kind = "iid"
     else:
-        cl_list = ([cluster_cols] if isinstance(cluster_cols, str)
-                    else list(cluster_cols))
+        cl_list = [cluster_cols] if isinstance(cluster_cols, str) else list(cluster_cols)
         cluster_arrs = [data[c].to_numpy() for c in cl_list]
         # Center scores so their mean equals the estimate before SE
         se_ate = _multiway_cluster_se(psi_ate - ate, cluster_arrs)
         se_atte = _multiway_cluster_se(psi_atte - atte, cluster_arrs)
         se_atc = _multiway_cluster_se(psi_atc - atc, cluster_arrs)
-        se_kind = (f"cluster:{cl_list[0]}" if len(cl_list) == 1
-                    else "cluster:" + "+".join(cl_list))
+        se_kind = f"cluster:{cl_list[0]}" if len(cl_list) == 1 else "cluster:" + "+".join(cl_list)
 
     z_ate = ate / se_ate if se_ate > 0 else 0.0
     z_atte = atte / se_atte if se_atte > 0 else 0.0
@@ -1400,13 +1412,21 @@ def otis_irm_dml(df: pd.DataFrame, *,
     p_atte = float(2 * (1 - sps.norm.cdf(abs(z_atte))))
     p_atc = float(2 * (1 - sps.norm.cdf(abs(z_atc))))
     return {
-        "ate": ate, "ate_se": se_ate, "ate_pval": p_ate,
+        "ate": ate,
+        "ate_se": se_ate,
+        "ate_pval": p_ate,
         "ate_ci95": (ate - 1.96 * se_ate, ate + 1.96 * se_ate),
-        "atte": atte, "atte_se": se_atte, "atte_pval": p_atte,
+        "atte": atte,
+        "atte_se": se_atte,
+        "atte_pval": p_atte,
         "atte_ci95": (atte - 1.96 * se_atte, atte + 1.96 * se_atte),
-        "atc": atc, "atc_se": se_atc, "atc_pval": p_atc,
+        "atc": atc,
+        "atc_se": se_atc,
+        "atc_pval": p_atc,
         "atc_ci95": (atc - 1.96 * se_atc, atc + 1.96 * se_atc),
-        "n": n, "n_treated": n_treated, "p_treat": p_treat,
+        "n": n,
+        "n_treated": n_treated,
+        "p_treat": p_treat,
         "se_kind": se_kind,
         "ml_outcome": ml_outcome if HAS_RF else "ols",
         "ml_propensity": ml_propensity if HAS_RF else "logit",
@@ -1416,14 +1436,19 @@ def otis_irm_dml(df: pd.DataFrame, *,
 # ── Per-year orchestrator ──────────────────────────────────────────
 
 
-def otis_per_year_irm_dml(df: pd.DataFrame, *,
-                            treatment: str, outcome: str,
-                            covariates: list[str],
-                            year_col: str = "EndFiscalYear",
-                            cluster_cols: list[str] | str | None = None,
-                            n_folds: int = 3, seed: int = 123,
-                            full_battery: bool = False,
-                            propensity_calibration: str = "none") -> dict:
+def otis_per_year_irm_dml(
+    df: pd.DataFrame,
+    *,
+    treatment: str,
+    outcome: str,
+    covariates: list[str],
+    year_col: str = "EndFiscalYear",
+    cluster_cols: list[str] | str | None = None,
+    n_folds: int = 3,
+    seed: int = 123,
+    full_battery: bool = False,
+    propensity_calibration: str = "none",
+) -> dict:
     """Fit IRM-DML separately on each fiscal year.
 
     Returns a dict keyed by year value.  When ``full_battery=False``
@@ -1441,37 +1466,38 @@ def otis_per_year_irm_dml(df: pd.DataFrame, *,
     for yr, sub in df.groupby(year_col):
         if not full_battery:
             try:
-                r = otis_irm_dml(sub, treatment=treatment, outcome=outcome,
-                                  covariates=covariates,
-                                  cluster_cols=cluster_cols,
-                                  n_folds=n_folds, seed=seed)
+                r = otis_irm_dml(
+                    sub,
+                    treatment=treatment,
+                    outcome=outcome,
+                    covariates=covariates,
+                    cluster_cols=cluster_cols,
+                    n_folds=n_folds,
+                    seed=seed,
+                )
                 out[str(yr)] = r
             except Exception as exc:  # noqa: BLE001
                 out[str(yr)] = {"error": str(exc)[:120]}
             continue
 
         # Full battery: run every estimator on this year's subset
-        year_results: dict = {"year": int(yr) if str(yr).isdigit()
-                                else str(yr),
-                                "n": int(sub.shape[0])}
+        year_results: dict = {"year": int(yr) if str(yr).isdigit() else str(yr), "n": int(sub.shape[0])}
         for label, runner, kwargs in [
-            ("ipw", otis_ipw,
-                {"propensity_calibration": propensity_calibration}),
-            ("aipw", otis_aipw,
-                {"propensity_calibration": propensity_calibration,
-                 "n_folds": n_folds}),
+            ("ipw", otis_ipw, {"propensity_calibration": propensity_calibration}),
+            ("aipw", otis_aipw, {"propensity_calibration": propensity_calibration, "n_folds": n_folds}),
             ("gcomp", otis_gcomputation, {"n_bootstrap": 100}),
             ("psm_nn", otis_psm, {"k": 1}),
             ("psm_subclass", otis_psm_subclass, {"n_strata": 5}),
             ("atc", otis_atc, {"n_folds": n_folds}),
             ("plr", otis_plr, {"n_folds": n_folds}),
-            ("superlearner", otis_aipw_superlearner,
-                {"propensity_calibration": propensity_calibration,
-                 "n_folds": n_folds}),
+            (
+                "superlearner",
+                otis_aipw_superlearner,
+                {"propensity_calibration": propensity_calibration, "n_folds": n_folds},
+            ),
         ]:
             try:
-                est = runner(sub, treatment=treatment, outcome=outcome,
-                              covariates=covariates, **kwargs)
+                est = runner(sub, treatment=treatment, outcome=outcome, covariates=covariates, **kwargs)
                 year_results[label] = {
                     "estimator": est.estimator,
                     "ate": float(est.ate),
@@ -1485,17 +1511,22 @@ def otis_per_year_irm_dml(df: pd.DataFrame, *,
         # IRM-DML (cluster-robust if requested) -- separately because
         # it returns ATE+ATTE+ATC dict, not CausalEstimate
         try:
-            irm = otis_irm_dml(sub, treatment=treatment, outcome=outcome,
-                                covariates=covariates,
-                                cluster_cols=cluster_cols,
-                                n_folds=n_folds, seed=seed)
+            irm = otis_irm_dml(
+                sub,
+                treatment=treatment,
+                outcome=outcome,
+                covariates=covariates,
+                cluster_cols=cluster_cols,
+                n_folds=n_folds,
+                seed=seed,
+            )
             year_results["irm_dml"] = {
-                "ate": float(irm["ate"]), "ate_se": float(irm["ate_se"]),
-                "atte": float(irm["atte"]), "atte_se": float(irm["atte_se"]),
-                "atc": float(irm.get("atc", float("nan")))
-                if irm.get("atc") is not None else None,
-                "atc_se": float(irm.get("atc_se", float("nan")))
-                if irm.get("atc_se") is not None else None,
+                "ate": float(irm["ate"]),
+                "ate_se": float(irm["ate_se"]),
+                "atte": float(irm["atte"]),
+                "atte_se": float(irm["atte_se"]),
+                "atc": float(irm.get("atc", float("nan"))) if irm.get("atc") is not None else None,
+                "atc_se": float(irm.get("atc_se", float("nan"))) if irm.get("atc_se") is not None else None,
                 "se_kind": irm["se_kind"],
                 "n": int(irm["n"]),
             }
@@ -1503,13 +1534,19 @@ def otis_per_year_irm_dml(df: pd.DataFrame, *,
             year_results["irm_dml"] = {"error": str(exc)[:120]}
         # match_first (PSM->IRM-DML)
         try:
-            mf = otis_irm_dml(sub, treatment=treatment, outcome=outcome,
-                                covariates=covariates,
-                                cluster_cols=cluster_cols,
-                                match_first=True,
-                                n_folds=n_folds, seed=seed)
+            mf = otis_irm_dml(
+                sub,
+                treatment=treatment,
+                outcome=outcome,
+                covariates=covariates,
+                cluster_cols=cluster_cols,
+                match_first=True,
+                n_folds=n_folds,
+                seed=seed,
+            )
             year_results["match_first"] = {
-                "ate": float(mf["ate"]), "ate_se": float(mf["ate_se"]),
+                "ate": float(mf["ate"]),
+                "ate_se": float(mf["ate_se"]),
                 "n": int(mf["n"]),
             }
         except Exception as exc:  # noqa: BLE001
@@ -1521,8 +1558,7 @@ def otis_per_year_irm_dml(df: pd.DataFrame, *,
 # ── Ruhela's primary T->Y pair: ac >= 2 -> vm (Goffmanian classification) ──
 
 
-def make_pair_alert_to_volatility_ruhela(df: pd.DataFrame
-                                          ) -> tuple[pd.DataFrame, str, str, list[str]]:
+def make_pair_alert_to_volatility_ruhela(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     """Ruhela's primary causal contrast: high alert complexity (ac ≥ 2)
     causes more inter-region transfers (vm).
 
@@ -1575,11 +1611,23 @@ def make_pair_alert_to_volatility_ruhela(df: pd.DataFrame
         Y = "Y_vm_count"    integer count, regional transfer count
         covariates = ["Gender", "Age_Category", "EndFiscalYear"]
     """
-    base = df[["UniqueIndividual_ID", "EndFiscalYear", "Gender",
-                 "Age_Category", "Region_AtTimeOfPlacement",
-                 "Region_MostRecentPlacement",
-                 "MentalHealth_Alert", "SuicideRisk_Alert",
-                 "SuicideWatch_Alert"]].dropna().copy()
+    base = (
+        df[
+            [
+                "UniqueIndividual_ID",
+                "EndFiscalYear",
+                "Gender",
+                "Age_Category",
+                "Region_AtTimeOfPlacement",
+                "Region_MostRecentPlacement",
+                "MentalHealth_Alert",
+                "SuicideRisk_Alert",
+                "SuicideWatch_Alert",
+            ]
+        ]
+        .dropna()
+        .copy()
+    )
     a_mh = _binarise(base["MentalHealth_Alert"])
     a_sr = _binarise(base["SuicideRisk_Alert"])
     a_sw = _binarise(base["SuicideWatch_Alert"])
@@ -1592,32 +1640,32 @@ def make_pair_alert_to_volatility_ruhela(df: pd.DataFrame
     # Sort by (id, year) for the across-row shift
     base = base.sort_values(["UniqueIndividual_ID", "EndFiscalYear"])
     # vm across rows: regA != regA(prev), per (id, year) group
-    base["regA_prev"] = (base.groupby(
-        ["UniqueIndividual_ID", "EndFiscalYear"])["regA"].shift(1))
-    base["vm_across_row"] = ((base["regA"] != base["regA_prev"])
-                                & base["regA_prev"].notna()).astype(int)
+    base["regA_prev"] = base.groupby(["UniqueIndividual_ID", "EndFiscalYear"])["regA"].shift(1)
+    base["vm_across_row"] = ((base["regA"] != base["regA_prev"]) & base["regA_prev"].notna()).astype(int)
     base["vm_row"] = base["vm_within_row"] + base["vm_across_row"]
 
     # Per (id, year) aggregation
     def _ac_distinct_combos(s):
         return int(s.nunique())
 
-    py = (base.groupby(["UniqueIndividual_ID", "EndFiscalYear"])
-                .agg(ac=("combo", _ac_distinct_combos),
-                      vm=("vm_row", "sum"),
-                      Gender=("Gender", "first"),
-                      Age_Category=("Age_Category", "first"),
-                      regA=("regA", "first"),
-                      regB=("regB", "first"))
-                .reset_index())
+    py = (
+        base.groupby(["UniqueIndividual_ID", "EndFiscalYear"])
+        .agg(
+            ac=("combo", _ac_distinct_combos),
+            vm=("vm_row", "sum"),
+            Gender=("Gender", "first"),
+            Age_Category=("Age_Category", "first"),
+            regA=("regA", "first"),
+            regB=("regB", "first"),
+        )
+        .reset_index()
+    )
     py["T_high_ac"] = (py["ac"] >= 2).astype(int)
     py["Y_vm_count"] = py["vm"].astype(int)
-    return (py, "T_high_ac", "Y_vm_count",
-             ["Gender", "Age_Category", "EndFiscalYear"])
+    return (py, "T_high_ac", "Y_vm_count", ["Gender", "Age_Category", "EndFiscalYear"])
 
 
-def make_pair_alert_to_volatility_naive(df: pd.DataFrame
-                                         ) -> tuple[pd.DataFrame, str, str, list[str]]:
+def make_pair_alert_to_volatility_naive(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     """Naïve (simpler) alternative to :func:`make_pair_alert_to_volatility_ruhela`.
 
     Treatment ac:
@@ -1638,26 +1686,42 @@ def make_pair_alert_to_volatility_naive(df: pd.DataFrame
     on sign and rough magnitude, the substantive conclusion is
     invariant to the operationalisation.
     """
-    base = df[["UniqueIndividual_ID", "EndFiscalYear", "Gender",
-                 "Age_Category", "Region_AtTimeOfPlacement",
-                 "Region_MostRecentPlacement",
-                 "MentalHealth_Alert", "SuicideRisk_Alert",
-                 "SuicideWatch_Alert"]].dropna().copy()
-    base["alert_sum_row"] = (_binarise(base["MentalHealth_Alert"])
-                                + _binarise(base["SuicideRisk_Alert"])
-                                + _binarise(base["SuicideWatch_Alert"]))
-    base["vm_row_binary"] = (base["Region_AtTimeOfPlacement"]
-                                != base["Region_MostRecentPlacement"]).astype(int)
-    py = (base.groupby(["UniqueIndividual_ID", "EndFiscalYear"])
-                .agg(ac_naive=("alert_sum_row", "max"),
-                      vm_any=("vm_row_binary", "max"),
-                      Gender=("Gender", "first"),
-                      Age_Category=("Age_Category", "first"))
-                .reset_index())
+    base = (
+        df[
+            [
+                "UniqueIndividual_ID",
+                "EndFiscalYear",
+                "Gender",
+                "Age_Category",
+                "Region_AtTimeOfPlacement",
+                "Region_MostRecentPlacement",
+                "MentalHealth_Alert",
+                "SuicideRisk_Alert",
+                "SuicideWatch_Alert",
+            ]
+        ]
+        .dropna()
+        .copy()
+    )
+    base["alert_sum_row"] = (
+        _binarise(base["MentalHealth_Alert"])
+        + _binarise(base["SuicideRisk_Alert"])
+        + _binarise(base["SuicideWatch_Alert"])
+    )
+    base["vm_row_binary"] = (base["Region_AtTimeOfPlacement"] != base["Region_MostRecentPlacement"]).astype(int)
+    py = (
+        base.groupby(["UniqueIndividual_ID", "EndFiscalYear"])
+        .agg(
+            ac_naive=("alert_sum_row", "max"),
+            vm_any=("vm_row_binary", "max"),
+            Gender=("Gender", "first"),
+            Age_Category=("Age_Category", "first"),
+        )
+        .reset_index()
+    )
     py["T_high_ac"] = (py["ac_naive"] >= 2).astype(int)
     py["Y_vm_any"] = py["vm_any"].astype(int)
-    return (py, "T_high_ac", "Y_vm_any",
-             ["Gender", "Age_Category", "EndFiscalYear"])
+    return (py, "T_high_ac", "Y_vm_any", ["Gender", "Age_Category", "EndFiscalYear"])
 
 
 def make_pair_alert_to_volatility_all(df: pd.DataFrame) -> dict:
@@ -1681,10 +1745,9 @@ make_pair_alert_to_volatility = make_pair_alert_to_volatility_ruhela
 # ── DML wrapper to match the IPW / AIPW signature ──────────────────
 
 
-def otis_dml(df: pd.DataFrame, *,
-              treatment: str, outcome: str,
-              covariates: list[str],
-              n_folds: int = 5, seed: int = 123) -> CausalEstimate:
+def otis_dml(
+    df: pd.DataFrame, *, treatment: str, outcome: str, covariates: list[str], n_folds: int = 5, seed: int = 123
+) -> CausalEstimate:
     """Cross-fitted DML PLR (partialling-out) wrapper.
 
     Reproduces :func:`morie.otis.otdml` but exposes the same
@@ -1712,16 +1775,15 @@ def otis_dml(df: pd.DataFrame, *,
 
     # ATE via partialled-out regression
     num = float((d_res * y_res).sum())
-    den = float((d_res ** 2).sum())
+    den = float((d_res**2).sum())
     ate = num / den if den > 0 else 0.0
     resid = y_res - d_res * ate
-    meat = float(np.mean((d_res ** 2) * (resid ** 2)))
-    bread = float(np.mean(d_res ** 2))
-    se = float(math.sqrt(meat / (bread ** 2 * n))) if bread > 0 else 0.0
+    meat = float(np.mean((d_res**2) * (resid**2)))
+    bread = float(np.mean(d_res**2))
+    se = float(math.sqrt(meat / (bread**2 * n))) if bread > 0 else 0.0
     z = ate / se if se > 0 else 0.0
     pval = float(2 * (1 - sps.norm.cdf(abs(z))))
-    return CausalEstimate("DML", ate, se, pval, n, n_treated, p_treat,
-                            notes=[f"cross-fit folds={n_folds}"])
+    return CausalEstimate("DML", ate, se, pval, n, n_treated, p_treat, notes=[f"cross-fit folds={n_folds}"])
 
 
 # ── Treatment / outcome constructors for the three pairs ───────────
@@ -1731,11 +1793,11 @@ def _ensure_b01(df: pd.DataFrame | None) -> pd.DataFrame:
     if df is not None:
         return df
     from .otis_churn import _load
+
     return _load("b01")
 
 
-def _ensure_a01(df: pd.DataFrame | None,
-                 *, auto_download: bool = True) -> pd.DataFrame:
+def _ensure_a01(df: pd.DataFrame | None, *, auto_download: bool = True) -> pd.DataFrame:
     """Return Ruhela's canonical a01 (Restrictive Confinement Detailed)
     DataFrame, in the column-name convention used by
     ``morie.otis_causal``.
@@ -1754,12 +1816,12 @@ def _ensure_a01(df: pd.DataFrame | None,
     if df is not None:
         return df
     from . import otis_datasets as ods
+
     csv = ods.OTIS_DATA_DIR / "a01_restrictive_confinement_detailed_dataset.csv"
     if not csv.exists() and auto_download:
         csv = ods.download_otis_dataset("a01")
     if not csv.exists():
-        raise FileNotFoundError(
-            f"a01 CSV not found at {csv}; pass `df=` or set auto_download=True")
+        raise FileNotFoundError(f"a01 CSV not found at {csv}; pass `df=` or set auto_download=True")
     return pd.read_csv(csv)
 
 
@@ -1770,15 +1832,25 @@ def make_pair_a(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     subsequent suicide-risk-alert occurrence, conditional on
     demographics and region?
     """
-    base = df[["UniqueIndividual_ID", "EndFiscalYear", "Gender",
-                 "Age_Category", "Region_AtTimeOfPlacement",
-                 "Region_MostRecentPlacement", "MentalHealth_Alert",
-                 "SuicideRisk_Alert"]].dropna().copy()
+    base = (
+        df[
+            [
+                "UniqueIndividual_ID",
+                "EndFiscalYear",
+                "Gender",
+                "Age_Category",
+                "Region_AtTimeOfPlacement",
+                "Region_MostRecentPlacement",
+                "MentalHealth_Alert",
+                "SuicideRisk_Alert",
+            ]
+        ]
+        .dropna()
+        .copy()
+    )
     base["T_a"] = _binarise(base["MentalHealth_Alert"])
     base["Y_a"] = _binarise(base["SuicideRisk_Alert"])
-    covariates = ["Gender", "Age_Category",
-                   "Region_AtTimeOfPlacement",
-                   "Region_MostRecentPlacement"]
+    covariates = ["Gender", "Age_Category", "Region_AtTimeOfPlacement", "Region_MostRecentPlacement"]
     return base, "T_a", "Y_a", covariates
 
 
@@ -1790,22 +1862,30 @@ def make_pair_b(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     Outcome Y_b = 1 iff this individual has ≥2 placements (proxy for
     any future readmission).
     """
-    base = df[["UniqueIndividual_ID", "EndFiscalYear", "Gender",
-                 "Age_Category", "Region_AtTimeOfPlacement",
-                 "Region_MostRecentPlacement",
-                 "MentalHealth_Alert", "SuicideRisk_Alert",
-                 "SuicideWatch_Alert", "Number_Of_Placements"]].dropna().copy()
+    base = (
+        df[
+            [
+                "UniqueIndividual_ID",
+                "EndFiscalYear",
+                "Gender",
+                "Age_Category",
+                "Region_AtTimeOfPlacement",
+                "Region_MostRecentPlacement",
+                "MentalHealth_Alert",
+                "SuicideRisk_Alert",
+                "SuicideWatch_Alert",
+                "Number_Of_Placements",
+            ]
+        ]
+        .dropna()
+        .copy()
+    )
     a1 = _binarise(base["MentalHealth_Alert"])
     a2 = _binarise(base["SuicideRisk_Alert"])
     a3 = _binarise(base["SuicideWatch_Alert"])
     base["T_b"] = ((a1 + a2 + a3) >= 2).astype(int)
-    base["Y_b"] = (pd.to_numeric(base["Number_Of_Placements"],
-                                   errors="coerce")
-                     .fillna(0)
-                     .astype(int) >= 2).astype(int)
-    covariates = ["Gender", "Age_Category",
-                   "Region_AtTimeOfPlacement",
-                   "Region_MostRecentPlacement"]
+    base["Y_b"] = (pd.to_numeric(base["Number_Of_Placements"], errors="coerce").fillna(0).astype(int) >= 2).astype(int)
+    covariates = ["Gender", "Age_Category", "Region_AtTimeOfPlacement", "Region_MostRecentPlacement"]
     return base, "T_b", "Y_b", covariates
 
 
@@ -1817,15 +1897,24 @@ def make_pair_c(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     Outcome Y_c = NumberConsecutiveDays_Segregation (continuous,
     truncated at the 99th percentile to dampen the long tail).
     """
-    base = df[["UniqueIndividual_ID", "EndFiscalYear", "Gender",
-                 "Age_Category", "Region_AtTimeOfPlacement",
-                 "Region_MostRecentPlacement",
-                 "MentalHealth_Alert",
-                 "NumberConsecutiveDays_Segregation"]].dropna().copy()
-    base["T_c"] = (base["Region_AtTimeOfPlacement"]
-                     != base["Region_MostRecentPlacement"]).astype(int)
-    y = pd.to_numeric(base["NumberConsecutiveDays_Segregation"],
-                       errors="coerce").fillna(0).astype(float)
+    base = (
+        df[
+            [
+                "UniqueIndividual_ID",
+                "EndFiscalYear",
+                "Gender",
+                "Age_Category",
+                "Region_AtTimeOfPlacement",
+                "Region_MostRecentPlacement",
+                "MentalHealth_Alert",
+                "NumberConsecutiveDays_Segregation",
+            ]
+        ]
+        .dropna()
+        .copy()
+    )
+    base["T_c"] = (base["Region_AtTimeOfPlacement"] != base["Region_MostRecentPlacement"]).astype(int)
+    y = pd.to_numeric(base["NumberConsecutiveDays_Segregation"], errors="coerce").fillna(0).astype(float)
     p99 = float(y.quantile(0.99))
     base["Y_c"] = y.clip(upper=p99)
     covariates = ["Gender", "Age_Category", "MentalHealth_Alert"]
@@ -1835,8 +1924,7 @@ def make_pair_c(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
 # ── The 3 × 3 grid ─────────────────────────────────────────────────
 
 
-def make_pair_alert_to_volatility_a01(df: pd.DataFrame | None = None
-                                        ) -> tuple[pd.DataFrame, str, str, list[str]]:
+def make_pair_alert_to_volatility_a01(df: pd.DataFrame | None = None) -> tuple[pd.DataFrame, str, str, list[str]]:
     """Same as :func:`make_pair_alert_to_volatility_ruhela` but
     auto-loads a01 (Restrictive Confinement Detailed) instead of
     b01 (Segregation Detailed) if ``df`` is None.
@@ -1849,9 +1937,7 @@ def make_pair_alert_to_volatility_a01(df: pd.DataFrame | None = None
     return make_pair_alert_to_volatility_ruhela(df)
 
 
-def otis_causal_grid(df: pd.DataFrame | None = None,
-                       *,
-                       seed: int = 123) -> RichResult:
+def otis_causal_grid(df: pd.DataFrame | None = None, *, seed: int = 123) -> RichResult:
     """Run IPW / AIPW / DML on all three canonical (T, Y) pairs.
 
     Returns a :class:`RichResult` with a 9-row payload table -- three
@@ -1861,12 +1947,9 @@ def otis_causal_grid(df: pd.DataFrame | None = None,
     df = _ensure_b01(df)
 
     pairs = {
-        "(a) MentalHealth -> SuicideRisk":
-            make_pair_a(df),
-        "(b) HighAlertComplexity -> AnyReadmission":
-            make_pair_b(df),
-        "(c) RegionalVolatility -> SegregationDays":
-            make_pair_c(df),
+        "(a) MentalHealth -> SuicideRisk": make_pair_a(df),
+        "(b) HighAlertComplexity -> AnyReadmission": make_pair_b(df),
+        "(c) RegionalVolatility -> SegregationDays": make_pair_c(df),
     }
 
     rows = []
@@ -1874,31 +1957,30 @@ def otis_causal_grid(df: pd.DataFrame | None = None,
         if data[T].sum() == 0 or data[T].sum() == data.shape[0]:
             warnings.warn(f"{label}: degenerate treatment, skipping")
             continue
-        for fn, kind in ((otis_ipw, "IPW"),
-                           (otis_aipw, "AIPW"),
-                           (otis_dml, "DML"),
-                           (otis_psm, "PSM")):
+        for fn, kind in ((otis_ipw, "IPW"), (otis_aipw, "AIPW"), (otis_dml, "DML"), (otis_psm, "PSM")):
             try:
-                est = fn(data, treatment=T, outcome=Y,
-                          covariates=covs, seed=seed) \
-                       if "seed" in fn.__code__.co_varnames else \
-                       fn(data, treatment=T, outcome=Y, covariates=covs)
+                est = (
+                    fn(data, treatment=T, outcome=Y, covariates=covs, seed=seed)
+                    if "seed" in fn.__code__.co_varnames
+                    else fn(data, treatment=T, outcome=Y, covariates=covs)
+                )
             except Exception as exc:  # noqa: BLE001
-                rows.append({"pair": label, "estimator": kind,
-                              "error": str(exc)[:80]})
+                rows.append({"pair": label, "estimator": kind, "error": str(exc)[:80]})
                 continue
-            rows.append({
-                "pair": label,
-                "estimator": kind,
-                "n": est.n,
-                "p_treat": round(est.p_treat, 4),
-                "ate": round(est.ate, 4),
-                "ate_se": round(est.ate_se, 4),
-                "ate_pval": round(est.ate_pval, 4),
-                "ci95_lo": round(est.ate_ci95[0], 4),
-                "ci95_hi": round(est.ate_ci95[1], 4),
-                "notes": "; ".join(est.notes) if est.notes else "",
-            })
+            rows.append(
+                {
+                    "pair": label,
+                    "estimator": kind,
+                    "n": est.n,
+                    "p_treat": round(est.p_treat, 4),
+                    "ate": round(est.ate, 4),
+                    "ate_se": round(est.ate_se, 4),
+                    "ate_pval": round(est.ate_pval, 4),
+                    "ci95_lo": round(est.ate_ci95[0], 4),
+                    "ci95_hi": round(est.ate_ci95[1], 4),
+                    "notes": "; ".join(est.notes) if est.notes else "",
+                }
+            )
 
     summary_lines = [
         ("Pairs evaluated", len(pairs)),

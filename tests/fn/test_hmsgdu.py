@@ -1,6 +1,7 @@
 """Tests for hmsgdu.geron_sgd_update."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmsgdu import geron_sgd_update
 
 
@@ -13,7 +14,7 @@ def test_hmsgdu_basic():
     seed = 42
     result = geron_sgd_update(X, y, theta, eta, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmsgdu_edge():

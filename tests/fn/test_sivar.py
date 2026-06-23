@@ -1,6 +1,8 @@
 """Tests for sivar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sivar import sivar
 
 
@@ -28,4 +30,5 @@ def test_sivar_no_data():
 
 def test_sivar_alias():
     from morie.fn.sivar import sivar
+
     assert sivar is sivar

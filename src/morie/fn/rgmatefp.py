@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Maternal ECG filtering from abdominal ECG recording."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_maternal_ecg_filter"]
@@ -34,7 +36,9 @@ def rangayyan_maternal_ecg_filter(abdominal_ecg, fs, n_channels):
     n = int(abdominal_ecg) if abdominal_ecg.ndim == 0 else len(abdominal_ecg)
     result = float(np.mean(abdominal_ecg))
     se = float(np.std(abdominal_ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Maternal ECG filtering from abdominal ECG recording"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Maternal ECG filtering from abdominal ECG recording"}
+    )
 
 
 def cheatsheet():

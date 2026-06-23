@@ -1,13 +1,14 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Accelerated Failure Time model (Weibull AFT via MLE)."""
 
-
 import numpy as np
 from scipy.optimize import minimize
 from scipy.stats import norm
 
 
-def aft(time: np.ndarray, event: np.ndarray, X: np.ndarray, distribution: str = "weibull", alpha: float = 0.05, cdf=None) -> dict:
+def aft(
+    time: np.ndarray, event: np.ndarray, X: np.ndarray, distribution: str = "weibull", alpha: float = 0.05, cdf=None
+) -> dict:
     r"""
     Accelerated Failure Time model via maximum likelihood estimation.
 

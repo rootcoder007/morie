@@ -1,7 +1,10 @@
 """Tests for analyzing_spatial_models_of_choice_and_judgment4e36.analyzing_spatial_models_of_choice_and_judgment_chapter_4_equation_36."""
+
 import numpy as np
-import pytest
-from morie.fn.analyzing_spatial_models_of_choice_and_judgment4e36 import analyzing_spatial_models_of_choice_and_judgment_chapter_4_equation_36
+
+from morie.fn.analyzing_spatial_models_of_choice_and_judgment4e36 import (
+    analyzing_spatial_models_of_choice_and_judgment_chapter_4_equation_36,
+)
 
 
 def test_analyzing_spatial_models_of_choice_and_judgment4e36_basic():
@@ -9,7 +12,7 @@ def test_analyzing_spatial_models_of_choice_and_judgment4e36_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = analyzing_spatial_models_of_choice_and_judgment_chapter_4_equation_36(x)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_analyzing_spatial_models_of_choice_and_judgment4e36_edge():

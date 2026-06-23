@@ -1,7 +1,7 @@
 """Tests for morie.fn.agfwd."""
 
 import numpy as np
-import pytest
+
 from morie.fn.agfwd import agfwd
 
 

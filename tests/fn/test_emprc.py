@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from morie.fn.emprc import emprc, EmpiricalProcessResult
+from morie.fn.emprc import EmpiricalProcessResult, emprc
 
 
 @pytest.fixture()
@@ -41,6 +41,7 @@ def test_process_bounded_for_normal():
 
 def test_custom_cdf():
     from scipy.stats import uniform
+
     rng = np.random.default_rng(7)
     x = rng.uniform(0, 1, size=200)
     result = emprc(x, cdf_fn=uniform.cdf)

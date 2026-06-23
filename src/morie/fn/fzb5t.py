@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """b_5(t) coefficient in MRL variance formula."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_b5_coefficient_mrl"]
@@ -36,7 +38,9 @@ def fauzi_b5_coefficient_mrl(t, g_func, density, mrl):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "b_5(t) coefficient in MRL variance formula"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "b_5(t) coefficient in MRL variance formula"}
+    )
 
 
 def cheatsheet():

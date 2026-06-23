@@ -1,6 +1,7 @@
 """Tests for mrr.mrr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mrr import mrr
 
 
@@ -10,7 +11,7 @@ def test_mrr_basic():
     relevant = np.random.default_rng(42).normal(0, 1, 100)
     result = mrr(pred_rank, relevant)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mrr_edge():

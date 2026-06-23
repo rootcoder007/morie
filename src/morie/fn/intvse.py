@@ -1,6 +1,7 @@
 """Interventional (in)direct effects."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["interventional_effect"]

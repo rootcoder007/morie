@@ -1,6 +1,7 @@
 """Test vmdir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.vmdir import vmdir
 
 

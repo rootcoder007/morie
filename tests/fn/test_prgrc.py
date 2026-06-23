@@ -1,9 +1,10 @@
 """Tests for morie.fn.prgrc — program recidivism."""
 
-import pytest
 import numpy as np
-from morie.fn.prgrc import program_recidivism
+import pytest
+
 from morie.fn._containers import ESRes
+from morie.fn.prgrc import program_recidivism
 
 
 class TestProgramRecidivism:

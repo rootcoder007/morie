@@ -1,6 +1,7 @@
 """Test enfld."""
+
 import numpy as np
-import pytest
+
 from morie.fn.enfld import enfld
 
 

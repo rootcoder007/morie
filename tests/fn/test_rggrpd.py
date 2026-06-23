@@ -1,6 +1,7 @@
 """Tests for rggrpd.rangayyan_group_delay."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rggrpd import rangayyan_group_delay
 
 
@@ -11,7 +12,7 @@ def test_rggrpd_basic():
     fs = 100.0
     result = rangayyan_group_delay(b, a, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rggrpd_edge():

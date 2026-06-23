@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transformer position-wise feed-forward network."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_transformer_feedforward"]
@@ -38,7 +40,9 @@ def geron_transformer_feedforward(x, W1, b1, W2, b2):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Transformer position-wise feed-forward network"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Transformer position-wise feed-forward network"}
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,7 @@
 """Tests for Voronoi tessellation."""
+
 import numpy as np
+
 from morie.fn.sgvor import sgvor
 
 
@@ -14,6 +16,7 @@ def test_sgvor_smoke():
 
 def test_cheatsheet():
     from morie.fn.sgvor import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

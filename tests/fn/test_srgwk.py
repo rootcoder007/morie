@@ -1,6 +1,7 @@
 """Test srgwk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.srgwk import srgwk
 
 

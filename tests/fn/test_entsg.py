@@ -1,7 +1,9 @@
 """Tests for entsg -- Signal entropy."""
+
 import numpy as np
-from morie.fn.entsg import entsg
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.entsg import entsg
 
 
 def test_entsg_shannon():

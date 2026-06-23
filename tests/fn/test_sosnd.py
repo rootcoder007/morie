@@ -1,6 +1,7 @@
 """Test sosnd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sosnd import sosnd
 
 

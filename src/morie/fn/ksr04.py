@@ -7,7 +7,9 @@ result (Vapnik-Chervonenkis 1971, Dudley 1978) gives
 We treat the columns of `x` as the ambient dimension d and return
 that bound, together with a Sauer-bound certificate.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kosorok_vc_dimension"]
@@ -32,11 +34,13 @@ def kosorok_vc_dimension(x):
     else:
         n, d = x.shape
     vc = d + 1
-    return RichResult(payload={
-        "estimate": int(vc),
-        "n":        int(n),
-        "method":   "VC(affine half-spaces in R^d) = d+1",
-    })
+    return RichResult(
+        payload={
+            "estimate": int(vc),
+            "n": int(n),
+            "method": "VC(affine half-spaces in R^d) = d+1",
+        }
+    )
 
 
 def cheatsheet():

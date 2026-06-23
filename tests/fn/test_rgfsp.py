@@ -1,6 +1,7 @@
 """Test rgfsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgfsp import rgfsp
 
 

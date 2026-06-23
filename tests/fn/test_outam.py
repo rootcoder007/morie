@@ -1,5 +1,7 @@
 """Tests for morie.fn.outam — A-M outlier detection."""
+
 import numpy as np
+
 from morie.fn.outam import outam
 
 
@@ -14,6 +16,7 @@ def test_outam_smoke():
 
 def test_cheatsheet():
     from morie.fn.outam import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

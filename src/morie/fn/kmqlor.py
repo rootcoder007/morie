@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """QLoRA: frozen base weights in NF4, LoRA adapters in BF16/FP16."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_qlora_4bit"]
@@ -40,7 +42,14 @@ def kamath_qlora_4bit(W0_nf4, A, B, alpha, r, x):
     n = len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "QLoRA: frozen base weights in NF4, LoRA adapters in BF16/FP16"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "QLoRA: frozen base weights in NF4, LoRA adapters in BF16/FP16",
+        }
+    )
 
 
 def cheatsheet():

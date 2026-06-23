@@ -1,7 +1,6 @@
 """Tests for morie.fn.zsnni -- Natural neighbor interpolation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zsnni import natural_neighbor
 

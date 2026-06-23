@@ -1,6 +1,7 @@
 """Tests for immid.index_moderated_mediation."""
+
 import numpy as np
-import pytest
+
 from morie.fn.immid import index_moderated_mediation
 
 
@@ -11,7 +12,7 @@ def test_immid_basic():
     b = np.random.default_rng(42).normal(0, 1, 100)
     result = index_moderated_mediation(a1, a3, b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_immid_edge():

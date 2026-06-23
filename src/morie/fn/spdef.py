@@ -58,7 +58,7 @@ def spdef(
         np.fill_diagonal(B, 0.0)
         np.fill_diagonal(B, -B.sum(axis=1))
         X_new = B @ X / n
-        new_stress = np.sqrt(np.sum((diss - squareform(pdist(X_new))) ** 2) / np.sum(diss ** 2 + 1e-12))
+        new_stress = np.sqrt(np.sum((diss - squareform(pdist(X_new))) ** 2) / np.sum(diss**2 + 1e-12))
         if abs(stress - new_stress) < tol:
             X = X_new
             stress = new_stress

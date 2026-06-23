@@ -1,6 +1,7 @@
 """Tests for bayisr.importance_resample."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bayisr import importance_resample
 
 
@@ -12,7 +13,7 @@ def test_bayisr_basic():
     M = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = importance_resample(target, proposal, n, M)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bayisr_edge():

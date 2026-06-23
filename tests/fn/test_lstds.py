@@ -1,8 +1,6 @@
 """Tests for morie.fn.lstds — list datasets."""
 
-import pytest
-
-from morie.fn.lstds import lstds, list_datasets
+from morie.fn.lstds import list_datasets, lstds
 
 
 def test_alias_is_same_function():

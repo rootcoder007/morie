@@ -1,6 +1,7 @@
 """Tests for morie.fn.sudast -- DAST score."""
 
 import pytest
+
 from morie.fn.sudast import dast_score
 
 

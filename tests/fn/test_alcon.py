@@ -1,9 +1,9 @@
 """Test algorithm_convergence (alcon)."""
-import numpy as np
+
 import pytest
 
-from morie.fn.alcon import algorithm_convergence, alcon
 from morie.fn._containers import DescriptiveResult
+from morie.fn.alcon import alcon, algorithm_convergence
 
 
 class TestAlgorithmConvergence:

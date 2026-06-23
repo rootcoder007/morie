@@ -91,4 +91,4 @@ paldet = palindrome_detect
 
 
 def cheatsheet() -> str:
-    return 'palindrome_detect({}) -> Palindrome detection in sequences.'
+    return "palindrome_detect({}) -> Palindrome detection in sequences."

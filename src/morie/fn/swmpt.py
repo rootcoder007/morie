@@ -79,4 +79,4 @@ swmpt = biomass_estimate
 
 
 def cheatsheet() -> str:
-    return 'biomass_estimate({}) -> Biomass estimation.'
+    return "biomass_estimate({}) -> Biomass estimation."

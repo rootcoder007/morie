@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ridge (L2) regression cost function."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ridge_cost"]

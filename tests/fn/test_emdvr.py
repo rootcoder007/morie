@@ -1,5 +1,7 @@
 """Tests for emdvr.py - EMD variance ratio."""
+
 import numpy as np
+
 from morie.fn.emdvr import emd_variance_ratio, emdvr
 
 

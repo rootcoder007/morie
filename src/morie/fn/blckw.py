@@ -77,4 +77,4 @@ blckw = snr_degradation
 
 
 def cheatsheet() -> str:
-    return 'snr_degradation({}) -> SNR degradation model.'
+    return "snr_degradation({}) -> SNR degradation model."

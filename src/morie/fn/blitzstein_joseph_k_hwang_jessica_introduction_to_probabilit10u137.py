@@ -1,8 +1,8 @@
 """CentralTendency expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_137"]
 
@@ -41,7 +41,12 @@ def blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnu
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression (auto-extracted; see ref).",
+        },
     )
 
 

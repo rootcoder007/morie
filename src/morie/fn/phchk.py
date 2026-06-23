@@ -14,7 +14,9 @@ __all__ = ["phchk"]
 import numpy as np
 
 
-def phchk(time: np.ndarray, event: np.ndarray, covariates: np.ndarray, beta: np.ndarray, transform: str = "km", cdf=None) -> dict:
+def phchk(
+    time: np.ndarray, event: np.ndarray, covariates: np.ndarray, beta: np.ndarray, transform: str = "km", cdf=None
+) -> dict:
     """
     Test the proportional hazards assumption using scaled Schoenfeld residuals.
 
@@ -110,8 +112,8 @@ def phchk(time: np.ndarray, event: np.ndarray, covariates: np.ndarray, beta: np.
             continue
         X_r = X_s[risk_mask]
         S1 = (exp_eta_r[:, None] * X_r).sum(axis=0) / S0
-        S2_diag = (exp_eta_r[:, None] * X_r ** 2).sum(axis=0) / S0
-        var_j = S2_diag - S1 ** 2  # variance of X in risk set
+        S2_diag = (exp_eta_r[:, None] * X_r**2).sum(axis=0) / S0
+        var_j = S2_diag - S1**2  # variance of X in risk set
 
         # Schoenfeld residual for this event time (one observation per event)
         x_event = X_s[event_mask].mean(axis=0)  # average over tied events

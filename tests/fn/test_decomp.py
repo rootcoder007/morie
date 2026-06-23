@@ -1,8 +1,9 @@
 """Tests for morie.fn.decomp — Seasonal decomposition."""
+
 import numpy as np
 import pytest
 
-from morie.fn.decomp import seasonal_decompose, decomp
+from morie.fn.decomp import decomp, seasonal_decompose
 
 
 def test_seasonal_signal():

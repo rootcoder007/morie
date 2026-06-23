@@ -1,7 +1,6 @@
 """Tests for morie.fn.zecsf -- Concentration surface estimation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zecsf import concentration_srf
 

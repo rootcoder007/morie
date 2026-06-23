@@ -1,6 +1,7 @@
 """Tests for pagrk.pagerank."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pagrk import pagerank
 
 
@@ -10,7 +11,7 @@ def test_pagrk_basic():
     alpha = 0.05
     result = pagerank(A, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_pagrk_edge():

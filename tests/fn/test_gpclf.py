@@ -1,6 +1,8 @@
 """Tests for gpclf."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gpclf import gpclf
 
 
@@ -28,4 +30,5 @@ def test_gpclf_no_data():
 
 def test_gpclf_alias():
     from morie.fn.gpclf import gpclf
+
     assert gpclf is gpclf

@@ -1,6 +1,8 @@
 """Tests for sgvar."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sgvar import sgvar
 
 
@@ -28,4 +30,5 @@ def test_sgvar_no_data():
 
 def test_sgvar_alias():
     from morie.fn.sgvar import sgvar
+
     assert sgvar is sgvar

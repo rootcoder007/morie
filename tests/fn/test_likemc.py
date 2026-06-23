@@ -1,6 +1,7 @@
 """Tests for likemc.likelihood_mcmc_epi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.likemc import likelihood_mcmc_epi
 
 
@@ -12,7 +13,7 @@ def test_likemc_basic():
     n_iter = 50
     result = likelihood_mcmc_epi(model, data, priors, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_likemc_edge():

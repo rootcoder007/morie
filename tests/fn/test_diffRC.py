@@ -1,6 +1,7 @@
 """Tests for diffRC.diffusion_rec."""
+
 import numpy as np
-import pytest
+
 from morie.fn.diffRC import diffusion_rec
 
 
@@ -10,7 +11,7 @@ def test_diffRC_basic():
     T = np.random.default_rng(43).integers(0, 2, 100)
     result = diffusion_rec(R, T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_diffRC_edge():

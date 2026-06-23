@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxsbv -- Spatial block cross-validation"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxsbv import spatial_cv_block
 

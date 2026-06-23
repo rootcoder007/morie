@@ -1,6 +1,7 @@
 """Tests for samdec.sam_mask_decoder."""
+
 import numpy as np
-import pytest
+
 from morie.fn.samdec import sam_mask_decoder
 
 
@@ -10,7 +11,7 @@ def test_samdec_basic():
     prompt_emb = np.random.default_rng(42).normal(0, 1, 100)
     result = sam_mask_decoder(img_emb, prompt_emb)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_samdec_edge():

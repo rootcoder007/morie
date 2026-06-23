@@ -73,4 +73,4 @@ entpro = entropy_production
 
 
 def cheatsheet() -> str:
-    return 'entropy_production({}) -> Entropy production rate.'
+    return "entropy_production({}) -> Entropy production rate."

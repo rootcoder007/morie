@@ -1,6 +1,7 @@
 """Tests for mvedet.mve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mvedet import mve
 
 
@@ -10,7 +11,7 @@ def test_mvedet_basic():
     h = 0.3
     result = mve(X, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mvedet_edge():

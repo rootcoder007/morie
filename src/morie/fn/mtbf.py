@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Estimate Mean Time Between Failures (MTBF)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -76,4 +77,4 @@ def mtbf_estimate(
 
 
 def cheatsheet() -> str:
-    return 'mtbf_estimate({}) -> Mean Time Between Failures.'
+    return "mtbf_estimate({}) -> Mean Time Between Failures."

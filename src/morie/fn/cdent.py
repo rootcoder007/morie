@@ -4,6 +4,8 @@
 import numpy as np
 
 from ._containers import ESRes
+
+
 def conditional_entropy(x, y, bins: int = 50, **kwargs) -> ESRes:
     """
     Compute conditional entropy H(X|Y) = H(X,Y) - H(Y).

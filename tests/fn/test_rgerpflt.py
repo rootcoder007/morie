@@ -1,6 +1,7 @@
 """Tests for rgerpflt.rangayyan_erp_artifact_remove."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgerpflt import rangayyan_erp_artifact_remove
 
 
@@ -10,7 +11,7 @@ def test_rgerpflt_basic():
     fs = 100.0
     result = rangayyan_erp_artifact_remove(erp_epochs, fs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgerpflt_edge():

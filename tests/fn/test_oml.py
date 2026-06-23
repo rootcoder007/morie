@@ -1,10 +1,11 @@
 """Tests for morie.fn.oml — DML IRM (ATE/ATT) for OTIS data."""
 
-import pytest
 import numpy as np
 import pandas as pd
-from morie.fn.oml import otdml as oml
+import pytest
+
 from morie.fn._containers import OtDmlR
+from morie.fn.oml import otdml as oml
 
 
 @pytest.fixture()
@@ -16,12 +17,14 @@ def dml_df():
     x2 = rng.standard_normal(n)
     d = (x1 + rng.standard_normal(n) * 0.5 > 0).astype(float)
     y = (0.5 * d + 0.3 * x1 + 0.2 * x2 + rng.standard_normal(n) * 0.5 > 0).astype(float)
-    return pd.DataFrame({
-        "Y": y,
-        "D": d,
-        "x1": x1,
-        "x2": x2,
-    })
+    return pd.DataFrame(
+        {
+            "Y": y,
+            "D": d,
+            "x1": x1,
+            "x2": x2,
+        }
+    )
 
 
 class TestOtdml:

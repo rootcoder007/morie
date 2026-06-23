@@ -1,6 +1,7 @@
 """Variogram model fit (spherical/exponential/Gaussian)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["variogram_fit"]
@@ -34,7 +35,9 @@ def variogram_fit(coords, values, model):
     n = len(values)
     result = float(np.mean(values))
     se = float(np.std(values, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variogram model fit (spherical/exponential/Gaussian)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Variogram model fit (spherical/exponential/Gaussian)"}
+    )
 
 
 def cheatsheet():

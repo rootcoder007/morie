@@ -1,5 +1,7 @@
 """Tests for conditional_prob."""
+
 import pytest
+
 from morie.fn.condp import conditional_prob, condp
 
 

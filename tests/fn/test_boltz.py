@@ -10,8 +10,7 @@ def test_returns_dict():
     E = np.array([0.0, 1.0, 2.0]) * 1e-21
     r = boltz(E, T=300.0)
     assert isinstance(r, dict)
-    for k in ("probabilities", "partition_function", "mean_energy",
-              "entropy", "free_energy"):
+    for k in ("probabilities", "partition_function", "mean_energy", "entropy", "free_energy"):
         assert k in r
 
 

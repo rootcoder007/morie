@@ -1,13 +1,11 @@
 """Tests for morie.fn.qjlmt — QJL projection matrix."""
 
 import numpy as np
-import pytest
 
 from morie.fn.qjlmt import qjl_matrix
 
 
 class TestQjlMatrix:
-
     def test_shape(self):
         res = qjl_matrix(128, 32)
         assert res.extra["matrix"].shape == (128, 32)

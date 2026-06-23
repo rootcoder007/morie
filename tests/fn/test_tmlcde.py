@@ -1,6 +1,7 @@
 """Tests for tmlcde.tmle_controlled_direct."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlcde import tmle_controlled_direct
 
 
@@ -13,7 +14,7 @@ def test_tmlcde_basic():
     m_value = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_controlled_direct(y, D, M, X, m_value)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlcde_edge():

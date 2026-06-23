@@ -1,7 +1,9 @@
 """Tests for renyi_entropy."""
+
 import numpy as np
 import pytest
-from morie.fn.renyi import renyi_entropy, renyi
+
+from morie.fn.renyi import renyi, renyi_entropy
 
 
 def test_alpha1_is_shannon():
@@ -9,6 +11,7 @@ def test_alpha1_is_shannon():
     x = rng.normal(0, 1, 5000)
     r1 = renyi_entropy(x, alpha=1.0, bins=20)
     from morie.fn.shent import shannon_entropy
+
     r2 = shannon_entropy(x, bins=20)
     assert abs(r1.estimate - r2.estimate) < 0.01
 

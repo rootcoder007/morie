@@ -1,6 +1,7 @@
 """Tests for jacqkn.jacquez_k_nn_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jacqkn import jacquez_k_nn_test
 
 
@@ -11,7 +12,7 @@ def test_jacqkn_basic():
     k = 5
     result = jacquez_k_nn_test(coords, time, k)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_jacqkn_edge():

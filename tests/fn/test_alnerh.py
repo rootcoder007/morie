@@ -1,6 +1,7 @@
 """Tests for alnerh.alammar_ner_token_head."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alnerh import alammar_ner_token_head
 
 
@@ -12,7 +13,7 @@ def test_alnerh_basic():
     tags = np.random.default_rng(42).normal(0, 1, 100)
     result = alammar_ner_token_head(h_tokens, W, b, tags)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alnerh_edge():

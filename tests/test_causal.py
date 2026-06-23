@@ -1,13 +1,12 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 from morie.causal import calculate_ipw_weights, compute_propensity_scores
+
 
 def test_calculate_ipw_weights():
     # Setup mock data
-    df = pd.DataFrame({
-        "treated": [1, 1, 0, 0],
-        "ps": [0.8, 0.9, 0.2, 0.1]
-    })
+    df = pd.DataFrame({"treated": [1, 1, 0, 0], "ps": [0.8, 0.9, 0.2, 0.1]})
 
     weights = calculate_ipw_weights(df, "treated", "ps")
 
@@ -18,8 +17,7 @@ def test_calculate_ipw_weights():
         else:
             expected = 1.0 / (1.0 - row["ps"])
         assert np.isclose(weights[i], expected, atol=1e-10), (
-            f"Row {i}: expected {expected:.6f} got {weights[i]:.6f} "
-            f"(treated={row['treated']}, ps={row['ps']:.2f})"
+            f"Row {i}: expected {expected:.6f} got {weights[i]:.6f} (treated={row['treated']}, ps={row['ps']:.2f})"
         )
 
     # Verify specific values (1/0.8=1.25, 1/0.9~1.111, 1/0.8=1.25, 1/0.9~1.111)

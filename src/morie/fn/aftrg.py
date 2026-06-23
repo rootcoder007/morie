@@ -66,7 +66,7 @@ def aftrg(
         raise ValueError(f"dist must be 'lognormal', 'loglogistic', or 'weibull', got '{dist}'.")
 
     def neg_loglik(params):
-        beta = params[:p + 1]
+        beta = params[: p + 1]
         log_sigma = params[p + 1]
         sigma = np.exp(log_sigma)
         resid = (log_t - X_aug @ beta) / sigma
@@ -75,10 +75,10 @@ def aftrg(
 
     theta0 = np.zeros(p + 2)
     beta_init = np.linalg.lstsq(X_aug[event == 1], log_t[event == 1], rcond=None)[0]
-    theta0[:p + 1] = beta_init
+    theta0[: p + 1] = beta_init
 
     result = optimize.minimize(neg_loglik, theta0, method="BFGS")
-    beta_hat = result.x[:p + 1]
+    beta_hat = result.x[: p + 1]
     sigma_hat = np.exp(result.x[p + 1])
     log_ll = -result.fun
 
@@ -90,7 +90,12 @@ def aftrg(
             ei, ej = np.zeros(d), np.zeros(d)
             ei[i] = eps
             ej[j] = eps
-            hessian[i, j] = (neg_loglik(result.x + ei + ej) - neg_loglik(result.x + ei - ej) - neg_loglik(result.x - ei + ej) + neg_loglik(result.x - ei - ej)) / (4 * eps ** 2)
+            hessian[i, j] = (
+                neg_loglik(result.x + ei + ej)
+                - neg_loglik(result.x + ei - ej)
+                - neg_loglik(result.x - ei + ej)
+                + neg_loglik(result.x - ei - ej)
+            ) / (4 * eps**2)
 
     try:
         var = np.linalg.inv(hessian)
@@ -98,7 +103,7 @@ def aftrg(
     except np.linalg.LinAlgError:
         se = np.full(d, np.nan)
 
-    se_beta = se[:p + 1]
+    se_beta = se[: p + 1]
     z = stats.norm.ppf(1.0 - alpha / 2.0)
 
     return {

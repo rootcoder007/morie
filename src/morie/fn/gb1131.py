@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spearman rank correlation coefficient r_s."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_spearman_rho"]
@@ -33,9 +35,23 @@ def gibbons_spearman_rho(x, y):
     y = np.asarray(y, dtype=float)
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Spearman rank correlation coefficient r_s"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Spearman rank correlation coefficient r_s",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Spearman rank correlation coefficient r_s"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Spearman rank correlation coefficient r_s",
+        }
+    )
 
 
 def cheatsheet():

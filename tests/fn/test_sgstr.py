@@ -1,5 +1,7 @@
 """Tests for strict stationarity test."""
+
 import numpy as np
+
 from morie.fn.sgstr import sgstr
 
 

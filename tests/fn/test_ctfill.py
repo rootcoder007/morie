@@ -1,6 +1,8 @@
 """Tests for ctfill."""
+
 import numpy as np
 import pytest
+
 from morie.fn.ctfill import ctfill
 
 
@@ -28,4 +30,5 @@ def test_ctfill_no_data():
 
 def test_ctfill_alias():
     from morie.fn.ctfill import ctfill
+
     assert ctfill is ctfill

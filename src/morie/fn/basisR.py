@@ -1,6 +1,7 @@
 """Basis representation y = sum c_k φ_k."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["basis_representation"]

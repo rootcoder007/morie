@@ -1,8 +1,9 @@
 """Tests for morie.fn.storm -- Markov chain weather model."""
 
 import numpy as np
-from morie.fn.storm import markov_weather, storm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.storm import markov_weather, storm
 
 
 class TestStorm:

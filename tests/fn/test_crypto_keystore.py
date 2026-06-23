@@ -8,7 +8,6 @@ from morie.crypto.keystore import create_keystore, list_keys, load_keypair, stor
 
 
 class TestKeystore:
-
     def test_create_and_list(self, tmp_path):
         ks = str(tmp_path / "keystore.json")
         create_keystore("hunter2", path=ks)
@@ -60,6 +59,7 @@ class TestKeystore:
         ks = str(tmp_path / "keystore.json")
         create_keystore("pw", path=ks)
         import stat
+
         mode = os.stat(ks).st_mode
         assert mode & stat.S_IRWXG == 0
         assert mode & stat.S_IRWXO == 0

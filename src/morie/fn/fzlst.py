@@ -13,7 +13,9 @@ Asymptotic variance via the Stieltjes-integral form:
 estimated via a discretised double-Riemann sum on the Silverman-KDE
 density-at-quantile.
 """
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_l_statistic"]
@@ -31,8 +33,7 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
     if n < 2:
-        return RichResult(payload={"estimate": np.nan, "n": n,
-                                    "method": "fzlst -- too few obs"})
+        return RichResult(payload={"estimate": np.nan, "n": n, "method": "fzlst -- too few obs"})
     if score is None:
         score = lambda u: np.ones_like(u)
 
@@ -46,8 +47,8 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
         a, b = cells[i], cells[i + 1]
         if b <= a:
             b = a + 1
-        seg_u = fine[a:b + 1]
-        seg_J = J_fine[a:b + 1]
+        seg_u = fine[a : b + 1]
+        seg_J = J_fine[a : b + 1]
         weights[i] = float(np.trapezoid(seg_J, seg_u))
     L = float(np.sum(weights * x_sorted))
 
@@ -59,6 +60,7 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
         sigma = 1.0
     h = 1.06 * sigma * n ** (-1.0 / 5.0)
     from scipy import stats as _sps
+
     f_Q = np.array([np.mean(_sps.norm.pdf((q - x) / h) / h) for q in Q])
     J_at_u = np.asarray(score(uu), dtype=float)
 
@@ -69,12 +71,14 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
     var = max(var, 0.0)
     se = float(np.sqrt(var))
 
-    return RichResult(payload={
-        "estimate": L,
-        "se": se,
-        "n": n,
-        "method": "Fauzi L-statistic with user score function J (Ch 5)",
-    })
+    return RichResult(
+        payload={
+            "estimate": L,
+            "se": se,
+            "n": n,
+            "method": "Fauzi L-statistic with user score function J (Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

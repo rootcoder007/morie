@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Relations between T, E(R), Kendall tau and Spearman rho."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_tau_rho_relation"]
@@ -32,7 +34,14 @@ def gibbons_tau_rho_relation(tau, rho):
     n = int(tau) if tau.ndim == 0 else len(tau)
     result = float(np.mean(tau))
     se = float(np.std(tau, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Relations between T, E(R), Kendall tau and Spearman rho"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Relations between T, E(R), Kendall tau and Spearman rho",
+        }
+    )
 
 
 def cheatsheet():

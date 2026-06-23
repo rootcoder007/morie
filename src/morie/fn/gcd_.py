@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Extended Euclidean algorithm."""
 
-
 from ._containers import DescriptiveResult
+
+
 def extended_gcd(a: int, b: int, **kwargs) -> DescriptiveResult:
     r"""
     Extended Euclidean algorithm returning gcd, x, y such that ax + by = gcd.

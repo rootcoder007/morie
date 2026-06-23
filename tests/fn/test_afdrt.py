@@ -1,6 +1,7 @@
 """Test afdrt."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afdrt import afdrt
 
 

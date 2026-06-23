@@ -1,6 +1,7 @@
 """Tests for rgdtfd.rangayyan_decomp_tfd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgdtfd import rangayyan_decomp_tfd
 
 
@@ -12,7 +13,7 @@ def test_rgdtfd_basic():
     max_atoms = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_decomp_tfd(x, fs, dictionary, max_atoms)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgdtfd_edge():

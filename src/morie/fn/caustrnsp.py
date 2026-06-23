@@ -1,6 +1,7 @@
 """Transportability weights from source to target population."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["causal_transportability_weights"]
@@ -32,7 +33,14 @@ def causal_transportability_weights(X_source, X_target):
     n = len(X_source)
     result = float(np.mean(X_source))
     se = float(np.std(X_source, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Transportability weights from source to target population"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Transportability weights from source to target population",
+        }
+    )
 
 
 def cheatsheet():

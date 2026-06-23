@@ -1,6 +1,7 @@
 """Tests for dvsrv: deviance residuals for Cox model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dvsrv import dvsrv
 
 

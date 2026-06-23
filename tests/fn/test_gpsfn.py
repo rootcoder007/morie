@@ -1,6 +1,7 @@
 """Tests for gpsfn.gp_sparse_inducing."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gpsfn import gp_sparse_inducing
 
 
@@ -12,7 +13,7 @@ def test_gpsfn_basic():
     inducing = np.random.default_rng(42).normal(0, 1, 100)
     result = gp_sparse_inducing(X, y, X_test, inducing)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gpsfn_edge():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 5.8: standardized smoothed sign/Wilcoxon converge to unsmoothed in L^2."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_thm5_8_smoothed_convergence"]
@@ -34,7 +36,14 @@ def fauzi_thm5_8_smoothed_convergence(data, bandwidth, theta):
     n = int(data) if data.ndim == 0 else len(data)
     result = float(np.mean(data))
     se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Theorem 5.8: standardized smoothed sign/Wilcoxon converge to unsmoothed in L^2"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Theorem 5.8: standardized smoothed sign/Wilcoxon converge to unsmoothed in L^2",
+        }
+    )
 
 
 def cheatsheet():

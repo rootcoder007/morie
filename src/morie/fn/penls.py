@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Penalized regression (ridge / LASSO / elastic net) for markers."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["penalized_regression"]
 
 
-def penalized_regression(x, y, alpha: float = 0.5, lam: float = 1.0,
-                         max_iter: int = 1000, tol: float = 1e-6):
+def penalized_regression(x, y, alpha: float = 0.5, lam: float = 1.0, max_iter: int = 1000, tol: float = 1e-6):
     """Elastic-net regression via coordinate descent (NumPy fallback).
 
     Objective::
@@ -44,9 +44,11 @@ def penalized_regression(x, y, alpha: float = 0.5, lam: float = 1.0,
         X = X.reshape(-1, 1)
     n, p = X.shape
     # Centre
-    y_mean = float(np.mean(y)); yc = y - y_mean
+    y_mean = float(np.mean(y))
+    yc = y - y_mean
     x_mean = X.mean(axis=0)
-    x_sd = X.std(axis=0); x_sd = np.where(x_sd > 0, x_sd, 1.0)
+    x_sd = X.std(axis=0)
+    x_sd = np.where(x_sd > 0, x_sd, 1.0)
     Xs = (X - x_mean) / x_sd
     # Coordinate descent on standardised X
     beta = np.zeros(p)
@@ -80,7 +82,7 @@ def penalized_regression(x, y, alpha: float = 0.5, lam: float = 1.0,
     intercept = y_mean - float(x_mean @ beta_orig)
     y_hat = X @ beta_orig + intercept
     resid = y - y_hat
-    se = float(np.sqrt(np.sum(resid ** 2) / max(n - p, 1)))
+    se = float(np.sqrt(np.sum(resid**2) / max(n - p, 1)))
     return RichResult(
         title=f"Penalised regression (alpha={alpha}, lam={lam})",
         summary_lines=[

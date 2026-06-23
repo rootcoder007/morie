@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fligner-Killeen test for equality of variances using aligned scores."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_fligner_killeen"]
@@ -32,9 +34,18 @@ def gibbons_fligner_killeen(x, y, cdf=None):
     x = np.asarray(x, dtype=float)
     n = int(x) if x.ndim == 0 else len(x)
     if x.ndim == 0:
-        return RichResult(payload={"statistic": float('nan'), "p_value": float('nan'), "n": 1, "method": "scalar-input placeholder"})
+        return RichResult(
+            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+        )
     if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Fligner-Killeen test for equality of variances using aligned scores"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Fligner-Killeen test for equality of variances using aligned scores",
+            }
+        )
     x_sorted = np.sort(x)
     if cdf is None:
         cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
@@ -49,9 +60,16 @@ def gibbons_fligner_killeen(x, y, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
-    return RichResult(payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Fligner-Killeen test for equality of variances using aligned scores"})
+    return RichResult(
+        payload={
+            "statistic": float(statistic),
+            "p_value": float(p_value),
+            "n": n,
+            "method": "Fligner-Killeen test for equality of variances using aligned scores",
+        }
+    )
 
 
 def cheatsheet():

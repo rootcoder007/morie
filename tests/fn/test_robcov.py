@@ -1,6 +1,7 @@
 """Tests for robcov.sandwich_robust_se."""
+
 import numpy as np
-import pytest
+
 from morie.fn.robcov import sandwich_robust_se
 
 
@@ -11,7 +12,7 @@ def test_robcov_basic():
     kind = np.random.default_rng(42).normal(0, 1, 100)
     result = sandwich_robust_se(X, y, kind)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_robcov_edge():

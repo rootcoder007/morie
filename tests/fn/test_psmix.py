@@ -1,7 +1,7 @@
 """Tests for morie.fn.psmix."""
 
 import numpy as np
-import pytest
+
 from morie.fn.psmix import psmix
 
 

@@ -1,6 +1,7 @@
 """k-anonymity check on a quasi-identifier set."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["k_anonymity_check"]
@@ -34,7 +35,9 @@ def k_anonymity_check(y, quasi_ids, k):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "k-anonymity check on a quasi-identifier set"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "k-anonymity check on a quasi-identifier set"}
+    )
 
 
 def cheatsheet():

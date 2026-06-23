@@ -1,6 +1,7 @@
 """Tests for morie.fn.prcv — precision-recall curve."""
-import numpy as np
+
 import pytest
+
 from morie.fn.prcv import pr_curve, prcv
 
 

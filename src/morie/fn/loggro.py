@@ -76,4 +76,4 @@ loggro = logistic_growth
 
 
 def cheatsheet() -> str:
-    return 'logistic_growth({}) -> Logistic growth model.'
+    return "logistic_growth({}) -> Logistic growth model."

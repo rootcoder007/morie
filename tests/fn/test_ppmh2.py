@@ -1,6 +1,7 @@
 """Test ppmh2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ppmh2 import ppmh2
 
 

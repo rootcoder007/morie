@@ -1,6 +1,7 @@
 """Wiener-Hopf equation expressed as a convolution relationship under stationarity.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_wiener_convolution_relationship"]
@@ -36,7 +37,14 @@ def rangayyan_ch3_wiener_convolution_relationship(w_ok, phi, theta, k):
     n = len(w_ok)
     result = float(np.mean(w_ok))
     se = float(np.std(w_ok, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wiener-Hopf equation expressed as a convolution relationship under stationarity."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wiener-Hopf equation expressed as a convolution relationship under stationarity.",
+        }
+    )
 
 
 def cheatsheet():

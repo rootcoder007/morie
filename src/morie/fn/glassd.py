@@ -1,8 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Glass's Δ effect size."""
 
-from typing import Sequence, Union
 import numpy as np
+
+
 def glassd(treated, control) -> float:
     """Glass's Δ: (mean_t − mean_c) / sd_c.
 

@@ -1,6 +1,7 @@
 """Tests for msm238.mvsml_general_eq_1_3."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm238 import mvsml_general_eq_1_3
 
 
@@ -14,7 +15,7 @@ def test_msm238_basic():
     order = 4
     result = mvsml_general_eq_1_3(Ordering, the, data, Data, Final, order)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm238_edge():

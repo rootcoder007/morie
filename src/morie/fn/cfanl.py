@@ -44,7 +44,7 @@ def cfa_uls(
             L[i, j] = 0.5
 
     for _ in range(max_iter):
-        Sigma = L @ L.T + np.diag(np.maximum(np.diag(S) - np.sum(L ** 2, axis=1), 1e-6))
+        Sigma = L @ L.T + np.diag(np.maximum(np.diag(S) - np.sum(L**2, axis=1), 1e-6))
         resid = S - Sigma
 
         grad = -2 * resid @ L
@@ -60,13 +60,13 @@ def cfa_uls(
             break
         L = L_new
 
-    Sigma = L @ L.T + np.diag(np.maximum(np.diag(S) - np.sum(L ** 2, axis=1), 1e-6))
+    Sigma = L @ L.T + np.diag(np.maximum(np.diag(S) - np.sum(L**2, axis=1), 1e-6))
     resid = S - Sigma
 
     df_model = p * (p + 1) // 2 - (np.count_nonzero(L) + p)
     df_model = max(df_model, 1)
 
-    f_model = np.sum(resid ** 2) / 2
+    f_model = np.sum(resid**2) / 2
     f_null = np.sum((S - np.diag(np.diag(S))) ** 2) / 2
     df_null = p * (p - 1) // 2
 

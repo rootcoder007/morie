@@ -1,6 +1,7 @@
 """Tests for jorelm.joseph_relative_mae."""
+
 import numpy as np
-import pytest
+
 from morie.fn.jorelm import joseph_relative_mae
 
 
@@ -11,7 +12,7 @@ def test_jorelm_basic():
     y_baseline = np.random.default_rng(42).normal(0, 1, 100)
     result = joseph_relative_mae(y_true, y_pred, y_baseline)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_jorelm_edge():

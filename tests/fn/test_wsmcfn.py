@@ -1,6 +1,7 @@
 """Tests for wsmcfn.wasserman_char_fn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmcfn import wasserman_char_fn
 
 
@@ -10,7 +11,7 @@ def test_wsmcfn_basic():
     t = np.linspace(0, 10, 100)
     result = wasserman_char_fn(x, t)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmcfn_edge():

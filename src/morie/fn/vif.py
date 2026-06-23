@@ -1,8 +1,12 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variance Inflation Factor."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
+
+
 def vif(X: Union[Sequence, np.ndarray]) -> np.ndarray:
     """Variance Inflation Factor for each column of X.
 

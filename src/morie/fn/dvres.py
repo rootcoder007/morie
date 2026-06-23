@@ -1,6 +1,7 @@
 """Deviance residual for Cox PH (symmetric martingale)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["deviance_residual_cox"]
@@ -34,7 +35,9 @@ def deviance_residual_cox(time, event, fitted):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Deviance residual for Cox PH (symmetric martingale)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Deviance residual for Cox PH (symmetric martingale)"}
+    )
 
 
 def cheatsheet():

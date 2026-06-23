@@ -1,7 +1,10 @@
 """I cannot teach anybody anything. I can only make them think. — Socrates"""
+
 import numpy as np
-import pytest
-from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u26 import christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_26
+
+from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u26 import (
+    christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_26,
+)
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u26_basic():
@@ -9,7 +12,7 @@ def test_christopher_gandrud_author_reproducible_research_with_r_and_4u26_basic(
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_26(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_christopher_gandrud_author_reproducible_research_with_r_and_4u26_edge():

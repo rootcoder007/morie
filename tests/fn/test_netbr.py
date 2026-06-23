@@ -1,23 +1,20 @@
 """Tests for morie.fn.netbr — Bridge centrality."""
 
 import numpy as np
-import pytest
+
 from morie.fn.netbr import network_bridge
 
 
 class TestNetworkBridge:
-
     def test_returns_dict(self):
-        A = np.array([[0, 0.5, 0.1, 0], [0.5, 0, 0, 0.2],
-                       [0.1, 0, 0, 0.3], [0, 0.2, 0.3, 0]])
+        A = np.array([[0, 0.5, 0.1, 0], [0.5, 0, 0, 0.2], [0.1, 0, 0, 0.3], [0, 0.2, 0.3, 0]])
         communities = [0, 0, 1, 1]
         result = network_bridge(A, communities)
         assert "bridge_strength" in result
 
     def test_bridge_node_higher(self):
         # Node 1 connects community {0,1} to {2,3}
-        A = np.array([[0, 1, 0, 0], [1, 0, 1, 0],
-                       [0, 1, 0, 1], [0, 0, 1, 0]], dtype=float)
+        A = np.array([[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]], dtype=float)
         communities = [0, 0, 1, 1]
         result = network_bridge(A, communities)
         assert result["bridge_strength"]["n1"] > result["bridge_strength"]["n0"]

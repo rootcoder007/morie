@@ -1,7 +1,8 @@
 """Tests for dctln.py - Dictionary Learning."""
+
 import numpy as np
-import pytest
-from morie.fn.dctln import dctln_fn, dctln
+
+from morie.fn.dctln import dctln, dctln_fn
 
 
 def test_dctln_returns_descriptive_result():

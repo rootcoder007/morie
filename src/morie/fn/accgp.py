@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Genomic-prediction accuracy metrics."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -43,8 +44,7 @@ def prediction_accuracy(y_true, y_pred):
         raise ValueError("y_true and y_pred must have the same length")
     if n < 2:
         return RichResult(
-            payload={"estimate": float("nan"), "n": n,
-                     "method": "Genomic prediction accuracy (n<2)"},
+            payload={"estimate": float("nan"), "n": n, "method": "Genomic prediction accuracy (n<2)"},
             warnings=["Need n >= 2 for accuracy metrics"],
         )
     mse = float(np.mean((y_true - y_pred) ** 2))
@@ -67,11 +67,11 @@ def prediction_accuracy(y_true, y_pred):
         rho = float("nan")
     # Calibration slope/intercept of y ~ a + b*y_pred
     if np.var(y_pred, ddof=1) > 0:
-        slope = float(np.cov(y_true, y_pred, ddof=1)[0, 1]
-                      / np.var(y_pred, ddof=1))
+        slope = float(np.cov(y_true, y_pred, ddof=1)[0, 1] / np.var(y_pred, ddof=1))
         intercept = float(np.mean(y_true) - slope * np.mean(y_pred))
     else:
-        slope = float("nan"); intercept = float("nan")
+        slope = float("nan")
+        intercept = float("nan")
     return RichResult(
         title="Genomic-prediction accuracy",
         summary_lines=[

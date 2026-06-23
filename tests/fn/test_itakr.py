@@ -1,7 +1,9 @@
 """Tests for Itakura-Saito distance."""
+
 import numpy as np
 import pytest
-from morie.fn.itakr import itakura_saito, itakr
+
+from morie.fn.itakr import itakr, itakura_saito
 
 
 def test_same():

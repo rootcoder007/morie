@@ -1,6 +1,7 @@
 """Tests for madMov.moving_mad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.madMov import moving_mad
 
 
@@ -11,7 +12,7 @@ def test_madMov_basic():
     k = 5
     result = moving_mad(x, window, k)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_madMov_edge():

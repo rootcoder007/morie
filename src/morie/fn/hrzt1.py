@@ -10,6 +10,7 @@
 
 The propensity score is fit by logistic regression.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -69,8 +70,9 @@ def horowitz_treatment_effect(x, y, treatment, bandwidth=None, _bootstrap=True):
         X = X.T
     n = y.size
     if n < 30 or D.size != n or X.shape[0] != n:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "kernel-matching ATE (insufficient data)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "kernel-matching ATE (insufficient data)"}
+        )
     # Add an intercept if not present
     if not np.allclose(X[:, 0], 1.0):
         Xp = np.column_stack([np.ones(n), X])
@@ -79,13 +81,17 @@ def horowitz_treatment_effect(x, y, treatment, bandwidth=None, _bootstrap=True):
     e = _logistic_newton(D, Xp)
     e = np.clip(e, 1e-6, 1 - 1e-6)
     h = float(bandwidth) if bandwidth is not None else max(_silverman(e), 1e-3)
-    t_idx = np.where(D > 0.5)[0]; c_idx = np.where(D < 0.5)[0]
-    n_t = t_idx.size; n_c = c_idx.size
+    t_idx = np.where(D > 0.5)[0]
+    c_idx = np.where(D < 0.5)[0]
+    n_t = t_idx.size
+    n_c = c_idx.size
     if n_t < 2 or n_c < 2:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n,
-                                   "method": "kernel-matching ATE (one arm empty)"})
+        return RichResult(
+            payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "kernel-matching ATE (one arm empty)"}
+        )
     # Kernel-matching counterfactual for each treated unit
-    e_t = e[t_idx]; e_c = e[c_idx]
+    e_t = e[t_idx]
+    e_c = e[c_idx]
     u = (e_t[:, None] - e_c[None, :]) / h
     K = np.exp(-0.5 * u * u)
     w = K / np.maximum(K.sum(axis=1, keepdims=True), 1e-12)
@@ -102,24 +108,31 @@ def horowitz_treatment_effect(x, y, treatment, bandwidth=None, _bootstrap=True):
     # SE: bootstrap (50 reps) -- disabled in nested calls to avoid recursion blow-up
     if _bootstrap:
         rng = np.random.default_rng(0)
-        B = 50; boot = np.zeros(B)
+        B = 50
+        boot = np.zeros(B)
         for b in range(B):
             idx = rng.integers(0, n, size=n)
             try:
-                sub = horowitz_treatment_effect(X[idx], y[idx], D[idx],
-                                                bandwidth=h, _bootstrap=False)
+                sub = horowitz_treatment_effect(X[idx], y[idx], D[idx], bandwidth=h, _bootstrap=False)
                 boot[b] = sub["estimate"] if not np.isnan(sub["estimate"]) else ate
             except Exception:
                 boot[b] = ate
         se = float(boot.std(ddof=1))
     else:
         se = float("nan")
-    return RichResult(payload={
-        "estimate": float(ate), "se": se,
-        "att": att, "atu": atu, "bandwidth": h,
-        "n": n, "n_treated": int(n_t), "n_control": int(n_c),
-        "method": "Kernel-matching ATE (Heckman-Ichimura-Todd)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(ate),
+            "se": se,
+            "att": att,
+            "atu": atu,
+            "bandwidth": h,
+            "n": n,
+            "n_treated": int(n_t),
+            "n_control": int(n_c),
+            "method": "Kernel-matching ATE (Heckman-Ichimura-Todd)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgcok -- Co-kriging multivariate"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgcok import cokriging
 
@@ -14,5 +13,5 @@ class TestCokriging:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = cokriging(np.array([1.,2.,3.]), np.array([0.,1.,2.]))
+        result = cokriging(np.array([1.0, 2.0, 3.0]), np.array([0.0, 1.0, 2.0]))
         assert hasattr(result, "statistic")

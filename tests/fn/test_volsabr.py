@@ -1,6 +1,7 @@
 """Tests for volsabr.vol_sabr_implied."""
+
 import numpy as np
-import pytest
+
 from morie.fn.volsabr import vol_sabr_implied
 
 
@@ -15,7 +16,7 @@ def test_volsabr_basic():
     nu = np.random.default_rng(42).normal(0, 1, 100)
     result = vol_sabr_implied(F, K, T, alpha, beta, rho, nu)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_volsabr_edge():

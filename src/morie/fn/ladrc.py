@@ -1,7 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ladder_of_causation"]
@@ -33,9 +35,23 @@ def ladder_of_causation(rung, model):
     y = np.asarray(model, dtype=float)
     n = min(len(rung), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)",
+            }
+        )
     result = stats.spearmanr(rung[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Pearl's Ladder of Causation: three rungs (association, intervention, counterfactual)",
+        }
+    )
 
 
 def cheatsheet():

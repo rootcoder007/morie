@@ -1,6 +1,7 @@
 """Tests for dpoF.dpo_loss."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpoF import dpo_loss
 
 
@@ -12,7 +13,7 @@ def test_dpoF_basic():
     pairs = np.random.default_rng(42).normal(0, 1, 100)
     result = dpo_loss(pi_theta, pi_ref, beta, pairs)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpoF_edge():

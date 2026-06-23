@@ -1,5 +1,7 @@
 """Test top-k and top-p sampling."""
+
 import numpy as np
+
 from morie.fn.topkp import topkp
 
 

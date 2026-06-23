@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Early stopping: halt training when validation error stops decreasing."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_early_stopping"]
@@ -40,7 +42,14 @@ def geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta):
     n = len(X_train)
     result = float(np.mean(X_train))
     se = float(np.std(X_train, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Early stopping: halt training when validation error stops decreasing"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Early stopping: halt training when validation error stops decreasing",
+        }
+    )
 
 
 def cheatsheet():

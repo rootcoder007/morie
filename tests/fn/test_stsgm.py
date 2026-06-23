@@ -1,7 +1,9 @@
 """Test st_segment (stsgm)."""
+
 import numpy as np
-from morie.fn.stsgm import st_segment, stsgm
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.stsgm import st_segment, stsgm
 
 
 class TestStSegment:

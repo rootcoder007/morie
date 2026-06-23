@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrspn -- Spatial panel fixed effects"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrspn import spatial_panel_fe
 

@@ -1,5 +1,5 @@
 """Tests for morie.fn.smutl -- simulate utility shocks."""
-import numpy as np
+
 from morie.fn.smutl import simulate_utility_shocks, smutl
 
 

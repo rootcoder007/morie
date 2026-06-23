@@ -9,6 +9,7 @@ Kunzel, S. R., Sekhon, J. S., Bickel, P. J., & Yu, B. (2019).
 Metalearners for estimating heterogeneous treatment effects using
 machine learning. *PNAS*, 116(10), 4156-4165.
 """
+
 from __future__ import annotations
 
 from typing import Any

@@ -1,6 +1,7 @@
 """Tests for bayoutl.bayes_outlier."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bayoutl import bayes_outlier
 
 
@@ -10,7 +11,7 @@ def test_bayoutl_basic():
     outlier_prior = np.random.default_rng(42).normal(0, 1, 100)
     result = bayes_outlier(y, outlier_prior)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bayoutl_edge():

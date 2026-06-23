@@ -1,6 +1,7 @@
 """Tests for sarre.spatial_ar_error."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sarre import spatial_ar_error
 
 
@@ -11,7 +12,7 @@ def test_sarre_basic():
     w = np.random.default_rng(45).exponential(1, 100)
     result = spatial_ar_error(x, y, w)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sarre_edge():

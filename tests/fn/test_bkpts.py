@@ -1,7 +1,6 @@
 """Tests for morie.fn.bkpts — Bai-Perron structural break detection."""
 
 import numpy as np
-import pytest
 
 from morie.fn.bkpts import bai_perron, bkpts
 

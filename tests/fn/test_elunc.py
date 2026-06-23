@@ -1,7 +1,7 @@
 """Tests for morie.fn.elunc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.elunc import elunc
 
 

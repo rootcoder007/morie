@@ -1,5 +1,8 @@
 """Tests for multivariate_outlier."""
-import numpy as np, pytest
+
+import numpy as np
+import pytest
+
 from morie.fn.mvout import multivariate_outlier
 
 

@@ -1,7 +1,7 @@
 """Tests for morie.fn.mdang."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mdang import mdang
 
 

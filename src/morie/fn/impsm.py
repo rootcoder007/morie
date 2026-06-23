@@ -7,6 +7,7 @@ Both **unnormalised** (works when p is known up to constant) and
 **self-normalised** ratio estimators are returned, plus the effective
 sample size ``ESS = (sum w)^2 / sum(w^2)``.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,28 +39,32 @@ def importance_sampling(x, h=None, p=None, q=None):
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 1:
-        return RichResult(payload={"estimate": float("nan"), "n": 0,
-                                   "method": "Importance sampling (empty)"})
+        return RichResult(payload={"estimate": float("nan"), "n": 0, "method": "Importance sampling (empty)"})
     if h is None:
         h = lambda z: z
     if p is None:
-        p = lambda z: np.exp(-0.5 * z ** 2) / np.sqrt(2 * np.pi)
+        p = lambda z: np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
     if q is None:
-        q = lambda z: np.exp(-0.5 * z ** 2) / np.sqrt(2 * np.pi)
+        q = lambda z: np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
     hx = np.asarray(h(x), dtype=float)
     px = np.asarray(p(x), dtype=float)
     qx = np.asarray(q(x), dtype=float)
     w = px / qx
-    est = float(np.mean(w * hx))            # unnormalised
+    est = float(np.mean(w * hx))  # unnormalised
     est_sn = float(np.sum(w * hx) / np.sum(w))  # self-normalised
     var = float(np.var(w * hx, ddof=1) / n)
     se = float(np.sqrt(var))
-    ess = float(np.sum(w) ** 2 / np.sum(w ** 2))
-    return RichResult(payload={
-        "estimate": est, "estimate_sn": est_sn, "se": se,
-        "ess": ess, "n": int(n),
-        "method": "Importance sampling (Geweke 1989)",
-    })
+    ess = float(np.sum(w) ** 2 / np.sum(w**2))
+    return RichResult(
+        payload={
+            "estimate": est,
+            "estimate_sn": est_sn,
+            "se": se,
+            "ess": ess,
+            "n": int(n),
+            "method": "Importance sampling (Geweke 1989)",
+        }
+    )
 
 
 # CANONICAL TEST

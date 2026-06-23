@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hard voting ensemble prediction (majority label among base classifiers)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_hard_voting"]
@@ -30,7 +32,14 @@ def geron_hard_voting(predictions):
     n = int(predictions) if predictions.ndim == 0 else len(predictions)
     result = float(np.mean(predictions))
     se = float(np.std(predictions, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hard voting ensemble prediction (majority label among base classifiers)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Hard voting ensemble prediction (majority label among base classifiers)",
+        }
+    )
 
 
 def cheatsheet():

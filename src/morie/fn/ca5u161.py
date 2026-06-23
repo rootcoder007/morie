@@ -1,8 +1,9 @@
 """GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context).."""
+
 import numpy as np
 from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+from ._richresult import hypothesis_test_result
 
 __all__ = ["ca_chapter_5_unnumbered_161"]
 
@@ -41,7 +42,11 @@ def ca_chapter_5_unnumbered_161(x, cdf=None):
             pvalue=float("nan"),
             warnings=["n<2: insufficient data."],
             extra_summary=[("n", n)],
-            extra_payload={"n": n, "method": "GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context).", "p_value": float("nan")},
+            extra_payload={
+                "n": n,
+                "method": "GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context).",
+                "p_value": float("nan"),
+            },
         )
     x_sorted = np.sort(x)
     if cdf is None:
@@ -57,16 +62,22 @@ def ca_chapter_5_unnumbered_161(x, cdf=None):
         p_value = 1.0 - stats.ksone.cdf(statistic, n)
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k ** 2 * lam ** 2) for k in range(1, 101)])
+        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
         p_value = max(0.0, min(1.0, p_value))
     return hypothesis_test_result(
         test_name="GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context).",
         statistic=float(statistic),
         pvalue=float(p_value),
         extra_summary=[("n", n)],
-        extra_payload={"n": n, "method": "GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context).", "p_value": float(p_value)},
+        extra_payload={
+            "n": n,
+            "method": "GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context).",
+            "p_value": float(p_value),
+        },
     )
 
 
 def cheatsheet():
-    return "ca5u161: GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context)."
+    return (
+        "ca5u161: GeneralStatistics expression involving 'variables' (auto-extracted; see reference for full context)."
+    )

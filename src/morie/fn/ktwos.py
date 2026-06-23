@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ktwos"]
@@ -76,9 +77,7 @@ def ktwos(
         np.fill_diagonal(kyy, 0.0)
         kxy = _rbf(a, b, h)
         la, lb = len(a), len(b)
-        return (kxx.sum() / (la * (la - 1))
-                + kyy.sum() / (lb * (lb - 1))
-                - 2.0 * kxy.mean())
+        return kxx.sum() / (la * (la - 1)) + kyy.sum() / (lb * (lb - 1)) - 2.0 * kxy.mean()
 
     stat = _mmd2(x, y, bw)
 

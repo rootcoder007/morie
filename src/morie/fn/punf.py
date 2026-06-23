@@ -7,7 +7,14 @@ import numpy as np
 import scipy.stats as stats
 
 
-def punif(x: Union[float, np.ndarray], min: float = 0.0, max: float = 1.0, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def punif(
+    x: Union[float, np.ndarray],
+    min: float = 0.0,
+    max: float = 1.0,
+    lower_tail: bool = True,
+    log: bool = False,
+    cdf=None,
+) -> Union[float, np.ndarray]:
     """
     Uniform distribution CDF.
 

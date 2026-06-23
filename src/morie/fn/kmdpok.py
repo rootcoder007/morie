@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Direct Preference Optimization loss (Rafailov et al.)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_dpo_loss"]
@@ -38,7 +40,14 @@ def kamath_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta):
     n = len(logp_w)
     result = float(np.mean(logp_w))
     se = float(np.std(logp_w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Direct Preference Optimization loss (Rafailov et al.)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Direct Preference Optimization loss (Rafailov et al.)",
+        }
+    )
 
 
 def cheatsheet():

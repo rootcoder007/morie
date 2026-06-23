@@ -1,6 +1,7 @@
 """Tests for wsmmle.wasserman_mle."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmmle import wasserman_mle
 
 
@@ -11,7 +12,7 @@ def test_wsmmle_basic():
     theta0 = 0.0
     result = wasserman_mle(data, f, theta0)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmmle_edge():

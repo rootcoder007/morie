@@ -1,8 +1,5 @@
 """Tests for morie.fam — vendored OllamaFreeAPI client."""
 
-import json
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from morie.fam import OllamaFreeAPI
@@ -47,7 +44,8 @@ class TestBuildPayload:
 
     def test_payload_with_kwargs(self):
         payload = OllamaFreeAPI._build_payload(
-            "model_a", "hello",
+            "model_a",
+            "hello",
             temperature=0.1,
             num_predict=10000,
             stop=["\n"],

@@ -1,6 +1,7 @@
 """Test wlgam."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wlgam import wlgam
 
 

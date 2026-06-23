@@ -1,5 +1,7 @@
 """Tests for arfmt.py - AR formant extraction."""
+
 import numpy as np
+
 from morie.fn.arfmt import ar_formant_extraction_fn, arfmt
 
 

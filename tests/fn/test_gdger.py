@@ -1,6 +1,7 @@
 """Test gdger."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gdger import gdger
 
 

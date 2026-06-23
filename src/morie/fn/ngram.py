@@ -74,4 +74,4 @@ def ngram_freq(
 
 
 def cheatsheet() -> str:
-    return 'ngram_freq({}) -> N-gram frequency analysis.'
+    return "ngram_freq({}) -> N-gram frequency analysis."

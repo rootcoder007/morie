@@ -1,6 +1,7 @@
 """Tests for rgeqn10a.rangayyan_ch10_cost_matrix."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgeqn10a import rangayyan_ch10_cost_matrix
 
 
@@ -11,7 +12,7 @@ def test_rgeqn10a_basic():
     priors = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_ch10_cost_matrix(cost_matrix, confusion_matrix, priors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgeqn10a_edge():

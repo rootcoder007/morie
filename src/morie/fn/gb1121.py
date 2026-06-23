@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kendall tau coefficient T = (concordant - discordant pairs) / C(n,2)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_kendall_tau"]
@@ -32,7 +34,14 @@ def gibbons_kendall_tau(x, y):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kendall tau coefficient T = (concordant - discordant pairs) / C(n,2)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Kendall tau coefficient T = (concordant - discordant pairs) / C(n,2)",
+        }
+    )
 
 
 def cheatsheet():

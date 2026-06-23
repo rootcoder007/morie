@@ -57,4 +57,4 @@ wlsci = wilson_ci
 
 
 def cheatsheet() -> str:
-    return 'wilson_ci({}) -> Wilson score interval for binomial proportion.'
+    return "wilson_ci({}) -> Wilson score interval for binomial proportion."

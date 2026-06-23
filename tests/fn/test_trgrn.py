@@ -1,6 +1,7 @@
 """Test trgrn."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trgrn import trgrn
 
 

@@ -1,6 +1,8 @@
 """Tests for morie.fn.kpsst -- KPSS stationarity test."""
+
 import numpy as np
 import pytest
+
 from morie.fn.kpsst import kpss_test
 
 
@@ -23,4 +25,5 @@ class TestKPSS:
 
     def test_cheatsheet(self):
         from morie.fn.kpsst import cheatsheet
+
         assert isinstance(cheatsheet(), str)

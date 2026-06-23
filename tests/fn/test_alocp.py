@@ -1,6 +1,7 @@
 """Tests for alocp.alammar_openclip_contrastive."""
+
 import numpy as np
-import pytest
+
 from morie.fn.alocp import alammar_openclip_contrastive
 
 
@@ -11,7 +12,7 @@ def test_alocp_basic():
     tau = 0.1
     result = alammar_openclip_contrastive(I_emb, T_emb, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_alocp_edge():

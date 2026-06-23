@@ -1,5 +1,5 @@
 """Tests for morie.fn.quadu — quadratic utility."""
-import numpy as np
+
 from morie.fn.quadu import quadu
 
 

@@ -1,7 +1,7 @@
 """Tests for morie.fn.svord2."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svord2 import svord2
 
 

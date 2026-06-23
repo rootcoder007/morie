@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Reinforcement learning: agent maximizes cumulative reward via policy."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_reinforcement_learning"]
@@ -34,7 +36,14 @@ def geron_reinforcement_learning(env, pi, gamma):
     n = len(env)
     result = float(np.mean(env))
     se = float(np.std(env, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Reinforcement learning: agent maximizes cumulative reward via policy"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Reinforcement learning: agent maximizes cumulative reward via policy",
+        }
+    )
 
 
 def cheatsheet():

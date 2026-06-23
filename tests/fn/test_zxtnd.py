@@ -1,7 +1,6 @@
 """Tests for morie.fn.zxtnd -- Spatial tensor decomposition"""
 
 import numpy as np
-import pytest
 
 from morie.fn.zxtnd import tensor_decomp_sp
 

@@ -1,6 +1,7 @@
 """Real knowledge is to know the extent of one's ignorance. — Confucius"""
+
 import numpy as np
-import pytest
+
 from morie.fn.flsh2 import flash_attention
 
 
@@ -11,7 +12,7 @@ def test_flsh2_basic():
     V = np.random.default_rng(42).normal(0, 1, 100)
     result = flash_attention(Q, K, V)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_flsh2_edge():

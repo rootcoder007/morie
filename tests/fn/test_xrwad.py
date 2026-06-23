@@ -1,7 +1,6 @@
 """Tests for morie.fn.xrwad -- Adaptive bandwidth weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.xrwad import w_adaptive
 

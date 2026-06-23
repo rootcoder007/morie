@@ -1,6 +1,8 @@
 """Tests for rndsgr."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rndsgr import rndsgr
 
 
@@ -28,4 +30,5 @@ def test_rndsgr_no_data():
 
 def test_rndsgr_alias():
     from morie.fn.rndsgr import rndsgr
+
     assert rndsgr is rndsgr

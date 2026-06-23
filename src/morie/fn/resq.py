@@ -96,4 +96,4 @@ resq = resonance_q
 
 
 def cheatsheet() -> str:
-    return 'resonance_q({}) -> Mechanical resonance / Q-factor.'
+    return "resonance_q({}) -> Mechanical resonance / Q-factor."

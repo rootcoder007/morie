@@ -1,6 +1,7 @@
 """Tests for rgsen.rangayyan_sensitivity."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgsen import rangayyan_sensitivity
 
 
@@ -10,7 +11,7 @@ def test_rgsen_basic():
     y_pred = np.random.default_rng(44).normal(0, 1, 100)
     result = rangayyan_sensitivity(y_true, y_pred)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgsen_edge():

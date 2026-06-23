@@ -1,4 +1,5 @@
 """Test gkpw."""
+
 from morie.fn.gkpw import gkp_witten
 
 
@@ -10,5 +11,6 @@ def test_gkpw_basic():
 
 def test_gkpw_invalid():
     import pytest
+
     with pytest.raises(ValueError):
         gkp_witten(z_bulk=-1.0)

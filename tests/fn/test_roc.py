@@ -1,7 +1,8 @@
 """Tests for morie.fn.roc — ROC curve and AUC."""
+
 import numpy as np
 
-from morie.fn.roc import roc_auc, roc
+from morie.fn.roc import roc, roc_auc
 
 
 def test_perfect_auc():

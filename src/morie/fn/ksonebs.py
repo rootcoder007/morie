@@ -1,17 +1,23 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kolmogorov-Smirnov test with R-style verbose result."""
 
-from typing import Sequence, Union, Callable
+from collections.abc import Callable, Sequence
+from typing import Union
+
 import numpy as np
 from scipy.stats import ks_1samp, ks_2samp
 
 
-def ksonebs(x: Union[Sequence, np.ndarray],
-            cdf_or_y: Union[Callable, str, Sequence, np.ndarray] = "norm",
-            alternative: str = "two-sided"):
+def ksonebs(
+    x: Union[Sequence, np.ndarray],
+    cdf_or_y: Union[Callable, str, Sequence, np.ndarray] = "norm",
+    alternative: str = "two-sided",
+):
     """Kolmogorov-Smirnov goodness-of-fit / two-sample test."""
-    from ._richresult import hypothesis_test_result
     from scipy import stats as _ss
+
+    from ._richresult import hypothesis_test_result
+
     a = np.asarray(x, dtype=float)
     if isinstance(cdf_or_y, str):
         dist = getattr(_ss, cdf_or_y, None)
@@ -35,8 +41,14 @@ def ksonebs(x: Union[Sequence, np.ndarray],
         n2_extra = [("n(y)", int(b.size)), ("Median(y)", float(np.median(b)))]
     return hypothesis_test_result(
         test_name=f"Kolmogorov-Smirnov test ({kind})",
-        statistic=float(res.statistic), pvalue=float(res.pvalue),
-        extra_summary=[("Test mode", kind), ("Target", target_name),
-                       ("n(x)", int(a.size)), ("Median(x)", float(np.median(a)))]
-                       + n2_extra + [("Alternative", alternative)],
+        statistic=float(res.statistic),
+        pvalue=float(res.pvalue),
+        extra_summary=[
+            ("Test mode", kind),
+            ("Target", target_name),
+            ("n(x)", int(a.size)),
+            ("Median(x)", float(np.median(a))),
+        ]
+        + n2_extra
+        + [("Alternative", alternative)],
     )

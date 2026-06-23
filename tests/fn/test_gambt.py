@@ -1,7 +1,7 @@
 """Tests for morie.fn.gambt -- card probability."""
 
-from morie.fn.gambt import card_probability, gambt
 from morie.fn._containers import DescriptiveResult
+from morie.fn.gambt import card_probability, gambt
 
 
 class TestGambt:

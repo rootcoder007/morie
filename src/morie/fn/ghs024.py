@@ -1,6 +1,7 @@
 """Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_ch3_tailfree_canonical_summability"]
@@ -32,7 +33,14 @@ def ghosal_ch3_tailfree_canonical_summability(V, m):
     n = len(V)
     result = float(np.mean(V))
     se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process.",
+        }
+    )
 
 
 def cheatsheet():

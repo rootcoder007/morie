@@ -1,6 +1,7 @@
 """Test rstoa."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rstoa import rstoa
 
 

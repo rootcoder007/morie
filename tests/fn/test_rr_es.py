@@ -1,6 +1,7 @@
 """Tests for morie.fn.rr_es -- risk ratio effect size."""
 
 import pytest
+
 from morie.fn.rr_es import risk_ratio
 
 

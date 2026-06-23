@@ -10,6 +10,7 @@ Generates an N×d stratified sample on [0,1]^d:
 When an integrand ``f`` is provided, returns the LHS Monte-Carlo estimator
 of ``E_U[f(U)]`` with its sample SE.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -50,8 +51,7 @@ def latin_hypercube(x=None, N: int = 100, d: int = 1, f=None, seed: int = 42):
     for j in range(d):
         u_j = cut + rng.uniform(0.0, 1.0 / N, size=N)
         sample[:, j] = rng.permutation(u_j)
-    payload = {"sample": sample, "N": int(N), "d": int(d),
-               "method": "Latin hypercube (McKay et al. 1979)"}
+    payload = {"sample": sample, "N": int(N), "d": int(d), "method": "Latin hypercube (McKay et al. 1979)"}
     if f is not None:
         try:
             fv = np.array([f(sample[i]) for i in range(N)], dtype=float)

@@ -1,6 +1,8 @@
 """Test cmpct."""
-import pytest
+
 import numpy as np
+import pytest
+
 from morie.fn.cmpct import compactify_torus
 
 

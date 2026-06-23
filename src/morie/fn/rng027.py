@@ -1,6 +1,7 @@
 """Definition of the continuous-time unit step function.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_unit_step_continuous"]
@@ -30,7 +31,14 @@ def rangayyan_ch3_unit_step_continuous(t):
     n = len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Definition of the continuous-time unit step function."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Definition of the continuous-time unit step function.",
+        }
+    )
 
 
 def cheatsheet():

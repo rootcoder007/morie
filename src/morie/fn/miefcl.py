@@ -1,6 +1,7 @@
 """MI Rubin's rules combination."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["multiple_imputation_combine"]

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_signal_features"]
@@ -32,7 +34,14 @@ def rangayyan_signal_features(x, fs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear",
+        }
+    )
 
 
 def cheatsheet():

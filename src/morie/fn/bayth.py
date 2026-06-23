@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayes theorem posterior for genomic parameters."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_theorem_genomic"]
@@ -34,7 +36,9 @@ def bayes_theorem_genomic(y, prior_f, likelihood_f):
     n = int(y) if y.ndim == 0 else len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayes theorem posterior for genomic parameters"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Bayes theorem posterior for genomic parameters"}
+    )
 
 
 def cheatsheet():

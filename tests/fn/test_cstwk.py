@@ -1,13 +1,13 @@
 """Tests for morie.fn.cstwk — custody work program."""
 
-import pytest
 import pandas as pd
-from morie.fn.cstwk import custody_work_program
+import pytest
+
 from morie.fn._containers import CrimeResult
+from morie.fn.cstwk import custody_work_program
 
 
 class TestCustodyWorkProgram:
-
     def test_returns_crime(self):
         df = pd.DataFrame({"person_id": [1, 2, 3, 4], "work_program": [1, 0, 1, 0]})
         result = custody_work_program(df)

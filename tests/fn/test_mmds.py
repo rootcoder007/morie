@@ -1,5 +1,7 @@
 """Tests for morie.fn.mmds — Metric MDS."""
+
 import numpy as np
+
 from morie.fn.mmds import mmds
 
 

@@ -1,6 +1,7 @@
 """Tests for gbtcom.goodman_bacon_3way."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gbtcom import goodman_bacon_3way
 
 
@@ -12,7 +13,7 @@ def test_gbtcom_basic():
     time = np.linspace(0, 10, 100)
     result = goodman_bacon_3way(y, D, unit, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_gbtcom_edge():

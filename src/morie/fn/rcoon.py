@@ -62,4 +62,4 @@ rcoon = hohmann_transfer
 
 
 def cheatsheet() -> str:
-    return 'hohmann_transfer({}) -> Hohmann transfer orbit computation.'
+    return "hohmann_transfer({}) -> Hohmann transfer orbit computation."

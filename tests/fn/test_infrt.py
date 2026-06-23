@@ -1,6 +1,7 @@
 """Tests for morie.fn.infrt -- Infant mortality rate."""
 
 import pytest
+
 from morie.fn.infrt import infant_mortality_rate
 
 

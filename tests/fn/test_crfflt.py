@@ -1,6 +1,7 @@
 """Tests for crfflt.christiano_fitzgerald."""
+
 import numpy as np
-import pytest
+
 from morie.fn.crfflt import christiano_fitzgerald
 
 
@@ -11,7 +12,7 @@ def test_crfflt_basic():
     p_high = np.random.default_rng(42).normal(0, 1, 100)
     result = christiano_fitzgerald(y, p_low, p_high)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_crfflt_edge():

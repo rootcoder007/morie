@@ -1,6 +1,7 @@
 """Tests for hmrelu.geron_relu."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmrelu import geron_relu
 
 
@@ -9,7 +10,7 @@ def test_hmrelu_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     result = geron_relu(z)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmrelu_edge():

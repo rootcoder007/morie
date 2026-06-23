@@ -1,6 +1,7 @@
 """Tests for morie.fn.tost — TOST equivalence test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tost import tost_test
 
 

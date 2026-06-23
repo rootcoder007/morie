@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_entropy_cnd"]
@@ -30,7 +32,14 @@ def ghosal_entropy_cnd(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2",
+        }
+    )
 
 
 def cheatsheet():

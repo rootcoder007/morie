@@ -135,7 +135,10 @@ def lglog(
         X_cov = None
 
     res = _opt.minimize(
-        _neg_ll, x0, args=(X_cov,), method="L-BFGS-B",
+        _neg_ll,
+        x0,
+        args=(X_cov,),
+        method="L-BFGS-B",
         options={"maxiter": max_iter, "ftol": tol, "gtol": tol},
     )
     params_hat = res.x
@@ -147,11 +150,13 @@ def lglog(
     # SE via numerical Hessian
     try:
         from scipy.optimize import approx_fprime
+
         eps = 1e-5
         hess = np.zeros((p_full, p_full))
         g0 = approx_fprime(params_hat, lambda p: _neg_ll(p, X_cov), eps)
         for j in range(p_full):
-            pp = params_hat.copy(); pp[j] += eps
+            pp = params_hat.copy()
+            pp[j] += eps
             g1 = approx_fprime(pp, lambda p: _neg_ll(p, X_cov), eps)
             hess[:, j] = (g1 - g0) / eps
         vcov = np.linalg.pinv((hess + hess.T) / 2)

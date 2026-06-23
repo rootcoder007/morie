@@ -1,6 +1,8 @@
 """Tests for sireal."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sireal import sireal
 
 
@@ -28,4 +30,5 @@ def test_sireal_no_data():
 
 def test_sireal_alias():
     from morie.fn.sireal import sireal
+
     assert sireal is sireal

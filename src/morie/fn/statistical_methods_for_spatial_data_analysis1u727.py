@@ -1,8 +1,8 @@
 """ContingencyTables expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_727"]
 
@@ -41,7 +41,12 @@ def statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_727(x):
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "ContingencyTables expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "ContingencyTables expression (auto-extracted; see ref).",
+        },
     )
 
 

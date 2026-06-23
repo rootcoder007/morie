@@ -1,6 +1,6 @@
 """Tests for morie.fn.sntpr — sentence percentiles."""
 
-from morie.fn.sntpr import sentence_percentiles, sntpr
+from morie.fn.sntpr import sentence_percentiles
 
 
 class TestSentencePercentiles:

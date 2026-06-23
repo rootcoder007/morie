@@ -1,6 +1,7 @@
 """Tests for spgfun.schabenberger_g_function."""
+
 import numpy as np
-import pytest
+
 from morie.fn.spgfun import schabenberger_g_function
 
 
@@ -10,7 +11,7 @@ def test_spgfun_basic():
     r = 10
     result = schabenberger_g_function(points, r)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_spgfun_edge():

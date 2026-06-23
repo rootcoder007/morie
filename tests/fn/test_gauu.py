@@ -1,5 +1,5 @@
 """Tests for morie.fn.gauu — gaussian utility."""
-import numpy as np
+
 from morie.fn.gauu import gauu
 
 

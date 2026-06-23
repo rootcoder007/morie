@@ -1,6 +1,7 @@
 """Test gcprc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gcprc import gcprc
 
 

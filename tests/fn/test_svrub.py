@@ -1,7 +1,6 @@
 """Tests for morie.fn.svrub -- Rubinstein spatial bargaining"""
 
 import numpy as np
-import pytest
 
 from morie.fn.svrub import rubinstein_sp
 

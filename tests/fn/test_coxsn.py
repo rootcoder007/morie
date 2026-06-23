@@ -41,4 +41,5 @@ def test_residuals_nonneg(cox_data):
 
 def test_cheatsheet():
     from morie.fn.coxsn import cheatsheet
+
     assert "cox" in cheatsheet().lower()

@@ -1,6 +1,7 @@
 """Tests for joqr.joseph_quantile_regression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.joqr import joseph_quantile_regression
 
 
@@ -11,7 +12,7 @@ def test_joqr_basic():
     tau = 0.1
     result = joseph_quantile_regression(X, y, tau)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_joqr_edge():

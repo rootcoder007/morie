@@ -20,8 +20,7 @@ def test_returns_dict(survival_data):
     time, event = survival_data
     result = kmsem(time, event)
     assert isinstance(result, dict)
-    for k in ("times", "survival", "se", "ci_lower", "ci_upper",
-              "n_obs", "n_events", "median_survival"):
+    for k in ("times", "survival", "se", "ci_lower", "ci_upper", "n_obs", "n_events", "median_survival"):
         assert k in result
 
 
@@ -76,4 +75,5 @@ def test_length_mismatch():
 
 def test_cheatsheet():
     from morie.fn.kmsem import cheatsheet
+
     assert "kaplan" in cheatsheet().lower()

@@ -73,4 +73,4 @@ btgrl = bagplot_outliers
 
 
 def cheatsheet() -> str:
-    return 'bagplot_outliers({}) -> Bagplot for bivariate outliers.'
+    return "bagplot_outliers({}) -> Bagplot for bivariate outliers."

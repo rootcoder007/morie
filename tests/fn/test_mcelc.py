@@ -1,4 +1,5 @@
 """Test mceliece_encrypt."""
+
 from morie.fn._containers import CryptoResult
 from morie.fn.mcelc import mcelc, mceliece_encrypt
 

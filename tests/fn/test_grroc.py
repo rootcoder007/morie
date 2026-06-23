@@ -1,6 +1,7 @@
 """Tests for grroc.geron_roc_curve."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grroc import geron_roc_curve
 
 
@@ -10,7 +11,7 @@ def test_grroc_basic():
     y_scores = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_roc_curve(y_true, y_scores)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grroc_edge():

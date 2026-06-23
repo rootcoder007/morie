@@ -1,6 +1,7 @@
 """Test agawd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agawd import agawd
 
 

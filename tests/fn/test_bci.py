@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.bci import bayesian_credible_interval
 
 

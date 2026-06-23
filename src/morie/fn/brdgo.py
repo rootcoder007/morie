@@ -1,6 +1,8 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bridge observations for cross-period ideal point comparison."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["bridge_observations"]
@@ -32,7 +34,14 @@ def bridge_observations(ideal_points_periods, bridge_ids):
     n = int(ideal_points_periods) if ideal_points_periods.ndim == 0 else len(ideal_points_periods)
     result = float(np.mean(ideal_points_periods))
     se = float(np.std(ideal_points_periods, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bridge observations for cross-period ideal point comparison"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bridge observations for cross-period ideal point comparison",
+        }
+    )
 
 
 def cheatsheet():

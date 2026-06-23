@@ -1,7 +1,7 @@
 """Tests for morie.fn.dtpar."""
 
 import numpy as np
-import pytest
+
 from morie.fn.dtpar import dtpar
 
 

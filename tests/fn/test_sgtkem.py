@@ -1,6 +1,7 @@
 """Tests for sgtkem.sgt_katz_centrality."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sgtkem import sgt_katz_centrality
 
 
@@ -11,7 +12,7 @@ def test_sgtkem_basic():
     beta = 0.8
     result = sgt_katz_centrality(A, alpha, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sgtkem_edge():

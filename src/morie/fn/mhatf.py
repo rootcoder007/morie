@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-head attention with output projection."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -10,9 +11,9 @@ from .attnq import scaled_dot_product_attention
 __all__ = ["multi_head_attention_full"]
 
 
-def multi_head_attention_full(x, num_heads: int = 2, W_q=None, W_k=None,
-                              W_v=None, W_o=None, seed: int = 0,
-                              deterministic_seed: "int | None" = None):
+def multi_head_attention_full(
+    x, num_heads: int = 2, W_q=None, W_k=None, W_v=None, W_o=None, seed: int = 0, deterministic_seed: int | None = None
+):
     r"""Multi-head attention with linear projection.
 
     .. math::
@@ -55,12 +56,12 @@ def multi_head_attention_full(x, num_heads: int = 2, W_q=None, W_k=None,
         x = x[None, :]
     seq_len, d_model = x.shape
     if d_model % num_heads != 0:
-        raise ValueError(
-            f"d_model={d_model} must be divisible by num_heads={num_heads}.")
+        raise ValueError(f"d_model={d_model} must be divisible by num_heads={num_heads}.")
     d_k = d_model // num_heads
 
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("mhatf", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -97,8 +98,7 @@ def multi_head_attention_full(x, num_heads: int = 2, W_q=None, W_k=None,
 
     return RichResult(
         title=f"Multi-head attention (h={num_heads})",
-        summary_lines=[("num_heads", num_heads), ("d_model", d_model),
-                       ("d_k per head", d_k), ("seq_len", seq_len)],
+        summary_lines=[("num_heads", num_heads), ("d_model", d_model), ("d_k per head", d_k), ("seq_len", seq_len)],
         payload={
             "output": out,
             "estimate": out,

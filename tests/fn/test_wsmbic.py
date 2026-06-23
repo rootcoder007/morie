@@ -1,6 +1,7 @@
 """Tests for wsmbic.wasserman_bic."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wsmbic import wasserman_bic
 
 
@@ -11,7 +12,7 @@ def test_wsmbic_basic():
     n = 100
     result = wasserman_bic(loglik, k, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wsmbic_edge():

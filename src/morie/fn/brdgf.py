@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BayesA via Gibbs sampler (per-marker variance scaled-inverse-chi^2)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -9,9 +10,16 @@ from ._richresult import RichResult
 __all__ = ["bayes_ridge_gibbs"]
 
 
-def bayes_ridge_gibbs(x, y, n_iter: int = 200, burn: int = 50,
-                      df0: float = 4.0, S0: float | None = None, seed: int = 0,
-                      deterministic_seed: int | None = None):
+def bayes_ridge_gibbs(
+    x,
+    y,
+    n_iter: int = 200,
+    burn: int = 50,
+    df0: float = 4.0,
+    S0: float | None = None,
+    seed: int = 0,
+    deterministic_seed: int | None = None,
+):
     """BayesA -- Meuwissen, Hayes & Goddard (2001).
 
     Model::
@@ -50,6 +58,7 @@ def bayes_ridge_gibbs(x, y, n_iter: int = 200, burn: int = 50,
     """
     if deterministic_seed is not None:
         from morie._det_rng import from_seed
+
         rng = from_seed("brdgf", deterministic_seed)
     else:
         rng = np.random.default_rng(seed)
@@ -88,14 +97,14 @@ def bayes_ridge_gibbs(x, y, n_iter: int = 200, burn: int = 50,
             beta[j] = rng.normal(mean_j, sd_j)
             resid = resid_j - xj * beta[j]
         df_post = df0 + 1.0
-        scale_post = (S0 * df0 + beta ** 2) / df_post
+        scale_post = (S0 * df0 + beta**2) / df_post
         chi2_draws = rng.chisquare(df_post, size=p)
         sigma_j2 = scale_post * df_post / np.maximum(chi2_draws, 1e-8)
         sigma_j2 = np.maximum(sigma_j2, 1e-12)
         df_e = 4.0
         Se = var_y * (df_e - 2.0) / df_e
         df_post_e = n + df_e
-        scale_post_e = (np.sum(resid ** 2) + df_e * Se) / df_post_e
+        scale_post_e = (np.sum(resid**2) + df_e * Se) / df_post_e
         sigma2 = scale_post_e * df_post_e / max(rng.chisquare(df_post_e), 1e-8)
         sigma2 = max(sigma2, 1e-12)
         if it >= burn:
@@ -131,8 +140,7 @@ def bayes_ridge_gibbs(x, y, n_iter: int = 200, burn: int = 50,
             "p": p,
             "method": "BayesA (Meuwissen-Hayes-Goddard) short Gibbs",
         },
-        warnings=["Short chain (default 200 / 50 burn) -- for publication "
-                  "posteriors use BGLR with ≥10k iters."],
+        warnings=["Short chain (default 200 / 50 burn) -- for publication posteriors use BGLR with ≥10k iters."],
     )
 
 

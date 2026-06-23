@@ -59,4 +59,4 @@ rlad = lad_regression
 
 
 def cheatsheet() -> str:
-    return 'lad_regression({}) -> Least absolute deviations regression.'
+    return "lad_regression({}) -> Least absolute deviations regression."

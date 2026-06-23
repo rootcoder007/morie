@@ -1,6 +1,7 @@
 """Tests for qjlcrn.qjl_compression."""
+
 import numpy as np
-import pytest
+
 from morie.fn.qjlcrn import qjl_compression
 
 
@@ -11,7 +12,7 @@ def test_qjlcrn_basic():
     seed = 42
     result = qjl_compression(x, bits, seed)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_qjlcrn_edge():

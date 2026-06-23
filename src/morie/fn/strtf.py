@@ -8,7 +8,16 @@ from scipy.stats import norm
 __all__ = ["strtf"]
 
 
-def strtf(time: np.ndarray, event: np.ndarray, X: np.ndarray, strata: np.ndarray, cdf=None, *, max_iter: int = 100, tol: float = 1e-8) -> dict:
+def strtf(
+    time: np.ndarray,
+    event: np.ndarray,
+    X: np.ndarray,
+    strata: np.ndarray,
+    cdf=None,
+    *,
+    max_iter: int = 100,
+    tol: float = 1e-8,
+) -> dict:
     """Stratified Cox model with stratum-specific baseline hazards.
 
     Parameters

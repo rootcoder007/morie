@@ -53,7 +53,7 @@ def einsf(
     n = metric.shape[0]
     G_tensor = ricci_tensor - 0.5 * scalar_curvature * metric
 
-    kappa = 8.0 * np.pi * G / (c ** 4)
+    kappa = 8.0 * np.pi * G / (c**4)
 
     residual = None
     if stress_energy is not None:

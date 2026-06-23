@@ -1,7 +1,7 @@
 """Tests for morie.fn.mpcnr."""
 
 import numpy as np
-import pytest
+
 from morie.fn.mpcnr import mpcnr
 
 

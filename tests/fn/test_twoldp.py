@@ -1,6 +1,7 @@
 """Tests for twoldp.two_locus_dprime."""
+
 import numpy as np
-import pytest
+
 from morie.fn.twoldp import two_locus_dprime
 
 
@@ -10,7 +11,7 @@ def test_twoldp_basic():
     geno2 = np.random.default_rng(42).normal(0, 1, 100)
     result = two_locus_dprime(geno1, geno2)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_twoldp_edge():

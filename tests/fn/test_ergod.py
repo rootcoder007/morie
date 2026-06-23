@@ -1,9 +1,10 @@
 """Test ergodicity_test (ergod)."""
+
 import numpy as np
 import pytest
 
-from morie.fn.ergod import ergodicity_test, ergod
 from morie.fn._containers import DescriptiveResult
+from morie.fn.ergod import ergod, ergodicity_test
 
 
 class TestErgodicityTest:

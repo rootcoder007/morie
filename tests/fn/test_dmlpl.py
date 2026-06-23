@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.dmlpl import dml_plr, dmlpl
+
 from morie.fn._containers import ESRes
+from morie.fn.dmlpl import dml_plr, dmlpl
 
 
 class TestDMLPLR:

@@ -1,11 +1,9 @@
 """Tests for Lanphear 2005 Lead → IQ loss model."""
 
-import math
-
 import numpy as np
 import pytest
 
-from morie.fn.leadiq import leadiq, lead_iq_loss
+from morie.fn.leadiq import lead_iq_loss, leadiq
 
 
 def test_leadiq_zero_loss_at_reference():
@@ -32,16 +30,15 @@ def test_leadiq_is_sublinear_per_unit_at_higher_bll():
     # (per-µg/dL) effect IS larger at low BLL:
     # (1.87 / 1 unit) at low vs (1.87 / 10 units) at high.
     loss_per_unit_low = abs(leadiq(2.0).value) / 1.0
-    loss_per_unit_high = (abs(leadiq(20.0).value)
-                           - abs(leadiq(10.0).value)) / 10.0
+    loss_per_unit_high = (abs(leadiq(20.0).value) - abs(leadiq(10.0).value)) / 10.0
     assert loss_per_unit_low > loss_per_unit_high
 
 
 def test_leadiq_with_ci_gives_bounds():
     r = leadiq(10.0, with_ci=True)
     # Central -6.2; lower (less IQ loss) and upper (more) should bracket
-    assert r.extra["iq_loss_lower_95"] > r.value   # less negative
-    assert r.extra["iq_loss_upper_95"] < r.value   # more negative
+    assert r.extra["iq_loss_lower_95"] > r.value  # less negative
+    assert r.extra["iq_loss_upper_95"] < r.value  # more negative
 
 
 def test_leadiq_array_input():

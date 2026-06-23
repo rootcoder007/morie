@@ -73,4 +73,4 @@ funlp = funnel_plot
 
 
 def cheatsheet() -> str:
-    return 'funnel_plot({}) -> Funnel plot data for publication bias.'
+    return "funnel_plot({}) -> Funnel plot data for publication bias."

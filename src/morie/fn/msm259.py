@@ -1,6 +1,7 @@
 """Numbered display equation (13.1) from MVSML chapter 13.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mvsml_deep_learning_eq_13_1"]
@@ -40,7 +41,14 @@ def mvsml_deep_learning_eq_13_1(image, of, size, Part, b, Fig):
     n = len(image)
     result = float(np.mean(image))
     se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Numbered display equation (13.1) from MVSML chapter 13."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Numbered display equation (13.1) from MVSML chapter 13.",
+        }
+    )
 
 
 def cheatsheet():

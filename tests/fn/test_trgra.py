@@ -1,6 +1,7 @@
 """Test trgra."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trgra import trgra
 
 

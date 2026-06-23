@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Autoencoder anomaly detection: high reconstruction error indicates anomaly."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_anomaly_autoencoder"]
@@ -34,7 +36,14 @@ def geron_anomaly_autoencoder(model, X, threshold):
     n = len(model)
     result = float(np.mean(model))
     se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Autoencoder anomaly detection: high reconstruction error indicates anomaly"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Autoencoder anomaly detection: high reconstruction error indicates anomaly",
+        }
+    )
 
 
 def cheatsheet():

@@ -7,7 +7,9 @@ import numpy as np
 import scipy.stats as stats
 
 
-def ppois(x: Union[int, np.ndarray], lambda_: float, lower_tail: bool = True, log: bool = False, cdf=None) -> Union[float, np.ndarray]:
+def ppois(
+    x: Union[int, np.ndarray], lambda_: float, lower_tail: bool = True, log: bool = False, cdf=None
+) -> Union[float, np.ndarray]:
     """
     Poisson distribution CDF.
 

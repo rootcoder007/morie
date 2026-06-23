@@ -1,6 +1,7 @@
 """Test grwsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grwsp import grwsp
 
 

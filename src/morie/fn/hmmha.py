@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-head attention: concat heads, then linear projection."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_multihead_attention"]
@@ -38,7 +40,14 @@ def geron_multihead_attention(Q, K, V, n_heads, W_O):
     n = len(Q)
     result = float(np.mean(Q))
     se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multi-head attention: concat heads, then linear projection"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Multi-head attention: concat heads, then linear projection",
+        }
+    )
 
 
 def cheatsheet():

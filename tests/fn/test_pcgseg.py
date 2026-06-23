@@ -1,5 +1,7 @@
 """Tests for pcg_segment."""
-import numpy as np, pytest
+
+import numpy as np
+
 from morie.fn.pcgseg import pcg_segment
 
 
@@ -10,8 +12,8 @@ class TestPcgSegment:
         for i in range(4):
             s1 = 500 * i + 100
             s2 = 500 * i + 300
-            env[s1:s1 + 50] = 1.0
-            env[s2:s2 + 50] = 0.8
+            env[s1 : s1 + 50] = 1.0
+            env[s2 : s2 + 50] = 0.8
         r = pcg_segment(env, fs, min_gap_ms=80)
         assert r.value >= 2
         assert len(r.extra["s1_indices"]) >= 2

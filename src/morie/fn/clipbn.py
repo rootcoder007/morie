@@ -1,6 +1,7 @@
 """CLIP image-text contrastive alignment."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["clip_image_text_align"]

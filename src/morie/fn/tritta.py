@@ -1,6 +1,7 @@
 """Triangular self-attention over starting/ending nodes."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["alphafold_triangle_attn"]
@@ -32,7 +33,9 @@ def alphafold_triangle_attn(pair_repr, start_end):
     n = len(pair_repr)
     result = float(np.mean(pair_repr))
     se = float(np.std(pair_repr, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Triangular self-attention over starting/ending nodes"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Triangular self-attention over starting/ending nodes"}
+    )
 
 
 def cheatsheet():

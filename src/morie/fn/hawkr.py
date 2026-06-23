@@ -42,16 +42,16 @@ def hawkr(
     if M <= 0:
         raise ValueError("Mass must be > 0.")
 
-    T_H = hbar * c ** 3 / (8.0 * np.pi * G * M * kB)
+    T_H = hbar * c**3 / (8.0 * np.pi * G * M * kB)
 
-    rs = 2.0 * G * M / c ** 2
+    rs = 2.0 * G * M / c**2
 
-    sigma_sb = 2.0 * np.pi ** 5 * kB ** 4 / (15.0 * hbar ** 3 * c ** 6)
+    sigma_sb = 2.0 * np.pi**5 * kB**4 / (15.0 * hbar**3 * c**6)
     sigma_sb_real = 5.670374419e-8
-    A = 4.0 * np.pi * rs ** 2
-    L = sigma_sb_real * A * T_H ** 4
+    A = 4.0 * np.pi * rs**2
+    L = sigma_sb_real * A * T_H**4
 
-    t_evap = 5120.0 * np.pi * G ** 2 * M ** 3 / (hbar * c ** 4)
+    t_evap = 5120.0 * np.pi * G**2 * M**3 / (hbar * c**4)
 
     lambda_peak = 2.8977719e-3 / (T_H + 1e-300)
 

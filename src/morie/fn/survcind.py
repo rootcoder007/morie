@@ -1,6 +1,7 @@
 """Survival concordance index (Harrell C)."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["survival_concordance"]
@@ -34,7 +35,9 @@ def survival_concordance(time, event, predicted_risk):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Survival concordance index (Harrell C)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Survival concordance index (Harrell C)"}
+    )
 
 
 def cheatsheet():

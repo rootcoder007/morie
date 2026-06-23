@@ -1,6 +1,7 @@
 """Test mtdeg."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtdeg import mtdeg
 
 

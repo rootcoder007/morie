@@ -668,8 +668,8 @@ def load_dataset(
             if key in DATASET_CATALOG:
                 msg += (
                     f"\n\n{key!r} is a morie catalogue dataset, not a file "
-                    f"path. Load it with morie.data.load_dataset({key!r}).\n"
-                    + dataset_recommendation(key))
+                    f"path. Load it with morie.data.load_dataset({key!r}).\n" + dataset_recommendation(key)
+                )
         except Exception:  # noqa: BLE001
             pass
         raise FileNotFoundError(msg)

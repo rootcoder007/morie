@@ -39,4 +39,5 @@ def test_with_covariates(surv_data):
 
 def test_cheatsheet():
     from morie.fn.expsv import cheatsheet
+
     assert "exponential" in cheatsheet().lower()

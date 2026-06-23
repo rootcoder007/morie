@@ -1,6 +1,7 @@
 """Tests for ksr064.kosorok_ch3_cox_partial_likelihood."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr064 import kosorok_ch3_cox_partial_likelihood
 
 
@@ -13,7 +14,7 @@ def test_ksr064_basic():
     n = 100
     result = kosorok_ch3_cox_partial_likelihood(beta, Z, V, d, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr064_edge():

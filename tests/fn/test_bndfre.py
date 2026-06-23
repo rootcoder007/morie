@@ -1,6 +1,7 @@
 """Tests for bndfre.bound_frequentist."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bndfre import bound_frequentist
 
 
@@ -11,7 +12,7 @@ def test_bndfre_basic():
     alpha = 0.05
     result = bound_frequentist(lower, upper, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bndfre_edge():

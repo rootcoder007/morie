@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Corrective RAG: classifier decides to use retrieved docs or fall back to web/self-knowledge."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_corrective_rag"]
@@ -38,7 +40,14 @@ def kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo):
     n = len(query)
     result = float(np.mean(query))
     se = float(np.std(query, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Corrective RAG: classifier decides to use retrieved docs or fall back to web/self-knowledge"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Corrective RAG: classifier decides to use retrieved docs or fall back to web/self-knowledge",
+        }
+    )
 
 
 def cheatsheet():

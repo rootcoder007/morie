@@ -1,6 +1,7 @@
 """Tests for gb_spq.gibbons_spearman_test."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gb_spq import gibbons_spearman_test
 
 
@@ -10,7 +11,7 @@ def test_gb_spq_basic():
     n = 100
     result = gibbons_spearman_test(r_s, n)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'p_value' in result or 'estimate' in result
+    assert "statistic" in result or "p_value" in result or "estimate" in result
 
 
 def test_gb_spq_edge():

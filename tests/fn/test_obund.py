@@ -1,12 +1,10 @@
 """Tests for morie.fn.obund — OTIS Manski bounds."""
 
-import pytest
-from morie.fn.obund import otis_bounds
 from morie.fn._containers import ESRes
+from morie.fn.obund import otis_bounds
 
 
 class TestOtisBounds:
-
     def test_returns_esres(self):
         result = otis_bounds(0, 1, 0.5, mean_treated=0.7, mean_control=0.3)
         assert isinstance(result, ESRes)

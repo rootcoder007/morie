@@ -1,6 +1,7 @@
 """Tests for tmllng.tmle_longitudinal."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmllng import tmle_longitudinal
 
 
@@ -12,7 +13,7 @@ def test_tmllng_basic():
     time = np.linspace(0, 10, 100)
     result = tmle_longitudinal(L, A, Y, time)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmllng_edge():

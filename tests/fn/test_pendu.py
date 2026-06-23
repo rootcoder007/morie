@@ -1,5 +1,7 @@
 """Tests for morie.fn.pendu."""
+
 import numpy as np
+
 from morie.fn.pendu import pendulum
 
 
@@ -13,6 +15,7 @@ def test_pendu_smoke():
 
 def test_cheatsheet():
     from morie.fn.pendu import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

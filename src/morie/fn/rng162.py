@@ -1,6 +1,7 @@
 """Time-varying step size mu(n) per Zhang et al. for VAG signals.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_lms_step_size_zhang"]
@@ -40,7 +41,14 @@ def rangayyan_ch3_lms_step_size_zhang(mu, M, x_bar, alpha, r, n):
     n = len(mu)
     result = float(np.mean(mu))
     se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Time-varying step size mu(n) per Zhang et al. for VAG signals."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Time-varying step size mu(n) per Zhang et al. for VAG signals.",
+        }
+    )
 
 
 def cheatsheet():

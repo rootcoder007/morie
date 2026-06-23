@@ -7,6 +7,7 @@ approximately ``1 - bias`` — is verified by feeding its output back
 through the Phase A audit, which both checks the generator and serves
 as an end-to-end audit-pipeline test.
 """
+
 import numpy as np
 import pytest
 
@@ -17,20 +18,18 @@ from morie.fairness.simulation import (
     simulate_biased_crime_data,
 )
 
-
 # ── noisy_or_detection ──────────────────────────────────────────────
 
+
 def test_noisy_or_one_officer_in_range():
-    res = noisy_or_detection([[0.0, 0.0], [10.0, 10.0]], [[0.1, 0.1]],
-                             radius=1.0)
+    res = noisy_or_detection([[0.0, 0.0], [10.0, 10.0]], [[0.1, 0.1]], radius=1.0)
     p = res.payload["probabilities"]
-    assert p[0] == pytest.approx(0.85)   # one officer, p=0.85
-    assert p[1] == pytest.approx(0.0)    # no officer in range
+    assert p[0] == pytest.approx(0.85)  # one officer, p=0.85
+    assert p[1] == pytest.approx(0.0)  # no officer in range
 
 
 def test_noisy_or_two_officers_compound():
-    res = noisy_or_detection([[0.0, 0.0]], [[0.1, 0.0], [0.0, 0.1]],
-                             radius=1.0)
+    res = noisy_or_detection([[0.0, 0.0]], [[0.1, 0.0], [0.0, 0.1]], radius=1.0)
     # 1 - (1 - 0.85)^2 = 1 - 0.0225
     assert res.payload["probabilities"][0] == pytest.approx(0.9775)
 
@@ -41,10 +40,8 @@ def test_noisy_or_no_officers():
 
 
 def test_noisy_or_sampling_is_seeded():
-    a = noisy_or_detection([[0.0, 0.0]] * 50, [[0.0, 0.0]], radius=1.0,
-                           seed=7)
-    b = noisy_or_detection([[0.0, 0.0]] * 50, [[0.0, 0.0]], radius=1.0,
-                           seed=7)
+    a = noisy_or_detection([[0.0, 0.0]] * 50, [[0.0, 0.0]], radius=1.0, seed=7)
+    b = noisy_or_detection([[0.0, 0.0]] * 50, [[0.0, 0.0]], radius=1.0, seed=7)
     assert list(a.payload["detected"]) == list(b.payload["detected"])
 
 
@@ -55,18 +52,17 @@ def test_noisy_or_bad_shape_raises():
 
 # ── simulate_biased_crime_data ──────────────────────────────────────
 
+
 def test_simulator_columns_and_size():
     df = simulate_biased_crime_data(n=500, seed=1)
     assert len(df) == 500
-    assert set(df.columns) == {"area", "group", "true_outcome",
-                               "detected", "risk_score"}
+    assert set(df.columns) == {"area", "group", "true_outcome", "detected", "risk_score"}
 
 
 def test_simulator_bias_zero_is_fair():
     # bias = 0 -> every group flagged at base_rate -> DIR ~ 1
     df = simulate_biased_crime_data(n=8000, bias=0.0, base_rate=0.4, seed=2)
-    di = fairness_disparate_impact(df["detected"], df["group"],
-                                   privileged="A")
+    di = fairness_disparate_impact(df["detected"], df["group"], privileged="A")
     assert float(di) == pytest.approx(1.0, abs=0.08)
     assert di.payload["adverse_impact"] is False
 
@@ -74,8 +70,7 @@ def test_simulator_bias_zero_is_fair():
 def test_simulator_injected_bias_is_recovered():
     # bias = 0.6 -> non-reference DIR ~ 1 - 0.6 = 0.4
     df = simulate_biased_crime_data(n=8000, bias=0.6, base_rate=0.4, seed=3)
-    di = fairness_disparate_impact(df["detected"], df["group"],
-                                   privileged="A")
+    di = fairness_disparate_impact(df["detected"], df["group"], privileged="A")
     assert float(di) == pytest.approx(0.4, abs=0.08)
     assert di.payload["adverse_impact"] is True
 

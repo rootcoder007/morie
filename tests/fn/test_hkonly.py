@@ -1,6 +1,7 @@
 """Tests for hkonly.hadamard_response."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hkonly import hadamard_response
 
 
@@ -10,7 +11,7 @@ def test_hkonly_basic():
     epsilon = 1e-6
     result = hadamard_response(x, epsilon)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hkonly_edge():

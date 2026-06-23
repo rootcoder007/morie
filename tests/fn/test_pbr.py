@@ -1,15 +1,13 @@
 """Tests for morie.fn.pbr -- Point-biserial correlation."""
 
-import numpy as np
-import pytest
 from morie.fn.pbr import point_biserial_r
 
 
 class TestPointBiserialR:
     def test_known_correlation(self):
         """Binary grouping with different means yields nonzero r."""
-        binary = [0]*20 + [1]*20
-        continuous = [1.0]*20 + [5.0]*20
+        binary = [0] * 20 + [1] * 20
+        continuous = [1.0] * 20 + [5.0] * 20
         result = point_biserial_r(binary, continuous)
         assert isinstance(result, dict)
         assert "r" in result

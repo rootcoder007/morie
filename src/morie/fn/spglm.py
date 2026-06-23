@@ -75,7 +75,7 @@ def spglm(
             d_mu = mu * (1 - mu) + 1e-12
         else:
             d_mu = np.ones(n)
-        W = np.diag(d_mu ** 2 / v)
+        W = np.diag(d_mu**2 / v)
         z = eta + (y - mu) / (d_mu + 1e-12)
         WR = W @ R_inv
         A = X.T @ WR @ X

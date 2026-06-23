@@ -1,6 +1,7 @@
 """Tests for eslmdl.esl_mdl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslmdl import esl_mdl
 
 
@@ -10,7 +11,7 @@ def test_eslmdl_basic():
     theta = 0.0
     result = esl_mdl(loglik, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslmdl_edge():

@@ -90,11 +90,7 @@ def em_variational_bayes(
         log_rho = np.zeros((n, K))
         for k in range(K):
             diff = x - m[k]
-            log_rho[:, k] = (
-                E_ln_pi[k]
-                + 0.5 * E_ln_tau[k]
-                - 0.5 * E_tau[k] * (diff ** 2 + 1.0 / beta[k])
-            )
+            log_rho[:, k] = E_ln_pi[k] + 0.5 * E_ln_tau[k] - 0.5 * E_tau[k] * (diff**2 + 1.0 / beta[k])
 
         log_rho -= np.max(log_rho, axis=1, keepdims=True)
         r = np.exp(log_rho)

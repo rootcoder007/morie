@@ -3,6 +3,8 @@
 import numpy as np
 
 from ._containers import DescriptiveResult
+
+
 def shannon_diversity(abundances, **kwargs) -> DescriptiveResult:
     r"""
     Compute the Shannon diversity index H'.

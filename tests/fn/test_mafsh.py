@@ -1,6 +1,7 @@
 """Test mafsh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mafsh import mafsh
 
 

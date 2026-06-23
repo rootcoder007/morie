@@ -1,6 +1,7 @@
 """Tests for sptgk.schabenberger_trans_gaussian_kriging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.sptgk import schabenberger_trans_gaussian_kriging
 
 
@@ -10,10 +11,10 @@ def test_sptgk_basic():
     z = np.random.default_rng(44).normal(0, 1, 100)
     target = np.random.default_rng(43).integers(0, 2, 100)
     transformation = np.random.default_rng(42).normal(0, 1, 100)
-    cov_model = 'exponential'
+    cov_model = "exponential"
     result = schabenberger_trans_gaussian_kriging(coords, z, target, transformation, cov_model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_sptgk_edge():
@@ -22,6 +23,6 @@ def test_sptgk_edge():
     z = np.random.default_rng(44).normal(0, 1, 100)
     target = np.random.default_rng(43).integers(0, 2, 100)
     transformation = np.random.default_rng(42).normal(0, 1, 100)
-    cov_model = 'exponential'
+    cov_model = "exponential"
     result = schabenberger_trans_gaussian_kriging(coords, z, target, transformation, cov_model)
     assert isinstance(result, dict)

@@ -1,6 +1,7 @@
 """Test csmrk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csmrk import csmrk
 
 

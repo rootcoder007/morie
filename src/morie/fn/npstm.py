@@ -1,6 +1,7 @@
 """Nonparametric TMLE for survival treatment effect."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["nonparametric_tmle_survival"]
@@ -36,7 +37,9 @@ def nonparametric_tmle_survival(time, event, A, W):
     n = len(time)
     result = float(np.mean(time))
     se = float(np.std(time, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nonparametric TMLE for survival treatment effect"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Nonparametric TMLE for survival treatment effect"}
+    )
 
 
 def cheatsheet():

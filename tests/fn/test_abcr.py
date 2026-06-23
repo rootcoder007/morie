@@ -1,6 +1,7 @@
 """Tests for morie.fn.abcr -- ABC rejection."""
 
 import numpy as np
+
 from morie.fn.abcr import abc_rejection
 
 

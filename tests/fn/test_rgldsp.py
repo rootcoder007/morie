@@ -1,6 +1,7 @@
 """Tests for rgldsp.rangayyan_dictionary_sparse."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgldsp import rangayyan_dictionary_sparse
 
 
@@ -11,7 +12,7 @@ def test_rgldsp_basic():
     sparsity_T = np.random.default_rng(42).normal(0, 1, 100)
     result = rangayyan_dictionary_sparse(Y, D, sparsity_T)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgldsp_edge():

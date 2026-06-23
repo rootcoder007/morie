@@ -1,6 +1,7 @@
 """MAD-based anomaly score."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mad_anomaly_score"]

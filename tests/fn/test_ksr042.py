@@ -1,6 +1,7 @@
 """Tests for ksr042.kosorok_ch2_functional_delta_method."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ksr042 import kosorok_ch2_functional_delta_method
 
 
@@ -12,7 +13,7 @@ def test_ksr042_basic():
     r_n = np.random.default_rng(42).normal(0, 1, 100)
     result = kosorok_ch2_functional_delta_method(phi, X_n, theta, r_n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_ksr042_edge():

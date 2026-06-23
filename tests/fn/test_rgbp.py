@@ -1,6 +1,7 @@
 """Tests for rgbp.rangayyan_basis_pursuit."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgbp import rangayyan_basis_pursuit
 
 
@@ -11,7 +12,7 @@ def test_rgbp_basic():
     tol = 1e-6
     result = rangayyan_basis_pursuit(x, D, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rgbp_edge():

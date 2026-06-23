@@ -1,6 +1,7 @@
 """Test pphpp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pphpp import pphpp
 
 

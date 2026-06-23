@@ -1,6 +1,7 @@
 """Tests for hbos.hbos."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hbos import hbos
 
 
@@ -10,7 +11,7 @@ def test_hbos_basic():
     bins = np.random.default_rng(42).normal(0, 1, 100)
     result = hbos(X, bins)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hbos_edge():

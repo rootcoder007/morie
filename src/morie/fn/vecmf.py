@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """VECM estimation with error-correction (Johansen 1995)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -45,23 +46,26 @@ def vecm(Y, k_ar=1, coint_rank=1):
         Y = Y.T
     T, k = Y.shape
     if T < 20 or k < 2 or coint_rank < 1 or coint_rank > k:
-        raise ValueError(
-            f"Need T>=20, k>=2, 1<=rank<=k; got T={T}, k={k}, r={coint_rank}.")
+        raise ValueError(f"Need T>=20, k>=2, 1<=rank<=k; got T={T}, k={k}, r={coint_rank}.")
 
     try:
         from statsmodels.tsa.vector_ar.vecm import VECM
+
         m = VECM(Y, k_ar_diff=k_ar, coint_rank=coint_rank, deterministic="ci")
         fit = m.fit()
-        return RichResult(payload={
-            "alpha": np.asarray(fit.alpha),
-            "beta":  np.asarray(fit.beta),
-            "Gamma": [np.asarray(g) for g in fit.gamma.reshape(k_ar, k, k)]
-                      if k_ar > 0 else [],
-            "Sigma": np.asarray(fit.sigma_u),
-            "loglik": float(fit.llf),
-            "n": int(T), "k": int(k), "rank": int(coint_rank),
-            "method": "VECM via statsmodels.tsa.vector_ar.vecm.VECM",
-        })
+        return RichResult(
+            payload={
+                "alpha": np.asarray(fit.alpha),
+                "beta": np.asarray(fit.beta),
+                "Gamma": [np.asarray(g) for g in fit.gamma.reshape(k_ar, k, k)] if k_ar > 0 else [],
+                "Sigma": np.asarray(fit.sigma_u),
+                "loglik": float(fit.llf),
+                "n": int(T),
+                "k": int(k),
+                "rank": int(coint_rank),
+                "method": "VECM via statsmodels.tsa.vector_ar.vecm.VECM",
+            }
+        )
     except Exception:
         pass
 
@@ -78,8 +82,7 @@ def vecm(Y, k_ar=1, coint_rank=1):
         rows = dY.shape[0] - k_ar
         Z0 = dY[k_ar:]
         Z1 = Y[k_ar:-1] if k_ar > 0 else Y[:-1]
-        Z2 = np.column_stack(
-            [dY[k_ar - i - 1 : k_ar - i - 1 + rows] for i in range(k_ar)])
+        Z2 = np.column_stack([dY[k_ar - i - 1 : k_ar - i - 1 + rows] for i in range(k_ar)])
         X = np.column_stack([Z1, Z2])
         B, *_ = np.linalg.lstsq(X, Z0, rcond=None)
         Pi_hat = B[:k].T
@@ -88,15 +91,19 @@ def vecm(Y, k_ar=1, coint_rank=1):
     alpha = U[:, :coint_rank] * s[:coint_rank]
     beta = Vt[:coint_rank].T
     Sigma = (eps.T @ eps) / max(rows - 1, 1)
-    return RichResult(payload={
-        "alpha": alpha,
-        "beta": beta,
-        "Gamma": [],
-        "Sigma": Sigma,
-        "loglik": np.nan,
-        "n": int(T), "k": int(k), "rank": int(coint_rank),
-        "method": "VECM via SVD of OLS Π (numpy fallback)",
-    })
+    return RichResult(
+        payload={
+            "alpha": alpha,
+            "beta": beta,
+            "Gamma": [],
+            "Sigma": Sigma,
+            "loglik": np.nan,
+            "n": int(T),
+            "k": int(k),
+            "rank": int(coint_rank),
+            "method": "VECM via SVD of OLS Π (numpy fallback)",
+        }
+    )
 
 
 def cheatsheet():

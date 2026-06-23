@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rate of convergence for G in single-index: same as 1D nonparametric."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["horowitz_rate_G_estimation"]
@@ -34,7 +36,14 @@ def horowitz_rate_G_estimation(x, y, bandwidth):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rate of convergence for G in single-index: same as 1D nonparametric"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Rate of convergence for G in single-index: same as 1D nonparametric",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,5 +1,5 @@
 """Tests for practical range."""
-import numpy as np
+
 from morie.fn.sgprn import sgprn
 
 

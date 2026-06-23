@@ -1,7 +1,8 @@
 """Tests for morie.fn.sim2d -- simulate 2D unfolding."""
 
 import numpy as np
-from morie.fn.sim2d import simulate_2d_unfolding, sim2d
+
+from morie.fn.sim2d import sim2d, simulate_2d_unfolding
 
 
 def test_sim2d_smoke():

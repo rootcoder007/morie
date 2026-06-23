@@ -1,6 +1,7 @@
 """Isomap MDS on geodesic distance matrix."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_isomap"]
@@ -34,7 +35,9 @@ def sgt_isomap(X, k, dim):
     n = len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Isomap MDS on geodesic distance matrix"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Isomap MDS on geodesic distance matrix"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """StereoSet bias: fraction of stereotype-preferred vs anti-stereotype continuations."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_stereoset_bias"]
@@ -32,7 +34,14 @@ def kamath_stereoset_bias(stereo_probs, anti_probs):
     n = len(stereo_probs)
     result = float(np.mean(stereo_probs))
     se = float(np.std(stereo_probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "StereoSet bias: fraction of stereotype-preferred vs anti-stereotype continuations"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "StereoSet bias: fraction of stereotype-preferred vs anti-stereotype continuations",
+        }
+    )
 
 
 def cheatsheet():

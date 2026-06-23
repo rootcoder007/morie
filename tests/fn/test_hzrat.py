@@ -1,6 +1,8 @@
 """Tests for hzrat: hazard ratio with CI."""
+
 import numpy as np
 import pytest
+
 from morie.fn.hzrat import hzrat
 
 

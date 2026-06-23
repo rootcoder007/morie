@@ -1,7 +1,9 @@
 """Test cross_fit."""
+
 import numpy as np
-from morie.fn.xfit import cross_fit, xfit
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.xfit import cross_fit, xfit
 
 
 class TestCrossFit:

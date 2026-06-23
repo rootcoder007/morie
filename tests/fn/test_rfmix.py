@@ -1,6 +1,8 @@
 """Tests for rfmix."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rfmix import rfmix
 
 
@@ -28,4 +30,5 @@ def test_rfmix_no_data():
 
 def test_rfmix_alias():
     from morie.fn.rfmix import rfmix
+
     assert rfmix is rfmix

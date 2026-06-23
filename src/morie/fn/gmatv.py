@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Genomic relationship matrix (VanRaden 2008, methods 1 and 2)."""
+
 from __future__ import annotations
 
 import numpy as np

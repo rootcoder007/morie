@@ -1,6 +1,7 @@
 """Tests for eslfdr.esl_bh_fdr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslfdr import esl_bh_fdr
 
 
@@ -10,7 +11,7 @@ def test_eslfdr_basic():
     alpha = 0.05
     result = esl_bh_fdr(pvalues, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslfdr_edge():

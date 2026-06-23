@@ -1,7 +1,7 @@
 """Tests for morie.fn.pastr."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pastr import pastr
 
 

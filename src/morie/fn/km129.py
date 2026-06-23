@@ -1,6 +1,7 @@
 r"""Modality encoder.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch9_modality_encoder"]

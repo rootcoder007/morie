@@ -1,6 +1,7 @@
 """Tests for facov.factor_analytic_covariance."""
+
 import numpy as np
-import pytest
+
 from morie.fn.facov import factor_analytic_covariance
 
 
@@ -10,7 +11,7 @@ def test_facov_basic():
     n_factors = np.random.default_rng(42).normal(0, 1, 100)
     result = factor_analytic_covariance(n_env, n_factors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_facov_edge():

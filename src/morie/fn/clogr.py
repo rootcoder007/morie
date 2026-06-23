@@ -76,8 +76,7 @@ def conditional_logistic(
         return g
 
     x0 = np.zeros(p)
-    res = optimize.minimize(neg_cond_loglik, x0, jac=lambda b: -grad(b),
-                            method="BFGS", options={"maxiter": max_iter})
+    res = optimize.minimize(neg_cond_loglik, x0, jac=lambda b: -grad(b), method="BFGS", options={"maxiter": max_iter})
     beta = res.x
     ll = float(-res.fun)
 
@@ -90,6 +89,7 @@ def conditional_logistic(
         se_arr = np.full(p, float("nan"))
 
     from scipy import stats as _st
+
     z_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.norm.sf(np.abs(z_vals))
 

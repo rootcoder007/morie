@@ -1,6 +1,7 @@
 """Tests for kmgev.kamath_g_eval."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmgev import kamath_g_eval
 
 
@@ -12,7 +13,7 @@ def test_kmgev_basic():
     model = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_g_eval(x, y, rubric, model)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmgev_edge():

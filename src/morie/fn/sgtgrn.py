@@ -1,6 +1,7 @@
 """GCN propagation step Â^k X."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_graph_neural_propagation"]

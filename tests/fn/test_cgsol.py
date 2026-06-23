@@ -1,8 +1,9 @@
 """Tests for morie.fn.cgsol -- Conjugate gradient solver."""
 
 import numpy as np
-from morie.fn.cgsol import conjugate_gradient, cgsol
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.cgsol import cgsol, conjugate_gradient
 
 
 class TestCgsol:

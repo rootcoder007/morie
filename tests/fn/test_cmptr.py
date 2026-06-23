@@ -1,6 +1,7 @@
 """Tests for morie.fn.cmptr — compliance trend."""
 
 import pandas as pd
+
 from morie.fn.cmptr import compliance_trend
 
 

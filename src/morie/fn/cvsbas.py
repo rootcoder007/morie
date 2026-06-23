@@ -99,4 +99,4 @@ cvsbas = cvss_base
 
 
 def cheatsheet() -> str:
-    return 'cvsbas() -> Compute CVSS v3.1 base score from metric values'
+    return "cvsbas() -> Compute CVSS v3.1 base score from metric values"

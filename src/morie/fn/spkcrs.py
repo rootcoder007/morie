@@ -1,5 +1,7 @@
 """Cross K-function for bivariate point patterns."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_cross_k_function"]
@@ -37,7 +39,9 @@ def schabenberger_cross_k_function(points1, points2, lambda1, lambda2, r):
     n = int(points1) if points1.ndim == 0 else len(points1)
     result = float(np.mean(points1))
     se = float(np.std(points1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cross K-function for bivariate point patterns"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Cross K-function for bivariate point patterns"}
+    )
 
 
 def cheatsheet():

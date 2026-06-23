@@ -5,6 +5,7 @@ Known-answer checks plus stability/instability guards: a system whose
 disparity is constant over time must show no temporal-instability
 signal, and a system whose disparity swings must be flagged.
 """
+
 import pytest
 
 from morie.fairness.temporal import predpol_temporal_audit

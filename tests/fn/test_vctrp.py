@@ -1,8 +1,9 @@
 """Tests for morie.fn.vctrp — repeat victimization."""
 
 import pytest
-from morie.fn.vctrp import victim_repeat
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.vctrp import victim_repeat
 
 
 class TestVictimRepeat:

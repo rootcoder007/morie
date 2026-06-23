@@ -1,7 +1,9 @@
 """Test equal_error_rate (eercl)."""
+
 import numpy as np
-from morie.fn.eercl import equal_error_rate, eercl
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.eercl import eercl, equal_error_rate
 
 
 class TestEercl:

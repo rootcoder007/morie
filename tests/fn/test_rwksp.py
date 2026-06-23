@@ -1,6 +1,7 @@
 """Test rwksp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rwksp import rwksp
 
 

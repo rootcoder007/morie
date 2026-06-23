@@ -1,6 +1,7 @@
 """Tests for eslbrm.esl_boltzmann."""
+
 import numpy as np
-import pytest
+
 from morie.fn.eslbrm import esl_boltzmann
 
 
@@ -10,7 +11,7 @@ def test_eslbrm_basic():
     h = 0.3
     result = esl_boltzmann(v, h)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_eslbrm_edge():

@@ -163,6 +163,7 @@ class EmissionsData:
             if isinstance(v, str):
                 return v.replace(",", " ").replace("\n", " ").replace("\r", " ")
             return v
+
         return ",".join(
             str(_clean(v))
             for v in [

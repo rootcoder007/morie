@@ -1,6 +1,7 @@
 """Tests for tmltrn.tmle_transportability."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmltrn import tmle_transportability
 
 
@@ -12,7 +13,7 @@ def test_tmltrn_basic():
     S = np.random.default_rng(42).normal(0, 1, 100)
     result = tmle_transportability(y, D, X, S)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmltrn_edge():

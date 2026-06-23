@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Incomplete beta integral identity linking binomial CDF and beta CDF."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["gibbons_binomial_beta_link"]
@@ -34,7 +36,14 @@ def gibbons_binomial_beta_link(t, r, n):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Incomplete beta integral identity linking binomial CDF and beta CDF"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Incomplete beta integral identity linking binomial CDF and beta CDF",
+        }
+    )
 
 
 def cheatsheet():

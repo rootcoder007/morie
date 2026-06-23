@@ -37,6 +37,4 @@ class TestSchon:
     def test_raises_shape_mismatch(self):
         """Mismatched beta length raises ValueError."""
         with pytest.raises(ValueError, match="beta length"):
-            schon(np.array([1, 2, 3]), np.array([1, 0, 1]),
-                  np.array([[1, 2], [3, 4], [5, 6]]),
-                  np.array([0.1]))
+            schon(np.array([1, 2, 3]), np.array([1, 0, 1]), np.array([[1, 2], [3, 4], [5, 6]]), np.array([0.1]))

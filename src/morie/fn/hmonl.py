@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Online learning: sequentially update model with streaming data and learning rate."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_online_learning"]
@@ -34,7 +36,14 @@ def geron_online_learning(X_stream, y_stream, eta):
     n = len(X_stream)
     result = float(np.mean(X_stream))
     se = float(np.std(X_stream, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Online learning: sequentially update model with streaming data and learning rate"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Online learning: sequentially update model with streaming data and learning rate",
+        }
+    )
 
 
 def cheatsheet():

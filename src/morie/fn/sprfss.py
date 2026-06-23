@@ -1,5 +1,7 @@
 """Stationarity definitions: strict, second-order, intrinsic."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["schabenberger_random_field_stationarity"]
@@ -28,7 +30,14 @@ def schabenberger_random_field_stationarity(x=None, *args, **kwargs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Stationarity definitions: strict, second-order, intrinsic"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Stationarity definitions: strict, second-order, intrinsic",
+        }
+    )
 
 
 def cheatsheet():

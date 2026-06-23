@@ -1,5 +1,7 @@
 """Test viras."""
+
 import pytest
+
 from morie.fn.viras import virasoro_algebra
 
 

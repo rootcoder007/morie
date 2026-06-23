@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Holt's linear trend (double exponential smoothing)."""
+
 from __future__ import annotations
 
 import numpy as np

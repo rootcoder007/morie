@@ -1,6 +1,7 @@
 """Tests for morie.fn.rhatd -- R-hat diagnostic."""
 
 import numpy as np
+
 from morie.fn.rhatd import rhat_diagnostic
 
 
@@ -22,10 +23,12 @@ def test_converged_chains():
 
 def test_divergent_chains():
     rng = np.random.default_rng(42)
-    chains = np.array([
-        rng.normal(0, 0.1, 500),
-        rng.normal(100, 0.1, 500),
-    ])
+    chains = np.array(
+        [
+            rng.normal(0, 0.1, 500),
+            rng.normal(100, 0.1, 500),
+        ]
+    )
     result = rhat_diagnostic(chains)
     assert result["rhat"] > 1.1
 

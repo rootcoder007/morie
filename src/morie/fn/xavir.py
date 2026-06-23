@@ -72,4 +72,4 @@ short = xavier_init
 
 
 def cheatsheet() -> str:
-    return 'xavir() -> Generate Xavier/Glorot weight initialization matrix'
+    return "xavir() -> Generate Xavier/Glorot weight initialization matrix"

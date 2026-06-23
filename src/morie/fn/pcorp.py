@@ -56,4 +56,4 @@ pcorp = partial_correlation
 
 
 def cheatsheet() -> str:
-    return 'partial_correlation({}) -> Partial correlation.'
+    return "partial_correlation({}) -> Partial correlation."

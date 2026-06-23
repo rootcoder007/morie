@@ -1,6 +1,7 @@
 """Tests for hmlaso.geron_lasso_cost."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmlaso import geron_lasso_cost
 
 
@@ -12,7 +13,7 @@ def test_hmlaso_basic():
     alpha = 0.05
     result = geron_lasso_cost(X, y, theta, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmlaso_edge():

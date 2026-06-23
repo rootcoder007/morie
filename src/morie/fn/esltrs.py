@@ -1,6 +1,7 @@
 """Truncated power basis for splines."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["esl_basis_truncated"]

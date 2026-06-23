@@ -1,6 +1,7 @@
 """Elastic net cost function: MSE plus a weighted mix of lasso (L1) and ridge (L2) regularization controlled by ratio r.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["geron_ch4_elastic_net_cost_function"]
@@ -38,7 +39,14 @@ def geron_ch4_elastic_net_cost_function(X, y, theta, alpha, r):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Elastic net cost function: MSE plus a weighted mix of lasso (L1) and ridge (L2) regularization controlled by ratio r."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Elastic net cost function: MSE plus a weighted mix of lasso (L1) and ridge (L2) regularization controlled by ratio r.",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Test agprx."""
+
 import numpy as np
-import pytest
+
 from morie.fn.agprx import agprx
 
 

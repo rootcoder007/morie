@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Efficient influence function for semiparametric BvM."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_eff_infl_fn"]
@@ -30,7 +32,9 @@ def ghosal_eff_infl_fn(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Efficient influence function for semiparametric BvM"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Efficient influence function for semiparametric BvM"}
+    )
 
 
 def cheatsheet():

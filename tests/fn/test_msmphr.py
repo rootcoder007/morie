@@ -1,6 +1,7 @@
 """Tests for msmphr.msm_proportional_hazards."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msmphr import msm_proportional_hazards
 
 
@@ -12,7 +13,7 @@ def test_msmphr_basic():
     covariate_history = np.random.default_rng(42).normal(0, 1, 100)
     result = msm_proportional_hazards(time, event, treatment_history, covariate_history)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msmphr_edge():

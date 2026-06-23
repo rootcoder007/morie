@@ -1,6 +1,7 @@
 """Updated SPKI rule when a QRS is detected in the search-back procedure.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_pan_tompkins_searchback_update"]
@@ -32,7 +33,14 @@ def rangayyan_ch4_pan_tompkins_searchback_update(PEAKI, SPKI):
     n = len(PEAKI)
     result = float(np.mean(PEAKI))
     se = float(np.std(PEAKI, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Updated SPKI rule when a QRS is detected in the search-back procedure."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Updated SPKI rule when a QRS is detected in the search-back procedure.",
+        }
+    )
 
 
 def cheatsheet():

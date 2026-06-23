@@ -1,6 +1,7 @@
 """Tests for rng159.rangayyan_ch3_lms_gradient_estimate."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng159 import rangayyan_ch3_lms_gradient_estimate
 
 
@@ -13,7 +14,7 @@ def test_rng159_basic():
     n = 100
     result = rangayyan_ch3_lms_gradient_estimate(x, r, w, e, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng159_edge():

@@ -1,6 +1,7 @@
 """Tests for magpa.ma_glmm_ipd_proportion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.magpa import ma_glmm_ipd_proportion
 
 
@@ -10,7 +11,7 @@ def test_magpa_basic():
     n = 100
     result = ma_glmm_ipd_proportion(x, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_magpa_edge():

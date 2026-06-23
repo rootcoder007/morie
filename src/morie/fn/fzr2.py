@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """r_2 integral in bias-reduced KDFE variance formula."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["fauzi_r2_integral"]
@@ -36,7 +38,9 @@ def fauzi_r2_integral(kernel, a):
     n = len(kernel)
     result = float(np.mean(kernel))
     se = float(np.std(kernel, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "r_2 integral in bias-reduced KDFE variance formula"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "r_2 integral in bias-reduced KDFE variance formula"}
+    )
 
 
 def cheatsheet():

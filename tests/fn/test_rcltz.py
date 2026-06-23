@@ -1,7 +1,7 @@
 """Tests for morie.fn.rcltz."""
 
 import numpy as np
-import pytest
+
 from morie.fn.rcltz import rcltz
 
 

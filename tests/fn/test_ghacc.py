@@ -1,6 +1,7 @@
 """Test ghacc."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghacc import ghacc
 
 

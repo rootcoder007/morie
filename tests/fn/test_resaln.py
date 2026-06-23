@@ -1,6 +1,7 @@
 """Tests for resaln.resultant."""
+
 import numpy as np
-import pytest
+
 from morie.fn.resaln import resultant
 
 
@@ -10,7 +11,7 @@ def test_resaln_basic():
     q = np.random.default_rng(42).normal(0, 1, 100)
     result = resultant(p, q)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_resaln_edge():

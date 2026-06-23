@@ -1,6 +1,7 @@
 """Sequential Monte Carlo for optimization."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sequential_mc"]
@@ -34,7 +35,9 @@ def sequential_mc(f, x0, temperatures):
     n = len(f)
     result = float(np.mean(f))
     se = float(np.std(f, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sequential Monte Carlo for optimization"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Sequential Monte Carlo for optimization"}
+    )
 
 
 def cheatsheet():

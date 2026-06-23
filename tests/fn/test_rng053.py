@@ -1,6 +1,7 @@
 """Tests for rng053.rangayyan_ch3_z_transform_fir."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng053 import rangayyan_ch3_z_transform_fir
 
 
@@ -12,7 +13,7 @@ def test_rng053_basic():
     N = 100
     result = rangayyan_ch3_z_transform_fir(h, n, z, N)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng053_edge():

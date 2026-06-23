@@ -7,7 +7,6 @@ from morie.fn.starn import starn
 
 
 class TestStarn:
-
     def test_output_keys(self):
         rng = np.random.default_rng(42)
         data = rng.standard_normal((10, 5))

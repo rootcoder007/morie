@@ -1,6 +1,11 @@
 """Tests for correlation_matrix."""
-import numpy as np, pandas as pd, pytest
+
+import numpy as np
+import pandas as pd
+import pytest
+
 from morie.fn.corrm import correlation_matrix
+
 
 class TestCorrm:
     def test_basic(self):
@@ -10,6 +15,6 @@ class TestCorrm:
         assert r.value.shape == (3, 3)
 
     def test_perfect(self):
-        df = pd.DataFrame({"x": [1,2,3,4,5], "y": [2,4,6,8,10]})
+        df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [2, 4, 6, 8, 10]})
         r = correlation_matrix(df)
         assert r.value.loc["x", "y"] == pytest.approx(1.0)

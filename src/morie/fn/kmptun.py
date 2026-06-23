@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prompt tuning: learned continuous soft-prompt embeddings prepended to input."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_prompt_tuning"]
@@ -32,7 +34,14 @@ def kamath_prompt_tuning(P, X):
     n = len(P)
     result = float(np.mean(P))
     se = float(np.std(P, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Prompt tuning: learned continuous soft-prompt embeddings prepended to input"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Prompt tuning: learned continuous soft-prompt embeddings prepended to input",
+        }
+    )
 
 
 def cheatsheet():

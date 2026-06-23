@@ -1,7 +1,9 @@
 """Test onset_detect_fn."""
+
 import numpy as np
-from morie.fn.onset import onset_detect_fn, alias
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.onset import alias, onset_detect_fn
 
 
 class TestOnsetDetectFn:

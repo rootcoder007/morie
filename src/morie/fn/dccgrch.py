@@ -1,6 +1,8 @@
 """Dynamic conditional correlation GARCH."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["dcc_garch"]
@@ -30,9 +32,18 @@ def dcc_garch(X):
     y = X  # template fallback (no y in spec)
     n = min(len(X), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Dynamic conditional correlation GARCH"})
+        return RichResult(
+            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Dynamic conditional correlation GARCH"}
+        )
     result = stats.spearmanr(X[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Dynamic conditional correlation GARCH"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Dynamic conditional correlation GARCH",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for strmkr.strauss_process."""
+
 import numpy as np
-import pytest
+
 from morie.fn.strmkr import strauss_process
 
 
@@ -11,7 +12,7 @@ def test_strmkr_basic():
     gamma = 1.0
     result = strauss_process(coords, r, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_strmkr_edge():

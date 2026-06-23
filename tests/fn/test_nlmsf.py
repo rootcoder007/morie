@@ -1,7 +1,9 @@
 """Test nlms_filter (nlmsf)."""
+
 import numpy as np
-from morie.fn.nlmsf import nlms_filter, nlmsf
+
 from morie.fn._containers import SignalResult
+from morie.fn.nlmsf import nlms_filter, nlmsf
 
 
 class TestNlmsFilter:

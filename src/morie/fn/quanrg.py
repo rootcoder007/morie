@@ -1,6 +1,7 @@
 """Quantile (LAD when tau=0.5) regression."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["quantile_regression"]
@@ -34,7 +35,9 @@ def quantile_regression(y, X, tau):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Quantile (LAD when tau=0.5) regression"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Quantile (LAD when tau=0.5) regression"}
+    )
 
 
 def cheatsheet():

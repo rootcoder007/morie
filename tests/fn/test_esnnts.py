@@ -1,6 +1,7 @@
 """Tests for esnnts.echo_state_network."""
+
 import numpy as np
-import pytest
+
 from morie.fn.esnnts import echo_state_network
 
 
@@ -10,7 +11,7 @@ def test_esnnts_basic():
     reservoir_size = 100
     result = echo_state_network(y, reservoir_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_esnnts_edge():

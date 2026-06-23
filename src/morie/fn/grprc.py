@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Precision-recall curve: precision and recall over thresholds."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_precision_recall_curve"]
@@ -32,7 +34,14 @@ def geron_precision_recall_curve(y_true, y_scores):
     n = int(y_true) if y_true.ndim == 0 else len(y_true)
     result = float(np.mean(y_true))
     se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Precision-recall curve: precision and recall over thresholds"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Precision-recall curve: precision and recall over thresholds",
+        }
+    )
 
 
 def cheatsheet():

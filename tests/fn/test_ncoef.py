@@ -1,5 +1,7 @@
 """Tests for morie.fn.ncoef — normalize coefficients."""
+
 import numpy as np
+
 from morie.fn.ncoef import ncoef
 
 
@@ -13,6 +15,7 @@ def test_ncoef_smoke():
 
 def test_cheatsheet():
     from morie.fn.ncoef import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

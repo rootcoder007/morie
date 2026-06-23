@@ -32,7 +32,6 @@ License: GPL-2.0-only
 from __future__ import annotations
 
 # SPDX-License-Identifier: GPL-2.0-only
-
 import argparse
 import datetime as _dt
 import importlib.metadata as md
@@ -48,10 +47,23 @@ try:
     from morie._license_check import GPL_COMPATIBLE_LICENSES
 except ImportError:
     GPL_COMPATIBLE_LICENSES = (
-        "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later",
-        "LGPL-2.1-only", "LGPL-2.1-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later",
-        "Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC",
-        "MPL-2.0", "CC0-1.0", "Unlicense", "Zlib",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "Apache-2.0",
+        "MIT",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "ISC",
+        "MPL-2.0",
+        "CC0-1.0",
+        "Unlicense",
+        "Zlib",
     )
 
 
@@ -85,8 +97,12 @@ def _spdx_from_metadata(dist: md.Distribution) -> str:
 
 
 def _audit_record(event: str, **kw) -> dict:
-    return {"ts": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
-            "event": event, "pid": os.getpid(), **kw}
+    return {
+        "ts": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+        "event": event,
+        "pid": os.getpid(),
+        **kw,
+    }
 
 
 def check_installed_env() -> list[dict]:
@@ -97,10 +113,14 @@ def check_installed_env() -> list[dict]:
         name = dist.metadata.get("Name") or "<unknown>"
         spdx = _spdx_from_metadata(dist)
         compatible = spdx in GPL_COMPATIBLE_LICENSES if spdx else None
-        records.append(_audit_record(
-            "import_check", module=name, spdx=spdx or "",
-            compatible=compatible,
-        ))
+        records.append(
+            _audit_record(
+                "import_check",
+                module=name,
+                spdx=spdx or "",
+                compatible=compatible,
+            )
+        )
     return records
 
 
@@ -124,12 +144,16 @@ def watch_loop(log_path: Path, interval: int = 60) -> int:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="morie LSM-style userspace audit daemon")
     ap.add_argument("--log", default="~/.local/state/morie/lsm-audit.jsonl")
-    ap.add_argument("--check-imports", action="store_true",
-                    help="One-shot scan of the current Python environment, then exit.")
-    ap.add_argument("--interval", type=int, default=60,
-                    help="Watch-loop polling interval in seconds (default 60).")
-    ap.add_argument("--enforce", choices=("warn", "exit", "kill"), default="warn",
-                    help="What to do on violation: warn (default), exit non-zero, or send SIGTERM to self.")
+    ap.add_argument(
+        "--check-imports", action="store_true", help="One-shot scan of the current Python environment, then exit."
+    )
+    ap.add_argument("--interval", type=int, default=60, help="Watch-loop polling interval in seconds (default 60).")
+    ap.add_argument(
+        "--enforce",
+        choices=("warn", "exit", "kill"),
+        default="warn",
+        help="What to do on violation: warn (default), exit non-zero, or send SIGTERM to self.",
+    )
     args = ap.parse_args(argv)
 
     log_path = Path(args.log).expanduser()

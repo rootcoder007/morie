@@ -58,4 +58,4 @@ attnr = attenuation_ratio
 
 
 def cheatsheet() -> str:
-    return 'attenuation_ratio({}) -> Disattenuation (correction for attenuation).'
+    return "attenuation_ratio({}) -> Disattenuation (correction for attenuation)."

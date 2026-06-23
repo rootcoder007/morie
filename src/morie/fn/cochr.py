@@ -35,7 +35,7 @@ def cochr(data, axis=0, cdf=None):
     L = np.sum(data, axis=1)
 
     # Cochran's Q statistic
-    Q = (k * (k - 1) * np.sum(G**2) - (k * np.sum(L)**2)) / (k * np.sum(L) - np.sum(L**2))
+    Q = (k * (k - 1) * np.sum(G**2) - (k * np.sum(L) ** 2)) / (k * np.sum(L) - np.sum(L**2))
 
     # p-value from chi-square with k-1 df
     p_value = 1 - sp_stats.chi2.cdf(Q, k - 1)

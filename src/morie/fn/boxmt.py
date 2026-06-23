@@ -44,7 +44,7 @@ def box_m_test(data: np.ndarray, groups: np.ndarray, cdf=None) -> DescriptiveRes
         Sp += (nc - 1) * Sc
 
     N = sum(ns)
-    Sp /= (N - k)
+    Sp /= N - k
 
     _, logdet_Sp = np.linalg.slogdet(Sp + np.eye(p) * 1e-12)
     M = 0.0
@@ -53,7 +53,7 @@ def box_m_test(data: np.ndarray, groups: np.ndarray, cdf=None) -> DescriptiveRes
         _, logdet_Si = np.linalg.slogdet(covs[i] + np.eye(p) * 1e-12)
         M += (ni - 1) * (logdet_Sp - logdet_Si)
 
-    c1 = (2 * p ** 2 + 3 * p - 1) / (6 * (p + 1) * (k - 1))
+    c1 = (2 * p**2 + 3 * p - 1) / (6 * (p + 1) * (k - 1))
     c1 *= sum(1.0 / (ni - 1) for ni in ns) - 1.0 / (N - k)
 
     chi2 = (1 - c1) * M

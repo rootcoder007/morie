@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-fold cross-validation for genomic-prediction accuracy."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -49,10 +50,10 @@ def genomic_cross_validation(x, y, K: int = 5, lam: float = 1.0, seed: int = 0):
         train = np.concatenate([folds[j] for j in range(K) if j != k])
         Xtr, ytr = X[train], y[train]
         Xte = X[test]
-        mu = ytr.mean(); x_mu = Xtr.mean(axis=0)
+        mu = ytr.mean()
+        x_mu = Xtr.mean(axis=0)
         Xtr_c = Xtr - x_mu
-        beta = np.linalg.solve(Xtr_c.T @ Xtr_c + lam * np.eye(p),
-                                Xtr_c.T @ (ytr - mu))
+        beta = np.linalg.solve(Xtr_c.T @ Xtr_c + lam * np.eye(p), Xtr_c.T @ (ytr - mu))
         y_hat[test] = (Xte - x_mu) @ beta + mu
         if len(test) > 1 and np.std(y[test]) > 0 and np.std(y_hat[test]) > 0:
             r_per_fold.append(float(np.corrcoef(y[test], y_hat[test])[0, 1]))

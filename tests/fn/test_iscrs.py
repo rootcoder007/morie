@@ -1,7 +1,7 @@
 """Tests for morie.fn.iscrs."""
 
 import numpy as np
-import pytest
+
 from morie.fn.iscrs import iscrs
 
 

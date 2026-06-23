@@ -70,4 +70,4 @@ lpflt = lowpass_filter
 
 
 def cheatsheet() -> str:
-    return 'lowpass_filter({}) -> Butterworth lowpass filter.'
+    return "lowpass_filter({}) -> Butterworth lowpass filter."

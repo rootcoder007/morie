@@ -1,6 +1,7 @@
 """Tests for morie.fn.frail — frailty model."""
+
 import numpy as np
-import pytest
+
 from morie.fn.frail import frailty_model
 
 

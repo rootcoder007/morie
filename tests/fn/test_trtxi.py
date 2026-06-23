@@ -1,6 +1,7 @@
 """Test trtxi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.trtxi import trtxi
 
 

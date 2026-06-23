@@ -1,7 +1,6 @@
 """Tests for morie.fn.clvr — clever covariate."""
 
 import numpy as np
-import pytest
 
 from morie.fn.clvr import clvr
 

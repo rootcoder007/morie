@@ -1,7 +1,9 @@
 """Test bartlett_psd (psdbt)."""
+
 import numpy as np
-from morie.fn.psdbt import bartlett_psd, psdbt
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.psdbt import bartlett_psd, psdbt
 
 
 class TestPsdbt:

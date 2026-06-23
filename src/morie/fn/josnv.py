@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Seasonal naive: repeat last seasonal period."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["joseph_seasonal_naive"]
@@ -34,7 +36,9 @@ def joseph_seasonal_naive(y, m, horizon):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Seasonal naive: repeat last seasonal period"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Seasonal naive: repeat last seasonal period"}
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,7 @@
 """Tests for snscl.sn_scale."""
+
 import numpy as np
-import pytest
+
 from morie.fn.snscl import sn_scale
 
 
@@ -9,7 +10,7 @@ def test_snscl_basic():
     y = np.random.default_rng(43).normal(0, 1, 100)
     result = sn_scale(y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_snscl_edge():

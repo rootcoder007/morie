@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Silhouette score: mean over points of (b - a) / max(a, b)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_silhouette_score"]
@@ -32,7 +34,14 @@ def geron_silhouette_score(X, labels):
     n = int(X) if X.ndim == 0 else len(X)
     result = float(np.mean(X))
     se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Silhouette score: mean over points of (b - a) / max(a, b)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Silhouette score: mean over points of (b - a) / max(a, b)",
+        }
+    )
 
 
 def cheatsheet():

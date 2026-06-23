@@ -17,6 +17,7 @@ heterogeneous causal effects. *PNAS*, 113(27), 7353-7360.
 Nie, X., & Wager, S. (2021). Quasi-oracle estimation of heterogeneous
 treatment effects. *Biometrika*, 108(2), 299-319.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -24,6 +25,7 @@ from typing import Any
 import numpy as np
 from scipy.special import expit
 from scipy.stats import norm as _norm
+
 from ._richresult import RichResult
 
 __all__ = ["cfore"]
@@ -148,6 +150,7 @@ def cfore(
 
 
 # ---- Minimal regression tree (axis-aligned splits) ----------------------
+
 
 def _fit_tree(X, y, max_depth, min_leaf):
     """Recursively build a regression tree dict."""

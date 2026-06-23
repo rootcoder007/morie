@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Decision trees are insensitive to feature scale (axis-aligned splits)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["geron_tree_sensitivity_scale"]
@@ -32,7 +34,14 @@ def geron_tree_sensitivity_scale(X, y):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Decision trees are insensitive to feature scale (axis-aligned splits)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Decision trees are insensitive to feature scale (axis-aligned splits)",
+        }
+    )
 
 
 def cheatsheet():

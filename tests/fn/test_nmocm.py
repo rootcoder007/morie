@@ -1,7 +1,6 @@
 """Tests for morie.fn.nmocm -- OC Coombs mesh"""
 
 import numpy as np
-import pytest
 
 from morie.fn.nmocm import oc_coombs_mesh
 

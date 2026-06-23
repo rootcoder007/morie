@@ -1,5 +1,7 @@
 """Test Mish activation."""
+
 import numpy as np
+
 from morie.fn.mish import mish
 
 

@@ -1,6 +1,7 @@
 """Test data_loader_stats."""
-from morie.fn.dtldr import data_loader_stats, dtldr
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.dtldr import data_loader_stats, dtldr
 
 
 class TestDataLoaderStats:

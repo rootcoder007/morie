@@ -1,6 +1,7 @@
 """Test wqno2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wqno2 import wqno2
 
 

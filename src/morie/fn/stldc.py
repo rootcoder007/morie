@@ -5,9 +5,7 @@ import numpy as np
 from ._containers import DescriptiveResult
 
 
-def stl_decompose(
-    y: np.ndarray, period: int = 12, trend_window: int | None = None
-) -> DescriptiveResult:
+def stl_decompose(y: np.ndarray, period: int = 12, trend_window: int | None = None) -> DescriptiveResult:
     """
     STL-like decomposition into trend, seasonal, and remainder.
 

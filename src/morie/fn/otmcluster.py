@@ -1,6 +1,7 @@
 """Wasserstein-based k-means using Wasserstein-2 between samples."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_clustering_w"]
@@ -34,7 +35,14 @@ def ot_clustering_w(X_list, k, max_iter):
     n = len(X_list)
     result = float(np.mean(X_list))
     se = float(np.std(X_list, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Wasserstein-based k-means using Wasserstein-2 between samples"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Wasserstein-based k-means using Wasserstein-2 between samples",
+        }
+    )
 
 
 def cheatsheet():

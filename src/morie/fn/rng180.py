@@ -1,6 +1,7 @@
 """MA smoothing filter applied to g_1 in the Murthy-Rangaraj QRS detector.."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_qrs_smoothing_ma_filter"]
@@ -34,7 +35,14 @@ def rangayyan_ch4_qrs_smoothing_ma_filter(g_1, n, M):
     n = len(g_1)
     result = float(np.mean(g_1))
     se = float(np.std(g_1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "MA smoothing filter applied to g_1 in the Murthy-Rangaraj QRS detector."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "MA smoothing filter applied to g_1 in the Murthy-Rangaraj QRS detector.",
+        }
+    )
 
 
 def cheatsheet():

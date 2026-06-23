@@ -1,6 +1,7 @@
 """Tests for covbal.covariate_balance_check."""
+
 import numpy as np
-import pytest
+
 from morie.fn.covbal import covariate_balance_check
 
 
@@ -11,7 +12,7 @@ def test_covbal_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = covariate_balance_check(A, H, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_covbal_edge():

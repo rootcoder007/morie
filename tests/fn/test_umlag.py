@@ -1,7 +1,7 @@
 """Tests for morie.fn.umlag."""
 
 import numpy as np
-import pytest
+
 from morie.fn.umlag import umlag
 
 

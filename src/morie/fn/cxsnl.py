@@ -117,7 +117,7 @@ def cxsnl(
         rho = float(model_params["rho"])
         lam = np.exp(log_lam)
         # H(t | x) = (lambda * exp(x^T beta))^rho * t^rho
-        residuals = (lam * exp_eta) ** rho * time ** rho
+        residuals = (lam * exp_eta) ** rho * time**rho
 
     # KM of Cox-Snell residuals to assess model fit
     # If fit is good: -log(KM(r)) vs r should be the 45-degree line

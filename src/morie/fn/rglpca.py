@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear predictive coding (LPC) analysis of speech/biosignals."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_lpc_analysis"]
@@ -38,7 +40,14 @@ def rangayyan_lpc_analysis(x, order, frame_len, hop_len, fs):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear predictive coding (LPC) analysis of speech/biosignals"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Linear predictive coding (LPC) analysis of speech/biosignals",
+        }
+    )
 
 
 def cheatsheet():

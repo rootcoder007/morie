@@ -1,6 +1,8 @@
 """Tests for gmprl: Gompertz survival model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.gmprl import gmprl
 
 

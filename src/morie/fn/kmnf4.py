@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """NormalFloat4 (NF4) data type: information-theoretically optimal 4-bit grid for N(0,1) weights."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kamath_nf4_datatype"]
@@ -30,7 +32,14 @@ def kamath_nf4_datatype(n_bins):
     n = len(n_bins)
     result = float(np.mean(n_bins))
     se = float(np.std(n_bins, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "NormalFloat4 (NF4) data type: information-theoretically optimal 4-bit grid for N(0,1) weights"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "NormalFloat4 (NF4) data type: information-theoretically optimal 4-bit grid for N(0,1) weights",
+        }
+    )
 
 
 def cheatsheet():

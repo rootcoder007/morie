@@ -1,10 +1,13 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bootstrap resamples of a statistic."""
 
-from typing import Sequence, Union, Callable
+from collections.abc import Callable, Sequence
+from typing import Union
+
 import numpy as np
-def bsboot(x: Union[Sequence, np.ndarray],
-           stat: Callable, n_boot: int = 1000, seed: int = 42) -> np.ndarray:
+
+
+def bsboot(x: Union[Sequence, np.ndarray], stat: Callable, n_boot: int = 1000, seed: int = 42) -> np.ndarray:
     """Generate `n_boot` bootstrap statistics by resampling x with
     replacement.
 

@@ -1,5 +1,7 @@
 """Tests for sign_rank_test."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.sigrn import sign_rank_test
 
 

@@ -1,6 +1,7 @@
 """Tests for chrF.chrf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.chrF import chrf
 
 
@@ -11,7 +12,7 @@ def test_chrF_basic():
     beta = 0.8
     result = chrf(candidate, reference, beta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_chrF_edge():

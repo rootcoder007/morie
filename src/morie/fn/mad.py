@@ -1,13 +1,16 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Median Absolute Deviation with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
+
 import numpy as np
 
 
 def mad(x: Union[Sequence[float], np.ndarray], scale: str = "normal"):
     """Median Absolute Deviation."""
     from ._richresult import RichResult
+
     a = np.asarray(x, dtype=float)
     if a.size < 2:
         raise ValueError("need at least 2 observations.")
@@ -34,8 +37,10 @@ def mad(x: Union[Sequence[float], np.ndarray], scale: str = "normal"):
             ("Median", median),
             ("n", int(a.size)),
         ],
-        interpretation=("MAD is robust to outliers; under Normality, "
-                        "1.4826*MAD ≈ SD. If MAD/SD << 1, the sample SD "
-                        "is being inflated by outliers."),
+        interpretation=(
+            "MAD is robust to outliers; under Normality, "
+            "1.4826*MAD ≈ SD. If MAD/SD << 1, the sample SD "
+            "is being inflated by outliers."
+        ),
         payload={"value": v, "statistic": v, "raw": raw, "median": median},
     )

@@ -1,6 +1,7 @@
 """Test csr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.csr import csr
 
 

@@ -1,6 +1,7 @@
 """Test dtfsk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtfsk import dtfsk
 
 

@@ -1,6 +1,8 @@
 """Tests for cxsnl: Cox-Snell residuals."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cxsnl import cxsnl
 
 
@@ -52,8 +54,7 @@ def test_weibull_model():
     time = np.minimum(T, C)
     event = (T <= C).astype(float)
     beta = np.array([0.3])
-    result = cxsnl(time, event, X, beta, model="weibull",
-                   model_params={"log_lambda": -1.0, "rho": 1.5})
+    result = cxsnl(time, event, X, beta, model="weibull", model_params={"log_lambda": -1.0, "rho": 1.5})
     assert np.all(result["residuals"] >= 0)
 
 

@@ -2,8 +2,9 @@
 
 import numpy as np
 import pytest
-from morie.fn.cocht import cochrans_q_test
+
 from morie.fn._containers import TestResult
+from morie.fn.cocht import cochrans_q_test
 
 
 class TestCochranQ:
@@ -17,11 +18,13 @@ class TestCochranQ:
 
     def test_different_proportions(self):
         """One column all 1, another all 0 => significant."""
-        data = np.column_stack([
-            np.ones(30),
-            np.zeros(30),
-            np.ones(30),
-        ])
+        data = np.column_stack(
+            [
+                np.ones(30),
+                np.zeros(30),
+                np.ones(30),
+            ]
+        )
         r = cochrans_q_test(data)
         assert r.p_value < 0.001
 

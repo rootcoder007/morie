@@ -1,6 +1,7 @@
 """Tests for rng171.rangayyan_ch3_rls_kalman_gain."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rng171 import rangayyan_ch3_rls_kalman_gain
 
 
@@ -12,7 +13,7 @@ def test_rng171_basic():
     n = 100
     result = rangayyan_ch3_rls_kalman_gain(P, r, lam, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_rng171_edge():

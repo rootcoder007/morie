@@ -1,6 +1,7 @@
 """Tests for hrzconf.horowitz_confidence_bands."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hrzconf import horowitz_confidence_bands
 
 
@@ -12,7 +13,7 @@ def test_hrzconf_basic():
     alpha = 0.05
     result = horowitz_confidence_bands(x, y, bandwidth, alpha)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hrzconf_edge():

@@ -1,6 +1,7 @@
 """Tests for viterb.viterbi."""
+
 import numpy as np
-import pytest
+
 from morie.fn.viterb import viterbi
 
 
@@ -11,7 +12,7 @@ def test_viterb_basic():
     emit = np.random.default_rng(42).normal(0, 1, 100)
     result = viterbi(obs, trans, emit)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_viterb_edge():

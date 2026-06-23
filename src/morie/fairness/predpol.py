@@ -26,6 +26,7 @@ no code was copied — the SciencesPo repository carries no licence and
 its code is not redistributable; this is an independent implementation
 from the project's written methodology.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -191,9 +192,7 @@ def predpol_calibration_audit(
     group = np.asarray(list(group), dtype=object)
     n = len(areas)
     if not (n == len(mean_risk) == len(outcome_rate) == len(group)):
-        raise ValueError(
-            "areas, mean_risk, outcome_rate and group must all align"
-        )
+        raise ValueError("areas, mean_risk, outcome_rate and group must all align")
     if n < 2:
         raise ValueError("need at least two areas to compare rankings")
 
@@ -201,18 +200,17 @@ def predpol_calibration_audit(
     finite = np.isfinite(mean_risk) & np.isfinite(outcome_rate)
     if not finite.all():
         warnings.append(
-            f"{int((~finite).sum())} area(s) had a non-finite risk or "
-            f"outcome value and were dropped from the audit."
+            f"{int((~finite).sum())} area(s) had a non-finite risk or outcome value and were dropped from the audit."
         )
         areas, mean_risk, outcome_rate, group = (
-            areas[finite], mean_risk[finite],
-            outcome_rate[finite], group[finite],
+            areas[finite],
+            mean_risk[finite],
+            outcome_rate[finite],
+            group[finite],
         )
         n = len(areas)
         if n < 2:
-            raise ValueError(
-                "fewer than two areas remain after dropping non-finite rows"
-            )
+            raise ValueError("fewer than two areas remain after dropping non-finite rows")
 
     # Rank 1 = highest risk / highest outcome rate.
     risk_rank = rankdata(-mean_risk, method="average")
@@ -241,47 +239,67 @@ def predpol_calibration_audit(
     worst = per_group[worst_group]
 
     area_rows = [
-        [str(a), str(gv), round(float(mr), 3), round(float(orr), 3),
-         round(float(rr), 1), round(float(orank), 1), round(float(gap), 1)]
+        [
+            str(a),
+            str(gv),
+            round(float(mr), 3),
+            round(float(orr), 3),
+            round(float(rr), 1),
+            round(float(orank), 1),
+            round(float(gap), 1),
+        ]
         for a, gv, mr, orr, rr, orank, gap in zip(
-            areas, group, mean_risk, outcome_rate,
-            risk_rank, outcome_rank, rank_gap)
+            areas, group, mean_risk, outcome_rate, risk_rank, outcome_rank, rank_gap
+        )
     ]
     group_rows = [
-        [str(gv), group_n[gv], round(per_group[gv], 3),
-         "over-predicted" if per_group[gv] > 0.5
-         else "under-predicted" if per_group[gv] < -0.5
-         else "≈ calibrated"]
+        [
+            str(gv),
+            group_n[gv],
+            round(per_group[gv], 3),
+            "over-predicted" if per_group[gv] > 0.5 else "under-predicted" if per_group[gv] < -0.5 else "≈ calibrated",
+        ]
         for gv in per_group
     ]
 
     if not np.isfinite(rho):
-        cal = ("Overall calibration could not be assessed — predicted "
-               "risk or realised outcome is constant across all areas.")
+        cal = (
+            "Overall calibration could not be assessed — predicted "
+            "risk or realised outcome is constant across all areas."
+        )
     elif rho >= 0.7:
-        cal = (f"Overall the ranking is well calibrated "
-               f"(Spearman ρ = {rho:.2f}): predicted risk broadly tracks "
-               f"realised outcomes.")
+        cal = (
+            f"Overall the ranking is well calibrated "
+            f"(Spearman ρ = {rho:.2f}): predicted risk broadly tracks "
+            f"realised outcomes."
+        )
     elif rho >= 0.3:
-        cal = (f"Overall calibration is weak (Spearman ρ = {rho:.2f}): "
-               f"predicted risk only loosely tracks realised outcomes.")
+        cal = (
+            f"Overall calibration is weak (Spearman ρ = {rho:.2f}): "
+            f"predicted risk only loosely tracks realised outcomes."
+        )
     else:
-        cal = (f"Overall the ranking is miscalibrated "
-               f"(Spearman ρ = {rho:.2f}): predicted risk does not track "
-               f"realised outcomes.")
+        cal = (
+            f"Overall the ranking is miscalibrated "
+            f"(Spearman ρ = {rho:.2f}): predicted risk does not track "
+            f"realised outcomes."
+        )
 
     if abs(worst) <= 0.5:
-        disp = ("No group's areas are systematically mis-ranked; the "
-                "rank gaps are small across groups.")
+        disp = "No group's areas are systematically mis-ranked; the rank gaps are small across groups."
     elif worst > 0:
-        disp = (f"Group {worst_group!r} is over-predicted: its areas are "
-                f"ranked, on average, {worst:.1f} rank positions more "
-                f"dangerous than their realised outcomes warrant — the "
-                f"signature of disparate over-policing.")
+        disp = (
+            f"Group {worst_group!r} is over-predicted: its areas are "
+            f"ranked, on average, {worst:.1f} rank positions more "
+            f"dangerous than their realised outcomes warrant — the "
+            f"signature of disparate over-policing."
+        )
     else:
-        disp = (f"Group {worst_group!r} is under-predicted: its areas are "
-                f"ranked, on average, {abs(worst):.1f} rank positions "
-                f"less dangerous than their realised outcomes.")
+        disp = (
+            f"Group {worst_group!r} is under-predicted: its areas are "
+            f"ranked, on average, {abs(worst):.1f} rank positions "
+            f"less dangerous than their realised outcomes."
+        )
 
     return RichResult(
         title="Predictive-Policing Calibration Audit",
@@ -291,17 +309,20 @@ def predpol_calibration_audit(
             ("Worst group rank gap", worst),
             ("Worst-affected group", worst_group),
         ],
-        sections=[{
-            "title": "Per-group mean rank gap (outcome rank − risk rank):",
-            "headers": ["group", "n areas", "mean gap", "direction"],
-            "table": group_rows,
-        }],
-        tables=[{
-            "title": "Per-area ranking:",
-            "headers": ["area", "group", "mean risk", "outcome rate",
-                        "risk rank", "outcome rank", "gap"],
-            "rows": area_rows,
-        }],
+        sections=[
+            {
+                "title": "Per-group mean rank gap (outcome rank − risk rank):",
+                "headers": ["group", "n areas", "mean gap", "direction"],
+                "table": group_rows,
+            }
+        ],
+        tables=[
+            {
+                "title": "Per-area ranking:",
+                "headers": ["area", "group", "mean risk", "outcome rate", "risk rank", "outcome rank", "gap"],
+                "rows": area_rows,
+            }
+        ],
         warnings=warnings,
         interpretation=cal + " " + disp,
         payload={
@@ -371,9 +392,7 @@ def predpol_score_disparity(
     warnings: list[str] = []
     finite = np.isfinite(score)
     if not finite.all():
-        warnings.append(
-            f"{int((~finite).sum())} non-finite score value(s) dropped."
-        )
+        warnings.append(f"{int((~finite).sum())} non-finite score value(s) dropped.")
         score, group = score[finite], group[finite]
     groups = _ordered_unique(group)
     if len(groups) < 2:
@@ -411,10 +430,14 @@ def predpol_score_disparity(
     significant = bool(np.isfinite(pval) and pval < 0.05)
 
     table = [
-        [str(g) + (" (ref)" if g == ref else ""), stats[g]["n"],
-         round(stats[g]["mean"], 3), round(stats[g]["median"], 3),
-         round(stats[g]["sd"], 3),
-         "—" if g == ref else round(gaps[g], 3)]
+        [
+            str(g) + (" (ref)" if g == ref else ""),
+            stats[g]["n"],
+            round(stats[g]["mean"], 3),
+            round(stats[g]["median"], 3),
+            round(stats[g]["sd"], 3),
+            "—" if g == ref else round(gaps[g], 3),
+        ]
         for g in groups
     ]
 
@@ -429,8 +452,7 @@ def predpol_score_disparity(
 
     interp = (
         f"Group mean risk scores span {spread:.2f} points "
-        f"(reference '{ref}'). " + anova_line
-        + "Note: a score gap is not itself evidence of bias — it can "
+        f"(reference '{ref}'). " + anova_line + "Note: a score gap is not itself evidence of bias — it can "
         "reflect genuine base-rate differences. Pair this with "
         "`predpol_calibration_audit`, which compares the score against "
         "realised outcomes."
@@ -444,11 +466,13 @@ def predpol_score_disparity(
             ("ANOVA p-value", pval),
             ("Reference group", ref),
         ],
-        tables=[{
-            "title": "Per-group risk-score summary:",
-            "headers": ["group", "n", "mean", "median", "sd", "gap vs ref"],
-            "rows": table,
-        }],
+        tables=[
+            {
+                "title": "Per-group risk-score summary:",
+                "headers": ["group", "n", "mean", "median", "sd", "gap vs ref"],
+                "rows": table,
+            }
+        ],
         warnings=warnings,
         interpretation=interp,
         payload={

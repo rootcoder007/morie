@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
-from morie.fn.iv import iv_2sls, iv
+
 from morie.fn._containers import RegressionResult
+from morie.fn.iv import iv, iv_2sls
 
 
 class TestIV:

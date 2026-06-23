@@ -1,8 +1,8 @@
 """Dispersion equation extracted from Use R.."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["use_r_chapter_8_equation_4"]
 

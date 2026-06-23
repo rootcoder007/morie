@@ -4,7 +4,6 @@ from morie.fn.milat import mi_latent_means
 
 
 class TestMiLatentMeans:
-
     def test_returns_comparisons(self, mapq_df):
         result = mi_latent_means(mapq_df, "gender")
         assert "reference" in result

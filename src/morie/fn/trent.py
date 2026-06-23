@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import numpy as np
 from scipy.stats import chi2
+
 from ._richresult import RichResult
 
 __all__ = ["trent"]
 
 
-def trent(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, scores: np.ndarray | None = None) -> dict:
+def trent(
+    time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, scores: np.ndarray | None = None
+) -> dict:
     """Trend test for survival (ordered groups).
 
     Uses the linear rank statistic with group scores to test
@@ -66,9 +69,11 @@ def trent(time: np.ndarray, event: np.ndarray, group: np.ndarray, cdf=None, *, s
         den += d * (n - d) / (n * (n - 1)) * var_s if n > 1 else 0
 
     if den <= 0:
-        return RichResult(payload={"statistic": 0.0, "p_value": 1.0, "n_obs": len(time), "n_events": int(np.sum(event))})
+        return RichResult(
+            payload={"statistic": 0.0, "p_value": 1.0, "n_obs": len(time), "n_events": int(np.sum(event))}
+        )
 
-    stat = num ** 2 / den
+    stat = num**2 / den
     pval = 1 - chi2.cdf(stat, df=1)
 
     return {

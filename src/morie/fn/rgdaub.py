@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Daubechies wavelet filter coefficients (db2-db10)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_daubechies"]
@@ -30,7 +32,9 @@ def rangayyan_daubechies(order):
     n = int(order) if order.ndim == 0 else len(order)
     result = float(np.mean(order))
     se = float(np.std(order, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Daubechies wavelet filter coefficients (db2-db10)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Daubechies wavelet filter coefficients (db2-db10)"}
+    )
 
 
 def cheatsheet():

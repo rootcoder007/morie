@@ -1,6 +1,7 @@
 """Test ghrsk."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghrsk import ghrsk
 
 

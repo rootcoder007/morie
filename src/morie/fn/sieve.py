@@ -64,11 +64,11 @@ def sieve(
         raise ValueError(f"basis must be one of {valid_bases}, got '{basis}'.")
 
     if k is None:
-        k = max(1, int(n ** 0.2))
+        k = max(1, int(n**0.2))
 
     def _build_basis(xv: np.ndarray, k_: int) -> np.ndarray:
         if basis == "polynomial":
-            return np.column_stack([xv ** j for j in range(k_ + 1)])
+            return np.column_stack([xv**j for j in range(k_ + 1)])
         elif basis == "cosine":
             cols = [np.ones_like(xv)]
             x_scaled = (xv - xv.min()) / max(xv.max() - xv.min(), 1e-12)
@@ -80,11 +80,13 @@ def sieve(
 
             t_interior = np.linspace(xv.min(), xv.max(), k_ - 2) if k_ > 2 else np.array([])
             degree = min(3, k_)
-            knots = np.concatenate([
-                np.repeat(xv.min(), degree + 1),
-                t_interior,
-                np.repeat(xv.max(), degree + 1),
-            ])
+            knots = np.concatenate(
+                [
+                    np.repeat(xv.min(), degree + 1),
+                    t_interior,
+                    np.repeat(xv.max(), degree + 1),
+                ]
+            )
             n_basis = len(knots) - degree - 1
             cols = []
             for j in range(n_basis):
@@ -98,7 +100,7 @@ def sieve(
     beta, res, _, _ = np.linalg.lstsq(B, y, rcond=None)
     y_fitted = B @ beta
     resid = y - y_fitted
-    sigma2 = float(np.sum(resid ** 2) / max(n - B.shape[1], 1))
+    sigma2 = float(np.sum(resid**2) / max(n - B.shape[1], 1))
 
     if x_new is None:
         x_new = np.sort(x)

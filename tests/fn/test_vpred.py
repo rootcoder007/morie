@@ -1,12 +1,9 @@
 """Tests for morie.fn.vpred — Predictive validity."""
 
-import numpy as np
-import pytest
 from morie.fn.vpred import validity_predictive
 
 
 class TestValidityPredictive:
-
     def test_logistic_auc(self, rng):
         scores = rng.standard_normal(200)
         outcome = (scores + rng.standard_normal(200) * 0.5 > 0).astype(float)

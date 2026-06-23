@@ -9,7 +9,9 @@ from scipy.optimize import minimize
 from ._containers import DescriptiveResult
 
 
-def truncated_regression(y: np.ndarray, x: np.ndarray, threshold: float, direction: str = "left", cdf=None) -> DescriptiveResult:
+def truncated_regression(
+    y: np.ndarray, x: np.ndarray, threshold: float, direction: str = "left", cdf=None
+) -> DescriptiveResult:
     """
     Truncated regression via maximum likelihood.
 
@@ -81,4 +83,4 @@ trunc = truncated_regression
 
 
 def cheatsheet() -> str:
-    return 'truncated_regression({}) -> Truncated regression.'
+    return "truncated_regression({}) -> Truncated regression."

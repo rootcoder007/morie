@@ -1,9 +1,9 @@
 """Tests for morie.fn.crtjr — R v Jordan compliance."""
 
 import pytest
-import numpy as np
-from morie.fn.crtjr import court_jordan
+
 from morie.fn._containers import CrimeResult
+from morie.fn.crtjr import court_jordan
 
 
 class TestCourtJordan:

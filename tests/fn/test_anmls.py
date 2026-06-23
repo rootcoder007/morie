@@ -1,8 +1,9 @@
 """Tests for morie.fn.anmls -- multi-view CCA."""
 
 import numpy as np
-from morie.fn.anmls import multiview_cca, anmls
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.anmls import anmls, multiview_cca
 
 
 class TestAnmls:

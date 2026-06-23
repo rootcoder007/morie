@@ -1,6 +1,7 @@
 """Tests for wilcox10u899.wilcox_chapter_10_unnumbered_899."""
+
 import numpy as np
-import pytest
+
 from morie.fn.wilcox10u899 import wilcox_chapter_10_unnumbered_899
 
 
@@ -9,7 +10,7 @@ def test_wilcox10u899_basic():
     x = np.random.default_rng(42).normal(0, 1, 100)
     result = wilcox_chapter_10_unnumbered_899(x)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_wilcox10u899_edge():

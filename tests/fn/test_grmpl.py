@@ -1,6 +1,7 @@
 """Tests for grmpl.geron_max_pooling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.grmpl import geron_max_pooling
 
 
@@ -11,7 +12,7 @@ def test_grmpl_basic():
     stride = np.random.default_rng(42).normal(0, 1, 100)
     result = geron_max_pooling(X, k, stride)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grmpl_edge():

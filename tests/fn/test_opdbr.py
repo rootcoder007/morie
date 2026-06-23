@@ -1,6 +1,7 @@
 """Test opdbr."""
+
 import numpy as np
-import pytest
+
 from morie.fn.opdbr import opdbr
 
 

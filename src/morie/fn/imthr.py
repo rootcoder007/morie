@@ -74,4 +74,4 @@ imthr = threshold
 
 
 def cheatsheet() -> str:
-    return 'threshold({}) -> Image thresholding (Otsu / fixed).'
+    return "threshold({}) -> Image thresholding (Otsu / fixed)."

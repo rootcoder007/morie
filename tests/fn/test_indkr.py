@@ -7,7 +7,6 @@ from morie.fn.indkr import indkr
 
 
 class TestIndkr:
-
     def test_probabilities_in_range(self):
         rng = np.random.default_rng(42)
         coords = rng.uniform(0, 10, (20, 2))

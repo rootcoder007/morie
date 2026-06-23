@@ -1,4 +1,5 @@
 """Test wots_sign."""
+
 from morie.fn._containers import CryptoResult
 from morie.fn.wots import wots, wots_sign
 

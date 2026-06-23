@@ -1,7 +1,6 @@
 """Tests for morie.fn.vgjck -- Variogram jackknife"""
 
 import numpy as np
-import pytest
 
 from morie.fn.vgjck import vario_jackknife
 
@@ -15,5 +14,5 @@ class TestVarioJackknife:
         assert result.statistic is not None
 
     def test_output_type(self):
-        result = vario_jackknife(np.random.default_rng(0).uniform(0,1,(5,2)), np.ones(5))
+        result = vario_jackknife(np.random.default_rng(0).uniform(0, 1, (5, 2)), np.ones(5))
         assert hasattr(result, "statistic")

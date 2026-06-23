@@ -30,17 +30,17 @@ _GEMM_PARAMS: dict[str, dict[str, float]] = {
     # NCDs (noncommunicable diseases) + LRI -- the WHO/GBD headline.
     # "All adult mortality attributable to ambient PM2.5" in
     # Burnett 2018 terminology.
-    "ncd_lri":    {"theta": 0.1430, "alpha": 1.6,  "mu": 15.5, "nu": 36.8},
+    "ncd_lri": {"theta": 0.1430, "alpha": 1.6, "mu": 15.5, "nu": 36.8},
     # Ischemic heart disease -- age-averaged 25-80+ (Burnett 2018 T-S2).
-    "ihd":        {"theta": 0.2969, "alpha": 1.9,  "mu": 12.0, "nu": 40.2},
+    "ihd": {"theta": 0.2969, "alpha": 1.9, "mu": 12.0, "nu": 40.2},
     # Stroke (cerebrovascular, age-averaged).
-    "stroke":     {"theta": 0.2720, "alpha": 6.2,  "mu":  7.0, "nu": 19.3},
+    "stroke": {"theta": 0.2720, "alpha": 6.2, "mu": 7.0, "nu": 19.3},
     # Chronic obstructive pulmonary disease.
-    "copd":       {"theta": 0.2510, "alpha": 6.5,  "mu": 19.4, "nu": 38.7},
+    "copd": {"theta": 0.2510, "alpha": 6.5, "mu": 19.4, "nu": 38.7},
     # Lung cancer.
-    "lung_cancer":{"theta": 0.3195, "alpha": 6.93, "mu": 12.0, "nu":  9.85},
+    "lung_cancer": {"theta": 0.3195, "alpha": 6.93, "mu": 12.0, "nu": 9.85},
     # Lower respiratory infections (children + adults pooled).
-    "lri":        {"theta": 0.4498, "alpha": 6.46, "mu": 12.0, "nu": 22.6},
+    "lri": {"theta": 0.4498, "alpha": 6.46, "mu": 12.0, "nu": 22.6},
 }
 
 # C0 -- theoretical minimum risk exposure level (Burnett 2018 § Methods).
@@ -50,9 +50,7 @@ _TMREL_UGM3 = 2.4
 def pm_gemm_rr(
     concentration_ugm3: float | np.ndarray,
     *,
-    outcome: Literal[
-        "ncd_lri", "ihd", "stroke", "copd", "lung_cancer", "lri"
-    ] = "ncd_lri",
+    outcome: Literal["ncd_lri", "ihd", "stroke", "copd", "lung_cancer", "lri"] = "ncd_lri",
     reference_ugm3: float = _TMREL_UGM3,
     theta: float | None = None,
     alpha: float | None = None,
@@ -129,14 +127,12 @@ def pm_gemm_rr(
     linear models fail.
     """
     if outcome not in _GEMM_PARAMS:
-        raise KeyError(
-            f"Unknown outcome {outcome!r}. Available: {sorted(_GEMM_PARAMS)}"
-        )
+        raise KeyError(f"Unknown outcome {outcome!r}. Available: {sorted(_GEMM_PARAMS)}")
     base = _GEMM_PARAMS[outcome]
     p_theta = base["theta"] if theta is None else theta
     p_alpha = base["alpha"] if alpha is None else alpha
-    p_mu    = base["mu"]    if mu    is None else mu
-    p_nu    = base["nu"]    if nu    is None else nu
+    p_mu = base["mu"] if mu is None else mu
+    p_nu = base["nu"] if nu is None else nu
 
     if p_alpha <= 0:
         raise ValueError("alpha must be > 0.")
@@ -166,8 +162,10 @@ def pm_gemm_rr(
             "outcome": outcome,
             "reference_ugm3": reference_ugm3,
             "params": {
-                "theta": p_theta, "alpha": p_alpha,
-                "mu": p_mu,       "nu": p_nu,
+                "theta": p_theta,
+                "alpha": p_alpha,
+                "mu": p_mu,
+                "nu": p_nu,
             },
             "source": "Burnett et al. 2018 PNAS 115(38):9592-9597 Table S1",
         },

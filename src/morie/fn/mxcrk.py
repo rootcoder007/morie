@@ -53,7 +53,7 @@ def mxcrk(
 
     def neg_loglik(params):
         gamma0 = params[0]
-        gamma = params[1:1 + p1]
+        gamma = params[1 : 1 + p1]
         log_k = params[1 + p1]
         log_lam = params[2 + p1]
 
@@ -62,7 +62,7 @@ def mxcrk(
         k = np.exp(log_k)
         lam = np.exp(log_lam)
 
-        Su = np.exp(-(time / lam) ** k)
+        Su = np.exp(-((time / lam) ** k))
         fu = (k / lam) * (time / lam) ** (k - 1) * Su
 
         pop_surv = pi + (1 - pi) * Su
@@ -75,11 +75,10 @@ def mxcrk(
     x0 = np.zeros(2 + p1 + 1 + 1)
     x0[1 + p1] = 0.0
     x0[2 + p1] = np.log(np.median(time) + 1e-6)
-    result = minimize(neg_loglik, x0, method="Nelder-Mead",
-                      options={"maxiter": 5000})
+    result = minimize(neg_loglik, x0, method="Nelder-Mead", options={"maxiter": 5000})
 
     gamma0 = result.x[0]
-    gamma = result.x[1:1 + p1]
+    gamma = result.x[1 : 1 + p1]
     shape = np.exp(result.x[1 + p1])
     scale = np.exp(result.x[2 + p1])
     cure_frac = float(expit(gamma0))

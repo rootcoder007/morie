@@ -1,7 +1,9 @@
 """Test trim_signal (sgtrm)."""
+
 import numpy as np
-from morie.fn.sgtrm import trim_signal, sgtrm
+
 from morie.fn._containers import SignalResult
+from morie.fn.sgtrm import sgtrm, trim_signal
 
 
 class TestTrimSignal:

@@ -1,6 +1,7 @@
 """Test bpe_encode."""
-from morie.fn.bpe import bpe_encode, bpe
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.bpe import bpe, bpe_encode
 
 
 class TestBpeEncode:

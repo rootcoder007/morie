@@ -1,6 +1,7 @@
 """Tests for okrig.ordinary_kriging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.okrig import ordinary_kriging
 
 
@@ -11,7 +12,7 @@ def test_okrig_basic():
     target = np.random.default_rng(43).integers(0, 2, 100)
     result = ordinary_kriging(x, coords, target)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_okrig_edge():

@@ -1,6 +1,8 @@
 """Tests for rftrun."""
+
 import numpy as np
 import pytest
+
 from morie.fn.rftrun import rftrun
 
 
@@ -28,4 +30,5 @@ def test_rftrun_no_data():
 
 def test_rftrun_alias():
     from morie.fn.rftrun import rftrun
+
     assert rftrun is rftrun

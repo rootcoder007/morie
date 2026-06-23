@@ -44,7 +44,7 @@ def dp_mixture_model(
     prod = 1.0
     for k in range(K_max):
         weights[k] = V[k] * prod
-        prod *= (1 - V[k])
+        prod *= 1 - V[k]
 
     assignments = np.zeros(n, dtype=int)
 
@@ -53,7 +53,7 @@ def dp_mixture_model(
             log_probs = np.zeros(K_max)
             for k in range(K_max):
                 diff = x[i] - means[k]
-                log_probs[k] = np.log(weights[k] + 1e-30) - 0.5 * np.sum(diff ** 2 / (variances[k] + 1e-30))
+                log_probs[k] = np.log(weights[k] + 1e-30) - 0.5 * np.sum(diff**2 / (variances[k] + 1e-30))
             log_probs -= np.max(log_probs)
             probs = np.exp(log_probs)
             probs /= np.sum(probs)
@@ -78,7 +78,7 @@ def dp_mixture_model(
         prod = 1.0
         for k in range(K_max):
             weights[k] = V[k] * prod
-            prod *= (1 - V[k])
+            prod *= 1 - V[k]
 
     n_active = len(set(assignments))
 

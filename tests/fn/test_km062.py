@@ -1,6 +1,7 @@
 """Tests for km062.kamath_ch4_krona_tuned_weights."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km062 import kamath_ch4_krona_tuned_weights
 
 
@@ -12,7 +13,7 @@ def test_km062_basic():
     s = 90
     result = kamath_ch4_krona_tuned_weights(W, A_k, B_k, s)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km062_edge():

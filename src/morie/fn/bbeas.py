@@ -69,4 +69,4 @@ bbeas = procrustes_shape
 
 
 def cheatsheet() -> str:
-    return 'procrustes_shape({}) -> Shape analysis (morphometrics).'
+    return "procrustes_shape({}) -> Shape analysis (morphometrics)."

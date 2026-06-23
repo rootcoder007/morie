@@ -1,5 +1,7 @@
 """Tests for morie.fn.euclm — Euclidean spatial model."""
+
 import numpy as np
+
 from morie.fn.euclm import euclm
 
 

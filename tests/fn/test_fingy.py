@@ -1,6 +1,8 @@
 """Tests for fingy: Fine-Gray subdistribution hazard model."""
+
 import numpy as np
 import pytest
+
 from morie.fn.fingy import fingy
 
 
@@ -13,7 +15,7 @@ def _sim_competing_risks_cov(n=200, beta_true=0.5, seed=0):
     C = rng.exponential(5.0, size=n)
     time = np.minimum(np.minimum(T1, T2), C)
     event = np.where(T1 < T2, 1, 2)
-    event = np.where(C < np.minimum(T1, T2), 0, event)
+    event = np.where(np.minimum(T1, T2) > C, 0, event)
     return time, event.astype(int), X
 
 

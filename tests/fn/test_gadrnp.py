@@ -1,6 +1,7 @@
 """Test gadrnp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.gadrnp import gadrnp
 
 

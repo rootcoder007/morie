@@ -1,6 +1,7 @@
 """Test fofrag."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fofrag import fofrag
 
 

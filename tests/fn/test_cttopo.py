@@ -1,6 +1,8 @@
 """Tests for cttopo."""
+
 import numpy as np
 import pytest
+
 from morie.fn.cttopo import cttopo
 
 
@@ -28,4 +30,5 @@ def test_cttopo_no_data():
 
 def test_cttopo_alias():
     from morie.fn.cttopo import cttopo
+
     assert cttopo is cttopo

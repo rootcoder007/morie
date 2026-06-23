@@ -1,7 +1,7 @@
 """Tests for morie.fn.psunf."""
 
 import numpy as np
-import pytest
+
 from morie.fn.psunf import psunf
 
 

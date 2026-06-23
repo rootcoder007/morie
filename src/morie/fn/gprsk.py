@@ -1,6 +1,7 @@
 """GP residual modeling."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["gp_residual_kernel"]

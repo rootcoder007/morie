@@ -1,6 +1,7 @@
 """Tests for msm100.mvsml_bayesian_regression_pt2_eq_7_4."""
+
 import numpy as np
-import pytest
+
 from morie.fn.msm100 import mvsml_bayesian_regression_pt2_eq_7_4
 
 
@@ -14,7 +15,7 @@ def test_msm100_basic():
     M3 = np.random.default_rng(42).normal(0, 1, 100)
     result = mvsml_bayesian_regression_pt2_eq_7_4(the, lines, So, only, models, M3)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_msm100_edge():

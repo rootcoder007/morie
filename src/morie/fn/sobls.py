@@ -4,6 +4,7 @@ Thin wrapper around ``scipy.stats.qmc.Sobol`` (deterministic for fixed
 seed).  Returns the QMC point set in [0,1]^d plus an optional QMC
 estimate ``\\hat\\theta = (1/N) sum f(x_i)`` for integrand ``f``.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -13,8 +14,7 @@ from ._richresult import RichResult
 __all__ = ["sobol_sequence"]
 
 
-def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None,
-                   scramble: bool = True, seed: int = 42):
+def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None, scramble: bool = True, seed: int = 42):
     """Sobol quasi-random sequence (low-discrepancy).
 
     Parameters
@@ -37,8 +37,7 @@ def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None,
     try:
         from scipy.stats import qmc
     except Exception as e:  # pragma: no cover
-        return RichResult(payload={"error": f"scipy.stats.qmc unavailable: {e}",
-                                   "method": "Sobol (Sobol 1967)"})
+        return RichResult(payload={"error": f"scipy.stats.qmc unavailable: {e}", "method": "Sobol (Sobol 1967)"})
     if x is not None:
         x_arr = np.asarray(x, dtype=float)
         if x_arr.ndim == 1:
@@ -49,8 +48,7 @@ def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None,
     # qmc.Sobol expects log2 N for the balanced sequence; fall back to .random
     m = int(np.ceil(np.log2(max(1, N))))
     sample = eng.random_base2(m)[:N]
-    payload = {"sample": sample, "N": int(N), "d": int(d),
-               "method": "Sobol QMC (Sobol 1967)"}
+    payload = {"sample": sample, "N": int(N), "d": int(d), "method": "Sobol QMC (Sobol 1967)"}
     if f is not None:
         try:
             fv = np.array([f(sample[i]) for i in range(N)], dtype=float)

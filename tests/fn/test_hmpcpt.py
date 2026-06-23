@@ -1,6 +1,7 @@
 """Tests for hmpcpt.geron_perceptron."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmpcpt import geron_perceptron
 
 
@@ -12,7 +13,7 @@ def test_hmpcpt_basic():
     n_iter = 50
     result = geron_perceptron(X, y, eta, n_iter)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmpcpt_edge():

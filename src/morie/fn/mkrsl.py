@@ -58,16 +58,17 @@ def mkrsl(
 
     if method == "marginal":
         from scipy.stats import t as _t_dist
+
         y_c = y - np.mean(y)
         for j in range(p):
             z_c = Z[:, j] - np.mean(Z[:, j])
-            ss_z = np.sum(z_c ** 2)
+            ss_z = np.sum(z_c**2)
             if ss_z < 1e-12:
                 scores[j] = 0.0
                 continue
             beta = np.sum(z_c * y_c) / ss_z
             resid = y_c - beta * z_c
-            se = np.sqrt(np.sum(resid ** 2) / max(n - 2, 1) / ss_z)
+            se = np.sqrt(np.sum(resid**2) / max(n - 2, 1) / ss_z)
             if se > 1e-12:
                 t_val = abs(beta / se)
                 scores[j] = float(2 * _t_dist.sf(t_val, n - 2))
@@ -84,7 +85,7 @@ def mkrsl(
         lam = 1.0
         ZtZ = Z.T @ Z + lam * np.eye(p)
         beta = np.linalg.solve(ZtZ, Z.T @ y)
-        scores = beta ** 2
+        scores = beta**2
         importance = scores
 
         if n_select is None:

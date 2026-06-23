@@ -1,6 +1,7 @@
 """Test rspan."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rspan import rspan
 
 

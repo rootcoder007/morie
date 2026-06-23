@@ -1,6 +1,7 @@
 """Test pages."""
+
 import numpy as np
-import pytest
+
 from morie.fn.pages import page_trend_test
 
 

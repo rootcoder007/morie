@@ -73,4 +73,4 @@ freze = freeze_thaw
 
 
 def cheatsheet() -> str:
-    return 'freeze_thaw({}) -> Freeze-thaw cycle degradation model.'
+    return "freeze_thaw({}) -> Freeze-thaw cycle degradation model."

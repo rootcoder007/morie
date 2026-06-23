@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from scipy.stats import f as f_dist
 
-from morie.fn.df_ import df_dist, df_
+from morie.fn.df_ import df_, df_dist
 
 
 class TestDfDist:

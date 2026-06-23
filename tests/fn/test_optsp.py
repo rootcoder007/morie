@@ -1,6 +1,7 @@
 """Test optsp."""
+
 import numpy as np
-import pytest
+
 from morie.fn.optsp import optsp
 
 

@@ -1,9 +1,10 @@
 """Tests for morie.fn.mtotm — temporal pattern."""
 
-import pytest
 import pandas as pd
-from morie.fn.mtotm import mto_temporal_pattern
+import pytest
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.mtotm import mto_temporal_pattern
 
 
 class TestTemporalPattern:

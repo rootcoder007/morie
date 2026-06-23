@@ -1,6 +1,7 @@
 """Tests for dpgrf.dp_grouped_random_field."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dpgrf import dp_grouped_random_field
 
 
@@ -12,7 +13,7 @@ def test_dpgrf_basic():
     gamma = 1.0
     result = dp_grouped_random_field(y, grid, alpha, gamma)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_dpgrf_edge():

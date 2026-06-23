@@ -1,8 +1,9 @@
 """Tests for morie.fn.tpscb — cost benefit."""
 
 import pytest
-from morie.fn.tpscb import tps_cost_benefit
+
 from morie.fn._containers import ESRes
+from morie.fn.tpscb import tps_cost_benefit
 
 
 class TestCostBenefit:

@@ -1,5 +1,7 @@
 """Test flatten layer."""
+
 import numpy as np
+
 from morie.fn.flatn import flatn
 
 

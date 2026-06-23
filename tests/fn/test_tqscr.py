@@ -1,6 +1,7 @@
 """Tests for tqscr.turboquant_score_distortion."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tqscr import turboquant_score_distortion
 
 
@@ -11,7 +12,7 @@ def test_tqscr_basic():
     n = 100
     result = turboquant_score_distortion(eps, r, n)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tqscr_edge():

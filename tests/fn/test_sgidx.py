@@ -1,5 +1,7 @@
 """Tests for index of dispersion."""
+
 import numpy as np
+
 from morie.fn.sgidx import sgidx
 
 

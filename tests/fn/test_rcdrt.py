@@ -1,7 +1,8 @@
 """Tests for morie.fn.rcdrt — recidivism trend over years."""
 
 import pandas as pd
-from morie.fn.rcdrt import recidivism_trend, rcdrt
+
+from morie.fn.rcdrt import recidivism_trend
 
 
 class TestRecidivismTrend:

@@ -1,7 +1,7 @@
 """Tests for areff (asymptotic relative efficiency)."""
 
-import numpy as np
 import pytest
+
 from morie.fn.areff import areff
 
 

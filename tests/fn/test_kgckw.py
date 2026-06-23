@@ -1,7 +1,6 @@
 """Tests for morie.fn.kgckw -- Co-kriging weights"""
 
 import numpy as np
-import pytest
 
 from morie.fn.kgckw import cok_weights
 

@@ -1,6 +1,7 @@
 """Tests for fciag.fci_algorithm."""
+
 import numpy as np
-import pytest
+
 from morie.fn.fciag import fci_algorithm
 
 
@@ -11,7 +12,7 @@ def test_fciag_basic():
     ci_test = np.random.default_rng(43).normal(0, 1, 30)
     result = fci_algorithm(data, alpha, ci_test)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_fciag_edge():

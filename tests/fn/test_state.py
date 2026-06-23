@@ -1,6 +1,8 @@
 """Tests for morie.fn.state -- Kalman filter."""
+
 import numpy as np
 import pytest
+
 from morie.fn.state import kalman_filter
 
 
@@ -23,4 +25,5 @@ class TestKalman:
 
     def test_cheatsheet(self):
         from morie.fn.state import cheatsheet
+
         assert isinstance(cheatsheet(), str)

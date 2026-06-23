@@ -1,6 +1,7 @@
 """Test dtcpb."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtcpb import dtcpb
 
 

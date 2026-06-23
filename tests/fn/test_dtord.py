@@ -1,6 +1,7 @@
 """Test dtord."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtord import dtord
 
 

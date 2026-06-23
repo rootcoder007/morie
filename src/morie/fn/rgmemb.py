@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Membrane potential dynamics (RC circuit model)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_membrane_potential"]
@@ -38,7 +40,9 @@ def rangayyan_membrane_potential(t, I_inj, C_m, R_m, V_rest):
     n = int(t) if t.ndim == 0 else len(t)
     result = float(np.mean(t))
     se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Membrane potential dynamics (RC circuit model)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Membrane potential dynamics (RC circuit model)"}
+    )
 
 
 def cheatsheet():

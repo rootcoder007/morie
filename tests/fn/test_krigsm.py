@@ -1,6 +1,7 @@
 """Tests for krigsm.ordinary_kriging."""
+
 import numpy as np
-import pytest
+
 from morie.fn.krigsm import ordinary_kriging
 
 
@@ -12,7 +13,7 @@ def test_krigsm_basic():
     variogram = np.random.default_rng(42).normal(0, 1, 100)
     result = ordinary_kriging(coords, values, s_predict, variogram)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_krigsm_edge():

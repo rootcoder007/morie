@@ -1,6 +1,7 @@
 """Test afgdd."""
+
 import numpy as np
-import pytest
+
 from morie.fn.afgdd import afgdd
 
 

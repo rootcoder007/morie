@@ -1,6 +1,7 @@
 """Tests for drcef.dr_callaway_event_study."""
+
 import numpy as np
-import pytest
+
 from morie.fn.drcef import dr_callaway_event_study
 
 
@@ -13,7 +14,7 @@ def test_drcef_basic():
     cohort = np.random.default_rng(42).normal(0, 1, 100)
     result = dr_callaway_event_study(y, D, unit, time, cohort)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_drcef_edge():

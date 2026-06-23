@@ -1,6 +1,7 @@
 """Tests for kmpref.kamath_prefix_tuning."""
+
 import numpy as np
-import pytest
+
 from morie.fn.kmpref import kamath_prefix_tuning
 
 
@@ -12,7 +13,7 @@ def test_kmpref_basic():
     V_input = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_prefix_tuning(prefix_K, prefix_V, K_input, V_input)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_kmpref_edge():

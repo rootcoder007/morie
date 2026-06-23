@@ -1,6 +1,7 @@
 """Tests for morie.fn.hw -- Hardy-Weinberg equilibrium test."""
 
 import pytest
+
 from morie.fn.hw import hardy_weinberg_test
 
 

@@ -38,4 +38,5 @@ def test_hr_positive(cr_data):
 
 def test_cheatsheet():
     from morie.fn.chzrd import cheatsheet
+
     assert "cause" in cheatsheet().lower()

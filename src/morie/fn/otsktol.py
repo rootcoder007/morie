@@ -1,6 +1,7 @@
 """Convergence tolerance check for Sinkhorn iterations."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["ot_sinkhorn_tol"]
@@ -34,7 +35,9 @@ def ot_sinkhorn_tol(T, a, b):
     n = len(T)
     result = float(np.mean(T))
     se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Convergence tolerance check for Sinkhorn iterations"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Convergence tolerance check for Sinkhorn iterations"}
+    )
 
 
 def cheatsheet():

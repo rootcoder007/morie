@@ -41,7 +41,7 @@ def pca_svd(
         X = X / s
 
     U, S, Vt = np.linalg.svd(X, full_matrices=False)
-    eigvals = S ** 2 / (n - 1)
+    eigvals = S**2 / (n - 1)
 
     k = n_components or min(n, p)
     components = Vt[:k].T

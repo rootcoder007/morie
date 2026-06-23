@@ -64,4 +64,4 @@ optsa = simulated_anneal_mds
 
 
 def cheatsheet() -> str:
-    return 'simulated_anneal_mds({}) -> Simulated annealing MDS.'
+    return "simulated_anneal_mds({}) -> Simulated annealing MDS."

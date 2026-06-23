@@ -1,6 +1,7 @@
 """Tests for rgecgemu.rangayyan_ecg_emg_coupling."""
+
 import numpy as np
-import pytest
+
 from morie.fn.rgecgemu import rangayyan_ecg_emg_coupling
 
 
@@ -11,7 +12,7 @@ def test_rgecgemu_basic():
     fs = 100.0
     result = rangayyan_ecg_emg_coupling(ecg, emg, fs)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_rgecgemu_edge():

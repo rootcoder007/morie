@@ -1,6 +1,7 @@
 """Tests for tmlnie.tmle_natural_indirect."""
+
 import numpy as np
-import pytest
+
 from morie.fn.tmlnie import tmle_natural_indirect
 
 
@@ -12,7 +13,7 @@ def test_tmlnie_basic():
     X = np.random.default_rng(42).normal(0, 1, (100, 5))
     result = tmle_natural_indirect(y, D, M, X)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_tmlnie_edge():

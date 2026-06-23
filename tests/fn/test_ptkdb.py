@@ -1,7 +1,6 @@
 """Tests for morie.fn.ptkdb -- KDE bandwidth selection (spatial)"""
 
 import numpy as np
-import pytest
 
 from morie.fn.ptkdb import kde_bandwidth
 

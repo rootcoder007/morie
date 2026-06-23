@@ -59,7 +59,7 @@ def subsp(
     n = data.shape[0]
 
     if b is None:
-        b = max(2, int(n ** 0.7))
+        b = max(2, int(n**0.7))
     if b < 2 or b >= n:
         raise ValueError(f"b must be in [2, n-1], got b={b}, n={n}.")
     if alpha <= 0 or alpha >= 1:

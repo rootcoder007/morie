@@ -1,6 +1,7 @@
 """Tests for hmbgdg.geron_batch_gd_grad."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmbgdg import geron_batch_gd_grad
 
 
@@ -11,7 +12,7 @@ def test_hmbgdg_basic():
     theta = 0.0
     result = geron_batch_gd_grad(X, y, theta)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmbgdg_edge():

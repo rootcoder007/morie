@@ -54,4 +54,4 @@ savfg = save_figure
 
 
 def cheatsheet() -> str:
-    return 'save_figure({}) -> Save figure helper.'
+    return "save_figure({}) -> Save figure helper."

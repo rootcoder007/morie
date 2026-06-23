@@ -1,6 +1,5 @@
 """Tests for morie.fn.inits -- initial start values."""
 
-import numpy as np
 from morie.fn.inits import initial_start_values, inits
 
 

@@ -1,6 +1,7 @@
 """Tests for bfac.bayes_factor."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bfac import bayes_factor
 
 
@@ -10,7 +11,7 @@ def test_bfac_basic():
     log_lik_b = np.random.default_rng(42).normal(0, 1, 100)
     result = bayes_factor(log_lik_a, log_lik_b)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bfac_edge():

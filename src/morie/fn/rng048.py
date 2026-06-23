@@ -1,6 +1,7 @@
 """Bilateral Laplace transform of an impulse response h(t).."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_laplace_transform"]
@@ -34,7 +35,14 @@ def rangayyan_ch3_laplace_transform(h, t, s):
     n = len(h)
     result = float(np.mean(h))
     se = float(np.std(h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bilateral Laplace transform of an impulse response h(t)."})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Bilateral Laplace transform of an impulse response h(t).",
+        }
+    )
 
 
 def cheatsheet():

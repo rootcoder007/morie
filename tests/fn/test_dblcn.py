@@ -1,6 +1,6 @@
 """Tests for morie.fn.dblcn — Double centering."""
+
 import numpy as np
-import pytest
 
 from morie.fn.dblcn import dblcn
 
@@ -14,6 +14,7 @@ def test_dblcn_smoke():
 
 def test_cheatsheet():
     from morie.fn.dblcn import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

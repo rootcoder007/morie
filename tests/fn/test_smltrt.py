@@ -1,6 +1,7 @@
 """Tests for smltrt.survey_ratio."""
+
 import numpy as np
-import pytest
+
 from morie.fn.smltrt import survey_ratio
 
 
@@ -11,7 +12,7 @@ def test_smltrt_basic():
     weights = np.random.default_rng(45).exponential(1, 100)
     result = survey_ratio(y, x, weights)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_smltrt_edge():

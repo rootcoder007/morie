@@ -1,6 +1,7 @@
 """Test dtwsh."""
+
 import numpy as np
-import pytest
+
 from morie.fn.dtwsh import dtwsh
 
 

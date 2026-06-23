@@ -1,6 +1,7 @@
 """Outcome-only TMLE -- robust if g misspecified."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["tmle_outcome_only_regr"]
@@ -34,7 +35,9 @@ def tmle_outcome_only_regr(y, D, X):
     n = len(y)
     result = float(np.mean(y))
     se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Outcome-only TMLE -- robust if g misspecified"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Outcome-only TMLE -- robust if g misspecified"}
+    )
 
 
 def cheatsheet():

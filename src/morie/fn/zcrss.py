@@ -65,4 +65,4 @@ def zero_crossings(
 
 
 def cheatsheet() -> str:
-    return 'zero_crossings({}) -> Zero-crossing detection.'
+    return "zero_crossings({}) -> Zero-crossing detection."

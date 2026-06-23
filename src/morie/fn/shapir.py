@@ -1,7 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shapiro-Wilk Normality test with R-style verbose result."""
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import numpy as np
 from scipy.stats import shapiro
@@ -15,15 +16,18 @@ def shapir(x: Union[Sequence, np.ndarray]):
     Wilcox (2017) ch.5; Wooditch et al. (2021) ch.12.
     """
     from ._richresult import hypothesis_test_result
+
     a = np.asarray(x, dtype=float)
     if a.size < 3:
         raise ValueError(f"need at least 3 observations, got {a.size}.")
     res = shapiro(a)
     warnings = []
     if a.size > 5000:
-        warnings.append(f"n={a.size} is very large; even tiny deviations "
-                        "from Normal become 'significant'. Consider Q-Q plot "
-                        "or `anddrl` (Anderson-Darling) as a complement.")
+        warnings.append(
+            f"n={a.size} is very large; even tiny deviations "
+            "from Normal become 'significant'. Consider Q-Q plot "
+            "or `anddrl` (Anderson-Darling) as a complement."
+        )
     return hypothesis_test_result(
         test_name="Shapiro-Wilk test for Normality",
         statistic=float(res.statistic),

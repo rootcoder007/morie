@@ -1,6 +1,7 @@
 """Tests for km015.kamath_ch2_multihead_head_i."""
+
 import numpy as np
-import pytest
+
 from morie.fn.km015 import kamath_ch2_multihead_head_i
 
 
@@ -14,7 +15,7 @@ def test_km015_basic():
     W_Vi = np.random.default_rng(42).normal(0, 1, 100)
     result = kamath_ch2_multihead_head_i(Q, K, V, W_Qi, W_Ki, W_Vi)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_km015_edge():

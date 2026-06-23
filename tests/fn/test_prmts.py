@@ -1,5 +1,7 @@
 """Tests for permutation_test_two."""
-import numpy as np, pytest
+
+import pytest
+
 from morie.fn.prmts import permutation_test_two
 
 

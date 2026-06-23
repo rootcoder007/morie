@@ -1,6 +1,7 @@
 """Tests for morie.fn.cdyld -- YLD."""
 
 import pytest
+
 from morie.fn.cdyld import years_lived_disability
 
 

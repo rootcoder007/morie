@@ -1,6 +1,7 @@
 """Mutual information between X and Y."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["mutual_information"]

@@ -1,6 +1,7 @@
 """Tests for autofm.autoformer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.autofm import autoformer
 
 
@@ -11,7 +12,7 @@ def test_autofm_basic():
     seq_len = 100
     result = autoformer(X, y, seq_len)
     assert isinstance(result, dict)
-    assert 'statistic' in result or 'estimate' in result
+    assert "statistic" in result or "estimate" in result
 
 
 def test_autofm_edge():

@@ -1,7 +1,8 @@
 """Tests for cfmat.py - Confusion matrix metrics."""
+
 import numpy as np
-import pytest
-from morie.fn.cfmat import cfmat_fn, cfmat
+
+from morie.fn.cfmat import cfmat, cfmat_fn
 
 
 def test_cfmat_returns_descriptive_result():

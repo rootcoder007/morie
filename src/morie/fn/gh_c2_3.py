@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Increasing-process prior via integrated Gaussian process for monotone functions."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["ghosal_gp_increasing_prior"]
@@ -30,7 +32,14 @@ def ghosal_gp_increasing_prior(x):
     n = int(x) if x.ndim == 0 else len(x)
     result = float(np.mean(x))
     se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Increasing-process prior via integrated Gaussian process for monotone functions"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "Increasing-process prior via integrated Gaussian process for monotone functions",
+        }
+    )
 
 
 def cheatsheet():

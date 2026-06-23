@@ -1,6 +1,7 @@
 """Tests for bfgsop.bfgs."""
+
 import numpy as np
-import pytest
+
 from morie.fn.bfgsop import bfgs
 
 
@@ -12,7 +13,7 @@ def test_bfgsop_basic():
     steps = np.random.default_rng(42).normal(0, 1, 100)
     result = bfgs(f, grad_f, x0, steps)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_bfgsop_edge():

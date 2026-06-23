@@ -1,6 +1,8 @@
 """Tests for vdwght."""
+
 import numpy as np
 import pytest
+
 from morie.fn.vdwght import vdwght
 
 
@@ -28,4 +30,5 @@ def test_vdwght_no_data():
 
 def test_vdwght_alias():
     from morie.fn.vdwght import vdwght
+
     assert vdwght is vdwght

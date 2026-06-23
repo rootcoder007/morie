@@ -1,8 +1,8 @@
 r"""CentralTendency expression (auto-extracted; see ref).."""
-import numpy as np
-from scipy import stats
 
-from ._richresult import RichResult, hypothesis_test_result
+import numpy as np
+
+from ._richresult import RichResult
 
 __all__ = ["probability_and_random_processes_with_one_thousand_exercises_chapter_7_unnumbered_2122"]
 
@@ -41,7 +41,12 @@ def probability_and_random_processes_with_one_thousand_exercises_chapter_7_unnum
             ("Standard error", se),
             ("n", n),
         ],
-        payload={"estimate": result, "se": se, "n": n, "method": "CentralTendency expression (auto-extracted; see ref)."},
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "CentralTendency expression (auto-extracted; see ref).",
+        },
     )
 
 

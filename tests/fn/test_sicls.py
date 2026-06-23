@@ -1,6 +1,8 @@
 """Tests for sicls."""
+
 import numpy as np
 import pytest
+
 from morie.fn.sicls import sicls
 
 
@@ -28,4 +30,5 @@ def test_sicls_no_data():
 
 def test_sicls_alias():
     from morie.fn.sicls import sicls
+
     assert sicls is sicls

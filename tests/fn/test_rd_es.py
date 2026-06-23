@@ -1,6 +1,7 @@
 """Tests for morie.fn.rd_es -- risk difference effect size."""
 
 import pytest
+
 from morie.fn.rd_es import risk_difference
 
 

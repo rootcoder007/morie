@@ -1,8 +1,8 @@
 """Tests for morie.fn.siutrn — SIU trend."""
 
 import pytest
+
 from morie.fn.siutrn import siu_trend
-from morie.fn._containers import DescriptiveResult
 
 
 class TestSiuTrend:

@@ -2,12 +2,14 @@
 
 import numpy as np
 import pytest
+
 from morie.fn.epdsg import epidemic_curve_fit
 
 
 class TestEpiCurveFit:
     def test_lognormal_peak(self):
         from scipy.stats import lognorm
+
         t = np.arange(60, dtype=float)
         inc = 500 * lognorm.pdf(t, s=0.5, scale=np.exp(2.5))
         res = epidemic_curve_fit(inc, distribution="lognormal")
@@ -16,6 +18,7 @@ class TestEpiCurveFit:
 
     def test_gamma_fit(self):
         from scipy.stats import gamma
+
         t = np.arange(50, dtype=float)
         inc = 300 * gamma.pdf(t, a=5, scale=3)
         res = epidemic_curve_fit(inc, distribution="gamma")

@@ -1,6 +1,7 @@
 """Tests for cqtmpl.cim_qtl."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cqtmpl import cim_qtl
 
 
@@ -12,7 +13,7 @@ def test_cqtmpl_basic():
     cofactors = np.random.default_rng(42).normal(0, 1, 100)
     result = cim_qtl(y, markers, positions, cofactors)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_cqtmpl_edge():

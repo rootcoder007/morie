@@ -3,8 +3,9 @@
 import numpy as np
 import pandas as pd
 import pytest
-from morie.fn.lasso import lasso_regression, lasso
+
 from morie.fn._containers import RegressionResult
+from morie.fn.lasso import lasso, lasso_regression
 
 
 @pytest.fixture()
@@ -40,8 +41,7 @@ class TestLasso:
     def test_sparsity_with_high_lambda(self, sparse_data):
         """With high lambda, some coefficients should be zeroed out."""
         result = lasso_regression(sparse_data, y="y", x=["x1", "x2", "x3"], lam=50.0)
-        zero_count = sum(1 for k, v in result.coefficients.items()
-                         if k != "(Intercept)" and abs(v) < 1e-10)
+        zero_count = sum(1 for k, v in result.coefficients.items() if k != "(Intercept)" and abs(v) < 1e-10)
         assert zero_count >= 1  # at least one noise variable zeroed
 
     def test_n_nonzero_in_extra(self, sparse_data):

@@ -1,6 +1,7 @@
 """Test geinf."""
+
 import numpy as np
-import pytest
+
 from morie.fn.geinf import geinf
 
 

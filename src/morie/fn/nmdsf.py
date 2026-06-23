@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonmetric MDS via isotonic regression (Kruskal 1964)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["nonmetric_mds"]
@@ -34,7 +36,9 @@ def nonmetric_mds(delta, n_dims, max_iter):
     n = int(delta) if delta.ndim == 0 else len(delta)
     result = float(np.mean(delta))
     se = float(np.std(delta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Nonmetric MDS via isotonic regression (Kruskal 1964)"})
+    return RichResult(
+        payload={"estimate": result, "se": se, "n": n, "method": "Nonmetric MDS via isotonic regression (Kruskal 1964)"}
+    )
 
 
 def cheatsheet():

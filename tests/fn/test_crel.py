@@ -1,7 +1,8 @@
 """Tests for morie.fn.crel — composite reliability."""
 
-import pytest
 import numpy as np
+import pytest
+
 from morie.fn import crel
 
 

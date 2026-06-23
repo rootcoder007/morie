@@ -1,6 +1,7 @@
 """Tests for mtpath.meta_path."""
+
 import numpy as np
-import pytest
+
 from morie.fn.mtpath import meta_path
 
 
@@ -11,7 +12,7 @@ def test_mtpath_basic():
     metapath = np.random.default_rng(42).normal(0, 1, 100)
     result = meta_path(G, node_types, metapath)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_mtpath_edge():

@@ -1,6 +1,7 @@
 """Tests for morie.fn.mhtrn -- mental health trend."""
 
 import pytest
+
 from morie.fn.mhtrn import mental_health_trend
 
 

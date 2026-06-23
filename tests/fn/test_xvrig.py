@@ -1,7 +1,9 @@
 """Test xavier_init."""
+
 import numpy as np
-from morie.fn.xvrig import xavier_init, xvrig
+
 from morie.fn._containers import DescriptiveResult
+from morie.fn.xvrig import xavier_init, xvrig
 
 
 class TestXavierInit:

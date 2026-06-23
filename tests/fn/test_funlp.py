@@ -1,5 +1,7 @@
 """Tests for morie.fn.funlp."""
+
 import numpy as np
+
 from morie.fn.funlp import funlp
 
 
@@ -13,6 +15,7 @@ def test_funlp_smoke():
 
 def test_cheatsheet():
     from morie.fn.funlp import cheatsheet
+
     cs = cheatsheet()
     assert isinstance(cs, str)
     assert len(cs) > 0

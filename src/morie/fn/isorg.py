@@ -65,4 +65,4 @@ isorg = isotonic_regression
 
 
 def cheatsheet() -> str:
-    return 'isotonic_regression({}) -> Isotonic regression.'
+    return "isotonic_regression({}) -> Isotonic regression."

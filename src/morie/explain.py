@@ -34,7 +34,6 @@ If you want detail beyond the summary row, see the companion files
 listed in `power_two_proportion_gender.csv` (two-proportion grid) and
 `power_one_proportion_grid.csv` (one-proportion grid).
 """.strip(),
-
     "power_two_proportion_gender.csv": """
 Question this file answers: "How many participants per gender group
 do I need to detect an effect of size X?"
@@ -53,7 +52,6 @@ Columns:
 Typical usage: scroll to the row matching your hypothesised effect, read
 n_per_group, double it for total sample.
 """.strip(),
-
     "power_one_proportion_grid.csv": """
 Same idea as power_two_proportion_gender.csv, but for a single-proportion
 design (one group, no comparison): "What's the smallest deviation from
@@ -61,115 +59,95 @@ a null proportion p0 I can detect with n participants at alpha=0.05?"
 
 Pick a row by n; read effect_size for the smallest detectable difference.
 """.strip(),
-
     "power_ebac_endpoint_anchors.csv": """
 Power-analysis grid specific to alcohol-impairment endpoints (eBAC =
 estimated blood alcohol concentration).  Each row is one anchor point:
 "if your endpoint is ebac_tot > 0.08 vs <= 0.08, what's the sample size?"
 """.strip(),
-
     "power_gpower_reference_two_group.csv": """
 Cross-reference: matches morie's two-group power numbers to G*Power
 (the gold-standard reference tool).  If you're submitting to a journal
 that demands G*Power, this is the table to cite.
 """.strip(),
-
     "power_interaction_assumptions.csv": """
 Assumptions used by the interaction-effect (e.g. gender × age) power
 calculation.  Read this if you want to know what the interaction model
 assumed before trusting power_interaction_pairwise_details.csv.
 """.strip(),
-
     "power_interaction_feasibility_flags.csv": """
 Flags for whether each proposed interaction cell is feasible at the
 target sample size.  TRUE = enough data expected, FALSE = under-powered.
 """.strip(),
-
     "power_interaction_group_allocations.csv": """
 How the total sample is split across interaction cells (e.g. men 18-24,
 men 25-44, women 18-24, women 25-44).  Tells you the per-cell n.
 """.strip(),
-
     "power_interaction_imbalance_penalty.csv": """
 The penalty to power introduced by unequal cell sizes.  If allocations
 in power_interaction_group_allocations are skewed, this quantifies how
 much power you lose vs. a balanced design.
 """.strip(),
-
     "power_interaction_pairwise_details.csv": """
 The detail backing power_interaction_assumptions.  Pairwise effect sizes
 for each combination of interaction levels.
 """.strip(),
-
     "power_interaction_sample_size_targets.csv": """
 The sample-size *targets* (per cell) to hit your desired power for each
 interaction comparison.  Compare to your actual allocations file.
 """.strip(),
-
     "randomization_block_blueprints.csv": """
 Pre-baked randomization-scheme blueprints (block sizes, stratification
 factors).  Pick one and the *_example CSVs show what the resulting
 allocation looks like.
 """.strip(),
-
     "randomization_schedule_example_heavy_drinking_30d.csv": """
 A *worked-example* randomization schedule using heavy-drinking-30-day as
 the stratifying outcome.  Shows the participant id → arm assignment
 table; useful for replicating in your own survey software.
 """.strip(),
-
     "randomization_schedule_example_ebac_legal.csv": """
 Worked-example randomization schedule stratified by ebac_legal (the
 legal-limit blood-alcohol-concentration endpoint).
 """.strip(),
-
     "randomization_schedule_example_ebac_tot.csv": """
 Worked-example randomization schedule stratified by ebac_tot (the
 total-impairment blood-alcohol-concentration endpoint).
 """.strip(),
-
     # ─── data-wrangling outputs ─────────────────────────────────────────
     "data_na_summary.csv": """
 Per-column missingness summary.  Each row is one input column; columns
 include n_missing, pct_missing.  Read this BEFORE running any inference
 module — fields with high missingness need imputation or exclusion.
 """.strip(),
-
     "data_wrangling_log.csv": """
 Step-by-step log of what the data-wrangling module did to your input
 (renames, coercions, dropped rows).  Useful for the methods section.
 """.strip(),
-
     # ─── descriptive-statistics outputs ─────────────────────────────────
     "binomial_summaries.csv": """
 Survey-weighted binomial summaries (e.g. heavy_drinking_30d prevalence)
 WITHOUT survey weights.  Compare against binomial_summaries_survey_weighted
 to see how much the weights shift the estimates.
 """.strip(),
-
     "binomial_summaries_survey_weighted.csv": """
 Survey-weighted binomial summaries WITH the CPADS weighting variable
 applied.  These are the prevalence estimates you'd report in a paper.
 """.strip(),
-
     "probability_estimates.csv": """
 Joint and conditional probability estimates across the survey design.
 Read column by column; row labels indicate the conditioning event.
 """.strip(),
-
     # ─── frequentist-inference outputs ──────────────────────────────────
     "frequentist_heavy_drinking_prevalence_ci.csv": """
 Frequentist (Wilson / Clopper-Pearson) confidence intervals for the
 prevalence of heavy drinking.  Each row is one subgroup; columns are
 estimate, ci_lower, ci_upper.
 """.strip(),
-
     "frequentist_effect_sizes.csv": """
 Cohen's-d / odds-ratio / risk-difference effect sizes for the primary
 contrasts of the analysis.  Read alongside p-values from
 frequentist_hypothesis_tests.csv.
 """.strip(),
-
     "frequentist_hypothesis_tests.csv": """
 Per-contrast p-values and test statistics.  CAUTION: these are
 NOT corrected for multiple comparisons by default — apply
@@ -200,6 +178,7 @@ def describe(filename: str) -> str:
 
 # ─── cheatsheet ───────────────────────────────────────────────────────────
 
+
 def _cheatsheet_body() -> str:
     """Build the cheatsheet with section headings translated via i18n.
 
@@ -208,6 +187,7 @@ def _cheatsheet_body() -> str:
     etc user actually sees their language on screen.
     """
     from .i18n import t
+
     return f"""
 morie cheat sheet
 =================

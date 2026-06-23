@@ -1,6 +1,7 @@
 """Moore-Penrose pseudoinverse of L."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["sgt_laplacian_pseudoinverse"]

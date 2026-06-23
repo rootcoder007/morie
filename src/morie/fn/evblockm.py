@@ -1,6 +1,7 @@
 """Block-maxima GEV fit from a series."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["evt_block_maxima_fit"]

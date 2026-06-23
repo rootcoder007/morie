@@ -1,7 +1,7 @@
 """Tests for morie.fn.svlgp."""
 
 import numpy as np
-import pytest
+
 from morie.fn.svlgp import svlgp
 
 

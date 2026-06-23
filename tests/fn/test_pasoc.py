@@ -1,7 +1,7 @@
 """Tests for morie.fn.pasoc."""
 
 import numpy as np
-import pytest
+
 from morie.fn.pasoc import pasoc
 
 

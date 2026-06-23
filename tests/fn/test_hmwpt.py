@@ -1,6 +1,7 @@
 """Tests for hmwpt.geron_wordpiece_tokenizer."""
+
 import numpy as np
-import pytest
+
 from morie.fn.hmwpt import geron_wordpiece_tokenizer
 
 
@@ -10,7 +11,7 @@ def test_hmwpt_basic():
     vocab_size = 100
     result = geron_wordpiece_tokenizer(corpus, vocab_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_hmwpt_edge():

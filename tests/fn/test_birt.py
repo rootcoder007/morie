@@ -1,12 +1,9 @@
 """Tests for morie.fn.birt — Bayesian 2PL IRT."""
 
-import numpy as np
-import pytest
 from morie.fn.birt import bayesian_irt_2pl
 
 
 class TestBayesianIrt2pl:
-
     def test_returns_dict(self, mapq_binary_df):
         result = bayesian_irt_2pl(mapq_binary_df, n_iter=100)
         assert "a_mean" in result and "b_mean" in result

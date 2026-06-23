@@ -1,6 +1,7 @@
 """Out of chaos, comes order. — Friedrich Nietzsche"""
+
 import numpy as np
-import pytest
+
 from morie.fn.grflash import geron_flash_attention_tile
 
 
@@ -12,7 +13,7 @@ def test_grflash_basic():
     block_size = 100
     result = geron_flash_attention_tile(Q, K, V, block_size)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_grflash_edge():

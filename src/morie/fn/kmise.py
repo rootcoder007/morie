@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["kmise"]
@@ -48,11 +49,9 @@ def kmise(data: np.ndarray, *, kernel: str = "gaussian") -> dict:
     sigma = max(sigma, 1e-10)
 
     if kernel == "gaussian":
-        bw_opt = (4.0 * sigma ** 5 / (3.0 * n)) ** 0.2
+        bw_opt = (4.0 * sigma**5 / (3.0 * n)) ** 0.2
         rk = 1.0 / (2.0 * np.sqrt(np.pi))
-        mise_approx = (5.0 / 4.0) * rk * n ** (-4.0 / 5) * (
-            3.0 / (4.0 * sigma ** 5)
-        ) ** (1.0 / 5)
+        mise_approx = (5.0 / 4.0) * rk * n ** (-4.0 / 5) * (3.0 / (4.0 * sigma**5)) ** (1.0 / 5)
     else:
         raise ValueError("Only 'gaussian' kernel is currently supported for MISE computation.")
 

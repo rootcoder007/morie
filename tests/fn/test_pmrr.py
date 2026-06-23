@@ -1,7 +1,5 @@
 """Tests for PM relative-risk model (ACS / Harvard Six Cities)."""
 
-import math
-
 import numpy as np
 import pytest
 
@@ -23,7 +21,7 @@ def test_pmrr_10_ugm3_above_reference_matches_base():
 def test_pmrr_25_ugm3_above_reference_scales_log_linearly():
     # delta=2.5, RR = 1.070^2.5
     r = pmrr(25.0, reference_ugm3=0.0, outcome="all_cause")
-    assert r.value == pytest.approx(1.070 ** 2.5, abs=0.001)
+    assert r.value == pytest.approx(1.070**2.5, abs=0.001)
 
 
 def test_pmrr_stroke_vs_all_cause():

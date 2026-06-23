@@ -1,5 +1,7 @@
 """VanRaden Method 2 genomic relationship matrix (weighted)."""
+
 import numpy as np
+
 from ._richresult import RichResult
 
 __all__ = ["vanraden_method2"]
@@ -33,7 +35,14 @@ def vanraden_method2(marker_matrix, weights, freq):
     n = int(marker_matrix) if marker_matrix.ndim == 0 else len(marker_matrix)
     result = float(np.mean(marker_matrix))
     se = float(np.std(marker_matrix, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "VanRaden Method 2 genomic relationship matrix (weighted)"})
+    return RichResult(
+        payload={
+            "estimate": result,
+            "se": se,
+            "n": n,
+            "method": "VanRaden Method 2 genomic relationship matrix (weighted)",
+        }
+    )
 
 
 def cheatsheet():

@@ -66,4 +66,5 @@ def test_gcv_score_finite(smooth_data):
 
 def test_cheatsheet():
     from morie.fn.pensp import cheatsheet
+
     assert "spline" in cheatsheet().lower()

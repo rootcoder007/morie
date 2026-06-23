@@ -1,7 +1,8 @@
 """Tests for cosine_distance."""
-import numpy as np
+
 import pytest
-from morie.fn.cosds import cosine_distance, cosds
+
+from morie.fn.cosds import cosds, cosine_distance
 
 
 def test_identical():

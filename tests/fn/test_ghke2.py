@@ -1,6 +1,7 @@
 """Test ghke2."""
+
 import numpy as np
-import pytest
+
 from morie.fn.ghke2 import ghke2
 
 

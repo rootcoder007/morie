@@ -1,6 +1,8 @@
 """Tests for morie.fn.dtw — dynamic time warping."""
+
 import numpy as np
 import pytest
+
 from morie.fn.dtw import dtw_distance
 
 

@@ -1,6 +1,7 @@
 """Test cslvy."""
+
 import numpy as np
-import pytest
+
 from morie.fn.cslvy import cslvy
 
 

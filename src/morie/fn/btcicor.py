@@ -1,6 +1,8 @@
 """Bootstrap CI for Pearson correlation via Fisher z."""
+
 import numpy as np
 from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["boot_ci_correlation"]
@@ -36,9 +38,23 @@ def boot_ci_correlation(x, y, B, alpha):
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
     if n < 3:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Bootstrap CI for Pearson correlation via Fisher z"})
+        return RichResult(
+            payload={
+                "statistic": np.nan,
+                "p_value": np.nan,
+                "n": n,
+                "method": "Bootstrap CI for Pearson correlation via Fisher z",
+            }
+        )
     result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(payload={"statistic": float(result.statistic), "p_value": float(result.pvalue), "n": n, "method": "Bootstrap CI for Pearson correlation via Fisher z"})
+    return RichResult(
+        payload={
+            "statistic": float(result.statistic),
+            "p_value": float(result.pvalue),
+            "n": n,
+            "method": "Bootstrap CI for Pearson correlation via Fisher z",
+        }
+    )
 
 
 def cheatsheet():

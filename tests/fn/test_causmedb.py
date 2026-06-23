@@ -1,6 +1,7 @@
 """Tests for causmedb.causal_mediation_baron_kenny."""
+
 import numpy as np
-import pytest
+
 from morie.fn.causmedb import causal_mediation_baron_kenny
 
 
@@ -11,7 +12,7 @@ def test_causmedb_basic():
     Y = np.random.default_rng(43).normal(0, 1, 100)
     result = causal_mediation_baron_kenny(X, M, Y)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_causmedb_edge():

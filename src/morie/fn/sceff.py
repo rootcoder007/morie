@@ -67,7 +67,7 @@ def sceff(
             break
 
     scores_final = np.array([score_func(x[i], theta) for i in range(n)])
-    info = float(np.mean(scores_final ** 2))
+    info = float(np.mean(scores_final**2))
     se = float(1.0 / np.sqrt(n * max(info, 1e-12)))
 
     z = stats.norm.ppf(1.0 - alpha / 2.0)

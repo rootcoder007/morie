@@ -1,6 +1,6 @@
 """Tests for morie.fn.rskov — risk score overlap."""
 
-from morie.fn.rskov import risk_overlap, rskov
+from morie.fn.rskov import risk_overlap
 
 
 class TestRiskOverlap:

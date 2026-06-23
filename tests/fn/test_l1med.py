@@ -1,6 +1,7 @@
 """Tests for l1med.l1_median."""
+
 import numpy as np
-import pytest
+
 from morie.fn.l1med import l1_median
 
 
@@ -10,7 +11,7 @@ def test_l1med_basic():
     tol = 1e-6
     result = l1_median(X, tol)
     assert isinstance(result, dict)
-    assert 'estimate' in result or 'statistic' in result
+    assert "estimate" in result or "statistic" in result
 
 
 def test_l1med_edge():

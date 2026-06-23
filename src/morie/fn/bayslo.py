@@ -1,6 +1,7 @@
 """Bayesian LASSO for genomic prediction."""
+
 import numpy as np
-from scipy import stats
+
 from ._richresult import RichResult
 
 __all__ = ["bayes_lasso"]
