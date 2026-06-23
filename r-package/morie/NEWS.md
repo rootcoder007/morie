@@ -1043,8 +1043,7 @@ bump.
   odds-ratio, proportion), power and sample-size (`morie_power_t_test`,
   `morie_power_prop_test`, `sample_size_logistic`), signal-processing primitives
   (Butterworth filters, Higuchi fractal dimension, Hurst exponent),
-  dataset profiling, OTIS correctional-data analysis, and the MRM
-  (McNamara-Ruhela-Medina) framework.
+  dataset profiling, OTIS correctional-data analysis, and the MRM framework.
 * Python parity: this package is the R sibling of the Python `morie`
   package on PyPI. Both expose the same conceptual public API; each uses
   its native language's idioms and ML ecosystem (R: mlr3 + DoubleML;
