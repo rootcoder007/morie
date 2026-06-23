@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "morie"
 version = "0.9.5.12"
-description = "morie 森 (the Fates' Forest): Multi-domain Open Research and Inferential Estimation. Multi-domain scientific computing toolkit hosting the MRM (Multilevel Reconciliation Methodology) framework for Canadian carceral, police, and oversight data, with general-purpose causal inference, signal processing, cryptography, spatial statistics, statistical physics, and psychometrics modules. The name compounds the Greek Moirai (the three Fates) with the Japanese kanji 森 (mori, 'forest' — three trees stacked into one ideogram)."
+description = "Multi-domain scientific computing toolkit (Python + R) for observational inference and intervention analysis, hosting the MRM (Multilevel Reconciliation Methodology) framework for Canadian carceral, police, and oversight data. Provides causal estimators (ATE, ATT, AIPW, DML, G-computation), survey sampling, propensity-score and doubly-robust methods, sensitivity analysis, spatial statistics, Hawkes point processes, and psychometrics, with a unified RichResult output."
 authors = [
   { name="Vansh Singh Ruhela", email="vsruhela@proton.me" }
 ]
