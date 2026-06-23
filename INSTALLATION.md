@@ -351,7 +351,7 @@ install.packages(
 
 ## Verifying the install
 
-Any of these should print `morie 0.8.0`:
+Any of these should print the installed `morie` version:
 
 ```bash
 # Python
