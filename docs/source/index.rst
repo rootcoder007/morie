@@ -31,7 +31,7 @@ for Canadian carceral, police, and oversight data analysis.
 Quick start
 -----------
 
-Pick any one channel — all install the **same** ``morie`` v0.8.0:
+Pick any one channel — each installs the current ``morie`` release:
 
 .. code-block:: bash
 
@@ -48,7 +48,7 @@ Pick any one channel — all install the **same** ``morie`` v0.8.0:
    brew install morie
 
    # 4. Docker (zero local dependencies)
-   docker run --rm ghcr.io/rootcoder007/morie:0.8.0 morie --help
+   docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
    # 5. R package (CRAN-compatible, served from r-universe)
    install.packages("morie", repos = "https://rootcoder007.r-universe.dev")
