@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
 
 # What this vignette covers
 
-The **MRM (Multilevel Reconciliation Methodology;** people-credit
-reading: McNamara--Ruhela--Medina**)** framework is a coordinated set
+The **MRM (Multilevel Reconciliation Methodology)** framework is a coordinated set
 of ten causal estimators paired with a multi-source data layer for
 Canadian carceral, police, and oversight data. This vignette uses the
 provincial Offender Tracking Information System (OTIS; published by
