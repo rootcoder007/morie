@@ -1,8 +1,6 @@
-# MORIE 森 — The Fates' Forest
+# MORIE 森
 
-**Multi-domain Open Research and Inferential Estimation**
-
-<sub>*Pronounced /ˈmɔɪraɪ ˈmoɾi/ — "MOY-rye MOH-ree". A compound name: **Moirai** (Μοῖραι), the three Greek Fates, paired with **森** (mori), Japanese for "forest" — three trees (木) stacked into one ideogram. A forest of methods named after the Fates.*</sub>
+**Multi-domain Open Research and Inferential Estimation.**
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
@@ -188,27 +186,6 @@ implementation but does not change the attribution of the work.
 
 - Anthropic — Claude API research credits.
 - Google — Gemini / Vertex AI research credits.
-- The author thanks **Glenn McNamara** — a 35-year career with the
-  Ontario Government — for his methodological mentorship. He brings
-  distribution theory, applied-statistics intuition for administrative
-  data, and the judgment that grounds much of this framework. Glenn
-  is the **M** in **MRM (Multilevel Reconciliation Methodology; people-credit reading: McNamara-Ruhela-Medina)** (catalyst).
-
-- The author thanks **Prof. Angela Zorro Medina**, Centre for
-  Criminology and Sociolegal Studies, University of Toronto, who is
-  the author's **supervisor**, **methodological instructor**, the
-  **domain-expert reviewer** of the preliminary methodological
-  approach, and a **knowledge user** of the framework. The
-  methodological lineage MRM follows is established in her work on
-  anti-gang legislation (Zorro Medina, 2023, *The Effect of
-  Anti-Gang Laws on Crime and Social Control*) — staggered
-  two-way-fixed-effects identification, formal leads-and-lags
-  Granger-causality diagnostics for parallel trends, multi-source
-  data-integration over five jurisdictional sources, deterrence /
-  routine-activities / certainty mechanism categorisation, and the
-  inequality-effects-of-criminal-law framing — all of which
-  directly shape MRM's empirical-statistical spine. Prof. Medina is
-  the **M** in MRM (supervisor & reviewer).
 
 ### Data acknowledgments
 

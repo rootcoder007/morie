@@ -1,9 +1,7 @@
-MORIE 森 — The Fates' Forest
-============================
+MORIE 森
+========
 
-**Multi-domain Open Research and Inferential Estimation**
-
-*Pronounced* /ˈmɔɪraɪ ˈmoɾi/ *— "MOY-rye MOH-ree". A compound name: the Greek* **Moirai** *(Μοῖραι, the three Fates) paired with the Japanese* **森** *(mori, "forest" — three trees stacked into one ideogram). A forest of methods named after the Fates.*
+**Multi-domain Open Research and Inferential Estimation.**
 
 .. image:: https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg
    :alt: License: AGPL-3.0-or-later
