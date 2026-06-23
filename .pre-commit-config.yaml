@@ -22,3 +22,14 @@ repos:
         args: ['--maxkb=2000']
       - id: mixed-line-ending
         args: ['--fix=lf']
+
+  # Self-healing version inventory: regenerate + stage VERSION_INVENTORY.csv
+  # on every commit so it can never drift out of sync (what version-drift CI enforces).
+  - repo: local
+    hooks:
+      - id: version-inventory
+        name: Regenerate + stage VERSION_INVENTORY.csv
+        entry: bash -c 'scripts/version-inventory.sh >/dev/null && git add VERSION_INVENTORY.csv'
+        language: system
+        pass_filenames: false
+        always_run: true
