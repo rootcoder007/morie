@@ -12,7 +12,7 @@ A multi-domain scientific computing toolkit (Python and R) for observational inf
 [![r-universe](https://img.shields.io/badge/r--universe-rootcoder007-276DC3)](https://rootcoder007.r-universe.dev/morie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions. Paper sources are at [`papers/`](https://github.com/rootcoder007/morie/tree/main/papers) (LaTeX).
+> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions.
 
 ## Installation
 

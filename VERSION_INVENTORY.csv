@@ -42,7 +42,7 @@ File,Line,Status,Version,Context
 ./INSTALLATION.md,3,STALE_OR_DEP,1.0.0,"> ⚠️ **Pre-alpha (v0.x).** morie is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift; datasets may move; and findings may be refined between minor versions."
 ./INSTALLATION.md,315,STALE_OR_DEP,3.13.5,"The Pi's `/usr/bin/python3` is Python 3.13.5; which segfaults on importing the SciPy stack (a Debian-packaging issue). Symptoms:"
 ./INSTALLATION.md,331,STALE_OR_DEP,0.8.0,"docker run --rm ghcr.io/rootcoder007/morie:0.8.0 morie --help"
-./README.md,15,STALE_OR_DEP,1.0.0,"> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift; datasets may move; and findings may be refined between minor versions. Paper sources are at [`papers/`](https://github.com/rootcoder007/morie/tree/main/papers) (LaTeX)."
+./README.md,15,STALE_OR_DEP,1.0.0,"> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift; datasets may move; and findings may be refined between minor versions."
 ./README.md,95,STALE_OR_DEP,0.9.5.4,"docker run --rm ghcr.io/rootcoder007/morie:0.9.5.4 morie --help"
 ./README.md,146,CURRENT,0.9.5.12,"Inferential Estimation (v0.9.5.12)."
 ./RELEASE-CHECKLIST.md,19,STALE_OR_DEP,0.1.0,"- Trigger: push a tag `v*.*.*` (e.g.; `v0.1.0`)."
