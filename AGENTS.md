@@ -187,7 +187,7 @@ not regenerated. Never hand-edit that file.
 
   ```
   Co-Authored-By: Claude <noreply@anthropic.com>
-  Co-Authored-By: Vansh Singh Ruhela (rootcoder007) <hadesllm@proton.me>
+  Co-Authored-By: Vansh Singh Ruhela (rootcoder007) <vsruhela@proton.me>
   ```
 
   PUBLIC repos use `Claude <noreply@anthropic.com>`; internal
@@ -210,6 +210,6 @@ Release flow:
 ## Contact
 
 Maintainer: Vansh Singh Ruhela ([rootcoder007]) ·
-[hadesllm@proton.me](mailto:hadesllm@proton.me)
+[vsruhela@proton.me](mailto:vsruhela@proton.me)
 
 [rootcoder007]: https://github.com/rootcoder007

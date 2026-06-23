@@ -58,7 +58,7 @@ fpm -s dir -t rpm \
   --name morie \
   --version "${VERSION}" \
   --architecture "${ARCH}" \
-  --maintainer "Vansh Singh Ruhela <hadesllm@proton.me>" \
+  --maintainer "Vansh Singh Ruhela <vsruhela@proton.me>" \
   --url "https://github.com/rootcoder007/morie" \
   --license "AGPL-3.0-or-later" \
   --description "Multi-domain Open Research and Inferential Estimation (morie)." \

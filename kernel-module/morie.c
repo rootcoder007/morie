@@ -34,7 +34,7 @@
  *     cat /sys/kernel/morie/license    # "GPL-2.0-only"
  *     sudo rmmod morie
  *
- * Author: Vansh Singh Ruhela (rootcoder007) <hadesllm@proton.me>
+ * Author: Vansh Singh Ruhela (rootcoder007) <vsruhela@proton.me>
  * License: GPL-2.0-only
  */
 
@@ -123,6 +123,6 @@ module_init(morie_init);
 module_exit(morie_exit);
 
 MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Vansh Singh Ruhela <hadesllm@proton.me>");
+MODULE_AUTHOR("Vansh Singh Ruhela <vsruhela@proton.me>");
 MODULE_DESCRIPTION("Symbolic GPL declaration + sysfs companion for the MORIE userspace toolkit");
 MODULE_VERSION(MORIE_VERSION);
