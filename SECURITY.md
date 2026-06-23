@@ -13,7 +13,7 @@ for unrelated downstream applications.
 
 ## Reporting a vulnerability
 
-Email **<hadesllm@proton.me>** — **do not** open a public GitHub Issue
+Email **<vsruhela@proton.me>** — **do not** open a public GitHub Issue
 for security reports. GitHub's [private vulnerability reporting](https://github.com/rootcoder007/morie/security/advisories/new)
 is also enabled. PGP preferred:
 
@@ -254,4 +254,4 @@ ITSG-33: Treasury Board of Canada IT Security Guidance. NIST 800-53 Rev 5 modera
 ---
 
 Maintainer: **Vansh Singh Ruhela** ([rootcoder007](https://github.com/rootcoder007))
-&nbsp;·&nbsp; <hadesllm@proton.me>
+&nbsp;·&nbsp; <vsruhela@proton.me>

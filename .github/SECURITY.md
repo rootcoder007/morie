@@ -13,7 +13,7 @@ If you discover a security vulnerability in MORIE, please report it responsibly.
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 
-Instead, please email: **hadesllm@proton.me**
+Instead, please email: **vsruhela@proton.me**
 
 You should receive a response within 72 hours. We will work with you to understand the issue and coordinate a fix before any public disclosure.
 

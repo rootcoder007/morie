@@ -25,7 +25,7 @@ Audit log entries (JSONL, one per line):
     {"ts": "...", "event": "import", "module": "...", "spdx": "...",
      "compatible": true|false, "pid": ...}
 
-Author: Vansh Singh Ruhela (rootcoder007) <hadesllm@proton.me>
+Author: Vansh Singh Ruhela (rootcoder007) <vsruhela@proton.me>
 License: GPL-2.0-only
 """
 
