@@ -167,12 +167,10 @@ test_that(".siu_curl_version reports a libcurl build string", {
 
 test_that(".siu_http_get / .siu_http_get_many fetch over the network", {
   testthat::skip_if_offline("www.siu.on.ca")
-  one <- tryCatch(
+  one <- skip_if_live_unavailable(
     morie:::.siu_http_get(
       "https://www.siu.on.ca/en/directors_report_details.php?drid=5080"
-    ),
-    error = function(e) ""
-  )
+    ))
   # Debug line: surface body size when CI surprises us. Distinguishes
   # WAF interstitial (~500B) vs rate-limit page (~200B) vs 5xx HTML
   # template (~1-2 kB) vs healthy report (~60 kB). Visible in the
@@ -186,13 +184,11 @@ test_that(".siu_http_get / .siu_http_get_many fetch over the network", {
   # validates a healthy endpoint, transient flakiness shouldn't fail CI.
   skip_if(nchar(one) < 1000, "SIU site unreachable or degraded")
   expect_true(nchar(one) > 1000)
-  many <- tryCatch(
+  many <- skip_if_live_unavailable(
     morie:::.siu_http_get_many(sprintf(
       "https://www.siu.on.ca/en/directors_report_details.php?drid=%d",
       5080:5083
-    ), 4L),
-    error = function(e) character(0)
-  )
+    ), 4L))
   skip_if(length(many) != 4L, "SIU site unreachable for batch fetch")
   expect_length(many, 4L)
   expect_true(all(nchar(many) > 0))
@@ -200,14 +196,12 @@ test_that(".siu_http_get / .siu_http_get_many fetch over the network", {
 
 test_that("morie_fetch_siu runs end-to-end, one row per case (network)", {
   testthat::skip_if_offline("www.siu.on.ca")
-  out <- tryCatch(
+  out <- skip_if_live_unavailable(
     morie_fetch_siu(
       cache_dir = tempfile("siu-"), overwrite = TRUE,
       max_drid = 120L, concurrency = 4L, rate_rps = 4.0,
       use_manifest = FALSE, progress = FALSE
-    ),
-    error = function(e) NULL
-  )
+    ))
   skip_if(is.null(out), "SIU site unreachable")
   df <- utils::read.csv(out, colClasses = "character", check.names = FALSE)
   expect_equal(ncol(df), 64L)
@@ -236,14 +230,12 @@ test_that(".siu_http_get_many rate-limit gate spaces requests (network)", {
     5070:5077
   )
   t0 <- Sys.time()
-  res <- tryCatch(
+  res <- skip_if_live_unavailable(
     morie:::.siu_http_get_many_with_status(
       urls,
       concurrency = 8L, timeout_s = 30L,
       rate_rps = 4.0, max_retries = 1L
-    ),
-    error = function(e) NULL
-  )
+    ))
   skip_if(is.null(res), "SIU site unreachable")
   skip_if(any(nchar(res$body) < 1000), "SIU served degraded responses")
   elapsed <- as.numeric(difftime(Sys.time(), t0, units = "secs"))

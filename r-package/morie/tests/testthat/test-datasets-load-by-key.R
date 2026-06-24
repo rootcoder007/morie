@@ -84,7 +84,8 @@ test_that("unknown dataset_key raises clear error", {
 test_that("3FFF1: MTL CKAN generic dispatch auto-resolves first CSV resource", {
   skip_on_cran()
   skip_if_offline("donnees.montreal.ca")
-  df <- morie_datasets_load_by_key("communique-presse", max_features = 5L)
+  df <- skip_if_live_unavailable(
+    morie_datasets_load_by_key("communique-presse", max_features = 5L))
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) >= 1L)
   expect_true(nrow(df) <= 5L)
@@ -93,9 +94,10 @@ test_that("3FFF1: MTL CKAN generic dispatch auto-resolves first CSV resource", {
 test_that("3FFF1: TO CKAN generic dispatch auto-resolves first CSV resource", {
   skip_on_cran()
   skip_if_offline("ckan0.cf.opendata.inter.prod-toronto.ca")
-  df <- morie_datasets_load_by_key(
-    "police-annual-statistical-report-shooting-occurrences",
-    max_features = 5L)
+  df <- skip_if_live_unavailable(
+    morie_datasets_load_by_key(
+      "police-annual-statistical-report-shooting-occurrences",
+      max_features = 5L))
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) >= 1L)
 })

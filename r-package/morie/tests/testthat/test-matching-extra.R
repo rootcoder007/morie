@@ -8,6 +8,7 @@
 # cardinality, multi_treatment, and longitudinal (5 large untested fns).
 
 test_that("morie_matching_genetic returns match_result on synthetic data", {
+  skip_if_not_installed("rgenoud")
   df <- make_match_df(n = 150, tau = 0.4, seed = 2L)
   out <- tryCatch(
     morie_matching_genetic(df, "d", c("x1", "x2"),
