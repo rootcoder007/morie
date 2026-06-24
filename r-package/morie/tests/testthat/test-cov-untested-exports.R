@@ -48,13 +48,11 @@ test_that("morie_siu_refresh_manifest accepts canonical args (skip on CRAN/offli
   # exercise the dispatch + arg-parsing + (if the SIU host is up) one
   # rate-limited probe; the assertion is "function returns without
   # erroring" rather than any specific content.
-  result <- tryCatch(
+  result <- skip_if_live_unavailable(
     morie_siu_refresh_manifest(
       max_drid = 1L, min_drid = 1L,
       concurrency = 1L, rate_rps = 1.0, progress = FALSE
-    ),
-    error = function(e) e
-  )
+    ))
   # Pass if it ran cleanly OR if the SIU host returned a structured
   # error (network unavailable, rate-limited, 5xx) — both are valid
   # responses for a tiny-range probe.

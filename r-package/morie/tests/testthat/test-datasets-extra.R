@@ -60,25 +60,15 @@ test_that("morie_datasets_siu_report_fields parses a minimal SIU text blob", {
 
 test_that("morie_datasets_chicago_crime is invokable", {
   testthat::skip_if_offline("data.cityofchicago.org")
-  out <- tryCatch(
-    morie_datasets_chicago_crime(year = 2023L, max_features = 5L),
-    error = function(e) e
-  )
-  if (inherits(out, "error")) {
-    skip(sprintf("chicago_crime: %s", conditionMessage(out)))
-  }
+  out <- skip_if_live_unavailable(
+    morie_datasets_chicago_crime(year = 2023L, max_features = 5L))
   expect_true(is.data.frame(out) || is.list(out))
 })
 
 test_that("morie_datasets_nyc_stop_and_frisk is invokable", {
   testthat::skip_if_offline("opendata.cityofnewyork.us")
-  out <- tryCatch(
-    morie_datasets_nyc_stop_and_frisk(year = 2023L, max_features = 5L),
-    error = function(e) e
-  )
-  if (inherits(out, "error")) {
-    skip(sprintf("nyc_stop_and_frisk: %s", conditionMessage(out)))
-  }
+  out <- skip_if_live_unavailable(
+    morie_datasets_nyc_stop_and_frisk(year = 2023L, max_features = 5L))
   expect_true(is.data.frame(out) || is.list(out))
 })
 

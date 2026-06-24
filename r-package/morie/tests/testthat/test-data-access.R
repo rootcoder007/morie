@@ -85,9 +85,7 @@ test_that("TPS catalog entries carry verified ArcGIS layer URLs", {
 
 test_that("morie_ckan_search returns resource rows (network)", {
   testthat::skip_if_offline("open.canada.ca")
-  hits <- tryCatch(morie_ckan_search("cannabis", rows = 3),
-    error = function(e) NULL
-  )
+  hits <- skip_if_live_unavailable(morie_ckan_search("cannabis", rows = 3))
   skip_if(is.null(hits), "CKAN package_search unreachable")
   expect_s3_class(hits, "data.frame")
   expect_true(all(c("dataset_title", "resource_id", "format") %in%
@@ -101,9 +99,7 @@ test_that("morie_fetch_arcgis paginates a FeatureServer layer (network)", {
     "rest/services/Homicides_Open_Data_ASR_RC_TBL_002/",
     "FeatureServer/0"
   )
-  df <- tryCatch(morie_fetch_arcgis(layer, max_records = 30),
-    error = function(e) NULL
-  )
+  df <- skip_if_live_unavailable(morie_fetch_arcgis(layer, max_records = 30))
   skip_if(is.null(df), "ArcGIS layer unreachable")
   expect_s3_class(df, "data.frame")
   expect_true(nrow(df) > 0 && nrow(df) <= 30)
