@@ -1,3 +1,7 @@
+.. meta::
+   :description: MORIE is a multi-domain scientific computing toolkit (Python and R) for observational causal inference, survey methods, spatial statistics, and criminal-justice analytics, and the home of the MRM (Multilevel Reconciliation Methodology) framework.
+   :keywords: MORIE, MRM framework, causal inference, observational inference, double machine learning, criminology, survey statistics, R package, Python package
+
 MORIE 森
 ========
 
