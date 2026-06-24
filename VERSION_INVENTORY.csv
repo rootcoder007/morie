@@ -131,7 +131,7 @@ File,Line,Status,Version,Context
 ./docs/r-port-roadmap.md,3,STALE_OR_DEP,0.9.5.5,"Generated 2026-05-22 as part of the v0.9.5.5 session.  Catalogues"
 ./docs/source/_ext/r_autodoc.py,722,STALE_OR_DEP,0.1.0,"version: 0.1.0;"
 ./docs/source/_extra/install.sh,172,STALE_OR_DEP,3.13.5,"#   2. Debian Trixie's python 3.13.5 segfaults importing the SciPy"
-./docs/source/index.rst,59,STALE_OR_DEP,3.13.5,"``/usr/bin/python3`` is python 3.13.5; which segfaults on import for"
+./docs/source/index.rst,63,STALE_OR_DEP,3.13.5,"``/usr/bin/python3`` is python 3.13.5; which segfaults on import for"
 ./docs/source/install.rst,82,STALE_OR_DEP,4.5.3,"Current recommended: R 4.5.3 (CRAN)."
 ./docs/source/install.rst,90,STALE_OR_DEP,4.5.3,"curl -O https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.5.3-arm64.pkg"
 ./docs/source/install.rst,91,STALE_OR_DEP,4.5.3,"sudo installer -pkg R-4.5.3-arm64.pkg -target /"
