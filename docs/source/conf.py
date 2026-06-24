@@ -239,5 +239,3 @@ ogp_description_length = 200
 ogp_enable_meta_description = True
 ogp_type = "website"
 
-# Google Search Console site verification
-html_meta = {"google-site-verification": "8ORzeHrfoPIOrujfV-km-kXCi9HD8dvL5GYH-GqwjYI"}
