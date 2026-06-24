@@ -4,12 +4,11 @@
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
-[![R CMD check](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml)
-[![CI](https://github.com/rootcoder007/morie/actions/workflows/ci.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/ci.yml)
+[![CI](https://github.com/rootcoder007/morie/actions/workflows/build.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/build.yml)
 [![CodeQL](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/rootcoder007/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
-[![r-universe](https://img.shields.io/badge/r--universe-rootcoder007-276DC3)](https://rootcoder007.r-universe.dev/morie)
+[![rmorie on r-universe](https://img.shields.io/badge/r--universe-rmorie-276DC3)](https://rootcoder007.r-universe.dev/rmorie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 > ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions.
@@ -56,7 +55,7 @@ python -m pip install morie
 python -c "import morie; print(morie.__version__)"
 ```
 
-For the R package: `Rscript -e "install.packages('morie', repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
+For the R package, install **rmorie** (the R distribution of morie): `Rscript -e "install.packages('rmorie', repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
 
 Prefer a package manager? If `winget --version` works on your machine, `winget install -e --id Python.Python.3.12` (and `RProject.R`) installs the prerequisites in one line each — but `winget` is absent from many Windows installs, so the installer steps above are the reliable default. The full Windows walkthrough, including fixes for common errors (`python` opening the Microsoft Store, PowerShell execution policy, long-path), is in **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
@@ -97,15 +96,17 @@ docker run --rm ghcr.io/rootcoder007/morie:0.9.5.4 morie --help
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
 
-### R — CRAN (when available) or r-universe
+### R package: rmorie — r-universe (CRAN when available)
+
+The R distribution of morie is the **[rmorie](https://github.com/rootcoder007/rmorie)** package.
 
 ```r
 # Stable from CRAN (when listing is live)
-install.packages("morie")
+install.packages("rmorie")
 
 # Nightly binary builds (recommended while CRAN listing is rolling out)
 install.packages(
-  "morie",
+  "rmorie",
   repos = c(
     rootcoder007 = "https://rootcoder007.r-universe.dev",
     CRAN     = "https://cloud.r-project.org"
