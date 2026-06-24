@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rootcoder007.github.io/morie/sitemap.xml
