@@ -225,3 +225,6 @@ mathjax3_config = {
         "displayMath": [["$$", "$$"], ["\\[", "\\]"]],
     }
 }
+
+# Canonical URL for SEO (search engines + social cards)
+html_baseurl = "https://rootcoder007.github.io/morie/"
