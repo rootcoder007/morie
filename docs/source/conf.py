@@ -48,6 +48,8 @@ extensions = [
     "myst_parser",
     # Mermaid class / flow diagrams (architecture page)
     "sphinxcontrib.mermaid",
+    "sphinx_sitemap",
+    "sphinxext.opengraph",
     # R autodoc bridge (local extension)
     "_ext.r_autodoc",
 ]
@@ -228,3 +230,11 @@ mathjax3_config = {
 
 # Canonical URL for SEO (search engines + social cards)
 html_baseurl = "https://rootcoder007.github.io/morie/"
+
+# SEO: sitemap.xml (needs html_baseurl) + Open Graph / Twitter cards
+sitemap_url_scheme = "{link}"
+ogp_site_url = "https://rootcoder007.github.io/morie/"
+ogp_site_name = "MORIE — multi-domain scientific computing toolkit"
+ogp_description_length = 200
+ogp_enable_meta_description = True
+ogp_type = "website"
