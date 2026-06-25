@@ -60,10 +60,17 @@ test_that("arcgis_query fails clean off-network", {
 
 test_that("ingest_tps_feature_layer routes through TPS helper (mocked)", {
   set.seed(1)
+  # feature_layer pages through .morie_tps_arcgis_query (NOT
+  # .morie_dataset_tps_fetch); mock the function it actually calls so the
+  # test is deterministic and never touches the live ArcGIS endpoint.
   testthat::local_mocked_bindings(
-    .morie_dataset_tps_fetch = function(...) {
-      data.frame(EVENT_UNIQUE_ID = "MOCK", OCC_YEAR = 2024L,
-                  stringsAsFactors = FALSE)
+    .morie_tps_arcgis_query = function(...) {
+      list(
+        features = list(list(attributes = list(
+          EVENT_UNIQUE_ID = "MOCK", OCC_YEAR = 2024L
+        ))),
+        exceededTransferLimit = FALSE
+      )
     },
     .package = "morie"
   )
