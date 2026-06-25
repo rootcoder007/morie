@@ -109,6 +109,10 @@ jobs:
       # setup-r-dependencies@v2 installs DESCRIPTION's Imports/Suggests
       # AND any extra-packages list, into the right user library so
       # later library() / Rscript calls find them.
+      - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
+        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie

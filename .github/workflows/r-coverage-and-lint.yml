@@ -46,6 +46,10 @@ jobs:
         with:
           r-version: 'release'
           use-public-rspm: true
+      - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
+        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
@@ -87,6 +91,10 @@ jobs:
         with:
           r-version: 'release'
           use-public-rspm: true
+      - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
+        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
@@ -119,6 +127,10 @@ jobs:
         with:
           r-version: 'release'
           use-public-rspm: true
+      - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
+        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
           working-directory: r-package/morie
@@ -160,6 +172,10 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y universal-ctags
+
+      - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
+        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
         with:
