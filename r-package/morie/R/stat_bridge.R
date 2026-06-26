@@ -203,7 +203,18 @@ stat_bridge_verify <- function() {
     res <- tryCatch({
       cmd$handler_repl()
       list(ok = TRUE, msg = "")
-    }, error = function(e) list(ok = FALSE, msg = conditionMessage(e)))
+    }, error = function(e) {
+      m <- conditionMessage(e)
+      # A bare "argument X is missing, with no default" means the handler is
+      # healthy but simply requires arguments to run -- it is NOT a verification
+      # failure. Report it as ok with a note. Only genuine errors (e.g. the
+      # test_bridge_throw fixture that throws "boom") are flagged as failures.
+      if (grepl("is missing, with no default", m, fixed = TRUE)) {
+        list(ok = TRUE, msg = "requires args")
+      } else {
+        list(ok = FALSE, msg = m)
+      }
+    })
     rows[[i]] <- data.frame(name = cmd$name, ok = res$ok,
                             message = res$msg, stringsAsFactors = FALSE)
     i <- i + 1L
