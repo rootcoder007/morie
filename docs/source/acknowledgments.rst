@@ -63,8 +63,7 @@ Use Microdata Files (PUMFs):
   and Drugs Survey* / CSTADS, 2014-2022; previously *Youth Smoking
   Survey* / YSS, before 2014).
 - **CSUS** — Canadian Substance Use Survey (2023, 2025).
-- **CADS** — Canadian Alcohol and Drugs Survey
-  (2019; https://doi.org/10.25318/132500052021001-eng).
+- **CADS** — Canadian Alcohol and Drugs Survey.
 - **CPADS** — Canadian Postsecondary Education Alcohol and Drug
   Use Survey (2019-20, 2021-22).
 
