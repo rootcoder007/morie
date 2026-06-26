@@ -35,13 +35,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macos-latest,   r: 'release' }
+          - { os: macos-latest,   r: '4.6.1' }
           # Use windows-latest so the runner image tracks GitHub's most-
           # recently-patched Windows image (currently windows-2022, moving
           # to windows-2025-vs2026 by 2026-06-15). Pinning to a specific
           # release sticks us on an older image once `latest` rolls.
-          - { os: windows-latest, r: 'release' }
-          - { os: ubuntu-latest,  r: 'release' }
+          - { os: windows-latest, r: '4.6.1' }
+          - { os: ubuntu-latest,  r: '4.6.1' }
           - { os: ubuntu-latest,  r: 'devel'   }
           - { os: ubuntu-latest,  r: 'oldrel-1' }
 
@@ -56,9 +56,9 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - uses: r-lib/actions/setup-pandoc@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-pandoc@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
 
-      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
@@ -70,14 +70,14 @@ jobs:
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
           cache-version: 1
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/check-r-package@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
           upload-snapshots: true
@@ -138,18 +138,18 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - uses: r-lib/actions/setup-pandoc@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-pandoc@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
 
-      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
-          r-version: 'release'
+          r-version: '4.6.1'
           use-public-rspm: true
 
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
           cache-version: 1
@@ -160,7 +160,7 @@ jobs:
             any::withr
           needs: check
 
-      - uses: r-lib/actions/check-r-package@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+      - uses: r-lib/actions/check-r-package@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
           upload-snapshots: true

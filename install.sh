@@ -179,6 +179,12 @@ install_python_morie() {
   VENV="$HOME/.venvs/morie"
   USERBIN="$HOME/.local/bin"
 
+  # Keep uv's cache on the SAME filesystem as the venv so it can hardlink
+  # wheels into the venv instead of doing slow full-copies. Without this, when
+  # ~/.cache and ~/.venvs live on different volumes, uv warns "Failed to
+  # hardlink files; falling back to full copy" and the install crawls.
+  export UV_CACHE_DIR="$HOME/.venvs/.uv-cache"
+
   # 1. ensure uv (single-binary, no system deps)
   if ! command -v uv >/dev/null 2>&1 && [ ! -x "$USERBIN/uv" ]; then
     echo "[install.sh] installing uv (managed python + venv tool) ..."

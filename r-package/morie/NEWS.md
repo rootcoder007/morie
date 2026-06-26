@@ -1,4 +1,4 @@
-# morie 0.9.7 - 2026-06-26
+# morie 0.9.8 - 2026-06-26
 
 ## Packaging: ~91% smaller wheel (~79 MB -> ~7 MB; ~73k files -> ~270)
 

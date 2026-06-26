@@ -10,6 +10,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from . import __version__
 from .modules import DEFAULT_CPADS_CSV, list_modules, run_module
 from .perseus import ask_percy
 
@@ -130,6 +131,9 @@ def execute_pipeline(
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
     parser = argparse.ArgumentParser(description="MORIE package runner")
+    parser.add_argument(
+        "--version", action="version", version=f"morie {__version__}"
+    )
     subparsers = parser.add_subparsers(dest="command")
 
     pipeline = subparsers.add_parser("pipeline", help="Run the MORIE module pipeline")

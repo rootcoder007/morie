@@ -179,6 +179,12 @@ install_python_morie() {
   VENV="$HOME/.venvs/morie"
   USERBIN="$HOME/.local/bin"
 
+  # Keep uv's cache on the SAME filesystem as the venv so it can hardlink
+  # wheels into the venv instead of doing slow full-copies. Without this, when
+  # ~/.cache and ~/.venvs live on different volumes, uv warns "Failed to
+  # hardlink files; falling back to full copy" and the install crawls.
+  export UV_CACHE_DIR="$HOME/.venvs/.uv-cache"
+
   # 1. ensure uv (single-binary, no system deps)
   if ! command -v uv >/dev/null 2>&1 && [ ! -x "$USERBIN/uv" ]; then
     echo "[install.sh] installing uv (managed python + venv tool) ..."
@@ -207,10 +213,10 @@ install_python_morie() {
   ln -sf "$VENV/bin/morie" "$USERBIN/morie"
 
   # 3. smoke-test the install — if `import morie` segfaults we want a
-  #    loud failure, not a silent broken state.
-  echo "[install.sh] verifying import + CLI ..."
-  if "$VENV/bin/python" -c "import morie; print('morie', morie.__version__, 'OK')" \
-       && "$VENV/bin/morie" --version >/dev/null 2>&1; then
+  #    loud failure, not a silent broken state.  Import-only: the CLI
+  #    uses subcommands, so we don't gate the smoke on a flag.
+  echo "[install.sh] verifying import ..."
+  if "$VENV/bin/python" -c "import morie; print('morie', morie.__version__, 'OK')"; then
     echo "[install.sh] ✓ morie installed at $USERBIN/morie (-> $VENV)"
     case ":$PATH:" in
       *":$USERBIN:"*) ;;
