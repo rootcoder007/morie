@@ -1,3 +1,19 @@
+# morie 0.9.7 - 2026-06-26
+
+## Packaging: ~91% smaller wheel (~79 MB -> ~7 MB; ~73k files -> ~270)
+
+* The ~36k per-callable `morie.fn` implementation modules and ~36k
+  `describe_<short>.md` guides now ship as two compressed archives --
+  `_fnsrc.json.xz` (solid lzma; imported via a small on-disk cache built
+  once on first `morie.fn` use) and `describe_docs.json.xz` -- instead of
+  ~73,000 loose files. The wheel drops from ~79 MB to ~7 MB and from
+  ~73,000 files to ~270, so `pip install morie` downloads and unpacks far
+  faster (the 73k-file unpack was the dominant cost).
+* No API or behaviour change: `morie.fn.<name>` and
+  `morie.fn.describe("<name>")` resolve exactly as before; callables are
+  still lazy-loaded, so only the ones you call are compiled. The sdist /
+  dev tree keep the loose files and the loaders fall back to them.
+
 # morie 0.9.6 - 2026-06-26
 
 ## CI: drop fwildclusterboot (pak recursive Remotes unreliable) (3MMM.40c)

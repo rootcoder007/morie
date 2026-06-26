@@ -9,11 +9,70 @@ returns a `RichResult` for verbose multi-paragraph output.
 
 from __future__ import annotations
 
+import functools
+import importlib.util
+import json
+import lzma
 import re
+import zipfile
 from pathlib import Path
 
 _FN_DIR = Path(__file__).parent
 _DESCRIBE_PREFIX = "describe_"
+
+# The describe docs ship either as loose describe_<short>.md files (dev tree)
+# or as a single lzma-compressed {short: markdown} map describe_docs.json.xz
+# (wheel -- collapses ~36k files and compresses ~36 MB down to ~8 MB). The
+# per-callable sources likewise ship loose or inside _fnsrc.zip. The readers
+# below try the bundled archive first and fall back to loose files, so both
+# layouts work identically.
+_DESCRIBE_DOCS_XZ = _FN_DIR / "describe_docs.json.xz"
+_FNSRC_ZIP = _FN_DIR / "_fnsrc.zip"
+
+
+@functools.lru_cache(maxsize=1)
+def _describe_docs() -> dict | None:
+    """Lazily load + cache the {short: markdown} map, or None if not bundled."""
+    if _DESCRIBE_DOCS_XZ.exists():
+        with lzma.open(_DESCRIBE_DOCS_XZ, "rt", encoding="utf-8") as fh:
+            return json.load(fh)
+    return None
+
+
+def _load_describe_md(short: str) -> str | None:
+    """Markdown for a callable: prefer a loose file (dev), else the archive."""
+    md_path = _FN_DIR / f"{_DESCRIBE_PREFIX}{short}.md"
+    if md_path.exists():
+        return md_path.read_text(encoding="utf-8")
+    docs = _describe_docs()
+    return docs.get(short) if docs is not None else None
+
+
+def _read_fn_source(name: str) -> str | None:
+    """Source of a per-callable module: a loose file, _fnsrc.zip, or whatever
+    layout the import system resolved (the solid-lzma cache zip / in-memory)."""
+    py_path = _FN_DIR / f"{name}.py"
+    if py_path.exists():
+        return py_path.read_text(encoding="utf-8", errors="replace")
+    if _FNSRC_ZIP.exists():
+        try:
+            with zipfile.ZipFile(_FNSRC_ZIP) as zf:
+                return zf.read(f"{name}.py").decode("utf-8", errors="replace")
+        except KeyError:
+            return None
+    # Solid-lzma layout: ask the import system (zipimport on the cache zip, or
+    # the in-memory finder -- both expose get_source).
+    try:
+        spec = importlib.util.find_spec(f"morie.fn.{name}")
+    except (ImportError, AttributeError, ValueError):
+        spec = None
+    get_source = getattr(getattr(spec, "loader", None), "get_source", None)
+    if get_source is not None:
+        try:
+            return get_source(f"morie.fn.{name}")
+        except Exception:
+            return None
+    return None
 
 # The 9 standard section headers we expect in describe_<name>.md files.
 # Order matters -- this is the order they're rendered.
@@ -63,11 +122,11 @@ def describe(name: str):
                     f"unknown callable: {name!r}. Try one of: {avail}, …  (REGISTRY has {len(REGISTRY)} entries)."
                 )
 
-    # Find the markdown file
-    md_path = _FN_DIR / f"{_DESCRIBE_PREFIX}{entry.short}.md"
-    if md_path.exists():
-        md_text = md_path.read_text(encoding="utf-8")
-        return _render_from_md(md_text, entry, md_path)
+    # Load the markdown (bundled archive or loose file)
+    md_text = _load_describe_md(entry.short)
+    if md_text is not None:
+        md_name = Path(f"{_DESCRIBE_PREFIX}{entry.short}.md")
+        return _render_from_md(md_text, entry, md_name)
     return _render_skeleton(entry)
 
 
@@ -76,12 +135,11 @@ def _synthesize_entry_from_module(name: str):
     that doesn't yet have a hand-curated REGISTRY row.
     Returns None if the fn/<name>.py file doesn't exist.
     """
-    py_path = _FN_DIR / f"{name}.py"
-    if not py_path.exists():
+    text = _read_fn_source(name)
+    if text is None:
         return None
     from ._registry import FnEntry
 
-    text = py_path.read_text(encoding="utf-8", errors="replace")
     # First docstring line is the description
     desc = ""
     for line in text.splitlines():
