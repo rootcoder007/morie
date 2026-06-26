@@ -262,9 +262,14 @@ returned when the local mirror is absent so CI keeps running.
 Function namespace ``morie.fn``
 ---------------------------------
 
-The ``morie.fn`` namespace exposes 36,000+ individual function
-files, indexed by a registry. The full registry is the canonical
-catalogue:
+The ``morie.fn`` namespace exposes 36,000+ individual callables,
+indexed by a registry and resolved lazily on first access. To keep the
+wheel small, the implementations and per-callable guides ship as two
+compressed archives (``_fnsrc.json.xz`` and ``describe_docs.json.xz``,
+~7 MB total) rather than ~73,000 loose files; the importer resolves
+``morie.fn.<name>`` from them transparently, and per-callable
+documentation is available at runtime via ``morie.fn.describe``. The
+full registry is the canonical catalogue:
 
 .. automodule:: morie.fn._registry
    :members:

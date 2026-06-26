@@ -30,7 +30,7 @@
  * Build (out-of-tree):
  *     make -C /lib/modules/$(uname -r)/build M=$(pwd) modules
  *     sudo insmod morie.ko
- *     cat /sys/kernel/morie/version    # "0.9.6"
+ *     cat /sys/kernel/morie/version    # "0.9.7"
  *     cat /sys/kernel/morie/license    # "GPL-2.0-only"
  *     sudo rmmod morie
  *
@@ -44,7 +44,7 @@
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
 
-#define MORIE_VERSION    "0.9.6"
+#define MORIE_VERSION    "0.9.7"
 #define MORIE_LICENSE_ID "GPL-2.0-only"
 
 static struct kobject *morie_kobj;

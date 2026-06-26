@@ -53,6 +53,9 @@ WORKDIR /build
 # ["LICENSE"], and scikit-build-core fails metadata generation if the
 # pattern matches nothing.
 COPY pyproject.toml README.md CMakeLists.txt LICENSE ./
+# scripts/bundle_fn.py is invoked by CMakeLists.txt at wheel-build time to
+# collapse the ~73k morie.fn files into _fnsrc.json.xz + describe_docs.json.xz.
+COPY scripts/bundle_fn.py ./scripts/bundle_fn.py
 COPY libmorie/ ./libmorie/
 COPY src/ ./src/
 
@@ -84,7 +87,7 @@ RUN R CMD INSTALL --library=/usr/local/lib/R/site-library /build/r-package/morie
 # ─── Stage 3: Runtime ────────────────────────────────────────────────────────
 FROM python:${PYTHON_VERSION}-slim AS runtime
 
-ARG VERSION=0.9.6
+ARG VERSION=0.9.7
 ARG VCS_REF=unknown
 ARG BUILD_DATE=unknown
 
