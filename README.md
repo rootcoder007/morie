@@ -194,8 +194,7 @@ Several MRM analyses use Statistics Canada and Health Canada Public
 Use Microdata Files (PUMFs) — including the **Canadian Cannabis
 Survey (CCS)**, the **Canadian Student Alcohol and Drugs Survey
 (CSADS)**, the **Canadian Substance Use Survey (CSUS)**, the
-**Canadian Alcohol and Drugs Survey (CADS, 2019;
-[doi.org/10.25318/132500052021001-eng](https://doi.org/10.25318/132500052021001-eng))**,
+**Canadian Alcohol and Drugs Survey (CADS)**,
 and the **Canadian Postsecondary Education Alcohol and Drug Use
 Survey (CPADS)** — along with Public Health Agency of Canada (PHAC)
 and Canadian Institute for Health Information (CIHI) aggregates.

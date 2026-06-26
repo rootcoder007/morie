@@ -1,4 +1,4 @@
-# morie 0.9.5.16 - 2026-05-25
+# morie 0.9.6 - 2026-06-26
 
 ## CI: drop fwildclusterboot (pak recursive Remotes unreliable) (3MMM.40c)
 
