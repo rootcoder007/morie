@@ -111,9 +111,39 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # Gate: run the full R test suite before tagging. A prior release shipped a
+  # DoubleML segfault because the auto-tag only verified the sdist + Docker
+  # build, not the tests. This mirrors ci.yml's test-r job so a failing or
+  # segfaulting test now blocks the tag (and therefore the entire publish chain).
+  test:
+    name: Verify tests pass (gates the tag)
+    needs: check
+    if: needs.check.outputs.should-release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          lfs: false
+      - uses: r-lib/actions/setup-r@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+        with:
+          r-version: "release"
+          use-public-rspm: true
+      - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
+        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        shell: Rscript {0}
+      - uses: r-lib/actions/setup-r-dependencies@2e3959d284a9ed60162f28a0f9891d1150f47f72 # v2
+        with:
+          working-directory: r-package/morie
+          extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite
+          needs: check
+      - name: Install morie
+        run: R CMD INSTALL r-package/morie
+      - name: Run the R test suite (the gate the auto-tag previously lacked)
+        run: Rscript -e "library(morie); testthat::test_dir('r-package/morie/tests/testthat')"
+
   tag:
     name: Tag + fire publish chain
-    needs: [check, verify]
+    needs: [check, verify, test]
     if: needs.check.outputs.should-release == 'true'
     runs-on: ubuntu-latest
     permissions:

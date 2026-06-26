@@ -25,7 +25,7 @@ namespace http {
 // constant. Drift check: `grep ^Version: DESCRIPTION` must equal
 // the version string below.
 const char* kDefaultUserAgent =
-  "morie-R/0.9.5.14 (+https://github.com/rootcoder007/morie) "
+  "morie-R/0.9.5.15 (+https://github.com/rootcoder007/morie) "
   "libcurl";
 
 namespace {
