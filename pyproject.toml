@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "morie"
-version = "0.9.7"
+version = "0.9.8"
 description = "Multi-domain scientific computing toolkit (Python + R) for observational inference and intervention analysis, hosting the MRM (Multilevel Reconciliation Methodology) framework for Canadian carceral, police, and oversight data. Provides causal estimators (ATE, ATT, AIPW, DML, G-computation), survey sampling, propensity-score and doubly-robust methods, sensitivity analysis, spatial statistics, Hawkes point processes, and psychometrics, with a unified RichResult output."
 authors = [
   { name="Vansh Singh Ruhela", email="vsruhela@proton.me" }

@@ -231,7 +231,7 @@ Run `citation("morie")` after installation. Please cite the software:
   title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 0.9.7},
+  note    = {R package version 0.9.8},
   url     = {https://github.com/rootcoder007/morie}
 }
 ```
