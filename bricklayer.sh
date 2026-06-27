@@ -1,7 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
-# bootstrap.sh -- offer to install the rest of the morie family.
+# bricklayer.sh -- offer to install the rest of the morie family.
 #
 # The morie family spans two open ecosystems plus one proprietary CLI:
 #   * morie            -- Python package (PyPI)            [OPEN, AGPL]
@@ -14,23 +14,23 @@
 # we only point to where to obtain it.
 #
 # Run directly:
-#   curl -fsSL https://rootcoder007.github.io/morie/bootstrap.sh | sh
+#   curl -fsSL https://rootcoder007.github.io/morie/bricklayer.sh | sh
 # Flags:
 #   -y, --yes     install without prompting (assume yes)
 #       --check   detect + report only; install nothing
 #   -h, --help    this help
 # Env:
-#   MORIE_NO_BOOTSTRAP=1   exit immediately, do nothing
-#   MORIE_BOOTSTRAP_YES=1  same as --yes
+#   MORIE_NO_BRICKLAYER=1   exit immediately, do nothing
+#   MORIE_BRICKLAYER_YES=1  same as --yes
 #
 # Exit: 0 ok / nothing to do, 1 an install failed, 2 bad usage.
 set -eu
 
 ASSUME_YES=0
 CHECK_ONLY=0
-[ "${MORIE_BOOTSTRAP_YES:-0}" = "1" ] && ASSUME_YES=1
+[ "${MORIE_BRICKLAYER_YES:-0}" = "1" ] && ASSUME_YES=1
 
-if [ "${MORIE_NO_BOOTSTRAP:-0}" = "1" ]; then
+if [ "${MORIE_NO_BRICKLAYER:-0}" = "1" ]; then
     exit 0
 fi
 
@@ -41,7 +41,7 @@ for arg in "$@"; do
         -h|--help)
             sed -n '3,30p' "$0" 2>/dev/null | sed 's/^# \{0,1\}//'
             exit 0 ;;
-        *) echo "bootstrap: unknown argument: $arg" >&2; exit 2 ;;
+        *) echo "bricklayer: unknown argument: $arg" >&2; exit 2 ;;
     esac
 done
 
@@ -116,8 +116,11 @@ if [ "$tc_ok" = 1 ]; then
      C/C++ core; without a compiler they fall back to slow pure-language
      kernels (or fail to build from source). Install one FIRST:
        Debian/Ubuntu : sudo apt-get install build-essential
-       macOS         : xcode-select --install
        Fedora/RHEL   : sudo dnf install gcc gcc-c++ make
+       Arch          : sudo pacman -S base-devel
+       Alpine        : sudo apk add build-base
+       openSUSE      : sudo zypper install -t pattern devel_C_C++
+       macOS         : xcode-select --install   (or: brew install gcc make)
 EOF
 fi
 echo
@@ -131,7 +134,7 @@ need_py=0; need_r=0
 
 # Surface uninstallable-here situations without failing.
 [ "$py_ok" = 1 ] && [ -z "$PY" ] && echo "note: Python not found -- install Python first, then 'pip install morie'."
-[ "$r_ok" = 1 ] && ! have_rscript && echo "note: R not found -- install R first, then re-run this bootstrap."
+[ "$r_ok" = 1 ] && ! have_rscript && echo "note: R not found -- install R first, then re-run this bricklayer."
 [ "$cli_ok" = 1 ] && echo "note: rmorie-cli is proprietary (Receipt-of-Custody); obtain it at $CLI_URL"
 
 if [ "$need_py" = 0 ] && [ "$need_r" = 0 ]; then
