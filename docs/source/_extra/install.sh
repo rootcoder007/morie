@@ -236,8 +236,12 @@ fi
 
 # --- R morie ------------------------------------------------------
 if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ]; then
-  echo "[install.sh] installing R morie via CRAN + r-universe fallback"
-  run Rscript -e 'install.packages("morie", repos = c(rootcoder007 = "https://rootcoder007.r-universe.dev", CRAN = "https://cloud.r-project.org"))'
+  echo "[install.sh] installing R morie from GitHub source (remotes::install_github) ..."
+  if Rscript -e 'if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org"); remotes::install_github("rootcoder007/morie", subdir = "r-package/morie", upgrade = "never")'; then
+    echo "[install.sh] ✓ R morie installed"
+  else
+    echo "[install.sh] NOTE: R morie build failed (needs a C toolchain + libcurl/libsodium dev headers). Python morie is installed and fully usable; build r-package/morie manually if you need the R side."
+  fi
 fi
 
 # --- Kernel module (opt-in, Linux only) ---------------------------
