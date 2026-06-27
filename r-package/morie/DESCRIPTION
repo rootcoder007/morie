@@ -41,8 +41,9 @@ Note: Tested on R 4.3.0, 4.4.x, 4.5.2, 4.5.3 (CRAN). Use CRAN R on Apple
 Imports:
   stats,
   utils,
-  Rcpp
-LinkingTo: Rcpp, RcppArmadillo
+  Rcpp,
+  rmoriebricklayer (>= 0.2.0)
+LinkingTo: Rcpp, RcppArmadillo, rmoriebricklayer
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests:
   AER,
