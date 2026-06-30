@@ -250,7 +250,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/DESCRIPTION,39,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,39,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,39,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
-./r-package/morie/DESCRIPTION,45,STALE_OR_DEP,0.2.0,"rmoriebricklayer (>= 0.2.0)"
+./r-package/morie/DESCRIPTION,45,STALE_OR_DEP,0.2.1,"rmoriebricklayer (>= 0.2.1)"
 ./r-package/morie/DESCRIPTION,134,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
 ./r-package/morie/NEWS.md,1,CURRENT,0.9.9,"# morie 0.9.9 - 2026-06-27"
 ./r-package/morie/NEWS.md,5,STALE_OR_DEP,0.9.8,"* Version bumped 0.9.8 -> 0.9.9; kept in step with the `rmorie` R package"

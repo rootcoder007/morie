@@ -107,6 +107,9 @@ jobs:
           use-public-rspm: true
 
       # setup-r-dependencies@v2 installs DESCRIPTION's Imports/Suggests
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       # AND any extra-packages list, into the right user library so
       # later library() / Rscript calls find them.
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
@@ -123,6 +126,9 @@ jobs:
           cache-version: 2
           needs: check
 
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       - name: Install morie
         run: R CMD INSTALL r-package/morie
 
