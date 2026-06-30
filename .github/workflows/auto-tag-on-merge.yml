@@ -136,6 +136,9 @@ jobs:
           working-directory: r-package/morie
           extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite
           needs: check
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       - name: Install morie
         run: R CMD INSTALL r-package/morie
       - name: Run the R test suite (the gate the auto-tag previously lacked)
