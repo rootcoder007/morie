@@ -5,8 +5,10 @@ dataclasses (RplRes / AstRes / VolRes / OtDmlR / etc.).  This module wraps
 each in a `RichResult` so OTIS analyses get the same multi-section output
 that Welch / Mann–Whitney / SIU analyses already emit.
 
-OTIS = anonymized Ontario MCSCS correctional placement records (open
-data). The canonical 76,934-row table lives in the repo cache at
+OTIS here = the public "Data on Inmates in Ontario" detailed records (Ontario
+Ministry of the Solicitor General), extracted from the Offender Tracking
+Information System (OTIS); open data under the Open Government Licence – Ontario.
+The canonical 76,934-row table lives in the repo cache at
 `data/cache/correctional_stats_report_environment.RData` as the R object
 `df`. Use `load_otis()` (CSV mirror) or call the Rscript exporter at
 `scripts/export_otis_csv.R` to refresh the CSV.
@@ -35,7 +37,7 @@ from .fn._richresult import RichResult
 PROJECT = _o.project_root()
 DEFAULT_OUT = PROJECT / "data/manifest/outputs/otis"
 
-# OTIS is open, anonymized Ontario MCSCS correctional-placement data.
+# OTIS = open "Data on Inmates in Ontario" data (Ontario Solicitor General).
 # The R workflow (libexec/config/tests/rtests/otis.R) loads
 # data/cache/correctional_stats_report_environment.RData and exposes
 # `df` (76,934 rows × 10 cols) as the canonical OTIS table. Our loader

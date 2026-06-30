@@ -4,7 +4,7 @@
 # test files don't exercise.
 #
 #   * morie_arsau_read_xlsx_dictionary — runs against the bundled
-#     authoritative MCSCS OTIS XLSX dictionary (uses the same row
+#     authoritative Solicitor General OTIS XLSX dictionary (uses the same row
 #     layout that ARSAU XLSXes follow).
 #   * morie_arsau_read_markdown_dictionary — runs against the bundled
 #     OTIS_DATA_DICTIONARY.md.
