@@ -10,7 +10,7 @@ Run this from the package root:
 
 This is the single source of truth for the OTIS synthetic-data fixtures
 used in tests/testthat/test-otis_all_analyze.R. The dictionary itself
-is extracted from the Ontario MCSCS publication
+is extracted from the Ontario Solicitor General publication
 `od-restrictiveconfinement-segregation-deaths-dd20251103-datadictionary.xlsx`
 (see audit/otis-dictionary-extract.json + the audit transcript).
 """
@@ -112,7 +112,7 @@ def main() -> int:
 #     python3 data-raw/gen-helper-otis.py
 #
 # Source of truth: inst/extdata/otis_dictionary.json (extracted from
-# the Ontario MCSCS XLSX dictionary
+# the Ontario Solicitor General XLSX dictionary
 # od-restrictiveconfinement-segregation-deaths-dd20251103-datadictionary.xlsx).
 #
 # Per-dataset OTIS synthetic-fixture dispatcher. Each OTIS publication

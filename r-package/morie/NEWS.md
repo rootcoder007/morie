@@ -1,3 +1,12 @@
+# morie 0.9.9 - 2026-06-27
+
+## Version lock with the rmorie ecosystem
+
+* Version bumped 0.9.8 -> 0.9.9, kept in step with the `rmorie` R package
+  (morie and rmorie versions are now locked equal).
+* Groundwork for routing `rmoriebricklayer` and `rmoriedata` through the
+  shared C/C++ backend (in progress).
+
 # morie 0.9.8 - 2026-06-26
 
 ## Packaging: ~91% smaller wheel (~79 MB -> ~7 MB; ~73k files -> ~270)

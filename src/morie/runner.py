@@ -449,6 +449,14 @@ def build_parser() -> argparse.ArgumentParser:
     except ImportError:
         pass
 
+    # ── bricklayer: offer to install the rest of the morie family ──────
+    try:
+        from morie.bricklayer import register_subparser as _bl_register
+
+        _bl_register(subparsers)
+    except ImportError:
+        pass
+
     # ── ingest: pull open-data feeds (CKAN, TPS ArcGIS, SIU PDFs) ──────
     ingest_cmd = subparsers.add_parser(
         "ingest",
@@ -886,6 +894,11 @@ def _main_impl() -> int:
         from .verify_earth_engine import handle_verify_earth_engine
 
         return handle_verify_earth_engine(args)
+
+    if args.command == "bricklayer":
+        from .bricklayer import run as _bl_run
+
+        return _bl_run(args)
 
     if args.command == "tutorial":
         from .tutorial import run as _run_tutorial

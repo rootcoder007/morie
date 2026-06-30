@@ -53,10 +53,13 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
-          cache-version: 1
+          cache-version: 2
           extra-packages: any::covr any::xml2
           needs: coverage
 
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       - name: Run covr
         run: |
           Rscript -e 'cov <- covr::package_coverage(type = "tests", quiet = TRUE); covr::to_cobertura(cov, filename = "coverage.xml"); cat(sprintf("Coverage: %.2f%%\n", covr::percent_coverage(cov)))'
@@ -98,9 +101,12 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
-          cache-version: 1
+          cache-version: 2
           extra-packages: any::lintr
 
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       - name: Run lintr
         run: |
           Rscript -e 'lintr::lint_package()'
@@ -134,9 +140,12 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
-          cache-version: 1
+          cache-version: 2
           extra-packages: any::goodpractice any::rcmdcheck any::covr any::cyclocomp any::lintr
 
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       - name: Run goodpractice
         run: |
           Rscript -e 'g <- goodpractice::gp("."); print(g)'
@@ -180,7 +189,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           working-directory: r-package/morie
-          cache-version: 1
+          cache-version: 2
           extra-packages: |
             any::rcmdcheck
             any::goodpractice
@@ -188,6 +197,9 @@ jobs:
             ropensci-review-tools/pkgstats
             ropensci-review-tools/pkgcheck
 
+      - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
+        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        shell: Rscript {0}
       - name: Run pkgcheck
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
