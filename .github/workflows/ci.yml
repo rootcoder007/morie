@@ -117,6 +117,10 @@ jobs:
         with:
           working-directory: r-package/morie
           extra-packages: any::testthat any::survey any::DBI any::RSQLite any::jsonlite
+          # Bust the stale cache that held an old rmoriebricklayer 0.2.0 lacking
+          # the rmbl_* C callables (the version was not bumped when the API
+          # changed), which made morie_mean_cpp/var/normal_pdf fail.
+          cache-version: 2
           needs: check
 
       - name: Install morie
