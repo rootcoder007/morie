@@ -8,7 +8,7 @@ A multi-domain scientific computing toolkit (Python and R) for observational inf
 [![CodeQL](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/rootcoder007/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
-[![rmorie on r-universe](https://img.shields.io/badge/r--universe-rmorie-276DC3)](https://rootcoder007.r-universe.dev/rmorie)
+[![rmorie on r-universe](https://rootcoder007.r-universe.dev/badges/rmorie)](https://rootcoder007.r-universe.dev/rmorie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 > ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift, datasets may move, and findings may be refined between minor versions.
@@ -144,7 +144,7 @@ If you use morie in your research, please cite the software:
 
 ```
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and
-Inferential Estimation (v0.9.5.12).
+Inferential Estimation.
 https://github.com/rootcoder007/morie
 ```
 

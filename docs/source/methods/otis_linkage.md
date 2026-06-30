@@ -6,7 +6,7 @@
 
 ## What the official dictionary says (verified 2026-05-08)
 
-From the Ontario MCSCS data dictionary v2.0 (resource `d83fe893-9634-4794-a0c1-c17bf619a95a`, last modified 2025-11-19):
+From the Ontario Solicitor General data dictionary v2.0 (resource `d83fe893-9634-4794-a0c1-c17bf619a95a`, last modified 2025-11-19):
 
 > `UniqueIndividual_ID`: A random number assigned to an individual (format: **YYYY-XXXXX-AA**), where **YYYY reflects the year at the end of the fiscal year reporting period** [calendar year for d-series], `XXXXX` is a sequence, and `AA` is a dataset acronym (`RC`, `SG`, `DC`).
 >
