@@ -11,7 +11,6 @@ File,Line,Status,Version,Context
 ./AGENTS.md,204,STALE_OR_DEP,0.9.5,"2. Tag `v0.9.5.x` on main"
 ./CITATION.cff,1,STALE_OR_DEP,1.2.0,"cff-version: 1.2.0"
 ./CITATION.cff,10,CURRENT,0.9.9,"version: 0.9.9"
-./CITATION.cff,23,CURRENT,0.9.9,"version: 0.9.9"
 ./CMakeLists.txt,3,STALE_OR_DEP,0.9.1,"# Build for libmorie -- the morie C++ numeric core (v0.9.1 backend"
 ./DEPENDENCIES.csv,7,STALE_OR_DEP,0.7.1,"Python;DoubleML;>=0.7.1;runtime;BSD-3-Clause;Yes;"
 ./DEPENDENCIES.csv,8,STALE_OR_DEP,3.7.0,"Python;matplotlib;>=3.7.0;runtime;PSF-2.0;Yes;matplotlib custom license is BSD-style"
@@ -44,7 +43,6 @@ File,Line,Status,Version,Context
 ./INSTALLATION.md,331,STALE_OR_DEP,0.8.0,"docker run --rm ghcr.io/rootcoder007/morie:0.8.0 morie --help"
 ./README.md,14,STALE_OR_DEP,1.0.0,"> ⚠️ **Pre-alpha (v0.x).** MORIE is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift; datasets may move; and findings may be refined between minor versions."
 ./README.md,94,STALE_OR_DEP,0.9.5.4,"docker run --rm ghcr.io/rootcoder007/morie:0.9.5.4 morie --help"
-./README.md,147,STALE_OR_DEP,0.9.5.12,"Inferential Estimation (v0.9.5.12)."
 ./RELEASE-CHECKLIST.md,19,STALE_OR_DEP,0.1.0,"- Trigger: push a tag `v*.*.*` (e.g.; `v0.1.0`)."
 ./RELEASE-CHECKLIST.md,22,STALE_OR_DEP,0.1.0,"git tag v0.1.0 && git push origin v0.1.0"
 ./RELEASE-CHECKLIST.md,22,STALE_OR_DEP,0.1.0,"git tag v0.1.0 && git push origin v0.1.0"

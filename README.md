@@ -144,7 +144,7 @@ If you use morie in your research, please cite the software:
 
 ```
 Ruhela, V. S. (2026). morie: Multi-domain Open Research and
-Inferential Estimation (v0.9.5.12).
+Inferential Estimation.
 https://github.com/rootcoder007/morie
 ```
 
