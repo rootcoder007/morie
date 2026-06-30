@@ -79,8 +79,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         libxml2-dev \
         libuv1-dev \
         zlib1g-dev \
-    && Rscript -e "install.packages(c('survey','testthat','DBI','RSQLite','jsonlite'), repos='https://cloud.r-project.org', quiet=TRUE, Ncpus=parallel::detectCores())"
+    && Rscript -e "install.packages(c('survey','testthat','DBI','RSQLite','jsonlite'), repos='https://cloud.r-project.org', quiet=TRUE, Ncpus=parallel::detectCores())" \
+    && Rscript -e "install.packages(c('rmoriebricklayer','rmoriedata'), repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'), quiet=TRUE, Ncpus=parallel::detectCores())"
 
+# morie's R package hard-depends on rmoriebricklayer (Imports + LinkingTo, on
+# r-universe not CRAN); it is installed in the step above so R CMD INSTALL works.
 COPY r-package/ /build/r-package/
 RUN R CMD INSTALL --library=/usr/local/lib/R/site-library /build/r-package/morie
 

@@ -37,7 +37,7 @@ File,Line,Status,Version,Context
 ./DEPENDENCIES.csv,65,STALE_OR_DEP,0.3.0,"R;mgcv;any;Suggests;GPL-2|GPL-3;Yes;added v0.3.0 for schabenberger spatial GLM"
 ./DEPENDENCIES.csv,66,STALE_OR_DEP,0.3.0,"R;MASS;any;Suggests;GPL-2|GPL-3;Yes;added v0.3.0 for armstrong ideal-point + kosorok M-estimators"
 ./Dockerfile,30,STALE_OR_DEP,0.9.1,"# Since v0.9.1 morie ships a compiled C++ core (libmorie) built with"
-./Dockerfile,90,CURRENT,0.9.9,"ARG VERSION=0.9.9"
+./Dockerfile,93,CURRENT,0.9.9,"ARG VERSION=0.9.9"
 ./INSTALLATION.md,3,STALE_OR_DEP,1.0.0,"> ⚠️ **Pre-alpha (v0.x).** morie is in pre-alpha. The first alpha milestone is **v1.0.0**; everything before that is point-releases of pre-alpha code. APIs may shift; datasets may move; and findings may be refined between minor versions."
 ./INSTALLATION.md,315,STALE_OR_DEP,3.13.5,"The Pi's `/usr/bin/python3` is Python 3.13.5; which segfaults on importing the SciPy stack (a Debian-packaging issue). Symptoms:"
 ./INSTALLATION.md,331,STALE_OR_DEP,0.8.0,"docker run --rm ghcr.io/rootcoder007/morie:0.8.0 morie --help"
