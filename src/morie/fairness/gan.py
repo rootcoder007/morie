@@ -201,7 +201,7 @@ def _cond_gen_loss(gp, dp, cond, z):
 class CTGANDebiaser:
     """A conditional tabular GAN that rebalances a biased dataset.
 
-    A clean-room reimplementation of the *debiasing* idea from CTGAN
+    A reimplementation of the *debiasing* idea from CTGAN
     (Xu et al., 2019) as used in arXiv:2603.18987 — written in JAX, with
     no dependency on the Business-Source-licensed ``sdv`` / ``ctgan``
     packages.

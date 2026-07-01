@@ -91,7 +91,7 @@ pip install morie
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:0.9.5.4 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 ```
 
 Multi-arch image published on every release with both versioned and `:latest` tags. Requires only Docker — no Python, no pip.
