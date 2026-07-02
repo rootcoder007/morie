@@ -171,6 +171,7 @@ _LAZY_EXPORTS = {
     "sync_rng": "longitudinal_sim",
     "validate_cpads_frame": "cpads",
     "verify_statistical_output": "inspector",
+    "agent": "agent_cli",
 }
 
 
@@ -234,6 +235,7 @@ __all__ = [
     "DatasetRegistry",
     "CPADS_REQUIRED_VARIABLES",
     "MeasurementLevel",
+    "agent",
     "ask",
     "agent_available",
     "ask_percy",
