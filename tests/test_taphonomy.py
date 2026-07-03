@@ -20,11 +20,13 @@ from morie.taphonomy import (
     taphonomy_evidence_loglik,
     taphonomy_ilr,
     taphonomy_likelihood_ratio,
+    taphonomy_pmi_schema,
     taphonomy_preservation_delta,
     taphonomy_preservation_lr,
     taphonomy_schema,
     taphonomy_simulate_pxrf,
 )
+from morie.taphonomy import _read_usgs_soil_zip
 from scipy.stats import norm
 
 

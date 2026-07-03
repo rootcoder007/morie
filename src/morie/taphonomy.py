@@ -773,3 +773,82 @@ def taphonomy_ilr(x, pseudocount: float = 1e-6) -> np.ndarray:
         for i in range(1, D)
     ]
     return np.column_stack(cols)
+
+
+# ===========================================================================
+# Open-data ingestion: real comparanda for calibration
+# ===========================================================================
+
+# USGS National Geochemical Database (soil) bulk CSV (verified 2026-07-03;
+# 54 MB zip -> 482 MB CSV; subject to federal-portal reorg).
+_USGS_NGDBSOIL_URL = "https://mrdata.usgs.gov/ngdb/soil/ngdbsoil-csv.zip"
+
+
+def _read_usgs_soil_zip(zip_path, nrows=None) -> pd.DataFrame:
+    """Read the CSV member of a downloaded ngdbsoil zip (no full extract)."""
+    import zipfile
+
+    with zipfile.ZipFile(zip_path) as zf:
+        members = [n for n in zf.namelist() if n.lower().endswith(".csv")]
+        if not members:
+            raise ValueError(f"no CSV member in {zip_path}")
+        with zf.open(members[0]) as fh:
+            return pd.read_csv(fh, nrows=nrows, low_memory=False)
+
+
+def taphonomy_fetch_usgs_soil(
+    dest=None, nrows: int | None = 1000, url: str = _USGS_NGDBSOIL_URL,
+    refresh: bool = False,
+) -> pd.DataFrame:
+    """Fetch USGS National Geochemical Database soil geochemistry.
+
+    Downloads the USGS NGDB (soil) bulk CSV -- **real, open** elemental
+    concentrations (the compositional analogue of pXRF spectra) to calibrate the
+    ``clr``/``ilr``/DML pipeline on genuine open data before real scans exist.
+    Dependency-free (base zipfile + pandas; the WFS endpoint is GML-only and not
+    used). ~54 MB download (482 MB uncompressed), cached in ``dest``.
+    R parity: ``morie_taphonomy_fetch_usgs_soil``.
+    """
+    import tempfile
+    import urllib.request
+    from pathlib import Path
+
+    dest = Path(dest) if dest is not None else Path(tempfile.gettempdir())
+    dest.mkdir(parents=True, exist_ok=True)
+    zip_path = dest / url.rsplit("/", 1)[-1]
+    if refresh or not zip_path.exists():
+        urllib.request.urlretrieve(url, zip_path)  # noqa: S310 (fixed https URL)
+    df = _read_usgs_soil_zip(zip_path, nrows)
+    df.attrs["source"] = url
+    return df
+
+
+def taphonomy_pmi_schema() -> pd.DataFrame:
+    """STO-2022 taphonomic-observation schema (PMI nuisance variables).
+
+    Typed zero-row template of the taphonomic-observation + environmental
+    variables for post-mortem-interval work (Standard for Taphonomic
+    Observations in Support of the PMI, 2022 -- the geoFOR variable family).
+    **geoFOR itself is an app with no open data API**, so this structures your
+    own case observations into the DML/Bayesian nuisance set X. No fabricated
+    rows. R parity: ``morie_taphonomy_pmi_schema``.
+    """
+    dtypes = {
+        "decomp_stage": "Int64",
+        "body_scoring_tbs": "float64",
+        "accumulated_deg_days": "float64",
+        "temp_c": "float64",
+        "humidity_pct": "float64",
+        "precipitation_mm": "float64",
+        "burial_depth_cm": "float64",
+        "soil_ph": "float64",
+        "scavenger_activity": "Int64",
+        "insect_activity": "Int64",
+        "pmi_days": "float64",
+    }
+    roles = (
+        ["observation"] * 2 + ["environment"] * 8 + ["outcome"]
+    )
+    df = pd.DataFrame({c: pd.Series(dtype=t) for c, t in dtypes.items()})
+    df.attrs["role"] = dict(zip(df.columns, roles))
+    return df
