@@ -852,3 +852,151 @@ def taphonomy_pmi_schema() -> pd.DataFrame:
     df = pd.DataFrame({c: pd.Series(dtype=t) for c, t in dtypes.items()})
     df.attrs["role"] = dict(zip(df.columns, roles))
     return df
+
+
+# ===========================================================================
+# MorphoSource client -- 3D bioarchaeology media (user-supplied API key)
+# ===========================================================================
+#
+# Endpoints + auth verified 2026-07-03 against github.com/Imageomics/
+# pyMorphoSource: base https://www.morphosource.org/api (override
+# MORPHOSOURCE_API_URL); search = GET /media|/physical-objects with q +
+# search_field=all_fields + f.<facet> + per_page/page; download = POST
+# /download/<id> with Authorization: <key> + use-statement body ->
+# response.media.download_url. Key from the caller's own env; never hard-coded.
+
+
+def _morphosource_api() -> str:
+    import os
+
+    return os.environ.get("MORPHOSOURCE_API_URL", "https://www.morphosource.org/api")
+
+
+def _morphosource_key(api_key: str | None = None, required: bool = True):
+    import os
+
+    key = api_key or os.environ.get("MORPHOSOURCE_API_KEY", "")
+    if not key:
+        if required:
+            raise ValueError(
+                "MorphoSource API key required. Pass api_key= or export "
+                "MORPHOSOURCE_API_KEY (token from your account at "
+                "https://www.morphosource.org). Never hard-code the key."
+            )
+        return None
+    return key
+
+
+def _morphosource_search_params(
+    query=None, media_type=None, taxonomy_gbif=None, visibility=None,
+    media_tag=None, per_page=10, page=1,
+) -> dict:
+    params = {}
+    if query:
+        params["q"] = query
+        params["search_field"] = "all_fields"
+    facets = {
+        "media_type": media_type, "taxonomy_gbif": taxonomy_gbif,
+        "publication_status": visibility, "tag": media_tag,
+    }
+    for k, v in facets.items():
+        if v:
+            params[f"f.{k}"] = v
+    params["per_page"] = int(per_page)
+    params["page"] = int(page)
+    return params
+
+
+def taphonomy_morphosource_search(
+    query=None, kind="media", media_type=None, taxonomy_gbif=None,
+    visibility=None, media_tag=None, per_page=10, page=1, api_key=None,
+) -> dict:
+    """Search MorphoSource for 3D media or physical objects.
+
+    Public search needs no key; a key (restricted records) comes from api_key or
+    MORPHOSOURCE_API_KEY and travels only in the Authorization header. ``kind``
+    is ``"media"`` or ``"physical-objects"``. Returns a dict with ``items``,
+    ``n``, ``total_pages``, and ``df`` (id + title). R parity:
+    ``morie_taphonomy_morphosource_search``.
+    """
+    import json
+    import urllib.parse
+    import urllib.request
+
+    if kind not in ("media", "physical-objects"):
+        raise ValueError("kind must be 'media' or 'physical-objects'")
+    params = _morphosource_search_params(
+        query, media_type, taxonomy_gbif, visibility, media_tag, per_page, page
+    )
+    url = f"{_morphosource_api()}/{kind}?" + urllib.parse.urlencode(params)
+    key = _morphosource_key(api_key, required=False)
+    req = urllib.request.Request(url)
+    if key:
+        req.add_header("Authorization", key)
+    with urllib.request.urlopen(req) as r:  # noqa: S310 (fixed https base)
+        parsed = json.load(r)["response"]
+    items_name = "media" if kind == "media" else "physical_objects"
+    items = parsed.get(items_name) or []
+    df = pd.DataFrame(
+        {"id": [str(i.get("id", "")) for i in items],
+         "title": [str(i.get("title", "")) for i in items]}
+    )
+    return {
+        "items": items,
+        "n": len(items),
+        "total_pages": (parsed.get("pages") or {}).get("total_pages"),
+        "df": df,
+    }
+
+
+def taphonomy_morphosource_fetch(
+    media_id, use_statement, use_categories=None, use_category_other=None,
+    dest=None, api_key=None,
+) -> str:
+    """Download a MorphoSource media bundle (requires a data-use statement).
+
+    MorphoSource enforces a use agreement on every download, so ``use_statement``
+    is required (``agreements_accepted=True`` is sent); restricted media also
+    need per-item permission on the site. Key from api_key/MORPHOSOURCE_API_KEY,
+    Authorization header only. Returns the path to the downloaded zip. R parity:
+    ``morie_taphonomy_morphosource_fetch``.
+    """
+    import json
+    import tempfile
+    import urllib.error
+    import urllib.request
+    from pathlib import Path
+
+    if not use_statement or not isinstance(use_statement, str):
+        raise ValueError(
+            "MorphoSource requires a non-empty use_statement (data-use agreement)."
+        )
+    key = _morphosource_key(api_key, required=True)
+    body = {"use_statement": use_statement, "agreements_accepted": True}
+    if use_categories:
+        body["use_categories"] = use_categories
+    if use_category_other:
+        body["use_category_other"] = use_category_other
+    url = f"{_morphosource_api()}/download/{media_id}"
+    req = urllib.request.Request(
+        url, data=json.dumps(body).encode(), method="POST",
+        headers={"Authorization": key, "Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req) as r:  # noqa: S310
+            dl_url = json.load(r)["response"]["media"]["download_url"]
+    except urllib.error.HTTPError as e:  # noqa: F821
+        if e.code == 403:
+            raise PermissionError(
+                f"Restricted media {media_id}: request download permission at "
+                "https://www.morphosource.org"
+            ) from e
+        raise
+    dest = Path(dest) if dest is not None else Path(tempfile.gettempdir())
+    dest.mkdir(parents=True, exist_ok=True)
+    path = dest / f"morphosource_{media_id}.zip"
+    dreq = urllib.request.Request(dl_url, headers={"Authorization": key})
+    with urllib.request.urlopen(dreq) as r, open(path, "wb") as fh:  # noqa: S310
+        while chunk := r.read(1 << 20):
+            fh.write(chunk)
+    return str(path)

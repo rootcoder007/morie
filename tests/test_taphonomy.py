@@ -254,3 +254,35 @@ def test_pmi_schema_is_typed_zero_row_sto2022_template():
     assert len(s) == 0
     assert {"accumulated_deg_days", "burial_depth_cm", "pmi_days"} <= set(s.columns)
     assert s.attrs["role"]["pmi_days"] == "outcome"
+
+
+def test_morphosource_key_resolves_arg_then_env_then_errors(monkeypatch):
+    from morie.taphonomy import _morphosource_key
+
+    monkeypatch.delenv("MORPHOSOURCE_API_KEY", raising=False)
+    assert _morphosource_key("explicit") == "explicit"          # arg wins
+    monkeypatch.setenv("MORPHOSOURCE_API_KEY", "from_env")
+    assert _morphosource_key() == "from_env"                    # env fallback
+    monkeypatch.delenv("MORPHOSOURCE_API_KEY", raising=False)
+    assert _morphosource_key(required=False) is None            # optional
+    with pytest.raises(ValueError, match="MORPHOSOURCE_API_KEY"):
+        _morphosource_key(required=True)
+
+
+def test_morphosource_search_params_encode_query_facets_paging():
+    from morie.taphonomy import _morphosource_search_params
+
+    p = _morphosource_search_params(query="cranium", media_type="Mesh",
+                                    per_page=25, page=2)
+    assert p["q"] == "cranium"
+    assert p["search_field"] == "all_fields"
+    assert p["f.media_type"] == "Mesh"
+    assert p["per_page"] == 25 and p["page"] == 2
+
+
+def test_morphosource_fetch_refuses_missing_use_statement(monkeypatch):
+    from morie.taphonomy import taphonomy_morphosource_fetch
+
+    monkeypatch.setenv("MORPHOSOURCE_API_KEY", "k")
+    with pytest.raises(ValueError, match="use_statement"):
+        taphonomy_morphosource_fetch(media_id=1, use_statement="")
