@@ -32,6 +32,8 @@ _LAZY_EXPORTS = {
     "AnovaOneWayResult": "mrm_design",
     "CPADS_REQUIRED_VARIABLES": "cpads",
     "CausalDesignResult": "mrm_design",
+    "taphonomy_schema": "taphonomy",
+    "taphonomy_preservation_delta": "taphonomy",
     "ColumnProfile": "dataset",
     "DatasetProfile": "dataset",
     "DatasetRegistry": "data",
@@ -230,6 +232,8 @@ _LAZY_EXPORTS.setdefault("build_assistant_prompt", "perseus")
 
 
 __all__ = [
+    "taphonomy_schema",
+    "taphonomy_preservation_delta",
     "ColumnProfile",
     "DatasetProfile",
     "DatasetRegistry",

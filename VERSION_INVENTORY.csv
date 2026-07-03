@@ -122,6 +122,8 @@ File,Line,Status,Version,Context
 ./audit/rcmdcheck-baseline.log,6,STALE_OR_DEP,26.4.1,"* running under: macOS Tahoe 26.4.1"
 ./audit/rcmdcheck-baseline.log,12,STALE_OR_DEP,0.9.5.6,"* this is package ‘morie’ version ‘0.9.5.6’"
 ./bin/morie,31,CURRENT,0.9.9,"readonly ESML_SCRIPT_VERSION=0.9.9"
+./capi/README.md,32,STALE_OR_DEP,0.1.0,"## Current ABI surface (v0.1.0)"
+./capi/morie_c_api.cpp,52,STALE_OR_DEP,0.1.0,"return morie-core C ABI 0.1.0 (wraps libmorie/morie_core.hpp);"
 ./daemon/LICENSE-NOTICE,6,STALE_OR_DEP,0.7.3,"(from v0.7.3 onward). See ../LICENSE."
 ./docs/data-dictionary-audit.md,1,STALE_OR_DEP,0.9.5.5,"# morie variable-coverage audit (v0.9.5.5)"
 ./docs/designexptr_coverage.md,1,STALE_OR_DEP,0.9.5.6,"# designexptr.org coverage map (morie 0.9.5.6)"
