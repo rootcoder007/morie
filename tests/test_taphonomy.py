@@ -165,6 +165,32 @@ def test_bhm_recovers_effect_and_prior_shrinks():
     assert abs(tight) < abs(lime_mean)  # tight prior at 0 pulls the estimate down
 
 
+def test_bhm_cmdstanpy_backend_recovers_effect():
+    pytest.importorskip("cmdstanpy")
+    try:
+        import cmdstanpy
+        cmdstanpy.cmdstan_path()
+    except Exception:  # noqa: BLE001
+        pytest.skip("CmdStan not installed")
+    rng = np.random.default_rng(1)
+    n = 120
+    lime = rng.integers(0, 2, n)
+    df = pd.DataFrame(
+        {"preservation_score": 0.5 * lime + rng.normal(0, 0.3, n),
+         "lime_treatment": lime}
+    )
+    fit = taphonomy_bhm(df, covariates=["lime_treatment"],
+                        backend="cmdstanpy", chains=2, iter=400)
+    assert "NUTS" in fit["backend"]
+    eff = float(
+        fit["coefficients"].loc[
+            fit["coefficients"]["term"] == "lime_treatment", "post_mean"
+        ].iloc[0]
+    )
+    assert 0.3 < eff < 0.7
+    assert fit["stanfit"] is not None
+
+
 def test_bhm_partial_pools_groups():
     rng = np.random.default_rng(2)
     n = 150

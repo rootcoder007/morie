@@ -554,6 +554,40 @@ def taphonomy_preservation_lr(
 # ===========================================================================
 
 
+_MORIE_BHM_STAN = """
+data {
+  int<lower=1> N;
+  int<lower=1> K;
+  matrix[N, K] X;
+  vector[N] y;
+  vector[K] prior_mean;
+  vector<lower=0>[K] prior_sd;
+  int<lower=0> J;
+  array[N] int<lower=0> g;
+}
+parameters {
+  vector[K] beta;
+  real<lower=0> sigma;
+  vector[J] z;
+  real<lower=0> tau;
+}
+model {
+  beta ~ normal(prior_mean, prior_sd);
+  sigma ~ exponential(1);
+  tau ~ exponential(1);
+  z ~ normal(0, 1);
+  vector[N] mu = X * beta;
+  if (J > 0)
+    for (n in 1:N) mu[n] += z[g[n]] * tau;
+  y ~ normal(mu, sigma);
+}
+generated quantities {
+  vector[J] group_intercept;
+  for (j in 1:J) group_intercept[j] = z[j] * tau;
+}
+"""
+
+
 def taphonomy_bhm(
     data: pd.DataFrame,
     *,
@@ -562,6 +596,10 @@ def taphonomy_bhm(
     group: str | None = None,
     priors: dict[str, dict[str, float]] | None = None,
     prior_sd_default: float = 10.0,
+    backend: str = "conjugate",
+    chains: int = 4,
+    iter: int = 1000,
+    seed: int = 42,
 ) -> dict[str, Any]:
     """Bayesian hierarchical preservation model (conjugate + EB pooling).
 
@@ -571,9 +609,11 @@ def taphonomy_bhm(
     (empirical Bayes). With ``group``, adds empirical-Bayes partial-pooled random
     intercepts (normal-normal shrinkage) for a two-level hierarchical model.
 
-    For full HMC/NUTS hierarchical inference, use ``bambi``/``pymc`` (Python) or
-    ``rstanarm`` (R); this is the dependency-free conjugate core. R parity:
-    ``morie_taphonomy_bhm``.
+    ``backend="conjugate"`` (default) uses the dependency-free closed form;
+    ``backend="cmdstanpy"`` fits the same model by full-Bayes HMC/NUTS via
+    cmdstanpy + a built CmdStan (returns the ``stanfit`` too). ``chains``/
+    ``iter``/``seed`` control the sampler. R parity: ``morie_taphonomy_bhm``
+    (its ``backend="cmdstanr"``).
 
     Returns a dict: ``coefficients`` (DataFrame: term, post_mean, post_sd,
     ci_lower, ci_upper, prob_positive), ``sigma``, ``group_effects`` (None
@@ -613,6 +653,11 @@ def taphonomy_bhm(
             m0[i] = float(priors[t]["mean"])
             s0[i] = float(priors[t]["sd"])
     Lambda0 = np.diag(1.0 / s0**2)
+
+    if backend == "cmdstanpy":
+        return _bhm_cmdstanpy(X, y, terms, m0, s0, frame, group, chains, iter, seed)
+    if backend != "conjugate":
+        raise ValueError(f"unknown backend {backend!r}; 'conjugate' or 'cmdstanpy'")
 
     # Empirical-Bayes noise variance from the OLS fit.
     beta_ols, *_ = np.linalg.lstsq(X, y, rcond=None)
@@ -676,7 +721,86 @@ def taphonomy_bhm(
         "group_effects": group_effects,
         "fitted": fitted,
         "n": n,
+        "backend": "conjugate (closed form)",
         "interpretation": interp,
+    }
+
+
+def _bhm_cmdstanpy(X, y, terms, m0, s0, frame, group, chains, iter, seed):
+    """HMC/NUTS fit of the BHM via cmdstanpy (same Stan model as R cmdstanr)."""
+    try:
+        import cmdstanpy
+    except ImportError as e:  # pragma: no cover
+        raise ImportError(
+            "backend='cmdstanpy' needs the 'cmdstanpy' package and a built "
+            "CmdStan. pip install cmdstanpy; "
+            "python -c 'import cmdstanpy; cmdstanpy.install_cmdstan()'."
+        ) from e
+    import tempfile
+    from pathlib import Path
+
+    n = X.shape[0]
+    if group is not None:
+        codes, levels = pd.factorize(frame[group])
+        J = int(len(levels))
+        g = (codes + 1).astype(int)  # Stan is 1-indexed
+    else:
+        J, g, levels = 0, np.zeros(n, dtype=int), []
+    standata = {
+        "N": int(n), "K": int(X.shape[1]), "X": X.tolist(), "y": y.tolist(),
+        "prior_mean": m0.tolist(), "prior_sd": s0.tolist(),
+        "J": J, "g": g.tolist(),
+    }
+    stan_path = Path(tempfile.gettempdir()) / "morie_taphonomy_bhm.stan"
+    stan_path.write_text(_MORIE_BHM_STAN)
+    model = cmdstanpy.CmdStanModel(stan_file=str(stan_path))
+    fit = model.sample(
+        data=standata, chains=chains, iter_warmup=iter, iter_sampling=iter,
+        seed=seed, show_progress=False, show_console=False,
+    )
+    beta = fit.stan_variable("beta")          # (draws, K)
+    sig = fit.stan_variable("sigma")
+    coefficients = pd.DataFrame(
+        {
+            "term": terms,
+            "post_mean": beta.mean(axis=0),
+            "post_sd": beta.std(axis=0, ddof=1),
+            "ci_lower": np.quantile(beta, 0.025, axis=0),
+            "ci_upper": np.quantile(beta, 0.975, axis=0),
+            "prob_positive": (beta > 0).mean(axis=0),
+        }
+    )
+    group_effects = None
+    if J > 0:
+        gi = fit.stan_variable("group_intercept")  # (draws, J)
+        group_effects = pd.DataFrame(
+            {
+                "group": list(levels),
+                "pooled_intercept": gi.mean(axis=0),
+                "post_sd": gi.std(axis=0, ddof=1),
+                "n": [int((g == j + 1).sum()) for j in range(J)],
+            }
+        )
+    fitted = X @ coefficients["post_mean"].to_numpy()
+    if J > 0:
+        fitted = fitted + group_effects["pooled_intercept"].to_numpy()[g - 1]
+    lime = "lime_treatment" if "lime_treatment" in terms else terms[1]
+    lrow = coefficients.loc[coefficients["term"] == lime].iloc[0]
+    return {
+        "coefficients": coefficients,
+        "sigma": float(sig.mean()),
+        "group_effects": group_effects,
+        "fitted": fitted,
+        "n": int(n),
+        "backend": "cmdstanpy (NUTS)",
+        "stanfit": fit,
+        "interpretation": (
+            f"Bayesian preservation model (n={n}, HMC/NUTS via cmdstanpy, "
+            f"{chains} chains x {iter} draws). Posterior effect of '{lrow['term']}' "
+            f"= {lrow['post_mean']:.3f} [{lrow['ci_lower']:.3f}, "
+            f"{lrow['ci_upper']:.3f}], P(effect>0)={lrow['prob_positive']:.3f}. "
+            "Full-Bayes posterior (no conjugacy approximation)."
+        ),
     }
 
 
