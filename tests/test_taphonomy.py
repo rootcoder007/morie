@@ -232,3 +232,25 @@ def test_end_to_end_simulate_ilr_bhm_recovers_lime_signal():
         ].iloc[0]
     )
     assert eff > 0.3
+
+
+def test_usgs_soil_zip_parser_reads_csv_member(tmp_path):
+    import zipfile
+
+    csv = tmp_path / "ngdbsoil.csv"
+    pd.DataFrame(
+        {"lab_id": [1, 2], "ca_pct": [3.1, 8.2], "fe_pct": [2.0, 1.1]}
+    ).to_csv(csv, index=False)
+    zpath = tmp_path / "ngdbsoil-csv.zip"
+    with zipfile.ZipFile(zpath, "w") as zf:
+        zf.write(csv, arcname="ngdbsoil.csv")
+    df = _read_usgs_soil_zip(zpath, nrows=None)
+    assert list(df.columns) == ["lab_id", "ca_pct", "fe_pct"]
+    assert len(df) == 2
+
+
+def test_pmi_schema_is_typed_zero_row_sto2022_template():
+    s = taphonomy_pmi_schema()
+    assert len(s) == 0
+    assert {"accumulated_deg_days", "burial_depth_cm", "pmi_days"} <= set(s.columns)
+    assert s.attrs["role"]["pmi_days"] == "outcome"
