@@ -678,3 +678,98 @@ def taphonomy_bhm(
         "n": n,
         "interpretation": interp,
     }
+
+
+# ===========================================================================
+# Synthetic pXRF (compositional) generation + log-ratio transforms
+# ===========================================================================
+
+_PXRF_ELEMENTS = ("Ca", "P", "Fe", "Sr", "Pb", "Zn")
+_PXRF_ALPHA = {
+    "control": (30.0, 15.0, 5.0, 1.0, 0.5, 0.5),   # natural soil/bone matrix
+    "treatment": (85.0, 5.0, 2.0, 0.5, 0.2, 0.2),  # quicklime: calcium spike
+}
+
+
+def taphonomy_simulate_pxrf(
+    n: int,
+    condition: str = "control",
+    elements: list[str] | None = None,
+    alpha=None,
+    seed: int | None = None,
+    as_ppm: bool = False,
+    total_ppm: float = 1e6,
+) -> pd.DataFrame:
+    """Simulate synthetic pXRF compositional data (Dirichlet).
+
+    **Synthetic data for testing/calibration ONLY -- never a substitute for real
+    comparanda, and never written to bundled data.** pXRF elemental
+    concentrations are closed compositions on the simplex, so this samples from
+    a Dirichlet (not Gaussian). Control = natural matrix; treatment = quicklime
+    (calcium-skewed). R parity: ``morie_taphonomy_simulate_pxrf``.
+
+    Returns a DataFrame with one column per element plus ``condition`` and
+    ``lime_treatment`` (1 = treatment); ``df.attrs`` carries ``elements``,
+    ``alpha``, ``synthetic=True``.
+    """
+    elements = list(elements) if elements is not None else list(_PXRF_ELEMENTS)
+    if alpha is None:
+        if condition not in _PXRF_ALPHA:
+            raise ValueError("condition must be 'control' or 'treatment'")
+        alpha = list(_PXRF_ALPHA[condition])
+        if len(alpha) != len(elements):
+            raise ValueError("supply `alpha` when using custom `elements`")
+    alpha = list(alpha)
+    if len(alpha) != len(elements):
+        raise ValueError("len(alpha) must equal len(elements)")
+    if any(a <= 0 for a in alpha):
+        raise ValueError("`alpha` must be > 0")
+    rng = np.random.default_rng(seed)
+    comp = rng.dirichlet(alpha, size=int(n))
+    if as_ppm:
+        comp = comp * total_ppm
+    df = pd.DataFrame(comp, columns=elements)
+    df["condition"] = condition
+    df["lime_treatment"] = int(condition == "treatment")
+    df.attrs.update(elements=elements, alpha=alpha, synthetic=True)
+    return df
+
+
+def _close(x, pseudocount: float) -> np.ndarray:
+    X = np.asarray(x, dtype=float)
+    if X.ndim == 1:
+        X = X.reshape(1, -1)
+    if np.any(X < 0):
+        raise ValueError("compositions must be non-negative")
+    X = X + pseudocount
+    return X / X.sum(axis=1, keepdims=True)
+
+
+def taphonomy_clr(x, pseudocount: float = 1e-6) -> np.ndarray:
+    """Centred log-ratio (CLR) transform: clr(x) = log x - mean(log x), row-wise.
+
+    Removes simplex closure. Rank-deficient (columns sum to 0); for regression
+    inputs prefer :func:`taphonomy_ilr`. R parity: ``morie_taphonomy_clr``.
+    """
+    X = _close(x, pseudocount)
+    L = np.log(X)
+    return L - L.mean(axis=1, keepdims=True)
+
+
+def taphonomy_ilr(x, pseudocount: float = 1e-6) -> np.ndarray:
+    """Isometric log-ratio (ILR): D-part composition -> D-1 orthonormal coords.
+
+    Full-rank (unlike CLR), so it feeds DML/BHM without a singular design.
+    Egozcue et al. (2003) pivot-coordinate basis, closed form -- identical to
+    the R sibling. R parity: ``morie_taphonomy_ilr``.
+    """
+    X = _close(x, pseudocount)
+    D = X.shape[1]
+    if D < 2:
+        raise ValueError("need >= 2 parts for ILR")
+    L = np.log(X)
+    cols = [
+        np.sqrt(i / (i + 1)) * (L[:, :i].mean(axis=1) - L[:, i])
+        for i in range(1, D)
+    ]
+    return np.column_stack(cols)

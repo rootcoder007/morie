@@ -16,11 +16,14 @@ from morie.taphonomy import (
     taphonomy_decay_delta,
     taphonomy_decay_simulate,
     taphonomy_bhm,
+    taphonomy_clr,
     taphonomy_evidence_loglik,
+    taphonomy_ilr,
     taphonomy_likelihood_ratio,
     taphonomy_preservation_delta,
     taphonomy_preservation_lr,
     taphonomy_schema,
+    taphonomy_simulate_pxrf,
 )
 from scipy.stats import norm
 
@@ -175,3 +178,55 @@ def test_bhm_partial_pools_groups():
     assert ge is not None
     assert ((ge["shrinkage"] >= 0) & (ge["shrinkage"] <= 1)).all()
     assert len(ge) == 5
+
+
+def test_simulated_pxrf_is_closed_and_lime_skews_calcium():
+    ctl = taphonomy_simulate_pxrf(200, "control", seed=1)
+    trt = taphonomy_simulate_pxrf(200, "treatment", seed=1)
+    elts = ctl.attrs["elements"]
+    assert np.allclose(ctl[elts].to_numpy().sum(axis=1), 1.0)
+    assert (trt["lime_treatment"] == 1).all()
+    assert trt["Ca"].mean() > ctl["Ca"].mean()
+
+
+def test_clr_zero_sum_and_ilr_full_rank():
+    comp = taphonomy_simulate_pxrf(10, "treatment", seed=2).iloc[:, :6]
+    clr = taphonomy_clr(comp)
+    assert np.allclose(clr.sum(axis=1), 0.0)
+    ilr = taphonomy_ilr(comp)
+    assert ilr.shape[1] == 5
+    assert np.all(np.isfinite(ilr))
+
+
+def test_ilr_matches_r_pivot_coordinate_formula():
+    # deterministic closed-form check (parity anchor with the R sibling)
+    x = np.array([[0.5, 0.3, 0.2]])
+    L = np.log(x)
+    ilr1 = np.sqrt(1 / 2) * (L[:, :1].mean(1) - L[:, 1])
+    ilr2 = np.sqrt(2 / 3) * (L[:, :2].mean(1) - L[:, 2])
+    got = taphonomy_ilr(x, pseudocount=0.0)
+    assert np.allclose(got, np.column_stack([ilr1, ilr2]))
+
+
+def test_end_to_end_simulate_ilr_bhm_recovers_lime_signal():
+    rng = np.random.default_rng(3)
+    ctl = taphonomy_simulate_pxrf(120, "control", seed=10)
+    trt = taphonomy_simulate_pxrf(120, "treatment", seed=11)
+    raw = pd.concat([ctl, trt], ignore_index=True)
+    ilr = taphonomy_ilr(raw.iloc[:, :6])
+    df = pd.DataFrame(
+        {
+            "preservation_score": 0.6 * raw["lime_treatment"].to_numpy()
+            + rng.normal(0, 0.3, len(raw)),
+            "lime_treatment": raw["lime_treatment"].to_numpy(),
+        }
+    )
+    for j in range(ilr.shape[1]):
+        df[f"ilr{j + 1}"] = ilr[:, j]
+    fit = taphonomy_bhm(df, covariates=["lime_treatment"])
+    eff = float(
+        fit["coefficients"].loc[
+            fit["coefficients"]["term"] == "lime_treatment", "post_mean"
+        ].iloc[0]
+    )
+    assert eff > 0.3
