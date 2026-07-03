@@ -446,3 +446,104 @@ def taphonomy_decay_delta(
             "practice, not baseline decay dynamics."
         ),
     }
+
+
+# ===========================================================================
+# Forensic likelihood-ratio framework
+# ===========================================================================
+
+
+def _lr_verbal(lr: float) -> str:
+    """ENFSI (2015) verbal-equivalent scale for a likelihood ratio."""
+    if not np.isfinite(lr):
+        return "extremely strong support (LR effectively infinite)"
+    x = lr if lr >= 1 else 1.0 / lr
+    side = "H1" if lr >= 1 else "H2"
+    if x <= 1:
+        return "no support either way"
+    if x <= 10:
+        band = "weak support"
+    elif x <= 100:
+        band = "moderate support"
+    elif x <= 1000:
+        band = "moderately strong support"
+    elif x <= 10000:
+        band = "strong support"
+    elif x <= 1e6:
+        band = "very strong support"
+    else:
+        band = "extremely strong support"
+    return f"{band} for {side}"
+
+
+def taphonomy_evidence_loglik(evidence, mean, sd) -> float:
+    """Gaussian log-likelihood of measured evidence under a model.
+
+    Sum of independent normal log-densities for measured evidence (e.g. pXRF
+    calcium, CT density) under a model with expected ``mean`` and ``sd``
+    (broadcast over ``evidence``). R parity: ``morie_taphonomy_evidence_loglik``.
+    """
+    evidence = np.asarray(evidence, dtype=float)
+    if evidence.size == 0:
+        raise ValueError("`evidence` is empty")
+    if not np.all(np.isfinite(evidence)):
+        raise ValueError("`evidence` has non-finite values")
+    if np.any(np.asarray(sd, dtype=float) <= 0):
+        raise ValueError("`sd` must be > 0")
+    return float(norm.logpdf(evidence, loc=mean, scale=sd).sum())
+
+
+def taphonomy_likelihood_ratio(
+    loglik_h1: float, loglik_h2: float
+) -> dict[str, Any]:
+    """Forensic likelihood ratio LR = P(E|H1) / P(E|H2).
+
+    Given the evidence log-likelihood under a natural/target hypothesis and an
+    alternative, returns the LR, its base-10 log, and the ENFSI (2015) verbal
+    equivalent. Computed in log space for stability. The LR reports how much the
+    evidence favours H1 over H2 -- it is not posterior odds and does not prove
+    either hypothesis. R parity: ``morie_taphonomy_likelihood_ratio``.
+    """
+    log_lr = float(loglik_h1) - float(loglik_h2)
+    lr = float(np.exp(log_lr))
+    log10_lr = log_lr / np.log(10)
+    verbal = _lr_verbal(lr)
+    if np.isfinite(lr) and lr >= 1:
+        factor = f"{lr:.4g} times"
+    elif np.isfinite(lr):
+        factor = f"{1 / lr:.4g} times less"
+    else:
+        factor = "infinitely"
+    return {
+        "lr": lr,
+        "log10_lr": float(log10_lr),
+        "log_lr": log_lr,
+        "verbal": verbal,
+        "interpretation": (
+            f"LR = {lr:.4g} (log10 = {log10_lr:.3f}): the evidence is {verbal}. "
+            f"The observed state is {factor} more probable under H1 (natural "
+            "preservation model) than under H2. This quantifies support; it is "
+            "not proof and not a posterior probability."
+        ),
+    }
+
+
+def taphonomy_preservation_lr(
+    evidence, natural: dict[str, Any], alternative: dict[str, Any]
+) -> dict[str, Any]:
+    """Preservation likelihood ratio from measured evidence.
+
+    Evaluate measured non-invasive evidence under a natural-preservation model
+    (H1) and an alternative model (H2), each a dict ``{"mean": .., "sd": ..}``,
+    and return the forensic LR (with ``loglik_h1``/``loglik_h2`` attached).
+    R parity: ``morie_taphonomy_preservation_lr``.
+    """
+    for m in (natural, alternative):
+        if not {"mean", "sd"} <= set(m):
+            raise ValueError("`natural`/`alternative` must be {'mean':.., 'sd':..}")
+    ll1 = taphonomy_evidence_loglik(evidence, natural["mean"], natural["sd"])
+    ll2 = taphonomy_evidence_loglik(evidence, alternative["mean"], alternative["sd"])
+    out = taphonomy_likelihood_ratio(ll1, ll2)
+    out["loglik_h1"] = ll1
+    out["loglik_h2"] = ll2
+    return out

@@ -15,9 +15,13 @@ from morie.taphonomy import (
     taphonomy_decay_chain,
     taphonomy_decay_delta,
     taphonomy_decay_simulate,
+    taphonomy_evidence_loglik,
+    taphonomy_likelihood_ratio,
     taphonomy_preservation_delta,
+    taphonomy_preservation_lr,
     taphonomy_schema,
 )
+from scipy.stats import norm
 
 
 def test_schema_is_typed_zero_row_template():
@@ -97,3 +101,30 @@ def test_r_python_decay_parity():
     a = taphonomy_decay_absorption(taphonomy_decay_chain(0.7))["absorption"]
     assert 0.0 < a["mummified"] < 1.0
     assert abs(a["mummified"] + a["skeletal"] - 1.0) < 1e-12
+
+
+def test_evidence_loglik_matches_scipy_and_rejects_bad_sd():
+    ll = taphonomy_evidence_loglik([1200, 1310], mean=1250, sd=80)
+    assert abs(ll - float(norm.logpdf([1200, 1310], 1250, 80).sum())) < 1e-10
+    with pytest.raises(ValueError, match="sd"):
+        taphonomy_evidence_loglik([1], 0, sd=0)
+
+
+def test_likelihood_ratio_log_space_and_verbal_band():
+    r = taphonomy_likelihood_ratio(loglik_h1=-3.1, loglik_h2=-12.7)
+    assert abs(r["log_lr"] - (-3.1 - (-12.7))) < 1e-12
+    assert abs(r["lr"] - np.exp(-3.1 + 12.7)) < 1e-6
+    assert "for H1" in r["verbal"]
+    r2 = taphonomy_likelihood_ratio(-12.7, -3.1)  # swap -> invert
+    assert abs(r2["lr"] - 1.0 / r["lr"]) < 1e-9
+    assert "for H2" in r2["verbal"]
+
+
+def test_preservation_lr_favours_matching_model():
+    out = taphonomy_preservation_lr(
+        evidence=[1200, 1310, 1180],
+        natural={"mean": 1250, "sd": 90},
+        alternative={"mean": 300, "sd": 120},
+    )
+    assert out["lr"] > 1
+    assert abs(out["log_lr"] - (out["loglik_h1"] - out["loglik_h2"])) < 1e-10
