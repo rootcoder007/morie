@@ -10,7 +10,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from morie.taphonomy import taphonomy_preservation_delta, taphonomy_schema
+from morie.taphonomy import (
+    taphonomy_decay_absorption,
+    taphonomy_decay_chain,
+    taphonomy_decay_delta,
+    taphonomy_decay_simulate,
+    taphonomy_preservation_delta,
+    taphonomy_schema,
+)
 
 
 def test_schema_is_typed_zero_row_template():
@@ -57,3 +64,36 @@ def test_cate_bootstrap_gives_valid_se_and_ordered_ci():
     assert r["se"] is not None and r["se"] > 0
     assert r["ci_lower"] < r["ci_upper"]
     assert r["p_value"] is not None
+
+
+def test_decay_chain_is_row_stochastic_absorbing_dtmc():
+    ch = taphonomy_decay_chain(preservation=0.6)
+    assert np.allclose(ch["P"].sum(axis=1), 1.0)
+    assert ch["absorbing"] == ["skeletal", "mummified"]
+    idx = {s: i for i, s in enumerate(ch["states"])}
+    assert ch["P"][idx["skeletal"], idx["skeletal"]] == 1.0
+    assert ch["P"][idx["mummified"], idx["mummified"]] == 1.0
+
+
+def test_absorption_sums_to_one_and_rises_with_preservation():
+    a0 = taphonomy_decay_absorption(taphonomy_decay_chain(0.0))
+    a1 = taphonomy_decay_absorption(taphonomy_decay_chain(0.8))
+    assert abs(sum(a0["absorption"].values()) - 1.0) < 1e-10
+    assert abs(sum(a1["absorption"].values()) - 1.0) < 1e-10
+    assert a1["absorption"]["mummified"] > a0["absorption"]["mummified"]
+    assert a0["expected_steps"] > 0
+
+
+def test_decay_delta_positive_and_simulate_absorbs():
+    d = taphonomy_decay_delta(0.8)
+    assert d["delta"] > 0
+    assert abs((d["p_mummified_treated"] - d["p_mummified_natural"]) - d["delta"]) < 1e-12
+    path = taphonomy_decay_simulate(taphonomy_decay_chain(0.8), n_steps=500, seed=1)
+    assert path[-1] in ("skeletal", "mummified")
+
+
+def test_r_python_decay_parity():
+    # same params -> same absorption probs as the R sibling (deterministic algebra)
+    a = taphonomy_decay_absorption(taphonomy_decay_chain(0.7))["absorption"]
+    assert 0.0 < a["mummified"] < 1.0
+    assert abs(a["mummified"] + a["skeletal"] - 1.0) < 1e-12

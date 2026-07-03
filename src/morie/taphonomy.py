@@ -32,6 +32,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
@@ -289,4 +290,159 @@ def taphonomy_preservation_delta(
         "cate_sd": cate_sd,
         "warnings": warnings,
         "interpretation": interpretation,
+    }
+
+
+# ===========================================================================
+# Stochastic decay modelling -- absorbing Markov chain (DTMC)
+# ===========================================================================
+
+_DECAY_STATES = ("fresh", "bloat", "active", "advanced")
+_ABSORBING = ("skeletal", "mummified")
+
+
+def taphonomy_decay_chain(
+    preservation: float = 0.0,
+    decay_rate: float = 0.5,
+    mummify_rate: float = 0.5,
+    states: list[str] | None = None,
+) -> dict[str, Any]:
+    """Build a taphonomic decay Markov chain (absorbing DTMC).
+
+    From each transient decomposition stage a body either *progresses* one step
+    toward the terminal ``"skeletal"`` state (ordinary decay) or *diverts* to
+    the terminal ``"mummified"`` state (preserved). ``preservation`` in [0, 1]
+    (quicklime desiccation, aridity, sealing) shifts mass from progression
+    toward diversion. Compare against the ``preservation=0`` chain to quantify
+    how much the burial practice changes the fate distribution.
+
+    Returns a dict with ``P`` (row-stochastic float transition matrix),
+    ``states``, ``transient``, ``absorbing`` (``["skeletal", "mummified"]``),
+    and ``preservation``. R parity: ``morie_taphonomy_decay_chain``.
+    """
+    if not 0.0 <= preservation <= 1.0:
+        raise ValueError("`preservation` must be in [0, 1]")
+    if not (0.0 < decay_rate <= 1.0) or not (0.0 <= mummify_rate <= 1.0):
+        raise ValueError("`decay_rate` in (0,1] and `mummify_rate` in [0,1]")
+    transient = list(states) if states is not None else list(_DECAY_STATES)
+    if len(transient) < 1 or len(set(transient)) != len(transient):
+        raise ValueError("`states` must be >= 1 unique transient stage(s)")
+    absorbing = list(_ABSORBING)
+    all_states = transient + absorbing
+    idx = {s: i for i, s in enumerate(all_states)}
+    k = len(transient)
+    P = np.zeros((len(all_states), len(all_states)))
+    for i in range(k):
+        prog = decay_rate * (1.0 - preservation)
+        mum = mummify_rate * preservation
+        tot = prog + mum
+        if tot > 1.0:
+            prog /= tot
+            mum /= tot
+            tot = 1.0
+        stay = 1.0 - tot
+        nxt = transient[i + 1] if i < k - 1 else "skeletal"
+        P[i, idx[nxt]] += prog
+        P[i, idx["mummified"]] += mum
+        P[i, i] += stay
+    P[idx["skeletal"], idx["skeletal"]] = 1.0
+    P[idx["mummified"], idx["mummified"]] = 1.0
+    return {
+        "P": P,
+        "states": all_states,
+        "transient": transient,
+        "absorbing": absorbing,
+        "preservation": float(preservation),
+    }
+
+
+def taphonomy_decay_absorption(
+    chain: dict[str, Any], start: str | None = None
+) -> dict[str, Any]:
+    """Absorption analysis via the fundamental matrix ``N = (I - Q)^-1``.
+
+    For a body entering at ``start``, returns P(each terminal fate) and the
+    expected steps to absorption (Grinstead & Snell, Ch. 11). Keys:
+    ``absorption`` (dict over absorbing states, sums to 1), ``expected_steps``,
+    ``fundamental`` (N), ``B``. R parity: ``morie_taphonomy_decay_absorption``.
+    """
+    tr, ab, all_states = chain["transient"], chain["absorbing"], chain["states"]
+    if start is None:
+        start = tr[0]
+    if start not in tr:
+        raise ValueError(f"`start` must be a transient state ({', '.join(tr)})")
+    idx = {s: i for i, s in enumerate(all_states)}
+    tr_i = [idx[s] for s in tr]
+    ab_i = [idx[s] for s in ab]
+    P = chain["P"]
+    Q = P[np.ix_(tr_i, tr_i)]
+    R = P[np.ix_(tr_i, ab_i)]
+    N = np.linalg.inv(np.eye(len(tr)) - Q)
+    B = N @ R
+    si = tr.index(start)
+    return {
+        "absorption": {ab[j]: float(B[si, j]) for j in range(len(ab))},
+        "expected_steps": float(N.sum(axis=1)[si]),
+        "fundamental": N,
+        "B": B,
+    }
+
+
+def taphonomy_decay_simulate(
+    chain: dict[str, Any],
+    start: str | None = None,
+    n_steps: int = 100,
+    seed: int = 42,
+) -> list[str]:
+    """Simulate one realised decay trajectory to an absorbing fate.
+
+    Deterministic given ``seed``. R parity: ``morie_taphonomy_decay_simulate``.
+    """
+    tr, states, P = chain["transient"], chain["states"], chain["P"]
+    if start is None:
+        start = tr[0]
+    if start not in tr:
+        raise ValueError("`start` must be a transient state")
+    rng = np.random.default_rng(seed)
+    idx = {s: i for i, s in enumerate(states)}
+    s = start
+    path = [s]
+    for _ in range(int(n_steps)):
+        s = states[rng.choice(len(states), p=P[idx[s]])]
+        path.append(s)
+        if s in chain["absorbing"]:
+            break
+    return path
+
+
+def taphonomy_decay_delta(
+    preservation: float, start: str | None = None, **kwargs: Any
+) -> dict[str, Any]:
+    """Natural-vs-treated fate delta: change in P(mummified) from preservation.
+
+    The Markov-chain analogue of the preservation delta -- the rise in the
+    probability of ending ``"mummified"`` when a preservation factor is applied,
+    relative to the natural (``preservation=0``) baseline. Keys:
+    ``p_mummified_natural``, ``p_mummified_treated``, ``delta``,
+    ``interpretation``. R parity: ``morie_taphonomy_decay_delta``.
+    """
+    if not 0.0 < preservation <= 1.0:
+        raise ValueError("`preservation` must be in (0, 1] for a contrast")
+    nat = taphonomy_decay_chain(preservation=0.0, **kwargs)
+    trt = taphonomy_decay_chain(preservation=preservation, **kwargs)
+    if start is None:
+        start = nat["transient"][0]
+    p_nat = taphonomy_decay_absorption(nat, start)["absorption"]["mummified"]
+    p_trt = taphonomy_decay_absorption(trt, start)["absorption"]["mummified"]
+    delta = p_trt - p_nat
+    return {
+        "p_mummified_natural": p_nat,
+        "p_mummified_treated": p_trt,
+        "delta": delta,
+        "interpretation": (
+            f"P(mummified) rises from {p_nat:.3f} (natural, no preservation) to "
+            f"{p_trt:.3f} under preservation={preservation:.2f} -- a fate delta "
+            f"of {delta:+.3f}. The preserved outcome is driven by the burial "
+            "practice, not baseline decay dynamics."
+        ),
     }
