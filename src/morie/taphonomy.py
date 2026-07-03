@@ -547,3 +547,134 @@ def taphonomy_preservation_lr(
     out["loglik_h1"] = ll1
     out["loglik_h2"] = ll2
     return out
+
+
+# ===========================================================================
+# Bayesian preservation model (conjugate + empirical-Bayes hierarchy)
+# ===========================================================================
+
+
+def taphonomy_bhm(
+    data: pd.DataFrame,
+    *,
+    outcome: str = "preservation_score",
+    covariates: list[str] | None = None,
+    group: str | None = None,
+    priors: dict[str, dict[str, float]] | None = None,
+    prior_sd_default: float = 10.0,
+) -> dict[str, Any]:
+    """Bayesian hierarchical preservation model (conjugate + EB pooling).
+
+    Conjugate Gaussian-linear Bayesian model with informative Normal priors on
+    the coefficients (domain knowledge, e.g. quicklime's desiccant effect,
+    enters as a prior). Closed-form posterior; noise variance from OLS residuals
+    (empirical Bayes). With ``group``, adds empirical-Bayes partial-pooled random
+    intercepts (normal-normal shrinkage) for a two-level hierarchical model.
+
+    For full HMC/NUTS hierarchical inference, use ``bambi``/``pymc`` (Python) or
+    ``rstanarm`` (R); this is the dependency-free conjugate core. R parity:
+    ``morie_taphonomy_bhm``.
+
+    Returns a dict: ``coefficients`` (DataFrame: term, post_mean, post_sd,
+    ci_lower, ci_upper, prob_positive), ``sigma``, ``group_effects`` (None
+    unless ``group``), ``fitted``, ``n``, ``interpretation``.
+    """
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError("`data` must be a pandas DataFrame")
+    if len(data) == 0:
+        raise ValueError("`data` is empty")
+    if outcome not in data.columns:
+        raise KeyError(f"column '{outcome}' not found")
+    if covariates is None:
+        wanted = list(_COVARIATES) + list(_MEASUREMENTS)
+        covariates = [c for c in wanted if c in data.columns]
+    covariates = [c for c in covariates if c not in (outcome, group)]
+    if not covariates:
+        raise ValueError("no covariates available")
+
+    cols = [outcome, *covariates] + ([group] if group else [])
+    frame = data[cols].dropna().copy()
+    y = frame[outcome].to_numpy(dtype=float)
+    n = int(len(y))
+
+    def _numeric(col):
+        s = frame[col]
+        return s.to_numpy(dtype=float) if pd.api.types.is_numeric_dtype(s) \
+            else pd.factorize(s)[0].astype(float)
+
+    terms = ["(Intercept)", *covariates]
+    X = np.column_stack([np.ones(n)] + [_numeric(c) for c in covariates])
+    p = X.shape[1]
+
+    m0 = np.zeros(p)
+    s0 = np.full(p, float(prior_sd_default))
+    for i, t in enumerate(terms):
+        if priors and t in priors:
+            m0[i] = float(priors[t]["mean"])
+            s0[i] = float(priors[t]["sd"])
+    Lambda0 = np.diag(1.0 / s0**2)
+
+    # Empirical-Bayes noise variance from the OLS fit.
+    beta_ols, *_ = np.linalg.lstsq(X, y, rcond=None)
+    dof = max(1, n - p)
+    sigma2 = float(((y - X @ beta_ols) ** 2).sum() / dof)
+    if not np.isfinite(sigma2) or sigma2 <= 0:
+        sigma2 = float(np.var(y, ddof=1)) if n > 1 else 1.0
+
+    Sigma = np.linalg.inv(X.T @ X / sigma2 + Lambda0)
+    mu = Sigma @ (X.T @ y / sigma2 + Lambda0 @ m0)
+    post_sd = np.sqrt(np.diag(Sigma))
+    z = 1.959964
+    coefficients = pd.DataFrame(
+        {
+            "term": terms,
+            "post_mean": mu,
+            "post_sd": post_sd,
+            "ci_lower": mu - z * post_sd,
+            "ci_upper": mu + z * post_sd,
+            "prob_positive": norm.cdf(mu / post_sd),
+        }
+    )
+    fitted = X @ mu
+
+    group_effects = None
+    if group is not None:
+        g = frame[group].to_numpy()
+        resid = y - fitted
+        labels = pd.unique(g)
+        gm = np.array([resid[g == lab].mean() for lab in labels])
+        nj = np.array([int((g == lab).sum()) for lab in labels])
+        tau2 = max(0.0, float(np.var(gm, ddof=1)) - float(np.mean(sigma2 / nj))) \
+            if len(gm) > 1 else 0.0
+        lam = tau2 / (tau2 + sigma2 / nj)
+        group_effects = pd.DataFrame(
+            {
+                "group": labels,
+                "raw_mean": gm,
+                "shrinkage": lam,
+                "pooled_intercept": lam * gm,
+                "n": nj,
+            }
+        )
+
+    lime_terms = [t for t in ("lime_treatment", covariates[0]) if t in terms]
+    lrow = coefficients.loc[coefficients["term"] == lime_terms[0]].iloc[0]
+    interp = (
+        f"Bayesian preservation model (n={n}, conjugate Gaussian, EB noise "
+        f"sd={sigma2 ** 0.5:.3f}). Posterior effect of '{lrow['term']}' = "
+        f"{lrow['post_mean']:.3f} [{lrow['ci_lower']:.3f}, {lrow['ci_upper']:.3f}], "
+        f"P(effect>0)={lrow['prob_positive']:.3f}. Priors update to posteriors: "
+        "an informative lime prior encodes the desiccant belief, the data "
+        "revises it."
+    )
+    if group is not None:
+        interp += f" {len(group_effects)} group intercepts partially pooled."
+
+    return {
+        "coefficients": coefficients,
+        "sigma": float(sigma2 ** 0.5),
+        "group_effects": group_effects,
+        "fitted": fitted,
+        "n": n,
+        "interpretation": interp,
+    }

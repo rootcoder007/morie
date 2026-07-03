@@ -15,6 +15,7 @@ from morie.taphonomy import (
     taphonomy_decay_chain,
     taphonomy_decay_delta,
     taphonomy_decay_simulate,
+    taphonomy_bhm,
     taphonomy_evidence_loglik,
     taphonomy_likelihood_ratio,
     taphonomy_preservation_delta,
@@ -128,3 +129,49 @@ def test_preservation_lr_favours_matching_model():
     )
     assert out["lr"] > 1
     assert abs(out["log_lr"] - (out["loglik_h1"] - out["loglik_h2"])) < 1e-10
+
+
+def test_bhm_recovers_effect_and_prior_shrinks():
+    rng = np.random.default_rng(1)
+    n = 200
+    lime = rng.integers(0, 2, n)
+    df = pd.DataFrame(
+        {
+            "preservation_score": 0.5 * lime + rng.normal(0, 0.3, n),
+            "lime_treatment": lime,
+        }
+    )
+    b = taphonomy_bhm(df, covariates=["lime_treatment"])
+    eff = b["coefficients"]
+    lime_mean = float(eff.loc[eff["term"] == "lime_treatment", "post_mean"].iloc[0])
+    assert 0.3 < lime_mean < 0.7
+    assert (eff["post_sd"] > 0).all()
+    assert ((eff["prob_positive"] >= 0) & (eff["prob_positive"] <= 1)).all()
+
+    b_tight = taphonomy_bhm(
+        df, covariates=["lime_treatment"],
+        priors={"lime_treatment": {"mean": 0.0, "sd": 0.01}},
+    )
+    tight = float(
+        b_tight["coefficients"].loc[
+            b_tight["coefficients"]["term"] == "lime_treatment", "post_mean"
+        ].iloc[0]
+    )
+    assert abs(tight) < abs(lime_mean)  # tight prior at 0 pulls the estimate down
+
+
+def test_bhm_partial_pools_groups():
+    rng = np.random.default_rng(2)
+    n = 150
+    df = pd.DataFrame(
+        {
+            "preservation_score": rng.normal(size=n),
+            "lime_treatment": rng.integers(0, 2, n),
+            "context": rng.choice(list("abcde"), n),
+        }
+    )
+    b = taphonomy_bhm(df, covariates=["lime_treatment"], group="context")
+    ge = b["group_effects"]
+    assert ge is not None
+    assert ((ge["shrinkage"] >= 0) & (ge["shrinkage"] <= 1)).all()
+    assert len(ge) == 5
