@@ -112,7 +112,11 @@ class _InMemoryFnLoader:
         return None
 
     def exec_module(self, module):
-        exec(compile(self._source, f"<{self._fullname}>", "exec"), module.__dict__)
+        # Standard importlib loader protocol. `self._source` is morie's OWN
+        # packaged fn/ source (shipped inside the wheel), never user or
+        # network input -- this is the import mechanism itself, equivalent
+        # to how CPython execs any module body.
+        exec(compile(self._source, f"<{self._fullname}>", "exec"), module.__dict__)  # noqa: S102
 
     def get_source(self, fullname):
         return self._source

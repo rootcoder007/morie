@@ -1,3 +1,25 @@
+# morie 1.0.1 - 2026-07-08
+
+## Supply-chain hardening
+
+* New `morie._exec_guard` centralises every dynamic-execution sink.
+  LLM-generated code is AST-validated (import whitelist, no dunder
+  access, restricted builtins) before it runs; the agent's shell tool
+  now executes without a shell (`shell=False`, shlex-tokenized, binary
+  allowlist) instead of `shell=True`.
+* `MORIE_NO_EXEC=1` disables all dynamic execution (agent, `morie exec`,
+  the polyglot REPL, and the TUI console) for CI and shared hosts.
+* The agent's `execute_code` tool is now guarded-Python-only; it no
+  longer exposes the multi-language polyglot engine to model output.
+* `pt2gguf` loads checkpoints with `weights_only=True` and reads
+  tokenizer pickles through a restricted unpickler (opt back in to the
+  legacy path with `MORIE_TRUST_CHECKPOINT=1`).
+* Boolean/Monte-Carlo expression evaluators use an AST-validated
+  `safe_eval_expr` in place of raw `eval()`.
+* Dropped the `lxml` dependency (BeautifulSoup now uses the stdlib
+  `html.parser`), removing its native-code and eval alerts from the
+  install tree.
+
 # morie 1.0.0 - 2026-07-08
 
 ## First alpha

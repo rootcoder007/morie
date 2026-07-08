@@ -1,4 +1,18 @@
-"""Agentic loop for Perseus -- MORIE's resident AI with tool calling."""
+"""Agentic loop for Perseus -- MORIE's resident AI with tool calling.
+
+SECURITY / TRUST MODEL
+----------------------
+This agent only runs when the LOCAL USER explicitly starts it against an
+LLM endpoint they configured (default: their own local ollama). It is
+never imported or executed on plain ``import morie``. Because LLM output
+is untrusted, every execution sink is guarded by :mod:`morie._exec_guard`:
+
+* ``tool_run_shell`` -- shlex-tokenized, ``shell=False``, binary
+  allowlist (no pipes, redirection, or command substitution);
+* all ``exec`` of LLM-generated setup code -- AST-validated
+  (import whitelist, no underscore attributes, restricted builtins);
+* ``MORIE_NO_EXEC=1`` disables every sink for CI/shared environments.
+"""
 
 from __future__ import annotations
 
@@ -97,31 +111,41 @@ def tool_write_file(path: str, content: str, *, sandbox: Path | None = None) -> 
 
 
 def tool_execute_code(code: str, language: str = "python") -> str:
-    """Execute code via PolyglotEngine and return output."""
+    """Execute LLM-generated Python under the execution guard.
+
+    This tool deliberately does NOT expose the multi-language polyglot
+    engine (shell/R/SQL/native) to the LLM: that would be an unrestricted
+    remote-code-execution path driven by untrusted model output. The LLM
+    runs shell via the allowlisted ``run_shell`` tool and statistics via
+    ``run_morie_function`` instead. Python here is AST-validated (import
+    whitelist, no dunder access, restricted builtins) by
+    morie._exec_guard, and MORIE_NO_EXEC=1 disables it entirely.
+    """
+    if language not in ("python", "py", ""):
+        return (
+            f"Language '{language}' is not available to the agent. Use the "
+            "'run_shell' tool for shell (allowlisted commands) or "
+            "'run_morie_function' for analysis; 'execute_code' runs guarded "
+            "Python only."
+        )
+
+    from morie._exec_guard import ExecGuardError, guarded_exec
+
+    stdout_buf = io.StringIO()
+    namespace: dict[str, Any] = {}
     try:
-        from .polyglot import PolyglotEngine
-    except ImportError:
-        return "PolyglotEngine not available"
+        with redirect_stdout(stdout_buf), redirect_stderr(stdout_buf):
+            guarded_exec(code, namespace)
+    except ExecGuardError as exc:
+        return f"[BLOCKED] {exc}"
+    except Exception:
+        return _truncate(f"[EXECUTION FAILED]\n{traceback.format_exc()}")
 
-    captured: list[str] = []
-    auto = language != "python"
-    engine = PolyglotEngine(polyglot=True, auto_detect=auto, output_fn=captured.append)
-    prefix_map = {"r": "R> ", "shell": "!", "sql": "Q> "}
-    prefix = prefix_map.get(language, "")
-    result = engine.execute(f"{prefix}{code}" if prefix else code)
-
-    parts: list[str] = []
-    if result.stdout:
-        parts.append(result.stdout)
-    if result.stderr:
-        parts.append(f"STDERR: {result.stderr}")
-    if captured:
-        parts.append("\n".join(captured))
-    if not parts:
-        parts.append("(no output)")
-    if not result.success:
-        parts.insert(0, "[EXECUTION FAILED]")
-    return _truncate("\n".join(parts))
+    out = stdout_buf.getvalue()
+    tail = {k: v for k, v in namespace.items() if not k.startswith("_") and k != "__builtins__"}
+    if not out and tail:
+        out = "\n".join(f"{k} = {v!r}" for k, v in list(tail.items())[-10:])
+    return _truncate(out) if out else "(no output)"
 
 
 def tool_web_fetch(url: str, *, max_chars: int = 5000) -> str:
@@ -281,20 +305,20 @@ def tool_search_codebase(
 
 
 def tool_run_shell(command: str, *, timeout: int = 30) -> str:
-    """Run a shell command and return output. Blocked: rm, mkfs, dd, reboot, shutdown."""
+    """Run an allowlisted command without a shell.
+
+    LLM-chosen commands are untrusted input: the command is shlex-
+    tokenized (no shell, so no pipes/redirection/substitution) and only
+    binaries on morie._exec_guard's allowlist may run. MORIE_NO_EXEC=1
+    disables this tool entirely.
+    """
     import subprocess
 
-    blocked = {"rm", "mkfs", "dd", "reboot", "shutdown", "poweroff", "halt", "kill", "pkill"}
-    first_word = command.strip().split()[0] if command.strip() else ""
-    if first_word in blocked:
-        return f"Blocked: '{first_word}' is not allowed for safety."
+    from morie._exec_guard import ExecGuardError, safe_shell_run
 
     try:
-        result = subprocess.run(
+        result = safe_shell_run(
             command,
-            shell=True,
-            capture_output=True,
-            text=True,
             timeout=timeout,
             cwd=str(_find_project_root()),
         )
@@ -308,6 +332,8 @@ def tool_run_shell(command: str, *, timeout: int = 30) -> str:
         return _truncate("\n".join(parts)) if parts else "(no output)"
     except subprocess.TimeoutExpired:
         return f"Command timed out after {timeout}s"
+    except ExecGuardError as exc:
+        return f"Blocked: {exc}"
     except Exception as exc:
         return f"Shell error: {exc}"
 
@@ -316,8 +342,10 @@ def tool_describe_data(code: str = "") -> str:
     """Describe a dataset: load from morie.data or describe a DataFrame expression."""
     stdout_buf = io.StringIO()
     try:
+        from morie._exec_guard import guarded_exec
+
         exec_globals: dict[str, Any] = {}
-        exec(
+        guarded_exec(
             "import pandas as pd; import numpy as np; from morie.data import load_dataset, DATASET_CATALOG; " + code,
             exec_globals,
         )
@@ -1106,8 +1134,10 @@ def tool_compare_methods(methods: str, data_code: str = "") -> str:
         try:
             import numpy as np
 
+            from morie._exec_guard import guarded_exec
+
             context["np"] = np
-            exec(data_code, context)  # noqa: S102
+            guarded_exec(data_code, context)
         except Exception as exc:
             return f"Error in data setup: {exc}"
 
@@ -1165,8 +1195,10 @@ def tool_run_suite(domain: str, data_code: str = "") -> str:
         try:
             import numpy as np
 
+            from morie._exec_guard import guarded_exec
+
             context["np"] = np
-            exec(data_code, context)  # noqa: S102
+            guarded_exec(data_code, context)
         except Exception as exc:
             return f"Error in data setup: {exc}"
 
@@ -1252,15 +1284,19 @@ _CORE_TOOLS: list[dict] = [
         "type": "function",
         "function": {
             "name": "execute_code",
-            "description": ("Execute code in Python/R/Shell/SQL. Returns stdout, stderr, and status."),
+            "description": (
+                "Execute guarded Python (numpy/pandas/scipy/morie only) and return "
+                "its stdout. For shell use 'run_shell'; for analysis use "
+                "'run_morie_function'."
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "code": {"type": "string", "description": "Code to execute"},
+                    "code": {"type": "string", "description": "Python code to execute"},
                     "language": {
                         "type": "string",
-                        "enum": ["python", "r", "shell", "sql"],
-                        "description": "Language (default python)",
+                        "enum": ["python"],
+                        "description": "Only 'python' is supported.",
                     },
                 },
                 "required": ["code"],

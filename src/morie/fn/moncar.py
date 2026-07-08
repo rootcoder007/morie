@@ -45,9 +45,12 @@ def monte_carlo(
     rng = np.random.default_rng(seed)
     x = rng.uniform(lo, hi, n_samples)
 
-    safe_ns = {"np": np, "x": x, "__builtins__": {}}
+    # AST-validated evaluation: only arithmetic operators, literals, and
+    # attribute/call chains on np/x are allowed; no builtins reachable.
+    from morie._exec_guard import safe_eval_expr
+
     try:
-        fx = eval(fn_expr, safe_ns)  # noqa: S307
+        fx = safe_eval_expr(fn_expr, {"np": np, "x": x})
     except Exception as exc:
         raise ValueError(f"Cannot evaluate expression '{fn_expr}': {exc}") from exc
 
