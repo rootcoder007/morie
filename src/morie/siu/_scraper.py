@@ -12,16 +12,50 @@ Caching policy:
 
 from __future__ import annotations
 
+import functools
+import random
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
-import stamina
 
 from ._parser import PARSER_VERSION, parse_html, parse_news_html
 from ._schema import BLANK_ROW
+
+
+def _retry(
+    *,
+    on: tuple[type[BaseException], ...],
+    attempts: int,
+    wait_initial: float = 1.0,
+    wait_max: float = 15.0,
+    wait_jitter: float = 1.5,
+) -> Callable:
+    """Retry ``on`` these exceptions with exponential backoff + jitter.
+
+    Stdlib replacement for the single ``stamina.retry`` use (dropped to keep
+    the dependency tree minimal). Waits ``wait_initial * 2**(n-1)`` capped at
+    ``wait_max`` between tries, plus up to ``wait_jitter`` seconds of random
+    jitter, and re-raises the last exception after ``attempts`` tries.
+    """
+
+    def decorator(fn: Callable) -> Callable:
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, attempts + 1):
+                try:
+                    return fn(*args, **kwargs)
+                except on:
+                    if attempt == attempts:
+                        raise
+                    backoff = min(wait_initial * 2 ** (attempt - 1), wait_max)
+                    time.sleep(backoff + random.uniform(0, wait_jitter))
+
+        return wrapper
+
+    return decorator
 
 SIU_BASE = "https://www.siu.on.ca"
 REPORT_URL = SIU_BASE + "/en/directors_report_details.php?drid={drid}"
@@ -43,7 +77,7 @@ def _cache_path(cache_dir: Path, drid: int, suffix: str = ".html") -> Path:
     return cache_dir / f"{drid}{suffix}"
 
 
-@stamina.retry(
+@_retry(
     on=(httpx.TransportError, httpx.HTTPStatusError),
     attempts=RETRY_ATTEMPTS,
     wait_initial=1.0,

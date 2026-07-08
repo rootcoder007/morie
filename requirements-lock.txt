@@ -1202,10 +1202,6 @@ sqlalchemy==2.0.51 \
     # via
     #   alembic
     #   optuna
-stamina==26.1.0 \
-    --hash=sha256:0214d05fdf5102c518194a4aac7520ce53cf660550ae3b940701aad88cf50c17 \
-    --hash=sha256:62e06829bec87c06d4cafde520b32a6097d1017c378a9eb63253c5bf5ebbbb88
-    # via -r requirements.in
 statsmodels==0.14.6 \
     --hash=sha256:00781869991f8f02ad3610da6627fd26ebe262210287beb59761982a8fa88cae \
     --hash=sha256:0444e88557df735eda7db330806fe09d51c9f888bb1f5906cb3a61fb1a3ed4a8 \
@@ -1246,10 +1242,6 @@ statsmodels==0.14.6 \
     # via
     #   -r requirements.in
     #   doubleml
-tenacity==9.1.4 \
-    --hash=sha256:6095a360c919085f28c6527de529e76a06ad89b23659fa881ae0649b867a9d55 \
-    --hash=sha256:adb31d4c263f2bd041081ab33b498309a57c77f9acf2db65aadf0898179cf93a
-    # via stamina
 threadpoolctl==3.6.0 \
     --hash=sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb \
     --hash=sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e
