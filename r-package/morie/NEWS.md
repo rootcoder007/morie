@@ -1,3 +1,14 @@
+# morie 1.0.0 - 2026-07-08
+
+## First alpha
+
+* Version bumped 0.9.9 -> 1.0.0 (first alpha), kept in step with the `rmorie`
+  R package.
+* New modules: cluster-robust double machine learning (`morie_dml_clustered`)
+  and spatiotemporal Hawkes (`morie_hawkes_st_*`). Forensic toxicology
+  (`tox_*`) ships on the Python side (it builds on taphonomy, R-side in
+  `rmorie`).
+
 # morie 0.9.9 - 2026-06-27
 
 ## Version lock with the rmorie ecosystem
