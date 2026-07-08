@@ -370,8 +370,15 @@ class TestToolRunShell:
         assert "Blocked" in result
 
     def test_timeout(self):
-        result = tool_run_shell("sleep 60", timeout=1)
+        result = tool_run_shell('python3 -c "import time; time.sleep(60)"', timeout=1)
         assert "timed out" in result.lower()
+
+    def test_pipes_and_redirection_are_inert(self):
+        # No shell => metacharacters are literal argv tokens, never operators.
+        result = tool_run_shell("echo hi; rm -rf /")
+        assert "hi" in result
+        result = tool_run_shell("echo a | cat")
+        assert "|" in result  # pipe printed literally, not interpreted
 
 
 class TestToolDescribeData:

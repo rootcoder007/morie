@@ -150,13 +150,31 @@ def _pad_to_alignment(buf, alignment=32):
     buf.write(b"\x00" * pad)
 
 
+class _TokenizerUnpickler(pickle.Unpickler):
+    """Restricted unpickler: only tiktoken/stdlib-container globals load.
+
+    Blocks the classic pickle RCE vector (arbitrary global lookup) while
+    still deserializing the autoresearch tiktoken tokenizer.
+    """
+
+    _ALLOWED_ROOTS = ("tiktoken", "builtins", "collections", "functools")
+
+    def find_class(self, module, name):
+        if module.split(".")[0] in self._ALLOWED_ROOTS:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(
+            f"blocked pickle global {module}.{name} -- tokenizer files may "
+            "only contain tiktoken objects"
+        )
+
+
 def _load_autoresearch_tokenizer(tokenizer_dir):
     tok_path = Path(tokenizer_dir) / "tokenizer.pkl"
     if not tok_path.exists():
         raise FileNotFoundError(f"Tokenizer not found: {tok_path}")
 
     with open(tok_path, "rb") as f:
-        enc = pickle.load(f)  # noqa: S301 -- local autoresearch tokenizer only, not user input
+        enc = _TokenizerUnpickler(f).load()
 
     tokens = []
     scores = []
@@ -217,10 +235,24 @@ def _turbo_compress_tensor(tensor_np, bits):
 def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
     try:
         import torch
-
-        ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     except ImportError:
         raise RuntimeError("PyTorch required for checkpoint loading")
+
+    try:
+        # weights_only=True refuses pickled code objects (no arbitrary
+        # code execution from a malicious checkpoint file).
+        ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+    except Exception:
+        import os
+
+        if os.environ.get("MORIE_TRUST_CHECKPOINT") != "1":
+            raise RuntimeError(
+                f"{checkpoint_path} contains non-tensor pickled objects, which "
+                "can execute arbitrary code when loaded. If you built this "
+                "checkpoint yourself and trust it, re-run with "
+                "MORIE_TRUST_CHECKPOINT=1."
+            )
+        ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)  # noqa: S614
 
     config = ckpt["config"]
     state_dict = ckpt["model_state_dict"]

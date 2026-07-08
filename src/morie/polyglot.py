@@ -1043,6 +1043,17 @@ class PolyglotEngine:
         return stripped, None
 
     def execute(self, code: str) -> ExecResult:
+        # TRUST BOUNDARY: the polyglot REPL executes code the LOCAL USER
+        # types into their own session -- same trust model as python/R/
+        # julia REPLs themselves. Nothing here runs remote or network-
+        # supplied code. MORIE_NO_EXEC=1 disables all execution.
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+
+        try:
+            ensure_exec_allowed("polyglot execution")
+        except ExecGuardError as exc:
+            return ExecResult(language="none", stderr=str(exc), success=False)
+
         actual_code, forced_lang = self.strip_prefix(code)
         lang = forced_lang or (detect_language(code, self._default_lang) if self.auto_detect else self._default_lang)
 

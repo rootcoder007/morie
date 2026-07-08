@@ -1251,9 +1251,21 @@ def _main_impl() -> int:
 
 
 def _handle_exec(args: argparse.Namespace) -> int:
+    # TRUST BOUNDARY: 'morie exec' runs code the LOCAL USER supplies on
+    # their own machine -- same trust model as `python -c` / `Rscript -e`.
+    # It never executes remote or network-supplied code. Set
+    # MORIE_NO_EXEC=1 (CI, shared hosts) to disable it entirely.
     import os
     import subprocess
     import tempfile
+
+    from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+
+    try:
+        ensure_exec_allowed("'morie exec'")
+    except ExecGuardError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
     if args.code == "co":
         return _handle_exec_co(args)

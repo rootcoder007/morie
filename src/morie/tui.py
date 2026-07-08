@@ -3447,7 +3447,16 @@ if _TEXTUAL_AVAILABLE:
                 log.write(f"[red]LLM error: {exc}[/red]")
 
         def _eval_python(self, log: RichLog, code: str) -> None:
-            """Execute Python -- uses exec() for multiline, push() for single."""
+            """Execute Python typed by the LOCAL USER into their own console.
+
+            Same trust model as the python REPL itself; never runs remote
+            code. MORIE_NO_EXEC=1 disables console execution.
+            """
+            from morie._exec_guard import exec_disabled
+
+            if exec_disabled():
+                log.write("[red]Console execution disabled by MORIE_NO_EXEC.[/red]")
+                return
             first_line = code.split("\n", 1)[0]
             log.write(f"[bold green][P][/bold green] {first_line}")
             if "\n" in code:

@@ -48,7 +48,11 @@ def boolean_eval(
         if ch not in allowed and not ch.isspace():
             raise ValueError(f"Unexpected character in expression: '{ch}'")
 
-    result = int(bool(eval(expr)))
+    # AST-validated evaluation (boolean/comparison operators and literals
+    # only, no builtins reachable) -- replaces a raw eval() sink.
+    from morie._exec_guard import safe_eval_expr
+
+    result = int(bool(safe_eval_expr(expr)))
 
     return DescriptiveResult(
         name="Boolean Evaluation",

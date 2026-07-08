@@ -1,0 +1,53 @@
+# Socket.dev configuration -- https://docs.socket.dev/docs/socket-yml
+#
+# morie is a scientific-computing package: its dependency tree (numpy,
+# scipy, pandas, scikit-learn, matplotlib, statsmodels, httpx) inherently
+# contains compiled native code, opens network sockets, and -- in the case
+# of numpy's f2py build tooling -- uses eval() on local build config. These
+# are EXPECTED capabilities of the package category, not vulnerabilities in
+# morie's own code (which has been hardened: see morie._exec_guard and the
+# 1.0.1 NEWS entry). This file acknowledges the purely-informational
+# capability alerts on that dependency tree while keeping every alert that
+# signals ACTUAL malicious behaviour switched on and PR-gating.
+version: 2
+
+issueRules:
+  # --- KEPT ON: genuine malware / integrity signals (must always gate) ---
+  malware: true
+  gptMalware: true
+  obfuscatedFile: true
+  installScripts: true
+  gptSecurity: true
+  telemetry: true
+  suspiciousStarActivity: true
+  troll: true
+  typosquat: true
+  didYouMean: true
+  criticalCVE: true
+  cve: true
+  gptAnomaly: true
+
+  # --- KEPT ON deliberately: do NOT globally blind these ---
+  # socket.yml rules are GLOBAL (no per-package overrides -- verified against
+  # docs.socket.dev/docs/socket-yml). Turning usesEval/shellAccess off here
+  # would silence them for EVERY dependency, so a future malicious eval/shell
+  # in a *different* package would slip through. morie's own code no longer
+  # uses eval/shell dangerously (1.0.1: shell=False + allowlist, AST-guarded
+  # eval, MORIE_NO_EXEC kill-switch), so the only current hits are the known
+  # transitive ones (numpy f2py build-config eval, anyio sockets). Those are
+  # triaged per-package in the Socket DASHBOARD, which keeps full visibility
+  # over the rest of the tree.
+  usesEval: true
+  shellAccess: true
+
+  # --- ACKNOWLEDGED OFF: pure-informational capabilities, not vuln classes ---
+  # Every scientific/HTTP package ships compiled extensions and opens sockets;
+  # flagging them adds noise without signal. Safe to disable globally because
+  # they describe a capability, not a behaviour that could be malicious.
+  nativeCode: false
+  networkAccess: false
+
+githubApp:
+  enabled: true
+  pullRequestAlertsEnabled: true
+  projectReportsEnabled: true

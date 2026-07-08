@@ -107,7 +107,7 @@ def list_reports(*, timeout: float = DEFAULT_TIMEOUT_SECONDS, user_agent: str = 
     # bs4 is a hard dep
     from bs4 import BeautifulSoup
 
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, "html.parser")
 
     rows: list[dict[str, Any]] = []
     for a in soup.find_all("a", href=True):
