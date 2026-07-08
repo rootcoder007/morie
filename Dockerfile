@@ -133,6 +133,11 @@ COPY --from=py-builder /install /usr/local
 # Pull in the R site-library (incl. morie and its CRAN deps).
 COPY --from=r-builder /usr/local/lib/R/site-library /usr/local/lib/R/site-library
 
+# Smoke-check that the packaged surfaces import (catches a module left out of
+# the wheel, e.g. the forensic-toxicology layer).
+RUN python3 -c "import morie.tox; from morie.fn._registry import REGISTRY; assert len(REGISTRY) > 0" \
+    && R -e 'library(morie)' >/dev/null
+
 USER morieapp
 WORKDIR /home/morieapp
 
