@@ -41,7 +41,7 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
                        and recorded as `source_url_report`.
     :return: dict with every SIU_COLUMNS key (Nones for unfound fields).
     """
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, "html.parser")
     full_text = _stripped_text(soup)
     text = _trim_to_body(full_text)
     # Use full_text for case-number search (page header may be in chrome)
@@ -235,7 +235,7 @@ def parse_news_html(html: str, *, nrid: int | None = None, source_url: str | Non
     The caller (typically `scrape_drid` after finding the nrid link)
     merges these into the main row dict by case_number match.
     """
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, "html.parser")
     full_text = _stripped_text(soup)
 
     out = {
