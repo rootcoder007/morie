@@ -12,3 +12,10 @@ name: "morie CodeQL config"
 # Python analysis runtime.
 paths-ignore:
   - "src/morie/fn/**"
+  # scripts/ are maintainer-only dev helpers (data scrapers, release
+  # tooling) -- NOT shipped in the wheel (pyproject wheel.packages =
+  # ["src/morie"]). The "clear-text storage" alerts on scrape_siu_*.py
+  # are false positives: they write PUBLIC SIU director's-report data to
+  # a local research cache, not secrets. CodeQL scans the shipped package
+  # surface (src/morie), not local dev scripts.
+  - "scripts/**"

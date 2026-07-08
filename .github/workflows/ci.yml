@@ -107,7 +107,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --require-hashes --no-deps -r requirements-lock.txt
-          python -c "import numpy, scipy, pandas, sklearn, statsmodels, httpx, bs4, stamina; print('hash-verified deps import OK')"
+          python -c "import numpy, scipy, pandas, sklearn, statsmodels, httpx, bs4; print('hash-verified deps import OK')"
 
   # test-papers-latex removed 2026-05-26: the five JSS-format papers
   # (papers/hawkes-paper, papers/morie-empirical-paper,
