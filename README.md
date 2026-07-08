@@ -150,11 +150,6 @@ The single citation above covers both the R (`r-package/morie/`) and
 Python (`src/morie/`) implementations, which ship under the same
 version.
 
-Methodology and empirical-applications papers (MRM framework,
-criminological Hawkes process, solitary-confinement / self-excitation
-/ institutional churn) are in preparation; they will be linked here
-once publicly available.
-
 See [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff)
 for machine-readable citation metadata (BibTeX, etc.) — that file is
 what GitHub's "Cite this repository" button consumes.
