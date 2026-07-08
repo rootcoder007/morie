@@ -69,6 +69,8 @@ rg --vimgrep --sort path --color=never -e "$REGEX" \
   -g '!src/morie/fn/describe_*.md' \
   -g '!VERSION_INVENTORY.csv' \
   -g '!VERSION_INVENTORY.csv.committed' \
+  -g '!requirements-lock.txt' \
+  -g '!requirements.in' \
   -g '!scripts/' \
   -g '!.git/' \
   . | awk -v curr="$CURRENT_VERSION" -F':' '{

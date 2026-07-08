@@ -762,6 +762,8 @@ File,Line,Status,Version,Context
 ./r-package/morie/vignettes/mrm-empirical-callables.Rmd,107,STALE_OR_DEP,0.1.14,"`mrm_classify_mandela()` shipped in v0.1.14 and remains the canonical"
 ./r-package/morie/vignettes/mrm-empirical-callables.Rmd,108,STALE_OR_DEP,0.2.0,"Mandela classifier in v0.2.0. It supports three operationalisations:"
 ./r-package/morie/vignettes/siu-pipeline.Rmd,83,STALE_OR_DEP,0.9.5,"interleaving change in v0.9.5."
+./socket.yaml,9,CURRENT,1.0.1,"# 1.0.1 NEWS entry). This file acknowledges the purely-informational"
+./socket.yaml,35,CURRENT,1.0.1,"# uses eval/shell dangerously (1.0.1: shell=False + allowlist; AST-guarded"
 ./src/morie/__init__.py,23,STALE_OR_DEP,0.0.0,"__version__ = 0.0.0+unknown"
 ./src/morie/__init__.py,26,STALE_OR_DEP,0.0.0,"__version__ = 0.0.0+unknown"
 ./src/morie/__init__.py,29,STALE_OR_DEP,0.3.0,"# previous eager try-import block at v0.3.0.  Edit this dict to add"
