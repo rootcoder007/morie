@@ -16,7 +16,7 @@ a ``protected`` argument and flags exactly that.
 Methods reimplemented from their published definitions (Fisher et al.
 on permutation importance; Friedman on partial dependence; Apley &
 Zhu on ALE; Štrumbelj & Kononenko / Lundberg & Lee on Shapley
-sampling); no code copied.
+sampling).
 """
 
 from __future__ import annotations

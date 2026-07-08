@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Simulation primitives for the predictive-policing audit subsystem.
 
-Clean-room reimplementations of the simulation components in Barman &
+Implements the simulation components described in Barman &
 Barman, *Unmasking Algorithmic Bias in Predictive Policing*
 (arXiv:2603.18987):
 
