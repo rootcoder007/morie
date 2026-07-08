@@ -33,6 +33,12 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 1
 INVENTORY_FILE="VERSION_INVENTORY.csv"
 VERSION_FILE="VERSION"
 
+# Atomic write: build into a temp file in the same directory and rename only on
+# success. A SIGKILL / timeout mid-scan then leaves the committed CSV untouched
+# instead of a truncated one (the file is streamed line-by-line by the rg pipe).
+TMP_FILE="$(mktemp "./.${INVENTORY_FILE}.XXXXXX")"
+trap 'rm -f "$TMP_FILE"' EXIT
+
 # 1. Ensure canonical source exists.
 if [[ ! -f "$VERSION_FILE" ]]; then
     echo "Error: Canonical $VERSION_FILE not found." >&2
@@ -47,8 +53,8 @@ echo "==> Scanning for versions (canonical target: $CURRENT_VERSION)..."
 # 2. Match 3 or 4 segment version numbers (e.g., 0.2.0, 0.9.5.5).
 REGEX='[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?'
 
-# 3. Initialise CSV with header.
-echo "File,Line,Status,Version,Context" > "$INVENTORY_FILE"
+# 3. Initialise CSV with header (into the temp file).
+echo "File,Line,Status,Version,Context" > "$TMP_FILE"
 
 # 4. ripgrep pipeline.
 #    --vimgrep gives standard 'file:line:column:context'
@@ -98,7 +104,11 @@ rg --vimgrep --sort path --color=never -e "$REGEX" \
 
         printf "%s,%s,%s,%s,\"%s\"\n", file, line, status, matched_ver, context
     }
-}' >> "$INVENTORY_FILE"
+}' >> "$TMP_FILE"
+
+# Atomic publish: the full scan completed, so swap the temp file into place in
+# one rename. (trap still fires but rm of a moved file is a harmless no-op.)
+mv "$TMP_FILE" "$INVENTORY_FILE"
 
 # Console summary.
 TOTAL_ROWS=$(tail -n +2 "$INVENTORY_FILE" | wc -l | tr -d ' ')

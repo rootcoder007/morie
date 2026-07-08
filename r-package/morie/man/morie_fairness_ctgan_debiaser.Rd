@@ -41,7 +41,7 @@ columns.}
 synthesised data.frame when a backend is available.
 }
 \description{
-Clean-room port of the CTGAN-style debiaser from
+A port of the CTGAN-style debiaser from
 arXiv:2603.18987. Conditions a tabular GAN on (group, outcome) and
 synthesises rows in which every group's favourable-outcome rate
 matches the privileged group's, so the Disparate-Impact Ratio of

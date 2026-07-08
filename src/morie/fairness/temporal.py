@@ -17,7 +17,7 @@ deployment.  :func:`predpol_temporal_audit` makes that instability a
 first-class output.
 
 Builds on the Phase A metrics in :mod:`morie.fairness.metrics`;
-methods reimplemented from the paper, no code copied.
+methods implemented from the paper.
 """
 
 from __future__ import annotations

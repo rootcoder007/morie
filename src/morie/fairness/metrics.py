@@ -21,7 +21,7 @@ Each returns a :class:`~morie.fn._richresult.RichResult` with a
 paragraph-level summary, a per-group table, and a plain-language
 interpretation.
 
-Prior art reimplemented independently (no code copied): the COMPAS
+Prior art: the COMPAS
 fairness audit in pbiecek's *XAI Stories* and IBM's AI Fairness 360
 definitions; the predictive-policing disparity framing of the
 SciencesPo *Predictive-policing-Chicago* project (Lachérade, Szabo,

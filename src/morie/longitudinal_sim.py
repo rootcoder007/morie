@@ -2,16 +2,11 @@
 """Synchronised longitudinal simulation: SyncRNG + AR / VAR coefficient
 matrices + multivariate normal generation with structured covariance.
 
-This module is a clean-room implementation of the techniques used in
-the Hlozek--Bangari Collaborative-CIFAR-Catalyst project
-(https://github.com/bangari-19/Collaborative-CIFAR-Project-).
-That repository is unlicensed (all rights reserved); no source is
-copied here. The techniques themselves (synchronised pseudo-random
-streams, lagged / contemporaneous coefficient matrices, multivariate
-normal generation under positive-definite Toeplitz / compound-symmetric
-covariance structures) are standard methods from the longitudinal-
-modelling and ecological-time-series literature; this implementation
-follows the methods independently from primary references.
+The techniques (synchronised pseudo-random streams, lagged /
+contemporaneous coefficient matrices, multivariate normal generation
+under positive-definite Toeplitz / compound-symmetric covariance
+structures) are standard methods from the longitudinal-modelling and
+ecological-time-series literature.
 
 Functions:
     sync_rng(seed): construct a synchronised RNG that emits the same
