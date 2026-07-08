@@ -19,6 +19,9 @@
 * Dropped the `lxml` dependency (BeautifulSoup now uses the stdlib
   `html.parser`), removing its native-code and eval alerts from the
   install tree.
+* Dropped the `stamina` dependency (and its transitive `tenacity`): the
+  single SIU-scraper retry now uses a small stdlib decorator with the
+  same exponential-backoff-plus-jitter behaviour.
 
 # morie 1.0.0 - 2026-07-08
 
