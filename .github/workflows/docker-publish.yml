@@ -107,8 +107,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # mode=min (final-stage layers only), NOT mode=max: max exports
+          # every intermediate build layer into the shared 10 GB Actions
+          # cache, which can evict the R/Python dependency caches (LRU) and
+          # force slow from-source rebuilds. min keeps layer reuse without
+          # starving the other caches. (Same fix as rmorie.)
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
           build-args: |
             VERSION=${{ steps.meta.outputs.version }}
             VCS_REF=${{ github.sha }}
