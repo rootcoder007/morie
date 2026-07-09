@@ -17,7 +17,14 @@ sudo apt update && sudo apt install morie
 
 Supported architectures: `amd64`, `arm64`.
 
-## Install morie on Fedora/RHEL
+## Install morie on Fedora 41+ (dnf5)
+
+```bash
+sudo dnf config-manager addrepo --from-repofile=https://rootcoder007.github.io/apt-morie/rpm/morie.repo
+sudo dnf install morie
+```
+
+## Install morie on Fedora &le; 40 / RHEL 8-9 (dnf4)
 
 ```bash
 sudo dnf config-manager --add-repo https://rootcoder007.github.io/apt-morie/rpm/morie.repo
