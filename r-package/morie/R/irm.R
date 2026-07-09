@@ -87,6 +87,10 @@ morie_estimate_irm <- function(data, treatment, outcome, covariates,
   ml_m <- mlr3::lrn("classif.log_reg")
 
   dml_irm <- DoubleML::DoubleMLIRM$new(dml_data, ml_g, ml_m, n_folds = n_folds)
+  # Sequential in-process cross-fit + future diagnostics silenced;
+  # see R/dml_guard.R. Restored on exit.
+  .gst <- .morie_dml_guard_begin()
+  on.exit(.morie_dml_guard_end(.gst), add = TRUE)
   dml_irm$fit()
 
   ate <- as.numeric(dml_irm$coef)[[1L]]
