@@ -103,6 +103,11 @@ jobs:
     uses: ./.github/workflows/r-coverage-and-lint.yml
     secrets: inherit
 
+  r-pipeline-integration:
+    needs: r-cmd-check
+    uses: ./.github/workflows/r-pipeline-integration.yml
+    secrets: inherit
+
   wheels:
     needs: python-test
     uses: ./.github/workflows/wheels.yml
@@ -126,6 +131,7 @@ jobs:
       - python-test
       - r-cmd-check
       - r-coverage-and-lint
+      - r-pipeline-integration
       - wheels
       - codeql
     if: always()
@@ -140,6 +146,7 @@ jobs:
           echo "  python-test        = ${{ needs.python-test.result }}"
           echo "  r-cmd-check        = ${{ needs.r-cmd-check.result }}"
           echo "  r-coverage-and-lint= ${{ needs.r-coverage-and-lint.result }}"
+          echo "  r-pipeline-integration = ${{ needs.r-pipeline-integration.result }}"
           echo "  wheels             = ${{ needs.wheels.result }}"
           echo "  codeql             = ${{ needs.codeql.result }}"
       - name: Fail summary if any leaf failed
@@ -152,6 +159,7 @@ jobs:
             "${{ needs.python-test.result }}" \
             "${{ needs.r-cmd-check.result }}" \
             "${{ needs.r-coverage-and-lint.result }}" \
+            "${{ needs.r-pipeline-integration.result }}" \
             "${{ needs.wheels.result }}" \
             "${{ needs.codeql.result }}"; do
             if [ "$r" != "success" ]; then
