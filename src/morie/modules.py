@@ -380,9 +380,10 @@ def load_cpads_analysis_data(
     return canonicalize_cpads_frame(raw)
 
 
-def _project_root() -> Path:
-    # morie/modules.py -> morie -> py-package -> tools -> config -> libexec -> project
-    return Path(__file__).resolve().parents[5]
+# The R-bridge shim ships inside the package (morie/rscripts/run_modules.R) so
+# it resolves from __file__ and works the same across every install layout
+# (source checkout, wheel, or bundled app).
+_R_MODULE_SHIM = Path(__file__).resolve().parent / "rscripts" / "run_modules.R"
 
 
 def _rscript_bin() -> str | None:
@@ -418,14 +419,19 @@ def _run_r_module(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     try:
+        if not _R_MODULE_SHIM.exists():
+            raise RuntimeError(
+                f"R-bridge shim not found at {_R_MODULE_SHIM}. The package may be "
+                "installed incompletely (rscripts/run_modules.R must ship in the wheel)."
+            )
         cmd = [
             rscript,
-            str(_project_root() / "libexec" / "config" / "tests" / "rtests" / "run_modules.R"),
+            str(_R_MODULE_SHIM),
             f"--modules={module_name}",
             f"--cpads-csv={cpads_csv}",
             f"--output-dir={output_dir}",
         ]
-        proc = subprocess.run(cmd, cwd=_project_root(), check=False, capture_output=True, text=True)
+        proc = subprocess.run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True)
         if proc.returncode != 0:
             raise RuntimeError(
                 f"R-backed module run failed for {module_name}.\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"

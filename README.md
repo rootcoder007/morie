@@ -140,15 +140,20 @@ Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.git
 
 If you use morie in your research, please cite the software:
 
-```
-Ruhela, V. S. (2026). morie: Multi-domain Open Research and
-Inferential Estimation.
-https://github.com/rootcoder007/morie
+> Ruhela, V. S. (2026). *morie: Multi-domain Open Research and Inferential Estimation.* https://github.com/rootcoder007/morie
+
+BibTeX:
+
+```bibtex
+@Manual{ruhela_morie_2026,
+  title  = {morie: Multi-domain Open Research and Inferential Estimation},
+  author = {Vansh Singh Ruhela},
+  year   = {2026},
+  url    = {https://github.com/rootcoder007/morie},
+}
 ```
 
-The single citation above covers both the R (`r-package/morie/`) and
-Python (`src/morie/`) implementations, which ship under the same
-version.
+The single citation above covers both the R (`r-package/morie/`) and Python (`src/morie/`) implementations, which ship under the same version.
 
 See [`CITATION.cff`](https://github.com/rootcoder007/morie/blob/main/CITATION.cff)
 for machine-readable citation metadata (BibTeX, etc.) — that file is
