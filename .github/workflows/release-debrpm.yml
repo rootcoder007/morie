@@ -313,20 +313,12 @@ jobs:
               -o public/rpm/repodata/repomd.xml.asc \
               public/rpm/repodata/repomd.xml
 
-      - name: Export public key + index page
+      # index.html is a committed, hand-maintained file in the apt-morie
+      # repository (deploy uses keep_files, so not emitting it here
+      # preserves it). Only the signing key is exported.
+      - name: Export public key
         run: |
           gpg --armor --export "${GPG_KEYID}" > public/key.gpg
-          cat > public/index.html <<'EOF'
-          <!doctype html><meta charset="utf-8">
-          <title>apt-morie</title>
-          <h1>morie apt / dnf repository</h1>
-          <p>See <a href="https://github.com/rootcoder007/morie/blob/main/packaging/README.md">install instructions</a>.</p>
-          <ul>
-            <li><a href="apt/">apt/</a> &mdash; Debian / Ubuntu</li>
-            <li><a href="rpm/">rpm/</a> &mdash; Fedora / RHEL</li>
-            <li><a href="key.gpg">key.gpg</a> &mdash; signing key</li>
-          </ul>
-          EOF
 
       - name: Deploy to rootcoder007/apt-morie (cross-repo)
         # apt/dnf moved out of morie itself in 2026-05-26: served from

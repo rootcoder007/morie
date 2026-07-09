@@ -1,3 +1,34 @@
+# morie 1.0.3 - 2026-07-09
+
+## New pipeline modules
+
+* `otis-analysis` is now implemented: OTIS restrictive-confinement
+  descriptives, alert-state combination encoding, cross-fitted DML
+  (mental-health alert -> consecutive segregation days), and
+  year-by-region trends, run on the bundled b01 sample
+  (data.ontario.ca, OGL-Ontario). Outputs `otis_descriptives.csv`,
+  `otis_alert_combos.csv`, `otis_dml_results.csv`, `otis_trends.csv`.
+* `mapq-psychometrics` is now implemented: MAPQII reliability (alpha,
+  omega, split-half per subscale), 4-factor loadings, and DML
+  (gender -> Knowledge Scale) on a deterministic synthetic MAPQII
+  panel (the real TKARONTOMAPQ survey is not redistributable).
+  Outputs `mapq_reliability.csv`, `mapq_factor_loadings.csv`,
+  `mapq_dml_results.csv`.
+* `morie_list_morie_modules()` and the pipeline now cover the full
+  23-module surface; the R-pipeline integration CI asserts 23/23.
+
+# morie 1.0.2 - 2026-07-09
+
+## Bug fixes
+
+* Fixed the Python->R bridge: the packaged `run_modules.R` shim now
+  ships with the wheel and the bridge resolves the project root
+  correctly from installed locations.
+* `future` added to `Suggests`; DoubleML fits run under a sequential
+  guard that restores the caller's plan on exit.
+* New `r-pipeline-integration` CI job runs `morie pipeline --all` on
+  the rmoriedata CPADS fixture.
+
 # morie 1.0.1 - 2026-07-08
 
 ## Supply-chain hardening

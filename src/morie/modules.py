@@ -285,12 +285,12 @@ MODULE_SPECS = {
     ),
     "otis-analysis": ModuleSpec(
         name="otis-analysis",
-        description="Ontario restrictive confinement causal analysis (DML, PSM, GLMM, AIPW).",
+        description="OTIS restrictive-confinement analysis (descriptives, alert combos, cross-fitted DML, trends) on the bundled b01 sample.",
         output_files=("otis_descriptives.csv", "otis_alert_combos.csv", "otis_dml_results.csv", "otis_trends.csv"),
     ),
     "mapq-psychometrics": ModuleSpec(
         name="mapq-psychometrics",
-        description="MAPQ psychometric validation (CTT, CFA, omega) + DML (gender -> KS).",
+        description="MAPQ psychometric validation (reliability, factor loadings) + DML (gender -> KS) on a synthetic MAPQII panel.",
         output_files=("mapq_reliability.csv", "mapq_factor_loadings.csv", "mapq_dml_results.csv"),
     ),
 }
