@@ -99,12 +99,10 @@ estimate_plr <- function(data, treatment, outcome, covariates,
       requireNamespace("mlr3learners", quietly = TRUE) &&
       requireNamespace("mlr3", quietly = TRUE)) {
     # DoubleML path. The R DoubleML package expects an mlr3 learner.
-    # future (via mlr3/DoubleML) runs a connection-misuse check on each resolve
-    # that can segfault R uncatchably on some builds (diff_connections() inside
-    # FutureResult). Disable that diagnostic for the DoubleML call; restore on
-    # exit. Same guard as rmorie's effects.R.
-    .morie_old_fut <- options(future.connections.onMisuse = "ignore")
-    on.exit(options(.morie_old_fut), add = TRUE)
+    # Sequential in-process cross-fit + future diagnostics silenced;
+    # see R/dml_guard.R. Restored on exit.
+    .gst <- .morie_dml_guard_begin()
+    on.exit(.morie_dml_guard_end(.gst), add = TRUE)
     dml_data <- DoubleML::DoubleMLData$new(
       data = df, y_col = outcome, d_cols = treatment,
       x_cols = covariates
@@ -215,9 +213,10 @@ estimate_pliv <- function(data, treatment, outcome, instrument,
   if (requireNamespace("DoubleML", quietly = TRUE) &&
       requireNamespace("mlr3learners", quietly = TRUE) &&
       requireNamespace("mlr3", quietly = TRUE)) {
-    # future connection-misuse check can segfault R uncatchably (see estimate_plr).
-    .morie_old_fut <- options(future.connections.onMisuse = "ignore")
-    on.exit(options(.morie_old_fut), add = TRUE)
+    # Sequential in-process cross-fit + future diagnostics silenced;
+    # see R/dml_guard.R. Restored on exit.
+    .gst <- .morie_dml_guard_begin()
+    on.exit(.morie_dml_guard_end(.gst), add = TRUE)
     dml_data <- DoubleML::DoubleMLData$new(
       data = df, y_col = outcome, d_cols = treatment,
       z_cols = instrument, x_cols = covariates

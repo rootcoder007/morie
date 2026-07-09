@@ -28,6 +28,9 @@ permissions:
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
+    # r-devel is a moving target (informational, mirrors rmorie's policy):
+    # its cell may fail without failing the workflow.
+    continue-on-error: ${{ matrix.config.allow_failure || false }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
@@ -42,7 +45,7 @@ jobs:
           # release sticks us on an older image once `latest` rolls.
           - { os: windows-latest, r: '4.6.1' }
           - { os: ubuntu-latest,  r: '4.6.1' }
-          - { os: ubuntu-latest,  r: 'devel'   }
+          - { os: ubuntu-latest,  r: 'devel', allow_failure: true }
           - { os: ubuntu-latest,  r: 'oldrel-1' }
 
     env:
