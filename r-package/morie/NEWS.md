@@ -1,3 +1,26 @@
+# morie 1.0.5 - 2026-07-09
+
+## R-side parity with rmorie 1.0.5 + hex logo (version re-locked with rmorie)
+
+* Ported the figure-export suite: `morie_tps_figures()` (Hawkes,
+  SARIMA, Langevin, Fokker-Planck panels from the public TPS portal)
+  and `morie_otis_figures()` (five OTIS exploratory figures rendered
+  offline from the bundled b01 sample).
+* Statistical-physics figures actually write now: all eight
+  `morie_tps_*` statphysics functions take `fig_dir =` and emit real
+  PNGs (previously the save_fig report was a stub with no png() call),
+  backed by the new portable dataset bridges
+  `morie_tps_load_tps_dataset()` / `morie_tps_load_tps()`.
+* Stochastic date extractor parses TPS month-name `OCC_MONTH` and
+  ArcGIS epoch-millisecond `OCC_DATE`; the Hawkes fitter spreads
+  same-day ties (fixes the degenerate `omega -> Inf`).
+* New hex logo (`r-package/morie/man/figures/logo.png`, generated
+  reproducibly by `data-raw/hex_logo.R`) on the README.
+* Full "Data on Inmates in Ontario" authorship chain recorded in the
+  OTIS provenance docs (Service Management and Oversight Branch;
+  Ministry of the Solicitor General; Business Intelligence and
+  Insights Branch; source system OTIS).
+
 # morie 1.0.3 - 2026-07-09
 
 ## New pipeline modules

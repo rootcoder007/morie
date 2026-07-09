@@ -27,7 +27,6 @@ per-group mean rank gap (the over-/under-prediction signal).
 \item \code{morie_predpol_score_disparity()}: descriptive per-group risk-score
 summary with a one-way ANOVA.
 }
-
 }
 \examples{
 agg <- morie_predpol_aggregate_areas(
