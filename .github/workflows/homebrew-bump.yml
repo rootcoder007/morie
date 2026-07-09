@@ -52,9 +52,10 @@ jobs:
           # builds the full cibuildwheel matrix and uploads the sdist
           # LAST -- after every wheel. So polling must (a) wait for the
           # sdist itself, not merely for the version JSON to appear, and
-          # (b) cover the whole publish (~20 min). Window: 70 x 30s.
+          # (b) cover the whole publish (v1.0.3 took >35 min). Window:
+          # 150 x 30s = 75 min.
           url=""; sha=""
-          for i in $(seq 1 70); do
+          for i in $(seq 1 150); do
             json="$(curl -fsS "https://pypi.org/pypi/morie/$v/json" || true)"
             if [ -n "$json" ]; then
               echo "$json" > /tmp/pypi.json
@@ -62,11 +63,11 @@ jobs:
               sha="$(python3 -c "import json; print(next((u['digests']['sha256'] for u in json.load(open('/tmp/pypi.json'))['urls'] if u['packagetype']=='sdist'), ''))")"
               [ -n "$url" ] && break
             fi
-            echo "morie $v sdist not on PyPI yet (attempt $i/70); sleeping 30s..."
+            echo "morie $v sdist not on PyPI yet (attempt $i/150); sleeping 30s..."
             sleep 30
           done
           if [ -z "$url" ]; then
-            echo "::error::morie $v sdist not found on PyPI after ~35 min."
+            echo "::error::morie $v sdist not found on PyPI after ~75 min."
             exit 1
           fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
