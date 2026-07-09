@@ -1,6 +1,6 @@
-# morie 1.0.4 - 2026-07-09
+# morie 1.0.5 - 2026-07-09
 
-## R-side parity with rmorie 1.0.4/1.0.5 + hex logo
+## R-side parity with rmorie 1.0.5 + hex logo (version re-locked with rmorie)
 
 * Ported the figure-export suite: `morie_tps_figures()` (Hawkes,
   SARIMA, Langevin, Fokker-Planck panels from the public TPS portal)
