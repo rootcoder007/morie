@@ -1,4 +1,4 @@
-# MORIE 森 <img src="r-package/morie/man/figures/logo.png" align="right" height="139" alt="morie hex logo" />
+# MORIE 森 <img src="https://raw.githubusercontent.com/rootcoder007/morie/main/r-package/morie/man/figures/logo.png" align="right" height="139" alt="morie hex logo" />
 
 **Multi-domain Open Research and Inferential Estimation.**
 
