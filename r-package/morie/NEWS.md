@@ -1,3 +1,14 @@
+# morie 1.1.0 - 2026-07-09
+
+## Packaging + docs fixes (version locked with rmorie 1.1.0)
+
+* README logo now uses an absolute raw.githubusercontent.com URL so it
+  renders on PyPI (project descriptions cannot resolve repo-relative
+  image paths; the 1.0.5 PyPI page showed a broken image).
+* No code changes; released to carry the corrected long description to
+  PyPI and to stay version-locked with rmorie 1.1.0 (which shipped CI
+  hardening for its docs-site build).
+
 # morie 1.0.5 - 2026-07-09
 
 ## R-side parity with rmorie 1.0.5 + hex logo (version re-locked with rmorie)
