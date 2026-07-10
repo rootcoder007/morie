@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import shutil
 import subprocess
 import tempfile
@@ -893,6 +894,19 @@ def _load_dataset_frame(
     return load_cpads_analysis_data(csv_path)
 
 
+# Modules with BOTH an R and a Python implementation; only these may fall
+# back to Python when the R stage fails (with a logged warning).
+_PY_FALLBACK_MODULES = frozenset({
+    "power-design",
+    "logistic-models",
+    "model-comparison",
+    "propensity-scores",
+    "treatment-effects",
+    "ebac-selection-adjustment-ipw",
+    "ebac-gender-smote-sensitivity",
+})
+
+
 def run_module(
     module_name: str,
     *,
@@ -920,17 +934,19 @@ def run_module(
 
     try:
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)
-    except Exception:
-        if module_name not in {
-            "power-design",
-            "logistic-models",
-            "model-comparison",
-            "propensity-scores",
-            "treatment-effects",
-            "ebac-selection-adjustment-ipw",
-            "ebac-gender-smote-sensitivity",
-        }:
+    except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
+        # Only these exception classes mean "the R stage itself failed"
+        # (missing R, bridge error, R-side error). Anything else is a bug
+        # in OUR code and must not be masked by the Python fallback.
+        if module_name not in _PY_FALLBACK_MODULES:
             raise
+        logging.getLogger(__name__).warning(
+            "R implementation of %s failed (%s); falling back to the "
+            "Python implementation. An R-side regression would otherwise "
+            "be invisible - investigate if unexpected.",
+            module_name,
+            str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
+        )
 
     if module_name == "power-design":
         return run_power_design_module(cpads_csv, output_dir=output_dir)

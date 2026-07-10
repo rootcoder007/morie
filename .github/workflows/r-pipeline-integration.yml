@@ -87,3 +87,24 @@ jobs:
             exit 1
           fi
           echo "All $TOTAL/$TOTAL pipeline modules completed (incl. the 5 R-backed stages)."
+
+      # The path a fresh `pip install morie` user hits: no --cpads-csv, the
+      # bundled src/morie/data/cpads_synthetic.csv. Guards the out-of-the-box
+      # 23/23 promise (this fixture was miscoded until 2026-07-10 and shipped
+      # an 18/23 first-run experience without CI noticing).
+      - name: Run pipeline --all on the BUNDLED fixture (out-of-the-box path), assert 23/23
+        run: |
+          set -o pipefail
+          morie pipeline --all --output-dir out-bundled -y --no-carbon 2>&1 | tee pipe-bundled.log || true
+          TOTAL="$(python -c 'from morie.modules import MODULE_SPECS; print(len(MODULE_SPECS))')"
+          if grep -q "ERROR in " pipe-bundled.log; then
+            echo "::error::bundled-fixture pipeline modules errored:"; grep "ERROR in " pipe-bundled.log
+            exit 1
+          fi
+          COMPLETED="$(sed -n 's/^Completed modules: //p' pipe-bundled.log | tr ',' '\n' | grep -c '[a-z]')"
+          echo "completed=$COMPLETED total=$TOTAL"
+          if [ "$COMPLETED" -ne "$TOTAL" ]; then
+            echo "::error::only $COMPLETED/$TOTAL modules completed on the bundled fixture"
+            exit 1
+          fi
+          echo "Out-of-the-box path green: $TOTAL/$TOTAL on the bundled synthetic fixture."
