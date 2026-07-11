@@ -383,3 +383,45 @@ class TestTurboQuantRoundTrip:
         # If we got here, the file was created and loaded successfully.
         assert model.config["architecture"] == "morie_gpt"
         assert len(model.tensor_names()) > 0
+
+
+# ---------------------------------------------------------------------------
+# TestCheckpointTrustGate — the weights_only=False escalation must be
+# unreachable unless MORIE_TRUST_CHECKPOINT is set. Uses a fake torch so no
+# real torch install is required.
+# ---------------------------------------------------------------------------
+
+
+class _FakeTorch:
+    """Minimal torch stand-in: weights_only=True 'fails' like a code-bearing
+    checkpoint would; weights_only=False 'succeeds' with a stub payload."""
+
+    def load(self, path, map_location=None, weights_only=True):
+        if weights_only:
+            raise RuntimeError("Weights only load failed (pickled code present)")
+        return {"__escalated__": True}  # got past the gate
+
+
+class TestCheckpointTrustGate:
+    def _install_fake_torch(self, monkeypatch):
+        import sys
+
+        monkeypatch.setitem(sys.modules, "torch", _FakeTorch())
+
+    def test_escalation_refused_when_knob_unset(self, monkeypatch):
+        from morie import pt2gguf
+
+        monkeypatch.delenv("MORIE_TRUST_CHECKPOINT", raising=False)
+        self._install_fake_torch(monkeypatch)
+        with pytest.raises(RuntimeError, match="MORIE_TRUST_CHECKPOINT"):
+            pt2gguf.convert("nonexistent.pt", "out.gguf")
+
+    def test_gate_opens_when_knob_set(self, monkeypatch):
+        from morie import pt2gguf
+
+        monkeypatch.setenv("MORIE_TRUST_CHECKPOINT", "1")
+        self._install_fake_torch(monkeypatch)
+        # Past the gate it hits the stub payload lacking "config" -> KeyError,
+        # NOT the MORIE_TRUST_CHECKPOINT RuntimeError. Proves the gate opened.
+        with pytest.raises(KeyError):
+            pt2gguf.convert("nonexistent.pt", "out.gguf")
