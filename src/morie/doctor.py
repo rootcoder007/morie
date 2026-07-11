@@ -225,6 +225,15 @@ def run_checks() -> dict[str, Any]:
     ok, detail = _check_docker()
     _add("Docker", ok, detail, required=False)
 
+    # Trust knobs -- report the active security posture. Each row is
+    # informational (never a required failure): the SAFE default is the
+    # risky path disabled, so an enabled knob is shown but not marked FAIL.
+    from morie._exec_guard import knob_status
+
+    for knob in knob_status():
+        state = "ENABLED" if knob["enabled"] else "default (off)"
+        _add(f"trust: {knob['name']}", True, f"{state} -- {knob['detail']}", required=False)
+
     return results
 
 

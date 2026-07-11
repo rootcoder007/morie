@@ -112,3 +112,58 @@ class TestKillSwitch:
     def test_unset_allows(self, monkeypatch):
         monkeypatch.delenv("MORIE_NO_EXEC", raising=False)
         assert exec_disabled() is False
+
+
+class TestTrustKnobs:
+    """Per-risk-class opt-in knobs: safe by default, truthful parsing."""
+
+    _KNOBS = [
+        ("MORIE_ALLOW_REMOTE_INSTALL", "remote_install_allowed"),
+        ("MORIE_TRUST_CHECKPOINT", "checkpoint_trusted"),
+        ("MORIE_ALLOW_RC", "rc_autoload_allowed"),
+        ("MORIE_ALLOW_CRON", "cron_allowed"),
+    ]
+
+    def test_all_default_off(self, monkeypatch):
+        import morie._exec_guard as g
+
+        for var, fn in self._KNOBS:
+            monkeypatch.delenv(var, raising=False)
+            assert getattr(g, fn)() is False, f"{fn} must default to off"
+
+    @pytest.mark.parametrize("truthy", ["1", "true", "TRUE", "yes", "on", "On"])
+    def test_truthy_values_enable(self, monkeypatch, truthy):
+        import morie._exec_guard as g
+
+        for var, fn in self._KNOBS:
+            monkeypatch.setenv(var, truthy)
+            assert getattr(g, fn)() is True
+
+    @pytest.mark.parametrize("falsy", ["0", "", "no", "off", "bogus"])
+    def test_falsy_values_stay_off(self, monkeypatch, falsy):
+        import morie._exec_guard as g
+
+        for var, fn in self._KNOBS:
+            monkeypatch.setenv(var, falsy)
+            assert getattr(g, fn)() is False
+
+    def test_knob_status_shape_and_defaults(self, monkeypatch):
+        from morie._exec_guard import knob_status
+
+        for var, _ in self._KNOBS:
+            monkeypatch.delenv(var, raising=False)
+        monkeypatch.delenv("MORIE_NO_EXEC", raising=False)
+
+        status = knob_status()
+        names = {k["name"] for k in status}
+        assert names == {
+            "MORIE_NO_EXEC",
+            "MORIE_ALLOW_REMOTE_INSTALL",
+            "MORIE_TRUST_CHECKPOINT",
+            "MORIE_ALLOW_RC",
+            "MORIE_ALLOW_CRON",
+        }
+        for k in status:
+            assert set(k) == {"name", "enabled", "detail"}
+            assert k["enabled"] is False  # all safe by default
+            assert k["detail"]

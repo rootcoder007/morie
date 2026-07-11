@@ -1312,8 +1312,13 @@ if _TEXTUAL_AVAILABLE:
                 "OPENAI_API_KEY",
             ]:
                 val = os.environ.get(var, "")
-                if "KEY" in var and val:
-                    val = val[:4] + "..." + val[-4:]
+                # Mask secrets by name (KEY/TOKEN/SECRET/PASSWORD/AUTH) and any
+                # value carrying URL userinfo credentials (user:pass@host).
+                if val and (
+                    any(s in var for s in ("KEY", "TOKEN", "SECRET", "PASSWORD", "AUTH"))
+                    or "@" in val
+                ):
+                    val = f"{val[:4]}...{val[-4:]}" if len(val) > 8 else "***"
                 log.write(f"  {var}={val or '(not set)'}")
 
             log.write("")
@@ -3506,7 +3511,15 @@ if _TEXTUAL_AVAILABLE:
                 sys.stderr = old_stderr
 
         def _eval_r(self, log: RichLog, code: str) -> None:
-            """Execute R code -- persistent subprocess if available, fallback to one-shot."""
+            """Execute R code -- persistent subprocess if available, fallback to one-shot.
+
+            Local-user REPL input; MORIE_NO_EXEC=1 disables it.
+            """
+            from morie._exec_guard import exec_disabled
+
+            if exec_disabled():
+                log.write("[red]R execution disabled by MORIE_NO_EXEC.[/red]")
+                return
             log.write(f"[bold blue][R][/bold blue] {code}")
 
             if self._r_proc and self._r_proc.poll() is None:
@@ -3741,7 +3754,15 @@ if _TEXTUAL_AVAILABLE:
                     pass
 
         def _eval_shell(self, log: RichLog, cmd: str) -> None:
-            """Execute shell command via user's actual shell (zsh/bash)."""
+            """Execute shell command via user's actual shell (zsh/bash).
+
+            Local-user REPL input; MORIE_NO_EXEC=1 disables it.
+            """
+            from morie._exec_guard import exec_disabled
+
+            if exec_disabled():
+                log.write("[red]Shell execution disabled by MORIE_NO_EXEC.[/red]")
+                return
             shell_name = Path(self._user_shell).name
             _shell_tags = {"zsh": "Z", "bash": "B", "sh": "S"}
             tag = _shell_tags.get(shell_name, "SH")

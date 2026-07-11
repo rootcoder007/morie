@@ -19,3 +19,23 @@ paths-ignore:
   # a local research cache, not secrets. CodeQL scans the shipped package
   # surface (src/morie), not local dev scripts.
   - "scripts/**"
+  # Vendored / generated / build-output / opaque-archive artifacts. Not
+  # first-party source and not code we can fix; scanning them only makes
+  # noise. Most are gitignored (build/, dist/, .venv/) so a clean CI
+  # checkout never sees them -- these entries also protect local
+  # `codeql database create` runs over a dirty working tree.
+  - "**/site-packages/**"
+  - "**/dist-packages/**"
+  - "**/node_modules/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/env/**"
+  - "**/__pycache__/**"
+  - "**/build/**"
+  - "**/dist/**"
+  - "**/*.egg-info/**"
+  - "**/vendored-meson/**"
+  - "**/test cases/**"
+  - "**/testcases/**"
+  - "**/labextension/static/**"
+  - "**/*.min.js"

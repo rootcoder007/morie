@@ -4,6 +4,21 @@ Convert autoresearch PyTorch checkpoints to GGUF format.
 Bridges autoresearch's train.py GPT architecture to MORIE's inference engine.
 Supports optional TurboQuant weight compression during conversion.
 
+TRUST MODEL -- what this module can do to your machine
+------------------------------------------------------
+This converter deserializes two files: a PyTorch ``.pt`` checkpoint and a
+``tokenizer.pkl``. Both formats can, in the general case, execute arbitrary
+code when loaded. This module defends against that by default:
+
+* the checkpoint is loaded with ``torch.load(weights_only=True)``, which
+  refuses pickled code objects. The unsafe ``weights_only=False`` path runs
+  ONLY when ``MORIE_TRUST_CHECKPOINT=1`` and logs a warning when it does;
+* ``tokenizer.pkl`` is read through a restricted unpickler that only permits
+  tiktoken/stdlib-container globals (see ``_TokenizerUnpickler``).
+
+Use this module ONLY with checkpoint and tokenizer files you produced
+yourself or obtained from a source you fully trust.
+
 Usage:
     python -m morie.pt2gguf --checkpoint model_baseline.pt --output morie_model.gguf
     python -m morie.pt2gguf --checkpoint model_baseline.pt --output morie_3bit.gguf --turbo-bits 3
@@ -11,12 +26,15 @@ Usage:
 
 import argparse
 import io
+import logging
 import os
 import pickle
 import struct
 from pathlib import Path
 
 import numpy as np
+
+log = logging.getLogger("morie.pt2gguf")
 
 GGUF_MAGIC = 0x46554747
 GGUF_VERSION = 3
@@ -243,15 +261,20 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
         # code execution from a malicious checkpoint file).
         ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
     except Exception:
-        import os
+        from morie._exec_guard import checkpoint_trusted
 
-        if os.environ.get("MORIE_TRUST_CHECKPOINT") != "1":
+        if not checkpoint_trusted():
             raise RuntimeError(
                 f"{checkpoint_path} contains non-tensor pickled objects, which "
                 "can execute arbitrary code when loaded. If you built this "
                 "checkpoint yourself and trust it, re-run with "
                 "MORIE_TRUST_CHECKPOINT=1."
             )
+        log.warning(
+            "MORIE_TRUST_CHECKPOINT is set: loading %s with weights_only=False "
+            "-- this executes any pickled code embedded in the checkpoint.",
+            checkpoint_path,
+        )
         ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)  # noqa: S614
 
     config = ckpt["config"]

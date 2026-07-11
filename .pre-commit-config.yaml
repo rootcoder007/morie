@@ -1,6 +1,21 @@
 # Run `pre-commit install` once after cloning, then every commit
 # is automatically linted + formatted. Run `pre-commit run --all-files`
 # to apply on the whole tree manually.
+
+# Never run hooks over vendored / generated / build-output / minified
+# artifacts -- they are not our source and only produce noise (and can be
+# huge). Applies to every hook below.
+exclude: |
+  (?x)^(
+    .*/(site-packages|dist-packages|node_modules|__pycache__)/.*|
+    .*/(\.venv|venv|env)/.*|
+    (build|dist|capi/build)/.*|
+    .*\.egg-info/.*|
+    .*/vendored-meson/.*|
+    .*/(test\ cases|testcases)/.*|
+    .*/labextension/static/.*|
+    .*\.(min\.js|pyc|whl|tar\.gz|tar\.xz|zip|7z)
+  )$
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.7.4

@@ -1,3 +1,30 @@
+# morie 1.1.1 - 2026-07-11
+
+## Security hardening — trust boundaries on the high-impact surfaces
+
+Every powerful surface now defaults to safe behaviour and gates the risky
+path behind a single named, off-by-default environment knob. No public API
+changed; these are new opt-in flags. See the "Trust model" section of the
+README and `morie doctor` (which now reports each knob's state).
+
+* **Kill-switch coverage** — the `tui` R and shell REPL paths now honour
+  `MORIE_NO_EXEC=1` (the Python path already did); `polyglot` was already
+  fully gated.
+* **`pt2gguf`** — the `torch.load(weights_only=False)` escalation now logs a
+  clear warning when it fires and is routed through the central guard; the
+  restricted tokenizer unpickler and `weights_only=True` default are unchanged.
+* **`bin/morie`** — the `ESML_RC` shell config is no longer auto-sourced
+  unless `MORIE_ALLOW_RC=1`; `cron add`/`remove` require `MORIE_ALLOW_CRON=1`;
+  the Ollama installer fetches to a temp file and prints its SHA256, executing
+  only under `MORIE_ALLOW_REMOTE_INSTALL=1`; `backup restore` refuses archives
+  containing absolute or `..` paths.  **These three are default behaviour
+  changes** (previously always-on), documented as advanced-only.
+* **Debug UI** — env-var display now masks tokens/secrets and credential-bearing
+  URLs, not just `*KEY*` names.
+* **Scan scope** — CodeQL, Socket, and pre-commit configs now exclude vendored /
+  generated / archive artifacts; numpy and plotly install wheels-only so their
+  vendored sdist trees are never resolved or scanned.
+
 # morie 1.1.0 - 2026-07-09
 
 ## Packaging + docs fixes (version locked with rmorie 1.1.0)

@@ -47,6 +47,79 @@ def ensure_exec_allowed(feature: str = "dynamic code execution") -> None:
 
 
 # --------------------------------------------------------------------------
+# Per-risk-class opt-in knobs.
+#
+# Each high-impact capability defaults to the SAFE behaviour. The risky
+# path runs only when its env var is set truthfully ("1"/"true"/"yes"/"on").
+# The knob NAME is the contract shared with bin/morie (a shell script that
+# reads the same variables directly). Keep the names in sync there.
+# --------------------------------------------------------------------------
+
+_TRUE = {"1", "true", "yes", "on"}
+
+
+def _enabled(var: str) -> bool:
+    return os.environ.get(var, "").strip().lower() in _TRUE
+
+
+def remote_install_allowed() -> bool:
+    """True to allow remote-script installers (Ollama ``curl | sh``)."""
+    return _enabled("MORIE_ALLOW_REMOTE_INSTALL")
+
+
+def checkpoint_trusted() -> bool:
+    """True to allow ``torch.load(weights_only=False)`` on a checkpoint."""
+    return _enabled("MORIE_TRUST_CHECKPOINT")
+
+
+def rc_autoload_allowed() -> bool:
+    """True to auto-source the ESML_RC shell config on every invocation."""
+    return _enabled("MORIE_ALLOW_RC")
+
+
+def cron_allowed() -> bool:
+    """True to allow writing to the user crontab (persistence)."""
+    return _enabled("MORIE_ALLOW_CRON")
+
+
+# knob name -> (getter, one-line description of what enabling it permits)
+_KNOBS = {
+    "MORIE_NO_EXEC": (
+        exec_disabled,
+        "when set: ALL dynamic execution (REPL/exec/shell) is disabled",
+    ),
+    "MORIE_ALLOW_REMOTE_INSTALL": (
+        remote_install_allowed,
+        "when set: `curl | sh` remote installers may run",
+    ),
+    "MORIE_TRUST_CHECKPOINT": (
+        checkpoint_trusted,
+        "when set: torch.load may execute pickled code in checkpoints",
+    ),
+    "MORIE_ALLOW_RC": (
+        rc_autoload_allowed,
+        "when set: the ESML_RC shell config is auto-sourced",
+    ),
+    "MORIE_ALLOW_CRON": (
+        cron_allowed,
+        "when set: `morie cron` may write to your crontab",
+    ),
+}
+
+
+def knob_status() -> list[dict[str, Any]]:
+    """Structured report of every trust knob and its current state.
+
+    Used by the ``doctor`` module so the active trust posture is visible
+    on startup.
+    """
+    return [
+        {"name": name, "enabled": bool(getter()), "detail": detail}
+        for name, (getter, detail) in _KNOBS.items()
+    ]
+
+
+# --------------------------------------------------------------------------
 # Guarded exec() for LLM-generated setup/data code (agent tools).
 # --------------------------------------------------------------------------
 

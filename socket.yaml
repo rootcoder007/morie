@@ -11,6 +11,42 @@
 # signals ACTUAL malicious behaviour switched on and PR-gating.
 version: 2
 
+# Files Socket should NOT scan as first-party source. These are vendored,
+# generated, build-output, or opaque-archive artifacts -- not code we ship
+# or can fix -- so findings on them are pure noise that drowns out real
+# alerts on src/morie. Gitignore-style globs (docs.socket.dev/docs/socket-yml).
+#
+# NOTE on the numpy `vendored-meson/test cases/` + plotly `labextension`
+# alerts: those live inside the dependency SDISTS, which Socket analyses at
+# the REGISTRY level -- projectIgnorePaths (repo-tree only) does not reach
+# them. They are addressed instead by installing WHEELS ONLY (see ci.yml
+# `--only-binary`), so the sdists are never resolved; wheels do not carry
+# those trees. Registry-level capability alerts stay governed by issueRules
+# below + dashboard triage.
+projectIgnorePaths:
+  - "**/site-packages/**"
+  - "**/dist-packages/**"
+  - "**/node_modules/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/env/**"
+  - "**/__pycache__/**"
+  - "**/*.pyc"
+  - "**/build/**"
+  - "**/dist/**"
+  - "**/*.egg-info/**"
+  - "**/*.whl"
+  - "**/*.tar.xz"
+  - "**/*.tar.gz"
+  - "**/*.zip"
+  - "**/*.7z"
+  - "**/vendored-meson/**"
+  - "**/test cases/**"
+  - "**/testcases/**"
+  - "**/labextension/static/**"
+  - "**/*.min.js"
+  - "**/.git/**"
+
 issueRules:
   # --- KEPT ON: genuine malware / integrity signals (must always gate) ---
   malware: true

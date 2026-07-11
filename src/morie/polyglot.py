@@ -4,6 +4,16 @@ Headless polyglot REPL engine -- multi-language execution with variable bridging
 Supports: Python, R, Shell (bash/zsh), Julia, SQL (SQLite/PostgreSQL), Node.js,
           Go, Rust, C, C++, OCaml, Lua, TypeScript, LaTeX
 Variable bridging: automatic bidirectional across all active languages.
+
+TRUST MODEL -- what this module can do to your machine
+------------------------------------------------------
+This is a REPL: it runs whatever code the LOCAL USER types into their own
+session, in whichever language they select -- the same trust model as
+python/R/bash themselves. It compiles/executes source and shells out to
+language toolchains. It does NOT execute remote or network-supplied code.
+Every language path funnels through ``execute()``, which honours
+``MORIE_NO_EXEC=1`` to disable all execution (set it on shared/CI machines).
+Only feed this engine code you would be willing to run at your own shell.
 """
 
 from __future__ import annotations
@@ -887,6 +897,9 @@ class PolyglotEngine:
 
             self._py_ns["fn"] = fn
             self._py_ns["REGISTRY"] = REGISTRY
+            # Keys come from morie's OWN in-package REGISTRY dict, never from
+            # caller input: every import target is a first-party morie.fn.*
+            # submodule. Not a dynamic-import-of-untrusted-name vector.
             for key, entry in REGISTRY.items():
                 try:
                     mod = __import__(f"morie.fn.{key}", fromlist=[entry.func_name])
