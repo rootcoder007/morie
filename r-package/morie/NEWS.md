@@ -15,7 +15,9 @@ had loaders + fairness/predpol analyses but no aggregator (parity with
   `perp_race`. Offline on bundled NYPD samples.
 
 These are the R backends the `rmorie-cli` `analyze nypd|cpd` verb dispatches
-to via `cli_main`.
+to via `cli_main`. Python parity ships alongside as
+`morie.cpd_all_analyze` / `morie.nypd_all_analyze` (`analyze_all()`), with the
+sample fixtures bundled under `morie/data/` for offline use.
 
 # morie 1.1.1 - 2026-07-11
 
