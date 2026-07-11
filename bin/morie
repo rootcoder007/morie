@@ -103,11 +103,28 @@ debug "Project root: $ROOT"
 
 # ---------------------------------------------------------------------------
 # Source user config
+#
+# ADVANCED / TRUST: $ESML_RC is executed as shell code on every invocation.
+# That is a persistence + arbitrary-execution surface, so it is OFF BY
+# DEFAULT. Set MORIE_ALLOW_RC=1 to opt in (only if you fully control that
+# file). `morie config show` prints the file's contents without sourcing.
 # ---------------------------------------------------------------------------
+_morie_is_true() {
+    # bash 3.2-safe (macOS): lowercase via tr, not ${var,,}
+    case "$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')" in
+        1|true|yes|on) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 if [[ -f "$ESML_RC" ]]; then
-    debug "Loading config: $ESML_RC"
-    # shellcheck source=/dev/null
-    source "$ESML_RC"
+    if _morie_is_true "${MORIE_ALLOW_RC:-}"; then
+        debug "Sourcing shell config $ESML_RC (MORIE_ALLOW_RC is set)"
+        # shellcheck source=/dev/null
+        source "$ESML_RC"
+    else
+        debug "Not sourcing $ESML_RC (set MORIE_ALLOW_RC=1 to auto-source it)"
+    fi
 fi
 
 # ---------------------------------------------------------------------------
@@ -294,11 +311,33 @@ _install_ollama() {
     if command -v ollama &>/dev/null; then success "Ollama found."; return 0; fi
     info "Ollama enables local, private LLM inference."
     if _ask_yn "Install Ollama for local AI assistant?" "n"; then
-        if curl -fsSL https://ollama.com/install.sh | sh 2>/dev/null; then
-            success "Ollama installed."
-            info "Pulling default model (qwen2.5:7b)..."
-            ollama pull qwen2.5:7b 2>/dev/null && success "Model ready." || warn "Pull model later: ollama pull qwen2.5:7b"
-        else warn "Ollama install failed. Visit: https://ollama.com"; fi
+        # TRUST: piping a remote script straight into a shell runs whatever
+        # that URL serves. We fetch to a temp file and print its SHA256 so
+        # it can be inspected/pinned, and only execute it when the caller
+        # has explicitly opted in with MORIE_ALLOW_REMOTE_INSTALL=1.
+        local _ol_script; _ol_script="$(mktemp -t ollama-install.XXXXXX.sh)"
+        if ! curl -fsSL https://ollama.com/install.sh -o "$_ol_script"; then
+            warn "Could not download Ollama installer. Visit: https://ollama.com"
+            rm -f "$_ol_script"; return 0
+        fi
+        local _ol_sha
+        _ol_sha="$( { sha256sum "$_ol_script" 2>/dev/null || shasum -a 256 "$_ol_script"; } | awk '{print $1}')"
+        info "Fetched https://ollama.com/install.sh -> $_ol_script"
+        info "SHA256: ${_ol_sha:-unavailable}"
+        if _morie_is_true "${MORIE_ALLOW_REMOTE_INSTALL:-}"; then
+            warn "MORIE_ALLOW_REMOTE_INSTALL is set: executing the fetched installer."
+            if sh "$_ol_script"; then
+                success "Ollama installed."
+                info "Pulling default model (qwen2.5:7b)..."
+                ollama pull qwen2.5:7b 2>/dev/null && success "Model ready." || warn "Pull model later: ollama pull qwen2.5:7b"
+            else warn "Ollama install failed. Visit: https://ollama.com"; fi
+        else
+            warn "Not executing remote installer (default-safe)."
+            info "Inspect it: less $_ol_script"
+            info "To run it:  MORIE_ALLOW_REMOTE_INSTALL=1 morie install"
+            info "Or install Ollama yourself: https://ollama.com/download"
+        fi
+        rm -f "$_ol_script"
     else info "Skipping Ollama."; fi
 }
 
@@ -2115,7 +2154,17 @@ cmd_backup() {
 
             info "Restoring from: $archive"
             info "Destination: $dest"
+            # TRUST: a crafted archive can carry absolute paths or '..'
+            # components to write OUTSIDE $dest (path traversal). Refuse any
+            # such member before extracting anything.
+            if tar -tzf "$archive" 2>/dev/null \
+                | grep -Eq '(^/|(^|/)\.\.(/|$))'; then
+                error "Archive contains absolute or '..' paths -- refusing to extract."
+                info  "Inspect it: tar -tzf $archive"
+                return 1
+            fi
             mkdir -p "$dest"
+            # -P is intentionally absent so tar also strips leading '/'.
             tar -xzf "$archive" -C "$dest" 2>/dev/null
             success "Restored to: $dest"
             _log_event "BACKUP restored: $archive -> $dest"
@@ -3882,6 +3931,19 @@ cmd_cron() {
     local cron_dir="$ESML_CONFIG_DIR/cron"
     mkdir -p "$cron_dir"
 
+    # TRUST: `add`/`remove` mutate your user crontab -- a persistence
+    # surface -- so they are OFF BY DEFAULT. Opt in with MORIE_ALLOW_CRON=1.
+    # `list` is read-only and always allowed.
+    case "$subcmd" in
+        add|remove)
+            if ! _morie_is_true "${MORIE_ALLOW_CRON:-}"; then
+                error "crontab writes are disabled by default (persistence surface)."
+                info  "Re-run with MORIE_ALLOW_CRON=1 to allow 'morie cron $subcmd'."
+                return 1
+            fi
+            ;;
+    esac
+
     case "$subcmd" in
         add)
             local schedule="$1" command="$2"
@@ -3890,7 +3952,8 @@ cmd_cron() {
                 echo "  Example: morie cron add '0 2 * * *' 'morie pipeline --all -y'"
                 return 1
             }
-            # Write to crontab.
+            # Write to crontab (gated above by MORIE_ALLOW_CRON).
+            warn "MORIE_ALLOW_CRON is set: writing to your crontab."
             local full_cmd="cd $ROOT && $command"
             (crontab -l 2>/dev/null; echo "# MORIE: $command"; echo "$schedule $full_cmd") | crontab -
             success "Added cron job: $schedule $command"

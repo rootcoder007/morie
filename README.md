@@ -213,6 +213,27 @@ morie is licensed under the **GNU Affero General Public License, version 3.0 or 
 
 Full detail in [`LICENSING.md`](https://github.com/rootcoder007/morie/blob/main/LICENSING.md).
 
+## Trust model — what the powerful features can do to your machine
+
+morie is a developer/research toolkit with some intentionally powerful
+surfaces. They run **local, user-supplied** input by design — never remote or
+network-supplied code — but under an untrusted-input threat model each is
+high-impact, so every one defaults to the safe behaviour and gates the risky
+path behind a single, named, off-by-default environment knob:
+
+| Surface | What it can do | Safe default → opt-in |
+|---|---|---|
+| `MORIE_NO_EXEC` | master kill-switch for all dynamic execution | executes; set `MORIE_NO_EXEC=1` to disable REPL/exec/shell everywhere |
+| **`morie tui`** / **polyglot** REPLs | run Python/R/shell/other code you type, like any REPL | run your input only; honour `MORIE_NO_EXEC=1`. Feed them only code you'd run at your own shell |
+| **`pt2gguf`** | deserialize `.pt`/`.pkl` model files | `torch.load(weights_only=True)` + a restricted unpickler; the code-executing `weights_only=False` path needs `MORIE_TRUST_CHECKPOINT=1`. Use trusted checkpoints only |
+| **`bin/morie`** installer — Ollama | remote `install.sh` | fetched to a temp file with its SHA256 printed; executes only under `MORIE_ALLOW_REMOTE_INSTALL=1` |
+| **`bin/morie`** — `ESML_RC` config | shell config sourced on every run (persistence) | **not sourced** unless `MORIE_ALLOW_RC=1` |
+| **`bin/morie`** — `morie cron` | writes your crontab (persistence) | `add`/`remove` refuse unless `MORIE_ALLOW_CRON=1`; `list` is read-only |
+| **`bin/morie`** — `backup restore` | extracts a tar archive | archives with absolute or `..` paths are refused before extraction |
+
+`morie doctor` prints the current state of every knob so you can see the active
+trust posture at a glance. Only enable a knob for inputs you fully control.
+
 ## Reporting issues / security
 
 - General issues: [GitHub Issues](https://github.com/rootcoder007/morie/issues)
