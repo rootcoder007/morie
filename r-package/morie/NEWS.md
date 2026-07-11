@@ -1,3 +1,22 @@
+# morie 1.1.2 - 2026-07-11
+
+## NYPD + CPD analysis aggregators
+
+Adds the missing single-call analysis suites for two policing subjects that
+had loaders + fairness/predpol analyses but no aggregator (parity with
+`morie_otis_all_analyses` / `morie_siu_all_analyses`):
+
+* `morie_cpd_all_analyses()` (Chicago) — crimes by type, predpol area
+  concentration (`morie_predpol_aggregate_areas`), temporal trend, and arrest
+  race disparity (`morie_fairness_disparate_impact`). Offline on bundled
+  Chicago fixtures.
+* `morie_nypd_all_analyses()` (New York) — arrests by offense/borough,
+  complaints by suspect race, and a felony-charge disparate-impact by
+  `perp_race`. Offline on bundled NYPD samples.
+
+These are the R backends the `rmorie-cli` `analyze nypd|cpd` verb dispatches
+to via `cli_main`.
+
 # morie 1.1.1 - 2026-07-11
 
 ## Security hardening — trust boundaries on the high-impact surfaces
