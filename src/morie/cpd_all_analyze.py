@@ -98,9 +98,17 @@ def analyze_arrest_race_disparity(
     if df is None or "race" not in df.columns:
         return RichResult(title="CPD arrests: race disparity",
                           warnings=["missing column: race (arrests data)"])
-    race = df["race"].dropna().astype(str)
-    race = race[race.str.len() > 0]
-    di = fairness_disparate_impact(y_pred=[1] * len(race), group=race.tolist())
+    frame = df[["race"]].copy()
+    frame["race"] = frame["race"].astype(str)
+    frame = frame[frame["race"].str.len() > 0]
+    if "charge_1_type" in df.columns:
+        # felony top-charge as the outcome — mirrors NYPD felony_race_disparity;
+        # an all-ones outcome makes every DI ratio trivially 1.0
+        outcome = (df.loc[frame.index, "charge_1_type"].astype(str) == "F").astype(int)
+    else:
+        outcome = pd.Series([1] * len(frame), index=frame.index)
+    race = frame["race"]
+    di = fairness_disparate_impact(y_pred=outcome.tolist(), group=race.tolist())
     counts = race.value_counts()
     return RichResult(
         title="CPD arrests: race disparity",

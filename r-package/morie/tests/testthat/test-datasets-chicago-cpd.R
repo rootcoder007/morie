@@ -20,7 +20,9 @@ test_that("morie_datasets_chicago_arrests(offline=TRUE) reads bundled 24-col fix
                 "charges_statute", "charges_description",
                 "charges_type", "charges_class"))
     expect_true(col %in% names(df))
-  expect_true(all(grepl("^SYNTH-ARR-", df$cb_no)))
+  # fixture is a real 400-row slice of Chicago Open Data dpt3-jri9
+  expect_true(nrow(df) >= 100L)
+  expect_true(all(nzchar(df$cb_no)))
 })
 
 test_that("morie_datasets_chicago_arrests(offline=TRUE) honours year + max_features", {

@@ -61,7 +61,9 @@ test_that("morie_datasets_nyc_nypd_arrests_historic offline -> 19-col arrest sch
                 "arrest_boro", "arrest_precinct", "age_group",
                 "perp_sex", "perp_race"))
     expect_true(col %in% names(df))
-  expect_true(all(grepl("^NYPD-AH-SYNTH", df$arrest_key)))
+  # fixture is a real 400-row slice of NYC Open Data 8h9b-rp9u
+  expect_true(nrow(df) >= 100L)
+  expect_true(all(nzchar(df$arrest_key)))
 })
 
 test_that("morie_datasets_nyc_nypd_arrests_ytd offline -> 19-col YTD arrest schema", {
