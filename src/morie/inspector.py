@@ -35,8 +35,13 @@ _CI_LOWER_PATTERNS = re.compile(r"(ci[_.\-]?lo|conf[_.\-]?lo|lower[_.\-]?ci|ci[_
 _CI_UPPER_PATTERNS = re.compile(r"(ci[_.\-]?hi|conf[_.\-]?hi|upper[_.\-]?ci|ci[_.\-]?97\.5|upper)", re.IGNORECASE)
 _SE_PATTERNS = re.compile(r"(^se$|std[_.\-]?err|standard[_.\-]?error|^se[_.\-])", re.IGNORECASE)
 _OR_PATTERNS = re.compile(r"(odds[_.\-]?ratio|^or$|^or[_.\-]|[_.\-]or$)", re.IGNORECASE)
+# "beta" must not match Beta-distribution hyperparameter columns
+# (beta_prior / beta_post in bayesian_posterior_summaries.csv) — those are
+# not point estimates and falsely fail the CI-containment check.
 _ESTIMATE_PATTERNS = re.compile(
-    r"(estimate|coef|coefficient|beta|effect|^ate$|^att$|^atc$|point[_.\-]?est)", re.IGNORECASE
+    r"(estimate|coef|coefficient|beta(?![_.\-]?(?:prior|post))|effect"
+    r"|^ate$|^att$|^atc$|point[_.\-]?est|post[_.\-]?mean)",
+    re.IGNORECASE,
 )
 _R_SQUARED_PATTERNS = re.compile(r"(r[_.\-]?squared|r2|rsq|pseudo[_.\-]?r2|adj[_.\-]?r2)", re.IGNORECASE)
 _SAMPLE_SIZE_PATTERNS = re.compile(r"(^n$|^n[_.\-]obs|sample[_.\-]?size|^nobs$|n_total)", re.IGNORECASE)
