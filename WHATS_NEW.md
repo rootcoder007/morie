@@ -7,6 +7,25 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.1.3 (2026-07-15)
+
+- **figures / tables / meta-synthesis modules now generate their outputs
+  everywhere** — 13 figures, `table1.html`, and the methods/results
+  markdown are built from the run's own data and CSVs (previously they
+  silently copied nothing outside the author's machine, overstating the
+  23/23 pipeline result).
+- `morie verify`: Beta hyperparameter columns (`beta_prior`/`beta_post`)
+  are no longer mistaken for point estimates — the spurious
+  "3 estimates outside CI" warning on Bayesian summaries is gone.
+- Bundled NYPD/CPD samples are real 400-row slices of the NYC and
+  Chicago open-data portals; the CPD fairness surface uses a felony
+  top-charge outcome, so disparate-impact demos produce real numbers.
+- `morie ingest ckan --portal open.canada.ca` (scheme-less hosts) works;
+  `morie explain power_summary.csv` describes the file's real schema;
+  emissions tests skip cleanly without `psutil`.
+- Docs: the full 23/23 pipeline needs the `survey` R package
+  (Suggests); nightly CI now samples the 36k generated `tests/fn` suite.
+
 ---
 
 ## What's new in v0.9.5
