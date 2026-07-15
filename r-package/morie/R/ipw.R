@@ -160,9 +160,6 @@ morie_run_ebac_selection_ipw_analysis <- function(
   covariates = c("age_group", "gender", "province_region", "mental_health", "physical_health")
 ) {
   morie_validate_cpads_data(data, strict = TRUE)
-  if (!requireNamespace("survey", quietly = TRUE)) {
-    stop("The `survey` package is required for morie_run_ebac_selection_ipw_analysis().", call. = FALSE)
-  }
 
   needed <- unique(c(
     "weight", "alcohol_past12m", "ebac_tot", "ebac_legal", treatment, covariates
@@ -204,21 +201,20 @@ morie_run_ebac_selection_ipw_analysis <- function(
     stringsAsFactors = FALSE
   )
 
-  des_ipw <- survey::svydesign(ids = ~1, weights = ~w_combined_trim, data = observed)
-  fit_bin <- survey::svyglm(
+  fit_bin <- .morie_svyglm_native(
     stats::as.formula(paste("ebac_legal ~", paste(c(treatment, covariates), collapse = " + "))),
-    design = des_ipw,
+    data = observed, weights = observed$w_combined_trim,
     family = stats::quasibinomial()
   )
-  fit_lin <- survey::svyglm(
+  fit_lin <- .morie_svyglm_native(
     stats::as.formula(paste("ebac_tot ~", paste(c(treatment, covariates), collapse = " + "))),
-    design = des_ipw
+    data = observed, weights = observed$w_combined_trim
   )
 
-  bin_coef <- summary(fit_bin)$coefficients[treatment, , drop = FALSE]
-  bin_ci <- suppressWarnings(stats::confint(fit_bin))[treatment, ]
-  lin_coef <- summary(fit_lin)$coefficients[treatment, , drop = FALSE]
-  lin_ci <- suppressWarnings(stats::confint(fit_lin))[treatment, ]
+  bin_coef <- fit_bin$coefficients[treatment, , drop = FALSE]
+  bin_ci <- fit_bin$confint[treatment, ]
+  lin_coef <- fit_lin$coefficients[treatment, , drop = FALSE]
+  lin_ci <- fit_lin$confint[treatment, ]
 
   ebac_final_ipw_or <- data.frame(
     model = "selection_adjusted_ipw",
