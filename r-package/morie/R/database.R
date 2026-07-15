@@ -262,7 +262,7 @@ morie_db_connect <- function(db_path = NULL) {
 #'   table is written through `con` and `db_path` is ignored. Use this
 #'   for non-SQLite backends (PostgreSQL, DuckDB, MariaDB).
 #' @return Number of rows written (invisible).
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' \donttest{
 #' db <- tempfile(fileext = ".db")
 #' morie_cache_store(
@@ -291,7 +291,7 @@ morie_cache_store <- function(data, table_name, db_path = NULL, con = NULL) {
 #' @param db_path Optional path to a SQLite file (default backend).
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame, or \code{NULL} if the table does not exist.
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' \donttest{
 #' db <- tempfile(fileext = ".db")
 #' morie_cache_store(
@@ -317,7 +317,7 @@ morie_cache_load <- function(table_name, db_path = NULL, con = NULL) {
 #' @param db_path Optional path to a SQLite file (default backend).
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return A data.frame with columns \code{table} and \code{rows}.
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' \donttest{
 #' db <- tempfile(fileext = ".db")
 #' morie_cache_store(data.frame(x = 1:3), "demo", db_path = db)
@@ -353,7 +353,7 @@ morie_cache_list <- function(db_path = NULL, con = NULL) {
 #' @param db_path Optional path to a SQLite file (default backend).
 #' @param con Optional pre-opened DBI connection (overrides `db_path`).
 #' @return Number of rows cached (invisible).
-#' @examples
+#' @examplesIf requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)
 #' tdir <- tempfile("morie-cache-")
 #' dir.create(tdir)
 #' f <- file.path(tdir, "demo.csv")
