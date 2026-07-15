@@ -1,3 +1,21 @@
+# morie 1.1.3 - 2026-07-15
+
+## Real outputs from figures / tables / meta-synthesis
+
+The three reporting modules generated nothing outside the author's
+machine (they copied pre-rendered artifacts from a local migration
+tree). They now build all 13 figures, `table1.html`, and the
+methods/results markdown from the run's own data and the CSVs earlier
+modules wrote, and fail loudly if nothing can be produced.
+
+## Fixes
+
+* Bundled NYPD/CPD fixtures are real 400-row open-data slices
+  (NYC `8h9b-rp9u`/`qgea-i56i`, Chicago `dpt3-jri9`); tests updated.
+* Docs: the full 23/23 pipeline requires the Suggests package
+  `survey` (+ optional `smotefamily`); source installs do not pull
+  Suggests automatically.
+
 # morie 1.1.2 - 2026-07-11
 
 ## NYPD + CPD analysis aggregators
