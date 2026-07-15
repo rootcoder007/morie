@@ -87,6 +87,38 @@ jobs:
           python -c "import os, sys; sys.exit(0 if os.path.exists('morie-ci-smoke/power_summary.csv') else 1)"
         shell: bash
 
+  # Debian portability leg. ubuntu-latest does NOT prove Debian (different
+  # glibc/toolchain/BLAS snapshots), and morie ships .deb artifacts via
+  # release-debrpm.yml — so the test suite must actually pass on Debian.
+  # python:3.13-bookworm is the official Debian 12 image.
+  test-debian:
+    name: Py 3.13 / debian-bookworm
+    runs-on: ubuntu-latest
+    container: python:3.13-bookworm
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          lfs: false
+
+      - name: Install system build deps
+        run: apt-get update -qq && apt-get install -y --no-install-recommends gfortran libopenblas-dev pkg-config
+
+      - name: Install
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test,interactive]"
+
+      - name: Test
+        run: pytest -q --tb=short
+
+      - name: Smoke (fresh-user CLI path)
+        run: |
+          python -c "import morie; print('morie', morie.__version__)"
+          morie list-modules
+          morie run-module power-design --output-dir morie-ci-smoke/
+          python -c "import os, sys; sys.exit(0 if os.path.exists('morie-ci-smoke/power_summary.csv') else 1)"
+        shell: bash
+
   # Supply-chain integrity: install the runtime dependency tree from a
   # sha256-pinned lockfile with --require-hashes. This fails the build if
   # any resolved artifact's hash deviates from what was audited -- proof
