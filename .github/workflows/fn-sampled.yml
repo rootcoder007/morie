@@ -1,0 +1,42 @@
+# Nightly rotating sample of the 36k auto-generated tests/fn suite.
+#
+# The full generated suite costs ~30 CPU-hours (~3 s/file: each test fits
+# real models on random arrays), so nothing ever ran it — which made it
+# false assurance. This job runs a date-seeded 500-file sample (~25 min);
+# the seed rotates daily, so over ~10 weeks every file gets exercised.
+# A failure here means a real regression in morie.fn or in the generator.
+name: fn-sampled
+
+on:
+  schedule:
+    - cron: "23 5 * * *" # nightly at 05:23 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  sample:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test]" pytest-timeout
+      - name: Run date-seeded 500-file sample
+        run: |
+          SEED=$(date -u +%Y%m%d)
+          echo "sample seed: ${SEED}"
+          find tests/fn -name 'test_*.py' | sort | \
+            shuf --random-source=<(yes "${SEED}") -n 500 > /tmp/fn_sample.txt
+          wc -l /tmp/fn_sample.txt
+          # addopts in pyproject ignores tests/fn; override for this job.
+          xargs -a /tmp/fn_sample.txt python -m pytest -q -o addopts="" \
+            -p no:cacheprovider --timeout=120
+        env:
+          MORIE_NO_UPDATE_CHECK: "1"
