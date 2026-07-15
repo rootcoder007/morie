@@ -11,6 +11,12 @@ import tempfile
 import time
 from pathlib import Path
 
+import pytest
+
+# The tracker samples CPU/RAM through psutil at call time; on an install
+# without the [test] extra these tests should skip, not error.
+pytest.importorskip("psutil")
+
 
 class TestCarbonIntensity:
     def test_known_countries_relative_ordering(self):
