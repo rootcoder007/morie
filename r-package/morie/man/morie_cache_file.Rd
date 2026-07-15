@@ -23,9 +23,11 @@ Reads a local file and writes it to the cache so that CI and Docker
 environments (which may lack the original files) can still run tests.
 }
 \examples{
+\dontshow{if (requireNamespace("DBI", quietly = TRUE) && requireNamespace("RSQLite", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 tdir <- tempfile("morie-cache-")
 dir.create(tdir)
 f <- file.path(tdir, "demo.csv")
 write.csv(data.frame(x = 1:3, y = 4:6), f, row.names = FALSE)
 morie_cache_file(f, "demo", db_path = file.path(tdir, "cache.db"))
+\dontshow{\}) # examplesIf}
 }
