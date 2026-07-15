@@ -69,11 +69,15 @@ Install from local source:
 
    install.packages("r-package/morie", repos = NULL, type = "source")
 
-Required R packages (installed automatically):
+A source install does **not** pull in Suggests packages. Install these
+manually — ``survey`` is required for the eBAC modules (without it
+``morie pipeline --all`` stops short of 23/23), ``testthat`` for running
+the R tests, and ``smotefamily`` (optional) for non-empty SMOTE outputs:
 
 .. code-block:: r
 
-   install.packages(c("survey", "testthat"), repos = "https://cloud.r-project.org/")
+   install.packages(c("survey", "testthat", "smotefamily"),
+                    repos = "https://cloud.r-project.org/")
 
 .. note::
 

@@ -38,6 +38,14 @@ Run all (or selected) modules in sequence.
    morie pipeline --modules power-design logistic-models -y
    morie pipeline --cpads-csv custom.csv --output-dir ./out
 
+.. note::
+
+   The full 23/23 run needs the R package installed plus the ``survey``
+   R package (required by the eBAC modules; it is in Suggests, so a
+   source install does not pull it in): ``install.packages("survey")``.
+   ``smotefamily`` is optional — without it the SMOTE outputs are
+   status-only.
+
 ``ask``
 ~~~~~~~
 
