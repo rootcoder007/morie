@@ -119,6 +119,40 @@ jobs:
           python -c "import os, sys; sys.exit(0 if os.path.exists('morie-ci-smoke/power_summary.csv') else 1)"
         shell: bash
 
+  # Fedora / RHEL-family leg — dnf, different glibc/BLAS stream from the
+  # Debian-family jobs; morie also ships .rpm artifacts via
+  # release-debrpm.yml, so the suite must pass on Fedora.
+  test-fedora:
+    name: Py 3.13 / fedora-42
+    runs-on: ubuntu-latest
+    container: fedora:42
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          lfs: false
+
+      - name: System Python + build deps
+        run: dnf install -y --setopt=install_weak_deps=False python3.13 python3.13-devel python3-pip gcc-c++ gcc-gfortran openblas-devel pkgconf-pkg-config git && dnf clean all
+
+      - name: Install
+        run: |
+          python3.13 -m venv /tmp/venv
+          . /tmp/venv/bin/activate
+          pip install --upgrade pip setuptools wheel
+          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test,interactive]"
+
+      - name: Test
+        run: . /tmp/venv/bin/activate && pytest -q --tb=short
+
+      - name: Smoke (fresh-user CLI path)
+        run: |
+          . /tmp/venv/bin/activate
+          python -c "import morie; print('morie', morie.__version__)"
+          morie list-modules
+          morie run-module power-design --output-dir morie-ci-smoke/
+          python -c "import os, sys; sys.exit(0 if os.path.exists('morie-ci-smoke/power_summary.csv') else 1)"
+        shell: bash
+
   # Supply-chain integrity: install the runtime dependency tree from a
   # sha256-pinned lockfile with --require-hashes. This fails the build if
   # any resolved artifact's hash deviates from what was audited -- proof
