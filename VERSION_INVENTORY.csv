@@ -10,7 +10,7 @@ File,Line,Status,Version,Context
 ./AGENTS.md,203,STALE_OR_DEP,0.9.5,"1. Merge `release/v0.9.5.x` → `main`"
 ./AGENTS.md,204,STALE_OR_DEP,0.9.5,"2. Tag `v0.9.5.x` on main"
 ./CITATION.cff,1,STALE_OR_DEP,1.2.0,"cff-version: 1.2.0"
-./CITATION.cff,10,CURRENT,1.1.2,"version: 1.1.2"
+./CITATION.cff,11,CURRENT,1.1.2,"version: 1.1.2"
 ./CMakeLists.txt,3,STALE_OR_DEP,0.9.1,"# Build for libmorie -- the morie C++ numeric core (v0.9.1 backend"
 ./DEPENDENCIES.csv,7,STALE_OR_DEP,0.7.1,"Python;DoubleML;>=0.7.1;runtime;BSD-3-Clause;Yes;"
 ./DEPENDENCIES.csv,8,STALE_OR_DEP,3.7.0,"Python;matplotlib;>=3.7.0;runtime;PSF-2.0;Yes;matplotlib custom license is BSD-style"
