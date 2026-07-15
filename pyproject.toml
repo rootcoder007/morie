@@ -216,11 +216,12 @@ ignore = [
 known-first-party = ["morie"]
 
 [tool.pytest.ini_options]
-# tests/fn/ holds 36k+ auto-generated tests that pass random arrays to
-# functions whose actual domain is more constrained. Skip in default
-# CI until the test-generation pass aligns with each function's
-# documented signature. The hand-curated tests in tests/ (top-level)
-# cover the public API.
+# tests/fn/ holds 36k+ auto-generated tests (~30 CPU-hours total: each
+# fits real models on random arrays), so the default run skips them.
+# They are NOT dead weight: the nightly fn-sampled workflow runs a
+# date-seeded 500-file rotating sample, covering the full set roughly
+# every ten weeks. The hand-curated tests in tests/ (top-level) cover
+# the public API.
 #
 # Top-level skips (each documented):
 #   - test_siu_federal_aggregate.py: needs OTIS CSV bundle (28 files)
