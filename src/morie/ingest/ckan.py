@@ -91,6 +91,10 @@ class Client:
 
     def __post_init__(self) -> None:
         self.portal = self.portal.rstrip("/")
+        # "--portal open.canada.ca" is the natural first try; without a
+        # scheme httpx raises a raw traceback. Assume https.
+        if self.portal and "://" not in self.portal:
+            self.portal = "https://" + self.portal
         headers: dict[str, str] = {"User-Agent": self.user_agent}
         if self.api_key:
             headers["Authorization"] = self.api_key

@@ -21,17 +21,18 @@ from __future__ import annotations
 _EXPLANATIONS: dict[str, str] = {
     # ─── power-design outputs ───────────────────────────────────────────
     "power_summary.csv": """
-Question this file answers: "What were the design assumptions for my
-power analysis, and what's the recommended sample size at a glance?"
+Question this file answers: "What sample did the power analysis run on,
+and what anchors did it use?"
 
-It's a one-row summary.  Read across; columns include:
-  - effect_size          The minimum effect you said you want to detect
-  - alpha                False-positive rate (typically 0.05)
-  - power                True-positive rate (typically 0.80)
-  - n_recommended        Per-group sample size to hit (power, effect) at alpha
+It's a long-format table with two columns — `metric` and `value` — one
+row per quantity.  Rows include:
+  - analysis_n                            Records in the analysis sample
+  - heavy_drinking_prevalence_weighted    Weighted outcome prevalence
+  - gender_levels_used                    Gender strata in the design
+  - (plus eBAC endpoint anchor rows when those measures are present)
 
-If you want detail beyond the summary row, see the companion files
-listed in `power_two_proportion_gender.csv` (two-proportion grid) and
+The actual power/sample-size grids live in the companion files:
+`power_two_proportion_gender.csv` (two-proportion grid) and
 `power_one_proportion_grid.csv` (one-proportion grid).
 """.strip(),
     "power_two_proportion_gender.csv": """
