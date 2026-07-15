@@ -256,3 +256,25 @@ class TestVerifyEdgeCases:
         report = verify_statistical_output(path)
         nan_checks = [c for c in report.checks if "no_nan" in c.name]
         assert any(not c.passed for c in nan_checks)
+
+    def test_beta_hyperparameters_not_treated_as_estimates(self, tmp_path):
+        # bayesian_posterior_summaries.csv shape: beta_prior/beta_post are
+        # Beta-distribution hyperparameters (0.5-2), not point estimates;
+        # only post_mean must be checked against the credible interval.
+        df = pd.DataFrame(
+            {
+                "prior_name": ["uniform", "jeffreys", "skeptical"],
+                "alpha_prior": [1.0, 0.5, 2.0],
+                "beta_prior": [1.0, 0.5, 2.0],
+                "alpha_post": [21.0, 20.5, 22.0],
+                "beta_post": [81.0, 80.5, 82.0],
+                "post_mean": [0.206, 0.203, 0.212],
+                "ci_lower": [0.13, 0.13, 0.14],
+                "ci_upper": [0.29, 0.28, 0.29],
+            }
+        )
+        path = tmp_path / "bayesian_posterior_summaries.csv"
+        df.to_csv(path, index=False)
+        report = verify_statistical_output(path)
+        ci_checks = [c for c in report.checks if c.name == "ci_contains_estimate"]
+        assert ci_checks and all(c.passed for c in ci_checks)
