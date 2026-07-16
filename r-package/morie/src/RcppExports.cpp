@@ -288,6 +288,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// morie_twfe_demean_cpp
+arma::mat morie_twfe_demean_cpp(arma::mat M, const arma::ivec& g1, const arma::ivec& g2, int K1, int K2, double tol, int max_iter);
+RcppExport SEXP _morie_morie_twfe_demean_cpp(SEXP MSEXP, SEXP g1SEXP, SEXP g2SEXP, SEXP K1SEXP, SEXP K2SEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type g1(g1SEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type g2(g2SEXP);
+    Rcpp::traits::input_parameter< int >::type K1(K1SEXP);
+    Rcpp::traits::input_parameter< int >::type K2(K2SEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_twfe_demean_cpp(M, g1, g2, K1, K2, tol, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_dsp_lms_cpp
 List morie_dsp_lms_cpp(NumericVector x, NumericVector d, int order, double mu);
 RcppExport SEXP _morie_morie_dsp_lms_cpp(SEXP xSEXP, SEXP dSEXP, SEXP orderSEXP, SEXP muSEXP) {
@@ -747,6 +764,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// morie_rlm_cpp
+List morie_rlm_cpp(const arma::mat& X, const arma::vec& y, double k, int maxit, double acc);
+RcppExport SEXP _morie_morie_rlm_cpp(SEXP XSEXP, SEXP ySEXP, SEXP kSEXP, SEXP maxitSEXP, SEXP accSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< double >::type acc(accSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_rlm_cpp(X, y, k, maxit, acc));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_spatial_nominate_iterate_cpp
 Rcpp::List morie_spatial_nominate_iterate_cpp(arma::mat votes, arma::mat X, arma::vec w, arma::mat nv, arma::mat mid, double beta, int max_iter);
 RcppExport SEXP _morie_morie_spatial_nominate_iterate_cpp(SEXP votesSEXP, SEXP XSEXP, SEXP wSEXP, SEXP nvSEXP, SEXP midSEXP, SEXP betaSEXP, SEXP max_iterSEXP) {
@@ -922,6 +954,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_crypto_chacha20poly1305_decrypt", (DL_FUNC) &_morie_morie_crypto_chacha20poly1305_decrypt, 4},
     {"_morie_morie_crypto_hkdf_sha256", (DL_FUNC) &_morie_morie_crypto_hkdf_sha256, 4},
     {"_morie_morie_crypto_random_bytes", (DL_FUNC) &_morie_morie_crypto_random_bytes, 1},
+    {"_morie_morie_twfe_demean_cpp", (DL_FUNC) &_morie_morie_twfe_demean_cpp, 7},
     {"_morie_morie_dsp_lms_cpp", (DL_FUNC) &_morie_morie_dsp_lms_cpp, 4},
     {"_morie_morie_dsp_nlms_cpp", (DL_FUNC) &_morie_morie_dsp_nlms_cpp, 5},
     {"_morie_morie_dsp_rls_cpp", (DL_FUNC) &_morie_morie_dsp_rls_cpp, 5},
@@ -955,6 +988,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_match_optimal_1d_cpp", (DL_FUNC) &_morie_morie_match_optimal_1d_cpp, 2},
     {"_morie_morie_match_optimal_assign_cpp", (DL_FUNC) &_morie_morie_match_optimal_assign_cpp, 2},
     {"_morie_morie_rlearner_forest_cpp", (DL_FUNC) &_morie_morie_rlearner_forest_cpp, 9},
+    {"_morie_morie_rlm_cpp", (DL_FUNC) &_morie_morie_rlm_cpp, 5},
     {"_morie_morie_spatial_nominate_iterate_cpp", (DL_FUNC) &_morie_morie_spatial_nominate_iterate_cpp, 7},
     {"_morie_morie_spatial_emirt_theta_update_cpp", (DL_FUNC) &_morie_morie_spatial_emirt_theta_update_cpp, 4},
     {"_morie_morie_spatial_smacof_step_cpp", (DL_FUNC) &_morie_morie_spatial_smacof_step_cpp, 3},

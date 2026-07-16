@@ -27,20 +27,14 @@
 #'   comparison of floating-point values.
 #' @noRd
 .morie_twfe_demean <- function(M, f1, f2, tol = 1e-11, max_iter = 500L) {
-  M <- as.matrix(M)
-  f1 <- as.factor(f1); f2 <- as.factor(f2)
-  n1 <- tabulate(f1); n2 <- tabulate(f2)
-  for (it in seq_len(max_iter)) {
-    delta <- 0
-    g1 <- rowsum(M, f1, reorder = TRUE) / n1
-    M1 <- M - g1[as.integer(f1), , drop = FALSE]
-    g2 <- rowsum(M1, f2, reorder = TRUE) / n2
-    M2 <- M1 - g2[as.integer(f2), , drop = FALSE]
-    delta <- max(abs(M2 - M))
-    M <- M2
-    if (delta < tol) break
-  }
-  M
+  M <- as.matrix(M); storage.mode(M) <- "double"
+  i1 <- as.integer(as.factor(f1)); i2 <- as.integer(as.factor(f2))
+  # Fused Armadillo alternating-projection sweep (0-based codes). Same
+  # unique within-projection as the R rowsum path, to `tol`.
+  out <- .morie_twfe_demean_cpp(M, i1 - 1L, i2 - 1L,
+                                max(i1), max(i2), tol, max_iter)
+  dimnames(out) <- dimnames(M)
+  out
 }
 
 #' Internal helper: TWFE OLS with fixest-style CR1 cluster vcov
@@ -130,11 +124,17 @@
 #' Internal helper: OLS fit + asymptotic linear rep on a subsample
 #' @noRd
 .morie_did_or_fit <- function(y, X, subset_w) {
-  # Weighted least squares of y on X with 0/1 (or general) weights.
-  wX <- X * subset_w
-  XpX <- crossprod(wX, X) / length(y)
+  # Weighted least squares of y on X with 0/1 (or general) weights. The
+  # normal equations only see rows with non-zero weight, so form the
+  # cross-products on that subsample (drdid weights zero out 50-75% of
+  # rows) -- identical XpX/Xpy, far less crossprod work. fitted and the
+  # influence-function linear rep stay full-length.
+  n <- length(y)
+  sel <- subset_w != 0
+  Xs <- X[sel, , drop = FALSE]; wXs <- Xs * subset_w[sel]
+  XpX <- crossprod(wXs, Xs) / n
   XpX_inv <- tryCatch(solve(XpX), error = function(e) .morie_ginv(XpX))
-  beta <- as.numeric(XpX_inv %*% (crossprod(wX, y) / length(y)))
+  beta <- as.numeric(XpX_inv %*% (crossprod(wXs, y[sel]) / n))
   fitted <- as.numeric(X %*% beta)
   lin_rep <- (subset_w * (y - fitted) * X) %*% XpX_inv
   list(fitted = fitted, beta = beta, lin_rep = lin_rep)
@@ -374,6 +374,17 @@
                    reg = .morie_reg_did_panel_native,
                    ipw = .morie_ipw_did_panel_native,
                    stop("Unknown est_method: ", est_method))
+  # Pull columns out as atomic vectors once; the per-cell work below then
+  # indexes these instead of subsetting the data.frame ([.data.frame plus
+  # character coercion dominated the profile). uid_all is the 1-based
+  # position in `ids`, so it doubles as the influence-function target.
+  uid_all <- match(as.character(df[[unit]]), as.character(ids))
+  time_all <- df[[time]]
+  y_all <- as.numeric(df[[outcome]])
+  Xcov_all <- if (length(covariates)) {
+    m <- as.matrix(df[, covariates, drop = FALSE])
+    storage.mode(m) <- "double"; m
+  } else NULL
   rows <- list()
   IF_cols <- list()
   for (g in glist) {
@@ -394,21 +405,23 @@
         (g_all == 0) | (g_all > max(tt, pret) & g_all != g)
       }
       keep_unit <- (g_all == g) | is_control
-      sub <- df[keep_unit & df[[time]] %in% c(pret, tt), , drop = FALSE]
-      # Units observed in both periods
-      cnt <- table(sub[[unit]])
-      both <- names(cnt)[cnt == 2L]
-      sub <- sub[as.character(sub[[unit]]) %in% both, , drop = FALSE]
-      sub <- sub[order(sub[[unit]], sub[[time]]), , drop = FALSE]
-      pre_rows <- sub[sub[[time]] == pret, , drop = FALSE]
-      post_rows <- sub[sub[[time]] == tt, , drop = FALSE]
-      if (nrow(pre_rows) == 0L) next
-      dy <- as.numeric(post_rows[[outcome]]) -
-        as.numeric(pre_rows[[outcome]])
-      D <- as.numeric(pre_rows[[gname]] == g)
+      cidx <- which(keep_unit & (time_all == pret | time_all == tt))
+      su <- uid_all[cidx]; st <- time_all[cidx]
+      # Units observed in both periods (appear exactly twice in the cell).
+      keep2 <- tabulate(su, nbins = n_ids)[su] == 2L
+      cidx <- cidx[keep2]; su <- su[keep2]; st <- st[keep2]
+      if (!length(su)) next
+      # Order by (unit, time); ids is sorted so unit-code order matches
+      # unit-value order, and pret < tt gives pre then post per unit.
+      o <- order(su, st); cidx <- cidx[o]; su <- su[o]; st <- st[o]
+      is_pre <- st == pret; is_post <- st == tt
+      if (!any(is_pre)) next
+      pre_idx <- cidx[is_pre]
+      dy <- y_all[cidx[is_post]] - y_all[pre_idx]
+      D <- as.numeric(g_all[pre_idx] == g)
       if (sum(D) == 0L || sum(1 - D) == 0L) next
-      X <- if (length(covariates)) {
-        cbind(1, as.matrix(pre_rows[, covariates, drop = FALSE]))
+      X <- if (!is.null(Xcov_all)) {
+        cbind(1, Xcov_all[pre_idx, , drop = FALSE])
       } else {
         matrix(1, nrow = length(dy), ncol = 1L)
       }
@@ -417,8 +430,7 @@
       # Map the subsample IF back to the full unit list, scaled by
       # n/n_sub (did's convention so that Var = mean(IF^2)/n).
       IF_full <- numeric(n_ids)
-      pos <- match(as.character(pre_rows[[unit]]), as.character(ids))
-      IF_full[pos] <- fit$IF * (n_ids / length(dy))
+      IF_full[su[is_pre]] <- fit$IF * (n_ids / length(dy))
       rows[[length(rows) + 1L]] <- data.frame(
         group = g, t = tt, att = fit$att,
         se_analytic = if (identical(se_convention, "bessel"))
