@@ -729,25 +729,11 @@ morie_estimate_late <- function(data, treatment, outcome, instrument,
 #' @examples
 #' morie_e_value(rr = 3.9, rr_lower = 2.4)
 morie_e_value <- function(rr, rr_lower = NULL) {
-  compute_e <- function(r) r + sqrt(r * (r - 1))
-  if (.causal_have_evalue()) {
-    # EValue::evalue returns a matrix with rows "RR" and "E-values"
-    # and columns "point" / "lower" / "upper". Extract the E-value
-    # for the point estimate and the lower CI bound.
-    res <- tryCatch(
-      EValue::evalue(EValue::RR(rr),
-                     lo = if (!is.null(rr_lower)) rr_lower else NA),
-      error = function(e) NULL
-    )
-    if (!is.null(res)) {
-      ev <- as.numeric(res["E-values", "point"])
-      ev_ci <- if (!is.null(rr_lower)) {
-        as.numeric(res["E-values", "lower"])
-      } else {
-        NA_real_
-      }
-      return(list(morie_e_value = ev, e_value_ci = ev_ci))
-    }
+  # Module 26: the Ding-VanderWeele closed form is exact; a CI bound
+  # whose interval covers 1 has E-value 1 (no confounding needed).
+  compute_e <- function(r) {
+    r <- if (r < 1) 1 / r else r
+    if (r <= 1) 1 else r + sqrt(r * (r - 1))
   }
   ev <- compute_e(rr)
   ev_ci <- if (!is.null(rr_lower)) compute_e(rr_lower) else NA_real_
@@ -1215,24 +1201,7 @@ morie_causal_robust_se <- function(model,
                                    type = "HC3",
                                    cluster = NULL,
                                    ...) {
-  if (!.causal_have_sandwich()) {
-    stop(
-      "morie_causal_robust_se requires the 'sandwich' package. ",
-      "Install with install.packages('sandwich').",
-      call. = FALSE
-    )
-  }
-  v <- if (identical(type, "HAC")) {
-    sandwich::vcovHAC(model, ...)
-  } else if (identical(type, "CL")) {
-    if (is.null(cluster)) {
-      stop("type = 'CL' requires a non-NULL cluster argument.",
-           call. = FALSE)
-    }
-    sandwich::vcovCL(model, cluster = cluster, ...)
-  } else {
-    sandwich::vcovHC(model, type = type, ...)
-  }
+  v <- morie_vcov_robust(model, type = type, cluster = cluster, ...)
   se <- sqrt(diag(v))
   list(
     vcov = v,

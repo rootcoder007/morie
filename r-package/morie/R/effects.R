@@ -43,24 +43,14 @@ NULL
 #' @return Named list with `ate` and `se` (HC3-robust).
 #' @export
 estimate_ate <- function(data, outcome, treatment, weights_col) {
-  if (!requireNamespace("sandwich", quietly = TRUE)) {
-    warning("sandwich not installed; SE will be naive model SE.")
-  }
   fml <- stats::as.formula(paste(outcome, "~", treatment))
   w   <- data[[weights_col]]
   fit <- stats::lm(fml, data = data, weights = w)
-  cf  <- summary(fit)$coefficients
-  if (requireNamespace("sandwich", quietly = TRUE) &&
-      requireNamespace("lmtest", quietly = TRUE)) {
-    # HC3 robust SE -- mirror statsmodels.wls(...).fit(cov_type='HC3').
-    vc  <- sandwich::vcovHC(fit, type = "HC3")
-    ct  <- lmtest::coeftest(fit, vcov. = vc)
-    list(ate = as.numeric(ct[treatment, "Estimate"]),
-         se  = as.numeric(ct[treatment, "Std. Error"]))
-  } else {
-    list(ate = as.numeric(cf[treatment, "Estimate"]),
-         se  = as.numeric(cf[treatment, "Std. Error"]))
-  }
+  vc  <- morie_vcov_hc(fit, type = "HC3")
+  list(
+    ate = as.numeric(stats::coef(fit)[treatment]),
+    se  = as.numeric(sqrt(diag(vc))[treatment])
+  )
 }
 
 

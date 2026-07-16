@@ -122,16 +122,11 @@ NULL
 #' @return A `morie_evalue` named-list.
 #' @export
 e_value_rr <- function(rr, ci_lower = NULL, ci_upper = NULL) {
-  if (requireNamespace("EValue", quietly = TRUE)) {
-    ev <- tryCatch(
-      EValue::evalue(EValue::RR(rr), lo = ci_lower, hi = ci_upper),
-      error = function(e) NULL
-    )
+  if (TRUE) {
+    ev <- morie_evalue(rr, "RR", lo = ci_lower, hi = ci_upper)
     if (!is.null(ev)) {
-      e_point <- as.numeric(ev["E-values", "point"])
-      e_ci    <- suppressWarnings(as.numeric(ev["E-values", "lower"]))
-      if (is.na(e_ci))
-        e_ci  <- suppressWarnings(as.numeric(ev["E-values", "upper"]))
+      e_point <- ev$point
+      e_ci    <- ev$ci
       interpretation <- sprintf(
         paste0("An unmeasured confounder would need RR >= %.2f with ",
                 "both treatment and outcome to explain away the point ",
