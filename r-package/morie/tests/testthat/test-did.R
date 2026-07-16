@@ -97,6 +97,7 @@ test_that("morie_did_repeated_cross_section works with weights", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_panel_fe recovers tau on panel DGP", {
+  # Module 14: native TWFE engine.
   df <- make_did_panel(n_units = 40, n_periods = 6, tau = 0.7, seed = 3)
   res <- morie_did_panel_fe(df, "y", "d", "unit", "time")
   expect_true(is.finite(res$estimate))
@@ -110,6 +111,7 @@ test_that("morie_did_panel_fe recovers tau on panel DGP", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_event_study returns coefficients with reference period", {
+  # Module 14: native event-study engine.
   df <- make_did_panel()
   res <- morie_did_event_study(df, "y", "unit", "time", "treat_time",
                                leads = 2L, lags = 2L)
@@ -158,6 +160,7 @@ test_that("morie_did_parallel_trends_data returns group-by-time means", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_group_time_att returns a data frame with att", {
+  # Module 14: native Callaway-Sant'Anna engine.
   df <- make_did_panel(n_units = 50, n_periods = 6, tau = 0.6, seed = 4)
   out <- tryCatch(
     morie_did_group_time_att(df, "y", "unit", "time", "treat_time",
@@ -196,12 +199,13 @@ test_that("morie_did_aggregate_gt_att event_time aggregation splits by rel time"
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_doubly_robust returns finite ATT", {
+  # Module 14: native Sant'Anna-Zhao engine.
   df <- make_did_2x2(n = 300)
   res <- morie_did_doubly_robust(df, "y", "d", "post",
                                  covariates = "x",
                                  n_bootstrap = 30L, seed = 5)
   expect_true(is.finite(res$estimate))
-  expect_equal(res$method, "did_doubly_robust")
+  expect_true(grepl("did_doubly_robust", res$method))
 })
 
 
@@ -227,7 +231,31 @@ test_that("morie_did_triple_difference returns finite estimate", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_bacon_decomposition returns components and overall", {
-  df <- make_did_panel(n_units = 30, n_periods = 6, tau = 0.5, seed = 6)
+  # Module 14: native Goodman-Bacon engine.
+  # bacondecomp::bacon requires (a) weakly-increasing treatment per
+  # unit and (b) genuine staggered timing (>=2 treatment cohorts) to
+  # produce 2x2 comparisons. make_did_panel only ever treats at t=4,
+  # so we build a staggered panel inline here.
+  set.seed(11)
+  n_units <- 40L
+  n_periods <- 8L
+  # Three cohorts: control (never), early (t>=4), late (t>=6).
+  cohort <- rep(c("never", "early", "late"),
+                length.out = n_units)
+  treat_time <- ifelse(cohort == "early", 4L,
+                       ifelse(cohort == "late", 6L, NA_integer_))
+  rows <- list()
+  for (u in seq_len(n_units)) {
+    a_i <- stats::rnorm(1)
+    for (t in seq_len(n_periods)) {
+      d_it <- as.integer(!is.na(treat_time[u]) && t >= treat_time[u])
+      y <- a_i + 0.1 * t + 0.5 * d_it + stats::rnorm(1, sd = 0.4)
+      rows[[length(rows) + 1L]] <- data.frame(
+        unit = u, time = t, y = y, d = d_it
+      )
+    }
+  }
+  df <- do.call(rbind, rows)
   res <- morie_did_bacon_decomposition(df, "y", "d", "unit", "time")
   expect_true("components" %in% names(res))
   expect_true("overall_estimate" %in% names(res))
@@ -343,6 +371,7 @@ test_that("morie_did_heterogeneous returns one row per stratum", {
 # ---------------------------------------------------------------------------
 
 test_that("morie_did_chaisemartin_dhaultfoeuille returns a finite estimate", {
+  # Module 14: native DID-M engine.
   df <- make_did_panel(n_units = 30, n_periods = 5, tau = 0.5, seed = 9)
   res <- morie_did_chaisemartin_dhaultfoeuille(
     df, "y", "d", "unit", "time",

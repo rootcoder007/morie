@@ -11,7 +11,7 @@ morie_estimate_cate(
   covariates,
   propensity_col = NULL,
   outcome_model = c("linear", "logistic"),
-  meta_learner = c("t_learner", "s_learner")
+  meta_learner = c("t_learner", "s_learner", "x_learner", "dr_learner")
 )
 }
 \arguments{
@@ -23,22 +23,32 @@ morie_estimate_cate(
 
 \item{covariates}{Character vector of covariate names.}
 
-\item{propensity_col}{Optional: name of a pre-computed propensity score column.}
+\item{propensity_col}{Optional: name of a pre-computed propensity
+score column.}
 
-\item{outcome_model}{Family for the outcome model: \code{"linear"} or \code{"logistic"}.}
+\item{outcome_model}{Family for the outcome model: \code{"linear"} or
+\code{"logistic"}.}
 
-\item{meta_learner}{\code{"t_learner"} (default) or \code{"s_learner"}.}
+\item{meta_learner}{One of \code{"t_learner"} (default), \code{"s_learner"},
+\code{"x_learner"} (Kuenzel et al. 2019 — two-stage with
+propensity-weighted combination; strong under arm imbalance), or
+\code{"dr_learner"} (Kennedy 2023 — cross-fit AIPW pseudo-outcome
+regressed with the native forest; doubly robust). All four are
+native; \code{outcome_model} applies to the T/S-learners only.}
 }
 \value{
 Numeric vector of per-unit CATE estimates.
 }
 \description{
-The \strong{T-learner} fits separate outcome models on treated and control
-units, then predicts the counterfactual for each unit:
+The \strong{T-learner} fits separate outcome models on treated and
+control units, then predicts the counterfactual for each unit:
 \eqn{\widehat{CATE}_i = \hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)}{CATE_hat_i = mu_hat_1(X_i) - mu_hat_0(X_i)}.
 }
 \details{
 The \strong{S-learner} fits one model with treatment as a feature.
+
+For random-forest CATE estimation prefer \code{grf::causal_forest}
+(richer heterogeneity, honest sample splitting).
 }
 \examples{
 morie_estimate_cate(

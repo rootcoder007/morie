@@ -82,14 +82,14 @@
   if (!file.exists(p)) {
     stop(sprintf("Keystore not found: %s", p), call. = FALSE)
   }
-  jsonlite::fromJSON(p, simplifyVector = FALSE)
+  .morie_from_json(p, simplifyVector = FALSE)
 }
 
 .morie_write_store <- function(data, path) {
   .morie_keystore_require()
   p <- .morie_resolve_path(path)
   dir.create(dirname(p), showWarnings = FALSE, recursive = TRUE)
-  json <- jsonlite::toJSON(data, pretty = TRUE, auto_unbox = TRUE)
+  json <- .morie_to_json(data, pretty = TRUE, auto_unbox = TRUE)
   con <- file(p, open = "wb")
   on.exit(close(con), add = TRUE)
   writeBin(charToRaw(as.character(json)), con)

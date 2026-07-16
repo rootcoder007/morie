@@ -15,7 +15,8 @@ morie_did_doubly_robust(
   cluster = NULL,
   n_bootstrap = 200L,
   seed = 42L,
-  alpha = 0.05
+  alpha = 0.05,
+  se_convention = "reference"
 )
 }
 \arguments{
@@ -30,24 +31,36 @@ any covariate columns.}
 
 \item{covariates}{Optional character vector of covariate column names.}
 
-\item{ps_model}{One of \code{"logistic"} (default) or \code{"gbm"}.}
+\item{ps_model}{Unused; retained for back-compat. A logistic
+propensity-score model is fitted internally.}
 
-\item{or_model}{One of \code{"linear"} (default) or \code{"gbm"}.}
+\item{or_model}{Unused; retained for back-compat. Linear outcome
+models are fitted internally.}
 
 \item{cluster}{Optional cluster ID column for CR1 standard errors.}
 
-\item{n_bootstrap}{Number of bootstrap replications.}
+\item{n_bootstrap}{Number of multiplier-bootstrap replications for
+the standard error (0 = analytic influence-function SE).}
 
-\item{seed}{RNG seed.}
+\item{seed}{RNG seed for the multiplier bootstrap.}
 
 \item{alpha}{Significance level for confidence intervals (default 0.05).}
+
+\item{se_convention}{For the analytic SE: \code{"reference"}
+(default) matches \code{DRDID::drdid_rc}'s population-sd
+convention exactly; \code{"bessel"} keeps Bessel's correction
+(\code{sd(IF)/sqrt(n)}). Asymptotically equivalent.}
 }
 \value{
 A result list; see \code{\link{morie_did_2x2}}.
 }
 \description{
-Combines an outcome regression model with an inverse-probability
-weighting model.  Consistent if either model is correctly specified.
+Native locally efficient doubly robust DiD estimator for the 2x2
+repeated-cross-section setting (the estimand of
+\code{DRDID::drdid_rc}, reproduced to machine precision incl. the
+influence function; see \code{tests/cross/}). Combines a logistic
+propensity-score model with linear outcome regressions and is
+consistent if either model is correctly specified.
 }
 \references{
 Sant'Anna, P. H. C., & Zhao, J. (2020). Doubly robust

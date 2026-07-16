@@ -18,11 +18,7 @@ external_validate(predict_fn, X_external, y_external, X_development = NULL)
 domain-shift diagnostics.}
 }
 \value{
-A \code{morie_external_result} (subclass of
-\code{morie_validation_result} / \code{morie_rich_result}) with nested
-\code{discrimination} and \code{calibration} sub-results,
-\code{n_external}, and a per-feature \code{domain_shift} list of
-KS p-values (empty when \code{X_development} is NULL).
+An object of class \code{"class_name"}.
 }
 \description{
 External validation on new data

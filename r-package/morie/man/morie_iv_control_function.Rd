@@ -30,11 +30,7 @@ morie_iv_control_function(
 \item{alpha}{Significance level for confidence intervals.}
 }
 \value{
-A list (same layout as \code{\link{morie_iv_tsls}}) with
-coefficients, standard errors, t-statistics, p-values, confidence
-interval bounds, variable names, sample size, \code{method =
-  "control function"}, and \code{details} (the fitted first- and
-second-stage models).
+A named list with elements \code{coefficients}, \code{std_errors}, \code{t_stats}, \code{p_values}, \code{ci_lower}, \code{ci_upper}, \code{variable_names}, \code{n_obs}, \code{method}, \code{details}.
 }
 \description{
 Control-function (residual augmentation) IV

@@ -26,9 +26,7 @@ regressors included in both the structural equation and the
 first stage. \code{NULL} (default) for a just-identified design.}
 }
 \value{
-A \code{data.frame} with one row per endogenous regressor
-and columns \code{endogenous}, \code{F} (first-stage F-statistic),
-\code{partial_R2}, and \code{n_instruments}.
+A \code{data.frame} of first-stage diagnostics, one row per endogenous regressor.
 }
 \description{
 First-stage F-statistics and partial R^2

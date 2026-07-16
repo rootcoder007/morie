@@ -45,9 +45,7 @@ grid search over candidate \code{beta0} values.}
 confidence-set / acceptance-region cut-off.}
 }
 \value{
-A numeric length-2 vector \code{c(lower, upper)} giving
-the AR confidence interval, or \code{c(NA, NA)} if no grid point
-is accepted.
+A vector of the computed values.
 }
 \description{
 Grid-based Anderson-Rubin confidence interval for a single endogenous

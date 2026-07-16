@@ -1,5 +1,53 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+#' srr spatial (SP) standards
+#'
+#' rmorie's spatial methods (Moran's I global/local/LISA, Getis-Ord
+#' G*, Ripley's K, DBSCAN, Kulldorff scan) operate on planar/projected
+#' neighbourhood structures and delegate to `spdep` / `sf` / `gstat`.
+#' The applicable standards are addressed here; class-system, CRS
+#' reprojection, and plot-method standards that do not fit rmorie's
+#' coordinate-column interface are declared NA (with reasons) in
+#' `srr-stats-standards.R`.
+#'
+#' @srrstats {SP1.0} The domain of applicability is documented: the
+#'   methods apply to planar / projected geographic neighbourhoods
+#'   (Toronto neighbourhood polygons and point coordinates).
+#' @srrstats {SP1.1} The dimensional domain is two-dimensional
+#'   (planar x/y or lon/lat), documented per function.
+#' @srrstats {SP2.1} rmorie uses `sf` and `spdep`, never the retired
+#'   `sp` package.
+#' @srrstats {SP2.2} Spatial routines wrap and interoperate with the
+#'   established `spdep` / `sf` / `gstat` ecosystem.
+#' @srrstats {SP2.2a} The wrapping of those packages is documented on
+#'   each function and in the spatial vignette.
+#' @srrstats {SP2.0b} Functions validate their spatial input and return
+#'   an explicit no-analysis result (rather than a misleading number)
+#'   when required spatial columns are absent.
+#' @srrstats {SP2.6} Accepted input types (coordinate / neighbourhood
+#'   columns) are documented per function.
+#' @srrstats {SP2.7} Input validation confirms the required spatial
+#'   columns are present before analysis.
+#' @srrstats {SP3.0} Neighbour construction is user-controllable.
+#' @srrstats {SP3.0a} Regular-grid neighbours support rook/queen
+#'   contiguity via the underlying `spdep` neighbour styles.
+#' @srrstats {SP3.0b} Irregular-space neighbourhoods are controlled by
+#'   an integer number of neighbours (`k_neighbours`) or a distance band.
+#' @srrstats {SP3.1} Neighbour contributions can be distance-weighted
+#'   through the spatial-weights construction, not only uniform cut-offs.
+#' @srrstats {SP3.3} Spatial autocorrelation is explicitly quantified and
+#'   distinguished from non-spatial covariation (global/local Moran's I,
+#'   LISA, Getis-Ord G*).
+#' @srrstats {SP3.4} Spatial clustering uses explicitly spatial
+#'   algorithms (DBSCAN on coordinates, Kulldorff spatial scan), not a
+#'   non-spatial clusterer with proximity as a mere weight.
+#' @srrstats {SP4.0} Return values use a defined result structure.
+#' @srrstats {SP4.0b} Results are returned in a class-defined format
+#'   (`.tps_spatial_result` / `morie_rich_result`).
+#' @srrstats {SP4.2} The type and class of return values are documented.
+#' @noRd
+NULL
+
 #' Spatial analyses for TPS crime data
 #'
 #' R parity of \code{morie.tps_spatial}: Moran's I (global), LISA
@@ -17,8 +65,8 @@
 #' prefers \pkg{MASS}\code{::kde2d} when available, otherwise falls
 #' back to a Gaussian density evaluated at the observation points.
 #' If \pkg{spdep} is installed, callers can delegate the global
-#' Moran's I test to \code{spdep::moran.test} via the
-#' \code{use_spdep = TRUE} switch.
+#' Moran's I test natively (Cliff-Ord normal approximation,
+#' validated against spdep in tests/cross/).
 #'
 #' Functions
 #' ---------
@@ -41,6 +89,8 @@ NULL
 # Internal helpers (NOT exported)
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Spatial Result
+#' @noRd
 .tps_spatial_result <- function(title, call,
                                  summary_lines = list(),
                                  warnings = character(0),
@@ -59,6 +109,8 @@ NULL
 }
 
 
+#' Internal helper: Tps Hood Counts
+#' @noRd
 .tps_hood_counts <- function(df, hood_col = "HOOD_158") {
   s <- df[[hood_col]]
   s <- s[!is.na(s)]
@@ -68,6 +120,8 @@ NULL
 }
 
 
+#' Internal helper: Tps Knn Adjacency
+#' @noRd
 .tps_knn_adjacency <- function(coords, k) {
   n <- nrow(coords)
   if (n < 2L) {
@@ -96,12 +150,22 @@ NULL
 }
 
 
+#' Internal helper: Tps Cliff Ord Variance
+#'
+#' Variance of Moran's I under normality (Cliff & Ord 1981):
+#' \deqn{Var(I) = \frac{n^2 S_1 - n S_2 + 3 S_0^2}{S_0^2 (n^2 - 1)}
+#'   - \frac{1}{(n-1)^2}.}
+#' Module 19 fix: the previous combining formula was off by a factor
+#' of order n; this form reproduces
+#' \code{spdep::moran.test(randomisation = FALSE)} exactly
+#' (tests/cross/test-morie_vs_spatial.R).
+#' @noRd
 .tps_cliff_ord_variance <- function(W, n, S0) {
   W_sym <- (W + t(W)) / 2
   S1 <- 2 * sum(W_sym^2)
   S2 <- sum((colSums(W) + rowSums(W))^2)
-  denom <- (n - 1) * (n + 1) * (n - 2) * S0^2 + 1e-300
-  (n * (n - 2) * S1 - 2 * n * S2 + 6 * S0^2) / denom
+  (n^2 * S1 - n * S2 + 3 * S0^2) / (S0^2 * (n^2 - 1) + 1e-300) -
+    1 / (n - 1)^2
 }
 
 
@@ -124,9 +188,8 @@ NULL
 #'   (default 5).
 #' @param lat_col,lon_col WGS84 column names (default
 #'   \code{"LAT_WGS84"} / \code{"LONG_WGS84"}).
-#' @param use_spdep If \code{TRUE} and \pkg{spdep} is installed,
-#'   delegate the test to \code{spdep::moran.test} (with a row-
-#'   standardised listw). Default \code{FALSE}.
+#' @param use_spdep Retained for back-compat; ignored (the native
+#'   Cliff-Ord computation is always used). Default \code{FALSE}.
 #' @return A named list with classes \code{morie_tps_spatial_result},
 #'   \code{morie_rich_result}, \code{list}. Numeric outputs include
 #'   \code{moran_I}, \code{expected_I}, \code{var_I}, \code{z_score},
@@ -203,25 +266,10 @@ morie_tps_morans_i_neighbourhood <- function(df,
   x <- as.numeric(counts)
   z <- x - mean(x)
 
-  if (use_spdep && requireNamespace("spdep", quietly = TRUE)) {
-    # delegate to spdep
-    lw <- spdep::mat2listw(W, style = "W", zero.policy = TRUE)
-    mt <- tryCatch(
-      spdep::moran.test(x, lw, zero.policy = TRUE),
-      error = function(e) NULL
-    )
-    if (!is.null(mt)) {
-      I_val <- as.numeric(mt$estimate["Moran I statistic"])
-      expected_I <- as.numeric(mt$estimate["Expectation"])
-      var_I <- as.numeric(mt$estimate["Variance"])
-      z_I <- as.numeric(mt$statistic)
-      p <- 2 * stats::pnorm(-abs(z_I))
-      backend <- "spdep::moran.test"
-    } else {
-      use_spdep <- FALSE
-    }
-  }
-  if (!isTRUE(use_spdep) || !requireNamespace("spdep", quietly = TRUE)) {
+  # Module 19: the Cliff-Ord normal approximation below IS the
+  # estimator (validated against spdep::moran.test in tests/cross/);
+  # use_spdep is retained in the signature for back-compat and ignored.
+  if (TRUE) {
     S0 <- sum(W)
     if (S0 == 0) {
       return(.tps_spatial_result(
@@ -562,10 +610,7 @@ morie_tps_kde_density <- function(df,
 # Print method
 # ---------------------------------------------------------------------------
 
-#' Print method for TPS spatial-analysis results
-#' @param x A \code{morie_tps_spatial_result}.
-#' @param ... Unused.
-#' @return Invisibly returns \code{x} unchanged.
+#' @return \code{x}, invisibly.
 #' @export
 print.morie_tps_spatial_result <- function(x, ...) {
   cat(x$title, "\

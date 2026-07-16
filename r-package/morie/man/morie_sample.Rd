@@ -19,6 +19,8 @@ running examples and tests of the \verb{mrm_*()} callables without any
 network or external data dependency.
 }
 \examples{
+\dontshow{if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 b01 <- morie_sample("otis_b01")
 head(b01)
+\dontshow{\}) # examplesIf}
 }

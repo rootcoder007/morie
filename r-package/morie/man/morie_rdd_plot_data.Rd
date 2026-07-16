@@ -45,11 +45,7 @@ side of the cutoff. \code{NULL} invokes the data-driven CCT selector.}
 \code{"uniform"}, or \code{"gaussian"}.}
 }
 \value{
-A named list with elements \code{bins} (data.frame of
-binned means of the running and outcome variables) and \code{poly}
-(data.frame of the fitted global polynomial); when \pkg{rdrobust}
-is available the list also includes \code{fit} (the underlying
-\code{rdplot} object).
+A named \code{list} (see Details).
 }
 \description{
 Binned scatter + global-polynomial data for an RD plot

@@ -14,10 +14,7 @@ to look up the Stock-Yogo critical-value table.}
 up the Stock-Yogo critical-value table.}
 }
 \value{
-A named list of Stock-Yogo maximal-bias critical values
-(elements \code{`10pct`}, \code{`15pct`}, \code{`20pct`},
-\code{`25pct`}) for the given \code{(n_endogenous, n_instruments)}
-combination.
+A named \code{list} of Stock-Yogo weak-instrument critical values.
 }
 \description{
 Stock-Yogo critical values

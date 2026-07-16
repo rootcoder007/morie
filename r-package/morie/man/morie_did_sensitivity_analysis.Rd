@@ -39,9 +39,16 @@ A data frame with columns \code{delta}, \code{ci_lower},
 \code{ci_upper}, \code{covers_zero}.
 }
 \description{
-For each \eqn{\delta}{delta}, computes a bias-adjusted confidence set under
-the bound \eqn{|\mathrm{bias}| \le \delta \hat\sigma}{|bias| <= delta hatsigma} (Rambachan &
-Roth, 2023, conservative version).
+For each \eqn{\delta}{delta}, computes a bias-adjusted confidence
+set under the bound
+\eqn{|\mathrm{bias}| \le \delta \hat\sigma}{|bias| <= delta hatsigma}
+(Rambachan & Roth, 2023, conservative version).
+}
+\details{
+For a relative-magnitudes bound anchored on observed event-study
+pre-trends (Rambachan & Roth's \eqn{\bar M}{M-bar}
+parameterization, conservative version) see
+\code{\link{morie_did_honest_sensitivity}}.
 }
 \references{
 Rambachan, A., & Roth, J. (2023). A more credible approach

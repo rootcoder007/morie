@@ -23,11 +23,11 @@ morie_rdd_kernel_gaussian(u)
 \value{
 Numeric vector of kernel weights, same length as \code{u}.
 
-Numeric vector of kernel weights, same length as \code{u}.
+A \code{function} of one argument returning Epanechnikov kernel weights.
 
-Numeric vector of kernel weights, same length as \code{u}.
+A \code{function} of one argument returning uniform kernel weights.
 
-Numeric vector of kernel weights, same length as \code{u}.
+A \code{function} of one argument returning Gaussian kernel weights.
 }
 \description{
 Vectorised kernel functions on the support |u| <= 1 (Gaussian is on
