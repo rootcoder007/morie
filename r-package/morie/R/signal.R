@@ -21,12 +21,9 @@
 #' }
 #' }
 buttlp <- function(x, fs, cutoff, order = 4L) {
-  if (requireNamespace("signal", quietly = TRUE)) {
-    bf <- signal::butter(order, cutoff / (fs / 2), type = "low")
-    y <- signal::filtfilt(bf, x)
-    return(list(filtered = y, fs = fs, order = order, name = "butter_lowpass"))
-  }
-  .morie_py_call("buttlp", x, fs, cutoff, order)
+  bf <- .morie_dsp_butter(order, cutoff / (fs / 2), type = "low")
+  y <- .morie_dsp_filtfilt(bf$b, bf$a, x)
+  list(filtered = y, fs = fs, order = order, name = "butter_lowpass")
 }
 
 #' Butterworth highpass filter
@@ -52,12 +49,9 @@ buttlp <- function(x, fs, cutoff, order = 4L) {
 #' }
 #' }
 butthp <- function(x, fs, cutoff, order = 4L) {
-  if (requireNamespace("signal", quietly = TRUE)) {
-    bf <- signal::butter(order, cutoff / (fs / 2), type = "high")
-    y <- signal::filtfilt(bf, x)
-    return(list(filtered = y, fs = fs, order = order, name = "butter_highpass"))
-  }
-  .morie_py_call("butthp", x, fs, cutoff, order)
+  bf <- .morie_dsp_butter(order, cutoff / (fs / 2), type = "high")
+  y <- .morie_dsp_filtfilt(bf$b, bf$a, x)
+  list(filtered = y, fs = fs, order = order, name = "butter_highpass")
 }
 
 #' Butterworth bandpass filter
@@ -85,12 +79,9 @@ butthp <- function(x, fs, cutoff, order = 4L) {
 #' }
 #' }
 buttbp <- function(x, fs, low, high, order = 4L) {
-  if (requireNamespace("signal", quietly = TRUE)) {
-    bf <- signal::butter(order, c(low, high) / (fs / 2), type = "pass")
-    y <- signal::filtfilt(bf, x)
-    return(list(filtered = y, fs = fs, order = order, name = "butter_bandpass"))
-  }
-  .morie_py_call("buttbp", x, fs, low, high, order)
+  bf <- .morie_dsp_butter(order, c(low, high) / (fs / 2), type = "pass")
+  y <- .morie_dsp_filtfilt(bf$b, bf$a, x)
+  list(filtered = y, fs = fs, order = order, name = "butter_bandpass")
 }
 
 #' Butterworth bandstop (notch) filter
@@ -116,12 +107,9 @@ buttbp <- function(x, fs, low, high, order = 4L) {
 #' }
 #' }
 buttbs <- function(x, fs, low = 59, high = 61, order = 4L) {
-  if (requireNamespace("signal", quietly = TRUE)) {
-    bf <- signal::butter(order, c(low, high) / (fs / 2), type = "stop")
-    y <- signal::filtfilt(bf, x)
-    return(list(filtered = y, fs = fs, order = order, name = "butter_bandstop"))
-  }
-  .morie_py_call("buttbs", x, fs, low, high, order)
+  bf <- .morie_dsp_butter(order, c(low, high) / (fs / 2), type = "stop")
+  y <- .morie_dsp_filtfilt(bf$b, bf$a, x)
+  list(filtered = y, fs = fs, order = order, name = "butter_bandstop")
 }
 
 #' Savitzky-Golay smoothing filter
@@ -146,12 +134,9 @@ buttbs <- function(x, fs, low = 59, high = 61, order = 4L) {
 #' }
 #' }
 morie_sgolay_smooth <- function(x, window_length = 11L, polyorder = 3L) {
-  if (requireNamespace("signal", quietly = TRUE)) {
-    sg <- signal::sgolay(p = polyorder, n = window_length)
-    y <- signal::filter(sg, x)
-    return(list(filtered = as.numeric(y), name = "savitzky_golay"))
-  }
-  .morie_py_call("sgolay", x, window_length, polyorder)
+  y <- .morie_dsp_sgolay(x, polyorder = polyorder,
+                         window_length = window_length)
+  list(filtered = as.numeric(y), name = "savitzky_golay")
 }
 
 #' Hurst exponent via rescaled-range (R/S) analysis
@@ -181,7 +166,7 @@ morie_hurst_r <- function(x) {
       ifelse(result$Hs < 0.45, "anti-persistent", "random")
     )))
   }
-  .morie_py_call("hurst", x)
+  stop("morie::morie_hurst_r requires the 'pracma' package; install.packages('pracma')")
 }
 
 #' Higuchi fractal dimension
@@ -262,19 +247,6 @@ morie_pcg_filter <- function(x, fs = 2000, low = 25, high = 400) {
   buttbp(x, fs, low, high)
 }
 
-.morie_py_call <- function(fn_name, ...) {
-  args <- list(...)
-  arg_str <- paste(vapply(args, function(a) {
-    if (is.numeric(a) && length(a) > 1) {
-      paste0("[", paste(a, collapse = ","), "]")
-    } else {
-      as.character(a)
-    }
-  }, character(1)), collapse = " ")
-  cmd <- paste(fn_name, arg_str)
-  out <- system2("python3", c("-m", "morie.stat_bridge", "exec", cmd), stdout = TRUE, stderr = TRUE)
-  paste(out, collapse = "\n")
-}
 
 
 # --- Added 2026-05-22: 18 missing signal-processing functions ---
@@ -511,13 +483,8 @@ dfa <- function(x, scales = NULL) {
 ecgdet <- function(ecg, fs) {
   ecg <- as.numeric(ecg)
   n <- length(ecg)
-  if (requireNamespace("signal", quietly = TRUE)) {
-    bf <- signal::butter(2, c(5, 15) / (fs / 2), type = "pass")
-    filt <- signal::filtfilt(bf, ecg)
-  } else {
-    # Minimal fallback: drift-removed signal (mean subtract); not band-limited
-    filt <- ecg - mean(ecg)
-  }
+  bf <- .morie_dsp_butter(2, c(5, 15) / (fs / 2), type = "pass")
+  filt <- .morie_dsp_filtfilt(bf$b, bf$a, ecg)
   d <- c(diff(filt), 0)
   sq <- d^2
   win_len <- max(1L, as.integer(0.15 * fs))
@@ -1041,12 +1008,8 @@ pcgseg <- function(envelope, fs = 2000, min_gap_ms = 100) {
 #' }
 pcgmur <- function(pcg, fs) {
   pcg <- as.numeric(pcg)
-  if (requireNamespace("signal", quietly = TRUE)) {
-    bf <- signal::butter(4, c(100, 400) / (fs / 2), type = "pass")
-    hf_band <- signal::filtfilt(bf, pcg)
-  } else {
-    hf_band <- pcg - mean(pcg)
-  }
+  bf <- .morie_dsp_butter(4, c(100, 400) / (fs / 2), type = "pass")
+  hf_band <- .morie_dsp_filtfilt(bf$b, bf$a, pcg)
   hf_energy <- mean(hf_band^2)
   total_energy <- mean(pcg^2) + 1e-12
   hf_ratio <- hf_energy / total_energy
@@ -1169,4 +1132,18 @@ sgolay <- function(x, window = 11L, polyorder = 3L) {
     n_samples = length(res$filtered),
     extra = list(window = window, polyorder = polyorder)
   )
+}
+
+.morie_py_call <- function(fn_name, ...) {
+  args <- list(...)
+  arg_str <- paste(vapply(args, function(a) {
+    if (is.numeric(a) && length(a) > 1) {
+      paste0("[", paste(a, collapse = ","), "]")
+    } else {
+      as.character(a)
+    }
+  }, character(1)), collapse = " ")
+  cmd <- paste(fn_name, arg_str)
+  out <- system2("python3", c("-m", "morie.stat_bridge", "exec", cmd), stdout = TRUE, stderr = TRUE)
+  paste(out, collapse = "\n")
 }

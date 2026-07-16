@@ -8,7 +8,7 @@
 #' (so the intensity process is non-Markovian).
 #'
 #' The complete intensity is
-#' \deqn{\lambda(t) = u(t) + \int_0^{t-} g(t - s) \, dN_s,}{lambda(t) = u(t) + int_0^t- g(t - s) dN_s,}
+#' \deqn{\lambda(t) = \u(t) + \int_0^{t-} g(t - s) \, dN_s,}{lambda(t) = u(t) + int_0^t- g(t - s) dN_s,}
 #' with kernel decomposition \eqn{g(u) = \eta \cdot \tilde g(u)}{g(u) = eta * tilde g(u)} where
 #' \eqn{\eta \in (0, 1)}{eta in (0, 1)} is the branching ratio (mean offspring per
 #' event) and \eqn{\tilde g}{tilde g} is a probability density on
@@ -16,7 +16,7 @@
 #'
 #' Supported kernels: exponential, gamma, Weibull, Lomax (Pareto-II).
 #' Supported baselines: constant and sinusoidal-with-trend
-#' \deqn{u(t) = \exp\bigl(a_0 + a_1 (t/T) + a_2 \sin(2\pi t / 365.25)
+#' \deqn{\u(t) = \exp\bigl(a_0 + a_1 (t/T) + a_2 \sin(2\pi t / 365.25)
 #'        + a_3 \cos(2\pi t / 365.25)\bigr).}{u(t) = expbigl(a_0 + a_1 (t/T) + a_2 sin(2pi t / 365.25) + a_3 cos(2pi t / 365.25)bigr).}
 #'
 #' Companion to \code{morie_tps_hawkes_temporal_fit} (exponential /
@@ -70,6 +70,8 @@ NULL
 .TPS_HAWKES_KERNELS   <- c("exponential", "gamma", "weibull", "lomax")
 .TPS_HAWKES_BASELINES <- c("constant", "sinusoidal")
 
+#' Internal helper: Tps Hwka Result
+#' @noRd
 .tps_hwka_result <- function(title, summary_lines = list(),
                               warnings = character(0),
                               interpretation = "",
@@ -86,10 +88,14 @@ NULL
   out
 }
 
+#' Internal helper: Tps Hwka N Kernel Params
+#' @noRd
 .tps_hwka_n_kernel_params <- function(kind) {
   if (identical(kind, "exponential")) 1L else 2L
 }
 
+#' Internal helper: Tps Hwka N Baseline Params
+#' @noRd
 .tps_hwka_n_baseline_params <- function(kind) {
   if (identical(kind, "constant")) 1L else 4L
 }
@@ -99,11 +105,15 @@ NULL
 # Kernel densities and CDFs (vectorised; mirrors the Python branch table)
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka Cpp Ok
+#' @noRd
 .tps_hwka_cpp_ok <- function() {
   exists("morie_hawkes_pair_excitation_sum_cpp",
          envir = asNamespace("morie"), inherits = FALSE)
 }
 
+#' Internal helper: Tps Hwka Kernel Density
+#' @noRd
 .tps_hwka_kernel_density <- function(u, kind, psi) {
   if (.tps_hwka_cpp_ok()) {
     return(morie_hawkes_kernel_density_cpp(as.numeric(u), kind,
@@ -143,6 +153,8 @@ NULL
   )
 }
 
+#' Internal helper: Tps Hwka Kernel Cdf
+#' @noRd
 .tps_hwka_kernel_cdf <- function(u, kind, psi) {
   if (.tps_hwka_cpp_ok()) {
     return(morie_hawkes_kernel_cdf_cpp(as.numeric(u), kind,
@@ -163,6 +175,8 @@ NULL
 # Baseline nu(t) and its integral
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka Baseline
+#' @noRd
 .tps_hwka_baseline <- function(t, kind, alpha, T_) {
   t <- as.numeric(t)
   switch(kind,
@@ -175,6 +189,8 @@ NULL
   )
 }
 
+#' Internal helper: Tps Hwka Baseline Integral
+#' @noRd
 .tps_hwka_baseline_integral <- function(T_, kind, alpha) {
   if (identical(kind, "constant")) return(exp(alpha[1]) * T_)
   if (identical(kind, "sinusoidal") && .tps_hwka_cpp_ok()) {
@@ -194,6 +210,8 @@ NULL
 # Negative log-likelihood (general, base-R O(n^2))
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka Split Theta
+#' @noRd
 .tps_hwka_split_theta <- function(theta, kernel_kind, baseline_kind) {
   nb <- .tps_hwka_n_baseline_params(baseline_kind)
   nk <- .tps_hwka_n_kernel_params(kernel_kind)
@@ -206,23 +224,16 @@ NULL
        psi = theta[(nb + 2L):length(theta)])
 }
 
+#' Internal helper: Tps Hwka Neg Loglik General
+#' @noRd
 .tps_hwka_neg_loglik_general <- function(theta, t, T_,
                                           kernel_kind,
                                           baseline_kind) {
-  # Fast path: delegate to the hawkes / emhawkes R package only when
-  # the requested combination is (exponential, constant) and the
-  # package is available; otherwise fall back to base R. The branch
-  # below mirrors the Python tps_hawkes_jit fast-path predicate.
-  if (identical(kernel_kind, "exponential") &&
-      identical(baseline_kind, "constant") &&
-      (requireNamespace("hawkes", quietly = TRUE) ||
-       requireNamespace("emhawkes", quietly = TRUE))) {
-    val <- try(.tps_hwka_neg_loglik_external_exp(theta, t, T_),
-               silent = TRUE)
-    if (!inherits(val, "try-error") && is.finite(val)) return(val)
-    # Silent fallthrough to base R on any external-package failure.
-  }
-
+  # Module 21: the native base-R/C++ path below IS the estimator for
+  # every kernel/baseline combination (the former hawkes/emhawkes
+  # exponential fast path was removed; tests/cross validates the
+  # exponential-kernel log-likelihood against hawkes::likelihoodHawkes
+  # where installed).
   nb <- .tps_hwka_n_baseline_params(baseline_kind)
   nk <- .tps_hwka_n_kernel_params(kernel_kind)
   a   <- theta[seq_len(nb)]
@@ -264,46 +275,13 @@ NULL
   -(log_sum - integral)
 }
 
-# External-package fast path for the Markovian special case. Both
-# CRAN packages 'hawkes' (Carstensen) and 'emhawkes' (Lee & Seo)
-# expose a univariate log-likelihood under the exponential-kernel
-# constant-baseline parameterisation; both are gated via
-# requireNamespace and stubbed when neither is installed.
-.tps_hwka_neg_loglik_external_exp <- function(theta, t, T_) {
-  if (requireNamespace("hawkes", quietly = TRUE)) {
-    a0   <- theta[1]
-    eta  <- theta[2]
-    beta <- theta[3]
-    mu   <- exp(a0)
-    alpha <- eta * beta
-    # hawkes::likelihoodHawkes returns -log-likelihood by convention.
-    # Signature is (lambda0, alpha, beta, history) -- no `end` argument
-    # in the CRAN release; the horizon is implicitly max(history).
-    # Caller is responsible for ensuring T_ == max(t) when delegating;
-    # otherwise the in-tree base-R path (.tps_hwka_neg_loglik_general)
-    # should be used to honour an arbitrary T_.
-    val <- try(hawkes::likelihoodHawkes(lambda0 = mu,
-                                         alpha   = alpha,
-                                         beta    = beta,
-                                         history = t),
-               silent = TRUE)
-    if (!inherits(val, "try-error")) return(as.numeric(val))
-  }
-  if (requireNamespace("emhawkes", quietly = TRUE)) {
-    # emhawkes has a multivariate API; for the 1-D Markovian case the
-    # closed-form base-R implementation is faster than constructing
-    # the emhawkes specifications. Defer to the stub.
-    stop("NotYetPorted: emhawkes 1-D wrapper not implemented; ",
-         "base-R path is used instead.")
-  }
-  stop("NotYetPorted: no external Hawkes backend available")
-}
-
 
 # ---------------------------------------------------------------------------
 # Initial-guess heuristic
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka X0
+#' @noRd
 .tps_hwka_x0 <- function(kernel_kind, baseline_kind, n, T_, mean_dt) {
   rate <- max(n / T_, 1e-3)
   a <- if (identical(baseline_kind, "constant")) {
@@ -326,6 +304,8 @@ NULL
 # Time-rescaling residuals (Brown et al. 2002)
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka Time Rescaling
+#' @noRd
 .tps_hwka_time_rescaling <- function(theta, t, T_,
                                       kernel_kind, baseline_kind) {
   nb <- .tps_hwka_n_baseline_params(baseline_kind)
@@ -361,6 +341,8 @@ NULL
 # Public single-fit driver
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka Fit One
+#' @noRd
 .tps_hwka_fit_one <- function(t, T_, kernel_kind, baseline_kind) {
   t <- as.numeric(t)
   t <- t[t >= 0 & t < T_]
@@ -431,6 +413,8 @@ NULL
 # Event-to-days conversion (TPS daily resolution + ties jitter)
 # ---------------------------------------------------------------------------
 
+#' Internal helper: Tps Hwka Events To Days
+#' @noRd
 .tps_hwka_events_to_days <- function(df, max_n) {
   date_col <- intersect(c("OCC_DATE", "REPORT_DATE"), colnames(df))[1]
   if (is.na(date_col)) {

@@ -24,9 +24,10 @@ morie_did_synthetic(
 
 \item{treated_units}{Optional explicit list of treated unit IDs.}
 
-\item{zeta}{Optional regularisation parameter (auto-selected if NULL).}
+\item{zeta}{Retained for back-compat; ignored (the engine derives
+the SDID regularisation from the data).}
 
-\item{n_bootstrap}{Bootstrap replications for placebo SE.}
+\item{n_bootstrap}{Bootstrap replications for the SE / CI.}
 
 \item{seed}{RNG seed.}
 
@@ -36,9 +37,12 @@ morie_did_synthetic(
 A result list; see \code{\link{morie_did_2x2}}.
 }
 \description{
-Requires the \pkg{synthdid} package
-(\code{remotes::install_github("synth-inference/synthdid")}); the
-algorithm has no comparably-faithful base-R port shipped here.
+Native synthetic difference-in-differences estimator (the
+Arkhangelsky et al. 2021 algorithm: ridge-regularized unit weights,
+simplex time weights, weighted DiD) with bootstrap inference. The
+engine lives in \code{R/synth_native.R}; see also
+\code{\link{morie_synth_control}} for the classic Abadie synthetic
+control with placebo inference.
 }
 \references{
 Arkhangelsky, D., et al. (2021). Synthetic

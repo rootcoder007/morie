@@ -30,9 +30,10 @@ morie_did_staggered(
 
 \item{covariates}{Optional covariates for doubly-robust estimation.}
 
-\item{n_bootstrap}{Number of bootstrap replications for inference.}
+\item{n_bootstrap}{Number of multiplier-bootstrap replications for
+inference (0 = analytic influence-function standard errors).}
 
-\item{seed}{RNG seed.}
+\item{seed}{RNG seed for the multiplier bootstrap.}
 
 \item{alpha}{Significance level.}
 }

@@ -23,9 +23,7 @@ bandwidth selectors + density tests that don't take a
 linear). 2 picks up quadratic curvature for bias correction.}
 }
 \value{
-A named list with elements \code{bandwidth} (numeric),
-\code{method} (character label), and \code{details} (the
-underlying \pkg{rdrobust} fit when available).
+A named list with elements \code{bandwidth}, \code{method}, \code{details}.
 }
 \description{
 Calonico-Cattaneo-Titiunik (CCT) MSE-optimal bandwidth

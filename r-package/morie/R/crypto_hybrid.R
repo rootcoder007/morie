@@ -15,6 +15,8 @@
 # WARNING: Research/educational implementation.  NOT constant-time.
 # For production use, prefer audited hybrid KEM libraries (e.g. liboqs).
 
+#' Internal helper: Morie Require Sodium
+#' @noRd
 .morie_require_sodium <- function() {
   if (!requireNamespace("sodium", quietly = TRUE)) {
     stop(
@@ -24,19 +26,11 @@
   }
 }
 
-.morie_require_openssl <- function() {
-  if (!requireNamespace("openssl", quietly = TRUE)) {
-    stop(
-      "morie_crypto requires openssl; install.packages('openssl')",
-      call. = FALSE
-    )
-  }
-}
-
+#' Internal helper: Morie Hkdf Sha256
+#' @noRd
 .morie_hkdf_sha256 <- function(ikm, len = 32L, salt = NULL,
                                info = raw(0)) {
   # 'len' not 'length' — base length() must not be shadowed
-  .morie_require_openssl()
   if (len < 1L || len > 255L * 32L) {
     stop("HKDF output length must be in 1..255*32", call. = FALSE)
   }
@@ -44,21 +38,23 @@
   if (is.character(ikm))  ikm  <- charToRaw(ikm)
   if (is.character(info)) info <- charToRaw(info)
   if (is.character(salt)) salt <- charToRaw(salt)
-  prk <- as.raw(openssl::sha256(ikm, key = salt))
+  # Module 22: native HMAC-SHA256 (RFC 5869 extract step).
+  prk <- .morie_hmac_sha256_impl(salt, ikm)
   n <- ceiling(len / 32L)
   t_prev <- raw(0)
   okm <- raw(0)
   for (i in seq_len(n)) {
     msg <- c(t_prev, info, as.raw(i))
-    t_prev <- as.raw(openssl::sha256(msg, key = prk))
+    t_prev <- .morie_hmac_sha256_impl(prk, msg)
     okm <- c(okm, t_prev)
   }
   okm[seq_len(len)]
 }
 
+#' Internal helper: Morie Wrapping Key
+#' @noRd
 .morie_wrapping_key <- function(kem_ct, pk) {
-  .morie_require_openssl()
-  salt <- as.raw(openssl::sha256(charToRaw("morie-hybrid-wrap-v1")))
+  salt <- .morie_sha256_impl(charToRaw("morie-hybrid-wrap-v1"))
   .morie_hkdf_sha256(
     ikm    = c(kem_ct, pk),
     len    = 32L,
@@ -112,6 +108,12 @@ morie_crypto_hybrid_decrypt <- function(ciphertext, recipient_sk) {
     call. = FALSE
   )
 }
+
+# Note: the public `morie_crypto_hkdf_sha256()` is the libsodium-backed
+# wrapper in R/crypto_sym.R (byte-for-byte with the Python impl). The
+# pure-R `.morie_hkdf_sha256()` helper above is the openssl fallback used
+# internally by the hybrid key-wrap path only; it is not re-exported here
+# to avoid a duplicate S3/namespace binding and a codoc mismatch.
 
 #' HKDF-SHA256 (RFC 5869)
 #' @param ikm    Raw vector or character string.

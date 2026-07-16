@@ -17,6 +17,6 @@ morie_psymet_parallel(data, nsim = 100, seed = 42)
 Single integer >= 1: the suggested number of factors / components.
 }
 \description{
-Delegates to \code{psych::fa.parallel()} when available; otherwise compares
-observed eigenvalues to the 95th percentile of random-data eigenvalues.
+Native Horn's parallel analysis: observed eigenvalues vs the 95th
+percentile of random-data eigenvalues.
 }

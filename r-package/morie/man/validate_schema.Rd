@@ -14,9 +14,7 @@ validate_schema(data, rules, raise_on_error = FALSE)
 \item{raise_on_error}{If TRUE, throw on first error.}
 }
 \value{
-A \code{morie_schema_result} (subclass of
-\code{morie_validation_result} / \code{morie_rich_result}) with logical
-\code{passed} plus character vectors \code{errors} and \code{warnings}.
+An object of class \code{"class_name"}.
 }
 \description{
 Validate a data frame against a list of column rules

@@ -51,8 +51,10 @@ A list with \code{coefficients} (data frame),
 \code{pre_trend_p_value}, and \code{details}.
 }
 \description{
-Constructs relative-time dummies \eqn{1\{t - g = k\}} for
-\eqn{k \in [-\text{leads}, \text{lags}]}{k in [-leads, lags]} (omitting
-\code{reference_period}) and regresses the outcome on these
-indicators with unit and time fixed effects.
+Native event-study estimator: relative-time dummies (with
+\code{reference_period} dropped as the baseline) on unit and time
+fixed effects, fitted by the same native TWFE engine as
+\code{\link{morie_did_panel_fe}}. Reproduces
+\code{fixest::feols} + \code{fixest::i()} to machine precision
+(see \code{tests/cross/}).
 }

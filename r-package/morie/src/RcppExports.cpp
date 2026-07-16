@@ -11,6 +11,54 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// morie_crypto_sha256_native
+Rcpp::RawVector morie_crypto_sha256_native(SEXP data);
+RcppExport SEXP _morie_morie_crypto_sha256_native(SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_sha256_native(data));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_sha256_hex_native
+std::string morie_crypto_sha256_hex_native(SEXP data);
+RcppExport SEXP _morie_morie_crypto_sha256_hex_native(SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_sha256_hex_native(data));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_hmac_sha256_native
+Rcpp::RawVector morie_crypto_hmac_sha256_native(SEXP key, SEXP msg);
+RcppExport SEXP _morie_morie_crypto_hmac_sha256_native(SEXP keySEXP, SEXP msgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type key(keySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type msg(msgSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_hmac_sha256_native(key, msg));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_pbkdf2_sha256_native
+Rcpp::RawVector morie_crypto_pbkdf2_sha256_native(SEXP password, SEXP salt, int iterations, int dklen);
+RcppExport SEXP _morie_morie_crypto_pbkdf2_sha256_native(SEXP passwordSEXP, SEXP saltSEXP, SEXP iterationsSEXP, SEXP dklenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type password(passwordSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type salt(saltSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< int >::type dklen(dklenSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_pbkdf2_sha256_native(password, salt, iterations, dklen));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_crypto_liboqs_available
 bool morie_crypto_liboqs_available();
 RcppExport SEXP _morie_morie_crypto_liboqs_available() {
@@ -96,6 +144,74 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type message_sxp(message_sxpSEXP);
     Rcpp::traits::input_parameter< SEXP >::type signature_sxp(signature_sxpSEXP);
     rcpp_result_gen = Rcpp::wrap(morie_crypto_mldsa65_verify(pk_sxp, message_sxp, signature_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_slhdsa128s_keygen
+SEXP morie_crypto_slhdsa128s_keygen();
+RcppExport SEXP _morie_morie_crypto_slhdsa128s_keygen() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_slhdsa128s_keygen());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_slhdsa128s_sign
+SEXP morie_crypto_slhdsa128s_sign(SEXP sk_sxp, SEXP message_sxp);
+RcppExport SEXP _morie_morie_crypto_slhdsa128s_sign(SEXP sk_sxpSEXP, SEXP message_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type sk_sxp(sk_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type message_sxp(message_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_slhdsa128s_sign(sk_sxp, message_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_slhdsa128s_verify
+SEXP morie_crypto_slhdsa128s_verify(SEXP pk_sxp, SEXP message_sxp, SEXP signature_sxp);
+RcppExport SEXP _morie_morie_crypto_slhdsa128s_verify(SEXP pk_sxpSEXP, SEXP message_sxpSEXP, SEXP signature_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type pk_sxp(pk_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type message_sxp(message_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type signature_sxp(signature_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_slhdsa128s_verify(pk_sxp, message_sxp, signature_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_hqc128_keygen
+SEXP morie_crypto_hqc128_keygen();
+RcppExport SEXP _morie_morie_crypto_hqc128_keygen() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_hqc128_keygen());
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_hqc128_encaps
+SEXP morie_crypto_hqc128_encaps(SEXP pk_sxp);
+RcppExport SEXP _morie_morie_crypto_hqc128_encaps(SEXP pk_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type pk_sxp(pk_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_hqc128_encaps(pk_sxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// morie_crypto_hqc128_decaps
+SEXP morie_crypto_hqc128_decaps(SEXP sk_sxp, SEXP ct_sxp);
+RcppExport SEXP _morie_morie_crypto_hqc128_decaps(SEXP sk_sxpSEXP, SEXP ct_sxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type sk_sxp(sk_sxpSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ct_sxp(ct_sxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_crypto_hqc128_decaps(sk_sxp, ct_sxp));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -612,6 +728,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// morie_rlearner_forest_cpp
+Rcpp::NumericMatrix morie_rlearner_forest_cpp(Rcpp::NumericMatrix X, Rcpp::NumericVector pseudo, Rcpp::NumericVector weight, Rcpp::NumericMatrix Xpred, int n_trees, int max_depth, int min_node, double subsample, int seed);
+RcppExport SEXP _morie_morie_rlearner_forest_cpp(SEXP XSEXP, SEXP pseudoSEXP, SEXP weightSEXP, SEXP XpredSEXP, SEXP n_treesSEXP, SEXP max_depthSEXP, SEXP min_nodeSEXP, SEXP subsampleSEXP, SEXP seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type pseudo(pseudoSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type weight(weightSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type Xpred(XpredSEXP);
+    Rcpp::traits::input_parameter< int >::type n_trees(n_treesSEXP);
+    Rcpp::traits::input_parameter< int >::type max_depth(max_depthSEXP);
+    Rcpp::traits::input_parameter< int >::type min_node(min_nodeSEXP);
+    Rcpp::traits::input_parameter< double >::type subsample(subsampleSEXP);
+    Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(morie_rlearner_forest_cpp(X, pseudo, weight, Xpred, n_trees, max_depth, min_node, subsample, seed));
+    return rcpp_result_gen;
+END_RCPP
+}
 // morie_spatial_nominate_iterate_cpp
 Rcpp::List morie_spatial_nominate_iterate_cpp(arma::mat votes, arma::mat X, arma::vec w, arma::mat nv, arma::mat mid, double beta, int max_iter);
 RcppExport SEXP _morie_morie_spatial_nominate_iterate_cpp(SEXP votesSEXP, SEXP XSEXP, SEXP wSEXP, SEXP nvSEXP, SEXP midSEXP, SEXP betaSEXP, SEXP max_iterSEXP) {
@@ -763,6 +898,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_morie_morie_crypto_sha256_native", (DL_FUNC) &_morie_morie_crypto_sha256_native, 1},
+    {"_morie_morie_crypto_sha256_hex_native", (DL_FUNC) &_morie_morie_crypto_sha256_hex_native, 1},
+    {"_morie_morie_crypto_hmac_sha256_native", (DL_FUNC) &_morie_morie_crypto_hmac_sha256_native, 2},
+    {"_morie_morie_crypto_pbkdf2_sha256_native", (DL_FUNC) &_morie_morie_crypto_pbkdf2_sha256_native, 4},
     {"_morie_morie_crypto_liboqs_available", (DL_FUNC) &_morie_morie_crypto_liboqs_available, 0},
     {"_morie_morie_crypto_liboqs_version", (DL_FUNC) &_morie_morie_crypto_liboqs_version, 0},
     {"_morie_morie_crypto_mlkem768_keygen", (DL_FUNC) &_morie_morie_crypto_mlkem768_keygen, 0},
@@ -771,6 +910,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_crypto_mldsa65_keygen", (DL_FUNC) &_morie_morie_crypto_mldsa65_keygen, 0},
     {"_morie_morie_crypto_mldsa65_sign", (DL_FUNC) &_morie_morie_crypto_mldsa65_sign, 2},
     {"_morie_morie_crypto_mldsa65_verify", (DL_FUNC) &_morie_morie_crypto_mldsa65_verify, 3},
+    {"_morie_morie_crypto_slhdsa128s_keygen", (DL_FUNC) &_morie_morie_crypto_slhdsa128s_keygen, 0},
+    {"_morie_morie_crypto_slhdsa128s_sign", (DL_FUNC) &_morie_morie_crypto_slhdsa128s_sign, 2},
+    {"_morie_morie_crypto_slhdsa128s_verify", (DL_FUNC) &_morie_morie_crypto_slhdsa128s_verify, 3},
+    {"_morie_morie_crypto_hqc128_keygen", (DL_FUNC) &_morie_morie_crypto_hqc128_keygen, 0},
+    {"_morie_morie_crypto_hqc128_encaps", (DL_FUNC) &_morie_morie_crypto_hqc128_encaps, 1},
+    {"_morie_morie_crypto_hqc128_decaps", (DL_FUNC) &_morie_morie_crypto_hqc128_decaps, 2},
     {"_morie_morie_crypto_sodium_available", (DL_FUNC) &_morie_morie_crypto_sodium_available, 0},
     {"_morie_morie_crypto_sodium_version", (DL_FUNC) &_morie_morie_crypto_sodium_version, 0},
     {"_morie_morie_crypto_chacha20poly1305_encrypt", (DL_FUNC) &_morie_morie_crypto_chacha20poly1305_encrypt, 4},
@@ -809,6 +954,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_morie_morie_match_greedy_1d_cpp", (DL_FUNC) &_morie_morie_match_greedy_1d_cpp, 5},
     {"_morie_morie_match_optimal_1d_cpp", (DL_FUNC) &_morie_morie_match_optimal_1d_cpp, 2},
     {"_morie_morie_match_optimal_assign_cpp", (DL_FUNC) &_morie_morie_match_optimal_assign_cpp, 2},
+    {"_morie_morie_rlearner_forest_cpp", (DL_FUNC) &_morie_morie_rlearner_forest_cpp, 9},
     {"_morie_morie_spatial_nominate_iterate_cpp", (DL_FUNC) &_morie_morie_spatial_nominate_iterate_cpp, 7},
     {"_morie_morie_spatial_emirt_theta_update_cpp", (DL_FUNC) &_morie_morie_spatial_emirt_theta_update_cpp, 4},
     {"_morie_morie_spatial_smacof_step_cpp", (DL_FUNC) &_morie_morie_spatial_smacof_step_cpp, 3},

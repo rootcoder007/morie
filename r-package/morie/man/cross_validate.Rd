@@ -43,10 +43,7 @@ cross_validate(
 \item{random_state}{Seed.}
 }
 \value{
-A \code{morie_cv_result} (subclass of
-\code{morie_validation_result} / \code{morie_rich_result}) with the
-per-fold \code{scores}, their \code{mean} and \code{sd}, normal-CI
-\code{ci_lower}/\code{ci_upper}, and (placeholder) \code{fold_details}.
+An object of class \code{"class_name"}.
 }
 \description{
 Cross-validate a model using a user-supplied fit/predict pair

@@ -25,6 +25,7 @@ test_that("morie_estimate_att/atc/aipw accept a supplied propensity column", {
 })
 
 test_that("morie_estimate_late runs the covariate-adjusted 2SLS path", {
+  # Module 17: the covariate path is the native k-class 2SLS engine.
   set.seed(12)
   n <- 400L
   z <- rbinom(n, 1, 0.5)
@@ -34,15 +35,7 @@ test_that("morie_estimate_late runs the covariate-adjusted 2SLS path", {
   df <- data.frame(t = t, y = y, z = z, x = x)
   iv <- morie_estimate_late(df, "t", "y", "z", covariates = "x")
   expect_true(is.finite(iv$late))
-  # force the manual 2SLS fallback by hiding ivreg
-  testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...) {
-      if (identical(package, "ivreg")) FALSE else TRUE
-    },
-    .package = "base"
-  )
-  man <- morie_estimate_late(df, "t", "y", "z", covariates = "x")
-  expect_true(is.finite(man$late))
+  expect_equal(iv$late, 0.8, tolerance = 0.35)
 })
 
 # ---- study_core.R ---------------------------------------------------------
@@ -120,6 +113,8 @@ test_that("morie_userguide accepts a name argument", {
 })
 
 test_that("morie_load_cpads reaches the CKAN branch when local+cache miss", {
+  testthat::skip_if_not_installed("RSQLite")
+  testthat::skip_if_not_installed("duckdb")
   testthat::local_mocked_bindings(
     morie_fetch_ckan = function(...) data.frame(seqid = 1:5),
     .package = "morie"

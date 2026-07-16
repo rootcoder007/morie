@@ -34,11 +34,8 @@ morie_iv_gmm(
 \item{alpha}{Significance level for confidence intervals.}
 }
 \value{
-A list (same layout as \code{\link{morie_iv_tsls}}) with
-coefficients, standard errors, t-statistics, p-values, confidence
-interval bounds, variable names, sample size, a \code{method}
-label (e.g. \code{"gmm (optimal)"}), and \code{details}.
+A named list with elements \code{coefficients}, \code{std_errors}, \code{t_stats}, \code{p_values}, \code{ci_lower}, \code{ci_upper}, \code{variable_names}, \code{n_obs}, \code{method}, \code{details}.
 }
 \description{
-Two-step efficient GMM via \code{gmm::gmm}; falls back to 2SLS otherwise.
+Two-step efficient GMM (rmorie native; HC0-weighted second step).
 }

@@ -37,8 +37,11 @@ any covariate columns.}
 A result list; see \code{\link{morie_did_2x2}}.
 }
 \description{
-Estimates \eqn{Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + X'\delta
-+ \varepsilon_{it}}{Y_it = alpha_i + lambda_t + tau D_it + X'delta + varepsilon_it}.  Prefers \code{fixest::feols} for fast within
-estimation with cluster-robust SE; falls back to a base-R two-way
-within-transform when \pkg{fixest} is not installed.
+Native two-way fixed-effects estimator of
+\eqn{Y_{it} = \alpha_i + \lambda_t + \tau D_{it} + X'\delta
++ \varepsilon_{it}}{Y_it = alpha_i + lambda_t + tau D_it + X'delta + varepsilon_it}
+via alternating-projection demeaning (Frisch-Waugh-Lovell) with
+CR1 cluster-robust standard errors using the same small-sample
+correction as \code{fixest::feols}'s default (reproduced to
+machine precision in \code{tests/cross/}).
 }

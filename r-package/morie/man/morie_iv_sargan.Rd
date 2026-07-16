@@ -23,9 +23,7 @@ regressors included in both the structural equation and the
 first stage. \code{NULL} (default) for a just-identified design.}
 }
 \value{
-A named list with elements \code{statistic}, \code{p_value},
-\code{name} (\code{"Sargan"} or \code{"Sargan (just-identified)"}),
-and (for over-identified cases) \code{df} degrees of freedom.
+A named \code{list} (see Details).
 }
 \description{
 Sargan test of overidentifying restrictions (homoskedastic)

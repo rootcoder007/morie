@@ -21,9 +21,7 @@ and binned-plot reductions.}
 side of the cutoff. \code{NULL} invokes the data-driven CCT selector.}
 }
 \value{
-A named list with elements \code{statistic} (test
-statistic), \code{p_value}, \code{name}, and optionally
-\code{details} (the underlying \pkg{rddensity} fit).
+A named \code{list} (see Details).
 }
 \description{
 McCrary (2008) density manipulation test
