@@ -49,27 +49,27 @@ morie_crypto_mldsa65_verify <- function(pk_sxp, message_sxp, signature_sxp) {
     .Call(`_morie_morie_crypto_mldsa65_verify`, pk_sxp, message_sxp, signature_sxp)
 }
 
-.morie_slhdsa128s_keygen_impl <- function() {
+.rmorie_slhdsa128s_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_slhdsa128s_keygen`)
 }
 
-.morie_slhdsa128s_sign_impl <- function(sk_sxp, message_sxp) {
+.rmorie_slhdsa128s_sign_impl <- function(sk_sxp, message_sxp) {
     .Call(`_morie_morie_crypto_slhdsa128s_sign`, sk_sxp, message_sxp)
 }
 
-.morie_slhdsa128s_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
+.rmorie_slhdsa128s_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
     .Call(`_morie_morie_crypto_slhdsa128s_verify`, pk_sxp, message_sxp, signature_sxp)
 }
 
-.morie_hqc128_keygen_impl <- function() {
+.rmorie_hqc128_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_hqc128_keygen`)
 }
 
-.morie_hqc128_encaps_impl <- function(pk_sxp) {
+.rmorie_hqc128_encaps_impl <- function(pk_sxp) {
     .Call(`_morie_morie_crypto_hqc128_encaps`, pk_sxp)
 }
 
-.morie_hqc128_decaps_impl <- function(sk_sxp, ct_sxp) {
+.rmorie_hqc128_decaps_impl <- function(sk_sxp, ct_sxp) {
     .Call(`_morie_morie_crypto_hqc128_decaps`, sk_sxp, ct_sxp)
 }
 
@@ -95,6 +95,10 @@ morie_crypto_hkdf_sha256 <- function(ikm_sxp, length_sxp, salt_sxp, info_sxp) {
 
 morie_crypto_random_bytes <- function(n) {
     .Call(`_morie_morie_crypto_random_bytes`, n)
+}
+
+.morie_twfe_demean_cpp <- function(M, g1, g2, K1, K2, tol = 1e-11, max_iter = 500L) {
+    .Call(`_morie_morie_twfe_demean_cpp`, M, g1, g2, K1, K2, tol, max_iter)
 }
 
 morie_dsp_lms_cpp <- function(x, d, order, mu) {
@@ -290,6 +294,10 @@ morie_matching_abadie_imbens_kernel_cpp <- function(y, t, treated_pos, control_p
 
 .morie_rlearner_forest_cpp <- function(X, pseudo, weight, Xpred, n_trees, max_depth, min_node, subsample, seed) {
     .Call(`_morie_morie_rlearner_forest_cpp`, X, pseudo, weight, Xpred, n_trees, max_depth, min_node, subsample, seed)
+}
+
+.morie_rlm_cpp <- function(X, y, k, maxit, acc) {
+    .Call(`_morie_morie_rlm_cpp`, X, y, k, maxit, acc)
 }
 
 morie_spatial_nominate_iterate_cpp <- function(votes, X, w, nv, mid, beta, max_iter) {
