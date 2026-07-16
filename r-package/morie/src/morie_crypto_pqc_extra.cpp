@@ -20,7 +20,8 @@ namespace {
 
 OQS_SIG* new_slhdsa128s() {
   static const char* names[] = {
-    "SLH-DSA-SHA2-128s",            // liboqs >= 0.13 (FIPS 205 final)
+    "SLH_DSA_PURE_SHA2_128S",       // liboqs >= 0.15 (FIPS 205 final)
+    "SLH-DSA-SHA2-128s",            // liboqs 0.13 - 0.14
     "SPHINCS+-SHA2-128s-simple",    // liboqs 0.8 - 0.12
     "SPHINCS+-SHA256-128s-simple"}; // very old spelling
   for (const char* n : names) {
@@ -31,7 +32,10 @@ OQS_SIG* new_slhdsa128s() {
 }
 
 OQS_KEM* new_hqc128() {
-  static const char* names[] = {"HQC-128", "HQC-RMRS-128"};
+  static const char* names[] = {
+    "HQC-1",           // liboqs >= 0.15 (level-1 = 128-bit)
+    "HQC-128",         // liboqs 0.9 - 0.14
+    "HQC-RMRS-128"};   // very old spelling
   for (const char* n : names) {
     OQS_KEM* k = OQS_KEM_new(n);
     if (k != nullptr) return k;
@@ -51,7 +55,7 @@ OQS_KEM* new_hqc128() {
 // SLH-DSA-SHA2-128s (hash-based signatures, FIPS 205)
 // ---------------------------------------------------------------------
 
-// [[Rcpp::export(name = ".morie_slhdsa128s_keygen_impl")]]
+// [[Rcpp::export(name = ".rmorie_slhdsa128s_keygen_impl")]]
 SEXP morie_crypto_slhdsa128s_keygen() {
 #ifdef MORIE_HAVE_LIBOQS
   OQS_SIG* sig = new_slhdsa128s();
@@ -71,7 +75,7 @@ SEXP morie_crypto_slhdsa128s_keygen() {
 #endif
 }
 
-// [[Rcpp::export(name = ".morie_slhdsa128s_sign_impl")]]
+// [[Rcpp::export(name = ".rmorie_slhdsa128s_sign_impl")]]
 SEXP morie_crypto_slhdsa128s_sign(SEXP sk_sxp, SEXP message_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
   RawVector sk(sk_sxp), msg(message_sxp);
@@ -101,7 +105,7 @@ SEXP morie_crypto_slhdsa128s_sign(SEXP sk_sxp, SEXP message_sxp) {
 #endif
 }
 
-// [[Rcpp::export(name = ".morie_slhdsa128s_verify_impl")]]
+// [[Rcpp::export(name = ".rmorie_slhdsa128s_verify_impl")]]
 SEXP morie_crypto_slhdsa128s_verify(SEXP pk_sxp, SEXP message_sxp,
                                     SEXP signature_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
@@ -122,7 +126,7 @@ SEXP morie_crypto_slhdsa128s_verify(SEXP pk_sxp, SEXP message_sxp,
 // HQC-128 (code-based KEM, NIST round-4 selection 2025)
 // ---------------------------------------------------------------------
 
-// [[Rcpp::export(name = ".morie_hqc128_keygen_impl")]]
+// [[Rcpp::export(name = ".rmorie_hqc128_keygen_impl")]]
 SEXP morie_crypto_hqc128_keygen() {
 #ifdef MORIE_HAVE_LIBOQS
   OQS_KEM* kem = new_hqc128();
@@ -142,7 +146,7 @@ SEXP morie_crypto_hqc128_keygen() {
 #endif
 }
 
-// [[Rcpp::export(name = ".morie_hqc128_encaps_impl")]]
+// [[Rcpp::export(name = ".rmorie_hqc128_encaps_impl")]]
 SEXP morie_crypto_hqc128_encaps(SEXP pk_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
   RawVector pk(pk_sxp);
@@ -167,7 +171,7 @@ SEXP morie_crypto_hqc128_encaps(SEXP pk_sxp) {
 #endif
 }
 
-// [[Rcpp::export(name = ".morie_hqc128_decaps_impl")]]
+// [[Rcpp::export(name = ".rmorie_hqc128_decaps_impl")]]
 SEXP morie_crypto_hqc128_decaps(SEXP sk_sxp, SEXP ct_sxp) {
 #ifdef MORIE_HAVE_LIBOQS
   RawVector sk(sk_sxp), ct(ct_sxp);
