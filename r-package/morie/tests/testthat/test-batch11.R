@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Batch 11 tests: irm, irtsp, isotn, jkest, johsn, kalmn, kmnsc, ksr01-08
 
-test_that("morie_estimate_irm errors without Suggests packages or returns valid list", {
-  skip_if_not_installed("DoubleML")
-  skip_if_not_installed("mlr3")
-  skip_if_not_installed("mlr3learners")
+test_that("morie_estimate_irm returns a valid native IRM estimate", {
+  # module 10: IRM is estimated by the native cross-fitting engine, so it
+  # no longer depends on DoubleML/mlr3 and does not error when they are
+  # absent. Method label is "IRM (morie native)".
   set.seed(1)
   n <- 60
   X <- matrix(rnorm(n * 3), n, 3)
@@ -12,33 +12,18 @@ test_that("morie_estimate_irm errors without Suggests packages or returns valid 
   Tr <- rbinom(n, 1, ps)
   Y <- 0.5 * Tr + X[, 1] + rnorm(n)
   df <- data.frame(Y = Y, T = Tr, X1 = X[, 1], X2 = X[, 2], X3 = X[, 3])
-
-  have_all <- requireNamespace("DoubleML", quietly = TRUE) &&
-    requireNamespace("mlr3", quietly = TRUE) &&
-    requireNamespace("mlr3learners", quietly = TRUE)
-
-  if (!have_all) {
-    expect_error(
-      morie_estimate_irm(df,
-        treatment = "T", outcome = "Y",
-        covariates = c("X1", "X2", "X3")
-      ),
-      "required for morie_estimate_irm"
-    )
-  } else {
-    res <- morie_estimate_irm(df,
-      treatment = "T", outcome = "Y",
-      covariates = c("X1", "X2", "X3"),
-      n_folds = 2L, random_state = 7L
-    )
-    expect_type(res, "list")
-    expect_named(res, c("ate", "se", "ci_lower", "ci_upper", "n", "method"))
-    expect_true(is.finite(res$ate))
-    expect_true(is.finite(res$se) && res$se >= 0)
-    expect_true(res$ci_lower <= res$ci_upper)
-    expect_equal(res$n, nrow(df))
-    expect_identical(res$method, "IRM (DoubleML)")
-  }
+  res <- morie_estimate_irm(df,
+    treatment = "T", outcome = "Y",
+    covariates = c("X1", "X2", "X3"),
+    n_folds = 2L, random_state = 7L
+  )
+  expect_type(res, "list")
+  expect_named(res, c("ate", "se", "ci_lower", "ci_upper", "n", "method"))
+  expect_true(is.finite(res$ate))
+  expect_true(is.finite(res$se) && res$se >= 0)
+  expect_true(res$ci_lower <= res$ci_upper)
+  expect_equal(res$n, nrow(df))
+  expect_identical(res$method, "IRM (morie native)")
 })
 
 test_that("irtsp fits a 2PL spatial model and returns expected structure", {

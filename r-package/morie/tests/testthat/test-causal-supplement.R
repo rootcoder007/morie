@@ -44,12 +44,14 @@ test_that("morie_estimate_double_ml recovers true ATE on simple DGP", {
   expect_equal(res$ate, 0.5, tolerance = 0.15)
 })
 
-test_that("morie_estimate_double_ml uses DoubleML when available", {
+test_that("morie_estimate_double_ml uses the native PLR engine", {
   skip_if_not_installed("ranger")
   df <- make_dml_df(n = 300)
   res <- morie_estimate_double_ml(df, "y", "d", c("x1", "x2", "x3"),
                                   n_folds = 3L)
-  expect_match(res$method, "DoubleML", fixed = TRUE)
+  # module 10 estimates DML natively (native cross-fitting); the method
+  # label is "PLR (morie native)".
+  expect_match(res$method, "morie native", fixed = TRUE)
 })
 
 test_that("morie_estimate_double_ml fallback path is named clearly", {

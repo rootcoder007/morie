@@ -47,34 +47,22 @@ test_that("hfd returns a structured higuchi_fd list on a deterministic input", {
   expect_length(out$extra$L_k, 5L)
 })
 
-test_that("filters fall back to the Python bridge without the signal pkg", {
+test_that("Butterworth filters run natively without the signal pkg", {
+  # module 20 replaced the signal-package / Python-bridge path with a
+  # native DSP engine, so filtering works even when 'signal' is absent.
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) {
       if (identical(package, "signal")) FALSE else TRUE
     },
     .package = "base"
   )
-  testthat::local_mocked_bindings(
-    .morie_py_call = function(fn_name, ...) paste0("bridge:", fn_name),
-    .package = "morie"
-  )
-  expect_equal(buttlp(1:10, 100, 10), "bridge:buttlp")
-  expect_equal(butthp(1:10, 100, 10), "bridge:butthp")
-  expect_equal(buttbp(1:10, 100, 5, 20), "bridge:buttbp")
-  expect_equal(buttbs(1:10, 100), "bridge:buttbs")
-  expect_equal(morie_sgolay_smooth(1:20), "bridge:sgolay")
+  expect_type(buttlp(1:10, 100, 10), "list")
+  expect_type(butthp(1:10, 100, 10), "list")
+  expect_type(buttbp(1:10, 100, 5, 20), "list")
+  expect_type(buttbs(1:10, 100), "list")
+  expect_type(morie_sgolay_smooth(1:20), "list")
 })
 
-test_that("morie_hurst_r falls back to the Python bridge without pracma", {
-  testthat::local_mocked_bindings(
-    requireNamespace = function(package, ...) {
-      if (identical(package, "pracma")) FALSE else TRUE
-    },
-    .package = "base"
-  )
-  testthat::local_mocked_bindings(
-    .morie_py_call = function(fn_name, ...) "bridge:hurst",
-    .package = "morie"
-  )
-  expect_equal(morie_hurst_r(cumsum(stats::rnorm(64))), "bridge:hurst")
+test_that("morie_hurst_r estimates the Hurst exponent", {
+  expect_type(morie_hurst_r(cumsum(stats::rnorm(64))), "list")
 })

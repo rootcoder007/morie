@@ -46,12 +46,14 @@ test_that(".morie_sha256_hex falls back to openssl, then stops", {
     .package = "base"
   )
   expect_type(morie:::.morie_sha256_hex("abc"), "character") # openssl path
+  # SHA-256 is now computed by a native C++ backend, so it no longer
+  # depends on digest/openssl and returns a hex digest regardless.
   testthat::local_mocked_bindings(
     requireNamespace = function(package, ...) {
       !(package %in% c("digest", "openssl"))
     }, .package = "base"
   )
-  expect_error(morie:::.morie_sha256_hex("abc"), "digest")
+  expect_type(morie:::.morie_sha256_hex("abc"), "character")
 })
 
 test_that("jsonlite-dependent entrypoints stop without jsonlite", {

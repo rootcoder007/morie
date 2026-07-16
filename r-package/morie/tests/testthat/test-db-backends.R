@@ -74,6 +74,7 @@ test_that("DBI/DuckDB cache round-trip via tempfile", {
 })
 
 test_that("morie_db_connect() default opens DuckDB when available", {
+  skip_if_not_installed("duckdb")
   skip_if_not_installed("DBI")
 
   tmp_dir <- tempfile("morie-test-")
