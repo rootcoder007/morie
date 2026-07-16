@@ -23,9 +23,7 @@
 # under `morie_matching_att_matched`, `morie_matching_atc_matched`,
 # `morie_matching_ate_matched` so they cannot be confused with IPW.
 
-#' @importFrom stats glm binomial predict quantile sd var cov cor lm coef
-#'   complete.cases as.formula model.matrix qnorm pnorm pchisq ks.test
-#'   weighted.mean median quantile setNames
+#' @importFrom stats glm binomial predict quantile sd var cov cor lm coef complete.cases as.formula model.matrix qnorm pnorm pchisq ks.test weighted.mean median setNames
 #' @importFrom utils head tail
 NULL
 
