@@ -280,6 +280,7 @@ test_that("rms_norm applies gamma scale and custom eps", {
 })
 
 test_that("morie_random_search_cv runs a small regression search", {
+  skip_if_not_installed("elasticnet")
   set.seed(0)
   n <- 40
   p <- 3
@@ -298,6 +299,7 @@ test_that("morie_random_search_cv runs a small regression search", {
 })
 
 test_that("morie_random_search_cv auto-detects classification task", {
+  skip_if_not_installed("elasticnet")
   set.seed(1)
   n <- 40
   p <- 3

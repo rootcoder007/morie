@@ -34,6 +34,7 @@ test_that("hawkes phi<->theta round-trip", {
 })
 
 test_that("morie_random_search_cv runs in regression mode", {
+  skip_if_not_installed("elasticnet")
   set.seed(1)
   x <- matrix(rnorm(60), 30, 2)
   y <- x %*% c(1, -1) + rnorm(30, sd = 0.1)
