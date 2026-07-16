@@ -58,7 +58,7 @@ NULL
     g <- t(Z) %*% w
     H <- t(Z) %*% (Z * Hd)
     step <- tryCatch(solve(H + 1e-8 * diag(q), g),
-      error = function(e) MASS::ginv(H) %*% g
+      error = function(e) .morie_ginv(H) %*% g
     )
     beta <- beta + step
     if (max(abs(step)) < tol) break
@@ -77,7 +77,7 @@ NULL
     g <- t(X) %*% (D - mu)
     H <- t(X) %*% (X * W)
     step <- tryCatch(solve(H + 1e-8 * diag(p), g),
-      error = function(e) MASS::ginv(H) %*% g
+      error = function(e) .morie_ginv(H) %*% g
     )
     beta <- beta + step
     if (max(abs(step)) < tol) break
@@ -95,7 +95,7 @@ NULL
     )
     w <- as.numeric(w)
     new <- tryCatch(solve(t(X) %*% (X * w), t(X) %*% (w * y)),
-      error = function(e) MASS::ginv(t(X) %*% (X * w)) %*% (t(X) %*% (w * y))
+      error = function(e) .morie_ginv(t(X) %*% (X * w)) %*% (t(X) %*% (w * y))
     )
     if (max(abs(new - beta)) < tol) {
       beta <- new

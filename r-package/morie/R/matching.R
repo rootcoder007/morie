@@ -669,7 +669,7 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
     H <- crossprod(C * w, C) - tcrossprod(Cw)
     dlam <- tryCatch(solve(H, -g),
                      error = function(e) {
-                       MASS::ginv(H) %*% (-g)
+                       .morie_ginv(H) %*% (-g)
                      })
     lam <- lam + as.numeric(dlam)
   }
