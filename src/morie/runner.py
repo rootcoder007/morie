@@ -1386,7 +1386,15 @@ def _handle_edit(args: argparse.Namespace) -> int:
 
 
 def _handle_repl(args: argparse.Namespace) -> int:
-    from .polyglot import run_headless_repl
+    try:
+        from .polyglot import run_headless_repl
+    except ImportError:
+        print(
+            "The polyglot multi-language REPL is not bundled in this install.\n"
+            "It ships in the source tree only (run morie from a source checkout "
+            "to use `morie repl --polyglot`)."
+        )
+        return 1
 
     polyglot = not getattr(args, "no_polyglot", False)
     auto_detect = not getattr(args, "no_detect", False)
