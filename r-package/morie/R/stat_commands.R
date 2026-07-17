@@ -502,19 +502,6 @@ print.morie_stat_command <- function(x, ...) {
 
 
 # --- Package-load hook -------------------------------------------------------
-# Fires once when the package namespace is loaded.  Wrapped in try() so a
-# downstream failure (e.g. missing optional dep used by a handler) never
-# aborts the load.
-.onLoad <- function(libname, pkgname) {
-  # future's connection-misuse check (diff_connections() in FutureResult) can
-  # segfault R uncatchably when DoubleML/mlr3 resolve futures. Setting the env
-  # var BEFORE future is loaded makes the "ignore" setting take effect in the
-  # main process AND every worker -- each re-reads R_FUTURE_* when future loads.
-  # An options() guard does not reach workers, which is why it was only flaky.
-  # Only set when the user has not chosen their own value.
-  if (!nzchar(Sys.getenv("R_FUTURE_CONNECTIONS_ONMISUSE"))) {
-    Sys.setenv(R_FUTURE_CONNECTIONS_ONMISUSE = "ignore")
-  }
-  try(.morie_auto_register_stat_commands(), silent = TRUE)
-  invisible(NULL)
-}
+# Registration fires from the single package .onLoad() in zzz.R (wrapped in
+# try() there so a downstream failure never aborts the load). Keeping a second
+# .onLoad here would have been silently shadowed by zzz.R's at collation time.
