@@ -195,7 +195,15 @@ jobs:
             any::goodpractice
             any::cyclocomp
             any::pkgstats
-            any::pkgcheck
+
+      # pkgcheck is not on CRAN; install from the rOpenSci r-universe.
+      # Then force CRAN pkgstats back on top: the r-universe dev pkgstats
+      # (0.2.3.005) crashes on empty-pattern gsub during pkgcheck runs.
+      - name: Install pkgcheck (r-universe) + pin CRAN pkgstats
+        run: |
+          install.packages("pkgcheck", repos = c("https://ropensci-review-tools.r-universe.dev", "https://cloud.r-project.org"))
+          install.packages("pkgstats", repos = "https://cloud.r-project.org")
+        shell: Rscript {0}
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
