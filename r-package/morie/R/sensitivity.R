@@ -120,6 +120,9 @@ NULL
 #' @param ci_lower  Lower 95% CI of the RR (optional).
 #' @param ci_upper  Upper 95% CI of the RR (optional).
 #' @return A `morie_evalue` named-list.
+#' @examples
+#' res <- e_value_rr(2.0)
+#' res$e_value_point
 #' @export
 e_value_rr <- function(rr, ci_lower = NULL, ci_upper = NULL) {
   if (TRUE) {
@@ -171,6 +174,9 @@ e_value_rr <- function(rr, ci_lower = NULL, ci_upper = NULL) {
 #' @param ci_lower,ci_upper Optional 95% CI.
 #' @param prevalence Outcome prevalence (optional).
 #' @return A `morie_evalue` named-list.
+#' @examples
+#' res <- e_value_or(2.0)
+#' res$e_value_point
 #' @export
 e_value_or <- function(odds_ratio, ci_lower = NULL, ci_upper = NULL,
                          prevalence = NULL) {
@@ -194,6 +200,9 @@ e_value_or <- function(odds_ratio, ci_lower = NULL, ci_upper = NULL,
 #' @param hr Hazard ratio.
 #' @param ci_lower,ci_upper Optional 95% CI of HR.
 #' @return A `morie_evalue` named-list.
+#' @examples
+#' res <- e_value_hr(2.0, ci_lower = 1.5, ci_upper = 2.5)
+#' res$e_value_point
 #' @export
 e_value_hr <- function(hr, ci_lower = NULL, ci_upper = NULL) {
   hr_to_rr <- function(x) {
@@ -216,6 +225,10 @@ e_value_hr <- function(hr, ci_lower = NULL, ci_upper = NULL) {
 #' @param se Standard error of d (optional).
 #' @param n  Sample size for SE approximation (optional).
 #' @return A `morie_evalue` named-list.
+#' @examples
+#' res <- e_value_d(0.5, se = 0.1)
+#' res$e_value_point
+#' e_value_d(0.5, n = 100)$e_value_point
 #' @export
 e_value_d <- function(d, se = NULL, n = NULL) {
   rr <- exp(0.91 * d)
@@ -555,6 +568,10 @@ specification_curve <- function(data, outcome, treatment,
 #' @param p_treated       Proportion treated.
 #' @param outcome_range   c(min, max) on the outcome. Default c(0, 1).
 #' @return Named list.
+#' @examples
+#' set.seed(1)
+#' res <- manski_bounds(runif(50), runif(50), p_treated = 0.5)
+#' c(res$lower_bound, res$upper_bound)
 #' @export
 manski_bounds <- function(outcome_treated, outcome_control,
                             p_treated, outcome_range = NULL) {
@@ -599,6 +616,10 @@ manski_bounds <- function(outcome_treated, outcome_control,
 #' @param prevalence_confounder Confounder prevalence. Default 0.5.
 #' @return Named list with `adjusted_estimate`, `bias`,
 #'   `adjusted_ci_lower`, `adjusted_ci_upper`, `original_estimate`.
+#' @examples
+#' res <- bias_adjusted_estimate(0.5, 0.1, rr_ud = 2, rr_eu = 2)
+#' res$adjusted_estimate
+#' c(res$adjusted_ci_lower, res$adjusted_ci_upper)
 #' @export
 bias_adjusted_estimate <- function(estimate, se, rr_ud, rr_eu,
                                       prevalence_confounder = 0.5) {

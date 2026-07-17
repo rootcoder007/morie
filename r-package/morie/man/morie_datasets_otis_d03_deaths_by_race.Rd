@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS d03 -- Deaths in custody by race
 }
+\examples{
+df <- morie_datasets_otis_d03_deaths_by_race(offline = TRUE)
+head(df)
+}

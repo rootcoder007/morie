@@ -25,3 +25,9 @@ and \code{csv_path}.
 \description{
 Load ARSAU main_records CSV for the given year.
 }
+\examples{
+\donttest{
+res <- try(morie_arsau_load_main_records("2024"))
+if (!inherits(res, "try-error")) head(res$data)
+}
+}

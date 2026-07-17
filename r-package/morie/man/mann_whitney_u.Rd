@@ -19,3 +19,10 @@ with the U statistic, p-value, rank-biserial effect size (also under
 \description{
 Mann-Whitney U / Wilcoxon rank-sum test
 }
+\examples{
+set.seed(1)
+x <- rnorm(60, mean = 0)
+y <- rnorm(60, mean = 0.4)
+res <- mann_whitney_u(x, y)
+res$extra$rank_biserial
+}

@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS d07 -- Deaths in custody alerts x housing unit
 }
+\examples{
+df <- morie_datasets_otis_d07_alerts_by_housing_unit(offline = TRUE)
+head(df)
+}

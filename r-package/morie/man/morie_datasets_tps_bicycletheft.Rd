@@ -37,3 +37,7 @@ HOOD_140 attached.
 \description{
 TPS PSDP -- Bicycle Theft
 }
+\examples{
+df <- morie_datasets_tps_bicycletheft(offline = TRUE)
+head(df[, c("PRIMARY_OFFENCE", "BIKE_MAKE", "BIKE_TYPE", "STATUS")])
+}

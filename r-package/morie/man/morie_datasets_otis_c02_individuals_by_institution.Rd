@@ -31,3 +31,7 @@ Columns mirror the upstream resource.
 \description{
 OTIS c02 -- Individuals by institution
 }
+\examples{
+df <- morie_datasets_otis_c02_individuals_by_institution(offline = TRUE)
+head(df)
+}

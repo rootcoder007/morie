@@ -31,3 +31,7 @@ the upstream resource.
 \description{
 OTIS c01 -- Total individuals (in custody / restrictive confinement / segregation)
 }
+\examples{
+df <- morie_datasets_otis_c01_individuals_total(offline = TRUE)
+head(df)
+}

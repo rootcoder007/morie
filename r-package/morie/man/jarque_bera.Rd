@@ -16,3 +16,8 @@ with the Jarque-Bera JB statistic, p-value, df = 2, and sample size n.
 \description{
 Jarque-Bera test for normality
 }
+\examples{
+set.seed(1)
+res <- jarque_bera(rnorm(100))
+res$p_value
+}

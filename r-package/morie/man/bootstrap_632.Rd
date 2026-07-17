@@ -27,3 +27,18 @@ error_632, error_632plus.
 \description{
 .632 and .632+ bootstrap estimators for prediction error
 }
+\examples{
+set.seed(1)
+X <- matrix(rnorm(50), 25, 2)
+y <- rnorm(25)
+model_fn <- function(Xt, yt) structure(
+  list(coef = drop(solve(crossprod(Xt), crossprod(Xt, yt)))),
+  class = "ols_lite")
+# registerS3method makes predict() dispatch work from any
+# environment the example is sourced into.
+registerS3method("predict", "ols_lite",
+  function(object, newdata, ...) drop(newdata \%*\% object$coef))
+score_fn <- function(yt, yp) mean((yt - yp)^2)
+res <- bootstrap_632(X, y, model_fn, score_fn, n_boot = 10L)
+res$error_632
+}

@@ -31,3 +31,7 @@ the upstream resource.
 \description{
 OTIS c07 -- Individuals: alerts + hold flags
 }
+\examples{
+df <- morie_datasets_otis_c07_individuals_alerts(offline = TRUE)
+head(df)
+}

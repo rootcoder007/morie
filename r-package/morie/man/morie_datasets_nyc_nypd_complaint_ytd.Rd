@@ -53,3 +53,7 @@ when \code{offline = FALSE}. Columns mirror NYC OpenData resource
 \description{
 NYPD Complaint Data Current (Year To Date)
 }
+\examples{
+df <- morie_datasets_nyc_nypd_complaint_ytd(offline = TRUE)
+ncol(df)  # 36: adds geocoded_column over the historic schema
+}

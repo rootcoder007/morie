@@ -15,3 +15,6 @@ A single numeric scalar: the harmonic mean p-value.
 \description{
 For tests that may be dependent.
 }
+\examples{
+harmonic_mean_p(c(0.001, 0.05, 0.5))
+}

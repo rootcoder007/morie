@@ -17,3 +17,10 @@ A \code{morie_effect_size}.
 \description{
 Applies J = 1 - 3 / (4 * df - 1).
 }
+\examples{
+set.seed(1)
+x <- rnorm(30, mean = 0)
+y <- rnorm(30, mean = 0.6)
+r <- hedges_g(x, y)
+r$estimate
+}

@@ -288,6 +288,12 @@ ARSAU_KINDS <- function() {
 #'
 #' @param path Path to the JSON file.
 #' @return Named list with \code{fields} and \code{records}.
+#' @examples
+#' tf <- tempfile(fileext = ".json")
+#' writeLines('{"fields": [{"id": "a", "type": "int"}]}', tf)
+#' res <- morie_arsau_read_sidecar(tf)
+#' res$fields
+#' unlink(tf)
 #' @export
 morie_arsau_read_sidecar <- function(path) {
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
@@ -446,6 +452,11 @@ morie_arsau_read_sidecar <- function(path) {
 #'   \code{warnings}, \code{interpretation}, \code{year}, \code{kind},
 #'   \code{language}, \code{is_valid}, \code{n_rows}, \code{n_cols},
 #'   and \code{csv_path}.
+#' @examples
+#' \donttest{
+#' res <- try(morie_arsau_load_main_records("2024"))
+#' if (!inherits(res, "try-error")) head(res$data)
+#' }
 #' @export
 morie_arsau_load_main_records <- function(year, language = "en", data_dir = NULL) {
   key <- .arsau_coerce_year_key(year)
@@ -464,6 +475,11 @@ morie_arsau_load_main_records <- function(year, language = "en", data_dir = NULL
 #'   individual_records data.frame plus sidecar, schema, and the
 #'   standard rich-result metadata fields described in
 #'   \code{\link{morie_arsau_load_main_records}}.
+#' @examples
+#' \donttest{
+#' res <- try(morie_arsau_load_individual_records("2024"))
+#' if (!inherits(res, "try-error")) head(res$data)
+#' }
 #' @export
 morie_arsau_load_individual_records <- function(year, language = "en", data_dir = NULL) {
   key <- .arsau_coerce_year_key(year)
@@ -482,6 +498,11 @@ morie_arsau_load_individual_records <- function(year, language = "en", data_dir 
 #'   probe-cycle data.frame plus sidecar and the standard
 #'   rich-result metadata fields described in
 #'   \code{\link{morie_arsau_load_main_records}}.
+#' @examples
+#' \donttest{
+#' res <- try(morie_arsau_load_probe_cycle_records("2024"))
+#' if (!inherits(res, "try-error")) head(res$data)
+#' }
 #' @export
 morie_arsau_load_probe_cycle_records <- function(year, language = "en", data_dir = NULL) {
   key <- .arsau_coerce_year_key(year)
@@ -504,6 +525,11 @@ morie_arsau_load_probe_cycle_records <- function(year, language = "en", data_dir
 #'   fields. When \code{allow_invalid = TRUE} is used for the 2023
 #'   release the returned object has \code{is_valid = FALSE} and
 #'   \code{warnings} opens with the ministry-flagged-invalid caveat.
+#' @examples
+#' \donttest{
+#' res <- try(morie_arsau_load_weapon_records("2024"))
+#' if (!inherits(res, "try-error")) head(res$data)
+#' }
 #' @export
 morie_arsau_load_weapon_records <- function(year, allow_invalid = FALSE,
                                               language = "en", data_dir = NULL) {
@@ -526,6 +552,11 @@ morie_arsau_load_weapon_records <- function(year, allow_invalid = FALSE,
 #'   data.frame (one row per service-year) plus sidecar and the
 #'   standard rich-result metadata fields described in
 #'   \code{\link{morie_arsau_load_main_records}}.
+#' @examples
+#' \donttest{
+#' res <- try(morie_arsau_load_aggregate_summary("2020-2022"))
+#' if (!inherits(res, "try-error")) head(res$data)
+#' }
 #' @export
 morie_arsau_load_aggregate_summary <- function(year_range = "2020-2022",
                                                  language = "en", data_dir = NULL) {
@@ -545,6 +576,11 @@ morie_arsau_load_aggregate_summary <- function(year_range = "2020-2022",
 #'   data.frame (167-column wide layout) plus sidecar and the standard
 #'   rich-result metadata fields described in
 #'   \code{\link{morie_arsau_load_main_records}}.
+#' @examples
+#' \donttest{
+#' res <- try(morie_arsau_load_detailed_dataset("2020-2022"))
+#' if (!inherits(res, "try-error")) head(res$data)
+#' }
 #' @export
 morie_arsau_load_detailed_dataset <- function(year_range = "2020-2022",
                                                 language = "en", data_dir = NULL) {
@@ -572,6 +608,10 @@ morie_arsau_load_detailed_dataset <- function(year_range = "2020-2022",
 #'   (which keys do/do not have a directory on disk), \code{n},
 #'   \code{data_root}, plus the standard \code{title},
 #'   \code{summary_lines}, \code{warnings}, and \code{interpretation}.
+#' @examples
+#' r <- morie_arsau_available_years(data_dir = tempdir())
+#' r$present
+#' r$missing
 #' @export
 morie_arsau_available_years <- function(data_dir = NULL, language = "en") {
   years <- ARSAU_YEARS()
@@ -633,6 +673,9 @@ morie_arsau_available_years <- function(data_dir = NULL, language = "en") {
 #'   \code{csv}, \code{valid}, \code{rows}, \code{cols}, and a
 #'   truncated \code{description}), plus the standard \code{title},
 #'   \code{summary_lines}, \code{warnings}, and \code{interpretation}.
+#' @examples
+#' r <- morie_arsau_available_datasets(year = "2023")
+#' r$n
 #' @export
 morie_arsau_available_datasets <- function(year = NULL, language = "en", data_dir = NULL) {
   if (is.null(year)) {
@@ -698,6 +741,9 @@ morie_arsau_available_datasets <- function(year = NULL, language = "en", data_di
 #'   (or \code{NULL}), the parsed \code{sidecar} (or \code{NULL}), plus
 #'   the standard \code{title}, \code{summary_lines}, \code{warnings},
 #'   and \code{interpretation}.
+#' @examples
+#' res <- morie_arsau_describe("main_records", "2024")
+#' res$summary_lines
 #' @export
 morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
                                    n_preview_rows = 3L) {

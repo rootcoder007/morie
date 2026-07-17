@@ -84,3 +84,8 @@ Phase 3HHH2. Bundled snapshot of every dataset on
 opendata.vancouver.ca with richer schema (publisher, theme,
 license, records_count).
 }
+\examples{
+d <- morie_datasets_nyc_opendata_bulk_layers(offline = TRUE)
+nrow(d)
+head(d[, c("soda_id", "type")])
+}

@@ -19,3 +19,9 @@ A \code{morie_rich_result} list with elements \code{method},
 \description{
 Robust to arbitrary correlation structure.
 }
+\examples{
+res <- cauchy_combination(c(0.01, 0.3, 0.5))
+res$p_value
+resw <- cauchy_combination(c(0.01, 0.3, 0.5), weights = c(0.5, 0.25, 0.25))
+resw$p_value
+}

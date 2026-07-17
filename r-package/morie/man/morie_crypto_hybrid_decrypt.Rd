@@ -17,3 +17,10 @@ Raw vector of decrypted plaintext.
 \description{
 Hybrid decrypt: ML-KEM-768 + ChaCha20-Poly1305
 }
+\examples{
+# Hybrid ML-KEM-768 decryption is not yet wired into the R bindings;
+# the call validates inputs, then signals "not implemented".
+if (morie_crypto_sodium_available()) {
+  try(morie_crypto_hybrid_decrypt(as.raw(1:4), as.raw(1:4)))
+}
+}

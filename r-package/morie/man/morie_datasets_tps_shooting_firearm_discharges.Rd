@@ -37,3 +37,7 @@ EVENT_TYPE) with HOOD_158 + HOOD_140 attached.
 \description{
 TPS PSDP -- Shooting and Firearm Discharges
 }
+\examples{
+df <- morie_datasets_tps_shooting_firearm_discharges(offline = TRUE)
+head(df[, c("EVENT_TYPE", "DEATH", "INJURIES", "OCC_TIME_RANGE")])
+}

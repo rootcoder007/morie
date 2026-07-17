@@ -30,6 +30,9 @@
 #' @param offline If `TRUE` (default), reads the bundled CSV.
 #' @return A `data.frame` with `soda_id`, `title`, `type`,
 #'   `search_keyword`.
+#' @examples
+#' d <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
+#' head(d)
 #' @export
 morie_datasets_calgary_open_crime_adjacent_layers <- function(offline = TRUE) {
   .morie_canadian_cat_fixture("calgary_opendata_crime_adjacent_catalog.csv",
@@ -91,6 +94,9 @@ morie_datasets_ottawa_open_crime_adjacent_layers <- function(offline = TRUE) {
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `community`, `category`, `crime_count`,
 #'   `year`, `month`.
+#' @examples
+#' df <- morie_datasets_calgary_community_crime_stats(offline = TRUE)
+#' head(df)
 #' @export
 morie_datasets_calgary_community_crime_stats <- function(offline = TRUE,
                                                             max_features = NULL) {
@@ -172,6 +178,9 @@ morie_datasets_calgary_socrata_by_id <- function(soda_id,
 #' @param max_features Optional row cap.
 #' @return A `data.frame` with `name`, `address`, `latitude`,
 #'   `longitude`.
+#' @examples
+#' df <- morie_datasets_edmonton_police_stations(offline = TRUE)
+#' df[, c("name", "latitude", "longitude")]
 #' @export
 morie_datasets_edmonton_police_stations <- function(offline = TRUE,
                                                       max_features = NULL) {

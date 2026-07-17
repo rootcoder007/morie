@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c04 -- Individuals by race x region
 }
+\examples{
+df <- morie_datasets_otis_c04_individuals_race_by_region(offline = TRUE)
+head(df)
+}

@@ -17,3 +17,8 @@ and sample size n.
 \description{
 Kendall's tau-b correlation
 }
+\examples{
+set.seed(1)
+res <- kendall_correlation(rnorm(40), rnorm(40))
+res
+}

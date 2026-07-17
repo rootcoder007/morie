@@ -22,3 +22,8 @@ vector of all known year/range keys), \code{present} + \code{missing}
 \description{
 List ARSAU year / year-range buckets.
 }
+\examples{
+r <- morie_arsau_available_years(data_dir = tempdir())
+r$present
+r$missing
+}

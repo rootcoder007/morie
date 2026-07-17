@@ -17,3 +17,7 @@ A \code{morie_effect_size}.
 \description{
 Eta-squared from ANOVA sums of squares
 }
+\examples{
+r <- eta_squared(10, 20)
+r$estimate
+}

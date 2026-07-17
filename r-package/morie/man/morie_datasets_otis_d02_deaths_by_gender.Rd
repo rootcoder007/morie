@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS d02 -- Deaths in custody by gender
 }
+\examples{
+df <- morie_datasets_otis_d02_deaths_by_gender(offline = TRUE)
+head(df)
+}

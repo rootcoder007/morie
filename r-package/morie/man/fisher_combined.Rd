@@ -16,3 +16,7 @@ A \code{morie_rich_result} list with elements \code{method},
 \description{
 Fisher's method for combining independent p-values
 }
+\examples{
+res <- fisher_combined(c(0.001, 0.6, 0.5))
+res$p_value
+}

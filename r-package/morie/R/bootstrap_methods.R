@@ -112,6 +112,11 @@
 #' @param cluster Optional vector of cluster labels (length n).
 #'
 #' @return A \code{morie_bootstrap_result} list.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(40)
+#' res <- bootstrap(x, mean, n_boot = 50L, ci_method = "percentile")
+#' c(res$estimate, res$ci_lower, res$ci_upper)
 #' @export
 bootstrap <- function(data, statistic, n_boot = 2000L, ci_level = 0.95,
                       ci_method = "bca", seed = 42L,
@@ -383,6 +388,12 @@ wild_bootstrap <- function(y, X, statistic_idx = 2L, n_boot = 999L,
 #'   \code{"stationary"}.
 #' @param seed Random seed.
 #' @return A \code{morie_bootstrap_result}.
+#' @examples
+#' set.seed(1)
+#' ts_dat <- as.numeric(arima.sim(list(ar = 0.4), n = 50L))
+#' res <- block_bootstrap(ts_dat, mean, block_size = 5L, n_boot = 20L,
+#'                        method = "circular")
+#' res$estimate
 #' @export
 block_bootstrap <- function(data, statistic, block_size,
                             n_boot = 2000L, ci_level = 0.95,
@@ -441,6 +452,11 @@ block_bootstrap <- function(data, statistic, block_size,
 #' @param statistic Function returning a scalar.
 #' @param ci_level Confidence level.
 #' @return A \code{morie_jackknife_result}.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(40)
+#' res <- jackknife(x, mean)
+#' res$se
 #' @export
 jackknife <- function(data, statistic, ci_level = 0.95) {
   n <- .nrow_like(data)
@@ -477,6 +493,11 @@ jackknife <- function(data, statistic, ci_level = 0.95) {
 #' @param max_subsets Maximum subsets to evaluate.
 #' @param seed Random seed.
 #' @return A \code{morie_jackknife_result}.
+#' @examples
+#' set.seed(1)
+#' x <- rnorm(8)
+#' r <- delete_d_jackknife(x, mean, d = 2L)
+#' r$estimate
 #' @export
 delete_d_jackknife <- function(data, statistic, d = 2L,
                                ci_level = 0.95, max_subsets = 5000L,
@@ -689,6 +710,20 @@ subsampling <- function(data, statistic, subsample_size = NULL,
 #' @param seed Random seed.
 #' @return Named numeric list with apparent_error, bootstrap_error,
 #'   error_632, error_632plus.
+#' @examples
+#' set.seed(1)
+#' X <- matrix(rnorm(50), 25, 2)
+#' y <- rnorm(25)
+#' model_fn <- function(Xt, yt) structure(
+#'   list(coef = drop(solve(crossprod(Xt), crossprod(Xt, yt)))),
+#'   class = "ols_lite")
+#' # registerS3method makes predict() dispatch work from any
+#' # environment the example is sourced into.
+#' registerS3method("predict", "ols_lite",
+#'   function(object, newdata, ...) drop(newdata %*% object$coef))
+#' score_fn <- function(yt, yp) mean((yt - yp)^2)
+#' res <- bootstrap_632(X, y, model_fn, score_fn, n_boot = 10L)
+#' res$error_632
 #' @export
 bootstrap_632 <- function(X, y, model_fn, score_fn,
                           n_boot = 200L, seed = 42L) {

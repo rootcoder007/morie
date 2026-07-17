@@ -136,6 +136,9 @@ NULL
 #' @param df b09 long-form data.frame.
 #' @param band_col,count_col Column names.
 #' @return \code{morie_otis_result}.
+#' @examples
+#' df <- morie_synth_otis("b01", n = 150L, seed = 2L)
+#' res <- try(morie_otis_repeat_placement_concentration(df))
 #' @export
 morie_otis_repeat_placement_concentration <- function(
   df,
@@ -218,6 +221,9 @@ morie_otis_repeat_placement_concentration <- function(
 #'
 #' @param df b01 data.frame.
 #' @return \code{morie_otis_result}.
+#' @examples
+#' df <- morie_synth_otis("b01", n = 80L, seed = 1L)
+#' res <- try(morie_otis_within_year_placement_count(df))
 #' @export
 morie_otis_within_year_placement_count <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear")
@@ -1025,6 +1031,11 @@ morie_otis_irr_glmm_vm <- function(df) {
 #' @param b01,b02,b09,a01 Input data.frames (any may be \code{NULL}).
 #' @param out_dir Optional output directory.
 #' @return Named list of \code{morie_otis_result}.
+#' @examples
+#' b01 <- morie_synth_otis("b01", n = 80L, seed = 21L)
+#' b02 <- morie_synth_otis("b01", n = 80L, seed = 22L)
+#' res <- try(morie_otis_churn_analyze_all(b01 = b01, b02 = b02))
+#' if (!inherits(res, "try-error")) names(res)
 #' @export
 morie_otis_churn_analyze_all <- function(b01 = NULL, b02 = NULL,
                                           b09 = NULL, a01 = NULL,

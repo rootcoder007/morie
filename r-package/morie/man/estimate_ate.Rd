@@ -21,3 +21,11 @@ Named list with \code{ate} and \code{se} (HC3-robust).
 \description{
 IPW-weighted OLS ATE
 }
+\examples{
+set.seed(1)
+d <- data.frame(x = rnorm(60), tr = rbinom(60, 1, 0.5))
+d$y <- 1 + 0.5 * d$tr + 0.3 * d$x + rnorm(60)
+d$wt <- runif(60, 0.5, 1.5)
+res <- estimate_ate(d, outcome = "y", treatment = "tr", weights_col = "wt")
+res$ate
+}

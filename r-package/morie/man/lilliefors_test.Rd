@@ -18,3 +18,8 @@ with the Lilliefors D statistic, p-value (approximate when
 Uses \pkg{nortest::lillie.test} when available; otherwise falls back
 to a plain KS test with estimated parameters (p-value approximate).
 }
+\examples{
+set.seed(1)
+res <- lilliefors_test(rnorm(80))
+res
+}

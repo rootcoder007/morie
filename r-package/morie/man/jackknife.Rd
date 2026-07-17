@@ -19,3 +19,9 @@ A \code{morie_jackknife_result}.
 \description{
 Delete-one (leave-one-out) jackknife
 }
+\examples{
+set.seed(1)
+x <- rnorm(40)
+res <- jackknife(x, mean)
+res$se
+}

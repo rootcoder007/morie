@@ -22,3 +22,8 @@ Anderson-Darling for arbitrary distributions requires the
 \pkg{ADGofTest} or \pkg{goftest} packages. For the normal case we
 fall back on \code{nortest::ad.test} when available.
 }
+\examples{
+set.seed(1)
+res <- anderson_darling(rnorm(60))
+res$test_statistic
+}

@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS b03 -- Segregation placements: alerts + hold by institution
 }
+\examples{
+df <- morie_datasets_otis_b03_seg_alerts_by_institution(offline = TRUE)
+head(df)
+}

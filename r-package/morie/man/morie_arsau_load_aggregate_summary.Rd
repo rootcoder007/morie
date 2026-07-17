@@ -27,3 +27,9 @@ standard rich-result metadata fields described in
 \description{
 Load ARSAU aggregate-summary-by-year CSV (2020-2022 only).
 }
+\examples{
+\donttest{
+res <- try(morie_arsau_load_aggregate_summary("2020-2022"))
+if (!inherits(res, "try-error")) head(res$data)
+}
+}

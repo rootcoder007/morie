@@ -27,3 +27,9 @@ Length-1 character string of the formatted number, or
 \description{
 Format a single number according to style conventions
 }
+\examples{
+format_number(0.5, style = "fixed")
+format_number(1e-6, style = "scientific")
+format_number(0.25, style = "percent")
+format_number(3.7, style = "integer")
+}

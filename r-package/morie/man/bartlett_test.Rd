@@ -16,3 +16,8 @@ with Bartlett's K-squared statistic, p-value, df, and total n.
 \description{
 Bartlett's test for equality of variances
 }
+\examples{
+set.seed(1)
+res <- bartlett_test(rnorm(30), rnorm(30, sd = 2))
+res$p_value
+}

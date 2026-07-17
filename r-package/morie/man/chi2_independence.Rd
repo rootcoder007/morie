@@ -19,3 +19,9 @@ with the chi-square statistic, p-value, df, Cramer's V effect size, and
 \description{
 Chi-squared test of independence
 }
+\examples{
+tab <- matrix(c(30, 20, 10, 40), 2, 2)
+res <- chi2_independence(tab)
+res$p_value
+res$extra$cramers_v
+}

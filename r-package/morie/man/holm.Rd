@@ -20,3 +20,8 @@ A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 Wraps \code{stats::p.adjust(method = "holm")}; uniformly more
 powerful than Bonferroni.
 }
+\examples{
+set.seed(1)
+p <- c(runif(30), runif(5, 0, 0.005))
+holm(p)$adjusted
+}

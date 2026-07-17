@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c10 -- Aggregate durations by institution
 }
+\examples{
+df <- morie_datasets_otis_c10_aggregate_durations_by_institution(offline = TRUE)
+names(df)
+}

@@ -39,3 +39,10 @@ Trains a small MLP-based GAN on an (n, 2) matrix of coordinates and
 returns a fitted object that can \code{sample()} synthetic points.
 Mirrors the JAX \code{SpatialGAN} class.
 }
+\examples{
+set.seed(1)
+pts <- matrix(rnorm(60), ncol = 2L)
+r <- morie_fairness_spatial_gan(pts, steps = 5L, batch_size = 8L,
+  latent_dim = 4L, hidden = 8L, seed = 1L)
+r$backend
+}

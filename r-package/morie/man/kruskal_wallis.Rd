@@ -16,3 +16,8 @@ with the H statistic, p-value, df, and eta-squared effect size.
 \description{
 Kruskal-Wallis H-test
 }
+\examples{
+set.seed(1)
+res <- kruskal_wallis(rnorm(20), rnorm(20, mean = 1), rnorm(20, mean = 2))
+res$df
+}

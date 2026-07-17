@@ -18,3 +18,8 @@ with Levene's F statistic, p-value, df, and total sample size n.
 \description{
 Levene's test for equality of variances
 }
+\examples{
+set.seed(1)
+res <- levene_test(rnorm(40), rnorm(40, sd = 2), center = "median")
+res
+}

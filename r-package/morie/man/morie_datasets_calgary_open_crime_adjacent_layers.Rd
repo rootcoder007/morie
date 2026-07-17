@@ -34,3 +34,7 @@ Phase 3FFF3. Bundled snapshot of 157 City-of-Calgary Socrata
 datasets matched on crime-adjacent keywords (crime, police,
 fire, ambulance, traffic, incident, collision, bylaw, 311).
 }
+\examples{
+d <- morie_datasets_calgary_open_crime_adjacent_layers(offline = TRUE)
+head(d)
+}

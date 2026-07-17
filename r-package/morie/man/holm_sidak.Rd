@@ -19,3 +19,8 @@ A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
 \description{
 Holm-Sidak step-down procedure
 }
+\examples{
+set.seed(1)
+p <- c(runif(30), runif(5, 0, 0.005))
+holm_sidak(p)$adjusted
+}

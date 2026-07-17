@@ -19,3 +19,8 @@ and total count n.
 \description{
 Chi-squared goodness-of-fit test
 }
+\examples{
+res <- chi2_goodness_of_fit(c(20, 30, 25, 25))
+res$p_value
+res$df
+}

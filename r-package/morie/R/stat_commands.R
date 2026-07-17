@@ -162,6 +162,9 @@ resolve_stat_command <- function(name) {
 #' Sorted vector of all command names + aliases
 #' @return A sorted character vector containing every registered stat
 #'   command name together with all registered aliases (deduplicated).
+#' @examples
+#' v <- all_stat_command_names()
+#' head(v)
 #' @export
 all_stat_command_names <- function() {
   sort(unique(c(names(.morie_stat_commands$registry),
@@ -171,6 +174,12 @@ all_stat_command_names <- function() {
 
 #' Commands grouped by category
 #' @return Named list of character vectors of command names.
+#' @examples
+#' cmd <- stat_command("demo_cmd", "Demo", "demo_cmd()", "Example command",
+#'                     handler_repl = function() 1)
+#' register_stat_command(cmd)
+#' groups <- commands_by_category()
+#' groups[["Demo"]]
 #' @export
 commands_by_category <- function() {
   cats <- .morie_stat_commands$categories
@@ -213,6 +222,12 @@ n_stat_commands <- function() {
 #' Reset the registry (test / debugging helper)
 #' @return The number of commands removed, invisibly.
 #' @keywords internal
+#' @examples
+#' n_cleared <- clear_stat_commands()
+#' n_stat_commands()
+#' morie:::.morie_seed_stat_commands()
+#' morie:::.morie_auto_register_stat_commands()
+#' n_stat_commands()
 #' @export
 clear_stat_commands <- function() {
   n <- length(.morie_stat_commands$registry)

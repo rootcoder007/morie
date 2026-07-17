@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS b05 -- Segregation placements by consecutive-length bucket
 }
+\examples{
+df <- morie_datasets_otis_b05_seg_consecutive_lengths(offline = TRUE)
+head(df)
+}

@@ -19,3 +19,8 @@ and n (the table total).
 \description{
 McNemar's test (paired nominal data)
 }
+\examples{
+tab <- matrix(c(20, 5, 10, 15), nrow = 2)
+res <- mcnemar_test(tab)
+res
+}

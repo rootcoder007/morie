@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS d04 -- Deaths in custody by religion
 }
+\examples{
+df <- morie_datasets_otis_d04_deaths_by_religion(offline = TRUE)
+head(df)
+}

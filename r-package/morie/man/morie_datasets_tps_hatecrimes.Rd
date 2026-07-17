@@ -37,3 +37,8 @@ attached.
 \description{
 TPS PSDP -- Hate Crimes
 }
+\examples{
+df <- morie_datasets_tps_hatecrimes(offline = TRUE)
+head(df[, c("OCCURRENCE_YEAR", "PRIMARY_OFFENCE", "RACE_BIAS",
+            "ARREST_MADE")])
+}

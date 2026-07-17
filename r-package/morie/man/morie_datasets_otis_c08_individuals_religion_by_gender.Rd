@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c08 -- Individuals by religion x gender
 }
+\examples{
+df <- morie_datasets_otis_c08_individuals_religion_by_gender(offline = TRUE)
+head(df)
+}

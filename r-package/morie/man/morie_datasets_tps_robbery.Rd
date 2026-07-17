@@ -36,3 +36,7 @@ HOOD_140 attached.
 \description{
 TPS PSDP -- Robbery
 }
+\examples{
+df <- morie_datasets_tps_robbery(offline = TRUE)
+head(df)
+}

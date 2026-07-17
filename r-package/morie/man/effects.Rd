@@ -14,7 +14,7 @@ native cross-fit partialling-out.
 \item \code{estimate_ate_gcomputation()} — G-computation
 (outcome-regression / standardisation) ATE with bootstrap SE.
 \item \code{sensitivity_rosenbaum()} — Rosenbaum bounds for hidden
-confounding (wraps \pkg{rbounds} when available, else base R).
+confounding (native Rosenbaum signed-rank bounds).
 \item \code{e_value()} — VanderWeele-Ding E-value (wraps
 \pkg{EValue} when available, else base R).
 }

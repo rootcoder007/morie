@@ -42,3 +42,7 @@ canonical CPS categories.
 Phase 3FFF3. Bundled 200-row sample of Calgary fire response
 calls (Socrata id \code{bdez-pds9}).
 }
+\examples{
+df <- morie_datasets_calgary_community_crime_stats(offline = TRUE)
+head(df)
+}

@@ -41,3 +41,9 @@ Resamples observations with replacement and computes confidence
 intervals via the percentile, normal, basic, BCa, or studentized
 method.  Optionally supports stratified or cluster resampling.
 }
+\examples{
+set.seed(1)
+x <- rnorm(40)
+res <- bootstrap(x, mean, n_boot = 50L, ci_method = "percentile")
+c(res$estimate, res$ci_lower, res$ci_upper)
+}
