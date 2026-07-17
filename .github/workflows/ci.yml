@@ -68,7 +68,10 @@ jobs:
           # carries labextension bundles; both are wheel-absent, and both
           # trip static scanners with false positives. Wheels exist for all
           # CI targets (numpy: manylinux; plotly: py3-none-any).
-          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test,interactive]"
+          # doubleml extra installed here (main matrix) so the DML wrapper
+          # path is tested; the container + lock jobs stay bare and exercise
+          # the importorskip path instead.
+          pip install --prefer-binary --only-binary=numpy,plotly -e ".[test,interactive,doubleml]"
 
       - name: Test
         run: pytest -q --tb=short
