@@ -812,7 +812,7 @@
         n <- sum(v[sel] == lev, na.rm = TRUE)
         sprintf("%d (%.1f%%)", n, 100 * n / max(1L, sum(sel)))
       }, character(1))
-      add_row(paste0("  ", lev), cells)
+      add_row(paste0("\u00a0\u00a0", lev), cells)
     }
   }
   for (num in intersect(c("ebac_tot", "heavy_drinking_30d"), names(data))) {
