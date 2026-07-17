@@ -1,8 +1,8 @@
 """
 REPL bootstrap for TIDE (Go TUI) and any external REPL.
 
-Usage from TIDE subprocess:
-    exec("from morie.repl_init import setup_repl; setup_repl(globals())")
+Usage from TIDE subprocess: import ``setup_repl`` from this module and call
+it with the caller's ``globals()`` to inject the helpers.
 
 This injects all convenience functions, stat_commands, and fn/ registry
 into the caller's namespace -- achieving parity with the Python TUI REPL.
