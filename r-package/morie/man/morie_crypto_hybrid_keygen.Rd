@@ -7,13 +7,16 @@
 morie_crypto_hybrid_keygen()
 }
 \value{
-A named list with \code{pk} (raw) and \code{sk} (raw).
+A named list with \code{pk} (raw, 1184 B) and \code{sk} (raw, 2400 B).
 }
 \description{
-Generate an ML-KEM-768 key pair for hybrid encryption
+Convenience wrapper around \code{\link[=morie_crypto_mlkem768_keygen]{morie_crypto_mlkem768_keygen()}} for the
+hybrid KEM-DEM scheme. Requires the liboqs backend
+(\code{\link[=morie_crypto_liboqs_available]{morie_crypto_liboqs_available()}}).
 }
 \examples{
-# Hybrid ML-KEM-768 keygen is not yet wired into the R bindings;
-# the call signals "not implemented" until v1.0.1.
-try(morie_crypto_hybrid_keygen())
+if (morie_crypto_liboqs_available()) {
+  kp <- morie_crypto_hybrid_keygen()
+  c(pk = length(kp$pk), sk = length(kp$sk))
+}
 }

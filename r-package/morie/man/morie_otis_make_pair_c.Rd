@@ -18,7 +18,7 @@ Outcome Y_c = NumberConsecutiveDays_Segregation winsorised at the
 99th percentile.
 }
 \examples{
-\dontrun{
-  morie_otis_make_pair_c(morie_otis_load())
-}
+pair <- morie_otis_make_pair_c(morie_synth_otis("b01", n = 120L,
+                                                 seed = 1L))
+head(pair)
 }

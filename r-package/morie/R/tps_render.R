@@ -607,10 +607,9 @@ morie_tps_render_yearly_grid <- function(polys,
 # Additional TPS rendering primitives: 4-panel quad composite, DBSCAN
 # cluster figure, district proportional-symbol map, SaTScan-style panel,
 # plus two internal helpers (compass + scalebar).  All callables prefer
-# ggplot2 when available and fall back to base graphics; the SaTScan and
-# proportional-symbol panels stub a `stop("NotYetPorted")` body for the
-# detailed Kulldorff-likelihood overlays that depend on the Python
-# tps_satscan module.
+# ggplot2 when available and fall back to base graphics.  The SaTScan
+# panel accepts an optional `llr` column (compute natively via
+# morie_mrm_kulldorff()) and renders size-only without it.
 # ----------------------------------------------------------------------------
 
 # Internal: draw a north-arrow compass in plot coordinates.
@@ -851,29 +850,33 @@ morie_tps_render_satscan_panel <- function(clusters, outfile = NULL) {
       !all(c("lat", "lon", "radius_km") %in% names(clusters))) {
     stop("clusters must be a data.frame with lat / lon / radius_km columns")
   }
-  if (!"llr" %in% names(clusters)) {
-    # Likelihood shading requires the Python SaTScan engine.
-    clusters$llr <- NA_real_
-  }
-  # The full Kulldorff windowing + Monte-Carlo replication pipeline isn't
-  # ported -- raise so callers don't silently get a degraded figure.
-  if (any(is.na(clusters$llr))) {
-    # Drop into a stub that documents the gap clearly.
-    stop("NotYetPorted")
-  }
+  # LLR shading is optional: compute cluster LLRs natively via
+  # morie_mrm_kulldorff() and pass them in the `llr` column; without
+  # them the panel renders size-only (no likelihood colour scale).
+  has_llr <- "llr" %in% names(clusters) && !any(is.na(clusters$llr))
+  if (!has_llr) clusters$llr <- 0
   pp <- morie_tps_project_xy(clusters$lat, clusters$lon)
   dfp <- data.frame(x = pp$x, y = pp$y,
                     radius = clusters$radius_km,
                     llr = clusters$llr)
   if (.tps_has_ggplot2()) {
-    p <- ggplot2::ggplot(dfp,
-                         ggplot2::aes(x = .data$x, y = .data$y,
-                                      size = .data$radius,
-                                      colour = .data$llr)) +
-      ggplot2::geom_point(alpha = 0.5) +
-      ggplot2::scale_size_area(name = "radius (km)") +
-      ggplot2::scale_colour_distiller(palette = "YlOrRd", direction = 1,
-                                       name = "LLR") +
+    p <- if (has_llr) {
+      ggplot2::ggplot(dfp,
+                      ggplot2::aes(x = .data$x, y = .data$y,
+                                   size = .data$radius,
+                                   colour = .data$llr)) +
+        ggplot2::geom_point(alpha = 0.5) +
+        ggplot2::scale_size_area(name = "radius (km)") +
+        ggplot2::scale_colour_distiller(palette = "YlOrRd", direction = 1,
+                                         name = "LLR")
+    } else {
+      ggplot2::ggplot(dfp,
+                      ggplot2::aes(x = .data$x, y = .data$y,
+                                   size = .data$radius)) +
+        ggplot2::geom_point(alpha = 0.5, colour = "#B03A2E") +
+        ggplot2::scale_size_area(name = "radius (km)")
+    }
+    p <- p +
       ggplot2::coord_equal() +
       ggplot2::labs(title = "SaTScan candidate clusters") +
       ggplot2::theme_minimal()
