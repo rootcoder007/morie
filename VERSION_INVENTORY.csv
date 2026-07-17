@@ -382,7 +382,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/R/thfdt.R,4,STALE_OR_DEP,8.3.1,"#' (Gibbons Ch 8.3.1)"
 ./r-package/morie/R/tps_hawkes_advanced.R,146,STALE_OR_DEP,0.9.5.6,"# v0.9.5.6+: scipy.stats.lomax convention."
 ./r-package/morie/R/tps_hawkes_advanced.R,168,STALE_OR_DEP,0.9.5.6,"lomax = 1 - (psi[2] / (u + psi[2])) ^ psi[1];  # v0.9.5.6+: scipy"
-./r-package/morie/R/tps_statphysics.R,565,STALE_OR_DEP,0.9.5.6,"# the denominator but still increment n). v0.9.5.6+ uses strict `>`"
+./r-package/morie/R/tps_statphysics.R,558,STALE_OR_DEP,0.9.5.6,"# the denominator but still increment n). v0.9.5.6+ uses strict `>`"
 ./r-package/morie/R/vdwrd.R,4,STALE_OR_DEP,8.3.2,"#' (Gibbons Ch 8.3.2)"
 ./r-package/morie/R/wsrpw.R,4,STALE_OR_DEP,5.7.3,"#' (Gibbons Ch 5.7.3)"
 ./r-package/morie/README.md,15,STALE_OR_DEP,0.9.5,"## What's in v0.9.5"
