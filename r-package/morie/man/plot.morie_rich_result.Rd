@@ -16,10 +16,14 @@ Invisibly \code{NULL}; called for its plotting side effect.
 }
 \description{
 Every morie analysis returns an object of class
-\code{morie_rich_result}. This default \code{plot} method bar-charts the
-numeric summary metrics, or the first numeric column of the first result
-table. For full publication figures use \code{\link{morie_otis_figures}}
-and \code{\link{morie_tps_figures}}.
+\code{morie_rich_result} (e.g. \code{morie_otis_result},
+\code{morie_tps_result}, \code{morie_fairness_result}). This default
+\code{plot} method gives every such result a quick visual: it
+bar-charts the numeric summary metrics (\code{$summary_lines}), or, if
+there are none, plots the first numeric column of the first result
+table. For full publication figures use the dedicated figure-export
+functions \code{\link{morie_otis_figures}} and
+\code{\link{morie_tps_figures}}.
 }
 \examples{
 r <- structure(

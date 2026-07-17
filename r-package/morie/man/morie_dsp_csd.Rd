@@ -19,7 +19,7 @@ morie_dsp_csd(x, y, fs = 1, nperseg = 256L)
 List with \code{freqs} (Hz) and \code{csd} (complex).
 }
 \description{
-Hamming-windowed averaged CSD (rmorie native FFT loop,
+Hamming-windowed averaged CSD (morie native FFT loop,
 module 20).
 }
 \references{

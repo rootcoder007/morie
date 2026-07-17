@@ -8,10 +8,9 @@ Provides:
 \itemize{
 \item \code{estimate_ate()} — IPW-weighted OLS ATE.
 \item \code{estimate_plr()} — Partially Linear Regression via
-DoubleML.jl-style cross-fitting (uses \pkg{DoubleML} if
-installed; otherwise base R cross-fit ridge fallback).
+native cross-fitting with ridge nuisance learners.
 \item \code{estimate_pliv()} — Partially Linear IV (LATE) via
-DoubleML or 2SLS fallback.
+native cross-fit partialling-out.
 \item \code{estimate_ate_gcomputation()} — G-computation
 (outcome-regression / standardisation) ATE with bootstrap SE.
 \item \code{sensitivity_rosenbaum()} — Rosenbaum bounds for hidden
