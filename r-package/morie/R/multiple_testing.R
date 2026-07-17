@@ -381,11 +381,12 @@ simes_combined <- function(p_values) {
 #' @return A single numeric scalar: the harmonic mean p-value.
 #' @export
 harmonic_mean_p <- function(p_values) {
+  # Asymptotically exact HMP (Wilson 2019): mean(1/p) referred to its
+  # Landau distribution -- a calibrated p-value rather than the raw
+  # harmonic mean. Shared implementation with rmorie.
   p <- .mt_check_p(p_values)
   p <- pmax(p, 1e-300)
-  m <- length(p)
-  hmp <- m / sum(1.0 / p)
-  hmp
+  as.numeric(.morie_hmp(p, L = length(p)))
 }
 
 #' Cauchy combination test (Liu and Xie 2020)
