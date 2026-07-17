@@ -4,6 +4,8 @@
 
 A multi-domain scientific computing toolkit (Python and R) for observational inference, with sociolegal, signal-processing, cryptographic, spatial-statistics, statistical-physics, and psychometrics modules. Hosts the MRM framework as a primary application for Canadian carceral, police, and oversight data analysis.
 
+The R package ships **native causal-inference engines** — matching (nearest/Mahalanobis/exact/CEM/optimal/genetic/cardinality), double machine learning with clustered SEs, R-learner causal forests, T/S/X/DR meta-learners, design-based GLM, and a causal DAG toolkit (`morie_dag*`) — implemented in-package and cross-validated against MatchIt, DoubleML, grf, and dagitty rather than depending on them.
+
 [![CI](https://github.com/rootcoder007/morie/actions/workflows/build.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/build.yml)
 [![CodeQL](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/rootcoder007/morie/blob/main/LICENSE)

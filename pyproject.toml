@@ -199,6 +199,9 @@ sdist.exclude = [
   # re-trigger gptMalware/gptAnomaly on scan even though the source is gone.
   "tests/test_polyglot.py",
   "tests/test_exec_guard.py",
+  # Docs page for the excised REPL module -- describes a feature the
+  # published artifact does not contain.
+  "docs/source/methods/polyglot.rst",
 ]
 sdist.include = ["libmorie/", "CMakeLists.txt", "scripts/bundle_fn.py"]
 

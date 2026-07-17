@@ -1,5 +1,30 @@
 # morie 1.1.4 - 2026-07-15
 
+## Native causal-inference engines
+
+The matching, DML, CATE, and DAG stacks now run on native
+implementations instead of wrapping third-party packages:
+
+* Matching: nearest-neighbour, Mahalanobis, exact, CEM, optimal,
+  genetic, and cardinality matching (`morie_matching_*`), replacing
+  the MatchIt/Matching/optmatch code paths.
+* Double machine learning: native PLR/IRM estimators plus
+  `morie_dml_clustered()` for cluster-robust inference; `DoubleML` is
+  no longer required at runtime (Python keeps it as the optional
+  `morie[doubleml]` extra).
+* CATE: R-learner causal forest and T/S/X/DR meta-learners via
+  `morie_estimate_cate(meta_learner = )`, replacing grf.
+* Causal DAG toolkit: `morie_dag()`, `morie_dag_identify()`
+  (backdoor identification via d-separation), `morie_dag_estimate()`,
+  `morie_dag_refute()` (placebo/random-common-cause/subset checks),
+  and `morie_mrm_dags()` bundled MRM structures — a native DoWhy
+  replacement, cross-validated against dagitty.
+* Design-based GLM: native svyglm-equivalent backend for the IPW
+  workflow.
+
+Every engine is cross-validated against the package it replaces in
+`tests/`; see the new *native-engines* vignette for a walkthrough.
+
 ## Real outputs from figures / tables / meta-synthesis
 
 The three reporting modules generated nothing outside the author's

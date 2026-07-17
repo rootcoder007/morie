@@ -81,6 +81,18 @@ reference:
       - starts_with("morie_estimate_")
       - starts_with("morie_ipw")
       - starts_with("morie_ebac")
+      - morie_dml_clustered
+  - title: Causal DAG toolkit (native)
+    desc: DAG construction, backdoor identification, estimation, refutation.
+    contents:
+      - starts_with("morie_dag")
+      - morie_mrm_dags
+  - title: Matching (native engines)
+    desc: >
+      Nearest-neighbour, Mahalanobis, exact, CEM, optimal, genetic, and
+      cardinality matching with balance diagnostics.
+    contents:
+      - starts_with("morie_matching")
   - title: Hawkes self-exciting point processes
     contents:
       - starts_with("morie_hawkes")
