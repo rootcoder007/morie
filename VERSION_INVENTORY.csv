@@ -338,7 +338,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/NEWS.md,1204,STALE_OR_DEP,0.1.15,"# morie 0.1.15 — 2026-05-11"
 ./r-package/morie/NEWS.md,1240,STALE_OR_DEP,0.1.2,"# morie 0.1.2"
 ./r-package/morie/NEWS.md,1251,STALE_OR_DEP,0.1.0,"# morie 0.1.0-4 (r-universe pre-CRAN)"
-./r-package/morie/R/causal.R,1122,STALE_OR_DEP,1.4.0,"#'   Observational Studies. R package version 1.4.0."
+./r-package/morie/R/causal.R,1114,STALE_OR_DEP,1.4.0,"#'   Observational Studies. R package version 1.4.0."
 ./r-package/morie/R/cntgc.R,3,STALE_OR_DEP,14.2.1,"#' Pearson contingency coefficient C (Gibbons Ch 14.2.1)"
 ./r-package/morie/R/cov2s.R,3,STALE_OR_DEP,2.11.2,"#' Two-sample placement coverage (Gibbons Ch 2.11.2)"
 ./r-package/morie/R/covsp.R,3,STALE_OR_DEP,2.11.1,"#' One-sample coverage probability (Gibbons Ch 2.11.1)"
