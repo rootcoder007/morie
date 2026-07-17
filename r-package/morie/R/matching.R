@@ -607,79 +607,26 @@ morie_matching_entropy_balance <- function(data, treatment, covariates,
                                            max_iter = 500L,
                                            tol = 1e-6) {
   df <- .morie_matching_drop_na(data, c(treatment, covariates))
-
-  if (.morie_matching_have("WeightIt")) {
-    f <- stats::as.formula(paste(treatment, "~",
-                                 paste(covariates, collapse = " + ")))
-    fit <- tryCatch(
-      WeightIt::weightit(f, data = df, method = "ebal",
-                         estimand = "ATT", moments = max_moment),
-      error = function(e) NULL
-    )
-    if (!is.null(fit)) {
-      w <- as.numeric(fit$weights)
-      names(w) <- rownames(df)
-      return(w)
-    }
-  }
-  if (.morie_matching_have("ebal")) {
-    t_mask <- df[[treatment]] == 1
-    X <- as.matrix(df[, covariates, drop = FALSE])
-    fit <- tryCatch(
-      ebal::ebalance(Treatment = as.integer(t_mask), X = X,
-                     max.iterations = max_iter),
-      error = function(e) NULL
-    )
-    if (!is.null(fit)) {
-      w <- rep(1.0, nrow(df))
-      w[!t_mask] <- as.numeric(fit$w)
-      names(w) <- rownames(df)
-      return(w)
-    }
-  }
-
-  # Base-R Newton fallback
   t_mask <- df[[treatment]] == 1
-  c_mask <- df[[treatment]] == 0
-  X_t <- as.matrix(df[t_mask, covariates, drop = FALSE])
-  X_c <- as.matrix(df[c_mask, covariates, drop = FALSE])
-  storage.mode(X_t) <- "double"
-  storage.mode(X_c) <- "double"
-  n_c <- nrow(X_c)
-
-  targets <- numeric(0)
-  C_list <- list()
-  for (m in seq_len(max_moment)) {
-    targets <- c(targets, colMeans(X_t^m))
-    C_list[[m]] <- X_c^m
+  X <- as.matrix(df[, covariates, drop = FALSE])
+  if (max_moment >= 2L) {
+    X <- cbind(X, X^2)
   }
-  C <- do.call(cbind, C_list)
-
-  lam <- rep(0, length(targets))
-  for (k in seq_len(max_iter)) {
-    logits <- as.numeric(C %*% lam)
-    logits <- logits - max(logits)
-    w_raw <- exp(logits)
-    w <- w_raw / sum(w_raw)
-    g <- as.numeric(crossprod(C, w)) - targets
-    if (max(abs(g)) < tol) break
-    Cw <- as.numeric(crossprod(C, w))
-    H <- crossprod(C * w, C) - tcrossprod(Cw)
-    dlam <- tryCatch(solve(H, -g),
-                     error = function(e) {
-                       .morie_ginv(H) %*% (-g)
-                     })
-    lam <- lam + as.numeric(dlam)
+  # Native Hainmueller (2012) entropy balancing, ATT: reweight controls
+  # so their covariate moments match the treated moments. Weight scale
+  # follows ebal::ebalance (control weights sum to n_control);
+  # cross-validated against ebal + WeightIt in tests. Shared
+  # implementation with rmorie (smallstats_native.R).
+  fit <- .morie_entropy_balance(t_mask, X, max_iter = max_iter)
+  if (!fit$converged) {
+    warning("entropy balancing did not fully converge; ",
+            "max moment imbalance = ",
+            format(fit$max_imbalance, digits = 3), call. = FALSE)
   }
-  logits <- as.numeric(C %*% lam)
-  logits <- logits - max(logits)
-  w_raw <- exp(logits)
-  w_final <- w_raw / sum(w_raw) * n_c
-
-  weights <- rep(1.0, nrow(df))
-  weights[c_mask] <- w_final
-  names(weights) <- rownames(df)
-  weights
+  w <- rep(1.0, nrow(df))
+  w[!t_mask] <- as.numeric(fit$w)
+  names(w) <- rownames(df)
+  w
 }
 
 
