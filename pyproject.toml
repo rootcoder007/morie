@@ -108,8 +108,6 @@ sim = [
 ]
 interactive = [
     "textual>=0.85,<9.0",
-
-    "dashing>=0.1.0",
     "enlighten>=1.12",
 ]
 ml = [
@@ -197,6 +195,10 @@ sdist.exclude = [
   "src/morie/tui.py",
   "src/morie/_exec_guard.py",
   "src/morie/repl_init.py",
+  # Test files for the excised modules carry exec/payload strings that
+  # re-trigger gptMalware/gptAnomaly on scan even though the source is gone.
+  "tests/test_polyglot.py",
+  "tests/test_exec_guard.py",
 ]
 sdist.include = ["libmorie/", "CMakeLists.txt", "scripts/bundle_fn.py"]
 
