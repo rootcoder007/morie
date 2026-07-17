@@ -328,7 +328,7 @@ Segmentation fault (core dumped)
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a version for reproducibility
-docker run --rm ghcr.io/rootcoder007/morie:1.1.3 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.1.4 morie --help
 ```
 
 The image is published on every release with both `:latest` and `:<version>` tags. Multi-arch (linux/amd64). Includes morie + the full SciPy + R stack + R 4.5.
