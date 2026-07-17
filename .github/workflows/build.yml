@@ -162,9 +162,7 @@ jobs:
             "${{ needs.r-pipeline-integration.result }}" \
             "${{ needs.wheels.result }}" \
             "${{ needs.codeql.result }}"; do
-            # "skipped" is a pass: wheels.yml is tag-gated, so on
-            # branch/dispatch runs its caller result is always skipped.
-            if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then
+            if [ "$r" != "success" ]; then
               fail=1
             fi
           done
