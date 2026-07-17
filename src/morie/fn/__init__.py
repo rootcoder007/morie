@@ -193,3 +193,28 @@ def _install_fnsrc():
 
 
 _install_fnsrc()
+
+
+def load_all(ignore_errors: bool = True):
+    """Eagerly import every ``morie.fn`` callable.
+
+    Opt-in only -- the package default is lazy (``import morie.fn`` stays
+    ~0.05 s / ~28 MB). Materialising all ~36k callables costs roughly 20 s and
+    ~400 MB, so call this only for exploration or for static-analysis / graph
+    tooling that needs every module resolved.
+
+    Returns ``(ok, failed)``: counts of callables imported and of those that
+    failed (typically because an optional third-party dependency is absent).
+    Set ``ignore_errors=False`` to re-raise the first failure instead.
+    """
+    ok = 0
+    failed = 0
+    for _name in _LAZY_MAP:
+        try:
+            __getattr__(_name)
+            ok += 1
+        except Exception:
+            if not ignore_errors:
+                raise
+            failed += 1
+    return ok, failed

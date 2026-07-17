@@ -9,6 +9,9 @@ Function and class reference for both languages.
 - :doc:`r` — every public R function exposed by the
   ``morie`` R package, extracted from the Roxygen2 ``.Rd`` files
   in ``r-package/morie/man/``.
+- :doc:`fn-catalog` — the full catalogue of the ~36k lazily-loaded
+  single-purpose callables under ``morie.fn``, all shipped in the wheel
+  and importable after ``pip install morie``.
 
 For narrative documentation of the *methods* behind these functions
 (estimands, formulae, references), see :doc:`../methods/index`.
@@ -18,3 +21,4 @@ For narrative documentation of the *methods* behind these functions
 
    python
    r
+   fn-catalog
