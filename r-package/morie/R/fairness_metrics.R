@@ -47,15 +47,20 @@ NULL
                                    warnings = character(0),
                                    interpretation = "",
                                    payload = list()) {
-  out <- list(
-    title = title,
-    summary_lines = summary_lines,
-    tables = tables,
-    sections = sections,
-    warnings = warnings,
-    interpretation = interpretation,
-    payload = payload,
-    value = payload$value
+  # Splice the payload fields up to the top level so the flat contract
+  # (res$value, res$per_group, res$adverse_impact, ...) that callers and
+  # tests rely on lives alongside the rich sections/tables view.
+  out <- c(
+    list(
+      title = title,
+      summary_lines = summary_lines,
+      tables = tables,
+      sections = sections,
+      warnings = warnings,
+      interpretation = interpretation,
+      payload = payload
+    ),
+    payload
   )
   class(out) <- c("morie_fairness_result", "morie_rich_result", "list")
   out
