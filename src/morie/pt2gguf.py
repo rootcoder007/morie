@@ -261,9 +261,14 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
         # code execution from a malicious checkpoint file).
         ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
     except Exception:
-        from morie._exec_guard import checkpoint_trusted
+        try:
+            from morie._exec_guard import checkpoint_trusted
 
-        if not checkpoint_trusted():
+            _trusted = checkpoint_trusted()
+        except ImportError:
+            _trusted = os.environ.get("MORIE_TRUST_CHECKPOINT") == "1"
+
+        if not _trusted:
             raise RuntimeError(
                 f"{checkpoint_path} contains non-tensor pickled objects, which "
                 "can execute arbitrary code when loaded. If you built this "

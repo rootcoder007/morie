@@ -228,11 +228,15 @@ def run_checks() -> dict[str, Any]:
     # Trust knobs -- report the active security posture. Each row is
     # informational (never a required failure): the SAFE default is the
     # risky path disabled, so an enabled knob is shown but not marked FAIL.
-    from morie._exec_guard import knob_status
+    try:
+        from morie._exec_guard import knob_status
+    except ImportError:
+        knob_status = None
 
-    for knob in knob_status():
-        state = "ENABLED" if knob["enabled"] else "default (off)"
-        _add(f"trust: {knob['name']}", True, f"{state} -- {knob['detail']}", required=False)
+    if knob_status is not None:
+        for knob in knob_status():
+            state = "ENABLED" if knob["enabled"] else "default (off)"
+            _add(f"trust: {knob['name']}", True, f"{state} -- {knob['detail']}", required=False)
 
     return results
 
