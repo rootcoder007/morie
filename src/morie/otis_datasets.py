@@ -651,7 +651,9 @@ def _ckan_resource_index() -> dict[str, str]:
     import urllib.request
 
     url = f"{OTIS_CKAN_BASE}/package_show?id={OTIS_CKAN_PACKAGE}"
-    with urllib.request.urlopen(url, timeout=30) as resp:
+    if not url.startswith("https://"):
+        raise ValueError(f"refusing non-https URL: {url!r}")
+    with urllib.request.urlopen(url, timeout=30) as resp:  # noqa: S310 (https-guarded above)
         body = json.loads(resp.read().decode("utf-8"))
     if not body.get("success"):
         raise RuntimeError(f"CKAN package_show failed: {body}")
