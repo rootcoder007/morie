@@ -26,7 +26,7 @@ morie_weight_ps(
 (stabilized IPW). Default FALSE.}
 
 \item{trim}{Optional symmetric propensity trim, e.g. 0.01 clips
-scores to \link{0.01, 0.99}.}
+scores to the interval 0.01 to 0.99.}
 }
 \value{
 A \code{morie_weight} object.

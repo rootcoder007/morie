@@ -21,6 +21,11 @@ morie_weight_cbps(
 \item{covariates}{Covariate column names.}
 
 \item{estimand}{"ATE" (default), "ATT", or "ATC".}
+
+\item{max_iter}{Maximum damped-Newton iterations. Default 100.}
+
+\item{tol}{Convergence tolerance on the balance-moment norm.
+Default 1e-10.}
 }
 \value{
 A \code{morie_weight} object.
