@@ -41,8 +41,10 @@ RATE_LIMIT_SECONDS = 2.0
 
 
 def _http_get(url: str, *, timeout: int = 60) -> str:
+    if not url.startswith("https://"):
+        raise ValueError(f"refusing non-https URL: {url!r}")
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 (https-guarded above)
         return r.read().decode("utf-8", errors="replace")
 
 

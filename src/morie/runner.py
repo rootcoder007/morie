@@ -227,7 +227,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     relay_cmd.add_argument("--port", type=int, default=8421, help="Port to listen on (default: 8421)")
     relay_cmd.add_argument("--token", default=None, help="Require auth token for API access")
-    relay_cmd.add_argument("--bind", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
+    relay_cmd.add_argument("--bind", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
 
     doctor_cmd = subparsers.add_parser(
         "doctor",
