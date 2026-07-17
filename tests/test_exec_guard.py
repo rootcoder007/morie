@@ -1,3 +1,6 @@
+
+import pytest as _pytest
+_pytest.importorskip("morie._exec_guard")  # interactive/agent layer ships in the source tree only
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests for morie._exec_guard -- the central execution-sink guard."""
 
