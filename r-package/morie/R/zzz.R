@@ -43,7 +43,11 @@ utils::globalVariables(c(
   # rmoriebricklayer registers via R_RegisterCCallable (LinkingTo). A
   # DESCRIPTION Imports: alone does not load the provider DLL, so load its
   # namespace (triggering its useDynLib + registration) before any C call.
-  requireNamespace("rmoriebricklayer", quietly = TRUE)
+  # The :: reference (not just requireNamespace) is what marks the Imports
+  # entry as used for R CMD check's dependency scan.
+  if (requireNamespace("rmoriebricklayer", quietly = TRUE)) {
+    invisible(rmoriebricklayer::core_mean)
+  }
   try(.morie_auto_register_stat_commands(), silent = TRUE)
   invisible(NULL)
 }
