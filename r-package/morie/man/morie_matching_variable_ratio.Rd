@@ -35,8 +35,13 @@ Matches each treated unit to between \code{min_ratio} and
 \code{max_ratio} controls within a caliper.
 }
 \examples{
-\dontrun{
+set.seed(1)
+df <- data.frame(
+  y = rnorm(150), d = rbinom(150, 1, 0.4),
+  x1 = rnorm(150), x2 = rnorm(150),
+  region = sample(c("North", "South"), 150, TRUE),
+  year = sample(2020:2022, 150, TRUE),
+  treat3 = sample(0:2, 150, TRUE))
 morie_matching_variable_ratio(df, "d", c("x1", "x2"),
                               min_ratio = 1, max_ratio = 3)
-}
 }

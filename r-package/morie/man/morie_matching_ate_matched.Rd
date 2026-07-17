@@ -35,8 +35,13 @@ between treated and control outcomes.  Uses the explicit
 \code{morie_estimate_ate} in \code{causal.R}.
 }
 \examples{
-\dontrun{
+set.seed(1)
+df <- data.frame(
+  y = rnorm(150), d = rbinom(150, 1, 0.4),
+  x1 = rnorm(150), x2 = rnorm(150),
+  region = sample(c("North", "South"), 150, TRUE),
+  year = sample(2020:2022, 150, TRUE),
+  treat3 = sample(0:2, 150, TRUE))
 morie_matching_ate_matched(df, "y", "d", c("x1", "x2"),
                            weights = "._cem_weight")
-}
 }

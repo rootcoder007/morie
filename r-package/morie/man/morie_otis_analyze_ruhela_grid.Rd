@@ -20,7 +20,8 @@ supplied named datasets list and presents a single primary-IRR
 comparison table (GEE cluster-robust > NB GLM > Poisson GLM).
 }
 \examples{
-\dontrun{
+# Synthetic OTIS-shaped panel (bundled generator)
+otis_b03 <- morie_synth_otis("b03", n = 120L, seed = 1L)
+otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 morie_otis_analyze_ruhela_grid(list(b03 = otis_b03, c01 = otis_c01))
-}
 }

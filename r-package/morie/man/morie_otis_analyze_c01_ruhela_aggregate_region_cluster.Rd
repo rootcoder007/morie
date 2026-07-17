@@ -21,7 +21,7 @@ morie_otis_analyze_c01_mrm_aggregate_region_cluster(data, out_dir = NULL)
 c01 region-cluster variant (year-clustered GEE).
 }
 \examples{
-\dontrun{
+# Synthetic OTIS-shaped panel (bundled generator)
+otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 morie_otis_analyze_c01_ruhela_aggregate_region_cluster(otis_c01)
-}
 }

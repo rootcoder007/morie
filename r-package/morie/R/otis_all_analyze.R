@@ -890,9 +890,9 @@ print.morie_otis_analysis_result <- function(x, ...) {
 #'   helpers aren't loaded, returns a "not yet ported" stub.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 #' morie_otis_analyze_a01(otis_a01)
-#' }
 morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
   if (!.otis_causal_available()) {
     return(.otis_not_yet_ported("morie_otis_analyze_a01",
@@ -952,9 +952,9 @@ morie_otis_analyze_a01 <- function(data = NULL, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 #' morie_otis_analyze_a01_ruhela_formulations(otis_a01)
-#' }
 morie_otis_analyze_a01_ruhela_formulations <- function(data = NULL,
                                                          out_dir = NULL) {
   .otis_not_yet_ported(
@@ -969,9 +969,9 @@ morie_otis_analyze_a01_ruhela_formulations <- function(data = NULL,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b01 <- morie_synth_otis("b01", n = 120L, seed = 1L)
 #' morie_otis_analyze_b01_ruhela_formulations(otis_b01)
-#' }
 morie_otis_analyze_b01_ruhela_formulations <- function(data = NULL,
                                                          out_dir = NULL) {
   .otis_not_yet_ported(
@@ -986,9 +986,9 @@ morie_otis_analyze_b01_ruhela_formulations <- function(data = NULL,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
 #' morie_otis_analyze_b02_ruhela_formulations(otis_b02)
-#' }
 morie_otis_analyze_b02_ruhela_formulations <- function(data = NULL,
                                                          out_dir = NULL) {
   .otis_not_yet_ported(
@@ -1317,7 +1317,9 @@ IRR > 1 ==> treatment increases the count rate; IRR < 1 ",
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b03_ruhela_aggregate(otis_b03) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b03 <- morie_synth_otis("b03", n = 120L, seed = 1L)
+#' morie_otis_analyze_b03_ruhela_aggregate(otis_b03)
 morie_otis_analyze_b03_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Alert_Presence", "Number_SegregationPlacements")
   if (!all(need %in% names(data)))
@@ -1350,7 +1352,9 @@ morie_otis_analyze_b03_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b04_ruhela_aggregate(otis_b04) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b04 <- morie_synth_otis("b04", n = 120L, seed = 1L)
+#' morie_otis_analyze_b04_ruhela_aggregate(otis_b04)
 morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_AtTimeOfPlacement", "Gender",
             "Measure", "NumberConsecutiveDays_Segregation")
@@ -1398,7 +1402,9 @@ morie_otis_analyze_b04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #'   applicable" note in \code{warnings}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b05_ruhela_aggregate(otis_b05) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
+#' morie_otis_analyze_b05_ruhela_aggregate(otis_b05)
 morie_otis_analyze_b05_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Consecutive_Duration",
             "Number_SegregationPlacements")
@@ -1427,7 +1433,9 @@ morie_otis_analyze_b05_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b06_ruhela_aggregate(otis_b06) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b06 <- morie_synth_otis("b06", n = 120L, seed = 1L)
+#' morie_otis_analyze_b06_ruhela_aggregate(otis_b06)
 morie_otis_analyze_b06_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Reason", "Gender",
             "Region_AtTimeOfPlacement",
@@ -1461,7 +1469,9 @@ morie_otis_analyze_b06_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b07_ruhela_aggregate(otis_b07) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b07 <- morie_synth_otis("b07", n = 120L, seed = 1L)
+#' morie_otis_analyze_b07_ruhela_aggregate(otis_b07)
 morie_otis_analyze_b07_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Alert_Type", "Gender",
             "Number_Segregation_Placements_With_Alert",
@@ -1509,7 +1519,9 @@ morie_otis_analyze_b07_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b08_ruhela_aggregate(otis_b08) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b08 <- morie_synth_otis("b08", n = 120L, seed = 1L)
+#' morie_otis_analyze_b08_ruhela_aggregate(otis_b08)
 morie_otis_analyze_b08_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_AtTimeOfPlacement",
             "Institution_AtTimeOfPlacement", "Gender",
@@ -1546,7 +1558,9 @@ morie_otis_analyze_b08_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b09_ruhela_aggregate(otis_b09) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b09 <- morie_synth_otis("b09", n = 120L, seed = 1L)
+#' morie_otis_analyze_b09_ruhela_aggregate(otis_b09)
 morie_otis_analyze_b09_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "NumberPlacements_Segregation", "Gender",
             "NumberIndividuals_Segregation")
@@ -1576,7 +1590,9 @@ morie_otis_analyze_b09_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c01_ruhela_aggregate(otis_c01) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
+#' morie_otis_analyze_c01_ruhela_aggregate(otis_c01)
 morie_otis_analyze_c01_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1602,9 +1618,9 @@ morie_otis_analyze_c01_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 #' morie_otis_analyze_c01_ruhela_aggregate_region_cluster(otis_c01)
-#' }
 morie_otis_analyze_c01_ruhela_aggregate_region_cluster <- function(data,
                                                           out_dir = NULL) {
   need <- c("EndFiscalYear", "Gender",
@@ -1635,7 +1651,9 @@ morie_otis_analyze_c01_ruhela_aggregate_region_cluster <- function(data,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c02_ruhela_aggregate(otis_c02) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c02 <- morie_synth_otis("c02", n = 120L, seed = 1L)
+#' morie_otis_analyze_c02_ruhela_aggregate(otis_c02)
 morie_otis_analyze_c02_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_MostRecentPlacement",
             "Institution_MostRecentPlacement", "Gender",
@@ -1667,7 +1685,9 @@ morie_otis_analyze_c02_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c03_ruhela_aggregate(otis_c03) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c03 <- morie_synth_otis("c03", n = 120L, seed = 1L)
+#' morie_otis_analyze_c03_ruhela_aggregate(otis_c03)
 morie_otis_analyze_c03_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Race", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1697,7 +1717,9 @@ morie_otis_analyze_c03_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c04_ruhela_aggregate(otis_c04) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
+#' morie_otis_analyze_c04_ruhela_aggregate(otis_c04)
 morie_otis_analyze_c04_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Race", "Region_MostRecentPlacement",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1727,9 +1749,9 @@ morie_otis_analyze_c04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
 #' morie_otis_analyze_c04_ruhela_aggregate_region_cluster(otis_c04)
-#' }
 morie_otis_analyze_c04_ruhela_aggregate_region_cluster <- function(data,
                                                           out_dir = NULL) {
   need <- c("EndFiscalYear", "Race", "Region_MostRecentPlacement",
@@ -1756,7 +1778,9 @@ morie_otis_analyze_c04_ruhela_aggregate_region_cluster <- function(data,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c05_ruhela_aggregate(otis_c05) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c05 <- morie_synth_otis("c05", n = 120L, seed = 1L)
+#' morie_otis_analyze_c05_ruhela_aggregate(otis_c05)
 morie_otis_analyze_c05_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Religion", "Region_MostRecentPlacement",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1787,7 +1811,9 @@ morie_otis_analyze_c05_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c06_ruhela_aggregate(otis_c06) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c06 <- morie_synth_otis("c06", n = 120L, seed = 1L)
+#' morie_otis_analyze_c06_ruhela_aggregate(otis_c06)
 morie_otis_analyze_c06_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Age_Category", "Region_MostRecentPlacement",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1814,7 +1840,9 @@ morie_otis_analyze_c06_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c07_ruhela_aggregate(otis_c07) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c07 <- morie_synth_otis("c07", n = 120L, seed = 1L)
+#' morie_otis_analyze_c07_ruhela_aggregate(otis_c07)
 morie_otis_analyze_c07_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Alert_Type", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1853,7 +1881,9 @@ morie_otis_analyze_c07_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c08_ruhela_aggregate(otis_c08) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c08 <- morie_synth_otis("c08", n = 120L, seed = 1L)
+#' morie_otis_analyze_c08_ruhela_aggregate(otis_c08)
 morie_otis_analyze_c08_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Religion", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1881,7 +1911,9 @@ morie_otis_analyze_c08_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c09_ruhela_aggregate(otis_c09) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c09 <- morie_synth_otis("c09", n = 120L, seed = 1L)
+#' morie_otis_analyze_c09_ruhela_aggregate(otis_c09)
 morie_otis_analyze_c09_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Age_Category", "Gender",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1908,7 +1940,9 @@ morie_otis_analyze_c09_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c10_ruhela_aggregate(otis_c10) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c10 <- morie_synth_otis("c10", n = 120L, seed = 1L)
+#' morie_otis_analyze_c10_ruhela_aggregate(otis_c10)
 morie_otis_analyze_c10_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_MostRecentPlacement",
             "Institution_MostRecentPlacement", "Gender", "Measure",
@@ -1942,7 +1976,9 @@ morie_otis_analyze_c10_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c11_ruhela_aggregate(otis_c11) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
+#' morie_otis_analyze_c11_ruhela_aggregate(otis_c11)
 morie_otis_analyze_c11_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Aggregate_Duration",
             "NumberIndividuals_RestrictiveConfinement")
@@ -1974,7 +2010,9 @@ morie_otis_analyze_c11_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c12_ruhela_aggregate(otis_c12) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c12 <- morie_synth_otis("c12", n = 120L, seed = 1L)
+#' morie_otis_analyze_c12_ruhela_aggregate(otis_c12)
 morie_otis_analyze_c12_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("EndFiscalYear", "Region_MostRecentPlacement", "Gender",
             "Measure", "TotalAggregatedDays_RestrictiveConfinement")
@@ -2006,7 +2044,9 @@ morie_otis_analyze_c12_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_d02_ruhela_aggregate(otis_d02) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_d02 <- morie_synth_otis("d02", n = 120L, seed = 1L)
+#' morie_otis_analyze_d02_ruhela_aggregate(otis_d02)
 morie_otis_analyze_d02_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Gender", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2033,7 +2073,9 @@ morie_otis_analyze_d02_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_d03_ruhela_aggregate(otis_d03) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_d03 <- morie_synth_otis("d03", n = 120L, seed = 1L)
+#' morie_otis_analyze_d03_ruhela_aggregate(otis_d03)
 morie_otis_analyze_d03_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Race", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2060,7 +2102,9 @@ morie_otis_analyze_d03_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_d04_ruhela_aggregate(otis_d04) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_d04 <- morie_synth_otis("d04", n = 120L, seed = 1L)
+#' morie_otis_analyze_d04_ruhela_aggregate(otis_d04)
 morie_otis_analyze_d04_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Religion", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2085,7 +2129,9 @@ morie_otis_analyze_d04_ruhela_aggregate <- function(data, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_d05_ruhela_aggregate(otis_d05) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_d05 <- morie_synth_otis("d05", n = 120L, seed = 1L)
+#' morie_otis_analyze_d05_ruhela_aggregate(otis_d05)
 morie_otis_analyze_d05_ruhela_aggregate <- function(data, out_dir = NULL) {
   need <- c("Year", "Age_Category", "Number_CustodialDeaths")
   if (!all(need %in% names(data)))
@@ -2312,7 +2358,9 @@ morie_otis_analyze_b01_ruhela_subgroup_male <- function(data = NULL,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_b05_mandela_classification(otis_b05) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b05 <- morie_synth_otis("b05", n = 120L, seed = 1L)
+#' morie_otis_analyze_b05_mandela_classification(otis_b05)
 morie_otis_analyze_b05_mandela_classification <- function(data,
                                                             out_dir = NULL) {
   need <- c("EndFiscalYear", "Consecutive_Duration",
@@ -2408,7 +2456,9 @@ morie_otis_analyze_b05_mandela_classification <- function(data,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_c11_mandela_classification(otis_c11) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
+#' morie_otis_analyze_c11_mandela_classification(otis_c11)
 morie_otis_analyze_c11_mandela_classification <- function(data,
                                                             out_dir = NULL) {
   need <- c("EndFiscalYear", "Aggregate_Duration",
@@ -2496,7 +2546,9 @@ morie_otis_analyze_c11_mandela_classification <- function(data,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{ morie_otis_analyze_otis_mandela_provincial_vs_federal(otis_c11) }
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
+#' morie_otis_analyze_otis_mandela_provincial_vs_federal(otis_c11)
 morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
         data, out_dir = NULL) {
   c11_r <- morie_otis_analyze_c11_mandela_classification(data, out_dir)
@@ -2652,9 +2704,10 @@ morie_otis_analyze_otis_mandela_provincial_vs_federal <- function(
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_c03 <- morie_synth_otis("c03", n = 120L, seed = 1L)
+#' otis_c04 <- morie_synth_otis("c04", n = 120L, seed = 1L)
 #' morie_otis_analyze_c_chi2(list(c03 = otis_c03, c04 = otis_c04))
-#' }
 morie_otis_analyze_c_chi2 <- function(datasets,
         contingency_value = "NumberIndividuals_RestrictiveConfinement",
         out_dir = NULL) {
@@ -2734,10 +2787,12 @@ morie_otis_analyze_c_chi2 <- function(datasets,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_d01 <- morie_synth_otis("d01", n = 120L, seed = 1L)
+#' otis_d06 <- morie_synth_otis("d06", n = 120L, seed = 1L)
+#' otis_d07 <- morie_synth_otis("d07", n = 120L, seed = 1L)
 #' morie_otis_analyze_d_chi2(list(d01 = otis_d01,
 #'                                  d06 = otis_d06, d07 = otis_d07))
-#' }
 morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
   stopifnot(is.list(datasets))
   d01 <- datasets$d01
@@ -2873,9 +2928,10 @@ morie_otis_analyze_d_chi2 <- function(datasets, out_dir = NULL) {
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_b03 <- morie_synth_otis("b03", n = 120L, seed = 1L)
+#' otis_c01 <- morie_synth_otis("c01", n = 120L, seed = 1L)
 #' morie_otis_analyze_ruhela_grid(list(b03 = otis_b03, c01 = otis_c01))
-#' }
 morie_otis_analyze_ruhela_grid <- function(datasets,
                                              out_dir = NULL) {
   stopifnot(is.list(datasets))
@@ -3167,9 +3223,9 @@ morie_otis_analyze_ruhela_master <- function(datasets,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
+#' # Synthetic OTIS-shaped panel (bundled generator)
+#' otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 #' morie_otis_analyze_a01_with_csi_context(otis_a01)
-#' }
 morie_otis_analyze_a01_with_csi_context <- function(data = NULL,
                                                      variant = "total",
                                                      rebase_to_year = 2023L,

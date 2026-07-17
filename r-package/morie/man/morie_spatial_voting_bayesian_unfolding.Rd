@@ -21,13 +21,19 @@ morie_spatial_voting_bayesian_unfolding(
 \item{burn_in}{Burn-in length.}
 }
 \value{
-Never returns; raises \code{NotYetPorted}.
+List with respondent/stimulus configurations and an
+\code{engine} tag (smacof deterministic mode, or the native
+Metropolis sampler when smacof is absent).
 }
 \description{
 Bayesian unfolding (stub) -- Bakker & Poole sampler
 }
 \examples{
-\dontrun{morie_spatial_voting_bayesian_unfolding(matrix(0, 3, 4))}
+set.seed(1)
+pref <- matrix(runif(12, 1, 9), 3, 4)
+fit <- morie_spatial_voting_bayesian_unfolding(pref,
+  n_samples = 200L)
+names(fit)
 }
 \references{
 Bakker, R. and Poole, K. T. (2013).
