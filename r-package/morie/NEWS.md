@@ -1,4 +1,4 @@
-# morie 1.1.3 - 2026-07-15
+# morie 1.1.4 - 2026-07-15
 
 ## Real outputs from figures / tables / meta-synthesis
 

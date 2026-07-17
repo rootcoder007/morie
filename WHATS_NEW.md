@@ -7,7 +7,7 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
-## 1.1.3 (2026-07-15)
+## 1.1.4 (2026-07-15)
 
 - **figures / tables / meta-synthesis modules now generate their outputs
   everywhere** — 13 figures, `table1.html`, and the methods/results
