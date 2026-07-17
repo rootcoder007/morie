@@ -979,9 +979,9 @@ morie_otis_make_pair_b <- function(df) {
 #' @return Named list \code{list(data, T = "T_c", Y = "Y_c", covariates)}.
 #' @export
 #' @examples
-#' \dontrun{
-#'   morie_otis_make_pair_c(morie_otis_load())
-#' }
+#' pair <- morie_otis_make_pair_c(morie_synth_otis("b01", n = 120L,
+#'                                                  seed = 1L))
+#' head(pair)
 morie_otis_make_pair_c <- function(df) {
   needed <- c("UniqueIndividual_ID", "EndFiscalYear", "Gender",
               "Age_Category", "Region_AtTimeOfPlacement",
@@ -1024,9 +1024,9 @@ morie_otis_make_pair_c <- function(df) {
 #'   \code{ate_pval}, \code{ci95_lo}, \code{ci95_hi}, \code{notes}.
 #' @export
 #' @examples
-#' \dontrun{
-#'   morie_otis_causal_grid()
-#' }
+#' df <- morie_synth_otis("b01", n = 200L, seed = 1L)
+#' grid <- morie_otis_causal_grid(df)
+#' names(grid)
 morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
   if (is.null(df)) {
     if (!exists("morie_otis_load", mode = "function")) {

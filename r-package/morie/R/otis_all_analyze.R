@@ -3079,9 +3079,10 @@ morie_otis_analyze_ruhela_grid <- function(datasets,
 #' @return \code{morie_otis_analysis_result}.
 #' @export
 #' @examples
-#' \dontrun{
-#' morie_otis_analyze_ruhela_master(datasets_list)
-#' }
+#' datasets_list <- list(b01 = morie_synth_otis("b01", n = 120L,
+#'                                              seed = 1L))
+#' res <- morie_otis_analyze_ruhela_master(datasets_list)
+#' length(res$sections)
 morie_otis_analyze_ruhela_master <- function(datasets,
                                                include_per_row = FALSE,
                                                out_dir = NULL) {
