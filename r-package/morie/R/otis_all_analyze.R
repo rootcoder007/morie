@@ -1075,8 +1075,8 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
 # ---------------------------------------------------------------------------
 #
 # These are FAITHFULLY ported. The math is base-R glm() + MASS::glm.nb.
-# GEE clustering uses geepack::geeglm when available; otherwise the GEE
-# rows are reported as "n/a (geepack not installed)".
+# GEE clustering runs the native Liang-Zeger estimator (Poisson +
+# exchangeable working correlation, sandwich covariance).
 
 .otis_aggregate_glm <- function(work, treatment, outcome,
                                   covariates = character(0),
@@ -1187,24 +1187,20 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
   # GEE clustered fits
   if (!is.null(cluster_group) && cluster_group %in% names(work)) {
     n_groups <- length(unique(work[[cluster_group]]))
-    if (requireNamespace("geepack", quietly = TRUE)) {
-      # Order by cluster (geepack requires it)
+    {
+      # Order by cluster for reproducible cluster blocks.
       work_g <- work[order(work[[cluster_group]]), , drop = FALSE]
       for (gee_label in c("GEE-Poisson")) {
-        # geepack doesn't have direct NB; restrict to Poisson family
-        # geepack::geese.fit calls `which(diff(as.numeric(id)) != 0)`
-        # to detect cluster boundaries. If id is character/factor,
-        # as.numeric() produces NAs and the diff() then propagates
-        # NaN into the working-correlation estimator. Pre-convert to
-        # integer factor codes so cluster boundaries are unambiguous.
+        # Native GEE (Liang-Zeger 1986), Poisson + exchangeable working
+        # correlation with sandwich covariance -- the geepack::geeglm
+        # surface this loop consumed, cross-validated in tests.
         id_int <- as.integer(factor(work_g[[cluster_group]]))
-        work_g$.gee_cluster_id_int_ <- id_int
-        res_g <- tryCatch(
-          geepack::geeglm(fml, data = work_g,
-                          id = .gee_cluster_id_int_,
-                          family = stats::poisson(),
-                          corstr = "exchangeable"),
-          error = function(e) e)
+        res_g <- tryCatch({
+          mf <- stats::model.frame(fml, data = work_g)
+          Xg <- stats::model.matrix(fml, mf)
+          yg <- stats::model.response(mf)
+          .morie_gee_poisson_exch(Xg, yg, id_int)
+        }, error = function(e) e)
         if (inherits(res_g, "error")) {
           rows[[length(rows) + 1L]] <- c(
             sprintf("%s (cluster:%s)", gee_label, cluster_group),
@@ -1217,7 +1213,7 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
         # covariance matrix's diagonal can be negative or NaN, which
         # silently produces NaN standard errors. Detect + report
         # explicitly instead of letting NaN propagate into the table.
-        vb <- tryCatch(res_g$geese$vbeta, error = function(e) NULL)
+        vb <- tryCatch(res_g$vbeta, error = function(e) NULL)
         if (is.null(vb) || any(!is.finite(diag(vb))) ||
             any(diag(vb) < 0)) {
           rows[[length(rows) + 1L]] <- c(
@@ -1231,8 +1227,7 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
             "--", "--", "--")
           next
         }
-        co <- summary(res_g)$coefficients
-        rn <- rownames(co)
+        rn <- colnames(Xg)
         t_idx <- grep(treatment, rn, fixed = TRUE)
         if (length(t_idx) == 0L) {
           rows[[length(rows) + 1L]] <- c(
@@ -1241,9 +1236,9 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
           next
         }
         t_key <- rn[t_idx[1]]
-        beta <- co[t_key, "Estimate"]
-        se   <- co[t_key, "Std.err"]
-        pval <- co[t_key, ncol(co)]
+        beta <- res_g$coefficients[t_idx[1]]
+        se   <- sqrt(diag(vb))[t_idx[1]]
+        pval <- 2 * stats::pnorm(-abs(beta / se))
         irr <- exp(beta)
         rows[[length(rows) + 1L]] <- c(
           sprintf("%s (cluster:%s, Exch)", gee_label, cluster_group),
@@ -1253,11 +1248,6 @@ morie_otis_analyze_b01_ruhela_per_year <- function(data = NULL,
           sprintf("%.2e", pval), "--",
           sprintf("groups=%d, n_obs=%d", n_groups, nrow(work)))
       }
-    } else {
-      rows[[length(rows) + 1L]] <- c(
-        sprintf("GEE-Poisson (cluster:%s)", cluster_group),
-        treatment, "geepack not installed",
-        "--", "--", "--", "--")
     }
   }
 
