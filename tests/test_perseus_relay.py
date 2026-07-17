@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import pytest as _pytest
+_pytest.importorskip("morie.agent")  # interactive/agent layer ships in the source tree only
+
 from unittest.mock import patch
 
 from morie.agent import AgentResponse, PerseusCloudAgent

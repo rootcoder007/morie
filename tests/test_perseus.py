@@ -1,3 +1,6 @@
+
+import pytest as _pytest
+_pytest.importorskip("morie.agent")  # interactive/agent layer ships in the source tree only
 from unittest.mock import patch
 
 from morie.perseus import agent_available, ask_percy, build_prompt

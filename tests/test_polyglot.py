@@ -1,3 +1,6 @@
+
+import pytest as _pytest
+_pytest.importorskip("morie.polyglot")  # interactive/agent layer ships in the source tree only
 """Tests for the headless polyglot REPL engine."""
 
 import os

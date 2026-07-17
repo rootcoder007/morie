@@ -195,7 +195,7 @@ jobs:
             any::goodpractice
             any::cyclocomp
             any::pkgstats
-            ropensci-review-tools/pkgcheck
+            any::pkgcheck
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")

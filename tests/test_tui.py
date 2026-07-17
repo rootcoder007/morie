@@ -6,6 +6,9 @@ Uses Textual's App.run_test() for headless async testing.
 
 from __future__ import annotations
 
+import pytest as _pytest
+_pytest.importorskip("morie.tui")  # interactive/agent layer ships in the source tree only
+
 import pytest
 
 try:
