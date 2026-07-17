@@ -250,6 +250,7 @@ class TestExposureResponseSensitivity:
     """
 
     def test_wraps_dml_with_bootstrap(self) -> None:
+        pytest.importorskip("doubleml")  # optional extra: pip install morie[doubleml]
         from morie.envhealth import exposure_response_sensitivity
 
         rng = np.random.default_rng(771)
