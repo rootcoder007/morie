@@ -1561,10 +1561,14 @@ morie_matching_multi_treatment <- function(data, treatment, covariates,
 #' @param method One of \code{"nearest_neighbor"} or \code{"mahalanobis"}.
 #' @return A list of class \code{morie_match_result}.
 #' @examples
-#' \dontrun{
-#' morie_matching_longitudinal(panel, "d", c("x1"), unit = "id",
-#'                             time = "t", treatment_time = "t0")
-#' }
+#' set.seed(1)
+#' panel <- expand.grid(id = 1:40, t = 1:5)
+#' panel$t0 <- ifelse(panel$id <= 20, 4, Inf)
+#' panel$d <- as.integer(panel$t >= panel$t0)
+#' panel$x1 <- rnorm(nrow(panel))
+#' m <- morie_matching_longitudinal(panel, "d", "x1", unit = "id",
+#'                                  time = "t", treatment_time = "t0")
+#' str(m, max.level = 1)
 #' @export
 morie_matching_longitudinal <- function(data, treatment, covariates, unit,
                                         time, treatment_time,
