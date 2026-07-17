@@ -166,7 +166,10 @@ NULL
     payload[[nm]] <- sub_results[[nm]]
   }
 
-  class(payload) <- c("morie_arsau_result", "morie_rich_result", "list")
+  # Carry the legacy `morie_arsau_analysis_result` class too so callers that
+  # test for either binding (the prior mrm_arsau.R shape) keep working.
+  class(payload) <- c("morie_arsau_result", "morie_arsau_analysis_result",
+                      "morie_rich_result", "list")
   payload
 }
 
