@@ -115,14 +115,5 @@ morie_crypto_hybrid_decrypt <- function(ciphertext, recipient_sk) {
 # internally by the hybrid key-wrap path only; it is not re-exported here
 # to avoid a duplicate S3/namespace binding and a codoc mismatch.
 
-#' HKDF-SHA256 (RFC 5869)
-#' @param ikm    Raw vector or character string.
-#' @param length Output length in bytes.
-#' @param salt   Raw vector or character; NULL for zeroed salt.
-#' @param info   Raw vector or character (context info).
-#' @return Raw vector of `length` bytes.
-#' @export
-morie_crypto_hkdf_sha256 <- function(ikm, len = 32L, salt = NULL,
-                                     info = raw(0)) {
-  .morie_hkdf_sha256(ikm = ikm, len = len, salt = salt, info = info)
-}
+# (public morie_crypto_hkdf_sha256() lives in R/crypto_sym.R, per the note
+#  above; only the internal .morie_hkdf_sha256() fallback is kept here.)
