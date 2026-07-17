@@ -42,8 +42,12 @@ covariate values.  Mirrors Python
 \code{morie.matching.match_longitudinal}.
 }
 \examples{
-\dontrun{
-morie_matching_longitudinal(panel, "d", c("x1"), unit = "id",
-                            time = "t", treatment_time = "t0")
-}
+set.seed(1)
+panel <- expand.grid(id = 1:40, t = 1:5)
+panel$t0 <- ifelse(panel$id <= 20, 4, Inf)
+panel$d <- as.integer(panel$t >= panel$t0)
+panel$x1 <- rnorm(nrow(panel))
+m <- morie_matching_longitudinal(panel, "d", "x1", unit = "id",
+                                 time = "t", treatment_time = "t0")
+str(m, max.level = 1)
 }

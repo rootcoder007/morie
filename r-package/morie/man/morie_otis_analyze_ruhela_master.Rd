@@ -31,7 +31,8 @@ Sections:
 }
 }
 \examples{
-\dontrun{
-morie_otis_analyze_ruhela_master(datasets_list)
-}
+datasets_list <- list(b01 = morie_synth_otis("b01", n = 120L,
+                                             seed = 1L))
+res <- morie_otis_analyze_ruhela_master(datasets_list)
+length(res$sections)
 }
