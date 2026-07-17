@@ -1,5 +1,21 @@
 # morie 1.1.4 - 2026-07-15
 
+## Modules 14-17 (quasi-experimental front-ends, weighting, modern DiD, crim methods)
+
+* Unified entry points `morie_did()` (auto Callaway-Sant'Anna dispatch
+  with a Goodman-Bacon contamination warning), `morie_iv_2sls()`
+  (Staiger-Stock weak-instrument refusal gate + Anderson-Rubin set),
+  and `morie_rdd()` (manipulation test + placebo cutoffs bundled).
+* The `morie_weight_*` propensity-weighting family (WeightIt
+  replacement) including native CBPS and a SuperLearner-NNLS stack.
+* `morie_did_sun_abraham()` / `morie_did_borusyak()` /
+  `morie_did_did2s()` modern staggered-DiD estimators.
+* `morie_crim_etas()` / `morie_crim_hawkes_multivariate()` /
+  `morie_crim_near_repeat()` / `morie_crim_risk_terrain()`.
+* Canonical replication fixtures (LaLonde, Basque, Lee 2008,
+  CigarettesSW) under `inst/extdata/quasiex/` with replication tests
+  and the cross-module composition test.
+
 ## Native causal-inference engines
 
 The matching, DML, CATE, and DAG stacks now run on native

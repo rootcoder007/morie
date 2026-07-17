@@ -37,5 +37,5 @@ morie_iv_gmm(
 A named list with elements \code{coefficients}, \code{std_errors}, \code{t_stats}, \code{p_values}, \code{ci_lower}, \code{ci_upper}, \code{variable_names}, \code{n_obs}, \code{method}, \code{details}.
 }
 \description{
-Two-step efficient GMM (rmorie native; HC0-weighted second step).
+Two-step efficient GMM (morie native; HC0-weighted second step).
 }

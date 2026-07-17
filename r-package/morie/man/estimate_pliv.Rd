@@ -34,6 +34,6 @@ Named list with \code{late}, \code{se}, \code{ci_lower}, \code{ci_upper},
 \code{pval}, \code{n_obs}, \code{method}.
 }
 \description{
-Wraps \pkg{DoubleML} when available. Otherwise falls back to 2SLS:
-first stage \code{D ~ Z + X}, second stage \code{Y ~ D_hat + X}, base R OLS.
+Native cross-fit partialled-out IV estimator (the DoubleMLPLIV
+estimand, Chernozhukov et al. 2018) with SVD-ridge nuisances.
 }
