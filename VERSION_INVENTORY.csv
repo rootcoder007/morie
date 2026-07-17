@@ -771,6 +771,8 @@ File,Line,Status,Version,Context
 ./r-package/morie/tests/testthat/test-siu.R,679,STALE_OR_DEP,127.0.0.1,"OLLAMA_HOST = http://127.0.0.1:1"
 ./r-package/morie/tests/testthat/test-siu_fetch.R,238,STALE_OR_DEP,192.0.2.0,"# 192.0.2.0/24 is TEST-NET-1 -- reserved for documentation; will not"
 ./r-package/morie/tests/testthat/test-siu_fetch.R,242,STALE_OR_DEP,192.0.2.123,"http://192.0.2.123/never-routes; timeout_s = 2L);"
+./r-package/morie/tests/testthat/test-smallstats-native-c.R,101,STALE_OR_DEP,1.1.1,"\2020\;\Canada\;\2016A000011124\;\1.1.1\;42.5;"
+./r-package/morie/tests/testthat/test-smallstats-native-c.R,102,STALE_OR_DEP,1.1.1,"\2021\;\Canada\;\2016A000011124\;\1.1.1\;43.1"
 ./r-package/morie/tests/testthat/test-tps_hawkes_advanced.R,53,STALE_OR_DEP,0.9.5.6,"# v0.9.5.6+ scipy form: f(u) = alpha * c^alpha * (u + c)^{-(alpha+1)}"
 ./r-package/morie/tests/testthat/test-tps_hawkes_advanced.R,91,STALE_OR_DEP,0.9.5.6,"# v0.9.5.6+ scipy form: F(u) = 1 - (c / (u + c))^alpha."
 ./r-package/morie/tests/testthat/test-trfbl-det-seed.R,3,STALE_OR_DEP,0.4.0,"# Verifies that the `deterministic_seed` argument added in morie v0.4.0:"
