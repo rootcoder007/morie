@@ -249,7 +249,6 @@ File,Line,Status,Version,Context
 ./pyproject.toml,69,STALE_OR_DEP,3.7.0,"matplotlib>=3.7.0;"
 ./pyproject.toml,70,STALE_OR_DEP,3.1.0,"openpyxl>=3.1.0;"
 ./pyproject.toml,91,STALE_OR_DEP,0.7.1,"DoubleML>=0.7.1;"
-./pyproject.toml,112,STALE_OR_DEP,0.1.0,"dashing>=0.1.0;"
 ./r-package/morie/DESCRIPTION,4,CURRENT,1.1.4,"Version: 1.1.4"
 ./r-package/morie/DESCRIPTION,36,STALE_OR_DEP,7.3.3,"RoxygenNote: 7.3.3"
 ./r-package/morie/DESCRIPTION,38,STALE_OR_DEP,4.3.0,"R (>= 4.3.0)"
