@@ -47,30 +47,6 @@ NULL
 )
 
 
-# ---------------------------------------------------------------------------
-# Internal: rich-result wrapper (matches morie.fn._richresult.RichResult shape)
-# ---------------------------------------------------------------------------
-
-.tps_result <- function(title, summary_lines = list(),
-                        tables = list(),
-                        warnings = character(0),
-                        interpretation = "",
-                        sections = list(),
-                        payload = list(),
-                        ...) {
-  out <- list(
-    title = title,
-    summary_lines = summary_lines,
-    tables = tables,
-    warnings = warnings,
-    interpretation = interpretation,
-    sections = sections,
-    payload = payload,
-    ...
-  )
-  class(out) <- c("morie_tps_result", "morie_rich_result", "list")
-  out
-}
 
 
 # ---------------------------------------------------------------------------
@@ -629,39 +605,3 @@ morie_tps_analyze_all <- function(dfs, out_dir = NULL) {
 }
 
 
-# ---------------------------------------------------------------------------
-# Print method
-# ---------------------------------------------------------------------------
-
-#' Print method for TPS analysis results
-#' @param x A \code{morie_tps_result}.
-#' @param ... Unused.
-#' @return Invisibly returns \code{x} unchanged.
-#' @export
-print.morie_tps_result <- function(x, ...) {
-  cat(x$title, "\
-", strrep("=", nchar(x$title)), "\
-", sep = "")
-  if (length(x$summary_lines) > 0L) {
-    nms <- names(x$summary_lines)
-    label_w <- max(nchar(nms))
-    for (i in seq_along(x$summary_lines)) {
-      cat(sprintf("  %-*s  %s\
-", label_w, nms[i],
-                  format(x$summary_lines[[i]])))
-    }
-    cat("\
-")
-  }
-  if (length(x$warnings) > 0L) {
-    for (w in x$warnings) cat("Warning:", w, "\
-")
-    cat("\
-")
-  }
-  if (nzchar(x$interpretation)) {
-    cat(x$interpretation, "\
-")
-  }
-  invisible(x)
-}

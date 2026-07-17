@@ -30,9 +30,20 @@ utils::globalVariables(c(
 ))
 
 .onLoad <- function(libname, pkgname) {
+  # future's connection-misuse check (diff_connections() in FutureResult) can
+  # segfault R uncatchably when DoubleML/mlr3 resolve futures. Setting the env
+  # var BEFORE future is loaded makes the "ignore" setting take effect in the
+  # main process AND every worker -- each re-reads R_FUTURE_* when future loads.
+  # An options() guard does not reach workers, which is why it was only flaky.
+  # Only set when the user has not chosen their own value.
+  if (!nzchar(Sys.getenv("R_FUTURE_CONNECTIONS_ONMISUSE"))) {
+    Sys.setenv(R_FUTURE_CONNECTIONS_ONMISUSE = "ignore")
+  }
   # The fast-stat kernels in src/morie_fast.cpp resolve rmbl_* routines that
   # rmoriebricklayer registers via R_RegisterCCallable (LinkingTo). A
   # DESCRIPTION Imports: alone does not load the provider DLL, so load its
   # namespace (triggering its useDynLib + registration) before any C call.
   requireNamespace("rmoriebricklayer", quietly = TRUE)
+  try(.morie_auto_register_stat_commands(), silent = TRUE)
+  invisible(NULL)
 }
