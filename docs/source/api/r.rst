@@ -20,6 +20,36 @@ Causal estimators
 .. r:function:: estimate_gate
 .. r:function:: estimate_late
 .. r:function:: estimate_propensity_scores
+.. r:function:: morie_dml_clustered
+
+Causal DAG toolkit (native)
+---------------------------
+
+Native DAG construction, backdoor identification, estimation, and
+refutation — a DoWhy-style workflow with no external graph packages.
+
+.. r:function:: morie_dag
+.. r:function:: morie_dag_identify
+.. r:function:: morie_dag_estimate
+.. r:function:: morie_dag_refute
+.. r:function:: morie_mrm_dags
+
+Matching (native engines)
+-------------------------
+
+Nearest-neighbour, Mahalanobis, exact, coarsened-exact, optimal-pair,
+genetic, and cardinality matching, plus balance diagnostics — all
+implemented natively (no MatchIt/Matching/optmatch runtime
+dependency).
+
+.. r:function:: morie_matching_nearest_neighbor
+.. r:function:: morie_matching_mahalanobis
+.. r:function:: morie_matching_exact
+.. r:function:: morie_matching_cem
+.. r:function:: morie_matching_optimal_pair
+.. r:function:: morie_matching_genetic
+.. r:function:: morie_matching_cardinality
+.. r:function:: morie_matching_balance
 
 Effect sizes + tests
 --------------------

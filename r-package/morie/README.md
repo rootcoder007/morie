@@ -14,11 +14,21 @@ Research and Inferential Estimation**.
 
 ## What's in v0.9.5
 
-- **559 exported `morie_*` R functions** — every public callable is now
-  prefixed to avoid name collisions with other CRAN packages
-  (`morie_chi_square_test`, `morie_kmeans_clustering`,
+- **1,464 exported `morie_*` R functions** (1,892 exports total in this
+  package; the standalone `rmorie` sibling exports 2,027) — every
+  public callable is prefixed to avoid name collisions with other CRAN
+  packages (`morie_chi_square_test`, `morie_kmeans_clustering`,
   `morie_decision_tree_split`, etc.). The companion `morie.fn` Python
   library mirrors these for cross-language parity.
+- **Native causal-inference engines** — matching (nearest-neighbour,
+  Mahalanobis, exact, CEM, optimal, genetic, cardinality), double machine
+  learning (PLR/IRM + clustered SEs via `morie_dml_clustered`), R-learner
+  causal forests, T/S/X/DR meta-learners (`morie_estimate_cate`),
+  design-based GLM, and a causal DAG toolkit
+  (`morie_dag`, `morie_dag_identify`, `morie_dag_estimate`,
+  `morie_dag_refute`, `morie_mrm_dags`) — all implemented natively, no
+  MatchIt/DoubleML/grf/dagitty required at runtime. See the
+  *native-engines* vignette.
 - **SIU subsystem** — a full pipeline for the Ontario Special
   Investigations Unit director's-report corpus (English + French,
   2005-present). See *SIU pipeline* below.

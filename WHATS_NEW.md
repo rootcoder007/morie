@@ -9,6 +9,17 @@ Per-package full changelogs:
 
 ## 1.1.4 (2026-07-15)
 
+- **Native causal-inference engines (R)** — matching
+  (nearest/Mahalanobis/exact/CEM/optimal/genetic/cardinality), native
+  DML with clustered SEs, R-learner causal forests, T/S/X/DR
+  meta-learners, design-based GLM, and the `morie_dag*` causal DAG
+  toolkit — no MatchIt/DoubleML/grf/dagitty needed at runtime, each
+  cross-validated against the package it replaces. See the
+  *native-engines* vignette.
+- **Supply-chain slimming (Python)** — the interactive REPL/agent/TUI
+  layer (`polyglot`, `agent`, `tui`) is source-tree-only and no longer
+  ships in the wheel/sdist; DoubleML moved to the optional
+  `morie[doubleml]` extra; dead `dashing` dependency removed.
 - **figures / tables / meta-synthesis modules now generate their outputs
   everywhere** — 13 figures, `table1.html`, and the methods/results
   markdown are built from the run's own data and CSVs (previously they

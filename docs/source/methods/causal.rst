@@ -275,8 +275,10 @@ The Neyman-orthogonal score for the ATE under the IRM is:
    + \frac{T_i(Y_i - g_0(1,X_i))}{m_0(X_i)}
    - \frac{(1-T_i)(Y_i - g_0(0,X_i))}{1 - m_0(X_i)} - \theta
 
-MORIE uses :class:`doubleml.DoubleMLIRM` with Random Forest nuisance learners
-and cross-fitting for honest inference.
+In Python, MORIE uses :class:`doubleml.DoubleMLIRM` with Random Forest
+nuisance learners and cross-fitting for honest inference (optional
+extra: ``pip install morie[doubleml]``). The R package estimates IRM
+with its own native engine and needs no DoubleML installation.
 
 **Python entry point**: :func:`morie.causal.estimate_irm`
 

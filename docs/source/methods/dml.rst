@@ -4,7 +4,12 @@ Double Machine Learning (DML)
 Part of :doc:`index` — MORIE's statistical-methods reference.
 
 MORIE implements the Partially Linear Regression (PLR) model from
-Chernozhukov et al. (2018) via the :pypi:`DoubleML` package.
+Chernozhukov et al. (2018). The Python entry point wraps the
+:pypi:`DoubleML` package (optional extra: ``pip install morie[doubleml]``);
+the R package runs its own native PLR/IRM engine — including
+``morie_dml_clustered()`` for cluster-robust inference — with no
+DoubleML dependency, cross-validated against DoubleML in the test
+suite.
 
 Partially Linear Regression
 ----------------------------
