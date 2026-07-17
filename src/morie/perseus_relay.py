@@ -32,8 +32,12 @@ logger = logging.getLogger(__name__)
 
 
 def _create_agent():
-    from .agent import create_agent
-
+    try:
+        from .agent import create_agent
+    except ImportError as exc:
+        raise RuntimeError(
+            "the morie agent is not bundled in this install (source-tree only)"
+        ) from exc
     return create_agent()
 
 

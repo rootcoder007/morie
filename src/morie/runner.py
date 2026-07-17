@@ -853,8 +853,11 @@ def _main_impl() -> int:
         return run_chat_repl(agent=args.agent)
 
     if args.command == "tui":
-        from .tui import launch_tui
-
+        try:
+            from .tui import launch_tui
+        except ImportError:
+            print("The TUI is not bundled in this install (source-tree only).")
+            return 1
         return launch_tui()
 
     if args.command == "selftest":
@@ -1453,7 +1456,11 @@ def _handle_percy(args: argparse.Namespace) -> int:
     import os
     import sys
 
-    from .agent import create_agent
+    try:
+        from .agent import create_agent
+    except ImportError:
+        print("The agent is not bundled in this install (source-tree only).")
+        return 1
 
     use_stream = not getattr(args, "no_stream", False)
     model = getattr(args, "model", None)

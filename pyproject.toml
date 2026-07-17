@@ -179,13 +179,25 @@ wheel.exclude = [
   "!morie/fn/_*.py",
   "!morie/fn/__init__.py",
   "!morie/fn/describe.py",
-  # polyglot.py is a local multi-language REPL engine (exec + shell -c). It is
-  # not part of the library API (only the `morie repl --polyglot` CLI path uses
-  # it, lazily) and static scanners flag it as an arbitrary-code-execution
-  # surface. Keep it in the source tree but out of the published artifacts.
+  # The interactive/agent layer runs user/LLM-supplied code (exec + shell -c)
+  # and is NOT part of the library API -- every entry point imports it lazily
+  # and is guarded. Static scanners (Socket gptMalware / "Uses eval") flag it
+  # as an arbitrary-code-execution surface, so it is kept in the source tree
+  # but excluded from the published wheel + sdist. `morie repl`/`morie agent`/
+  # `morie tui` degrade gracefully when it is absent.
   "morie/polyglot.py",
+  "morie/agent.py",
+  "morie/tui.py",
+  "morie/_exec_guard.py",
+  "morie/repl_init.py",
 ]
-sdist.exclude = ["src/morie/polyglot.py"]
+sdist.exclude = [
+  "src/morie/polyglot.py",
+  "src/morie/agent.py",
+  "src/morie/tui.py",
+  "src/morie/_exec_guard.py",
+  "src/morie/repl_init.py",
+]
 sdist.include = ["libmorie/", "CMakeLists.txt", "scripts/bundle_fn.py"]
 
 [tool.cibuildwheel]
