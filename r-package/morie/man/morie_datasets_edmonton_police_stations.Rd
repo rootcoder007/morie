@@ -27,3 +27,7 @@ include \code{name}, \code{address}, \code{latitude}, \code{longitude}.
 Phase 3FFF3. Bundled 10-row fixture of Edmonton Police Service
 station locations (Socrata id \code{e7aq-scxv}).
 }
+\examples{
+df <- morie_datasets_edmonton_police_stations(offline = TRUE)
+df[, c("name", "latitude", "longitude")]
+}

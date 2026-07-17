@@ -108,6 +108,11 @@ NULL
 #' @param alpha Significance level.
 #' @param labels Optional character vector of test labels.
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(50), runif(10, 0, 0.005))
+#' res <- bonferroni(p, alpha = 0.05)
+#' res$n_rejected
 #' @export
 bonferroni <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -136,6 +141,10 @@ sidak <- function(p_values, alpha = 0.05, labels = NULL) {
 #'
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(30), runif(5, 0, 0.005))
+#' holm(p)$adjusted
 #' @export
 holm <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -149,6 +158,10 @@ holm <- function(p_values, alpha = 0.05, labels = NULL) {
 #'
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(30), runif(5, 0, 0.005))
+#' hochberg(p)$adjusted
 #' @export
 hochberg <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -162,6 +175,10 @@ hochberg <- function(p_values, alpha = 0.05, labels = NULL) {
 #'
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(30), runif(5, 0, 0.005))
+#' hommel(p)$adjusted
 #' @export
 hommel <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -173,6 +190,10 @@ hommel <- function(p_values, alpha = 0.05, labels = NULL) {
 #'
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(30), runif(5, 0, 0.005))
+#' holm_sidak(p)$adjusted
 #' @export
 holm_sidak <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -200,6 +221,11 @@ holm_sidak <- function(p_values, alpha = 0.05, labels = NULL) {
 #'
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(80), runif(20, 0, 0.005))
+#' res <- benjamini_hochberg(p)
+#' head(res$adjusted)
 #' @export
 benjamini_hochberg <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -217,6 +243,11 @@ bh <- benjamini_hochberg
 #'
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(80), runif(20, 0, 0.005))
+#' res <- benjamini_yekutieli(p)
+#' head(res$adjusted)
 #' @export
 benjamini_yekutieli <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -297,6 +328,9 @@ storey_q <- function(p_values, alpha = 0.05, lambda_param = 0.5,
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (chi-square), and \code{p_value} (combined p).
+#' @examples
+#' res <- fisher_combined(c(0.001, 0.6, 0.5))
+#' res$p_value
 #' @export
 fisher_combined <- function(p_values) {
   p <- .mt_check_p(p_values)
@@ -379,6 +413,8 @@ simes_combined <- function(p_values) {
 #'
 #' @inheritParams bonferroni
 #' @return A single numeric scalar: the harmonic mean p-value.
+#' @examples
+#' harmonic_mean_p(c(0.001, 0.05, 0.5))
 #' @export
 harmonic_mean_p <- function(p_values) {
   # Asymptotically exact HMP (Wilson 2019): mean(1/p) referred to its
@@ -398,6 +434,11 @@ harmonic_mean_p <- function(p_values) {
 #' @return A \code{morie_rich_result} list with elements \code{method},
 #'   \code{statistic} (Cauchy combination statistic), and \code{p_value}
 #'   (combined p).
+#' @examples
+#' res <- cauchy_combination(c(0.01, 0.3, 0.5))
+#' res$p_value
+#' resw <- cauchy_combination(c(0.01, 0.3, 0.5), weights = c(0.5, 0.25, 0.25))
+#' resw$p_value
 #' @export
 cauchy_combination <- function(p_values, weights = NULL) {
   p <- .mt_check_p(p_values)
@@ -433,6 +474,10 @@ cauchy_combination <- function(p_values, weights = NULL) {
 #' @inheritParams bonferroni
 #' @return A \code{morie_rich_result} list with a logical \code{rejected}
 #'   vector and an integer \code{n_rejected}; see \code{morie_multiple_testing}.
+#' @examples
+#' res <- fixed_sequence(c(0.01, 0.02, 0.5, 0.001))
+#' res$n_rejected
+#' res$rejected
 #' @export
 fixed_sequence <- function(p_values, alpha = 0.05, labels = NULL) {
   p <- .mt_check_p(p_values)
@@ -468,6 +513,10 @@ fixed_sequence <- function(p_values, alpha = 0.05, labels = NULL) {
 #' @return A \code{morie_rich_result} list with logical \code{rejected},
 #'   integer \code{n_rejected}, and the input \code{weights}
 #'   (see \code{morie_multiple_testing}).
+#' @examples
+#' res <- fallback_procedure(c(0.01, 0.04, 0.30, 0.02),
+#'                           weights = c(0.4, 0.3, 0.2, 0.1))
+#' res$rejected
 #' @export
 fallback_procedure <- function(p_values, weights, alpha = 0.05,
                                 labels = NULL) {
@@ -509,6 +558,9 @@ fallback_procedure <- function(p_values, weights, alpha = 0.05,
 #'   across families (mirrors the Python reference).
 #' @return A \code{morie_rich_result} list with one stage entry per
 #'   family and an \code{overall_rejected} logical vector.
+#' @examples
+#' res <- hierarchical_bonferroni(list(c(0.4, 0.5), c(0.001, 0.002)))
+#' str(res)
 #' @export
 hierarchical_bonferroni <- function(p_values_by_family, alpha = 0.05,
                                      propagate_alpha = TRUE) {
@@ -586,6 +638,10 @@ hierarchical_bonferroni <- function(p_values_by_family, alpha = 0.05,
 #' @param method One of \code{"storey"}, \code{"bootstrap"}, or
 #'   \code{"two_step"}.
 #' @return A scalar pi0 estimate in `[0, 1]`.
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(80), runif(20, 0, 0.005))
+#' estimate_pi0(p, method = "storey")
 #' @export
 estimate_pi0 <- function(p_values, method = c("storey", "bootstrap", "two_step")) {
   method <- match.arg(method)
@@ -636,6 +692,11 @@ estimate_pi0 <- function(p_values, method = c("storey", "bootstrap", "two_step")
 #'   \code{"storey"}, or \code{"fwer"} (alias of holm).
 #' @return A \code{morie_rich_result} list as returned by the dispatched
 #'   adjustment routine (see \code{morie_multiple_testing}).
+#' @examples
+#' set.seed(1)
+#' p <- c(runif(20), runif(5, 0, 0.005))
+#' res <- adjust_p_values(p, method = "bh")
+#' res$n_rejected
 #' @export
 adjust_p_values <- function(p_values, method = "bh", alpha = 0.05,
                              labels = NULL) {

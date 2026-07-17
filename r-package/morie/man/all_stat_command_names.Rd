@@ -13,3 +13,7 @@ command name together with all registered aliases (deduplicated).
 \description{
 Sorted vector of all command names + aliases
 }
+\examples{
+v <- all_stat_command_names()
+head(v)
+}

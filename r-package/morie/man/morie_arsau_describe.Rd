@@ -34,3 +34,7 @@ and \code{interpretation}.
 \description{
 Describe a single ARSAU dataset entry.
 }
+\examples{
+res <- morie_arsau_describe("main_records", "2024")
+res$summary_lines
+}

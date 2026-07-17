@@ -38,6 +38,13 @@
 #' @param data Numeric matrix or data.frame: items as columns, respondents as rows.
 #' @param ci Confidence level (default 0.95).
 #' @return A list with components `raw`, `std`, `avgr`, `k`, `n`, `ci_lo`, `ci_hi`.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(50)
+#' X <- sapply(1:5, function(j) sqrt(0.6) * f + sqrt(0.4) * rnorm(50))
+#' colnames(X) <- paste0("i", 1:5)
+#' res <- morie_psymet_alpha(X)
+#' res$raw
 #' @export
 morie_psymet_alpha <- function(data, ci = 0.95) {
   X <- .as_item_matrix(data)
@@ -80,6 +87,13 @@ morie_psymet_alpha <- function(data, ci = 0.95) {
 #' @param data Numeric matrix / data.frame of items.
 #' @param nf Number of factors (default 1).
 #' @return list with `total`, `hier`, `alpha`, `nf`, `expvar`.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(120)
+#' X <- sapply(1:12, function(j) sqrt(0.5) * f + sqrt(0.5) * rnorm(120))
+#' colnames(X) <- paste0("i", 1:12)
+#' res <- morie_psymet_omega(X, nf = 4)
+#' c(res$total, res$hier)
 #' @export
 morie_psymet_omega <- function(data, nf = 1) {
   X <- .as_item_matrix(data)
@@ -110,6 +124,13 @@ morie_psymet_omega <- function(data, nf = 1) {
 #'
 #' @param data Numeric matrix / data.frame.
 #' @return data.frame with columns `item`, `r_total`, `r_corr`.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(50)
+#' X <- sapply(1:5, function(j) sqrt(0.6) * f + sqrt(0.4) * rnorm(50))
+#' colnames(X) <- paste0("i", 1:5)
+#' out <- morie_psymet_itemtotal(X)
+#' out
 #' @export
 morie_psymet_itemtotal <- function(data) {
   X <- .as_item_matrix(data)
@@ -127,6 +148,13 @@ morie_psymet_itemtotal <- function(data) {
 #'
 #' @param data Numeric matrix / data.frame.
 #' @return data.frame with `item`, `adel`.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(50)
+#' X <- sapply(1:5, function(j) sqrt(0.6) * f + sqrt(0.4) * rnorm(50))
+#' colnames(X) <- paste0("i", 1:5)
+#' out <- morie_psymet_alphadel(X)
+#' out
 #' @export
 morie_psymet_alphadel <- function(data) {
   X <- .as_item_matrix(data)
@@ -144,6 +172,9 @@ morie_psymet_alphadel <- function(data) {
 #' CR = (sum lambda)^2 / ((sum lambda)^2 + sum(1 - lambda^2))
 #' @param loads Numeric vector of standardised factor loadings (lambda).
 #' @return Single numeric scalar in `[0, 1]`: the composite reliability (CR).
+#' @examples
+#' lam <- c(0.7, 0.8, 0.6)
+#' morie_psymet_cr(lam)
 #' @export
 morie_psymet_cr <- function(loads) {
   lam <- as.numeric(loads)
@@ -156,6 +187,9 @@ morie_psymet_cr <- function(loads) {
 #' @param loads Numeric vector of standardised factor loadings (lambda).
 #' @return Single numeric scalar: the average variance extracted (mean of
 #'   squared loadings).
+#' @examples
+#' lam <- c(0.7, 0.8, 0.6)
+#' morie_psymet_ave(lam)
 #' @export
 morie_psymet_ave <- function(loads) {
   mean(as.numeric(loads)^2)
@@ -167,6 +201,13 @@ morie_psymet_ave <- function(loads) {
 #' partial-correlation anti-image matrix.
 #' @return list with `msa` (overall) and named numeric vector `items`.
 #' @param data Numeric matrix or data.frame of items.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(100)
+#' X <- sapply(1:5, function(j) sqrt(0.5) * f + sqrt(0.5) * rnorm(100))
+#' colnames(X) <- paste0("i", 1:5)
+#' res <- morie_psymet_kmo(X)
+#' res$msa
 #' @export
 morie_psymet_kmo <- function(data) {
   X <- .as_item_matrix(data)
@@ -194,6 +235,13 @@ morie_psymet_kmo <- function(data) {
 #' Bartlett's test of sphericity.
 #' @return list with `chisq`, `df`, `pval`.
 #' @param data Numeric matrix or data.frame of items.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(100)
+#' X <- sapply(1:5, function(j) sqrt(0.5) * f + sqrt(0.5) * rnorm(100))
+#' colnames(X) <- paste0("i", 1:5)
+#' res <- morie_psymet_bartlett(X)
+#' res$pval
 #' @export
 morie_psymet_bartlett <- function(data) {
   X <- .as_item_matrix(data)
@@ -215,6 +263,13 @@ morie_psymet_bartlett <- function(data) {
 #' @param nsim Integer; number of simulated random datasets (default 100).
 #' @param seed Integer; RNG seed for reproducibility.
 #' @return Single integer >= 1: the suggested number of factors / components.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(60)
+#' X <- sapply(1:5, function(j) sqrt(0.6) * f + sqrt(0.4) * rnorm(60))
+#' colnames(X) <- paste0("i", 1:5)
+#' k <- morie_psymet_parallel(X, nsim = 20, seed = 1)
+#' k
 #' @export
 morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
   X <- .as_item_matrix(data)
@@ -239,6 +294,13 @@ morie_psymet_parallel <- function(data, nsim = 100, seed = 42) {
 #' @param data Numeric matrix or data.frame of items.
 #' @return Single numeric scalar: the Spearman-Brown corrected split-half
 #'   reliability coefficient.
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(80)
+#' X <- sapply(1:6, function(j) sqrt(0.6) * f + sqrt(0.4) * rnorm(80))
+#' colnames(X) <- paste0("i", 1:6)
+#' v <- morie_psymet_splithalf(X, method = "first_last")
+#' v
 #' @export
 morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
   method <- match.arg(method)
@@ -264,6 +326,13 @@ morie_psymet_splithalf <- function(data, method = c("first_last", "odd_even")) {
 #' @return data.frame with `item`, `d`.
 #' @param data Numeric matrix or data.frame of items.
 #' @param pct Numeric in (0, 0.5); proportion for the upper/lower group split (default 0.27, the Kelley-Cureton rule).
+#' @examples
+#' set.seed(1)
+#' f <- rnorm(50)
+#' X <- sapply(1:5, function(j) sqrt(0.6) * f + sqrt(0.4) * rnorm(50))
+#' colnames(X) <- paste0("i", 1:5)
+#' out <- morie_psymet_discrimination(X)
+#' out
 #' @export
 morie_psymet_discrimination <- function(data, pct = 0.27) {
   X <- .as_item_matrix(data)

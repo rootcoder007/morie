@@ -21,3 +21,8 @@ with the KS D statistic, p-value, and sample size n.
 \description{
 One-sample Kolmogorov-Smirnov test
 }
+\examples{
+set.seed(1)
+res <- ks_test_one_sample(rnorm(40), cdf = "norm")
+res
+}

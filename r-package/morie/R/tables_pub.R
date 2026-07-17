@@ -534,6 +534,11 @@ odds_ratio_table <- function(model, confidence = 0.95, digits = 3L,
 #'   \code{<confidence>\% CI}, \code{p-value}, and a star column.
 #'   Otherwise a character string holding the rendered table in the
 #'   requested format.
+#' @examples
+#' params <- c(treat = 0.5, age = 0.02)
+#' se <- c(treat = 0.1, age = 0.005)
+#' pv <- c(treat = 0.001, age = 0.0001)
+#' hazard_ratio_table(params, se, pv)
 #' @export
 hazard_ratio_table <- function(params, se, pvalues, confidence = 0.95,
                                 digits = 3L, apa = FALSE,
@@ -587,6 +592,10 @@ hazard_ratio_table <- function(params, se, pvalues, confidence = 0.95,
 #'   significance stars) indexed by the numeric column names of
 #'   \code{data}. Otherwise a character string holding the rendered
 #'   table in the requested format.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(a = rnorm(30), b = rnorm(30), c = rnorm(30))
+#' correlation_table(df)
 #' @export
 correlation_table <- function(data, method = "pearson", show_stars = TRUE,
                                 mask_diagonal = TRUE, digits = 3L,
@@ -639,6 +648,13 @@ correlation_table <- function(data, method = "pearson", show_stars = TRUE,
 #'   optionally \code{R-sq}, \code{LR stat}, \code{LR p}. Otherwise a
 #'   character string holding the rendered table in the requested
 #'   format.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(x = rnorm(30))
+#' df$y <- df$x + rnorm(30)
+#' m1 <- lm(y ~ 1, data = df)
+#' m2 <- lm(y ~ x, data = df)
+#' model_comparison_table(list(null = m1, fit = m2))
 #' @export
 model_comparison_table <- function(models, nested = FALSE, digits = 3L,
                                      output_format = "dataframe",
@@ -718,6 +734,12 @@ model_comparison_table <- function(models, nested = FALSE, digits = 3L,
 #'   / chi-square statistic, F or LR statistic, formatted p-value, and
 #'   a star column). Otherwise a character string holding the rendered
 #'   table in the requested format.
+#' @examples
+#' set.seed(1)
+#' df <- data.frame(x = rnorm(30))
+#' df$y <- df$x + rnorm(30)
+#' m <- lm(y ~ x, data = df)
+#' anova_table(m, typ = 1L)
 #' @export
 anova_table <- function(model, typ = 2L, digits = 3L,
                           output_format = "dataframe",
@@ -768,6 +790,11 @@ anova_table <- function(model, typ = 2L, digits = 3L,
 #' @param apa APA-style leading-zero suppression.
 #' @return Length-1 character string of the formatted number, or
 #'   \code{""} when \code{x} is not finite.
+#' @examples
+#' format_number(0.5, style = "fixed")
+#' format_number(1e-6, style = "scientific")
+#' format_number(0.25, style = "percent")
+#' format_number(3.7, style = "integer")
 #' @export
 format_number <- function(x, style = c("fixed", "scientific",
                                           "percent", "integer"),
@@ -793,6 +820,9 @@ format_number <- function(x, style = c("fixed", "scientific",
 #'   other numeric columns use \code{numeric_fmt}). Otherwise a
 #'   character string holding the rendered table in the requested
 #'   format.
+#' @examples
+#' df <- data.frame(est = c(1.234, 2.456), p = c(0.001, 0.5))
+#' format_dataframe(df, pval_cols = "p")
 #' @export
 format_dataframe <- function(df, numeric_fmt = "%.2f",
                                 pval_cols = NULL,

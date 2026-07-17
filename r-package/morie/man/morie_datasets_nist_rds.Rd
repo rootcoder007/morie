@@ -26,3 +26,7 @@ A \code{data.frame} with the NIST RDS catalog schema.
 \description{
 NIST Reference Datasets (RDS) catalog metadata.
 }
+\examples{
+df <- morie_datasets_nist_rds(offline = TRUE)
+head(df)
+}

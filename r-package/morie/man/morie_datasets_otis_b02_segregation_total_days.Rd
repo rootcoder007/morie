@@ -31,3 +31,7 @@ Columns mirror the upstream resource.
 \description{
 OTIS b02 -- Segregation total days per individual
 }
+\examples{
+df <- morie_datasets_otis_b02_segregation_total_days(offline = TRUE)
+head(df)
+}

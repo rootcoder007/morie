@@ -65,6 +65,10 @@
 
 #' Generate an ML-KEM-768 key pair for hybrid encryption
 #' @return A named list with `pk` (raw) and `sk` (raw).
+#' @examples
+#' # Hybrid ML-KEM-768 keygen is not yet wired into the R bindings;
+#' # the call signals "not implemented" until v1.0.1.
+#' try(morie_crypto_hybrid_keygen())
 #' @export
 morie_crypto_hybrid_keygen <- function() {
   stop(
@@ -78,6 +82,12 @@ morie_crypto_hybrid_keygen <- function() {
 #' @param plaintext   Raw vector or character string to encrypt.
 #' @param recipient_pk Raw vector: recipient's ML-KEM-768 public key.
 #' @return Raw vector container.
+#' @examples
+#' # Hybrid ML-KEM-768 encryption is not yet wired into the R bindings;
+#' # the call validates inputs, then signals "not implemented".
+#' if (morie_crypto_sodium_available()) {
+#'   try(morie_crypto_hybrid_encrypt("hi", as.raw(1:4)))
+#' }
 #' @export
 morie_crypto_hybrid_encrypt <- function(plaintext, recipient_pk) {
   .morie_require_sodium()
@@ -96,6 +106,12 @@ morie_crypto_hybrid_encrypt <- function(plaintext, recipient_pk) {
 #' @param ciphertext  Raw vector container.
 #' @param recipient_sk Raw vector: recipient's ML-KEM-768 secret key.
 #' @return Raw vector of decrypted plaintext.
+#' @examples
+#' # Hybrid ML-KEM-768 decryption is not yet wired into the R bindings;
+#' # the call validates inputs, then signals "not implemented".
+#' if (morie_crypto_sodium_available()) {
+#'   try(morie_crypto_hybrid_decrypt(as.raw(1:4), as.raw(1:4)))
+#' }
 #' @export
 morie_crypto_hybrid_decrypt <- function(ciphertext, recipient_sk) {
   .morie_require_sodium()

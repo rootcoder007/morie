@@ -39,3 +39,8 @@ table in the requested format.
 \description{
 Pairwise correlation matrix with significance stars
 }
+\examples{
+set.seed(1)
+df <- data.frame(a = rnorm(30), b = rnorm(30), c = rnorm(30))
+correlation_table(df)
+}

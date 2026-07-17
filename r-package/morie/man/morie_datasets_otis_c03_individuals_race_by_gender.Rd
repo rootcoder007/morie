@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c03 -- Individuals by race x gender
 }
+\examples{
+df <- morie_datasets_otis_c03_individuals_race_by_gender(offline = TRUE)
+head(df[, c("Race", "Gender")])
+}

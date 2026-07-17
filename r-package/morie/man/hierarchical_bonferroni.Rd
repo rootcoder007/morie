@@ -26,3 +26,7 @@ family and an \code{overall_rejected} logical vector.
 Families are tested in order; if a family produces no rejections,
 subsequent families are blocked from testing.
 }
+\examples{
+res <- hierarchical_bonferroni(list(c(0.4, 0.5), c(0.001, 0.002)))
+str(res)
+}

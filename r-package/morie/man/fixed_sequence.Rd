@@ -22,3 +22,8 @@ Tests are evaluated in the given order and the procedure stops at
 the first non-rejection; reached hypotheses need no multiplicity
 adjustment.
 }
+\examples{
+res <- fixed_sequence(c(0.01, 0.02, 0.5, 0.001))
+res$n_rejected
+res$rejected
+}

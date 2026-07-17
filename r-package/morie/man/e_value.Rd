@@ -20,3 +20,6 @@ Scalar E-value (>= 1).
 Wraps \pkg{EValue} when available. Otherwise applies the same
 continuous-scale z-stat -> RR approximation as the Python port.
 }
+\examples{
+e_value(ate = 0.5, se = 0.1)
+}

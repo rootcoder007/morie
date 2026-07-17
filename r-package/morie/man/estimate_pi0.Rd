@@ -18,3 +18,8 @@ A scalar pi0 estimate in \verb{[0, 1]}.
 \description{
 Estimate the proportion of true null hypotheses (pi0)
 }
+\examples{
+set.seed(1)
+p <- c(runif(80), runif(20, 0, 0.005))
+estimate_pi0(p, method = "storey")
+}

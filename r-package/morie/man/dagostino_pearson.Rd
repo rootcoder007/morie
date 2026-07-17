@@ -17,3 +17,8 @@ with the K^2 omnibus statistic, p-value, df = 2, and sample size n.
 API stub: implemented via the K2 statistic = Z(skew)^2 + Z(kurt)^2
 (D'Agostino & Pearson 1973). Recommended n >= 20.
 }
+\examples{
+set.seed(1)
+res <- dagostino_pearson(rnorm(100))
+res$p_value
+}

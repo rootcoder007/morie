@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS b04 -- Segregation consecutive durations by region
 }
+\examples{
+df <- morie_datasets_otis_b04_seg_consecutive_by_region(offline = TRUE)
+head(df)
+}

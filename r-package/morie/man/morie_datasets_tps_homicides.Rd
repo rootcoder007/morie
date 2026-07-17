@@ -36,3 +36,7 @@ date triple) with HOOD_158 + HOOD_140 attached.
 \description{
 TPS PSDP -- Homicides
 }
+\examples{
+df <- morie_datasets_tps_homicides(offline = TRUE)
+table(df$HOMICIDE_TYPE)
+}

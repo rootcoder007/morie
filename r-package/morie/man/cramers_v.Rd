@@ -17,3 +17,8 @@ A \code{morie_effect_size}.
 \description{
 Cramer's V for a contingency table
 }
+\examples{
+tbl <- matrix(c(20, 10, 5, 25), nrow = 2)
+r <- cramers_v(tbl)
+r$estimate
+}

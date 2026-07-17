@@ -17,3 +17,11 @@ size (also under \code{extra$kendall_w}).
 \description{
 Friedman test (repeated-measures rank ANOVA)
 }
+\examples{
+set.seed(1)
+a <- rnorm(15)
+b <- rnorm(15, mean = 0.5)
+c <- rnorm(15, mean = 1)
+res <- friedman_test(a, b, c)
+res$p_value
+}

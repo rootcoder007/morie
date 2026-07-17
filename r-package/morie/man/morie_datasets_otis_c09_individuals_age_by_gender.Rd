@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c09 -- Individuals by age category x gender
 }
+\examples{
+df <- morie_datasets_otis_c09_individuals_age_by_gender(offline = TRUE)
+head(df)
+}

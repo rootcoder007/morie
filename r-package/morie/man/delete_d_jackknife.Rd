@@ -32,3 +32,9 @@ A \code{morie_jackknife_result}.
 \description{
 Delete-d (generalised) jackknife
 }
+\examples{
+set.seed(1)
+x <- rnorm(8)
+r <- delete_d_jackknife(x, mean, d = 2L)
+r$estimate
+}

@@ -23,3 +23,9 @@ rich-result metadata fields described in
 \description{
 Load ARSAU probe_cycle_records CSV (CEW telemetry).
 }
+\examples{
+\donttest{
+res <- try(morie_arsau_load_probe_cycle_records("2024"))
+if (!inherits(res, "try-error")) head(res$data)
+}
+}

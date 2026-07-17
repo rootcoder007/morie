@@ -18,6 +18,9 @@
 #' @param direction One of "above", "below", "either". Default "above".
 #' @return Integer vector of detected indices.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.2.
+#' @examples
+#' x <- c(0, 1, 0, 2, 0, 3, 0)
+#' morie_dsp_threshold_detect(x, threshold = 0.5)
 #' @export
 morie_dsp_threshold_detect <- function(x, threshold, min_distance = 1L,
                                        direction = "above") {
@@ -72,6 +75,10 @@ morie_dsp_derivative_detect <- function(x, fs = 1,
 #' @param frame_length Optional frame length.
 #' @return Scalar (whole signal) or numeric vector (per frame).
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.3.
+#' @examples
+#' N <- 1000L; t <- seq.int(0, N - 1L) / N
+#' x <- sin(2 * pi * 5 * t)
+#' morie_dsp_zero_crossing(x)
 #' @export
 morie_dsp_zero_crossing <- function(x, frame_length = NULL) {
   if (is.null(frame_length)) {
@@ -98,6 +105,12 @@ morie_dsp_zero_crossing <- function(x, frame_length = NULL) {
 #' @param threshold Minimum correlation. Default 0.7.
 #' @return List with `indices` (1-based) and `correlations`.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.4.
+#' @examples
+#' set.seed(1L)
+#' tpl <- c(0, 1, 2, 1, 0)
+#' x <- c(rnorm(15, sd = 0.01), tpl, rnorm(15, sd = 0.01))
+#' out <- morie_dsp_template_match(x, tpl, threshold = 0.7)
+#' out$indices
 #' @export
 morie_dsp_template_match <- function(x, template, threshold = 0.7) {
   x <- as.numeric(x)
@@ -134,6 +147,10 @@ morie_dsp_template_match <- function(x, template, threshold = 0.7) {
 #' @param threshold_factor Multiplier on baseline median. Default 3.
 #' @return Integer vector of onset indices.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.5.
+#' @examples
+#' set.seed(1L)
+#' x <- c(0.01 * rnorm(200), 5 + 0.01 * rnorm(200))
+#' morie_dsp_onset_detect(x, fs = 1000, energy_window_ms = 5, threshold_factor = 3)
 #' @export
 morie_dsp_onset_detect <- function(x, fs, energy_window_ms = 20,
                                    threshold_factor = 3) {
@@ -166,6 +183,10 @@ morie_dsp_onset_detect <- function(x, fs, energy_window_ms = 20,
 #' @return Numeric vector, length(x).
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.5;
 #'   Liang et al. (1997).
+#' @examples
+#' set.seed(1L)
+#' x <- rnorm(50)
+#' morie_dsp_shannon_energy(x)
 #' @export
 morie_dsp_shannon_energy <- function(x) {
   # Normalise to max amplitude so x_sq lies in [0, 1] and the entropy
@@ -185,6 +206,8 @@ morie_dsp_shannon_energy <- function(x) {
 #' @return Numeric vector, length(x); ends are zero.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.5;
 #'   Kaiser (1990).
+#' @examples
+#' morie_dsp_teager_energy(c(1, 2, 3, 4, 5))
 #' @export
 morie_dsp_teager_energy <- function(x) {
   n <- length(x)
@@ -202,6 +225,12 @@ morie_dsp_teager_energy <- function(x) {
 #' @param x Numeric vector.
 #' @return Numeric vector, length(x).
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.6.
+#' @examples
+#' fs <- 1024
+#' t <- seq.int(0, 1023) / fs
+#' x <- 2 * sin(2 * pi * 64 * t)
+#' env <- morie_dsp_hilbert_envelope(x)
+#' mean(env[20:1004])  # ~2 (the amplitude)
 #' @export
 morie_dsp_hilbert_envelope <- function(x) {
   # Module 20: native analytic signal in the FFT domain.
@@ -354,6 +383,8 @@ morie_dsp_complex_cepstrum <- function(x) {
 #' @param rr_intervals Numeric vector (seconds).
 #' @return Numeric vector of BPM values.
 #' @references Rangayyan & Krishnan (2015), Ch. 4, sec. 4.8.
+#' @examples
+#' morie_dsp_hr_from_rr(c(1.0, 1.0, 1.0))  # 1s RR intervals -> 60 bpm
 #' @export
 morie_dsp_hr_from_rr <- function(rr_intervals) {
   rr <- as.numeric(rr_intervals)

@@ -35,3 +35,16 @@ Native cross-fit partially-linear-regression estimator
 (Chernozhukov et al. 2018) with SVD-ridge nuisance learners;
 cross-validated against DoubleML.
 }
+\examples{
+\donttest{
+set.seed(1)
+n <- 200
+X <- matrix(rnorm(n * 2), n, 2)
+tr <- rbinom(n, 1, plogis(X[, 1]))
+y <- 2 * tr + X[, 1] + rnorm(n)
+df <- data.frame(y = y, d = tr, x1 = X[, 1], x2 = X[, 2])
+res <- suppressWarnings(estimate_plr(df, treatment = "d", outcome = "y",
+                                     covariates = c("x1", "x2")))
+res$ate
+}
+}

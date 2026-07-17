@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS b09 -- Individuals in segregation by number of times placed
 }
+\examples{
+df <- morie_datasets_otis_b09_seg_n_times(offline = TRUE)
+head(df)
+}

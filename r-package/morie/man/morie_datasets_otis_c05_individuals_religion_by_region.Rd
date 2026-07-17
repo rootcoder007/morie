@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c05 -- Individuals by religion x region
 }
+\examples{
+df <- morie_datasets_otis_c05_individuals_religion_by_region(offline = TRUE)
+head(df)
+}

@@ -31,3 +31,7 @@ Columns mirror the upstream resource.
 \description{
 OTIS c11 -- Aggregate lengths
 }
+\examples{
+df <- morie_datasets_otis_c11_aggregate_lengths(offline = TRUE)
+head(df)
+}

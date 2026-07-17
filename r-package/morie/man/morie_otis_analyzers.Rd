@@ -15,3 +15,7 @@ driving \code{morie_otis_analyze_all()}.
 Mirrors \code{_ANALYSES} in
 \code{src/morie/otis_all_analyze.py}.
 }
+\examples{
+res <- morie_otis_analyzers()
+head(names(res))
+}

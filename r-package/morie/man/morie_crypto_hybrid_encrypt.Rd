@@ -17,3 +17,10 @@ Raw vector container.
 \description{
 Hybrid encrypt: ML-KEM-768 + ChaCha20-Poly1305
 }
+\examples{
+# Hybrid ML-KEM-768 encryption is not yet wired into the R bindings;
+# the call validates inputs, then signals "not implemented".
+if (morie_crypto_sodium_available()) {
+  try(morie_crypto_hybrid_encrypt("hi", as.raw(1:4)))
+}
+}

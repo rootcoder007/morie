@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS d05 -- Deaths in custody by age category
 }
+\examples{
+df <- morie_datasets_otis_d05_deaths_by_age_category(offline = TRUE)
+head(df)
+}

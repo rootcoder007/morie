@@ -111,6 +111,12 @@ NULL
 #' @return A \code{morie_fairness_result} with the fitted parameters in
 #'   \code{$gp}, standardisation in \code{$mean}/\code{$std}, and a
 #'   \code{$sample(n, seed)} closure when a backend was found.
+#' @examples
+#' set.seed(1)
+#' pts <- matrix(rnorm(60), ncol = 2L)
+#' r <- morie_fairness_spatial_gan(pts, steps = 5L, batch_size = 8L,
+#'   latent_dim = 4L, hidden = 8L, seed = 1L)
+#' r$backend
 #' @export
 morie_fairness_spatial_gan <- function(points, steps = 1500L,
                                         batch_size = 128L,
@@ -217,6 +223,11 @@ morie_fairness_spatial_gan <- function(points, steps = 1500L,
 #' @param seed Sampling/training seed.
 #' @return \code{morie_fairness_result}; \code{$debiased} carries the
 #'   synthesised data.frame when a backend is available.
+#' @examples
+#' df <- data.frame(group = c("A", "B"), outcome = c(1, 0), stringsAsFactors = FALSE)
+#' r <- morie_fairness_ctgan_debiaser(df, outcome_col = "outcome",
+#'   feature_cols = c("x1"), group_col = "group", n = 5L)
+#' r$warnings
 #' @export
 morie_fairness_ctgan_debiaser <- function(df, outcome_col, feature_cols,
                                            group_col = "group",

@@ -47,3 +47,9 @@ synthesises rows in which every group's favourable-outcome rate
 matches the privileged group's, so the Disparate-Impact Ratio of
 the debiased data moves toward 1.
 }
+\examples{
+df <- data.frame(group = c("A", "B"), outcome = c(1, 0), stringsAsFactors = FALSE)
+r <- morie_fairness_ctgan_debiaser(df, outcome_col = "outcome",
+  feature_cols = c("x1"), group_col = "group", n = 5L)
+r$warnings
+}

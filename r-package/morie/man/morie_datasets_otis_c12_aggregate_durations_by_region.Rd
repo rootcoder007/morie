@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS c12 -- Aggregate durations by region
 }
+\examples{
+df <- morie_datasets_otis_c12_aggregate_durations_by_region(offline = TRUE)
+head(df)
+}

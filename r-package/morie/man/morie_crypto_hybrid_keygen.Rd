@@ -12,3 +12,8 @@ A named list with \code{pk} (raw) and \code{sk} (raw).
 \description{
 Generate an ML-KEM-768 key pair for hybrid encryption
 }
+\examples{
+# Hybrid ML-KEM-768 keygen is not yet wired into the R bindings;
+# the call signals "not implemented" until v1.0.1.
+try(morie_crypto_hybrid_keygen())
+}

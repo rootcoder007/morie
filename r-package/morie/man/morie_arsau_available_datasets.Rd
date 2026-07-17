@@ -25,3 +25,7 @@ truncated \code{description}), plus the standard \code{title},
 \description{
 List ARSAU dataset kinds, optionally restricted to one year.
 }
+\examples{
+r <- morie_arsau_available_datasets(year = "2023")
+r$n
+}

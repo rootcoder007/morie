@@ -746,6 +746,9 @@ morie_otis_analyze_d07 <- function(data) {
 #' @return A named list mapping OTIS dataset ids (\code{"b01"} ...
 #'   \code{"d07"}) to the corresponding analyzer functions, suitable for
 #'   driving \code{morie_otis_analyze_all()}.
+#' @examples
+#' res <- morie_otis_analyzers()
+#' head(names(res))
 #' @export
 morie_otis_analyzers <- function() {
   list(
@@ -776,6 +779,10 @@ morie_otis_analyzers <- function() {
 #' @param out_dir Optional directory to write per-dataset
 #'   \code{overlay_<id>.rds} files. \code{NULL} means in-memory only.
 #' @return Named list of \code{morie_otis_analysis_result}s.
+#' @examples
+#' ds <- morie_synth_otis_all(n = 80L, seed = 2L)
+#' res <- try(morie_otis_analyze_all(ds))
+#' if (!inherits(res, "try-error")) names(res)
 #' @export
 morie_otis_analyze_all <- function(datasets, out_dir = NULL) {
   stopifnot(is.list(datasets))

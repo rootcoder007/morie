@@ -10,4 +10,7 @@ morie_cor_pearson(x, y)
 Single-pass C++ kernel.  Equivalent to \code{cor(x, y)} when both
 vectors are equal-length and complete (no NA handling).
 }
+\examples{
+morie:::morie_cor_pearson(1:10, 1:10)
+}
 \keyword{internal}

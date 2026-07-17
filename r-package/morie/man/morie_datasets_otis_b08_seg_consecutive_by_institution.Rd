@@ -31,3 +31,7 @@ sample, live Ontario CKAN, synthetic, or empty schema per
 \description{
 OTIS b08 -- Segregation consecutive durations by institution
 }
+\examples{
+df <- morie_datasets_otis_b08_seg_consecutive_by_institution(offline = TRUE)
+head(df)
+}
