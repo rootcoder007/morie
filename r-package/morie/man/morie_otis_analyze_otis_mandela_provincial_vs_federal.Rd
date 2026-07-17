@@ -19,5 +19,7 @@ Cross-references the c11 Mandela classification against the
 Sprott-Doob Feb 2021 federal SIU figures (Table 19, N=1960).
 }
 \examples{
-\dontrun{ morie_otis_analyze_otis_mandela_provincial_vs_federal(otis_c11) }
+# Synthetic OTIS-shaped panel (bundled generator)
+otis_c11 <- morie_synth_otis("c11", n = 120L, seed = 1L)
+morie_otis_analyze_otis_mandela_provincial_vs_federal(otis_c11)
 }

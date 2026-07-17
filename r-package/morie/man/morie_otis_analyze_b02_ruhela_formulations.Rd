@@ -24,7 +24,7 @@ morie_otis_analyze_b02_mrm(data = NULL, out_dir = NULL)
 OTIS b02 Ruhela formulations: T=Female -> seg-day count.
 }
 \examples{
-\dontrun{
+# Synthetic OTIS-shaped panel (bundled generator)
+otis_b02 <- morie_synth_otis("b02", n = 120L, seed = 1L)
 morie_otis_analyze_b02_ruhela_formulations(otis_b02)
-}
 }

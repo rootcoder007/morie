@@ -27,7 +27,7 @@ SuperLearner) on the canonical alert-complexity -> regional-
 volatility formulation.
 }
 \examples{
-\dontrun{
+# Synthetic OTIS-shaped panel (bundled generator)
+otis_a01 <- morie_synth_otis("a01", n = 120L, seed = 1L)
 morie_otis_analyze_a01_ruhela_formulations(otis_a01)
-}
 }

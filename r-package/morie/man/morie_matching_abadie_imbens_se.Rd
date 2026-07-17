@@ -29,9 +29,15 @@ Computes the conditional-variance Abadie-Imbens SE accounting for the
 fact that matching introduces correlation across matched observations.
 }
 \examples{
-\dontrun{
+set.seed(1)
+df <- data.frame(
+  y = rnorm(150), d = rbinom(150, 1, 0.4),
+  x1 = rnorm(150), x2 = rnorm(150),
+  region = sample(c("North", "South"), 150, TRUE),
+  year = sample(2020:2022, 150, TRUE),
+  treat3 = sample(0:2, 150, TRUE))
+res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 morie_matching_abadie_imbens_se(df, "y", "d", res$match_pairs)
-}
 }
 \references{
 Abadie, A., & Imbens, G. W. (2006). Large sample properties

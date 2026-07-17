@@ -24,13 +24,20 @@ morie_spatial_voting_bayesian_mds(
 \item{sigma_init}{Numeric; initial value for the latent-coordinate scale (default 1).}
 }
 \value{
-Never returns; raises \code{NotYetPorted}.
+List: \code{positions}/\code{coords} (posterior-mean or modal
+configuration), fit diagnostics, and an \code{engine} tag.
 }
 \description{
 Bayesian MDS (stub) -- log-normal distances via Metropolis
 }
 \examples{
-\dontrun{morie_spatial_voting_bayesian_mds(matrix(0, 5, 5))}
+set.seed(1)
+X <- matrix(rnorm(30), 10, 3)
+D <- as.matrix(dist(X))
+fit <- morie_spatial_voting_bayesian_mds(D, n_dims = 2L,
+                                         n_samples = 200L,
+                                         burn_in = 50L)
+dim(fit$positions)
 }
 \references{
 Oh & Raftery (2001) JASA 96(455).

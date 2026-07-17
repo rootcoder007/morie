@@ -37,8 +37,14 @@ suffix to distinguish it from the IPW estimator
 \code{morie_estimate_att} in \code{causal.R}.
 }
 \examples{
-\dontrun{
+set.seed(1)
+df <- data.frame(
+  y = rnorm(150), d = rbinom(150, 1, 0.4),
+  x1 = rnorm(150), x2 = rnorm(150),
+  region = sample(c("North", "South"), 150, TRUE),
+  year = sample(2020:2022, 150, TRUE),
+  treat3 = sample(0:2, 150, TRUE))
+res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 res <- morie_matching_nearest_neighbor(df, "d", c("x1", "x2"))
 morie_matching_att_matched(df, "y", "d", res$match_pairs)
-}
 }
