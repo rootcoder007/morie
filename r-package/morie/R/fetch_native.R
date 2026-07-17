@@ -592,10 +592,12 @@ morie_fetch_parquet <- function(path) {
     chunks <- rg[["1"]]
     for (ci in seq_along(chunks)) {
       cmeta <- chunks[[ci]][["3"]]
-      codec <- cmeta[["3"]]
+      # Thrift ColumnMetaData: 3 = path_in_schema, 4 = codec,
+      # 5 = num_values, 9 = data_page_offset, 11 = dictionary_page_offset.
+      codec <- cmeta[["4"]]
       n_vals <- cmeta[["5"]]
       offset <- cmeta[["9"]]
-      if (is.null(offset)) offset <- cmeta[["4"]]
+      if (is.null(offset)) offset <- cmeta[["11"]]
       vals <- .mpq_read_column(con, offset, codec, n_vals,
                                cols_meta[[ci]]$type)
       nm <- cols_meta[[ci]]$name
