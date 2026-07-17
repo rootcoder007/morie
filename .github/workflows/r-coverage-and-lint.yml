@@ -157,6 +157,12 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     name: rOpenSci pkgcheck (manual only)
+    # Advisory pre-submission audit; non-gating because srr's
+    # update_msg_paths() crashes on any srr message without a
+    # "file [...]" suffix (gsub(character(0), ...) -> "invalid
+    # 'pattern' argument") -- present in both CRAN srr 1.0.0 and dev.
+    # Remove once the upstream fix lands.
+    continue-on-error: true
 
     defaults:
       run:
