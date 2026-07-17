@@ -194,7 +194,7 @@ jobs:
             any::rcmdcheck
             any::goodpractice
             any::cyclocomp
-            ropensci-review-tools/pkgstats
+            any::pkgstats
             ropensci-review-tools/pkgcheck
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
