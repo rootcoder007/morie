@@ -827,28 +827,81 @@ def _detect_witness_officer_count(wo_section: str) -> int | None:
 
 
 def _detect_location_from_intro(text: str) -> str | None:
-    """Find "in the [Township|City|Town] of <Place>" pattern early in the
-    Investigation section."""
+    """Find the most specific location of the incident.
+
+    Preference order (specific -> coarse):
+      1. a street-level address / intersection near the notification or
+         scene wording ("on Bloor Street West between ... in Toronto",
+         "in the area of Robertson Road and Moodie Drive, Ottawa");
+      2. the dispatch phrasing ("officers were called to an address in
+         the area of ...");
+      3. the coarse "in the City/Town of X".
+    """
     inv = _section_text(text, "The Investigation", end_markers=("The Team", "Incident Narrative"))
-    haystack = inv or text
+    haystack = (inv or "") + "\n" + text
+
+    def _trim(v):
+        # Cut trailing action clauses so we keep only the place:
+        # "... Kitchener, and drew a CEW" -> "... Kitchener".
+        v = re.split(r",?\s+(?:and|where|when|after|to)\s+[a-z]", v)[0]
+        v = re.split(r"\s+to\s+(?:arrest|apprehend|attend|assist|respond|investigate)\b", v)[0]
+        v = re.split(r"\s+in relation\b|\s+regarding\b|\s+following\b|\s+for\s+the\s+purpose", v)[0]
+        return v.strip().rstrip(",")
+
+    # Street-level cues: a road/place noun + optional cross-street +
+    # trailing city. Kept tight to avoid swallowing whole sentences.
+    street = (r"(?:Street|St\.?|Road|Rd\.?|Avenue|Ave\.?|Boulevard|Blvd\.?"
+              r"|Drive|Dr\.?|Crescent|Cres\.?|Highway|Hwy\.?|Lane|Way"
+              r"|Court|Ct\.?|Place|Trail|Parkway|Line|Concession|Sideroad"
+              r"|Terrace|Circle|Square|Gardens|intersection|parking lot)")
+    patterns = [
+        # "... on <Street> between <A> and <B>, in Toronto"
+        rf"\bon\s+([A-Z][A-Za-z0-9'\-]*(?:\s+[A-Z][A-Za-z0-9'\-]*)*\s+{street}[^.\n]{{0,90}}?(?:,?\s+in\s+[A-Z][A-Za-z\s\-]+?))(?=[.\n])",
+        # "... in the area of <Street> and <Street>, <City>"
+        rf"\bin the (?:area|vicinity) of\s+([A-Z][^.\n]{{4,110}}?{street}[^.\n]{{0,60}}?)(?=[.\n])",
+        # "... at <number> <Street>, <City>" or "at the <place> ..."
+        rf"\bat\s+(\d*\s*[A-Z][A-Za-z0-9'\-]*(?:\s+[A-Z][A-Za-z0-9'\-]*)*\s+{street}[^.\n]{{0,70}}?)(?=[.\n,])",
+    ]
+    for pat in patterns:
+        m = re.search(pat, haystack)
+        if m:
+            val = re.sub(r"\s+", " ", m.group(1)).strip().rstrip(",")
+            val = _trim(val)
+            if 5 < len(val) < 140:
+                return val
+
+    # Dispatch phrasing: "responded to a domestic disturbance call in
+    # Huron Shores", "responded to a residence in Barry's Bay",
+    # "responded to a mental health call at the Sault Area Hospital".
     m = re.search(
-        r"in the (Township|City|Town|Municipality|Region) of ([A-Z][A-Za-z\s\-]+?)(?:[\.,]|\s+(?:on|at|when))", haystack
-    )
-    if m:
-        return f"{m.group(1)} of {m.group(2).strip()}"
-    # The dispatch address is the truest "location of call":
-    # "officers were called/dispatched to an address in the area of X".
-    m = re.search(
-        r"(?:called|dispatched|responded)\s+to\s+(?:an address\s+)?(?:in|at|near)\s+(?:the\s+area\s+of\s+)?([A-Z][^.\n]{5,120}?)[.\n]",
+        r"(?:called|dispatched|responded|attended)\s+to\s+"
+        r"(?:an?\s+)?[a-z][^.\n]{0,70}?"
+        r"(?:call|residence|home|address|location|scene|apartment|"
+        r"building|hospital|complex|property|premises)\s+"
+        r"(?:in|at|near|on)\s+(?:the\s+)?([A-Z][^.\n]{3,90}?)(?=[.,\n])",
         haystack)
     if m:
-        return m.group(1).strip().rstrip(",")
-    # 2026 layout: "The Scene ... events in question transpired <where>."
+        return _trim(re.sub(r"\s+", " ", m.group(1)).strip())
+    m = re.search(
+        r"(?:called|dispatched|responded|attended)\s+to\s+(?:an address\s+)?(?:in|at|near)\s+(?:the\s+area\s+of\s+)?([A-Z][^.\n]{5,120}?)[.\n]",
+        haystack)
+    if m:
+        return _trim(re.sub(r"\s+", " ", m.group(1)).strip())
+
+    # 2026 "The Scene ... transpired <where>".
     m = re.search(
         r"events in question transpired\s+(?:on and around\s+|at\s+|on\s+|in\s+)?([^.\n]{5,160})[.\n]",
         text)
     if m:
-        return m.group(1).strip()
+        return _trim(re.sub(r"\s+", " ", m.group(1)).strip())
+
+    # Coarse city fallback.
+    m = re.search(
+        r"in the (Township|City|Town|Municipality|Region) of ([A-Z][A-Za-z'\-]+(?:\s+[A-Z][A-Za-z'\-]+)*)",
+        haystack
+    )
+    if m:
+        return f"{m.group(1)} of {m.group(2).strip()}"
     return None
 
 
@@ -986,12 +1039,25 @@ def _detect_specific_injuries(text: str) -> str | None:
     """
     i = text.find("The Investigation")
     hay = text[i:] if i >= 0 else text
-    m = re.search(
-        r"\b((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?)[^\n]{1,200}?(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|finger|spine|vertebra|foot|feet|hip|orbital|pelvis|shoulder|hand)[^\n]{0,80})",
-        hay,
-        re.IGNORECASE,
-    )
-    return m.group(1).strip() if m else None
+    boiler = ("fracture to the skull, or to a limb, rib or vertebra",
+              "fracture to a limb, rib or vertebrae or to the skull")
+    inj = re.compile(
+        r"\b((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?|"
+        r"concussion|dislocat\w+|avuls\w+|contusion)[^\n.]{1,200}?"
+        r"(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|teeth|finger|"
+        r"spine|vertebra|foot|feet|hip|orbital|pelvis|shoulder|hand|"
+        r"lip|eye|face|facial|head|nasal|collarbone|clavicle)[^\n.]{0,80})",
+        re.IGNORECASE)
+    for m in inj.finditer(hay):
+        cand = m.group(1).strip()
+        low = cand.lower()
+        # skip the statutory serious-injury definition boilerplate
+        if any(b in low for b in boiler):
+            continue
+        if "serious injury" in low and "purposes" in low:
+            continue
+        return cand
+    return None
 
 
 def _detect_legislation(text: str) -> str | None:
