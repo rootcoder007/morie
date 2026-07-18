@@ -931,11 +931,11 @@ def _detect_incident_date_from_narrative(text: str) -> str | None:
         if not sec:
             continue
         # Walk every "On <Date>" hit; pick first NOT near a notification verb
-        for m in re.finditer(r"\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", sec):
+        for m in re.finditer(r"\b[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", sec):
             window = sec[max(0, m.start() - 50) : m.end() + 80].lower()
             if any(skip in window for skip in SKIP_NEAR):
                 continue
-            return m.group(1).replace(",", "")
+            return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     return None
 
 
@@ -952,23 +952,23 @@ def _detect_siu_notified(text: str) -> str | None:
     # preceded by "On" (capitalized) or "on" (lowercase, often after
     # "at <time> on <weekday>, <date>"); accept either.
     m = re.search(
-        r"\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})"
+        r"\b[Oo]n\s+(?:[A-Z][a-z]+,?\s+)?([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})"
         r"[^\n]{0,200}?(?:notified|contacted)\s+the\s+SIU",
         haystack,
     )
     if m:
-        return m.group(1).replace(",", "")
+        return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     # Form B: "...notified|contacted the SIU on <Date>"
-    m = re.search(r"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", haystack)
+    m = re.search(r"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", haystack)
     if m:
-        return m.group(1).replace(",", "")
+        return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     # Form C: any "On <Date>" inside the "Notification of the SIU"
     # subsection (the modern format opens with this)
     notif = _section_text(text, "Notification of the SIU", end_markers=("The Team", "Incident Narrative", "Evidence"))
     if notif:
-        m = re.search(r"On\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", notif)
+        m = re.search(r"On\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", notif)
         if m:
-            return m.group(1).replace(",", "")
+            return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     return None
 
 
@@ -986,9 +986,9 @@ def _detect_decision_date(text: str) -> str | None:
     """Director's decision date -- signature block usually has 'Date: <date>'
     immediately above the director's name."""
     # "Date: October 18, 2018" near "Director" mention.
-    m = re.search(r"Date:\s*([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})", text)
+    m = re.search(r"Date:\s*([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", text)
     if m:
-        return m.group(1).replace(",", "")
+        return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     # ISO date variant
     m = re.search(r"Date:\s*(\d{4}-\d{2}-\d{2})", text)
     if m:
@@ -1078,7 +1078,7 @@ def _detect_charges_from_decision(text: str) -> bool | None:
     """Read the Analysis and Director's Decision section for the verdict."""
     sec = _section_text(text, "Analysis and Director's Decision", end_markers=("Endnotes", "News Release", "Note:"))
     if not sec:
-        m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}, \d{4}", text)
+        m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}(?:st|nd|rd|th)?, \d{4}", text)
         if m0:
             sec = text[max(0, m0.start() - 3000):m0.start()]
     if not sec:
@@ -1232,7 +1232,7 @@ def _detect_reasonable_grounds(text: str) -> str | None:
     if not sec:
         # 2016-2019 pages lack the heading; the conclusion sits just
         # above the "Date: ... signed by" footer.
-        m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}, \d{4}", text)
+        m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}(?:st|nd|rd|th)?, \d{4}", text)
         if m0:
             sec = text[max(0, m0.start() - 3000):m0.start()]
     if not sec:
