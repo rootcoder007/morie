@@ -312,9 +312,10 @@ test_that("morie_siu_audit_case reads from cached HTML", {
   expect_false(grepl("<", a$report_text, fixed = TRUE)) # stripped
 })
 
-test_that("LLM providers table has the four documented backends", {
+test_that("LLM providers table has the six documented backends", {
   ps <- morie:::.siu_llm_providers()
-  expect_setequal(names(ps), c("gemini", "claude", "vertex", "ollama"))
+  expect_setequal(names(ps), c("gemini", "claude", "vertex", "ollama",
+                               "openai", "openai_compatible"))
   expect_equal(ps$gemini$env_required, "GOOGLE_API_KEY")
   expect_equal(ps$claude$env_required, "ANTHROPIC_API_KEY")
   expect_equal(ps$vertex$env_required, "VERTEX_ACCESS_TOKEN")
@@ -322,6 +323,8 @@ test_that("LLM providers table has the four documented backends", {
   # branch in the dispatcher, so OLLAMA_HOST being unset still
   # works out of the box on a freshly-installed local daemon.
   expect_equal(ps$ollama$env_required, "OLLAMA_HOST_OR_DEFAULT")
+  expect_equal(ps$openai$env_required, "OPENAI_API_KEY")
+  expect_equal(ps$openai_compatible$env_required, "MORIE_LLM_BASE_URL")
 })
 
 test_that("morie_siu_llm_extract returns a 64-col row from mocked JSON", {
