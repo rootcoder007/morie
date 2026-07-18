@@ -76,8 +76,11 @@ test_that("extract_links returns case_number/url pairs from index HTML", {
   set.seed(1)
   idx <- paste0(
     '<html><body>',
-    '<a href="case_summary_details.php?drid=11">22-OCI-001</a>',
-    '<a href="case_summary_details.php?drid=12">22-OCI-002</a>',
+    '<input type="hidden" id="total_drs" value="2">',
+    '<tr class="dr-item" id="11"><td><nobr>22-OCI-001</nobr></td>',
+    '<td><a href="directors_report_details.php?drid=11">Read</a></td></tr>',
+    '<tr class="dr-item" id="12"><td><nobr>22-OCI-002</nobr></td>',
+    '<td><a href="directors_report_details.php?drid=12">Read</a></td></tr>',
     '</body></html>')
   m <- morie:::.siu_fetch_extract_links(
     idx, "https://www.siu.on.ca/en/directors_reports.php")
@@ -185,14 +188,17 @@ test_that("fetch_cases returns a CSV path with the mocked SIU HTTP layer", {
   # without touching www.siu.on.ca.
   index_html <- paste0(
     "<html><body>",
-    "<a href='case_summary_details.php?nid=1'>23-OFD-001</a>",
-    "<a href='case_summary_details.php?nid=2'>23-OFD-002</a>",
+    "<input type='hidden' id='total_drs' value='2'>",
+    "<tr class='dr-item' id='1'><td><nobr>23-OFD-001</nobr></td>",
+    "<td><a href='directors_report_details.php?drid=1'>Read Full Text</a></td></tr>",
+    "<tr class='dr-item' id='2'><td><nobr>23-OFD-002</nobr></td>",
+    "<td><a href='directors_report_details.php?drid=2'>Read Full Text</a></td></tr>",
     "</body></html>"
   )
   detail_html <- "<html><body><p>Director's report body.</p></body></html>"
   testthat::local_mocked_bindings(
     .siu_fetch_http_get = function(url, ...) {
-      if (grepl("case_summary_details", url)) detail_html else index_html
+      if (grepl("directors_report_details", url)) detail_html else index_html
     },
     .package = "morie"
   )
@@ -209,12 +215,14 @@ test_that("fetch_cases returns a CSV path with the mocked SIU HTTP layer", {
 test_that("fetch_dataframe returns a parsed data.frame via the mocked HTTP layer", {
   index_html <- paste0(
     "<html><body>",
-    "<a href='case_summary_details.php?nid=1'>23-OFD-003</a>",
+    "<input type='hidden' id='total_drs' value='1'>",
+    "<tr class='dr-item' id='1'><td><nobr>23-OFD-003</nobr></td>",
+    "<td><a href='directors_report_details.php?drid=1'>Read</a></td></tr>",
     "</body></html>"
   )
   testthat::local_mocked_bindings(
     .siu_fetch_http_get = function(url, ...) {
-      if (grepl("case_summary_details", url))
+      if (grepl("directors_report_details", url))
         "<html><body><p>case detail body</p></body></html>"
       else index_html
     },
