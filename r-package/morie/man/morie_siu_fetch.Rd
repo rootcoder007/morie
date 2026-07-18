@@ -8,8 +8,7 @@
 morie_siu_index_url()
 }
 \value{
-A length-1 character string -- the URL of the SIU
-Director's Reports index page.
+A character string.
 }
 \description{
 On-demand scraper for the Ontario Special Investigations Unit (SIU)
@@ -45,3 +44,6 @@ session cache; see \code{\link{morie_cache_dir}} and
 \code{\link{morie_cache_clear}} (no implicit writes to \code{~/.cache}).
 }
 
+\examples{
+morie_siu_index_url()
+}
