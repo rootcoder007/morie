@@ -619,7 +619,10 @@ def _section_text(text: str, header: str, end_markers: tuple[str, ...] = ()) -> 
     "Civilian Witnesses". Header match is case-sensitive (SIU pages are
     consistent) but tolerant of leading/trailing whitespace.
     """
-    pat = re.compile(rf"(?:^|\n)\s*{re.escape(header)}\s*\n", re.M)
+    # SIU pages drifted from ASCII ' to typographic \u2019 in headings
+    # ("Director's Decision" vs "Director\u2019s Decision") -- match either.
+    hdr = re.escape(header).replace("'", "['\u2019]")
+    pat = re.compile(rf"(?:^|\n)\s*{hdr}\s*\n", re.M)
     m = pat.search(text)
     if not m:
         return ""
@@ -1023,8 +1026,10 @@ def _detect_reasonable_grounds(text: str) -> str | None:
     sec = _section_text(text, "Analysis and Director's Decision", end_markers=("Endnotes", "News Release", "Note:"))
     if not sec:
         return None
-    # First sentence containing "reasonable grounds"
-    m = re.search(r"([^.\n]*reasonable grounds[^.\n]*\.)", sec, re.IGNORECASE)
+    # First sentence containing "reasonable grounds". The stripped page
+    # text wraps mid-sentence, so collapse whitespace before matching.
+    flat = re.sub(r"\s+", " ", sec)
+    m = re.search(r"([^.]*reasonable grounds[^.]*\.)", flat, re.IGNORECASE)
     if m:
         return m.group(1).strip()[:400]
     return None
