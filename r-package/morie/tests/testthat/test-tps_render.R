@@ -147,9 +147,11 @@ test_that("morie_tps_render_district_proportional errors without coords", {
   )
 })
 
-test_that("morie_tps_render_satscan_panel stubs when llr absent", {
+test_that("morie_tps_render_satscan_panel renders (size-only) when llr absent", {
+  skip_if_not_installed("ggplot2")
   clusters <- data.frame(lat = 43.7, lon = -79.4, radius_km = 1)
-  expect_error(morie_tps_render_satscan_panel(clusters), "NotYetPorted")
+  p <- morie_tps_render_satscan_panel(clusters)
+  expect_s3_class(p, "ggplot")
 })
 
 test_that("morie_tps_render_satscan_panel runs when llr supplied", {
