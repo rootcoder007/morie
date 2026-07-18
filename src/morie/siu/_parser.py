@@ -824,6 +824,13 @@ def _detect_location_from_intro(text: str) -> str | None:
     )
     if m:
         return f"{m.group(1)} of {m.group(2).strip()}"
+    # The dispatch address is the truest "location of call":
+    # "officers were called/dispatched to an address in the area of X".
+    m = re.search(
+        r"(?:called|dispatched|responded)\s+to\s+(?:an address\s+)?(?:in|at|near)\s+(?:the\s+area\s+of\s+)?([A-Z][^.\n]{5,120}?)[.\n]",
+        haystack)
+    if m:
+        return m.group(1).strip().rstrip(",")
     # 2026 layout: "The Scene ... events in question transpired <where>."
     m = re.search(
         r"events in question transpired\s+(?:on and around\s+|at\s+|on\s+|in\s+)?([^.\n]{5,160})[.\n]",
