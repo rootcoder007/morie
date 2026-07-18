@@ -110,6 +110,10 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
     # ── witnesses + officer counts (parsed from sub-sections) ──────
     cw_section = _section_text(
         text, "Civilian Witnesses", end_markers=("Witness Officers", "Subject Officers", "Incident Narrative")
+    ) or _section_text(
+        text, "Civilian Witness",
+        end_markers=("Witness Official", "Subject Official", "Witness Officers",
+                     "Subject Officers", "Incident Narrative", "Evidence"),
     )
     row["number_of_civilian_witnesses"] = _count_lines_starting_with(cw_section, "CW")
 
@@ -158,7 +162,13 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
         row["subject_official_interviewed_or_notes"] = "Yes"
 
     # ── reason / location (prose-mined) ────────────────────────────
-    row["location_of_call"] = _label_value(text, "Location") or _detect_location_from_intro(text)
+    # NOTE: a bare "Location" label match is unsafe -- the FIPPA
+    # restrictions list contains the line "Location information", which
+    # used to be captured as location_of_call = "information".
+    loc_label = _label_value(text, "Location")
+    if loc_label and loc_label.strip().lower() in ("information", "information;"):
+        loc_label = None
+    row["location_of_call"] = _detect_location_from_intro(text) or loc_label
     row["reason_for_interaction"] = _label_value(text, "Reason for Interaction")
 
     # ── date_of_incident ───────────────────────────────────────────
@@ -212,6 +222,74 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
 
     # ── mental-health / race signal ────────────────────────────────
     row["mental_health_or_race_indications"] = _scan_mental_health_race(row["narrative_full"] or "")
+    # The approval footer names the signing Director on the report page
+    # itself ("Electronically approved by / Joseph Martino / Director" or
+    # the pre-2020 "Original signed by / James L. Cornish / Director").
+    m = re.search(
+        r"(?:approved by|signed by)\s*\n+\s*([A-Z][A-Za-z.'\-]+(?:\s+[A-Z][A-Za-z.'\-]+){1,2})\s*\n+\s*(?:Acting\s+)?Director\b",
+        text)
+    if m:
+        row["directors_name"] = m.group(1).strip()
+
+    # ── pre-2017 release format fallbacks (labelled File#/Case type
+    #    block + prose rosters like "Witness Officer #1") ──────────────
+    if row["number_of_witness_officials"] is None:
+        n = len(set(re.findall(r"Witness Officer\s*#(\d+)", text)))
+        if n:
+            row["number_of_witness_officials"] = n
+    if row["number_of_witness_officials"] is None and re.search(
+            r"(?:^|\n)\s*WO\s+(?:Interviewed|Not interviewed|Declined)", text):
+        row["number_of_witness_officials"] = 1
+    if row["number_of_civilian_witnesses"] is None and re.search(
+            r"(?:^|\n)\s*CW\s+Interviewed", text):
+        row["number_of_civilian_witnesses"] = 1
+    if row["number_of_civilian_witnesses"] is None:
+        n = len(set(re.findall(r"Civilian Witness\s*#(\d+)", text)))
+        if n:
+            row["number_of_civilian_witnesses"] = n
+    if row["age_affected"] is None:
+        m2 = re.search(r"\b(\d{1,3})[\s\-]year[\s\-]old\b", text)
+        if m2:
+            row["age_affected"] = m2.group(1)
+    if row["number_of_subject_officials"] is None and re.search(
+            r"was designated as a subject officer", text):
+        row["number_of_subject_officials"] = 1
+    if row["subject_official_interviewed_or_notes"] is None and re.search(
+            r"Subject Officer\s+was interviewed", text):
+        row["subject_official_interviewed_or_notes"] = "Yes"
+    _WORDNUM = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+                "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+    if row["siu_investigators"] is None:
+        m2 = re.search(r"\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+SIU\s+investigators", text, re.I)
+        if m2:
+            w = m2.group(1).lower()
+            row["siu_investigators"] = str(_WORDNUM.get(w, w))
+    if row["siu_forensics_investigators"] is None:
+        m2 = re.search(r"\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+SIU\s+Forensic", text, re.I)
+        if m2:
+            w = m2.group(1).lower()
+            row["siu_forensics_investigators"] = str(_WORDNUM.get(w, w))
+    if row["notifying_party"] is None:
+        m2 = re.search(r"(?:Notifying Officer|officer)\s+of the\s+([A-Z][A-Za-z\s]+?(?:Police(?:\s+Service)?|Service))\b", text)
+        if m2:
+            row["notifying_party"] = m2.group(1).strip()
+    if row["directors_decision_reasonable"] is None:
+        low = text.lower()
+        i = low.find("director\u2019s decision under")
+        if i < 0:
+            i = low.find("director's decision under")
+        if i >= 0:
+            flat = re.sub(r"\s+", " ", text[i:i + 2500])
+            m2 = re.search(r"([^.]*reasonable grounds[^.]*\.)", flat, re.I)
+            if m2:
+                row["directors_decision_reasonable"] = m2.group(1).strip()[:400]
+            if row["charges_recommended"] is None and re.search(
+                    r"no reasonable grounds|no basis for charges", flat, re.I):
+                row["charges_recommended"] = False
+            if row["relevant_legislation"] is None:
+                m2 = re.search(r"of the ([A-Z][A-Za-z ]+Act)", text[i:i + 200])
+                if m2:
+                    row["relevant_legislation"] = m2.group(1)
 
     # ── supplemental links ────────────────────────────────────────
     row["supplemental_materials"] = _extract_outbound_links(soup, source_url)
@@ -272,13 +350,28 @@ def parse_news_html(html: str, *, nrid: int | None = None, source_url: str | Non
 
 
 def _stripped_text(soup: BeautifulSoup) -> str:
-    """Get the page's visible text with normalised whitespace."""
+    """Get the page's visible text with normalised whitespace.
+
+    Line breaks are emitted ONLY at block-level boundaries. The naive
+    get_text("\n") put a newline around every inline element too, so
+    an <abbr>SIU</abbr> in the middle of "Number of SIU Investigators
+    assigned: 4" split the label across three lines and every
+    label/roster regex missed it.
+    """
     for s in soup(["script", "style", "noscript"]):
         s.decompose()
-    txt = soup.get_text("\n", strip=True)
+    block = {"p", "div", "li", "tr", "br", "h1", "h2", "h3", "h4",
+             "h5", "h6", "ul", "ol", "table", "section", "article",
+             "blockquote"}
+    for tag in soup.find_all(block):
+        tag.append("\n")
+        tag.insert(0, "\n")
+    txt = soup.get_text("", strip=False)
+    txt = txt.replace("\xa0", " ")
     txt = re.sub(r"[ \t]+", " ", txt)
+    txt = re.sub(r" *\n *", "\n", txt)
     txt = re.sub(r"\n{3,}", "\n\n", txt)
-    return txt
+    return txt.strip()
 
 
 # Section names that appear in the "Contents:" TOC at the top of every
@@ -311,7 +404,7 @@ def _label_value(text: str, label: str) -> str | None:
     whitespace flexibility.
     """
     pat = re.compile(
-        rf"{re.escape(label)}\s*[:\-]?\s*(.{{1,200}}?)(?=\n|$)",
+        rf"(?:^|\n)\s*{re.escape(label)}\s*[:\-]\s*(.{{1,200}}?)(?=\n|$)",
         re.IGNORECASE,
     )
     m = pat.search(text)
@@ -622,7 +715,13 @@ def _section_text(text: str, header: str, end_markers: tuple[str, ...] = ()) -> 
     # SIU pages drifted from ASCII ' to typographic \u2019 in headings
     # ("Director's Decision" vs "Director\u2019s Decision") -- match either.
     hdr = re.escape(header).replace("'", "['\u2019]")
-    pat = re.compile(rf"(?:^|\n)\s*{hdr}\s*\n", re.M)
+    # Page text carries doubled/odd internal whitespace ("The  Team",
+    # "Notification  of the SIU") -- match any run of whitespace
+    # between header words, including line breaks.
+    hdr = re.sub(r"(?:\\ |\ )+", r"\\s+", hdr)
+    # Optional singular/plural drift and parenthetical suffix:
+    # "Civilian Witness (CW)", "Witness Officials (WO)".
+    pat = re.compile(rf"(?:^|\n)\s*{hdr}e?s?\s*(?:\([^)\n]*\))?\s*\n", re.M)
     m = pat.search(text)
     if not m:
         return ""
@@ -725,6 +824,12 @@ def _detect_location_from_intro(text: str) -> str | None:
     )
     if m:
         return f"{m.group(1)} of {m.group(2).strip()}"
+    # 2026 layout: "The Scene ... events in question transpired <where>."
+    m = re.search(
+        r"events in question transpired\s+(?:on and around\s+|at\s+|on\s+|in\s+)?([^.\n]{5,160})[.\n]",
+        text)
+    if m:
+        return m.group(1).strip()
     return None
 
 
@@ -854,10 +959,17 @@ def _detect_injuries_sustained(text: str) -> str | None:
 
 
 def _detect_specific_injuries(text: str) -> str | None:
-    """Look for fracture/laceration/etc. specifics in narrative."""
+    """Look for fracture/laceration/etc. specifics in narrative.
+
+    Search only from "The Investigation" onward so the mandate
+    boilerplate ("suffer a fracture to the skull, or to a limb, rib or
+    vertebra") can never be captured as the person's injuries.
+    """
+    i = text.find("The Investigation")
+    hay = text[i:] if i >= 0 else text
     m = re.search(
-        r"((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?)[^\n]{1,200}?(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|finger|spine|vertebra)[^\n]{0,80})",
-        text,
+        r"\b((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?)[^\n]{1,200}?(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|finger|spine|vertebra|foot|feet|hip|orbital|pelvis|shoulder|hand)[^\n]{0,80})",
+        hay,
         re.IGNORECASE,
     )
     return m.group(1).strip() if m else None
@@ -870,7 +982,7 @@ def _detect_legislation(text: str) -> str | None:
     if not sec:
         return None
     sections = []
-    for m in re.finditer(r"Section\s+\d+(?:\([^)]+\))?,?\s+([A-Z][^\n,–-]+?)(?:\s*[–-]|$)", sec):
+    for m in re.finditer(r"Sections?\s+\d+(?:\([^)]+\))?(?:\s+and\s+\d+)?,?\s+([A-Z][^\n,–-]+?)(?:\s*[–-]|$)", sec):
         act = m.group(1).strip().rstrip(",")
         if act not in sections:
             sections.append(act)
