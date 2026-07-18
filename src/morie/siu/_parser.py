@@ -226,8 +226,8 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
     # itself ("Electronically approved by / Joseph Martino / Director" or
     # the pre-2020 "Original signed by / James L. Cornish / Director").
     m = re.search(
-        r"(?:approved by|signed by)\s*\n+\s*([A-Z][A-Za-z.'\-]+(?:\s+[A-Z][A-Za-z.'\-]+){1,2})\s*\n+\s*(?:Acting\s+)?Director\b",
-        text)
+        r"(?:approved by|signed by)\s+([A-Z][A-Za-z.'\-]+(?:\s+[A-Z][A-Za-z.'\-]+){1,2}?)\s+(?:Acting\s+|Interim\s+)?Director\b",
+        re.sub(r"\s+", " ", text))
     if m:
         row["directors_name"] = m.group(1).strip()
 
@@ -237,6 +237,18 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
         n = len(set(re.findall(r"Witness Officer\s*#(\d+)", text)))
         if n:
             row["number_of_witness_officials"] = n
+    if row["number_of_witness_officials"] is None:
+        n = len(set(re.findall(r"\bWO\s*#(\d+)", text)))
+        if n:
+            row["number_of_witness_officials"] = n
+    if row["number_of_civilian_witnesses"] is None:
+        n = len(set(re.findall(r"\bCW\s*#(\d+)", text)))
+        if n:
+            row["number_of_civilian_witnesses"] = n
+    if row["number_of_subject_officials"] is None:
+        n = len(set(re.findall(r"\bSO\s*#(\d+)", text)))
+        if n:
+            row["number_of_subject_officials"] = n
     if row["number_of_witness_officials"] is None and re.search(
             r"(?:^|\n)\s*WO\s+(?:Interviewed|Not interviewed|Declined)", text):
         row["number_of_witness_officials"] = 1
@@ -1000,12 +1012,18 @@ def _detect_charges_from_decision(text: str) -> bool | None:
     """Read the Analysis and Director's Decision section for the verdict."""
     sec = _section_text(text, "Analysis and Director's Decision", end_markers=("Endnotes", "News Release", "Note:"))
     if not sec:
+        m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}, \d{4}", text)
+        if m0:
+            sec = text[max(0, m0.start() - 3000):m0.start()]
+    if not sec:
         return None
     low = sec.lower()
     if any(
         p in low
         for p in (
             "no charges",
+            "charges will not issue",
+            "charges should not issue",
             "shall issue",
             "none shall issue",
             "no basis for charges",
@@ -1015,6 +1033,8 @@ def _detect_charges_from_decision(text: str) -> bool | None:
             "lack the necessary grounds",
         )
     ):
+        return False
+    if re.search(r"(?:no|not|don't|do not|never)[^.]{0,140}charges?\s+(?:should|will|shall)\s+issue", low):
         return False
     if any(
         p in low
@@ -1144,11 +1164,23 @@ def _detect_reasonable_grounds(text: str) -> str | None:
     """Pull the conclusion sentence from the Director's Decision."""
     sec = _section_text(text, "Analysis and Director's Decision", end_markers=("Endnotes", "News Release", "Note:"))
     if not sec:
+        # 2016-2019 pages lack the heading; the conclusion sits just
+        # above the "Date: ... signed by" footer.
+        m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}, \d{4}", text)
+        if m0:
+            sec = text[max(0, m0.start() - 3000):m0.start()]
+    if not sec:
         return None
     # First sentence containing "reasonable grounds". The stripped page
     # text wraps mid-sentence, so collapse whitespace before matching.
     flat = re.sub(r"\s+", " ", sec)
     m = re.search(r"([^.]*reasonable grounds[^.]*\.)", flat, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()[:400]
+    # 2016-2019 phrasing: the conclusion says "... charges should/will
+    # issue" without the words "reasonable grounds".
+    m = re.search(r"([^.]*charges?\s+(?:should|will|shall)\s+(?:not\s+)?issue[^.]*\.)",
+                  flat, re.IGNORECASE)
     if m:
         return m.group(1).strip()[:400]
     return None
