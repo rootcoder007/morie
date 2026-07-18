@@ -99,20 +99,6 @@ morie_spatial_variogram_fit <- function(coords, values,
        method = "variogram ML (rmorie native)")
 }
 
-#' Ordinary kriging prediction
-#'
-#' Solves the ordinary-kriging system with the supplied (or ML-fitted)
-#' variogram model and predicts at new locations, returning kriging
-#' variances.
-#'
-#' @param coords,values Observed locations and values.
-#' @param new_coords Matrix of prediction locations.
-#' @param vgm A fit from \code{\link{morie_spatial_variogram_fit}}, or
-#'   \code{NULL} to fit an exponential model first.
-#' @return A data frame with \code{pred} and \code{var}.
-#' @references Cressie, N. (1993). \emph{Statistics for Spatial Data}.
-#' @export
-
 # Fast WLS fit of a variogram model on the binned empirical variogram
 # (Cressie 1985 weights n_h / h^2) -- the gstat::fit.variogram
 # analogue. Milliseconds at any n; the full Gaussian-likelihood MLE
