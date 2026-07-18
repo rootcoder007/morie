@@ -69,6 +69,16 @@ def parse_date(text: str | None) -> tuple[str | None, str | None]:
     raw = text.strip()
     if not raw:
         return None, None
+    # 2017-era reports write ordinal day suffixes ("August 3rd, 2017",
+    # "1st", "22nd") that strptime cannot parse -- strip them first,
+    # keeping `raw` verbatim for audit replay.
+    norm = re.sub(r"(\d{1,2})(st|nd|rd|th)\b", r"\1", raw)
+    for fmt in DATE_FORMATS:
+        try:
+            d = datetime.strptime(norm, fmt).date()
+            return d.isoformat(), raw
+        except ValueError:
+            continue
     for fmt in DATE_FORMATS:
         try:
             d = datetime.strptime(raw, fmt).date()
