@@ -42,7 +42,11 @@ jobs:
           use-public-rspm: true
 
       # rmoriebricklayer is a transitive dep of the R morie package; install it
-      # from r-universe first (mirrors r-cmd-check.yml).
+      # from r-universe first (mirrors r-cmd-check.yml). Its r-universe binary
+      # may be unavailable for this R/platform, forcing a source build of
+      # rmbl_fetch.cpp against libcurl -- install curl/curl.h first.
+      - name: System libs for rmoriebricklayer source build
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
       - name: Pre-install rmoriebricklayer (r-universe)
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
