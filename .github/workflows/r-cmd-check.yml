@@ -67,6 +67,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      # rmoriebricklayer compiles rmbl_fetch.cpp against libcurl. When its
+      # r-universe binary isn't available for this R/platform it falls back to
+      # a source build, which needs curl/curl.h -- install it (Linux) before
+      # the manual install below, which runs BEFORE setup-r-dependencies.
+      - name: System libs for rmoriebricklayer source build (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
+
       # cache-version: 1 -- pak's binary cache persists across runs.
       # Bump to invalidate on toolchain change.
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
@@ -150,6 +158,10 @@ jobs:
         with:
           r-version: '4.6.1'
           use-public-rspm: true
+
+      - name: System libs for rmoriebricklayer source build (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
 
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))

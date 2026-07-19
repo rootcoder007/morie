@@ -206,6 +206,11 @@ jobs:
           r-version: "4.6.1"
           use-public-rspm: true
 
+      # rmoriebricklayer source-builds against libcurl (rmbl_fetch.cpp) when its
+      # r-universe binary isn't available; install curl/curl.h first.
+      - name: System libs for rmoriebricklayer source build
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
+
       # setup-r-dependencies@v2 installs DESCRIPTION's Imports/Suggests
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
         run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
