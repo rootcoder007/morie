@@ -219,13 +219,43 @@ jobs:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # srr's update_msg_paths() crashes (gsub(character(0), ...) ->
-          # "invalid 'pattern' argument") on any srr message lacking a
-          # "file [...]" suffix -- present in BOTH CRAN srr 1.0.0 and dev,
-          # so pinning does not help. Catch that upstream crash so this
-          # advisory audit reports a note instead of a red job; the real
-          # gate is R CMD check --as-cran, which runs green in this DAG.
-          Rscript -e 'ok <- tryCatch({ cks <- pkgcheck::pkgcheck("."); md <- pkgcheck::checks_to_markdown(cks); writeLines(md, "pkgcheck.md"); cat(md); TRUE }, error = function(e) { m <- conditionMessage(e); message("pkgcheck/srr upstream crash (non-gating): ", m); writeLines(paste0("pkgcheck did not complete due to an upstream srr/pkgcheck crash (update_msg_paths): ", m), "pkgcheck.md"); FALSE }); quit(save = "no", status = 0L)'
+          # Root-cause fix for the pkgcheck red job. srr's internal
+          # update_msg_paths() does gsub(file_name, ...) where file_name is
+          # character(0) whenever an srr message has no "file [...]" suffix
+          # (package-level / TODO / missing-standard messages legitimately
+          # have no single file). gsub(character(0), ...) -> "invalid
+          # 'pattern' argument", crashing pkgcheck. The bug is unguarded in
+          # BOTH CRAN srr 1.0.0 and github/r-universe main (verified), so no
+          # version pin helps. Monkeypatch srr with the one-line guard so
+          # pkgcheck runs to completion and emits the real audit; a light
+          # tryCatch stays as a backstop for any OTHER upstream breakage.
+          Rscript -e '
+            .fix <- function(msgs, path, path_root) {
+              for (type in grep("^msgs", names(msgs), value = TRUE)) {
+                msgs[[type]] <- lapply(msgs[[type]], function(m) {
+                  g  <- gregexpr("file\\s+\\[.*\\]$", m)
+                  fn <- gsub("file\\s+\\[|\\]$", "", regmatches(m, g)[[1]])
+                  if (length(fn) != 1L || !nzchar(fn)) return(m)   # the guard
+                  fabs <- fs::path_abs(fs::path(path, fn))
+                  frel <- fs::path_rel(fabs, path_root)
+                  gsub(fn, frel, m, fixed = TRUE)
+                })
+              }
+              msgs
+            }
+            try(utils::assignInNamespace("update_msg_paths", .fix, ns = "srr"), silent = TRUE)
+            ok <- tryCatch({
+              cks <- pkgcheck::pkgcheck(".")
+              md  <- pkgcheck::checks_to_markdown(cks)
+              writeLines(md, "pkgcheck.md"); cat(md); TRUE
+            }, error = function(e) {
+              m <- conditionMessage(e)
+              message("pkgcheck backstop caught upstream crash (non-gating): ", m)
+              writeLines(paste0("pkgcheck did not complete (upstream tool crash): ", m), "pkgcheck.md")
+              FALSE
+            })
+            quit(save = "no", status = 0L)
+          '
 
       - name: Upload pkgcheck markdown
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
