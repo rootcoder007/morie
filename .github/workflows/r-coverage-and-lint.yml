@@ -219,7 +219,13 @@ jobs:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          Rscript -e 'cks <- pkgcheck::pkgcheck("."); md <- pkgcheck::checks_to_markdown(cks); writeLines(md, "pkgcheck.md"); cat(md)'
+          # srr's update_msg_paths() crashes (gsub(character(0), ...) ->
+          # "invalid 'pattern' argument") on any srr message lacking a
+          # "file [...]" suffix -- present in BOTH CRAN srr 1.0.0 and dev,
+          # so pinning does not help. Catch that upstream crash so this
+          # advisory audit reports a note instead of a red job; the real
+          # gate is R CMD check --as-cran, which runs green in this DAG.
+          Rscript -e 'ok <- tryCatch({ cks <- pkgcheck::pkgcheck("."); md <- pkgcheck::checks_to_markdown(cks); writeLines(md, "pkgcheck.md"); cat(md); TRUE }, error = function(e) { m <- conditionMessage(e); message("pkgcheck/srr upstream crash (non-gating): ", m); writeLines(paste0("pkgcheck did not complete due to an upstream srr/pkgcheck crash (update_msg_paths): ", m), "pkgcheck.md"); FALSE }); quit(save = "no", status = 0L)'
 
       - name: Upload pkgcheck markdown
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
