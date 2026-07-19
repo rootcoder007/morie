@@ -128,6 +128,8 @@ jobs:
         with:
           r-version: "4.6.1"
           use-public-rspm: true
+      - name: System libs for rmoriebricklayer source build
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
         run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
         shell: Rscript {0}
