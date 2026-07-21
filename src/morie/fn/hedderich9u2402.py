@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["hedderich_chapter_9_unnumbered_2402"]
 
 
-def hedderich_chapter_9_unnumbered_2402(x):
+def hedderich_chapter_9_unnumbered_2402(x, y=None):
     """
     Correlation expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def hedderich_chapter_9_unnumbered_2402(x):
     ----------
     Hedderich, Sachs & Reynarowych (2023) Applied Statistics: Methods Using R, ch.9 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

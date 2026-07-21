@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["cb_chapter_14_equation_1"]
 
 
-def cb_chapter_14_equation_1(x):
+def cb_chapter_14_equation_1(x, y=None):
     """
     CentralTendency expression involving 'correlation' (auto-extracted; see reference for full context).
 
@@ -31,6 +31,10 @@ def cb_chapter_14_equation_1(x):
     ----------
     Beginner's Guide to Statistics for Criminology and Criminal Justice using R (Wooditch et al., Springer 2021), ch.14 eq.14.1
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

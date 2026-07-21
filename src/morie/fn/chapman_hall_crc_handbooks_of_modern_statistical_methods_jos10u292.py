@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_292"]
 
 
-def chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_292(x):
+def chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_292(x, y=None):
     """
     Association expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnu
     ----------
     [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference, ch.10 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

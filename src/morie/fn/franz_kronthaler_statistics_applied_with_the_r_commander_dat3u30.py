@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30"]
 
 
-def franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30(x):
+def franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_30(x, y=None):
     """
     Correlation expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnum
     ----------
     Franz Kronthaler - Statistics Applied with the R Commander  Data Analysis Is (Not) an Art-Springer (2024), ch.3 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

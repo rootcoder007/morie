@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["information_theory_mackay_chapter_26_unnumbered_210"]
 
 
-def information_theory_mackay_chapter_26_unnumbered_210(x):
+def information_theory_mackay_chapter_26_unnumbered_210(x, y=None):
     """
     Association expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def information_theory_mackay_chapter_26_unnumbered_210(x):
     ----------
     Information theory MacKay, ch.26 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_62"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_62(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_62(x, y=None):
     """
     Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
 
@@ -31,6 +31,10 @@ def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_6
     ----------
     David J. Morin - Probability  For the Enthusiastic Beginner, ch.6 eq.6.62
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

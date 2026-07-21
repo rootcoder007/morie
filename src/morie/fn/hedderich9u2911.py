@@ -8,7 +8,11 @@ from ._richresult import hypothesis_test_result
 __all__ = ["hedderich_chapter_9_unnumbered_2911"]
 
 
-def hedderich_chapter_9_unnumbered_2911(x):
+def hedderich_chapter_9_unnumbered_2911(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     r"""
     Association expression (auto-extracted; see ref).
 

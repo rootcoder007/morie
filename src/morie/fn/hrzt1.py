@@ -39,7 +39,11 @@ def _logistic_newton(D, X, maxiter=50, tol=1e-8):
     return 1.0 / (1.0 + np.exp(-np.clip(X @ beta, -50, 50)))
 
 
-def _silverman(x):
+def _silverman(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     n = x.size
     if n < 2:
         return 1.0

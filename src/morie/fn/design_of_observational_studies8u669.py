@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["design_of_observational_studies_chapter_8_unnumbered_669"]
 
 
-def design_of_observational_studies_chapter_8_unnumbered_669(x):
+def design_of_observational_studies_chapter_8_unnumbered_669(x, y=None):
     """
     Correlation expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def design_of_observational_studies_chapter_8_unnumbered_669(x):
     ----------
     Design of observational studies, ch.8 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_5"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_5(x):
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_5(x, y=None):
     """
     Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
 
@@ -31,6 +31,10 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equat
     ----------
     Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.5 eq.5.5
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

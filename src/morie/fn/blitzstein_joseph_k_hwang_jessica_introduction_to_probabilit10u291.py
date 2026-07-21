@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_291"]
 
 
-def blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_291(x):
+def blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_291(x, y=None):
     """
     Association expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnu
     ----------
     Blitzstein, Joseph K.  Hwang, Jessica - Introduction to probability, ch.10 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
