@@ -585,6 +585,24 @@ def nibrs(
     if year is None:
         raise ValueError("morie.datasets.nibrs: year=... is required unless offline=True")
 
+    import os
+
+    if not (api_key or os.environ.get("FBI_CDE_API_KEY")):
+        # Open-path contract (mirrors rmorie): no key means the bundled
+        # synthetic sample with the documented schema, not an error.
+        import warnings
+
+        warnings.warn(
+            "morie.datasets.nibrs: no FBI CDE API key (api_key=/FBI_CDE_API_KEY); "
+            "returning the bundled synthetic NIBRS sample. Sign up free at "
+            "https://api.data.gov/signup/ for live data.",
+            stacklevel=2,
+        )
+        df = _forensics_synthetic("nibrs", kind="nibrs")
+        if max_features is not None:
+            df = df.head(max_features)
+        return df
+
     from .ingest.forensics import fetch_nibrs
 
     return fetch_nibrs(
