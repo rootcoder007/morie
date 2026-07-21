@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbered_7"]
 
 
-def edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbered_7(x):
+def edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbered_7(x, y=None):
     """
     Association expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_7_unnumbere
     ----------
     Edward Frenkel - Love and Math  The Heart of Hidden Reality, ch.7 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

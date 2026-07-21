@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_135"]
 
 
-def statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_135(x):
+def statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnumbered_135(x, y=None):
     """
     Correlation expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_7_unnum
     ----------
     Statistics, Fourth Edition -- David Freeman, Robert Pisani, and Roger Purves -- 2018, ch.7 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

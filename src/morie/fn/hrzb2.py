@@ -18,7 +18,11 @@ from ._richresult import RichResult
 __all__ = ["horowitz_smoothed_maximum_score"]
 
 
-def _silverman(x):
+def _silverman(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
     if n < 2:

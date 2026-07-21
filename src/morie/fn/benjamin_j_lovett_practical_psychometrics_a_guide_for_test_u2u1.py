@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u_chapter_2_unnumbered_1"]
 
 
-def benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u_chapter_2_unnumbered_1(x):
+def benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u_chapter_2_unnumbered_1(x, y=None):
     """
     Correlation expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u_chapter_2_unnum
     ----------
     Benjamin J. Lovett - Practical Psychometrics  A Guide for Test Users, ch.2 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

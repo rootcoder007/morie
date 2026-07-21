@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["analyzing_spatial_models_of_choice_and_judgment_chapter_5_unnumbered_272"]
 
 
-def analyzing_spatial_models_of_choice_and_judgment_chapter_5_unnumbered_272(x):
+def analyzing_spatial_models_of_choice_and_judgment_chapter_5_unnumbered_272(x, y=None):
     """
     Association expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def analyzing_spatial_models_of_choice_and_judgment_chapter_5_unnumbered_272(x):
     ----------
     Cahoon, Hinich & Ordeshook (1978) Analyzing Spatial Models of Choice and Judgment, ch.5 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

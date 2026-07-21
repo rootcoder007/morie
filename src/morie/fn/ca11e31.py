@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["ca_chapter_11_equation_31"]
 
 
-def ca_chapter_11_equation_31(x):
+def ca_chapter_11_equation_31(x, y=None):
     """
     Correlation expression involving 'dffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffiffi' (auto-extracted; see reference for full context).
 
@@ -31,6 +31,10 @@ def ca_chapter_11_equation_31(x):
     ----------
     Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.11 eq.11.31
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_16"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_16(x):
+def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equation_16(x, y=None):
     """
     Correlation equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
 
@@ -31,6 +31,10 @@ def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_6_equat
     ----------
     Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.6 eq.6.16
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_105"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_105(x):
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_105(x, y=None):
     """
     Correlation expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_unnumbered_105(x
     ----------
     [The R Series] Dick J. Brus - Spatial Sampling with R, ch.26 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))

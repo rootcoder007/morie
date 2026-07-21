@@ -8,7 +8,7 @@ from ._richresult import hypothesis_test_result
 __all__ = ["wilcox_chapter_13_unnumbered_1161"]
 
 
-def wilcox_chapter_13_unnumbered_1161(x):
+def wilcox_chapter_13_unnumbered_1161(x, y=None):
     """
     Association expression (auto-extracted; see ref).
 
@@ -31,6 +31,10 @@ def wilcox_chapter_13_unnumbered_1161(x):
     ----------
     Wilcox, R.R. (2017) Modern Statistics for the Social and Behavioral Sciences, ch.13 (unnumbered)
     """
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     n = min(len(x), len(y))
