@@ -155,6 +155,16 @@ def fetch_siu_cases(
     if out_path.is_file() and not overwrite:
         return out_path
 
+    # Corpus-first (mirrors rmorie): materialize the panel-reviewed
+    # corpus published in the rmoriedata repository instead of scraping
+    # ~5,000 pages. A deliberate live sweep sets MORIE_SIU_ALLOW_FETCH=1.
+    import os
+
+    if not os.environ.get("MORIE_SIU_ALLOW_FETCH"):
+        corpus_path = _materialize_corpus(out_path, years, progress)
+        if corpus_path is not None:
+            return corpus_path
+
     # The SIU index supports a `?year=YYYY` filter; default to all years
     # the user requested, or scrape the unfiltered index if none given.
     years = list(years) if years is not None else [None]
@@ -230,3 +240,35 @@ def fetch_siu_dataframe(**kwargs):
     import pandas as pd
 
     return pd.read_csv(fetch_siu_cases(**kwargs), low_memory=False)
+
+_CORPUS_URL = (
+    "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/"
+    "inst/extdata/siu_directors_reports.csv.gz"
+)
+
+
+def _materialize_corpus(out_path, years, progress):
+    """Write the published panel-reviewed corpus to out_path, or None.
+
+    Returns None on any failure so the caller falls through to the live
+    scrape; never raises.
+    """
+    try:
+        import pandas as pd
+
+        df = pd.read_csv(_CORPUS_URL, compression="gzip", dtype=str)
+        if df.empty or "case_number" not in df.columns:
+            return None
+        if years is not None:
+            yy = {f"{int(y) % 100:02d}" for y in years}
+            df = df[df["case_number"].str.slice(0, 2).isin(yy)]
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(out_path, index=False)
+        if progress:
+            print(
+                f"[siu] wrote the panel-reviewed corpus ({len(df)} rows) to "
+                f"{out_path}. Set MORIE_SIU_ALLOW_FETCH=1 for a live re-scrape."
+            )
+        return out_path
+    except Exception:
+        return None
