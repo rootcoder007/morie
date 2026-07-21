@@ -353,6 +353,30 @@ morie_siu_fetch_cases <- function(
   if (file.exists(out_path) && !overwrite) {
     return(out_path)
   }
+
+  # Corpus-first (same contract as morie_fetch_siu): materialize the
+  # rmoriedata panel-reviewed corpus unless a live run was requested.
+  if (!isTRUE(getOption("morie.siu.allow_fetch")) &&
+      requireNamespace("rmoriedata", quietly = TRUE)) {
+    corpus <- tryCatch(rmoriedata::load_siu_reports(),
+                       error = function(e) NULL)
+    if (!is.null(corpus) && nrow(corpus)) {
+      if (!is.null(years) && "case_number" %in% names(corpus)) {
+        yy <- sprintf("%02d", years %% 100L)
+        pref <- substr(corpus$case_number, 1L, 2L)
+        corpus <- corpus[pref %in% yy, , drop = FALSE]
+      }
+      dir.create(dirname(out_path), recursive = TRUE, showWarnings = FALSE)
+      utils::write.csv(corpus, out_path, row.names = FALSE, na = "")
+      return(out_path)
+    }
+  }
+  if (nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) &&
+      !isTRUE(getOption("morie.siu.allow_fetch"))) {
+    dir.create(dirname(out_path), recursive = TRUE, showWarnings = FALSE)
+    writeLines("case_number", out_path)  # 0-row placeholder
+    return(out_path)
+  }
   if (!is.null(years)) {
     years <- as.integer(years)
     if (any(!is.finite(years))) {

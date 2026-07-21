@@ -251,7 +251,18 @@ morie_ingest_forensics_nibrs <- function(year,
   if (is.na(yr)) {
     stop("`year` must be coercible to integer.", call. = FALSE)
   }
-  key <- .morie_forensics_require_fbi_key(api_key)
+  key <- tryCatch(.morie_forensics_require_fbi_key(api_key),
+                  error = function(e) NULL)
+  if (is.null(key)) {
+    message(
+      "morie_ingest_forensics_nibrs: no FBI CDE API key ",
+      "(api_key=/", .MORIE_FBI_CDE_API_KEY_ENV, "); returning the ",
+      "bundled synthetic NIBRS sample. Sign up free at ",
+      .MORIE_FBI_CDE_SIGNUP_URL, " for live data."
+    )
+    return(morie_datasets_nibrs(offline = TRUE,
+                                max_features = max_features))
+  }
   state_part <- if (!is.null(state) && nzchar(state)) {
     toupper(state)
   } else {

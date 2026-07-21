@@ -124,6 +124,39 @@ morie_fetch_siu <- function(cache_dir = file.path(tempdir(), "morie", "siu"),
     return(out_path)
   }
 
+  # Corpus-first (the README contract): when the panel-reviewed corpus
+  # from rmoriedata is installed and the caller has not opted into a
+  # live sweep, materialize the verified corpus instead of re-fetching
+  # ~5,000 pages. A deliberate live run sets
+  # options(morie.siu.allow_fetch = TRUE) (and/or max_drid=).
+  if (!isTRUE(getOption("morie.siu.allow_fetch")) &&
+      requireNamespace("rmoriedata", quietly = TRUE)) {
+    corpus <- tryCatch(rmoriedata::load_siu_reports(),
+                       error = function(e) NULL)
+    if (!is.null(corpus) && nrow(corpus)) {
+      if (lang != "all" && "_language" %in% names(corpus)) {
+        corpus <- corpus[corpus[["_language"]] %in% c(lang, "unknown"), ,
+                         drop = FALSE]
+      }
+      utils::write.csv(corpus, out_path, row.names = FALSE, na = "")
+      if (progress) {
+        message("SIU: wrote the panel-reviewed corpus from rmoriedata (",
+                nrow(corpus), " rows) to ", out_path,
+                ". For a live re-fetch set ",
+                "options(morie.siu.allow_fetch = TRUE).")
+      }
+      return(out_path)
+    }
+  }
+
+  # Under R CMD check without the corpus package, never start a live
+  # multi-thousand-page sweep.
+  if (nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) &&
+      !isTRUE(getOption("morie.siu.allow_fetch"))) {
+    writeLines("case_number", out_path)  # 0-row placeholder
+    return(out_path)
+  }
+
   manifest <- if (use_manifest) .siu_load_manifest() else NULL
 
   # Always probe past the *live* max so new reports added since the
