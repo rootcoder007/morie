@@ -8,7 +8,11 @@ from ._richresult import hypothesis_test_result
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_360"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_360(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_unnumbered_360(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     """
     Correlation expression (auto-extracted; see ref).
 

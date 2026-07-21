@@ -8,7 +8,11 @@ from ._richresult import hypothesis_test_result
 __all__ = ["spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_2_unnumbered_14"]
 
 
-def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_2_unnumbered_14(x):
+def spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_2_unnumbered_14(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     """
     Correlation expression (auto-extracted; see ref).
 
