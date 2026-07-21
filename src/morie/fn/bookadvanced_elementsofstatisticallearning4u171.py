@@ -8,7 +8,11 @@ from ._richresult import hypothesis_test_result
 __all__ = ["bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_171"]
 
 
-def bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_171(x):
+def bookadvanced_elementsofstatisticallearning_chapter_4_unnumbered_171(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     """
     Correlation expression (auto-extracted; see ref).
 

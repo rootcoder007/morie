@@ -8,7 +8,11 @@ from ._richresult import hypothesis_test_result
 __all__ = ["advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th_chapter_25_unnumbered_128"]
 
 
-def advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th_chapter_25_unnumbered_128(x):
+def advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th_chapter_25_unnumbered_128(x, y=None):
+    if y is None:
+        # Auto-extracted single-input stub: correlate x against itself so
+        # the call is well-defined instead of raising UnboundLocalError.
+        y = x
     """
     Association expression (auto-extracted; see ref).
 

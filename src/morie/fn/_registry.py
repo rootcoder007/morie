@@ -114684,8 +114684,8 @@ _r(
 _r(
     "gmafn",
     "gemma_function_call",
-    "Auto",
-    "Auto-wired callable from fn/gmafn.py",
+    "LLM",
+    "Gemma 4 native function calling via a local Ollama server",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
