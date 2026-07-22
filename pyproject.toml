@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "morie"
-version = "1.1.4"
+version = "1.1.5"
 description = "Multi-domain scientific computing toolkit (Python + R) for observational inference and intervention analysis. Provides causal estimators (ATE, ATT, AIPW, DML, G-computation), survey sampling, propensity-score and doubly-robust methods, sensitivity analysis, spatial statistics, Hawkes point processes, and psychometrics, with a unified RichResult output."
 authors = [
   { name="Vansh Singh Ruhela", email="vsruhela@proton.me" }
