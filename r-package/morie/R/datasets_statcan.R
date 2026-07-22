@@ -71,6 +71,8 @@ morie_datasets_statcan_cube_metadata <- function(product_id,
   r <- .morie_dataset_http_post_json(
     sprintf("%s/getCubeMetadata", .MORIE_STATCAN_WDS_BASE),
     body = body, timeout_s = timeout_s)
+  if (!is.null(r$message) && is.character(r$message))
+    stop("StatCan WDS: ", r$message[[1L]], call. = FALSE)
   if (length(r) == 0L || !is.list(r[[1]]) || is.null(r[[1]]$status))
     stop("StatCan WDS returned empty or malformed response ",
          "(the service intermittently rejects cloud IPs)", call. = FALSE)
@@ -105,7 +107,10 @@ morie_datasets_statcan_cube_metadata <- function(product_id,
 morie_datasets_statcan_vectors <- function(vector_ids,
                                              n_periods = 5L,
                                              timeout_s = 60L) {
-  body <- lapply(as.integer(vector_ids), function(v) {
+  ids <- suppressWarnings(as.integer(sub("^[vV]", "", as.character(vector_ids))))
+  if (anyNA(ids))
+    stop("vector_ids must be numeric or 'v'-prefixed numeric IDs", call. = FALSE)
+  body <- lapply(ids, function(v) {
     list(vectorId = v, latestN = as.integer(n_periods))
   })
   r <- .morie_dataset_http_post_json(
