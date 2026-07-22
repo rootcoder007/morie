@@ -354,6 +354,14 @@ morie_siu_fetch_cases <- function(
     return(out_path)
   }
 
+  if (!is.null(years)) {
+    years <- as.integer(years)
+    if (any(!is.finite(years))) {
+      stop("`years` must be a finite integer vector or NULL.",
+        call. = FALSE)
+    }
+  }
+
   # Corpus-first (same contract as morie_fetch_siu): materialize the
   # rmoriedata panel-reviewed corpus unless a live run was requested.
   if (!isTRUE(getOption("morie.siu.allow_fetch")) &&
@@ -378,11 +386,6 @@ morie_siu_fetch_cases <- function(
     return(out_path)
   }
   if (!is.null(years)) {
-    years <- as.integer(years)
-    if (any(!is.finite(years))) {
-      stop("`years` must be a finite integer vector or NULL.",
-        call. = FALSE)
-    }
     too_new <- years[years > .siu_fetch_latest_year]
     if (length(too_new) && progress) {
       message(

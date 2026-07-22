@@ -110,6 +110,10 @@ test_that(".siu_discover_max_drid parses the index and adds a margin", {
 })
 
 test_that("morie_fetch_siu assembles one row per case (offline, mocked)", {
+  # Corpus-first would short-circuit to rmoriedata; this test exercises
+  # the live fetch pipeline, so opt in.
+  op <- options(morie.siu.allow_fetch = TRUE)
+  on.exit(options(op), add = TRUE)
   # covr instruments R source without loading the C++ .so, so the
   # .Call to .siu_http_get_many fails under covr even with mocked
   # bindings. The mock chain itself is exercised by the smaller
@@ -195,6 +199,10 @@ test_that(".siu_http_get / .siu_http_get_many fetch over the network", {
 })
 
 test_that("morie_fetch_siu runs end-to-end, one row per case (network)", {
+  # Corpus-first would short-circuit to rmoriedata; this test exercises
+  # the live fetch pipeline, so opt in.
+  op <- options(morie.siu.allow_fetch = TRUE)
+  on.exit(options(op), add = TRUE)
   testthat::skip_if_offline("www.siu.on.ca")
   out <- skip_if_live_unavailable(
     morie_fetch_siu(
