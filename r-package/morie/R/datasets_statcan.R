@@ -71,8 +71,9 @@ morie_datasets_statcan_cube_metadata <- function(product_id,
   r <- .morie_dataset_http_post_json(
     sprintf("%s/getCubeMetadata", .MORIE_STATCAN_WDS_BASE),
     body = body, timeout_s = timeout_s)
-  if (length(r) == 0L || is.null(r[[1]]$status))
-    stop("StatCan WDS returned empty or malformed response", call. = FALSE)
+  if (length(r) == 0L || !is.list(r[[1]]) || is.null(r[[1]]$status))
+    stop("StatCan WDS returned empty or malformed response ",
+         "(the service intermittently rejects cloud IPs)", call. = FALSE)
   if (r[[1]]$status != "SUCCESS")
     stop(sprintf("StatCan WDS status=%s: %s",
                   r[[1]]$status,
@@ -160,7 +161,7 @@ morie_datasets_statcan_full_csv_url <- function(product_id,
                   .MORIE_STATCAN_WDS_BASE,
                   as.integer(product_id), language)
   r <- .morie_dataset_http_json(url)
-  if (is.null(r$status) || r$status != "SUCCESS")
+  if (!is.list(r) || is.null(r$status) || r$status != "SUCCESS")
     stop(sprintf("StatCan WDS getFullTableDownloadCSV status=%s",
                   r$status %||% "NULL"),
           call. = FALSE)
