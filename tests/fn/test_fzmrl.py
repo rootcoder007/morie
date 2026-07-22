@@ -6,11 +6,15 @@ from morie.fn.fzmrl import fauzi_mrl_asymptotic
 
 
 def test_fzmrl_basic():
-    """Test basic functionality."""
+    """MRL at t=0 for non-negative X is E[X]; at the default t=median
+    it is the mean exceedance over the median."""
     x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = fauzi_mrl_asymptotic(x)
+    result = fauzi_mrl_asymptotic(x, t=0.0)
     assert "estimate" in result
-    assert abs(result["estimate"] - 3.0) < 0.01
+    assert abs(result["estimate"] - 3.0) < 0.01  # E[X - 0 | X > 0] = mean
+    result_med = fauzi_mrl_asymptotic(x)  # t = median = 3
+    assert abs(result_med["estimate"] - 1.5) < 0.01  # mean([4-3, 5-3])
+    assert result_med["se"] >= 0.0
 
 
 def test_fzmrl_edge():
