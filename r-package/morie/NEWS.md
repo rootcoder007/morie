@@ -1,3 +1,41 @@
+# morie 1.1.6 - 2026-07-22
+
+## Patch release: republish with the 07-22 hardening baked in
+
+PyPI wheels for 1.1.5 were correct, but the 1.1.5 sdist snapshot predated
+the same-day hardening commits, so its bundled r-package sources were
+stale. 1.1.6 republishes all artifacts from the fixed tree.
+
+* StatCan WDS loaders: guard malformed/HTML responses, surface embargo
+  messages ("The product is not released yet"), accept `v`-prefixed
+  vector IDs with a clean error for non-numeric input.
+* Shared TPS datetime parser `.morie_tps_parse_datetime()`: explicit
+  per-format passes (ISO 8601 incl. `T`/millis/`Z`, US `m/d/Y` with and
+  without `AM/PM` times). Fixes mixed-format vectors losing ISO entries
+  (`as.POSIXct` with no format throws when any element fails, R >= 4.3)
+  and the sample-CSV crash on Debian.
+* `.morie_dataset_http_post_json()`: non-JSON service error pages now
+  raise a clear error with a response snippet instead of a jsonlite
+  lexical error.
+* `morie_datasets_statcan_full_csv_url()`: HTML outage responses report
+  `status=NULL` cleanly instead of crashing on `$` of an atomic vector.
+* New tests cover every branch above (codecov patch 100%); the fzmrl
+  generated test now asserts the mean residual life at the median, not
+  the mean.
+* `CITATION.cff` version resynced (had lagged at 1.1.4).
+
+# morie 1.1.5 - 2026-07-22
+
+* Open-path parity with rmorie: SIU corpus-first loading + keyless NIBRS
+  fallback (Python and r-package), bundled NIBRS synthetic fixture, year
+  validation before corpus-first.
+* Family version locks: rmoriebricklayer >= 0.3.5, rmoriedata >= 0.2.5;
+  rmoriedata moved Suggests -> Imports (auto-installs the panel-reviewed
+  SIU corpus).
+* Generated fn-suite: fixed the undefined-y defect across all 551 stubs
+  and the 18 fn-sampled failures (wrong test constants, stale registry
+  category); full branch coverage for the open-path parity port.
+
 # morie 1.1.4 - 2026-07-15
 
 ## Modules 14-17 (quasi-experimental front-ends, weighting, modern DiD, crim methods)
