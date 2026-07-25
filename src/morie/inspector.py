@@ -43,7 +43,10 @@ _ESTIMATE_PATTERNS = re.compile(
     r"|^ate$|^att$|^atc$|point[_.\-]?est|post[_.\-]?mean)",
     re.IGNORECASE,
 )
-_R_SQUARED_PATTERNS = re.compile(r"(r[_.\-]?squared|r2|rsq|pseudo[_.\-]?r2|adj[_.\-]?r2)", re.IGNORECASE)
+_R_SQUARED_PATTERNS = re.compile(
+    r"(^|[_.\-])(r[_.\-]?squared|r2|rsq|pseudo[_.\-]?r2|adj[_.\-]?r2)($|[_.\-])",
+    re.IGNORECASE,
+)  # anchored so bare `r2` no longer matches the substring in `factor2`/`predictor2` (N5)
 _SAMPLE_SIZE_PATTERNS = re.compile(r"(^n$|^n[_.\-]obs|sample[_.\-]?size|^nobs$|n_total)", re.IGNORECASE)
 _AIC_BIC_PATTERNS = re.compile(r"(^aic$|^bic$)", re.IGNORECASE)
 

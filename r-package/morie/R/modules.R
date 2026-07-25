@@ -75,22 +75,18 @@ morie_list_morie_modules <- function() {
 }
 
 .resolve_cpads_csv <- function(cpads_csv) {
+  # The Python bridge passes an absolute path (see modules.py, finding N1);
+  # a direct Rscript caller is responsible for a path valid from its own cwd.
+  # No parent-directory walk: it only ever "worked" when the output dir
+  # happened to sit inside the repo, and silently surprised everyone else.
   if (file.exists(cpads_csv)) {
     return(normalizePath(cpads_csv, mustWork = TRUE))
   }
-  current <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
-  for (i in seq_len(10L)) {
-    candidate <- file.path(current, cpads_csv)
-    if (file.exists(candidate)) {
-      return(normalizePath(candidate, mustWork = TRUE))
-    }
-    parent <- dirname(current)
-    if (identical(parent, current)) {
-      break
-    }
-    current <- parent
-  }
-  stop("CPADS CSV not found: ", cpads_csv, call. = FALSE)
+  stop(
+    "CPADS CSV not found: ", cpads_csv,
+    "\n  Pass an absolute path (or one valid from the current working directory).",
+    call. = FALSE
+  )
 }
 
 #' Canonicalize raw CPADS PUMF columns

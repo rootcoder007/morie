@@ -417,8 +417,12 @@ def _run_r_module(
     if output_dir is None:
         _tmp_ctx = tempfile.TemporaryDirectory(prefix=f"morie-{module_name}-")
         output_dir = Path(_tmp_ctx.name)
-    output_dir = Path(output_dir)
+    output_dir = Path(output_dir).expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+    # Rscript runs with cwd=output_dir, so any relative path we forward would
+    # resolve against the OUTPUT dir, not the caller's cwd. Make cpads_csv
+    # absolute here so it works regardless of where output lands (N1).
+    cpads_csv = Path(cpads_csv).expanduser().resolve()
     try:
         if not _R_MODULE_SHIM.exists():
             raise RuntimeError(
