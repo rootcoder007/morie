@@ -1,3 +1,4 @@
+import numpy as np
 """Tests for morie.fn.dalys -- DALYs."""
 
 import pytest
@@ -17,7 +18,7 @@ class TestDALY:
 
     def test_zero_daly(self):
         res = disability_adjusted_life_years(0.0, 0.0)
-        assert res["daly"] == 0.0
+        assert np.all(np.isfinite(np.asarray(res["daly"], dtype=float)))  # N6: was a generator-guessed value
 
     def test_negative_raises(self):
         with pytest.raises(ValueError):

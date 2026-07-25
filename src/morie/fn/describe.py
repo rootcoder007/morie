@@ -104,6 +104,24 @@ def describe(name: str):
     from ._registry import REGISTRY
 
     name = name.lstrip("/")  # tolerant of "/welcht" etc.
+
+    # Truthfulness gate (N6): the REGISTRY has drifted from reality — it holds
+    # rows for names that are NOT importable callables (e.g. `flshA`, or `cokrg`
+    # whose real export is `cokriging`). Validate against the actual lazy-import
+    # symbol table FIRST, so describe() can never fabricate documentation for a
+    # name the package cannot back. If the map is unavailable, fall through to
+    # the legacy REGISTRY path rather than breaking describe() entirely.
+    backed = _backed_names()
+    if backed and name not in backed:
+        ci = next((k for k in backed if k.lower() == name.lower()), None)
+        if ci is None:
+            raise ValueError(
+                f"unknown callable: {name!r} is not a real morie.fn export "
+                f"(the import table has {len(backed)} callables). "
+                f"describe() will not invent documentation for it."
+            )
+        name = ci
+
     entry = REGISTRY.get(name)
     if entry is None:
         # Try case-insensitive match
@@ -130,11 +148,27 @@ def describe(name: str):
     return _render_skeleton(entry)
 
 
+@functools.lru_cache(maxsize=1)
+def _backed_names() -> frozenset:
+    """The real symbol table: names actually resolvable via the lazy import
+    map. describe() must not invent documentation for anything outside this."""
+    path = _FN_DIR / "_lazy_map.json"
+    try:
+        return frozenset(json.loads(path.read_text()))
+    except (OSError, ValueError):
+        return frozenset()
+
+
 def _synthesize_entry_from_module(name: str):
     """Build a minimal REGISTRY-compatible entry for a generated callable
     that doesn't yet have a hand-curated REGISTRY row.
-    Returns None if the fn/<name>.py file doesn't exist.
+    Returns None unless `name` is a REAL, importable callable — otherwise
+    describe() would fabricate documentation (and a source stub) for a name
+    it cannot back, e.g. `cokrg` (the real export is `cokriging`) or the
+    non-existent `flshA` (N6).
     """
+    if name not in _backed_names():
+        return None
     text = _read_fn_source(name)
     if text is None:
         return None

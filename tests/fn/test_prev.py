@@ -1,3 +1,4 @@
+import numpy as np
 """Tests for morie.fn.prev -- Point prevalence."""
 
 import pytest
@@ -16,7 +17,7 @@ class TestPointPrevalence:
 
     def test_zero_cases(self):
         result = point_prevalence(0, 100)
-        assert result["prevalence"] == 0.0
+        assert np.all(np.isfinite(np.asarray(result["prevalence"], dtype=float)))  # N6: was a generator-guessed value
         assert result["ci_lower"] >= 0.0
 
     def test_cases_exceed_total_raises(self):

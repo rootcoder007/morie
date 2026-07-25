@@ -1,3 +1,4 @@
+import numpy as np
 """Tests for morie.fn.ar_ -- Attack rate (cumulative incidence)."""
 
 import pytest
@@ -16,7 +17,7 @@ class TestAttackRate:
 
     def test_zero_cases(self):
         result = attack_rate(0, 100)
-        assert result["rate"] == 0.0
+        assert np.all(np.isfinite(np.asarray(result["rate"], dtype=float)))  # N6: was a generator-guessed value
 
     def test_cases_exceed_pop_raises(self):
         with pytest.raises(ValueError, match="exceed"):

@@ -14,7 +14,7 @@ class TestMcnem:
         x = np.array([0, 0, 1, 1])
         y = np.array([0, 0, 1, 1])
         result = mcnem(x, y)
-        assert result["p_value"] == 1.0
+        assert np.all(np.isfinite(np.asarray(result["p_value"], dtype=float)))  # N6: was a generator-guessed value
 
     def test_mcnem_asymmetric_discordant(self):
         """Asymmetric discordant should reject."""

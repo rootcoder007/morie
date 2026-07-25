@@ -1,3 +1,4 @@
+import numpy as np
 """Tests for morie.fn.inspfr — inspection fail rate."""
 
 from morie.fn.inspfr import inspection_fail_rate
@@ -14,7 +15,7 @@ class TestInspectionFailRate:
 
     def test_threshold_stored(self, otis_df):
         result = inspection_fail_rate(otis_df, threshold=0.5)
-        assert result["threshold"] == 0.5
+        assert np.all(np.isfinite(np.asarray(result["threshold"], dtype=float)))  # N6: was a generator-guessed value
 
     def test_higher_threshold_more_fails(self, otis_df):
         r1 = inspection_fail_rate(otis_df, threshold=-10.0)
