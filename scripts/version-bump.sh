@@ -55,10 +55,82 @@ fi
 # Extend this when you find a stale stamp the regular CURRENT pass missed.
 KNOWN_LEGACY_VERSIONS=("0.3.0" "0.2.0")
 
-# 1. Update the canonical version file.
+# Files whose version strings are HISTORY, never a current stamp.
+#
+# Release notes record what a past release did ("# morie 1.1.4 - 2026-07-15",
+# "CITATION.cff version resynced (had lagged at 1.1.4)"). Rewriting those is
+# always wrong: it renames a shipped release and turns true sentences false.
+# On 2026-07-25 this script did exactly that, retitling the 1.1.4 section as
+# 1.1.7 while keeping 1.1.4's date. Add entries here rather than patching.
+NEVER_PATCH_RE='(^|/)(NEWS\.md|CHANGELOG\.md|WHATS_NEW\.md|.*_tracker\.md)$'
+
+# 1. Establish the TRUE current version before touching anything.
+#
+# version-inventory.sh classifies a row CURRENT when it matches the VERSION
+# file, so a stale VERSION silently inverts every decision this script makes:
+# the real version gets marked STALE_OR_DEP and is never bumped, while
+# historical mentions of the stale value get marked CURRENT and are rewritten.
+# That is precisely how 1.1.6 shipped with pyproject.toml unbumped and NEWS.md
+# corrupted. Trust the release manifests, not the VERSION file.
+read_ver() { [[ -f "$1" ]] && sed -nE "s/$2/\1/p" "$1" | head -1 || true; }
+
+PYPROJECT_VER=$(read_ver pyproject.toml '^version[[:space:]]*=[[:space:]]*"([^"]+)".*')
+CITATION_VER=$(read_ver CITATION.cff '^version:[[:space:]]*"?([^"[:space:]]+)"?.*')
+FILE_VER=$(tr -d '[:space:]' < "$VERSION_FILE" 2>/dev/null || true)
+
+if [[ -z "$PYPROJECT_VER" ]]; then
+    echo "Error: could not read version from pyproject.toml." >&2
+    exit 1
+fi
+
+if [[ -n "$CITATION_VER" && "$CITATION_VER" != "$PYPROJECT_VER" ]]; then
+    echo "Error: release manifests disagree, refusing to guess." >&2
+    echo "  pyproject.toml: $PYPROJECT_VER" >&2
+    echo "  CITATION.cff:   $CITATION_VER" >&2
+    echo "Reconcile them by hand, then re-run." >&2
+    exit 1
+fi
+
+OLD_VER="$PYPROJECT_VER"
+echo "==> Current version (from release manifests): $OLD_VER"
+
+if [[ "$FILE_VER" != "$OLD_VER" ]]; then
+    echo "==> WARNING: $VERSION_FILE said '$FILE_VER' but the real version is '$OLD_VER'."
+    echo "    Self-healing $VERSION_FILE and regenerating the inventory so that"
+    echo "    CURRENT/STALE_OR_DEP are computed against the real version."
+    echo "$OLD_VER" > "$VERSION_FILE"
+    ./scripts/version-inventory.sh >/dev/null
+fi
+
+if [[ "$NEW_VER" == "$OLD_VER" ]]; then
+    echo "Error: requested version $NEW_VER equals the current version." >&2
+    exit 1
+fi
+
+# 2. Patch the release manifests explicitly.
+#
+# These must be bumped whether or not the inventory happened to list them; a
+# missing or misclassified CSV row is not permitted to skip a release file.
+echo "==> Patching release manifests..."
+perl -pi -e "s/^version(\s*=\s*)\"\Q$OLD_VER\E\"/version\${1}\"$NEW_VER\"/" pyproject.toml
+echo "  [x] pyproject.toml ($OLD_VER -> $NEW_VER)"
+if [[ -f CITATION.cff ]]; then
+    perl -pi -e "s/^version:(\s*)\"?\Q$OLD_VER\E\"?/version:\${1}\"$NEW_VER\"/" CITATION.cff
+    echo "  [x] CITATION.cff ($OLD_VER -> $NEW_VER)"
+fi
 echo "$NEW_VER" > "$VERSION_FILE"
-echo "==> Updated $VERSION_FILE to $NEW_VER"
-echo "==> Applying patches..."
+echo "  [x] $VERSION_FILE ($OLD_VER -> $NEW_VER)"
+
+# Fail loudly rather than shipping a half-bumped release.
+for f in pyproject.toml CITATION.cff; do
+    [[ -f "$f" ]] || continue
+    if ! grep -qF "$NEW_VER" "$f"; then
+        echo "Error: $f does not contain $NEW_VER after patching." >&2
+        exit 1
+    fi
+done
+
+echo "==> Applying inventory-driven patches..."
 
 PATCH_COUNT=0
 SKIP_COUNT=0
@@ -73,6 +145,18 @@ while IFS=, read -r file line status old_ver context; do
         echo "  [!] Skipping $file (file not found)"
         continue
     fi
+
+    # Release notes and trackers record history; never rewrite them.
+    if [[ "$file" =~ $NEVER_PATCH_RE ]]; then
+        SKIP_COUNT=$((SKIP_COUNT + 1))
+        continue
+    fi
+
+    # Already handled explicitly above.
+    case "$file" in
+        ./pyproject.toml|pyproject.toml|./CITATION.cff|CITATION.cff|./VERSION|VERSION)
+            SKIP_COUNT=$((SKIP_COUNT + 1)); continue ;;
+    esac
 
     SHOULD_PATCH=false
     if [[ "$status" == "CURRENT" ]]; then
