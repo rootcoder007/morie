@@ -30,7 +30,14 @@ def _find_cpads_csv() -> str:
     Resolution order:
       1. Real CPADS PUMF microdata at the documented project-root
          path (data/datasets/oc/CPADS/2021-2022/cpads-2021-2022-pumf2.csv).
-         This is what users with a Statistics Canada PUMF subscription get.
+         The Canadian Postsecondary Alcohol and Drug Survey 2021-2022 PUMF
+         is OPEN DATA under the Open Government Licence - Canada; no
+         subscription is required. Download it from
+         <https://open.canada.ca/data/en/dataset/736fa9b2-62e4-4e31-aea4-51869605b363>.
+         It is not bundled because the CSV is ~39 MB (40,931 data rows),
+         far past what a CRAN package may ship, so rmoriedata carries the
+         provenance record instead (SHA-256 and the direct URL, in
+         inst/extdata/cpads_data_provenance.json) for fetch-and-verify.
       2. A 1,200-row synthetic CPADS-shaped frame shipped inside the
          wheel at morie/data/cpads_synthetic.csv.  This lets fresh
          users run `morie run-module power-design` on their first
