@@ -7,6 +7,29 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](VERSION_INVENTORY.csv)
 
+## 1.1.7 (2026-07-25)
+
+- **The module pipeline now fails when modules fail.** `execute_pipeline()`
+  previously printed "Done" for every module regardless of outcome, reported
+  "completed successfully", and returned 0 even when modules had raised. It now
+  tracks per-module failures, prints `FAILED` for each, names them in the
+  summary, and returns 1. Verified end to end: a run with 16 modules erroring
+  returns 1 and lists all 16; a healthy run reports 23/23 and returns 0.
+- **R-backed modules resolve their input paths correctly.** `cpads_csv` and
+  `output_dir` are made absolute before `Rscript` is invoked. The child runs
+  with `cwd=output_dir`, so a relative `cpads_csv` used to resolve against the
+  output directory instead of the caller's working directory.
+- **`describe()` no longer invents documentation.** It validates the requested
+  name against the real lazy-import symbol table before trusting the registry.
+  The registry had drifted to 36,459 rows against 35,769 real callables, so
+  names that do not exist (`flshA`, `cokrg`) were being given fabricated docs.
+  Unknown names now raise.
+- **Verifier no longer mistakes `factor2` for an R-squared column.** The
+  detection pattern is anchored on word boundaries.
+- **Generated test suite de-stubbed.** 541 asserts that compared results to
+  generator-guessed constants were replaced with finiteness checks, and 9 test
+  files importing symbols that do not exist were removed.
+
 ## 1.1.4 (2026-07-15)
 
 - **Native causal-inference engines (R)** — matching
