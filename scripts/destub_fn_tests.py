@@ -41,7 +41,7 @@ def transform(text: str) -> tuple[str, int]:
 def main(apply: bool):
     files, total = 0, 0
     for p in FN.rglob("test_*.py"):
-        t = p.read_text()
+        t = p.read_text(encoding="utf-8")
         new, n = transform(t)
         if n:
             files += 1
@@ -49,7 +49,7 @@ def main(apply: bool):
             if "import numpy as np" not in new:
                 new = "import numpy as np\n" + new  # ensure np available
             if apply:
-                p.write_text(new)
+                p.write_text(new, encoding="utf-8")
     print(f"{'rewrote' if apply else 'would rewrite'} {total} asserts across {files} files")
 
 
