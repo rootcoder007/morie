@@ -93,6 +93,7 @@ def execute_pipeline(
     except ImportError:
         pass
 
+    failed: dict[str, str] = {}
     for idx, module_name in enumerate(selected, start=1):
         if _pbar:
             _pbar.desc = f"Running: {module_name}"
@@ -105,12 +106,15 @@ def execute_pipeline(
                 dataset_key=dataset_key,
                 output_dir=output_dir,
             )
+            status = "Done"
         except Exception as exc:
+            failed[module_name] = str(exc)
             print(f"  ERROR in {module_name}: {exc}")
+            status = "FAILED"
         if _pbar:
             _pbar.update()
         else:
-            print(f"[{idx}/{total}] Done: {module_name}", flush=True)
+            print(f"[{idx}/{total}] {status}: {module_name}", flush=True)
 
     if _manager:
         _manager.stop()
@@ -123,7 +127,16 @@ def execute_pipeline(
         except Exception:  # pragma: no cover
             pass
 
-    print("Pipeline completed successfully.")
+    n_ok = len(results)
+    if failed:
+        print(
+            f"Pipeline completed {n_ok}/{total} "
+            f"({len(failed)} failed: {', '.join(failed)})."
+        )
+        if results:
+            print("Succeeded modules:", ", ".join(results.keys()))
+        return 1
+    print(f"Pipeline completed successfully ({n_ok}/{total}).")
     print("Completed modules:", ", ".join(results.keys()))
     return 0
 
