@@ -88,9 +88,18 @@ _TRIVIAL_PATTERNS = {
 }
 
 
+# Node IDs flagged during this session, accumulated instead of warned one by
+# one. There are 3,621 of them across tests/fn, so emitting a warning per test
+# buried every other warning in the run -- 3,621 of 3,852 were this one
+# message. The durable register is tests/fn/_audit/trivial_tests.csv, which
+# additionally classifies each target as a real implementation or a generated
+# stub, and .github/workflows/fn-sampled.yml gates the count so it cannot grow.
+_TRIVIAL_HITS: set[str] = set()
+
+
 @pytest.fixture(autouse=True)
 def _warn_trivial_assertions(request):
-    """Flag tests that only use trivially-true assertions."""
+    """Record tests that only use trivially-true assertions."""
     yield
     src = inspect.getsource(request.function)
     lines = [ln.strip() for ln in src.splitlines() if ln.strip().startswith("assert")]
@@ -98,8 +107,23 @@ def _warn_trivial_assertions(request):
         return
     trivial = sum(1 for ln in lines if any(ln.startswith(p) for p in _TRIVIAL_PATTERNS))
     if trivial == len(lines) and len(lines) > 0:
-        warnings.warn(
-            f"FALSE-POSITIVE RISK: {request.node.nodeid} has {trivial} trivially-true "
-            f"assertion(s) and zero domain-specific checks. Tighten assertions.",
-            stacklevel=2,
-        )
+        _TRIVIAL_HITS.add(request.node.nodeid)
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Emit one summary instead of one warning per flagged test.
+
+    Under xdist this runs once per worker, so a 6-worker run emits 6 lines
+    rather than 3,621. The counts are per-worker by construction; the whole-tree
+    number comes from the CSV, not from adding these up.
+    """
+    if not _TRIVIAL_HITS:
+        return
+    warnings.warn(
+        f"FALSE-POSITIVE RISK: {len(_TRIVIAL_HITS)} test(s) in this session have "
+        "only trivially-true assertions and zero domain-specific checks. "
+        "Full register with stub-vs-real classification: "
+        "tests/fn/_audit/trivial_tests.csv "
+        "(regenerate with python tests/fn/_audit/harvest_trivial.py).",
+        stacklevel=1,
+    )
