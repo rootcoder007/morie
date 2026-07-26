@@ -33,10 +33,39 @@ def wavelet_time_series(x, wavelet="haar", level=None):
         (list of cD coefficients level-by-level), ``energies`` (variance
         per level), ``level``, ``n``, ``method``.
 
+    Raises
+    ------
+    ValueError
+        If ``x`` has fewer than 4 observations, or if a non-Haar wavelet is
+        requested without PyWavelets installed.
+
     References
     ----------
-    Percival DB, Walden AT (2000). *Wavelet Methods for Time Series
-    Analysis*. Cambridge UP.
+    Percival, D. B., & Walden, A. T. (2000). *Wavelet Methods for Time
+        Series Analysis*. Cambridge University Press. DWT p.56; jth level
+        wavelet detail :math:`\mathcal{D}_j` p.64; multiresolution analysis
+        p.65; energy (squared norm) :math:`\mathcal{E}_X` pp.42, 72.
+    PyWavelets developers. ``pywt.wavedec`` reference documentation.
+        https://pywavelets.readthedocs.io/en/latest/ref/dwt-discrete-wavelet-transform.html
+
+    Notes
+    -----
+    The orthonormal DWT preserves energy, so the returned ``energies`` sum to
+    :math:`\sum_t x_t^2` (P&W's :math:`\mathcal{E}_X`, pp.42, 72). That is
+    the identity the tests pin, and it is what would break first if the
+    filter normalisation drifted.
+
+    ``energies`` is aligned with the returned arrays: ``energies[0]`` is the
+    approximation and ``energies[i + 1]`` is ``details[i]``. It previously was
+    not -- ``details`` was ordered deepest-first while ``energies`` ran
+    shallowest-first, so the two disagreed for every level beyond the first.
+
+    PyWavelets is an optional extra (``pip install morie[wavelets]``). Without
+    it only ``wavelet="haar"`` is available, via a pure-NumPy implementation;
+    any other family raises rather than silently returning Haar. The previous
+    code caught every exception from the pywt path and fell through, so a
+    request for ``db4`` -- or a typo -- returned Haar coefficients with no
+    warning.
     """
     y = np.asarray(x, dtype=float).ravel()
     n = y.size
@@ -49,10 +78,36 @@ def wavelet_time_series(x, wavelet="haar", level=None):
 
     try:
         import pywt
+    except ImportError:
+        pywt = None
 
-        coeffs = pywt.wavedec(y, wavelet, level=level)
+    if pywt is None and str(wavelet).lower() not in ("haar", "db1"):
+        raise ValueError(
+            f"wavelet={wavelet!r} needs PyWavelets, which is not installed. "
+            "Install it with `pip install morie[wavelets]`, or use "
+            'wavelet="haar", which is implemented natively. Returning Haar '
+            "for a non-Haar request would be a silently wrong basis."
+        )
+
+    if pywt is not None:
+        # Errors from pywt propagate: an unknown wavelet name is a caller
+        # mistake, not a reason to substitute a different basis.
+        # mode="periodization", not pywt's default "symmetric".
+        #
+        # P&W define the DWT with filters "periodized to N" (Conventions and
+        # Notation, A_j / B_j), which makes the transform orthonormal and
+        # energy-preserving. pywt's default symmetric extension is redundant:
+        # it returns more coefficients than input samples, and the energies do
+        # NOT sum to sum(x^2). Measured on 64 Gaussian samples with db4 at
+        # level 3, energy preservation failed under "symmetric" and holds
+        # under "periodization" -- and only the latter agrees with the native
+        # Haar path, so swapping PyWavelets in or out no longer changes the
+        # answer.
+        coeffs = pywt.wavedec(y, wavelet, level=level, mode="periodization")
         cA = coeffs[0]
         cDs = coeffs[1:]
+        # coeffs is [cA_n, cD_n, ..., cD_1], so energies line up with
+        # [approximation] + details as returned.
         energies = [float(np.sum(c**2)) for c in coeffs]
         return RichResult(
             payload={
@@ -62,13 +117,11 @@ def wavelet_time_series(x, wavelet="haar", level=None):
                 "level": int(level),
                 "n": int(n),
                 "wavelet": wavelet,
-                "method": f"DWT via pywt (wavelet={wavelet}, level={level})",
+                "method": f"DWT via pywt (wavelet={wavelet}, level={level}, mode=periodization)",
             }
         )
-    except Exception:
-        pass
 
-    # Pure-NumPy Haar DWT fallback.
+    # Pure-NumPy Haar DWT (used when PyWavelets is absent).
     cA = y.copy()
     cDs = []
     for _ in range(level):
@@ -82,11 +135,15 @@ def wavelet_time_series(x, wavelet="haar", level=None):
         cD = (even - odd) / np.sqrt(2.0)
         cDs.append(cD)
         cA = cA_new
-    energies = [float(np.sum(cA**2))] + [float(np.sum(c**2)) for c in cDs]
+    # cDs is built shallowest-first (cD_1 ... cD_n); reverse to match pywt's
+    # deepest-first convention, and build energies from the SAME ordered list
+    # so energies[i + 1] is always the energy of details[i].
+    details = cDs[::-1]
+    energies = [float(np.sum(cA**2))] + [float(np.sum(c**2)) for c in details]
     return RichResult(
         payload={
             "approximation": cA,
-            "details": cDs[::-1],
+            "details": details,
             "energies": energies,
             "level": int(level),
             "n": int(n),

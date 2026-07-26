@@ -90,6 +90,11 @@ Changelog     = "https://github.com/rootcoder007/morie/releases"
 doubleml = [
     "DoubleML>=0.7.1",
 ]
+wavelets = [
+    # Only needed for non-Haar families in morie.fn.wavts; the Haar DWT is
+    # implemented natively so the base install stays lean.
+    "PyWavelets>=1.4",
+]
 test = [
     "pytest>=7.0",
     "pytest-cov",
