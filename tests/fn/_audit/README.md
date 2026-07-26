@@ -67,6 +67,37 @@ Independently, the suite's own `FALSE-POSITIVE RISK` warning (trivially-true
 assertions, zero domain-specific checks) fired on **3,621 distinct tests**
 in the same run. Nothing reads it, because warnings do not fail a build.
 
+## The irtgr precedent
+
+The first fix in this series is the worked example of why "the test passes
+and it's faster" is not evidence of correctness.
+
+`irtgr` (Samejima GRM) was blowing the 120s CI cap; the real cost was
+**314.0s**. The first vectorisation collapsed the M-step reduction into a
+single `np.sum` over a 2-D array and ran in **19.1s** — and it was wrong.
+numpy's `np.sum` uses pairwise summation where the original accumulated
+sequentially over quadrature points. That perturbed the last bits, which
+moved L-BFGS-B's finite-difference gradients, which shifted EM
+convergence: `n_iter` 59 -> 58, loglik delta 5.1e-05, thresholds off by
+2.4e-03. Every test still passed.
+
+It was backed out. The reduction stays a Python loop over quadrature
+points; the speed lives in the vectorised probability call, not in the
+reduction. Final: **42.2s (7.4x), bit-identical** — loglik, theta, info,
+discriminations and thresholds all `0.000e+00` delta against a baseline
+saved *before* the code was touched.
+
+Three rules follow, and they bind for every function in this series:
+
+1. Save every output to disk **before** editing. "Should be speed-only" is
+   a hypothesis; a diff against a saved baseline is a result.
+2. A green test does not distinguish a correct change from a change whose
+   error is smaller than the assertions. Only the baseline diff does.
+3. Reduction order is part of the contract. Anything feeding an iterative
+   optimiser can turn a last-bit difference into a different answer.
+
+Commit `8cebb72491`.
+
 ## Column meanings
 
 `priority` — 1 = non-skeleton (255), 2 = shared-skeleton (84). P1 first.
