@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Pan-Tompkins QRS detection -- Rangayyan Ch 6."""
+"""Pan-Tompkins QRS detection -- Rangayyan & Krishnan Sec. 4.3.2, p.220."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ __all__ = ["rangayyan_qrs_detect"]
 def rangayyan_qrs_detect(x, fs=360.0):
     """Pan-Tompkins QRS detector.
 
-    Pipeline (Pan & Tompkins 1985, adapted in Rangayyan Ch 6):
+    Pipeline (Pan & Tompkins 1985; Rangayyan & Krishnan Sec. 4.3.2, p.220):
 
     1.  Bandpass 5–15 Hz (Butterworth IIR, zero-phase).
     2.  Differentiate ``y[n] = (1/8)(2 x[n] + x[n-1] - x[n-3] - 2 x[n-4])``.
@@ -36,12 +36,59 @@ def rangayyan_qrs_detect(x, fs=360.0):
 
     References
     ----------
-    Pan & Tompkins (1985), IEEE TBME 32:230.  Rangayyan Ch 6.
+    Pan, J., & Tompkins, W. J. (1985). A real-time QRS detection algorithm.
+        *IEEE Transactions on Biomedical Engineering*, BME-32(3), 230-236.
+    Rangayyan, R. M., & Krishnan, S. *Biomedical Signal Analysis*, 3rd ed.
+        (IEEE Press / Wiley, 2024), Sec. 4.3.2 "The Pan-Tompkins algorithm
+        for QRS detection", p.220, eqs (4.7), (4.8), (4.14), (4.15).
+
+    Note: the docstring previously cited Ch. 6; the algorithm is Sec. 4.3.2 in
+    the edition we hold.
+
+    Verified against the book: the derivative here is eq (4.14) exactly,
+    y(n) = (1/8)[2x(n) + x(n-1) - x(n-3) - 2x(n-4)], and the 150 ms
+    integration window is eq (4.15)'s N = 30 samples at the paper's
+    fs = 200 Hz.
+
+    Note on two deliberate deviations from the original, both consequences of
+    this being an OFFLINE detector rather than the real-time one Pan and
+    Tompkins designed:
+
+    * Bandpass. The original cascades the integer-coefficient recursive
+      lowpass of eq (4.7)-(4.8) with a matching highpass, chosen so the
+      filter can run in real time on 1985 hardware. This uses a zero-phase
+      Butterworth bandpass (``sosfiltfilt``) over the same 5-15 Hz band.
+      Zero-phase filtering is non-causal and cannot be done in real time, but
+      it removes the group delay the original has to correct for.
+    * Integration. Eq (4.15) is a causal moving average over the preceding N
+      samples, which lags the QRS by about N/2. This convolves with
+      ``mode="same"``, i.e. centred, so the integrated peak sits on the QRS
+      rather than after it. Given the +/-50 ms refinement against the
+      bandpassed signal that follows, centring is what keeps the refinement
+      window on the true R peak.
+
+    Neither changes the detection logic, but both change sample-level timing
+    against a strict reading of the equations, so a reviewer comparing R-peak
+    indices with a causal implementation should expect an offset there and
+    not here.
     """
     from scipy.signal import butter, find_peaks, sosfiltfilt
 
     x = np.asarray(x, dtype=float).ravel()
+    if fs <= 0:
+        raise ValueError(f"`fs` must be positive, got {fs}.")
     nyq = 0.5 * fs
+    # sosfiltfilt needs more samples than its padlen, and a QRS detector needs
+    # enough signal to hold a beat regardless. Without this the failure is
+    # scipy's "The length of the input vector x must be greater than padlen",
+    # which says nothing about ECG. One second is the floor: the 150 ms
+    # integration window and 200 ms refractory period are meaningless below it.
+    min_samples = max(int(round(fs)), 40)
+    if x.size < min_samples:
+        raise ValueError(
+            f"need at least {min_samples} samples (1 s at fs={fs:g} Hz) to "
+            f"detect QRS complexes, got {x.size}."
+        )
     # 1) bandpass 5–15 Hz
     sos = butter(3, [5.0 / nyq, min(15.0, nyq * 0.95) / nyq], btype="band", output="sos")
     bp = sosfiltfilt(sos, x)
