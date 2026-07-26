@@ -1,9 +1,9 @@
 """dimrd: Kaiser / Cattell dimensionality test.
 
-Kaiser (1960) for the lambda>1 rule, Cattell (1966) for the scree gap.
-Neither paper is in the library yet (ACQUISITION.md 1d-iv), so the tests
-below pin only properties that follow from the eigen-decomposition itself.
-The module previously cited "Armstrong Ch 7"; that book has six chapters.
+Kaiser (1960), Educ. Psychol. Meas. 20(1):141-151, for the lambda>1
+retention rule; Cattell (1966), Multivar. Behav. Res. 1(2):245-276, for the
+scree gap. The module previously cited "Armstrong Ch 7"; that book has six
+chapters.
 """
 
 import numpy as np

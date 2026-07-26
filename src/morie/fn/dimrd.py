@@ -30,8 +30,7 @@ def dimensionality_test(x, threshold: float = 1.0):
     Cattell, R. B. (1966). The scree test for the number of factors.
         *Multivariate Behavioral Research*, 1(2), 245-276. The `scree_gap`.
     NOT Armstrong: the former "Ch 7" citation is to a chapter that does not
-        exist (that book has six). Neither paper is in the library yet --
-        see docs-snapshots/ACQUISITION.md item 1d-iv.
+        exist -- that book has six chapters.
     """
     M = np.asarray(x, dtype=float)
     if M.ndim == 1:

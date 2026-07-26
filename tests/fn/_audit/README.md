@@ -13,8 +13,8 @@ can be recreated cheaply.
 | `trivial_tests.csv` | the 3,621 tests whose assertions cannot fail, with each one's target classified stub-vs-real |
 | `harvest_trivial.py` | regenerates that CSV, and `--check` fails if the count grows |
 
-The 11 MB junit XML is too large for the repo and lives at
-`/Volumes/VSR/rootcoderfiles/morie-audit-artifacts/fn-full-2026-07-26.xml`.
+The 11 MB junit XML is too large for the repo and is kept outside it, in the
+maintainer's audit-artifacts directory.
 
 ## How the run was produced
 
@@ -160,12 +160,11 @@ which version of the docs was read.
 the library gets written into the library immediately, so no later session
 re-fetches it:
 
-- real PDF -> `data/datasets/userguides/other/pdf/`
-- online docs -> verbatim snapshot in
-  `data/datasets/userguides/other/docs-snapshots/<topic>.md`, with URL and
-  retrieval date (web docs are mutable; the snapshot is what was actually read)
-- paywalled / HTTP 403 -> a row in `docs-snapshots/ACQUISITION.md` with the
-  DOI, the function that needs it, and how the definition was verified meanwhile
+- real PDF -> the maintainer's PDF library
+- online docs -> a verbatim snapshot alongside it, with URL and retrieval date
+  (web docs are mutable; the snapshot is what was actually read)
+- paywalled / HTTP 403 -> flag it to the maintainer with the DOI and the
+  function that needs it, and record how the definition was verified meanwhile
 
 Then add the row to `books.csv`. Publishers block scripted download hard --
 PNAS and the American Physiological Society both return 403 with an HTML body

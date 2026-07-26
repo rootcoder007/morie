@@ -33,8 +33,7 @@ def multinomial_probit_spatial(x, n_draws: int = 2000, seed: int = 0):
     Train, K. E. (2009). *Discrete Choice Methods with Simulation*, 2nd ed.
         Cambridge University Press. The GHK simulator.
     NOT Armstrong: the former "Ch 9" citation is to a chapter that does not
-        exist (that book has six). Not in the library yet -- see
-        docs-snapshots/ACQUISITION.md item 1d-iii.
+        exist -- that book has six chapters.
     """
     U = np.asarray(x, dtype=float)
     if U.ndim == 1:
