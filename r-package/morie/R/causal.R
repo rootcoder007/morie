@@ -92,11 +92,6 @@ NULL
 .causal_have_causalimpact <- function() {
   requireNamespace("CausalImpact", quietly = TRUE)
 }
-#' Internal helper: Causal Have Sandwich
-#' @noRd
-.causal_have_sandwich     <- function() {
-  requireNamespace("sandwich",     quietly = TRUE)
-}
 #' Internal helper: Causal Have Aer
 #' @noRd
 .causal_have_aer          <- function() {

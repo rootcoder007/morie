@@ -70,6 +70,13 @@ def spatial_mixed_model(x, y, coords):
         resid = yw - Xw @ beta
         rss = float(resid @ resid)
         sigma2 = rss / max(n - p, 1)
+        # Degenerate (near-perfect) fit: residual variance is numerically zero,
+        # and log(2 * pi * sigma2) would be -inf. The exact-zero boundary is not
+        # portable across BLAS/LAPACK (x86_64 yields exactly 0; aarch64 leaves a
+        # tiny positive value), so use a scale-aware tolerance.
+        tol = np.sqrt(np.finfo(float).eps) * max(1.0, float(np.mean(yw**2)))
+        if not np.isfinite(sigma2) or sigma2 <= tol:
+            return 1e12
         logdet_Sigma = 2.0 * np.log(np.diag(L)).sum()
         logdet_XtSiX = 2.0 * np.log(np.diag(L2)).sum()
         return 0.5 * (logdet_Sigma + logdet_XtSiX + (n - p) * np.log(2 * np.pi * sigma2) + (n - p))

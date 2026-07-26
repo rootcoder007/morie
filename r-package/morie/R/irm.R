@@ -1,16 +1,14 @@
 #' Estimate the ATE via the Interactive Regression Model (IRM)
 #'
-#' Thin R wrapper that dispatches to the CRAN `DoubleML` package's
-#' \code{DoubleML::DoubleMLIRM} \link[R6]{R6Class}, mirroring the Python sibling
-#' `morie.estimate_irm()` (which dispatches to the Python `DoubleML` package).
+#' Native implementation of the Chernozhukov et al. (2018) interactive
+#' regression model: cross-fit logistic propensity scores and GCV-ridge
+#' outcome regressions, combined through the doubly-robust (AIPW) score.
+#' Mirrors the Python sibling `morie.estimate_irm()`.
 #'
-#' Following the DoubleML R package's own conventions, this uses
-#' the `mlr3` ecosystem for the nuisance learners (\code{ml_g} for
-#' \eqn{E[Y|T,X]} and \code{ml_m} for \eqn{P(T=1|X)}). Defaults are
-#' `lrn("regr.lm")` and `lrn("classif.log_reg")`, which require nothing
-#' beyond `stats`. For higher-capacity defaults, install `ranger` and pass
-#' `lrn("regr.ranger")` / `lrn("classif.ranger")` via the underlying
-#' `DoubleML::DoubleMLIRM$new()` directly.
+#' Nothing beyond `stats` is required at runtime. The estimator is
+#' cross-validated against \pkg{DoubleML} in the package's cross tests,
+#' but \pkg{DoubleML}, \pkg{mlr3}, and \pkg{mlr3learners} are not
+#' loaded or called.
 #'
 #' Following Chernozhukov et al. (2018), the IRM extends the partially linear
 #' model by allowing fully heterogeneous treatment effects:
@@ -44,23 +42,17 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
-#' if (requireNamespace("DoubleML", quietly = TRUE) &&
-#'   requireNamespace("mlr3", quietly = TRUE) &&
-#'   requireNamespace("mlr3learners", quietly = TRUE)) {
-#'   set.seed(1)
-#'   n <- 200
-#'   X <- matrix(rnorm(n * 5), n, 5)
-#'   ps <- plogis(X[, 1] - X[, 2])
-#'   T <- rbinom(n, 1, ps)
-#'   Y <- 0.5 * T + X[, 1] + rnorm(n)
-#'   df <- data.frame(Y = Y, T = T, X)
-#'   morie_estimate_irm(df,
-#'     treatment = "T", outcome = "Y",
-#'     covariates = paste0("X", 1:5)
-#'   )
-#' }
-#' }
+#' set.seed(1)
+#' n <- 200
+#' X <- matrix(rnorm(n * 5), n, 5)
+#' ps <- plogis(X[, 1] - X[, 2])
+#' T <- rbinom(n, 1, ps)
+#' Y <- 0.5 * T + X[, 1] + rnorm(n)
+#' df <- data.frame(Y = Y, T = T, X)
+#' morie_estimate_irm(df,
+#'   treatment = "T", outcome = "Y",
+#'   covariates = paste0("X", 1:5)
+#' )
 morie_estimate_irm <- function(data, treatment, outcome, covariates,
                                n_folds = 5L, random_state = 42L) {
   prep <- .dml_prepare_xy(data, treatment, outcome, covariates)
