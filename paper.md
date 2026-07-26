@@ -234,9 +234,20 @@ follow Higuchi [@higuchi1988approach], Grassberger and Procaccia
 [@grassberger1983strangeness], and Peng and colleagues
 [@peng1994mosaic]; the entropy estimators follow Pincus
 [@pincus1991approximate] and Richman and Moorman
-[@richman2000physiological]; the polytomous item-response model
-follows Samejima [@samejima1969estimation]; and the genomic
-relationship matrices follow VanRaden [@vanraden2008efficient].
+[@richman2000physiological]; the largest Lyapunov exponent follows
+Rosenstein, Collins and De Luca [@rosenstein1993practical]; the
+spectral estimators follow Welch [@welch1967use] and, for the
+autoregressive route, Burg [@burg1975maximum] and Marple
+[@marple1987digital]; the adaptive noise canceller follows Widrow
+and Stearns [@widrow1985adaptive]; the wavelet transforms follow
+Percival and Walden [@percival2000wavelet] and the shrinkage
+thresholds Donoho and Johnstone [@donoho1994ideal]; the heart-rate
+variability measures follow the Task Force of the European Society
+of Cardiology and the North American Society of Pacing and
+Electrophysiology [@taskforce1996heart]; the polytomous
+item-response model follows Samejima [@samejima1969estimation]; and
+the genomic relationship matrices follow VanRaden
+[@vanraden2008efficient].
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
 reader can check the implementation against the same page the

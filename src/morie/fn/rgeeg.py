@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""EEG band power (δ θ α β γ) via Welch -- Rangayyan Ch 9."""
+"""EEG band power (delta theta alpha beta gamma) -- Rangayyan & Krishnan Sec 4.4.1."""
 
 from __future__ import annotations
 
@@ -8,6 +8,14 @@ import numpy as np
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["rangayyan_eeg_bands"]
+
+# np.trapz was REMOVED in NumPy 2.0 and renamed to np.trapezoid. pyproject
+# still declares numpy>=1.24, where only np.trapz exists, so bind whichever
+# the installed NumPy provides. Without this the function raised
+# AttributeError on every call under NumPy >= 2 -- not a test artefact, a
+# hard failure for any caller.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
+
 
 
 _BANDS = {
@@ -38,7 +46,9 @@ def rangayyan_eeg_bands(x, fs, bands=None, nperseg=None):
 
     References
     ----------
-    Rangayyan Ch 9.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 4.4.1 "Detection of EEG rhythms",
+        p.228. The previous docstring cited Ch 9.
     """
     from scipy.signal import welch
 
@@ -48,11 +58,11 @@ def rangayyan_eeg_bands(x, fs, bands=None, nperseg=None):
     bands = bands or _BANDS
     freqs, pxx = welch(x, fs=fs, nperseg=nperseg)
     df = float(freqs[1] - freqs[0])
-    total = float(np.trapz(pxx, freqs))
+    total = float(_trapezoid(pxx, freqs))
     absolute = {}
     for name, (lo, hi) in bands.items():
         mask = (freqs >= lo) & (freqs < hi)
-        absolute[name] = float(np.trapz(pxx[mask], freqs[mask])) if mask.any() else 0.0
+        absolute[name] = float(_trapezoid(pxx[mask], freqs[mask])) if mask.any() else 0.0
     relative = {k: (v / total if total > 0 else 0.0) for k, v in absolute.items()}
     rows = [[name, f"{absolute[name]:.4g}", f"{relative[name] * 100:.2f}%"] for name in bands]
     res = RichResult(
@@ -76,4 +86,4 @@ def rangayyan_eeg_bands(x, fs, bands=None, nperseg=None):
 
 
 def cheatsheet():
-    return "rgeeg: EEG δ θ α β γ band power -- Rangayyan Ch 9"
+    return "rgeeg: EEG delta theta alpha beta gamma band power -- Rangayyan & Krishnan Sec 4.4.1"

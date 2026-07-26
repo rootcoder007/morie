@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Zero-crossing rate -- Rangayyan Ch 5."""
+"""Zero-crossing rate -- Rangayyan & Krishnan Sec 5.6.2."""
 
 from __future__ import annotations
 
@@ -27,7 +27,9 @@ def rangayyan_zero_crossing(x, fs=1.0):
 
     References
     ----------
-    Rangayyan Ch 5.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 5.6.2 "Zero-crossing rate", p.285
+        (Sec 5.6 "Analysis of Activity", p.283).
     """
     x = np.asarray(x, dtype=float).ravel()
     n = x.size
@@ -66,4 +68,4 @@ def rangayyan_zero_crossing(x, fs=1.0):
 
 
 def cheatsheet():
-    return "rgzcr: Zero-crossing rate -- Rangayyan Ch 5"
+    return "rgzcr: Zero-crossing rate -- Rangayyan & Krishnan Sec 5.6.2"

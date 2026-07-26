@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Hilbert-transform envelope -- Rangayyan Ch 5."""
+"""Hilbert-transform envelope -- Rangayyan & Krishnan Sec 5.5.3."""
 
 from __future__ import annotations
 
@@ -27,7 +27,9 @@ def rangayyan_envelope(x):
 
     References
     ----------
-    Rangayyan Ch 5.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 5.5.3 "The envelogram", p.281
+        (Sec 5.5 "Envelope Extraction and Analysis", p.277).
     """
     from scipy.signal import hilbert
 
@@ -58,4 +60,4 @@ def rangayyan_envelope(x):
 
 
 def cheatsheet():
-    return "rgenv: Hilbert envelope -- Rangayyan Ch 5"
+    return "rgenv: Hilbert envelope -- Rangayyan & Krishnan Sec 5.5.3"

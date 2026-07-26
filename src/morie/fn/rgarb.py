@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""AR(p) model via Burg's recursion -- Rangayyan Ch 4."""
+"""AR(p) model via Burg's recursion -- Rangayyan & Krishnan Sec 7.5 / 8.6.2."""
 
 from __future__ import annotations
 
@@ -29,9 +29,29 @@ def rangayyan_ar_burg(x, order=10):
     -------
     RichResult with keys ``ar_coeffs``, ``variance``, ``order``, ``reflection``.
 
+    ``ar_coeffs`` are the coefficients of the PREDICTION-ERROR FILTER,
+
+        A(z) = 1 + a_1 z^-1 + ... + a_p z^-p,
+
+    i.e. the returned array is ``[a_1, ..., a_p]`` with the leading 1
+    omitted. The recursion form is therefore
+
+        x[n] = -sum_i a_i x[n-i] + e[n],
+
+    so the coefficients of the usual ``x[n] = sum_i c_i x[n-i]`` form are
+    ``c = -ar_coeffs``. Stability is checked on ``[1, *ar_coeffs]``: Burg's
+    method guarantees every root lies inside the unit circle (p.456, "The
+    magnitudes of the reflection coefficients are less than unity").
+
     References
     ----------
-    Rangayyan Ch 4; Burg (1975); Marple (1987) §8.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 7.5 "Autoregressive or All-pole
+        Modeling", p.369; the Burg-lattice recursion is described in
+        Sec 8.6.2, p.456. The previous docstring cited Ch 4.
+    Burg, J. P. (1975). *Maximum Entropy Spectral Analysis* (PhD thesis).
+        Stanford University.
+    Marple, S. L. (1987). *Digital Spectral Analysis*, Ch 8. Prentice-Hall.
     """
     x = np.asarray(x, dtype=float).ravel()
     N = x.size
@@ -82,4 +102,4 @@ def rangayyan_ar_burg(x, order=10):
 
 
 def cheatsheet():
-    return "rgarb: AR(p) coefficients via Burg method -- Rangayyan Ch 4"
+    return "rgarb: AR(p) coefficients via Burg method -- Rangayyan & Krishnan Sec 7.5"

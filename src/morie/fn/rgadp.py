@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""LMS adaptive noise canceller -- Rangayyan Ch 11."""
+"""LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2."""
 
 from __future__ import annotations
 
@@ -39,7 +39,11 @@ def rangayyan_adaptive_filter(x, reference, mu=0.01, order=16):
 
     References
     ----------
-    Rangayyan Ch 11; Widrow & Stearns (1985).
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 3.10.2 "The least-mean-squares
+        adaptive filter", p.184. The previous docstring cited Ch 11.
+    Widrow, B., & Stearns, S. D. (1985). *Adaptive Signal Processing*.
+        Prentice-Hall.
     """
     x = np.asarray(x, dtype=float).ravel()
     r = np.asarray(reference, dtype=float).ravel()
@@ -50,8 +54,18 @@ def rangayyan_adaptive_filter(x, reference, mu=0.01, order=16):
     w = np.zeros(M)
     y = np.zeros(N)
     e = np.zeros(N)
-    for n in range(M - 1, N):
-        rv = r[n - M + 1 : n + 1][::-1]
+    # Start at n = 0 with a zero-padded reference history rather than at
+    # n = M-1. The old loop left y[0..M-2] and e[0..M-2] at zero, so the first
+    # M-1 samples of the returned signal were not the cancelled input -- they
+    # were nothing at all. At the default order=16 that silently destroyed 15
+    # samples, and it broke the identity that defines a noise canceller:
+    # signal + noise_estimate must reconstruct the primary input everywhere.
+    # Zero-padding the history is the standard LMS start-up and keeps the
+    # filter adapting from the first sample.
+    for n in range(N):
+        seg = r[max(0, n - M + 1) : n + 1][::-1]
+        rv = np.zeros(M)
+        rv[: seg.size] = seg
         y[n] = float(w @ rv)
         e[n] = x[n] - y[n]
         w = w + 2.0 * mu * e[n] * rv
@@ -78,4 +92,4 @@ def rangayyan_adaptive_filter(x, reference, mu=0.01, order=16):
 
 
 def cheatsheet():
-    return "rgadp: LMS adaptive noise canceller -- Rangayyan Ch 11"
+    return "rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2"
