@@ -67,6 +67,44 @@ Independently, the suite's own `FALSE-POSITIVE RISK` warning (trivially-true
 assertions, zero domain-specific checks) fired on **3,621 distinct tests**
 in the same run. Nothing reads it, because warnings do not fail a build.
 
+## The source hierarchy
+
+The spec for a function is the first of these that actually covers the method
+it implements. Record which tier was used in `book_reference`, and cite it in
+the docstring `References:` block.
+
+1. **The PDF in the library.** Authoritative. Chapter, section, equation
+   number and printed page.
+2. **The primary methodology paper**, when the library holds only a secondary
+   source that cites it. Where the two disagree the primary wins, and the
+   secondary's value is recorded as the alternative (`gmatv`, where the
+   secondary contradicted its own worked example twice).
+3. **Official reference documentation** — CRAN package manuals / vignettes,
+   the Python / NumPy / SciPy / PyWavelets reference docs — when the library
+   has no book covering the method, or when the function's behaviour is
+   *defined by* the library routine it calls rather than by a textbook.
+4. **STOP and ask.** Nothing above applies.
+
+**The txt extractions are never a tier.** They are a search index for
+locating material fast across 85 MB. Every equation, every fixture value and
+every page citation is read from the PDF. The extraction destroys
+mathematics — `G ¼ 1 p XX T` for `G = (1/p)XXᵀ`, `zij ¼ xij  2p j = 2p j 1  p j`
+for `z = (x−2p)/√(2p(1−p))` — and it silently truncates tables. Both bugs
+found in Rangayyan batch 1 lived exactly where the extraction was unusable.
+
+Tier 3 is not a fallback for laziness; it is the correct tier when the
+function's contract *is* the library's contract. `rgfir` is the worked case:
+Rangayyan Ch. 3 covers Butterworth IIR filtering and has no windowed-sinc FIR
+design section, so the SciPy `firwin` documentation is the specification —
+and it supplied both the missing error behaviour ("raises ValueError if any
+value in cutoff is ... greater than or equal to fs/2", which the function was
+masking with a clip) and the exact identity to pin it with (`scale=True`
+normalises unity gain at DC, therefore `sum(taps) == 1`).
+
+Quote tier-3 documentation verbatim in the docstring the same way a book is
+quoted, with the URL, so a reviewer can check the claim without guessing
+which version of the docs was read.
+
 ## The irtgr precedent
 
 The first fix in this series is the worked example of why "the test passes
