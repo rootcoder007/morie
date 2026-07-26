@@ -1,0 +1,146 @@
+{
+  "source": {
+    "book": "Montesinos-Lopez, Montesinos-Lopez & Crossa, Multivariate Statistical Machine Learning Methods for Genomic Prediction",
+    "section": "2.4 Methods to Compute the Genomic Relationship Matrix",
+    "pages": "49-52",
+    "after": "VanRaden, P.M. (2008). Efficient methods to compute genomic predictions. J Dairy Sci 91(11):4414-4423",
+    "note": "All values below are HAND-TRANSCRIBED from the printed pages, never produced by running morie."
+  },
+  "input": {
+    "X_markers_8x7": [
+      [
+        1,
+        0,
+        0,
+        1,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        2,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      [
+        2,
+        0,
+        0,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2
+      ],
+      [
+        2,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ]
+    ],
+    "coding": "0/1/2 = homozygous major / heterozygous / homozygous minor"
+  },
+  "transcription_check": {
+    "printed_phat": [
+      0.5,
+      0.1875,
+      0.4375,
+      0.4375,
+      0.4375,
+      0.375,
+      0.4375
+    ],
+    "note": "colMeans(X)/2 reproduces the book's printed phat exactly; this validates the matrix transcription independently of any G."
+  },
+  "method1": {
+    "printed_formula": "G = (1/p) X X^T,  p = number of markers",
+    "printed_G_row1": [
+      0.875,
+      0.25,
+      0.5,
+      0.875,
+      0.625,
+      0.375,
+      0.375,
+      0.5
+    ],
+    "DISCREPANCY": "XX^T/7 (markers, per the stated formula) does NOT reproduce the printed table; XX^T/8 (lines) does. UNRESOLVED - awaiting maintainer ruling."
+  },
+  "method2": {
+    "printed_formula": "G = (X - mu_E)(X - mu_E)^T / (2 * sum_j p_j(1-p_j))",
+    "printed_G_row1": [
+      0.93,
+      -0.766,
+      -0.227,
+      0.352,
+      -0.265,
+      -0.227,
+      -0.072,
+      0.275
+    ],
+    "status": "formula reproduces the printed table exactly; no discrepancy",
+    "tolerance": 0.0005
+  },
+  "method3": {
+    "printed_formula": "z_ij = (x_ij - 2p_j)/sqrt(2 p_j (1-p_j)); G = ZZ^T/p",
+    "printed_R_code": "X3=scale(X,center=TRUE,scale=TRUE); G_M3=tcrossprod(X3)/ncol(X3)",
+    "printed_G_row1": [
+      0.962,
+      -0.88,
+      -0.093,
+      0.435,
+      -0.221,
+      -0.397,
+      -0.028,
+      0.223
+    ],
+    "DISCREPANCY": "the stated formula does NOT reproduce the printed table; the R code (sample SD, ddof=1) does. VanRaden's original uses the sqrt(2p(1-p)) scaling, so the book's R code is likely the error. UNRESOLVED - awaiting maintainer ruling."
+  },
+  "identity_properties": [
+    "G is symmetric",
+    "G is positive semi-definite (all eigenvalues >= 0 up to numerical tolerance)"
+  ]
+}
