@@ -105,6 +105,21 @@ Quote tier-3 documentation verbatim in the docstring the same way a book is
 quoted, with the URL, so a reviewer can check the claim without guessing
 which version of the docs was read.
 
+**Bank every tier-2/tier-3 source on first use.** A spec fetched from outside
+the library gets written into the library immediately, so no later session
+re-fetches it:
+
+- real PDF -> `data/datasets/userguides/other/pdf/`
+- online docs -> verbatim snapshot in
+  `data/datasets/userguides/other/docs-snapshots/<topic>.md`, with URL and
+  retrieval date (web docs are mutable; the snapshot is what was actually read)
+- paywalled / HTTP 403 -> a row in `docs-snapshots/ACQUISITION.md` with the
+  DOI, the function that needs it, and how the definition was verified meanwhile
+
+Then add the row to `books.csv`. Publishers block scripted download hard --
+PNAS and the American Physiological Society both return 403 with an HTML body
+that lands under a `.pdf` name, so `file` the download before trusting it.
+
 ## The irtgr precedent
 
 The first fix in this series is the worked example of why "the test passes
