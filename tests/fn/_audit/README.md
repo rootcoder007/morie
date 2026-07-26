@@ -118,6 +118,40 @@ python tests/fn/_audit/harvest_trivial.py --check  # exit 1 if the count grew
 The `--check` form runs nightly in `.github/workflows/fn-sampled.yml`, so the
 baseline can fall but cannot silently rise. Lowering it is a normal commit.
 
+## The DL/LLM group is NOT out of scope
+
+`red_functions.csv` marks 59 rows "LLM/DL wrapper - math spec is a learned
+model or remote service". That is wrong, and it was wrong when it was
+written. The modules so labelled are closed-form arithmetic with published
+specifications and no network call anywhere in them:
+
+| module | what it actually is | spec |
+|---|---|---|
+| `attnq` | softmax(QK'/sqrt(d_k))V | Vaswani et al. (2017) eq. (1) |
+| `bnfwd` | (x - mu) / sqrt(var + eps), then scale and shift | Ioffe & Szegedy (2015) |
+| `rmsnr` | x / sqrt(mean(x^2) + eps) | Zhang & Sennrich (2019) |
+| `swigl` | Swish(xW) * (xV) | Shazeer (2020) |
+| `tmpsc` | softmax(z / T) | Hinton et al. (2015) |
+| `topkd` / `toppd` | truncate to the top k, or to cumulative mass p | Fan et al. (2018); Holtzman et al. (2020) |
+| `cslnc` / `lradw` | cosine and linear learning-rate schedules | Loshchilov & Hutter (2017); Vaswani et al. (2017) |
+| `drpfw` | inverted dropout: mask / (1 - p) | Srivastava et al. (2014) |
+| `grdcl` | g * min(1, c / ||g||) | Pascanu et al. (2013) |
+| `pplxm` | exp(mean negative log-likelihood) | Jelinek et al. (1977) |
+| `bpblm` | nll_nats / (ln 2 * n_bytes) | Gao et al. (2020), The Pile |
+| `cslat` | lower-triangular mask | Radford et al. (2019) |
+| `wdemb` | an embedding-table gather | Mikolov et al. (2013) |
+
+Every one of these has an exact expected output for a given input, which is
+precisely what the audit is for. Softmax rows sum to 1; a causal mask is
+lower-triangular; inverted dropout preserves the expectation of its input;
+gradient clipping is idempotent and leaves a short gradient untouched;
+temperature 1 is the identity; top-p with p=1 keeps everything. None of that
+needs a GPU, a checkpoint, or a remote service.
+
+What IS genuinely out of scope is the false-negative quadrant above -- tests
+that pass against a shared stub body. That is a different set, and conflating
+the two is what let 59 testable rows sit unexamined.
+
 ## The source hierarchy
 
 The spec for a function is the first of these that actually covers the method
@@ -225,7 +259,7 @@ Planned additions before batch 1: `language_layer`, `mirrored_in_rmorie`,
 | Rangayyan, *Biomedical Signal Analysis* | 20 (+`wavts` = 21) | 36-38 |
 | Armstrong, *Analyzing Spatial Models of Choice and Judgment* | 13 | 21 |
 | Chakraborti & Gibbons, *Nonparametric Statistical Inference* 5e | 12 | 17 |
-| DL/LLM papers | 28 | 53 (out of scope) |
+| DL/LLM papers | 28 | 53 |
 | Fauzi / Horowitz | 6 | 8 |
 | other / paper-cited | 56 | 113 |
 
