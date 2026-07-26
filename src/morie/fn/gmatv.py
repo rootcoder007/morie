@@ -10,22 +10,50 @@ from ._richresult import RichResult
 __all__ = ["grm_vanraden"]
 
 
-def grm_vanraden(markers, method: int = 1):
+_METHOD_ALIASES = {
+    1: 1, "G_VR2": 1,
+    2: 2, "G_VR3": 2,
+    3: 3, "G_VR1": 3,
+}
+
+
+def grm_vanraden(markers, method=1):
     """Genomic relationship matrix per VanRaden (2008).
 
-    Method 1 (default, "G_VR1"):
-        Centre Z = M - 2P, where P_j = column allele frequency p_j.
-        G = Z Z' / [2 * sum_j p_j (1 - p_j)]
+    Method numbering
+    ----------------
+    morie's integer ``method`` predates this audit and does NOT line up with
+    the source's numbering. Both spellings are first-class; the string
+    aliases follow the agrigenomic convention and are the unambiguous ones:
 
-    Method 2 ("G_VR2"):
-        Z is centred AND each column scaled by sqrt(2 p_j (1-p_j)).
-        G = Z Z' / m, where m is the number of markers.
+    ==============  ====================  ==================================
+    ``method=``     alias                 source's method
+    ==============  ====================  ==================================
+    ``1`` (default) ``"G_VR2"``           Method 2 -- centred, sum-2pq scaled
+    ``2``           ``"G_VR3"``           Method 3 -- per-locus scaled
+    ``3``           ``"G_VR1"``           Method 1 -- uncentred XX'/m
+    ==============  ====================  ==================================
+
+    The integers are deliberately NOT renumbered to match the source: existing
+    callers pass ``method=1`` and ``method=2``, and silently changing what
+    those mean would leave working code returning a different matrix. Prefer
+    the string aliases in new code.
+
+    ``method=3`` / ``"G_VR1"`` is the most-cited GRM in the GBLUP literature
+    and was previously unimplemented.
+
+    Formulae
+    --------
+    ``"G_VR1"``  G = X X' / m
+    ``"G_VR2"``  G = (X - mu_E)(X - mu_E)' / [2 * sum_j p_j (1 - p_j)],
+                 mu_E = 2 p_j (expected genotype under Hardy-Weinberg)
+    ``"G_VR3"``  z_ij = (x_ij - 2 p_j) / sqrt(2 p_j (1 - p_j));  G = Z Z' / m
 
     Parameters
     ----------
     markers : array-like, shape (n, m)
-        Genotype matrix, coded {0,1,2} (number of reference alleles).
-    method : {1, 2}, default 1
+        Genotype matrix, coded {0,1,2} (count of the reference allele).
+    method : {1, 2, 3, "G_VR1", "G_VR2", "G_VR3"}, default 1
 
     Returns
     -------
@@ -39,26 +67,58 @@ def grm_vanraden(markers, method: int = 1):
     References
     ----------
     VanRaden, P. M. (2008). Efficient methods to compute genomic predictions.
-        J Dairy Sci, 91(11), 4414-4423.
-    Montesinos Lopez et al. (2022), Ch. 3.
+        *Journal of Dairy Science*, 91(11), 4414-4423.
+    Montesinos-Lopez et al., *Multivariate Statistical Machine Learning
+        Methods for Genomic Prediction*, Sec. 2.4 "Methods to Compute the
+        Genomic Relationship Matrix", pp. 49-52.
+
+    Worked example: Montesinos-Lopez et al., Sec. 2.4, pp. 50-52 (8 lines x
+    7 SNPs) -- transcribed in ``tests/fn/fixtures/gmatv.json``.
+
+    Note: the secondary source contradicts itself twice, verified against the
+    typeset PDF rather than the text extraction. For Method 1 (``"G_VR1"``)
+    both the printed formula and the printed R code divide by the number of
+    MARKERS (``dim(X)[2]``), but the printed numeric table is reproduced only
+    by dividing by the number of LINES; we follow the formula, which is also
+    VanRaden's canonical definition. For Method 3 (``"G_VR3"``) the printed
+    formula uses the allele-frequency scaling ``sqrt(2p(1-p))`` while the
+    printed R code uses ``scale(X, center=TRUE, scale=TRUE)`` -- the sample
+    standard deviation -- and the printed table matches the R code, to a
+    maximum absolute deviation of 0.162 from the formula. We follow the
+    formula: allele-frequency scaling is the defining feature of VanRaden's
+    Method 3, whereas sample-SD scaling yields standardised genotype scores,
+    a different quantity. Both readings are recorded in the fixture.
     """
     M = np.asarray(markers, dtype=float)
     if M.ndim != 2:
         raise ValueError("`markers` must be a 2D (n × m) array")
+    try:
+        mode = _METHOD_ALIASES[method]
+    except (KeyError, TypeError):
+        raise ValueError(
+            "method must be one of: 1, 2, 3, 'G_VR1', 'G_VR2', 'G_VR3' "
+            f"(got {method!r})"
+        ) from None
     n, m = M.shape
     # Allele frequencies (assume coding 0/1/2)
     p = M.mean(axis=0) / 2.0
-    Z = M - 2.0 * p  # centred
-    if method == 2:
+    if mode == 3:
+        # Method 1 of the source: uncentred, divided by the marker count.
+        Z = M
+        denom = float(m)
+        method_str = "VanRaden G_VR1 (uncentred XX'/m)"
+    elif mode == 2:
+        Z = M - 2.0 * p
         scale = np.sqrt(2.0 * p * (1.0 - p))
         scale = np.where(scale > 0, scale, 1.0)
         Z = Z / scale
         denom = float(m)
-        method_str = "VanRaden method 2 (per-locus scaled)"
+        method_str = "VanRaden G_VR3 (per-locus scaled)"
     else:
+        Z = M - 2.0 * p
         denom = float(2.0 * np.sum(p * (1.0 - p)))
         denom = denom if denom > 0 else 1.0
-        method_str = "VanRaden method 1 (sum-2pq)"
+        method_str = "VanRaden G_VR2 (sum-2pq)"
     G = (Z @ Z.T) / denom
     diag_mean = float(np.mean(np.diag(G)))
     off = G - np.diag(np.diag(G))
@@ -84,10 +144,4 @@ def grm_vanraden(markers, method: int = 1):
 
 
 def cheatsheet():
-    return "gmatv: Genomic relationship matrix (VanRaden methods 1 and 2)"
-
-
-# CANONICAL TEST
-# markers = np.array([[0,1,2,0],[2,1,0,1],[1,2,1,2],[0,0,2,1]])
-# G = grm_vanraden(markers, method=1).estimate
-# expected diag_mean ≈ 1.0 ± slack; G is symmetric, trace(G) ≈ n.
+    return "gmatv: Genomic relationship matrix (VanRaden G_VR1 / G_VR2 / G_VR3)"
