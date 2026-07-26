@@ -87,10 +87,25 @@ def autocorrelation_check(chain, max_lag=None):
             "a sampler failure to report rather than a number to return."
         )
     cap = (n - 1) if max_lag is None else min(int(max_lag), n - 1)
-    rho = np.empty(cap + 1)
+    # Autocovariance for every lag in one FFT, O(n log n), instead of a Python
+    # loop of `cap` dot products which is O(n^2).
+    #
+    # This mattered. Geyer's rule below truncates at lag ~23 on a typical
+    # chain, but the loop computed ALL n-1 lags first: at n = 200,000 that is
+    # 199,999 dot products to consume 23, roughly 8,700x wasted work. It
+    # finished on a quiet box and blew the per-test timeout under six xdist
+    # workers, where pytest-timeout reported the traceback at whatever line
+    # the thread happened to be on -- the assertion -- which read as a wrong
+    # answer rather than a slow one.
+    #
+    # Zero-padding to at least 2n makes the circular correlation equal the
+    # linear one, so this is the same quantity the loop produced, not an
+    # approximation of it.
+    m = 1 << (2 * n - 1).bit_length()
+    f = np.fft.rfft(dev, n=m)
+    acov = np.fft.irfft(f * np.conj(f), n=m)[: cap + 1].real
+    rho = acov / denom
     rho[0] = 1.0
-    for k in range(1, cap + 1):
-        rho[k] = float(dev[: n - k] @ dev[k:]) / denom
 
     # Geyer's initial positive sequence: truncate at the first non-positive
     # Gamma_m = rho_{2m} + rho_{2m+1}.
