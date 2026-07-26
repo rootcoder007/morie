@@ -10,6 +10,8 @@ can be recreated cheaply.
 |---|---|
 | `red_functions.csv` | the worklist — 339 rows, one per failing testcase, parsed from the junit XML |
 | `fn-full-2026-07-26.log.gz` | full pytest log of the complete run |
+| `trivial_tests.csv` | the 3,621 tests whose assertions cannot fail, with each one's target classified stub-vs-real |
+| `harvest_trivial.py` | regenerates that CSV, and `--check` fails if the count grows |
 
 The 11 MB junit XML is too large for the repo and lives at
 `/Volumes/VSR/rootcoderfiles/morie-audit-artifacts/fn-full-2026-07-26.xml`.
@@ -66,6 +68,55 @@ suite and tell a reviewer nothing they can act on.
 Independently, the suite's own `FALSE-POSITIVE RISK` warning (trivially-true
 assertions, zero domain-specific checks) fired on **3,621 distinct tests**
 in the same run. Nothing reads it, because warnings do not fail a build.
+
+## The trivial-assertion harvest
+
+`trivial_tests.csv` is that warning made durable. The detector in
+`tests/conftest.py` is a pure source-inspection fixture — it reads
+`inspect.getsource(request.function)` and looks at the `assert` lines — so it
+can be replayed statically over the whole tree without running pytest.
+`harvest_trivial.py` does exactly that, and lands on **3,621**, the same
+number the 11-minute run reported. That equality is the evidence the replay is
+faithful; `tests/test_audit_trivial_harvest.py` pins the two pattern sets
+together so a later edit to the fixture cannot silently change what the CSV
+counts.
+
+The CSV's value is not the count, which was already known. It is the
+`target_kind` column, which splits the 3,621 into work and non-work by
+skeletonising every function in `morie.fn` (identifiers and literals erased)
+and asking whether the target's body is shared with >= 20 siblings:
+
+| `target_kind` | rows | meaning |
+|---|---|---|
+| `real` | 126 | trivial test of a REAL implementation — **actionable** |
+| `stub` | 3,491 | trivial test of a generated stub body — blocked on the stub |
+| `unknown` | 4 | target not resolvable from the module's imports |
+
+**96% are blocked, not neglected.** Tightening a test against `abblc` — whose
+docstring says "Black carbon spatial" and whose body is `float(np.mean(data))`
+— converts a passing test into a failing one and tells a reviewer nothing the
+skeleton census above does not already say. Those rows stay in the
+false-negative quadrant, out of scope for this series.
+
+The **126 `real` rows are the actionable set**, and they are tractable: 117
+modules, mostly one test each, clustered in `gwr*` (16), plus `igrav*`,
+`gns*`, `dif*` and the IRT/MDS group. These are real implementations whose
+only assertion is `assert r.value is not None` — the function could return the
+wrong number, the wrong units, or a constant, and the test would still pass.
+They grade the same way as a red: find the book, derive the value, pin it.
+
+The four `unknown` rows (`ghsrv`, `sgedg`, `sgint`) do not import their target
+from `morie.fn.*` in the form the resolver expects, and need reading by hand.
+
+Regenerate and gate:
+
+```sh
+python tests/fn/_audit/harvest_trivial.py          # rewrite the CSV
+python tests/fn/_audit/harvest_trivial.py --check  # exit 1 if the count grew
+```
+
+The `--check` form runs nightly in `.github/workflows/fn-sampled.yml`, so the
+baseline can fall but cannot silently rise. Lowering it is a normal commit.
 
 ## The source hierarchy
 

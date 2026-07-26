@@ -28,6 +28,14 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           pip install --prefer-binary --only-binary=numpy,plotly -e ".[test]" pytest-timeout
+      # The suite's own FALSE-POSITIVE RISK warning fires on 3,621 tests whose
+      # assertions cannot fail. Warnings do not fail a build, so nothing read
+      # it. tests/fn/_audit/trivial_tests.csv is the committed register of
+      # those tests; this step fails if the count grows, so new trivial tests
+      # cannot be added silently. Lowering the baseline is a normal commit.
+      - name: Trivial-assertion baseline must not grow
+        run: python tests/fn/_audit/harvest_trivial.py --check
+
       - name: Run date-seeded 500-file sample
         run: |
           SEED=$(date -u +%Y%m%d)
