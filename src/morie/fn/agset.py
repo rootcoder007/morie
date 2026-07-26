@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Agenda-setter model (Romer-Rosenthal; Armstrong Ch 10)."""
+"""Agenda-setter model (Romer & Rosenthal 1978)."""
 
 import numpy as np
 
@@ -14,7 +14,12 @@ def agenda_setter_power(options, setter_ideal, reversion):
     The agenda-setter offers a single take-it-or-leave-it proposal from
     `options`; the legislature accepts iff the proposal is closer (in
     1-D Euclidean distance) to the median voter than the reversion
-    point. For the simple "setter monopoly" case used in Armstrong Ch
+    point. For the simple "setter monopoly" case (Romer, T. & Rosenthal, H. (1978),
+    "Political resource allocation, controlled agendas, and the status quo",
+    *Public Choice* 33(4):27-43). NOT Armstrong: that book has six chapters,
+    contains zero occurrences of "agenda setter", and its single "Romer" hit
+    is "G. Romer", an editor in a bibliography entry for an unrelated
+    volume -- checked in the PDF. In the setter-monopoly case, the se
     10, the setter picks the feasible option closest to their own ideal
     point that the legislature will still accept (assumed median voter
     = midpoint between setter ideal and reversion, default behaviour).
