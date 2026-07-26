@@ -1,0 +1,13 @@
+
+# Preference order for the default model: biggest/most-capable coder first.
+# Cloud passthrough models run off-Pi so they're both large AND fast.
+_DEFAULT_PREF = [
+    # qwen3-coder:480b-cloud was first here until 2026-07-26; it now returns
+    # HTTP 410 Gone from the cloud passthrough, so HELM was defaulting to a
+    # dead model. It stays out of the list entirely rather than lower down:
+    # a retired endpoint is not a fallback.
+    "minimax-m3:cloud", "minimax-m2.5:cloud", "gemma4:31b-cloud",
+    "gpt-oss:120b-cloud", "nemotron-cascade-2:latest",
+    "magistral:24b", "mistral-nemo:latest", "qwen3.5:latest", "qwen3.5:9b",
+]
+
