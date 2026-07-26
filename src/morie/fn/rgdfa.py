@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Detrended fluctuation analysis -- Rangayyan Ch 7."""
+"""Detrended fluctuation analysis (Peng et al. 1994); NOT covered by Rangayyan."""
 
 from __future__ import annotations
 
@@ -33,7 +33,34 @@ def rangayyan_dfa(x, scales=None, order=1):
 
     References
     ----------
-    Peng, C.-K. et al. (1994), Phys Rev E 49:1685. Rangayyan Ch 7.
+    Peng, C.-K., Buldyrev, S. V., Havlin, S., Simons, M., Stanley, H. E., &
+        Goldberger, A. L. (1994). Mosaic organization of DNA nucleotides.
+        *Physical Review E*, 49(2), 1685-1689, method on p.1685.
+        https://doi.org/10.1103/PhysRevE.49.1685  (PRIMARY -- in the library.)
+
+    Note: this method is NOT in Rangayyan, contrary to the previous
+    docstring's "Ch 7". The 2024 edition mentions "detrended fluctuation"
+    four times, every one a citation to someone else's application rather
+    than a treatment of the method.
+
+    Peng's steps, verbatim in substance (p.1685):
+      1. "Divide the entire sequence of length N into N/l nonoverlapping
+         boxes, each containing l nucleotides, and define the 'local trend'
+         in each box to be the ordinate of a linear least-squares fit."
+      2. "Define the 'detrended walk' ... as the difference between the
+         original walk y(n) and the local trend. Calculate the variance
+         about the detrended walk for each box, and calculate the average of
+         these variances over all the boxes of size l, denoted F_d^2(l)."
+
+    So F(l) is the square root of the mean per-box residual variance -- not
+    the mean of the per-box standard deviations, which is a different and
+    smaller quantity. With no long-range correlation F_d(l) ~ l^(1/2), i.e.
+    alpha = 1/2; alpha != 1/2 indicates power-law correlation.
+
+    Peng integrates the raw walk; this implementation subtracts the mean
+    before the cumulative sum. The two differ by a linear ramp, which
+    order >= 1 detrending removes exactly, so alpha is unchanged for the
+    default DFA-1 and above.
     """
     x = np.asarray(x, dtype=float).ravel()
     N = x.size
@@ -44,6 +71,19 @@ def rangayyan_dfa(x, scales=None, order=1):
         scales = np.unique(np.round(np.exp(log_n)).astype(int))
         scales = scales[scales >= 4]
     scales = np.asarray(scales, dtype=int)
+    order = int(order)
+    if order < 0:
+        raise ValueError(f"`order` must be >= 0, got {order}.")
+    # A box of n points cannot support a polynomial of degree `order` unless
+    # n >= order + 2; at n == order + 1 the fit is exact, every residual is
+    # zero, and F(n) collapses to 0 -> log F = -inf, silently poisoning the
+    # slope. numpy would only emit a RankWarning.
+    too_small = scales[scales < order + 2]
+    if too_small.size:
+        raise ValueError(
+            f"box sizes {too_small.tolist()} are too small for order={order}: "
+            f"need at least {order + 2} points per box."
+        )
     y = np.cumsum(x - x.mean())
     F = np.empty(scales.size, dtype=float)
     for j, n in enumerate(scales):
@@ -62,6 +102,15 @@ def rangayyan_dfa(x, scales=None, order=1):
     mask = np.isfinite(F) & (F > 0)
     log_n = np.log(scales[mask])
     log_F = np.log(F[mask])
+    # alpha is the slope of a log-log fit, so it needs at least two usable
+    # scales. With one, polyfit returns an arbitrary line through a single
+    # point and only emits a RankWarning -- a meaningless alpha that looks
+    # like a number.
+    if log_n.size < 2:
+        raise ValueError(
+            f"need at least 2 usable box sizes to fit a slope, got {log_n.size} "
+            f"(from scales={scales.tolist()}); F must be finite and > 0 at each."
+        )
     alpha, intercept = np.polyfit(log_n, log_F, 1)
     res = RichResult(
         title="Detrended Fluctuation Analysis",
@@ -80,4 +129,4 @@ def rangayyan_dfa(x, scales=None, order=1):
 
 
 def cheatsheet():
-    return "rgdfa: detrended fluctuation analysis α -- Rangayyan Ch 7"
+    return "rgdfa: detrended fluctuation analysis α -- Peng et al. (1994)"
