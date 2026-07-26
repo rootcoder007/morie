@@ -76,7 +76,16 @@ def fauzi_cvm_smoothed(x, cdf="norm", args=None, h=None):
         F_ref = dist.cdf(t_grid, *args)
     F_hat = np.array([np.mean(_sps.norm.cdf((g - x) / h)) for g in t_grid])
     w2 = float(n * np.mean((F_hat - F_ref) ** 2))
-    p = _cvm_pvalue(w2 / n)  # CvM table is in the per-obs scale
+    # The critical values in _cvm_pvalue are for the n-SCALED statistic
+    # W^2 = n * integral (F_hat - F)^2 dF, which is exactly what w2 already
+    # is. This used to pass w2 / n "because the CvM table is in the per-obs
+    # scale" -- it is not, and dividing undid the scaling: the argument then
+    # sat below the smallest tabulated value (0.347) for every realistic
+    # input, so _cvm_pvalue took its first branch and returned 0.5 always.
+    # Measured before the fix: uniform(-3,3) against N(0,1) gave W^2 = 6.61
+    # and a 2-sigma shift gave W^2 = 86.29, both reported as p = 0.5. The
+    # test could not reject anything.
+    p = _cvm_pvalue(w2)
 
     return RichResult(
         payload={
