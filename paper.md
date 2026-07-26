@@ -245,9 +245,22 @@ thresholds Donoho and Johnstone [@donoho1994ideal]; the heart-rate
 variability measures follow the Task Force of the European Society
 of Cardiology and the North American Society of Pacing and
 Electrophysiology [@taskforce1996heart]; the polytomous
-item-response model follows Samejima [@samejima1969estimation]; and
-the genomic relationship matrices follow VanRaden
-[@vanraden2008efficient].
+item-response model follows Samejima [@samejima1969estimation]; the
+genomic relationship matrices follow VanRaden
+[@vanraden2008efficient]; the global spatial autocorrelation
+statistic follows Moran [@moran1950notes] in the formulation of
+Schabenberger and Gotway [@schabenberger2005spatial]; the
+correlation variance-stabilising transform follows Fisher
+[@fisher1921probable]; the multivariate information measures follow
+Watanabe [@watanabe1960information] and Han [@han1978nonnegative];
+the classical test-theory item statistics follow Nunnally and
+Bernstein [@nunnally1994psychometric]; the variance inflation for
+dependent effect sizes follows Hedges, Tipton and Johnson
+[@hedges2010robust]; the family-based association test follows
+Spielman, McGinnis and Ewens [@spielman1993transmission]; the Markov
+chain Monte Carlo effective sample size follows Geyer
+[@geyer1992practical]; and the functional data correlation follows
+Ramsay and Silverman [@ramsay2005functional].
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
 reader can check the implementation against the same page the

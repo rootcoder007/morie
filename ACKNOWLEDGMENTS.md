@@ -50,6 +50,15 @@ check the code against the same page the author wrote.
 | Wavelet shrinkage denoising (universal threshold) | David L. Donoho & Iain M. Johnstone, *Biometrika* 81:425–455 (1994) |
 | Discrete wavelet transform for time series | Donald B. Percival & Andrew T. Walden, *Wavelet Methods for Time Series Analysis* (Cambridge University Press, 2000) |
 | Largest Lyapunov exponent | Michael T. Rosenstein, James J. Collins & Carlo J. De Luca, *Physica D* 65:117–134 (1993) |
+| Global spatial autocorrelation (Moran's I) | P. A. P. Moran, *Biometrika* 37:17–23 (1950); Oliver Schabenberger & Carol A. Gotway, *Statistical Methods for Spatial Data Analysis* (Chapman and Hall/CRC, 2005) |
+| Correlation variance-stabilising transform | Ronald A. Fisher, *Metron* 1:3–32 (1921) |
+| Total correlation (multi-information) | Satosi Watanabe, *IBM Journal of Research and Development* 4:66–82 (1960) |
+| Dual total correlation | Te Sun Han, *Information and Control* 36:133–156 (1978) |
+| Corrected item-total correlation | Jum C. Nunnally & Ira H. Bernstein, *Psychometric Theory*, 3rd ed. (McGraw-Hill, 1994) |
+| Variance inflation for dependent effect sizes | Larry V. Hedges, Elizabeth Tipton & Matthew C. Johnson, *Research Synthesis Methods* 1:39–65 (2010) |
+| Transmission disequilibrium test | Richard S. Spielman, Ralph E. McGinnis & Warren J. Ewens, *American Journal of Human Genetics* 52:506–516 (1993) |
+| MCMC effective sample size (initial positive sequence) | Charles J. Geyer, *Statistical Science* 7:473–483 (1992) |
+| Functional data correlation | James O. Ramsay & Bernard W. Silverman, *Functional Data Analysis*, 2nd ed. (Springer, 2005) |
 | Double machine learning | V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, W. Newey & J. Robins, *Econometrics Journal* 21:C1–C68 (2018) |
 
 Where a secondary source and the primary disagree, morie follows the primary
