@@ -10,6 +10,73 @@ from ._richresult import RichResult
 __all__ = ["wavelet_time_series"]
 
 
+# Percival & Walden scaling filters {g_l}, in the book's own orientation.
+#
+# haar is eq (75c) and D(4) is eq (75d), p.75:
+#     g0 = (1+sqrt3)/(4 sqrt2), g1 = (3+sqrt3)/(4 sqrt2),
+#     g2 = (3-sqrt3)/(4 sqrt2), g3 = (1-sqrt3)/(4 sqrt2)
+# LA(8) is P&W's least-asymmetric filter, p.107 ("also called 'symmlets'").
+# P&W print the LA filters only as figures (Figures 108a/108b) -- the numeric
+# coefficients live on the book's web site -- so these were cross-checked
+# against the CRAN `wavelets` package, which implements P&W's conventions:
+# `wt.filter("la8")@g` agrees to 9 decimals, as does its @h with the QMF below.
+#
+# The orientation is NOT recoverable from PyWavelets. pywt stores db2's dec_lo
+# as the reverse of P&W's g, but sym4's dec_lo in the SAME order as P&W's g, so
+# a uniform `dec_lo[::-1]` mapping silently time-reverses LA(8).
+_PW_SCALING = {
+    "haar": (0.7071067811865475, 0.7071067811865475),
+    "d4": (
+        0.4829629131445341,
+        0.8365163037378079,
+        0.2241438680420134,
+        -0.1294095225512604,
+    ),
+    "la8": (
+        -0.07576571478935668,
+        -0.02963552764596039,
+        0.49761866763256290,
+        0.80373875180538600,
+        0.29785779560560505,
+        -0.09921954357695636,
+        -0.01260396726226383,
+        0.03222310060407815,
+    ),
+}
+
+
+def _pw_filters(name):
+    """Scaling and wavelet filters, P&W eq (75b) p.75: h_l = (-1)^l g_{L-1-l}."""
+    g = np.asarray(_PW_SCALING[name], dtype=float)
+    h = g[::-1] * (-1.0) ** np.arange(g.size)
+    return g, h
+
+
+def _pw_dwt(y, name, level):
+    """P&W pyramid algorithm, eq (77b) p.77, periodic ('circular') boundary.
+
+        V_{1,t} = sum_{l=0}^{L-1} g_l X_{2t+1-l mod N},  t = 0, ..., N/2 - 1
+
+    and identically for W with {h_l}. Returns ``(V_J, [W_1, ..., W_J])``.
+    """
+    g, h = _pw_filters(name)
+    v = np.asarray(y, dtype=float)
+    Ws = []
+    for _ in range(level):
+        N = v.size
+        half = N // 2
+        t = np.arange(half)
+        W = np.zeros(half)
+        V = np.zeros(half)
+        for ell in range(g.size):
+            idx = (2 * t + 1 - ell) % N
+            W += h[ell] * v[idx]
+            V += g[ell] * v[idx]
+        Ws.append(W)
+        v = V
+    return v, Ws
+
+
 def wavelet_time_series(x, wavelet="haar", level=None):
     r"""Multiresolution decomposition via the discrete wavelet transform.
 
@@ -75,6 +142,34 @@ def wavelet_time_series(x, wavelet="haar", level=None):
     if level is None:
         level = min(max(max_level, 1), 6)
     level = int(min(level, max_level))
+
+    key = str(wavelet).lower()
+    if key in _PW_SCALING:
+        # Section 4.4's DWT is defined for N = 2^J, so pad to the next power of
+        # two. The padding is zeros, which leaves the energy identity intact.
+        # This mirrors the R implementation exactly.
+        N = 1 << int(np.ceil(np.log2(n)))
+        yp = np.concatenate([y, np.zeros(N - n)]) if N > n else y
+        J = min(level, int(np.floor(np.log2(N))))
+        cA, Ws = _pw_dwt(yp, key, J)
+        # Ws is shallowest-first (W_1 ... W_J); reverse so details run
+        # deepest-first and energies[i + 1] is the energy of details[i].
+        details = Ws[::-1]
+        energies = [float(np.sum(cA**2))] + [float(np.sum(c**2)) for c in details]
+        return RichResult(
+            payload={
+                "approximation": cA,
+                "details": details,
+                "energies": energies,
+                "level": int(J),
+                "n": int(n),
+                "wavelet": key,
+                "method": (
+                    f"DWT (Percival & Walden pyramid, wavelet={key}, level={J}, "
+                    "periodic boundary, odd-index subsampling per eq (77b) p.77)"
+                ),
+            }
+        )
 
     try:
         import pywt
