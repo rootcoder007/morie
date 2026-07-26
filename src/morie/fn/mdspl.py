@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Classical MDS for spatial map of legislators (Armstrong Ch 7)."""
+"""Classical MDS for spatial map of legislators (Armstrong sec. 3.1, p.68)."""
 
 import numpy as np
 
@@ -26,6 +26,15 @@ def mds_spatial_map(x, k: int = 2):
     Returns
     -------
     RichResult with keys: coords, eigenvalues, stress, k, n
+
+    References
+    ----------
+    Armstrong, D. A., et al. *Analyzing Spatial Models of Choice and
+        Judgment*. Section 3.1, "Classical Metric Multidimensional Scaling",
+        printed p.68. Verified against the PDF; the book has six chapters, so
+        the former "Armstrong Ch 7" citation was to a chapter that does not
+        exist. The book itself attributes the method to Torgerson (1952) via
+        the Eckart-Young (1936) theorem.
     """
     x = np.asarray(x, dtype=float)
     if x.ndim == 1:

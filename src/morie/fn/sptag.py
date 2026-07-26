@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Spatial agreement scores between legislators (Armstrong Ch 8)."""
+"""Spatial agreement scores between legislators (Armstrong sec. 3.2.2, p.88)."""
 
 import numpy as np
 
@@ -21,6 +21,14 @@ def spatial_agreement(x):
     Returns
     -------
     RichResult with keys: agreement, mean_agreement, n, m
+
+    References
+    ----------
+    Armstrong, D. A., Bakker, R., Carroll, R., Hare, C., Poole, K. T., &
+        Rosenthal, H. *Analyzing Spatial Models of Choice and Judgment*.
+        Section 3.2.2, "90th US Senate Agreement Scores", printed p.88.
+        Verified against the PDF; the book has six chapters, so the module's
+        former "Armstrong Ch 8" citation was to a chapter that does not exist.
     """
     M = np.asarray(x, dtype=float)
     if M.ndim == 1:
@@ -54,7 +62,7 @@ def spatial_agreement(x):
         else float("nan")
     )
     return RichResult(
-        title="Pairwise vote agreement (Armstrong Ch 8)",
+        title="Pairwise vote agreement (Armstrong sec. 3.2.2, p.88)",
         summary_lines=[("Mean off-diagonal agreement", mean_a), ("n legislators", n), ("m votes", m)],
         payload={"agreement": A, "mean_agreement": mean_a, "n": int(n), "m": int(m), "method": "spatial_agreement"},
     )

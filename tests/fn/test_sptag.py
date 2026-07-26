@@ -1,4 +1,9 @@
-"""sptag: pairwise agreement matrix (Armstrong)."""
+"""sptag: pairwise agreement matrix.
+
+Armstrong et al., section 3.2.2, "90th US Senate Agreement Scores", printed
+p.88 -- verified against the PDF. The module previously cited "Armstrong
+Ch 8"; that book has six chapters.
+"""
 
 import numpy as np
 import pytest

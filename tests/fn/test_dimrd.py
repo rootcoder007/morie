@@ -1,4 +1,10 @@
-"""dimrd: Cattell scree / Kaiser dimensionality test (Kaiser 1960; Armstrong)."""
+"""dimrd: Kaiser / Cattell dimensionality test.
+
+Kaiser (1960) for the lambda>1 rule, Cattell (1966) for the scree gap.
+Neither paper is in the library yet (ACQUISITION.md 1d-iv), so the tests
+below pin only properties that follow from the eigen-decomposition itself.
+The module previously cited "Armstrong Ch 7"; that book has six chapters.
+"""
 
 import numpy as np
 import pytest

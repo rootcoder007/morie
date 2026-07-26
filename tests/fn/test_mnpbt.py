@@ -1,4 +1,10 @@
-"""mnpbt: multinomial probit choice probabilities (Armstrong Ch 9)."""
+"""mnpbt: multinomial probit choice probabilities.
+
+Train (2009), Discrete Choice Methods with Simulation, for the GHK
+simulator -- not in the library yet (ACQUISITION.md 1d-iii), so the tests
+below pin only what follows from the choice model itself. The module
+previously cited "Armstrong Ch 9"; that book has six chapters.
+"""
 
 import numpy as np
 import pytest

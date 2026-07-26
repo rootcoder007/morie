@@ -1,4 +1,10 @@
-"""mdspl: classical (Torgerson) MDS (Armstrong)."""
+"""mdspl: classical (Torgerson) MDS.
+
+Armstrong et al., *Analyzing Spatial Models of Choice and Judgment*,
+section 3.1, printed p.68 -- verified against the PDF table of contents and
+body text. The module previously cited "Armstrong Ch 7"; that book has six
+chapters.
+"""
 
 import numpy as np
 import pytest
