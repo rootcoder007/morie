@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Approximate entropy -- Rangayyan Ch 7."""
+"""Approximate entropy -- Pincus (1991); NOT covered by Rangayyan."""
 
 from __future__ import annotations
 
@@ -29,7 +29,18 @@ def rangayyan_approximate_entropy(x, m=2, r=None):
 
     References
     ----------
-    Pincus (1991), PNAS 88:2297. Rangayyan Ch 7.
+    Pincus, S. M. (1991). Approximate entropy as a measure of system
+        complexity. *Proceedings of the National Academy of Sciences*,
+        88(6), 2297-2301. https://doi.org/10.1073/pnas.88.6.2297
+
+    Note: this method is NOT in Rangayyan, contrary to the previous
+    docstring's "Ch 7" -- the 2024 edition contains no occurrence of
+    "approximate entropy" or "Pincus". The primary paper is the
+    specification.
+
+    Unlike sample entropy, ApEn INCLUDES self-matches and evaluates phi^m
+    over N-m+1 template vectors and phi^(m+1) over N-m, per Pincus. That
+    asymmetry is deliberate here, not the bug that was fixed in rgsam.
     """
     x = np.asarray(x, dtype=float).ravel()
     N = x.size
@@ -75,4 +86,4 @@ def rangayyan_approximate_entropy(x, m=2, r=None):
 
 
 def cheatsheet():
-    return "rgapn: approximate entropy -- Rangayyan Ch 7"
+    return "rgapn: approximate entropy -- Pincus 1991 / Richman & Moorman 2000"
