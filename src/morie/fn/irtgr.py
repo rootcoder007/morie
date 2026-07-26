@@ -26,13 +26,10 @@ def _grm_category_probs(theta: np.ndarray, a: float, thresholds: list[float]) ->
         logit = np.clip(a * (theta - thresholds[kk]), -700, 700)
         cum[:, kk + 1] = 1.0 / (1.0 + np.exp(-logit))
 
-    # Category probabilities: P(k) = P*(k) - P*(k+1)
-    probs = np.diff(-cum, axis=1)  # cum[:, :-1] - cum[:, 1:]
-    # Actually: probs[:, k] = cum[:, k] - cum[:, k+1]
-    probs2 = np.zeros((n_t, m + 1))
-    for kk in range(m + 1):
-        probs2[:, kk] = cum[:, kk] - cum[:, kk + 1]
-    return np.clip(probs2, 1e-10, 1.0)
+    # Category probabilities: P(k) = P*(k) - P*(k+1), as a single strided
+    # subtraction rather than a per-category Python loop. Elementwise and in
+    # the same order, so the result is bit-identical to the loop it replaces.
+    return np.clip(cum[:, :-1] - cum[:, 1:], 1e-10, 1.0)
 
 
 def irtgr(
@@ -113,15 +110,16 @@ def irtgr(
     loglik_prev = -np.inf
 
     for iteration in range(max_iter):
-        # E-step
+        # E-step. _grm_category_probs is already vectorised over theta, so the
+        # whole quadrature grid goes through in one call instead of n_quad
+        # single-point calls. For a fixed (respondent, quad point) the item
+        # contributions are still accumulated in j order, so this is
+        # bit-identical to the nested loop it replaces.
         log_like_quad = np.zeros((n, n_quad))
-        for q in range(n_quad):
-            th_q = np.array([quad_pts[q]])
-            for j in range(k):
-                probs = _grm_category_probs(th_q, a[j], thresholds[j])  # (1, n_cats)
-                resp = X_int[:, j]
-                resp_clipped = np.clip(resp, 0, probs.shape[1] - 1)
-                log_like_quad[:, q] += np.log(probs[0, resp_clipped])
+        for j in range(k):
+            probs = _grm_category_probs(quad_pts, a[j], thresholds[j])  # (n_quad, n_cats)
+            resp_clipped = np.clip(X_int[:, j], 0, probs.shape[1] - 1)
+            log_like_quad += np.log(probs[:, resp_clipped]).T  # (n, n_quad)
 
         log_joint = log_like_quad + np.log(quad_wts)[None, :]
         log_marginal = np.logaddexp.reduce(log_joint, axis=1)
@@ -139,7 +137,13 @@ def irtgr(
             if m < 1:
                 continue
 
-            def _neg_ll_item(params, _j=j, _m=m):
+            # Hoisted out of the objective: neither the responses nor the
+            # posterior change while L-BFGS-B searches this item's parameters,
+            # so re-deriving them on every function evaluation was pure waste.
+            resp_j = X_int[:, j]
+            post_T = posterior.T  # (n_quad, n)
+
+            def _neg_ll_item(params, _resp=resp_j, _post_T=post_T):
                 aj = params[0]
                 bj = list(params[1:])
                 if aj < 0.01:
@@ -149,13 +153,24 @@ def irtgr(
                     if bj[kk] >= bj[kk + 1]:
                         return 1e12
 
+                # One vectorised evaluation over the whole quadrature grid,
+                # replacing n_quad single-point calls. This is the hot path:
+                # L-BFGS-B evaluates it once per objective *and* once per
+                # parameter per finite-difference gradient.
+                probs = _grm_category_probs(quad_pts, aj, bj)  # (n_quad, n_cats)
+                resp_clipped = np.clip(_resp, 0, probs.shape[1] - 1)
+                logp = np.log(probs[:, resp_clipped])  # (n_quad, n)
+
+                # Accumulate over quadrature points in the original order.
+                # Reducing the whole 2-D array in one np.sum would use pairwise
+                # summation and perturb the last bits, which moves L-BFGS-B's
+                # finite-difference gradients and shifts EM convergence
+                # (measured: n_iter 59 -> 58, thresholds off by 2.4e-3).
+                # Speed comes from the single probs call, not from the
+                # reduction, so keep the reduction bit-identical.
                 ll = 0.0
                 for q in range(n_quad):
-                    th_q = np.array([quad_pts[q]])
-                    probs = _grm_category_probs(th_q, aj, bj)
-                    resp = X_int[:, _j]
-                    resp_clipped = np.clip(resp, 0, probs.shape[1] - 1)
-                    ll += np.sum(posterior[:, q] * np.log(probs[0, resp_clipped]))
+                    ll += np.sum(_post_T[q] * logp[q])
                 return -ll
 
             x0 = [a[j]] + thresholds[j]
@@ -166,14 +181,12 @@ def irtgr(
                 a[j] = res.x[0]
                 thresholds[j] = sorted(res.x[1:].tolist())
 
-    # EAP
+    # EAP -- same vectorisation as the E-step above.
     log_like_quad = np.zeros((n, n_quad))
-    for q in range(n_quad):
-        th_q = np.array([quad_pts[q]])
-        for j in range(k):
-            probs = _grm_category_probs(th_q, a[j], thresholds[j])
-            resp_clipped = np.clip(X_int[:, j], 0, probs.shape[1] - 1)
-            log_like_quad[:, q] += np.log(probs[0, resp_clipped])
+    for j in range(k):
+        probs = _grm_category_probs(quad_pts, a[j], thresholds[j])
+        resp_clipped = np.clip(X_int[:, j], 0, probs.shape[1] - 1)
+        log_like_quad += np.log(probs[:, resp_clipped]).T
 
     log_joint = log_like_quad + np.log(quad_wts)[None, :]
     log_marginal = np.logaddexp.reduce(log_joint, axis=1)
@@ -200,12 +213,14 @@ def irtgr(
         th_arr = theta_grid
         probs = _grm_category_probs(th_arr, a[j], thresholds[j])
         # GRM information: sum over categories of (P'_k)^2 / P_k
-        # P'_k for GRM involves cumulative prob derivatives
+        # P'_k for GRM involves cumulative prob derivatives.
+        # The two finite-difference evaluations do not depend on the category
+        # index, so they are computed once per item rather than once per
+        # category -- same values, n_cats-fold fewer calls.
+        eps = 1e-5
+        probs_plus = _grm_category_probs(th_arr + eps, a[j], thresholds[j])
+        probs_minus = _grm_category_probs(th_arr - eps, a[j], thresholds[j])
         for kk in range(probs.shape[1]):
-            # Numerical derivative of P_k w.r.t. theta
-            eps = 1e-5
-            probs_plus = _grm_category_probs(th_arr + eps, a[j], thresholds[j])
-            probs_minus = _grm_category_probs(th_arr - eps, a[j], thresholds[j])
             dP = (probs_plus[:, kk] - probs_minus[:, kk]) / (2 * eps)
             info_grid += dP**2 / np.clip(probs[:, kk], 1e-10, None)
 
