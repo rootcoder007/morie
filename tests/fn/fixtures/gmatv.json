@@ -4,7 +4,8 @@
     "section": "2.4 Methods to Compute the Genomic Relationship Matrix",
     "pages": "49-52",
     "after": "VanRaden, P.M. (2008). Efficient methods to compute genomic predictions. J Dairy Sci 91(11):4414-4423",
-    "note": "All values below are HAND-TRANSCRIBED from the printed pages, never produced by running morie."
+    "note": "All values below are HAND-TRANSCRIBED from the printed pages, never produced by running morie.",
+    "verified_against": "TYPESET PDF pp.48-52 of 'Multivariate Statistical Machine Learnin [Pages 35-70] [2026-04-16].pdf'. The txt extraction of this section is UNUSABLE for the formulae -- it renders them as 'G \u00bc 1 p XX T' and 'zij \u00bc xij  2p j = 2p j 1  p j', losing fractions, signs and radicals. PDF is truth; txt is a search index only."
   },
   "input": {
     "X_markers_8x7": [
@@ -107,7 +108,91 @@
       0.375,
       0.5
     ],
-    "DISCREPANCY": "XX^T/7 (markers, per the stated formula) does NOT reproduce the printed table; XX^T/8 (lines) does. UNRESOLVED - awaiting maintainer ruling."
+    "DISCREPANCY": "Formula AND printed R code both divide by MARKERS (m=7); the printed table is reproduced only by dividing by LINES (J=8). Two of three internal sources agree with the formula, so the table is the outlier. RULING 2026-07-26: follow the formula (markers).",
+    "printed_R_code": "G_M1=tcrossprod(X)/dim(X)[2]   # dim(X)[2] = ncol = 7 markers",
+    "printed_G": [
+      [
+        0.875,
+        0.25,
+        0.5,
+        0.875,
+        0.625,
+        0.375,
+        0.375,
+        0.5
+      ],
+      [
+        0.25,
+        1.0,
+        0.625,
+        0.625,
+        0.75,
+        0.75,
+        0.5,
+        0.375
+      ],
+      [
+        0.5,
+        0.625,
+        1.0,
+        0.75,
+        1.125,
+        0.25,
+        0.5,
+        0.375
+      ],
+      [
+        0.875,
+        0.625,
+        0.75,
+        1.375,
+        0.875,
+        0.75,
+        0.5,
+        0.5
+      ],
+      [
+        0.625,
+        0.75,
+        1.125,
+        0.875,
+        1.5,
+        0.375,
+        0.5,
+        0.5
+      ],
+      [
+        0.375,
+        0.75,
+        0.25,
+        0.75,
+        0.375,
+        0.875,
+        0.375,
+        0.375
+      ],
+      [
+        0.375,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.375,
+        0.5,
+        0.375
+      ],
+      [
+        0.5,
+        0.375,
+        0.375,
+        0.5,
+        0.5,
+        0.375,
+        0.375,
+        0.5
+      ]
+    ],
+    "ruling": "markers divisor; printed table recorded as the alternative reading"
   },
   "method2": {
     "printed_formula": "G = (X - mu_E)(X - mu_E)^T / (2 * sum_j p_j(1-p_j))",
@@ -122,7 +207,89 @@
       0.275
     ],
     "status": "formula reproduces the printed table exactly; no discrepancy",
-    "tolerance": 0.0005
+    "tolerance": 0.0005,
+    "printed_G": [
+      [
+        0.93,
+        -0.766,
+        -0.227,
+        0.352,
+        -0.265,
+        -0.227,
+        -0.072,
+        0.275
+      ],
+      [
+        -0.766,
+        0.93,
+        -0.072,
+        -0.419,
+        -0.111,
+        0.545,
+        0.082,
+        -0.188
+      ],
+      [
+        -0.227,
+        -0.072,
+        0.776,
+        -0.188,
+        0.737,
+        -0.766,
+        0.005,
+        -0.265
+      ],
+      [
+        0.352,
+        -0.419,
+        -0.188,
+        1.007,
+        -0.227,
+        0.12,
+        -0.342,
+        -0.304
+      ],
+      [
+        -0.265,
+        -0.111,
+        0.737,
+        -0.227,
+        1.316,
+        -0.805,
+        -0.342,
+        -0.304
+      ],
+      [
+        -0.227,
+        0.545,
+        -0.766,
+        0.12,
+        -0.805,
+        1.084,
+        0.005,
+        0.043
+      ],
+      [
+        -0.072,
+        0.082,
+        0.005,
+        -0.342,
+        -0.342,
+        0.005,
+        0.467,
+        0.198
+      ],
+      [
+        0.275,
+        -0.188,
+        -0.265,
+        -0.304,
+        -0.304,
+        0.043,
+        0.198,
+        0.545
+      ]
+    ]
   },
   "method3": {
     "printed_formula": "z_ij = (x_ij - 2p_j)/sqrt(2 p_j (1-p_j)); G = ZZ^T/p",
@@ -137,10 +304,99 @@
       -0.028,
       0.223
     ],
-    "DISCREPANCY": "the stated formula does NOT reproduce the printed table; the R code (sample SD, ddof=1) does. VanRaden's original uses the sqrt(2p(1-p)) scaling, so the book's R code is likely the error. UNRESOLVED - awaiting maintainer ruling."
+    "DISCREPANCY": "Printed formula uses sqrt(2p(1-p)); printed R code uses scale(X,center=TRUE,scale=TRUE) (sample SD, ddof=1). All 64 entries of the printed table match the R CODE exactly (max|delta| 0.0000) and differ from the FORMULA by up to 0.162. RULING 2026-07-26: follow the formula -- allele-frequency scaling is the defining feature of VanRaden Method 3; sample-SD scaling is a different quantity (standardised genotype scores).",
+    "printed_G_sampleSD_reading": [
+      [
+        0.962,
+        -0.88,
+        -0.093,
+        0.435,
+        -0.221,
+        -0.397,
+        -0.028,
+        0.223
+      ],
+      [
+        -0.88,
+        1.084,
+        -0.133,
+        -0.507,
+        -0.014,
+        0.667,
+        0.012,
+        -0.228
+      ],
+      [
+        -0.093,
+        -0.133,
+        0.619,
+        -0.112,
+        0.49,
+        -0.658,
+        0.023,
+        -0.136
+      ],
+      [
+        0.435,
+        -0.507,
+        -0.112,
+        1.058,
+        -0.241,
+        0.022,
+        -0.35,
+        -0.305
+      ],
+      [
+        -0.221,
+        -0.014,
+        0.49,
+        -0.241,
+        1.181,
+        -0.539,
+        -0.391,
+        -0.265
+      ],
+      [
+        -0.397,
+        0.667,
+        -0.658,
+        0.022,
+        -0.539,
+        1.053,
+        -0.057,
+        -0.092
+      ],
+      [
+        -0.028,
+        0.012,
+        0.023,
+        -0.35,
+        -0.391,
+        -0.057,
+        0.516,
+        0.276
+      ],
+      [
+        0.223,
+        -0.228,
+        -0.136,
+        -0.305,
+        -0.265,
+        -0.092,
+        0.276,
+        0.527
+      ]
+    ],
+    "ruling": "sqrt(2p(1-p)) scaling; sample-SD table recorded as the alternative reading"
   },
   "identity_properties": [
     "G is symmetric",
     "G is positive semi-definite (all eigenvalues >= 0 up to numerical tolerance)"
-  ]
+  ],
+  "morie_method_mapping": {
+    "1": "G_VR2 (source Method 2)",
+    "2": "G_VR3 (source Method 3)",
+    "3": "G_VR1 (source Method 1) - added 2026-07-26",
+    "note": "integers deliberately NOT renumbered; existing callers would silently change meaning"
+  }
 }
