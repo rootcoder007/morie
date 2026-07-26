@@ -1069,42 +1069,163 @@ def ks_test_two_sample(
     )
 
 
+# ---------------------------------------------------------------------
+# Native EDF goodness-of-fit tables (no statsmodels / scipy.stats.anderson)
+#
+# Transcribed from Gibbons, J.D. & Chakraborti, S. (2010), Nonparametric
+# Statistical Inference, 5th edn, CRC Press:
+#   Table O (p. 589)     Lilliefors's test, normal distribution
+#   Table T (p. 598)     Lilliefors's test, exponential distribution
+#   Table 4.7.1 (p. 139) Anderson-Darling modifications + upper tail points
+# Tables O and T are adapted there from Edgeman & Scott (1987); Table 4.7.1
+# from Stephens (1986) in D'Agostino & Stephens, Goodness-of-Fit Techniques.
+# Entries are verbatim, including the one non-monotonicity in Table T
+# (N = 18 and N = 20 at alpha = 0.001 are .328 and .329).
+# ---------------------------------------------------------------------
+
+_GOF_LILLIE_N = (4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20,
+                 25, 30, 40, 50, 60, 75, 100)
+_GOF_LILLIE_ALPHA = (0.100, 0.050, 0.010, 0.001)
+
+_GOF_LILLIE_NORM = (
+    (.344, .375, .414, .432), (.320, .344, .398, .427),
+    (.298, .323, .369, .421), (.281, .305, .351, .399),
+    (.266, .289, .334, .383), (.252, .273, .316, .366),
+    (.240, .261, .305, .350), (.231, .251, .291, .331),
+    (.223, .242, .281, .327), (.208, .226, .262, .302),
+    (.195, .213, .249, .291), (.185, .201, .234, .272),
+    (.176, .192, .223, .266), (.159, .173, .202, .236),
+    (.146, .159, .186, .219), (.127, .139, .161, .190),
+    (.114, .125, .145, .173), (.105, .114, .133, .159),
+    (.094, .102, .119, .138), (.082, .089, .104, .121),
+)
+_GOF_LILLIE_EXP = (
+    (.444, .483, .556, .626), (.405, .443, .514, .585),
+    (.374, .410, .477, .551), (.347, .381, .444, .509),
+    (.327, .359, .421, .502), (.310, .339, .399, .460),
+    (.296, .325, .379, .444), (.284, .312, .366, .433),
+    (.271, .299, .350, .412), (.252, .277, .325, .388),
+    (.237, .261, .311, .366), (.224, .247, .293, .328),
+    (.213, .234, .279, .329), (.192, .211, .251, .296),
+    (.176, .193, .229, .270), (.153, .168, .201, .241),
+    (.137, .150, .179, .214), (.125, .138, .164, .193),
+    (.113, .124, .146, .173), (.098, .108, .127, .150),
+)
+_GOF_LILLIE_ASYMP = {
+    "norm": (.816, .888, 1.038, 1.212),
+    "expon": (.980, 1.077, 1.274, 1.501),
+}
+
+_GOF_AD_ALPHA = (0.01, 0.025, 0.05, 0.10, 0.15)
+_GOF_AD_CRIT = {
+    "norm": (1.035, 0.873, 0.752, 0.631, 0.561),
+    "expon": (1.959, 1.591, 1.321, 1.062, 0.916),
+}
+
+
+def _gof_lillie_crit(n: int, dist: str) -> np.ndarray:
+    """Lilliefors critical values at sample size ``n``."""
+    if n > 100:
+        return np.asarray(_GOF_LILLIE_ASYMP[dist]) / np.sqrt(n)
+    tab = np.asarray(_GOF_LILLIE_NORM if dist == "norm" else _GOF_LILLIE_EXP)
+    if n <= _GOF_LILLIE_N[0]:
+        return tab[0]
+    # Interpolate each tabulated significance level linearly in N.
+    return np.array([np.interp(n, _GOF_LILLIE_N, tab[:, j])
+                     for j in range(tab.shape[1])])
+
+
+def _gof_p_from_crit(stat, crit, alpha):
+    """p-value by log-linear interpolation between bracketing critical values.
+
+    Outside the tabulated range the nearest bound is returned and the second
+    element says which side was clamped, so callers can distinguish an exact
+    0.001 from "at most 0.001".
+    """
+    crit = np.asarray(crit, dtype=float)
+    alpha = np.asarray(alpha, dtype=float)
+    order = np.argsort(crit)
+    crit, alpha = crit[order], alpha[order]
+    if stat <= crit[0]:
+        return float(alpha.max()), "upper"
+    if stat >= crit[-1]:
+        return float(alpha.min()), "lower"
+    return float(np.exp(np.interp(stat, crit, np.log(alpha)))), None
+
+
 def anderson_darling(
     x: Union[np.ndarray, pd.Series, list],
     dist: str = "norm",
 ) -> TestResult:
-    """Anderson--Darling test for a specified distribution family.
+    """Anderson--Darling goodness-of-fit test.
+
+    Native implementation for the two composite null hypotheses with
+    published percentage points: the normal distribution with unknown mean
+    and variance, and the exponential distribution with unknown mean.
+
+    .. math::
+        A^2 = -n - n^{-1} \\sum (2i-1)[\\ln F(z_i) + \\ln(1 - F(z_{n+1-i}))]
+
+    Because the parameters are estimated from the same sample, :math:`A^2`
+    is not referred to its own null distribution: the modified statistic is
+    :math:`A^* = A^2(1 + 0.75/n + 2.25/n^2)` in the normal case and
+    :math:`A^* = A^2(1 + 0.3/n)` in the exponential case.
 
     Parameters
     ----------
     x : array-like
         Sample data.
     dist : str, default "norm"
-        Distribution name (``"norm"``, ``"expon"``, ``"logistic"``, ``"gumbel"``).
+        Either ``"norm"`` or ``"expon"``.
 
     Returns
     -------
     TestResult
-        The ``extra`` dict contains critical values and significance levels.
+        ``test_statistic`` is the modified :math:`A^*`. ``extra`` carries the
+        unmodified ``a_squared`` and ``p_bounded`` (``"upper"``/``"lower"``)
+        when the statistic falls outside the tabulated range, in which case
+        the p-value is the nearest bound rather than an exact value.
+
+    References
+    ----------
+    Gibbons, J. D. & Chakraborti, S. (2010). *Nonparametric Statistical
+    Inference*, 5th edn. CRC Press. Section 4.7 and Table 4.7.1.
+
+    Stephens, M. A. (1986). Tests based on EDF statistics. In R. B.
+    D'Agostino & M. A. Stephens (eds), *Goodness-of-Fit Techniques*.
+    Marcel Dekker.
     """
     x = _validate_array(x, "x")
-    result = stats.anderson(x, dist=dist)
-    # Determine approximate p-value from critical values
-    sig_levels = result.significance_level
-    crit_vals = result.critical_values
-    p_approx = 1.0
-    for sl, cv in zip(sig_levels, crit_vals):
-        if result.statistic > cv:
-            p_approx = sl / 100.0
+    if dist not in ("norm", "expon"):
+        raise ValueError(f"anderson_darling: dist must be 'norm' or 'expon', got {dist!r}")
+    n = len(x)
+    xs = np.sort(x)
+    if dist == "norm":
+        s = float(xs.std(ddof=1))
+        if not np.isfinite(s) or s <= 0:
+            raise ValueError("anderson_darling: 'x' has zero variance; the normal fit is degenerate.")
+        z = (xs - xs.mean()) / s
+        lf = stats.norm.logcdf(z)
+        lsf = stats.norm.logsf(z[::-1])
+        mult = 1 + 0.75 / n + 2.25 / n**2
+    else:
+        mu = float(xs.mean())
+        if not np.isfinite(mu) or mu <= 0 or xs[0] < 0:
+            raise ValueError("anderson_darling: dist='expon' needs non-negative 'x' with a positive mean.")
+        z = xs / mu
+        lf = stats.expon.logcdf(z)
+        lsf = stats.expon.logsf(z[::-1])
+        mult = 1 + 0.3 / n
+    i = np.arange(1, n + 1)
+    a2 = -n - np.mean((2 * i - 1) * (lf + lsf))
+    astar = a2 * mult
+    p, bounded = _gof_p_from_crit(astar, _GOF_AD_CRIT[dist], _GOF_AD_ALPHA)
     return TestResult(
         method=f"Anderson-Darling test ({dist})",
-        test_statistic=float(result.statistic),
-        p_value=float(p_approx),
-        n=len(x),
-        extra={
-            "critical_values": crit_vals.tolist(),
-            "significance_levels": sig_levels.tolist(),
-        },
+        test_statistic=float(astar),
+        p_value=p,
+        n=n,
+        extra={"a_squared": float(a2), "p_bounded": bounded},
     )
 
 
@@ -1287,37 +1408,70 @@ def jarque_bera(
 
 def lilliefors_test(
     x: Union[np.ndarray, pd.Series, list],
+    dist: str = "norm",
 ) -> TestResult:
-    """Lilliefors test for normality (KS test with estimated mean and SD).
+    """Lilliefors goodness-of-fit test.
 
-    Uses the Kolmogorov--Smirnov statistic with parameters estimated from the
-    data.  Critical values and *p*-value are approximated via the D'Agostino--
-    Stephens table or, when :mod:`statsmodels` is available, via its
-    ``lilliefors`` implementation.
+    The Kolmogorov--Smirnov statistic referred to Lilliefors's null
+    distribution rather than Kolmogorov's. When the parameters are estimated
+    from the same sample the ordinary K--S critical values are badly
+    conservative -- the point Lilliefors (1967) established -- so the correct
+    points come from separate simulations, tabulated for the normal case and
+    for the exponential case.
 
     Parameters
     ----------
     x : array-like
         Sample data.
+    dist : str, default "norm"
+        ``"norm"`` (mean and variance unknown) or ``"expon"`` (mean unknown).
 
     Returns
     -------
     TestResult
+        ``extra["p_bounded"]`` is ``"upper"``/``"lower"`` when D falls outside
+        the tabulated range; the p-value is then the nearest bound (0.10 or
+        0.001) rather than an exact value.
+
+    References
+    ----------
+    Lilliefors, H. W. (1967). On the Kolmogorov-Smirnov test for normality
+    with mean and variance unknown. *Journal of the American Statistical
+    Association*, 62(318), 399--402.
+
+    Lilliefors, H. W. (1969). On the Kolmogorov-Smirnov test for the
+    exponential distribution with mean unknown. *Journal of the American
+    Statistical Association*, 64(325), 387--389.
+
+    Gibbons, J. D. & Chakraborti, S. (2010). *Nonparametric Statistical
+    Inference*, 5th edn. CRC Press. Sections 4.5--4.6, Tables O and T.
     """
     x = _validate_array(x, "x")
-    try:
-        from statsmodels.stats.diagnostic import lilliefors as _lilliefors
-
-        stat, p = _lilliefors(x, dist="norm")
-    except ImportError:
-        # Fall back to KS with estimated params
-        stat, p = stats.kstest(x, "norm", args=(x.mean(), x.std(ddof=1)))
-        logger.warning("statsmodels not available; Lilliefors p-value is approximate (plain KS).")
+    if dist not in ("norm", "expon"):
+        raise ValueError(f"lilliefors_test: dist must be 'norm' or 'expon', got {dist!r}")
+    n = len(x)
+    xs = np.sort(x)
+    if dist == "norm":
+        s = float(xs.std(ddof=1))
+        if not np.isfinite(s) or s <= 0:
+            raise ValueError("lilliefors_test: 'x' has zero variance; the normal fit is degenerate.")
+        f = stats.norm.cdf((xs - xs.mean()) / s)
+    else:
+        mu = float(xs.mean())
+        if not np.isfinite(mu) or mu <= 0 or xs[0] < 0:
+            raise ValueError("lilliefors_test: dist='expon' needs non-negative 'x' with a positive mean.")
+        f = stats.expon.cdf(xs / mu)
+    i = np.arange(1, n + 1)
+    # Both one-sided gaps: the EDF jumps at each order statistic, so the
+    # supremum is attained just before or just at an observation.
+    d = float(np.maximum(i / n - f, f - (i - 1) / n).max())
+    p, bounded = _gof_p_from_crit(d, _gof_lillie_crit(n, dist), _GOF_LILLIE_ALPHA)
     return TestResult(
-        method="Lilliefors test",
-        test_statistic=float(stat),
-        p_value=float(p),
-        n=len(x),
+        method=f"Lilliefors test ({dist})",
+        test_statistic=d,
+        p_value=p,
+        n=n,
+        extra={"p_bounded": bounded},
     )
 
 

@@ -101,7 +101,6 @@ Suggests:
   mlr3,
   mlr3learners,
   MSwM,
-  nortest,
   openssl,
   patchwork,
   pdftools,
