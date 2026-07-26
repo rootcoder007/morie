@@ -75,7 +75,24 @@ def fuzzy_inference(
     def _mf_array(x_arr, mf_type, params):
         return np.array([_eval_mf(xi, mf_type, params) for xi in x_arr])
 
-    for rule in rules:
+    for i, rule in enumerate(rules):
+        # A rule is a dict, not a tuple. Without this check the first tuple
+        # rule dies on `'tuple' object has no attribute 'get'` several frames
+        # deep inside the inference loop, which names neither the argument nor
+        # the shape it wanted.
+        if not isinstance(rule, dict):
+            raise TypeError(
+                f"rules[{i}] must be a dict with keys 'antecedent' and "
+                f"'consequent' (and optionally 'weight'); got {type(rule).__name__}. "
+                "Example: {'antecedent': [(0, 'triangular', (0, 0.5, 1))], "
+                "'consequent': ('triangular', (0, 0.5, 1))}"
+            )
+        missing = {"antecedent", "consequent"} - set(rule)
+        if missing:
+            raise ValueError(
+                f"rules[{i}] is missing required key(s) {sorted(missing)}; "
+                f"got keys {sorted(rule)}"
+            )
         weight = rule.get("weight", 1.0)
         firing = 1.0
         for inp_idx, mf_type, params in rule["antecedent"]:
