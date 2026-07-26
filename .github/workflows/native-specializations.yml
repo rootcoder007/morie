@@ -40,7 +40,13 @@ jobs:
             runiverse = "https://rootcoder007.r-universe.dev",
             P3M = "https://packagemanager.posit.co/cran/__linux__/bookworm/latest",
             CRAN = "https://cloud.r-project.org")
-          pkgs <- c("here", "Rcpp", "RcppArmadillo", "rmoriebricklayer",
+          # rmoriedata is in DESCRIPTION Imports (a HARD dependency), so
+          # pkgload::load_all() cannot build the package without it. It was
+          # missing from this list, and the job failed with
+          #   ERROR: dependency 'rmoriedata' is not available for package 'morie'
+          # It is published on the r-universe repo already listed above.
+          pkgs <- c("here", "Rcpp", "RcppArmadillo",
+                    "rmoriedata", "rmoriebricklayer",
                     "testthat", "pkgload", "rcmdcheck")
           install.packages(pkgs, repos = repos, Ncpus = 2)
           missing <- setdiff(pkgs, rownames(installed.packages()))
