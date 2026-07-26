@@ -87,11 +87,55 @@ def audit():
     return drifted, only_rmorie, only_morie_r
 
 
+# A roxygen block that says "Wraps \pkg{Foo}" is only telling the truth if the
+# module actually calls Foo. Both packages went native under prose that never
+# got updated -- irm.R advertised dispatching to DoubleML directly above a body
+# that calls .morie_dml_irm_native() and nothing else.
+_CLAIM = re.compile(r"#'.*\b(?:[Ww]raps|[Tt]hin (?:R )?wrapper|dispatches to)\b.*")
+_PKGREF = re.compile(r"\\pkg\{([\w.]+)\}|`([\w.]+)`")
+
+
+def stale_wrapper_claims(tree: pathlib.Path):
+    """Roxygen claiming delegation to a package the module never calls."""
+    out = []
+    for p in sorted(tree.glob("*.R")):
+        text = p.read_text(errors="replace")
+        code = "\n".join(l for l in text.splitlines()
+                         if not l.strip().startswith("#"))
+        for lineno, line in enumerate(text.splitlines(), 1):
+            if not _CLAIM.search(line):
+                continue
+            named = {g for t in _PKGREF.findall(line) for g in t if g}
+            live = {n for n in named
+                    if re.search(rf'["\']{re.escape(n)}["\']|{re.escape(n)}::', code)}
+            if named and not live:
+                out.append((p.name, lineno, sorted(named), line.strip()))
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--strict", action="store_true",
                     help="exit 1 if the two R trees have drifted")
+    ap.add_argument("--wrappers", action="store_true",
+                    help="report roxygen claiming delegation the code cannot do")
     args = ap.parse_args()
+
+    if args.wrappers:
+        bad = 0
+        for label, tree in (("morie/R", R_MORIE), ("rmorie/R", R_RMORIE)):
+            if not tree.exists():
+                continue
+            hits = stale_wrapper_claims(tree)
+            print(f"\n=== {label}: {len(hits)} stale wrapper claim(s) ===")
+            for fname, lineno, named, line in hits:
+                print(f"  {fname}:{lineno} [{','.join(named)}]\n      {line[:96]}")
+            bad += len(hits)
+        # Endpoint/C-function wraps ("the getCubeMetadata POST endpoint",
+        # "libsodium's randombytes_buf") are correct and will show up here.
+        print("\nReview each: only R-package claims are bugs.")
+        return 1 if (args.strict and bad) else 0
+
     if not R_RMORIE.exists():
         print(f"rmorie checkout not found at {R_RMORIE}; cannot audit", file=sys.stderr)
         return 0
