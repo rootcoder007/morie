@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Higuchi fractal dimension -- Rangayyan Ch 7."""
+"""Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41)."""
 
 from __future__ import annotations
 
@@ -13,8 +13,14 @@ __all__ = ["rangayyan_higuchi_fd"]
 def rangayyan_higuchi_fd(x, kmax=10):
     """Higuchi (1988) fractal dimension.
 
-    L_m(k) = (N-1)/(k² ⌊(N-m)/k⌋) Σ |x[m+ik] − x[m+(i-1)k]|;
-    L(k) = mean_m L_m(k); HFD = slope of log L(k) vs log(1/k).
+    Eq (5.39)  x_k(m) = x(m), x(m+k), x(m+2k), ..., x(m + floor((N-m)/k) k),
+               for m = 1, 2, ..., k  (1-based).
+    Eq (5.40)  L(m,k) = (1/k) * (N-1) / (k floor((N-m)/k))
+                        * sum_{i=1}^{floor((N-m)/k)} |x(m+ik) - x(m+(i-1)k)|
+    Eq (5.41)  L(k)   = (1/k) sum_{m=1}^{k} L(m,k)
+
+    FD is the slope of a straight-line fit to a log-log plot of L(k)
+    against 1/k.
 
     Parameters
     ----------
@@ -28,7 +34,13 @@ def rangayyan_higuchi_fd(x, kmax=10):
 
     References
     ----------
-    Higuchi (1988), Physica D 31:277. Rangayyan Ch 7.
+    Rangayyan, R. M. *Biomedical Signal Analysis* (Wiley/IEEE, 2024),
+        Sec. 5.13.2 "Higuchi's method", p. 304, eqs (5.39)-(5.41).
+    Higuchi, T. (1988). Approach to an irregular time series on the basis of
+        the fractal theory. *Physica D*, 31, 277-283.
+
+    Note: the docstring previously cited Ch. 7; Higuchi's method is in
+    Sec. 5.13.2 of the 2024 edition, verified against the typeset PDF.
     """
     x = np.asarray(x, dtype=float).ravel()
     N = x.size
@@ -38,12 +50,22 @@ def rangayyan_higuchi_fd(x, kmax=10):
     L = np.empty(kmax)
     for k in range(1, kmax + 1):
         lk = []
-        for m in range(k):
-            idx = np.arange(m, N, k)
+        for m in range(1, k + 1):
+            # Eq (5.39): x_k(m) starts at the m-th sample, 1-based in the book,
+            # so index m-1 into the 0-based array.
+            idx = np.arange(m - 1, N, k)
             if idx.size < 2:
                 continue
             diffs = np.sum(np.abs(np.diff(x[idx])))
-            norm = (N - 1) / (k * np.floor((N - m) / k))
+            # Eq (5.40): the normaliser is floor((N - m)/k) with the book's
+            # 1-based m, and it must equal the number of difference terms
+            # actually summed. The previous code passed the 0-based loop index
+            # here, making the denominator floor((N - m + 1)/k) while the
+            # numerator still had floor((N - m)/k) terms -- the two disagreed
+            # whenever (N - m) was not a multiple of k. Deriving it from
+            # idx.size keeps them identical by construction.
+            n_terms = idx.size - 1
+            norm = (N - 1) / (k * n_terms)
             lk.append((diffs / k) * norm)
         L[k - 1] = np.mean(lk) if lk else np.nan
     ks = np.arange(1, kmax + 1)
@@ -73,4 +95,4 @@ def rangayyan_higuchi_fd(x, kmax=10):
 
 
 def cheatsheet():
-    return "rghfd: Higuchi fractal dimension -- Rangayyan Ch 7"
+    return "rghfd: Higuchi fractal dimension -- Rangayyan Sec. 5.13.2"
