@@ -48,7 +48,8 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
 
     References
     ----------
-    Rangayyan, R. M. *Biomedical Signal Analysis* (Wiley/IEEE, 2024),
+    Rangayyan, R. M., & Krishnan, S. *Biomedical Signal Analysis*,
+        3rd ed. (IEEE Press / Wiley, 2024),
         Ch. 3 "Filtering for Removal of Artifacts" -- pp. 106-208, for the
         artifact-removal filtering context this function serves.
     SciPy developers. ``scipy.signal.firwin`` reference documentation.

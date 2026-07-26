@@ -5,7 +5,8 @@
 #' @param x Numeric vector.
 #' @param kmax Maximum lag (default 10).
 #' @return Named list `HFD`, `log_L`, `log_inv_k`, `kmax`.
-#' @references Rangayyan, R. M. Biomedical Signal Analysis (Wiley/IEEE, 2024),
+#' @references Rangayyan, R. M. & Krishnan, S. Biomedical Signal Analysis, 3rd ed.
+#'   (IEEE Press / Wiley, 2024),
 #'   Sec. 5.13.2 "Higuchi's method", p. 304, eqs (5.39)-(5.41).
 #'   Higuchi, T. (1988). Physica D 31:277-283.
 #' @export

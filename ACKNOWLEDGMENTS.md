@@ -26,6 +26,31 @@ MORIE (Multi-domain Open Research and Inferential Estimation) is developed by Va
 
 MORIE builds on the work of many open-source projects, including but not limited to: NumPy, SciPy, pandas, scikit-learn, Textual, httpx, Sphinx, and the broader Python/R scientific computing ecosystem.
 
+## Methods and their authors
+
+morie's general-purpose modules implement published methods. The
+implementations are written against the primary sources, and each function's
+docstring cites the specific chapter, section or equation, so a reader can
+check the code against the same page the author wrote.
+
+| Method | Source |
+|---|---|
+| Biomedical signal analysis (filtering, spectral, waveform complexity) | Rangaraj M. Rangayyan & Sridhar Krishnan, *Biomedical Signal Analysis*, 3rd ed. (IEEE Press / Wiley, 2024) |
+| Higuchi fractal dimension | T. Higuchi, *Physica D* 31:277–283 (1988) |
+| Correlation dimension D₂ | P. Grassberger & I. Procaccia, *Physica D* 9:189–208 (1983) |
+| Detrended fluctuation analysis | C.-K. Peng, S. V. Buldyrev, S. Havlin, M. Simons, H. E. Stanley & A. L. Goldberger, *Phys. Rev. E* 49:1685–1689 (1994) |
+| Approximate entropy | S. M. Pincus, *PNAS* 88:2297–2301 (1991) |
+| Sample entropy | J. S. Richman & J. R. Moorman, *Am. J. Physiol.* 278:H2039–H2049 (2000) |
+| Graded response model (polytomous IRT) | F. Samejima, *Psychometrika Monograph Supplement* No. 17 (1969) |
+| Genomic relationship matrices | P. M. VanRaden, *J. Dairy Sci.* 91:4414–4423 (2008) |
+| Double machine learning | V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, W. Newey & J. Robins, *Econometrics Journal* 21:C1–C68 (2018) |
+
+Where a secondary source and the primary disagree, morie follows the primary
+and records the divergence in the function's docstring, so the choice is
+auditable rather than inherited. The genomic relationship matrices are the
+worked case: a widely used secondary text renumbers VanRaden's three methods,
+and morie's method aliases follow VanRaden's own numbering.
+
 ## Funding
 
 This work is conducted with zero external funding, using exclusively free-tier and open-source tools.
