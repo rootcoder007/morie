@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from morie.causal import (
     compute_propensity_scores,
@@ -428,3 +429,79 @@ class TestPropensityScorePreprocessing:
         )
         ps = compute_propensity_scores(df, treatment="treated", covariates=["x"])
         assert list(ps.index) == list(df.index)
+
+
+# ---------------------------------------------------------------------------
+# Anderson-Darling / Lilliefors -- book-as-spec
+#
+# Gibbons & Chakraborti (2010), Nonparametric Statistical Inference, 5th edn,
+# Examples 4.6.1 and 4.7.1 use this exact 10-point sample and publish the
+# resulting statistics. The R and Python implementations must agree with the
+# book and with each other.
+# ---------------------------------------------------------------------------
+
+GIBBONS_EXPON_SAMPLE = [1.5, 2.3, 4.2, 7.1, 10.4, 8.4, 9.3, 6.5, 2.5, 4.6]
+
+
+def test_lilliefors_reproduces_gibbons_example_4_6_1():
+    from morie.statistics import lilliefors_test
+
+    res = lilliefors_test(GIBBONS_EXPON_SAMPLE, dist="expon")
+    assert res.test_statistic == pytest.approx(0.233, abs=5e-4)
+    # Book: "the approximate P value is greater than 0.10". D is below the
+    # smallest tabulated critical value, so p is reported at the 0.10 bound.
+    assert res.p_value == pytest.approx(0.10)
+    assert res.extra["p_bounded"] == "upper"
+
+
+def test_anderson_darling_reproduces_gibbons_example_4_7_1():
+    from morie.statistics import anderson_darling
+
+    res = anderson_darling(GIBBONS_EXPON_SAMPLE, dist="expon")
+    assert res.extra["a_squared"] == pytest.approx(0.9455, abs=5e-5)
+    assert res.test_statistic == pytest.approx(0.9738, abs=5e-5)
+    # A* sits between the alpha=0.15 point (0.916) and the alpha=0.10 point
+    # (1.062) of Table 4.7.1.
+    assert 0.10 < res.p_value < 0.15
+
+
+def test_anderson_darling_applies_case_3_normal_modification():
+    from morie.statistics import anderson_darling
+
+    rng = np.random.default_rng(11)
+    x = rng.normal(size=50)
+    res = anderson_darling(x, dist="norm")
+    n = len(x)
+    assert res.test_statistic == pytest.approx(
+        res.extra["a_squared"] * (1 + 0.75 / n + 2.25 / n**2), rel=1e-12
+    )
+
+
+def test_gof_rejects_misfit_and_accepts_good_fit():
+    from morie.statistics import anderson_darling, lilliefors_test
+
+    rng = np.random.default_rng(4)
+    heavy = rng.exponential(size=200)          # not normal
+    # Both land beyond the largest tabulated critical value, so p is clamped
+    # at the table floor and flagged; a strictly smaller p is not expressible.
+    li = lilliefors_test(heavy, dist="norm")
+    assert li.p_value == pytest.approx(0.001)
+    assert li.extra["p_bounded"] == "lower"
+    ad = anderson_darling(heavy, dist="norm")
+    assert ad.p_value == pytest.approx(0.01)
+    assert ad.extra["p_bounded"] == "lower"
+
+    good = np.random.default_rng(5).normal(size=200)
+    assert lilliefors_test(good, dist="norm").p_value > 0.05
+    assert anderson_darling(good, dist="norm").p_value > 0.05
+
+
+def test_gof_rejects_degenerate_and_invalid_input():
+    from morie.statistics import anderson_darling, lilliefors_test
+
+    with pytest.raises(ValueError, match="zero variance"):
+        anderson_darling(np.ones(20), dist="norm")
+    with pytest.raises(ValueError, match="zero variance"):
+        lilliefors_test(np.ones(20), dist="norm")
+    with pytest.raises(ValueError, match="non-negative"):
+        anderson_darling(np.array([-1.0, 2.0, 3.0]), dist="expon")
