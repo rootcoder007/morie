@@ -10,10 +10,15 @@ from ._richresult import RichResult
 __all__ = ["grm_vanraden"]
 
 
+# Aliases follow VanRaden (2008) p.4416, verified against the primary paper.
+# They were briefly wrong: an earlier pass took the numbering from the
+# Montesinos secondary source, which renumbers VanRaden's methods. G_VR3 is
+# deliberately absent -- VanRaden's third method regresses MM' on A and is not
+# implemented here, so claiming the name would be a lie.
 _METHOD_ALIASES = {
-    1: 1, "G_VR2": 1,
-    2: 2, "G_VR3": 2,
-    3: 3, "G_VR1": 3,
+    1: 1, "G_VR1": 1,
+    2: 2, "G_VR2": 2,
+    3: 3, "G_XX": 3,
 }
 
 
@@ -26,34 +31,43 @@ def grm_vanraden(markers, method=1):
     the source's numbering. Both spellings are first-class; the string
     aliases follow the agrigenomic convention and are the unambiguous ones:
 
-    ==============  ====================  ==================================
-    ``method=``     alias                 source's method
-    ==============  ====================  ==================================
-    ``1`` (default) ``"G_VR2"``           Method 2 -- centred, sum-2pq scaled
-    ``2``           ``"G_VR3"``           Method 3 -- per-locus scaled
-    ``3``           ``"G_VR1"``           Method 1 -- uncentred XX'/m
-    ==============  ====================  ==================================
+    ==============  ===========  =====================  =====================
+    ``method=``     alias        VanRaden (2008)        Montesinos Sec 2.4
+    ==============  ===========  =====================  =====================
+    ``1`` (default) ``"G_VR1"``  Method 1, ZZ'/2sum-pq  Method 2
+    ``2``           ``"G_VR2"``  Method 2, ZDZ'         Method 3
+    ``3``           ``"G_XX"``   -- (not a VR method)   Method 1
+    ==============  ===========  =====================  =====================
+
+    The two sources number these differently, which is why the aliases carry
+    the primary source's numbering and the table shows both. VanRaden's own
+    Method 3 -- regressing MM' on A to get G = (MM' - g0*11')/g1, requiring no
+    allele frequencies -- is NOT implemented, so there is deliberately no
+    ``G_VR3`` alias. ``method=3`` is the uncentred XX'/m that the Montesinos
+    chapter calls its Method 1; it is not one of VanRaden's three, hence
+    ``G_XX`` rather than a ``G_VR*`` name.
 
     The integers are deliberately NOT renumbered to match the source: existing
     callers pass ``method=1`` and ``method=2``, and silently changing what
     those mean would leave working code returning a different matrix. Prefer
     the string aliases in new code.
 
-    ``method=3`` / ``"G_VR1"`` is the most-cited GRM in the GBLUP literature
-    and was previously unimplemented.
+    ``method=3`` / ``"G_XX"`` was previously unimplemented.
 
     Formulae
     --------
-    ``"G_VR1"``  G = X X' / m
-    ``"G_VR2"``  G = (X - mu_E)(X - mu_E)' / [2 * sum_j p_j (1 - p_j)],
-                 mu_E = 2 p_j (expected genotype under Hardy-Weinberg)
-    ``"G_VR3"``  z_ij = (x_ij - 2 p_j) / sqrt(2 p_j (1 - p_j));  G = Z Z' / m
+    ``"G_VR1"``  Z = M - P with column j of P equal to 2 p_j;
+                 G = Z Z' / [2 * sum_j p_j (1 - p_j)]        (VanRaden Eq., p.4416)
+    ``"G_VR2"``  G = Z D Z' with D diagonal, D_jj = 1 / (m * 2 p_j (1 - p_j));
+                 equivalently z_ij = (x_ij - 2 p_j) / sqrt(2 p_j (1 - p_j))
+                 and G = Z Z' / m                            (VanRaden, p.4416)
+    ``"G_XX"``   G = X X' / m, uncentred  (Montesinos Sec 2.4 Method 1)
 
     Parameters
     ----------
     markers : array-like, shape (n, m)
         Genotype matrix, coded {0,1,2} (count of the reference allele).
-    method : {1, 2, 3, "G_VR1", "G_VR2", "G_VR3"}, default 1
+    method : {1, 2, 3, "G_VR1", "G_VR2", "G_XX"}, default 1
 
     Returns
     -------
@@ -67,7 +81,9 @@ def grm_vanraden(markers, method=1):
     References
     ----------
     VanRaden, P. M. (2008). Efficient methods to compute genomic predictions.
-        *Journal of Dairy Science*, 91(11), 4414-4423.
+        *Journal of Dairy Science*, 91(11), 4414-4423, "Genomic Relationships
+        and Inbreeding", p.4416. https://doi.org/10.3168/jds.2007-0980
+        (PRIMARY -- now in the library.)
     Montesinos-Lopez et al., *Multivariate Statistical Machine Learning
         Methods for Genomic Prediction*, Sec. 2.4 "Methods to Compute the
         Genomic Relationship Matrix", pp. 49-52.
@@ -96,7 +112,7 @@ def grm_vanraden(markers, method=1):
         mode = _METHOD_ALIASES[method]
     except (KeyError, TypeError):
         raise ValueError(
-            "method must be one of: 1, 2, 3, 'G_VR1', 'G_VR2', 'G_VR3' "
+            "method must be one of: 1, 2, 3, 'G_VR1', 'G_VR2', 'G_XX' "
             f"(got {method!r})"
         ) from None
     n, m = M.shape
@@ -106,19 +122,19 @@ def grm_vanraden(markers, method=1):
         # Method 1 of the source: uncentred, divided by the marker count.
         Z = M
         denom = float(m)
-        method_str = "VanRaden G_VR1 (uncentred XX'/m)"
+        method_str = "G_XX (uncentred XX'/m; Montesinos Method 1, not VanRaden)"
     elif mode == 2:
         Z = M - 2.0 * p
         scale = np.sqrt(2.0 * p * (1.0 - p))
         scale = np.where(scale > 0, scale, 1.0)
         Z = Z / scale
         denom = float(m)
-        method_str = "VanRaden G_VR3 (per-locus scaled)"
+        method_str = "VanRaden Method 2 / G_VR2 (ZDZ', per-locus scaled)"
     else:
         Z = M - 2.0 * p
         denom = float(2.0 * np.sum(p * (1.0 - p)))
         denom = denom if denom > 0 else 1.0
-        method_str = "VanRaden G_VR2 (sum-2pq)"
+        method_str = "VanRaden Method 1 / G_VR1 (ZZ'/2sum-pq)"
     G = (Z @ Z.T) / denom
     diag_mean = float(np.mean(np.diag(G)))
     off = G - np.diag(np.diag(G))
@@ -144,4 +160,4 @@ def grm_vanraden(markers, method=1):
 
 
 def cheatsheet():
-    return "gmatv: Genomic relationship matrix (VanRaden G_VR1 / G_VR2 / G_VR3)"
+    return "gmatv: Genomic relationship matrix (VanRaden G_VR1 / G_VR2, plus G_XX)"

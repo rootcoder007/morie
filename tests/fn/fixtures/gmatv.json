@@ -398,5 +398,14 @@
     "2": "G_VR3 (source Method 3)",
     "3": "G_VR1 (source Method 1) - added 2026-07-26",
     "note": "integers deliberately NOT renumbered; existing callers would silently change meaning"
+  },
+  "PRIMARY_SOURCE_ACQUIRED_2026-07-26": {
+    "file": "data/datasets/userguides/other/pdf/VanRaden_2008_PIIS0022030208709901.pdf",
+    "page": "4416, 'Genomic Relationships and Inbreeding'",
+    "vanraden_method_1": "G = ZZ'/(2*sum p_i(1-p_i)); Z = M - P, column i of P is 2(p_i - 0.5) with M coded -1/0/1",
+    "vanraden_method_2": "G = ZDZ', D diagonal, D_ii = 1/(m*[2 p_i(1-p_i)])",
+    "vanraden_method_3": "G = (MM' - g0*11')/g1, from regressing MM' = g0*11' + g1*A + E; requires NO allele frequencies. NOT IMPLEMENTED in morie.",
+    "NUMBERING_CORRECTION": "The Montesinos secondary source renumbers VanRaden's methods. Montesinos Method 2 IS VanRaden Method 1; Montesinos Method 3 IS VanRaden Method 2; Montesinos Method 1 (uncentred XX'/p) is NOT one of VanRaden's three methods at all. morie's G_VR* aliases were briefly assigned from the secondary numbering and are now corrected to the primary. morie method=3 is renamed G_XX because no VanRaden method matches it.",
+    "RULINGS_UNCHANGED": "Both 2026-07-26 rulings stand. The marker divisor and the sqrt(2p(1-p)) scaling are confirmed by the primary source; only the METHOD NAMES were wrong, not the mathematics."
   }
 }
