@@ -223,8 +223,26 @@ the federal context provided by Anthony N. Doob's affidavit
 [@doob2020affidavit] and the four Sprott–Doob–Iftene
 independent academic reports [@sprottdoob2020operation;
 @sprottdoob2020covid; @sprottdoob2021torture;
-@sprottdoobiftene2021iedm]. All implementation, all framework
-design, and all empirical findings are the work of the framework
-author.
+@sprottdoobiftene2021iedm].
+
+The general-purpose modules implement published methods, and the
+authors of those methods are the reason the implementations can be
+checked rather than merely trusted. The signal-processing and
+waveform-complexity modules follow Rangayyan and Krishnan
+[@rangayyan2024biomedical]; the fractal and complexity estimators
+follow Higuchi [@higuchi1988approach], Grassberger and Procaccia
+[@grassberger1983strangeness], and Peng and colleagues
+[@peng1994mosaic]; the entropy estimators follow Pincus
+[@pincus1991approximate] and Richman and Moorman
+[@richman2000physiological]; the polytomous item-response model
+follows Samejima [@samejima1969estimation]; and the genomic
+relationship matrices follow VanRaden [@vanraden2008efficient].
+Each function is implemented against the primary source and its
+docstring cites the specific chapter, section or equation, so a
+reader can check the implementation against the same page the
+author wrote.
+
+All implementation, all framework design, and all empirical
+findings are the work of the framework author.
 
 # References

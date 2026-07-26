@@ -34,7 +34,8 @@ def rangayyan_higuchi_fd(x, kmax=10):
 
     References
     ----------
-    Rangayyan, R. M. *Biomedical Signal Analysis* (Wiley/IEEE, 2024),
+    Rangayyan, R. M., & Krishnan, S. *Biomedical Signal Analysis*,
+        3rd ed. (IEEE Press / Wiley, 2024),
         Sec. 5.13.2 "Higuchi's method", p. 304, eqs (5.39)-(5.41).
     Higuchi, T. (1988). Approach to an irregular time series on the basis of
         the fractal theory. *Physica D*, 31, 277-283.
