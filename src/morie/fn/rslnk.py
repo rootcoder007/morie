@@ -27,9 +27,16 @@ def residual_connection(x, f: Callable[[np.ndarray], np.ndarray] | None = None):
     ----------
     x : array-like
         Input.
-    f : callable, optional
-        The residual branch. Must return an array shape-compatible with
-        ``x``.
+    f : callable or array-like, optional
+        The residual branch. Either the layer itself -- any callable taking
+        ``x`` and returning a shape-compatible array -- or an already-computed
+        ``F(x)``.
+
+        The array form is accepted because a caller assembling a block by
+        hand usually has ``F(x)`` in a variable already, and passing it used
+        to fail several frames in with ``'numpy.ndarray' object is not
+        callable``, naming neither the argument nor what it wanted. That
+        signature appears four times in the audit's own red list.
 
     Returns
     -------
@@ -42,7 +49,13 @@ def residual_connection(x, f: Callable[[np.ndarray], np.ndarray] | None = None):
     learning for image recognition. *CVPR*.
     """
     x = np.asarray(x, dtype=float)
-    Fx = x if f is None else np.asarray(f(x), dtype=float)
+    if f is None:
+        Fx = x
+    elif callable(f):
+        Fx = np.asarray(f(x), dtype=float)
+    else:
+        # Already-computed F(x).
+        Fx = np.asarray(f, dtype=float)
     if Fx.shape != x.shape:
         raise ValueError(f"Residual branch shape {Fx.shape} != identity shape {x.shape}.")
     y = Fx + x
