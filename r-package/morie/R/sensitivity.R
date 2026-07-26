@@ -16,8 +16,8 @@
 #' variable bias (Cinelli-Hazlett), Manski bounds, probabilistic
 #' (Monte-Carlo) bias analysis, and specification curve analysis.
 #'
-#' Wraps CRAN \pkg{EValue} when available; falls back to base R
-#' otherwise.
+#' Implemented natively in base R from the published closed forms; no
+#' CRAN sensitivity package is loaded or called at runtime.
 #'
 #' @references
 #' Rosenbaum (2002); VanderWeele & Ding (2017); Cinelli & Hazlett
@@ -113,8 +113,7 @@ NULL
 
 #' E-value for a risk ratio
 #'
-#' Wraps \pkg{EValue} when available; otherwise applies the
-#' VanderWeele-Ding closed-form formula directly.
+#' Applies the VanderWeele-Ding closed-form formula directly in base R.
 #'
 #' @param rr        Observed risk ratio.
 #' @param ci_lower  Lower 95% CI of the RR (optional).
@@ -251,8 +250,8 @@ e_value_d <- function(d, se = NULL, n = NULL) {
 
 #' Rosenbaum sensitivity analysis for matched-pair designs
 #'
-#' Wraps \pkg{rbounds} when available (and `method == "wilcoxon"`);
-#' falls back to a base-R normal-approximation implementation.
+#' Native base-R implementation using the normal approximation to the
+#' Wilcoxon signed-rank statistic under the Rosenbaum Gamma model.
 #'
 #' @param treated_outcomes Vector of outcomes for treated units.
 #' @param control_outcomes Vector of outcomes for matched controls.
@@ -389,8 +388,8 @@ tipping_point_analysis <- function(estimate, se, n_treated, n_control,
 
 #' Omitted-variable bias analysis (sensemakr framework)
 #'
-#' Wraps \pkg{sensemakr} when available; otherwise applies the
-#' closed-form Cinelli-Hazlett robustness-value formulas in base R.
+#' Applies the closed-form Cinelli-Hazlett robustness-value formulas
+#' natively in base R.
 #'
 #' @param estimate              Treatment coefficient.
 #' @param se                    SE of the estimate.

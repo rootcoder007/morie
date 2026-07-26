@@ -337,8 +337,8 @@ estimate_ate_gcomputation <- function(data, treatment, outcome,
 
 #' Rosenbaum bounds sensitivity analysis (data-frame interface)
 #'
-#' Wraps \pkg{rbounds} when available; otherwise computes normal-
-#' approximation Wilcoxon signed-rank bounds in base R.
+#' Computes normal-approximation Wilcoxon signed-rank bounds natively
+#' in base R.
 #'
 #' @param data       Data frame with treatment + outcome columns.
 #' @param treatment  Binary treatment column (0/1).
@@ -413,8 +413,8 @@ sensitivity_rosenbaum <- function(data, treatment, outcome,
 
 #' E-value for unmeasured confounding (continuous-ATE scale)
 #'
-#' Wraps \pkg{EValue} when available. Otherwise applies the same
-#' continuous-scale z-stat -> RR approximation as the Python port.
+#' Applies the continuous-scale z-stat -> RR approximation natively,
+#' matching the Python port.
 #'
 #' @param ate  Point estimate of the treatment effect.
 #' @param se   Standard error of the ATE (must be > 0).
