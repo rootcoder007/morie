@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Political polarization index (Armstrong Ch 8)."""
+"""Political polarization as a standardised mean difference (Cohen 1988)."""
 
 import numpy as np
 
@@ -11,8 +11,15 @@ __all__ = ["polarization_index", "polrz"]
 def polarization_index(x, group=None):
     """Two-group polarization: P = |mean(x_R) - mean(x_D)| / pooled_sd.
 
-    A Cohen-d-style standardised distance between two party-aligned
-    distributions of ideal points (Armstrong et al. 2014, Ch 8).
+    A standardised distance between two party-aligned distributions of ideal
+    points. The quantity computed IS Cohen's d, so that is what it cites:
+
+        Cohen, J. (1988). *Statistical Power Analysis for the Behavioral
+        Sciences*, 2nd ed. Lawrence Erlbaum.
+
+    NOT Armstrong. That book has six chapters, and its only mentions of
+    polarization (printed p.129) are a passing citation to McCarty, Poole and
+    Rosenthal (2006) rather than any index definition -- checked in the PDF.
 
     Parameters
     ----------
