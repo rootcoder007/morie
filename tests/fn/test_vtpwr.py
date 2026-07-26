@@ -1,9 +1,10 @@
 """vtpwr: Banzhaf and Shapley-Shubik voting power.
 
-Primary sources: Banzhaf, J. F. (1965), Rutgers Law Review 19(2):317-343;
+Primary sources, both now in the library and both READ FROM THE PDF:
 Shapley, L. S. & Shubik, M. (1954), American Political Science Review
-48(3):787-792. NOT Armstrong -- see the module docstring; neither "Banzhaf"
-nor "Shapley" occurs anywhere in that book.
+48(3):787-792 (verified p.787-789); Banzhaf, J. F. (1965), Rutgers Law
+Review 19(2):317-343. NOT Armstrong -- that book has six chapters and
+neither "Banzhaf" nor "Shapley" appears in any of its 320 pages.
 
 Both indices are finite enumerations, so the values below follow from the
 definitions and need no text to certify them.
@@ -65,6 +66,22 @@ def test_vtpwr_dictator_holds_all_the_power():
     r = vpi(np.array([5.0, 1.0, 1.0]), quota=5.0)
     assert np.asarray(r["banzhaf"]) == pytest.approx([1.0, 0.0, 0.0])
     assert np.asarray(r["shapley_shubik"]) == pytest.approx([1.0, 0.0, 0.0])
+
+
+def test_vtpwr_equal_weights_give_exactly_one_nth_each():
+    """Shapley & Shubik (1954) p.788, stated verbatim:
+
+        "where all voters have the same number of votes, they will each be
+        credited with 1/nth of the power, there being n participants."
+
+    Read from the PDF, not from a docstring.
+    """
+    for n in (2, 3, 4, 5, 6):
+        w = np.ones(n)
+        q = n / 2 + 0.5
+        r = vpi(w, quota=q)
+        assert np.asarray(r["shapley_shubik"]) == pytest.approx(np.full(n, 1 / n))
+        assert np.asarray(r["banzhaf"]) == pytest.approx(np.full(n, 1 / n))
 
 
 def test_vtpwr_equal_weights_give_equal_power():
