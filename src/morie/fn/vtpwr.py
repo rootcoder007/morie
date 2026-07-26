@@ -23,8 +23,16 @@ def voting_power_index(x, quota=None):
     x : array-like (n,)
         Voter weights w_i.
     quota : float, optional
-        Winning threshold q (default = ceil(sum(w)/2 + 1) to be strictly
-        more than half -- the simple-majority rule).
+        Winning threshold q. Default is ``sum(w)/2`` nudged up by 1e-9, so a
+        coalition wins on strictly more than half the total weight -- the
+        simple-majority rule. The epsilon is what makes "strictly more"
+        strict: an exact half-and-half split must lose, and floating-point
+        equality alone would let it win.
+
+        This docstring previously said ``ceil(sum(w)/2 + 1)``. That is a
+        different and much harsher rule -- for weights (2, 1, 1) it gives
+        q = 3, requiring three quarters of the total, not a majority -- and
+        it was never what the code did.
 
     Returns
     -------
