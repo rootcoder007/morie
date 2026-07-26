@@ -1,4 +1,13 @@
-"""vtpwr: Banzhaf and Shapley-Shubik voting power (Armstrong Ch 10)."""
+"""vtpwr: Banzhaf and Shapley-Shubik voting power.
+
+Primary sources: Banzhaf, J. F. (1965), Rutgers Law Review 19(2):317-343;
+Shapley, L. S. & Shubik, M. (1954), American Political Science Review
+48(3):787-792. NOT Armstrong -- see the module docstring; neither "Banzhaf"
+nor "Shapley" occurs anywhere in that book.
+
+Both indices are finite enumerations, so the values below follow from the
+definitions and need no text to certify them.
+"""
 
 import numpy as np
 import pytest

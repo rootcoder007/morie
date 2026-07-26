@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Multinomial probit for spatial choice (Armstrong Ch 9)."""
+"""Multinomial probit for spatial choice (Train 2009, GHK simulator)."""
 
 import numpy as np
 from scipy.stats import norm
@@ -17,7 +17,7 @@ def multinomial_probit_spatial(x, n_draws: int = 2000, seed: int = 0):
         eps ~ N(0, I), choice = argmax_j (U_ij + eps_j)
     Probability estimated by GHK-style Monte Carlo (independent Gaussian
     errors -- sufficient for the IIA-relaxed spatial-choice case in
-    Armstrong Ch 9).
+    Train 2009, GHK simulator).
 
     Parameters
     ----------
@@ -27,6 +27,14 @@ def multinomial_probit_spatial(x, n_draws: int = 2000, seed: int = 0):
     Returns
     -------
     RichResult with keys: probs, max_alt, n_obs, n_alt
+
+    References
+    ----------
+    Train, K. E. (2009). *Discrete Choice Methods with Simulation*, 2nd ed.
+        Cambridge University Press. The GHK simulator.
+    NOT Armstrong: the former "Ch 9" citation is to a chapter that does not
+        exist (that book has six). Not in the library yet -- see
+        docs-snapshots/ACQUISITION.md item 1d-iii.
     """
     U = np.asarray(x, dtype=float)
     if U.ndim == 1:

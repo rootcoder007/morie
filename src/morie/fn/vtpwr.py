@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Banzhaf and Shapley-Shubik voting-power indices (Armstrong Ch 10)."""
+"""Banzhaf and Shapley-Shubik voting-power indices (Banzhaf 1965; Shapley & Shubik 1954)."""
 
 from itertools import combinations
 from math import factorial
@@ -37,6 +37,25 @@ def voting_power_index(x, quota=None):
     Returns
     -------
     RichResult with keys: banzhaf, shapley_shubik, quota, weights
+
+    References
+    ----------
+    Banzhaf, J. F. (1965). Weighted voting doesn't work: A mathematical
+        analysis. *Rutgers Law Review*, 19(2), 317-343.
+    Shapley, L. S., & Shubik, M. (1954). A method for evaluating the
+        distribution of power in a committee system. *American Political
+        Science Review*, 48(3), 787-792.
+
+    Notes
+    -----
+    This module previously cited "Armstrong Ch 10". That citation is wrong:
+    the strings "Banzhaf" and "Shapley" do not occur anywhere in *Analyzing
+    Spatial Models of Choice and Judgment*, nor anywhere else in the local
+    library. Neither primary paper is on disk either, so both are recorded in
+    docs-snapshots/ACQUISITION.md. The implementation is nonetheless
+    verifiable without them: both indices are defined by finite enumeration
+    over coalitions and orderings, and the tests pin them against a
+    hand-enumerated game whose values follow from the definitions alone.
     """
     w = np.asarray(x, dtype=float).ravel()
     n = int(w.size)

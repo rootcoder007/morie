@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Dimensionality test for spatial voting (Armstrong Ch 7)."""
+"""Dimensionality test for spatial voting (Kaiser 1960; Cattell 1966)."""
 
 import numpy as np
 
@@ -21,6 +21,17 @@ def dimensionality_test(x, threshold: float = 1.0):
     Returns
     -------
     RichResult with keys: n_dims, eigenvalues, threshold, scree_gap
+
+    References
+    ----------
+    Kaiser, H. F. (1960). The application of electronic computers to factor
+        analysis. *Educational and Psychological Measurement*, 20(1), 141-151.
+        The lambda > 1 retention rule implemented here.
+    Cattell, R. B. (1966). The scree test for the number of factors.
+        *Multivariate Behavioral Research*, 1(2), 245-276. The `scree_gap`.
+    NOT Armstrong: the former "Ch 7" citation is to a chapter that does not
+        exist (that book has six). Neither paper is in the library yet --
+        see docs-snapshots/ACQUISITION.md item 1d-iv.
     """
     M = np.asarray(x, dtype=float)
     if M.ndim == 1:
