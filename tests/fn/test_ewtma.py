@@ -31,8 +31,15 @@ def test_ewtma_volatility_is_the_square_root_of_the_variance():
 
 
 def test_ewtma_default_lambda_is_the_riskmetrics_value():
-    """RiskMetrics fixes lambda = 0.94 for daily data. That constant is the
-    whole reason the method is named after them."""
+    """Verified against the RiskMetrics Technical Document itself (PDF p.51):
+
+        "Correlations estimated using exponentially weighted daily historical
+         observations with decay factors of 0.94 (for trading, 74 day cutoff
+         1%) and 0.97 (for investing, 151 day cutoff at 1%)."
+
+    0.94 is the daily/trading figure and is the constant that makes this
+    RiskMetrics rather than a generic EWMA.
+    """
     assert ew(np.random.default_rng(2411).normal(0, 0.01, 50))["lambda"] == pytest.approx(0.94)
 
 

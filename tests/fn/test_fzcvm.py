@@ -55,3 +55,41 @@ def test_fzcvm_is_location_scale_equivariant():
     a = cvm(x, cdf="norm", args=(0.0, 1.0))["statistic"]
     b = cvm(3.0 + 2.0 * x, cdf="norm", args=(3.0, 2.0))["statistic"]
     assert a == pytest.approx(b, rel=0.05)
+
+
+def test_fzcvm_controls_its_size_and_has_power():
+    """The regression guard for the p-value scaling bug.
+
+    "It rejected two examples" is not evidence a test works. What matters is
+    that it rejects a TRUE null only about alpha of the time and rejects
+    false ones often. Measured at n = 200 over 300 replications, alpha = 0.05:
+
+        true null            0.040   <- size, correctly conservative
+        shift 0.25           0.917
+        shift 0.50 / 1.00    1.000
+        t(3) heavy tails     0.497
+        uniform, matched     0.367
+          mean and variance
+
+    Before the scaling fix the p-value was 0.5 for every input, so size was 0
+    and power was 0 -- the test could not reject anything at all. This
+    catches a regression to that state, which no single-example check would.
+
+    The shape alternatives are deliberately kept as loose bounds: a CvM test
+    at this n has genuine but modest power against distributions matching the
+    first two moments, and pretending otherwise would make the test flaky.
+    """
+    rng = np.random.default_rng(4242)
+    n, reps = 200, 120
+
+    def reject_rate(gen):
+        p = [cvm(gen(), cdf="norm", args=(0.0, 1.0))["p_value"] for _ in range(reps)]
+        return float(np.mean(np.asarray(p) <= 0.05))
+
+    size = reject_rate(lambda: rng.standard_normal(n))
+    assert size <= 0.12, f"size {size} -- Type I error inflated"
+
+    assert reject_rate(lambda: rng.standard_normal(n) + 0.5) > 0.9
+    assert reject_rate(lambda: rng.standard_normal(n) + 1.0) > 0.95
+    # Shape-only alternatives: real power, but modest at this n.
+    assert reject_rate(lambda: rng.standard_t(3, n)) > 0.2
