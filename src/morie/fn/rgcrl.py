@@ -39,6 +39,7 @@ def rangayyan_correlation_dimension(x, m=3, tau=1, n_r=20):
     Grassberger, P., & Procaccia, I. (1983). Measuring the strangeness of
         strange attractors. *Physica D: Nonlinear Phenomena*, 9(1-2),
         189-208. https://doi.org/10.1016/0167-2789(83)90298-1
+        (PRIMARY -- now in the library.)
 
     Note: this method is NOT in Rangayyan, contrary to the previous
     docstring's "Ch 7". The 2024 edition mentions "correlation dimension"
