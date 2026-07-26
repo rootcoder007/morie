@@ -18,8 +18,8 @@ So: never assert "CI will skip this" from memory. Uninstall the extra, run
 the tests, observe the skip, reinstall, run again, observe the pass. Both
 paths, measured, every time a gate is added or changed.
 
-Usage
------
+Usage (uv is required; there is no pip fallback by design)
+---------------------------------------------------------
     python tests/fn/_audit/ci_sim.py doubleml tests/fn/test_douml.py
     python tests/fn/_audit/ci_sim.py doubleml tests/fn/test_douml.py tests/fn/test_dml.py
 
@@ -63,15 +63,28 @@ def _pytest(paths: list[str]) -> tuple[int, int, int, str]:
     return n("passed"), n("skipped"), n("failed"), out.strip().splitlines()[-1] if out.strip() else ""
 
 
+def _require_uv() -> None:
+    """uv is mandatory -- there is deliberately no pip fallback.
+
+    A fallback would silently resolve differently from the uv-managed venv
+    and reintroduce exactly the machine-to-machine drift this script exists
+    to detect. uv-created venvs also have no `pip` module at all, so
+    `python -m pip` inside one dies with "No module named pip".
+    """
+    if _run(["uv", "--version"]).returncode != 0:
+        sys.exit("[ci_sim] uv not found. Install it: "
+                 "curl -LsSf https://astral.sh/uv/install.sh | sh "
+                 '(then export PATH="$HOME/.local/bin:$PATH")')
+
+
 def _uninstall(pkg: str) -> None:
-    # uv first (the venvs on L14 are uv-created and have no pip); fall back.
-    if _run(["uv", "pip", "uninstall", "--python", PY, pkg]).returncode != 0:
-        _run([PY, "-m", "pip", "uninstall", "-y", pkg])
+    _run(["uv", "pip", "uninstall", "--python", PY, pkg])
 
 
 def _install(pkg: str) -> None:
-    if _run(["uv", "pip", "install", "--quiet", "--python", PY, pkg]).returncode != 0:
-        _run([PY, "-m", "pip", "install", "--quiet", pkg])
+    proc = _run(["uv", "pip", "install", "--quiet", "--python", PY, pkg])
+    if proc.returncode != 0:
+        sys.exit(f"[ci_sim] uv could not reinstall {pkg}: {proc.stderr.strip()}")
 
 
 def main() -> int:
@@ -82,6 +95,7 @@ def main() -> int:
     ap.add_argument("--json", type=Path, help="write the two-view result here")
     args = ap.parse_args()
 
+    _require_uv()
     print(f"[ci_sim] extra={args.extra}  paths={' '.join(args.paths)}")
 
     # --- CI path: the extra is absent -------------------------------------
