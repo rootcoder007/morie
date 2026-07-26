@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Power spectral density via Welch's method -- Rangayyan Ch 4."""
+"""Power spectral density via Welch's method -- Rangayyan & Krishnan Sec 6.3.2-6.3.4."""
 
 from __future__ import annotations
 
@@ -8,6 +8,14 @@ import numpy as np
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["rangayyan_psd"]
+
+# np.trapz was REMOVED in NumPy 2.0 and renamed to np.trapezoid. pyproject
+# still declares numpy>=1.24, where only np.trapz exists, so bind whichever
+# the installed NumPy provides. Without this the function raised
+# AttributeError on every call under NumPy >= 2 -- not a test artefact, a
+# hard failure for any caller.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
+
 
 
 def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
@@ -38,7 +46,15 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
 
     References
     ----------
-    Rangayyan Ch 4.  Welch (1967), IEEE Trans Audio Electroacoust 15:70-73.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 6.3.2 "The periodogram", p.323;
+        Sec 6.3.3 "The need for averaging PSDs", p.325; Sec 6.3.4 "The use
+        of windows: spectral resolution and leakage", p.326 -- NOT Ch 4.
+        Welch's method is precisely the averaged, windowed periodogram those
+        three sections build up.
+    Welch, P. D. (1967). The use of Fast Fourier Transform for the estimation
+        of power spectra. *IEEE Transactions on Audio and Electroacoustics*,
+        15(2), 70-73.
     """
     from scipy.signal import welch
 
@@ -55,16 +71,16 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
             ("Window", window),
             ("Peak freq (Hz)", float(freqs[peak_idx])),
             ("Peak power", float(pxx[peak_idx])),
-            ("Total power", float(np.trapz(pxx, freqs))),
+            ("Total power", float(_trapezoid(pxx, freqs))),
         ],
-        interpretation=(f"PSD peaks at {freqs[peak_idx]:.3g} Hz; total band power {float(np.trapz(pxx, freqs)):.4g}."),
+        interpretation=(f"PSD peaks at {freqs[peak_idx]:.3g} Hz; total band power {float(_trapezoid(pxx, freqs)):.4g}."),
         payload={
             "freqs": freqs,
             "psd": pxx,
             "fs": float(fs),
             "nperseg": int(nperseg),
             "peak_freq": float(freqs[peak_idx]),
-            "total_power": float(np.trapz(pxx, freqs)),
+            "total_power": float(_trapezoid(pxx, freqs)),
         },
     )
     return with_describe_pointer(res, "rgpsd")
@@ -79,4 +95,4 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
 
 
 def cheatsheet():
-    return "rgpsd: Welch power spectral density -- Rangayyan Ch 4"
+    return "rgpsd: Welch power spectral density -- Rangayyan & Krishnan Sec 6.3.3"

@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Heart rate variability (time-domain) -- Rangayyan Ch 6."""
+"""Heart rate variability (time-domain) -- Task Force (1996)."""
 
 from __future__ import annotations
 
@@ -33,7 +33,15 @@ def rangayyan_hrv(rr_ms):
 
     References
     ----------
-    Rangayyan Ch 6.  Task Force of the ESC/NASPE (1996), Circulation 93:1043.
+    Task Force of the European Society of Cardiology and the North American
+        Society of Pacing and Electrophysiology (1996). Heart rate
+        variability: standards of measurement, physiological interpretation,
+        and clinical use. *Circulation*, 93(5), 1043-1065. This is the
+        specification for SDNN, RMSSD and pNN50.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 2.2.5 "Heart-rate variability",
+        p.75, and Sec 7.9 "Application: Heart-rate Variability", p.416. The
+        previous docstring cited Ch 6.
     """
     rr = np.asarray(rr_ms, dtype=float).ravel()
     n = rr.size
@@ -81,4 +89,4 @@ def rangayyan_hrv(rr_ms):
 
 
 def cheatsheet():
-    return "rghrv: time-domain HRV (SDNN, RMSSD, pNN50) -- Rangayyan Ch 6"
+    return "rghrv: time-domain HRV (SDNN, RMSSD, pNN50) -- Task Force (1996)"

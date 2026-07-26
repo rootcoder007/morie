@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Wavelet denoising -- Rangayyan Ch 10."""
+"""Wavelet denoising -- Donoho & Johnstone (1994)."""
 
 from __future__ import annotations
 
@@ -43,7 +43,13 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
 
     References
     ----------
-    Donoho & Johnstone (1994).  Rangayyan Ch 10.
+    Donoho, D. L., & Johnstone, I. M. (1994). Ideal spatial adaptation by
+        wavelet shrinkage. *Biometrika*, 81(3), 425-455. The universal
+        threshold sigma*sqrt(2 log n) is theirs.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 8.14 "Application: Wavelet
+        Denoising of PPG Signals", p.493. The previous docstring cited
+        Ch 10.
     """
     x = np.asarray(x, dtype=float).ravel()
     warnings_list: list[str] = []
@@ -115,4 +121,4 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
 
 
 def cheatsheet():
-    return "rgwav: wavelet (universal-threshold) denoising -- Rangayyan Ch 10"
+    return "rgwav: wavelet (universal-threshold) denoising -- Donoho & Johnstone (1994)"

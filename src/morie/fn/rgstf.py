@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Short-time Fourier transform -- Rangayyan Ch 4."""
+"""Short-time Fourier transform -- Rangayyan & Krishnan Sec 8.4.1."""
 
 from __future__ import annotations
 
@@ -28,7 +28,9 @@ def rangayyan_stft(x, fs=1.0, nperseg=256, noverlap=None, window="hann"):
 
     References
     ----------
-    Rangayyan Ch 4.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 8.4.1 "The short-time Fourier
+        transform", p.438. The previous docstring cited Ch 4.
     """
     from scipy.signal import spectrogram
 
@@ -63,4 +65,4 @@ def rangayyan_stft(x, fs=1.0, nperseg=256, noverlap=None, window="hann"):
 
 
 def cheatsheet():
-    return "rgstf: short-time Fourier transform -- Rangayyan Ch 4"
+    return "rgstf: short-time Fourier transform -- Rangayyan & Krishnan Sec 8.4.1"

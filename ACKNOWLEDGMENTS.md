@@ -43,6 +43,13 @@ check the code against the same page the author wrote.
 | Sample entropy | J. S. Richman & J. R. Moorman, *Am. J. Physiol.* 278:H2039–H2049 (2000) |
 | Graded response model (polytomous IRT) | F. Samejima, *Psychometrika Monograph Supplement* No. 17 (1969) |
 | Genomic relationship matrices | P. M. VanRaden, *J. Dairy Sci.* 91:4414–4423 (2008) |
+| LMS adaptive noise cancelling | Bernard Widrow & Samuel D. Stearns, *Adaptive Signal Processing* (Prentice-Hall, 1985) |
+| Autoregressive modelling (Burg's recursion) | John Parker Burg, *Maximum Entropy Spectral Analysis* (PhD thesis, Stanford University, 1975); S. Lawrence Marple, *Digital Spectral Analysis* (Prentice-Hall, 1987) |
+| Averaged-periodogram power spectral density | Peter D. Welch, *IEEE Trans. Audio Electroacoust.* 15:70–73 (1967) |
+| Heart-rate variability (SDNN, RMSSD, pNN50) | Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology, *Circulation* 93:1043–1065 (1996) |
+| Wavelet shrinkage denoising (universal threshold) | David L. Donoho & Iain M. Johnstone, *Biometrika* 81:425–455 (1994) |
+| Discrete wavelet transform for time series | Donald B. Percival & Andrew T. Walden, *Wavelet Methods for Time Series Analysis* (Cambridge University Press, 2000) |
+| Largest Lyapunov exponent | Michael T. Rosenstein, James J. Collins & Carlo J. De Luca, *Physica D* 65:117–134 (1993) |
 | Double machine learning | V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, W. Newey & J. Robins, *Econometrics Journal* 21:C1–C68 (2018) |
 
 Where a secondary source and the primary disagree, morie follows the primary

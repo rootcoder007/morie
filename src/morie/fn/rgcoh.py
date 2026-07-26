@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Magnitude-squared coherence -- Rangayyan Ch 4."""
+"""Magnitude-squared coherence -- Rangayyan & Krishnan Sec 4.5.1."""
 
 from __future__ import annotations
 
@@ -30,7 +30,9 @@ def rangayyan_coherence(x, y, fs=1.0, nperseg=None):
 
     References
     ----------
-    Rangayyan Ch 4.
+    Rangayyan, R. M., & Krishnan, S. (2024). *Biomedical Signal Analysis*
+        (3rd ed.). Wiley-IEEE Press. Sec 4.5.1 "Coherence analysis of EEG
+        channels", p.235.
     """
     from scipy.signal import coherence
 
@@ -74,4 +76,4 @@ def rangayyan_coherence(x, y, fs=1.0, nperseg=None):
 
 
 def cheatsheet():
-    return "rgcoh: magnitude-squared coherence -- Rangayyan Ch 4"
+    return "rgcoh: magnitude-squared coherence -- Rangayyan & Krishnan Sec 4.5.1"
