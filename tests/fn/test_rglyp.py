@@ -7,17 +7,71 @@ Physica D 65(1-2):117-134.
 NOT Rangayyan -- the 2024 edition contains no occurrence of "Lyapunov" or
 "Rosenstein", so the previous "Ch 7" citation pointed at nothing.
 
-THE PRIMARY IS NOT IN THE LIBRARY, so these tests deliberately do NOT assert a
-magnitude. They pin behaviour that follows from what a Lyapunov exponent IS,
-using a system whose exponent is known analytically -- claims that hold
-whatever normalisation Rosenstein prescribes. Tighten them to a transcribed
-fixture once the paper is on disk.
+The primary was acquired 2026-07-26, so these tests now assert MAGNITUDE
+against the paper's own Table 1 (p.122), hand-transcribed into
+tests/fn/fixtures/rglyp.json, at the tolerance the paper states for itself:
+"less than +/-10%, and most errors were less than +/-5%".
 """
+
+import json
+import pathlib
+
+_FIX = json.loads(
+    (pathlib.Path(__file__).parent / "fixtures" / "rglyp.json").read_text()
+)
+_EXPECT = {s["name"]: s for s in _FIX["systems"]}
 
 import numpy as np
 import pytest
 
 from morie.fn.rglyp import rangayyan_lyapunov
+
+
+def _henon(n, a=1.4, b=0.3):
+    """Henon map, Table 1 row 2: a = 1.4, b = 0.3, dt = 1, lambda_1 = 0.418."""
+    x, y = 0.1, 0.3
+    out = np.empty(n)
+    for i in range(n):
+        x, y = 1.0 - a * x * x + y, b * x
+        out[i] = x
+    return out
+
+
+def test_matches_rosenstein_table_1_logistic():
+    """Table 1, p.122: logistic mu = 4.0, dt = 1, lambda_1 = 0.693."""
+    want = _EXPECT["logistic"]["expected_lambda1"]
+    got = rangayyan_lyapunov(_logistic(6000), m=2, tau=1, max_t=25, dt=1.0)["lyapunov"]
+    assert abs(got - want) / want < 0.10, f"expected {want} +/-10%, got {got}"
+
+
+def test_matches_rosenstein_table_1_henon():
+    """Table 1, p.122: Henon a = 1.4, b = 0.3, dt = 1, lambda_1 = 0.418.
+
+    A second system matters: the logistic map alone could be matched by an
+    estimator that happens to recover ln 2 for the wrong reason.
+    """
+    want = _EXPECT["henon"]["expected_lambda1"]
+    got = rangayyan_lyapunov(_henon(6000), m=2, tau=1, max_t=25, dt=1.0)["lyapunov"]
+    assert abs(got - want) / want < 0.10, f"expected {want} +/-10%, got {got}"
+
+
+def test_dt_scales_the_exponent_per_equation_13():
+    """Eq (13) divides by dt, so lambda is per unit of dt.
+
+    Halving dt must double the exponent. Without a dt parameter the function
+    silently returned a per-SAMPLE rate, which for a sampled flow is wrong by
+    a factor of fs while still looking like a plausible number.
+    """
+    x = _logistic(3000)
+    base = rangayyan_lyapunov(x, m=2, tau=1, max_t=25, dt=1.0)["lyapunov"]
+    for d in (0.5, 0.1, 2.0):
+        got = rangayyan_lyapunov(x, m=2, tau=1, max_t=25, dt=d)["lyapunov"]
+        assert np.isclose(got, base / d, rtol=1e-9)
+
+
+def test_rejects_non_positive_dt():
+    with pytest.raises(ValueError, match="`dt` must be positive"):
+        rangayyan_lyapunov(_logistic(500), dt=0.0)
 
 
 def _logistic(n, r=4.0, x0=0.4):
@@ -37,11 +91,8 @@ def _logistic(n, r=4.0, x0=0.4):
 def test_identity_chaotic_map_gives_a_positive_exponent():
     """Logistic r=4 is chaotic, so lambda must be clearly positive.
 
-    Measured 0.591 against the analytic ln 2 = 0.6931 -- an underestimate of
-    about 15%, which is expected for Rosenstein-style estimation on a fixed
-    early-growth window and finite data. The bounds are deliberately loose:
-    without the primary the magnitude is not certified, only the sign and
-    order of magnitude.
+    Kept alongside the Table 1 checks as a cheap sign/order guard that does
+    not depend on the fixture.
     """
     lam = rangayyan_lyapunov(_logistic(4000), m=3, tau=1, max_t=30)["lyapunov"]
     assert 0.3 < lam < 0.9, f"expected a clearly positive lambda near ln2, got {lam}"
