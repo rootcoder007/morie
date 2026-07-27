@@ -1,24 +1,36 @@
-"""Tests for bivcn.bivariate_causal_test."""
+"""Tests for bivcn -- the front-end over anmod."""
 
 import numpy as np
+import pytest
 
+from morie.fn.anmod import additive_noise_model
 from morie.fn.bivcn import bivariate_causal_test
 
 
-def test_bivcn_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(42).normal(0, 1, 100)
-    regressor = np.random.default_rng(42).normal(0, 1, 100)
-    result = bivariate_causal_test(X, Y, regressor)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+def _cubic(seed=1, n=250):
+    rng = np.random.default_rng(seed)
+    x = rng.uniform(-2, 2, n)
+    return x, x**3 + rng.normal(0, 0.5, n)
 
 
-def test_bivcn_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    Y = np.random.default_rng(42).normal(0, 1, 100)
-    regressor = np.random.default_rng(42).normal(0, 1, 100)
-    result = bivariate_causal_test(X, Y, regressor)
-    assert isinstance(result, dict)
+def test_front_end_matches_the_canonical_implementation():
+    x, y = _cubic()
+    a = additive_noise_model(x, y, B=60, seed=5)
+    b = bivariate_causal_test(x, y, B=60, seed=5)
+    assert a["direction"] == b["direction"]
+    assert a["hsic_xy"] == b["hsic_xy"]
+
+
+def test_an_unimplemented_regressor_is_refused_not_ignored():
+    """Silently using a different smoother would misreport what was run."""
+    x, y = _cubic()
+    with pytest.raises(ValueError, match="not implemented"):
+        bivariate_causal_test(x, y, regressor="gp")
+
+
+def test_it_does_not_carry_a_second_implementation():
+    import inspect
+
+    from morie.fn import bivcn
+
+    assert "anmod" in inspect.getsource(bivcn)
