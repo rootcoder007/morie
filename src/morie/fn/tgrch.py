@@ -18,7 +18,7 @@ def tgarch_model(x):
 
         \sigma_t^2 = \omega + (\alpha + \gamma I_{t-1})\,\epsilon_{t-1}^2
                      + \beta\,\sigma_{t-1}^2,
-        \quad I_{t-1} = 1\{\epsilon_{t-1} < 0\}.
+        \quad I_{t-1} = 1\{\epsilon_{t-1} \le 0\}.
 
     Parameters
     ----------
@@ -43,31 +43,6 @@ def tgarch_model(x):
     if n < 20:
         raise ValueError(f"Need at least 20 observations, got {n}.")
 
-    try:
-        from arch import arch_model
-
-        m = arch_model(r, mean="Zero", vol="GARCH", p=1, o=1, q=1, dist="normal")
-        fit = m.fit(disp="off", show_warning=False)
-        params = fit.params
-        omega = float(params.get("omega", np.nan))
-        alpha = float(params.get("alpha[1]", np.nan))
-        gamma = float(params.get("gamma[1]", np.nan))
-        beta = float(params.get("beta[1]", np.nan))
-        return RichResult(
-            payload={
-                "omega": omega,
-                "alpha": alpha,
-                "gamma": gamma,
-                "beta": beta,
-                "persistence": alpha + 0.5 * gamma + beta,
-                "loglik": float(fit.loglikelihood),
-                "conditional_variance": np.asarray(fit.conditional_volatility) ** 2,
-                "n": int(n),
-                "method": "GJR-GARCH(1,1) via arch.arch_model",
-            }
-        )
-    except Exception:
-        pass
 
     def neg_ll(p):
         omega, alpha, gamma, beta = p
@@ -76,7 +51,7 @@ def tgarch_model(x):
         s2 = np.zeros(n)
         s2[0] = np.var(r) + 1e-10
         for t in range(1, n):
-            I = 1.0 if r[t - 1] < 0 else 0.0
+            I = 1.0 if r[t - 1] <= 0 else 0.0
             s2[t] = omega + (alpha + gamma * I) * r[t - 1] ** 2 + beta * s2[t - 1]
             s2[t] = max(s2[t], 1e-12)
         return 0.5 * np.sum(np.log(2 * np.pi * s2) + r**2 / s2)
@@ -92,7 +67,7 @@ def tgarch_model(x):
     s2 = np.zeros(n)
     s2[0] = var_r
     for t in range(1, n):
-        I = 1.0 if r[t - 1] < 0 else 0.0
+        I = 1.0 if r[t - 1] <= 0 else 0.0
         s2[t] = omega + (alpha + gamma * I) * r[t - 1] ** 2 + beta * s2[t - 1]
     return RichResult(
         payload={
