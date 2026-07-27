@@ -1,22 +1,21 @@
-"""Tests for volrk.vol_realised_kernel."""
+"""Tests for volrk."""
 
 import numpy as np
+import pytest
 
 from morie.fn.volrk import vol_realised_kernel
 
 
 def test_volrk_basic():
-    """Test basic functionality."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_realised_kernel(r_intraday, H)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(0)
+    r = rng.normal(scale=0.01, size=400)
+    out = vol_realised_kernel(r)
+    assert out["rk"] == pytest.approx(0.01**2 * 400, rel=0.3)
+    assert out["gammas"].size == out["H"] + 1
 
 
 def test_volrk_edge():
-    """Test edge cases."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    H = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_realised_kernel(r_intraday, H)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        vol_realised_kernel(np.ones(3))
+    with pytest.raises(ValueError):
+        vol_realised_kernel(np.ones(20), H=25)

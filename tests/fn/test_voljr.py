@@ -1,22 +1,22 @@
-"""Tests for voljr.vol_jump_robust_var."""
+"""Tests for voljr."""
 
 import numpy as np
+import pytest
 
 from morie.fn.voljr import vol_jump_robust_var
 
 
 def test_voljr_basic():
-    """Test basic functionality."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    result = vol_jump_robust_var(r_intraday, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    r = rng.normal(scale=0.01, size=200)
+    r[50] = 0.4
+    out = vol_jump_robust_var(r)
+    assert out["n_excluded"] >= 1
+    assert out["rv"] - out["rv_truncated"] > 0.15
 
 
 def test_voljr_edge():
-    """Test edge cases."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    result = vol_jump_robust_var(r_intraday, theta)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        vol_jump_robust_var([0.1, 0.2])
+    with pytest.raises(ValueError):
+        vol_jump_robust_var(np.ones(10), threshold=0.0)

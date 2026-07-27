@@ -1,4 +1,5 @@
-"""Realised quadratic variation = RV in-sample."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Realised quadratic variation of a sampled path."""
 
 import numpy as np
 
@@ -8,33 +9,47 @@ __all__ = ["vol_realised_quadratic_var"]
 
 
 def vol_realised_quadratic_var(x):
-    """
-    Realised quadratic variation = RV in-sample
+    r"""Quadratic variation of a discretely observed path.
 
-    Formula: [X]_T = Σ_i (X_{t_i}-X_{t_{i-1}})²
+    .. math:: [X]_T = \sum_i (X_{t_i} - X_{t_{i-1}})^2,
+
+    computed from *levels* (prices or log-prices), where realised
+    variance takes returns -- the two agree when the returns are the
+    first differences of x. Also returns the realised quarticity
+    :math:`\tfrac{m}{3} \sum r_i^4`, the ingredient the BNS jump test
+    and the HAR-Q model both need.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    x : array-like, shape (m,)
+        Observed path levels.
 
     Returns
     -------
-    result : dict
-        Keys: QV
+    RichResult
+        keys: ``qv``, ``rq`` (realised quarticity), ``n_increments``,
+        ``method``.
 
     References
     ----------
-    Andersen-Bollerslev (1998)
+    Barndorff-Nielsen, O. E. & Shephard, N. (2004). *Journal of
+    Financial Econometrics*, 2(1), 1-48. (QV and the quarticity
+    normalisation)
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    x = np.asarray(x, dtype=float).ravel()
+    if x.size < 3:
+        raise ValueError("need at least 3 observations of the path.")
+    r = np.diff(x)
+    m = r.size
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Realised quadratic variation = RV in-sample"}
+        payload={
+            "qv": float((r**2).sum()),
+            "rq": float(m / 3.0 * (r**4).sum()),
+            "n_increments": int(m),
+            "method": "Realised quadratic variation + quarticity",
+        }
     )
 
 
 def cheatsheet():
-    return "volraq: Realised quadratic variation = RV in-sample"
+    return "volraq: [X]_T = sum (dX)^2; RQ = (m/3) sum r^4"

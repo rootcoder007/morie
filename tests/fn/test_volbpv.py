@@ -1,22 +1,21 @@
-"""Tests for volbpv.vol_bipower_variation."""
+"""Tests for volbpv."""
 
 import numpy as np
+import pytest
 
 from morie.fn.volbpv import vol_bipower_variation
 
 
 def test_volbpv_basic():
-    """Test basic functionality."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    block_index = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_bipower_variation(r_intraday, block_index)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    r = np.array([0.1, -0.1, 0.1, -0.1])
+    assert vol_bipower_variation(r)["bpv"] == pytest.approx(np.pi / 2 * 3 * 0.01)
 
 
 def test_volbpv_edge():
-    """Test edge cases."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    block_index = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_bipower_variation(r_intraday, block_index)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(0)
+    r = rng.normal(scale=0.01, size=300)
+    clean = vol_bipower_variation(r)["bpv"]
+    rj = r.copy(); rj[100] += 0.3
+    assert vol_bipower_variation(rj)["bpv"] - clean < 0.02  # jump-robust
+    with pytest.raises(ValueError):
+        vol_bipower_variation([0.1, 0.2])

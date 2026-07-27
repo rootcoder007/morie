@@ -1,22 +1,17 @@
-"""Tests for volrv.vol_realised_variance."""
+"""Tests for volrv."""
 
 import numpy as np
+import pytest
 
 from morie.fn.volrv import vol_realised_variance
 
 
 def test_volrv_basic():
-    """Test basic functionality."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    block_index = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_realised_variance(r_intraday, block_index)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert vol_realised_variance([0.1, -0.2, 0.3])["rv"] == pytest.approx(0.14)
 
 
 def test_volrv_edge():
-    """Test edge cases."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    block_index = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_realised_variance(r_intraday, block_index)
-    assert isinstance(result, dict)
+    out = vol_realised_variance([0.1, 0.2, 0.3, 0.4], ["a", "a", "b", "b"])
+    assert out["rv"] == pytest.approx([0.05, 0.25])
+    with pytest.raises(ValueError):
+        vol_realised_variance([0.1])
