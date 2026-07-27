@@ -10,6 +10,12 @@ citation against the library PDFs or the actual paper before use.
   (VanderWeele & Ding 2017, doi:10.7326/M16-2607, verified;
   Ding & VanderWeele 2016)
 - `jntmed` -- joint-significance max-p test (MacKinnon et al. 2002)
+- `medfm` `fdadj` `fdcrt` -- Pearl mediation formula (Pearl 2001;
+  VanderWeele 2015 Ch.2), front-door adjustment + criterion (Pearl
+  2009 Thm 3.3.4 / Def 3.3.3); front-door test proves unobserved-
+  confounder cancellation against the naive conditional
+- `causmedb` `mdian` `backDR` `medFront` -- documented front-ends to
+  bkmed / bdrj / fdadj (mdian residualises covariates first)
 
 ## Cluster plan (next)
 
@@ -42,7 +48,6 @@ citation against the library PDFs or the actual paper before use.
 - `causdmliv` -- Double ML for instrumental variables
 - `causftbl` -- Pearl front-door adjustment via mediator path
 - `causipsw` -- ATT inverse probability of treatment weights
-- `causmedb` -- Baron-Kenny three-equation mediation
 - `causmedi` -- Imai-Keele-Tingley sequential ignorability mediation
 - `causmtch` -- Propensity-score nearest-neighbour 1:1 matching
 - `causqte` -- Quantile treatment effect via Firpo IPW
@@ -70,8 +75,6 @@ citation against the library PDFs or the actual paper before use.
 - `drovrl` -- DR-DiD with propensity overlap trimming
 - `exchg` -- Exchangeability (unconfoundedness/ignorability): treatment independent of potential outcomes given covariates
 - `fciag` -- Fast Causal Inference (FCI) algorithm for hidden confounders
-- `fdadj` -- Front-door adjustment formula for causal effect via mediator
-- `fdcrt` -- Front-door criterion: identification via mediator when backdoor blocked
 - `frkst` -- Fork (common cause) structure A<-B->C: B is confounder
 - `gb1251` -- Kendall partial tau for controlling confounder z
 - `gctvc` -- G-computation (parametric g-formula) for time-varying confounding
@@ -91,10 +94,8 @@ citation against the library PDFs or the actual paper before use.
 - `kmprf` -- Prefix-LM attention mask: bidirectional over prefix, causal over completion
 - `longMd` -- Longitudinal mediation (cross-lagged)
 - `mcausm` -- Multi-mediator causal mediation analysis
-- `mdian` -- Mediation analysis: decompose total effect into direct and indirect
 - `medML` -- Double ML mediation
 - `medSEM` -- SEM-based mediation (lavaan style)
-- `medfm` -- Pearl's mediation formula
 - `medstg` -- Sequential / chain mediation X -> M1 -> M2 -> Y
 - `mivbnd` -- Manski monotone instrumental variable bounds
 - `mlmMd` -- Multilevel (1-1-1, 2-1-1) mediation
@@ -141,10 +142,8 @@ citation against the library PDFs or the actual paper before use.
 - `trnfen` -- Transfer entropy (info-theoretic causality)
 - `unitnr` -- Unit nonresponse propensity weighting
 - `weakid` -- Weak identification check for mediation
-- `backDR` -- Back-door adjustment
 - `causmrop` -- G-formula (parametric) standardised mean
 - `drlnr` -- DR-learner: doubly robust meta-learner for CATE
-- `medFront` -- Front-door criterion
 - `msmphr` -- Marginal structural Cox model with IPTW
 - `pluginM` -- Plug-in g-computation NIE
 - `sntmod` -- Sequential targeted parametric g-formula
