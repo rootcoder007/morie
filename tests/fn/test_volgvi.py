@@ -1,26 +1,24 @@
-"""Tests for volgvi.vol_garch_var_impl."""
+"""Tests for volgvi."""
 
-import numpy as np
+import pytest
+from scipy import stats
 
 from morie.fn.volgvi import vol_garch_var_impl
 
 
 def test_volgvi_basic():
-    """Test basic functionality."""
-    mu = 0.0
-    sigma_next = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    dist = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_garch_var_impl(mu, sigma_next, alpha, dist)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = vol_garch_var_impl(0.0, 1.0, alpha=0.05)
+    assert out["var"] == pytest.approx(-stats.norm.ppf(0.05), abs=1e-12)
+    assert vol_garch_var_impl(0.0, 3.0)["var"] == pytest.approx(3 * out["var"])
 
 
 def test_volgvi_edge():
-    """Test edge cases."""
-    mu = 0.0
-    sigma_next = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    dist = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_garch_var_impl(mu, sigma_next, alpha, dist)
-    assert isinstance(result, dict)
+    # a fatter tail must widen the 1% VaR
+    assert (
+        vol_garch_var_impl(0.0, 1.0, 0.01, dist="t", nu=4.0)["var"]
+        > vol_garch_var_impl(0.0, 1.0, 0.01)["var"]
+    )
+    with pytest.raises(ValueError):
+        vol_garch_var_impl(0.0, 0.0)
+    with pytest.raises(ValueError):
+        vol_garch_var_impl(0.0, 1.0, alpha=0.0)

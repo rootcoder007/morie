@@ -1,38 +1,46 @@
-"""Integrated GARCH (alpha + beta = 1)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Integrated GARCH(1,1)."""
 
-import numpy as np
-
+from ._garch import garch_fit, garch_forecast
 from ._richresult import RichResult
 
 __all__ = ["igarch_integrated"]
 
 
 def igarch_integrated(x):
-    """
-    Integrated GARCH (alpha + beta = 1)
+    r"""Integrated GARCH(1,1).
 
-    Formula: sigma_t^2 = omega + alpha eps^2 + (1-alpha) sigma_{t-1}^2
+    Tsay Sec. 3.6, p. 140-141: the unit root pins alpha at 1 - beta,
+    so shocks to variance never die out and persistence is exactly 1.
+
+    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    recursion in :mod:`morie.fn._garch`.
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Return series.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``params``, ``sigma2``, ``sigma``, ``loglik``, ``aic``,
+        ``bic``, ``persistence``, ``std_residuals``, ``forecast``
+        (one-step-ahead variance), ``converged``, ``n``, ``method``.
 
     References
     ----------
-    Engle & Bollerslev (1986)
+    Engle, R. F. & Bollerslev, T. (1986). Modelling the persistence of
+    conditional variances. *Econometric Reviews*, 5(1), 1-50.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series*
+    (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Integrated GARCH (alpha + beta = 1)"})
+    fit = garch_fit(x, "igarch")
+    fit["forecast"] = float(garch_forecast(fit, 1)[0])
+    fit["method"] = "Integrated GARCH(1,1) (Tsay 2010 Ch. 3)"
+    return RichResult(payload=fit)
 
 
 def cheatsheet():
-    return "igarcm: Integrated GARCH (alpha + beta = 1)"
+    return "igarcm: Integrated GARCH(1,1), spec 'igarch'"

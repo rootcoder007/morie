@@ -1,44 +1,52 @@
-"""Markov-switching GARCH(1,1) two-regime."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Markov-switching GARCH."""
 
-import numpy as np
-
+from ._garch import ms_garch_fit
 from ._richresult import RichResult
 
 __all__ = ["vol_markov_switching_garch"]
 
 
-def vol_markov_switching_garch(r, K, init):
-    """
-    Markov-switching GARCH(1,1) two-regime
+def vol_markov_switching_garch(r, K=2):
+    r"""Markov-switching GARCH with regime-specific (omega, alpha, beta).
 
-    Formula: Two regimes with separate (ω,α,β); P transition
+    An exact MS-GARCH likelihood is intractable because the variance
+    recursion depends on the entire unobserved regime path. This uses
+    Gray's (1996) collapsing step -- the variance carried into the
+    next period is the filtered-probability-weighted average across
+    regimes -- which keeps the state finite-dimensional at the cost of
+    being an approximation, stated here rather than glossed.
+
+    Regimes are returned sorted by unconditional variance, so index 0
+    is always the calm regime and the labels do not permute between
+    runs.
 
     Parameters
     ----------
     r : array-like
-        Input data.
-    K : array-like
-        Input data.
-    init : array-like
-        Input data.
+        Return series, at least 100 observations.
+    K : int, default 2
+        Number of regimes.
 
     Returns
     -------
-    result : dict
-        Keys: omega, alpha, beta, P, ll
+    RichResult
+        keys: ``params`` (list of per-regime dicts), ``transition``
+        (K x K), ``unconditional_var``, ``loglik``, ``n_regimes``,
+        ``converged``, ``n``, ``method``.
 
     References
     ----------
-    Klaassen (2002)
+    Gray, S. F. (1996). Modeling the conditional distribution of
+    interest rates as a regime-switching process. *Journal of
+    Financial Economics*, 42(1), 27-62.
+
+    Hamilton, J. D. (1989). A new approach to the economic analysis of
+    nonstationary time series and the business cycle. *Econometrica*,
+    57(2), 357-384.
     """
-    r = np.atleast_1d(np.asarray(r, dtype=float))
-    n = len(r)
-    result = float(np.mean(r))
-    se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Markov-switching GARCH(1,1) two-regime"}
-    )
+    return RichResult(payload=ms_garch_fit(r, K))
 
 
 def cheatsheet():
-    return "volmsg: Markov-switching GARCH(1,1) two-regime"
+    return "volmsg: MS-GARCH, Gray (1996) collapsed recursion, regimes sorted by variance"
