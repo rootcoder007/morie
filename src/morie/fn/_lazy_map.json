@@ -20671,6 +20671,7 @@
 "moods": "moods",
 "moran_resid": "xrmri",
 "moran_residual_test": "sgrmr",
+"morani": "sptau",
 "morans_i": "morisp",
 "morans_i_asymptotic_test": "moranI",
 "morphological_ca": "mca",
