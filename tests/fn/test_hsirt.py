@@ -1,22 +1,29 @@
-"""Tests for hsirt.heteroskedastic_irt."""
+"""Tests for hsirt."""
 
 import numpy as np
+import pytest
+
+from scipy.stats import norm
 
 from morie.fn.hsirt import heteroskedastic_irt
 
 
 def test_hsirt_basic():
-    """Test basic functionality."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    n_dims = 2
-    result = heteroskedastic_irt(votes, n_dims)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n, q = 25, 70
+    x = np.linspace(-2, 2, n)
+    beta = rng.normal(scale=1.2, size=q)
+    alpha = rng.normal(scale=0.5, size=q)
+    psi = np.ones(n)
+    psi[0] = 4.0
+    P = norm.cdf((x[:, None] * beta - alpha) / psi[:, None])
+    V = (rng.random((n, q)) < P).astype(float)
+    out = heteroskedastic_irt(V, x, item_params=(alpha, beta), max_iter=8)
+    assert np.argmax(out["psi"]) == 0  # the unpredictable voter
 
 
 def test_hsirt_edge():
-    """Test edge cases."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    n_dims = 2
-    result = heteroskedastic_irt(votes, n_dims)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        heteroskedastic_irt(np.ones((4, 3)) * 2, np.zeros(4))  # non-binary
+    with pytest.raises(ValueError):
+        heteroskedastic_irt(np.ones((4, 3)), np.zeros(2))  # length mismatch

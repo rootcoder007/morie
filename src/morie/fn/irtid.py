@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Identification constraints for Bayesian IRT ideal points."""
+"""Identification constraints for IRT ideal points."""
 
 import numpy as np
 
@@ -8,43 +8,87 @@ from ._richresult import RichResult
 __all__ = ["irt_identification_constraints"]
 
 
-def irt_identification_constraints(x_init, polarity_idx, pivot_idx):
-    """
-    Identification constraints for Bayesian IRT ideal points
+def irt_identification_constraints(x, polarity_idx=None, pivot_idx=None):
+    r"""Normalise a 1-D ideal-point vector to the identified scale.
 
-    Formula: Fix 2+ legislators (polarity + scale): one liberal <0, one conservative >0; or fix mean=0, sd=1
+    The IRT likelihood is invariant to affine maps of the latent
+    scale, so estimates only mean anything after fixing location,
+    scale, and polarity. This applies the standard normalisation
+    (mean 0, sd 1) and then, if ``polarity_idx`` is given, reflects
+    the scale so that legislator's position is negative (the
+    "liberal-on-the-left" convention); ``pivot_idx`` instead demands
+    that legislator positive. Supplying both requires them to be on
+    opposite sides after normalisation, else the constraint set is
+    infeasible and an error says so.
 
     Parameters
     ----------
-    x_init : array-like
-        Input data.
-    polarity_idx : array-like
-        Input data.
-    pivot_idx : array-like
-        Input data.
+    x : array-like, shape (n,)
+        Raw ideal points.
+    polarity_idx : int, optional
+        Index forced negative.
+    pivot_idx : int, optional
+        Index forced positive.
 
     Returns
     -------
-    result : dict
-        Keys: {'x_constrained': 'array'}
+    RichResult
+        keys: ``x`` (normalised, possibly reflected), ``reflected``,
+        ``mean_before``, ``sd_before``, ``n``, ``method``.
 
     References
     ----------
-    Armstrong Ch 6
+    Clinton, J., Jackman, S. & Rivers, D. (2004). *APSR*, 98(2),
+    355-370. (identification of the ideal-point model)
+
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Ch. 6 (Bayesian scaling and
+    identification), p. 181.
     """
-    x_init = np.asarray(x_init, dtype=float)
-    n = int(x_init) if x_init.ndim == 0 else len(x_init)
-    result = float(np.mean(x_init))
-    se = float(np.std(x_init, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    x = np.asarray(x, dtype=float).ravel()
+    n = x.size
+    if n < 2:
+        raise ValueError("need at least 2 ideal points.")
+    sd = x.std()
+    if sd <= 0:
+        raise ValueError("ideal points are constant; the scale cannot be identified.")
+    mu = float(x.mean())
+    z = (x - mu) / sd
+
+    reflected = False
+    if polarity_idx is not None:
+        i = int(polarity_idx)
+        if not 0 <= i < n:
+            raise ValueError(f"polarity_idx out of range [0, {n - 1}].")
+        if z[i] > 0:
+            z = -z
+            reflected = True
+        if z[i] == 0:
+            raise ValueError("polarity legislator sits exactly at the mean; pick another.")
+    if pivot_idx is not None:
+        j = int(pivot_idx)
+        if not 0 <= j < n:
+            raise ValueError(f"pivot_idx out of range [0, {n - 1}].")
+        if polarity_idx is None:
+            if z[j] < 0:
+                z = -z
+                reflected = True
+        elif z[j] <= 0:
+            raise ValueError(
+                "infeasible constraints: polarity and pivot legislators fall on the same side."
+            )
+
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Identification constraints for Bayesian IRT ideal points",
+            "x": z,
+            "reflected": reflected,
+            "mean_before": mu,
+            "sd_before": float(sd),
+            "n": int(n),
+            "method": "IRT identification: mean 0, sd 1, polarity/pivot reflection",
         }
     )
 
 
 def cheatsheet():
-    return "irtid: Identification constraints for Bayesian IRT ideal points"
+    return "irtid: normalise to mean 0 / sd 1, reflect so polarity_idx < 0 (< pivot_idx)"

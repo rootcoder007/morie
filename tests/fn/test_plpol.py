@@ -1,24 +1,18 @@
-"""Tests for plpol.plot_spatial."""
+"""Tests for plpol."""
 
 import numpy as np
+import pytest
 
 from morie.fn.plpol import plot_spatial
 
 
 def test_plpol_basic():
-    """Test basic functionality."""
-    ideal_points = np.random.default_rng(42).normal(0, 1, 100)
-    party_labels = np.random.default_rng(43).integers(0, 2, 100)
-    stimuli_labels = np.random.default_rng(43).integers(0, 2, 100)
-    result = plot_spatial(ideal_points, party_labels, stimuli_labels)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = plot_spatial(np.array([[-1.0, 0.0], [1.0, 0.0]]), party_labels=["D", "R"])
+    assert out["centroids"]["D"] == pytest.approx([-1.0, 0.0])
+    assert out["coords"].shape == (2, 2)
 
 
 def test_plpol_edge():
-    """Test edge cases."""
-    ideal_points = np.random.default_rng(42).normal(0, 1, 100)
-    party_labels = np.random.default_rng(43).integers(0, 2, 100)
-    stimuli_labels = np.random.default_rng(43).integers(0, 2, 100)
-    result = plot_spatial(ideal_points, party_labels, stimuli_labels)
-    assert isinstance(result, dict)
+    assert plot_spatial([0.0, 1.0])["coords"].shape == (2, 2)  # 1-D padded
+    with pytest.raises(ValueError):
+        plot_spatial([[0.0, 1.0]], party_labels=["D", "R"])  # label mismatch
