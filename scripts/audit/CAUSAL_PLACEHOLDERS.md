@@ -57,6 +57,13 @@ citation against the library PDFs or the actual paper before use.
   triple, executable SCM + unit counterfactuals, ITE/selection-bias
   decomposition. Legacy tests re-fixtured; Fisher-z |r|=1 guard.
 
+- `ggrcst` `granci` `trnfen` -- Granger/info-flow cluster (Granger
+  1969 Econometrica 37(3) 424-438; Barnett-Barrett-Seth 2009 PRL
+  103(23) 238701; Schreiber 2000 PRL 85(2) 461-464 -- all verified).
+  F-test, Gaussian CMI = 0.5 ln RSS ratio (identity asserted against
+  the F arm), transfer entropy in gaussian + binned modes with
+  direction tests. Legacy tests re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
