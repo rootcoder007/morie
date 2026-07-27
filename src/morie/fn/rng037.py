@@ -1,49 +1,30 @@
-"""Equivalent discrete-time causal convolution with swapped arguments.."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Equivalent discrete-time causal convolution with swapped arguments."""
 
 from ._richresult import RichResult
+from .rng036 import rangayyan_ch3_discrete_convolution_causal
 
 __all__ = ["rangayyan_ch3_discrete_convolution_causal_alt"]
 
 
-def rangayyan_ch3_discrete_convolution_causal_alt(x, h, n):
-    """
-    Equivalent discrete-time causal convolution with swapped arguments.
+def rangayyan_ch3_discrete_convolution_causal_alt(x, h, n=None):
+    r"""Commuted form :math:`y(n) = \sum_{k=0}^{n} h(k) x(n-k)`.
 
-    Formula: y(n) = sum_{k=0}^{n} h(k) x(n - k)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
+    Convolution is commutative, so this returns exactly the same
+    sequence as :func:`rangayyan_ch3_discrete_convolution_causal` with
+    the arguments swapped -- the identity is the point of the pair in
+    the text, and the test asserts it.
 
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.37, p. 110
+    Rangayyan, R. M. (2024). *Biomedical Signal Analysis* (3rd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Equivalent discrete-time causal convolution with swapped arguments.",
-        }
-    )
+    out = rangayyan_ch3_discrete_convolution_causal(h, x, n=n)
+    payload = dict(out)
+    payload["method"] = "Causal discrete convolution, commuted: y(n) = sum_k h(k) x(n-k)"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "rng037: Equivalent discrete-time causal convolution with swapped arguments."
+    return "rng037: y(n) = sum_{k=0}^{n} h(k) x(n-k) -- same as rng036 by commutativity"

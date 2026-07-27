@@ -1,22 +1,24 @@
 """Tests for kmprf.kamath_prefix_lm_mask."""
 
 import numpy as np
+import pytest
 
 from morie.fn.kmprf import kamath_prefix_lm_mask
 
 
 def test_kmprf_basic():
-    """Test basic functionality."""
-    prefix_len = np.random.default_rng(42).normal(0, 1, 100)
-    total_len = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_prefix_lm_mask(prefix_len, total_len)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    m = kamath_prefix_lm_mask(2, 4)["mask"]
+    assert np.array_equal(
+        m,
+        np.array(
+            [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 1, 0], [1, 1, 1, 1]],
+            dtype=bool,
+        ),
+    )
 
 
 def test_kmprf_edge():
-    """Test edge cases."""
-    prefix_len = np.random.default_rng(42).normal(0, 1, 100)
-    total_len = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_prefix_lm_mask(prefix_len, total_len)
-    assert isinstance(result, dict)
+    assert np.array_equal(kamath_prefix_lm_mask(0, 3)["mask"], np.tril(np.ones((3, 3), bool)))
+    assert kamath_prefix_lm_mask(3, 3)["mask"].all()
+    with pytest.raises(ValueError):
+        kamath_prefix_lm_mask(4, 3)

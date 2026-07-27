@@ -64,6 +64,16 @@ citation against the library PDFs or the actual paper before use.
   the F arm), transfer entropy in gaussian + binned modes with
   direction tests. Legacy tests re-fixtured.
 
+- `rng032` `rng033` `rng036` `rng037` `rng049` `rng053` `rng103`
+  `rng196` `rgztf` `hmc1d` `grc1d` `kmclm` `kmprf` `nchunk` --
+  causal-signal/NN cluster. rng196 verified in the PDF itself
+  (Rangayyan 3rd ed. Eq. 4.22, p. 228, PDF page 264; taps
+  2, -1, -2, -1, 2). Convolution integrals/sums with commutativity
+  identities, running integral, finite-duration Laplace, FIR
+  z-transform, causal + dilated Conv1D, causal-LM cross-entropy,
+  prefix-LM mask, chunked causal attention (equals full causal
+  attention when every chunk is visible). Legacy tests re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`

@@ -1,51 +1,29 @@
-"""Equivalent causal continuous-time convolution with swapped arguments.."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Equivalent causal continuous-time convolution with swapped arguments."""
 
 from ._richresult import RichResult
+from .rng032 import rangayyan_ch3_causal_convolution
 
 __all__ = ["rangayyan_ch3_causal_convolution_alt"]
 
 
-def rangayyan_ch3_causal_convolution_alt(x, h, t, tau):
-    """
-    Equivalent causal continuous-time convolution with swapped arguments.
+def rangayyan_ch3_causal_convolution_alt(x, h, dt=1.0):
+    r"""Commuted form :math:`y(t) = \int_0^t h(\tau) x(t-\tau)\, d\tau`.
 
-    Formula: y(t) = integral_{0}^{t} h(tau) x(t - tau) d(tau)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h : array-like
-        Input data.
-    t : array-like
-        Input data.
-    tau : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
+    Identical to :func:`rangayyan_ch3_causal_convolution` with the
+    arguments swapped; the pair exists in the text to make the
+    commutativity of convolution explicit.
 
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.33, p. 109
+    Rangayyan, R. M. (2024). *Biomedical Signal Analysis* (3rd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Equivalent causal continuous-time convolution with swapped arguments.",
-        }
-    )
+    out = rangayyan_ch3_causal_convolution(h, x, dt=dt)
+    payload = dict(out)
+    payload["method"] = "Causal convolution integral, commuted: y(t) = int_0^t h(tau) x(t-tau) dtau"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "rng033: Equivalent causal continuous-time convolution with swapped arguments."
+    return "rng033: y(t) = int_0^t h(tau) x(t-tau) dtau -- rng032 commuted"

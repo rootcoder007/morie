@@ -1,26 +1,22 @@
 """Tests for rng033.rangayyan_ch3_causal_convolution_alt."""
 
 import numpy as np
+import pytest
 
+from morie.fn.rng032 import rangayyan_ch3_causal_convolution
 from morie.fn.rng033 import rangayyan_ch3_causal_convolution_alt
 
 
 def test_rng033_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    t = np.linspace(0, 10, 100)
-    tau = 0.1
-    result = rangayyan_ch3_causal_convolution_alt(x, h, t, tau)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    t = np.linspace(0, 3, 301)
+    x = np.exp(-t)
+    h = np.sin(t)
+    dt = t[1] - t[0]
+    a = rangayyan_ch3_causal_convolution_alt(x, h, dt=dt)
+    b = rangayyan_ch3_causal_convolution(x, h, dt=dt)
+    assert a["y"] == pytest.approx(b["y"])  # convolution commutes
 
 
 def test_rng033_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    t = np.linspace(0, 10, 100)
-    tau = 0.1
-    result = rangayyan_ch3_causal_convolution_alt(x, h, t, tau)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        rangayyan_ch3_causal_convolution_alt([1.0, 2.0], [1.0])  # grid mismatch

@@ -1,42 +1,56 @@
-"""Running integral of a causal signal over [0, t].."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Running integral of a causal signal over [0, t]."""
 
 import numpy as np
+from scipy import integrate
 
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch3_integral_causal"]
 
 
-def rangayyan_ch3_integral_causal(x, t):
-    """
-    Running integral of a causal signal over [0, t].
+def rangayyan_ch3_integral_causal(x, dt=1.0):
+    r"""Running integral :math:`y(t) = \int_0^t x(\tau)\, d\tau`.
 
-    Formula: y(t) = integral_{0}^{t} x(t) dt
+    Cumulative trapezoidal integration of a causal signal (zero for
+    t < 0), so ``y[0] = 0`` and each later value accumulates only past
+    input -- integration is itself a causal LTI operation.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    t : array-like
-        Input data.
+    x : array-like, shape (m,)
+        Samples on a uniform grid starting at t = 0.
+    dt : float, default 1.0
+        Sampling interval.
 
     Returns
     -------
-    result : dict
-        Keys: value
+    RichResult
+        keys: ``y`` (m,), ``t`` (m,), ``total`` (y at the last
+        sample), ``dt``, ``method``.
 
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.114, p. 144
+    Rangayyan, R. M. (2024). *Biomedical Signal Analysis* (3rd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    x = np.asarray(x, dtype=float).ravel()
+    if x.size < 2:
+        raise ValueError("need at least 2 samples.")
+    dt = float(dt)
+    if dt <= 0:
+        raise ValueError(f"dt must be positive, got {dt}.")
+    y = integrate.cumulative_trapezoid(x, dx=dt, initial=0.0)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Running integral of a causal signal over [0, t]."}
+        payload={
+            "y": y,
+            "t": np.arange(x.size) * dt,
+            "total": float(y[-1]),
+            "dt": dt,
+            "method": "Running integral y(t) = int_0^t x(tau) dtau (cumulative trapezoid)",
+        }
     )
 
 
 def cheatsheet():
-    return "rng103: Running integral of a causal signal over [0, t]."
+    return "rng103: cumulative trapezoid integral of a causal signal"

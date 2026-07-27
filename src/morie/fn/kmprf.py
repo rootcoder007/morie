@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Prefix-LM attention mask: bidirectional over prefix, causal over completion."""
+"""Prefix-LM attention mask: bidirectional over the prefix, causal over the completion."""
 
 import numpy as np
 
@@ -9,40 +9,62 @@ __all__ = ["kamath_prefix_lm_mask"]
 
 
 def kamath_prefix_lm_mask(prefix_len, total_len):
-    """
-    Prefix-LM attention mask: bidirectional over prefix, causal over completion
+    r"""Boolean attention mask for a prefix language model.
 
-    Formula: M_ij = 0 for i,j in prefix OR (j in prefix for any i) OR j <= i in completion
+    Position i may attend to position j when
+
+    .. math:: j < P \quad\text{(the prefix is fully visible)}
+              \qquad\text{or}\qquad j \le i,
+
+    so tokens inside the prefix see each other in both directions
+    while completion tokens keep the strict causal restriction. With
+    P = 0 this reduces to the standard lower-triangular causal mask;
+    with P = L it is fully bidirectional.
 
     Parameters
     ----------
-    prefix_len : array-like
-        Input data.
-    total_len : array-like
-        Input data.
+    prefix_len : int
+        Number of prefix positions P, 0 <= P <= L.
+    total_len : int
+        Sequence length L.
 
     Returns
     -------
-    result : dict
-        Keys: mask
+    RichResult
+        keys: ``mask`` (L, L) boolean, True = attention allowed,
+        ``additive`` (0 where allowed, -inf where blocked, for adding
+        to logits), ``prefix_len``, ``total_len``, ``n_allowed``,
+        ``method``.
 
     References
     ----------
-    Kamath Ch 2, Prefix Language Modeling section
+    Kamath, U., Graham, K. L. & Emara, W. (2022). *Transformers for
+    Machine Learning: A Deep Dive*. Chapman & Hall/CRC. Ch. 3
+    (attention masking; prefix-LM vs causal-LM objectives).
     """
-    prefix_len = np.atleast_1d(np.asarray(prefix_len, dtype=float))
-    n = len(prefix_len)
-    result = float(np.mean(prefix_len))
-    se = float(np.std(prefix_len, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    P = int(prefix_len)
+    L = int(total_len)
+    if L < 1:
+        raise ValueError(f"total_len must be positive, got {L}.")
+    if not 0 <= P <= L:
+        raise ValueError(f"prefix_len must lie in [0, {L}], got {P}.")
+
+    i = np.arange(L)[:, None]
+    j = np.arange(L)[None, :]
+    mask = (j < P) | (j <= i)
+    additive = np.where(mask, 0.0, -np.inf)
+
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Prefix-LM attention mask: bidirectional over prefix, causal over completion",
+            "mask": mask,
+            "additive": additive,
+            "prefix_len": P,
+            "total_len": L,
+            "n_allowed": int(mask.sum()),
+            "method": "Prefix-LM mask: bidirectional within the prefix, causal after it",
         }
     )
 
 
 def cheatsheet():
-    return "kmprf: Prefix-LM attention mask: bidirectional over prefix, causal over completion"
+    return "kmprf: allow j < P or j <= i; P=0 gives the causal mask, P=L bidirectional"
