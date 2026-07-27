@@ -43,8 +43,27 @@ def test_describe_full_text_contains_section_headers():
 
 def test_describe_skeleton_for_callable_without_md():
     """A callable that doesn't have a describe_*.md file gets the
-    auto-generated skeleton with a warning."""
-    r = describe("xbar")
+    auto-generated skeleton with a warning. The name is picked
+    dynamically from the REGISTRY -- hard-coding one broke when its doc
+    was authored (xbar gained describe_xbar.md and the old version of
+    this test started failing for the wrong reason)."""
+    from pathlib import Path
+
+    import morie.fn as fnpkg
+    from morie.fn._registry import REGISTRY
+
+    import json
+
+    fn_dir = Path(fnpkg.__file__).parent
+    # Must survive describe()'s truthfulness gate too: the name has to be
+    # a REAL export (in the lazy import table), not merely a REGISTRY row.
+    table = set(json.loads((fn_dir / "_lazy_map.json").read_text()))
+    bare = next(
+        name
+        for name in sorted(REGISTRY)
+        if name in table and not (fn_dir / f"describe_{name}.md").exists()
+    )
+    r = describe(bare)
     assert r.warnings
     assert any("skeleton" in w.lower() or "describe_" in w for w in r.warnings)
 
