@@ -1,24 +1,20 @@
 """Tests for nonresp.nonresponse_adjustment."""
 
 import numpy as np
+import pytest
 
 from morie.fn.nonresp import nonresponse_adjustment
 
 
 def test_nonresp_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    propensity = np.random.default_rng(42).normal(0, 1, 100)
-    result = nonresponse_adjustment(y, weights, propensity)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    # w_adj = (2, 1); Hajek mean = (2*1 + 1*3)/3
+    result = nonresponse_adjustment([1.0, 3.0], [1.0, 1.0], [0.5, 1.0])
+    assert result["weights_adjusted"] == pytest.approx([2.0, 1.0])
+    assert result["estimate"] == pytest.approx(5.0 / 3.0)
 
 
 def test_nonresp_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    propensity = np.random.default_rng(42).normal(0, 1, 100)
-    result = nonresponse_adjustment(y, weights, propensity)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        nonresponse_adjustment([1.0], [1.0], [0.0])  # phi = 0
+    with pytest.raises(ValueError):
+        nonresponse_adjustment([1.0], [-1.0], [0.5])  # negative weight

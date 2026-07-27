@@ -17,6 +17,15 @@ citation against the library PDFs or the actual paper before use.
 - `causmedb` `mdian` `backDR` `medFront` -- documented front-ends to
   bkmed / bdrj / fdadj (mdian residualises covariates first)
 
+- `causipsw` `msmest` `causmtch` `cipsc` `prsmtd` `unitnr` `nonresp`
+  `spwgts` `causqte` -- IPW/propensity cluster (Firpo 2007
+  Econometrica 75(1) 259-276; Robins-Hernan-Brumback 2000 Epidemiology
+  11(5) 550-560; Austin 2011 Pharm Stat 10(2) 150-161; Lu 2005
+  Biometrics 61(3) 721-728; Little-Vartivarian 2005 Surv Meth 31(2)
+  161-168; Westreich-Lessler-Funk 2010 J Clin Epi 63(8) 826-833;
+  Cole-Hernan 2008 AJE 168(6) 656-664 -- all verified by web search).
+  Legacy generated tests for all 9 rewritten with valid fixtures.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`

@@ -1,3 +1,4 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Nonresponse adjustment via response propensity."""
 
 import numpy as np
@@ -8,37 +9,70 @@ __all__ = ["nonresponse_adjustment"]
 
 
 def nonresponse_adjustment(y, weights, propensity):
-    """
-    Nonresponse adjustment via response propensity
+    r"""Adjust design weights by the inverse response propensity.
 
-    Formula: w_i_adj = w_i / hat phi_i; phi = P(respond | X)
+    Each respondent's design weight is divided by its estimated
+    response probability, :math:`w_i^{adj} = w_i / \hat\varphi_i`, and
+    the population mean is estimated by the Hajek ratio
+
+    .. math:: \hat{\bar Y} = \frac{\sum_i w_i^{adj} y_i}
+              {\sum_i w_i^{adj}}.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    weights : array-like
-        Input data.
-    propensity : array-like
-        Input data.
+    y : array-like, shape (r,)
+        Respondent outcomes.
+    weights : array-like, shape (r,)
+        Respondent design weights (positive).
+    propensity : array-like, shape (r,)
+        Estimated response propensities in (0, 1].
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``estimate`` (Hajek weighted mean), ``se`` (weighted
+        ratio-estimator SE), ``weights_adjusted``, ``ess``, ``n``,
+        ``method``.
 
     References
     ----------
-    Little & Rubin (2002) §15
+    Little, R. J. A. & Rubin, D. B. (2002). *Statistical Analysis with
+    Missing Data* (2nd ed.). Wiley. Sec. 3.3 (weighting adjustments).
+
+    Little, R. J. & Vartivarian, S. (2005). Does weighting for
+    nonresponse increase the variance of survey means? *Survey
+    Methodology*, 31(2), 161-168.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    y = np.asarray(y, dtype=float).ravel()
+    w = np.asarray(weights, dtype=float).ravel()
+    phi = np.asarray(propensity, dtype=float).ravel()
+    if not (y.size == w.size == phi.size):
+        raise ValueError("y, weights, propensity must have equal length.")
+    if np.any(w <= 0):
+        raise ValueError("weights must be positive.")
+    if np.any((phi <= 0) | (phi > 1)):
+        raise ValueError("propensity must lie in (0, 1].")
+
+    wa = w / phi
+    sw = wa.sum()
+    est = float((wa * y).sum() / sw)
+    # linearised SE of the Hajek ratio estimator
+    n = y.size
+    resid = wa * (y - est)
+    se = float(np.sqrt(n / (n - 1) * (resid**2).sum()) / sw) if n > 1 else float("nan")
+    ess = float(sw * sw / (wa**2).sum())
+
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Nonresponse adjustment via response propensity"}
+        payload={
+            "estimate": est,
+            "se": se,
+            "weights_adjusted": wa,
+            "ess": ess,
+            "n": int(n),
+            "method": "Nonresponse adjustment via response propensity",
+        }
     )
 
 
 def cheatsheet():
-    return "nonresp: Nonresponse adjustment via response propensity"
+    return "nonresp: Hajek mean with weights w/phi (inverse response propensity)"
