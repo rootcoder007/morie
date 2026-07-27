@@ -135,6 +135,21 @@ used only as the search index. Schabenberger & Gotway eqs. (1.14),
 (1.15), (5.13)-(5.16), (6.33)-(6.41) and ESL eq. (9.17) read in the
 PDF itself; the Corradi-Swanson citation verified by web search.
 
+## Final state (2026-07-27)
+
+All 138 reds closed, plus the 18-module tail the five families did not
+cover. Targeted re-runs of every previously failing file: green.
+Cumulative real defects found and fixed under the placeholder-era
+tests: mcnem, cvxhl, volengle, volcorpst, archm, lilf, kssup, regms,
+sgtadj, sgtnbe, dccgrch, rng223, semthe, msm164, and the hrzc1 CLAD
+intercept bug (slope 2.73-2.85 measured everywhere truth was 2.0).
+
+R parity: reds_native.R (6 mirrors + archm ceiling) byte-identical in
+rmorie and r-package/morie, 51/51 tests green in both; R McNemar and
+Lilliefors verified already-correct, no mirror needed.
+
+Placeholder population underway: see CAUSAL_PLACEHOLDERS.md.
+
 ## Reproducing the triage
 
 ```sh
