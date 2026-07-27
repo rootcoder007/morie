@@ -56,6 +56,12 @@ def regime_switching(x, k_regimes=2):
         mu = np.asarray([float(fit.params[f"const[{k}]"]) for k in range(k_regimes)])
         sigma = np.asarray([float(np.sqrt(fit.params[f"sigma2[{k}]"])) for k in range(k_regimes)])
         P = np.asarray(fit.regime_transition).reshape(k_regimes, k_regimes)
+        # statsmodels stores P[to, from] (columns sum to 1). Expose the
+        # row-stochastic convention P[i, j] = P(next = j | current = i),
+        # which is what every textbook prints; normalise in case the
+        # reshape of the time-varying array introduced slack.
+        P = P.T
+        P = P / P.sum(axis=1, keepdims=True)
         return RichResult(
             payload={
                 "mu": mu,

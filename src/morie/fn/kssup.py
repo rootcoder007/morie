@@ -37,6 +37,21 @@ def ks_supremum(
     Returns
     -------
     TestResult
+
+    Notes
+    -----
+    Parameters of ``dist`` are FITTED from the data before the test.
+    The p-value from the classical KS distribution is then
+    conservative (the fitted CDF hugs the sample, shrinking D); for
+    the Gaussian case with a correct null distribution use
+    :func:`morie.fn.lilf.lilliefors_test`.
+
+    References
+    ----------
+    Kolmogorov, A. N. (1933). Sulla determinazione empirica di una
+    legge di distribuzione. *Giorn. Ist. Ital. Attuari*, 4, 83-91.
+    Massey, F. J. (1951). The Kolmogorov-Smirnov test for goodness of
+    fit. *JASA*, 46(253), 68-78.
     """
     x = _extract_col(data, col)
     if len(x) < 5:
@@ -46,7 +61,10 @@ def ks_supremum(
     except AttributeError:
         raise ValueError(f"Unknown distribution: {dist}")
     params = dist_obj.fit(x)
-    result = stats.kstest(x, dist, args=params, alternative=alternative)
+    # Freeze the distribution rather than passing the name + args: recent
+    # scipy maps some named CDFs to bare special functions (norm -> ndtr)
+    # that reject location/scale arguments.
+    result = stats.kstest(x, dist_obj(*params).cdf, alternative=alternative)
     return TestResult(
         test_name=f"KS supremum test ({dist})",
         statistic=float(result.statistic),

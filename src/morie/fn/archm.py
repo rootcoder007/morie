@@ -51,17 +51,25 @@ def arch_in_mean(x):
         eps = np.zeros(n)
         eps[0] = y[0] - mu - delta * np.sqrt(s2[0])
         for t in range(1, n):
-            s2[t] = omega + alpha * eps[t - 1] ** 2
-            s2[t] = max(s2[t], 1e-12)
+            # Ceiling as well as floor: at corner parameter values the
+            # eps -> s2 -> eps recursion explodes, the objective turns
+            # nan, and the optimiser silently keeps its starting point.
+            s2[t] = min(max(omega + alpha * eps[t - 1] ** 2, 1e-12), 1e30)
             eps[t] = y[t] - mu - delta * np.sqrt(s2[t])
-        return 0.5 * np.sum(np.log(2 * np.pi * s2) + eps**2 / s2)
+        ll = 0.5 * np.sum(np.log(2 * np.pi * s2) + eps**2 / s2)
+        return ll if np.isfinite(ll) else 1e10
 
     var_y = float(np.var(y))
+    # L-BFGS-B silently returns the starting point here: the recursion makes
+    # the numerical gradient huge at x0, the first line search overshoots and
+    # backtracks to nothing, and it declares convergence having moved nowhere
+    # (delta and alpha came back EXACTLY 0.0 and 0.2 on every input tested,
+    # including data with no ARCH at all). Powell needs no gradient.
     fit = optimize.minimize(
         neg_ll,
         [float(np.mean(y)), 0.0, var_y * 0.5, 0.2],
         bounds=[(-10, 10), (-10, 10), (1e-8, var_y * 10), (1e-8, 0.999)],
-        method="L-BFGS-B",
+        method="Powell",
     )
     mu, delta, omega, alpha = fit.x
     s2 = np.zeros(n)
@@ -69,7 +77,7 @@ def arch_in_mean(x):
     eps = np.zeros(n)
     eps[0] = y[0] - mu - delta * np.sqrt(s2[0])
     for t in range(1, n):
-        s2[t] = omega + alpha * eps[t - 1] ** 2
+        s2[t] = min(max(omega + alpha * eps[t - 1] ** 2, 1e-12), 1e30)
         eps[t] = y[t] - mu - delta * np.sqrt(s2[t])
     return RichResult(
         payload={
