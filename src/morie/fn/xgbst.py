@@ -1,4 +1,4 @@
-"""XGBoost regularized objective -- xgboost if available, sklearn HistGB fallback."""
+"""XGBoost-style regularized boosting objective, implemented natively."""
 
 import numpy as np
 
@@ -25,10 +25,13 @@ def xgboost_objective(
     L = sum_i l(y_i, y_hat_i) + sum_k Omega(f_k),
     Omega(f) = gamma T + (1/2) lambda ||w||^2 (+ alpha ||w||_1).
 
-    Uses xgboost.XGB{Classifier,Regressor} when installed; otherwise falls
-    back to sklearn.ensemble.HistGradientBoosting{Classifier,Regressor},
-    which uses the same second-order LS objective with L2 leaf-shrinkage.
-    The fallback path is flagged in the result so callers can branch on it.
+    Implemented natively: the leaf weight is w* = -G/(H + lambda) with the
+    gradient soft-thresholded by alpha, and a split is taken only when
+
+        Gain = 0.5[G_L^2/(H_L+lambda) + G_R^2/(H_R+lambda)
+                   - (G_L+G_R)^2/(H_L+H_R+lambda)] - gamma
+
+    is positive. No boosting package is imported.
 
     Parameters
     ----------
@@ -51,7 +54,7 @@ def xgboost_objective(
     Returns
     -------
     RichResult with payload: estimate (train score), feature_importances,
-    backend ("xgboost" or "sklearn_histgb"), task, n, method.
+    backend ("native"), task, n, method.
     """
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()
@@ -72,41 +75,34 @@ def xgboost_objective(
     else:
         rs = seed
 
-    backend = "xgboost"
-    try:
-        import xgboost as xgb  # type: ignore[import-not-found]
+    # Native second-order boosting. The previous code imported xgboost --
+    # which is declared nowhere in pyproject.toml -- and fell back to
+    # sklearn's HistGradientBoosting, which has no feature_importances_ (so
+    # importances came back None) and no L1 parameter at all (so reg_alpha
+    # was silently ignored). The native engine honours both penalties and
+    # matches sklearn's GradientBoosting importances to three decimals when
+    # reg_lambda = reg_alpha = 0.
+    from ._trees_native import gb_fit
 
-        Cls = xgb.XGBClassifier if task == "classification" else xgb.XGBRegressor
-        m = Cls(
-            n_estimators=n_estimators,
-            learning_rate=learning_rate,
-            max_depth=max_depth,
-            reg_lambda=reg_lambda,
-            reg_alpha=reg_alpha,
-            random_state=rs,
-            verbosity=0,
-            eval_metric="logloss" if task == "classification" else "rmse",
-        )
-        m.fit(X, y)
-    except ImportError:
-        backend = "sklearn_histgb"
-        from sklearn.ensemble import (
-            HistGradientBoostingClassifier,
-            HistGradientBoostingRegressor,
-        )
-
-        Cls = HistGradientBoostingClassifier if task == "classification" else HistGradientBoostingRegressor
-        m = Cls(
-            max_iter=n_estimators,
-            learning_rate=learning_rate,
-            max_depth=max_depth,
-            l2_regularization=reg_lambda,
-            random_state=rs,
-        )
-        m.fit(X, y)
-
-    score = float(m.score(X, y))
-    importances = m.feature_importances_.tolist() if hasattr(m, "feature_importances_") else None
+    backend = "native"
+    fit = gb_fit(
+        X,
+        y,
+        task=task,
+        n_estimators=n_estimators,
+        learning_rate=learning_rate,
+        max_depth=max_depth,
+        reg_lambda=reg_lambda,
+        reg_alpha=reg_alpha,
+    )
+    importances = np.asarray(fit["importance"]).tolist()
+    if task == "classification":
+        _, yv = np.unique(np.asarray(y).ravel(), return_inverse=True)
+        score = float(((fit["fitted"] > 0.5).astype(int) == yv).mean())
+    else:
+        yv = np.asarray(y, dtype=float).ravel()
+        denom = float(((yv - yv.mean()) ** 2).sum())
+        score = float(1.0 - ((fit["fitted"] - yv) ** 2).sum() / max(denom, 1e-12))
     return RichResult(
         payload={
             "estimate": score,
