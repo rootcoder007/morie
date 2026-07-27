@@ -1,28 +1,27 @@
-"""Tests for survMd.survival_mediation."""
+"""Tests for survmd.survival_mediation."""
 
 import numpy as np
+import pytest
 
 from morie.fn.survmd import survival_mediation
 
 
 def test_survmd_basic():
-    """Test basic functionality."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    result = survival_mediation(T, delta, X, M, C)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n = 4000
+    x = rng.normal(size=n)
+    m = 0.5 * x + rng.normal(scale=0.5, size=n)
+    t_event = rng.exponential(np.exp(-(0.4 * x + 0.6 * m)))
+    cens = rng.exponential(2.0, size=n)
+    time = np.minimum(t_event, cens)
+    event = (t_event <= cens).astype(float)
+    out = survival_mediation(time, event, x, m)
+    assert out["coefficients"]["theta1"] == pytest.approx(0.4, abs=0.1)
+    assert out["hr_total"] == pytest.approx(out["hr_nde"] * out["hr_nie"])
 
 
 def test_survmd_edge():
-    """Test edge cases."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    result = survival_mediation(T, delta, X, M, C)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        survival_mediation([1.0] * 20, np.zeros(20), np.zeros(20), np.zeros(20))  # no events
+    with pytest.raises(ValueError):
+        survival_mediation([-1.0] * 20, np.ones(20), np.zeros(20), np.zeros(20))

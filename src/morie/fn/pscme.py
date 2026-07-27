@@ -1,44 +1,74 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Path-specific causal effect for multiple mediators."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .medstg import sequential_mediation
 
 __all__ = ["path_specific_causal_effect"]
 
 
-def path_specific_causal_effect(X, M, Y):
-    """
-    Path-specific causal effect for multiple mediators
+def path_specific_causal_effect(x, m1, m2, y, c=None):
+    r"""Enumerate the path-specific effects of a two-mediator SCM.
 
-    Formula: PSE_pi = E[Y(1, M_pi(1), M_-pi(0))] - E[Y(0,M(0))]
+    For the causally ordered graph
+    :math:`X \to M_1 \to M_2 \to Y` (with all shortcut edges present),
+    the four directed paths from X to Y carry
+
+    ============================  ==========================
+    path                          effect
+    ============================  ==========================
+    X -> Y                        :math:`c'`
+    X -> M1 -> Y                  :math:`a_1 b_1`
+    X -> M2 -> Y                  :math:`a_2 b_2`
+    X -> M1 -> M2 -> Y            :math:`a_1 d\, b_2`
+    ============================  ==========================
+
+    Under linearity a path-specific effect is the product of the edge
+    coefficients along it, and the total effect is their sum -- the
+    linear special case of Avin, Shpitser and Pearl's path-specific
+    effects.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    M : array-like
-        Input data.
-    Y : array-like
-        Input data.
+    x, m1, m2, y : array-like, shape (n,)
+        Treatment, ordered mediators, outcome.
+    c : array-like, optional
+        Baseline covariates.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``paths`` (dict path-string -> effect), ``total``,
+        ``coefficients``, ``n``, ``method``.
 
     References
     ----------
-    Avin, Shpitser, Pearl (2005)
+    Avin, C., Shpitser, I. & Pearl, J. (2005). Identifiability of
+    path-specific effects. *Proceedings of IJCAI-05*, 357-363.
+
+    Pearl, J. (2009). *Causality* (2nd ed.). Cambridge University
+    Press. Sec. 4.5 (path coefficients and effect decomposition in
+    linear models).
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    s = sequential_mediation(x, m1, m2, y, c=c)
+    paths = {
+        "X->Y": s["direct"],
+        "X->M1->Y": s["via_m1"],
+        "X->M2->Y": s["via_m2"],
+        "X->M1->M2->Y": s["serial"],
+    }
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Path-specific causal effect for multiple mediators"}
+        payload={
+            "paths": paths,
+            "total": float(sum(paths.values())),
+            "coefficients": s["paths"],
+            "n": s["n"],
+            "method": "Path-specific effects (products of linear path coefficients)",
+        }
     )
 
 
 def cheatsheet():
-    return "pscme: Path-specific causal effect for multiple mediators"
+    return "pscme: effect of each directed X->Y path = product of its edge coefficients"

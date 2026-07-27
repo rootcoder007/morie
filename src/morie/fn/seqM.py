@@ -1,48 +1,30 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Sequential (causally ordered) mediators."""
 
-import numpy as np
-
 from ._richresult import RichResult
+from .medstg import sequential_mediation
 
 __all__ = ["sequential_mediators"]
 
 
-def sequential_mediators(Y, X, M1, M2, C):
-    """
-    Sequential (causally ordered) mediators
+def sequential_mediators(y, x, m1, m2, c=None):
+    """Causally ordered mediators M1 -> M2; front-end to :mod:`medstg`.
 
-    Formula: path-specific effects M1 -> M2 -> Y
-
-    Parameters
-    ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    M1 : array-like
-        Input data.
-    M2 : array-like
-        Input data.
-    C : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+    Same serial decomposition as
+    :func:`morie.fn.medstg.sequential_mediation`, with the
+    outcome-first argument order used elsewhere in the mediation
+    namespace.
 
     References
     ----------
-    Avin-Shpitser-Pearl (2005)
+    Hayes, A. F. (2022). *Introduction to Mediation, Moderation, and
+    Conditional Process Analysis* (3rd ed.). Guilford Press. Ch. 5.
     """
-    Y = np.atleast_1d(np.asarray(Y, dtype=float))
-    n = len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Sequential (causally ordered) mediators"}
-    )
+    out = sequential_mediation(x, m1, m2, y, c=c)
+    payload = dict(out)
+    payload["method"] = "Sequential (causally ordered) mediators M1 -> M2"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "seqM: Sequential (causally ordered) mediators"
+    return "seqM: causally ordered mediators (medstg front-end, y-first signature)"

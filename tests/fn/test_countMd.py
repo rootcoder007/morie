@@ -1,26 +1,24 @@
 """Tests for countMd.count_mediation."""
 
 import numpy as np
+import pytest
 
 from morie.fn.countMd import count_mediation
 
 
 def test_countMd_basic():
-    """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    result = count_mediation(Y, X, M, C)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n = 6000
+    x = rng.normal(size=n)
+    m = 0.5 * x + rng.normal(scale=0.5, size=n)
+    y = rng.poisson(np.exp(0.3 * x + 0.4 * m))
+    out = count_mediation(y, x, m)
+    assert out["coefficients"]["theta1"] == pytest.approx(0.3, abs=0.06)
+    assert out["rr_total"] == pytest.approx(out["rr_nde"] * out["rr_nie"])
 
 
 def test_countMd_edge():
-    """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    result = count_mediation(Y, X, M, C)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        count_mediation([-1.0] * 20, np.zeros(20), np.zeros(20))  # negative counts
+    with pytest.raises(ValueError):
+        count_mediation([1.0] * 5, np.zeros(5), np.zeros(5))  # too few obs

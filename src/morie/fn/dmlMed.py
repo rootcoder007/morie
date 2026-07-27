@@ -1,46 +1,24 @@
-"""Double ML mediation Neyman-orthogonal."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Double ML mediation, Neyman-orthogonal."""
 
 from ._richresult import RichResult
+from .medML import ml_mediation_dml
 
 __all__ = ["dml_mediation_orthogonal"]
 
 
-def dml_mediation_orthogonal(Y, X, M, C, K):
+def dml_mediation_orthogonal(x, m, y, c, n_folds=5, seed=0):
+    """Front-end to :func:`morie.fn.medML.ml_mediation_dml`.
+
+    Same cross-fitted partialling-out estimator (Chernozhukov et al.
+    2018, *Econometrics Journal* 21(1), C1-C68); kept as a separate
+    entry point for the double-ML namespace.
     """
-    Double ML mediation Neyman-orthogonal
-
-    Formula: score is orthogonal in nuisance
-
-    Parameters
-    ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    M : array-like
-        Input data.
-    C : array-like
-        Input data.
-    K : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Farbmacher-Huber-Lafférs-Langen-Spindler (2022)
-    """
-    Y = np.atleast_1d(np.asarray(Y, dtype=float))
-    n = len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Double ML mediation Neyman-orthogonal"})
+    out = ml_mediation_dml(x, m, y, c, n_folds=n_folds, seed=seed)
+    payload = dict(out)
+    payload["method"] = "Double ML mediation (Neyman-orthogonal, cross-fitted)"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "dmlMed: Double ML mediation Neyman-orthogonal"
+    return "dmlMed: front-end to medML cross-fitted mediation"

@@ -1,44 +1,59 @@
-"""Rho critical value where mediation effect -> 0."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Rho critical value where the mediation effect goes to zero."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .sensIM import _lsem_fit
 
 __all__ = ["rho_critical_mediation"]
 
 
-def rho_critical_mediation(nie, sigma_e2, sigma_e3):
-    """
-    Rho critical value where mediation effect -> 0
+def rho_critical_mediation(x, m, y, c=None):
+    r"""The sensitivity parameter at which the ACME vanishes.
 
-    Formula: rho* = NIE_obs / sqrt(sigma_2 * sigma_3)
+    Setting Imai-Keele-Tingley's Theorem 2 expression to zero,
+
+    .. math:: \tilde\rho = \rho \sqrt{\frac{1-\tilde\rho^2}{1-\rho^2}}
+              \iff \rho^2 = \tilde\rho^2,
+
+    so the ACME crosses zero exactly at :math:`\rho = \tilde\rho =
+    \mathrm{Corr}(\varepsilon_1, \varepsilon_2)`, estimated by the
+    sample correlation of the total-effect and mediator residuals
+    (the paper's footnote 6). :math:`|\rho^*|` near zero means a tiny
+    unmeasured mediator-outcome confounder would overturn the finding.
 
     Parameters
     ----------
-    nie : array-like
-        Input data.
-    sigma_e2 : array-like
-        Input data.
-    sigma_e3 : array-like
-        Input data.
+    x, m, y : array-like, shape (n,)
+        Treatment, mediator, outcome.
+    c : array-like, optional
+        Baseline covariates.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``rho_critical``, ``abs_rho_critical`` (the robustness
+        summary), ``acme_0``, ``n``, ``method``.
 
     References
     ----------
-    Imai, Keele, Yamamoto (2010)
+    Imai, K., Keele, L. & Tingley, D. (2010). A general approach to
+    causal mediation analysis. *Psychological Methods*, 15(4),
+    309-334. Theorem 2 and footnote 6, p. 316.
     """
-    nie = np.atleast_1d(np.asarray(nie, dtype=float))
-    n = len(nie)
-    result = float(np.mean(nie))
-    se = float(np.std(nie, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    f = _lsem_fit(x, m, y, c=c)
+    rt = f["rho_tilde"]
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Rho critical value where mediation effect -> 0"}
+        payload={
+            "rho_critical": rt,
+            "abs_rho_critical": abs(rt),
+            "acme_0": float(f["beta2"] * f["sigma1"] / f["sigma2"] * rt),
+            "n": int(f["n"]),
+            "method": "rho at which the ACME crosses zero (= Corr(e1, e2))",
+        }
     )
 
 
 def cheatsheet():
-    return "rhomed: Rho critical value where mediation effect -> 0"
+    return "rhomed: rho* = Corr(e1, e2); |rho*| small = fragile mediation claim"
