@@ -128,6 +128,12 @@ citation against the library PDFs or the actual paper before use.
 
 ## Status: all 119 causal placeholders populated (2026-07-27)
 
+**Full sweep green.** `tests/fn` on L14: 80,017 passed, 0 FAILED,
+EXIT=0 (`~/fnrun/causal_full2.log`). The first sweep surfaced 21 reds
+in the E-value/Pearl cluster -- real implementations whose generated
+legacy tests had never been re-fixtured -- plus a stale
+`test_survMd.py` duplicating `test_survmd.py`. Both closed.
+
 Every module on this worklist now has a real implementation. Verified
 mechanically: no file in the done set still contains the
 `result = np.mean(...)` / `se = np.std(...)` placeholder template.
@@ -136,14 +142,25 @@ Each cluster also had its two generated legacy tests (`test_<mod>.py`)
 rewritten with valid fixtures, since those were written against the
 placeholders and rejected by the real input validation.
 
-R parity: `R/causal_native2.R` mirrors eight closed-form estimators
-into both R trees (rmorie and morie/r-package/morie), 25/25 testthat
-green on L14. `morie_did_2x2` and `morie_mediation_sensitivity` were
-deliberately NOT mirrored -- both already exist in R (R/did.R,
-R/sensmi.R) and the latter already implements the same
-Imai-Keele-Yamamoto theorem. The causal-forest and TMLE tiers remain
-Python-only; they need the honest-splitting and targeting machinery,
-which has not been ported.
+R parity: complete, no Python-only tier.
+
+- `R/causal_native2.R` -- eight closed-form estimators, 25/25
+  testthat green. `morie_did_2x2` and `morie_mediation_sensitivity`
+  deliberately NOT mirrored: both already exist in R (R/did.R,
+  R/sensmi.R) and the latter already implements the same
+  Imai-Keele-Yamamoto theorem.
+- `R/causal_shared_native.R` + `R/causal_forest_honest.R` +
+  `R/tmle_native.R` -- the honest-forest and TMLE cores plus their
+  eighteen derived estimators, 72/72 testthat green, including a
+  cross-language anchor: `morie_tmle_ate` matches
+  `morie.fn._tmle.tmle_ate` to 10 significant digits on ate, se,
+  epsilon, ey1 and ey0 for a fixed dataset, so drift on either side
+  breaks the build.
+
+All files byte-identical in rmorie and morie/r-package/morie. Named
+`causal_forest_honest.R` because `causal_forest_native.R` already
+holds the R-learner forest with the OpenMP kernel -- see
+[[feedback-r-mirror-collision-and-namespace]].
 
 ## Cluster plan (superseded -- kept for the record)
 
