@@ -1,26 +1,17 @@
-"""Tests for copfra.frank_copula."""
+"""Tests for copfra."""
 
 import numpy as np
+import pytest
 
 from morie.fn.copfra import frank_copula
 
-
 def test_copfra_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    theta = 0.0
-    result = frank_copula(y, u, v, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    pos = frank_copula(0.5, 0.5, 5.0)
+    neg = frank_copula(0.5, 0.5, -5.0)
+    assert pos["tau"] > 0 > neg["tau"]
+    assert pos["tau"] == pytest.approx(-neg["tau"])
 
 
 def test_copfra_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    theta = 0.0
-    result = frank_copula(y, u, v, theta)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        frank_copula(0.5, 0.5, 0.0)

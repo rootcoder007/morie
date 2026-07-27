@@ -1,26 +1,18 @@
-"""Tests for copgau.gaussian_copula."""
+"""Tests for copgau."""
 
 import numpy as np
+import pytest
 
+from morie.fn._copula import copula_cdf
 from morie.fn.copgau import gaussian_copula
 
-
 def test_copgau_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    rho = 0.5
-    result = gaussian_copula(y, u, v, rho)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gaussian_copula(0.3, 0.7, 0.5)
+    assert out["cdf"] == pytest.approx(copula_cdf("gaussian", 0.3, 0.7, 0.5))
+    assert out["tau"] == pytest.approx(2 / np.pi * np.arcsin(0.5))
 
 
 def test_copgau_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    rho = 0.5
-    result = gaussian_copula(y, u, v, rho)
-    assert isinstance(result, dict)
+    assert gaussian_copula(0.4, 1.0, 0.5)["cdf"] == pytest.approx(0.4, abs=1e-5)
+    with pytest.raises(ValueError):
+        gaussian_copula(0.3, 0.7, 1.5)

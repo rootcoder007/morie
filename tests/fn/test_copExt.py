@@ -1,24 +1,21 @@
-"""Tests for copExt.extremal_copula."""
+"""Tests for copExt."""
 
 import numpy as np
+import pytest
 
+from morie.fn._copula import copula_cdf
 from morie.fn.copExt import extremal_copula
 
-
 def test_copExt_basic():
-    """Test basic functionality."""
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = extremal_copula(u, v, A)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    c = extremal_copula(0.4, 0.7, "gumbel", 2.0)
+    assert c["valid_pickands"] is True
+    assert c["cdf"] == pytest.approx(copula_cdf("gumbel", 0.4, 0.7, 2.0))
 
 
 def test_copExt_edge():
-    """Test edge cases."""
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    result = extremal_copula(u, v, A)
-    assert isinstance(result, dict)
+    # max-stability: C(u^k, v^k) = C(u, v)^k
+    c = extremal_copula(0.4, 0.7, "galambos", 1.5)
+    ck = extremal_copula(0.4**2, 0.7**2, "galambos", 1.5)
+    assert ck["cdf"] == pytest.approx(c["cdf"] ** 2, rel=1e-8)
+    with pytest.raises(ValueError):
+        extremal_copula(0.0, 0.7, "gumbel", 2.0)

@@ -1,46 +1,52 @@
-"""Clayton copula CDF (Archimedean, lower-tail)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Clayton copula (lower-tail dependence)."""
 
 import numpy as np
 
+from ._copula import copula_cdf, copula_tau
 from ._richresult import RichResult
 
 __all__ = ["clayton_copula"]
 
 
-def clayton_copula(y, u, v, theta):
-    """
-    Clayton copula CDF (Archimedean, lower-tail)
+def clayton_copula(u, v, theta):
+    r"""Clayton copula (lower-tail dependence) CDF and its Kendall's tau.
 
-    Formula: C(u,v) = (u^{-theta} + v^{-theta} - 1)^{-1/theta}
+    Evaluates :math:`C(u, v)` for the clayton family via the shared
+    core in :mod:`morie.fn._copula`, together with the Kendall's tau
+    implied by the parameter (Czado 2019, Table 3.2, p. 54 -- read in
+    the library PDF). Parameter range: ``theta > 0``.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    u : array-like
-        Input data.
-    v : array-like
-        Input data.
-    theta : array-like
-        Input data.
+    u, v : array-like in [0, 1]
+        Uniform margins (broadcastable).
+    theta : float
+        Copula parameter.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``cdf`` (same shape as the broadcast u, v), ``tau``,
+        ``theta``, ``family``, ``method``.
 
     References
     ----------
-    Clayton (1978)
+    Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas*.
+    Springer. Ch. 3 (bivariate copula classes), Table 3.2 p. 54
+    (parameter/Kendall's tau relations).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    cdf = copula_cdf("clayton", u, v, theta)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Clayton copula CDF (Archimedean, lower-tail)"}
+        payload={
+            "cdf": cdf,
+            "tau": copula_tau("clayton", theta),
+            "theta": float(theta),
+            "family": "clayton",
+            "method": "Clayton copula (lower-tail dependence) CDF (Czado 2019 Ch. 3)",
+        }
     )
 
 
 def cheatsheet():
-    return "copcla: Clayton copula CDF (Archimedean, lower-tail)"
+    return "copcla: clayton copula CDF + Kendall tau (theta > 0)"

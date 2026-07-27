@@ -1,24 +1,17 @@
-"""Tests for blncop.blomqvists_beta_copula."""
+"""Tests for blncop."""
 
 import numpy as np
+import pytest
 
 from morie.fn.blncop import blomqvists_beta_copula
 
-
 def test_blncop_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    copula = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    result = blomqvists_beta_copula(y, copula, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert blomqvists_beta_copula("independence")["beta"] == pytest.approx(0.0)
+    assert blomqvists_beta_copula("clayton", 5.0)["beta"] > 0.3
 
 
 def test_blncop_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    copula = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    result = blomqvists_beta_copula(y, copula, theta)
-    assert isinstance(result, dict)
+    out = blomqvists_beta_copula("gumbel", 2.0)
+    assert out["beta"] == pytest.approx(4 * out["c_half"] - 1)
+    with pytest.raises(ValueError):
+        blomqvists_beta_copula("weibull", 2.0)

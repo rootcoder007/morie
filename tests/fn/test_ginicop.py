@@ -1,24 +1,15 @@
-"""Tests for ginicop.ginis_gamma_copula."""
+"""Tests for ginicop."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ginicop import ginis_gamma_copula
 
-
 def test_ginicop_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    copula = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    result = ginis_gamma_copula(y, copula, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert ginis_gamma_copula("independence")["gamma"] == pytest.approx(0.0, abs=1e-6)
+    assert ginis_gamma_copula("gumbel", 5.0)["gamma"] > ginis_gamma_copula("gumbel", 1.5)["gamma"]
 
 
 def test_ginicop_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    copula = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    result = ginis_gamma_copula(y, copula, theta)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        ginis_gamma_copula("clayton", 2.0, n=5)

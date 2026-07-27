@@ -1,26 +1,18 @@
-"""Tests for copcla.clayton_copula."""
+"""Tests for copcla."""
 
 import numpy as np
+import pytest
 
 from morie.fn.copcla import clayton_copula
 
-
 def test_copcla_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    theta = 0.0
-    result = clayton_copula(y, u, v, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = clayton_copula(0.5, 0.5, 2.0)
+    assert out["cdf"] == pytest.approx((0.5**-2 + 0.5**-2 - 1) ** (-0.5))
+    assert out["tau"] == pytest.approx(0.5)  # theta/(theta+2)
 
 
 def test_copcla_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    theta = 0.0
-    result = clayton_copula(y, u, v, theta)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        clayton_copula(0.5, 0.5, 0.0)
+    with pytest.raises(ValueError):
+        clayton_copula(1.5, 0.5, 2.0)  # u outside [0, 1]

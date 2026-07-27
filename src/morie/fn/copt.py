@@ -1,46 +1,57 @@
-"""Student t copula CDF."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Student t copula."""
 
-import numpy as np
-
+from ._copula import copula_cdf, copula_tau
 from ._richresult import RichResult
 
 __all__ = ["t_copula"]
 
 
-def t_copula(y, u, v, rho, nu):
-    """
-    Student t copula CDF
+def t_copula(u, v, rho, nu=4.0):
+    r"""Student t copula CDF and Kendall's tau.
 
-    Formula: C(u,v) = T_{nu,R}(t_nu^{-1}(u), t_nu^{-1}(v))
+    .. math:: C(u, v) = T_{\nu,\rho}\big(t_\nu^{-1}(u),
+              t_\nu^{-1}(v)\big),
+
+    evaluated by writing the bivariate t as a scale mixture of
+    normals and integrating over the chi-square mixing variable. It
+    shares the Gaussian copula's tau, :math:`\tau = \tfrac2\pi
+    \arcsin\rho` (Czado Table 3.2), but unlike the Gaussian it has
+    *symmetric tail dependence* for finite nu -- which is why the two
+    can agree on tau and still differ sharply in the joint extremes.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    u : array-like
-        Input data.
-    v : array-like
-        Input data.
-    rho : array-like
-        Input data.
-    nu : array-like
-        Input data.
+    u, v : array-like in [0, 1]
+        Uniform margins.
+    rho : float in (-1, 1)
+        Correlation parameter.
+    nu : float > 0, default 4.0
+        Degrees of freedom; larger nu approaches the Gaussian copula.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``cdf``, ``tau``, ``rho``, ``nu``, ``family``,
+        ``method``.
 
     References
     ----------
-    Embrechts, McNeil, Straumann (2002)
+    Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas*.
+    Springer. Ch. 3, Table 3.2 p. 54.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Student t copula CDF"})
+    cdf = copula_cdf("t", u, v, rho, nu)
+    return RichResult(
+        payload={
+            "cdf": cdf,
+            "tau": copula_tau("t", rho),
+            "rho": float(rho),
+            "nu": float(nu),
+            "family": "t",
+            "method": "Student t copula CDF (normal scale-mixture quadrature)",
+        }
+    )
 
 
 def cheatsheet():
-    return "copt: Student t copula CDF"
+    return "copt: T_{nu,rho}(t^-1 u, t^-1 v); tau = (2/pi) arcsin rho, symmetric tails"
