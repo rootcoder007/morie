@@ -1,24 +1,19 @@
-"""Tests for stquo.status_quo_spatial."""
+"""Tests for stquo."""
 
 import numpy as np
+import pytest
 
 from morie.fn.stquo import status_quo_spatial
 
 
 def test_stquo_basic():
-    """Test basic functionality."""
-    ideal_points = np.random.default_rng(42).normal(0, 1, 100)
-    status_quo = np.random.default_rng(42).normal(0, 1, 100)
-    proposal = np.random.default_rng(42).normal(0, 1, 100)
-    result = status_quo_spatial(ideal_points, status_quo, proposal)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    ideal = [0.0, 1.0, 2.0, 3.0, 10.0]
+    out = status_quo_spatial(ideal, status_quo=0.0, proposal=2.5)
+    assert out["passes"] is True
+    assert out["votes_for"] == 3
 
 
 def test_stquo_edge():
-    """Test edge cases."""
-    ideal_points = np.random.default_rng(42).normal(0, 1, 100)
-    status_quo = np.random.default_rng(42).normal(0, 1, 100)
-    proposal = np.random.default_rng(42).normal(0, 1, 100)
-    result = status_quo_spatial(ideal_points, status_quo, proposal)
-    assert isinstance(result, dict)
+    assert status_quo_spatial([0.0, 1.0], 2.0, 5.0)["passes"] is False
+    with pytest.raises(ValueError):
+        status_quo_spatial([0.0, 1.0], [0.0, 0.0], 1.0)  # dimension mismatch

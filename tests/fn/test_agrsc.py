@@ -1,19 +1,19 @@
-"""Tests for agrsc.agreement_score_matrix."""
+"""Tests for agrsc."""
 
 import numpy as np
+import pytest
 
+from morie.fn.agrmt import agreement_score
 from morie.fn.agrsc import agreement_score_matrix
 
 
 def test_agrsc_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = agreement_score_matrix(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    V = np.array([[1, 1, 0, 0], [1, 0, 0, 1], [1, 1, 0, np.nan]])
+    out = agreement_score_matrix(V)
+    assert out["matrix"] == pytest.approx(agreement_score(V).value["agreement_matrix"])
+    assert out["matrix"][0, 2] == pytest.approx(1.0)
 
 
 def test_agrsc_edge():
-    """Test edge cases."""
-    result = agreement_score_matrix(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        agreement_score_matrix(np.ones(4))  # 1-D input

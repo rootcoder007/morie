@@ -1,22 +1,21 @@
-"""Tests for krust.kruskal_stress."""
+"""Tests for krust."""
 
 import numpy as np
+import pytest
 
 from morie.fn.krust import kruskal_stress
 
 
 def test_krust_basic():
-    """Test basic functionality."""
-    D_observed = np.random.default_rng(42).normal(0, 1, 100)
-    D_config = np.random.default_rng(42).normal(0, 1, 100)
-    result = kruskal_stress(D_observed, D_config)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    D = np.array([[0.0, 1.0], [1.0, 0.0]])
+    assert kruskal_stress(D, D)["stress"] == pytest.approx(0.0)
+    Dc = np.array([[0.0, 2.0], [2.0, 0.0]])
+    assert kruskal_stress(D, Dc)["stress"] == pytest.approx(0.5)
 
 
 def test_krust_edge():
-    """Test edge cases."""
-    D_observed = np.random.default_rng(42).normal(0, 1, 100)
-    D_config = np.random.default_rng(42).normal(0, 1, 100)
-    result = kruskal_stress(D_observed, D_config)
-    assert isinstance(result, dict)
+    D = np.array([[0.0, 1.0], [1.0, 0.0]])
+    with pytest.raises(ValueError):
+        kruskal_stress(D, np.zeros((2, 2)))  # zero distances
+    with pytest.raises(ValueError):
+        kruskal_stress(D, np.zeros((3, 3)))  # shape mismatch

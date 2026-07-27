@@ -1,28 +1,28 @@
-"""Tests for smacf.smacof_algorithm."""
+"""Tests for smacf."""
 
 import numpy as np
+import pytest
 
 from morie.fn.smacf import smacof_algorithm
 
 
+def _planted(seed=0, n=10, k=2):
+    rng = np.random.default_rng(seed)
+    X = rng.normal(size=(n, k))
+    diff = X[:, None, :] - X[None, :, :]
+    return X, np.sqrt((diff**2).sum(axis=2))
+
+
 def test_smacf_basic():
-    """Test basic functionality."""
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    n_dims = 2
-    weights = np.random.default_rng(45).exponential(1, 100)
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    result = smacof_algorithm(delta, n_dims, weights, max_iter, eps)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    _, D = _planted(1)
+    out = smacof_algorithm(D, n_dims=2, max_iter=200)
+    assert np.all(np.diff(out["stress_path"]) <= 1e-9)  # majorization
+    assert out["stress"] < 1e-6
 
 
 def test_smacf_edge():
-    """Test edge cases."""
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    n_dims = 2
-    weights = np.random.default_rng(45).exponential(1, 100)
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    result = smacof_algorithm(delta, n_dims, weights, max_iter, eps)
-    assert isinstance(result, dict)
+    _, D = _planted(1)
+    with pytest.raises(ValueError):
+        smacof_algorithm(D, n_dims=0)
+    with pytest.raises(ValueError):
+        smacof_algorithm(D[:4, :5])

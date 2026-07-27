@@ -1,24 +1,27 @@
-"""Tests for nmdsf.nonmetric_mds."""
+"""Tests for nmdsf."""
 
 import numpy as np
+import pytest
 
 from morie.fn.nmdsf import nonmetric_mds
 
 
+def _planted(seed=0, n=10, k=2):
+    rng = np.random.default_rng(seed)
+    X = rng.normal(size=(n, k))
+    diff = X[:, None, :] - X[None, :, :]
+    return X, np.sqrt((diff**2).sum(axis=2))
+
+
 def test_nmdsf_basic():
-    """Test basic functionality."""
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    n_dims = 2
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = nonmetric_mds(delta, n_dims, max_iter)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    _, D = _planted(2, n=12)
+    out = nonmetric_mds(D**3, n_dims=2, max_iter=200)  # monotone distortion
+    assert out["stress"] < 0.05
 
 
 def test_nmdsf_edge():
-    """Test edge cases."""
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    n_dims = 2
-    max_iter = np.random.default_rng(42).normal(0, 1, 100)
-    result = nonmetric_mds(delta, n_dims, max_iter)
-    assert isinstance(result, dict)
+    _, D = _planted(2)
+    with pytest.raises(ValueError):
+        nonmetric_mds(D, n_dims=0)
+    with pytest.raises(ValueError):
+        nonmetric_mds(D[:4, :5])
