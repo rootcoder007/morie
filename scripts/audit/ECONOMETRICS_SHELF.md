@@ -1,5 +1,8 @@
 # Econometrics / volatility shelf (batch 3 of the book-as-spec series)
 
+**STATUS: COMPLETE 2026-07-27.** All 66 placeholders are real across
+four families, with full R parity in both trees. Family notes below.
+
 Triaged 2026-07-27. 66 placeholder modules across four families. Books
 acquired 2026-07-26 (registry rows): Tsay 2010 3e, Hamilton 1994/2020,
 Brooks 3e/4e Python guide, Czado 2019 (13 page-range volumes),
@@ -192,4 +195,28 @@ too: I compared the forecast to the seasonal pattern after subtracting
 only its mean, leaving the linear trend in and capping the correlation
 near 0.75 regardless of implementation -- the forecast has to be
 detrended before the comparison means anything.
+
+### R parity for batch 3 -- COMPLETE
+
+Collision scan first, per the standing rule. R already carried a
+surprising amount: `R/copul.R` (tau inversion, 3 families),
+`R/vines.R`, `R/garch.R`, `R/egrch.R`, `R/tgrch.R`, `R/coitg.R`,
+`R/johsn.R`, `R/vecmf.R`, `R/cccmd.R`, `R/dccmd.R`. Two new files add
+only what those do not cover:
+
+- `R/copula_native.R` -- 9 exports: CDFs for all eight families, the
+  Czado Table 3.2 tau relations (including the Frank Debye and Joe
+  digamma forms `copul.R` lacks), tau inversion, Spearman/Blomqvist/
+  Gini, extreme-value copulas, survival copulas, COPOD. 109 tests.
+- `R/garch_coint_native.R` -- 8 exports: IGARCH/GJR/APARCH fits,
+  scalar BEKK, VaR/ES, Holt, Holt-Winters, hierarchical
+  reconciliation, Aalen-Johansen. 58 tests.
+
+Both files carry cross-language anchors against the Python cores at
+full precision (testthat tolerance is relative). Two R-only bugs
+surfaced that way, both parity traps rather than algorithm errors:
+`integrate` loses the mass when the t-copula quantile endpoint is far
+out (clamp to +/- 8.5 sd; scipy handled it silently), and `stats::var`
+uses the n - 1 denominator where `np.var` uses n, which offset every
+variance burn-in by n/(n-1) from the first step.
 
