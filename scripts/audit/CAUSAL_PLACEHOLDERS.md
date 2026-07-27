@@ -33,6 +33,14 @@ citation against the library PDFs or the actual paper before use.
   regression, standardisation, 3-method consistency check, linear
   plug-in NIE. Legacy tests re-fixtured.
 
+- `caussc` `scmaba` `ascmcl` `gscmcl` `causscg` `causscss` --
+  synthetic control cluster (Abadie-Diamond-Hainmueller 2010 JASA
+  105(490) 493-505; Ben-Michael-Feller-Rothstein 2021 JASA 116(536)
+  1789-1803; Xu 2017 Political Analysis 25(1) 57-76 -- all verified).
+  NNLS simplex weights, full SCM, ridge-augmented SCM (beats plain SCM
+  outside the donor hull in tests), interactive-fixed-effects
+  imputation, nonneg-LASSO donor selection. Legacy tests re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
