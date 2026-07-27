@@ -213,7 +213,9 @@ the spurious-correlation argument of [@pearson1897spurious];
 collinearity diagnostics follow [@belsley1980regression]; the
 classification metric is [@matthews1975comparison]; and the
 point-pattern tests follow [@diggle2003pointpatterns] and
-[@schabenberger2005spatial].
+[@schabenberger2005spatial]; and the multivariate portmanteau test
+follows [@hosking1980multivariate], whose modified statistic is
+restated as equation (9) of [@mahdi2020portes].
 
 Writing each method twice, once in Python and once in R, is a
 deliberate check rather than duplicated effort. Two defects in this

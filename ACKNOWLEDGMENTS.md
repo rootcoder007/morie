@@ -72,6 +72,7 @@ check the code against the same page the author wrote.
 | Matthews correlation coefficient | Brian W. Matthews, *Biochimica et Biophysica Acta* 405:442–451 (1975) |
 | Variance inflation factor and collinearity diagnostics | David A. Belsley, Edwin Kuh & Roy E. Welsch, *Regression Diagnostics* (Wiley, 1980) |
 | Complete spatial randomness, nearest-neighbour distances | Peter J. Diggle, *Statistical Analysis of Spatial Point Patterns*, 2nd ed. (Edward Arnold, 2003); Schabenberger & Gotway (2005), §§3.3–3.4 |
+| Multivariate portmanteau test for white noise | J. R. M. Hosking, *Journal of the American Statistical Association* 75:602–608 (1980); restated as eq. (9) in Esam Mahdi, arXiv:2005.00931 (2020) |
 
 Where a secondary source and the primary disagree, morie follows the primary
 and records the divergence in the function's docstring, so the choice is
