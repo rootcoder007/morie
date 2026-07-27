@@ -53,6 +53,13 @@ cannot pass; three-way parity (Python + morie/R + rmorie); push only
 feat/native-specializations; collision-scan R filenames AND function
 names before mirroring.
 
+## Status: COMPLETE (2026-07-27)
+
+Full tests/fn sweep after the batch: 0 FAILED, EXIT=0 on L14
+(~/fnrun/armstrong_full.log). All 32 placeholders real, all 13
+fabricated citations corrected, R parity closed (33 of 35 mirrors
+pre-existed; 2 gap-fillers added to both trees).
+
 ## Done
 
 - **R parity (batch 2): complete via discovery, not duplication.** The
