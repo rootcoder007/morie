@@ -1,26 +1,22 @@
-"""Tests for rngnrm.qk_norm."""
+"""Tests for rngnrm (range normalization)."""
 
 import numpy as np
+import pytest
 
-from morie.fn.rngnrm import rngnrm as qk_norm
-
-
-def test_rngnrm_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    s = 90
-    result = qk_norm(y, Q, K, s)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.rngnrm import rngnrm
 
 
-def test_rngnrm_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    Q = np.random.default_rng(42).normal(0, 1, 100)
-    K = np.eye(10) + 0.1 * np.random.default_rng(43).normal(0, 1, (10, 10))
-    s = 90
-    result = qk_norm(y, Q, K, s)
-    assert isinstance(result, dict)
+def test_rngnrm_maps_to_the_unit_interval_with_endpoints():
+    out = rngnrm([2.0, 4.0, 6.0])
+    np.testing.assert_allclose(out, [0.0, 0.5, 1.0], atol=1e-12)
+
+
+def test_rngnrm_is_shift_and_scale_invariant():
+    rng = np.random.default_rng(0)
+    x = rng.normal(size=50)
+    np.testing.assert_allclose(rngnrm(x), rngnrm(5.0 + 3.0 * x), atol=1e-12)
+
+
+def test_rngnrm_rejects_constant_input():
+    with pytest.raises(ValueError, match="identical"):
+        rngnrm([3.0, 3.0, 3.0])

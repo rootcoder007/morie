@@ -1,20 +1,30 @@
 """Tests for sgnpw.sign_test_power."""
 
 import numpy as np
+import pytest
 
 from morie.fn.sgnpw import sign_test_power
 
 
-def test_sgnpw_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = sign_test_power(x)
-    assert "statistic" in result
-    assert "p_value" in result
-    assert 0 <= result["p_value"] <= 1
+def test_sgnpw_power_rises_with_the_alternative_probability():
+    rng = np.random.default_rng(0)
+    x = rng.normal(size=40)
+    p6 = float(sign_test_power(x, p_alt=0.6)["statistic"])
+    p9 = float(sign_test_power(x, p_alt=0.9)["statistic"])
+    assert 0.0 <= p6 <= p9 <= 1.0
+    assert p9 > 0.9
 
 
-def test_sgnpw_edge():
-    """Test edge cases."""
-    result = sign_test_power(np.array([1.0]))
-    assert result["n"] == 1
+def test_sgnpw_null_probability_gives_alpha():
+    rng = np.random.default_rng(1)
+    x = rng.normal(size=50)
+    r = sign_test_power(x, p_alt=0.5, alpha=0.05)
+    assert float(r["statistic"]) <= 0.07  # exact binomial test is conservative
+
+
+def test_sgnpw_respects_alpha():
+    rng = np.random.default_rng(2)
+    x = rng.normal(size=40)
+    strict = float(sign_test_power(x, p_alt=0.7, alpha=0.01)["statistic"])
+    loose = float(sign_test_power(x, p_alt=0.7, alpha=0.10)["statistic"])
+    assert strict <= loose

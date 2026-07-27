@@ -1,71 +1,66 @@
-"""Synthetic test signal composed of three occurrences of a basic pattern (impulses).."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Rangayyan Ch. 4 synthetic three-event test signal (Eq. 4.51)."""
 
 import numpy as np
-from scipy import stats
 
 from ._richresult import RichResult
 
 __all__ = ["rangayyan_ch4_test_signal_three_events"]
 
 
-def rangayyan_ch4_test_signal_three_events(n, cdf=None):
-    """
-    Synthetic test signal composed of three occurrences of a basic pattern (impulses).
+def rangayyan_ch4_test_signal_three_events(n=36):
+    r"""Synthetic signal of three scaled repetitions of one basic pattern.
 
-    Formula: x(n) = 3*delta(n-5) + 2*delta(n-6) + delta(n-7) + 1.5*delta(n-16) + delta(n-17) + 0.5*delta(n-18) + 0.75*delta(n-26) + 0.5*delta(n-27) + 0.25*delta(n-28)
+    .. math::
+
+        x(n) = 3\delta(n-5) + 2\delta(n-6) + \delta(n-7)
+             + 1.5\delta(n-16) + \delta(n-17) + 0.5\delta(n-18)
+             + 0.75\delta(n-26) + 0.5\delta(n-27) + 0.25\delta(n-28)
+
+    (Eq. 4.51), equivalently :math:`x(n) = g(n-5) + 0.5\,g(n-16) +
+    0.25\,g(n-26)` with the basic pattern :math:`g(n) = 3\delta(n) +
+    2\delta(n-1) + \delta(n-2)` (Eqs. 4.52-4.53). The book uses it to
+    illustrate matched filtering: the matched filter's output peaks at
+    the three event locations with amplitudes in the 1 : 0.5 : 0.25
+    ratio. This replaces a placeholder that computed a KS statistic on
+    the length argument.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    n : int, default 36
+        Signal length; must cover the last event sample (28).
 
     Returns
     -------
-    result : dict
-        Keys: array
+    RichResult
+        keys: ``signal`` (length n), ``pattern`` (g), ``onsets``,
+        ``amplitudes``, ``n``, ``method``.
 
     References
     ----------
-    Rangayyan (2024), Ch 4, Eq 4.51, p. 240
+    Rangayyan, R. M. (2024). *Biomedical Signal Analysis*, 3rd edn.
+    Wiley-IEEE. Ch. 4, Eqs. (4.51)-(4.53), p. 240.
     """
-    n = np.asarray(n, dtype=float)
-    n = len(n)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Synthetic test signal composed of three occurrences of a basic pattern (impulses).",
-            }
-        )
-    x_sorted = np.sort(n)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(n), scale=np.std(n, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n = int(n)
+    if n < 29:
+        raise ValueError(f"n must be at least 29 to hold the third event, got {n}.")
+    g = np.array([3.0, 2.0, 1.0])
+    onsets = [5, 16, 26]
+    amps = [1.0, 0.5, 0.25]
+    x = np.zeros(n)
+    for o, a in zip(onsets, amps):
+        x[o : o + 3] += a * g
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "signal": x,
+            "pattern": g,
+            "onsets": onsets,
+            "amplitudes": amps,
             "n": n,
-            "method": "Synthetic test signal composed of three occurrences of a basic pattern (impulses).",
+            "method": "Rangayyan Ch.4 three-event test signal (Eq. 4.51)",
         }
     )
 
 
 def cheatsheet():
-    return "rng223: Synthetic test signal composed of three occurrences of a basic pattern (impulses)."
+    return "rng223: Rangayyan Ch.4 three-event matched-filter test signal (Eq. 4.51)"
