@@ -223,7 +223,9 @@ Wasserstein two-sample test follows [@ramdas2017wasserstein], using the
 one-dimensional closed form of [@villani2009optimal];
 covariate-balance diagnostics follow [@austin2009balance]; space-time
 interaction follows [@jacquez1996knn]; and second-order point-pattern
-analysis follows [@ripley1977modelling].
+analysis follows [@ripley1977modelling];
+differential item functioning follows [@shealyStout1993sibtest]; and
+panel cointegration follows [@pedroni1999critical].
 
 Writing each method twice, once in Python and once in R, is a
 deliberate check rather than duplicated effort. Two defects in this

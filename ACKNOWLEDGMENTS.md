@@ -79,6 +79,8 @@ check the code against the same page the author wrote.
 | Covariate balance (standardised mean differences) | Peter C. Austin, *Statistics in Medicine* 28:3083–3107 (2009) |
 | Space-time interaction (k-nearest-neighbour test) | Geoffrey M. Jacquez, *Statistics in Medicine* 15:1935–1949 (1996) |
 | Second-order point-pattern analysis (Ripley's K) | Brian D. Ripley, *Journal of the Royal Statistical Society, Series B* 39:172–212 (1977) |
+| Differential item functioning (SIBTEST) | Robin Shealy & William Stout, *Psychometrika* 58:159–194 (1993) |
+| Panel cointegration | Peter Pedroni, *Oxford Bulletin of Economics and Statistics* 61(S1):653–670 (1999) |
 
 Where a secondary source and the primary disagree, morie follows the primary
 and records the divergence in the function's docstring, so the choice is
