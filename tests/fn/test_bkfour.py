@@ -1,24 +1,38 @@
-"""Tests for bkfour.baron_kenny_four_step."""
+"""Tests for bkfour -- the treatment-first front-end over bkmed."""
 
 import numpy as np
 
 from morie.fn.bkfour import baron_kenny_four_step
+from morie.fn.bkmed import baron_kenny
 
 
-def test_bkfour_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    result = baron_kenny_four_step(X, M, Y)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def _data(seed=0, n=500):
+    rng = np.random.default_rng(seed)
+    x = rng.normal(0, 1, n)
+    m = 0.8 * x + rng.normal(0, 1, n)
+    y = 0.3 * x + 0.6 * m + rng.normal(0, 1, n)
+    return x, m, y
 
 
-def test_bkfour_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    result = baron_kenny_four_step(X, M, Y)
-    assert isinstance(result, dict)
+def test_front_end_matches_the_canonical_implementation():
+    x, m, y = _data(seed=1)
+    a = baron_kenny(y, x, m)
+    b = baron_kenny_four_step(x, m, y)
+    for k in ("c", "a", "b", "c_prime", "indirect", "mediation"):
+        assert a[k] == b[k]
+
+
+def test_all_four_steps_are_reported():
+    x, m, y = _data(seed=2)
+    steps = baron_kenny_four_step(x, m, y)["steps"]
+    assert len(steps) == 4
+    assert all(isinstance(v, bool) for v in steps.values())
+
+
+def test_it_does_not_carry_a_second_implementation():
+    import inspect
+
+    from morie.fn import bkfour
+
+    assert "bkmed" in inspect.getsource(bkfour)
+    assert len(inspect.getsource(bkfour.baron_kenny_four_step).splitlines()) < 20

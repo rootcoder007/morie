@@ -1,44 +1,29 @@
-"""Baron-Kenny 4-step causal-graph mediation."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Baron-Kenny four-step mediation -- front-end over bkmed."""
 
-import numpy as np
+from __future__ import annotations
 
-from ._richresult import RichResult
+from .bkmed import baron_kenny as _baron_kenny
 
 __all__ = ["baron_kenny_four_step"]
 
 
-def baron_kenny_four_step(X, M, Y):
+def baron_kenny_four_step(X, M, Y, alpha=0.05):
+    """Baron & Kenny's four steps, treatment-first argument order.
+
+    The same procedure as :func:`morie.fn.bkmed.baron_kenny`, which holds
+    the implementation and already evaluates and reports all four
+    conditions separately. This entry point exists for the
+    treatment-first calling convention and does not carry a second copy
+    of the logic.
+
+    Returns the same result, with ``steps`` naming each of the four
+    conditions. See :func:`morie.fn.bkmed.baron_kenny` for why step 1 --
+    requiring a significant total effect -- is reported rather than
+    enforced.
     """
-    Baron-Kenny 4-step causal-graph mediation
-
-    Formula: step1: Y~X; step2: M~X; step3: Y~X+M; step4: c'<c
-
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    M : array-like
-        Input data.
-    Y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Baron & Kenny (1986)
-    """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Baron-Kenny 4-step causal-graph mediation"}
-    )
+    return _baron_kenny(Y, X, M, alpha=alpha)
 
 
 def cheatsheet():
-    return "bkfour: Baron-Kenny 4-step causal-graph mediation"
+    return "bkfour: Baron-Kenny four-step mediation (treatment-first); see bkmed"

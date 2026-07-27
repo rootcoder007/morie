@@ -1,44 +1,27 @@
-"""Mediation for binary outcome (logit)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Mediation for a binary outcome (logit) -- front-end over binmed."""
 
-import numpy as np
+from __future__ import annotations
 
-from ._richresult import RichResult
+from .binmed import binary_outcome_mediation as _binmed
 
 __all__ = ["binary_outcome_mediation"]
 
 
-def binary_outcome_mediation(Y, X, M, C):
+def binary_outcome_mediation(Y, X, M, C=None, **kwargs):
+    """Binary-outcome mediation, outcome-first argument order.
+
+    Identical estimator to :func:`morie.fn.binmed.binary_outcome_mediation`,
+    which holds the implementation; only the argument order differs, this
+    one leading with the outcome. It is kept as a separate entry point
+    because callers written against either convention exist, and silently
+    accepting a swapped order would be worse than having two names.
+
+    See :func:`morie.fn.binmed.binary_outcome_mediation` for the method,
+    the assumptions and the reference.
     """
-    Mediation for binary outcome (logit)
-
-    Formula: NIE/NDE on OR scale via approximation
-
-    Parameters
-    ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    M : array-like
-        Input data.
-    C : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    VanderWeele-Vansteelandt (2010)
-    """
-    Y = np.atleast_1d(np.asarray(Y, dtype=float))
-    n = len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mediation for binary outcome (logit)"})
+    return _binmed(X, M, Y, C=C, **kwargs)
 
 
 def cheatsheet():
-    return "binMd: Mediation for binary outcome (logit)"
+    return "binMd: binary-outcome mediation (outcome-first order); see binmed"
