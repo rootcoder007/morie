@@ -1,26 +1,23 @@
 """Tests for abdpd.abduction_modification_prediction."""
 
-import numpy as np
+import pytest
 
 from morie.fn.abdpd import abduction_modification_prediction
 
+EQS = {"X": (("u1",), lambda u1: u1), "Y": (("X", "u2"), lambda X, u2: 2 * X + u2)}
+
 
 def test_abdpd_basic():
-    """Test basic functionality."""
-    evidence = np.random.default_rng(42).normal(0, 1, 100)
-    do_X = np.random.default_rng(42).normal(0, 1, 100)
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    scm = np.random.default_rng(42).normal(0, 1, 100)
-    result = abduction_modification_prediction(evidence, do_X, Y, scm)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = abduction_modification_prediction(
+        {"X": 1.0, "Y": 3.0}, EQS, ["u1", "u2"], {"X": 4.0}, "Y"
+    )
+    assert out["abducted"]["u2"] == pytest.approx(1.0, abs=1e-6)
+    assert out["factual"] == pytest.approx(3.0, abs=1e-6)
+    assert out["counterfactual"] == pytest.approx(9.0, abs=1e-6)
 
 
 def test_abdpd_edge():
-    """Test edge cases."""
-    evidence = np.random.default_rng(42).normal(0, 1, 100)
-    do_X = np.random.default_rng(42).normal(0, 1, 100)
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    scm = np.random.default_rng(42).normal(0, 1, 100)
-    result = abduction_modification_prediction(evidence, do_X, Y, scm)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        abduction_modification_prediction({"X": 1.0}, EQS, ["u1", "u2"], {"u1": 0.0}, "Y")
+    with pytest.raises(ValueError):
+        abduction_modification_prediction({}, EQS, ["u1"], {"X": 1.0}, "Y")  # no evidence

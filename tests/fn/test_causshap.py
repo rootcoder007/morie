@@ -1,26 +1,27 @@
 """Tests for causshap.causal_shap_decomposition."""
 
-import numpy as np
+import pytest
 
 from morie.fn.causshap import causal_shap_decomposition
 
+W = {"a": 3.0, "b": 2.0, "c": -1.0}
+
+
+def _v(S):
+    return sum(W[f] for f in S)
+
 
 def test_causshap_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    n_samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_shap_decomposition(X, y, model, n_samples)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = causal_shap_decomposition(_v, ["a", "b", "c"])
+    assert out["shapley"] == pytest.approx(W)
+    assert out["efficiency_gap"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_causshap_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    n_samples = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_shap_decomposition(X, y, model, n_samples)
-    assert isinstance(result, dict)
+    def v2(S):
+        return 1.0 if set(S) == {"a", "b"} else 0.0
+
+    sym = causal_shap_decomposition(v2, ["a", "b"])
+    assert sym["shapley"]["a"] == pytest.approx(0.5)
+    with pytest.raises(ValueError):
+        causal_shap_decomposition(_v, [])

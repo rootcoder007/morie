@@ -90,6 +90,22 @@ citation against the library PDFs or the actual paper before use.
   and Cox Newton-Raphson written for countMd/survmd. Legacy tests
   re-fixtured.
 
+- `mivbnd` `causdmliv` `ddrbnd` `gb1251` `plcbo` `causftbl` `clstcr`
+  `shrtgr` `causshap` `abdpd` `counRS` `bnscrd` `causrho` `msmiv2`
+  `msmphr` `fciag` `deciA` -- IV/bounds/refutation cluster
+  (Manski-Pepper 2000 Econometrica 68(4) 997-1010 verified;
+  Imbens-Angrist 1994; Chernozhukov et al. 2018 Sec 4.2; Cameron-Miller
+  2015 JHR 50(2) 317-372; Gelman et al. 2008 AOAS 2(4) 1360-1383;
+  Shapley 1953; Dudik-Langford-Li 2011; Miao-Geng-Tchetgen Tchetgen
+  2018 Biometrika 105(4) 987-993; Hernan-Brumback-Robins 2000
+  Epidemiology 11(5) 561-570; Spirtes-Glymour-Scheines 2000 Ch.6).
+  Honest scope notes written into the docstrings: FCI applies only the
+  v-structure rule (R1-R10 not implemented, `orientation_complete` is
+  always False); Kendall partial tau is a shrinkage diagnostic, NOT a
+  conditional-independence test (measured 0.199 under exact CI);
+  deciA's adjustment set is a heuristic unless a DAG is supplied.
+  Legacy tests re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
