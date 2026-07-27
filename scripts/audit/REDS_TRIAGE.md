@@ -91,6 +91,24 @@ assert something a stub would fail:
   (attention, convolution, positional encoding), which admit
   hand-checkable answers.
 
+## Progress
+
+| Family | Status |
+|---|---|
+| NN hyperparameter | **done** -- `posab` `rotrp` `heinz` `vaenc` `ganls` `mhatf` `grpqa` (26 tests green). `trfbl` `tknbp` `tsnrd` remain |
+| Matrix shape | **partly done** -- `cnn2d` `mxpol` `kldivg` `mcnem` `cvxhl` (24 tests green). `gearyc` `sarre` `sarla` `sptau` `okrig` `spblk` remain |
+| Series length | not started (17 modules) |
+| Classification labels | not started (6 modules) |
+| Genuine defects | not started (9) |
+
+Two real defects found so far, both masked by the placeholder-era tests:
+
+- `mcnem` used a 0.5 continuity correction where Edwards (1948) uses 1.
+  At b=20, c=30 that gave 1.805 instead of 1.62 -- anti-conservative,
+  the wrong direction for a correction meant to be conservative.
+- `cvxhl` called `np.cross` on 2-vectors, removed in NumPy 2.0, so the
+  module raised on every call under any current NumPy.
+
 ## Reproducing the triage
 
 ```sh
