@@ -26,6 +26,13 @@ citation against the library PDFs or the actual paper before use.
   Cole-Hernan 2008 AJE 168(6) 656-664 -- all verified by web search).
   Legacy generated tests for all 9 rewritten with valid fixtures.
 
+- `causmrop` `gforml` `gctvc` `sntmod` `gmccsm` `pluginM` -- g-formula
+  cluster (Robins 1986 Mathematical Modelling 7 1393-1512; Bang-Robins
+  2005 Biometrics 61(4) 962-972 + 2008 correction -- verified by web
+  search; VanderWeele 2015 Ch.2). MC g-formula, ICE sequential
+  regression, standardisation, 3-method consistency check, linear
+  plug-in NIE. Legacy tests re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
