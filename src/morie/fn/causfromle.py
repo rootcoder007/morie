@@ -1,40 +1,21 @@
-"""VanderWeele-Ding E-value for unmeasured confounding."""
-
-import numpy as np
-
-from ._richresult import RichResult
+# morie.fn -- function file (rootcoder007/morie)
+"""VanderWeele-Ding E-value -- front-end to evalu."""
 
 __all__ = ["causal_e_value"]
 
 
 def causal_e_value(RR):
+    r"""E-value for a point risk ratio.
+
+    Delegates to :func:`morie.fn.evalu.evalue`; this entry point exists
+    under the historical name whose placeholder body returned the mean
+    of RR. See that module for the formula and reference (VanderWeele
+    & Ding 2017, *Ann Intern Med* 167(4), 268-274).
     """
-    VanderWeele-Ding E-value for unmeasured confounding
+    from .evalu import evalue
 
-    Formula: E = RR + sqrt(RR(RR-1)) where RR is observed risk ratio
-
-    Parameters
-    ----------
-    RR : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: Eval
-
-    References
-    ----------
-    VanderWeele & Ding (2017)
-    """
-    RR = np.atleast_1d(np.asarray(RR, dtype=float))
-    n = len(RR)
-    result = float(np.mean(RR))
-    se = float(np.std(RR, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "VanderWeele-Ding E-value for unmeasured confounding"}
-    )
+    return evalue(RR)
 
 
 def cheatsheet():
-    return "causfromle: VanderWeele-Ding E-value for unmeasured confounding"
+    return "causfromle: E-value for a point RR (front-end to evalu)"
