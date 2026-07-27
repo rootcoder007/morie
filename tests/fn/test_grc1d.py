@@ -1,22 +1,21 @@
 """Tests for grc1d.geron_causal_1d_cnn."""
 
 import numpy as np
+import pytest
 
 from morie.fn.grc1d import geron_causal_1d_cnn
 
 
 def test_grc1d_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    w = np.random.default_rng(45).exponential(1, 100)
-    result = geron_causal_1d_cnn(x, w)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    x = np.arange(1.0, 7.0)
+    dil = geron_causal_1d_cnn(x, [1.0, 1.0], dilation=2)  # y_t = x_t + x_{t-2}
+    assert dil["y"][2:] == pytest.approx(x[2:] + x[:-2])
+    assert dil["receptive_field"] == 3
 
 
 def test_grc1d_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    w = np.random.default_rng(45).exponential(1, 100)
-    result = geron_causal_1d_cnn(x, w)
-    assert isinstance(result, dict)
+    x = np.arange(1.0, 7.0)
+    strict = geron_causal_1d_cnn(x, [1.0], strict=True)  # y_t = x_{t-1}
+    assert strict["y"][1:] == pytest.approx(x[:-1])
+    with pytest.raises(ValueError):
+        geron_causal_1d_cnn(x, [1.0, 1.0], dilation=0)

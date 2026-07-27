@@ -1,24 +1,18 @@
 """Tests for rng037.rangayyan_ch3_discrete_convolution_causal_alt."""
 
-import numpy as np
+import pytest
 
+from morie.fn.rng036 import rangayyan_ch3_discrete_convolution_causal
 from morie.fn.rng037 import rangayyan_ch3_discrete_convolution_causal_alt
 
 
 def test_rng037_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    n = 100
-    result = rangayyan_ch3_discrete_convolution_causal_alt(x, h, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    x, h = [1.0, 2.0, 3.0], [0.5, 0.25]
+    a = rangayyan_ch3_discrete_convolution_causal_alt(x, h)
+    b = rangayyan_ch3_discrete_convolution_causal(x, h)
+    assert a["y"] == pytest.approx(b["y"])  # commutativity
 
 
 def test_rng037_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    n = 100
-    result = rangayyan_ch3_discrete_convolution_causal_alt(x, h, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        rangayyan_ch3_discrete_convolution_causal_alt([1.0], [], n=0)

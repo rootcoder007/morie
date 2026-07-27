@@ -1,19 +1,17 @@
 """Tests for rgztf.rangayyan_z_transform."""
 
-import numpy as np
+import pytest
 
 from morie.fn.rgztf import rangayyan_z_transform
 
 
 def test_rgztf_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = rangayyan_z_transform(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = rangayyan_z_transform([1.0, 0.5, 0.25], z=2.0)
+    assert out["degree"] == 2
+    assert out["H"].real == pytest.approx(1 + 0.5 / 2 + 0.25 / 4)
 
 
 def test_rgztf_edge():
-    """Test edge cases."""
-    result = rangayyan_z_transform(np.array([42.0]))
-    assert result["n"] == 1
+    assert rangayyan_z_transform([1.0])["H"] is None
+    with pytest.raises(ValueError):
+        rangayyan_z_transform([])
