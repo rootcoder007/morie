@@ -1,47 +1,70 @@
-"""Shepard diagram: plot of dissimilarities vs distances to assess MDS fit."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Shepard diagram data for assessing MDS fit."""
 
 import numpy as np
+from scipy import stats
 
 from ._richresult import RichResult
+from .isotr import isotonic_regression_disparity
 
 __all__ = ["shepard_diagram"]
 
 
 def shepard_diagram(delta, D_config):
-    """
-    Shepard diagram: plot of dissimilarities vs distances to assess MDS fit
+    r"""The (dissimilarity, distance) scatter plus its monotone trend.
 
-    Formula: Plot (delta_ij, d_ij(X)) pairs; monotone trend indicates good nonmetric fit
+    Pairs :math:`(\delta_{ij}, d_{ij}(X))` sorted by dissimilarity,
+    with the PAV monotone fit through them and Spearman's rank
+    correlation as the summary: a tight monotone trend is what a good
+    nonmetric fit looks like, and scatter around the step function is
+    exactly the stress.
 
     Parameters
     ----------
-    delta : array-like
-        Input data.
-    D_config : array-like
-        Input data.
+    delta : array-like, shape (n, n)
+        Observed dissimilarities (symmetric, zero diagonal).
+    D_config : array-like, shape (n, n)
+        Configuration distances.
 
     Returns
     -------
-    result : dict
-        Keys: {'plot_data': 'tuple'}
+    RichResult
+        keys: ``dissimilarities``, ``distances`` (both sorted by
+        dissimilarity), ``monotone_fit`` (PAV through the sorted
+        distances), ``spearman_rho``, ``n_pairs``, ``method``.
 
     References
     ----------
-    Armstrong Ch 3
+    Shepard, R. N. (1962). The analysis of proximities:
+    multidimensional scaling with an unknown distance function. I.
+    *Psychometrika*, 27(2), 125-140.
+
+    Kruskal, J. B. (1964). *Psychometrika*, 29(1), 1-27. (the diagram
+    as the visual companion of stress)
     """
-    delta = np.asarray(delta, dtype=float)
-    n = int(delta) if delta.ndim == 0 else len(delta)
-    result = float(np.mean(delta))
-    se = float(np.std(delta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    Delta = np.asarray(delta, dtype=float)
+    Dc = np.asarray(D_config, dtype=float)
+    if Delta.shape != Dc.shape or Delta.ndim != 2 or Delta.shape[0] != Delta.shape[1]:
+        raise ValueError("delta and D_config must be square matrices of the same shape.")
+    n = Delta.shape[0]
+    iu = np.triu_indices(n, k=1)
+    dd, dc = Delta[iu], Dc[iu]
+    order = np.argsort(dd, kind="stable")
+    dd_s, dc_s = dd[order], dc[order]
+    fit = isotonic_regression_disparity(dc_s, np.arange(dc_s.size))["disparities"]
+    rho = float(stats.spearmanr(dd, dc).statistic) if dd.size > 2 else float("nan")
+
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Shepard diagram: plot of dissimilarities vs distances to assess MDS fit",
+            "dissimilarities": dd_s,
+            "distances": dc_s,
+            "monotone_fit": fit,
+            "spearman_rho": rho,
+            "n_pairs": int(dd.size),
+            "method": "Shepard diagram (sorted pairs + PAV trend + Spearman rho)",
         }
     )
 
 
 def cheatsheet():
-    return "shrpd: Shepard diagram: plot of dissimilarities vs distances to assess MDS fit"
+    return "shrpd: (delta, d) pairs sorted by delta, PAV trend, Spearman rho"

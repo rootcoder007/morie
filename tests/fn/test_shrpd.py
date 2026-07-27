@@ -1,22 +1,26 @@
-"""Tests for shrpd.shepard_diagram."""
+"""Tests for shrpd."""
 
 import numpy as np
+import pytest
 
 from morie.fn.shrpd import shepard_diagram
 
 
+def _planted(seed=0, n=10, k=2):
+    rng = np.random.default_rng(seed)
+    X = rng.normal(size=(n, k))
+    diff = X[:, None, :] - X[None, :, :]
+    return X, np.sqrt((diff**2).sum(axis=2))
+
+
 def test_shrpd_basic():
-    """Test basic functionality."""
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    D_config = np.random.default_rng(42).normal(0, 1, 100)
-    result = shepard_diagram(delta, D_config)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    _, D = _planted(3, n=8)
+    out = shepard_diagram(D**2, D)
+    assert out["spearman_rho"] == pytest.approx(1.0)
+    assert np.all(np.diff(out["monotone_fit"]) >= -1e-12)
 
 
 def test_shrpd_edge():
-    """Test edge cases."""
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    D_config = np.random.default_rng(42).normal(0, 1, 100)
-    result = shepard_diagram(delta, D_config)
-    assert isinstance(result, dict)
+    _, D = _planted(3)
+    with pytest.raises(ValueError):
+        shepard_diagram(D[:4, :5], D[:4, :5])

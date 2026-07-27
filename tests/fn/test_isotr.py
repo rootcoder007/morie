@@ -1,22 +1,19 @@
-"""Tests for isotr.isotonic_regression_disparity."""
+"""Tests for isotr."""
 
 import numpy as np
+import pytest
 
 from morie.fn.isotr import isotonic_regression_disparity
 
 
 def test_isotr_basic():
-    """Test basic functionality."""
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    delta_rank = np.random.default_rng(42).normal(0, 1, 100)
-    result = isotonic_regression_disparity(D, delta_rank)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = isotonic_regression_disparity([1.0, 3.0, 2.0, 4.0], [0, 1, 2, 3])
+    assert out["disparities"] == pytest.approx([1.0, 2.5, 2.5, 4.0])
+    assert np.all(np.diff(out["sorted_fit"]) >= -1e-12)
 
 
 def test_isotr_edge():
-    """Test edge cases."""
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    delta_rank = np.random.default_rng(42).normal(0, 1, 100)
-    result = isotonic_regression_disparity(D, delta_rank)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        isotonic_regression_disparity([1.0], [0])  # single pair
+    with pytest.raises(ValueError):
+        isotonic_regression_disparity([1.0, 2.0], [0])  # length mismatch

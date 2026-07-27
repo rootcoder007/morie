@@ -55,6 +55,26 @@ names before mirroring.
 
 ## Done
 
+- **Cluster 3, MDS family + spatial utilities (11/11 placeholders).**
+  mmdsf (Torgerson 1952 double centering, exact recovery of planted
+  Euclidean configurations asserted), krust (Kruskal 1964 stress-1 +
+  the verbal scale), isotr (PAV monotone regression, hand case
+  [1,3,2,4] -> [1,2.5,2.5,4]), smacf (de Leeuw 1977 Guttman-transform
+  majorization; the never-increasing stress path is asserted, weighted
+  variant included), nmdsf (Kruskal's alternation; stress < 0.05 on
+  rank-preserving cubic distortion of planted distances), shrpd
+  (Shepard 1962 diagram data + PAV trend + Spearman rho), procs
+  (Schoenemann 1966 closed form; undoes a planted rotation+reflection
+  to 1e-10), agrsc (front-end to agrmt, Armstrong Sec 3.2.2), eudst
+  (quadratic utility, scalar and matrix forms), rndut (McFadden 1974
+  closed-form logit == softmax asserted; simulated probit for normal
+  errors, Train 2009 Ch 3/5), stquo (proposal-vs-status-quo majority,
+  median-voter check). Citations verified by web search 2026-07-27
+  (Kruskal 29(1) 1-27 + 29(2) 115-129, Torgerson 17(4) 401-419,
+  Schoenemann 31(1) 1-10, McFadden pp. 105-142). Legacy tests
+  re-fixtured for all 11. Verified locally (Mac, pure numpy/scipy);
+  L14 re-verification pending a Tailscale re-auth.
+
 - **Cluster 1, fabricated citations (13/13).** vtpwr, algnm, sptag were
   already corrected in the 07-26 session. This session fixed the other
   ten: agrmt -> Sec 3.2.2 p.88; rollc -> Ch 5 + Poole-Rosenthal 1997;

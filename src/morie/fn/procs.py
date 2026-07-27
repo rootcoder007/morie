@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Procrustes rotation to align two MDS configurations."""
+"""Orthogonal Procrustes rotation to align two configurations."""
 
 import numpy as np
 
@@ -9,35 +9,56 @@ __all__ = ["procrustes_rotation"]
 
 
 def procrustes_rotation(A, Z):
-    """
-    Procrustes rotation to align two MDS configurations
+    r"""Schoenemann's closed-form orthogonal Procrustes solution.
 
-    Formula: min ||A - Z*T||^2 over orthogonal T; T = U*V' from SVD(A'*Z)
+    .. math:: \min_T \|A - Z T\|_F^2 \quad \text{s.t.}\quad T'T = I,
+              \qquad T = U V' \text{ from } \mathrm{SVD}(Z'A) = U S V'.
+
+    MDS solutions are only identified up to rotation and reflection,
+    so comparing two configurations requires aligning one to the
+    other first; the residual after the optimal rotation is the real
+    disagreement.
 
     Parameters
     ----------
-    A : array-like
-        Input data.
-    Z : array-like
-        Input data.
+    A : array-like, shape (n, k)
+        Target configuration.
+    Z : array-like, shape (n, k)
+        Configuration to rotate.
 
     Returns
     -------
-    result : dict
-        Keys: {'A_rotated': 'matrix', 'T': 'matrix', 'residual': 'float'}
+    RichResult
+        keys: ``rotation`` (k, k orthogonal), ``rotated`` (Z T),
+        ``residual`` (||A - ZT||_F), ``residual_before``
+        (||A - Z||_F), ``reflection`` (det T < 0), ``n``, ``method``.
 
     References
     ----------
-    Armstrong Ch 3
+    Schoenemann, P. H. (1966). A generalized solution of the
+    orthogonal Procrustes problem. *Psychometrika*, 31(1), 1-10.
     """
     A = np.asarray(A, dtype=float)
-    n = int(A) if A.ndim == 0 else len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    Z = np.asarray(Z, dtype=float)
+    if A.shape != Z.shape or A.ndim != 2:
+        raise ValueError("A and Z must be 2-D arrays of the same shape.")
+
+    U, _, Vt = np.linalg.svd(Z.T @ A)
+    T = U @ Vt
+    ZT = Z @ T
+
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Procrustes rotation to align two MDS configurations"}
+        payload={
+            "rotation": T,
+            "rotated": ZT,
+            "residual": float(np.linalg.norm(A - ZT)),
+            "residual_before": float(np.linalg.norm(A - Z)),
+            "reflection": bool(np.linalg.det(T) < 0),
+            "n": int(A.shape[0]),
+            "method": "Orthogonal Procrustes rotation (Schoenemann 1966)",
+        }
     )
 
 
 def cheatsheet():
-    return "procs: Procrustes rotation to align two MDS configurations"
+    return "procs: T = UV' from SVD(Z'A); ZT is Z aligned to A"

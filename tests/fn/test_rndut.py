@@ -1,22 +1,21 @@
-"""Tests for rndut.random_utility_model."""
+"""Tests for rndut."""
 
 import numpy as np
+import pytest
 
 from morie.fn.rndut import random_utility_model
 
 
 def test_rndut_basic():
-    """Test basic functionality."""
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    eps_dist = np.random.default_rng(42).normal(0, 1, 100)
-    result = random_utility_model(V, eps_dist)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    V = np.array([1.0, 0.0, -1.0])
+    out = random_utility_model(V, "gumbel")
+    ez = np.exp(V)
+    assert out["probabilities"] == pytest.approx(ez / ez.sum())
+    assert out["chosen"] == 0
 
 
 def test_rndut_edge():
-    """Test edge cases."""
-    V = np.random.default_rng(42).normal(0, 1, 100)
-    eps_dist = np.random.default_rng(42).normal(0, 1, 100)
-    result = random_utility_model(V, eps_dist)
-    assert isinstance(result, dict)
+    p = random_utility_model([0.0, 0.0], "normal", n_draws=20000, seed=0)
+    assert p["probabilities"][0] == pytest.approx(0.5, abs=0.03)
+    with pytest.raises(ValueError):
+        random_utility_model([1.0, 2.0], "cauchy")
