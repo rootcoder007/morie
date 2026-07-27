@@ -106,6 +106,26 @@ citation against the library PDFs or the actual paper before use.
   deciA's adjustment set is a heuristic unless a DAG is supplied.
   Legacy tests re-fixtured.
 
+- `crfath` `crfboot` `crfhte` `csfgrf` `survcfg` `csurv2` `qbcfgr`
+  `htgcrf` `drlnr` `ipsiMed` + `_cforest` core -- causal forest tier
+  (Wager-Athey 2018 JASA 113(523) 1228-1242; Athey-Imbens 2016 PNAS;
+  Chernozhukov et al. 2018 arXiv:1712.04802 BLP; Cui et al. 2023
+  JRSS-B 85(2) 179-211; Kennedy 2023 EJS 17(2) 3008-3049;
+  VanderWeele-Vansteelandt-Robins 2014 Epidemiology 25(2) 300-306).
+  Honest splitting written from scratch: split on child-tau
+  heterogeneity on one half, fill leaves on the other; out-of-bag
+  predictions feed every downstream test.
+- `tmlpoy` `tmltrt` `tmlsen` `tmlqct` `tmlmed` `tmlivc` `tmltvc`
+  `tmllng` `npstm` + `_tmle` core -- TMLE tier (van der Laan-Rubin
+  2006; Gruber-van der Laan 2010 bounded-continuous fluctuation;
+  van der Laan-Gruber 2012 longitudinal; Zheng-van der Laan 2012
+  mediation; Tan 2006 marginal sensitivity model; Petersen et al. 2012
+  positivity). Shared core: initial Q and g, logistic fluctuation
+  along H = A/g - (1-A)/(1-g) on the [0,1]-scaled outcome, EIF-based
+  SE. tmlpoy demonstrates double robustness by construction (null Q,
+  correct g, still consistent -- asserted 6/6 seeds).
+  Legacy tests re-fixtured for all 19.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
