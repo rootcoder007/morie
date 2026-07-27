@@ -1,24 +1,27 @@
 """Tests for granci.granger_causality_info."""
 
 import numpy as np
+import pytest
 
 from morie.fn.granci import granger_causality_info
 
 
 def test_granci_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lag = 10
-    result = granger_causality_info(x, y, lag)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n = 1500
+    x = np.zeros(n); y = np.zeros(n)
+    ex = rng.normal(size=n); ey = rng.normal(size=n)
+    for t in range(1, n):
+        x[t] = 0.5 * x[t - 1] + ex[t]
+        y[t] = 0.4 * y[t - 1] + 0.6 * x[t - 1] + ey[t]
+    out = granger_causality_info(x, y, lag=1)
+    assert out["mi"] > 0.05  # measured ~0.11 nats
+    assert out["p_value"] < 0.01
+    assert granger_causality_info(y, x, lag=1)["mi"] < 0.01
 
 
 def test_granci_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    lag = 10
-    result = granger_causality_info(x, y, lag)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        granger_causality_info([1.0, 2.0], [1.0, 2.0], lag=1)  # too short
+    with pytest.raises(ValueError):
+        granger_causality_info([1.0] * 20, [1.0] * 25, lag=1)  # length mismatch

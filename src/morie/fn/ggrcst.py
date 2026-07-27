@@ -1,3 +1,4 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Granger causality test."""
 
 import numpy as np
@@ -8,56 +9,94 @@ from ._richresult import RichResult
 __all__ = ["granger_causality"]
 
 
-def granger_causality(x, y, p, cdf=None):
-    """
-    Granger causality test
+def _lag_design(y, x, p, include_x):
+    n = y.size
+    cols = [np.ones(n - p)]
+    for j in range(1, p + 1):
+        cols.append(y[p - j : n - j])
+    if include_x:
+        for j in range(1, p + 1):
+            cols.append(x[p - j : n - j])
+    return np.column_stack(cols), y[p:]
 
-    Formula: F-test of restricted vs unrestricted VAR
+
+def _rss(D, t):
+    b, *_ = np.linalg.lstsq(D, t, rcond=None)
+    r = t - D @ b
+    return float((r**2).sum())
+
+
+def granger_causality(x, y, p=1):
+    r"""Does x Granger-cause y? F-test of restricted vs unrestricted AR.
+
+    Restricted model: :math:`y_t` on p own lags. Unrestricted: plus p
+    lags of x. Under the null that the x-lag coefficients are all
+    zero,
+
+    .. math:: F = \frac{(\mathrm{RSS}_r - \mathrm{RSS}_u)/p}
+              {\mathrm{RSS}_u/(m - 2p - 1)} \sim F_{p,\, m-2p-1},
+
+    with m = n - p usable observations. Rejection means x's past
+    improves the prediction of y beyond y's own past -- Granger's
+    operational notion of causality (predictive, not structural: a
+    common driver of both series produces it too).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    p : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x, y : array-like, shape (n,)
+        The candidate cause and the response series.
+    p : int, default 1
+        Lag order.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``statistic`` (F), ``p_value``, ``df`` (p, m - 2p - 1),
+        ``rss_restricted``, ``rss_unrestricted``, ``n``, ``p_lags``,
+        ``method``.
 
     References
     ----------
-    Granger (1969)
+    Granger, C. W. J. (1969). Investigating causal relations by
+    econometric models and cross-spectral methods. *Econometrica*,
+    37(3), 424-438.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Granger causality test"})
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    x = np.asarray(x, dtype=float).ravel()
+    y = np.asarray(y, dtype=float).ravel()
+    if x.size != y.size:
+        raise ValueError("x and y must have equal length.")
+    p = int(p)
+    if p < 1:
+        raise ValueError(f"p must be at least 1, got {p}.")
+    n = y.size
+    m = n - p
+    dof2 = m - 2 * p - 1
+    if dof2 < 1:
+        raise ValueError(f"need at least {3 * p + 2} observations for p = {p}, got {n}.")
+    if not (np.all(np.isfinite(x)) and np.all(np.isfinite(y))):
+        raise ValueError("x and y must be finite.")
+
+    Dr, t = _lag_design(y, x, p, include_x=False)
+    Du, _ = _lag_design(y, x, p, include_x=True)
+    rss_r, rss_u = _rss(Dr, t), _rss(Du, t)
+    if rss_u <= 0:
+        raise ValueError("unrestricted model fits exactly; F statistic undefined.")
+    F = ((rss_r - rss_u) / p) / (rss_u / dof2)
+    pv = float(stats.f.sf(F, p, dof2))
+
     return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Granger causality test"}
+        payload={
+            "statistic": float(F),
+            "p_value": pv,
+            "df": (p, dof2),
+            "rss_restricted": rss_r,
+            "rss_unrestricted": rss_u,
+            "n": int(n),
+            "p_lags": p,
+            "method": f"Granger causality F-test (p={p})",
+        }
     )
 
 
 def cheatsheet():
-    return "ggrcst: Granger causality test"
+    return "ggrcst: F-test of x-lags in y's AR (Granger 1969)"
