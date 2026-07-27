@@ -95,19 +95,45 @@ assert something a stub would fail:
 
 | Family | Status |
 |---|---|
-| NN hyperparameter | **done** -- `posab` `rotrp` `heinz` `vaenc` `ganls` `mhatf` `grpqa` (26 tests green). `trfbl` `tknbp` `tsnrd` remain |
-| Matrix shape | **partly done** -- `cnn2d` `mxpol` `kldivg` `mcnem` `cvxhl` (24 tests green). `gearyc` `sarre` `sarla` `sptau` `okrig` `spblk` remain |
-| Series length | not started (17 modules) |
-| Classification labels | not started (6 modules) |
-| Genuine defects | not started (9) |
+| NN hyperparameter | **done** -- all 10 incl. `trfbl` `tknbp` `tsnrd` |
+| Matrix shape | **done** -- all 11 incl. spatial six, PDF-verified vs Schabenberger & Gotway |
+| Series length | **done** -- all 16, DGP parameter-recovery tests |
+| Classification labels | **done** -- all 6, ESL-anchored |
+| Placeholders | **done** -- `sgtadj` `sgtnbe` implemented; `dccgrch` front-ends dccmd; `studres` was real |
+| Missing modules | **done** -- `test_vecmF.py` deleted (stale duplicate); bnp suite test rewritten |
+| Assertion reds | **done** -- logrnk/cgmth/studres/describe stale tests fixed; `morani` restored to the import table |
 
-Two real defects found so far, both masked by the placeholder-era tests:
+Real defects found and fixed (all masked by the placeholder-era tests):
 
-- `mcnem` used a 0.5 continuity correction where Edwards (1948) uses 1.
-  At b=20, c=30 that gave 1.805 instead of 1.62 -- anti-conservative,
-  the wrong direction for a correction meant to be conservative.
-- `cvxhl` called `np.cross` on 2-vectors, removed in NumPy 2.0, so the
-  module raised on every call under any current NumPy.
+- `mcnem`: 0.5 continuity correction where Edwards (1948) subtracts 1.
+- `cvxhl`: `np.cross` on 2-vectors, removed in NumPy 2.0 -- raised on
+  every call.
+- `volengle`: docstring promised Engle's ARCH-LM; body was a KS
+  normality template that ignored `q`. Reimplemented (Engle 1982
+  Sec. 8).
+- `volcorpst`: same KS template, ignored `horizons`. Reimplemented as
+  a per-horizon distributional accuracy test (Corradi & Swanson 2006,
+  J. Econometrics 135, 187-228 -- verified to exist).
+- `archm`: L-BFGS-B returned its starting values verbatim on every
+  input (delta = 0.0, alpha = 0.2 even on iid data). Powell + variance
+  ceiling.
+- `lilf`: reported the classical KS p-value as if it were Lilliefors,
+  and described the direction of the error backwards. Now a Monte
+  Carlo null.
+- `kssup`: broke on current scipy (string dist + args maps "norm" to
+  ndtr); now freezes the fitted distribution.
+- `regms`: transition matrix orientation undocumented; now
+  row-stochastic by contract.
+- `sgtadj`/`sgtnbe`: mean-of-edge-array placeholders; real adjacency +
+  Hashimoto matrices.
+- `dccgrch`: spearmanr(X, X) placeholder, identically 1; now delegates
+  to the real DCC engine.
+
+Citation policy applied throughout: page-precise references verified
+against the library PDFs (`data/datasets/userguides/other/pdf`), txt
+used only as the search index. Schabenberger & Gotway eqs. (1.14),
+(1.15), (5.13)-(5.16), (6.33)-(6.41) and ESL eq. (9.17) read in the
+PDF itself; the Corradi-Swanson citation verified by web search.
 
 ## Reproducing the triage
 
