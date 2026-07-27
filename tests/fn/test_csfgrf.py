@@ -1,26 +1,30 @@
-"""Tests for csfgrf.causal_survival_forest."""
+"""Tests for csfgrf."""
 
 import numpy as np
+import pytest
 
 from morie.fn.csfgrf import causal_survival_forest
 
 
+def _surv(seed=42, n=1200):
+    rng = np.random.default_rng(seed)
+    X = rng.normal(size=(n, 2))
+    D = (rng.random(n) < 0.5).astype(float)
+    t_event = rng.exponential(np.exp(0.5 * D))
+    cens = rng.exponential(4.0, size=n)
+    return np.minimum(t_event, cens), (t_event <= cens).astype(float), D, X
+
+
 def test_csfgrf_basic():
-    """Test basic functionality."""
-    time = np.linspace(0, 10, 100)
-    event = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = causal_survival_forest(time, event, D, X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    time, event, D, X = _surv()
+    out = causal_survival_forest(time, event, D, X, n_trees=80, min_leaf=20, seed=0)
+    assert out["ate"] > 0  # treatment lengthens survival
+    assert out["horizon"] > 0
 
 
 def test_csfgrf_edge():
-    """Test edge cases."""
-    time = np.linspace(0, 10, 100)
-    event = np.random.default_rng(42).normal(0, 1, 100)
-    D = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = causal_survival_forest(time, event, D, X)
-    assert isinstance(result, dict)
+    time, event, D, X = _surv()
+    with pytest.raises(ValueError):
+        causal_survival_forest(-time, event, D, X)  # nonpositive times
+    with pytest.raises(ValueError):
+        causal_survival_forest(time, event, D, X, horizon=-1.0)

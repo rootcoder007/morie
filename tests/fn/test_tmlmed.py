@@ -1,26 +1,26 @@
-"""Tests for tmlmed.tmle_mediation."""
+"""Tests for tmlmed."""
 
 import numpy as np
+import pytest
 
 from morie.fn.tmlmed import tmle_mediation
 
 
 def test_tmlmed_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    treatment = np.random.default_rng(42).normal(0, 1, 100)
-    mediator = np.random.default_rng(42).normal(0, 1, 100)
-    covariates = np.random.default_rng(42).normal(0, 1, 100)
-    result = tmle_mediation(y, treatment, mediator, covariates)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n = 3000
+    W = rng.normal(size=(n, 2))
+    A = (rng.random(n) < 1 / (1 + np.exp(-W[:, 0]))).astype(float)
+    M = 0.8 * A + 0.4 * W[:, 0] + rng.normal(scale=0.6, size=n)
+    y = 0.5 * A + 1.0 * M + 0.3 * W[:, 0] + rng.normal(scale=0.6, size=n)
+    out = tmle_mediation(y, A, M, W)
+    assert out["total"] == pytest.approx(out["nde"] + out["nie"])
+    assert out["total"] == pytest.approx(1.3, abs=0.3)
 
 
 def test_tmlmed_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    treatment = np.random.default_rng(42).normal(0, 1, 100)
-    mediator = np.random.default_rng(42).normal(0, 1, 100)
-    covariates = np.random.default_rng(42).normal(0, 1, 100)
-    result = tmle_mediation(y, treatment, mediator, covariates)
-    assert isinstance(result, dict)
+    z = np.zeros(200)
+    with pytest.raises(ValueError):
+        tmle_mediation(np.arange(200.0), z, z)  # one arm
+    with pytest.raises(ValueError):
+        tmle_mediation(np.arange(200.0), (np.arange(200) % 2).astype(float), z[:10])

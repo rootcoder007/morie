@@ -1,32 +1,30 @@
-"""Tests for drlnr.dr_learner."""
+"""Tests for drlnr."""
 
 import numpy as np
+import pytest
 
 from morie.fn.drlnr import dr_learner
 
 
+def _hetero(seed=42, n=1200):
+    rng = np.random.default_rng(seed)
+    X = rng.normal(size=(n, 3))
+    D = (rng.random(n) < 0.5).astype(float)
+    tau = 1.0 + 2.0 * X[:, 0]
+    y = X[:, 1] + tau * D + rng.normal(scale=0.5, size=n)
+    return y, D, X, tau
+
+
 def test_drlnr_basic():
-    """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    mu0 = 0.0
-    mu1 = np.random.default_rng(42).normal(0, 1, 100)
-    e_model = np.random.default_rng(42).normal(0, 1, 100)
-    cate_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = dr_learner(Y, T, X, mu0, mu1, e_model, cate_model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    y, D, X, tau = _hetero()
+    out = dr_learner(y, D, X, n_folds=5, seed=0)
+    assert out["ate"] == pytest.approx(1.0, abs=0.25)
+    assert np.corrcoef(out["cate"], tau)[0, 1] > 0.8
 
 
 def test_drlnr_edge():
-    """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    mu0 = 0.0
-    mu1 = np.random.default_rng(42).normal(0, 1, 100)
-    e_model = np.random.default_rng(42).normal(0, 1, 100)
-    cate_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = dr_learner(Y, T, X, mu0, mu1, e_model, cate_model)
-    assert isinstance(result, dict)
+    y, D, X, _ = _hetero()
+    with pytest.raises(ValueError):
+        dr_learner(y, D, X, n_folds=1)
+    with pytest.raises(ValueError):
+        dr_learner(y, np.full(y.size, 0.5), X)  # non-binary T
