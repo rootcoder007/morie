@@ -85,6 +85,7 @@ check the code against the same page the author wrote.
 | Back-door adjustment | Judea Pearl, *Causality*, 2nd ed. (Cambridge University Press, 2009), Theorem 3.3.2 |
 | Back-door criterion and d-separation | Judea Pearl, *Causality*, 2nd ed. (Cambridge University Press, 2009), Definition 3.3.1 |
 | Doubly robust difference-in-differences | Pedro H. C. Sant'Anna & Jun Zhao, *Journal of Econometrics* 219:101–122 (2020) |
+| Causal mediation for a binary outcome (inverse odds-ratio weighting) | Eric J. Tchetgen Tchetgen, *Statistics in Medicine* 32:4567–4580 (2013) |
 | Stepwise mediation and the product-of-coefficients indirect effect | Reuben M. Baron & David A. Kenny, *Journal of Personality and Social Psychology* 51:1173–1182 (1986); Michael E. Sobel, *Sociological Methodology* 13:290–312 (1982) |
 
 ### Transcribed numerical tables
