@@ -60,6 +60,18 @@ check the code against the same page the author wrote.
 | MCMC effective sample size (initial positive sequence) | Charles J. Geyer, *Statistical Science* 7:473–483 (1992) |
 | Functional data correlation | James O. Ramsay & Bernard W. Silverman, *Functional Data Analysis*, 2nd ed. (Springer, 2005) |
 | Double machine learning | V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, W. Newey & J. Robins, *Econometrics Journal* 21:C1–C68 (2018) |
+| Anderson–Darling and Lilliefors goodness-of-fit (critical-value tables) | Jean Dickinson Gibbons & Subhabrata Chakraborti, *Nonparametric Statistical Inference*, 5th ed. (Chapman & Hall/CRC, 2011) |
+| Constant conditional correlation MGARCH | Tim Bollerslev, *Review of Economics and Statistics* 72:498–505 (1990) |
+| Dynamic conditional correlation MGARCH | Robert F. Engle, *Journal of Business & Economic Statistics* 20:339–350 (2002) |
+| Random forests | Leo Breiman, *Machine Learning* 45:5–32 (2001); Trevor Hastie, Robert Tibshirani & Jerome Friedman, *The Elements of Statistical Learning*, 2nd ed. (Springer, 2009), Algorithm 15.1 |
+| Gradient boosting | Jerome H. Friedman, *Annals of Statistics* 29:1189–1232 (2001); Hastie, Tibshirani & Friedman (2009), Algorithm 10.3 and eq. (10.41) |
+| Regularised tree-boosting objective | Tianqi Chen & Carlos Guestrin, *KDD '16*, 785–794 (2016) |
+| Support vector machines (SMO decomposition) | Chih-Chung Chang & Chih-Jen Lin, *ACM TIST* 2(3):27 (2011); Rong-En Fan, Pai-Hsuen Chen & Chih-Jen Lin, *JMLR* 6:1889–1918 (2005) |
+| Causal mediation sensitivity to an unobserved confounder | Kosuke Imai, Luke Keele & Teppei Yamamoto, *Statistical Science* 25:51–71 (2010); Guido W. Imbens, *American Economic Review* 93:126–132 (2003) |
+| Compositional data, closure and subcompositional coherence | John Aitchison, *The Statistical Analysis of Compositional Data* (Chapman & Hall, 1986); Karl Pearson, *Proceedings of the Royal Society of London* 60:489–498 (1897) |
+| Matthews correlation coefficient | Brian W. Matthews, *Biochimica et Biophysica Acta* 405:442–451 (1975) |
+| Variance inflation factor and collinearity diagnostics | David A. Belsley, Edwin Kuh & Roy E. Welsch, *Regression Diagnostics* (Wiley, 1980) |
+| Complete spatial randomness, nearest-neighbour distances | Peter J. Diggle, *Statistical Analysis of Spatial Point Patterns*, 2nd ed. (Edward Arnold, 2003); Schabenberger & Gotway (2005), §§3.3–3.4 |
 
 Where a secondary source and the primary disagree, morie follows the primary
 and records the divergence in the function's docstring, so the choice is

@@ -193,6 +193,36 @@ statistics (`spatial`), genomics utilities (`genomics`),
 cryptographic primitives (`crypto`), and a 5,800+ file `fn/`
 namespace of individual statistical / scientific functions.
 
+These modules are written natively rather than delegating to a
+third-party package. Where a method has a canonical source, the
+implementation follows that source and the docstring names the
+equation, so a reader can check the code against the page the
+author wrote. Goodness-of-fit critical values are transcribed from
+[@gibbonsChakraborti2011nonparametric]; the multivariate GARCH
+family follows [@bollerslev1990ccc] for constant conditional
+correlation and [@engle2002dcc] for the dynamic case; the tree
+ensembles follow [@breiman2001randomforests], [@friedman2001greedy]
+and [@hastie2009esl], with the regularised split objective of
+[@chenGuestrin2016xgboost]; the support-vector solver is the
+decomposition of [@changLin2011libsvm] with the working-set
+selection of [@fanChenLin2005wss]; mediation sensitivity follows
+[@imaiKeeleYamamoto2010mediation], whose partial-$R^{2}$
+parameterisation is due to [@imbens2003sensitivity]; the
+compositional diagnostics follow [@aitchison1986compositional] and
+the spurious-correlation argument of [@pearson1897spurious];
+collinearity diagnostics follow [@belsley1980regression]; the
+classification metric is [@matthews1975comparison]; and the
+point-pattern tests follow [@diggle2003pointpatterns] and
+[@schabenberger2005spatial].
+
+Writing each method twice, once in Python and once in R, is a
+deliberate check rather than duplicated effort. Two defects in this
+release were found only because the second implementation existed:
+an integer overflow in the R Matthews coefficient at sample sizes
+above roughly 800, which Python's arbitrary-precision integers
+cannot produce, and a column-major unwinding in R that silently
+transposed a window specification the Python read correctly.
+
 ## Terminal user interface and LLM integration
 
 A Textual TUI with 10 screens, a multi-language REPL with
