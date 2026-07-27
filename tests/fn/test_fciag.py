@@ -1,24 +1,27 @@
 """Tests for fciag.fci_algorithm."""
 
 import numpy as np
+import pytest
 
 from morie.fn.fciag import fci_algorithm
 
 
 def test_fciag_basic():
-    """Test basic functionality."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    ci_test = np.random.default_rng(43).normal(0, 1, 30)
-    result = fci_algorithm(data, alpha, ci_test)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n = 4000
+    a = rng.normal(size=n)
+    b = rng.normal(size=n)
+    cc = a + b + rng.normal(scale=0.4, size=n)
+    d = cc + rng.normal(scale=0.4, size=n)
+    out = fci_algorithm(np.column_stack([a, b, cc, d]), names=["A", "B", "C", "D"])
+    edges = {frozenset(e) for e in out["edges"]}
+    assert frozenset({"A", "C"}) in edges
+    assert frozenset({"A", "B"}) not in edges  # marginally independent
+    assert ("A", "C", "B") in out["colliders"] or ("B", "C", "A") in out["colliders"]
 
 
 def test_fciag_edge():
-    """Test edge cases."""
-    data = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    ci_test = np.random.default_rng(43).normal(0, 1, 30)
-    result = fci_algorithm(data, alpha, ci_test)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        fci_algorithm(np.zeros((10, 2)))  # < 3 variables
+    with pytest.raises(ValueError):
+        fci_algorithm(np.zeros((10, 3)), alpha=1.5)
