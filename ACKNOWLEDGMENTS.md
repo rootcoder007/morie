@@ -82,6 +82,24 @@ check the code against the same page the author wrote.
 | Differential item functioning (SIBTEST) | Robin Shealy & William Stout, *Psychometrika* 58:159–194 (1993) |
 | Panel cointegration | Peter Pedroni, *Oxford Bulletin of Economics and Statistics* 61(S1):653–670 (1999) |
 
+### Transcribed numerical tables
+
+Three of the implementations depend on numerical tables published by
+their authors, rather than on formulas alone. These are reproduced in the
+source with the citation attached, because a transcribed table is data
+taken from someone's work and its provenance has to travel with it.
+
+| Table | Source | Used by |
+|---|---|---|
+| Lilliefors and Anderson–Darling critical values (Tables O and T) | Gibbons & Chakraborti, *Nonparametric Statistical Inference*, 5th ed. (Chapman & Hall/CRC, 2011) | `statistics.py` goodness-of-fit |
+| Table 2, "Adjustment Terms for Panel Cointegration Tests" — 3 deterministic cases × m = 2–7 regressors × 5 statistics | Pedroni, *Oxford Bulletin of Economics and Statistics* 61(S1):653–670 (1999); transcribed from the author's working paper at `web.williams.edu/Economics/wp/pedronicriticalvalues.pdf` | `pdcoin.py` panel cointegration |
+
+Two limits are recorded in the code rather than smoothed over. Pedroni's
+Table 2 has no m = 1 row, so a bivariate cointegrating regression cannot
+be standardised from it and that case is refused instead of
+extrapolated. The Anderson–Darling table floors at p = 0.01, so smaller
+p-values are reported as bounded rather than invented.
+
 Where a secondary source and the primary disagree, morie follows the primary
 and records the divergence in the function's docstring, so the choice is
 auditable rather than inherited. The genomic relationship matrices are the
