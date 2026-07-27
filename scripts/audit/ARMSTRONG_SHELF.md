@@ -55,6 +55,21 @@ names before mirroring.
 
 ## Done
 
+- **Cluster 5 core, NOMINATE/OC group (8 placeholders).** wnomp
+  (Gaussian-utility choice probability -- the NOMINATE signature vs
+  quadratic IRT; equidistant = 0.5 asserted), wnoml (Bernoulli
+  log-likelihood + the Sec 5.3.5 fit statistics from the same
+  probabilities), ricei (Rice 1925 PSQ 40(1) 60-72, verified),
+  apre (the p.143 APRE formula, minority-vote fixture), agpar (party
+  unity with the CQ unity-votes-only variant), oclin (Poole 2000
+  exhaustive cutpoint search along the discriminant; zero errors on
+  separable fixtures in 1-D and 2-D), pscrc (recode + lopsidedness
+  screen, wnominate's lop = 0.025 default), brdgo (bridge alignment =
+  centre + scale + Schoenemann rotation on shared actors; exact
+  recovery of a planted similarity transform; Bailey 2007 as the
+  bridging primary). Legacy tests re-fixtured for all 8; 24/24 green
+  on L14.
+
 - **Cluster 3, MDS family + spatial utilities (11/11 placeholders).**
   mmdsf (Torgerson 1952 double centering, exact recovery of planted
   Euclidean configurations asserted), krust (Kruskal 1964 stress-1 +

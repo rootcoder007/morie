@@ -1,22 +1,22 @@
-"""Tests for agpar.party_unity_score."""
+"""Tests for agpar."""
 
 import numpy as np
+import pytest
 
 from morie.fn.agpar import party_unity_score
 
 
 def test_agpar_basic():
-    """Test basic functionality."""
-    vote_matrix = np.random.default_rng(42).normal(0, 1, (10, 10))
-    party_id = np.random.default_rng(42).normal(0, 1, 100)
-    result = party_unity_score(vote_matrix, party_id)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    V = np.array([[1, 1], [1, 1], [1, 0], [0, 0], [0, 0]], dtype=float)
+    pid = np.array(["a", "a", "a", "b", "b"])
+    out = party_unity_score(V, pid)
+    assert out["unity"][2] == pytest.approx(0.5)
+    assert out["by_party"]["b"] == pytest.approx(1.0)
 
 
 def test_agpar_edge():
-    """Test edge cases."""
-    vote_matrix = np.random.default_rng(42).normal(0, 1, (10, 10))
-    party_id = np.random.default_rng(42).normal(0, 1, 100)
-    result = party_unity_score(vote_matrix, party_id)
-    assert isinstance(result, dict)
+    V = np.array([[1, 1], [0, 0]], dtype=float)
+    with pytest.raises(ValueError):
+        party_unity_score(V, ["a", "a", "b"])  # length mismatch
+    with pytest.raises(ValueError):
+        party_unity_score(V, ["a", "a"], unity_votes_only=True)  # one party

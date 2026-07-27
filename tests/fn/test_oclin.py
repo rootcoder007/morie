@@ -1,22 +1,21 @@
-"""Tests for oclin.oc_cutting_line."""
+"""Tests for oclin."""
 
 import numpy as np
+import pytest
 
 from morie.fn.oclin import oc_cutting_line
 
 
 def test_oclin_basic():
-    """Test basic functionality."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    n_dims = 2
-    result = oc_cutting_line(votes, n_dims)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    x = np.array([-1.0, -0.6, 0.1, 0.4, 0.9])
+    v = np.array([1, 1, 1, 0, 0], dtype=float)
+    out = oc_cutting_line(x, v)
+    assert out["errors"] == 0
+    assert 0.1 < out["cutpoint"] < 0.4
 
 
 def test_oclin_edge():
-    """Test edge cases."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    n_dims = 2
-    result = oc_cutting_line(votes, n_dims)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        oc_cutting_line(np.array([0.0, 1.0]), np.array([1.0, 1.0]))  # one class
+    with pytest.raises(ValueError):
+        oc_cutting_line(np.array([0.0, 1.0]), np.array([1.0]))  # length mismatch

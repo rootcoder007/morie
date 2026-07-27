@@ -1,26 +1,19 @@
-"""Tests for wnomp.wnominate_probability."""
+"""Tests for wnomp."""
 
 import numpy as np
+import pytest
 
 from morie.fn.wnomp import wnominate_probability
 
 
 def test_wnomp_basic():
-    """Test basic functionality."""
-    ideal_point = np.random.default_rng(42).normal(0, 1, 100)
-    yea_pos = np.random.default_rng(42).normal(0, 1, 100)
-    nay_pos = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = wnominate_probability(ideal_point, yea_pos, nay_pos, beta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert wnominate_probability([0.0], [-1.0], [1.0])["p_yea"] == pytest.approx(0.5)
+    assert wnominate_probability([-0.9], [-1.0], [1.0])["p_yea"] > 0.9
 
 
 def test_wnomp_edge():
-    """Test edge cases."""
-    ideal_point = np.random.default_rng(42).normal(0, 1, 100)
-    yea_pos = np.random.default_rng(42).normal(0, 1, 100)
-    nay_pos = np.random.default_rng(42).normal(0, 1, 100)
-    beta = 0.8
-    result = wnominate_probability(ideal_point, yea_pos, nay_pos, beta)
-    assert isinstance(result, dict)
+    lo = wnominate_probability([-0.3], [-1.0], [1.0], beta=1.0)["p_yea"]
+    hi = wnominate_probability([-0.3], [-1.0], [1.0], beta=50.0)["p_yea"]
+    assert hi > lo
+    with pytest.raises(ValueError):
+        wnominate_probability([0.0], [-1.0], [1.0], beta=-1.0)
