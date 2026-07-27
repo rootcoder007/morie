@@ -126,7 +126,26 @@ citation against the library PDFs or the actual paper before use.
   correct g, still consistent -- asserted 6/6 seeds).
   Legacy tests re-fixtured for all 19.
 
-## Cluster plan (next)
+## Status: all 119 causal placeholders populated (2026-07-27)
+
+Every module on this worklist now has a real implementation. Verified
+mechanically: no file in the done set still contains the
+`result = np.mean(...)` / `se = np.std(...)` placeholder template.
+
+Each cluster also had its two generated legacy tests (`test_<mod>.py`)
+rewritten with valid fixtures, since those were written against the
+placeholders and rejected by the real input validation.
+
+R parity: `R/causal_native2.R` mirrors eight closed-form estimators
+into both R trees (rmorie and morie/r-package/morie), 25/25 testthat
+green on L14. `morie_did_2x2` and `morie_mediation_sensitivity` were
+deliberately NOT mirrored -- both already exist in R (R/did.R,
+R/sensmi.R) and the latter already implements the same
+Imai-Keele-Yamamoto theorem. The causal-forest and TMLE tiers remain
+Python-only; they need the honest-splitting and targeting machinery,
+which has not been ported.
+
+## Cluster plan (superseded -- kept for the record)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
    `mdian` (delegate to bkmed), `medfm` (Pearl mediation formula,
