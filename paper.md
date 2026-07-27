@@ -227,6 +227,17 @@ analysis follows [@ripley1977modelling];
 differential item functioning follows [@shealyStout1993sibtest]; and
 panel cointegration follows [@pedroni1999critical].
 
+Three implementations depend on numerical tables their authors
+published rather than on formulas alone: the Lilliefors and
+Anderson-Darling critical values of
+[@gibbonsChakraborti2011nonparametric], and Pedroni's adjustment
+terms [@pedroni1999critical]. These are transcribed into the source
+with their citation, and their limits are enforced rather than
+smoothed over: Pedroni's table has no single-regressor row, so a
+bivariate panel is refused rather than extrapolated, and the
+Anderson-Darling table floors at p = 0.01, so smaller values are
+reported as bounded rather than invented.
+
 Writing each method twice, once in Python and once in R, is a
 deliberate check rather than duplicated effort. Two defects in this
 release were found only because the second implementation existed:
