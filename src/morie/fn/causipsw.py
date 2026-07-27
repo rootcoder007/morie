@@ -1,3 +1,4 @@
+# morie.fn -- function file (rootcoder007/morie)
 """ATT inverse probability of treatment weights."""
 
 import numpy as np
@@ -8,35 +9,63 @@ __all__ = ["causal_iptw_attweights"]
 
 
 def causal_iptw_attweights(treat, ps):
-    """
-    ATT inverse probability of treatment weights
+    r"""ATT inverse-probability-of-treatment weights.
 
-    Formula: w_i = e(x_i)/(1-e(x_i)) for control, 1 for treated
+    For the average treatment effect on the treated, treated units keep
+    weight 1 and controls are reweighted to look like the treated
+    population:
+
+    .. math:: w_i = T_i + (1 - T_i)\,\frac{e(x_i)}{1 - e(x_i)}.
+
+    Also reports the Kish effective sample size of each reweighted
+    group, :math:`\mathrm{ESS} = (\sum w)^2 / \sum w^2`, the standard
+    diagnostic for how much information the weighting discards.
 
     Parameters
     ----------
-    treat : array-like
-        Input data.
-    ps : array-like
-        Input data.
+    treat : array-like of {0, 1}, shape (n,)
+        Treatment indicator.
+    ps : array-like, shape (n,)
+        Estimated propensity scores; must lie strictly in (0, 1) for
+        controls.
 
     Returns
     -------
-    result : dict
-        Keys: weights, ess
+    RichResult
+        keys: ``weights`` (n,), ``ess_control``, ``ess_treated``,
+        ``n``, ``method``.
 
     References
     ----------
-    Hernán-Robins (2020)
+    Hernan, M. A. & Robins, J. M. (2020). *Causal Inference: What If*.
+    Chapman & Hall/CRC. Ch. 15 (propensity scores; ATT weighting).
     """
-    treat = np.atleast_1d(np.asarray(treat, dtype=float))
-    n = len(treat)
-    result = float(np.mean(treat))
-    se = float(np.std(treat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    treat = np.asarray(treat, dtype=float).ravel()
+    ps = np.asarray(ps, dtype=float).ravel()
+    if treat.size != ps.size:
+        raise ValueError(f"treat and ps must have equal length, got {treat.size} and {ps.size}.")
+    if not np.all(np.isin(treat, (0.0, 1.0))):
+        raise ValueError("treat must be binary 0/1.")
+    ctrl = treat == 0
+    if np.any((ps[ctrl] <= 0) | (ps[ctrl] >= 1)):
+        raise ValueError("control propensity scores must lie strictly in (0, 1).")
+
+    w = np.where(treat == 1, 1.0, ps / (1.0 - ps))
+
+    def _ess(v):
+        s = v.sum()
+        return float(s * s / (v**2).sum()) if v.size else 0.0
+
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "ATT inverse probability of treatment weights"}
+        payload={
+            "weights": w,
+            "ess_control": _ess(w[ctrl]),
+            "ess_treated": _ess(w[~ctrl]),
+            "n": int(treat.size),
+            "method": "ATT inverse probability of treatment weights",
+        }
     )
 
 
 def cheatsheet():
-    return "causipsw: ATT inverse probability of treatment weights"
+    return "causipsw: ATT IPT weights (controls e/(1-e), treated 1) + Kish ESS"

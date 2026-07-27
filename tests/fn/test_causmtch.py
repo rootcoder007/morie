@@ -1,24 +1,23 @@
 """Tests for causmtch.causal_pair_matching."""
 
 import numpy as np
+import pytest
 
 from morie.fn.causmtch import causal_pair_matching
 
 
 def test_causmtch_basic():
-    """Test basic functionality."""
-    ps = np.random.default_rng(42).normal(0, 1, 100)
-    treat = np.random.default_rng(42).normal(0, 1, 100)
-    caliper = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_pair_matching(ps, treat, caliper)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    ps = np.array([0.7, 0.69, 0.4, 0.41, 0.2])
+    treat = np.array([1, 0, 1, 0, 0])
+    y = np.array([3.0, 1.0, 2.0, 1.5, 0.0])
+    result = causal_pair_matching(ps, treat, y=y)
+    pairs = {tuple(p) for p in result["matched_idx"]}
+    assert pairs == {(0, 1), (2, 3)}  # nearest neighbours on logit scale
+    assert result["att"] == pytest.approx(((3.0 - 1.0) + (2.0 - 1.5)) / 2)
 
 
 def test_causmtch_edge():
-    """Test edge cases."""
-    ps = np.random.default_rng(42).normal(0, 1, 100)
-    treat = np.random.default_rng(42).normal(0, 1, 100)
-    caliper = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_pair_matching(ps, treat, caliper)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        causal_pair_matching([0.5, 0.5], [1, 1])  # no controls
+    with pytest.raises(ValueError):
+        causal_pair_matching([1.2, 0.5], [1, 0])  # ps outside (0, 1)
