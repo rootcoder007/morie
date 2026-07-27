@@ -1,3 +1,4 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Joint significance test for mediation."""
 
 import numpy as np
@@ -5,68 +6,81 @@ from scipy import stats
 
 from ._richresult import RichResult
 
-__all__ = ["joint_significance_test"]
+__all__ = ["joint_significance_mediation"]
 
 
-def joint_significance_test(a, b, se_a, se_b, cdf=None):
-    """
-    Joint significance test for mediation
+def joint_significance_mediation(x, m, y, alpha=0.05):
+    r"""Joint significance ("max-p") test of the mediated path.
 
-    Formula: reject H0_med iff reject both H0_a AND H0_b
+    Fits M = i1 + a X and Y = i2 + c'X + b M by OLS and declares
+    mediation when BOTH a and b are individually significant; the
+    p-value reported is max(p_a, p_b). In the MacKinnon et al. (2002)
+    comparison of 14 mediation tests this simple procedure held the
+    best balance of Type I error and power -- better than the Sobel
+    test, whose normal approximation to the product ab is poor exactly
+    where mediation is in doubt.
+
+    This replaces a placeholder that averaged its first argument.
 
     Parameters
     ----------
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    se_a : array-like
-        Input data.
-    se_b : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x, m, y : array-like, shape (n,)
+        Treatment, mediator, outcome.
+    alpha : float, default 0.05
+        Per-path significance level.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``significant``, ``p_value`` (= max(p_a, p_b)), ``a``,
+        ``b``, ``p_a``, ``p_b``, ``indirect`` (= ab), ``n``,
+        ``method``.
 
     References
     ----------
-    Cohen & Cohen (1983); MacKinnon et al. (2002)
+    MacKinnon, D. P., Lockwood, C. M., Hoffman, J. M., West, S. G. &
+    Sheets, V. (2002). A comparison of methods to test mediation and
+    other intervening variable effects. *Psychological Methods*, 7(1),
+    83-104.
     """
-    a = np.asarray(a, dtype=float)
-    n = len(a)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Joint significance test for mediation"}
-        )
-    x_sorted = np.sort(a)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(a), scale=np.std(a, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    x = np.asarray(x, dtype=float).ravel()
+    m = np.asarray(m, dtype=float).ravel()
+    y = np.asarray(y, dtype=float).ravel()
+    n = x.size
+    if not (m.size == n and y.size == n):
+        raise ValueError(f"x, m and y must share a length; got {n}, {m.size}, {y.size}.")
+    if n < 4:
+        raise ValueError(f"Need at least 4 observations, got {n}.")
+    if not 0 < alpha < 1:
+        raise ValueError(f"alpha must lie in (0, 1), got {alpha}.")
+
+    def _ols_t(D, resp, col):
+        beta, *_ = np.linalg.lstsq(D, resp, rcond=None)
+        r = resp - D @ beta
+        dof = n - D.shape[1]
+        s2 = float(r @ r) / dof
+        cov = s2 * np.linalg.inv(D.T @ D)
+        t = beta[col] / np.sqrt(cov[col, col])
+        return float(beta[col]), float(2 * stats.t.sf(abs(t), dof))
+
+    a, p_a = _ols_t(np.column_stack([np.ones(n), x]), m, 1)
+    b, p_b = _ols_t(np.column_stack([np.ones(n), x, m]), y, 2)
+    p = max(p_a, p_b)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Joint significance test for mediation",
+            "significant": bool(p < alpha),
+            "p_value": p,
+            "a": a,
+            "b": b,
+            "p_a": p_a,
+            "p_b": p_b,
+            "indirect": a * b,
+            "n": int(n),
+            "alpha": float(alpha),
+            "method": "Joint significance (max-p) mediation test (MacKinnon et al. 2002)",
         }
     )
 
 
 def cheatsheet():
-    return "jntmed: Joint significance test for mediation"
+    return "jntmed: joint-significance (max-p) mediation test (MacKinnon et al. 2002)"

@@ -19321,7 +19321,7 @@
 "joint_frailty": "jntfr",
 "joint_longitudinal_survival": "jntlmm",
 "joint_loss_mixed_outcomes": "jntlO",
-"joint_significance_test": "jntmed",
+"joint_significance_mediation": "jntmed",
 "joint_sparse_decompose": "jsdcm",
 "jonckheere_terpstra": "jnckh",
 "jonckheere_terpstra_test": "jt",
