@@ -220,7 +220,10 @@ and the table-inertia chi-square follows
 [@nenadicGreenacre2007ca] and [@greenacre1984correspondence];
 the kernel two-sample test follows [@gretton2012kernel]; and the
 Wasserstein two-sample test follows [@ramdas2017wasserstein], using the
-one-dimensional closed form of [@villani2009optimal].
+one-dimensional closed form of [@villani2009optimal];
+covariate-balance diagnostics follow [@austin2009balance]; space-time
+interaction follows [@jacquez1996knn]; and second-order point-pattern
+analysis follows [@ripley1977modelling].
 
 Writing each method twice, once in Python and once in R, is a
 deliberate check rather than duplicated effort. Two defects in this

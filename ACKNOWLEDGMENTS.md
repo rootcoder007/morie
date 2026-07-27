@@ -76,6 +76,9 @@ check the code against the same page the author wrote.
 | Correspondence analysis, table inertia and chi-square | Oleg Nenadic & Michael Greenacre, *Journal of Statistical Software* 20(3):1–13 (2007); Michael J. Greenacre, *Theory and Applications of Correspondence Analysis* (Academic Press, 1984) |
 | Kernel two-sample test (maximum mean discrepancy) | Arthur Gretton, Karsten M. Borgwardt, Malte J. Rasch, Bernhard Schölkopf & Alexander Smola, *Journal of Machine Learning Research* 13:723–773 (2012) |
 | Wasserstein two-sample testing | Aaditya Ramdas, Nicolás García Trillos & Marco Cuturi, *Entropy* 19(2):47 (2017); Cédric Villani, *Optimal Transport: Old and New* (Springer, 2009), Theorem 2.18 |
+| Covariate balance (standardised mean differences) | Peter C. Austin, *Statistics in Medicine* 28:3083–3107 (2009) |
+| Space-time interaction (k-nearest-neighbour test) | Geoffrey M. Jacquez, *Statistics in Medicine* 15:1935–1949 (1996) |
+| Second-order point-pattern analysis (Ripley's K) | Brian D. Ripley, *Journal of the Royal Statistical Society, Series B* 39:172–212 (1977) |
 
 Where a secondary source and the primary disagree, morie follows the primary
 and records the divergence in the function's docstring, so the choice is
