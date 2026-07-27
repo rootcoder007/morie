@@ -1,52 +1,38 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mediation analysis: decompose total effect into direct and indirect."""
-
-import numpy as np
-
-from ._richresult import RichResult
+"""Mediation analysis front-end (total = direct + indirect)."""
 
 __all__ = ["mediation_analysis"]
 
 
-def mediation_analysis(Y, T, M, X):
-    """
-    Mediation analysis: decompose total effect into direct and indirect
+def mediation_analysis(Y, T, M, X=None):
+    r"""Decompose a total effect into direct and indirect parts.
 
-    Formula: Total = Direct + Indirect; Direct = E[Y(Y,M(Y'))] - E[Y(x',M(Y'))]; Indirect = E[Y(x,M(x))] - E[Y(x,M(x'))]
-
-    Parameters
-    ----------
-    Y : array-like
-        Input data.
-    T : array-like
-        Input data.
-    M : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: {'total': 'float', 'direct': 'float', 'indirect': 'float'}
+    Delegates to :func:`morie.fn.bkmed.baron_kenny` on (Y, T, M); the
+    optional baseline covariates X are residualised out of all three
+    variables first (Frisch-Waugh), which leaves the paths unchanged in
+    the linear model. The placeholder this replaces averaged Y.
 
     References
     ----------
-    Molak Ch 6
+    Baron, R. M. & Kenny, D. A. (1986). *J. Pers. Soc. Psychol.*,
+    51(6), 1173-1182.
     """
-    Y = np.asarray(Y, dtype=float)
-    n = int(Y) if Y.ndim == 0 else len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Mediation analysis: decompose total effect into direct and indirect",
-        }
-    )
+    import numpy as np
+
+    from .bkmed import baron_kenny
+
+    y = np.asarray(Y, dtype=float).ravel()
+    t = np.asarray(T, dtype=float).ravel()
+    m = np.asarray(M, dtype=float).ravel()
+    if X is not None:
+        C = np.asarray(X, dtype=float)
+        if C.ndim == 1:
+            C = C.reshape(-1, 1)
+        D = np.column_stack([np.ones(len(y)), C])
+        resid = lambda v: v - D @ np.linalg.lstsq(D, v, rcond=None)[0]
+        y, t, m = resid(y), resid(t), resid(m)
+    return baron_kenny(y, t, m)
 
 
 def cheatsheet():
-    return "mdian: Mediation analysis: decompose total effect into direct and indirect"
+    return "mdian: mediation decomposition (front-end to bkmed, covariates residualised)"

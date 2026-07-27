@@ -1,44 +1,19 @@
-"""Front-door criterion."""
-
-import numpy as np
-
-from ._richresult import RichResult
+# morie.fn -- function file (rootcoder007/morie)
+"""Front-door adjustment -- front-end to fdadj."""
 
 __all__ = ["front_door"]
 
 
-def front_door(Y, X, M, C):
+def front_door(Y, X, M):
+    r"""Front-door adjustment of the X -> Y effect through mediator M.
+
+    Delegates to :func:`morie.fn.fdadj.frontdoor_adjustment` (Pearl
+    2009, Thm. 3.3.4). The placeholder this replaces averaged Y.
     """
-    Front-door criterion
+    from .fdadj import frontdoor_adjustment
 
-    Formula: P(Y|do(X)) = sum_m P(m|x) sum_x' P(Y|x',m) P(x')
-
-    Parameters
-    ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    M : array-like
-        Input data.
-    C : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Pearl (1995)
-    """
-    Y = np.atleast_1d(np.asarray(Y, dtype=float))
-    n = len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Front-door criterion"})
+    return frontdoor_adjustment(X, M, Y)
 
 
 def cheatsheet():
-    return "medFront: Front-door criterion"
+    return "medFront: front-door adjustment (front-end to fdadj)"

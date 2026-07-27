@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Front-door adjustment formula for causal effect via mediator."""
+"""Front-door adjustment formula (discrete)."""
 
 import numpy as np
 
@@ -8,45 +8,83 @@ from ._richresult import RichResult
 __all__ = ["frontdoor_adjustment"]
 
 
-def frontdoor_adjustment(X, Y, Z, data):
-    """
-    Front-door adjustment formula for causal effect via mediator
+def frontdoor_adjustment(x, z, y, at=None):
+    r"""Front-door adjustment of the X -> Y effect through mediator Z.
 
-    Formula: P(Y|do(X)) = sum_z P(Z=z|X) * sum_{data'} P(Y|X=x',Z=z) * P(X=data')
+    .. math:: P(y|do(x)) = \sum_z P(z|x) \sum_{x'} P(y|x', z)\,P(x')
+
+    (Pearl 2009, Thm. 3.3.4). The inner sum re-weights by the MARGINAL
+    of X, which is what lets an unobserved X-Y confounder cancel; that
+    re-weighting is the whole difference from conditioning. Validity is
+    a graph question -- see :func:`morie.fn.fdcrt.frontdoor_criterion`.
+
+    This replaces a placeholder that averaged its first argument. All
+    variables are discrete.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    Z : array-like
-        Input data.
-    data : array-like
-        Input data.
+    x, z, y : array-like, shape (n,)
+        Treatment, mediator, outcome.
+    at : sequence, optional
+        Treatment values to intervene on; default every level.
 
     Returns
     -------
-    result : dict
-        Keys: {'ate': 'float'}
+    RichResult
+        keys: ``distribution`` ({x: {y: prob}}), ``incomplete_cells``,
+        ``n``, ``method``.
 
     References
     ----------
-    Molak Ch 6
+    Pearl, J. (2009). *Causality*, 2nd edn. Cambridge UP. Thm. 3.3.4
+    (front-door adjustment).
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    xa = np.asarray(x).ravel()
+    za = np.asarray(z).ravel()
+    ya = np.asarray(y).ravel()
+    n = xa.size
+    if not (za.size == n and ya.size == n):
+        raise ValueError(f"x, z and y must share a length; got {n}, {za.size}, {ya.size}.")
+    if n == 0:
+        raise ValueError("inputs must not be empty.")
+    xs = np.unique(xa)
+    zs = np.unique(za)
+    ys = np.unique(ya)
+    p_x = {xv: float(np.mean(xa == xv)) for xv in xs}
+    targets = list(xs) if at is None else list(at)
+    for t in targets:
+        if not np.any(xa == t):
+            raise ValueError(f"at = {t!r} does not occur in x.")
+
+    incomplete = []
+    dist = {}
+    for t in targets:
+        acc = {yv: 0.0 for yv in ys}
+        sel_t = xa == t
+        for zv in zs:
+            p_z_x = float(np.mean(za[sel_t] == zv))
+            if p_z_x == 0.0:
+                continue
+            for yv in ys:
+                inner = 0.0
+                for xv in xs:
+                    sel = (xa == xv) & (za == zv)
+                    cnt = int(sel.sum())
+                    if cnt == 0:
+                        incomplete.append((xv, zv))
+                        continue
+                    inner += float(np.mean(ya[sel] == yv)) * p_x[xv]
+                acc[yv] += p_z_x * inner
+        dist[t] = acc
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Front-door adjustment formula for causal effect via mediator",
+            "distribution": dist,
+            "incomplete_cells": sorted(set(incomplete)),
+            "n": int(n),
+            "method": "Front-door adjustment (Pearl 2009, Thm. 3.3.4), discrete",
         }
     )
 
 
 def cheatsheet():
-    return "fdadj: Front-door adjustment formula for causal effect via mediator"
+    return "fdadj: front-door adjustment P(y|do(x)) via mediator (Pearl Thm 3.3.4)"

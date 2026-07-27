@@ -1,42 +1,21 @@
-"""Back-door adjustment."""
-
-import numpy as np
-
-from ._richresult import RichResult
+# morie.fn -- function file (rootcoder007/morie)
+"""Back-door adjustment -- front-end to bdrj."""
 
 __all__ = ["back_door"]
 
 
 def back_door(Y, X, C):
+    r"""Back-door adjustment of the X -> Y effect for the discrete set C.
+
+    Delegates to :func:`morie.fn.bdrj.backdoor_adjustment_formula`
+    (Pearl 2009, Thm 3.3.2); whether C is a VALID adjustment set is a
+    graph question answered by :func:`morie.fn.bdcrt.backdoor_criterion`,
+    not by this arithmetic. The placeholder this replaces averaged Y.
     """
-    Back-door adjustment
+    from .bdrj import backdoor_adjustment_formula
 
-    Formula: P(Y|do(X)) = sum_c P(Y|X,C) P(C)
-
-    Parameters
-    ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    C : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Pearl (1995)
-    """
-    Y = np.atleast_1d(np.asarray(Y, dtype=float))
-    n = len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Back-door adjustment"})
+    return backdoor_adjustment_formula(X, Y, C)
 
 
 def cheatsheet():
-    return "backDR: Back-door adjustment"
+    return "backDR: back-door adjustment (front-end to bdrj)"
