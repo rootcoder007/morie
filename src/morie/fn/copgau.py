@@ -1,44 +1,52 @@
-"""Gaussian (Normal) copula CDF."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Gaussian (normal) copula."""
 
 import numpy as np
 
+from ._copula import copula_cdf, copula_tau
 from ._richresult import RichResult
 
 __all__ = ["gaussian_copula"]
 
 
-def gaussian_copula(y, u, v, rho):
-    """
-    Gaussian (Normal) copula CDF
+def gaussian_copula(u, v, rho):
+    r"""Gaussian (normal) copula CDF and its Kendall's tau.
 
-    Formula: C(u,v) = Phi_R(Phi^{-1}(u), Phi^{-1}(v))
+    Evaluates :math:`C(u, v)` for the gaussian family via the shared
+    core in :mod:`morie.fn._copula`, together with the Kendall's tau
+    implied by the parameter (Czado 2019, Table 3.2, p. 54 -- read in
+    the library PDF). Parameter range: ``-1 < rho < 1``.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    u : array-like
-        Input data.
-    v : array-like
-        Input data.
-    rho : array-like
-        Input data.
+    u, v : array-like in [0, 1]
+        Uniform margins (broadcastable).
+    rho : float
+        Copula parameter.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``cdf`` (same shape as the broadcast u, v), ``tau``,
+        ``rho``, ``family``, ``method``.
 
     References
     ----------
-    Sklar (1959); Nelsen (2006) §4
+    Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas*.
+    Springer. Ch. 3 (bivariate copula classes), Table 3.2 p. 54
+    (parameter/Kendall's tau relations).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gaussian (Normal) copula CDF"})
+    cdf = copula_cdf("gaussian", u, v, rho)
+    return RichResult(
+        payload={
+            "cdf": cdf,
+            "tau": copula_tau("gaussian", rho),
+            "rho": float(rho),
+            "family": "gaussian",
+            "method": "Gaussian (normal) copula CDF (Czado 2019 Ch. 3)",
+        }
+    )
 
 
 def cheatsheet():
-    return "copgau: Gaussian (Normal) copula CDF"
+    return "copgau: gaussian copula CDF + Kendall tau (-1 < rho < 1)"

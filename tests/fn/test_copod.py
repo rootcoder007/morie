@@ -1,20 +1,20 @@
-"""Tests for copod.copod."""
+"""Tests for copod."""
 
 import numpy as np
+import pytest
 
 from morie.fn.copod import copod
 
-
 def test_copod_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = copod(X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    X = rng.normal(size=(150, 3))
+    X[0] = 9.0
+    out = copod(X)
+    assert int(np.argmax(out["scores"])) == 0
 
 
 def test_copod_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = copod(X)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        copod(np.array([[1.0, 2.0]]))  # too few samples
+    with pytest.raises(ValueError):
+        copod(np.full((10, 2), np.nan))

@@ -1,16 +1,20 @@
-"""Tests for morie.fn.zxcpv -- Vine copula spatial"""
+"""Tests for zxcpv."""
 
 import numpy as np
+import pytest
 
 from morie.fn.zxcpv import copula_vine_sp
 
+def test_zxcpv_basic():
+    rng = np.random.default_rng(42)
+    z = rng.normal(size=300)
+    X = np.column_stack([0.9 * z + 0.4 * rng.normal(size=300), z,
+                         0.9 * z + 0.4 * rng.normal(size=300)])
+    out = copula_vine_sp(X)
+    assert out["root"] == 1  # the hub variable
+    assert len(out["tree1_edges"]) == 2
 
-class TestCopulaVineSp:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = copula_vine_sp(data)
-        assert result.value is not None
 
-    def test_output_type(self):
-        result = copula_vine_sp(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxcpv_edge():
+    with pytest.raises(ValueError):
+        copula_vine_sp(np.zeros((10, 1)))

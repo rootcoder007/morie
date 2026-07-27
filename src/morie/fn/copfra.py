@@ -1,44 +1,52 @@
-"""Frank copula CDF (Archimedean)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Frank copula (no tail dependence)."""
 
 import numpy as np
 
+from ._copula import copula_cdf, copula_tau
 from ._richresult import RichResult
 
 __all__ = ["frank_copula"]
 
 
-def frank_copula(y, u, v, theta):
-    """
-    Frank copula CDF (Archimedean)
+def frank_copula(u, v, theta):
+    r"""Frank copula (no tail dependence) CDF and its Kendall's tau.
 
-    Formula: C(u,v) = -1/theta * log(1 + (e^{-theta u} - 1)(e^{-theta v} - 1)/(e^{-theta} - 1))
+    Evaluates :math:`C(u, v)` for the frank family via the shared
+    core in :mod:`morie.fn._copula`, together with the Kendall's tau
+    implied by the parameter (Czado 2019, Table 3.2, p. 54 -- read in
+    the library PDF). Parameter range: ``theta != 0``.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    u : array-like
-        Input data.
-    v : array-like
-        Input data.
-    theta : array-like
-        Input data.
+    u, v : array-like in [0, 1]
+        Uniform margins (broadcastable).
+    theta : float
+        Copula parameter.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``cdf`` (same shape as the broadcast u, v), ``tau``,
+        ``theta``, ``family``, ``method``.
 
     References
     ----------
-    Frank (1979); Genest (1987)
+    Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas*.
+    Springer. Ch. 3 (bivariate copula classes), Table 3.2 p. 54
+    (parameter/Kendall's tau relations).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Frank copula CDF (Archimedean)"})
+    cdf = copula_cdf("frank", u, v, theta)
+    return RichResult(
+        payload={
+            "cdf": cdf,
+            "tau": copula_tau("frank", theta),
+            "theta": float(theta),
+            "family": "frank",
+            "method": "Frank copula (no tail dependence) CDF (Czado 2019 Ch. 3)",
+        }
+    )
 
 
 def cheatsheet():
-    return "copfra: Frank copula CDF (Archimedean)"
+    return "copfra: frank copula CDF + Kendall tau (theta != 0)"

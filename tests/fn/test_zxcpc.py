@@ -1,16 +1,19 @@
-"""Tests for morie.fn.zxcpc -- Clayton copula spatial"""
+"""Tests for zxcpc."""
 
 import numpy as np
+import pytest
 
 from morie.fn.zxcpc import copula_clayton_sp
 
+def test_zxcpc_basic():
+    rng = np.random.default_rng(42)
+    cov = np.array([[1.0, 0.7], [0.7, 1.0]])
+    X = rng.multivariate_normal(np.zeros(2), cov, size=300)
+    out = copula_clayton_sp(X)
+    assert out["theta_matrix"][0, 1] > 0
+    assert out["tau_matrix"][0, 1] == pytest.approx(0.5, abs=0.15)
 
-class TestCopulaClaytonSp:
-    def test_basic(self):
-        data = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-        result = copula_clayton_sp(data)
-        assert result.value is not None
 
-    def test_output_type(self):
-        result = copula_clayton_sp(np.array([1.0, 2.0, 3.0]))
-        assert hasattr(result, "value")
+def test_zxcpc_edge():
+    with pytest.raises(ValueError):
+        copula_clayton_sp(np.zeros((10, 1)))  # needs >= 2 variables

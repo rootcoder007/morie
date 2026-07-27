@@ -1,26 +1,15 @@
-"""Tests for plkt.plackett_copula."""
+"""Tests for plkt."""
 
 import numpy as np
+import pytest
 
 from morie.fn.plkt import plackett_copula
 
-
 def test_plkt_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    theta = 0.0
-    result = plackett_copula(y, u, v, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert plackett_copula(0.4, 0.6, 1.0)["cdf"] == pytest.approx(0.24)
+    assert plackett_copula(0.5, 0.5, 10.0)["cdf"] > 0.25  # positive dependence
 
 
 def test_plkt_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    v = np.random.default_rng(44).normal(0, 1, 100)
-    theta = 0.0
-    result = plackett_copula(y, u, v, theta)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        plackett_copula(0.5, 0.5, 0.0)

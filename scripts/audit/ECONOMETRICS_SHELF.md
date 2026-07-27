@@ -60,3 +60,40 @@ feat/native-specializations only.
   volrm), volrlmt (ABDL 2003 log-RV AR(1) with lognormal
   back-transform). All primaries verified; legacy tests re-fixtured;
   58/58 green on L14.
+
+### Family 2 -- copulas (19 modules) -- DONE 2026-07-27
+
+Spec: Czado (2019), *Analyzing Dependent Data with Vine Copulas*,
+Ch. 2-3. **Table 3.2, p. 54 read in the PDF** for every
+parameter/Kendall's-tau relation used (Gaussian/t `(2/pi) arcsin rho`;
+Gumbel `1 - 1/delta`; Clayton `delta/(delta+2)`; Frank's Debye-function
+form; Joe's digamma form). Theorem 3.9 eq. (3.17)-(3.18) for the
+general Archimedean and extreme-value integrals; Table 3.1 p. 52 for
+the Pickands functions.
+
+New shared core `src/morie/fn/_copula.py`: `copula_cdf`, `copula_tau`,
+`tau_to_theta`, `FAMILIES`.
+
+Modules: copgau copt copcla copgmb copfra copjoe plkt (family CDFs);
+taukcp spcoef blncop ginicop (dependence measures); copExt (Pickands /
+extreme-value); clyfr copfr (survival copulas on Kaplan-Meier
+margins); copod (Li et al. 2020 outlier detection); zxcpc zxcpg zxcpv
+(pairwise-tau fits to multivariate data).
+
+Tests: `tests/fn/test_copula_cluster.py` (16) + 18 rewritten legacy
+files = 52 green on L14. The cluster asserts the copula *axioms* on
+every family (grounded margins, uniform margins, Frechet-Hoeffding
+bounds, 2-increasing rectangle mass), max-stability for the
+extreme-value branch, and closed-form vs numeric-double-integral
+agreement for tau -- assertions no placeholder can pass.
+
+Design notes worth keeping:
+- `zxcpc` returns NaN for pairs whose sample tau is negative rather
+  than clamping: Clayton cannot represent negative dependence and
+  hiding that would be a silent wrong answer.
+- `spcoef` uses the exact elliptical `(6/pi) arcsin(rho/2)` for the
+  Gaussian and quadrature elsewhere, reporting which route it took in
+  an `exact` flag.
+- `copynm` is NOT a copula (copy-number-variant detection, genomics);
+  it was swept in by the name match and is out of scope for this
+  shelf.
