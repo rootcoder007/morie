@@ -1,20 +1,19 @@
-"""Tests for volrm.vol_riskmetrics."""
+"""Tests for volrm."""
+
+import numpy as np
+import pytest
 
 from morie.fn.volrm import vol_riskmetrics
 
 
 def test_volrm_basic():
-    """Test basic functionality."""
-    r = 10
-    lam = 0.1
-    result = vol_riskmetrics(r, lam)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    r = np.array([1.0, 2.0] + [0.5] * 20)
+    out = vol_riskmetrics(r, lam=0.9)
+    assert out["sigma2"][1] == pytest.approx(0.9 * out["sigma2"][0] + 0.1 * 1.0)
+    assert out["lam"] == 0.9
 
 
 def test_volrm_edge():
-    """Test edge cases."""
-    r = 10
-    lam = 0.1
-    result = vol_riskmetrics(r, lam)
-    assert isinstance(result, dict)
+    assert vol_riskmetrics(np.ones(25))["lam"] == 0.94
+    with pytest.raises(ValueError):
+        vol_riskmetrics(np.ones(25), lam=0.0)

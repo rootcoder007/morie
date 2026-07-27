@@ -1,26 +1,18 @@
-"""Tests for volrs.vol_rogers_satchell."""
+"""Tests for volrs."""
 
 import numpy as np
+import pytest
 
 from morie.fn.volrs import vol_rogers_satchell
 
 
 def test_volrs_basic():
-    """Test basic functionality."""
-    o = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_rogers_satchell(o, h, l, c)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = vol_rogers_satchell([100.0], [110.0], [95.0], [105.0])
+    expect = np.log(110 / 105) * np.log(110 / 100) + np.log(95 / 105) * np.log(95 / 100)
+    assert out["sigma2"][0] == pytest.approx(expect)
 
 
 def test_volrs_edge():
-    """Test edge cases."""
-    o = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    l = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_rogers_satchell(o, h, l, c)
-    assert isinstance(result, dict)
+    assert vol_rogers_satchell([10.0], [10.0], [10.0], [10.0])["sigma2"][0] == pytest.approx(0.0)
+    with pytest.raises(ValueError):
+        vol_rogers_satchell([100.0], [99.0], [95.0], [105.0])

@@ -1,24 +1,20 @@
-"""Tests for volmuk.vol_multi_kernel_rk."""
+"""Tests for volmuk."""
 
 import numpy as np
+import pytest
 
 from morie.fn.volmuk import vol_multi_kernel_rk
 
 
 def test_volmuk_basic():
-    """Test basic functionality."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    grids = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    result = vol_multi_kernel_rk(r_intraday, grids, kernel)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    r = rng.normal(scale=0.01, size=1200)
+    out = vol_multi_kernel_rk(r, n_grids=3)
+    assert out["rk_per_grid"].size == 3
+    # measured 0.111 vs true 0.12 at m = 1200 (subgrids of 400)
+    assert out["rk_avg"] == pytest.approx(0.01**2 * 1200, rel=0.35)
 
 
 def test_volmuk_edge():
-    """Test edge cases."""
-    r_intraday = np.random.default_rng(42).normal(0, 1, 100)
-    grids = np.random.default_rng(42).normal(0, 1, 100)
-    kernel = lambda u: np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
-    result = vol_multi_kernel_rk(r_intraday, grids, kernel)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        vol_multi_kernel_rk(np.ones(8), n_grids=3)
