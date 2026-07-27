@@ -41,6 +41,13 @@ citation against the library PDFs or the actual paper before use.
   outside the donor hull in tests), interactive-fixed-effects
   imputation, nonneg-LASSO donor selection. Legacy tests re-fixtured.
 
+- `causdid2` `drovrl` `drbqs` -- DiD cluster (Card-Krueger 1994 AER
+  84(4) 772-793; Crump et al. 2009 Biometrika 96(1) 187-199 0.1 rule;
+  Callaway-Li 2019 Quant Econ 10(4) 1579-1618; Sant'Anna-Zhao via
+  existing aiptdd -- all verified). 2x2 cells + OLS interaction SE,
+  overlap-trimmed DR-DiD, change-distribution QTT. Legacy tests
+  re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`
