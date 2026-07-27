@@ -1,38 +1,47 @@
-"""BEKK multivariate GARCH."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Multivariate BEKK GARCH."""
 
-import numpy as np
-
+from ._garch import bekk_fit
 from ._richresult import RichResult
 
 __all__ = ["bekk_garch_multivariate"]
 
 
 def bekk_garch_multivariate(X):
-    """
-    BEKK multivariate GARCH
+    r"""Scalar BEKK(1,1) multivariate GARCH.
 
-    Formula: H_t = C C' + A' eps_{t-1} eps_{t-1}' A + B' H_{t-1} B
+    .. math:: H_t = C'C + A'\epsilon_{t-1}\epsilon_{t-1}'A
+              + B'H_{t-1}B
+
+    The quadratic form makes every :math:`H_t` positive definite by
+    construction, which is what BEKK buys over a naive
+    element-by-element multivariate GARCH. Fitted with variance
+    targeting: :math:`C'C = \bar H(1 - a - b)`, so only the two
+    dynamic parameters are estimated and the long-run covariance
+    equals the sample covariance exactly.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
+    X : array-like, shape (T, k)
+        Return panel, k >= 2 series.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``H`` (T, k, k conditional covariances), ``a``, ``b``,
+        ``persistence``, ``H_bar``, ``C``, ``loglik``, ``T``, ``k``,
+        ``converged``, ``method``.
 
     References
     ----------
-    Engle & Kroner (1995)
+    Engle, R. F. & Kroner, K. F. (1995). Multivariate simultaneous
+    generalized ARCH. *Econometric Theory*, 11(1), 122-150.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series* (3rd ed.).
+    Wiley. Ch. 10 (multivariate volatility models).
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "BEKK multivariate GARCH"})
+    return RichResult(payload=bekk_fit(X))
 
 
 def cheatsheet():
-    return "mgrch: BEKK multivariate GARCH"
+    return "mgrch: scalar BEKK(1,1), H_t PD by construction, variance targeting"

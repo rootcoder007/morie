@@ -1,24 +1,24 @@
-"""Tests for mstrn.multistate_transition_matrix."""
+"""Tests for mstrn."""
 
 import numpy as np
+import pytest
 
 from morie.fn.mstrn import multistate_transition_matrix
 
+_TIME = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+_FROM = np.array([0, 0, 0, 1, 0, 1])
+_TO = np.array([1, 1, 2, 2, 1, 2])
+
 
 def test_mstrn_basic():
-    """Test basic functionality."""
-    time = np.linspace(0, 10, 100)
-    state = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = multistate_transition_matrix(time, state, X)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = multistate_transition_matrix(_TIME, _FROM, _TO, n_states=3)
+    assert out["P"].shape == (3, 3)
+    assert np.allclose(out["P"].sum(axis=1), 1.0)  # rows are probabilities
 
 
 def test_mstrn_edge():
-    """Test edge cases."""
-    time = np.linspace(0, 10, 100)
-    state = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    result = multistate_transition_matrix(time, state, X)
-    assert isinstance(result, dict)
+    out = multistate_transition_matrix(_TIME, _FROM, _TO, n_states=3)
+    for dA in out["increments"]:
+        assert np.allclose(dA.sum(axis=1), 0.0)  # zero row sums by construction
+    with pytest.raises(ValueError):
+        multistate_transition_matrix(_TIME, _FROM, _TO, n_states=2)

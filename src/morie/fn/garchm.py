@@ -1,42 +1,51 @@
-"""GARCH(p,q) volatility model."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GARCH(1,1) volatility model."""
 
-import numpy as np
-
+from ._garch import garch_fit, garch_forecast
 from ._richresult import RichResult
 
 __all__ = ["garch_model"]
 
 
-def garch_model(y, p, q):
-    """
-    GARCH(p,q) volatility model
+def garch_model(y, p=1, q=1):
+    r"""GARCH(1,1) volatility model.
 
-    Formula: sigma_t^2 = omega + alpha eps_{t-1}^2 + beta sigma_{t-1}^2
+    Tsay Sec. 3.5, p. 131. ``p`` and ``q`` are accepted for interface
+    compatibility; the fitted recursion is the (1,1) case, which is
+    what the shared core implements.
+
+    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    recursion in :mod:`morie.fn._garch`.
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    p : array-like
-        Input data.
-    q : array-like
-        Input data.
+        Return series.
+    p : int, default 1
+        Order, accepted for interface compatibility.
+    q : int, default 1
+        Order, accepted for interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``params``, ``sigma2``, ``sigma``, ``loglik``, ``aic``,
+        ``bic``, ``persistence``, ``std_residuals``, ``forecast``
+        (one-step-ahead variance), ``converged``, ``n``, ``method``.
 
     References
     ----------
-    Bollerslev (1986)
+    Bollerslev, T. (1986). Generalized autoregressive conditional
+    heteroskedasticity. *Journal of Econometrics*, 31(3), 307-327.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series*
+    (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GARCH(p,q) volatility model"})
+    fit = garch_fit(y, "garch")
+    fit["forecast"] = float(garch_forecast(fit, 1)[0])
+    fit["method"] = "GARCH(1,1) volatility model (Tsay 2010 Ch. 3)"
+    return RichResult(payload=fit)
 
 
 def cheatsheet():
-    return "garchm: GARCH(p,q) volatility model"
+    return "garchm: GARCH(1,1) volatility model, spec 'garch'"

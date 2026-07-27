@@ -1,42 +1,44 @@
-"""EGARCH(1,1) MLE accommodating asymmetry."""
+# morie.fn -- function file (rootcoder007/morie)
+"""EGARCH fit."""
 
-import numpy as np
-
+from ._garch import garch_fit, garch_forecast
 from ._richresult import RichResult
 
 __all__ = ["vol_egarch_fit"]
 
 
-def vol_egarch_fit(r, init):
-    """
-    EGARCH(1,1) MLE accommodating asymmetry
+def vol_egarch_fit(r):
+    r"""EGARCH fit.
 
-    Formula: log σ_t² = ω + β log σ_{t-1}² + α(|z_{t-1}|-E|z|) + γ z_{t-1}
+    Tsay Sec. 3.8, p. 143.
+
+    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    recursion in :mod:`morie.fn._garch`.
 
     Parameters
     ----------
     r : array-like
-        Input data.
-    init : array-like
-        Input data.
+        Return series.
 
     Returns
     -------
-    result : dict
-        Keys: omega, alpha, beta, gamma, ll
+    RichResult
+        keys: ``params``, ``sigma2``, ``sigma``, ``loglik``, ``aic``,
+        ``bic``, ``persistence``, ``std_residuals``, ``forecast``
+        (one-step-ahead variance), ``converged``, ``n``, ``method``.
 
     References
     ----------
-    Nelson (1991)
+    Nelson, D. B. (1991). *Econometrica*, 59(2), 347-370.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series*
+    (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).
     """
-    r = np.atleast_1d(np.asarray(r, dtype=float))
-    n = len(r)
-    result = float(np.mean(r))
-    se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "EGARCH(1,1) MLE accommodating asymmetry"}
-    )
+    fit = garch_fit(r, "egarch")
+    fit["forecast"] = float(garch_forecast(fit, 1)[0])
+    fit["method"] = "EGARCH fit (Tsay 2010 Ch. 3)"
+    return RichResult(payload=fit)
 
 
 def cheatsheet():
-    return "volegar: EGARCH(1,1) MLE accommodating asymmetry"
+    return "volegar: EGARCH fit, spec 'egarch'"

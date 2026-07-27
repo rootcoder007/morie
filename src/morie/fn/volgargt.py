@@ -1,40 +1,50 @@
-"""GARCH(1,1) with Student-t innovations."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GARCH with Student t innovations."""
 
-import numpy as np
-
+from ._garch import garch_fit, garch_forecast
 from ._richresult import RichResult
 
 __all__ = ["vol_garch_t"]
 
 
-def vol_garch_t(r, init):
-    """
-    GARCH(1,1) with Student-t innovations
+def vol_garch_t(r, nu=None):
+    r"""GARCH with Student t innovations.
 
-    Formula: ε_t = σ_t z_t, z_t ~ t_ν
+    The t is standardised to unit variance so nu changes the tail
+    shape without rescaling the fitted volatility; nu is estimated
+    jointly when not supplied.
+
+    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    recursion in :mod:`morie.fn._garch`.
 
     Parameters
     ----------
     r : array-like
-        Input data.
-    init : array-like
-        Input data.
+        Return series.
+    nu : float, optional
+        Shape parameter; estimated jointly when omitted.
 
     Returns
     -------
-    result : dict
-        Keys: omega, alpha, beta, nu, ll
+    RichResult
+        keys: ``params``, ``sigma2``, ``sigma``, ``loglik``, ``aic``,
+        ``bic``, ``persistence``, ``std_residuals``, ``forecast``
+        (one-step-ahead variance), ``converged``, ``n``, ``method``.
 
     References
     ----------
-    Bollerslev (1987)
+    Bollerslev, T. (1987). A conditionally heteroskedastic time series
+    model for speculative prices and rates of return. *Review of
+    Economics and Statistics*, 69(3), 542-547.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series*
+    (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).
     """
-    r = np.atleast_1d(np.asarray(r, dtype=float))
-    n = len(r)
-    result = float(np.mean(r))
-    se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GARCH(1,1) with Student-t innovations"})
+    fit = garch_fit(r, "garch", dist="t", nu=nu)
+    fit["forecast"] = float(garch_forecast(fit, 1)[0])
+    fit["method"] = "GARCH with Student t innovations (Tsay 2010 Ch. 3)"
+    return RichResult(payload=fit)
 
 
 def cheatsheet():
-    return "volgargt: GARCH(1,1) with Student-t innovations"
+    return "volgargt: GARCH with Student t innovations, spec 'garch'"

@@ -97,3 +97,99 @@ Design notes worth keeping:
 - `copynm` is NOT a copula (copy-number-variant detection, genomics);
   it was swept in by the name match and is out of scope for this
   shelf.
+
+### Family 3 -- GARCH extensions (22 modules) -- DONE 2026-07-27
+
+Spec: Tsay (2010), *Analysis of Financial Time Series*, 3rd ed.,
+Ch. 3, read in the library PDF. **Printed page = PDF page - 27.**
+Chapter index (was marked TO BE POPULATED in books.csv):
+
+| Section | Topic | Printed p. | PDF p. |
+|---|---|---|---|
+| 3.4 | ARCH model | 115 | 142 |
+| 3.5 | GARCH model | 131 | 158 |
+| 3.6 | Integrated GARCH | 140 | 167 |
+| 3.7 | GARCH-M (eq. 3.23, Table 3.2) | 142 | 169 |
+| 3.8 | Exponential GARCH (eq. 3.24-3.25) | 143 | 170 |
+| 3.9 | Threshold GARCH (eq. 3.34) | 149 | 176 |
+| 3.10 | CHARMA (eq. 3.36) | 150 | 177 |
+| 3.12 | Stochastic volatility | 153 | 180 |
+| 3.13 | Long-memory SV | 154 | 181 |
+
+Equations transcribed from the PDF, not recalled: the IGARCH weight
+constraint alpha = 1 - beta (p. 141); the EGARCH weighted innovation
+g(e) = theta e + gamma(|e| - E|e|) with E|e| = sqrt(2/pi) for a
+Gaussian (the Remark on p. 143); the TGARCH indicator form of
+eq. (3.34).
+
+New shared core `src/morie/fn/_garch.py`: `garch_recursion`,
+`garch_fit` (Gaussian/t/GED QML on an unconstrained
+reparameterisation), `garch_forecast`, `bekk_fit`, `ms_garch_fit`,
+`var_es`; specs garch igarch egarch gjr tgarch aparch cgarch figarch.
+
+Modules: garchm volgar igarcm volign egarch egarcm volegar tgarcm
+volgjr voltgr volaprch volcgar volfig volgargt volgargd (univariate
+fits); mgrch volbekk (BEKK); volgo (orthogonal); volmsg
+(Markov-switching); volgvi volges (VaR / expected shortfall);
+volnsig (EGARCH + skew-GED).
+
+Tests: `tests/fn/test_garch_cluster.py` (19) + 22 rewritten legacy
+files. The cluster checks the recursions against the Tsay equations
+computed by hand, parameter recovery as rates over seeds, that
+standardised residuals actually remove the ARCH effect (LM statistic
+falls) rather than merely being finite, BEKK positive-definiteness at
+several t, and that the forecast converges to omega/(1 - a - b).
+
+Two bugs my own tests caught:
+- The persistence lookup was written as a dict literal, which
+  evaluates every branch: a KeyError on 'gamma' fired for specs that
+  have no gamma. Replaced with an if/elif chain.
+- The Markov-switching transition matrix pinned column 0 rather than
+  the diagonal for identification, so regime 0's self-transition
+  collapsed to 3e-14 -- a "regime" that never persists. Fixed by
+  pinning the diagonal logit and starting the off-diagonals negative.
+
+One wrong constant I wrote from memory and then derived instead: the
+normal 5% expected shortfall is 2.0627128075074253 (phi(z)/alpha), not
+the 2.0627128425 I first typed.
+
+### Family 4 -- cointegration + four misfiled modules (7) -- DONE 2026-07-27
+
+Spec: Hamilton (1994) *Time Series Analysis* Ch. 19-20 and Tsay Ch. 8
+for cointegration; Hyndman & Athanasopoulos *FPP* 3rd ed. for the
+forecasting modules.
+
+**Four of the seven were name-match false positives.** `johbu`,
+`joholt` and `johw` are not Johansen anything -- they are "joseph"
+hierarchical reconciliation and Holt / Holt-Winters smoothing; `mstrn`
+is a multistate transition matrix (Aalen-Johansen), a survival method.
+They were implemented against their real sources rather than forced
+into the cointegration frame.
+
+New core `src/morie/fn/_coint.py`: `adf_test`, `engle_granger`
+(MacKinnon 2010 critical values, p-value *bands* rather than a
+false-precision interpolation), `johansen` (reduced-rank trace test,
+Osterwald-Lenum 1992 CVs), `vecm_fit`.
+
+Modules: egcoin engrgr vecmod (cointegration); joholt johw (Holt and
+Holt-Winters, with damped trend and a multiplicative form that refuses
+non-positive data); johbu (bottom-up plus OLS/WLS optimal-combination
+reconciliation, Wickramasuriya et al. 2019); mstrn (Aalen-Johansen
+product integral).
+
+Tests: `tests/fn/test_coint_cluster.py` (9) + 7 rewritten legacy files
+= 23 green. Rates over seeds throughout: ADF rejects 8/8 stationary
+series and 0/8 random walks; Engle-Granger finds 8/8 genuine
+cointegrations and 0/8 spurious ones; Johansen recovers rank 1 on 6/6
+cointegrated systems and rank 0 on 6/6 independent pairs.
+
+One real bug my own test caught: Holt-Winters initialised its seasonal
+indices from raw per-position period means, which absorb the
+within-period trend and come out phase-shifted. Replaced with a
+classical centred-moving-average detrend (Hyndman Sec. 3.4); the
+seasonal-shape correlation went from 0.58 to 0.95. One test-side error
+too: I compared the forecast to the seasonal pattern after subtracting
+only its mean, leaving the linear trend in and capping the correlation
+near 0.75 regardless of implementation -- the forecast has to be
+detrended before the comparison means anything.
+

@@ -1,48 +1,50 @@
-"""Implied Expected Shortfall under GARCH+t."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GARCH-implied expected shortfall."""
 
-import numpy as np
-
+from ._garch import var_es
 from ._richresult import RichResult
 
 __all__ = ["vol_garch_es_impl"]
 
 
-def vol_garch_es_impl(mu, sigma_next, alpha, dist, nu):
-    """
-    Implied Expected Shortfall under GARCH+t
+def vol_garch_es_impl(mu, sigma_next, alpha=0.05, dist="normal", nu=8.0):
+    r"""One-step expected shortfall from a volatility forecast.
 
-    Formula: ES_α = -μ - σ φ(z_α)/(1-α) for normal
+    .. math:: ES_\alpha = -\mu + \sigma \phi(z_\alpha)/\alpha
+
+    for the Gaussian case: the mean loss *given* the loss already
+    exceeds VaR. Unlike VaR, ES is subadditive, so it does not
+    penalise diversification -- the reason regulators moved to it.
+    ES always exceeds the VaR at the same alpha, which the tests pin.
 
     Parameters
     ----------
-    mu : array-like
-        Input data.
-    sigma_next : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    dist : array-like
-        Input data.
-    nu : array-like
-        Input data.
+    mu : float
+        Conditional mean forecast.
+    sigma_next : float
+        One-step volatility.
+    alpha : float, default 0.05
+        Tail probability.
+    dist : {"normal", "t"}
+        Innovation distribution.
+    nu : float, default 8.0
+        Degrees of freedom for the t.
 
     Returns
     -------
-    result : dict
-        Keys: ES
+    RichResult
+        keys: ``es``, ``var``, ``quantile``, ``alpha``, ``dist``.
 
     References
     ----------
-    Acerbi-Tasche (2002)
+    Artzner, P., Delbaen, F., Eber, J.-M. & Heath, D. (1999). Coherent
+    measures of risk. *Mathematical Finance*, 9(3), 203-228.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series* (3rd ed.).
+    Wiley. Ch. 7.
     """
-    mu = np.atleast_1d(np.asarray(mu, dtype=float))
-    n = len(mu)
-    result = float(np.mean(mu))
-    se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Implied Expected Shortfall under GARCH+t"}
-    )
+    return RichResult(payload=var_es(mu, sigma_next, alpha, dist, nu))
 
 
 def cheatsheet():
-    return "volges: Implied Expected Shortfall under GARCH+t"
+    return "volges: ES = mean loss beyond VaR; subadditive, always >= VaR"

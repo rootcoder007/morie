@@ -1,28 +1,20 @@
-"""Tests for volges.vol_garch_es_impl."""
+"""Tests for volges."""
 
-import numpy as np
+import pytest
+from scipy import stats
 
 from morie.fn.volges import vol_garch_es_impl
 
 
 def test_volges_basic():
-    """Test basic functionality."""
-    mu = 0.0
-    sigma_next = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    dist = np.random.default_rng(42).normal(0, 1, 100)
-    nu = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_garch_es_impl(mu, sigma_next, alpha, dist, nu)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = vol_garch_es_impl(0.0, 1.0, alpha=0.05)
+    z = stats.norm.ppf(0.05)
+    assert out["es"] == pytest.approx(stats.norm.pdf(z) / 0.05, abs=1e-12)
+    assert out["es"] > out["var"]  # ES always lies beyond VaR
 
 
 def test_volges_edge():
-    """Test edge cases."""
-    mu = 0.0
-    sigma_next = np.random.default_rng(42).normal(0, 1, 100)
-    alpha = 0.05
-    dist = np.random.default_rng(42).normal(0, 1, 100)
-    nu = np.random.default_rng(42).normal(0, 1, 100)
-    result = vol_garch_es_impl(mu, sigma_next, alpha, dist, nu)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        vol_garch_es_impl(0.0, 1.0, dist="t", nu=1.5)  # infinite variance
+    with pytest.raises(ValueError):
+        vol_garch_es_impl(0.0, 1.0, dist="cauchy")

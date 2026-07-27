@@ -1,40 +1,44 @@
-"""GARCH(1,1) MLE fit."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GARCH(1,1) fit."""
 
-import numpy as np
-
+from ._garch import garch_fit, garch_forecast
 from ._richresult import RichResult
 
 __all__ = ["vol_garch11_fit"]
 
 
-def vol_garch11_fit(r, init):
-    """
-    GARCH(1,1) MLE fit
+def vol_garch11_fit(r):
+    r"""GARCH(1,1) fit.
 
-    Formula: σ_t² = ω + α ε_{t-1}² + β σ_{t-1}²
+    Tsay Sec. 3.5, p. 131.
+
+    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    recursion in :mod:`morie.fn._garch`.
 
     Parameters
     ----------
     r : array-like
-        Input data.
-    init : array-like
-        Input data.
+        Return series.
 
     Returns
     -------
-    result : dict
-        Keys: omega, alpha, beta, ll, sigma2
+    RichResult
+        keys: ``params``, ``sigma2``, ``sigma``, ``loglik``, ``aic``,
+        ``bic``, ``persistence``, ``std_residuals``, ``forecast``
+        (one-step-ahead variance), ``converged``, ``n``, ``method``.
 
     References
     ----------
-    Bollerslev (1986)
+    Bollerslev, T. (1986). *Journal of Econometrics*, 31(3), 307-327.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series*
+    (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).
     """
-    r = np.atleast_1d(np.asarray(r, dtype=float))
-    n = len(r)
-    result = float(np.mean(r))
-    se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GARCH(1,1) MLE fit"})
+    fit = garch_fit(r, "garch")
+    fit["forecast"] = float(garch_forecast(fit, 1)[0])
+    fit["method"] = "GARCH(1,1) fit (Tsay 2010 Ch. 3)"
+    return RichResult(payload=fit)
 
 
 def cheatsheet():
-    return "volgar: GARCH(1,1) MLE fit"
+    return "volgar: GARCH(1,1) fit, spec 'garch'"

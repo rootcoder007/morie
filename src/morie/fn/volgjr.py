@@ -1,42 +1,45 @@
-"""Glosten-Jagannathan-Runkle GARCH with leverage."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GJR-GARCH fit."""
 
-import numpy as np
-
+from ._garch import garch_fit, garch_forecast
 from ._richresult import RichResult
 
 __all__ = ["vol_gjr_garch"]
 
 
-def vol_gjr_garch(r, init):
-    """
-    Glosten-Jagannathan-Runkle GARCH with leverage
+def vol_gjr_garch(r):
+    r"""GJR-GARCH fit.
 
-    Formula: σ_t² = ω + (α + γ I[ε_{t-1}<0]) ε_{t-1}² + β σ_{t-1}²
+    Tsay Sec. 3.9, p. 149, eq. (3.34).
+
+    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    recursion in :mod:`morie.fn._garch`.
 
     Parameters
     ----------
     r : array-like
-        Input data.
-    init : array-like
-        Input data.
+        Return series.
 
     Returns
     -------
-    result : dict
-        Keys: omega, alpha, gamma, beta, ll
+    RichResult
+        keys: ``params``, ``sigma2``, ``sigma``, ``loglik``, ``aic``,
+        ``bic``, ``persistence``, ``std_residuals``, ``forecast``
+        (one-step-ahead variance), ``converged``, ``n``, ``method``.
 
     References
     ----------
-    GJR (1993)
+    Glosten, L. R., Jagannathan, R. & Runkle, D. E. (1993).
+    *Journal of Finance*, 48(5), 1779-1801.
+
+    Tsay, R. S. (2010). *Analysis of Financial Time Series*
+    (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).
     """
-    r = np.atleast_1d(np.asarray(r, dtype=float))
-    n = len(r)
-    result = float(np.mean(r))
-    se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Glosten-Jagannathan-Runkle GARCH with leverage"}
-    )
+    fit = garch_fit(r, "gjr")
+    fit["forecast"] = float(garch_forecast(fit, 1)[0])
+    fit["method"] = "GJR-GARCH fit (Tsay 2010 Ch. 3)"
+    return RichResult(payload=fit)
 
 
 def cheatsheet():
-    return "volgjr: Glosten-Jagannathan-Runkle GARCH with leverage"
+    return "volgjr: GJR-GARCH fit, spec 'gjr'"
