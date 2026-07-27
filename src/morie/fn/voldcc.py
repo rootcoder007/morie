@@ -1,51 +1,67 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Dynamic Conditional Correlation MGARCH."""
 
+from __future__ import annotations
+
 import numpy as np
-from scipy import stats
 
 from ._richresult import RichResult
+from .dccmd import dcc_multivariate_garch
 
 __all__ = ["vol_dcc_garch"]
 
 
-def vol_dcc_garch(R_panel, init):
-    """
-    Dynamic Conditional Correlation MGARCH
+def vol_dcc_garch(R_panel, init=None):
+    r"""Engle (2002) Dynamic Conditional Correlation MGARCH.
 
-    Formula: Q_t = (1-a-b)Q̄ + a u_{t-1}u_{t-1}^T + b Q_{t-1}
+    Front-end over :func:`morie.fn.dccmd.dcc_multivariate_garch`, which
+    holds the estimator. This module exists for the volatility-family
+    naming scheme (``vol*``); it does not carry a second copy of the
+    recursion.
+
+    The proxy process and its rescaling are equations (9) and (10) of the
+    rmgarch model reference:
+
+    .. math::
+
+        Q_t &= (1 - a - b)\bar Q + a\,z_{t-1}z_{t-1}' + b\,Q_{t-1} \\
+        R_t &= \mathrm{diag}(Q_t)^{-1/2}\,Q_t\,\mathrm{diag}(Q_t)^{-1/2}
+
+    with :math:`a, b \ge 0` and :math:`a + b < 1` for stationarity and
+    positive definiteness. CCC is the special case :math:`a = b = 0`
+    (see :func:`morie.fn.volccc.vol_ccc_garch`).
 
     Parameters
     ----------
-    R_panel : array-like
-        Input data.
-    init : array-like
-        Input data.
+    R_panel : array-like, shape (n, k)
+        Return panel, n observations x k assets. k >= 2 is required.
+    init : array-like of length 2, optional
+        Starting values ``(a, b)`` for the correlation step. Ignored by
+        the current estimator, which starts from ``(0.02, 0.95)``;
+        accepted so callers written against the ``vol*`` signature do not
+        break.
 
     Returns
     -------
-    result : dict
-        Keys: a, b, Q_bar, ll
+    RichResult
+        keys: ``a``, ``b``, ``Q_bar``, ``ll``, plus everything
+        :func:`~morie.fn.dccmd.dcc_multivariate_garch` returns.
 
     References
     ----------
-    Engle (2002)
+    Engle, R. F. (2002). Dynamic Conditional Correlation: a simple class
+    of multivariate generalized autoregressive conditional
+    heteroskedasticity models. *Journal of Business & Economic
+    Statistics*, 20(3), 339-350.
     """
-    R_panel = np.atleast_1d(np.asarray(R_panel, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(R_panel), len(y))
-    if n < 3:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Dynamic Conditional Correlation MGARCH"}
-        )
-    result = stats.spearmanr(R_panel[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Dynamic Conditional Correlation MGARCH",
-        }
-    )
+    del init  # estimator uses fixed, well-conditioned starting values
+    res = dcc_multivariate_garch(R_panel)
+    payload = dict(res.payload)
+    # `vol*` callers expect the short names from this module's contract.
+    payload["Q_bar"] = payload["unconditional_correlation"]
+    payload["ll"] = payload["loglik"]
+    payload["sigmas"] = np.sqrt(payload["conditional_variance"])
+    return RichResult(title="DCC-GARCH (Engle 2002)", payload=payload)
 
 
 def cheatsheet():
