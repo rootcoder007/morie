@@ -55,6 +55,28 @@ names before mirroring.
 
 ## Done
 
+- **Clusters 2/4/6/7, IRT-Bayesian + survey group (13/13 -- closes all
+  32 placeholders).** ambtc (A-M bootstrap SEs, replicates sign-aligned
+  before the sd), bayam (Gibbs BAM sampler, Hare et al. 2015 AJPS
+  59(3) 759-774; stimulus recovery r > 0.99), irtdq (quadratic-utility
+  probit -- the test caught a SIGN ERROR in my first derivation:
+  U_yea - U_nay = 2(z_y - z_n)(x - mid), not (z_n - z_y)), irtid
+  (identification normalisation with polarity/pivot feasibility
+  checks), foldp (single-peakedness diagnostic, Armstrong Ch 4),
+  plpol (plot data layer, Sec 5.3.5.1), mcmpp (Albert 1992
+  data-augmentation Gibbs for probit IRT, JEBS 17(3) 251-269; order
+  recovery r > 0.9), pscli (rollcall screen -> Gibbs, ideal()-style),
+  hsirt (Lauderdale heteroskedastic scales -- placeholder cited AJPS,
+  the paper is Political Analysis 18(2) 151-171: another wrong venue
+  caught), emtxt (wordfish, Slapin-Proksch 2008 AJPS 52(3) 705-722;
+  theta recovery r > 0.95), bymds (Bakker-Poole 2013 PA 21(1) 125-140
+  RW-Metropolis, draws Procrustes-aligned), bmdul (Bayesian unfolding
+  over X and Y jointly), chopit (King et al. 2004 APSR 98(1) 191-207;
+  DIF shift 0.8 recovered; location anchored at mean vignette level
+  = 0 after the sampler exposed the tau-mu location
+  non-identification by drifting both to -62). All primaries verified
+  before use; legacy tests re-fixtured; 39/39 green on L14.
+
 - **Cluster 5 core, NOMINATE/OC group (8 placeholders).** wnomp
   (Gaussian-utility choice probability -- the NOMINATE signature vs
   quadratic IRT; equidistant = 0.5 asserted), wnoml (Bernoulli

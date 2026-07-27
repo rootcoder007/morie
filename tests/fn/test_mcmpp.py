@@ -1,26 +1,27 @@
-"""Tests for mcmpp.mcmcpack_irt."""
+"""Tests for mcmpp."""
 
 import numpy as np
+import pytest
+
+from scipy.stats import norm
 
 from morie.fn.mcmpp import mcmcpack_irt
 
 
 def test_mcmpp_basic():
-    """Test basic functionality."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    n_dims = 2
-    burnin = np.random.default_rng(42).normal(0, 1, 100)
-    n_iter = 50
-    result = mcmcpack_irt(votes, n_dims, burnin, n_iter)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n, q = 30, 50
+    x = np.linspace(-2, 2, n)
+    beta = rng.normal(size=q)
+    alpha = rng.normal(scale=0.5, size=q)
+    V = (rng.random((n, q)) < norm.cdf(x[:, None] * beta - alpha)).astype(float)
+    out = mcmcpack_irt(V, n_iter=300, burnin=100, seed=0, polarity_idx=0)
+    assert np.corrcoef(out["ideal_points"], x)[0, 1] > 0.85
+    assert out["ideal_points"][0] < 0
 
 
 def test_mcmpp_edge():
-    """Test edge cases."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    n_dims = 2
-    burnin = np.random.default_rng(42).normal(0, 1, 100)
-    n_iter = 50
-    result = mcmcpack_irt(votes, n_dims, burnin, n_iter)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        mcmcpack_irt(np.full((4, 3), 2.0))  # non-binary
+    with pytest.raises(ValueError):
+        mcmcpack_irt(np.eye(4), n_iter=50, burnin=100)

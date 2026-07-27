@@ -1,22 +1,25 @@
-"""Tests for emtxt.em_irt_text."""
+"""Tests for emtxt."""
 
 import numpy as np
+import pytest
 
 from morie.fn.emtxt import em_irt_text
 
 
 def test_emtxt_basic():
-    """Test basic functionality."""
-    word_freq_matrix = np.random.default_rng(42).normal(0, 1, (10, 10))
-    n_dims = 2
-    result = em_irt_text(word_freq_matrix, n_dims)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    n, k = 8, 50
+    theta = np.linspace(-1.5, 1.5, n)
+    psi = rng.normal(1.0, 0.3, size=k)
+    beta = rng.normal(0.0, 0.8, size=k)
+    Y = rng.poisson(np.exp(1.0 + psi[None, :] + beta[None, :] * theta[:, None]))
+    out = em_irt_text(Y, polarity=(0, n - 1))
+    assert np.corrcoef(out["theta"], theta)[0, 1] > 0.95
+    assert out["theta"][0] < out["theta"][-1]
 
 
 def test_emtxt_edge():
-    """Test edge cases."""
-    word_freq_matrix = np.random.default_rng(42).normal(0, 1, (10, 10))
-    n_dims = 2
-    result = em_irt_text(word_freq_matrix, n_dims)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        em_irt_text(np.full((5, 5), -1.0))  # negative counts
+    with pytest.raises(ValueError):
+        em_irt_text(np.ones((5, 5)), polarity=(0, 0))
