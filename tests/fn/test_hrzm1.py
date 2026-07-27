@@ -1,19 +1,24 @@
 """Tests for hrzm1.horowitz_mixture_model."""
 
 import numpy as np
+import pytest
 
 from morie.fn.hrzm1 import horowitz_mixture_model
 
 
-def test_hrzm1_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = horowitz_mixture_model(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+def test_hrzm1_separates_two_well_split_components():
+    rng = np.random.default_rng(0)
+    y = np.concatenate([rng.normal(-3, 0.5, 400), rng.normal(3, 0.5, 600)])
+    r = horowitz_mixture_model(y, k=2)
+    means = np.sort(np.asarray(r["estimate"]["mu"], dtype=float).ravel())
+    assert means[0] == pytest.approx(-3.0, abs=0.3)
+    assert means[-1] == pytest.approx(3.0, abs=0.3)
 
 
-def test_hrzm1_edge():
-    """Test edge cases."""
-    result = horowitz_mixture_model(np.array([42.0]))
-    assert result["n"] == 1
+def test_hrzm1_weights_reflect_the_mixing_proportion():
+    rng = np.random.default_rng(1)
+    y = np.concatenate([rng.normal(-4, 0.5, 300), rng.normal(4, 0.5, 700)])
+    r = horowitz_mixture_model(y, k=2)
+    w = np.sort(np.asarray(r["estimate"]["pi"], dtype=float).ravel())
+    assert w[0] == pytest.approx(0.3, abs=0.08)
+    assert w.sum() == pytest.approx(1.0, abs=1e-6)

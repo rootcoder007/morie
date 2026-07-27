@@ -1,55 +1,79 @@
-"""Numbered display equation (9.1) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Hyperplane equation and point classification (MVSML Eq. 9.1)."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_1"]
+__all__ = ["hyperplane_side"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_1(family, subspaces, From, a, mathematical, point):
-    """
-    Numbered display equation (9.1) from MVSML chapter 9.
+def hyperplane_side(X, beta, beta0=0.0):
+    r"""Evaluate a separating hyperplane at one or more points.
 
-    Formula: family subspaces. From a mathematical point of view, a hyperplane is deﬁned as (James et al. 2013) \beta0 + \beta1X1 + \beta2X2 + \beta3X3 = 0 (9.1) for parameters \beta0, \beta1, \beta2, and \beta3. (9.1) “deﬁnes” a hyperplane, since any X = (X1, X2, X3 )T for which (9.1) holds is a point in the hyperplane. Equation (9.1) is the equation of a plane, since in three dimensions, as mentioned before, a hyperplane is a plane, as can be observed in Fig. 9.1 (right). For the p-dimensional space, the dimension of the hyperplane generated is p + 1, and it is simply an extension of
+    .. math:: f(x) = \beta_0 + \beta_1 x_1 + \dots + \beta_p x_p
+
+    Points with :math:`f(x) = 0` lie ON the (p-1)-dimensional
+    hyperplane (Eq. 9.1 of the source, extended to p dimensions by its
+    Eq. 9.2); the sign of :math:`f(x)` says which side, and
+    :math:`|f(x)| / \lVert\beta\rVert` is the Euclidean distance to
+    the plane -- the margin quantity of an SVM. This replaces a
+    placeholder whose signature was six words of extracted prose and
+    whose body returned the mean of the first argument. The generated
+    name promised "ridge lasso elastic", but the chapter's Eq. (9.1)
+    is the hyperplane definition; the module now implements what its
+    source actually says.
 
     Parameters
     ----------
-    family : array-like
-        Input data.
-    subspaces : array-like
-        Input data.
-    From : array-like
-        Input data.
-    a : array-like
-        Input data.
-    mathematical : array-like
-        Input data.
-    point : array-like
-        Input data.
+    X : array-like, shape (n, p) or (p,)
+        Point(s) to evaluate.
+    beta : array-like, shape (p,)
+        Hyperplane normal vector; must not be all zero.
+    beta0 : float, default 0.0
+        Intercept.
 
     Returns
     -------
-    result : dict
-        Keys: expression
+    RichResult
+        keys: ``value`` (f(x) per point), ``side`` (sign),
+        ``distance`` (|f| / ||beta||), ``on_plane``, ``n``,
+        ``method``.
 
     References
     ----------
-    MVSML, Eq. (9.1) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
+    Multivariate Statistical Machine Learning Methods for Genomic
+    Prediction (2022). Springer. Ch. 9, Eqs. (9.1)-(9.2) (hyperplane
+    definition), citing James et al. (2013), *An Introduction to
+    Statistical Learning*, Ch. 9.
     """
-    family = np.atleast_1d(np.asarray(family, dtype=float))
-    n = len(family)
-    result = float(np.mean(family))
-    se = float(np.std(family, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.1) from MVSML chapter 9.",
-        }
-    )
+    b = np.asarray(beta, dtype=float).ravel()
+    nb = float(np.linalg.norm(b))
+    if nb == 0:
+        raise ValueError("beta must not be the zero vector; it defines no hyperplane.")
+    P = np.asarray(X, dtype=float)
+    single = P.ndim == 1
+    if single:
+        P = P.reshape(1, -1)
+    if P.shape[1] != b.size:
+        raise ValueError(f"X has {P.shape[1]} coordinates but beta has {b.size}.")
+    f = float(beta0) + P @ b
+    dist = np.abs(f) / nb
+    side = np.sign(f)
+    out = {
+        "value": float(f[0]) if single else f,
+        "side": float(side[0]) if single else side,
+        "distance": float(dist[0]) if single else dist,
+        "on_plane": bool(np.isclose(f[0], 0.0)) if single else np.isclose(f, 0.0),
+        "n": int(P.shape[0]),
+        "method": "Hyperplane f(x) = beta0 + beta'x (MVSML Eq. 9.1)",
+    }
+    return RichResult(payload=out)
+
+
+# Back-compatible alias under the generated export name.
+mvsml_ridge_lasso_elastic_eq_9_1 = hyperplane_side
 
 
 def cheatsheet():
-    return "msm164: Numbered display equation (9.1) from MVSML chapter 9."
+    return "msm164: hyperplane evaluation f(x) = beta0 + beta'x (MVSML Eq. 9.1)"

@@ -47,11 +47,19 @@ def _qreg_irls(X, y, tau=0.5, maxiter=50, tol=1e-6):
 
 
 def horowitz_censored_regression(x, y, censor=0.0):
-    """Powell CLAD estimator for left-censored regression."""
+    """Powell CLAD estimator for left-censored regression.
+
+    Returns coefficients as (intercept, slopes...): the design gets an
+    explicit constant column. Without it the true intercept leaks into
+    the slopes -- measured slope 2.73-2.85 across seeds where the truth
+    was 2.0 with intercept 1, on every seed tried.
+    """
     y = np.asarray(y, dtype=float).ravel()
     X = np.atleast_2d(np.asarray(x, dtype=float))
     if X.shape[0] != y.size:
         X = X.T
+    # Explicit intercept column (Powell 1984 defines the model with one).
+    X = np.column_stack([np.ones(X.shape[0]), X])
     n, p = X.shape
     if n < max(10, 2 * p):
         return RichResult(
