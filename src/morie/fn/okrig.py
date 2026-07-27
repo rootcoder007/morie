@@ -33,6 +33,19 @@ def ordinary_kriging(
     with prediction  Z_hat(s0) = lambda' Z  and kriging variance
         sigma^2(s0) = (c0 + c1) - lambda' c0 - mu.
 
+    The augmented system carries +1 in the border column, so the
+    multiplier returned here is mu = -m in the book's notation and the
+    variance matches sigma^2_ok(s0) = C(0) - lambda' sigma + m of
+    eq. (5.16) exactly.
+
+    References
+    ----------
+    Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
+    Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 5.2.2,
+    eqs. (5.13)-(5.16), pp. 226-227.
+    Cressie, N. (1993). *Statistics for Spatial Data*, rev. edn.
+    Wiley, p. 123 (OK weights and variance).
+
     Parameters
     ----------
     x : array-like, shape (n,)

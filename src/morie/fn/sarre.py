@@ -13,8 +13,9 @@ def spatial_ar_error(x, y, w):
     SAR error model:
         Y = X beta + u,    u = lambda W u + eps,   eps ~ N(0, sigma2 I).
 
-    Concentrated log-likelihood in lambda (Anselin 1988; Schabenberger
-    & Gotway 2005, Ch 7):
+    Concentrated log-likelihood in lambda (Whittle 1954; Anselin 1988;
+    Schabenberger & Gotway 2005, Sec. 6.2.2.1, eq. (6.36), pp. 335-337:
+    Z = X beta + e, e = rho W e + v is their one-parameter SAR):
         ll(lambda) = -n/2 log(2 pi sigma2_hat) + log|I - lambda W| - n/2
     with sigma2_hat = e' A' A e / n,  A = I - lambda W,  beta_hat from
     GLS on the transformed system  A y = A X beta + eps.

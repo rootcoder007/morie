@@ -26,6 +26,14 @@ def spatial_block_kriging(
                 [ 1'  0 ] [  mu  ] = [       1       ]
     Variance:   sigma^2(B) = C_bar(B,B) - lambda' C_bar(., B) - mu.
 
+    References
+    ----------
+    Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
+    Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 5.2 (ordinary
+    kriging system, extended point-to-block).
+    Cressie, N. (1993). *Statistics for Spatial Data*, rev. edn.
+    Wiley, Sec. 5.2 (block kriging).
+
     Parameters
     ----------
     x : array-like, shape (n,)
