@@ -262,7 +262,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/DESCRIPTION,39,STALE_OR_DEP,4.3.0,"Note: Tested on R 4.3.0; 4.4.x; 4.5.2; 4.5.3 (CRAN). Use CRAN R on Apple"
 ./r-package/morie/DESCRIPTION,46,STALE_OR_DEP,0.3.5,"rmoriebricklayer (>= 0.3.5);"
 ./r-package/morie/DESCRIPTION,47,STALE_OR_DEP,0.2.5,"rmoriedata (>= 0.2.5)"
-./r-package/morie/DESCRIPTION,139,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
+./r-package/morie/DESCRIPTION,138,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
 ./r-package/morie/NEWS.md,1,STALE_OR_DEP,1.1.6,"# morie 1.1.6 - 2026-07-22"
 ./r-package/morie/NEWS.md,5,STALE_OR_DEP,1.1.5,"PyPI wheels for 1.1.5 were correct; but the 1.1.5 sdist snapshot predated"
 ./r-package/morie/NEWS.md,5,STALE_OR_DEP,1.1.5,"PyPI wheels for 1.1.5 were correct; but the 1.1.5 sdist snapshot predated"
