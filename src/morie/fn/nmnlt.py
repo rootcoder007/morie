@@ -33,7 +33,14 @@ def nominate_scaling(
 
     References
     ----------
-    Armstrong (2014), Ch 8. Poole & Rosenthal (1997).
+    Poole, K. T. & Rosenthal, H. (1997). *Congress: A
+    Political-Economic History of Roll Call Voting*. Oxford
+    University Press. (NOMINATE)
+
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 5.3 (W-NOMINATE), pp.
+    139-144. The former "Ch 8" citation was fabricated: the book has
+    six chapters.
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """

@@ -55,4 +55,17 @@ names before mirroring.
 
 ## Done
 
-(nothing yet)
+- **Cluster 1, fabricated citations (13/13).** vtpwr, algnm, sptag were
+  already corrected in the 07-26 session. This session fixed the other
+  ten: agrmt -> Sec 3.2.2 p.88; rollc -> Ch 5 + Poole-Rosenthal 1997;
+  clfrt/prech/gmpre -> the Sec 5.3.5 footnote p.143 (PDF page verified;
+  prech and gmpre match the printed APRE and GMP formulas exactly, so
+  citation-only fixes); nmnlt -> Poole-Rosenthal 1997 + Sec 5.3;
+  ocslt -> Poole 2000 (library PDF) + Sec 5.4; bayid ->
+  Clinton-Jackman-Rivers 2004 APSR 98(2) 355-370; btlmd ->
+  Bradley-Terry 1952 Biometrika 39 324-345 + Hunter 2004 Ann Stat
+  32(1) 384-406; alcov -> Kruschke 1992 Psych Rev 99(1) 22-44 (all
+  external citations verified by web search 2026-07-27).
+  New tests/fn/test_armstrong_fitstats.py pins the footnote formulas
+  with hand fixtures (APRE 0.75 case, GMP exp-mean-loglik case,
+  Sec 3.2.2 agreement matrix).
