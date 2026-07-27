@@ -55,6 +55,17 @@ names before mirroring.
 
 ## Done
 
+- **R parity (batch 2): complete via discovery, not duplication.** The
+  filename+function collision scan found R/spatial_voting.R already
+  carrying 35 functions -- MDS/SMACOF/nonmetric/Procrustes, the whole
+  NOMINATE family incl. loglik and bootstrap, Bayesian AM/MDS/
+  unfolding, CJR/EM/dynamic IRT, wordfish, anchoring vignettes, OC --
+  plus Rice cohesion in R/algnm.R and APRE already present. Only two
+  mirrors were genuinely missing and were added as
+  R/spatial_voting_native2.R in both trees: morie_party_unity (CQ
+  variant included) and morie_heteroskedastic_scales (Lauderdale,
+  Political Analysis 18(2) 151-171). 10/10 testthat on L14.
+
 - **Clusters 2/4/6/7, IRT-Bayesian + survey group (13/13 -- closes all
   32 placeholders).** ambtc (A-M bootstrap SEs, replicates sign-aligned
   before the sd), bayam (Gibbs BAM sampler, Hare et al. 2015 AJPS
