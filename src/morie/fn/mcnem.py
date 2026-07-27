@@ -32,7 +32,12 @@ def mcnem(table: Union[Sequence, np.ndarray], continuity: bool = True):
             ],
             warnings=warnings,
         )
-    chi = (abs(b - c) - 0.5) ** 2 / (b + c) if continuity else (b - c) ** 2 / (b + c)
+    # Edwards' correction subtracts 1, not the 0.5 that a continuity correction
+    # usually takes. The reason is the scale: b - c is a difference of two
+    # counts, so moving one pair across the diagonal changes it by 2. A
+    # half-step on that scale is therefore 1. Subtracting 0.5 corrects by only
+    # a quarter step and leaves the test anti-conservative.
+    chi = (abs(b - c) - 1.0) ** 2 / (b + c) if continuity else (b - c) ** 2 / (b + c)
     if (b + c) < 10:
         warnings.append(f"discordant total b+c={int(b + c)}<10; consider exact mid-p binomial.")
     return hypothesis_test_result(

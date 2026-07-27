@@ -1,4 +1,4 @@
-"""Tests for mcnem (McNemar's test)."""
+"""Tests for mcnem.mcnem."""
 
 import numpy as np
 import pytest
@@ -6,32 +6,35 @@ import pytest
 from morie.fn.mcnem import mcnem
 
 
-class TestMcnem:
-    """McNemar's test for paired binary data."""
+def test_mcnem_uses_only_the_discordant_pairs():
+    """McNemar's statistic depends on b and c alone. Change the concordant
+    cells freely and the statistic must not move -- that is the test's
+    defining feature and what separates it from a chi-square on the table."""
+    a = mcnem([[10, 20], [30, 40]])
+    b = mcnem([[999, 20], [30, 5]])
+    assert float(a["statistic"]) == pytest.approx(float(b["statistic"]), rel=1e-12)
 
-    def test_mcnem_no_discordant(self):
-        """No discordant pairs should not reject."""
-        x = np.array([0, 0, 1, 1])
-        y = np.array([0, 0, 1, 1])
-        result = mcnem(x, y)
-        assert np.all(np.isfinite(np.asarray(result["p_value"], dtype=float)))  # N6: was a generator-guessed value
 
-    def test_mcnem_asymmetric_discordant(self):
-        """Asymmetric discordant should reject."""
-        x = np.array([0, 0, 0, 1, 1, 1])
-        y = np.array([0, 1, 1, 1, 1, 1])
-        result = mcnem(x, y)
-        assert "p_value" in result
+def test_mcnem_matches_the_hand_computed_corrected_statistic():
+    """(|b - c| - 1)^2 / (b + c) with b = 20, c = 30 gives 81/50 = 1.62."""
+    r = mcnem([[10, 20], [30, 40]], continuity=True)
+    assert float(r["statistic"]) == pytest.approx((abs(20 - 30) - 1) ** 2 / 50, rel=1e-9)
+    assert float(r["statistic"]) == pytest.approx(1.62, rel=1e-9)
+    # Without the correction it is (b - c)^2 / (b + c) = 100/50 = 2.
+    assert float(mcnem([[10, 20], [30, 40]], continuity=False)["statistic"]) == pytest.approx(2.0, rel=1e-9)
 
-    def test_mcnem_returns_dict(self):
-        """Return type should be dict with required keys."""
-        x = np.array([0, 1, 0, 1])
-        y = np.array([0, 0, 1, 1])
-        result = mcnem(x, y)
-        required_keys = {"statistic", "p_value", "n_01", "n_10", "interpretation"}
-        assert set(result.keys()) == required_keys
 
-    def test_mcnem_length_mismatch_error(self):
-        """x and y must have equal length."""
-        with pytest.raises(ValueError):
-            mcnem(np.array([0, 1, 0]), np.array([1, 0]))
+def test_mcnem_symmetric_discordance_gives_no_evidence():
+    r = mcnem([[5, 25], [25, 5]], continuity=False)
+    assert float(r["statistic"]) == pytest.approx(0.0, abs=1e-12)
+    assert float(r["pvalue"]) == pytest.approx(1.0, abs=1e-12)
+
+
+def test_mcnem_strong_asymmetry_is_significant():
+    r = mcnem([[10, 40], [5, 10]])
+    assert float(r["pvalue"]) < 0.001
+
+
+def test_mcnem_rejects_a_table_that_is_not_2x2():
+    with pytest.raises(ValueError, match="2x2"):
+        mcnem([[1, 2, 3], [4, 5, 6]])
