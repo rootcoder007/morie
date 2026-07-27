@@ -8,7 +8,24 @@ import numpy as np
 
 
 def gearyc(x: Union[Sequence, np.ndarray], W: Union[Sequence, np.ndarray]):
-    """Geary's C: alternative spatial autocorrelation."""
+    """Geary's C: alternative spatial autocorrelation.
+
+    c = 1/(2 S^2 w..) * sum_ij w_ij (Z_i - Z_j)^2  with
+    S^2 = (n-1)^{-1} sum_i (Z_i - Zbar)^2, so
+    c = (n-1) sum_ij w_ij (Z_i - Z_j)^2 / (2 w.. sum_i (Z_i - Zbar)^2).
+
+    E[c] = 1 under no autocorrelation; c < 1 indicates positive spatial
+    autocorrelation (neighbours similar), c > 1 negative. The
+    interpretation runs opposite to Moran's I.
+
+    References
+    ----------
+    Geary, R. C. (1954). The contiguity ratio and statistical mapping.
+    *The Incorporated Statistician*, 5(3), 115-145.
+    Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
+    Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 1.3.2.2,
+    eq. (1.15), p. 22.
+    """
     from ._richresult import RichResult
 
     a = np.asarray(x, dtype=float)

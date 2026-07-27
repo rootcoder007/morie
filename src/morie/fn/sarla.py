@@ -13,8 +13,9 @@ def spatial_ar_lag(x, y, w):
     SAR lag model:
         Y = rho W Y + X beta + eps,   eps ~ N(0, sigma2 I).
 
-    Concentrated log-likelihood in rho (Anselin 1988; Schabenberger
-    & Gotway 2005, Ch 7):
+    Concentrated log-likelihood in rho (Ord 1975; Anselin 1988;
+    Schabenberger & Gotway 2005, Sec. 6.2.2.1, pp. 335-341 -- the SAR
+    family and the eigenvalue bounds on rho):
 
         ll(rho) = -n/2 log(2 pi sigma2_hat) + log|I - rho W| - n/2
         e0 = M y,  e1 = M W y,   M = I - X (X'X)^{-1} X'

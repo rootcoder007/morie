@@ -16,7 +16,18 @@ def spatial_autocorrelation(x, w):
     where S0 = sum_ij w_ij.
 
     Inference uses the normal approximation with the standard randomization
-    variance for Moran's I (Cliff & Ord 1981; Schabenberger & Gotway 2005, Ch 1).
+    variance for Moran's I. E[I] = -1/(n-1); the randomization variance
+    depends on the sample kurtosis b2 through the usual S0, S1, S2 sums.
+
+    References
+    ----------
+    Moran, P. A. P. (1950). Notes on continuous stochastic phenomena.
+    *Biometrika*, 37(1/2), 17-23.
+    Cliff, A. D. & Ord, J. K. (1981). *Spatial Processes: Models and
+    Applications*. Pion, p. 21 (moments of I).
+    Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
+    Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 1.3.2.2,
+    eq. (1.14) p. 21, moments p. 22.
 
     Parameters
     ----------
