@@ -48,6 +48,15 @@ citation against the library PDFs or the actual paper before use.
   overlap-trimmed DR-DiD, change-distribution QTT. Legacy tests
   re-fixtured.
 
+- `cmark` `exchg` `ivcrt` `frkst` `chstr` `ident` `scmdf` `ctcfl`
+  `potef` + `_dsep` helper -- graph/identification cluster (Pearl 2009
+  Defs 3.3.1/7.1.1/7.1.5, Sec 1.2.3/1.4/7.4.1; Hernan-Robins Ch 2-3;
+  Holland 1986 JASA 81(396) 945-960 verified). Local Markov
+  enumeration + Fisher-z tests, back-door exchangeability, graphical
+  IV check via G-underline-X, fork/chain signatures, identification
+  triple, executable SCM + unit counterfactuals, ITE/selection-bias
+  decomposition. Legacy tests re-fixtured; Fisher-z |r|=1 guard.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`

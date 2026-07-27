@@ -1,26 +1,22 @@
 """Tests for frkst.fork_structure."""
 
 import numpy as np
+import pytest
 
 from morie.fn.frkst import fork_structure
 
 
 def test_frkst_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    conditioned = np.random.default_rng(42).normal(0, 1, 100)
-    result = fork_structure(A, B, C, conditioned)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    b = rng.normal(size=3000)
+    a = b + rng.normal(scale=0.7, size=3000)
+    c = b + rng.normal(scale=0.7, size=3000)
+    out = fork_structure(a, b, c)
+    assert out["consistent_with_fork"] is True
+    assert out["marginally_dependent"] is True
+    assert out["conditionally_independent"] is True
 
 
 def test_frkst_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    B = np.random.default_rng(43).normal(0, 1, (10, 10))
-    C = np.random.default_rng(42).normal(0, 1, 100)
-    conditioned = np.random.default_rng(42).normal(0, 1, 100)
-    result = fork_structure(A, B, C, conditioned)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        fork_structure([1.0, 2.0], [1.0], [1.0, 2.0])  # length mismatch

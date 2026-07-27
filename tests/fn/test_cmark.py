@@ -1,22 +1,23 @@
 """Tests for cmark.causal_markov_condition."""
 
 import numpy as np
+import pytest
 
 from morie.fn.cmark import causal_markov_condition
 
 
 def test_cmark_basic():
-    """Test basic functionality."""
-    dag = {"A": [], "B": ["A"], "C": ["B"]}
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_markov_condition(dag, P)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = causal_markov_condition({"X": ["Y"], "Y": ["Z"]})
+    assert out["implied"] == [("Z", "X", ("Y",))]
+    rng = np.random.default_rng(42)
+    x = rng.normal(size=2000)
+    y = x + rng.normal(scale=0.7, size=2000)
+    z = y + rng.normal(scale=0.7, size=2000)
+    assert causal_markov_condition({"X": ["Y"], "Y": ["Z"]}, {"X": x, "Y": y, "Z": z})["holds"] is True
 
 
 def test_cmark_edge():
-    """Test edge cases."""
-    dag = {"A": [], "B": ["A"], "C": ["B"]}
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = causal_markov_condition(dag, P)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        causal_markov_condition({"A": ["B"], "B": ["A"]})  # cycle
+    with pytest.raises(ValueError):
+        causal_markov_condition({"X": ["Y"], "Y": ["Z"]}, {"X": [1.0, 2.0]})  # missing nodes

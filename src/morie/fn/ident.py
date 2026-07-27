@@ -4,45 +4,83 @@
 import numpy as np
 
 from ._richresult import RichResult
+from .bdcrt import backdoor_criterion
 
 __all__ = ["identifiability_conditions"]
 
 
-def identifiability_conditions(data, dag):
-    """
-    Identifiability conditions for causal effects from observational data
+def identifiability_conditions(dag, X, Y, Z=(), treatment=None, strata=None):
+    r"""Check the three textbook identification conditions.
 
-    Formula: ATE identifiable if: positivity P(T=t|X=data)>0 for all t,data; exchangeability Y(t) _|_ T|X; consistency Y = Y(T)
+    1. **Exchangeability** given Z -- checkable in the posited graph:
+       Z satisfies the back-door criterion for (X, Y).
+    2. **Positivity** -- checkable in data: every stratum of Z contains
+       both treatment levels. Supply ``treatment`` (binary vector) and
+       ``strata`` (vector of stratum labels for the same units).
+    3. **Consistency** (Y = Y(T) for the treatment actually received)
+       -- a substantive assumption about the treatment's definition;
+       reported as such, never as a computed verdict.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    dag : array-like
-        Input data.
+    dag : dict or edge list
+        The causal graph.
+    X, Y : hashable
+        Treatment and outcome nodes.
+    Z : iterable, optional
+        Proposed adjustment set.
+    treatment : array-like of {0, 1}, optional
+        Observed treatment per unit, for the positivity check.
+    strata : array-like, optional
+        Stratum label per unit (e.g. the discretised Z values).
 
     Returns
     -------
-    result : dict
-        Keys: {'identifiable': 'bool'}
+    RichResult
+        keys: ``exchangeability``, ``positivity`` (None without
+        data), ``empty_arms`` (strata violating positivity),
+        ``consistency`` (always the string "assumption: untestable
+        from (Y, T, Z) alone"), ``identifiable`` (None when
+        positivity unknown), ``method``.
 
     References
     ----------
-    Molak Ch 7,8
+    Hernan, M. A. & Robins, J. M. (2020). *Causal Inference: What If*.
+    Chapman & Hall/CRC. Ch. 3 (exchangeability, positivity,
+    consistency as the identification triple).
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    bd = backdoor_criterion(dag, X, Y, Z=tuple(Z))
+    exch = bd["satisfied"]
+
+    positivity = None
+    empty = []
+    if treatment is not None:
+        if strata is None:
+            raise ValueError("positivity check needs both treatment and strata.")
+        T = np.asarray(treatment, dtype=float).ravel()
+        S = np.asarray(strata).ravel()
+        if T.size != S.size:
+            raise ValueError("treatment and strata must have equal length.")
+        if not np.all(np.isin(T, (0.0, 1.0))):
+            raise ValueError("treatment must be binary 0/1.")
+        for s in np.unique(S):
+            arm = T[S == s]
+            if arm.min() == arm.max():
+                empty.append(s)
+        positivity = len(empty) == 0
+
+    identifiable = None if positivity is None else bool(exch and positivity)
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Identifiability conditions for causal effects from observational data",
+            "exchangeability": bool(exch),
+            "positivity": positivity,
+            "empty_arms": empty,
+            "consistency": "assumption: untestable from (Y, T, Z) alone",
+            "identifiable": identifiable,
+            "method": "Identification triple: back-door check + stratum positivity + consistency note",
         }
     )
 
 
 def cheatsheet():
-    return "ident: Identifiability conditions for causal effects from observational data"
+    return "ident: exchangeability (back-door) + positivity (both arms per stratum) + consistency note"
