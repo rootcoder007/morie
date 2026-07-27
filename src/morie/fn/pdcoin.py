@@ -48,6 +48,59 @@ _PEDRONI_T2 = {
 
 
 
+def _newey_west_lrv(u, bandwidth=None):
+    r"""Long-run variance of ``u`` by the Newey-West (1987) estimator.
+
+    .. math:: \hat\sigma^2 = \hat\gamma_0
+              + 2\sum_{s=1}^{K}\left(1 - \frac{s}{K+1}\right)\hat\gamma_s
+
+    The default bandwidth is Newey and West's ``4 (T/100)^{2/9}``.
+    """
+    u = np.asarray(u, dtype=float)
+    T = u.size
+    if T < 2:
+        return float(np.var(u)) if T else 0.0
+    K = int(4 * (T / 100.0) ** (2.0 / 9.0)) if bandwidth is None else int(bandwidth)
+    K = max(0, min(K, T - 1))
+    uc = u - u.mean()
+    g0 = float(uc @ uc) / T
+    s = g0
+    for lag in range(1, K + 1):
+        gl = float(uc[lag:] @ uc[:-lag]) / T
+        s += 2.0 * (1.0 - lag / (K + 1.0)) * gl
+    return max(s, 1e-12)
+
+
+def _pedroni_nuisance(y, Zx, e, bandwidth):
+    """Pedroni's step 2-4 nuisance terms for one panel unit.
+
+    Returns ``(L11_sq, lambda_i, sigma2_i)``: the long-run variance of
+    the differenced-regression residuals, the Phillips-Perron style
+    correction, and the long-run variance of the AR(1) residuals.
+    """
+    # Step 2-3: regress the differenced dependent on the differenced
+    # regressors and take the long-run variance of those residuals.
+    dy = np.diff(y)
+    dX = np.diff(Zx, axis=0)
+    if dX.size and dX.shape[0] == dy.size and dX.shape[1] > 0:
+        b, *_ = np.linalg.lstsq(dX, dy, rcond=None)
+        eta = dy - dX @ b
+    else:
+        eta = dy
+    L11_sq = _newey_west_lrv(eta, bandwidth)
+
+    # Step 4(a): e_t = gamma e_{t-1} + u_t, then sigma2 (long-run) and
+    # s2 (simple) of u give lambda = (sigma2 - s2) / 2.
+    lag_e = e[:-1]
+    de = np.diff(e)
+    denom = float(lag_e @ lag_e)
+    gamma = float(lag_e @ de) / denom if denom > 0 else 0.0
+    u = de - gamma * lag_e
+    sigma2 = _newey_west_lrv(u, bandwidth)
+    s2 = float(np.var(u))
+    return L11_sq, 0.5 * (sigma2 - s2), sigma2
+
+
 def _ols_resid(y, Z):
     """Residuals from regressing y on Z with an intercept."""
     D = np.column_stack([np.ones(len(y)), Z])
@@ -78,7 +131,7 @@ def _adf_t(e, lags):
     return float(beta[0] / seb) if seb > 0 else np.nan
 
 
-def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, case="intercept"):
+def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, case="intercept", bandwidth=None):
     r"""Residual-based panel cointegration statistics.
 
     Runs a cointegrating regression within each unit of the panel, then
@@ -96,28 +149,35 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, 
     The statistics returned are the pooled and averaged
     :math:`\rho`-statistic and ADF :math:`t`-statistic.
 
-    **The group ADF statistic is standardised; the others are not.**
-    Pedroni's tests are read against a normal only after subtracting a
-    tabulated mean and dividing by a tabulated standard deviation,
+    All five of Pedroni's tabulated statistics are computed and
+    standardised, following his own five-step recipe: fit the
+    cointegrating regression and keep the residuals; regress the
+    differenced dependent on the differenced regressors and take the
+    long-run variance of *those* residuals as :math:`\hat L_{11i}^2`;
+    fit :math:`\hat e_{i,t} = \hat\gamma_i \hat e_{i,t-1} + \hat u_{i,t}`
+    and form :math:`\hat\lambda_i = \tfrac12(\hat\sigma_i^2 - \hat s_i^2)`
+    from the long-run and simple variances of :math:`\hat u`. Long-run
+    variances use the Newey-West estimator.
+
+    The statistics are then his Table 1 forms, for instance
+
+    .. math::
+
+        Z_{\hat\rho} = T\sqrt{N}\,
+          \frac{\sum_i \sum_t \hat L_{11i}^{-2}
+                 (\hat e_{i,t-1}\Delta\hat e_{i,t} - \hat\lambda_i)}
+                {\sum_i \sum_t \hat L_{11i}^{-2} \hat e_{i,t-1}^2}
+
+    and each is read against a normal only after his equation (2),
 
     .. math:: Z = \frac{\chi_{N,T} - \mu\sqrt{N}}{\sqrt{v}}
-              \;\Rightarrow\; N(0,1)
 
-    his equation (2), with :math:`\mu` and :math:`v` from his Table 2.
-    That table is transcribed here in full, for all three deterministic
-    cases and m = 2..7 regressors.
+    with :math:`\mu` and :math:`v` from Table 2, transcribed here in full
+    for all three deterministic cases and m = 2..7 regressors.
 
-    Of the statistics computed here, ``group_adf`` is already in the form
-    his Table 1 defines, :math:`N^{-1/2}\sum_i t_i`, so it is
-    standardised with the "Group t" column and gets a genuine asymptotic
-    p-value. ``panel_rho`` and ``group_rho`` are the raw pooled and
-    averaged autoregressive coefficients: they are *not* in Pedroni's
-    standardised form, which requires the long-run variance corrections
-    :math:`\hat\lambda_i`, :math:`\hat\sigma_i^2` and
-    :math:`\hat L_{11i}` that this implementation does not compute. They
-    are reported as descriptive quantities and are not given p-values,
-    because applying the Table 2 terms to a statistic that is not in the
-    matching form would be wrong quietly.
+    The panel variance statistic diverges to :math:`+\infty` under the
+    alternative, so it alone is read from the right tail; the other four
+    go negative under cointegration and are read from the left.
 
     Table 2 has no m = 1 row, so a bivariate cointegrating regression
     cannot be standardised from it. That case is refused rather than
@@ -142,6 +202,9 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, 
         statistic.
     seed : int, optional
         Seed for the simulation.
+    bandwidth : int, optional
+        Newey-West truncation lag for the long-run variances. Defaults
+        to Newey and West's ``4 (T/100)^(2/9)``.
     case : {"intercept", "standard", "trend"}, default "intercept"
         Deterministic specification, selecting the block of Table 2. The
         cointegrating regression fitted here carries an intercept, so
@@ -180,31 +243,63 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, 
     if lags < 0:
         raise ValueError(f"lags must not be negative, got {lags}.")
 
-    num = 0.0
-    den = 0.0
+    # Pedroni's steps 1-4, per unit.
+    A_num = A_den = 0.0     # panel (within) sums, weighted by L11^-2
+    g_rho_sum = g_t_sum = 0.0
+    sig_over_L = []
     rho_i = []
     adf_i = []
     skipped = []
+    T_used = []
     for u in units:
         sel = g == u
-        e = _ols_resid(Xa[sel, 0], Xa[sel, 1:])
+        yv = Xa[sel, 0]
+        Zx = Xa[sel, 1:]
+        e = _ols_resid(yv, Zx)
         if e.size < 4 * (lags + 1):
             skipped.append(u)
             continue
+        L11_sq, lam, sigma2 = _pedroni_nuisance(yv, Zx, e, bandwidth)
         lag_e = e[:-1]
         de = np.diff(e)
-        num += float(lag_e @ de)
-        den += float(lag_e @ lag_e)
-        if lag_e @ lag_e > 0:
-            rho_i.append(float(lag_e @ de) / float(lag_e @ lag_e))
-        adf_i.append(_adf_t(e, lags))
+        ss = float(lag_e @ lag_e)
+        if ss <= 0 or L11_sq <= 0:
+            skipped.append(u)
+            continue
+        cross = float(lag_e @ de) - lag_e.size * lam
 
-    if den <= 0 or not adf_i:
+        # Panel (within): pooled numerator and denominator, L11^-2 weighted.
+        A_den += ss / L11_sq
+        A_num += cross / L11_sq
+        sig_over_L.append(sigma2 / L11_sq)
+
+        # Group (between): one ratio per unit, then summed.
+        g_rho_sum += cross / ss
+        g_t_sum += cross / np.sqrt(sigma2 * ss)
+
+        rho_i.append(float(lag_e @ de) / ss)
+        adf_i.append(_adf_t(e, lags))
+        T_used.append(e.size)
+
+    if A_den <= 0 or not adf_i:
         raise ValueError("No panel unit had enough usable observations; check group sizes and lags.")
+
+    N = len(T_used)
+    T_bar = float(np.mean(T_used))
+    sigma_tilde2 = float(np.mean(sig_over_L))
 
     adf_arr = np.asarray(adf_i, dtype=float)
     finite = adf_arr[np.isfinite(adf_arr)]
     panel_adf = float(finite.mean() * np.sqrt(finite.size)) if finite.size else np.nan
+
+    # Table 1 forms.
+    stats_raw = {
+        "panel_v": (T_bar**2) * (N ** 1.5) / A_den,
+        "panel_rho": T_bar * np.sqrt(N) * A_num / A_den,
+        "panel_t": A_num / np.sqrt(sigma_tilde2 * A_den),
+        "group_rho": T_bar * (N ** -0.5) * g_rho_sum,
+        "group_t": (N ** -0.5) * g_t_sum,
+    }
 
     warn = []
     if skipped:
@@ -214,24 +309,29 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, 
     if case not in _PEDRONI_T2:
         raise ValueError(f"case must be one of {sorted(_PEDRONI_T2)}, got {case!r}.")
 
-    z = None
-    p = None
-    if cdf is not None:
-        p = float(cdf(panel_adf))
-    elif m in _PEDRONI_T2[case]:
-        # group_adf is N^-1/2 sum_i t_i, which is Pedroni's Table 1 form
-        # for the group t statistic, so Table 2's "Group t" column
-        # applies directly.
-        mu, v = _PEDRONI_T2[case][m]["group_t"]
-        z = (panel_adf - mu * np.sqrt(finite.size)) / np.sqrt(v)
-        p = float(stats.norm.cdf(z))  # left tail: cointegration drives it negative
+    # Standardise every statistic with its own Table 2 column, via
+    # Pedroni eq. (2): Z = (stat - mu sqrt(N)) / sqrt(v). The panel
+    # variance statistic diverges to +infinity under the alternative, so
+    # it is the one read from the right tail; the other four go negative
+    # under cointegration and are read from the left.
+    z = {}
+    pvals = {}
+    if m in _PEDRONI_T2[case]:
+        for name, raw in stats_raw.items():
+            mu, v = _PEDRONI_T2[case][m][name]
+            zz = (raw - mu * np.sqrt(N)) / np.sqrt(v)
+            z[name] = float(zz)
+            pvals[name] = float(stats.norm.sf(zz)) if name == "panel_v" else float(stats.norm.cdf(zz))
     else:
         warn.append(
             f"Pedroni Table 2 covers m = 2..7 regressors; this panel has m = {m}, "
-            "so no standardised p-value is available. Use nsim for a simulated null."
+            "so no standardised p-values are available. Use nsim for a simulated null."
         )
 
-    if p is None and nsim and nsim > 0:
+    p = pvals.get("group_t")
+    if cdf is not None:
+        p = float(cdf(panel_adf))
+    elif p is None and nsim and nsim > 0:
         rng = np.random.default_rng(seed)
         nsim = int(nsim)
         null = np.empty(nsim)
@@ -246,20 +346,25 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, 
         p = (1.0 + float(np.sum(good <= panel_adf))) / (1.0 + good.size) if good.size else None
 
     warn.append(
-        "panel_rho and group_rho are raw pooled/averaged autoregressive coefficients, "
-        "not Pedroni's standardised forms; they carry no p-value."
+        "The two ADF (parametric) statistics use Table 2's t columns, which Pedroni "
+        "tabulates jointly for the parametric and non-parametric t forms."
     )
 
     return RichResult(
         title="Panel cointegration (residual-based)",
         payload={
-            "panel_rho": num / den,
+            "statistics": stats_raw,
+            "z": z,
+            "p_values": pvals,
+            "panel_v": stats_raw["panel_v"],
+            "panel_rho": stats_raw["panel_rho"],
+            "panel_t": stats_raw["panel_t"],
+            "group_rho": stats_raw["group_rho"],
+            "group_t": stats_raw["group_t"],
             "group_adf": panel_adf,
-            "group_rho": float(np.mean(rho_i)) if rho_i else np.nan,
             "mean_adf_t": float(finite.mean()) if finite.size else np.nan,
-            "z_group_adf": z,
             "per_unit_adf": adf_arr,
-            "n_units": int(units.size - len(skipped)),
+            "n_units": int(N),
             "n_regressors": int(m),
             "case": case,
             "p_value": p,
