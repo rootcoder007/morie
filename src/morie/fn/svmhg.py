@@ -13,6 +13,14 @@ def svm_hinge_primal(x, y, *, C=1.0, seed=0):
     Solves min (1/2)||w||^2 + C sum_i max(0, 1 - y_i (w'x_i + b)).
     Labels are coerced to {-1, +1} internally.
 
+    References
+    ----------
+    Cortes, C. & Vapnik, V. (1995). Support-vector networks.
+    *Machine Learning*, 20(3), 273-297.
+    Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of
+    Statistical Learning*, 2nd edn. Springer. Sec. 12.2, pp. 417-421
+    (hinge-loss primal, eq. 12.25).
+
     Parameters
     ----------
     x : array-like (n, p).

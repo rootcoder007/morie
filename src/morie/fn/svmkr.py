@@ -8,7 +8,13 @@ __all__ = ["svm_kernel_trick"]
 
 
 def svm_kernel_trick(x, y, *, kernel="rbf", C=1.0, gamma="scale", degree=3, seed=0):
-    """Kernel SVM via sklearn.svm.SVC.
+    """Kernel SVM
+
+    References
+    ----------
+    Hastie, T., Tibshirani, R. & Friedman, J. (2009). *The Elements of
+    Statistical Learning*, 2nd edn. Springer. Sec. 12.3, pp. 423-426
+    (SVMs and kernels). via sklearn.svm.SVC.
 
     K(x_i, x_j) -- RBF: exp(-gamma ||x_i - x_j||^2);
     poly: (gamma <x_i, x_j> + coef0)^degree; sigmoid: tanh(gamma <x_i,x_j>+coef0).

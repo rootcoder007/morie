@@ -8,7 +8,13 @@ __all__ = ["confusion_matrix_metrics"]
 
 
 def confusion_matrix_metrics(y_true, y_pred, *, labels=None):
-    """Confusion matrix + classification report via sklearn.metrics.
+    """Confusion matrix
+
+    References
+    ----------
+    van Rijsbergen, C. J. (1979). *Information Retrieval*, 2nd edn.
+    Butterworths. Ch. 7 (the F-measure as the harmonic mean of
+    precision and recall). + classification report via sklearn.metrics.
 
     F1 = 2 P R / (P + R), P = TP / (TP + FP), R = TP / (TP + FN).
     Works for binary or multiclass.  Returns per-class precision/recall/F1

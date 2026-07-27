@@ -17,6 +17,14 @@ def crba(
 ) -> RlbRes:
     """Cronbach's coefficient alpha with Feldt CI.
 
+    References
+    ----------
+    Cronbach, L. J. (1951). Coefficient alpha and the internal
+    structure of tests. *Psychometrika*, 16(3), 297-334.
+    Feldt, L. S. (1965). The approximate sampling distribution of
+    Kuder-Richardson reliability coefficient twenty. *Psychometrika*,
+    30(3), 357-370.
+
     Parameters
     ----------
     data : DataFrame or ndarray
