@@ -24,7 +24,15 @@ def geometric_mean_probability(
 
     References
     ----------
-    Armstrong (2014), Ch 10. Poole & Rosenthal (1997).
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 5.3.5 footnote, p. 143:
+    GMP is "the exponential of the average log-likelihood of all
+    choices", verified against the PDF page. The former "Ch 10"
+    citation was fabricated: the book has six chapters.
+
+    Poole, K. T. & Rosenthal, H. (1997). *Congress: A
+    Political-Economic History of Roll Call Voting*. Oxford
+    University Press.
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """

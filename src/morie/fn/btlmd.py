@@ -21,7 +21,15 @@ def bradley_terry(win_matrix, *, max_iter: int = 100, tol: float = 1e-8) -> Desc
 
     References
     ----------
-    Armstrong (2014), Ch 8. Bradley & Terry (1952). Hunter (2004).
+    Bradley, R. A. & Terry, M. E. (1952). Rank analysis of
+    incomplete block designs: I. The method of paired comparisons.
+    *Biometrika*, 39(3/4), 324-345.
+
+    Hunter, D. R. (2004). MM algorithms for generalized Bradley-Terry
+    models. *The Annals of Statistics*, 32(1), 384-406.
+
+    The former "Armstrong Ch 8" citation was fabricated: the book has
+    six chapters and does not cover Bradley-Terry models.
 
     .. epigraph:: The measure of a man is what he does with power. -- Plato
     """

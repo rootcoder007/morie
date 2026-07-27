@@ -34,7 +34,14 @@ def bayesian_ideal_points(
 
     References
     ----------
-    Armstrong (2014), Ch 9. Clinton, Jackman & Rivers (2004).
+    Clinton, J., Jackman, S. & Rivers, D. (2004). The statistical
+    analysis of roll call data. *American Political Science Review*,
+    98(2), 355-370. (the Bayesian IRT ideal-point model)
+
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Ch. 6 (Bayesian Scaling), p.
+    181. The former "Ch 9" citation was fabricated: the book has six
+    chapters.
 
     .. epigraph:: If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton
     """

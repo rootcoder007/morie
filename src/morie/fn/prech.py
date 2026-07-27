@@ -24,7 +24,15 @@ def proportional_reduction_error(
 
     References
     ----------
-    Armstrong (2014), Ch 10.
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 5.3.5 footnote, p. 143:
+    APRE = sum_j(Minority Vote - Classification Errors)_j /
+    sum_j(Minority Vote)_j, verified against the PDF page. The former
+    "Ch 10" citation was fabricated: the book has six chapters.
+
+    Poole, K. T. & Rosenthal, H. (1997). *Congress: A
+    Political-Economic History of Roll Call Voting*. Oxford
+    University Press. (origin of the roll-call APRE)
 
     .. epigraph:: What is now proved was once only imagined. -- William Blake
     """
