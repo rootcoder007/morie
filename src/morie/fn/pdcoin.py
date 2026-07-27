@@ -10,6 +10,43 @@ from ._richresult import RichResult
 
 __all__ = ["pedroni_panel_cointegration"]
 
+# Pedroni (1999) Table 2, "Adjustment Terms for Panel Cointegration Tests",
+# transcribed from the author's working paper at
+# https://web.williams.edu/Economics/wp/pedronicriticalvalues.pdf
+#
+# Keyed by deterministic case, then by m, the number of regressors
+# excluding any constant or trend. Each entry is (mean, variance) for
+# the five statistics the table covers. The table runs m = 2..7; there
+# is no m = 1 row, so a bivariate regression cannot be standardised
+# from it and is refused rather than extrapolated.
+_PEDRONI_T2 = {
+    "standard": {
+        2: {"panel_v": (6.982, 81.145), "panel_rho": (-6.388, 64.288), "panel_t": (-1.662, 1.559), "group_rho": (-9.889, 41.943), "group_t": (-1.992, 0.649)},
+        3: {"panel_v": (10.402, 140.804), "panel_rho": (-10.191, 89.962), "panel_t": (-2.156, 1.286), "group_rho": (-13.865, 57.801), "group_t": (-2.440, 0.600)},
+        4: {"panel_v": (14.254, 182.450), "panel_rho": (-14.136, 103.176), "panel_t": (-2.571, 1.028), "group_rho": (-17.834, 72.097), "group_t": (-2.819, 0.567)},
+        5: {"panel_v": (18.198, 217.784), "panel_rho": (-18.042, 120.787), "panel_t": (-2.926, 0.928), "group_rho": (-21.805, 88.611), "group_t": (-3.151, 0.559)},
+        6: {"panel_v": (22.169, 256.530), "panel_rho": (-21.985, 132.499), "panel_t": (-3.244, 0.820), "group_rho": (-25.750, 103.371), "group_t": (-3.450, 0.544)},
+        7: {"panel_v": (26.120, 277.429), "panel_rho": (-25.889, 143.561), "panel_t": (-3.533, 0.750), "group_rho": (-29.627, 117.059), "group_t": (-3.723, 0.530)},
+    },
+    "intercept": {
+        2: {"panel_v": (11.754, 104.546), "panel_rho": (-9.495, 57.610), "panel_t": (-2.177, 0.964), "group_rho": (-12.938, 51.490), "group_t": (-2.453, 0.618)},
+        3: {"panel_v": (15.197, 151.094), "panel_rho": (-13.256, 81.772), "panel_t": (-2.576, 0.923), "group_rho": (-16.888, 67.123), "group_t": (-2.827, 0.585)},
+        4: {"panel_v": (18.910, 190.661), "panel_rho": (-17.163, 99.331), "panel_t": (-2.930, 0.843), "group_rho": (-20.841, 81.835), "group_t": (-3.157, 0.560)},
+        5: {"panel_v": (22.715, 231.864), "panel_rho": (-21.013, 119.546), "panel_t": (-3.241, 0.800), "group_rho": (-24.775, 98.278), "group_t": (-3.452, 0.553)},
+        6: {"panel_v": (26.603, 270.451), "panel_rho": (-24.944, 134.341), "panel_t": (-3.531, 0.750), "group_rho": (-28.720, 113.131), "group_t": (-3.726, 0.542)},
+        7: {"panel_v": (30.457, 293.431), "panel_rho": (-28.795, 144.615), "panel_t": (-3.795, 0.685), "group_rho": (-32.538, 126.059), "group_t": (-3.976, 0.525)},
+    },
+    "trend": {
+        2: {"panel_v": (21.162, 160.249), "panel_rho": (-14.011, 64.219), "panel_t": (-2.648, 0.690), "group_rho": (-17.359, 66.387), "group_t": (-2.872, 0.555)},
+        3: {"panel_v": (24.556, 198.167), "panel_rho": (-17.600, 83.815), "panel_t": (-2.967, 0.686), "group_rho": (-21.116, 81.832), "group_t": (-3.179, 0.548)},
+        4: {"panel_v": (28.046, 239.425), "panel_rho": (-21.287, 103.905), "panel_t": (-3.262, 0.688), "group_rho": (-24.930, 97.362), "group_t": (-3.464, 0.543)},
+        5: {"panel_v": (31.738, 276.997), "panel_rho": (-25.130, 124.613), "panel_t": (-3.545, 0.686), "group_rho": (-28.849, 113.145), "group_t": (-3.737, 0.538)},
+        6: {"panel_v": (35.537, 310.982), "panel_rho": (-28.981, 138.227), "panel_t": (-3.806, 0.654), "group_rho": (-32.716, 127.989), "group_t": (-3.986, 0.530)},
+        7: {"panel_v": (39.231, 348.217), "panel_rho": (-32.756, 154.378), "panel_t": (-4.047, 0.638), "group_rho": (-36.494, 140.756), "group_t": (-4.217, 0.518)},
+    },
+}
+
+
 
 def _ols_resid(y, Z):
     """Residuals from regressing y on Z with an intercept."""
@@ -41,7 +78,7 @@ def _adf_t(e, lags):
     return float(beta[0] / seb) if seb > 0 else np.nan
 
 
-def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None):
+def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None, case="intercept"):
     r"""Residual-based panel cointegration statistics.
 
     Runs a cointegrating regression within each unit of the panel, then
@@ -59,15 +96,32 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None):
     The statistics returned are the pooled and averaged
     :math:`\rho`-statistic and ADF :math:`t`-statistic.
 
-    **What this does not do.** Pedroni's published tests standardise each
-    raw statistic by tabulated moments, ``(stat - mu*sqrt(N)) /
-    sqrt(v)``, with :math:`\mu` and :math:`v` read from his simulation
-    tables, and only then compare against a standard normal. Those tables
-    are not reproduced here, so no asymptotic p-value is reported by
-    default: an unstandardised statistic compared against a normal would
-    be wrong, quietly. Set ``nsim`` to obtain a p-value by simulating the
-    null -- independent random walks of the same shape -- which needs no
-    tables, or pass ``cdf`` if you have the appropriate null in hand.
+    **The group ADF statistic is standardised; the others are not.**
+    Pedroni's tests are read against a normal only after subtracting a
+    tabulated mean and dividing by a tabulated standard deviation,
+
+    .. math:: Z = \frac{\chi_{N,T} - \mu\sqrt{N}}{\sqrt{v}}
+              \;\Rightarrow\; N(0,1)
+
+    his equation (2), with :math:`\mu` and :math:`v` from his Table 2.
+    That table is transcribed here in full, for all three deterministic
+    cases and m = 2..7 regressors.
+
+    Of the statistics computed here, ``group_adf`` is already in the form
+    his Table 1 defines, :math:`N^{-1/2}\sum_i t_i`, so it is
+    standardised with the "Group t" column and gets a genuine asymptotic
+    p-value. ``panel_rho`` and ``group_rho`` are the raw pooled and
+    averaged autoregressive coefficients: they are *not* in Pedroni's
+    standardised form, which requires the long-run variance corrections
+    :math:`\hat\lambda_i`, :math:`\hat\sigma_i^2` and
+    :math:`\hat L_{11i}` that this implementation does not compute. They
+    are reported as descriptive quantities and are not given p-values,
+    because applying the Table 2 terms to a statistic that is not in the
+    matching form would be wrong quietly.
+
+    Table 2 has no m = 1 row, so a bivariate cointegrating regression
+    cannot be standardised from it. That case is refused rather than
+    extrapolated; use ``nsim`` there instead.
 
     Parameters
     ----------
@@ -78,7 +132,8 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None):
         Unit label per row. At least two units, each with enough
         observations to difference and lag.
     cdf : callable, optional
-        Null CDF for the panel ADF statistic.
+        Null CDF for the group ADF statistic, replacing the standardised
+        normal.
     lags : int, default 1
         Augmentation lags in the residual ADF regressions.
     nsim : int, default 0
@@ -87,6 +142,11 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None):
         statistic.
     seed : int, optional
         Seed for the simulation.
+    case : {"intercept", "standard", "trend"}, default "intercept"
+        Deterministic specification, selecting the block of Table 2. The
+        cointegrating regression fitted here carries an intercept, so
+        "intercept" is the matching default; "standard" has no
+        deterministic term and "trend" adds a linear trend.
 
     Returns
     -------
@@ -149,15 +209,29 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None):
     warn = []
     if skipped:
         warn.append(f"{len(skipped)} unit(s) skipped for too few observations: {list(skipped)}")
-    warn.append(
-        "Statistics are unstandardised: Pedroni's tabulated mu and v are not applied, "
-        "so they are not directly comparable with published critical values."
-    )
 
+    m = Xa.shape[1] - 1  # regressors, excluding the intercept
+    if case not in _PEDRONI_T2:
+        raise ValueError(f"case must be one of {sorted(_PEDRONI_T2)}, got {case!r}.")
+
+    z = None
     p = None
     if cdf is not None:
         p = float(cdf(panel_adf))
-    elif nsim and nsim > 0:
+    elif m in _PEDRONI_T2[case]:
+        # group_adf is N^-1/2 sum_i t_i, which is Pedroni's Table 1 form
+        # for the group t statistic, so Table 2's "Group t" column
+        # applies directly.
+        mu, v = _PEDRONI_T2[case][m]["group_t"]
+        z = (panel_adf - mu * np.sqrt(finite.size)) / np.sqrt(v)
+        p = float(stats.norm.cdf(z))  # left tail: cointegration drives it negative
+    else:
+        warn.append(
+            f"Pedroni Table 2 covers m = 2..7 regressors; this panel has m = {m}, "
+            "so no standardised p-value is available. Use nsim for a simulated null."
+        )
+
+    if p is None and nsim and nsim > 0:
         rng = np.random.default_rng(seed)
         nsim = int(nsim)
         null = np.empty(nsim)
@@ -165,24 +239,32 @@ def pedroni_panel_cointegration(X, groups, cdf=None, lags=1, nsim=0, seed=None):
             sim = np.empty_like(Xa)
             for u in units:
                 sel = g == u
-                m = int(np.sum(sel))
-                sim[sel] = np.cumsum(rng.normal(0, 1, (m, Xa.shape[1])), axis=0)
-            null[b] = pedroni_panel_cointegration(sim, g, lags=lags)["panel_adf"]
+                mm = int(np.sum(sel))
+                sim[sel] = np.cumsum(rng.normal(0, 1, (mm, Xa.shape[1])), axis=0)
+            null[b] = pedroni_panel_cointegration(sim, g, lags=lags, case=case)["group_adf"]
         good = null[np.isfinite(null)]
         p = (1.0 + float(np.sum(good <= panel_adf))) / (1.0 + good.size) if good.size else None
+
+    warn.append(
+        "panel_rho and group_rho are raw pooled/averaged autoregressive coefficients, "
+        "not Pedroni's standardised forms; they carry no p-value."
+    )
 
     return RichResult(
         title="Panel cointegration (residual-based)",
         payload={
             "panel_rho": num / den,
-            "panel_adf": panel_adf,
+            "group_adf": panel_adf,
             "group_rho": float(np.mean(rho_i)) if rho_i else np.nan,
-            "group_adf": float(finite.mean()) if finite.size else np.nan,
+            "mean_adf_t": float(finite.mean()) if finite.size else np.nan,
+            "z_group_adf": z,
             "per_unit_adf": adf_arr,
             "n_units": int(units.size - len(skipped)),
+            "n_regressors": int(m),
+            "case": case,
             "p_value": p,
             "nsim": int(nsim),
-            "method": "Residual-based panel cointegration, within and between poolings",
+            "method": "Pedroni residual-based panel cointegration; group ADF standardised by Table 2",
             "warnings": warn,
         },
     )
