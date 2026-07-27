@@ -1,4 +1,5 @@
-"""Multilevel (1-1-1, 2-1-1) mediation."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Multilevel (1-1-1) mediation with within/between decomposition."""
 
 import numpy as np
 
@@ -7,38 +8,88 @@ from ._richresult import RichResult
 __all__ = ["multilevel_mediation"]
 
 
-def multilevel_mediation(Y, X, M, cluster):
-    """
-    Multilevel (1-1-1, 2-1-1) mediation
+def multilevel_mediation(y, x, m, cluster):
+    r"""Within- and between-cluster indirect effects.
 
-    Formula: between- vs within-cluster decomposition
+    For a 1-1-1 design (X, M, Y all measured at level 1) the naive
+    pooled indirect effect conflates two distinct quantities. Splitting
+    each variable into its cluster mean and its cluster-centred
+    deviation,
+
+    .. math:: X_{ij} = \bar X_j + \tilde X_{ij},
+
+    and fitting the mediation paths separately on the two pieces gives
+    the within-cluster effect :math:`a_w b_w` and the between-cluster
+    effect :math:`a_b b_b`. Zhang, Zyphur and Preacher show the
+    uncentred estimate is a *blend* of the two and equals neither
+    unless they coincide -- which is why the split matters.
 
     Parameters
     ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    M : array-like
-        Input data.
-    cluster : array-like
-        Input data.
+    y, x, m : array-like, shape (n,)
+        Outcome, treatment, mediator at level 1.
+    cluster : array-like, shape (n,)
+        Cluster (level 2) identifier.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys: ``indirect_within``, ``indirect_between``,
+        ``direct_within``, ``direct_between``, ``paths`` dict,
+        ``n_clusters``, ``n``, ``method``.
 
     References
     ----------
-    Krull-MacKinnon (2001); Zhang-Zyphur-Preacher (2009)
+    Zhang, Z., Zyphur, M. J. & Preacher, K. J. (2009). Testing
+    multilevel mediation using hierarchical linear models: problems
+    and solutions. *Organizational Research Methods*, 12(4), 695-719.
     """
-    Y = np.atleast_1d(np.asarray(Y, dtype=float))
-    n = len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Multilevel (1-1-1, 2-1-1) mediation"})
+    y = np.asarray(y, dtype=float).ravel()
+    x = np.asarray(x, dtype=float).ravel()
+    m = np.asarray(m, dtype=float).ravel()
+    g = np.asarray(cluster).ravel()
+    n = y.size
+    if not (x.size == n and m.size == n and g.size == n):
+        raise ValueError("y, x, m, cluster must have equal length.")
+    groups, inv = np.unique(g, return_inverse=True)
+    J = groups.size
+    if J < 3:
+        raise ValueError(f"need at least 3 clusters, got {J}.")
+
+    def split(v):
+        means = np.array([v[inv == j].mean() for j in range(J)])
+        return means, v - means[inv]
+
+    xb, xw = split(x)
+    mb, mw = split(m)
+    yb, yw = split(y)
+
+    def ols(cols, t):
+        D = np.column_stack([np.ones(t.size), *cols])
+        b, *_ = np.linalg.lstsq(D, t, rcond=None)
+        return b
+
+    aw = float(ols([xw], mw)[1])
+    byw = ols([xw, mw], yw)
+    cw, bw = float(byw[1]), float(byw[2])
+
+    ab = float(ols([xb], mb)[1])
+    byb = ols([xb, mb], yb)
+    cb, bb = float(byb[1]), float(byb[2])
+
+    return RichResult(
+        payload={
+            "indirect_within": aw * bw,
+            "indirect_between": ab * bb,
+            "direct_within": cw,
+            "direct_between": cb,
+            "paths": {"a_within": aw, "b_within": bw, "a_between": ab, "b_between": bb},
+            "n_clusters": int(J),
+            "n": int(n),
+            "method": "1-1-1 multilevel mediation (within/between decomposition)",
+        }
+    )
 
 
 def cheatsheet():
-    return "mlmMd: Multilevel (1-1-1, 2-1-1) mediation"
+    return "mlmMd: split into cluster means + deviations; a_w b_w and a_b b_b"

@@ -74,6 +74,22 @@ citation against the library PDFs or the actual paper before use.
   prefix-LM mask, chunked causal attention (equals full causal
   attention when every chunk is visible). Legacy tests re-fixtured.
 
+- `sensIM` `rhomed` `snsmed` `causmedi` `medstg` `seqM` `tdmed`
+  `mcausm` `pscme` `nemed` `immid` `weakid` `medSEM` `mlmMd` `longMd`
+  `countMd` `survmd` `baymed` `medML` `dmlMed` `mssm` -- mediation
+  cluster. The ACME(rho) sensitivity formula was read off the paper
+  PDF itself (Imai-Keele-Tingley 2010 Psych Methods 15(4) 309-334,
+  Theorem 2 p. 316, incl. footnote 6 giving rho* = Corr(e1, e2)) --
+  NOT recalled. Also Hayes 2015 MBR 50(1) 1-22 (index of moderated
+  mediation), VanderWeele 2009 Epidemiology 20(1) 18-26 (MSM for
+  natural effects), VanderWeele 2011 Epidemiology 22(4) 582-585
+  (survival), Yuan-MacKinnon 2009 Psych Methods 14(4) 301-322
+  (Bayesian), Zhang-Zyphur-Preacher 2009 ORM 12(4) 695-719
+  (multilevel), Cole-Maxwell 2003 JAP 112(4) 558-577 (cross-lagged),
+  Chernozhukov et al. 2018 EJ 21(1) C1-C68 (DML). Native Poisson IRLS
+  and Cox Newton-Raphson written for countMd/survmd. Legacy tests
+  re-fixtured.
+
 ## Cluster plan (next)
 
 1. **Mediation core** (bkmed/abind machinery exists): `causmedb`

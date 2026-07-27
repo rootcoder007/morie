@@ -1,26 +1,20 @@
 """Tests for weakid.weak_identification_mediation."""
 
 import numpy as np
+import pytest
 
 from morie.fn.weakid import weak_identification_mediation
 
 
 def test_weakid_basic():
-    """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    se_a = np.random.default_rng(42).normal(0, 1, 100)
-    se_b = np.random.default_rng(42).normal(0, 1, 100)
-    result = weak_identification_mediation(a, b, se_a, se_b)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = weak_identification_mediation(0.5, 0.5, 0.05, 0.05)
+    assert out["weakly_identified"] is False
+    assert out["ab"] == pytest.approx(0.25)
+    assert out["sobel_se"] == pytest.approx(np.sqrt(2 * 0.5**2 * 0.05**2))
 
 
 def test_weakid_edge():
-    """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    se_a = np.random.default_rng(42).normal(0, 1, 100)
-    se_b = np.random.default_rng(42).normal(0, 1, 100)
-    result = weak_identification_mediation(a, b, se_a, se_b)
-    assert isinstance(result, dict)
+    weak = weak_identification_mediation(0.5, 0.05, 0.05, 0.05)
+    assert weak["weak_b"] is True and weak["weakly_identified"] is True
+    with pytest.raises(ValueError):
+        weak_identification_mediation(1.0, 1.0, 0.0, 0.1)

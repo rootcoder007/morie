@@ -1,26 +1,27 @@
 """Tests for mlmMd.multilevel_mediation."""
 
 import numpy as np
+import pytest
 
 from morie.fn.mlmMd import multilevel_mediation
 
 
 def test_mlmMd_basic():
-    """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    cluster = np.random.default_rng(42).normal(0, 1, 100)
-    result = multilevel_mediation(Y, X, M, cluster)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(42)
+    J, npc = 60, 40
+    n = J * npc
+    cl = np.repeat(np.arange(J), npc)
+    xb = rng.normal(size=J)[cl]
+    xw = rng.normal(size=n)
+    x = xb + xw
+    m = 1.0 * xb + 0.2 * xw + rng.normal(scale=0.3, size=n)
+    mb = np.array([m[cl == j].mean() for j in range(J)])[cl]
+    y = 1.0 * mb + 0.2 * (m - mb) + rng.normal(scale=0.3, size=n)
+    out = multilevel_mediation(y, x, m, cl)
+    assert out["indirect_between"] > out["indirect_within"]
+    assert out["n_clusters"] == J
 
 
 def test_mlmMd_edge():
-    """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    cluster = np.random.default_rng(42).normal(0, 1, 100)
-    result = multilevel_mediation(Y, X, M, cluster)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        multilevel_mediation(np.zeros(10), np.zeros(10), np.zeros(10), np.zeros(10))  # 1 cluster
