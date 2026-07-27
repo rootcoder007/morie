@@ -217,7 +217,10 @@ point-pattern tests follow [@diggle2003pointpatterns] and
 follows [@hosking1980multivariate], whose modified statistic is
 restated as equation (9) of [@mahdi2020portes];
 and the table-inertia chi-square follows
-[@nenadicGreenacre2007ca] and [@greenacre1984correspondence].
+[@nenadicGreenacre2007ca] and [@greenacre1984correspondence];
+the kernel two-sample test follows [@gretton2012kernel]; and the
+Wasserstein two-sample test follows [@ramdas2017wasserstein], using the
+one-dimensional closed form of [@villani2009optimal].
 
 Writing each method twice, once in Python and once in R, is a
 deliberate check rather than duplicated effort. Two defects in this

@@ -74,6 +74,8 @@ check the code against the same page the author wrote.
 | Complete spatial randomness, nearest-neighbour distances | Peter J. Diggle, *Statistical Analysis of Spatial Point Patterns*, 2nd ed. (Edward Arnold, 2003); Schabenberger & Gotway (2005), §§3.3–3.4 |
 | Multivariate portmanteau test for white noise | J. R. M. Hosking, *Journal of the American Statistical Association* 75:602–608 (1980); restated as eq. (9) in Esam Mahdi, arXiv:2005.00931 (2020) |
 | Correspondence analysis, table inertia and chi-square | Oleg Nenadic & Michael Greenacre, *Journal of Statistical Software* 20(3):1–13 (2007); Michael J. Greenacre, *Theory and Applications of Correspondence Analysis* (Academic Press, 1984) |
+| Kernel two-sample test (maximum mean discrepancy) | Arthur Gretton, Karsten M. Borgwardt, Malte J. Rasch, Bernhard Schölkopf & Alexander Smola, *Journal of Machine Learning Research* 13:723–773 (2012) |
+| Wasserstein two-sample testing | Aaditya Ramdas, Nicolás García Trillos & Marco Cuturi, *Entropy* 19(2):47 (2017); Cédric Villani, *Optimal Transport: Old and New* (Springer, 2009), Theorem 2.18 |
 
 Where a secondary source and the primary disagree, morie follows the primary
 and records the divergence in the function's docstring, so the choice is
