@@ -73,7 +73,6 @@ Suggests:
   DoubleML,
   DRDID,
   duckdb,
-  e1071,
   ebal,
   elasticnet,
   EValue,
