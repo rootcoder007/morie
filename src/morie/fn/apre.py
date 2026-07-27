@@ -1,5 +1,5 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Aggregate proportional reduction in error (APRE) for OC."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Aggregate proportional reduction in error (APRE) for OC/NOMINATE fits."""
 
 import numpy as np
 
@@ -9,40 +9,76 @@ __all__ = ["oc_apre"]
 
 
 def oc_apre(votes, predictions):
-    """
-    Aggregate proportional reduction in error (APRE) for OC
+    r"""APRE per the Armstrong Sec 5.3.5 footnote.
 
-    Formula: APRE_j = (minor_j - errors_j) / minor_j; mean over all votes
+    .. math:: \mathrm{APRE} = \frac{\sum_{j=1}^{q}
+              (\text{Minority Vote} - \text{Classification Errors})_j}
+              {\sum_{j=1}^{q} \text{Minority Vote}_j},
+
+    the roll-call-aggregated improvement over predicting every choice
+    at the modal category. Per-roll-call PRE values are reported too;
+    a roll call the model classifies no better than its margin scores
+    zero.
 
     Parameters
     ----------
-    votes : array-like
-        Input data.
-    predictions : array-like
-        Input data.
+    votes : array-like, shape (n, q)
+        Observed binary votes (1 = yea, 0 = nay, NaN = missing).
+    predictions : array-like, shape (n, q)
+        Model-predicted votes on the same coding.
 
     Returns
     -------
-    result : dict
-        Keys: {'apre': 'float', 'apre_per_vote': 'array'}
+    RichResult
+        keys: ``apre``, ``per_vote_pre`` (q,), ``minority_total``,
+        ``errors_total``, ``n_choices``, ``method``.
 
     References
     ----------
-    Armstrong Ch 5
+    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
+    Choice and Judgment*. CRC Press. Sec. 5.3.5 footnote, p. 143
+    (formula verified against the PDF page).
+
+    Poole, K. T. & Rosenthal, H. (1997). *Congress*. Oxford
+    University Press.
     """
-    votes = np.asarray(votes, dtype=float)
-    n = int(votes) if votes.ndim == 0 else len(votes)
-    result = float(np.mean(votes))
-    se = float(np.std(votes, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    V = np.asarray(votes, dtype=float)
+    P = np.asarray(predictions, dtype=float)
+    if V.shape != P.shape or V.ndim != 2:
+        raise ValueError("votes and predictions must be 2-D arrays of the same shape.")
+
+    minority_total = 0
+    errors_total = 0
+    n_choices = 0
+    per = []
+    for j in range(V.shape[1]):
+        valid = ~np.isnan(V[:, j])
+        y = V[valid, j]
+        if y.size == 0:
+            per.append(np.nan)
+            continue
+        pred = P[valid, j]
+        yea = int(y.sum())
+        minority = min(yea, y.size - yea)
+        errors = int((pred != y).sum())
+        minority_total += minority
+        errors_total += errors
+        n_choices += y.size
+        per.append((minority - errors) / minority if minority > 0 else np.nan)
+
+    if minority_total == 0:
+        raise ValueError("every roll call is unanimous; APRE is undefined.")
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Aggregate proportional reduction in error (APRE) for OC",
+            "apre": float((minority_total - errors_total) / minority_total),
+            "per_vote_pre": np.array(per),
+            "minority_total": int(minority_total),
+            "errors_total": int(errors_total),
+            "n_choices": int(n_choices),
+            "method": "APRE (Armstrong Sec 5.3.5 footnote, p. 143)",
         }
     )
 
 
 def cheatsheet():
-    return "apre: Aggregate proportional reduction in error (APRE) for OC"
+    return "apre: sum(minority - errors) / sum(minority) across roll calls"

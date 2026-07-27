@@ -1,22 +1,19 @@
-"""Tests for ricei.rice_index."""
+"""Tests for ricei."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ricei import rice_index
 
 
 def test_ricei_basic():
-    """Test basic functionality."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    party_id = np.random.default_rng(42).normal(0, 1, 100)
-    result = rice_index(votes, party_id)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    V = np.array([[1, 1], [1, 1], [1, 1], [0, 1]], dtype=float)
+    out = rice_index(V, np.array(["a", "a", "a", "a"]))
+    assert out["matrix"]["a"] == pytest.approx([0.5, 1.0])
 
 
 def test_ricei_edge():
-    """Test edge cases."""
-    votes = np.random.default_rng(43).integers(0, 2, (50, 100))
-    party_id = np.random.default_rng(42).normal(0, 1, 100)
-    result = rice_index(votes, party_id)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        rice_index(np.ones((4, 2)), ["a", "a"])  # length mismatch
+    with pytest.raises(ValueError):
+        rice_index(np.ones(4), ["a"] * 4)  # 1-D votes
