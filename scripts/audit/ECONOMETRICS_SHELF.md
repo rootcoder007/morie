@@ -220,3 +220,4 @@ out (clamp to +/- 8.5 sd; scipy handled it silently), and `stats::var`
 uses the n - 1 denominator where `np.var` uses n, which offset every
 variance burn-in by n/(n-1) from the first step.
 
+**Full tests/fn sweep after batch 3: [100%], 0 FAILED (L14, batch3_full.log, 2026-07-27).**
