@@ -29,7 +29,7 @@
 #' @param y Response, length n.
 #' @param w n-by-n weights matrix.
 #' @return Named list: estimate, se, rho, sigma2, n, method.
-#' @references Anselin (1988); Schabenberger & Gotway (2005), Ch 7.
+#' @references Anselin (1988); Schabenberger & Gotway (2005), Ch 6, Sec 6.2.2.1.
 #' @examples
 #' # See the package vignettes for usage examples:
 #' #   vignette(package = "morie")
