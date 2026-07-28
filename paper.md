@@ -314,10 +314,42 @@ Spielman, McGinnis and Ewens [@spielman1993transmission]; the Markov
 chain Monte Carlo effective sample size follows Geyer
 [@geyer1992practical]; and the functional data correlation follows
 Ramsay and Silverman [@ramsay2005functional].
+The econometric and nonparametric modules follow Horowitz
+[@horowitz2009semiparametric] throughout: the single-index
+estimators follow Ichimura [@ichimura1993semiparametric], Klein and
+Spady [@kleinSpady1993efficient], Powell, Stock and Stoker
+[@powellStockStoker1989semiparametric] and Newey and Stoker
+[@neweyStoker1993efficiency]; the rank estimators follow Han
+[@han1987nonparametric], Sherman [@sherman1993limiting] and
+Cavanagh and Sherman [@cavanagh1998rank]; the maximum-score
+estimators and their choice-based, panel and ordered-response
+extensions follow Manski [@manski1985semiparametric;
+@manski1987semiparametric], Horowitz [@horowitz1992smoothed] and
+Melenberg and van Soest [@melenbergVanSoest1996parametric]; the
+heteroskedastic binary-response estimator follows Lewbel
+[@lewbel2000semiparametric] in the simplified form of Dong and
+Lewbel [@dongLewbel2015simple]; the deconvolution rates follow Fan
+[@fan1991optimal] and the panel deconvolution Horowitz and Markatou
+[@horowitzMarkatou1996semiparametric]; the transformation-model
+estimators follow Horowitz [@horowitz1996distribution] and Chen
+[@chen2002rank], with the baseline hazard built on Breslow
+[@breslow1974covariance]. The empirical-process and semiparametric
+inference modules follow Kosorok [@kosorok2008introduction], the
+nonparametric tests Gibbons and Chakraborti
+[@gibbonsChakraborti2011nonparametric], the copula modules Czado
+[@czado2019analyzing], and the volatility and cointegration modules
+Tsay [@tsay2010analysis].
+
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
 reader can check the implementation against the same page the
-author wrote.
+author wrote. Where an implementation departs from a printed
+statement it says so and shows the measurement that settled it --
+for example equation (4.43) of Horowitz
+[@horowitz2009semiparametric] prints ``maximize'' over a sum of
+absolute deviations while describing the estimator as a median
+regression, and the module minimises, with the discrepancy recorded
+in the docstring and asserted in the test suite.
 
 All implementation, all framework design, and all empirical
 findings are the work of the framework author.
