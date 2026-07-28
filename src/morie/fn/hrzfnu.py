@@ -5,58 +5,73 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_deconv_estimator"]
+__all__ = ["horowitz_smoothed_fU"]
 
 
-def horowitz_deconv_estimator(w, eps_cf, bandwidth, nu_n):
-    """
-    Smoothed deconvolution estimator of fU
+def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None):
+    r"""The smoothed estimator of :math:`f_U` alone (Horowitz
+    Sec. 5.2.1), equation (5.26):
 
-    Formula: fnU(u) = (1/2pi)*integral exp(-i*tau*u)*[psiNW(tau)*psiZeta(nu_n*tau)/psiEps(tau)]dtau
+    .. math:: f_{nU}(u) = \frac{1}{2\pi}\int_{-\infty}^{\infty}
+              e^{-i\tau u}\,
+              \frac{\psi_{nW}(\tau)\,\psi_\zeta(\nu_{nU}\tau)}
+                   {|\psi_{n\eta}(\tau)|^{1/2}}\, d\tau.
+
+    Substituting the empirical characteristic functions straight into
+    the inversion formula does NOT work -- the resulting integral
+    does not exist in general, because
+    :math:`\psi_{n\eta}` decays while the numerator does not, and the
+    ratio need not be integrable. :math:`\psi_\zeta` is the
+    regularisation: a characteristic function supported on
+    :math:`[-1, 1]`, so the integrand is identically zero outside
+    :math:`|\tau| \le 1/\nu_{nU}` and the ratio is never formed where
+    the denominator has died. It is the Fourier-transform analogue of
+    kernel smoothing, and it is mandatory rather than a refinement.
 
     Parameters
     ----------
-    w : array-like
-        Input data.
-    eps_cf : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    nu_n : array-like
-        Input data.
+    y : array-like, shape (n, T)
+        Panel responses.
+    x : array-like, shape (n, T, d) or (n*T, d)
+        Covariates.
+    beta : array-like, shape (d,)
+        Root-n-consistent beta.
+    nu_U : float, optional
+        Smoothing bandwidth; ``(log n)**(-1/2)`` otherwise.
+    grid : array-like, optional
+        Evaluation points.
 
     Returns
     -------
-    result : dict
-        Keys: density_estimate
-
+    RichResult
+        keys: ``grid``, ``f_U``, ``nu_U``, ``cutoff``
+        (:math:`1/\nu_{nU}`), ``regularisation_required`` (True),
+        ``n``, ``T``, ``method``.
     References
     ----------
-    Horowitz Ch 5, Eq 5.8
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Sec. 5.2.1, eq. (5.26).
     """
-    w = np.asarray(w, dtype=float)
-    n = int(w) if w.ndim == 0 else len(w)
-    if w.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Smoothed deconvolution estimator of fU"})
-    estimate = np.median(w)
-    se = 1.2533 * np.std(w, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Smoothed deconvolution estimator of fU",
-        }
-    )
+    from ._hrz_paneldec import deconvolve_pair, panel_residuals
+
+    Y = np.atleast_2d(np.asarray(y, dtype=float))
+    n, T = Y.shape
+    b = np.asarray(beta, dtype=float).ravel()
+    W, eta = panel_residuals(Y, x, b)
+    if n < 10:
+        raise ValueError(f"need at least 10 individuals, got {n}.")
+    nU = float(np.log(n) ** -0.5) if nu_U is None else float(nu_U)
+    if nU <= 0:
+        raise ValueError(f"nu_U must be positive, got {nU}.")
+    g = np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61) \
+        if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    f_U, _ = deconvolve_pair(W, eta, g, g[:1], nU, nU)
+    return RichResult(payload={
+        "grid": g, "f_U": f_U, "nu_U": nU, "cutoff": 1.0 / nU,
+        "regularisation_required": True,
+        "n": int(n), "T": int(T),
+        "method": "(5.26): psi_zeta compactly supported, so the ratio is never formed past the cut-off"})
 
 
 def cheatsheet():
-    return "hrzfnu: Smoothed deconvolution estimator of fU"
+    return "hrzfnu: without psi_zeta the inversion integral does not exist -- regularisation is mandatory"
