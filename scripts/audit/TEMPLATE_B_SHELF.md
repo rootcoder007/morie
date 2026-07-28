@@ -47,7 +47,12 @@ placeholders.
 - [x] **Rangayyan biomedical (15)** — rgburg, rgcepsp, rgeegsp,
       rgelast, rgenvgm, rgpdfest, rgrmsnw, rgtfe, rgtwamx, rng017–020,
       rng190, rng211. 24/24 tests green. **Rangayyan complete: 37/37.**
+- [x] **R parity for Rangayyan (37)** — `R/rangayyan_native2.R`,
+      13 exports, 39 tests green, mirrored byte-identical into both
+      trees. Collision scan skipped the five already-covered
+      `morie_dsp_*` functions.
 - [ ] Horowitz (47), Fauzi (22), Kosorok remainder (13), tail (~272)
+      — **R parity in the SAME commit as the Python from here on**
 
 ## Distinctions the repairs preserve
 
@@ -81,3 +86,21 @@ presenting one convention as neutral:
   relationship is monotone but the calibration is subject-specific.
 - `rgeegsp` refuses fs ≤ 60 Hz, which cannot represent the 13–30 Hz
   beta band it would otherwise report a number for.
+
+## Parity rule, restated after a lapse
+
+Kosorok and the Rangayyan template-B work were both completed
+Python-only and only mirrored afterwards, on being challenged. That
+broke the standing rule. From Horowitz onward the R mirror ships in
+the **same commit** as the Python, never as a follow-up.
+
+Two parity bugs the cross-language anchors caught, neither visible
+from the Python side alone:
+
+- `morie_functional_delta` used the raw Jacobian where the delta
+  method needs it applied to the deviation; the remainder came out
+  −395.99 instead of 0.01.
+- `morie_moving_average` filled `stats::filter`'s NA startup transient
+  by dividing by the number of available samples. Python's zero-padded
+  convolution divides by M throughout, so `y[2]` on `0:9` with M = 4
+  is 0.25, not 0.5.
