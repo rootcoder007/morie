@@ -17,6 +17,33 @@
      Last regenerated 2026-07-28. -->
 
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-abadie2005semiparametric" class="csl-entry">
+
+Abadie, Alberto. 2005. “Semiparametric Difference-in-Differences
+Estimators.” *Review of Economic Studies* 72 (1): 1–19.
+<https://doi.org/10.1111/0034-6527.00321>.
+
+</div>
+
+<div id="ref-abadie2010synthetic" class="csl-entry">
+
+Abadie, Alberto, Alexis Diamond, and Jens Hainmueller. 2010. “Synthetic
+Control Methods for Comparative Case Studies: Estimating the Effect of
+<span class="nocase">California’s</span> Tobacco Control Program.”
+*Journal of the American Statistical Association* 105 (490): 493–505.
+<https://doi.org/10.1198/jasa.2009.ap08746>.
+
+</div>
+
+<div id="ref-abadie2003economic" class="csl-entry">
+
+Abadie, Alberto, and Javier Gardeazabal. 2003. “The Economic Costs of
+Conflict: A Case Study of the Basque Country.” *American Economic
+Review* 93 (1): 113–32. <https://doi.org/10.1257/000282803321455188>.
+
+</div>
 
 <div id="ref-aitchison1986compositional" class="csl-entry">
 
@@ -60,6 +87,15 @@ Angrist, Joshua D., Guido W. Imbens, and Donald B. Rubin. 1996.
 
 </div>
 
+<div id="ref-arkhangelsky2021synthetic" class="csl-entry">
+
+Arkhangelsky, Dmitry, Susan Athey, David A. Hirshberg, Guido W. Imbens,
+and Stefan Wager. 2021. “Synthetic Difference-in-Differences.” *American
+Economic Review* 111 (12): 4088–118.
+<https://doi.org/10.1257/aer.20190159>.
+
+</div>
+
 <div id="ref-austin2009balance" class="csl-entry">
 
 Austin, Peter C. 2009. “Balance Diagnostics for Comparing the
@@ -82,6 +118,15 @@ Function and Quantiles by a Kernel Method.” *Biometrika* 68 (1): 326–28.
 Belsley, David A., Edwin Kuh, and Roy E. Welsch. 1980. *Regression
 Diagnostics: Identifying Influential Data and Sources of Collinearity*.
 John Wiley & Sons. <https://doi.org/10.1002/0471725153>.
+
+</div>
+
+<div id="ref-bertrand2004howmuch" class="csl-entry">
+
+Bertrand, Marianne, Esther Duflo, and Sendhil Mullainathan. 2004. “How
+Much Should We Trust Differences-in-Differences Estimates?” *Quarterly
+Journal of Economics* 119 (1): 249–75.
+<https://doi.org/10.1162/003355304772839588>.
 
 </div>
 
@@ -120,6 +165,15 @@ Economics and Statistics* 72 (3): 498–505.
 
 </div>
 
+<div id="ref-borusyak2024revisiting" class="csl-entry">
+
+Borusyak, Kirill, Xavier Jaravel, and Jann Spiess. 2024. “Revisiting
+Event-Study Designs: Robust and Efficient Estimation.” *Review of
+Economic Studies* 91 (6): 3253–85.
+<https://doi.org/10.1093/restud/rdae007>.
+
+</div>
+
 <div id="ref-breiman1996bagging" class="csl-entry">
 
 Breiman, Leo. 1996. “Bagging Predictors.” *Machine Learning* 24 (2):
@@ -145,6 +199,14 @@ Data.” *Biometrics* 30 (1): 89–99. <https://doi.org/10.2307/2529620>.
 
 Burg, John Parker. 1975. “Maximum Entropy Spectral Analysis.” PhD
 thesis, Stanford University.
+
+</div>
+
+<div id="ref-callawaySantanna2021" class="csl-entry">
+
+Callaway, Brantly, and Pedro H. C. Sant’Anna. 2021.
+“Difference-in-Differences with Multiple Time Periods.” *Journal of
+Econometrics* 225 (2): 200–230.
 
 </div>
 
@@ -378,6 +440,13 @@ Monographs. Chapman & Hall/CRC.
 
 Goffman, Erving. 1961. *Asylums: Essays on the Social Situation of
 Mental Patients and Other Inmates*. Anchor Books.
+
+</div>
+
+<div id="ref-goodmanBacon2021did" class="csl-entry">
+
+Goodman-Bacon, Andrew. 2021. “Difference-in-Differences with Variation
+in Treatment Timing.” *Journal of Econometrics* 225 (2): 254–77.
 
 </div>
 
@@ -978,6 +1047,14 @@ the Latent Trait Theory.” *Psychometrika* 38 (2): 221–33.
 
 </div>
 
+<div id="ref-santannaZhao2020drdid" class="csl-entry">
+
+Sant’Anna, Pedro H. C., and Jun Zhao. 2020. “Doubly Robust
+Difference-in-Differences Estimators.” *Journal of Econometrics* 219
+(1): 101–22. <https://doi.org/10.1016/j.jeconom.2020.06.003>.
+
+</div>
+
 <div id="ref-sargan1958estimation" class="csl-entry">
 
 Sargan, John D. 1958. “The Estimation of Economic Relationships Using
@@ -1038,6 +1115,14 @@ Bulletin* 86 (2): 420–28. <https://doi.org/10.1037/0033-2909.86.2.420>.
 
 Silverman, Bernard W. 1986. *Density Estimation for Statistics and Data
 Analysis*. Chapman; Hall. <https://doi.org/10.1201/9781315140919>.
+
+</div>
+
+<div id="ref-sloczynski2022interpreting" class="csl-entry">
+
+Słoczyński, Tymon. 2022. “Interpreting OLS Estimands When Treatment
+Effects Are Heterogeneous.” *Review of Economics and Statistics* 104
+(3): 501–9. <https://doi.org/10.1162/rest_a_00953>.
 
 </div>
 
@@ -1256,6 +1341,14 @@ Processing*. Prentice-Hall.
 
 Wooldridge, Jeffrey M. 2010. *Econometric Analysis of Cross Section and
 Panel Data*. 2nd ed. MIT Press.
+
+</div>
+
+<div id="ref-wooldridge2021twoway" class="csl-entry">
+
+Wooldridge, Jeffrey M. 2021. *Two-Way Fixed Effects, the Two-Way Mundlak
+Regression, and Difference-in-Differences Estimators*. No. 3906345.
+SSRN. <https://doi.org/10.2139/ssrn.3906345>.
 
 </div>
 

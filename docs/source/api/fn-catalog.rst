@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **35,769 single-purpose callables** -- every one
+``morie.fn`` ships **35,770 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -19359,7 +19359,7 @@ Full list
    "joint_frailty", "jntfr"
    "joint_longitudinal_survival", "jntlmm"
    "joint_loss_mixed_outcomes", "jntlO"
-   "joint_significance_test", "jntmed"
+   "joint_significance_mediation", "jntmed"
    "joint_sparse_decompose", "jsdcm"
    "jonckheere_terpstra", "jnckh"
    "jonckheere_terpstra_test", "jt"
@@ -20709,6 +20709,7 @@ Full list
    "moods", "moods"
    "moran_resid", "xrmri"
    "moran_residual_test", "sgrmr"
+   "morani", "sptau"
    "morans_i", "morisp"
    "morans_i_asymptotic_test", "moranI"
    "morphological_ca", "mca"
