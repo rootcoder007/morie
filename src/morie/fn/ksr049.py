@@ -1,67 +1,83 @@
-"""Linearization of Z-estimator deviation around the true parameter."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Asymptotic linearity of a Z-estimator."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_ch2_z_master_linearization"]
+__all__ = ["kosorok_asymptotic_linearity"]
 
 
-def kosorok_ch2_z_master_linearization(Psi_dot, Psi_n, Psi, theta_n, theta_0, n):
-    """
-    Linearization of Z-estimator deviation around the true parameter
+def kosorok_asymptotic_linearity(psi_dot, psi_n, psi, theta_n, theta0, n,
+                                 grid=None):
+    r"""Asymptotic linearity of a Z-estimator (Kosorok Eq. 2.13,
+    p. 26):
 
-    Formula: || sqrt(n) Psi_dot_{theta_0}(theta_n - theta_0) + sqrt(n)(Psi_n - Psi)(theta_0) ||_L -> 0
+    .. math:: \big\|\sqrt n\,\dot\Psi_{\theta_0}
+              (\theta_n - \theta_0)
+              + \sqrt n(\Psi_n - \Psi)(\theta_0)\big\|_L
+              \to 0.
+
+    The payoff of Chapter 2. It says
+    :math:`\sqrt n(\theta_n - \theta_0)` behaves like
+    :math:`-\dot\Psi_{\theta_0}^{-1}\sqrt n(\Psi_n -
+    \Psi)(\theta_0)`: an ESTIMATOR, which is an implicit function
+    of the data, is replaced by a linear functional of an empirical
+    process, whose limit is known. Everything after -- weak
+    convergence, the bootstrap, efficiency -- follows from this one
+    representation.
+
+    The derivative :math:`\dot\Psi_{\theta_0}` must be
+    continuously invertible, and that is a genuine condition rather
+    than a formality: where it fails the estimator is typically not
+    root-n at all. ``derivative_invertible`` reports it.
 
     Parameters
     ----------
-    Psi_dot : array-like
-        Input data.
-    Psi_n : array-like
-        Input data.
-    Psi : array-like
-        Input data.
-    theta_n : array-like
-        Input data.
-    theta_0 : array-like
-        Input data.
-    n : array-like
-        Input data.
+    psi_dot : array-like or callable
+        The derivative operator at ``theta0``.
+    psi_n, psi : callable
+        ``(theta, t)`` maps.
+    theta_n, theta0 : array-like
+        The estimate and the truth.
+    n : int
+        Sample size.
+    grid : array-like, optional
+        Points for the uniform norm.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``residual_norm``, ``linear_term``, ``process_term``,
+        ``derivative_invertible``, ``implies``, ``n``, ``method``.
     References
     ----------
-    Kosorok (2008), Ch 2, Eq 2.13, p. 26
+    Kosorok, Ch. 2, Eq. (2.13), p. 26.
     """
-    Psi_dot = np.atleast_1d(np.asarray(Psi_dot, dtype=float))
-    n = len(Psi_dot)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Linearization of Z-estimator deviation around the true parameter",
-            }
-        )
-    estimate = np.median(Psi_dot)
-    se = 1.2533 * np.std(Psi_dot, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Linearization of Z-estimator deviation around the true parameter",
-        }
-    )
+    g = np.linspace(0.0, 1.0, 51) if grid is None else \
+        np.atleast_1d(np.asarray(grid, dtype=float))
+    nn = int(n)
+    if nn < 1:
+        raise ValueError(f"n must be at least 1, got {nn}.")
+    th = np.atleast_1d(np.asarray(theta_n, dtype=float)).ravel()
+    t0 = np.atleast_1d(np.asarray(theta0, dtype=float)).ravel()
+    if th.size != t0.size:
+        raise ValueError("theta_n and theta0 must have the same length.")
+    D = np.atleast_2d(np.asarray(psi_dot(t0) if callable(psi_dot) else psi_dot,
+                                 dtype=float))
+    if D.shape[0] != D.shape[1] or D.shape[0] != th.size:
+        raise ValueError(f"psi_dot must be {th.size} by {th.size}.")
+    inv_ok = bool(np.linalg.matrix_rank(D) == D.shape[0])
+    lin = np.sqrt(nn) * (D @ (th - t0))
+    proc = np.array([float(psi_n(t0, v) - psi(t0, v)) for v in g]) * np.sqrt(nn)
+    resid = float(np.max(np.abs(lin.sum() + proc)))
+    return RichResult(payload={
+        "residual_norm": resid, "linear_term": lin, "process_term": proc,
+        "derivative_invertible": inv_ok,
+        "implies": "sqrt(n)(theta_n - theta_0) ~ -Psi_dot^{-1} sqrt(n)(Psi_n - Psi)(theta_0)",
+        "n": nn,
+        "method": "Asymptotic linearity (Eq. 2.13); an estimator becomes a linear functional of a process"})
 
 
 def cheatsheet():
-    return "ksr049: Linearization of Z-estimator deviation around the true parameter"
+    return "ksr049: this one representation is what everything after Chapter 2 is built on"

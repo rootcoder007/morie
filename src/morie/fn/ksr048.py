@@ -1,65 +1,83 @@
-"""Stochastic equicontinuity condition needed in the Z-estimator master theorem."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Stochastic equicontinuity condition for Z-estimators."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_ch2_z_master_stochastic_equicontinuity"]
+__all__ = ["kosorok_stochastic_equicontinuity"]
 
 
-def kosorok_ch2_z_master_stochastic_equicontinuity(Psi_n, Psi, theta_n, theta_0, n):
-    """
-    Stochastic equicontinuity condition needed in the Z-estimator master theorem
+def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq,
+                                      grid=None):
+    r"""The stochastic equicontinuity condition (Kosorok Eq. 2.12,
+    p. 26):
 
-    Formula: || sqrt(n)(Psi_n(theta_n) - Psi(theta_n)) - sqrt(n)(Psi_n(theta_0) - Psi(theta_0)) ||_L / (1 + sqrt(n)||theta_n-theta_0||) -> 0
+    .. math:: \frac{\big\|\sqrt n(\Psi_n - \Psi)(\theta_n)
+              - \sqrt n(\Psi_n - \Psi)(\theta_0)\big\|_L}
+              {1 + \sqrt n\,\|\theta_n - \theta_0\|} \to 0.
+
+    The empirical process must not move much between
+    :math:`\theta_n` and :math:`\theta_0` -- it is a smoothness
+    requirement on the PROCESS, not on any single realisation, and
+    it is what allows the increment to be replaced by its limit in
+    the linearisation of Eq. (2.13).
+
+    The denominator matters. Without the
+    :math:`\sqrt n\|\theta_n-\theta_0\|` term the condition
+    would be far too strong to hold at the root-n scale; with it,
+    the requirement weakens exactly as fast as
+    :math:`\theta_n` approaches :math:`\theta_0`, which is why the
+    condition is checkable in practice. ``ratio`` returns the whole
+    quantity, and ``numerator`` separately, so the effect of the
+    denominator is visible.
 
     Parameters
     ----------
-    Psi_n : array-like
-        Input data.
-    Psi : array-like
-        Input data.
-    theta_n : array-like
-        Input data.
-    theta_0 : array-like
-        Input data.
-    n : array-like
-        Input data.
+    psi_n, psi : callable
+        ``(theta, t)`` maps as in :mod:`morie.fn.ksr046`.
+    theta_seq : sequence
+        Candidate parameters, one per entry of ``n_seq``.
+    theta0 : object
+        True parameter.
+    n_seq : sequence of int
+        Sample sizes.
+    grid : array-like, optional
+        Points for the uniform norm.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``n``, ``ratio``, ``numerator``, ``denominator``,
+        ``holds``, ``denominator_is_essential`` (True), ``method``.
     References
     ----------
-    Kosorok (2008), Ch 2, Eq 2.12, p. 26
+    Kosorok, Ch. 2, Eq. (2.12), p. 26.
     """
-    Psi_n = np.atleast_1d(np.asarray(Psi_n, dtype=float))
-    n = len(Psi_n)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Stochastic equicontinuity condition needed in the Z-estimator master theorem",
-            }
-        )
-    estimate = np.median(Psi_n)
-    se = 1.2533 * np.std(Psi_n, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Stochastic equicontinuity condition needed in the Z-estimator master theorem",
-        }
-    )
+    g = np.linspace(0.0, 1.0, 51) if grid is None else \
+        np.atleast_1d(np.asarray(grid, dtype=float))
+    ths = list(theta_seq)
+    ns = np.atleast_1d(np.asarray(n_seq, dtype=float)).ravel()
+    if len(ths) != ns.size:
+        raise ValueError(f"theta_seq has {len(ths)} entries for {ns.size} sizes.")
+    if np.any(ns < 1):
+        raise ValueError("sample sizes must be at least 1.")
+    num, den, rat = [], [], []
+    for th, nn in zip(ths, ns):
+        a = np.array([float(psi_n(th, v) - psi(th, v)) for v in g])
+        b = np.array([float(psi_n(theta0, v) - psi(theta0, v)) for v in g])
+        nu = float(np.sqrt(nn) * np.max(np.abs(a - b)))
+        de = 1.0 + float(np.sqrt(nn) *
+                         np.abs(np.asarray(th, dtype=float) -
+                                np.asarray(theta0, dtype=float)).max())
+        num.append(nu); den.append(de); rat.append(nu / de)
+    return RichResult(payload={
+        "n": ns, "ratio": np.array(rat), "numerator": np.array(num),
+        "denominator": np.array(den),
+        "holds": bool(rat[-1] < rat[0]),
+        "denominator_is_essential": True,
+        "method": "Stochastic equicontinuity (Eq. 2.12); a condition on the PROCESS, not a realisation"})
 
 
 def cheatsheet():
-    return "ksr048: Stochastic equicontinuity condition needed in the Z-estimator master theorem"
+    return "ksr048: the 1 + sqrt(n)||theta_n - theta_0|| denominator is what makes it satisfiable"
