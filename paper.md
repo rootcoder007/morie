@@ -186,7 +186,7 @@ panel.
 
 Causal inference (`causal`, `effects`, `investigation`),
 survey-weighted estimation (`survey`), psychometrics (`psymet` —
-Cronbach's α, McDonald's ω, KMO, Bartlett, parallel analysis,
+Cronbach's $\alpha$, McDonald's $\omega$, KMO, Bartlett, parallel analysis,
 composite reliability, AVE), signal processing
 (`signal_processing`, `homomorphic_deconvolution`), spatial
 statistics (`spatial`), genomics utilities (`genomics`),
