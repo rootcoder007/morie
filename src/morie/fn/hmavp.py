@@ -1,58 +1,90 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Average pooling: output mean per pooling window."""
+"""Global and windowed average pooling."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .grapl import geron_average_pooling_2d
 
-__all__ = ["geron_average_pool"]
+__all__ = ["average_pooling"]
 
 
-def geron_average_pool(x, window, stride):
-    """
-    Average pooling: output mean per pooling window
+def average_pooling(x, pool_size=2, stride=None, padding="valid",
+                    global_pool=False):
+    r"""Average pooling, windowed or global.
 
-    Formula: y[i,j,k] = mean over window W of x[i+u, j+v, k]
+    ``global_pool=True`` collapses each channel to its mean over all
+    spatial positions. That is the operation that replaced the flatten
+    plus dense layer at the head of modern convolutional networks: it
+    has NO parameters, so it cannot overfit the way a dense layer on a
+    flattened feature map does, and it forces each channel to stand for
+    a concept on its own rather than relying on a downstream mixing
+    layer.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    window : array-like
-        Input data.
-    stride : array-like
-        Input data.
+        ``(h, w)``, ``(h, w, c)`` or ``(n, h, w, c)``.
+    pool_size, stride, padding
+        As in :func:`~morie.fn.grapl.geron_average_pooling_2d`.
+    global_pool : bool
+        Average over all spatial positions instead.
 
     Returns
     -------
-    result : dict
-        Keys: y
+    RichResult
+        ``pooled``, ``output_shape``, ``parameters`` (always 0).
 
     References
     ----------
-    Géron Ch 12
+    Geron (2022), *Hands-On Machine Learning*, 3rd ed., chapter 12.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> a = np.arange(16.0).reshape(4, 4)
+    >>> float(average_pooling(a, global_pool=True)["pooled"])
+    7.5
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    if n < 1:
+    a = np.asarray(x, dtype=float)
+    if not global_pool:
+        out = geron_average_pooling_2d(a, pool_size, stride, padding)
         return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Average pooling: output mean per pooling window"}
+            payload={
+                "estimate": out["pooled"],
+                "pooled": out["pooled"],
+                "output_shape": out["output_shape"],
+                "global": False,
+                "parameters": 0,
+                "method": "Windowed average pooling",
+            }
         )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
+    if a.ndim == 2:
+        res = float(a.mean())
+    elif a.ndim == 3:
+        res = a.mean(axis=(0, 1))
+    elif a.ndim == 4:
+        res = a.mean(axis=(1, 2))
+    else:
+        raise ValueError(
+            "x must have 2, 3 or 4 dimensions, got %d." % a.ndim
+        )
     return RichResult(
         payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Average pooling: output mean per pooling window",
+            "estimate": res,
+            "pooled": res,
+            "output_shape": tuple(int(v) for v in np.shape(res)),
+            "global": True,
+            "parameters": 0,
+            "note": (
+                "global average pooling has no parameters, so unlike a dense "
+                "head on a flattened map it cannot overfit the spatial "
+                "layout; each channel has to mean something by itself"
+            ),
+            "method": "Global average pooling",
         }
     )
 
 
 def cheatsheet():
-    return "hmavp: Average pooling: output mean per pooling window"
+    return "hmavp: windowed or global average pooling, the latter parameter-free"
