@@ -359,7 +359,17 @@ the local average treatment effect follows Imbens and Angrist
 Robins, Rotnitzky and Zhao [-@robins1994estimation]; double machine
 learning follows Chernozhukov and colleagues
 [-@chernozhukov2018double]; and the interaction-weighted event
-study follows Sun and Abraham [-@sun2021estimating].
+study follows Sun and Abraham [-@sun2021estimating]. The
+partial-identification modules follow Manski
+[-@manski1990nonparametric] and Manski and Tamer
+[-@manskiTamer2002inference] for worst-case bounds, Imbens and
+Manski [-@imbensManski2004confidence] and Stoye [-@stoye2009more]
+for confidence intervals on partially identified parameters,
+Chernozhukov, Hong and Tamer [-@chernozhukovHongTamer2007] for
+criterion-function confidence regions under moment inequalities,
+Mogstad, Santos and Torgovitsky [-@mogstadSantosTorgovitsky2018]
+for sharp linear-programming bounds, and Lavine [-@lavine1992polya]
+for the Polya tree posterior.
 
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
@@ -514,6 +524,15 @@ Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, et al. 2018.
 “Double/Debiased Machine Learning for Treatment and Structural
 Parameters.” *The Econometrics Journal* 21 (1): C1–68.
 <https://doi.org/10.1111/ectj.12097>.
+
+</div>
+
+<div id="ref-chernozhukovHongTamer2007" class="csl-entry">
+
+Chernozhukov, Victor, Han Hong, and Elie Tamer. 2007. “Estimation and
+Confidence Regions for Parameter Sets in Econometric Models.”
+*Econometrica* 75 (5): 1243–84.
+<https://doi.org/10.1111/j.1468-0262.2007.00794.x>.
 
 </div>
 
@@ -800,6 +819,14 @@ Estimation of Local Average Treatment Effects.” *Econometrica* 62 (2):
 
 </div>
 
+<div id="ref-imbensManski2004confidence" class="csl-entry">
+
+Imbens, Guido W., and Charles F. Manski. 2004. “Confidence Intervals for
+Partially Identified Parameters.” *Econometrica* 72 (6): 1845–57.
+<https://doi.org/10.1111/j.1468-0262.2004.00555.x>.
+
+</div>
+
 <div id="ref-jacquez1996knn" class="csl-entry">
 
 Jacquez, Geoffrey M. 1996. “A k Nearest Neighbour Test for Space-Time
@@ -837,6 +864,14 @@ Semiparametric Inference*. Springer Series in Statistics. Springer.
 Laan, Mark J. van der, Eric C. Polley, and Alan E. Hubbard. 2007. “Super
 Learner.” *Statistical Applications in Genetics and Molecular Biology* 6
 (1).
+
+</div>
+
+<div id="ref-lavine1992polya" class="csl-entry">
+
+Lavine, Michael. 1992. “Some Aspects of Polya Tree Distributions for
+Statistical Modelling.” *The Annals of Statistics* 20 (3): 1222–35.
+<https://doi.org/10.1214/aos/1176348767>.
 
 </div>
 
@@ -887,6 +922,21 @@ Linear Models from Binary Panel Data.” *Econometrica* 55 (2): 357–62.
 
 </div>
 
+<div id="ref-manski1990nonparametric" class="csl-entry">
+
+Manski, Charles F. 1990. “Nonparametric Bounds on Treatment Effects.”
+*American Economic Review: Papers and Proceedings* 80 (2): 319–23.
+
+</div>
+
+<div id="ref-manskiTamer2002inference" class="csl-entry">
+
+Manski, Charles F., and Elie Tamer. 2002. “Inference on Regressions with
+Interval Data on a Regressor or Outcome.” *Econometrica* 70 (2): 519–46.
+<https://doi.org/10.1111/1468-0262.00294>.
+
+</div>
+
 <div id="ref-marple1987digital" class="csl-entry">
 
 Marple, S. Lawrence. 1987. *Digital Spectral Analysis with
@@ -909,6 +959,15 @@ Melenberg, Bertrand, and Arthur van Soest. 1996. “Measuring the Costs of
 Children: Parametric and Semiparametric Estimators.” *Statistica
 Neerlandica* 50 (1): 171–92.
 <https://doi.org/10.1111/j.1467-9574.1996.tb01486.x>.
+
+</div>
+
+<div id="ref-mogstadSantosTorgovitsky2018" class="csl-entry">
+
+Mogstad, Magne, Andres Santos, and Alexander Torgovitsky. 2018. “Using
+Instrumental Variables for Inference about Policy Relevant Treatment
+Parameters.” *Econometrica* 86 (5): 1589–619.
+<https://doi.org/10.3982/ECTA15463>.
 
 </div>
 
@@ -1165,6 +1224,14 @@ Independent External Decision Makers Ensure That “an Inmate’s
 Confinement in a Structured Intervention Unit Is to End as Soon as
 Possible”? \[Corrections and Conditional Release Act, Section 33\]*.
 Schulich School of Law, Dalhousie University.
+
+</div>
+
+<div id="ref-stoye2009more" class="csl-entry">
+
+Stoye, Jörg. 2009. “More on Confidence Intervals for Partially
+Identified Parameters.” *Econometrica* 77 (4): 1299–315.
+<https://doi.org/10.3982/ECTA7347>.
 
 </div>
 
