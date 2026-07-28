@@ -96,6 +96,14 @@ Economic Review* 111 (12): 4088–118.
 
 </div>
 
+<div id="ref-atheyImbens2016recursive" class="csl-entry">
+
+Athey, Susan, and Guido Imbens. 2016. “Recursive Partitioning for
+Heterogeneous Causal Effects.” *Proceedings of the National Academy of
+Sciences* 113 (27): 7353–60. <https://doi.org/10.1073/pnas.1510489113>.
+
+</div>
+
 <div id="ref-austin2009balance" class="csl-entry">
 
 Austin, Peter C. 2009. “Balance Diagnostics for Comparing the
@@ -249,6 +257,15 @@ Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, et al. 2018.
 “Double/Debiased Machine Learning for Treatment and Structural
 Parameters.” *The Econometrics Journal* 21 (1): C1–68.
 <https://doi.org/10.1111/ectj.12097>.
+
+</div>
+
+<div id="ref-chernozhukov2018generic" class="csl-entry">
+
+Chernozhukov, Victor, Mert Demirer, Esther Duflo, and Iván
+Fernández-Val. 2018. *Generic Machine Learning Inference on
+Heterogeneous Treatment Effects in Randomized Experiments*. No. 24678.
+National Bureau of Economic Research. <https://doi.org/10.3386/w24678>.
 
 </div>
 
@@ -474,6 +491,15 @@ Schölkopf, and Alexander Smola. 2012. “A Kernel Two-Sample Test.”
 
 </div>
 
+<div id="ref-gruberVanDerLaan2010" class="csl-entry">
+
+Gruber, Susan, and Mark J. van der Laan. 2010. “A Targeted Maximum
+Likelihood Estimator of a Causal Effect on a Bounded Continuous
+Outcome.” *International Journal of Biostatistics* 6 (1): Article 26.
+<https://doi.org/10.2202/1557-4679.1260>.
+
+</div>
+
 <div id="ref-han1987nonparametric" class="csl-entry">
 
 Han, Aaron K. 1987. “Non-Parametric Analysis of a Generalized Regression
@@ -673,11 +699,28 @@ Semiparametric Inference*. Springer Series in Statistics. Springer.
 
 </div>
 
+<div id="ref-kunzel2019metalearners" class="csl-entry">
+
+Künzel, Sören R., Jasjeet S. Sekhon, Peter J. Bickel, and Bin Yu. 2019.
+“Metalearners for Estimating Heterogeneous Treatment Effects Using
+Machine Learning.” *Proceedings of the National Academy of Sciences* 116
+(10): 4156–65. <https://doi.org/10.1073/pnas.1804597116>.
+
+</div>
+
 <div id="ref-vanderlaan2007superlearner" class="csl-entry">
 
 Laan, Mark J. van der, Eric C. Polley, and Alan E. Hubbard. 2007. “Super
 Learner.” *Statistical Applications in Genetics and Molecular Biology* 6
 (1).
+
+</div>
+
+<div id="ref-vanderLaanRubin2006tmle" class="csl-entry">
+
+Laan, Mark J. van der, and Daniel Rubin. 2006. “Targeted Maximum
+Likelihood Learning.” *International Journal of Biostatistics* 2 (1):
+Article 11. <https://doi.org/10.2202/1557-4679.1043>.
 
 </div>
 
@@ -837,6 +880,14 @@ of Statistical Software* 20 (3): 1–13.
 Newey, Whitney K., and Thomas M. Stoker. 1993. “Efficiency of Weighted
 Average Derivative Estimators and Index Models.” *Econometrica* 61 (5):
 1199–223. <https://doi.org/10.2307/2951498>.
+
+</div>
+
+<div id="ref-nie2021quasi" class="csl-entry">
+
+Nie, Xinkun, and Stefan Wager. 2021. “Quasi-Oracle Estimation of
+Heterogeneous Treatment Effects.” *Biometrika* 108 (2): 299–319.
+<https://doi.org/10.1093/biomet/asaa076>.
 
 </div>
 
@@ -1292,6 +1343,23 @@ Influence Diagnostics for Meta-Analysis.” *Research Synthesis Methods* 1
 Villani, Cédric. 2009. *Optimal Transport: Old and New*. Vol. 338.
 Grundlehren Der Mathematischen Wissenschaften. Springer.
 <https://doi.org/10.1007/978-3-540-71050-9>.
+
+</div>
+
+<div id="ref-wagerAthey2018" class="csl-entry">
+
+Wager, Stefan, and Susan Athey. 2018. “Estimation and Inference of
+Heterogeneous Treatment Effects Using Random Forests.” *Journal of the
+American Statistical Association* 113 (523): 1228–42.
+<https://doi.org/10.1080/01621459.2017.1319839>.
+
+</div>
+
+<div id="ref-wagerHastieEfron2014" class="csl-entry">
+
+Wager, Stefan, Trevor Hastie, and Bradley Efron. 2014. “Confidence
+Intervals for Random Forests: The Jackknife and the Infinitesimal
+Jackknife.” *Journal of Machine Learning Research* 15: 1625–51.
 
 </div>
 
