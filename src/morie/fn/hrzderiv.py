@@ -1,66 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Appendix: Estimating derivatives of density via kernel methods."""
+"""Kernel density derivative."""
 
 import numpy as np
 
+from ._horowitz import kde_deriv
 from ._richresult import RichResult
 
-__all__ = ["horowitz_density_derivative"]
+__all__ = ["hrz_density_derivative"]
 
 
-def horowitz_density_derivative(x, bandwidth, order):
-    """
-    Appendix: Estimating derivatives of density via kernel methods
+def hrz_density_derivative(x, grid=None, h=None, kernel_name="gaussian", r=1):
+    r"""Kernel estimate of the density derivative (Horowitz Ch. 2):
 
-    Formula: f_hat'(x) = -(1/nh^2)*sum K'((x-X_i)/h); rate O_p(n^{-r/(2r+3)}) for r-th derivative
+    .. math:: \hat f'(x) = -\frac{1}{nh^2}\sum_i
+              K'\!\left(\frac{x - X_i}{h}\right),
+
+    converging at :math:`O_p(n^{-r/(2r+3)})` for the rth derivative --
+    strictly slower than the density itself. The bandwidth must be
+    WIDER than the density-optimal one; reusing that bandwidth
+    undersmooths badly, which is the standard mistake here.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    order : array-like
-        Input data.
+        Sample.
+    grid : array-like, optional
+        Evaluation points.
+    h : float, optional
+        Bandwidth; a derivative-appropriate rule if omitted.
+    kernel_name : str
+        Kernel.
+    r : int, default 1
+        Derivative order, used for the reported rate.
 
     Returns
     -------
-    result : dict
-        Keys: derivative_estimate
-
+    RichResult
+        keys: ``grid``, ``derivative``, ``bandwidth``,
+        ``rate_exponent``, ``r``, ``method``.
     References
     ----------
-    Horowitz Appendix A.1.2
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 2 (derivative estimation).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Appendix: Estimating derivatives of density via kernel methods",
-            }
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Appendix: Estimating derivatives of density via kernel methods",
-        }
-    )
+    r = int(r)
+    if r < 1:
+        raise ValueError(f"r must be at least 1, got {r}.")
+    g, d, hh = kde_deriv(x, grid=grid, h=h, name=kernel_name)
+    return RichResult(payload={"grid": g, "derivative": d, "bandwidth": hh,
+                               "rate_exponent": -r / (2.0 * r + 3.0), "r": r,
+                               "method": "f-hat'(x) via K'; needs a WIDER bandwidth than the density"})
 
 
 def cheatsheet():
-    return "hrzderiv: Appendix: Estimating derivatives of density via kernel methods"
+    return "hrzderiv: reusing the density bandwidth undersmooths the derivative"

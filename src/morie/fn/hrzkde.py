@@ -1,64 +1,53 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Appendix: Kernel density estimator and MSE-optimal bandwidth."""
+"""Univariate kernel density estimate."""
 
 import numpy as np
 
+from ._horowitz import kde, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["horowitz_appendix_kde"]
+__all__ = ["hrz_kde"]
 
 
-def horowitz_appendix_kde(x, bandwidth):
-    """
-    Appendix: Kernel density estimator and MSE-optimal bandwidth
+def hrz_kde(x, grid=None, h=None, kernel_name="gaussian"):
+    r"""Kernel density estimate (Horowitz Ch. 2):
 
-    Formula: f_hat(x) = (1/nh)*sum K((x-X_i)/h); h_opt = c*n^{-1/5} minimizes MISE
+    .. math:: \hat f(x) = \frac{1}{nh}\sum_i
+              K\!\left(\frac{x - X_i}{h}\right),
+
+    with the MISE-optimal bandwidth of order :math:`n^{-1/5}`. The
+    resulting rate :math:`n^{-2/5}` is slower than the parametric
+    :math:`n^{-1/2}` and cannot be improved for a twice-differentiable
+    density -- that gap is the reason the book builds root-n
+    FUNCTIONALS of this object rather than using it directly.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
+        Sample.
+    grid : array-like, optional
+        Evaluation points.
+    h : float, optional
+        Bandwidth; Silverman's rule if omitted.
+    kernel_name : {"gaussian", "epanechnikov", "uniform"}
 
     Returns
     -------
-    result : dict
-        Keys: density_estimate, optimal_bandwidth
-
+    RichResult
+        keys: ``grid``, ``density``, ``bandwidth``, ``rate_exponent``
+        (-2/5), ``integrates_to``, ``n``, ``method``.
     References
     ----------
-    Horowitz Appendix A.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 2 (kernel density estimation).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Appendix: Kernel density estimator and MSE-optimal bandwidth",
-            }
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Appendix: Kernel density estimator and MSE-optimal bandwidth",
-        }
-    )
+    g, d, hh = kde(x, grid=grid, h=h, name=kernel_name)
+    return RichResult(payload={"grid": g, "density": d, "bandwidth": hh,
+                               "rate_exponent": -0.4,
+                               "integrates_to": float(np.trapezoid(d, g)),
+                               "n": int(np.asarray(x).size),
+                               "method": "KDE with n^{-1/5} bandwidth; rate n^{-2/5}"})
 
 
 def cheatsheet():
-    return "hrzkde: Appendix: Kernel density estimator and MSE-optimal bandwidth"
+    return "hrzkde: n^{-2/5} rate is a ceiling, not a defect -- hence root-n functionals"

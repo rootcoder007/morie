@@ -1,64 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Appendix: Local-linear quantile regression estimator."""
+"""Local linear quantile regression."""
 
 import numpy as np
 
+from ._horowitz import local_linear_quantile
 from ._richresult import RichResult
 
-__all__ = ["horowitz_local_linear_quantile"]
+__all__ = ["hrz_local_linear_quantile"]
 
 
-def horowitz_local_linear_quantile(x, y, bandwidth, tau):
-    """
-    Appendix: Local-linear quantile regression estimator
+def hrz_local_linear_quantile(x, y, tau=0.5, grid=None, h=None,
+                              kernel_name="gaussian"):
+    r"""Local linear quantile regression (Horowitz Ch. 3):
 
-    Formula: (alpha_hat,beta_hat) = argmin sum K_h(x-X_i)*rho_tau(Y_i-alpha-beta*(X_i-x))
+    .. math:: (\hat\alpha, \hat\beta) = \arg\min \sum_i
+              K_h(x - X_i)\,\rho_\tau\big(Y_i - \alpha
+              - \beta(X_i - x)\big),
+
+    with the check loss :math:`\rho_\tau(u) = u(\tau - 1\{u<0\})`.
+    Estimating a conditional QUANTILE rather than the mean is robust
+    to heavy tails and, unlike the mean, describes how the whole
+    conditional distribution moves with x.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    tau : array-like
-        Input data.
+    x, y : array-like
+        Regressor and response.
+    tau : float in (0, 1), default 0.5
+        Quantile level.
+    grid : array-like, optional
+        Evaluation points.
+    h : float, optional
+        Bandwidth.
+    kernel_name : str
+        Kernel.
 
     Returns
     -------
-    result : dict
-        Keys: q_hat
-
+    RichResult
+        keys: ``grid``, ``quantile``, ``tau``, ``bandwidth``, ``n``,
+        ``method``.
     References
     ----------
-    Horowitz Appendix A.3.2
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 3 (quantile regression).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Appendix: Local-linear quantile regression estimator"}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Appendix: Local-linear quantile regression estimator",
-        }
-    )
+    g, q, hh = local_linear_quantile(x, y, tau=tau, grid=grid, h=h,
+                                     name=kernel_name)
+    return RichResult(payload={"grid": g, "quantile": q, "tau": float(tau),
+                               "bandwidth": hh, "n": int(np.asarray(x).size),
+                               "method": "Local linear check-loss fit; robust to heavy tails"})
 
 
 def cheatsheet():
-    return "hrzllqr: Appendix: Local-linear quantile regression estimator"
+    return "hrzllqr: conditional quantile, not mean -- shows the whole distribution move"

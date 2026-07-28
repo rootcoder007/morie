@@ -1,60 +1,54 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Ichimura (1993) single-index NLS estimator."""
+"""Ichimura estimator (front-end)."""
 
 import numpy as np
 
+from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["horowitz_ichimura_estimator"]
+__all__ = ["hrz_ichimura"]
 
 
-def horowitz_ichimura_estimator(x, y, bandwidth):
-    """
-    Ichimura (1993) single-index NLS estimator
+from .hrznls import hrz_semiparametric_ls
 
-    Formula: beta_hat = argmin_{b:|b1|=1} sum_i [Y_i - G_hat_{-i,b}(X_i'b)]^2
+
+def hrz_ichimura(X, y, h=None, kernel_name="gaussian"):
+    r"""Ichimura's semiparametric least-squares estimator (Horowitz
+    Ch. 2), delegating to :mod:`morie.fn.hrznls`:
+
+    .. math:: \hat\beta = \arg\min_{b:\,|b_1|=1}
+              \sum_i \big(Y_i - \hat G_{-i,b}(X_i'b)\big)^2.
+
+    Named entry point for the same criterion. The estimator is root-n
+    consistent and asymptotically normal even though the link G is
+    estimated nonparametrically, which is what distinguishes a
+    semiparametric problem from a purely nonparametric one.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
+    X, y : array-like
+        Covariates and response.
+    h : float, optional
+        Bandwidth.
+    kernel_name : str
+        Kernel.
 
     Returns
     -------
-    result : dict
-        Keys: beta_hat, se
-
+    RichResult
+        keys: ``beta``, ``sse``, ``converged``, ``root_n`` (True),
+        ``n``, ``d``, ``method``.
     References
     ----------
-    Horowitz Ch 2, Sec 2.5
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 2 (Ichimura 1993).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Ichimura (1993) single-index NLS estimator"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Ichimura (1993) single-index NLS estimator",
-        }
-    )
+    out = hrz_semiparametric_ls(X, y, h=h, kernel_name=kernel_name)
+    return RichResult(payload={"beta": out["beta"], "sse": out["sse"],
+                               "converged": out["converged"], "root_n": True,
+                               "n": out["n"], "d": out["d"],
+                               "method": "Ichimura SLS; beta root-n despite nonparametric G"})
 
 
 def cheatsheet():
-    return "hrzich: Ichimura (1993) single-index NLS estimator"
+    return "hrzich: beta is root-n even though G is not -- the semiparametric point"
