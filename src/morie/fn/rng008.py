@@ -1,4 +1,5 @@
-"""Sample mean-squared (MS) value estimator from N observed samples.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample mean square."""
 
 import numpy as np
 
@@ -7,53 +8,43 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_sample_mean_squared"]
 
 
-def rangayyan_ch3_sample_mean_squared(eta, N):
-    """
-    Sample mean-squared (MS) value estimator from N observed samples.
+def rangayyan_ch3_sample_mean_squared(eta, N=None):
+    r"""Sample mean-squared value (Rangayyan Ch. 3):
 
-    Formula: MS_eta = (1/N) * sum_{n=0}^{N-1} [eta(n)]^2
+    .. math:: MS_\eta = \frac1N \sum_{n=0}^{N-1} [\eta(n)]^2.
+
+    This is the total average power, NOT the variance: the two differ
+    by the squared mean, and they coincide only for a zero-mean
+    signal. Both are returned so the distinction is visible.
 
     Parameters
     ----------
     eta : array-like
-        Input data.
-    N : array-like
-        Input data.
+        Samples.
+    N : int, optional
+        Length.
 
     Returns
     -------
-    result : dict
-        Keys: value
-
+    RichResult
+        keys: ``mean_square``, ``variance``, ``mean``, ``N``,
+        ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.8, p. 95
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Sample mean-squared (MS) value estimator from N observed samples.",
-            }
-        )
-    estimate = np.median(eta)
-    se = 1.2533 * np.std(eta, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Sample mean-squared (MS) value estimator from N observed samples.",
-        }
-    )
+    eta = np.asarray(eta, dtype=float).ravel()
+    if eta.size < 1:
+        raise ValueError("eta must be non-empty.")
+    if N is not None and int(N) != eta.size:
+        raise ValueError(f"N = {N} does not match len(eta) = {eta.size}.")
+    mu = float(np.mean(eta))
+    ms = float(np.mean(eta**2))
+    return RichResult(payload={"mean_square": ms, "variance": ms - mu**2,
+                               "mean": mu, "N": int(eta.size),
+                               "method": "MS = (1/N) sum eta^2; equals variance only if mu = 0"})
 
 
 def cheatsheet():
-    return "rng008: Sample mean-squared (MS) value estimator from N observed samples."
+    return "rng008: mean square is total power, not variance, unless mu = 0"

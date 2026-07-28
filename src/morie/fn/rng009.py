@@ -1,4 +1,5 @@
-"""Sample root-mean-square (RMS) value estimator from N observed samples.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample RMS."""
 
 import numpy as np
 
@@ -7,53 +8,38 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_sample_rms"]
 
 
-def rangayyan_ch3_sample_rms(eta, N):
-    """
-    Sample root-mean-square (RMS) value estimator from N observed samples.
+def rangayyan_ch3_sample_rms(eta, N=None):
+    r"""Root-mean-square value (Rangayyan Ch. 3):
 
-    Formula: RMS_eta = sqrt( (1/N) * sum_{n=0}^{N-1} [eta(n)]^2 )
+    .. math:: RMS_\eta = \sqrt{\frac1N \sum_{n=0}^{N-1}
+              [\eta(n)]^2}.
 
     Parameters
     ----------
     eta : array-like
-        Input data.
-    N : array-like
-        Input data.
+        Samples.
+    N : int, optional
+        Length.
 
     Returns
     -------
-    result : dict
-        Keys: value
-
+    RichResult
+        keys: ``rms``, ``mean_square``, ``N``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.9, p. 95
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Sample root-mean-square (RMS) value estimator from N observed samples.",
-            }
-        )
-    estimate = np.median(eta)
-    se = 1.2533 * np.std(eta, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Sample root-mean-square (RMS) value estimator from N observed samples.",
-        }
-    )
+    eta = np.asarray(eta, dtype=float).ravel()
+    if eta.size < 1:
+        raise ValueError("eta must be non-empty.")
+    if N is not None and int(N) != eta.size:
+        raise ValueError(f"N = {N} does not match len(eta) = {eta.size}.")
+    ms = float(np.mean(eta**2))
+    return RichResult(payload={"rms": float(np.sqrt(ms)), "mean_square": ms,
+                               "N": int(eta.size),
+                               "method": "RMS = sqrt((1/N) sum eta^2)"})
 
 
 def cheatsheet():
-    return "rng009: Sample root-mean-square (RMS) value estimator from N observed samples."
+    return "rng009: RMS = sqrt(mean square)"

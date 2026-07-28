@@ -1,4 +1,5 @@
-"""Sample standard deviation estimator from N observed samples.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample standard deviation."""
 
 import numpy as np
 
@@ -7,55 +8,49 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_sample_std"]
 
 
-def rangayyan_ch3_sample_std(eta, mu_eta, N):
-    """
-    Sample standard deviation estimator from N observed samples.
+def rangayyan_ch3_sample_std(eta, mu_eta=None, N=None):
+    r"""Sample standard deviation (Rangayyan Ch. 3):
 
-    Formula: sigma_eta = sqrt( (1/N) * sum_{n=0}^{N-1} (eta(n) - mu_eta)^2 )
+    .. math:: \sigma_\eta = \sqrt{\frac1N \sum_{n=0}^{N-1}
+              (\eta(n) - \mu_\eta)^2}.
+
+    The book's divisor is N, not N - 1: this is the second central
+    moment of the observed record, not an unbiased estimator of a
+    population variance. Both are returned, since substituting one
+    for the other is a common slip.
 
     Parameters
     ----------
     eta : array-like
-        Input data.
-    mu_eta : array-like
-        Input data.
-    N : array-like
-        Input data.
+        Samples.
+    mu_eta : float, optional
+        Mean to centre on; the sample mean if omitted.
+    N : int, optional
+        Length.
 
     Returns
     -------
-    result : dict
-        Keys: value
-
+    RichResult
+        keys: ``std`` (divisor N), ``std_unbiased`` (divisor N - 1),
+        ``mean_used``, ``N``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.10, p. 95
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Sample standard deviation estimator from N observed samples.",
-            }
-        )
-    estimate = np.median(eta)
-    se = 1.2533 * np.std(eta, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Sample standard deviation estimator from N observed samples.",
-        }
-    )
+    eta = np.asarray(eta, dtype=float).ravel()
+    if eta.size < 1:
+        raise ValueError("eta must be non-empty.")
+    if N is not None and int(N) != eta.size:
+        raise ValueError(f"N = {N} does not match len(eta) = {eta.size}.")
+    mu = float(np.mean(eta)) if mu_eta is None else float(mu_eta)
+    dev2 = (eta - mu) ** 2
+    n = eta.size
+    unb = float(np.sqrt(dev2.sum() / (n - 1))) if n > 1 else float("nan")
+    return RichResult(payload={"std": float(np.sqrt(dev2.mean())),
+                               "std_unbiased": unb, "mean_used": mu, "N": int(n),
+                               "method": "sigma with divisor N (the book's convention)"})
 
 
 def cheatsheet():
-    return "rng010: Sample standard deviation estimator from N observed samples."
+    return "rng010: divisor N, not N-1; both returned"

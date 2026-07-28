@@ -1,4 +1,5 @@
-"""Estimation error between the desired signal and the filter output (Wiener setup).."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Estimation error."""
 
 import numpy as np
 
@@ -7,55 +8,50 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_estimation_error"]
 
 
-def rangayyan_ch3_estimation_error(d, d_tilde, n):
-    """
-    Estimation error between the desired signal and the filter output (Wiener setup).
+def rangayyan_ch3_estimation_error(d, d_tilde, n=None):
+    r"""Estimation error of an adaptive filter (Rangayyan Ch. 3):
 
-    Formula: e(n) = d(n) - d_tilde(n)
+    .. math:: e(n) = d(n) - \tilde d(n),
+
+    the desired response minus its estimate. Also returns the mean
+    squared error, the quantity the LMS and RLS recursions actually
+    minimise.
 
     Parameters
     ----------
     d : array-like
-        Input data.
+        Desired response.
     d_tilde : array-like
-        Input data.
-    n : array-like
-        Input data.
+        Estimate.
+    n : int, optional
+        Index to report; the whole series if omitted.
 
     Returns
     -------
-    result : dict
-        Keys: array
-
+    RichResult
+        keys: ``error``, ``error_at_n``, ``mse``, ``N``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.153, p. 173
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (adaptive filters).
     """
-    d = np.atleast_1d(np.asarray(d, dtype=float))
-    n = len(d)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Estimation error between the desired signal and the filter output (Wiener setup).",
-            }
-        )
-    estimate = np.median(d)
-    se = 1.2533 * np.std(d, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Estimation error between the desired signal and the filter output (Wiener setup).",
-        }
-    )
+    d = np.asarray(d, dtype=float).ravel()
+    dt = np.asarray(d_tilde, dtype=float).ravel()
+    if d.size != dt.size:
+        raise ValueError("d and d_tilde must have the same length.")
+    if d.size < 1:
+        raise ValueError("d must be non-empty.")
+    e = d - dt
+    at_n = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < e.size:
+            raise ValueError(f"n must lie in 0..{e.size - 1}, got {idx}.")
+        at_n = float(e[idx])
+    return RichResult(payload={"error": e, "error_at_n": at_n,
+                               "mse": float(np.mean(e**2)), "N": int(e.size),
+                               "method": "e(n) = d(n) - d_tilde(n)"})
 
 
 def cheatsheet():
-    return "rng137: Estimation error between the desired signal and the filter output (Wiener setup)."
+    return "rng137: e = d - d_tilde; MSE is what LMS/RLS minimise"

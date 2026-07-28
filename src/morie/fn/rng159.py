@@ -1,4 +1,5 @@
-"""Instantaneous gradient estimate used by the LMS algorithm.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""LMS gradient estimate."""
 
 import numpy as np
 
@@ -7,55 +8,57 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_lms_gradient_estimate"]
 
 
-def rangayyan_ch3_lms_gradient_estimate(x, r, w, e, n):
-    """
-    Instantaneous gradient estimate used by the LMS algorithm.
+def rangayyan_ch3_lms_gradient_estimate(r, e, x=None, w=None, n=None):
+    r"""LMS instantaneous gradient estimate (Rangayyan Ch. 3):
 
-    Formula: grad(e^2(n)) = -2*x(n)*r(n) + 2*{w^T(n)*r(n)}*r(n) = -2*e(n)*r(n)
+    .. math:: \widehat{\nabla}\,e^2(n) = -2 e(n)\, \mathbf{r}(n).
+
+    Widrow-Hoff's key simplification: the true gradient of the MEAN
+    squared error needs an expectation, but the gradient of the
+    INSTANTANEOUS squared error needs only the current sample. The
+    algorithm is a stochastic gradient descent whose noisy steps
+    average to the right direction, which is why LMS converges in the
+    mean rather than monotonically.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    r : array-like
-        Input data.
-    w : array-like
-        Input data.
-    e : array-like
-        Input data.
-    n : array-like
-        Input data.
+    r : array-like, shape (N, p)
+        Reference vectors.
+    e : array-like, shape (N,)
+        Instantaneous errors.
+    x, w : ignored
+        Interface compatibility -- the identity
+        -2xr + 2(w'r)r = -2er already folds them in.
+    n : int, optional
+        Index to report.
 
     Returns
     -------
-    result : dict
-        Keys: array
-
+    RichResult
+        keys: ``gradient`` (N, p), ``gradient_at_n``, ``N``, ``p``,
+        ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.202, p. 185
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (the LMS algorithm).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Instantaneous gradient estimate used by the LMS algorithm."}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Instantaneous gradient estimate used by the LMS algorithm.",
-        }
-    )
+    R = np.atleast_2d(np.asarray(r, dtype=float))
+    ev = np.asarray(e, dtype=float).ravel()
+    if R.shape[0] != ev.size:
+        R = R.T
+    if R.shape[0] != ev.size:
+        raise ValueError("r must have one row per entry of e.")
+    grad = -2.0 * ev[:, None] * R
+    at_n = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < grad.shape[0]:
+            raise ValueError(f"n must lie in 0..{grad.shape[0] - 1}, got {idx}.")
+        at_n = grad[idx]
+    return RichResult(payload={"gradient": grad, "gradient_at_n": at_n,
+                               "N": int(R.shape[0]), "p": int(R.shape[1]),
+                               "method": "grad e^2(n) = -2 e(n) r(n); stochastic, not exact"})
 
 
 def cheatsheet():
-    return "rng159: Instantaneous gradient estimate used by the LMS algorithm."
+    return "rng159: instantaneous gradient needs no expectation -- that IS the trick"

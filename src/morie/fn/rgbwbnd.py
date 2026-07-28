@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Signal bandwidth estimation from PSD (half-power or 99% energy criterion)."""
+"""Spectral bandwidth."""
 
 import numpy as np
 
@@ -8,59 +8,72 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_bandwidth"]
 
 
-def rangayyan_bandwidth(psd, freqs, criterion):
-    """
-    Signal bandwidth estimation from PSD (half-power or 99% energy criterion)
+def rangayyan_bandwidth(psd, freqs, criterion="3dB"):
+    r"""Spectral bandwidth by two criteria (Rangayyan Ch. 3):
 
-    Formula: BW_3dB: f where S(f)>=S_max/2; BW_99: band containing 99% of total power
+    - ``"3dB"``: the span of frequencies where
+      :math:`S(f) \ge S_{\max}/2` (half power, i.e. -3 dB);
+    - ``"99"``: the narrowest band from the peak containing 99% of the
+      total power.
+
+    The two answer different questions and can differ by an order of
+    magnitude on a peaky spectrum, so the criterion is explicit rather
+    than defaulted silently.
 
     Parameters
     ----------
     psd : array-like
-        Input data.
+        Power spectral density.
     freqs : array-like
-        Input data.
-    criterion : array-like
-        Input data.
+        Matching frequencies.
+    criterion : {"3dB", "99"}
+        Which bandwidth to report.
 
     Returns
     -------
-    result : dict
-        Keys: bandwidth
-
+    RichResult
+        keys: ``bandwidth``, ``f_low``, ``f_high``, ``f_peak``,
+        ``criterion``, ``method``.
     References
     ----------
-    Rangayyan Ch 6.4.1
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (bandwidth measures).
     """
-    psd = np.asarray(psd, dtype=float)
-    n = int(psd) if psd.ndim == 0 else len(psd)
-    if psd.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Signal bandwidth estimation from PSD (half-power or 99% energy criterion)",
-            }
-        )
-    estimate = np.median(psd)
-    se = 1.2533 * np.std(psd, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Signal bandwidth estimation from PSD (half-power or 99% energy criterion)",
-        }
-    )
+    S = np.asarray(psd, dtype=float).ravel()
+    f = np.asarray(freqs, dtype=float).ravel()
+    if S.size != f.size:
+        raise ValueError("psd and freqs must have the same length.")
+    if S.size < 2:
+        raise ValueError("need at least 2 spectral points.")
+    if np.any(S < 0):
+        raise ValueError("a power spectral density cannot be negative.")
+    ipk = int(np.argmax(S))
+    if criterion == "3dB":
+        thr = S[ipk] / 2.0
+        above = np.flatnonzero(S >= thr)
+        lo, hi = float(f[above[0]]), float(f[above[-1]])
+    elif criterion == "99":
+        total = float(S.sum())
+        if total <= 0:
+            raise ValueError("spectrum has zero total power.")
+        lo_i = hi_i = ipk
+        acc = S[ipk]
+        while acc < 0.99 * total and (lo_i > 0 or hi_i < S.size - 1):
+            left = S[lo_i - 1] if lo_i > 0 else -np.inf
+            right = S[hi_i + 1] if hi_i < S.size - 1 else -np.inf
+            if left >= right:
+                lo_i -= 1
+                acc += S[lo_i]
+            else:
+                hi_i += 1
+                acc += S[hi_i]
+        lo, hi = float(f[lo_i]), float(f[hi_i])
+    else:
+        raise ValueError("criterion must be '3dB' or '99'.")
+    return RichResult(payload={"bandwidth": hi - lo, "f_low": lo, "f_high": hi,
+                               "f_peak": float(f[ipk]), "criterion": criterion,
+                               "method": f"{criterion} bandwidth about the spectral peak"})
 
 
 def cheatsheet():
-    return "rgbwbnd: Signal bandwidth estimation from PSD (half-power or 99% energy criterion)"
+    return "rgbwbnd: 3dB and 99% answer different questions; criterion is explicit"
