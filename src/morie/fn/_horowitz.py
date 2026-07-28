@@ -234,5 +234,58 @@ def check_rate(errors, n_grid, expected_exponent):
     }
 
 
+GRID_SCAN_HALF_WIDTH = 10.0
+GRID_SCAN_POINTS = 2001
+
+
+def optimize_scale_normalized(objective, d, n_restarts=8, seed=0, x0=None):
+    r"""Minimise ``objective(b)`` over :math:`b` with :math:`b_1 = 1`.
+
+    Every maximum-score variant in Chapter 4 is identified only up to
+    scale, so the book normalises :math:`|b_1| = 1` and optimises over
+    the remaining ``d - 1`` coordinates.
+
+    These objectives are STEP FUNCTIONS of ``b``, which rules out any
+    gradient method and makes simplex methods start-dependent: they
+    stall on the first flat region they land in. For the ``d = 2``
+    case -- one free coordinate, and the usual one -- this uses an
+    exhaustive grid scan instead, which is both the right method for
+    a piecewise-constant objective and exactly reproducible, so the
+    Python and R implementations agree to the last digit rather than
+    to whatever their respective simplex routines happen to do. The
+    grid spans ``+/-10`` at a resolution of ``0.01``.
+
+    For ``d > 2`` an exhaustive scan is not affordable and multi-start
+    Nelder-Mead is used; there the restarts are not defensive padding
+    but the only thing making the answer reproducible.
+
+    ``objective`` is always MINIMISED, so callers maximising a score
+    pass its negation.
+    """
+    from scipy import optimize as _opt
+
+    d = int(d)
+    if d < 2:
+        raise ValueError(f"need at least 2 coefficients, got {d}.")
+    if d == 2:
+        grid = np.linspace(-GRID_SCAN_HALF_WIDTH, GRID_SCAN_HALF_WIDTH,
+                           GRID_SCAN_POINTS)
+        vals = np.array([objective(np.array([1.0, g])) for g in grid])
+        k = int(np.argmin(vals))
+        return np.array([1.0, float(grid[k])]), float(vals[k])
+    rng = np.random.default_rng(seed)
+    starts = [np.zeros(d - 1) if x0 is None else
+              np.atleast_1d(np.asarray(x0, dtype=float)).ravel()[-(d - 1):]]
+    starts += [rng.standard_normal(d - 1) for _ in range(int(n_restarts))]
+    best, best_val = None, np.inf
+    for st in starts:
+        r = _opt.minimize(lambda z: objective(np.r_[1.0, z]), st,
+                          method="Nelder-Mead",
+                          options={"maxiter": 3000, "fatol": 1e-9})
+        if r.fun < best_val:
+            best_val, best = float(r.fun), r.x
+    return np.r_[1.0, best], best_val
+
+
 def cheatsheet():
     return "_horowitz: kernels, KDE, NW, local linear/quantile, sieves, rate checks"

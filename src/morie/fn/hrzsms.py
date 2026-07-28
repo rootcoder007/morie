@@ -13,7 +13,7 @@ from scipy import optimize, stats as _st
 
 
 def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):
-    r"""Horowitz's smoothed maximum score estimator (Ch. 3):
+    r"""Horowitz's smoothed maximum score estimator (Horowitz Sec. 4.3.3):
 
     .. math:: \hat\beta = \arg\max_{b:\,|b_1|=1} \frac1n
               \sum_i (2Y_i - 1)\, K\!\left(\frac{X_i'b}{h_n}\right).
@@ -47,7 +47,8 @@ def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 3 (smoothed maximum score).
+    Econometrics*. Springer. Sec. 4.3.3 (estimating beta: the smoothed
+    maximum-score estimator).
     """
     X = np.atleast_2d(np.asarray(X, dtype=float))
     y = np.asarray(y, dtype=float).ravel()
