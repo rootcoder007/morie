@@ -1,19 +1,16 @@
-"""Tests for gb736.gibbons_linrank_sym_special."""
+"""Tests for gb736 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb736 import gibbons_linrank_sym_special
 
 
 def test_gb736_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_linrank_sym_special(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = gibbons_linrank_sym_special(8)
+    assert out["palindromic"] is True and out["symmetric"] is True
 
 
 def test_gb736_edge():
-    """Test edge cases."""
-    result = gibbons_linrank_sym_special(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_linrank_sym_special(7)  # odd N genuinely skewed

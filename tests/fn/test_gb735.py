@@ -1,24 +1,18 @@
-"""Tests for gb735.gibbons_linrank_sym_equal."""
+"""Tests for gb735 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb735 import gibbons_linrank_sym_equal
 
 
 def test_gb735_basic():
-    """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    m = 10
-    n = 100
-    result = gibbons_linrank_sym_equal(a, m, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    ugly = np.array([0.0, 1.0, 1.5, 7.0, 7.2, 11.0])
+    assert gibbons_linrank_sym_equal(ugly, 3, 3)["symmetric"] is True
 
 
 def test_gb735_edge():
-    """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    m = 10
-    n = 100
-    result = gibbons_linrank_sym_equal(a, m, n)
-    assert isinstance(result, dict)
+    ugly = np.array([0.0, 1.0, 1.5, 7.0, 7.2, 11.0])
+    assert gibbons_linrank_sym_equal(ugly, 2, 4)["symmetric"] is False
+    with pytest.raises(ValueError):
+        gibbons_linrank_sym_equal(ugly, 2, 3)  # length mismatch

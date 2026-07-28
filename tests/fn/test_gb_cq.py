@@ -1,19 +1,18 @@
-"""Tests for gb_cq.gibbons_cramers_contingency."""
+"""Tests for gb_cq (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_cq import gibbons_cramers_contingency
 
 
 def test_gb_cq_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_cramers_contingency(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    from morie.fn.gb1421t import gibbons_phi_cramers_v
+    tbl = [[18, 7, 2], [6, 19, 5]]
+    assert gibbons_cramers_contingency(tbl)["cramers_v"] == pytest.approx(
+        gibbons_phi_cramers_v(tbl)["cramers_v"])
 
 
 def test_gb_cq_edge():
-    """Test edge cases."""
-    result = gibbons_cramers_contingency(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_cramers_contingency([[0, 0], [0, 0]])

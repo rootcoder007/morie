@@ -1,24 +1,17 @@
-"""Tests for gb1321.gibbons_are_def."""
+"""Tests for gb1321 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb1321 import gibbons_are_def
 
 
 def test_gb1321_basic():
-    """Test basic functionality."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    T_star = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_are_def(T, T_star, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gibbons_are_def(1.0, 2.0, n=100)
+    assert out["are"] == pytest.approx(0.25)
+    assert out["n_star_for_equal_power"] == pytest.approx(25.0)
 
 
 def test_gb1321_edge():
-    """Test edge cases."""
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    T_star = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_are_def(T, T_star, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_are_def(0.0, 1.0)

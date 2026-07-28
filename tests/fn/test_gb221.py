@@ -1,22 +1,17 @@
-"""Tests for gb221.gibbons_quantile_deriv."""
+"""Tests for gb221 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb221 import gibbons_quantile_deriv
 
 
 def test_gb221_basic():
-    """Test basic functionality."""
-    p = 5
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_quantile_deriv(p, f)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from scipy import stats
+    out = gibbons_quantile_deriv(0.8, stats.norm())
+    assert out["Q_prime"] == pytest.approx(1 / stats.norm.pdf(stats.norm.ppf(0.8)), rel=1e-8)
 
 
 def test_gb221_edge():
-    """Test edge cases."""
-    p = 5
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_quantile_deriv(p, f)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_quantile_deriv(1.5, None)

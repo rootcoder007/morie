@@ -1,19 +1,17 @@
-"""Tests for gb_spv.gibbons_spearman_rho_var."""
+"""Tests for gb_spv (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_spv import gibbons_spearman_rho_var
 
 
 def test_gb_spv_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_spearman_rho_var(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    assert gibbons_spearman_rho_var(10)["var"] == pytest.approx(1 / 9)
 
 
 def test_gb_spv_edge():
-    """Test edge cases."""
-    result = gibbons_spearman_rho_var(np.array([42.0]))
-    assert result["n"] == 1
+    out = gibbons_spearman_rho_var(26, r_s=0.5)
+    assert out["z"] == pytest.approx(2.5)
+    with pytest.raises(ValueError):
+        gibbons_spearman_rho_var(1)

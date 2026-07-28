@@ -1,20 +1,16 @@
-"""Tests for gb1141.gibbons_tau_rho_relation."""
+"""Tests for gb1141 (Gibbons shelf)."""
+
+import numpy as np
+import pytest
 
 from morie.fn.gb1141 import gibbons_tau_rho_relation
 
 
 def test_gb1141_basic():
-    """Test basic functionality."""
-    tau = 0.1
-    rho = 0.5
-    result = gibbons_tau_rho_relation(tau, rho)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_tau_rho_relation(0.4, 0.55)["consistent"] is True
 
 
 def test_gb1141_edge():
-    """Test edge cases."""
-    tau = 0.1
-    rho = 0.5
-    result = gibbons_tau_rho_relation(tau, rho)
-    assert isinstance(result, dict)
+    assert gibbons_tau_rho_relation(0.9, -0.9)["consistent"] is False
+    with pytest.raises(ValueError):
+        gibbons_tau_rho_relation(2.0, 0.0)

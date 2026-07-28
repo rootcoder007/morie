@@ -1,46 +1,48 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Cramer's V contingency measure for general r x c table."""
+"""Cramer's V (front-end)."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .gb1421t import gibbons_phi_cramers_v
 
 __all__ = ["gibbons_cramers_contingency"]
 
 
 def gibbons_cramers_contingency(table):
-    """
-    Cramer's V contingency measure for general r table c table
+    r"""Cramer's V, delegating to :mod:`morie.fn.gb1421t`:
 
-    Formula: V = sqrt(chi2 / (n * min(r-1, c-1)))
+    .. math:: V = \sqrt{\frac{\chi^2}{n \min(r - 1, c - 1)}}.
+
+    V = 0 at exact independence; V = 1 when every row (or column)
+    concentrates in a single cell -- attainable for every table
+    shape, which the raw phi cannot claim.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    table : array-like, shape (r, c)
+        Observed counts.
 
     Returns
     -------
-    result : dict
-        Keys: V
+    RichResult
+        keys: ``cramers_v``, ``chi2``, ``n``, ``r``, ``c``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 14.2
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 14.2.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    result = float(np.mean(table))
-    se = float(np.std(table, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    out = gibbons_phi_cramers_v(table)
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Cramer's V contingency measure for general r x c table",
+            "cramers_v": out["cramers_v"], "chi2": out["chi2"], "n": out["n"],
+            "r": out["r"], "c": out["c"],
+            "method": "Cramer's V = sqrt(chi2/(n min(r-1, c-1))) (Ch. 14.2)",
         }
     )
 
 
 def cheatsheet():
-    return "gb_cq: Cramer's V contingency measure for general r x c table"
+    return "gb_cq: V front-end; delegates to gb1421t"

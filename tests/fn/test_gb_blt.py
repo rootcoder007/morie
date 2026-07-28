@@ -1,26 +1,20 @@
-"""Tests for gb_blt.gibbons_balance_incomplete."""
+"""Tests for gb_blt (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_blt import gibbons_balance_incomplete
 
 
 def test_gb_blt_basic():
-    """Test basic functionality."""
-    rankings = np.random.default_rng(42).permutation(10).reshape(2, 5)
-    lam = 0.1
-    n = 100
-    k = 5
-    result = gibbons_balance_incomplete(rankings, lam, n, k)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    nan = np.nan
+    bib = np.array([[1, 2, 3, nan], [1, 2, nan, 3], [1, nan, 2, 3], [nan, 1, 2, 3]])
+    out = gibbons_balance_incomplete(bib)
+    assert out["lambda_"] == 2 and 0 < out["W_b"] <= 1
 
 
 def test_gb_blt_edge():
-    """Test edge cases."""
-    rankings = np.random.default_rng(42).permutation(10).reshape(2, 5)
-    lam = 0.1
-    n = 100
-    k = 5
-    result = gibbons_balance_incomplete(rankings, lam, n, k)
-    assert isinstance(result, dict)
+    nan = np.nan
+    bad = np.array([[1, 2, 3, nan], [1, 2, 3, nan], [1, nan, 2, 3], [nan, 1, 2, 3]])
+    with pytest.raises(ValueError):
+        gibbons_balance_incomplete(bad)  # not a BIB design

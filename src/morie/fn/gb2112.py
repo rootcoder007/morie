@@ -1,5 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions."""
+"""Block frequencies are uniform over compositions."""
+
+from math import comb
 
 import numpy as np
 
@@ -8,41 +10,57 @@ from ._richresult import RichResult
 __all__ = ["gibbons_block_freq_dist"]
 
 
-def gibbons_block_freq_dist(m, n):
-    """
-    Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions
+def gibbons_block_freq_dist(m, n, block_counts=None):
+    r"""Theorem 2.11.2: when F_X = F_Y, the vector of block
+    frequencies -- how many of the n Y-observations fall in each of
+    the m + 1 blocks cut by the X order statistics -- is uniform:
 
-    Formula: P(B_1=b_1,...) = 1/C(m+n,n) when F_X = F_Y
+    .. math:: P(B_1 = b_1, \dots, B_{m+1} = b_{m+1})
+              = \frac{1}{\binom{m+n}{n}}
+
+    for every composition with :math:`\sum b_i = n`. Every placement
+    pattern is equally likely, which is why placement statistics are
+    distribution-free.
 
     Parameters
     ----------
-    m : array-like
-        Input data.
-    n : array-like
-        Input data.
+    m, n : int
+        Sizes of the X (cutting) and Y (placed) samples.
+    block_counts : array-like of int, optional
+        A specific composition; validated to sum to n.
 
     Returns
     -------
-    result : dict
-        Keys: joint_distribution
+    RichResult
+        keys: ``pmf`` (the common probability), ``n_compositions``
+        (C(m+n, n)), ``valid_composition`` (if given), ``m``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Theorem 2.11.2
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Theorem 2.11.2.
     """
-    m = np.asarray(m, dtype=float)
-    n = int(m) if m.ndim == 0 else len(m)
-    result = float(np.mean(m))
-    se = float(np.std(m, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    m, n = int(m), int(n)
+    if m < 1 or n < 0:
+        raise ValueError("need m >= 1 and n >= 0.")
+    total = comb(m + n, n)
+    valid = None
+    if block_counts is not None:
+        b = np.asarray(block_counts, dtype=int).ravel()
+        if b.size != m + 1:
+            raise ValueError(f"block_counts must have m + 1 = {m + 1} entries.")
+        if np.any(b < 0):
+            raise ValueError("block counts must be non-negative.")
+        valid = bool(b.sum() == n)
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions",
+            "pmf": 1.0 / total, "n_compositions": int(total),
+            "valid_composition": valid, "m": m, "n": n,
+            "method": "Block frequencies uniform over C(m+n, n) compositions",
         }
     )
 
 
 def cheatsheet():
-    return "gb2112: Joint distribution of block frequencies B_1,...,B_(n+1) is uniform over partitions"
+    return "gb2112: every composition equally likely, p = 1/C(m+n, n)"

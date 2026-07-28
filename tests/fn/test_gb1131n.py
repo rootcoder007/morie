@@ -1,22 +1,17 @@
-"""Tests for gb1131n.gibbons_spearman_asymp."""
+"""Tests for gb1131n (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb1131n import gibbons_spearman_asymp
 
 
 def test_gb1131n_basic():
-    """Test basic functionality."""
-    r_s = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_spearman_asymp(r_s, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gibbons_spearman_asymp(0.5, 26)
+    assert out["z"] == pytest.approx(2.5)
 
 
 def test_gb1131n_edge():
-    """Test edge cases."""
-    r_s = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_spearman_asymp(r_s, n)
-    assert isinstance(result, dict)
+    assert gibbons_spearman_asymp(0.5, 8)["large_sample_ok"] is False
+    with pytest.raises(ValueError):
+        gibbons_spearman_asymp(1.5, 20)

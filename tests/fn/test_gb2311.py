@@ -1,22 +1,16 @@
-"""Tests for gb2311.gibbons_edf_mean_var."""
+"""Tests for gb2311 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb2311 import gibbons_edf_mean_var
 
 
 def test_gb2311_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_edf_mean_var(x, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gibbons_edf_mean_var(0.3, 40)
+    assert out["var"] == pytest.approx(0.3 * 0.7 / 40)
 
 
 def test_gb2311_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_edf_mean_var(x, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_edf_mean_var(1.5, 40)

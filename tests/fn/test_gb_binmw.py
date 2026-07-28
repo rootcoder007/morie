@@ -1,22 +1,15 @@
-"""Tests for gb_binmw.gibbons_mw_binomial_link."""
+"""Tests for gb_binmw (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_binmw import gibbons_mw_binomial_link
 
 
 def test_gb_binmw_basic():
-    """Test basic functionality."""
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    result = gibbons_mw_binomial_link(W, m)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_mw_binomial_link(30.0, 5)["U"] == pytest.approx(15.0)
 
 
 def test_gb_binmw_edge():
-    """Test edge cases."""
-    W = np.random.default_rng(42).normal(0, 1, 100)
-    m = 10
-    result = gibbons_mw_binomial_link(W, m)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_mw_binomial_link(5.0, 5)  # below minimum rank sum

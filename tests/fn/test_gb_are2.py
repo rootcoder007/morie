@@ -1,19 +1,17 @@
-"""Tests for gb_are2.gibbons_are_normal_case."""
+"""Tests for gb_are2 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_are2 import gibbons_are_normal_case
 
 
 def test_gb_are2_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_are_normal_case(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = gibbons_are_normal_case()
+    assert out["wilcoxon_vs_t"] == pytest.approx(3 / np.pi)
+    assert out["sign_vs_t"] == pytest.approx(2 / np.pi)
 
 
 def test_gb_are2_edge():
-    """Test edge cases."""
-    result = gibbons_are_normal_case(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_are_normal_case("weibull")

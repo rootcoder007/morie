@@ -1,20 +1,15 @@
-"""Tests for gb321l.gibbons_distributing_objects."""
+"""Tests for gb321l (Gibbons shelf)."""
+
+import numpy as np
+import pytest
 
 from morie.fn.gb321l import gibbons_distributing_objects
 
 
 def test_gb321l_basic():
-    """Test basic functionality."""
-    n = 100
-    r = 10
-    result = gibbons_distributing_objects(n, r)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_distributing_objects(6, 3)["count"] == 10  # C(5,2)
 
 
 def test_gb321l_edge():
-    """Test edge cases."""
-    n = 100
-    r = 10
-    result = gibbons_distributing_objects(n, r)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_distributing_objects(3, 5)

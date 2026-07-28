@@ -1,19 +1,18 @@
-"""Tests for gb1241t.gibbons_concordance_w_ties."""
+"""Tests for gb1241t (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb1241t import gibbons_concordance_w_ties
 
 
 def test_gb1241t_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_concordance_w_ties(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    R = np.tile(np.arange(1, 6), (3, 1))
+    assert gibbons_concordance_w_ties(R)["W"] == pytest.approx(1.0)  # tie-free == plain
 
 
 def test_gb1241t_edge():
-    """Test edge cases."""
-    result = gibbons_concordance_w_ties(np.array([42.0]))
-    assert result["n"] == 1
+    tied = np.array([[1.5, 1.5, 3.0], [1.0, 2.0, 3.0]])
+    assert gibbons_concordance_w_ties(tied)["tie_sum"] > 0
+    with pytest.raises(ValueError):
+        gibbons_concordance_w_ties(np.ones((2, 3)))  # every judge all-tied

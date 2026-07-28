@@ -1,24 +1,17 @@
-"""Tests for gb331.gibbons_run_lengths_dist."""
+"""Tests for gb331 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb331 import gibbons_run_lengths_dist
 
 
 def test_gb331_basic():
-    """Test basic functionality."""
-    run_lengths = np.random.default_rng(42).normal(0, 1, 100)
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_run_lengths_dist(run_lengths, n1, n2)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from math import comb
+    # 0011: L1 = (2,), L2 = (2,): c=2, perms 1*1 -> 2/C(4,2)
+    assert gibbons_run_lengths_dist([2], [2])["pmf"] == pytest.approx(2 / comb(4, 2))
 
 
 def test_gb331_edge():
-    """Test edge cases."""
-    run_lengths = np.random.default_rng(42).normal(0, 1, 100)
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_run_lengths_dist(run_lengths, n1, n2)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_run_lengths_dist([2, 2], [1, 1, 1, 1, 1])

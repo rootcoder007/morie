@@ -1,26 +1,18 @@
-"""Tests for gb_lsm.gibbons_large_sample_moments."""
+"""Tests for gb_lsm (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_lsm import gibbons_large_sample_moments
 
 
 def test_gb_lsm_basic():
-    """Test basic functionality."""
-    r = 10
-    n = 100
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_large_sample_moments(r, n, f, F)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(3)
+    approx = gibbons_large_sample_moments(15, 29)
+    sims = np.sort(rng.standard_normal((4000, 29)), axis=1)[:, 14]
+    assert approx["var"] == pytest.approx(sims.var(), rel=0.2)
 
 
 def test_gb_lsm_edge():
-    """Test edge cases."""
-    r = 10
-    n = 100
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_large_sample_moments(r, n, f, F)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_large_sample_moments(0, 10)

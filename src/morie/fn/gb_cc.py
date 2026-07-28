@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Continuity correction for normal approximation to discrete statistics."""
+"""Continuity correction for integer-valued statistics."""
 
 import numpy as np
 from scipy import stats
@@ -10,69 +10,51 @@ __all__ = ["gibbons_continuity_corr"]
 
 
 def gibbons_continuity_corr(T, mu, sigma, cdf=None):
-    """
-    Continuity correction for normal approximation to discrete statistics
+    r"""Section 1.2.13: when an integer-valued statistic is
+    approximated by a normal, half a unit is moved toward the mean:
 
-    Formula: Z_cc = (|T - mu| - 0.5) / sigma for integer-valued T
+    .. math:: Z_{cc} = \frac{|T - \mu| - 0.5}{\sigma},
+
+    matching the discrete mass at T to the continuous area between
+    T - 1/2 and T + 1/2. Both the corrected and uncorrected z are
+    returned; the correction always WEAKENS the evidence (smaller
+    |z|), never strengthens it.
 
     Parameters
     ----------
-    T : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
+    T : float
+        Observed integer-valued statistic.
+    mu, sigma : float
+        Null mean and standard deviation.
+    cdf : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: z_corrected
+    RichResult
+        keys: ``z_corrected``, ``z_uncorrected``, ``p_two_sided``,
+        ``p_uncorrected``, ``method``.
 
     References
     ----------
-    Gibbons Ch 1.2.13
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 1.2.13.
     """
-    T = np.asarray(T, dtype=float)
-    n = int(T) if T.ndim == 0 else len(T)
-    if T.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Continuity correction for normal approximation to discrete statistics",
-            }
-        )
-    x_sorted = np.sort(T)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(T), scale=np.std(T, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    sigma = float(sigma)
+    if sigma <= 0:
+        raise ValueError(f"sigma must be positive, got {sigma}.")
+    T, mu = float(T), float(mu)
+    z0 = (T - mu) / sigma
+    zc = max(abs(T - mu) - 0.5, 0.0) / sigma
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Continuity correction for normal approximation to discrete statistics",
+            "z_corrected": float(zc), "z_uncorrected": float(z0),
+            "p_two_sided": float(2 * stats.norm.sf(zc)),
+            "p_uncorrected": float(2 * stats.norm.sf(abs(z0))),
+            "method": "Z_cc = (|T - mu| - 0.5)/sigma (Gibbons Ch. 1.2.13)",
         }
     )
 
 
 def cheatsheet():
-    return "gb_cc: Continuity correction for normal approximation to discrete statistics"
+    return "gb_cc: half-unit toward the mean; always weakens, never strengthens"

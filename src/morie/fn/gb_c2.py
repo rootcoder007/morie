@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Yates continuity correction for 2x2 chi-square test."""
+"""Chi-square test with Yates's continuity correction."""
 
 import numpy as np
 from scipy import stats
@@ -10,65 +10,62 @@ __all__ = ["gibbons_chi2_yates"]
 
 
 def gibbons_chi2_yates(table, cdf=None):
-    """
-    Yates continuity correction for 2x2 chi-square test
+    r"""Yates-corrected chi-square for a 2x2 table:
 
-    Formula: Q_c = sum (|O_ij - E_ij| - 0.5)^2 / E_ij
+    .. math:: Q_c = \sum_{ij} \frac{(|O_{ij} - E_{ij}| - 0.5)^2}
+              {E_{ij}},
+
+    the cellwise version of the half-unit continuity correction.
+    Restricted to 2x2 -- Yates's argument is about a single discrete
+    hypergeometric margin, and applying it to larger tables
+    over-corrects, so bigger tables raise rather than silently
+    getting the wrong adjustment.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    table : array-like, shape (2, 2)
+        Observed counts.
+    cdf : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys: ``chi2_corrected``, ``chi2_uncorrected``, ``df`` (1),
+        ``p_value``, ``expected``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.2 continuity
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 14.2.
+
+    Yates, F. (1934). Contingency tables involving small numbers and
+    the chi-square test. *Supplement to the Journal of the Royal
+    Statistical Society*, 1(2), 217-235.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    if table.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    O = np.asarray(table, dtype=float)
+    if O.shape != (2, 2):
+        raise ValueError(
+            f"Yates's correction is a 2x2 argument; got shape {O.shape}."
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Yates continuity correction for 2x2 chi-square test",
-            }
-        )
-    x_sorted = np.sort(table)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(table), scale=np.std(table, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    if np.any(O < 0):
+        raise ValueError("counts must be non-negative.")
+    ntot = O.sum()
+    if ntot <= 0:
+        raise ValueError("the table is empty.")
+    E = np.outer(O.sum(axis=1), O.sum(axis=0)) / ntot
+    if np.any(E == 0):
+        raise ValueError("a margin is zero; the test is degenerate.")
+    qc = float(np.sum((np.maximum(np.abs(O - E) - 0.5, 0.0)) ** 2 / E))
+    q0 = float(np.sum((O - E) ** 2 / E))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Yates continuity correction for 2x2 chi-square test",
+            "chi2_corrected": qc, "chi2_uncorrected": q0, "df": 1,
+            "p_value": float(stats.chi2.sf(qc, 1)), "expected": E,
+            "method": "Yates Q_c = sum (|O - E| - .5)^2/E, 2x2 only (Ch. 14.2)",
         }
     )
 
 
 def cheatsheet():
-    return "gb_c2: Yates continuity correction for 2x2 chi-square test"
+    return "gb_c2: Yates on 2x2 only; larger tables over-correct"

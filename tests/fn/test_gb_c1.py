@@ -1,19 +1,18 @@
-"""Tests for gb_c1.gibbons_chebyshev."""
+"""Tests for gb_c1 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_c1 import gibbons_chebyshev
 
 
 def test_gb_c1_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_chebyshev(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    rng = np.random.default_rng(10)
+    out = gibbons_chebyshev(2.0, rng.standard_normal(3000))
+    assert out["empirical"] <= out["bound"]
 
 
 def test_gb_c1_edge():
-    """Test edge cases."""
-    result = gibbons_chebyshev(np.array([42.0]))
-    assert result["n"] == 1
+    assert gibbons_chebyshev(0.5)["bound"] == 1.0  # capped at 1
+    with pytest.raises(ValueError):
+        gibbons_chebyshev(-1.0)

@@ -1,19 +1,18 @@
-"""Tests for gb232.gibbons_glivenko_cantelli."""
+"""Tests for gb232 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb232 import gibbons_glivenko_cantelli
 
 
 def test_gb232_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_glivenko_cantelli(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    rng = np.random.default_rng(0)
+    d1 = gibbons_glivenko_cantelli(rng.standard_normal(50))["sup_distance"]
+    d2 = gibbons_glivenko_cantelli(rng.standard_normal(5000))["sup_distance"]
+    assert d2 < d1
 
 
 def test_gb232_edge():
-    """Test edge cases."""
-    result = gibbons_glivenko_cantelli(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_glivenko_cantelli([])

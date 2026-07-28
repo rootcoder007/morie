@@ -1,20 +1,15 @@
-"""Tests for gb435.gibbons_ks_onesided_asymp."""
+"""Tests for gb435 (Gibbons shelf)."""
+
+import numpy as np
+import pytest
 
 from morie.fn.gb435 import gibbons_ks_onesided_asymp
 
 
 def test_gb435_basic():
-    """Test basic functionality."""
-    d = 5
-    n = 100
-    result = gibbons_ks_onesided_asymp(d, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_ks_onesided_asymp(1.0)["p_value"] == pytest.approx(np.exp(-2.0))
 
 
 def test_gb435_edge():
-    """Test edge cases."""
-    d = 5
-    n = 100
-    result = gibbons_ks_onesided_asymp(d, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_ks_onesided_asymp(-1.0)

@@ -1,24 +1,17 @@
-"""Tests for gb332.gibbons_type1_run_lengths."""
+"""Tests for gb332 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb332 import gibbons_type1_run_lengths
 
 
 def test_gb332_basic():
-    """Test basic functionality."""
-    run_lengths = np.random.default_rng(42).normal(0, 1, 100)
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_type1_run_lengths(run_lengths, n1, n2)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from math import comb
+    assert gibbons_type1_run_lengths([2], n2=2)["pmf"] == pytest.approx(
+        comb(3, 1) / comb(4, 2))
 
 
 def test_gb332_edge():
-    """Test edge cases."""
-    run_lengths = np.random.default_rng(42).normal(0, 1, 100)
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_type1_run_lengths(run_lengths, n1, n2)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_type1_run_lengths([2], n2=None)

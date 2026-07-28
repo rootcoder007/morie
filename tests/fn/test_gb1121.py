@@ -1,22 +1,20 @@
-"""Tests for gb1121.gibbons_kendall_tau."""
+"""Tests for gb1121 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb1121 import gibbons_kendall_tau
 
 
 def test_gb1121_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_kendall_tau(x, y)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from scipy import stats
+    rng = np.random.default_rng(0)
+    x = rng.standard_normal(25); y = 0.5 * x + rng.standard_normal(25)
+    assert gibbons_kendall_tau(x, y)["tau"] == pytest.approx(
+        stats.kendalltau(x, y).statistic, abs=1e-12)
 
 
 def test_gb1121_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_kendall_tau(x, y)
-    assert isinstance(result, dict)
+    assert gibbons_kendall_tau([1, 2, 3], [3, 2, 1])["tau"] == -1.0
+    with pytest.raises(ValueError):
+        gibbons_kendall_tau([1.0], [2.0])

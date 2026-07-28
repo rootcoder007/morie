@@ -1,47 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Distribution of sample range W = X_(n) - X_(1)."""
+"""Distribution of the sample range."""
 
 import numpy as np
+from scipy import integrate
 
 from ._richresult import RichResult
 
 __all__ = ["gibbons_range_dist"]
 
 
-def gibbons_range_dist(w, n, f, F):
-    """
-    Distribution of sample range W = X_(n) - X_(1)
+def gibbons_range_dist(w, n, f=None, F=None):
+    r"""Section 2.7.2: the CDF of the range W = X_(n) - X_(1) is
 
-    Formula: F_W(w) = n * integral [F(w+w)-F(w)]^(n-1) f(w) dx
+    .. math:: F_W(w) = n \int_{-\infty}^{\infty}
+              [F(x + w) - F(x)]^{n-1} f(x)\, dx, \qquad w > 0,
+
+    integrating over the position of the minimum. Evaluated by
+    adaptive quadrature for any supplied density/CDF pair (standard
+    normal by default).
 
     Parameters
     ----------
-    w : array-like
-        Input data.
-    n : array-like
-        Input data.
-    f : array-like
-        Input data.
-    F : array-like
-        Input data.
+    w : float
+        Range value, w > 0.
+    n : int
+        Sample size, at least 2.
+    f, F : callable, optional
+        Parent density and CDF; standard normal if omitted.
 
     Returns
     -------
-    result : dict
-        Keys: distribution
+    RichResult
+        keys: ``cdf``, ``w``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 2.7.2
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 2.7.2.
     """
-    w = np.asarray(w, dtype=float)
-    n = int(w) if w.ndim == 0 else len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    from scipy import stats
+
+    w = float(w)
+    if w <= 0:
+        raise ValueError(f"w must be positive, got {w}.")
+    n = int(n)
+    if n < 2:
+        raise ValueError(f"n must be at least 2, got {n}.")
+    if f is None:
+        f = stats.norm.pdf
+    if F is None:
+        F = stats.norm.cdf
+
+    val, _ = integrate.quad(
+        lambda t: (F(t + w) - F(t)) ** (n - 1) * f(t), -np.inf, np.inf, limit=200
+    )
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Distribution of sample range W = X_(n) - X_(1)"}
+        payload={
+            "cdf": float(min(max(n * val, 0.0), 1.0)), "w": w, "n": n,
+            "method": "F_W(w) = n int [F(x+w)-F(x)]^{n-1} f(x) dx (Ch. 2.7.2)",
+        }
     )
 
 
 def cheatsheet():
-    return "gb_rng: Distribution of sample range W = X_(n) - X_(1)"
+    return "gb_rng: range CDF by quadrature over the minimum's position"
