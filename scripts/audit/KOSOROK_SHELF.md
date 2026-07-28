@@ -37,10 +37,23 @@ Cox efficient information matches the sampling standard deviation of
 bridge covariance structure; the U-statistic matches brute-force
 enumeration.
 
-**Remaining (28)**: ksr022 ksr025 ksr029 ksr031–ksr045 ksr050–ksr056
-ksr059 ksr061 ksr062 ksr065 — entropy/bracketing, weak-convergence
-characterisations, the functional delta method and its bootstrap,
-Kaplan-Meier Hadamard derivatives, M-estimator expansions, LAN.
+**Tranche 2 (10 modules) — DONE, 21/21 tests green**
+
+ksr029 ksr031 ksr032 ksr033 ksr034 ksr035 ksr036 ksr037 ksr038 ksr039
+— class-indexed GC, tightness/equicontinuity, the weak-convergence
+characterisation, uniform and bracketing entropy, both Donsker
+theorems, the bounded-Lipschitz metric.
+
+Tested by the SEPARATION each theorem draws, not just its easy side:
+polynomial vs exponential bracketing growth (finite vs diverging
+entropy integral), finite entropy with a non-integrable envelope
+(fails GC), a smooth process vs a shrinking spike (tight vs not),
+matched marginals vs a rescaled law (fidi passes vs fails).
+
+**Remaining (18)**: ksr022 ksr025 ksr040–ksr045 ksr050–ksr056 ksr059
+ksr061 ksr062 ksr065 — bootstrap Donsker, the functional delta method
+and its bootstrap, Kaplan-Meier Hadamard derivatives, M-estimator
+expansions, KMT, LAN and efficient influence functions.
 
 ## Defects found
 
@@ -52,3 +65,10 @@ Kaplan-Meier Hadamard derivatives, M-estimator expansions, LAN.
   *directional*, and central differencing reports 0 for |·| at 0
   where the one-sided derivative is 1 — the test now pins both
   directions.
+- `ksr032` first judged finite-dimensional convergence against a fixed
+  0.15 threshold. At 400 replications over 40 grid points two samples
+  from the **same** law already differ by 0.21 in mean and 0.25 in
+  variance, so the constant rejected identical distributions. The
+  tolerance is now derived from the replication count and grid size
+  (`sigma sqrt(2/n_rep) sqrt(log k)`), and both the gap and the
+  tolerance are returned so the comparison is auditable.
