@@ -5,62 +5,76 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_thm4_5_mrl_consistency"]
+__all__ = ["fauzi_theorem_4_5"]
 
 
-def fauzi_thm4_5_mrl_consistency(t, bandwidth, g_func):
-    """
-    Theorem 4.5: strong uniform consistency of boundary-free MRL estimators
+def fauzi_theorem_4_5(mrl_hat, mrl_true, t_grid, interval=None):
+    r"""Theorem 4.5 (Fauzi): strong uniform consistency,
 
-    Formula: sup_{t in Omega} |m_tilde_X,i(t) - m_X(t)| ->_{a.s.} 0
+    .. math:: \sup_{t \in B}\big|\tilde m_{X,i}(t) - m_X(t)\big|
+              \to_{a.s.} 0
+
+    on a bounded interval :math:`B`.
+
+    UNIFORM and ALMOST SURE, which is stronger than the pointwise
+    convergence in distribution of Theorem 4.4 and is what licenses
+    using the estimated curve as a whole -- for a plot, a maximum, or
+    a crossing point -- rather than at one pre-chosen t.
+
+    Lemma 4.3's argument is worth noting: it gets uniformity from
+    MONOTONICITY plus pointwise convergence on a finite grid, the
+    same device that proves the Glivenko-Cantelli theorem. Bounded
+    ``B`` is required; on an unbounded interval the supremum need not
+    converge.
 
     Parameters
     ----------
-    t : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    g_func : array-like
-        Input data.
+    mrl_hat, mrl_true : array-like
+        Estimated and true MRL on ``t_grid``.
+    t_grid : array-like
+        Evaluation points.
+    interval : tuple, optional
+        The bounded ``B`` to take the supremum over.
 
     Returns
     -------
-    result : dict
-        Keys: boolean
-
+    RichResult
+        keys: ``sup_error``, ``argmax_t``, ``interval``,
+        ``mode`` ("uniform, almost sure"), ``requires_bounded_B``
+        (True), ``stronger_than_pointwise`` (True), ``method``.
     References
     ----------
-    Fauzi Ch 4, Theorem 4.5
+    Fauzi and Maesono (2023), Theorem 4.5 and Lemma 4.3. From the PDF.
     """
-    t = np.asarray(t, dtype=float)
-    n = int(t) if t.ndim == 0 else len(t)
-    if t.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Theorem 4.5: strong uniform consistency of boundary-free MRL estimators",
-            }
-        )
-    estimate = np.median(t)
-    se = 1.2533 * np.std(t, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Theorem 4.5: strong uniform consistency of boundary-free MRL estimators",
-        }
-    )
+    mh = np.atleast_1d(np.asarray(mrl_hat, dtype=float)).ravel()
+    mt = np.atleast_1d(np.asarray(mrl_true, dtype=float)).ravel()
+    tg = np.atleast_1d(np.asarray(t_grid, dtype=float)).ravel()
+    if not (mh.size == mt.size == tg.size):
+        raise ValueError("all three arguments must have the same length.")
+    if interval is None:
+        sel = np.ones(tg.size, dtype=bool)
+        iv = (float(tg.min()), float(tg.max()))
+    else:
+        lo, hi = float(interval[0]), float(interval[1])
+        if not np.isfinite(lo) or not np.isfinite(hi) or hi <= lo:
+            raise ValueError("the interval must be bounded with lo < hi; "
+                             "uniform consistency is stated on a BOUNDED B.")
+        sel = (tg >= lo) & (tg <= hi)
+        iv = (lo, hi)
+    if not np.any(sel):
+        raise ValueError("no grid points fall inside the interval.")
+    err = np.abs(mh[sel] - mt[sel])
+    k = int(np.nanargmax(err))
+    return RichResult(payload={
+        "sup_error": float(np.nanmax(err)), "argmax_t": float(tg[sel][k]),
+        "interval": iv, "mode": "uniform, almost sure",
+        "requires_bounded_B": True, "stronger_than_pointwise": True,
+        "proof_device": "monotonicity plus pointwise convergence on a finite "
+                        "grid, as in Glivenko-Cantelli",
+        "licenses": "using the whole estimated curve -- a maximum, a crossing "
+                    "point -- not just one pre-chosen t",
+        "method": "Theorem 4.5: strong uniform consistency on a bounded interval"})
 
 
 def cheatsheet():
-    return "fzt45: Theorem 4.5: strong uniform consistency of boundary-free MRL estimators"
+    return "fzt45: uniform + a.s. is what lets you use the WHOLE curve, not one point"

@@ -5,60 +5,72 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_thm4_6_mean_value"]
+__all__ = ["fauzi_theorem_4_6"]
 
 
-def fauzi_thm4_6_mean_value(data, g_func):
-    """
-    Theorem 4.6: mean value property of boundary-free MRL estimators
+def fauzi_theorem_4_6(x, a1, mrl_at_a1, h=None):
+    r"""Theorem 4.6 (Fauzi Eqs. 4.29-4.30): the mean value property,
 
-    Formula: m_tilde_X,2(a_1)+a_1=X_bar (exact); m_tilde_X,1(a_1)+a_1=X_bar+O_p(h^2)
+    .. math:: \tilde m_{X,1}(a_1) + a_1 = \bar X + O_p(h^2),
+
+    where :math:`a_1` is the lower boundary of the support.
+
+    A sanity identity with real content: the mean residual life at
+    the START of the support, plus that starting point, must be the
+    overall mean, because everyone is still at risk there. The
+    estimator satisfies it up to :math:`O(h^2)` -- it does not merely
+    approximate the MRL pointwise, it reproduces a structural
+    relationship the true MRL obeys exactly.
+
+    That makes it a genuine diagnostic. A large discrepancy is
+    evidence of a bandwidth too big or a transformation mismatched to
+    the support, and the module returns the gap so it can be checked
+    rather than assumed.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    g_func : array-like
-        Input data.
+    x : array-like
+        The sample.
+    a1 : float
+        Lower boundary of the support.
+    mrl_at_a1 : float
+        The estimated MRL evaluated at ``a1``.
+    h : float, optional
+        Bandwidth, for reporting the expected O(h^2) tolerance.
 
     Returns
     -------
-    result : dict
-        Keys: property_check
-
+    RichResult
+        keys: ``identity_lhs``, ``sample_mean``, ``gap``,
+        ``expected_order``, ``within_expected``, ``a1``, ``n``,
+        ``method``.
     References
     ----------
-    Fauzi Ch 4, Theorem 4.6, Eq 4.29-4.30
+    Fauzi and Maesono (2023), Theorem 4.6, Eqs. (4.29)-(4.30). From
+    the PDF.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Theorem 4.6: mean value property of boundary-free MRL estimators",
-            }
-        )
-    estimate = np.median(data)
-    se = 1.2533 * np.std(data, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Theorem 4.6: mean value property of boundary-free MRL estimators",
-        }
-    )
+    xv = np.asarray(x, dtype=float).ravel()
+    n = xv.size
+    if n < 2:
+        raise ValueError(f"need at least 2 observations, got {n}.")
+    a = float(a1)
+    if np.any(xv < a):
+        raise ValueError(f"a1 = {a} is not a lower bound of the sample.")
+    lhs = float(mrl_at_a1) + a
+    xbar = float(xv.mean())
+    gap = abs(lhs - xbar)
+    tol = None if h is None else float(h) ** 2
+    return RichResult(payload={
+        "identity_lhs": lhs, "sample_mean": xbar, "gap": gap,
+        "expected_order": "O(h^2)",
+        "within_expected": None if tol is None else bool(gap <= 5 * tol),
+        "a1": a, "n": int(n),
+        "why_it_holds": "at the start of the support everyone is still at "
+                        "risk, so MRL(a_1) + a_1 is the overall mean",
+        "diagnostic_use": "a large gap indicates a bandwidth too big or a "
+                          "transformation mismatched to the support",
+        "method": "Theorem 4.6 (4.29): m_tilde(a_1) + a_1 = Xbar + O_p(h^2)"})
 
 
 def cheatsheet():
-    return "fzt46: Theorem 4.6: mean value property of boundary-free MRL estimators"
+    return "fzt46: MRL at the support's start plus that start IS the sample mean -- a real diagnostic"

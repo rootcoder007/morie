@@ -5,62 +5,98 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_lem3_1_asymp_rep"]
+__all__ = ["fauzi_lemma_3_1"]
 
 
-def fauzi_lem3_1_asymp_rep(data, p, bandwidth):
-    """
-    Lemma 3.1: asymptotic representation of kernel quantile estimator
+def fauzi_lemma_3_1(x, p, h=None, q_true=None):
+    r"""Lemma 3.1 (Fauzi Ch. 3): the asymptotic representation of the
+    kernel quantile estimator as an average plus a negligible
+    remainder,
 
-    Formula: sigma_n^{-1}*sqrt(n)*(Q_hat_{p,h}-Q_hat(p)) = d_{1n}A_{1n}+d_{2n}A_{2n}+d_{3n}A_{3n}+...+o_L(n^{-1/2})
+    .. math:: \hat Q_{p,h} - Q(p)
+              = \frac{1}{n}\sum_{i=1}^{n}
+                \frac{p - \mathbf 1\{X_i \le Q(p)\}}
+                     {f(Q(p))} + R_n ,
+
+    with :math:`R_n` of smaller order.
+
+    A Bahadur-type representation, and it is the workhorse of the
+    chapter: once the estimator is an i.i.d. AVERAGE plus a
+    remainder, its limiting normality, its variance
+    :math:`p(1-p)/(nf^2)` and the Edgeworth expansion that refines
+    them all follow from standard theory for sums. Without it each
+    would need its own argument.
+
+    The influence function :math:`(p - \mathbf 1\{X \le Q\})/f(Q)`
+    is returned, since it is what every subsequent variance and
+    expansion is built from.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    p : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
+    x : array-like
+        Sample.
+    p : float
+        Probability level in (0, 1).
+    h : float, optional
+        Bandwidth for the kernel quantile estimate.
 
     Returns
     -------
-    result : dict
-        Keys: representation
-
+    RichResult
+        keys: ``influence``, ``linear_term``, ``estimate``,
+        ``remainder``, ``density_at_quantile``, ``centre``, ``centred_at``,
+        ``asymptotic_variance``,
+        ``representation``, ``n``, ``method``.
     References
     ----------
-    Fauzi Ch 3, Lemma 3.1
+    Fauzi and Maesono (2023), Lemma 3.1. From the PDF.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Lemma 3.1: asymptotic representation of kernel quantile estimator",
-            }
-        )
-    estimate = np.median(data)
-    se = 1.2533 * np.std(data, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Lemma 3.1: asymptotic representation of kernel quantile estimator",
-        }
-    )
+    from ._fauzi import kernel_K
+    from .fzkqe import fauzi_kernel_quantile
+
+    xv = np.asarray(x, dtype=float).ravel()
+    n = xv.size
+    if n < 5:
+        raise ValueError(f"need at least 5 observations, got {n}.")
+    pp = float(p)
+    if not 0 < pp < 1:
+        raise ValueError(f"p must lie strictly in (0, 1), got {pp}.")
+    # Lemma 3.1 expands Q_hat - Q(p) about the POPULATION quantile.
+    # Centring on the sample quantile instead makes the linear term
+    # (p - F_n(Q))/f vanish identically -- F_n at its own p-quantile
+    # is p up to 1/n -- so the "representation" would be a remainder
+    # and nothing else, and the asymptotic variance it licenses would
+    # be unsupported. When the truth is unknown the sample quantile is
+    # still the only available centre, so it is used and flagged
+    # rather than silently substituted.
+    if q_true is None:
+        centred_at = ("sample quantile -- the linear term is degenerate here; "
+                      "supply q_true for the lemma as stated")
+        Q = float(np.quantile(xv, pp))
+    else:
+        centred_at = "population quantile (supplied)"
+        Q = float(q_true)
+    hb = 1.06 * float(np.std(xv, ddof=1)) * n ** -0.2
+    fQ = float(np.mean(kernel_K((Q - xv) / hb)) / hb)
+    if fQ <= 0:
+        raise ValueError("the estimated density at the quantile is zero; "
+                         "the representation divides by it.")
+    infl = (pp - (xv <= Q).astype(float)) / fQ
+    lin = float(infl.mean())
+    est = float(fauzi_kernel_quantile(xv, pp, h=h)["quantile"][0])
+    return RichResult(payload={
+        "influence": infl, "linear_term": lin, "estimate": est,
+        "remainder": float(est - Q - lin),
+        "density_at_quantile": fQ,
+        "centre": Q, "centred_at": centred_at,
+        "asymptotic_variance": float(pp * (1 - pp) / (n * fQ ** 2)),
+        "representation": "Bahadur-type: an i.i.d. average plus a smaller-order "
+                          "remainder, which is what makes normality, the "
+                          "variance and the Edgeworth expansion all follow "
+                          "from standard theory for sums",
+        "n": int(n),
+        "method": "Lemma 3.1: asymptotic representation of the kernel quantile estimator"})
 
 
 def cheatsheet():
-    return "fzl31: Lemma 3.1: asymptotic representation of kernel quantile estimator"
+    return "fzl31: once it is an average plus a remainder, everything else follows from sums"
