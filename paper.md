@@ -282,64 +282,63 @@ The general-purpose modules implement published methods, and the
 authors of those methods are the reason the implementations can be
 checked rather than merely trusted. The signal-processing and
 waveform-complexity modules follow Rangayyan and Krishnan
-[@rangayyan2024biomedical]; the fractal and complexity estimators
-follow Higuchi [@higuchi1988approach], Grassberger and Procaccia
-[@grassberger1983strangeness], and Peng and colleagues
-[@peng1994mosaic]; the entropy estimators follow Pincus
-[@pincus1991approximate] and Richman and Moorman
-[@richman2000physiological]; the largest Lyapunov exponent follows
-Rosenstein, Collins and De Luca [@rosenstein1993practical]; the
-spectral estimators follow Welch [@welch1967use] and, for the
-autoregressive route, Burg [@burg1975maximum] and Marple
-[@marple1987digital]; the adaptive noise canceller follows Widrow
-and Stearns [@widrow1985adaptive]; the wavelet transforms follow
-Percival and Walden [@percival2000wavelet] and the shrinkage
-thresholds Donoho and Johnstone [@donoho1994ideal]; the heart-rate
+[-@rangayyan2024biomedical]; the fractal and complexity estimators
+follow Higuchi [-@higuchi1988approach], Grassberger and Procaccia
+[-@grassberger1983strangeness], and Peng and colleagues
+[-@peng1994mosaic]; the entropy estimators follow Pincus
+[-@pincus1991approximate] and Richman and Moorman
+[-@richman2000physiological]; the largest Lyapunov exponent follows
+Rosenstein, Collins and De Luca [-@rosenstein1993practical]; the
+spectral estimators follow Welch [-@welch1967use] and, for the
+autoregressive route, Burg [-@burg1975maximum] and Marple
+[-@marple1987digital]; the adaptive noise canceller follows Widrow
+and Stearns [-@widrow1985adaptive]; the wavelet transforms follow
+Percival and Walden [-@percival2000wavelet] and the shrinkage
+thresholds Donoho and Johnstone [-@donoho1994ideal]; the heart-rate
 variability measures follow the Task Force of the European Society
 of Cardiology and the North American Society of Pacing and
-Electrophysiology [@taskforce1996heart]; the polytomous
-item-response model follows Samejima [@samejima1969estimation]; the
+Electrophysiology [-@taskforce1996heart]; the polytomous
+item-response model follows Samejima [-@samejima1969estimation]; the
 genomic relationship matrices follow VanRaden
-[@vanraden2008efficient]; the global spatial autocorrelation
-statistic follows Moran [@moran1950notes] in the formulation of
-Schabenberger and Gotway [@schabenberger2005spatial]; the
+[-@vanraden2008efficient]; the global spatial autocorrelation
+statistic follows Moran [-@moran1950notes] in the formulation of
+Schabenberger and Gotway [-@schabenberger2005spatial]; the
 correlation variance-stabilising transform follows Fisher
-[@fisher1921probable]; the multivariate information measures follow
-Watanabe [@watanabe1960information] and Han [@han1978nonnegative];
+[-@fisher1921probable]; the multivariate information measures follow
+Watanabe [-@watanabe1960information] and Han [-@han1978nonnegative];
 the classical test-theory item statistics follow Nunnally and
-Bernstein [@nunnally1994psychometric]; the variance inflation for
+Bernstein [-@nunnally1994psychometric]; the variance inflation for
 dependent effect sizes follows Hedges, Tipton and Johnson
-[@hedges2010robust]; the family-based association test follows
-Spielman, McGinnis and Ewens [@spielman1993transmission]; the Markov
+[-@hedges2010robust]; the family-based association test follows
+Spielman, McGinnis and Ewens [-@spielman1993transmission]; the Markov
 chain Monte Carlo effective sample size follows Geyer
-[@geyer1992practical]; and the functional data correlation follows
-Ramsay and Silverman [@ramsay2005functional].
+[-@geyer1992practical]; and the functional data correlation follows
+Ramsay and Silverman [-@ramsay2005functional].
 The econometric and nonparametric modules follow Horowitz
-[@horowitz2009semiparametric] throughout: the single-index
-estimators follow Ichimura [@ichimura1993semiparametric], Klein and
-Spady [@kleinSpady1993efficient], Powell, Stock and Stoker
-[@powellStockStoker1989semiparametric] and Newey and Stoker
-[@neweyStoker1993efficiency]; the rank estimators follow Han
-[@han1987nonparametric], Sherman [@sherman1993limiting] and
-Cavanagh and Sherman [@cavanagh1998rank]; the maximum-score
+[-@horowitz2009semiparametric] throughout: the single-index
+estimators follow Ichimura [-@ichimura1993semiparametric], Klein and
+Spady [-@kleinSpady1993efficient], Powell, Stock and Stoker
+[-@powellStockStoker1989semiparametric] and Newey and Stoker
+[-@neweyStoker1993efficiency]; the rank estimators follow Han
+[-@han1987nonparametric], Sherman [-@sherman1993limiting] and
+Cavanagh and Sherman [-@cavanagh1998rank]; the maximum-score
 estimators and their choice-based, panel and ordered-response
-extensions follow Manski [@manski1985semiparametric;
-@manski1987semiparametric], Horowitz [@horowitz1992smoothed] and
-Kooreman and Melenberg [@kooremanMelenberg1989maximum] and
-Melenberg and van Soest [@melenbergVanSoest1996parametric]; the
+extensions follow Manski [-@manski1985semiparametric; -@manski1987semiparametric], Horowitz [-@horowitz1992smoothed] and
+Kooreman and Melenberg [-@kooremanMelenberg1989maximum], and
+Melenberg and van Soest [-@melenbergVanSoest1996parametric]; the
 heteroskedastic binary-response estimator follows Lewbel
-[@lewbel2000semiparametric] in the simplified form of Dong and
-Lewbel [@dongLewbel2015simple]; the deconvolution rates follow Fan
-[@fan1991optimal] and the panel deconvolution Horowitz and Markatou
-[@horowitzMarkatou1996semiparametric]; the transformation-model
-estimators follow Horowitz [@horowitz1996distribution] and Chen
-[@chen2002rank], with the baseline hazard built on Breslow
-[@breslow1974covariance]. The empirical-process and semiparametric
-inference modules follow Kosorok [@kosorok2008introduction], the
+[-@lewbel2000semiparametric] in the simplified form of Dong and
+Lewbel [-@dongLewbel2015simple]; the deconvolution rates follow Fan
+[-@fan1991optimal] and the panel deconvolution Horowitz and Markatou
+[-@horowitzMarkatou1996semiparametric]; the transformation-model
+estimators follow Horowitz [-@horowitz1996distribution] and Chen
+[-@chen2002rank], with the baseline hazard built on Breslow
+[-@breslow1974covariance]. The empirical-process and semiparametric
+inference modules follow Kosorok [-@kosorok2008introduction], the
 nonparametric tests Gibbons and Chakraborti
-[@gibbonsChakraborti2011nonparametric], the copula modules Czado
-[@czado2019analyzing], and the volatility and cointegration modules
-Tsay [@tsay2010analysis].
+[-@gibbonsChakraborti2011nonparametric], the copula modules Czado
+[-@czado2019analyzing], and the volatility and cointegration modules
+Tsay [-@tsay2010analysis].
 
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
@@ -347,7 +346,7 @@ reader can check the implementation against the same page the
 author wrote. Where an implementation departs from a printed
 statement it says so and shows the measurement that settled it --
 for example equation (4.43) of Horowitz
-[@horowitz2009semiparametric] prints ``maximize'' over a sum of
+[-@horowitz2009semiparametric] prints ``maximize'' over a sum of
 absolute deviations while describing the estimator as a median
 regression, and the module minimises, with the discrepancy recorded
 in the docstring and asserted in the test suite.
