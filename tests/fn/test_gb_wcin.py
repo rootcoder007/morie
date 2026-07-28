@@ -1,19 +1,20 @@
-"""Tests for gb_wcin.gibbons_concordance_incomplete."""
+"""Tests for gb_wcin (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_wcin import gibbons_concordance_incomplete
 
 
 def test_gb_wcin_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_concordance_incomplete(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    nan = np.nan
+    agree = np.array([[1, 2, 3, nan], [nan, 1, 2, 3], [1, 2, nan, 3]])
+    disagree = np.array([[3, 2, 1, nan], [nan, 3, 2, 1], [1, 2, nan, 3]])
+    assert (gibbons_concordance_incomplete(agree)["W"]
+            > gibbons_concordance_incomplete(disagree)["W"])
 
 
 def test_gb_wcin_edge():
-    """Test edge cases."""
-    result = gibbons_concordance_incomplete(np.array([42.0]))
-    assert result["n"] == 1
+    nan = np.nan
+    with pytest.raises(ValueError):
+        gibbons_concordance_incomplete(np.array([[1, nan], [2, nan]]))

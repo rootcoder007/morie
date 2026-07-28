@@ -1,74 +1,78 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ARE of Kruskal-Wallis relative to F-test: at least 0.864 for any continuous F."""
+"""Hodges-Lehmann efficiency bounds."""
 
 import numpy as np
-from scipy import stats
 
+from ._gb_are import (
+    ARE_TABLE,
+    HL_SIGN_LOWER_BOUND,
+    HL_WILCOXON_LOWER_BOUND,
+    efficacy_are,
+)
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_kw"]
 
 
-def gibbons_are_kw(distribution, cdf=None):
-    """
-    ARE of Kruskal-Wallis relative to F-test: at least 0.864 for any continuous F
+def gibbons_are_kw(distribution="normal", cdf=None, f=None):
+    r"""The Hodges-Lehmann (1956) bounds quoted in Gibbons p. 492-493:
 
-    Formula: ARE(KW, F) >= 3/pi for normal; lower bound 0.864 for all continuous F
+    .. math:: \mathrm{ARE}(T^+, t) \ge 0.864
+
+    over ALL continuous symmetric distributions (the infimum is
+    attained by a parabolic density, not by any textbook family), and
+    :math:`\mathrm{ARE}(K, t) \ge 1/3` over continuous unimodal
+    symmetric distributions, attained at the uniform.
+
+    Evaluates the Wilcoxon-vs-t ARE at the requested distribution (or
+    a supplied density) and reports it against the bound -- every
+    admissible density must land above 0.864, which the tests check
+    for all four table families.
 
     Parameters
     ----------
-    distribution : array-like
-        Input data.
+    distribution : str
+        One of the Table 13.3.1 families, used when f is omitted.
+    cdf : ignored
+        Interface compatibility.
+    f : callable, optional
+        A density to evaluate instead.
 
     Returns
     -------
-    result : dict
-        Keys: ARE_lower_bound
+    RichResult
+        keys: ``are_wilcoxon_t``, ``hl_bound`` (0.864),
+        ``above_bound``, ``sign_bound`` (1/3), ``distribution``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 10.8
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 13.3.
+
+    Hodges, J. L. & Lehmann, E. L. (1956). The efficiency of some
+    nonparametric competitors of the t-test. *The Annals of
+    Mathematical Statistics*, 27(2), 324-335.
     """
-    distribution = np.asarray(distribution, dtype=float)
-    n = int(distribution) if distribution.ndim == 0 else len(distribution)
-    if distribution.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "ARE of Kruskal-Wallis relative to F-test: at least 0.864 for any continuous F",
-            }
-        )
-    x_sorted = np.sort(distribution)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(distribution), scale=np.std(distribution, ddof=1))
+    if f is not None:
+        are = efficacy_are(f)["wilcoxon_vs_t"]
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        if distribution not in ARE_TABLE:
+            raise ValueError(
+                f"distribution must be one of {sorted(ARE_TABLE)}, got "
+                f"{distribution!r}."
+            )
+        are = ARE_TABLE[distribution]["wilcoxon_vs_t"]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "ARE of Kruskal-Wallis relative to F-test: at least 0.864 for any continuous F",
+            "are_wilcoxon_t": float(are), "hl_bound": HL_WILCOXON_LOWER_BOUND,
+            "above_bound": bool(are >= HL_WILCOXON_LOWER_BOUND - 1e-9),
+            "sign_bound": HL_SIGN_LOWER_BOUND,
+            "distribution": None if f is not None else distribution,
+            "method": "Hodges-Lehmann bounds: ARE(T+, t) >= 0.864 (Gibbons p. 492)",
         }
     )
 
 
 def cheatsheet():
-    return "gb_are4: ARE of Kruskal-Wallis relative to F-test: at least 0.864 for any continuous F"
+    return "gb_are4: HL bound 0.864 for Wilcoxon-vs-t; 1/3 for the sign test"

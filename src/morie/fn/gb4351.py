@@ -1,7 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""V = 4n*D+^2 is asymptotically chi-square with 2 df."""
+"""Chi-square form of the one-sided K-S limit."""
 
 import numpy as np
+from scipy import stats
 
 from ._richresult import RichResult
 
@@ -9,38 +10,47 @@ __all__ = ["gibbons_ks_chi2_approx"]
 
 
 def gibbons_ks_chi2_approx(n, Dplus):
-    """
-    V = 4n*D+^2 is asymptotically chi-square with 2 df
+    r"""Corollary 4.3.5.1: since P(D_n^+ > d/sqrt n) -> exp(-2d^2)
+    and the chi-square(2) survival function is exp(-x/2),
 
-    Formula: 4n*D+_n^2 ->_d chi2(2) as n -> inf
+    .. math:: 4 n (D_n^+)^2 \;\to_d\; \chi^2_2.
+
+    The same limit as Theorem 4.3.5 wearing chi-square clothes -- the
+    p-values are algebraically identical, which the tests assert.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
-    Dplus : array-like
-        Input data.
+    n : int
+        Sample size.
+    Dplus : float > 0
+        Observed one-sided statistic.
 
     Returns
     -------
-    result : dict
-        Keys: chi2_statistic
+    RichResult
+        keys: ``chi2_stat`` (4 n D+^2), ``df`` (2), ``p_value``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Corollary 4.3.5.1
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Corollary 4.3.5.1.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(max(n, 2))
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    n = int(n)
+    if n < 1:
+        raise ValueError(f"n must be at least 1, got {n}.")
+    Dplus = float(Dplus)
+    if Dplus <= 0:
+        raise ValueError(f"Dplus must be positive, got {Dplus}.")
+    stat = 4.0 * n * Dplus**2
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "V = 4n*D+^2 is asymptotically chi-square with 2 df"}
+        payload={
+            "chi2_stat": float(stat), "df": 2,
+            "p_value": float(stats.chi2.sf(stat, 2)), "n": n,
+            "method": "4n(D+)^2 -> chi2(2) (Gibbons Corollary 4.3.5.1)",
+        }
     )
 
 
 def cheatsheet():
-    return "gb4351: V = 4n*D+^2 is asymptotically chi-square with 2 df"
+    return "gb4351: 4n(D+)^2 ~ chi2(2); identical p to exp(-2nD+^2)"

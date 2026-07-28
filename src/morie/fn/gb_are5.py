@@ -1,74 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ARE calculations for two-sample scale tests (Mood, Klotz, Siegel-Tukey)."""
+"""ARE of the scale tests against the F test."""
 
-import numpy as np
-from scipy import stats
-
+from ._gb_are import ARE_KLOTZ_VS_F_NORMAL, ARE_MOOD_VS_F_NORMAL
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_scale_tests"]
 
 
-def gibbons_are_scale_tests(distribution, cdf=None):
-    """
-    ARE calculations for two-sample scale tests (Mood, Klotz, Siegel-Tukey)
+def gibbons_are_scale_tests(distribution="normal", cdf=None):
+    r"""Scale-problem efficiencies at the normal (Gibbons
+    Sec. 13.3.3, PDF-verified):
 
-    Formula: ARE(Klotz, F-test | normal) = 1.0; ARE(Mood, F-test) = 3/pi
+    .. math:: \mathrm{ARE}(M_N, F) = \frac{15}{2\pi^2} \approx 0.760,
+
+    for Mood's squared-rank test, and ARE = 1 for the Klotz
+    normal-scores test (Klotz 1962), which attains full efficiency
+    where the F test is optimal.
+
+    NOTE: the placeholder this module replaces claimed
+    ARE(Mood, F) = 3/pi; the book's own derivation (Sec. 13.3.3, the
+    e(M_N) calculation) gives 15/(2 pi^2). The placeholder value was
+    wrong and is gone.
 
     Parameters
     ----------
-    distribution : array-like
-        Input data.
+    distribution : str
+        Only "normal" is tabulated here; anything else raises rather
+        than guessing.
+    cdf : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: ARE
+    RichResult
+        keys: ``are_mood_f``, ``are_klotz_f``, ``distribution``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 13.3.2
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Sec. 13.3.3.
+
+    Klotz, J. (1962). Nonparametric tests for scale. *The Annals of
+    Mathematical Statistics*, 33(2), 498-512.
     """
-    distribution = np.asarray(distribution, dtype=float)
-    n = int(distribution) if distribution.ndim == 0 else len(distribution)
-    if distribution.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    if distribution != "normal":
+        raise ValueError(
+            "scale-test AREs are tabulated here for the normal only; "
+            f"got {distribution!r}."
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "ARE calculations for two-sample scale tests (Mood, Klotz, Siegel-Tukey)",
-            }
-        )
-    x_sorted = np.sort(distribution)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(distribution), scale=np.std(distribution, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "ARE calculations for two-sample scale tests (Mood, Klotz, Siegel-Tukey)",
+            "are_mood_f": ARE_MOOD_VS_F_NORMAL,
+            "are_klotz_f": ARE_KLOTZ_VS_F_NORMAL,
+            "distribution": "normal",
+            "method": "ARE(Mood, F) = 15/(2 pi^2); ARE(Klotz, F) = 1 (Sec. 13.3.3)",
         }
     )
 
 
 def cheatsheet():
-    return "gb_are5: ARE calculations for two-sample scale tests (Mood, Klotz, Siegel-Tukey)"
+    return "gb_are5: Mood 15/(2pi^2) = 0.760, Klotz 1.0 at the normal"

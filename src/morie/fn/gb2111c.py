@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution."""
+"""Elementary coverages are Beta(1, n)."""
 
 import numpy as np
 
@@ -9,41 +9,43 @@ __all__ = ["gibbons_elementary_coverage_beta"]
 
 
 def gibbons_elementary_coverage_beta(n):
-    """
-    Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution
+    r"""Corollary 2.11.1.1: each elementary coverage
+    :math:`C_i = U_{(i)} - U_{(i-1)}` is distributed Beta(1, n), so
 
-    Formula: C_i ~ Beta(1, n); E(C_i) = 1/(n+1)
+    .. math:: E(C_i) = \frac{1}{n + 1}, \qquad
+              \mathrm{Var}(C_i) = \frac{n}{(n+1)^2(n+2)}.
+
+    Every gap between adjacent order statistics of a uniform sample
+    has the SAME marginal distribution regardless of position -- the
+    exchangeability fact that makes block frequencies tractable.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
+    n : int
+        Sample size, at least 1.
 
     Returns
     -------
-    result : dict
-        Keys: distribution
+    RichResult
+        keys: ``alpha`` (1), ``beta`` (n), ``mean``, ``var``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Corollary 2.11.1.1
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Corollary 2.11.1.1.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(max(n, 2))
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    n = int(n)
+    if n < 1:
+        raise ValueError(f"n must be at least 1, got {n}.")
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution",
+            "alpha": 1, "beta": n, "mean": 1.0 / (n + 1),
+            "var": float(n / ((n + 1.0) ** 2 * (n + 2.0))), "n": n,
+            "method": "C_i ~ Beta(1, n), position-free (Corollary 2.11.1.1)",
         }
     )
 
 
 def cheatsheet():
-    return "gb2111c: Elementary coverage C_i = U_(i) - U_(i-1) has Beta(1,n) distribution"
+    return "gb2111c: every elementary coverage ~ Beta(1, n); E = 1/(n+1)"

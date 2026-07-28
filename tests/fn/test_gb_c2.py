@@ -1,20 +1,18 @@
-"""Tests for gb_c2.gibbons_chi2_yates."""
+"""Tests for gb_c2 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_c2 import gibbons_chi2_yates
 
 
 def test_gb_c2_basic():
-    """Test basic functionality."""
-    table = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_chi2_yates(table)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    from scipy import stats
+    tbl = [[18, 7], [6, 19]]
+    assert gibbons_chi2_yates(tbl)["chi2_corrected"] == pytest.approx(
+        stats.chi2_contingency(tbl, correction=True).statistic, abs=1e-10)
 
 
 def test_gb_c2_edge():
-    """Test edge cases."""
-    table = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_chi2_yates(table)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_chi2_yates(np.ones((3, 3)))  # 2x2 only

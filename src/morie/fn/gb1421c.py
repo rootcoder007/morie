@@ -1,41 +1,54 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Contingency coefficient C = sqrt(Q/(Q+n))."""
+"""Pearson's contingency coefficient."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .gb1421t import gibbons_phi_cramers_v
 
 __all__ = ["gibbons_contingency_coeff"]
 
 
 def gibbons_contingency_coeff(table):
-    """
-    Contingency coefficient C = sqrt(Q/(Q+n))
+    r"""Section 14.2.1: Pearson's contingency coefficient,
 
-    Formula: C = sqrt(chi2/(chi2+n)); bounded [0,1) but max depends on table size
+    .. math:: C = \sqrt{\frac{\chi^2}{\chi^2 + n}} \in [0, 1),
+
+    with the awkward property that its MAXIMUM depends on the table
+    shape: for a k x k table, :math:`C_{\max} = \sqrt{(k-1)/k}` < 1.
+    The shape-adjusted ratio C/C_max is returned alongside, since
+    comparing raw C across differently shaped tables is a category
+    error the raw number invites.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    table : array-like, shape (r, c)
+        Observed counts.
 
     Returns
     -------
-    result : dict
-        Keys: C
+    RichResult
+        keys: ``C``, ``C_max`` (sqrt((k-1)/k), k = min(r, c)),
+        ``C_adjusted`` (C/C_max), ``chi2``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.2.1
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 14.2.1.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    result = float(np.mean(table))
-    se = float(np.std(table, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    out = gibbons_phi_cramers_v(table)
+    Q, ntot = out["chi2"], out["n"]
+    C = float(np.sqrt(Q / (Q + ntot)))
+    k = min(out["r"], out["c"])
+    Cmax = float(np.sqrt((k - 1) / k))
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Contingency coefficient C = sqrt(Q/(Q+n))"}
+        payload={
+            "C": C, "C_max": Cmax, "C_adjusted": C / Cmax, "chi2": Q,
+            "n": ntot,
+            "method": "C = sqrt(chi2/(chi2 + n)); max depends on shape (Ch. 14.2.1)",
+        }
     )
 
 
 def cheatsheet():
-    return "gb1421c: Contingency coefficient C = sqrt(Q/(Q+n))"
+    return "gb1421c: C < sqrt((k-1)/k) always; adjusted ratio returned"

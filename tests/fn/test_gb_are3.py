@@ -1,19 +1,17 @@
-"""Tests for gb_are3.gibbons_are_dbl_exp."""
+"""Tests for gb_are3 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_are3 import gibbons_are_dbl_exp
 
 
 def test_gb_are3_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_are_dbl_exp(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = gibbons_are_dbl_exp()
+    assert out["sign_vs_t"] == pytest.approx(2.0)  # sign BEATS t at the Laplace
+    assert out["wilcoxon_vs_t"] == pytest.approx(1.5)
 
 
 def test_gb_are3_edge():
-    """Test edge cases."""
-    result = gibbons_are_dbl_exp(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_are_dbl_exp("normal")

@@ -1,22 +1,16 @@
-"""Tests for gb251.gibbons_pit."""
+"""Tests for gb251 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb251 import gibbons_pit
 
 
 def test_gb251_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_pit(X, F)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(1)
+    assert gibbons_pit(rng.standard_normal(300))["ks_p"] > 0.01
 
 
 def test_gb251_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_pit(X, F)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_pit([np.inf])

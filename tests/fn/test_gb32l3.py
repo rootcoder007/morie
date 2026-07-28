@@ -1,20 +1,15 @@
-"""Tests for gb32l3.gibbons_vandermonde_id2."""
+"""Tests for gb32l3 (Gibbons shelf)."""
+
+import numpy as np
+import pytest
 
 from morie.fn.gb32l3 import gibbons_vandermonde_id2
 
 
 def test_gb32l3_basic():
-    """Test basic functionality."""
-    m = 10
-    n = 100
-    result = gibbons_vandermonde_id2(m, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_vandermonde_id2(5, 7)["holds"] is True
 
 
 def test_gb32l3_edge():
-    """Test edge cases."""
-    m = 10
-    n = 100
-    result = gibbons_vandermonde_id2(m, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_vandermonde_id2(3, 0)

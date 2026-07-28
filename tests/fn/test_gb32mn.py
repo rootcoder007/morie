@@ -1,22 +1,15 @@
-"""Tests for gb32mn.gibbons_runs_mean."""
+"""Tests for gb32mn (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb32mn import gibbons_runs_mean
 
 
 def test_gb32mn_basic():
-    """Test basic functionality."""
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_runs_mean(n1, n2)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_runs_mean(5, 5)["mean"] == pytest.approx(1 + 50 / 10)
 
 
 def test_gb32mn_edge():
-    """Test edge cases."""
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_runs_mean(n1, n2)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_runs_mean(0, 5)

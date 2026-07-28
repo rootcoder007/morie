@@ -1,22 +1,17 @@
-"""Tests for gb734.gibbons_linrank_symmetry_cond."""
+"""Tests for gb734 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb734 import gibbons_linrank_symmetry_cond
 
 
 def test_gb734_basic():
-    """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    N = 100
-    result = gibbons_linrank_symmetry_cond(a, N)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gibbons_linrank_symmetry_cond(np.arange(1, 9))
+    assert out["symmetric"] is True and out["constant"] == 9.0
 
 
 def test_gb734_edge():
-    """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    N = 100
-    result = gibbons_linrank_symmetry_cond(a, N)
-    assert isinstance(result, dict)
+    assert gibbons_linrank_symmetry_cond([1.0, 5.0, 2.0])["symmetric"] is False
+    with pytest.raises(ValueError):
+        gibbons_linrank_symmetry_cond([1.0])

@@ -1,46 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ARE values for normal distribution: Wilcoxon=3/pi, sign=2/pi relative to t."""
+"""ARE values at the normal distribution."""
 
-import numpy as np
-
+from ._gb_are import ARE_TABLE, efficacy_are
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_normal_case"]
 
 
-def gibbons_are_normal_case(distribution):
-    """
-    ARE values for normal distribution: Wilcoxon=3/pi, sign=2/pi relative to t
+def gibbons_are_normal_case(distribution="normal", cdf=None):
+    r"""Exact asymptotic relative efficiencies at the normal
+    distribution (Gibbons Table 13.3.1, PDF-verified, printed
+    p. 492).
 
-    Formula: ARE(Wilcoxon, t|normal) = 3/pi = 0.955; ARE(sign, t|normal) = 2/pi = 0.637
+    The t test's home game: even here the signed-rank test keeps
+    3/pi = 95.5% efficiency, while the sign test drops to 2/pi = 63.7%.
+
+    The table values are also RE-DERIVED here from the density via
+    the efficacy integrals, and both are returned -- the derivation
+    agreeing with the table is the check that neither was copied
+    wrong.
 
     Parameters
     ----------
-    distribution : array-like
-        Input data.
+    distribution : str
+        Accepted for interface compatibility; must name this module's
+        distribution.
+    cdf : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: ARE_values
+    RichResult
+        keys: ``wilcoxon_vs_t``, ``sign_vs_t``, ``sign_vs_wilcoxon``
+        (exact), ``derived`` (the same three from the efficacy
+        integrals), ``distribution``, ``method``.
 
     References
     ----------
-    Gibbons Ch 13
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Table 13.3.1.
     """
-    distribution = np.asarray(distribution, dtype=float)
-    n = int(distribution) if distribution.ndim == 0 else len(distribution)
-    result = float(np.mean(distribution))
-    se = float(np.std(distribution, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    if distribution not in ("normal",):
+        raise ValueError(
+            f"this module carries the normal case, got {distribution!r}."
+        )
+    import numpy as np
+    from scipy import stats
+
+    dens = {
+        "uniform": lambda x: stats.uniform.pdf(x, loc=-np.sqrt(3), scale=2 * np.sqrt(3)),
+        "normal": stats.norm.pdf,
+        "logistic": stats.logistic.pdf,
+        "double_exponential": stats.laplace.pdf,
+    }["normal"]
+    derived = efficacy_are(dens)
+    exact = ARE_TABLE["normal"]
     return RichResult(
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "ARE values for normal distribution: Wilcoxon=3/pi, sign=2/pi relative to t",
+            **exact,
+            "derived": {k: derived[k] for k in exact},
+            "distribution": "normal",
+            "method": "Gibbons Table 13.3.1 + efficacy re-derivation",
         }
     )
 
 
 def cheatsheet():
-    return "gb_are2: ARE values for normal distribution: Wilcoxon=3/pi, sign=2/pi relative to t"
+    return "gb_are2: Table 13.3.1 at the normal; re-derived from the density"

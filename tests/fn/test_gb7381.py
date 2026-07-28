@@ -1,20 +1,16 @@
-"""Tests for gb7381.gibbons_cs_null_var."""
+"""Tests for gb7381 (Gibbons shelf)."""
+
+import numpy as np
+import pytest
 
 from morie.fn.gb7381 import gibbons_cs_null_var
 
 
 def test_gb7381_basic():
-    """Test basic functionality."""
-    J = 20
-    lam = 0.1
-    result = gibbons_cs_null_var(J, lam)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gibbons_cs_null_var(lambda u: u, 0.5)
+    assert out["var_J"] == pytest.approx(1 / 12, abs=1e-10)
 
 
 def test_gb7381_edge():
-    """Test edge cases."""
-    J = 20
-    lam = 0.1
-    result = gibbons_cs_null_var(J, lam)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_cs_null_var(lambda u: u, 0.0)

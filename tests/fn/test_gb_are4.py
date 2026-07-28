@@ -1,20 +1,16 @@
-"""Tests for gb_are4.gibbons_are_kw."""
+"""Tests for gb_are4 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_are4 import gibbons_are_kw
 
 
 def test_gb_are4_basic():
-    """Test basic functionality."""
-    distribution = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_are_kw(distribution)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    for d in ("uniform", "normal", "logistic", "double_exponential"):
+        assert gibbons_are_kw(d)["above_bound"] is True
 
 
 def test_gb_are4_edge():
-    """Test edge cases."""
-    distribution = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_are_kw(distribution)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_are_kw("weibull")

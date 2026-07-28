@@ -1,19 +1,17 @@
-"""Tests for gb34mn.gibbons_runs_ud_mean."""
+"""Tests for gb34mn (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb34mn import gibbons_runs_ud_mean
 
 
 def test_gb34mn_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_runs_ud_mean(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = gibbons_runs_ud_mean(10)
+    assert out["mean"] == pytest.approx(19 / 3)
+    assert out["var"] == pytest.approx(131 / 90)
 
 
 def test_gb34mn_edge():
-    """Test edge cases."""
-    result = gibbons_runs_ud_mean(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_runs_ud_mean(2)

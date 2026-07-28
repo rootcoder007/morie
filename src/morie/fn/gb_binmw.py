@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2."""
+"""W-U linkage for the two-sample rank statistics."""
 
 import numpy as np
 
@@ -9,40 +9,45 @@ __all__ = ["gibbons_mw_binomial_link"]
 
 
 def gibbons_mw_binomial_link(W, m):
-    """
-    Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2
+    r"""The constant link between the rank-sum and Mann-Whitney forms
+    (Gibbons Ch. 6.6):
 
-    Formula: U = W - m(m+1)/2; two statistics differ by a constant function of m
+    .. math:: U = W - \frac{m(m + 1)}{2}.
+
+    The two statistics are the SAME test: W counts ranks, U counts
+    (X, Y) pairs with X > Y, and the offset m(m+1)/2 is the rank sum
+    a sample of m earns just by existing. Any p-value computed from
+    one applies verbatim to the other.
 
     Parameters
     ----------
-    W : array-like
-        Input data.
-    m : array-like
-        Input data.
+    W : float
+        Rank sum of the size-m sample; must be at least m(m+1)/2.
+    m : int
+        Size of the sample whose ranks were summed.
 
     Returns
     -------
-    result : dict
-        Keys: U
+    RichResult
+        keys: ``U``, ``W``, ``offset``, ``m``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.6
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 6.6.
     """
-    W = np.asarray(W, dtype=float)
-    n = int(W) if W.ndim == 0 else len(W)
-    result = float(np.mean(W))
-    se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    m = int(m)
+    if m < 1:
+        raise ValueError(f"m must be at least 1, got {m}.")
+    W = float(W)
+    off = m * (m + 1) / 2.0
+    if W < off:
+        raise ValueError(f"W = {W} is below the minimum possible rank sum {off}.")
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2",
-        }
+        payload={"U": float(W - off), "W": W, "offset": float(off), "m": m,
+                 "method": "U = W - m(m+1)/2 (Gibbons Ch. 6.6)"}
     )
 
 
 def cheatsheet():
-    return "gb_binmw: Mann-Whitney U relation to Wilcoxon rank-sum W: U = W - m(m+1)/2"
+    return "gb_binmw: U = W - m(m+1)/2; same test, two bookkeepings"

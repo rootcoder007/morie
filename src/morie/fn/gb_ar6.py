@@ -1,74 +1,70 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ARE of Wilcoxon rank-sum vs t-test under uniform distribution: 1.0."""
+"""ARE values at the uniform distribution."""
 
-import numpy as np
-from scipy import stats
-
+from ._gb_are import ARE_TABLE, efficacy_are
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_unif"]
 
 
-def gibbons_are_unif(distribution, cdf=None):
-    """
-    ARE of Wilcoxon rank-sum vs t-test under uniform distribution: 1.0
+def gibbons_are_unif(distribution="uniform", cdf=None):
+    r"""Exact asymptotic relative efficiencies at the uniform
+    distribution (Gibbons Table 13.3.1, PDF-verified, printed
+    p. 492).
 
-    Formula: ARE(Wilcoxon, t | Uniform) = 1.0
+    The signed-rank test is fully efficient (ARE = 1) against the t
+    at the uniform; the sign test achieves the Hodges-Lehmann lower
+    bound 1/3 here.
+
+    The table values are also RE-DERIVED here from the density via
+    the efficacy integrals, and both are returned -- the derivation
+    agreeing with the table is the check that neither was copied
+    wrong.
 
     Parameters
     ----------
-    distribution : array-like
-        Input data.
+    distribution : str
+        Accepted for interface compatibility; must name this module's
+        distribution.
+    cdf : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: ARE
+    RichResult
+        keys: ``wilcoxon_vs_t``, ``sign_vs_t``, ``sign_vs_wilcoxon``
+        (exact), ``derived`` (the same three from the efficacy
+        integrals), ``distribution``, ``method``.
 
     References
     ----------
-    Gibbons Ch 13
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Table 13.3.1.
     """
-    distribution = np.asarray(distribution, dtype=float)
-    n = int(distribution) if distribution.ndim == 0 else len(distribution)
-    if distribution.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    if distribution not in ("uniform",):
+        raise ValueError(
+            f"this module carries the uniform case, got {distribution!r}."
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "ARE of Wilcoxon rank-sum vs t-test under uniform distribution: 1.0",
-            }
-        )
-    x_sorted = np.sort(distribution)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(distribution), scale=np.std(distribution, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    import numpy as np
+    from scipy import stats
+
+    dens = {
+        "uniform": lambda x: stats.uniform.pdf(x, loc=-np.sqrt(3), scale=2 * np.sqrt(3)),
+        "normal": stats.norm.pdf,
+        "logistic": stats.logistic.pdf,
+        "double_exponential": stats.laplace.pdf,
+    }["uniform"]
+    derived = efficacy_are(dens)
+    exact = ARE_TABLE["uniform"]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "ARE of Wilcoxon rank-sum vs t-test under uniform distribution: 1.0",
+            **exact,
+            "derived": {k: derived[k] for k in exact},
+            "distribution": "uniform",
+            "method": "Gibbons Table 13.3.1 + efficacy re-derivation",
         }
     )
 
 
 def cheatsheet():
-    return "gb_ar6: ARE of Wilcoxon rank-sum vs t-test under uniform distribution: 1.0"
+    return "gb_ar6: Table 13.3.1 at the uniform; re-derived from the density"

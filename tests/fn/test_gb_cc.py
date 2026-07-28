@@ -1,24 +1,17 @@
-"""Tests for gb_cc.gibbons_continuity_corr."""
+"""Tests for gb_cc (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_cc import gibbons_continuity_corr
 
 
 def test_gb_cc_basic():
-    """Test basic functionality."""
-    T = np.random.default_rng(42).normal(0, 1, 100)
-    mu = 0.0
-    sigma = 1.0
-    result = gibbons_continuity_corr(T, mu, sigma)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    out = gibbons_continuity_corr(60, 50, 5.0)
+    assert out["z_corrected"] == pytest.approx(1.9)
+    assert out["p_two_sided"] > out["p_uncorrected"]  # always weakens
 
 
 def test_gb_cc_edge():
-    """Test edge cases."""
-    T = np.random.default_rng(42).normal(0, 1, 100)
-    mu = 0.0
-    sigma = 1.0
-    result = gibbons_continuity_corr(T, mu, sigma)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_continuity_corr(60, 50, 0.0)

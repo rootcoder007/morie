@@ -1,19 +1,16 @@
-"""Tests for gb_ktv.gibbons_kendall_tau_var."""
+"""Tests for gb_ktv (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_ktv import gibbons_kendall_tau_var
 
 
 def test_gb_ktv_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_kendall_tau_var(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = gibbons_kendall_tau_var(10)
+    assert out["var_tau"] == pytest.approx(2 * 25 / (9 * 90))
 
 
 def test_gb_ktv_edge():
-    """Test edge cases."""
-    result = gibbons_kendall_tau_var(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_kendall_tau_var(1)

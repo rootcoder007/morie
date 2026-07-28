@@ -1,22 +1,17 @@
-"""Tests for gb_mw2.gibbons_mw_rs_equiv."""
+"""Tests for gb_mw2 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_mw2 import gibbons_mw_rs_equiv
 
 
 def test_gb_mw2_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_mw_rs_equiv(x, y)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(9)
+    out = gibbons_mw_rs_equiv(rng.standard_normal(10), rng.standard_normal(12))
+    assert out["identity_holds"] is True
 
 
 def test_gb_mw2_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = gibbons_mw_rs_equiv(x, y)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_mw_rs_equiv([], [1.0])

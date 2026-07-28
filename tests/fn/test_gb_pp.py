@@ -1,22 +1,19 @@
-"""Tests for gb_pp.gibbons_pp_plot."""
+"""Tests for gb_pp (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_pp import gibbons_pp_plot
 
 
 def test_gb_pp_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    F0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_pp_plot(x, F0)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from scipy import stats
+    rng = np.random.default_rng(4)
+    x = rng.standard_normal(150)
+    assert gibbons_pp_plot(x)["max_departure"] == pytest.approx(
+        stats.kstest(x, "norm").statistic, abs=1e-12)
 
 
 def test_gb_pp_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    F0 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_pp_plot(x, F0)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_pp_plot([1.0])

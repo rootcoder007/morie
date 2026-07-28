@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Empirical quantile function Q_n(u) as inverse of EDF."""
+"""Empirical quantile function."""
 
 import numpy as np
 
@@ -9,35 +9,52 @@ __all__ = ["gibbons_emp_quantile"]
 
 
 def gibbons_emp_quantile(u, data):
-    """
-    Empirical quantile function Q_n(u) as inverse of EDF
+    r"""Section 2.3.1: the empirical quantile function is the
+    left-continuous inverse of the EDF,
 
-    Formula: Q_n(u) = X_(i) if (i-1)/n < u <= i/n
+    .. math:: Q_n(u) = X_{(i)} \quad\text{for}\quad
+              \frac{i-1}{n} < u \le \frac{i}{n},
+
+    i.e. the smallest order statistic whose EDF value reaches u --
+    NOT an interpolated quantile: Q_n is a step function taking only
+    observed values, which is what makes it distribution-free.
 
     Parameters
     ----------
-    u : array-like
-        Input data.
+    u : float or array-like in (0, 1]
+        Probability levels.
     data : array-like
-        Input data.
+        Sample.
 
     Returns
     -------
-    result : dict
-        Keys: quantile
+    RichResult
+        keys: ``quantile``, ``index`` (1-based i), ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 2.3.1
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 2.3.1.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    result = float(np.mean(data))
-    se = float(np.std(data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    x = np.sort(np.asarray(data, dtype=float).ravel())
+    n = x.size
+    if n < 1:
+        raise ValueError("data must be non-empty.")
+    uu = np.atleast_1d(np.asarray(u, dtype=float))
+    if np.any((uu <= 0) | (uu > 1)):
+        raise ValueError("u must lie in (0, 1].")
+    idx = np.ceil(uu * n).astype(int)  # smallest i with i/n >= u
+    q = x[idx - 1]
+    scalar = np.isscalar(u) or np.ndim(u) == 0
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Empirical quantile function Q_n(u) as inverse of EDF"}
+        payload={
+            "quantile": float(q[0]) if scalar else q,
+            "index": int(idx[0]) if scalar else idx,
+            "n": int(n),
+            "method": "Q_n(u) = X_(ceil(nu)), step function (Gibbons Ch. 2.3.1)",
+        }
     )
 
 
 def cheatsheet():
-    return "gb_eqf: Empirical quantile function Q_n(u) as inverse of EDF"
+    return "gb_eqf: Q_n(u) = X_(ceil(nu)); a step function, never interpolated"

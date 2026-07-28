@@ -1,22 +1,17 @@
-"""Tests for gb434bt.gibbons_ks_bt_formula."""
+"""Tests for gb434bt (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb434bt import gibbons_ks_bt_formula
 
 
 def test_gb434bt_basic():
-    """Test basic functionality."""
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_ks_bt_formula(c, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from scipy import stats
+    assert gibbons_ks_bt_formula(0.25, 20)["p_exceed"] == pytest.approx(
+        stats.ksone.sf(0.25, 20), abs=1e-10)
 
 
 def test_gb434bt_edge():
-    """Test edge cases."""
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = gibbons_ks_bt_formula(c, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_ks_bt_formula(1.5, 10)

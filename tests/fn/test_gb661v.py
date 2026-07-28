@@ -1,20 +1,15 @@
-"""Tests for gb661v.gibbons_mw_var."""
+"""Tests for gb661v (Gibbons shelf)."""
+
+import numpy as np
+import pytest
 
 from morie.fn.gb661v import gibbons_mw_var
 
 
 def test_gb661v_basic():
-    """Test basic functionality."""
-    m = 10
-    n = 100
-    result = gibbons_mw_var(m, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert gibbons_mw_var(6, 8)["var"] == pytest.approx(60.0)
 
 
 def test_gb661v_edge():
-    """Test edge cases."""
-    m = 10
-    n = 100
-    result = gibbons_mw_var(m, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_mw_var(0, 5)

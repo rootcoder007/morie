@@ -1,19 +1,16 @@
-"""Tests for gb2111c.gibbons_elementary_coverage_beta."""
+"""Tests for gb2111c (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb2111c import gibbons_elementary_coverage_beta
 
 
 def test_gb2111c_basic():
-    """Test basic functionality."""
-    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
-    result = gibbons_elementary_coverage_beta(x)
-    assert "estimate" in result
-    assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))  # N6: was a generator-guessed value
+    out = gibbons_elementary_coverage_beta(20)
+    assert out["mean"] == pytest.approx(1 / 21)
 
 
 def test_gb2111c_edge():
-    """Test edge cases."""
-    result = gibbons_elementary_coverage_beta(np.array([42.0]))
-    assert result["n"] == 1
+    with pytest.raises(ValueError):
+        gibbons_elementary_coverage_beta(0)

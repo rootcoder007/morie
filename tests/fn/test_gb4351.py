@@ -1,22 +1,16 @@
-"""Tests for gb4351.gibbons_ks_chi2_approx."""
+"""Tests for gb4351 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb4351 import gibbons_ks_chi2_approx
 
 
 def test_gb4351_basic():
-    """Test basic functionality."""
-    n = 100
-    Dplus = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_ks_chi2_approx(n, Dplus)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = gibbons_ks_chi2_approx(400, 0.05)
+    assert out["p_value"] == pytest.approx(np.exp(-2 * 400 * 0.0025), abs=1e-12)
 
 
 def test_gb4351_edge():
-    """Test edge cases."""
-    n = 100
-    Dplus = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_ks_chi2_approx(n, Dplus)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_ks_chi2_approx(400, 0.0)

@@ -1,24 +1,16 @@
-"""Tests for gb322.gibbons_total_runs_dist."""
+"""Tests for gb322 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb322 import gibbons_total_runs_dist
 
 
 def test_gb322_basic():
-    """Test basic functionality."""
-    r = 10
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_total_runs_dist(r, n1, n2)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    total = sum(gibbons_total_runs_dist(r, 4, 5)["pmf"] for r in range(2, 10))
+    assert total == pytest.approx(1.0, abs=1e-12)
 
 
 def test_gb322_edge():
-    """Test edge cases."""
-    r = 10
-    n1 = np.random.default_rng(42).normal(0, 1, 100)
-    n2 = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_total_runs_dist(r, n1, n2)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_total_runs_dist(1, 4, 5)

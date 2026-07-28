@@ -1,20 +1,17 @@
-"""Tests for gb_are5.gibbons_are_scale_tests."""
+"""Tests for gb_are5 (Gibbons shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.gb_are5 import gibbons_are_scale_tests
 
 
 def test_gb_are5_basic():
-    """Test basic functionality."""
-    distribution = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_are_scale_tests(distribution)
-    assert isinstance(result, dict)
-    assert "statistic" in result or "p_value" in result or "estimate" in result
+    out = gibbons_are_scale_tests()
+    assert out["are_mood_f"] == pytest.approx(15 / (2 * np.pi**2))  # PDF-verified
+    assert out["are_klotz_f"] == 1.0
 
 
 def test_gb_are5_edge():
-    """Test edge cases."""
-    distribution = np.random.default_rng(42).normal(0, 1, 100)
-    result = gibbons_are_scale_tests(distribution)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        gibbons_are_scale_tests("uniform")

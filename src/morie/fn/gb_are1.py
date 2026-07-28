@@ -1,74 +1,51 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ARE of sign test relative to Wilcoxon signed-rank test."""
+"""ARE of the sign test against the Wilcoxon signed-rank test."""
 
 import numpy as np
-from scipy import stats
 
+from ._gb_are import efficacy_are
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_sign_wilcoxon"]
 
 
 def gibbons_are_sign_wilcoxon(f, cdf=None):
-    """
-    ARE of sign test relative to Wilcoxon signed-rank test
+    r"""General-density ARE of the sign test relative to the Wilcoxon
+    signed-rank test (Gibbons Ch. 13.3):
 
-    Formula: ARE(sign, Wilcoxon) = f^2(0) / (3 * [integral f^2(f)dx]^2) * pi/2
+    .. math:: \mathrm{ARE}(K, T^+) = \frac{f(0)^2}
+              {3\big(\int_{-\infty}^{\infty} f^2(x)\,dx\big)^2}.
+
+    Scale-free: replacing f by its rescaled version leaves the ratio
+    unchanged, which the tests verify -- an ARE that moved under
+    rescaling would be a units bug.
 
     Parameters
     ----------
-    f : array-like
-        Input data.
+    f : callable
+        Density symmetric about 0.
+    cdf : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: ARE
+    RichResult
+        keys: ``are``, ``f0``, ``int_f2``, ``method``.
 
     References
     ----------
-    Gibbons Ch 13.3.1
+    Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
+    Statistical Inference* (5th ed.). CRC Press. Ch. 13.3.
     """
-    f = np.asarray(f, dtype=float)
-    n = int(f) if f.ndim == 0 else len(f)
-    if f.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "ARE of sign test relative to Wilcoxon signed-rank test",
-            }
-        )
-    x_sorted = np.sort(f)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(f), scale=np.std(f, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    out = efficacy_are(f)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "ARE of sign test relative to Wilcoxon signed-rank test",
+            "are": out["sign_vs_wilcoxon"], "f0": out["f0"],
+            "int_f2": out["int_f2"],
+            "method": "ARE(K, T+) = f(0)^2/[3 (int f^2)^2] (Gibbons Ch. 13.3)",
         }
     )
 
 
 def cheatsheet():
-    return "gb_are1: ARE of sign test relative to Wilcoxon signed-rank test"
+    return "gb_are1: f(0)^2 / [3 (int f^2)^2]; scale-free by construction"
