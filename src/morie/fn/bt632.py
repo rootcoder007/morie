@@ -1,55 +1,37 @@
-""".632 error estimator combining apparent and OOB."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+""".632 error estimator from apparent and out-of-bag errors."""
 
 from ._richresult import RichResult
 
 __all__ = ["boot_632_estimator"]
 
 
-def boot_632_estimator(err_app, err_oob):
-    """
-    .632 error estimator combining apparent and OOB
+def boot_632_estimator(err_app, err_oob, gamma=None):
+    """Efron and Tibshirani's (1997) .632 prediction-error estimator,
+    `.368 err_app + .632 err_oob`, with the .632+ refinement when the
+    no-information rate is supplied.
 
-    Formula: ê_.632 = .368 ê_app + .632 ê_OOB
-
-    Parameters
-    ----------
-    err_app : array-like
-        Input data.
-    err_oob : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: err_632
+    One estimator across the library: the computation is
+    :func:`morie.fn.eslo63.esl_oob_632`, which carries the full
+    derivation -- why the second argument must be the OUT-OF-BAG
+    (leave-one-out bootstrap) error and not the naive bootstrap
+    error, the book-exact 1-NN counterexample, and the .632+ weight.
+    This entry point exists for the bootstrap shelf's naming and adds
+    nothing beyond the alias record.
 
     References
     ----------
-    Efron & Tibshirani (1997)
+    Efron, B. and Tibshirani, R. (1997), "Improvements on
+    cross-validation: the .632+ bootstrap method", *JASA*
+    92:548-560.
     """
-    err_app = np.atleast_1d(np.asarray(err_app, dtype=float))
-    n = len(err_app)
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": ".632 error estimator combining apparent and OOB"}
-        )
-    estimate = np.median(err_app)
-    se = 1.2533 * np.std(err_app, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": ".632 error estimator combining apparent and OOB",
-        }
-    )
+    from .eslo63 import esl_oob_632
+
+    out = esl_oob_632(err_app, err_oob, gamma=gamma)
+    payload = dict(out)
+    payload["alias_of"] = "morie.fn.eslo63.esl_oob_632"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "bt632: .632 error estimator combining apparent and OOB"
+    return "bt632: alias of eslo63 -- one .632 implementation in the library"

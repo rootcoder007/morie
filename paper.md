@@ -388,7 +388,18 @@ probability-weighted-moment fits, Smith and Weissman
 [-@ferroSegers2003inference] and Northrop [-@northrop2015efficient]
 for the extremal index, and Naveau, Guillou, Cooley and Diebolt
 [-@naveau2009modelling] for the madogram estimate of extremal
-dependence.
+dependence. The resampling modules follow Efron [-@efron1979bootstrap]
+and Efron and Tibshirani [-@efronTibshirani1993introduction] for the
+bootstrap, Quenouille [-@quenouille1949approximate] for the
+jackknife, and Davison and Hinkley [-@davisonHinkley1997bootstrap]
+for the ratio interval; the range-volatility modules follow
+Parkinson [-@parkinson1980extreme] and Garman and Klass
+[-@garmanKlass1980estimation], the realized-volatility aggregation
+Andersen, Bollerslev, Diebold and Labys
+[-@andersenBollerslevDieboldLabys2003], and the microstructure-noise
+decomposition Zhang, Mykland and A\"it-Sahalia
+[-@zhangMyklandAitSahalia2005tale] and A\"it-Sahalia, Mykland and
+Zhang [-@aitSahaliaMyklandZhang2005often].
 
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
@@ -412,6 +423,23 @@ findings are the work of the framework author.
 
 Aitchison, John. 1986. *The Statistical Analysis of Compositional Data*.
 Monographs on Statistics and Applied Probability. Chapman & Hall.
+
+</div>
+
+<div id="ref-aitSahaliaMyklandZhang2005often" class="csl-entry">
+
+Aït-Sahalia, Yacine, Per A. Mykland, and Lan Zhang. 2005. “How Often to
+Sample a Continuous-Time Process in the Presence of Market
+Microstructure Noise.” *Review of Financial Studies* 18 (2): 351–416.
+<https://doi.org/10.1093/rfs/hhi016>.
+
+</div>
+
+<div id="ref-andersenBollerslevDieboldLabys2003" class="csl-entry">
+
+Andersen, Torben G., Tim Bollerslev, Francis X. Diebold, and Paul Labys.
+2003. “Modeling and Forecasting Realized Volatility.” *Econometrica* 71
+(2): 579–625. <https://doi.org/10.1111/1468-0262.00418>.
 
 </div>
 
@@ -571,6 +599,14 @@ Springer.
 
 </div>
 
+<div id="ref-davisonHinkley1997bootstrap" class="csl-entry">
+
+Davison, Anthony C., and David V. Hinkley. 1997. *Bootstrap Methods and
+Their Application*. Cambridge University Press.
+<https://doi.org/10.1017/CBO9780511802843>.
+
+</div>
+
 <div id="ref-dekkers1989moment" class="csl-entry">
 
 Dekkers, Arnold L. M., John H. J. Einmahl, and Laurens de Haan. 1989. “A
@@ -624,6 +660,13 @@ Efron, Bradley, and Robert Tibshirani. 1997. “Improvements on
 Cross-Validation: The .632+ Bootstrap Method.” *Journal of the American
 Statistical Association* 92 (438): 548–60.
 <https://doi.org/10.1080/01621459.1997.10474007>.
+
+</div>
+
+<div id="ref-efronTibshirani1993introduction" class="csl-entry">
+
+Efron, Bradley, and Robert J. Tibshirani. 1993. *An Introduction to the
+Bootstrap*. Chapman; Hall. <https://doi.org/10.1201/9780429246593>.
 
 </div>
 
@@ -688,6 +731,14 @@ Boosting Machine.” *The Annals of Statistics* 29 (5): 1189–232.
 Fuller, Wayne A. 1977. “Some Properties of a Modification of the Limited
 Information Estimator.” *Econometrica* 45 (4): 939–53.
 <https://doi.org/10.2307/1912683>.
+
+</div>
+
+<div id="ref-garmanKlass1980estimation" class="csl-entry">
+
+Garman, Mark B., and Michael J. Klass. 1980. “On the Estimation of
+Security Price Volatilities from Historical Data.” *Journal of Business*
+53 (1): 67–78. <https://doi.org/10.1086/296072>.
 
 </div>
 
@@ -1096,6 +1147,14 @@ ed. McGraw-Hill.
 
 </div>
 
+<div id="ref-parkinson1980extreme" class="csl-entry">
+
+Parkinson, Michael. 1980. “The Extreme Value Method for Estimating the
+Variance of the Rate of Return.” *Journal of Business* 53 (1): 61–65.
+<https://doi.org/10.1086/296071>.
+
+</div>
+
 <div id="ref-parzen1962estimation" class="csl-entry">
 
 Parzen, Emanuel. 1962. “On Estimation of a Probability Density Function
@@ -1160,6 +1219,14 @@ Complexity.” *Proceedings of the National Academy of Sciences* 88 (6):
 Powell, James L., James H. Stock, and Thomas M. Stoker. 1989.
 “Semiparametric Estimation of Index Coefficients.” *Econometrica* 57
 (6): 1403–30. <https://doi.org/10.2307/1913713>.
+
+</div>
+
+<div id="ref-quenouille1949approximate" class="csl-entry">
+
+Quenouille, Maurice H. 1949. “Approximate Tests of Correlation in
+Time-Series.” *Journal of the Royal Statistical Society, Series B* 11
+(1): 68–84. <https://doi.org/10.1111/j.2517-6161.1949.tb00023.x>.
 
 </div>
 
@@ -1501,6 +1568,15 @@ Zandieh, Amir, Majid Daliri, Milad Hadian, and Vahab Mirrokni. 2026.
 “TurboQuant: Online Vector Quantization with Near-Optimal Distortion
 Rate.” *International Conference on Learning Representations (ICLR)*.
 <https://doi.org/10.48550/arXiv.2504.19874>.
+
+</div>
+
+<div id="ref-zhangMyklandAitSahalia2005tale" class="csl-entry">
+
+Zhang, Lan, Per A. Mykland, and Yacine Aït-Sahalia. 2005. “A Tale of Two
+Time Scales: Determining Integrated Volatility with Noisy High-Frequency
+Data.” *Journal of the American Statistical Association* 100 (472):
+1394–411. <https://doi.org/10.1198/016214505000000169>.
 
 </div>
 
