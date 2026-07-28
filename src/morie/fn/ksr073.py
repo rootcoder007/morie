@@ -1,69 +1,83 @@
-"""Corollary giving efficiency of nonparametric maximum likelihood estimator under Donsker and rate conditions."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Joint convergence of parameter and nuisance (Kosorok Cor 3.2)."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_ch3_max_likelihood_efficiency_corollary"]
+__all__ = ["kosorok_joint_convergence"]
 
 
-def kosorok_ch3_max_likelihood_efficiency_corollary(theta_hat_n, theta_0, eta_hat_n, eta_0, Psi_dot_0, Z, n):
-    """
-    Corollary giving efficiency of nonparametric maximum likelihood estimator under Donsker and rate conditions
+def kosorok_joint_convergence(psi_dot, scores, n=None):
+    r"""Joint weak convergence of the parameter and the nuisance
+    (Kosorok Cor. 3.2, p. 47):
 
-    Formula: sqrt(n)( theta_hat_n - theta_0, eta_hat_n - eta_0 ) => -Psi_dot_0^{-1} Z under no-bias and stochastic equicontinuity
+    .. math:: \sqrt n\big(\hat\theta_n - \theta_0,\;
+              \hat\eta_n - \eta_0\big)
+              \rightsquigarrow -\dot\Psi_0^{-1} Z,
+
+    under the no-bias condition and stochastic equicontinuity.
+
+    JOINTLY, not separately, and that is the content. The two
+    estimates are correlated -- they solve the same estimating
+    equation -- so a valid confidence region for a function of both,
+    or for :math:`\theta` after substituting :math:`\hat\eta`,
+    needs the joint law. Reporting marginal limits and combining
+    them as if independent understates the variability, and
+    ``jointly`` records that this is the joint statement.
+
+    The single operator :math:`\dot\Psi_0^{-1}` acting on one
+    Gaussian limit is what delivers it: both blocks come from
+    inverting the SAME derivative, which is why their dependence is
+    determined rather than an extra assumption.
 
     Parameters
     ----------
-    theta_hat_n : array-like
-        Input data.
-    theta_0 : array-like
-        Input data.
-    eta_hat_n : array-like
-        Input data.
-    eta_0 : array-like
-        Input data.
-    Psi_dot_0 : array-like
-        Input data.
-    Z : array-like
-        Input data.
-    n : array-like
-        Input data.
+    psi_dot : array-like
+        The derivative operator :math:`\dot\Psi_0`, square and
+        invertible, over the stacked (theta, eta) coordinates.
+    scores : array-like, shape (n, d)
+        Stacked influence contributions.
+    n : int, optional
+        Sample size; taken from ``scores`` otherwise.
 
     Returns
     -------
-    result : dict
-        Keys: estimate, se
-
+    RichResult
+        keys: ``avar``, ``se``, ``correlation``, ``jointly`` (True),
+        ``operator_invertible``, ``conditions``, ``n``, ``d``,
+        ``method``.
     References
     ----------
-    Kosorok (2008), Cor 3.2, p. 47
+    Kosorok, Cor. 3.2, p. 47.
     """
-    theta_hat_n = np.atleast_1d(np.asarray(theta_hat_n, dtype=float))
-    n = len(theta_hat_n)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Corollary giving efficiency of nonparametric maximum likelihood estimator under Donsker and rate conditions",
-            }
-        )
-    estimate = np.median(theta_hat_n)
-    se = 1.2533 * np.std(theta_hat_n, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Corollary giving efficiency of nonparametric maximum likelihood estimator under Donsker and rate conditions",
-        }
-    )
+    S = np.atleast_2d(np.asarray(scores, dtype=float))
+    if S.shape[0] < S.shape[1]:
+        S = S.T
+    nn = S.shape[0] if n is None else int(n)
+    if nn < 2:
+        raise ValueError(f"n must be at least 2, got {nn}.")
+    d = S.shape[1]
+    D = np.atleast_2d(np.asarray(psi_dot, dtype=float))
+    if D.shape != (d, d):
+        raise ValueError(f"psi_dot must be {d} by {d}, got {D.shape}.")
+    ok = bool(np.linalg.matrix_rank(D) == d)
+    Sigma = S.T @ S / S.shape[0]
+    Di = np.linalg.pinv(D)
+    avar = Di @ Sigma @ Di.T
+    sd = np.sqrt(np.maximum(np.diag(avar), 0.0))
+    with np.errstate(invalid="ignore", divide="ignore"):
+        corr = avar / np.outer(sd, sd)
+    return RichResult(payload={
+        "avar": avar, "se": sd / np.sqrt(nn),
+        "correlation": np.where(np.isfinite(corr), corr, 0.0),
+        "jointly": True, "operator_invertible": ok,
+        "conditions": "the no-bias condition (3.6) and stochastic equicontinuity",
+        "warning": "theta-hat and eta-hat solve the SAME equation and are correlated; "
+                   "combining marginal limits as if independent understates variability",
+        "n": int(nn), "d": int(d),
+        "method": "Joint convergence (Cor. 3.2); one operator inverse gives both blocks and their dependence"})
 
 
 def cheatsheet():
-    return "ksr073: Corollary giving efficiency of nonparametric maximum likelihood estimator under Donsker and rate conditions"
+    return "ksr073: theta-hat and eta-hat are correlated -- the JOINT law is what you need"

@@ -1,65 +1,79 @@
-"""Efron self-consistency Z-estimator representation of the Kaplan-Meier survival estimator."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Kaplan-Meier Z-estimator map Psi(S)(t)."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_ch2_kaplan_meier_self_consistency"]
+__all__ = ["kosorok_survival_psi"]
 
 
-def kosorok_ch2_kaplan_meier_self_consistency(S, S_0, L, G, t):
-    """
-    Efron self-consistency Z-estimator representation of the Kaplan-Meier survival estimator
+def kosorok_survival_psi(S, t_grid, S0, L, G):
+    r"""The estimating map whose root is the Kaplan-Meier estimator
+    (Kosorok Eq. 2.11, p. 26):
 
-    Formula: Psi(S)(t) = P psi_{S,t} = S_0(t) L(t) + integral_0^t S_0(u)/S(u) dG(u) S(t) - S(t)
+    .. math:: \Psi(S)(t) = P\psi_{S,t}
+              = S_0(t)L(t)
+              + \int_0^t \frac{S_0(u)}{S(u)}\,dG(u)\,S(t) - S(t).
+
+    ``S0``, ``L`` and ``G`` are SUPPLIED. The section fixes them for
+    its own censoring model, and the passage stating (2.11) does not
+    define them unambiguously enough to reconstruct; substituting
+    plausible empirical stand-ins was tried and does NOT make the
+    Kaplan-Meier estimator a root of the resulting map, so guessing
+    them would have produced a module that looked right and was
+    wrong. The printed functional is computed from whatever the
+    caller supplies.
+
+    Survival analysis becomes Z-ESTIMATION: instead of writing the
+    Kaplan-Meier estimator down and studying it directly, it is
+    characterised as the zero of a map between function spaces, and
+    the general Z-estimator theory of Chapter 2 then supplies
+    consistency, weak convergence and the bootstrap at once.
+
+    The parameter here is a FUNCTION, and the norm is uniform, which
+    is why the theory needs empirical processes rather than
+    finite-dimensional asymptotics. ``sup_norm`` reports
+    :math:`\|\Psi(S)\|_\infty`, and it is near zero exactly when
+    ``S`` is close to the Kaplan-Meier solution.
 
     Parameters
     ----------
     S : array-like
-        Input data.
-    S_0 : array-like
-        Input data.
+        Candidate survival function on ``t_grid``.
+    t_grid : array-like
+        Grid everything is supplied on.
+    S0 : array-like
+        The true survival function on ``t_grid``.
     L : array-like
-        Input data.
+        The section's ``L`` on ``t_grid``.
     G : array-like
-        Input data.
-    t : array-like
-        Input data.
+        The section's ``G`` on ``t_grid``.
 
     Returns
     -------
-    result : dict
-        Keys: estimate, se
-
+    RichResult
+        keys: ``t_grid``, ``psi``, ``sup_norm``, ``parameter_is``,
+        ``norm``, ``n``, ``method``.
     References
     ----------
-    Kosorok (2008), Ch 2, Eq 2.11, p. 26
+    Kosorok, Ch. 2, Eq. (2.11), p. 26.
     """
-    S = np.atleast_1d(np.asarray(S, dtype=float))
-    n = len(S)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Efron self-consistency Z-estimator representation of the Kaplan-Meier survival estimator",
-            }
-        )
-    estimate = np.median(S)
-    se = 1.2533 * np.std(S, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Efron self-consistency Z-estimator representation of the Kaplan-Meier survival estimator",
-        }
-    )
+    from ._kosorok import survival_psi
+
+    tg = np.atleast_1d(np.asarray(t_grid, dtype=float))
+    if tg.size < 2:
+        raise ValueError(f"need at least 2 grid points, got {tg.size}.")
+    psi = survival_psi(S, tg, S0, L, G)
+    return RichResult(payload={
+        "t_grid": tg, "psi": psi,
+        "sup_norm": float(np.max(np.abs(psi))),
+        "parameter_is": "a FUNCTION, so the norm is uniform",
+        "norm": "supremum",
+        "components_supplied": True,
+        "n": int(tg.size),
+        "method": "Kaplan-Meier as a Z-estimator (Eq. 2.11); its root is the estimator"})
 
 
 def cheatsheet():
-    return "ksr047: Efron self-consistency Z-estimator representation of the Kaplan-Meier survival estimator"
+    return "ksr047: Kaplan-Meier is the ROOT of a map between function spaces"

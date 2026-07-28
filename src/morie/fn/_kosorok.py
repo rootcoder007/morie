@@ -27,6 +27,8 @@ replaces already had that problem.
 import numpy as np
 
 __all__ = [
+    "z_estimator_map", "sup_difference", "survival_psi",
+    "efficient_information",
     "empirical_df", "empirical_process", "bridge_cov", "sup_norm",
     "bootstrap_multiplier_process", "bracketing_number_monotone",
     "covering_number_grid", "hadamard_derivative", "cox_score",
@@ -250,6 +252,79 @@ def cox_score(beta, Z, time, event):
         loglik += lin[i] - (np.log(s0) + lin.max())
     return {"score": U, "information": I, "loglik": float(loglik),
             "n_events": int(event.sum()), "n": int(n)}
+
+
+# --- Z- and M-estimator machinery (Ch. 2-3) -----------------------
+
+def z_estimator_map(theta, psi, data):
+    """Empirical criterion Psi_n(theta) = P_n psi_theta."""
+    vals = np.asarray([psi(theta, d) for d in data], dtype=float)
+    return vals.mean(axis=0)
+
+
+def sup_difference(f, g, grid):
+    """||f - g||_L on a grid: the uniform norm the Z-estimator
+    theorems of Ch. 2 are stated in."""
+    a = np.asarray([f(v) for v in grid], dtype=float)
+    b = np.asarray([g(v) for v in grid], dtype=float)
+    return float(np.max(np.abs(a - b)))
+
+
+def survival_psi(S, t_grid, S0, L, G):
+    r"""The Kaplan-Meier Z-estimator map (Kosorok Eq. 2.11, p. 26):
+
+    .. math:: \Psi(S)(t) = S_0(t)L(t)
+              + \int_0^t \frac{S_0(u)}{S(u)}\,dG(u)\,S(t) - S(t).
+
+    Implemented exactly as printed. ``S0``, ``L`` and ``G`` are
+    SUPPLIED rather than inferred: the section fixes them for its own
+    censoring model, and the excerpt that states (2.11) does not
+    define them unambiguously enough to reconstruct without guessing.
+    Substituting plausible-looking empirical stand-ins does not make
+    the Kaplan-Meier estimator a root -- checked, it does not -- so
+    they are the caller's to provide, and the module computes the
+    printed functional of them.
+    """
+    tg = np.asarray(t_grid, dtype=float)
+    Sv = np.asarray(S, dtype=float)
+    S0v = np.asarray(S0, dtype=float)
+    Lv = np.asarray(L, dtype=float)
+    Gv = np.asarray(G, dtype=float)
+    for name, arr in (("S", Sv), ("S0", S0v), ("L", Lv), ("G", Gv)):
+        if arr.size != tg.size:
+            raise ValueError(
+                f"{name} has {arr.size} entries for {tg.size} grid points.")
+    dG = np.diff(np.concatenate([[0.0], Gv]))
+    safe = np.where(Sv > 0, Sv, np.inf)
+    integ = np.cumsum(S0v / safe * dG)
+    return S0v * Lv + integ * Sv - Sv
+
+
+def efficient_information(scores, nuisance_scores):
+    r"""Efficient information
+    :math:`\tilde I = P[\tilde\ell\tilde\ell']` where
+    :math:`\tilde\ell` is the score for theta with the closed
+    linear span of the NUISANCE scores projected out
+    (Kosorok Ch. 3).
+
+    The projection is the whole content: the information for theta
+    in the presence of an unknown nuisance is never larger than the
+    information when it is known, and the shortfall is exactly what
+    the nuisance costs.
+    """
+    s = np.atleast_2d(np.asarray(scores, dtype=float))
+    if s.shape[0] < s.shape[1]:
+        s = s.T
+    b = np.atleast_2d(np.asarray(nuisance_scores, dtype=float))
+    if b.shape[0] != s.shape[0]:
+        b = b.T
+    if b.size and b.shape[0] == s.shape[0]:
+        coef, *_ = np.linalg.lstsq(b, s, rcond=None)
+        eff = s - b @ coef
+    else:
+        eff = s
+    n = eff.shape[0]
+    return eff.T @ eff / n, eff
 
 
 def cheatsheet():
