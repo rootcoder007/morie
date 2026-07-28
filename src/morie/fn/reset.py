@@ -55,7 +55,17 @@ def ramsey_reset_test(
     k = X_arr.shape[1]
 
     # Augmented regressors: y_hat^2, y_hat^3, ...
-    aug_cols = [y_hat**p for p in range(2, power + 1)]
+    # Scaled to unit maximum first. This leaves the column span of the
+    # augmented design unchanged, so it cannot alter F in exact
+    # arithmetic, but cubing an unscaled y_hat makes the condition
+    # number grow with the SIXTH power of the response scale. The same
+    # defect was present in morie.fn.rmsyt, morie.fn.ramsy and the R
+    # implementation, where it turned an F of 315.08 into 125.59 at a
+    # response scale of 1000 and negative on another design.
+    _scale = float(np.max(np.abs(y_hat)))
+    if not np.isfinite(_scale) or _scale <= 0:
+        _scale = 1.0
+    aug_cols = [(y_hat / _scale) ** p for p in range(2, power + 1)]
     q = len(aug_cols)
     X_aug = np.column_stack([X_arr] + aug_cols)
 

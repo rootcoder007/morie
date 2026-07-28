@@ -1,12 +1,21 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ramsey RESET test for functional form."""
 
+# NOTE: the computation lives in morie.fn.rsetf.reset_core. This
+# module previously carried its own copy, which raised UNSCALED
+# fitted values to powers; cubing them makes the condition number
+# of the augmented design grow with the sixth power of the response
+# scale, and the same defect was present in morie.fn.reset,
+# morie.fn.rmsyt, morie.fn.ramsy and the R implementation. One core,
+# one fix.
+
+
 from __future__ import annotations
 
 import numpy as np
-from scipy import stats as sp_stats
 
 from ._containers import TestResult
+from .rsetf import reset_core
 
 
 def ramsey_reset_test(
@@ -34,45 +43,23 @@ def ramsey_reset_test(
     TestResult
     """
     X = np.asarray(X, dtype=float)
-    y = np.asarray(y, dtype=float)
+    y = np.asarray(y, dtype=float).ravel()
     if X.ndim == 1:
         X = X.reshape(-1, 1)
-    n, p = X.shape
-    if n < p + power + 1:
-        raise ValueError("Not enough observations.")
-
-    beta = np.linalg.lstsq(X, y, rcond=None)[0]
-    y_hat = X @ beta
-    resid_r = y - y_hat
-    rss_r = np.sum(resid_r**2)
-
-    aug_cols = [X]
-    for pw in range(2, power + 1):
-        aug_cols.append((y_hat**pw).reshape(-1, 1))
-    X_aug = np.hstack(aug_cols)
-    q = X_aug.shape[1]
-
-    beta_aug = np.linalg.lstsq(X_aug, y, rcond=None)[0]
-    resid_u = y - X_aug @ beta_aug
-    rss_u = np.sum(resid_u**2)
-
-    df_num = power - 1
-    df_den = n - q
-    f_stat = ((rss_r - rss_u) / df_num) / (rss_u / df_den) if rss_u > 1e-12 else np.inf
-    pval = sp_stats.f.sf(f_stat, df_num, df_den)
-
+    n = X.shape[0]
+    X_int = np.column_stack([np.ones(n), X])
+    powers = list(range(2, int(power) + 1))
+    f, pv, ssr_r, ssr_u, df1, df2, n, _ = reset_core(y, X_int, powers)
     return TestResult(
-        test_name="Ramsey RESET test",
-        statistic=float(f_stat),
-        p_value=float(pval),
-        df=float(df_num),
+        test_name="Ramsey RESET",
+        statistic=float(f),
+        p_value=float(pv),
+        df=float(df1),
+        method=f"RESET with powers 2..{int(power)}",
         n=n,
-        method=f"power={power}",
-        extra={"df_num": df_num, "df_den": df_den},
+        extra={"df_num": df1, "df_den": df2, "powers": powers,
+               "ssr_restricted": ssr_r, "ssr_unrestricted": ssr_u},
     )
-
-
-ramsy = ramsey_reset_test
 
 
 def cheatsheet() -> str:

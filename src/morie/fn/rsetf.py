@@ -16,7 +16,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ramsey_reset"]
+__all__ = ["ramsey_reset", "reset_core"]
 
 _METHOD = "Ramsey RESET test for functional-form misspecification"
 
@@ -111,6 +111,39 @@ def _f_upper_tail(f, df1, df2):
     if not np.isfinite(f) or f <= 0 or df1 <= 0 or df2 <= 0:
         return float("nan")
     return _betai(df2 / 2.0, df1 / 2.0, df2 / (df2 + df1 * f))
+
+
+def reset_core(y, X, powers=(2, 3)):
+    """Shared native core: returns (F, p, ssr_r, ssr_u, df1, df2, n, p_cols).
+
+    Kept separate so morie.fn.reset, morie.fn.rmsyt and morie.fn.ramsy --
+    which each carried their own copy of this arithmetic, all of them
+    raising unscaled fitted values to powers -- can delegate here rather
+    than repeat the conditioning defect four times over.
+    """
+    yv = np.asarray(y, dtype=float).ravel()
+    Xm = np.atleast_2d(np.asarray(X, dtype=float))
+    if Xm.shape[0] != yv.size and Xm.shape[1] == yv.size:
+        Xm = Xm.T
+    n, p = Xm.shape
+    pw = [int(v) for v in powers]
+    q = len(pw)
+    beta_r, *_ = np.linalg.lstsq(Xm, yv, rcond=None)
+    yhat = Xm @ beta_r
+    res_r = yv - yhat
+    ssr_r = float(res_r @ res_r)
+    scale = float(np.max(np.abs(yhat)))
+    scale = scale if scale > 0 else 1.0
+    Z = np.column_stack([(yhat / scale) ** v for v in pw])
+    Xu = np.column_stack([Xm, Z])
+    beta_u, *_ = np.linalg.lstsq(Xu, yv, rcond=None)
+    res_u = yv - Xu @ beta_u
+    ssr_u = float(res_u @ res_u)
+    df1, df2 = q, n - p - q
+    if df2 <= 0 or ssr_u <= 0:
+        return float("nan"), float("nan"), ssr_r, ssr_u, df1, max(df2, 0), n, p
+    f = ((ssr_r - ssr_u) / df1) / (ssr_u / df2)
+    return f, _f_upper_tail(f, df1, df2), ssr_r, ssr_u, df1, df2, n, p
 
 
 def ramsey_reset(y, X, powers=(2, 3), add_intercept=False):
