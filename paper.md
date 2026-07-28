@@ -286,6 +286,36 @@ measured numbers are recorded here and asserted in the test suite.
 | Variable importance, $R^{2}$, strong signal | 0.667 | 0.675 | 0.030 | -- |
 | Variable importance, $R^{2}$, weak signal | 0.167 | 0.174 | 0.026 | -- |
 | Variable importance, $R^{2}$, null | 0.000 | 0.003 | 0.018 | -- |
+| G-estimation, structural nested mean model | 1.500 | 1.507 | -- | -- |
+| Kaplan--Meier median, exponential(10) | 6.93 | 7.14 | -- | -- |
+| Kaplan--Meier $S(10)$, same design | 0.3679 | 0.3721 | -- | -- |
+| Kozachenko--Leonenko entropy, $d = 1$ | 1.4189 | 1.4166 | -- | -- |
+| Kozachenko--Leonenko entropy, $d = 4$ | 5.6758 | 5.6017 | -- | -- |
+| Bridge sampling, $\log Z$ | 2.0000 | 2.0000 | -- | -- |
+| Mediation, product of coefficients $ab$ | 0.300 | 0.300 | -- | -- |
+| BayesC$\pi$, proportion of null markers | 0.950 | 0.925 | -- | -- |
+| MINE mutual information, $\rho = 0.6$ | 0.2231 | 0.2100 | -- | -- |
+| MINE mutual information, $\rho = 0.9$ | 0.8304 | 0.6811 | -- | -- |
+
+Several identities are checked as identities rather than
+approximately, and hold to machine precision: the mediation relation
+$c - c' = ab$ for a continuous least-squares outcome (residual
+$0.00 \times 10^{0}$), the restricted-likelihood relation
+$\ell_{REML} = \ell_{ML} - \tfrac12\ln|X'V^{-1}X| + \tfrac{p}{2}\ln 2\pi$,
+the Krogh--Vedelsby decomposition of ensemble error into mean member
+error minus ambiguity ($10^{-10}$), the Goodman--Bacon weights
+summing to one with zero residual against the regression coefficient,
+and the Aalen--Johansen partition in which the cumulative incidences
+over all causes plus the overall survival equal one at every time
+($2.7 \times 10^{-14}$).
+
+The MINE rows are included because they show the estimator failing in
+the direction it must. It is a lower bound on mutual information, and
+it understates progressively as the dependence strengthens -- accurate
+at $\rho = 0.6$, short by a fifth at $\rho = 0.9$. That is the
+sample-size limit of McAllester and Stratos [-@mcallester2020formal]
+in practice, not a defect of the implementation, and an estimator that
+did not show it would be the suspicious one.
 
 Three results are worth stating separately because each is a
 property an implementation can fail silently.
@@ -1367,6 +1397,15 @@ Matthews, Brian W. 1975. “Comparison of the Predicted and Observed
 Secondary Structure of T4 Phage Lysozyme.” *Biochimica Et Biophysica
 Acta (BBA) — Protein Structure* 405 (2): 442–51.
 <https://doi.org/10.1016/0005-2795(75)90109-9>.
+
+</div>
+
+<div id="ref-mcallester2020formal" class="csl-entry">
+
+McAllester, David, and Karl Stratos. 2020. “Formal Limitations on the
+Measurement of Mutual Information.” *Proceedings of the Twenty Third
+International Conference on Artificial Intelligence and Statistics*,
+Proceedings of machine learning research, vol. 108: 875–84.
 
 </div>
 

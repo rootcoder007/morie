@@ -6,7 +6,7 @@
      matter stops Pandoc emitting a second copy at build time, so
      the list below is spliced from a render of the body ALONE.
      Regenerate after editing paper.bib or paper.md's prose:
-       head -551 paper.md | grep -v '^suppress-bibliography: true$' \
+       head -581 paper.md | grep -v '^suppress-bibliography: true$' \
          > /tmp/body.md
        pandoc /tmp/body.md --citeproc -t gfm -o - \
          | sed -n '/^<div id="refs"/,$p' > /tmp/refs.md
@@ -832,6 +832,15 @@ Matthews, Brian W. 1975. “Comparison of the Predicted and Observed
 Secondary Structure of T4 Phage Lysozyme.” *Biochimica Et Biophysica
 Acta (BBA) — Protein Structure* 405 (2): 442–51.
 <https://doi.org/10.1016/0005-2795(75)90109-9>.
+
+</div>
+
+<div id="ref-mcallester2020formal" class="csl-entry">
+
+McAllester, David, and Karl Stratos. 2020. “Formal Limitations on the
+Measurement of Mutual Information.” *Proceedings of the Twenty Third
+International Conference on Artificial Intelligence and Statistics*,
+Proceedings of machine learning research, vol. 108: 875–84.
 
 </div>
 
