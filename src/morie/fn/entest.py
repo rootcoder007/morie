@@ -120,7 +120,12 @@ def knn_entropy(x, k=3, base="nats"):
             "k": k,
             "dimension": int(d),
             "neighbour_distances": eps,
-            "distance_concentration": float(np.std(eps) / np.mean(eps)),
+            # ddof=1 to match R's stats::sd; numpy defaults to the
+            # population divisor and the two differ by sqrt(n/(n-1)),
+            # which is enough to break a ten-digit parity anchor
+            "distance_concentration": float(
+                np.std(eps, ddof=1) / np.mean(eps)
+            ),
             "concentration_note": (
                 "spread of the k-th neighbour distance over its mean; as "
                 "this collapses toward zero the points are all equidistant "
