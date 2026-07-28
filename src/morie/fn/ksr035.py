@@ -1,51 +1,66 @@
-"""Bracketing integral whose finiteness implies the Donsker property."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bracketing entropy integral."""
 
 import numpy as np
+
+from scipy import integrate
 
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_donsker_bracketing_integral"]
 
 
-def kosorok_ch2_donsker_bracketing_integral(F, P, r, delta):
-    """
-    Bracketing integral whose finiteness implies the Donsker property
+def kosorok_ch2_donsker_bracketing_integral(N_bracket, delta=1.0, r=2, F=None, P=None):
+    r"""Bracketing entropy integral
 
-    Formula: J_[](delta, F, L_r(P)) = integral_0^delta sqrt(log N_[](eps, F, L_r(P))) deps
+    .. math:: J_{[\,]}(\delta, \mathcal F, L_r(P))
+              = \int_0^\delta
+                \sqrt{\log N_{[\,]}(\epsilon, \mathcal F, L_r(P))}
+                \, d\epsilon.
+
+    The square root is what makes the integral converge for classes
+    whose bracketing numbers blow up polynomially: :math:`\log` of a
+    polynomial is logarithmic, and :math:`\sqrt{\log(1/\epsilon)}`
+    is integrable at 0. A class with exponentially growing brackets
+    diverges -- which is exactly the Donsker boundary.
 
     Parameters
     ----------
-    F : array-like
-        Input data.
-    P : array-like
-        Input data.
-    r : array-like
-        Input data.
-    delta : array-like
-        Input data.
+    N_bracket : callable
+        eps -> bracketing number.
+    delta : float, default 1.0
+        Upper limit.
+    r : int, default 2
+        Interface compatibility (the exponent lives in N_bracket).
+    F, P : ignored
+        Interface compatibility.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``J``, ``finite``, ``delta``, ``abs_error``, ``method``.
     References
     ----------
-    Kosorok (2008), Ch 2, Eq following 2.6, p. 17
+    Kosorok, M. R. (2008). *Introduction to Empirical Processes and
+    Semiparametric Inference*. Springer. Ch. 2 (bracketing entropy integral).
     """
-    F = np.atleast_1d(np.asarray(F, dtype=float))
-    n = len(F)
-    result = float(np.mean(F))
-    se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    delta = float(delta)
+    if delta <= 0:
+        raise ValueError(f"delta must be positive, got {delta}.")
+
+    def integrand(eps):
+        n = float(N_bracket(eps))
+        if n < 1:
+            return 0.0
+        return float(np.sqrt(np.log(n)))
+
+    val, err = integrate.quad(integrand, 1e-10, delta, limit=200)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bracketing integral whose finiteness implies the Donsker property",
-        }
+        payload={"J": float(val), "finite": bool(np.isfinite(val)),
+                 "delta": delta, "abs_error": float(err),
+                 "method": "J_[](delta) = int_0^delta sqrt(log N_[](eps)) deps"}
     )
 
 
 def cheatsheet():
-    return "ksr035: Bracketing integral whose finiteness implies the Donsker property"
+    return "ksr035: sqrt(log N) integrable at 0 for polynomial N; that IS the boundary"
