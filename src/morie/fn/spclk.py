@@ -84,6 +84,9 @@ def schabenberger_composite_likelihood(coords, z, variogram_model="exponential")
             "model": model,
             "n_pairs": fit["n_pairs"],
             "objective": fit["objective"],
+            "iterations": fit["iterations"],
+            "converged": fit["converged"],
+            "convergence_note": fit["diverged_note"],
             "binning_note": (
                 "fitted to the semivariogram cloud, so no lag classes, "
                 "tolerance or cutoff enter the estimate"
