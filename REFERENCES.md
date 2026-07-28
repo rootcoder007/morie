@@ -6,7 +6,7 @@
      matter stops Pandoc emitting a second copy at build time, so
      the list below is spliced from a render of the body ALONE.
      Regenerate after editing paper.bib or paper.md's prose:
-       head -437 paper.md | grep -v '^suppress-bibliography: true$' \
+       head -551 paper.md | grep -v '^suppress-bibliography: true$' \
          > /tmp/body.md
        pandoc /tmp/body.md --citeproc -t gfm -o - \
          | sed -n '/^<div id="refs"/,$p' > /tmp/refs.md
@@ -16,7 +16,6 @@
      names it, and loading the file twice renders every entry twice.
      Last regenerated 2026-07-28. -->
 
-<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-abadie2005semiparametric" class="csl-entry">
@@ -207,6 +206,14 @@ Data.” *Biometrics* 30 (1): 89–99. <https://doi.org/10.2307/2529620>.
 
 Burg, John Parker. 1975. “Maximum Entropy Spectral Analysis.” PhD
 thesis, Stanford University.
+
+</div>
+
+<div id="ref-caiVanDerLaan2020" class="csl-entry">
+
+Cai, Weixin, and Mark J. van der Laan. 2020. “One-Step Targeted Maximum
+Likelihood Estimation for Time-to-Event Outcomes.” *Biometrics* 76 (3):
+722–33. <https://doi.org/10.1111/biom.13172>.
 
 </div>
 
@@ -617,6 +624,17 @@ Probability-Weighted Moments.” *Technometrics* 27 (3): 251–61.
 
 </div>
 
+<div id="ref-hubbard2000nonparametric" class="csl-entry">
+
+Hubbard, Alan E., Mark J. van der Laan, and James M. Robins. 2000.
+“Nonparametric Locally Efficient Estimation of the Treatment Specific
+Survival Distribution with Right Censored Data and Covariates in
+Observational Studies.” In *Statistical Models in Epidemiology, the
+Environment, and Clinical Trials*, edited by M. Elizabeth Halloran and
+Donald Berry. Springer. <https://doi.org/10.1007/978-1-4612-1284-3_3>.
+
+</div>
+
 <div id="ref-huber1973robust" class="csl-entry">
 
 Huber, Peter J. 1973. “Robust Regression: Asymptotics, Conjectures and
@@ -848,6 +866,15 @@ Mogstad, Magne, Andres Santos, and Alexander Torgovitsky. 2018. “Using
 Instrumental Variables for Inference about Policy Relevant Treatment
 Parameters.” *Econometrica* 86 (5): 1589–619.
 <https://doi.org/10.3982/ECTA15463>.
+
+</div>
+
+<div id="ref-mooreVanDerLaan2009censored" class="csl-entry">
+
+Moore, Kelly L., and Mark J. van der Laan. 2009. “Increasing Power in
+Randomized Trials with Right Censored Outcomes Through Covariate
+Adjustment.” *Journal of Biopharmaceutical Statistics* 19 (6): 1099–131.
+<https://doi.org/10.1080/10543400903243017>.
 
 </div>
 
@@ -1402,6 +1429,24 @@ Electroacoustics* 15 (2): 70–73.
 
 Widrow, Bernard, and Samuel D. Stearns. 1985. *Adaptive Signal
 Processing*. Prentice-Hall.
+
+</div>
+
+<div id="ref-williamson2021nonparametric" class="csl-entry">
+
+Williamson, Brian D., Peter B. Gilbert, Marco Carone, and Noah Simon.
+2021. “Nonparametric Variable Importance Assessment Using Machine
+Learning Techniques.” *Biometrics* 77 (1): 9–22.
+<https://doi.org/10.1111/biom.13392>.
+
+</div>
+
+<div id="ref-williamson2023general" class="csl-entry">
+
+Williamson, Brian D., Peter B. Gilbert, Noah Simon, and Marco Carone.
+2023. “A General Framework for Inference on Algorithm-Agnostic Variable
+Importance.” *Journal of the American Statistical Association* 118
+(543): 1645–58. <https://doi.org/10.1080/01621459.2021.2003200>.
 
 </div>
 
