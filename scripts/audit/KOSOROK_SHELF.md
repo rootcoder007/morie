@@ -50,10 +50,18 @@ entropy integral), finite entropy with a non-integrable envelope
 (fails GC), a smooth process vs a shrinking spike (tight vs not),
 matched marginals vs a rescaled law (fidi passes vs fails).
 
-**Remaining (18)**: ksr022 ksr025 ksr040–ksr045 ksr050–ksr056 ksr059
-ksr061 ksr062 ksr065 — bootstrap Donsker, the functional delta method
-and its bootstrap, Kaplan-Meier Hadamard derivatives, M-estimator
-expansions, KMT, LAN and efficient influence functions.
+**Tranche 3 (10 modules) — DONE, 30/30 tests green**
+
+ksr022 ksr025 (Ch. 1), ksr042 ksr050 ksr051 ksr052 ksr053 ksr055
+ksr056 ksr059 — the functional delta method, Frechet differentiability,
+continuous invertibility, both Kaplan-Meier Hadamard derivatives,
+M-estimator expansions, the LAD Lipschitz bound and the KMT bound.
+
+**Remaining (13)**: ksr040 ksr041 ksr043 ksr044 ksr045 ksr054 ksr061
+ksr062 ksr065 and the ksr0xx stragglers — bootstrap Donsker
+characterisations, quantile Hadamard bounds, the delta-method
+bootstrap, LAN/quadratic mean differentiability and efficient
+influence functions.
 
 ## Defects found
 
@@ -72,3 +80,16 @@ expansions, KMT, LAN and efficient influence functions.
   tolerance is now derived from the replication count and grid size
   (`sigma sqrt(2/n_rep) sqrt(log k)`), and both the gap and the
   tolerance are returned so the comparison is auditable.
+- `ksr050` (Frechet) first used a numerical derivative recomputed in
+  each perturbation direction. That is the *Hadamard* derivative, so
+  the check was vacuous — it reported `|·|` at 0 as Frechet
+  differentiable with a residual ratio of exactly 0. Frechet requires
+  a single linear map valid in every direction; the fallback now
+  builds the Jacobian once and applies it linearly, and the kinked map
+  correctly shows a ratio pinned at 1.
+- `ksr053` refuses to integrate when `L(u⁻)S₀(u⁻)` vanishes. That
+  surfaced a modelling error in my own test, not a code bug: I passed a
+  hazard-like `L(u) = 0.5u`, which is 0 at the origin, where the
+  Kaplan-Meier `L` is an at-risk probability and positive there. The
+  guard stays; the test now uses a proper at-risk `L` and separately
+  asserts the refusal.
