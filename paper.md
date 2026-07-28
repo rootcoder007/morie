@@ -369,7 +369,14 @@ Chernozhukov, Hong and Tamer [-@chernozhukovHongTamer2007] for
 criterion-function confidence regions under moment inequalities,
 Mogstad, Santos and Torgovitsky [-@mogstadSantosTorgovitsky2018]
 for sharp linear-programming bounds, and Lavine [-@lavine1992polya]
-for the Polya tree posterior.
+for the Polya tree posterior. The robust-statistics modules
+follow Huber [-@huber1973robust] for M-regression, Rousseeuw and
+Yohai [-@rousseeuwYohai1984robust] for S-estimators, Yohai
+[-@yohai1987high] for MM-estimators, Yohai and Zamar
+[-@yohaiZamar1988high] for tau-estimators, Rousseeuw and Croux
+[-@rousseeuwCroux1993alternatives] for the Qn and Sn scales, and
+Theil [-@theil1950rank] and Sen [-@sen1968estimates] for the
+median-of-slopes line and its distribution-free interval.
 
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
@@ -785,6 +792,14 @@ Hosking, J. R. M. 1980. “The Multivariate Portmanteau Statistic.”
 
 </div>
 
+<div id="ref-huber1973robust" class="csl-entry">
+
+Huber, Peter J. 1973. “Robust Regression: Asymptotics, Conjectures and
+Monte Carlo.” *The Annals of Statistics* 1 (5): 799–821.
+<https://doi.org/10.1214/aos/1176342503>.
+
+</div>
+
 <div id="ref-ichimura1993semiparametric" class="csl-entry">
 
 Ichimura, Hidehiko. 1993. “Semiparametric Least Squares (SLS) and
@@ -1119,6 +1134,24 @@ Data Sets.” *Physica D: Nonlinear Phenomena* 65 (1–2): 117–34.
 
 </div>
 
+<div id="ref-rousseeuwCroux1993alternatives" class="csl-entry">
+
+Rousseeuw, Peter J., and Christophe Croux. 1993. “Alternatives to the
+Median Absolute Deviation.” *Journal of the American Statistical
+Association* 88 (424): 1273–83.
+<https://doi.org/10.1080/01621459.1993.10476408>.
+
+</div>
+
+<div id="ref-rousseeuwYohai1984robust" class="csl-entry">
+
+Rousseeuw, Peter J., and Victor J. Yohai. 1984. “Robust Regression by
+Means of S-Estimators.” In *Robust and Nonlinear Time Series Analysis*,
+vol. 26. Lecture Notes in Statistics. Springer.
+<https://doi.org/10.1007/978-1-4615-7821-5_15>.
+
+</div>
+
 <div id="ref-ruhela2026dlrm" class="csl-entry">
 
 Ruhela, Vansh Singh. 2026. “The MRM Framework: A Multi-Source
@@ -1147,6 +1180,14 @@ Instrumental Variables.” *Econometrica* 26 (3): 393–415.
 
 Schabenberger, Oliver, and Carol A. Gotway. 2005. *Statistical Methods
 for Spatial Data Analysis*. Chapman; Hall/CRC.
+
+</div>
+
+<div id="ref-sen1968estimates" class="csl-entry">
+
+Sen, Pranab Kumar. 1968. “Estimates of the Regression Coefficient Based
+on Kendall’s Tau.” *Journal of the American Statistical Association* 63
+(324): 1379–89. <https://doi.org/10.1080/01621459.1968.10480934>.
 
 </div>
 
@@ -1254,6 +1295,14 @@ Use.” *Circulation* 93 (5): 1043–65.
 
 </div>
 
+<div id="ref-theil1950rank" class="csl-entry">
+
+Theil, Henri. 1950. “A Rank-Invariant Method of Linear and Polynomial
+Regression Analysis.” *Proceedings of the Koninklijke Nederlandse
+Akademie van Wetenschappen* 53: 386–92, 521–25, 1397–412.
+
+</div>
+
 <div id="ref-tsay2010analysis" class="csl-entry">
 
 Tsay, Ruey S. 2010. *Analysis of Financial Time Series*. 3rd ed. Wiley.
@@ -1331,6 +1380,23 @@ Processing*. Prentice-Hall.
 
 Wooldridge, Jeffrey M. 2010. *Econometric Analysis of Cross Section and
 Panel Data*. 2nd ed. MIT Press.
+
+</div>
+
+<div id="ref-yohai1987high" class="csl-entry">
+
+Yohai, Victor J. 1987. “High Breakdown-Point and High Efficiency Robust
+Estimates for Regression.” *The Annals of Statistics* 15 (2): 642–56.
+<https://doi.org/10.1214/aos/1176350366>.
+
+</div>
+
+<div id="ref-yohaiZamar1988high" class="csl-entry">
+
+Yohai, Victor J., and Ruben H. Zamar. 1988. “High Breakdown-Point
+Estimates of Regression by Means of the Minimization of an Efficient
+Scale.” *Journal of the American Statistical Association* 83 (402):
+406–13. <https://doi.org/10.1080/01621459.1988.10478611>.
 
 </div>
 

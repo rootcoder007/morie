@@ -1,53 +1,31 @@
-"""MM-estimator regression (Yohai)."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""MM-estimator regression -- alias entry point."""
 
 from ._richresult import RichResult
 
-__all__ = ["mm_estimator_regression"]
+__all__ = ["mm_estimator"]
 
 
-def mm_estimator_regression(y, X):
-    """
-    MM-estimator regression (Yohai)
-
-    Formula: S-step then M-step with redescending psi at high efficiency
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+def mm_estimator(X, y, n_subsets=200, seed=0):
+    """Yohai's (1987) MM-estimator. This module and
+    ``morie.fn.mmreg`` are ONE estimator with two catalogue entries;
+    the computation lives in ``morie.fn._robust.mm_regression`` and
+    is invoked through :func:`morie.fn.mmreg.mm_regression_estimator`
+    so the two cannot drift apart. See that module for the
+    construction and the reason the scale is held fixed through the
+    efficiency stage.
 
     References
     ----------
-    Yohai (1987)
+    Yohai, V. J. (1987), *Annals of Statistics* 15:642-656.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "MM-estimator regression (Yohai)"})
-    estimate = np.median(y)
-    se = 1.2533 * np.std(y, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "MM-estimator regression (Yohai)",
-        }
-    )
+    from .mmreg import mm_regression_estimator
+
+    out = mm_regression_estimator(X, y, n_subsets=n_subsets, seed=seed)
+    payload = dict(out)
+    payload["alias_of"] = "morie.fn.mmreg.mm_regression_estimator"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "mmestr: MM-estimator regression (Yohai)"
+    return "mmestr: same estimator as mmreg, one implementation -- see mmreg"
