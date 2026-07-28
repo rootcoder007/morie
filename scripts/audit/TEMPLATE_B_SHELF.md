@@ -44,9 +44,10 @@ placeholders.
       rng165, rng166, rng194. 7/7 tests green.
 - [x] **Rangayyan spectral (7)** — rgacf, rgperio, rgwelch, rgyw,
       rgarsp, rgpsdacf, rgbwbnd. 13/13 tests green.
-- [ ] Rangayyan biomedical (15): rgburg rgcepsp rgeegsp rgelast
-      rgenvgm rgpdfest rgrmsnw rgtfe rgtwamx rng017–020 rng190 rng211
-- [ ] Horowitz (47), Fauzi (22), Kosorok remainder (13), tail
+- [x] **Rangayyan biomedical (15)** — rgburg, rgcepsp, rgeegsp,
+      rgelast, rgenvgm, rgpdfest, rgrmsnw, rgtfe, rgtwamx, rng017–020,
+      rng190, rng211. 24/24 tests green. **Rangayyan complete: 37/37.**
+- [ ] Horowitz (47), Fauzi (22), Kosorok remainder (13), tail (~272)
 
 ## Distinctions the repairs preserve
 
@@ -69,3 +70,14 @@ presenting one convention as neutral:
   alongside.
 - `rng097` reports its 3.5-sample delay: an even-length boxcar cannot
   be delay-corrected by an integer shift.
+- `rgtfe` refuses a single segment: coherence from one segment is
+  identically 1 at every frequency and certifies nothing.
+- `rgtwamx` truncates to an EVEN beat count, since 0.5 cycles/beat is
+  only an exact FFT bin when the beat count is even.
+- `rgenvgm` requires R peaks rather than guessing alignment —
+  averaging unaligned beats smears the envelope it is meant to show.
+- `rgelast` returns spectral descriptors and a `calibrated: False`
+  flag instead of inventing an absolute stiffness value; the
+  relationship is monotone but the calibration is subject-specific.
+- `rgeegsp` refuses fs ≤ 60 Hz, which cannot represent the 13–30 Hz
+  beta band it would otherwise report a number for.
