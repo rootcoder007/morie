@@ -301,6 +301,19 @@ measured numbers are recorded here and asserted in the test suite.
 | Median SE, normal electorate, $n=4000$ | 0.01982 | 0.02000 | 0.01971 | -- |
 | Dual-frame total, Hartley | 504.4 | 505.2 | 15.0 | -- |
 | Same population, naive pooling | 504.4 | 608.8 | 10.7 | -- |
+| Bracken abundance, species 1 of 3 | 0.5000 | 0.5016 | -- | -- |
+| Bracken abundance, species 2 of 3 | 0.3000 | 0.2991 | -- | -- |
+| Bracken abundance, species 3 of 3 | 0.2000 | 0.1994 | -- | -- |
+| FACE eigenvalue 1, Karhunen--Loeve | 1.0000 | 1.0033 | -- | -- |
+| FACE eigenvalue 2, same design | 0.5000 | 0.5084 | -- | -- |
+| FACE noise variance $\sigma^{2}$ | 0.0900 | 0.0931 | -- | -- |
+| W-NOMINATE ideal points, 1-D correlation | 1.0000 | 0.9897 | -- | -- |
+| W-NOMINATE ideal points, 2-D (Procrustes) | 1.0000 | 0.9835 | -- | -- |
+| AR(1) SE inflation, $\rho = 0.8$ | 3.000 | 3.008 | -- | -- |
+| AR(1) SE inflation, $\rho = 0.9$ | 4.359 | 4.355 | -- | -- |
+| Text-confounded ATE, adjusted | 1.0000 | 1.0541 | 0.0903 | -- |
+| Same design, unadjusted | 1.0000 | 2.5381 | -- | -- |
+| RESET $F$, response scaled $\times 10^{6}$ | 315.076 | 315.076 | -- | -- |
 | AIPW ATE against Hahn's efficiency bound | 1.000 | 0.999 | 0.0559 | 0.0542 |
 | Minimax regret constant $\max_t t\Phi(-t)$ | 0.169971 | 0.169971 | -- | -- |
 | Plug-in treatment rule, worst-case regret | 0.007601 | 0.007625 | -- | -- |
@@ -431,6 +444,67 @@ than over-warns, which is the safe direction, but it is not the
 nominal level and the implementation says so rather than quietly
 reporting a $p$-value it cannot support.
 
+# Numerical failures that do not announce themselves
+
+Three defects found during this work share a shape: the code runs,
+returns a plausible number, and is wrong. None would have been caught
+by inspection, and two were in estimators that had passed every
+correctness test written for them. They are recorded because the
+failure mode is more transferable than the fixes.
+
+*A non-concave objective makes the starting point part of the method.*
+The spatial voting model is fitted by alternating between legislators
+and roll calls. Each half-step is a probit and cannot decrease the
+likelihood, which makes the procedure look safe; the joint objective
+is not concave, so it is not. Fitting a simulated 120-member chamber
+with known ideal points:
+
+| Start | Sweeps | Log-likelihood | Correlation with truth |
+|---|---|---|---|
+| Random | 60 | $-19{,}801$ | 0.47 |
+| Random | 200 | $-7{,}045$ | 0.965 |
+| Leading singular vectors | 26 | $-6{,}913$ | 0.990 |
+
+The first row is the dangerous one. It reports an ideal-point
+configuration that is superficially reasonable and is in fact almost
+uninformative, and only the convergence flag distinguishes it. Seeding
+from the leading singular vectors of the centred vote matrix -- which
+alone correlate 0.92 with the truth before any fitting -- reaches a
+better optimum in a fraction of the sweeps. The lesson taken into the
+implementation is that a stopped iteration must say so loudly and
+report the per-sweep change in the objective, not merely a boolean.
+
+*An imputation choice can dominate the estimator it feeds.* The
+functional covariance smoother must hold out the diagonal, which
+carries the measurement-error variance. Holding it out requires
+filling it with something, and the obvious first choice -- the mean of
+the rest of the row -- is badly wrong, because the row mean of
+$C(s,t)$ over $s$ is nowhere near $C(t,t)$. On a two-component
+Karhunen--Loève design with $\sigma^2 = 0.09$ it returned 0.334, and
+left 13 per cent of the eigenvalue mass negative on an operator that
+cannot have any. Imputing the diagonal from the smoothed surface and
+iterating to a fixed point gives 0.093, with negative mass at
+$6 \times 10^{-4}$ of the total. The eigenvalues and eigenfunctions
+were accurate under *both* versions -- 0.973 and 0.487 against 1.0 and
+0.5 -- so every test aimed at the headline quantities passed while the
+noise estimate was off by a factor of nearly four.
+
+*Conditioning fails quietly and scales with the data.* The RESET test
+augments a design with powers of the fitted values. Cubing an unscaled
+$\hat y$ makes the condition number of the augmented cross-product
+grow with the **sixth** power of the response scale. On a quadratic
+design whose correct statistic is $F = 315.08$, multiplying the
+response by 100 returned 229.06, by 1000 returned 125.59, and on a
+second design the statistic came out *negative*. Since $F$ is
+invariant to the scale in exact arithmetic, every one of those numbers
+is a pure artefact of floating point. Normalising $\hat y$ before
+taking powers does not change the column span, and solving by QR
+rather than through the normal equations avoids squaring the condition
+number again; together they hold the statistic at 315.075993 across
+six orders of magnitude of response scale. This one had been shipping
+in the R implementation, and was found only because the Python port
+disagreed with it.
+
 Cross-language agreement is treated as a second, independent
 implementation rather than a formality. The targeting step of the
 average-treatment-effect estimator is deterministic, so the Python
@@ -541,8 +615,15 @@ voter theorem follows Black [-@black1948rationale]; dual-frame
 estimation follows Hartley [-@hartley1962multiple] and Lohr and Rao
 [-@lohrRao2000dualframe]; quantal dose-response analysis follows
 Finney [-@finney1971probit] with the ratio intervals of Fieller
-[-@fieller1954interval]; and the interaction-weighted event study
-follows Sun and Abraham [-@sun2021estimating]. The
+[-@fieller1954interval]; functional-form testing follows
+Ramsey [-@ramsey1969reset]; taxonomic abundance re-estimation follows
+Lu and colleagues [-@lu2017bracken]; spatial voting follows Poole and
+Rosenthal [-@poole1985spatial]; fast functional covariance estimation
+follows Xiao and colleagues [-@xiao2016face]; text-adjusted treatment
+effects follow Veitch, Sridhar and Blei [-@veitch2020text]; the
+autocorrelation-aware variance follows Geyer [-@geyer1992practical];
+and the interaction-weighted event study follows Sun and Abraham
+[-@sun2021estimating]. The
 partial-identification modules follow Manski
 [-@manski1990nonparametric] and Manski and Tamer
 [-@manskiTamer2002inference] for worst-case bounds, Imbens and
@@ -1487,6 +1568,15 @@ Practical Testing Problems*. Lawrence Erlbaum Associates.
 
 </div>
 
+<div id="ref-lu2017bracken" class="csl-entry">
+
+Lu, Jennifer, Florian P. Breitwieser, Peter Thielen, and Steven L.
+Salzberg. 2017. “Bracken: Estimating Species Abundance in Metagenomics
+Data.” *PeerJ Computer Science* 3: e104.
+<https://doi.org/10.7717/peerj-cs.104>.
+
+</div>
+
 <div id="ref-lumley2010complex" class="csl-entry">
 
 Lumley, Thomas. 2010. *Complex Surveys: A Guide to Analysis Using R*.
@@ -1738,6 +1828,14 @@ Complexity.” *Proceedings of the National Academy of Sciences* 88 (6):
 
 </div>
 
+<div id="ref-poole1985spatial" class="csl-entry">
+
+Poole, Keith T., and Howard Rosenthal. 1985. “A Spatial Model for
+Legislative Roll Call Analysis.” *American Journal of Political Science*
+29 (2): 357–84. <https://doi.org/10.2307/2111172>.
+
+</div>
+
 <div id="ref-powellStockStoker1989semiparametric" class="csl-entry">
 
 Powell, James L., James H. Stock, and Thomas M. Stoker. 1989.
@@ -1766,6 +1864,15 @@ Tests.” *Entropy* 19 (2): 47. <https://doi.org/10.3390/e19020047>.
 
 Ramsay, James O., and Bernard W. Silverman. 2005. *Functional Data
 Analysis*. 2nd ed. Springer. <https://doi.org/10.1007/b98888>.
+
+</div>
+
+<div id="ref-ramsey1969reset" class="csl-entry">
+
+Ramsey, J. B. 1969. “Tests for Specification Errors in Classical Linear
+Least-Squares Regression Analysis.” *Journal of the Royal Statistical
+Society, Series B* 31 (2): 350–71.
+<https://doi.org/10.1111/j.2517-6161.1969.tb00796.x>.
 
 </div>
 
@@ -2061,6 +2168,13 @@ Predictions.” *Journal of Dairy Science* 91 (11): 4414–23.
 
 </div>
 
+<div id="ref-veitch2020text" class="csl-entry">
+
+Veitch, Victor, Dhanya Sridhar, and David M. Blei. 2020. *Adapting Text
+Embeddings for Causal Inference*. <https://arxiv.org/abs/1905.12741>.
+
+</div>
+
 <div id="ref-veroniki2016methods" class="csl-entry">
 
 Veroniki, Areti Angeliki, Dan Jackson, Wolfgang Viechtbauer, et al.
@@ -2192,6 +2306,15 @@ Panel Data*. 2nd ed. MIT Press.
 Wooldridge, Jeffrey M. 2021. *Two-Way Fixed Effects, the Two-Way Mundlak
 Regression, and Difference-in-Differences Estimators*. No. 3906345.
 SSRN. <https://doi.org/10.2139/ssrn.3906345>.
+
+</div>
+
+<div id="ref-xiao2016face" class="csl-entry">
+
+Xiao, Luo, Vadim Zipunnikov, David Ruppert, and Ciprian Crainiceanu.
+2016. “Fast Covariance Estimation for High-Dimensional Functional Data.”
+*Statistics and Computing* 26 (1–2): 409–21.
+<https://doi.org/10.1007/s11222-014-9485-x>.
 
 </div>
 
