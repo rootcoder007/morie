@@ -1,21 +1,5 @@
 # References
 
-<!-- Written out in full so the bibliography is readable in the
-     repository and on GitHub, which renders markdown without
-     citeproc. `suppress-bibliography: true` in paper.md's front
-     matter stops Pandoc emitting a second copy at build time, so
-     the list below is spliced from a render of the body ALONE.
-     Regenerate after editing paper.bib or paper.md's prose:
-       head -581 paper.md | grep -v '^suppress-bibliography: true$' \
-         > /tmp/body.md
-       pandoc /tmp/body.md --citeproc -t gfm -o - \
-         | sed -n '/^<div id="refs"/,$p' > /tmp/refs.md
-     then paste /tmp/refs.md under this comment, and splice the same
-     block into paper.md after its own `# References` heading.
-     Do NOT also pass --bibliography=paper.bib: the YAML already
-     names it, and loading the file twice renders every entry twice.
-     Last regenerated 2026-07-28. -->
-
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-abadie2005semiparametric" class="csl-entry">
@@ -348,6 +332,14 @@ Canada, File T-539-20, Application Record Vol. 3 of 5, pp. 778–795.
 
 </div>
 
+<div id="ref-dwork2014algorithmic" class="csl-entry">
+
+Dwork, Cynthia, and Aaron Roth. 2014. “The Algorithmic Foundations of
+Differential Privacy.” *Foundations and Trends in Theoretical Computer
+Science* 9 (3–4): 211–487. <https://doi.org/10.1561/0400000042>.
+
+</div>
+
 <div id="ref-efron1979bootstrap" class="csl-entry">
 
 Efron, Bradley. 1979. “Bootstrap Methods: Another Look at the
@@ -507,6 +499,14 @@ Outcome.” *International Journal of Biostatistics* 6 (1): Article 26.
 
 </div>
 
+<div id="ref-hahn1998propensity" class="csl-entry">
+
+Hahn, Jinyong. 1998. “On the Role of the Propensity Score in Efficient
+Semiparametric Estimation of Average Treatment Effects.” *Econometrica*
+66 (2): 315–31. <https://doi.org/10.2307/2998560>.
+
+</div>
+
 <div id="ref-han1987nonparametric" class="csl-entry">
 
 Han, Aaron K. 1987. “Non-Parametric Analysis of a Generalized Regression
@@ -555,6 +555,14 @@ the Fractal Theory.” *Physica D: Nonlinear Phenomena* 31 (2): 277–83.
 Hill, Bruce M. 1975. “A Simple General Approach to Inference about the
 Tail of a Distribution.” *The Annals of Statistics* 3 (5): 1163–74.
 <https://doi.org/10.1214/aos/1176343247>.
+
+</div>
+
+<div id="ref-hirano2009asymptotics" class="csl-entry">
+
+Hirano, Keisuke, and Jack R. Porter. 2009. “Asymptotics for Statistical
+Treatment Rules.” *Econometrica* 77 (5): 1683–701.
+<https://doi.org/10.3982/ECTA6630>.
 
 </div>
 
@@ -690,6 +698,13 @@ Partially Identified Parameters.” *Econometrica* 72 (6): 1845–57.
 Jacquez, Geoffrey M. 1996. “A k Nearest Neighbour Test for Space-Time
 Interaction.” *Statistics in Medicine* 15 (18): 1935–49.
 [https://doi.org/10.1002/(SICI)1097-0258(19960930)15:18\<1935::AID-SIM406\>3.0.CO;2-I](https://doi.org/10.1002/(SICI)1097-0258(19960930)15:18<1935::AID-SIM406>3.0.CO;2-I).
+
+</div>
+
+<div id="ref-karwa2018finite" class="csl-entry">
+
+Karwa, Vishesh, and Salil Vadhan. 2017. *Finite Sample Differentially
+Private Confidence Intervals*. <https://arxiv.org/abs/1711.03908>.
 
 </div>
 
@@ -1471,6 +1486,15 @@ Panel Data*. 2nd ed. MIT Press.
 Wooldridge, Jeffrey M. 2021. *Two-Way Fixed Effects, the Two-Way Mundlak
 Regression, and Difference-in-Differences Estimators*. No. 3906345.
 SSRN. <https://doi.org/10.2139/ssrn.3906345>.
+
+</div>
+
+<div id="ref-yang2019xlnet" class="csl-entry">
+
+Yang, Zhilin, Zihang Dai, Yiming Yang, Jaime Carbonell, Ruslan
+Salakhutdinov, and Quoc V. Le. 2019. *XLNet: Generalized Autoregressive
+Pretraining for Language Understanding*.
+<https://arxiv.org/abs/1906.08237>.
 
 </div>
 
