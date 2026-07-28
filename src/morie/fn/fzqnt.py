@@ -19,6 +19,13 @@ __all__ = ["fauzi_kernel_quantile_asymptotic"]
 
 
 def _silverman_h(x):
+    """DENSITY bandwidth, 1.06 sigma n^(-1/5).
+
+    Kept for the plug-in estimate of f at the quantile, which really
+    is a density and really does have an O(1/(nh)) variance. The
+    root-find below inverts a DISTRIBUTION function and uses
+    _kdfe_h instead -- see morie.fn._fauzi.kdfe_bandwidth.
+    """
     n = len(x)
     s = np.std(x, ddof=1)
     iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.34
@@ -26,6 +33,12 @@ def _silverman_h(x):
     if sigma <= 0:
         sigma = 1.0
     return 1.06 * sigma * n ** (-1.0 / 5.0)
+
+
+def _kdfe_h(x):
+    """DISTRIBUTION-function bandwidth, 4^(1/3) sigma n^(-1/3)."""
+    from ._fauzi import kdfe_bandwidth
+    return kdfe_bandwidth(x)
 
 
 def _kdfe(x, t, h):
@@ -55,8 +68,14 @@ def fauzi_kernel_quantile_asymptotic(x, p=0.5, h=None):
         return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "fzqnt -- too few obs"})
     if not 0.0 < p < 1.0:
         raise ValueError("p must be in (0,1)")
+    # two estimands, two rates: inverting a DISTRIBUTION function is
+    # an O(h/n)-variance problem and wants n^(-1/3), while the
+    # plug-in density in the standard error is an O(1/(nh)) problem
+    # and wants n^(-1/5). Using one bandwidth for both oversmooths
+    # one of them whichever value is chosen.
     if h is None:
-        h = float(_silverman_h(x))
+        h = float(_kdfe_h(x))
+    h_dens = float(_silverman_h(x))
 
     lo, hi = float(np.min(x)), float(np.max(x))
     pad = 5.0 * h + 1e-9
@@ -65,7 +84,7 @@ def fauzi_kernel_quantile_asymptotic(x, p=0.5, h=None):
     except Exception:
         q_hat = float(np.quantile(x, p))
 
-    f_q = _kde_density(x, q_hat, h)
+    f_q = _kde_density(x, q_hat, h_dens)
     if f_q <= 0:
         se = np.nan
     else:

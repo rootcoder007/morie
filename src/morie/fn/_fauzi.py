@@ -140,3 +140,80 @@ def muller_order_m(u, m=4):
 
 def cheatsheet():
     return "_fauzi: the boundary is the problem -- gamma kernels and bijections are the two answers"
+
+
+def kdfe_bandwidth(x, sigma=None, n=None):
+    r"""Normal-reference bandwidth for a DISTRIBUTION-function-type
+    kernel estimator: :math:`(4)^{1/3}\,\hat\sigma\,n^{-1/3}`.
+
+    A cube root, not the fifth root of the density rule, and the
+    difference is not cosmetic. Equations (2.3)-(2.4) of the book give
+
+    .. math::
+        \mathrm{Bias}[\hat F_h(x)] &= h^2 \tfrac{f_X'(x)}2 \mu_2(K)
+          + o(h^2), \\
+        \mathrm{Var}[\hat F_h(x)] &= \tfrac1n F(1-F)
+          - \tfrac{2h}{n} r_1 f_X(x) + o(h/n),
+
+    with :math:`r_1 = \int y K(y) W(y) dy`, so the MISE is
+
+    .. math:: \frac{h^4}4 \mu_2^2 R(f') + \frac1n\!\int\! F(1-F)
+              - \frac{2h}n r_1 .
+
+    The bandwidth enters the variance at order :math:`h/n` and with a
+    NEGATIVE sign -- smoothing *reduces* variance here, where in a
+    density estimator it enters at :math:`1/(nh)` and blows up as
+    :math:`h \to 0`. Setting the derivative to zero gives
+
+    .. math:: h_{opt} = \Big(\frac{2 r_1}{n\,\mu_2^2\,R(f')}\Big)^{1/3},
+
+    and for a Gaussian kernel (:math:`\mu_2 = 1`,
+    :math:`r_1 = 1/(2\sqrt\pi)`) against a normal reference
+    (:math:`R(f') = 1/(4\sqrt\pi\sigma^3)`) that collapses to
+    :math:`(4)^{1/3}\sigma n^{-1/3} \approx 1.587\,\sigma\,n^{-1/3}`.
+
+    Sec. 5.3.2 states the same conclusion in words -- "Azzalini in
+    [9] recommended a bandwidth of :math:`cn^{-1/3}` for the
+    estimation of the distribution function" -- and the book's own
+    simulations use :math:`h_n = n^{-1/3}`.
+
+    Everything in this book that converges at the parametric rate
+    with an :math:`O(h^2)` bias and an :math:`O(h/n)` variance term
+    takes this rate: the KDFE itself, the smoothed KS, CvM, sign and
+    Wilcoxon statistics, the survival estimator and the mean residual
+    life estimators (whose Theorem 4.3 variance is likewise
+    :math:`O(1/n) - O(h/n)`). Only the Ch. 1 DENSITY estimators,
+    whose variance is :math:`O(1/(nh))`, take :math:`n^{-1/5}`.
+
+    Under the density rule a KDFE oversmooths badly enough to lose,
+    in mean squared error, to the empirical distribution function it
+    exists to improve on.
+
+    Parameters
+    ----------
+    x : array-like, optional
+        Sample; ``sigma`` and ``n`` are read off it when not given.
+    sigma : float, optional
+        Scale estimate, overriding the one taken from ``x``.
+    n : int, optional
+        Sample size, overriding ``len(x)``.
+
+    References
+    ----------
+    Fauzi and Maesono (2023), Eqs. (2.3), (2.4) and the MISE display
+    of Sec. 2.1; Sec. 5.3.2. Azzalini, A. (1981), *Biometrika*
+    68:326-328.
+    """
+    if x is not None:
+        xv = np.asarray(x, dtype=float).ravel()
+        if n is None:
+            n = xv.size
+        if sigma is None:
+            s = float(np.std(xv, ddof=1))
+            iqr = float(np.subtract(*np.percentile(xv, [75, 25]))) / 1.349
+            sigma = min(s, iqr) if iqr > 0 else s
+    if n is None or n < 2:
+        raise ValueError("need a sample size of at least 2.")
+    if sigma is None or sigma <= 0:
+        sigma = 1.0
+    return float(4.0 ** (1.0 / 3.0) * sigma * n ** (-1.0 / 3.0))
