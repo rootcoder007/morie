@@ -1,53 +1,29 @@
-"""Hill tail-index estimator."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Hill tail-index estimator -- alias entry point."""
 
 from ._richresult import RichResult
 
 __all__ = ["hill_estimator"]
 
 
-def hill_estimator(x, k):
-    """
-    Hill tail-index estimator
-
-    Formula: ξ̂ = (1/k) sum log(X_(n-i+1) / X_(n-k))
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+def hill_estimator(x, k=None):
+    """Hill (1975) tail-index estimator. This module and
+    ``morie.fn.evhill`` are ONE estimator with two catalogue entries;
+    the computation lives in :func:`morie.fn.evhill.ev_hill`, so the
+    two cannot drift apart. See that module for the xi > 0
+    restriction, the bias-variance role of k, and the Hill plot.
 
     References
     ----------
-    Hill (1975)
+    Hill, B. M. (1975), *Annals of Statistics* 3:1163-1174.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Hill tail-index estimator"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Hill tail-index estimator",
-        }
-    )
+    from .evhill import ev_hill
+
+    out = ev_hill(x, k=k)
+    payload = dict(out)
+    payload["alias_of"] = "morie.fn.evhill.ev_hill"
+    return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return "hillEst: Hill tail-index estimator"
+    return "hillEst: same estimator as evhill, one implementation"
