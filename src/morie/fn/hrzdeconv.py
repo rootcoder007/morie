@@ -9,7 +9,7 @@ __all__ = ["hrz_deconvolution"]
 
 
 def hrz_deconvolution(W, sigma_eps, grid=None, h=None, error="normal"):
-    r"""Deconvolution kernel density estimate (Horowitz Ch. 5):
+    r"""Deconvolution kernel density estimate (Horowitz Sec. 5.1):
 
     .. math:: \hat f_U(u) = \frac{1}{2\pi}\int e^{-i\tau u}
               \frac{\psi_W(\tau)}{\psi_\epsilon(\tau)}\, d\tau,
@@ -57,7 +57,8 @@ def hrz_deconvolution(W, sigma_eps, grid=None, h=None, error="normal"):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 5 (deconvolution).
+    Econometrics*. Springer. Ch. 5, Sec. 5.1 (deconvolution in a model of
+    measurement error).
     """
     W = np.asarray(W, dtype=float).ravel()
     n = W.size

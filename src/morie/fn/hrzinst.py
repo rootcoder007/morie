@@ -9,7 +9,7 @@ __all__ = ["hrz_instrument_check"]
 
 
 def hrz_instrument_check(X, Z, U=None, y=None):
-    r"""Diagnostics for the instrument conditions (Horowitz Ch. 6):
+    r"""Diagnostics for the instrument conditions (Horowitz Sec. 5.3-5.5):
 
     identification needs :math:`E[U|Z] = 0` (exogeneity) together with
     variation in X that Z explains (relevance).
@@ -41,7 +41,8 @@ def hrz_instrument_check(X, Z, U=None, y=None):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 6 (instrumental variables).
+    Econometrics*. Springer. Ch. 5, Sec. 5.3 (nonparametric instrumental-variables
+    estimation).
     """
     X = np.atleast_2d(np.asarray(X, dtype=float))
     Z = np.atleast_2d(np.asarray(Z, dtype=float))

@@ -10,7 +10,7 @@ __all__ = ["hrz_sieve_iv"]
 
 def hrz_sieve_iv(T, Ey_w, K=None):
     r"""Sieve (series) solution of the nonparametric IV equation
-    (Horowitz Ch. 6):
+    (Horowitz Sec. 5.3-5.5):
 
     .. math:: \hat g = \arg\min_{g \in G_K}
               \|\widehat E(Y|W) - \hat T g\|^2,
@@ -41,7 +41,8 @@ def hrz_sieve_iv(T, Ey_w, K=None):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 6 (sieve estimation of NPIV).
+    Econometrics*. Springer. Ch. 5, Sec. 5.4.2 (estimation by series truncation when
+    T is unknown).
     """
     Tm = np.atleast_2d(np.asarray(T, dtype=float))
     b = np.asarray(Ey_w, dtype=float).ravel()

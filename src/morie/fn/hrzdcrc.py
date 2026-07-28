@@ -9,7 +9,7 @@ __all__ = ["hrz_deconv_rate"]
 
 
 def hrz_deconv_rate(n, error="normal", s=2.0, r=2.0):
-    r"""Convergence rates for deconvolution (Horowitz Ch. 5):
+    r"""Convergence rates for deconvolution (Horowitz Sec. 5.1):
 
     .. math:: \|\hat f_U - f_U\|^2 =
               \begin{cases}
@@ -41,7 +41,8 @@ def hrz_deconv_rate(n, error="normal", s=2.0, r=2.0):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 5 (rates of convergence in deconvolution).
+    Econometrics*. Springer. Ch. 5, Sec. 5.1.1-5.1.2 (rate of convergence of the
+    density estimator; why deconvolution estimators converge slowly).
     """
     n = int(n)
     if n < 2:

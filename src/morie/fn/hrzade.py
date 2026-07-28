@@ -9,7 +9,7 @@ __all__ = ["hrz_average_derivative"]
 
 
 def hrz_average_derivative(X, y, h=None, weighted=True):
-    r"""Density-weighted average derivative (Horowitz Ch. 2):
+    r"""Density-weighted average derivative (Horowitz Sec. 2.6):
 
     .. math:: \delta = E\!\left[f_X(X)\,
               \frac{\partial E(Y|X)}{\partial X}\right]
@@ -49,7 +49,7 @@ def hrz_average_derivative(X, y, h=None, weighted=True):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 2 (average derivative estimation).
+    Econometrics*. Springer. Ch. 2, Sec. 2.6.1 (average-derivative estimators).
     """
     from ._horowitz import kernel_deriv, silverman_bw
 

@@ -9,7 +9,7 @@ __all__ = ["hrz_npiv_quantile"]
 
 
 def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
-    r"""Nonparametric quantile IV (Horowitz Ch. 6):
+    r"""Nonparametric quantile IV (Horowitz Sec. 5.3-5.5):
 
     solve :math:`P(Y \le g(X) \mid W = w) = \tau` for g.
 
@@ -39,7 +39,7 @@ def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 6 (quantile IV).
+    Econometrics*. Springer. Ch. 5, Sec. 5.5.1 (nonparametric quantile IV).
     """
     if not 0 < tau < 1:
         raise ValueError(f"tau must lie in (0, 1), got {tau}.")
