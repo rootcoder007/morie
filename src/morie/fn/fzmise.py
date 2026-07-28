@@ -5,54 +5,80 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_mise_kdfe"]
+__all__ = ["fauzi_mise"]
 
 
-def fauzi_mise_kdfe(x, bandwidth):
-    """
-    MISE of kernel density estimator
+def fauzi_mise(n, h=None, R_K=None, mu2_K=1.0, R_f2=1.0, sigma=1.0):
+    r"""Mean integrated squared error of the kernel density estimator
+    (Fauzi Ch. 1):
 
-    Formula: MISE = E[integral (f_hat_h - f)^2 dx]
+    .. math:: \mathrm{MISE} \approx \frac{R(K)}{nh}
+              + \frac{h^4}{4}\mu_2(K)^2 R(f''),
+
+    variance falling in h and squared bias rising in it.
+
+    Minimising gives the classical
+
+    .. math:: h_{opt} = \left[\frac{R(K)}
+              {n\,\mu_2(K)^2 R(f'')}\right]^{1/5}
+              \propto n^{-1/5},
+              \qquad
+              \mathrm{MISE}_{opt} \propto n^{-4/5},
+
+    and that :math:`n^{-4/5}` is the ceiling for a second-order
+    kernel and a twice-differentiable density -- strictly worse than
+    the parametric :math:`n^{-1}`, and not improvable without either
+    more smoothness or a higher-order kernel. Both the optimum and
+    the attainable rate are returned, so the gap to parametric is a
+    number rather than a remark.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
+    n : int
+        Sample size.
+    h : float, optional
+        Bandwidth to evaluate MISE at; the optimum otherwise.
+    R_K : float, optional
+        :math:`\int K^2`; the Gaussian value otherwise.
+    mu2_K : float
+        :math:`\int u^2 K(u)du`.
+    R_f2 : float
+        :math:`\int (f'')^2`, the roughness of the truth.
+    sigma : float
+        Scale, for the normal reference rule.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Fauzi Ch 1, Eq 1.2
+    RichResult
+        keys: ``mise``, ``variance_part``, ``bias_part``, ``h``,
+        ``h_optimal``, ``mise_optimal``, ``rate_exponent`` (-4/5),
+        ``parametric_rate_exponent`` (-1), ``n``, ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "MISE of kernel density estimator"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "MISE of kernel density estimator",
-        }
-    )
+    nn = int(n)
+    if nn < 2:
+        raise ValueError(f"n must be at least 2, got {nn}.")
+    rk = 1.0 / (2.0 * np.sqrt(np.pi)) if R_K is None else float(R_K)
+    m2 = float(mu2_K)
+    rf = float(R_f2)
+    if rk <= 0 or m2 <= 0 or rf <= 0:
+        raise ValueError("R_K, mu2_K and R_f2 must all be positive.")
+    h_opt = float((rk / (nn * m2 ** 2 * rf)) ** 0.2)
+    hh = h_opt if h is None else float(h)
+    if hh <= 0:
+        raise ValueError(f"bandwidth must be positive, got {hh}.")
+    var = rk / (nn * hh)
+    bias = hh ** 4 / 4.0 * m2 ** 2 * rf
+    return RichResult(payload={
+        "mise": float(var + bias), "variance_part": float(var),
+        "bias_part": float(bias), "h": hh, "h_optimal": h_opt,
+        "mise_optimal": float(rk / (nn * h_opt) + h_opt ** 4 / 4 * m2 ** 2 * rf),
+        "rate_exponent": -0.8, "parametric_rate_exponent": -1.0,
+        "bandwidth_rate": "h_opt proportional to n^{-1/5}",
+        "ceiling_note": "n^{-4/5} is the best a second-order kernel can do "
+                        "for a twice-differentiable density",
+        "n": nn,
+        "method": "MISE = R(K)/(nh) + h^4 mu2^2 R(f'')/4; the two terms pull opposite ways"})
 
 
 def cheatsheet():
-    return "fzmise: MISE of kernel density estimator"
+    return "fzmise: h ~ n^{-1/5} gives MISE ~ n^{-4/5} -- the ceiling, and short of parametric n^{-1}"

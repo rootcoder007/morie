@@ -5,56 +5,74 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_naive_mrl"]
+__all__ = ["fauzi_mrl_naive"]
 
 
-def fauzi_naive_mrl(t, bandwidth, kernel):
-    """
-    Naive kernel MRL function estimator
+def fauzi_mrl_naive(x, t_grid, h=None):
+    r"""Naive kernel mean-residual-life estimator (Fauzi Eq. 4.2):
 
-    Formula: m_hat_X(t) = [h*sum V((t-X_i)/h)] / [sum V((t-X_i)/h)]
+    .. math:: \hat m_X(t)
+              = \frac{h\sum_i \mathbb V\!\left(\frac{t-X_i}{h}\right)}
+                     {\sum_i V\!\left(\frac{t-X_i}{h}\right)},
+              \qquad t \in \Omega .
+
+    The baseline the chapter improves on. It applies a symmetric
+    kernel directly on the original scale, so it inherits exactly the
+    boundary problem the chapter exists to solve: Remark 4.5 states
+    that its bias degrades from :math:`O(h^2)` in the interior to
+    :math:`O(h)` or even :math:`O(1)` near the edges, while the
+    transformed estimators of :mod:`morie.fn.fzmr2` stay
+    :math:`O(h^2)` throughout.
 
     Parameters
     ----------
-    t : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    kernel : array-like
-        Input data.
+    x : array-like
+        Non-negative sample.
+    t_grid : array-like
+        Evaluation points.
+    h : float, optional
+        Bandwidth.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``t_grid``, ``mrl``, ``bandwidth``,
+        ``interior_bias_order``, ``boundary_bias_order``,
+        ``boundary_safe`` (False), ``n``, ``method``.
     References
     ----------
-    Fauzi Ch 4, Eq 4.2
+    Fauzi and Maesono (2023), Eq. (4.2) and Remark 4.5. Transcribed
+    from the PDF.
     """
-    t = np.asarray(t, dtype=float)
-    n = int(t) if t.ndim == 0 else len(t)
-    if t.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Naive kernel MRL function estimator"})
-    estimate = np.median(t)
-    se = 1.2533 * np.std(t, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Naive kernel MRL function estimator",
-        }
-    )
+    from ._fauzi import kernel_V
+
+    xv = np.asarray(x, dtype=float).ravel()
+    n = xv.size
+    if n < 2:
+        raise ValueError(f"need at least 2 observations, got {n}.")
+    tg = np.atleast_1d(np.asarray(t_grid, dtype=float))
+    hh = float(np.std(xv, ddof=1) * n ** -0.2) if h is None else float(h)
+    if hh <= 0:
+        raise ValueError(f"bandwidth must be positive, got {hh}.")
+    upper = float(xv.max() + 8 * hh)
+    mrl = np.empty(tg.size)
+    for j, t in enumerate(tg):
+        den = float(np.sum(kernel_V((t - xv) / hh)))
+        if den <= 0:
+            mrl[j] = np.nan
+            continue
+        zz = np.linspace(t, upper, 400)
+        num = float(np.trapezoid(
+            kernel_V((zz[:, None] - xv[None, :]) / hh).sum(axis=1), zz))
+        mrl[j] = num / den
+    return RichResult(payload={
+        "t_grid": tg, "mrl": mrl, "bandwidth": hh,
+        "interior_bias_order": "O(h^2)",
+        "boundary_bias_order": "O(h), and can degrade to O(1)",
+        "boundary_safe": False,
+        "n": int(n),
+        "method": "Naive kernel MRL (4.2); the baseline whose boundary failure Ch. 4 fixes"})
 
 
 def cheatsheet():
-    return "fzmrln: Naive kernel MRL function estimator"
+    return "fzmrln: interior O(h^2), boundary O(h) or worse -- the baseline, not the recommendation"

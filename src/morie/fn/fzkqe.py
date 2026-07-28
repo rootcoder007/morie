@@ -5,64 +5,79 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_kernel_quantile_estimator"]
+__all__ = ["fauzi_kernel_quantile"]
 
 
-def fauzi_kernel_quantile_estimator(data, p, bandwidth, kernel):
-    """
-    Kernel quantile estimator via kernel-smoothed empirical quantile function
+def fauzi_kernel_quantile(x, p, h=None):
+    r"""Kernel quantile estimator (Fauzi Eq. 3.1):
 
-    Formula: Q_hat_{p,h} = (1/h) integral_0^1 F_n^{-1}(data) K((data-p)/h) dx
+    .. math:: \hat Q_{p,h} = \frac1h\int_0^1
+              F_n^{-1}(u)\,K\!\left(\frac{u-p}{h}\right)du,
+
+    which is a weighted sum of ORDER STATISTICS -- the book notes
+    (3.1) can be rewritten that way, and that is how it is computed
+    here.
+
+    Smoothing in the PROBABILITY argument, not in x. The sample
+    quantile uses a single order statistic and therefore jumps as
+    :math:`p` crosses :math:`i/n`; this averages neighbouring order
+    statistics with kernel weights, which removes the jumps and
+    reduces variance. The book's motivation is explicit: in risk
+    management the tails matter, and a single order statistic is a
+    poor estimate out there.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    p : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    kernel : array-like
-        Input data.
+    x : array-like
+        Sample.
+    p : float or array-like
+        Probability levels in (0, 1).
+    h : float, optional
+        Bandwidth on the probability scale.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``p``, ``quantile``, ``sample_quantile``, ``bandwidth``,
+        ``weights_sum``, ``smooths_in``, ``n``, ``method``.
     References
     ----------
-    Fauzi Ch 3, Eq 3.1
+    Fauzi and Maesono (2023), Eq. (3.1). From the PDF.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Kernel quantile estimator via kernel-smoothed empirical quantile function",
-            }
-        )
-    estimate = np.median(data)
-    se = 1.2533 * np.std(data, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Kernel quantile estimator via kernel-smoothed empirical quantile function",
-        }
-    )
+    from ._fauzi import kernel_W
+
+    xv = np.sort(np.asarray(x, dtype=float).ravel())
+    n = xv.size
+    if n < 3:
+        raise ValueError(f"need at least 3 observations, got {n}.")
+    pv = np.atleast_1d(np.asarray(p, dtype=float)).ravel()
+    if np.any((pv <= 0) | (pv >= 1)):
+        raise ValueError("probability levels must lie strictly in (0, 1).")
+    hh = float(n ** -0.4) if h is None else float(h)
+    if hh <= 0:
+        raise ValueError(f"bandwidth must be positive, got {hh}.")
+    # Weight on the i-th order statistic is the kernel mass of the
+    # interval ((i-1)/n, i/n], which is an EXACT difference of the
+    # integrated kernel -- no quadrature. A numerical integral over a
+    # fixed u-grid silently fails here: once n exceeds the grid
+    # resolution each bin holds one point or none, and a one-point
+    # trapezoid is zero, so nearly every weight vanishes and the
+    # estimate collapses onto whichever order statistic survives.
+    edges = np.arange(n + 1) / n
+    Wl = kernel_W((edges[:, None] - pv[None, :]) / hh)
+    wi = Wl[1:] - Wl[:-1]
+    wsum = wi.sum(axis=0)
+    q = (wi * xv[:, None]).sum(axis=0) / wsum
+    return RichResult(payload={
+        "p": pv, "quantile": q,
+        "sample_quantile": np.quantile(xv, pv),
+        "bandwidth": hh, "weights_sum": wsum,
+        "smooths_in": "the PROBABILITY argument, not in x",
+        "why": "the sample quantile uses one order statistic and jumps as p "
+               "crosses i/n; the tails are exactly where that hurts",
+        "n": int(n),
+        "method": "Kernel quantile estimator (3.1) as a weighted sum of order statistics"})
 
 
 def cheatsheet():
-    return "fzkqe: Kernel quantile estimator via kernel-smoothed empirical quantile function"
+    return "fzkqe: smooths in p, not in x -- averages neighbouring order statistics"

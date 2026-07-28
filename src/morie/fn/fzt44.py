@@ -5,62 +5,69 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_thm4_4_mrl_normality"]
+__all__ = ["fauzi_theorem_4_4"]
 
 
-def fauzi_thm4_4_mrl_normality(t, bandwidth, g_func):
-    """
-    Theorem 4.4: asymptotic normality of boundary-free MRL estimators
+def fauzi_theorem_4_4(mrl_hat, mrl_true, variance):
+    r"""Theorem 4.4 (Fauzi): asymptotic normality of the
+    boundary-free mean-residual-life estimators,
 
-    Formula: (m_tilde_X,i(t) - m_X(t)) / sqrt(Var[m_tilde_X,i(t)]) ->_D N(0,1)
+    .. math:: \frac{\tilde m_{X,i}(t) - m_X(t)}
+                    {\sqrt{\mathrm{Var}[\tilde m_{X,i}(t)]}}
+              \;\to_D\; N(0,1),
+              \qquad i = 1, 2 .
+
+    The proof runs through Lyapunov's condition, and what makes it
+    work is that :math:`V(\cdot)` is BOUNDED between 0 and 1, so all
+    its moments exist automatically -- the book checks
+    :math:`E|V - EV|^{2+\delta} \le 2^{2+\delta} < \infty` and the
+    condition follows. A kernel-type estimator whose summands were
+    unbounded would need a genuine moment assumption instead.
+
+    Both estimators satisfy it, so a normal confidence interval is
+    licensed at any interior point AND at the boundary, which is not
+    true of the naive estimator.
 
     Parameters
     ----------
-    t : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    g_func : array-like
-        Input data.
+    mrl_hat : array-like
+        The estimates.
+    mrl_true : array-like
+        The target, for the standardised statistic.
+    variance : array-like
+        The Theorem 4.3 variances.
 
     Returns
     -------
-    result : dict
-        Keys: statistic
-
+    RichResult
+        keys: ``z``, ``p_two_sided``, ``holds_for``,
+        ``why_lyapunov_works``, ``valid_at_boundary`` (True),
+        ``method``.
     References
     ----------
-    Fauzi Ch 4, Theorem 4.4
+    Fauzi and Maesono (2023), Theorem 4.4. Transcribed from the PDF.
     """
-    t = np.asarray(t, dtype=float)
-    n = int(t) if t.ndim == 0 else len(t)
-    if t.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Theorem 4.4: asymptotic normality of boundary-free MRL estimators",
-            }
-        )
-    estimate = np.median(t)
-    se = 1.2533 * np.std(t, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Theorem 4.4: asymptotic normality of boundary-free MRL estimators",
-        }
-    )
+    from scipy import stats
+
+    mh = np.atleast_1d(np.asarray(mrl_hat, dtype=float)).ravel()
+    mt = np.atleast_1d(np.asarray(mrl_true, dtype=float)).ravel()
+    v = np.atleast_1d(np.asarray(variance, dtype=float)).ravel()
+    if not (mh.size == mt.size == v.size):
+        raise ValueError("all three arguments must have the same length.")
+    if np.any(v < 0):
+        raise ValueError("variances must be non-negative.")
+    sd = np.sqrt(np.maximum(v, 0.0))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        z = np.where(sd > 0, (mh - mt) / np.maximum(sd, 1e-300), np.nan)
+    return RichResult(payload={
+        "z": z, "p_two_sided": 2 * stats.norm.sf(np.abs(z)),
+        "holds_for": "both m_tilde_{X,1} and m_tilde_{X,2}",
+        "why_lyapunov_works": "V is bounded in [0, 1], so every moment exists "
+                              "automatically and the Lyapunov condition needs "
+                              "no extra assumption",
+        "valid_at_boundary": True,
+        "method": "Theorem 4.4: standardised boundary-free MRL estimators are asymptotically N(0, 1)"})
 
 
 def cheatsheet():
-    return "fzt44: Theorem 4.4: asymptotic normality of boundary-free MRL estimators"
+    return "fzt44: V bounded in [0,1] is what makes Lyapunov automatic -- no moment assumption needed"
