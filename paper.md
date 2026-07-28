@@ -376,7 +376,19 @@ Yohai [-@rousseeuwYohai1984robust] for S-estimators, Yohai
 [-@yohaiZamar1988high] for tau-estimators, Rousseeuw and Croux
 [-@rousseeuwCroux1993alternatives] for the Qn and Sn scales, and
 Theil [-@theil1950rank] and Sen [-@sen1968estimates] for the
-median-of-slopes line and its distribution-free interval.
+median-of-slopes line and its distribution-free interval. The
+extreme-value modules follow Hill [-@hill1975simple], Pickands
+[-@pickands1975statistical] and Dekkers, Einmahl and de Haan
+[-@dekkers1989moment] for the extreme-value index, Hosking
+[-@hosking1990lmoments], Hosking, Wallis and Wood
+[-@hoskingWallisWood1985estimation] and Hosking and Wallis
+[-@hoskingWallis1987parameter] for the L-moment and
+probability-weighted-moment fits, Smith and Weissman
+[-@smithWeissman1994estimating], Ferro and Segers
+[-@ferroSegers2003inference] and Northrop [-@northrop2015efficient]
+for the extremal index, and Naveau, Guillou, Cooley and Diebolt
+[-@naveau2009modelling] for the madogram estimate of extremal
+dependence.
 
 Each function is implemented against the primary source and its
 docstring cites the specific chapter, section or equation, so a
@@ -559,6 +571,15 @@ Springer.
 
 </div>
 
+<div id="ref-dekkers1989moment" class="csl-entry">
+
+Dekkers, Arnold L. M., John H. J. Einmahl, and Laurens de Haan. 1989. “A
+Moment Estimator for the Index of an Extreme-Value Distribution.” *The
+Annals of Statistics* 17 (4): 1833–55.
+<https://doi.org/10.1214/aos/1176347397>.
+
+</div>
+
 <div id="ref-diggle2003pointpatterns" class="csl-entry">
 
 Diggle, Peter J. 2003. *Statistical Analysis of Spatial Point Patterns*.
@@ -636,6 +657,14 @@ Machines.” *Journal of Machine Learning Research* 6: 1889–918.
 Fauzi, Rizky Reza, and Yoshihiko Maesono. 2023. *Statistical Inference
 Based on Kernel Distribution Function Estimators*. SpringerBriefs in
 Statistics. Springer. <https://doi.org/10.1007/978-981-99-1862-1>.
+
+</div>
+
+<div id="ref-ferroSegers2003inference" class="csl-entry">
+
+Ferro, Christopher A. T., and Johan Segers. 2003. “Inference for
+Clusters of Extreme Values.” *Journal of the Royal Statistical Society,
+Series B* 65 (2): 545–56. <https://doi.org/10.1111/1467-9868.00401>.
 
 </div>
 
@@ -752,6 +781,14 @@ the Fractal Theory.” *Physica D: Nonlinear Phenomena* 31 (2): 277–83.
 
 </div>
 
+<div id="ref-hill1975simple" class="csl-entry">
+
+Hill, Bruce M. 1975. “A Simple General Approach to Inference about the
+Tail of a Distribution.” *The Annals of Statistics* 3 (5): 1163–74.
+<https://doi.org/10.1214/aos/1176343247>.
+
+</div>
+
 <div id="ref-horowitz1992smoothed" class="csl-entry">
 
 Horowitz, Joel L. 1992. “A Smoothed Maximum Score Estimator for the
@@ -789,6 +826,32 @@ Studies* 63 (1): 145–68. <https://doi.org/10.2307/2298119>.
 Hosking, J. R. M. 1980. “The Multivariate Portmanteau Statistic.”
 *Journal of the American Statistical Association* 75 (371): 602–8.
 <https://doi.org/10.1080/01621459.1980.10477520>.
+
+</div>
+
+<div id="ref-hosking1990lmoments" class="csl-entry">
+
+Hosking, J. R. M. 1990. “L-Moments: Analysis and Estimation of
+Distributions Using Linear Combinations of Order Statistics.” *Journal
+of the Royal Statistical Society, Series B* 52 (1): 105–24.
+<https://doi.org/10.1111/j.2517-6161.1990.tb01775.x>.
+
+</div>
+
+<div id="ref-hoskingWallis1987parameter" class="csl-entry">
+
+Hosking, J. R. M., and J. R. Wallis. 1987. “Parameter and Quantile
+Estimation for the Generalized Pareto Distribution.” *Technometrics* 29
+(3): 339–49. <https://doi.org/10.1080/00401706.1987.10488243>.
+
+</div>
+
+<div id="ref-hoskingWallisWood1985estimation" class="csl-entry">
+
+Hosking, J. R. M., J. R. Wallis, and E. F. Wood. 1985. “Estimation of
+the Generalized Extreme-Value Distribution by the Method of
+Probability-Weighted Moments.” *Technometrics* 27 (3): 251–61.
+<https://doi.org/10.1080/00401706.1985.10488049>.
 
 </div>
 
@@ -993,6 +1056,14 @@ Moran, P. A. P. 1950. “Notes on Continuous Stochastic Phenomena.”
 
 </div>
 
+<div id="ref-naveau2009modelling" class="csl-entry">
+
+Naveau, Philippe, Armelle Guillou, Daniel Cooley, and Jean Diebolt.
+2009. “Modelling Pairwise Dependence of Maxima in Space.” *Biometrika*
+96 (1): 1–17. <https://doi.org/10.1093/biomet/asn044>.
+
+</div>
+
 <div id="ref-nenadicGreenacre2007ca" class="csl-entry">
 
 Nenadic, Oleg, and Michael Greenacre. 2007. “Correspondence Analysis in
@@ -1007,6 +1078,14 @@ of Statistical Software* 20 (3): 1–13.
 Newey, Whitney K., and Thomas M. Stoker. 1993. “Efficiency of Weighted
 Average Derivative Estimators and Index Models.” *Econometrica* 61 (5):
 1199–223. <https://doi.org/10.2307/2951498>.
+
+</div>
+
+<div id="ref-northrop2015efficient" class="csl-entry">
+
+Northrop, Paul J. 2015. “An Efficient Semiparametric Maxima Estimator of
+the Extremal Index.” *Extremes* 18 (4): 585–603.
+<https://doi.org/10.1007/s10687-015-0221-5>.
 
 </div>
 
@@ -1057,6 +1136,14 @@ Review E* 49 (2): 1685–89. <https://doi.org/10.1103/PhysRevE.49.1685>.
 Percival, Donald B., and Andrew T. Walden. 2000. *Wavelet Methods for
 Time Series Analysis*. Cambridge Series in Statistical and Probabilistic
 Mathematics. Cambridge University Press.
+
+</div>
+
+<div id="ref-pickands1975statistical" class="csl-entry">
+
+Pickands, James. 1975. “Statistical Inference Using Extreme Order
+Statistics.” *The Annals of Statistics* 3 (1): 119–31.
+<https://doi.org/10.1214/aos/1176343003>.
 
 </div>
 
@@ -1220,6 +1307,14 @@ Sciences* 18 (Suppl.): 1249–67.
 
 Silverman, Bernard W. 1986. *Density Estimation for Statistics and Data
 Analysis*. Chapman; Hall. <https://doi.org/10.1201/9781315140919>.
+
+</div>
+
+<div id="ref-smithWeissman1994estimating" class="csl-entry">
+
+Smith, Richard L., and Ishay Weissman. 1994. “Estimating the Extremal
+Index.” *Journal of the Royal Statistical Society, Series B* 56 (3):
+515–28. <https://doi.org/10.1111/j.2517-6161.1994.tb01997.x>.
 
 </div>
 
