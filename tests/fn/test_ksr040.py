@@ -1,22 +1,17 @@
-"""Tests for ksr040.kosorok_ch2_bootstrap_donsker_iff."""
+"""Tests for ksr040 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr040 import kosorok_ch2_bootstrap_donsker_iff
 
 
 def test_ksr040_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_bootstrap_donsker_iff(F, P)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(11)
+    out = kosorok_ch2_bootstrap_donsker_iff(rng.random(300), n_boot=400, rng=rng)
+    assert out["max_abs_gap"] < 0.1  # matches the bridge covariance
 
 
 def test_ksr040_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_bootstrap_donsker_iff(F, P)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        kosorok_ch2_bootstrap_donsker_iff(np.random.default_rng(11).random(5))

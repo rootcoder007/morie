@@ -1,22 +1,17 @@
-"""Tests for ksr036.kosorok_ch2_donsker_bracketing_theorem."""
+"""Tests for ksr036 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr036 import kosorok_ch2_donsker_bracketing_theorem
 
 
 def test_ksr036_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_donsker_bracketing_theorem(F, P)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch2_donsker_bracketing_theorem(lambda e: (1 / e) ** 2)
+    assert out["sufficient_condition_met"] is True
 
 
 def test_ksr036_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_donsker_bracketing_theorem(F, P)
-    assert isinstance(result, dict)
+    # the key is named 'sufficient', because the theorem is not an iff
+    out = kosorok_ch2_donsker_bracketing_theorem(lambda e: (1 / e) ** 2)
+    assert "sufficient_condition_met" in out

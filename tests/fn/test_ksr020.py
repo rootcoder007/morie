@@ -1,26 +1,22 @@
-"""Tests for ksr020.kosorok_ch1_linear_regression_model."""
+"""Tests for ksr020 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr020 import kosorok_ch1_linear_regression_model
 
 
 def test_ksr020_basic():
-    """Test basic functionality."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    beta = 0.8
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    result = kosorok_ch1_linear_regression_model(Y, Z, beta, e)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(0)
+    Z = rng.standard_normal((200, 2))
+    Y = Z @ np.array([1.5, -0.5]) + rng.standard_normal(200) * 0.4
+    out = kosorok_ch1_linear_regression_model(Y, Z)
+    assert out["beta"] == pytest.approx([1.5, -0.5], abs=0.15)
+    assert out["bounded_cond_var"] is True
 
 
 def test_ksr020_edge():
-    """Test edge cases."""
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    beta = 0.8
-    e = np.random.default_rng(44).normal(0, 1, 100)
-    result = kosorok_ch1_linear_regression_model(Y, Z, beta, e)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(0)
+    Z = rng.standard_normal((200, 2))
+    with pytest.raises(ValueError):
+        kosorok_ch1_linear_regression_model(np.zeros(10), Z)  # length mismatch

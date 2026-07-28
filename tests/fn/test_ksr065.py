@@ -1,26 +1,20 @@
-"""Tests for ksr065.kosorok_ch3_efficient_influence_general."""
+"""Tests for ksr065 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr065 import kosorok_ch3_efficient_influence_general
 
 
 def test_ksr065_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    psi_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    chi_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch3_efficient_influence_general(A, psi_tilde, chi_tilde, eta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch3_efficient_influence_general(np.array([[2.0, 0.0], [0.0, 4.0]]),
+                                                 np.array([2.0, 8.0]))
+    assert out["chi"] == pytest.approx([1.0, 2.0])
+    assert out["consistent"] is True
 
 
 def test_ksr065_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    psi_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    chi_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch3_efficient_influence_general(A, psi_tilde, chi_tilde, eta)
-    assert isinstance(result, dict)
+    # an inconsistent system means the parameter is NOT pathwise
+    # differentiable -- reported, not silently least-squared away
+    bad = kosorok_ch3_efficient_influence_general(np.ones((2, 2)), np.array([1.0, 5.0]))
+    assert bad["consistent"] is False

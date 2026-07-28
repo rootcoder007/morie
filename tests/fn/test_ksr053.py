@@ -1,28 +1,20 @@
-"""Tests for ksr053.kosorok_ch2_kaplan_meier_inverse."""
+"""Tests for ksr053 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr053 import kosorok_ch2_kaplan_meier_inverse
 
 
 def test_ksr053_basic():
-    """Test basic functionality."""
-    S_0 = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    F_0 = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    result = kosorok_ch2_kaplan_meier_inverse(S_0, L, F_0, a, t)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch2_kaplan_meier_inverse(lambda u: np.exp(-0.5 * u),
+                                           lambda u: np.exp(-0.3 * u), None,
+                                           lambda u: u, 1.0)
+    assert np.isfinite(out["inverse"])
 
 
 def test_ksr053_edge():
-    """Test edge cases."""
-    S_0 = np.random.default_rng(42).normal(0, 1, 100)
-    L = np.random.default_rng(42).normal(0, 1, 100)
-    F_0 = np.random.default_rng(42).normal(0, 1, 100)
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    t = np.linspace(0, 10, 100)
-    result = kosorok_ch2_kaplan_meier_inverse(S_0, L, F_0, a, t)
-    assert isinstance(result, dict)
+    # a hazard-like L vanishing at 0 makes the integrand undefined
+    with pytest.raises(ValueError):
+        kosorok_ch2_kaplan_meier_inverse(lambda u: np.exp(-0.5 * u),
+                                         lambda u: 0.5 * u, None, lambda u: u, 1.0)

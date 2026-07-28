@@ -1,22 +1,20 @@
-"""Tests for ksr041.kosorok_ch2_bootstrap_donsker_almost_sure."""
+"""Tests for ksr041 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr041 import kosorok_ch2_bootstrap_donsker_almost_sure
 
 
 def test_ksr041_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_bootstrap_donsker_almost_sure(F, P)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(12)
+    out = kosorok_ch2_bootstrap_donsker_almost_sure(rng.random(300), n_boot=200, rng=rng)
+    assert out["both_conditions_met"] is True
 
 
 def test_ksr041_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_bootstrap_donsker_almost_sure(F, P)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(12)
+    # a.s. convergence needs the extra envelope condition
+    bad = kosorok_ch2_bootstrap_donsker_almost_sure(rng.random(300), n_boot=200,
+                                                    rng=rng, envelope_sq_mean=np.inf)
+    assert bad["both_conditions_met"] is False

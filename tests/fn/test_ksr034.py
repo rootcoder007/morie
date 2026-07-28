@@ -1,24 +1,21 @@
-"""Tests for ksr034.kosorok_ch2_glivenko_cantelli_bracketing."""
+"""Tests for ksr034 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr034 import kosorok_ch2_glivenko_cantelli_bracketing
 
 
 def test_ksr034_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_glivenko_cantelli_bracketing(F, P, eps)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(9)
+    X = rng.random(150)
+    F = [(lambda x, c=c: (np.asarray(x) <= c).astype(float)) for c in np.linspace(.05,.95,20)]
+    out = kosorok_ch2_glivenko_cantelli_bracketing(F, X)
+    assert out["finite_on_grid"] is True  # 'on grid', not 'for all eps'
 
 
 def test_ksr034_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    eps = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_glivenko_cantelli_bracketing(F, P, eps)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(9)
+    F = [(lambda x: (np.asarray(x) <= 0.5).astype(float))]
+    with pytest.raises(ValueError):
+        kosorok_ch2_glivenko_cantelli_bracketing(F, rng.random(50), eps_grid=[0.0])

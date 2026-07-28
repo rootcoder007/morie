@@ -16,9 +16,12 @@ def kosorok_ch2_frechet_differentiability(phi, theta, h_n, derivative=None):
 
     Frechet is STRONGER than Hadamard: the ratio must vanish for every
     sequence :math:`h_n \to 0`, not merely for those converging in a
-    direction. Many statistical functionals (the quantile map, for
-    one) are Hadamard but not Frechet differentiable, which is exactly
-    why the delta method in this book is built on Hadamard.
+    direction. The quantile map is the standard example -- Hadamard
+    differentiable (van der Vaart 1998, Lemma 21.3, with derivative
+    :math:`\alpha \mapsto -\alpha(F^{-1})/f(F^{-1})`) but not
+    Frechet. Reeds (1976) introduced Hadamard into this literature for
+    exactly that reason, and it is why the delta method in this book
+    is built on Hadamard rather than Frechet.
 
     Evaluated along the supplied sequence; a small ratio here is
     evidence, not proof, and the returned key is named
@@ -42,7 +45,15 @@ def kosorok_ch2_frechet_differentiability(phi, theta, h_n, derivative=None):
     References
     ----------
     Kosorok, M. R. (2008). *Introduction to Empirical Processes and
-    Semiparametric Inference*. Springer. Ch. 2 (differentiability of functionals).
+    Semiparametric Inference*. Springer. Ch. 2 (differentiability of
+    functionals).
+
+    van der Vaart, A. W. (1998). *Asymptotic Statistics*. Cambridge
+    University Press. Lemma 21.3 (Hadamard differentiability of the
+    quantile map).
+
+    Reeds, J. A. (1976). *On the Definition of von Mises Functionals*.
+    PhD thesis, Harvard University.
     """
     th = np.asarray(theta, dtype=float)
     base = np.asarray(phi(th), dtype=float)

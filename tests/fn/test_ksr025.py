@@ -1,28 +1,17 @@
-"""Tests for ksr025.kosorok_ch1_penalized_loglikelihood."""
+"""Tests for ksr025 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr025 import kosorok_ch1_penalized_loglikelihood
 
 
 def test_ksr025_basic():
-    """Test basic functionality."""
-    beta = 0.8
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    lambda_n = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = kosorok_ch1_penalized_loglikelihood(beta, eta, X, lambda_n, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch1_penalized_loglikelihood(np.full(50, -1.0), J_eta=2.0,
+                                              lambda_n=0.5)
+    assert out["penalty"] == pytest.approx(0.25 * 4.0)  # lambda^2 J^2
 
 
 def test_ksr025_edge():
-    """Test edge cases."""
-    beta = 0.8
-    eta = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    lambda_n = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = kosorok_ch1_penalized_loglikelihood(beta, eta, X, lambda_n, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        kosorok_ch1_penalized_loglikelihood(np.zeros(10), J_eta=1.0, lambda_n=-1.0)
