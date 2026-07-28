@@ -325,6 +325,7 @@ Cavanagh and Sherman [@cavanagh1998rank]; the maximum-score
 estimators and their choice-based, panel and ordered-response
 extensions follow Manski [@manski1985semiparametric;
 @manski1987semiparametric], Horowitz [@horowitz1992smoothed] and
+Kooreman and Melenberg [@kooremanMelenberg1989maximum] and
 Melenberg and van Soest [@melenbergVanSoest1996parametric]; the
 heteroskedastic binary-response estimator follows Lewbel
 [@lewbel2000semiparametric] in the simplified form of Dong and
