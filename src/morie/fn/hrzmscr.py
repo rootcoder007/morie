@@ -13,7 +13,7 @@ from scipy import optimize
 
 
 def hrz_maximum_score(X, y, beta0=None, n_restarts=8, seed=0):
-    r"""Manski's maximum score estimator (Horowitz Ch. 3):
+    r"""Manski's maximum score estimator (Horowitz Sec. 4.3.2):
 
     .. math:: \hat\beta = \arg\max_{b:\,|b_1|=1}
               \sum_i (2Y_i - 1)\,\mathbf 1\{X_i'b > 0\}.
@@ -47,7 +47,8 @@ def hrz_maximum_score(X, y, beta0=None, n_restarts=8, seed=0):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 3 (the maximum score estimator).
+    Econometrics*. Springer. Sec. 4.3.2 (estimating beta: the maximum-score
+    estimator).
     """
     X = np.atleast_2d(np.asarray(X, dtype=float))
     y = np.asarray(y, dtype=float).ravel()
