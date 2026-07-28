@@ -1,49 +1,53 @@
-"""Standard empirical distribution function indexed by t in R."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Empirical distribution function."""
 
 import numpy as np
 
+from ._kosorok import empirical_df
 from ._richresult import RichResult
 
 __all__ = ["kosorok_ch2_empirical_distribution_function"]
 
 
-def kosorok_ch2_empirical_distribution_function(X, t, n):
-    """
-    Standard empirical distribution function indexed by t in R
+def kosorok_ch2_empirical_distribution_function(X, t=None, n=None):
+    r"""Empirical distribution function
 
-    Formula: F_n(t) = n^{-1} * sum_{i=1}^{n} 1{X_i <= t}
+    .. math:: F_n(t) = n^{-1}\sum_{i=1}^{n} 1\{X_i \le t\}.
+
+    The base object of the whole chapter: every process below is a
+    functional of this one. Evaluated on the sample's own order
+    statistics when ``t`` is omitted, since those are the only points
+    where F_n changes.
 
     Parameters
     ----------
     X : array-like
-        Input data.
-    t : array-like
-        Input data.
-    n : array-like
-        Input data.
+        Sample.
+    t : float or array-like, optional
+        Evaluation points; the sorted sample if omitted.
+    n : int, optional
+        Accepted for interface compatibility; taken from X.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``t``, ``F_n``, ``n``, ``method``.
     References
     ----------
-    Kosorok (2008), Ch 2, Eq 2.1, p. 9
+    Kosorok, M. R. (2008). *Introduction to Empirical Processes and
+    Semiparametric Inference*. Springer. Ch. 2.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    X = np.asarray(X, dtype=float).ravel()
+    if X.size < 1:
+        raise ValueError("X must be non-empty.")
+    if n is not None and int(n) != X.size:
+        raise ValueError(f"n = {n} does not match len(X) = {X.size}.")
+    tt = np.sort(X) if t is None else np.atleast_1d(np.asarray(t, dtype=float))
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Standard empirical distribution function indexed by t in R",
-        }
+        payload={"t": tt, "F_n": empirical_df(X, tt), "n": int(X.size),
+                 "method": "F_n(t) = n^-1 sum 1{X_i <= t} (Kosorok Ch. 2)"}
     )
 
 
 def cheatsheet():
-    return "ksr026: Standard empirical distribution function indexed by t in R"
+    return "ksr026: the EDF; base object of the chapter"
