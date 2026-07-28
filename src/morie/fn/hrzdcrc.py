@@ -1,59 +1,64 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Rate of convergence of deconvolution estimator."""
+"""Deconvolution convergence rates."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_deconv_rate"]
+__all__ = ["hrz_deconv_rate"]
 
 
-def horowitz_deconv_rate(n, smoothness_type, r, s):
-    """
-    Rate of convergence of deconvolution estimator
+def hrz_deconv_rate(n, error="normal", s=2.0, r=2.0):
+    r"""Convergence rates for deconvolution (Horowitz Ch. 5):
 
-    Formula: ||fnU - fU||^2 = O_p([log n]^{-s}) for ordinary smooth; O_p(n^{-r}) for supersmooth
+    .. math:: \|\hat f_U - f_U\|^2 =
+              \begin{cases}
+              O_p(n^{-r}) & \text{ordinary smooth}\\
+              O_p\big[(\log n)^{-s}\big] & \text{supersmooth}
+              \end{cases}
+
+    The gap is enormous and is the practical message of the chapter:
+    at n = 10^6 a logarithmic rate has barely moved. Both are returned
+    at the requested n so the difference is a number rather than a
+    footnote.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
-    smoothness_type : array-like
-        Input data.
-    r : array-like
-        Input data.
-    s : array-like
-        Input data.
+    n : int
+        Sample size.
+    error : {"normal", "laplace"}
+        Error type.
+    s : float, default 2.0
+        Supersmooth exponent.
+    r : float, default 2.0
+        Ordinary-smooth exponent.
 
     Returns
     -------
-    result : dict
-        Keys: rate
-
+    RichResult
+        keys: ``rate``, ``regime``, ``polynomial_rate``,
+        ``logarithmic_rate``, ``ratio``, ``n``, ``method``.
     References
     ----------
-    Horowitz Ch 5, Sec 5.1.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 5 (rates of convergence in deconvolution).
     """
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Rate of convergence of deconvolution estimator"}
-        )
-    estimate = np.median(n)
-    se = 1.2533 * np.std(n, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Rate of convergence of deconvolution estimator",
-        }
-    )
+    n = int(n)
+    if n < 2:
+        raise ValueError(f"n must be at least 2, got {n}.")
+    if error not in ("normal", "laplace"):
+        raise ValueError("error must be 'normal' or 'laplace'.")
+    poly = float(n ** (-float(r)))
+    logr = float(np.log(n) ** (-float(s)))
+    supersmooth = error == "normal"
+    return RichResult(payload={"rate": logr if supersmooth else poly,
+                               "regime": "supersmooth" if supersmooth
+                               else "ordinary smooth",
+                               "polynomial_rate": poly, "logarithmic_rate": logr,
+                               "ratio": logr / poly if poly > 0 else np.inf,
+                               "n": n,
+                               "method": "n^{-r} vs (log n)^{-s}; the gap is the chapter's point"})
 
 
 def cheatsheet():
-    return "hrzdcrc: Rate of convergence of deconvolution estimator"
+    return "hrzdcrc: at n=1e6 the logarithmic rate has barely moved"

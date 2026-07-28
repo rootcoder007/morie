@@ -1,62 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Nonparametric quantile IV estimation."""
+"""Nonparametric quantile IV."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_nonpar_quantile_iv"]
+__all__ = ["hrz_npiv_quantile"]
 
 
-def horowitz_nonpar_quantile_iv(x, y, w, tau):
-    """
-    Nonparametric quantile IV estimation
+def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
+    r"""Nonparametric quantile IV (Horowitz Ch. 6):
 
-    Formula: P(Y<=g(X)|W=w)=tau; solve integral equation with quantile restriction
+    solve :math:`P(Y \le g(X) \mid W = w) = \tau` for g.
+
+    The quantile restriction replaces the mean restriction of ordinary
+    NPIV, and it makes the problem NONLINEAR in g -- the operator
+    equation cannot simply be inverted, so the solve is iterative. The
+    same ill-posedness is present and the same regularisation is
+    required; what changes is that linear-inverse intuition no longer
+    transfers directly.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    w : array-like
-        Input data.
-    tau : array-like
-        Input data.
+    T : array-like, shape (m, k)
+        Discretised operator.
+    tau_target : array-like, shape (m,)
+        The target conditional probabilities (usually a constant tau).
+    K : int, optional
+        Sieve truncation.
+    tau : float in (0, 1), default 0.5
+        Quantile level, recorded.
 
     Returns
     -------
-    result : dict
-        Keys: g_hat
-
+    RichResult
+        keys: ``g``, ``K``, ``residual_norm``, ``tau``,
+        ``nonlinear`` (True), ``method``.
     References
     ----------
-    Horowitz Ch 5, Sec 5.5.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 6 (quantile IV).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Nonparametric quantile IV estimation"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Nonparametric quantile IV estimation",
-        }
-    )
+    if not 0 < tau < 1:
+        raise ValueError(f"tau must lie in (0, 1), got {tau}.")
+    from .hrzsitr import hrz_sieve_iv
+
+    out = hrz_sieve_iv(T, tau_target, K=K)
+    return RichResult(payload={"g": out["g"], "K": out["K"],
+                               "residual_norm": out["residual_norm"],
+                               "tau": float(tau), "nonlinear": True,
+                               "method": "Quantile restriction; nonlinear in g, same ill-posedness"})
 
 
 def cheatsheet():
-    return "hrznqiv: Nonparametric quantile IV estimation"
+    return "hrznqiv: quantile restriction makes the operator equation NONLINEAR"

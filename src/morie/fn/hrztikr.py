@@ -1,62 +1,83 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Tikhonov regularization for NPIV estimation."""
+"""Tikhonov-regularised nonparametric IV."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_tikhonov_npiv"]
+__all__ = ["hrz_tikhonov_iv"]
 
 
-def horowitz_tikhonov_npiv(x, y, w, alpha_n):
-    """
-    Tikhonov regularization for NPIV estimation
+def hrz_tikhonov_iv(T, Ey_w, alpha=None, alphas=None):
+    r"""Tikhonov regularisation for nonparametric IV (Horowitz Ch. 6):
 
-    Formula: g_hat = argmin_{g in H} [||E_hat(Y|W)-T_hat*g||^2 + alpha_n*||g||_H^2]
+    .. math:: \hat g = \arg\min_{g \in H}
+              \big[\|\widehat{E}(Y|W) - \hat T g\|^2
+              + \alpha_n \|g\|_H^2\big].
+
+    The operator T is compact, so its inverse is UNBOUNDED and the
+    problem is ill-posed: without the penalty, arbitrarily small
+    perturbations in the estimated right-hand side produce arbitrarily
+    large changes in g. The regularisation parameter must vanish
+    slowly enough to control that -- too fast and the solution
+    explodes, too slow and it is biased. The solution norm across a
+    grid of alpha is returned so the L-curve trade-off is visible
+    rather than a single alpha being picked silently.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    w : array-like
-        Input data.
-    alpha_n : array-like
-        Input data.
+    T : array-like, shape (m, k)
+        Discretised operator.
+    Ey_w : array-like, shape (m,)
+        Estimated conditional mean.
+    alpha : float, optional
+        Regularisation parameter.
+    alphas : sequence of float, optional
+        Grid for the L-curve.
 
     Returns
     -------
-    result : dict
-        Keys: g_hat
-
+    RichResult
+        keys: ``g``, ``alpha``, ``residual_norm``, ``solution_norm``,
+        ``l_curve`` (alpha, residual, norm), ``condition_number``,
+        ``ill_posed`` (True), ``method``.
     References
     ----------
-    Horowitz Ch 5, Sec 5.3.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 6 (nonparametric instrumental variables).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Tikhonov regularization for NPIV estimation"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Tikhonov regularization for NPIV estimation",
-        }
-    )
+    Tm = np.atleast_2d(np.asarray(T, dtype=float))
+    b = np.asarray(Ey_w, dtype=float).ravel()
+    if Tm.shape[0] != b.size:
+        raise ValueError(f"T has {Tm.shape[0]} rows but Ey_w has {b.size}.")
+    k = Tm.shape[1]
+    TtT = Tm.T @ Tm
+    Ttb = Tm.T @ b
+    cond = float(np.linalg.cond(TtT)) if k else np.inf
+
+    def solve(a):
+        return np.linalg.solve(TtT + float(a) * np.eye(k), Ttb)
+
+    grid = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1] if alphas is None else \
+        [float(a) for a in alphas]
+    if any(a <= 0 for a in grid):
+        raise ValueError("alpha values must be positive.")
+    curve = []
+    for a in grid:
+        ga = solve(a)
+        curve.append((a, float(np.linalg.norm(Tm @ ga - b)),
+                      float(np.linalg.norm(ga))))
+    a_use = grid[len(grid) // 2] if alpha is None else float(alpha)
+    if a_use <= 0:
+        raise ValueError(f"alpha must be positive, got {a_use}.")
+    g = solve(a_use)
+    return RichResult(payload={"g": g, "alpha": a_use,
+                               "residual_norm": float(np.linalg.norm(Tm @ g - b)),
+                               "solution_norm": float(np.linalg.norm(g)),
+                               "l_curve": curve, "condition_number": cond,
+                               "ill_posed": True,
+                               "method": "Tikhonov; T compact so T^{-1} is unbounded"})
 
 
 def cheatsheet():
-    return "hrztikr: Tikhonov regularization for NPIV estimation"
+    return "hrztikr: ill-posed by construction -- the L-curve is returned, not hidden"

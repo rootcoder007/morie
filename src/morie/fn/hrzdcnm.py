@@ -1,64 +1,68 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Asymptotic normality of deconvolution estimator."""
+"""Deconvolution asymptotic normality."""
 
 import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_deconv_normality"]
+__all__ = ["hrz_deconv_normality"]
 
 
-def horowitz_deconv_normality(w, eps_density, bandwidth, u):
-    """
-    Asymptotic normality of deconvolution estimator
+def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
+    r"""Asymptotic normality of the deconvolution estimator (Horowitz
+    Ch. 5):
 
-    Formula: [n*h_n/b_n]^{1/2} * (fnU(u) - fU(u) - bias) ->_D N(0, sigma^2)
+    .. math:: \left[\frac{n h_n}{b_n}\right]^{1/2}
+              \big(\hat f_U(u) - f_U(u) - \mathrm{bias}\big)
+              \;\to_D\; N(0, \sigma^2).
+
+    The normalising factor carries :math:`b_n`, a deconvolution-specific
+    inflation absent from ordinary kernel estimation -- it is what
+    encodes the price of dividing by a vanishing characteristic
+    function. The bias term is SUBTRACTED, not assumed away: an
+    undersmoothed bandwidth is what makes it negligible, and if it is
+    not, the interval is centred wrongly.
 
     Parameters
     ----------
-    w : array-like
-        Input data.
-    eps_density : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    u : array-like
-        Input data.
+    fn_u, f_u : float
+        Estimate and truth at the evaluation point.
+    n : int
+        Sample size.
+    h, b : float > 0
+        Bandwidth and the deconvolution inflation factor.
+    bias : float, default 0.0
+        Asymptotic bias.
+    sigma : float, default 1.0
+        Limiting standard deviation.
 
     Returns
     -------
-    result : dict
-        Keys: statistic
-
+    RichResult
+        keys: ``z``, ``scaling``, ``p_two_sided``, ``bias_subtracted``,
+        ``method``.
     References
     ----------
-    Horowitz Ch 5, Sec 5.1.3
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 5 (asymptotic distribution of deconvolution estimators).
     """
-    w = np.asarray(w, dtype=float)
-    n = int(w) if w.ndim == 0 else len(w)
-    if w.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Asymptotic normality of deconvolution estimator"}
-        )
-    estimate = np.median(w)
-    se = 1.2533 * np.std(w, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Asymptotic normality of deconvolution estimator",
-        }
-    )
+    from scipy import stats
+
+    n = int(n)
+    h = float(h)
+    b = float(b)
+    if n < 2 or h <= 0 or b <= 0:
+        raise ValueError("need n >= 2 and positive h, b.")
+    sig = float(sigma)
+    if sig <= 0:
+        raise ValueError(f"sigma must be positive, got {sig}.")
+    scale = np.sqrt(n * h / b)
+    z = scale * (float(fn_u) - float(f_u) - float(bias)) / sig
+    return RichResult(payload={"z": float(z), "scaling": float(scale),
+                               "p_two_sided": float(2 * stats.norm.sf(abs(z))),
+                               "bias_subtracted": float(bias),
+                               "method": "[n h / b]^{1/2}(f-hat - f - bias) -> N(0, sigma^2)"})
 
 
 def cheatsheet():
-    return "hrzdcnm: Asymptotic normality of deconvolution estimator"
+    return "hrzdcnm: b_n is the deconvolution price; the bias is subtracted, not wished away"
