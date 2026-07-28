@@ -7,11 +7,28 @@ from ._containers import DescriptiveResult
 from ._richresult import RichResult
 
 
-def _best_split(X, y, max_features=None):
+def _best_split(X, y, max_features=None, rng=None):
+    """Best (feature, threshold) by within-node sum of squares.
+
+    ``max_features`` restricts the search to a random subset of the
+    columns, which is what turns a bagged ensemble of these trees
+    into a random forest. It is honoured here AND by ``_build_tree``;
+    an earlier version accepted the argument and then called
+    ``_build_tree`` without it, so the subset never reached a split
+    and the "forest" was plain bagging.
+
+    ``rng`` is a ``numpy.random.Generator``. Drawing from the global
+    ``numpy.random`` state instead makes the fit unreproducible and
+    silently couples it to whatever else in the process has drawn.
+    """
     n, p = X.shape
     best_mse = np.inf
     best_feat, best_thr = 0, 0.0
-    features = np.arange(p) if max_features is None else np.random.choice(p, min(max_features, p), replace=False)
+    if max_features is None:
+        features = np.arange(p)
+    else:
+        gen = np.random.default_rng() if rng is None else rng
+        features = gen.choice(p, min(int(max_features), p), replace=False)
     for j in features:
         thresholds = np.unique(X[:, j])
         for t in thresholds:
@@ -27,10 +44,19 @@ def _best_split(X, y, max_features=None):
     return best_feat, best_thr, best_mse
 
 
-def _build_tree(X, y, depth, max_depth, min_samples):
+def _build_tree(X, y, depth, max_depth, min_samples, max_features=None,
+                rng=None):
+    """Grow a regression tree.
+
+    ``max_features`` and ``rng`` are threaded down to EVERY node, not
+    applied once at the root: a per-node draw is what decorrelates
+    the trees of a random forest, and a per-tree draw decorrelates
+    far less. Both default to the plain-CART behaviour (all features,
+    deterministic), so ``decision_tree`` is unaffected.
+    """
     if depth >= max_depth or len(y) <= min_samples or np.var(y) < 1e-10:
         return RichResult(payload={"leaf": True, "value": float(np.mean(y))})
-    feat, thr, mse = _best_split(X, y)
+    feat, thr, mse = _best_split(X, y, max_features=max_features, rng=rng)
     left_mask = X[:, feat] <= thr
     right_mask = ~left_mask
     if left_mask.sum() == 0 or right_mask.sum() == 0:
@@ -39,8 +65,10 @@ def _build_tree(X, y, depth, max_depth, min_samples):
         "leaf": False,
         "feature": feat,
         "threshold": thr,
-        "left": _build_tree(X[left_mask], y[left_mask], depth + 1, max_depth, min_samples),
-        "right": _build_tree(X[right_mask], y[right_mask], depth + 1, max_depth, min_samples),
+        "left": _build_tree(X[left_mask], y[left_mask], depth + 1, max_depth,
+                            min_samples, max_features, rng),
+        "right": _build_tree(X[right_mask], y[right_mask], depth + 1, max_depth,
+                             min_samples, max_features, rng),
     }
 
 
