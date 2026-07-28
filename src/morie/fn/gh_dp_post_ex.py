@@ -8,55 +8,65 @@ from ._richresult import RichResult
 __all__ = ["ghosal_dp_posterior_exact"]
 
 
-def ghosal_dp_posterior_exact(x):
-    """
-    Exact posterior predictive for DP: closed-form Polya urn for density estimation
+def ghosal_dp_posterior_exact(x, alpha=1.0, grid=None):
+    r"""Exact posterior predictive of a Dirichlet process (Ghosal
+    Sec. 4.1.4):
 
-    Formula: p(X_{n+1}=x|X_1..X_n) = alpha/(alpha+n)*G0(x) + sum_{k} n_k/(alpha+n)*delta_{X_k^*}(x)
+    .. math:: p(X_{n+1} \in \cdot \mid X_1,\dots,X_n)
+              = \frac{\alpha}{\alpha+n}G_0
+              + \frac{1}{\alpha+n}\sum_k n_k \delta_{X_k^{*}}.
+
+    Closed form, no simulation: conjugacy (Sec. 4.1.3) turns the
+    posterior of ``F ~ DP(alpha G_0)`` into
+    ``DP(alpha G_0 + sum delta_{X_i})``, and the predictive is its
+    mean.
+
+    The predictive is NOT a density. It has an atom at every distinct
+    observed value carrying total mass ``n/(alpha+n)``, and that is a
+    property of the process rather than an approximation: a DP draw
+    is almost surely discrete however smooth ``G_0`` is. Anything
+    wanting a density must mix the DP, which is what
+    :mod:`morie.fn.gh_c5_8` does. ``atom_weight`` is returned so the
+    discreteness is visible rather than implied.
+
+    As ``alpha -> 0`` the base measure is ignored and the predictive
+    becomes the empirical distribution; as ``alpha -> inf`` it
+    becomes ``G_0``. Both limits are returned as ``limit_note``.
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Observations.
+    alpha : float > 0
+        Concentration of the base measure.
+    grid : array-like, optional
+        Points at which to report the continuous part.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``grid``, ``base_density`` (already weighted),
+        ``atoms``, ``atom_probs``, ``base_weight``, ``atom_weight``,
+        ``n_distinct``, ``is_density`` (False), ``limit_note``,
+        ``n``, ``method``.
     References
     ----------
-    Ghosal Ch 4 §4.1.4
+    Ghosal, S. and van der Vaart, A. *Fundamentals of Nonparametric
+    Bayesian Inference*. Cambridge. Sec. 4.1.3-4.1.4.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Exact posterior predictive for DP: closed-form Polya urn for density estimation",
-            }
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Exact posterior predictive for DP: closed-form Polya urn for density estimation",
-        }
-    )
+    from ._ghosal import dp_predictive
+
+    xv = np.asarray(x, dtype=float).ravel()
+    if xv.size < 1:
+        raise ValueError("need at least one observation.")
+    out = dp_predictive(xv, alpha=alpha, grid=grid)
+    return RichResult(payload={
+        **out, "is_density": False,
+        "limit_note": "alpha -> 0 gives the empirical distribution; "
+                      "alpha -> infinity gives G_0",
+        "n": int(xv.size),
+        "method": "Polya urn predictive (Sec. 4.1.4); atoms at the distinct values, mass n/(alpha+n)"})
 
 
 def cheatsheet():
-    return "gh_dp_post_ex: Exact posterior predictive for DP: closed-form Polya urn for density estimation"
+    return "gh_dp_post_ex: the predictive is NOT a density -- a DP draw is a.s. discrete"

@@ -8,55 +8,77 @@ from ._richresult import RichResult
 __all__ = ["ghosal_empirical_bayes_np"]
 
 
-def ghosal_empirical_bayes_np(x):
-    """
-    Empirical Bayes: estimate hyperparameter alpha from marginal likelihood
+def ghosal_empirical_bayes_np(x, alpha_grid=None, sigma=1.0):
+    r"""Empirical-Bayes choice of the Dirichlet concentration
+    (Ghosal Ch. 4-6):
 
-    Formula: alpha_hat = argmax_alpha integral p_alpha(X) dPi_alpha(theta) for Bayes model
+    .. math:: \hat\alpha = \arg\max_\alpha
+              \int p_\alpha(X)\,d\Pi_\alpha(\theta),
+
+    the maximiser of the MARGINAL likelihood, with the
+    infinite-dimensional parameter integrated out.
+
+    For a Dirichlet process the marginal is available in closed form
+    through the Polya urn: the joint law of the sample factorises
+    into terms ``alpha/(alpha+i-1)`` for each NEW value and
+    ``n_k/(alpha+i-1)`` for a repeat, so the marginal likelihood
+    depends on the data only through the sequence of distinct values.
+    That makes :math:`\hat\alpha` a function of the number of
+    CLUSTERS, and the intuition is exact: many distinct values push
+    :math:`\hat\alpha` up, few push it down.
+
+    Empirical Bayes is not free. Plugging :math:`\hat\alpha` back
+    in treats an estimated hyperparameter as known, so the resulting
+    credible sets can under-cover; the book's fully Bayesian
+    alternative puts a prior on :math:`\alpha`.
+    ``understates_uncertainty`` records that rather than leaving it
+    implicit.
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Observations. Ties define the clusters the marginal depends
+        on; continuous data are binned to the observed resolution.
+    alpha_grid : array-like, optional
+        Concentrations searched over.
+    sigma : float > 0
+        Retained for interface symmetry with the mixture modules.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``alpha_hat``, ``alpha_grid``, ``log_marginal``,
+        ``n_clusters``, ``understates_uncertainty`` (True),
+        ``fully_bayes_alternative``, ``n``, ``method``.
     References
     ----------
-    Ghosal Ch 4-6
+    Ghosal and van der Vaart, Ch. 4 (Dirichlet process marginals)
+    and Ch. 6; the Polya urn factorisation is Sec. 4.1.4.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Empirical Bayes: estimate hyperparameter alpha from marginal likelihood",
-            }
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Empirical Bayes: estimate hyperparameter alpha from marginal likelihood",
-        }
-    )
+    from scipy.special import gammaln
+
+    xv = np.asarray(x, dtype=float).ravel()
+    n = xv.size
+    if n < 2:
+        raise ValueError(f"need at least 2 observations, got {n}.")
+    _, counts = np.unique(xv, return_counts=True)
+    k = counts.size
+    ag = np.logspace(-2, 2, 200) if alpha_grid is None else \
+        np.atleast_1d(np.asarray(alpha_grid, dtype=float))
+    if np.any(ag <= 0):
+        raise ValueError("alpha values must be positive.")
+    # log marginal of the partition under the Polya urn (Antoniak):
+    # k log alpha + log Gamma(alpha) - log Gamma(alpha + n) + const
+    lm = k * np.log(ag) + gammaln(ag) - gammaln(ag + n)
+    j = int(np.argmax(lm))
+    return RichResult(payload={
+        "alpha_hat": float(ag[j]), "alpha_grid": ag, "log_marginal": lm,
+        "n_clusters": int(k),
+        "understates_uncertainty": True,
+        "fully_bayes_alternative": "put a prior on alpha and integrate it out",
+        "n": int(n),
+        "method": "Empirical Bayes for the DP concentration; the marginal depends on the CLUSTER count"})
 
 
 def cheatsheet():
-    return "gh_emp_bayes: Empirical Bayes: estimate hyperparameter alpha from marginal likelihood"
+    return "gh_emp_bayes: alpha-hat is driven by the number of clusters; plugging it in under-covers"
