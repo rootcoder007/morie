@@ -1,3 +1,4 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Sample life table estimator."""
 
 import numpy as np
@@ -7,51 +8,76 @@ from ._richresult import RichResult
 __all__ = ["sample_lifetable"]
 
 
-def sample_lifetable(intervals, entered, died, censored):
-    """
-    Sample life table estimator
+def sample_lifetable(intervals, entered, died, withdrawn=None):
+    r"""Actuarial (grouped) life-table estimator:
 
-    Formula: interval-based KM with grouped data
+    .. math:: \hat q_j = \frac{d_j}{n_j - w_j/2},
+              \qquad
+              \hat S_j = \prod_{k \le j}(1 - \hat q_k).
+
+    Built for INTERVAL-grouped data, where exact times are unknown --
+    registry tables, published cohort summaries. The
+    :math:`w_j/2` is the actuarial correction: withdrawals are
+    assumed uniform within the interval, so on average each
+    contributes half an interval of exposure.
+
+    That assumption is the method's only real content, and it is
+    checkable in spirit rather than in the data: with wide intervals
+    and heavy withdrawal it fails, and the estimate is biased in a
+    direction that depends on whether withdrawal concentrates early
+    or late. Kaplan-Meier is the limit as intervals shrink, which is
+    why it should be preferred whenever exact times exist.
 
     Parameters
     ----------
     intervals : array-like
-        Input data.
+        Interval boundaries, increasing, length J+1.
     entered : array-like
-        Input data.
+        Number entering each interval.
     died : array-like
-        Input data.
-    censored : array-like
-        Input data.
+        Deaths in each interval.
+    withdrawn : array-like, optional
+        Withdrawals in each interval.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Cutler-Ederer (1958)
+    RichResult
+        keys: ``intervals``, ``q``, ``survival``, ``effective_n``,
+        ``actuarial_correction``, ``assumes``, ``J``, ``method``.
     """
-    intervals = np.atleast_1d(np.asarray(intervals, dtype=float))
-    n = len(intervals)
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Sample life table estimator"})
-    estimate = np.median(intervals)
-    se = 1.2533 * np.std(intervals, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Sample life table estimator",
-        }
-    )
+    edges = np.atleast_1d(np.asarray(intervals, dtype=float)).ravel()
+    if edges.size < 2:
+        raise ValueError("need at least 2 interval boundaries.")
+    if np.any(np.diff(edges) <= 0):
+        raise ValueError("interval boundaries must be strictly increasing.")
+    J = edges.size - 1
+    nj = np.atleast_1d(np.asarray(entered, dtype=float)).ravel()
+    dj = np.atleast_1d(np.asarray(died, dtype=float)).ravel()
+    wj = np.zeros(J) if withdrawn is None else \
+        np.atleast_1d(np.asarray(withdrawn, dtype=float)).ravel()
+    for nm, arr in (("entered", nj), ("died", dj), ("withdrawn", wj)):
+        if arr.size != J:
+            raise ValueError(f"{nm} has {arr.size} entries for {J} intervals.")
+        if np.any(arr < 0):
+            raise ValueError(f"{nm} must be non-negative.")
+    eff = nj - wj / 2.0
+    if np.any(eff <= 0):
+        raise ValueError("effective sample size is non-positive in some "
+                         "interval; check entered against withdrawn.")
+    if np.any(dj > eff):
+        raise ValueError("more deaths than effective exposure in some interval.")
+    q = dj / eff
+    S = np.cumprod(1.0 - q)
+    return RichResult(payload={
+        "intervals": edges, "q": q, "survival": S, "effective_n": eff,
+        "actuarial_correction": "n_j - w_j/2",
+        "assumes": "withdrawals uniform within each interval, so each "
+                   "contributes half an interval of exposure on average",
+        "prefer": "Kaplan-Meier whenever exact times exist; this is its "
+                  "grouped-data limit",
+        "J": int(J),
+        "method": "Actuarial life table for interval-grouped data"})
 
 
 def cheatsheet():
-    return "smplts: Sample life table estimator"
+    return "smplts: the w/2 IS the method -- uniform withdrawal within the interval, nothing more"
