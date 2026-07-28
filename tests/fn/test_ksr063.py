@@ -1,30 +1,23 @@
-"""Tests for ksr063.kosorok_ch3_cox_efficient_score_beta."""
+"""Tests for ksr063 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr063 import kosorok_ch3_cox_efficient_score_beta
 
 
 def test_ksr063_basic():
-    """Test basic functionality."""
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    beta = 0.8
-    Lambda = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    tau = 0.1
-    result = kosorok_ch3_cox_efficient_score_beta(Z, Y, beta, Lambda, M, tau)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(19)
+    Z = rng.standard_normal((200, 1))
+    T = rng.exponential(1.0 / np.exp(Z[:, 0] * 0.5))
+    C = rng.exponential(2.0, 200)
+    out = kosorok_ch3_cox_efficient_score_beta(Z, time=np.minimum(T, C),
+                                               event=(T <= C).astype(float))
+    assert out["efficient_information"][0, 0] > 0
 
 
 def test_ksr063_edge():
-    """Test edge cases."""
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    beta = 0.8
-    Lambda = np.random.default_rng(42).normal(0, 1, 100)
-    M = np.random.default_rng(43).normal(0, 1, (10, 10))
-    tau = 0.1
-    result = kosorok_ch3_cox_efficient_score_beta(Z, Y, beta, Lambda, M, tau)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(19)
+    Z = rng.standard_normal((50, 1))
+    with pytest.raises(ValueError):
+        kosorok_ch3_cox_efficient_score_beta(Z, time=np.ones(50), event=None)

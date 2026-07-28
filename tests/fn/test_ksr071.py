@@ -1,26 +1,16 @@
-"""Tests for ksr071.kosorok_ch3_log_profile_expansion."""
+"""Tests for ksr071 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr071 import kosorok_ch3_log_profile_expansion
 
 
 def test_ksr071_basic():
-    """Test basic functionality."""
-    theta_bar_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta_hat_n = np.random.default_rng(42).normal(0, 1, 100)
-    I_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch3_log_profile_expansion([0.5], [0.4], [[4.0]], n=100)
+    assert out["quadratic_term"] == pytest.approx(0.5 * 100 * 0.01 * 4.0)
 
 
 def test_ksr071_edge():
-    """Test edge cases."""
-    theta_bar_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta_hat_n = np.random.default_rng(42).normal(0, 1, 100)
-    I_tilde = np.random.default_rng(42).normal(0, 1, 100)
-    n = 100
-    result = kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        kosorok_ch3_log_profile_expansion([0.5], [0.4], [[4.0]])  # n missing

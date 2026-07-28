@@ -1,28 +1,18 @@
-"""Tests for ksr059.kosorok_ch2_kmt_strong_approximation."""
+"""Tests for ksr059 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr059 import kosorok_ch2_kmt_strong_approximation
 
 
 def test_ksr059_basic():
-    """Test basic functionality."""
-    G_n = np.random.default_rng(42).normal(0, 1, 100)
-    B_n = np.random.default_rng(42).normal(0, 1, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    n = 100
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_kmt_strong_approximation(G_n, B_n, F, n, x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch2_kmt_strong_approximation(1000, x=2.0, a=1.0, b=1.0, c=1.0)
+    assert out["probability_bound"] == pytest.approx(np.exp(-2.0))
 
 
 def test_ksr059_edge():
-    """Test edge cases."""
-    G_n = np.random.default_rng(42).normal(0, 1, 100)
-    B_n = np.random.default_rng(42).normal(0, 1, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    n = 100
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_kmt_strong_approximation(G_n, B_n, F, n, x)
-    assert isinstance(result, dict)
+    # the universal constants are not stated in the literature, so the
+    # module refuses to invent them
+    with pytest.raises(ValueError, match="universal"):
+        kosorok_ch2_kmt_strong_approximation(1000, x=1.0)

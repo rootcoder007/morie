@@ -1,4 +1,5 @@
-"""Pathwise derivative of psi along a smooth submodel expressed via efficient influence function."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Pathwise derivative of a parameter."""
 
 import numpy as np
 
@@ -7,51 +8,65 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch3_pathwise_derivative"]
 
 
-def kosorok_ch3_pathwise_derivative(psi, P_t, l_dot, g, a, theta, eta):
-    """
-    Pathwise derivative of psi along a smooth submodel expressed via efficient influence function
+def kosorok_ch3_pathwise_derivative(psi_values, scores, weights=None):
+    r"""Pathwise differentiability of a parameter (Kosorok Ch. 3):
 
-    Formula: d psi(P_t)/dt |_{t=0} = a = P[ psi_tilde_{theta,eta} (l_dot_{theta,eta} a + g) ]
+    .. math:: \frac{d}{dt}\psi(P_t)\Big|_{t=0} = a
+              = P\big[\tilde\psi_{\theta,\eta}\,
+              (\dot\ell_{\theta,\eta} a + g)\big].
+
+    The parameter's derivative along a submodel equals the inner
+    product of its influence function with the submodel's score. That
+    identity is the whole content of "pathwise differentiable": the
+    derivative is REPRESENTED by an influence function, which is what
+    makes an efficiency bound meaningful.
+
+    Given the influence-function values and score values on a sample,
+    returns the empirical inner product and checks the two conditions
+    an influence function must satisfy: mean zero, and finite
+    variance.
 
     Parameters
     ----------
-    psi : array-like
-        Input data.
-    P_t : array-like
-        Input data.
-    l_dot : array-like
-        Input data.
-    g : array-like
-        Input data.
-    a : array-like
-        Input data.
-    theta : array-like
-        Input data.
-    eta : array-like
-        Input data.
+    psi_values : array-like, shape (n,)
+        Influence-function values.
+    scores : array-like, shape (n,) or (n, k)
+        Score values along the submodel(s).
+    weights : array-like, optional
+        Observation weights.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
+    RichResult
+        keys: ``derivative`` (per submodel), ``influence_mean``,
+        ``influence_var``, ``mean_zero`` (bool), ``n``, ``method``.
     References
     ----------
-    Kosorok (2008), Ch 3, Eq 3.2, p. 40
+    Kosorok, M. R. (2008). *Introduction to Empirical Processes and
+    Semiparametric Inference*. Springer. Ch. 3 (pathwise differentiability).
     """
-    psi = np.atleast_1d(np.asarray(psi, dtype=float))
-    n = len(psi)
-    result = float(np.mean(psi))
-    se = float(np.std(psi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    psi = np.asarray(psi_values, dtype=float).ravel()
+    S = np.asarray(scores, dtype=float)
+    if S.ndim == 1:
+        S = S[:, None]
+    n = psi.size
+    if S.shape[0] != n:
+        raise ValueError("scores must have one row per influence value.")
+    w = np.ones(n) / n if weights is None else np.asarray(weights, dtype=float).ravel()
+    if w.size != n:
+        raise ValueError("weights must match the sample size.")
+    if not np.isclose(w.sum(), 1.0):
+        w = w / w.sum()
+    mean = float(w @ psi)
+    var = float(w @ (psi - mean) ** 2)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Pathwise derivative of psi along a smooth submodel expressed via efficient influence function",
-        }
+        payload={"derivative": (w[:, None] * psi[:, None] * S).sum(axis=0),
+                 "influence_mean": mean, "influence_var": var,
+                 "mean_zero": bool(abs(mean) < 1e-6 * max(1.0, np.sqrt(var))),
+                 "n": int(n),
+                 "method": "d psi(P_t)/dt = P[psi-tilde * score]; the representation IS the point"}
     )
 
 
 def cheatsheet():
-    return "ksr062: Pathwise derivative of psi along a smooth submodel expressed via efficient influence function"
+    return "ksr062: derivative represented by an influence function; mean zero checked"

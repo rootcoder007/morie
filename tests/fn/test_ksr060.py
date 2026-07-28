@@ -1,26 +1,21 @@
-"""Tests for ksr060.kosorok_ch2_u_process_measure."""
+"""Tests for ksr060 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr060 import kosorok_ch2_u_process_measure
 
 
 def test_ksr060_basic():
-    """Test basic functionality."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n = 100
-    m = 10
-    result = kosorok_ch2_u_process_measure(f, X, n, m)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from itertools import combinations
+    rng = np.random.default_rng(17)
+    X = rng.random(40)
+    out = kosorok_ch2_u_process_measure(lambda a, b: abs(a - b) / 2, X, m=2)
+    assert out["U"] == pytest.approx(
+        np.mean([abs(a - b) / 2 for a, b in combinations(X, 2)]))
 
 
 def test_ksr060_edge():
-    """Test edge cases."""
-    f = np.random.default_rng(42).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n = 100
-    m = 10
-    result = kosorok_ch2_u_process_measure(f, X, n, m)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(17)
+    with pytest.raises(ValueError):
+        kosorok_ch2_u_process_measure(lambda a, b, c: a, rng.random(400), m=3)

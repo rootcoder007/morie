@@ -1,30 +1,23 @@
-"""Tests for ksr068.kosorok_ch3_cox_profile_score."""
+"""Tests for ksr068 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr068 import kosorok_ch3_cox_profile_score
 
 
 def test_ksr068_basic():
-    """Test basic functionality."""
-    beta = 0.8
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    tau = 0.1
-    n = 100
-    result = kosorok_ch3_cox_profile_score(beta, Z, Y, X, tau, n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(20)
+    Z = rng.standard_normal((300, 1))
+    T = rng.exponential(1.0 / np.exp(Z[:, 0] * 0.8))
+    C = rng.exponential(2.0, 300)
+    out = kosorok_ch3_cox_profile_score(Z=Z, time=np.minimum(T, C),
+                                        event=(T <= C).astype(float))
+    assert np.abs(out["score_at_root"]).max() < 1e-6
 
 
 def test_ksr068_edge():
-    """Test edge cases."""
-    beta = 0.8
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    tau = 0.1
-    n = 100
-    result = kosorok_ch3_cox_profile_score(beta, Z, Y, X, tau, n)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(20)
+    with pytest.raises(ValueError):
+        kosorok_ch3_cox_profile_score(Z=rng.standard_normal((50, 1)), time=None,
+                                      event=np.ones(50))

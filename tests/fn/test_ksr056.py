@@ -1,26 +1,21 @@
-"""Tests for ksr056.kosorok_ch2_lad_lipschitz_bound."""
+"""Tests for ksr056 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr056 import kosorok_ch2_lad_lipschitz_bound
 
 
 def test_ksr056_basic():
-    """Test basic functionality."""
-    theta_1 = np.random.default_rng(42).normal(0, 1, 100)
-    theta_2 = np.random.default_rng(42).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_lad_lipschitz_bound(theta_1, theta_2, u, x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(15)
+    U = rng.standard_normal((100, 2))
+    out = kosorok_ch2_lad_lipschitz_bound([1.0, 0.0], [0.8, 0.3], U,
+                                          rng.standard_normal(100))
+    assert out["bound_holds"] is True
 
 
 def test_ksr056_edge():
-    """Test edge cases."""
-    theta_1 = np.random.default_rng(42).normal(0, 1, 100)
-    theta_2 = np.random.default_rng(42).normal(0, 1, 100)
-    u = np.random.default_rng(44).normal(0, 1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_lad_lipschitz_bound(theta_1, theta_2, u, x)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(15)
+    with pytest.raises(ValueError):
+        kosorok_ch2_lad_lipschitz_bound([1.0], [1.0, 2.0],
+                                        rng.standard_normal((10, 2)))

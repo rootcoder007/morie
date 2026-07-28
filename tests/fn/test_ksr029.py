@@ -1,24 +1,17 @@
-"""Tests for ksr029.kosorok_ch2_glivenko_cantelli_class."""
+"""Tests for ksr029 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr029 import kosorok_ch2_glivenko_cantelli_class
 
 
 def test_ksr029_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P_n = np.random.default_rng(42).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_glivenko_cantelli_class(F, P_n, P)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(5)
+    F = [(lambda x, c=c: (np.asarray(x) <= c).astype(float)) for c in (0.3, 0.6)]
+    assert kosorok_ch2_glivenko_cantelli_class(F, rng.random(2000))["shrinking"] is True
 
 
 def test_ksr029_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P_n = np.random.default_rng(42).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_glivenko_cantelli_class(F, P_n, P)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        kosorok_ch2_glivenko_cantelli_class([], np.random.default_rng(5).random(50))

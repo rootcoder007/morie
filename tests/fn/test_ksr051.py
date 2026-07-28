@@ -1,26 +1,18 @@
-"""Tests for ksr051.kosorok_ch2_continuous_invertibility."""
+"""Tests for ksr051 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr051 import kosorok_ch2_continuous_invertibility
 
 
 def test_ksr051_basic():
-    """Test basic functionality."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    theta_1 = np.random.default_rng(42).normal(0, 1, 100)
-    theta_2 = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_continuous_invertibility(A, theta_1, theta_2, c)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    A = np.array([[2.0, 0.0], [0.0, 3.0]])
+    out = kosorok_ch2_continuous_invertibility(lambda th: A @ th, np.zeros(2))
+    assert out["c_estimate"] >= 1.9  # smallest singular value is 2
 
 
 def test_ksr051_edge():
-    """Test edge cases."""
-    A = np.random.default_rng(42).normal(0, 1, (10, 10))
-    theta_1 = np.random.default_rng(42).normal(0, 1, 100)
-    theta_2 = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_continuous_invertibility(A, theta_1, theta_2, c)
-    assert isinstance(result, dict)
+    B = np.array([[1.0, 1.0], [1.0, 1.0]])  # rank deficient
+    assert kosorok_ch2_continuous_invertibility(lambda th: B @ th,
+                                                np.zeros(2))["c_estimate"] < 0.5

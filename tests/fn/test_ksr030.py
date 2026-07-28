@@ -1,24 +1,19 @@
-"""Tests for ksr030.kosorok_ch2_brownian_bridge_covariance."""
+"""Tests for ksr030 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr030 import kosorok_ch2_brownian_bridge_covariance
 
 
 def test_ksr030_basic():
-    """Test basic functionality."""
-    s = 90
-    t = np.linspace(0, 10, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    result = kosorok_ch2_brownian_bridge_covariance(s, t, F)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch2_brownian_bridge_covariance(0.3, 0.7)
+    assert out["covariance"] == pytest.approx(0.3 - 0.21)  # F(s^t) - F(s)F(t)
 
 
 def test_ksr030_edge():
-    """Test edge cases."""
-    s = 90
-    t = np.linspace(0, 10, 100)
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    result = kosorok_ch2_brownian_bridge_covariance(s, t, F)
-    assert isinstance(result, dict)
+    # the bridge is tied down at both endpoints
+    assert kosorok_ch2_brownian_bridge_covariance(0.0, 0.5)["covariance"] == \
+        pytest.approx(0.0)
+    assert kosorok_ch2_brownian_bridge_covariance(1.0, 0.5)["covariance"] == \
+        pytest.approx(0.0)

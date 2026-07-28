@@ -1,28 +1,22 @@
-"""Tests for ksr044.kosorok_ch2_quantile_taylor_bounds."""
+"""Tests for ksr044 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr044 import kosorok_ch2_quantile_taylor_bounds
 
 
 def test_ksr044_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    h = 0.3
-    t_n = np.random.default_rng(42).normal(0, 1, 100)
-    xi_pn = np.random.default_rng(42).normal(0, 1, 100)
-    eps_pn = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_quantile_taylor_bounds(F, h, t_n, xi_pn, eps_pn)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    from scipy import stats
+    h = lambda z: 0.1 * stats.norm.pdf(z)
+    out = kosorok_ch2_quantile_taylor_bounds(stats.norm.cdf, h, t_n=0.01, p=0.6)
+    xi = stats.norm.ppf(0.6)
+    assert out["implied_derivative"] == pytest.approx(-h(xi) / stats.norm.pdf(xi),
+                                                      rel=1e-3)
 
 
 def test_ksr044_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    h = 0.3
-    t_n = np.random.default_rng(42).normal(0, 1, 100)
-    xi_pn = np.random.default_rng(42).normal(0, 1, 100)
-    eps_pn = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_quantile_taylor_bounds(F, h, t_n, xi_pn, eps_pn)
-    assert isinstance(result, dict)
+    from scipy import stats
+    with pytest.raises(ValueError):
+        kosorok_ch2_quantile_taylor_bounds(stats.norm.cdf, lambda z: 0.0,
+                                           t_n=-1.0, p=0.6)

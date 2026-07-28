@@ -1,28 +1,24 @@
-"""Tests for ksr022.kosorok_ch1_multiplicative_intensity."""
+"""Tests for ksr022 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr022 import kosorok_ch1_multiplicative_intensity
 
 
 def test_ksr022_basic():
-    """Test basic functionality."""
-    t = np.linspace(0, 10, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    beta = 0.8
-    Lambda = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch1_multiplicative_intensity(t, Z, Y, beta, Lambda)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    rng = np.random.default_rng(1)
+    n = 400
+    Z = rng.standard_normal((n, 1))
+    T = rng.exponential(1.0 / np.exp(Z[:, 0] * 0.5))
+    C = rng.exponential(3.0, n)
+    out = kosorok_ch1_multiplicative_intensity(np.minimum(T, C),
+                                               (T <= C).astype(float), Z, beta=[0.5])
+    assert np.all(np.diff(out["cumulative_hazard"]) >= 0)  # monotone Breslow
 
 
 def test_ksr022_edge():
-    """Test edge cases."""
-    t = np.linspace(0, 10, 100)
-    Z = np.random.default_rng(43).normal(0, 1, (100, 10))
-    Y = np.random.default_rng(43).normal(0, 1, 100)
-    beta = 0.8
-    Lambda = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch1_multiplicative_intensity(t, Z, Y, beta, Lambda)
-    assert isinstance(result, dict)
+    rng = np.random.default_rng(1)
+    Z = rng.standard_normal((50, 1))
+    with pytest.raises(ValueError):
+        kosorok_ch1_multiplicative_intensity(np.ones(50), np.zeros(50), Z)  # no events

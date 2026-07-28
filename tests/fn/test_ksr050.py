@@ -1,24 +1,19 @@
-"""Tests for ksr050.kosorok_ch2_frechet_differentiability."""
+"""Tests for ksr050 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr050 import kosorok_ch2_frechet_differentiability
 
 
 def test_ksr050_basic():
-    """Test basic functionality."""
-    phi = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    h_n = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_frechet_differentiability(phi, theta, h_n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    hs = [np.array(0.1), np.array(0.05), np.array(0.01)]
+    assert kosorok_ch2_frechet_differentiability(lambda th: th**2, 1.0,
+                                                 hs)["ratio_shrinking"] is True
 
 
 def test_ksr050_edge():
-    """Test edge cases."""
-    phi = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    h_n = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_frechet_differentiability(phi, theta, h_n)
-    assert isinstance(result, dict)
+    hs = [np.array(0.1), np.array(0.05), np.array(0.01)]
+    # |.| at 0 is Hadamard but NOT Frechet: the ratio stays at ~1
+    kink = kosorok_ch2_frechet_differentiability(lambda th: abs(th), 0.0, hs)
+    assert kink["ratios"].min() > 0.9

@@ -1,26 +1,17 @@
-"""Tests for ksr042.kosorok_ch2_functional_delta_method."""
+"""Tests for ksr042 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr042 import kosorok_ch2_functional_delta_method
 
 
 def test_ksr042_basic():
-    """Test basic functionality."""
-    phi = np.random.default_rng(42).normal(0, 1, 100)
-    X_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    r_n = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_functional_delta_method(phi, X_n, theta, r_n)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch2_functional_delta_method(lambda x: x**2, np.array(2.01),
+                                              np.array(2.0), r_n=100.0)
+    assert float(out["derivative"]) == pytest.approx(0.04, abs=1e-6)
 
 
 def test_ksr042_edge():
-    """Test edge cases."""
-    phi = np.random.default_rng(42).normal(0, 1, 100)
-    X_n = np.random.default_rng(42).normal(0, 1, 100)
-    theta = 0.0
-    r_n = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_functional_delta_method(phi, X_n, theta, r_n)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        kosorok_ch2_functional_delta_method(lambda x: x**2, 2.0, 2.0, r_n=0.0)

@@ -23,8 +23,13 @@ def kosorok_ch2_kmt_strong_approximation(n, x=1.0, a=None, b=None, c=None,
     bands.
 
     The constants a, b, c are universal but their numerical values are
-    not stated in the text; they must be supplied, and omitting them
-    raises rather than substituting invented numbers.
+    stated NOWHERE in the original KMT papers or in Kosorok, so they
+    must be supplied; omitting them raises rather than substituting
+    invented numbers. This is not a gap in this implementation: Ye &
+    Austern (2025) exists precisely because "practical application has
+    been hindered by a lack of practical constants", and derives
+    computable bounds as a substitute. Use that paper's constants if
+    numerical values are needed.
 
     Parameters
     ----------
@@ -48,6 +53,15 @@ def kosorok_ch2_kmt_strong_approximation(n, x=1.0, a=None, b=None, c=None,
     ----------
     Kosorok, M. R. (2008). *Introduction to Empirical Processes and
     Semiparametric Inference*. Springer. Ch. 2 (the KMT construction).
+
+    Komlos, J., Major, P. & Tusnady, G. (1975). An approximation of
+    partial sums of independent RV's, and the sample DF. I.
+    *Zeitschrift fur Wahrscheinlichkeitstheorie und verwandte
+    Gebiete*, 32(1-2), 111-131.
+
+    Ye, H. & Austern, M. (2025). Computable bounds for strong
+    approximations with applications. arXiv:2508.03833. (Derives
+    explicit constants, which the classical statement lacks.)
     """
     n = int(n)
     if n < 2:

@@ -1,4 +1,4 @@
-# Kosorok shelf (batch 5) — 39 placeholders
+# Kosorok shelf (batch 5) — 39 placeholders — **COMPLETE**
 
 Spec: Kosorok, M. R. (2008), *Introduction to Empirical Processes and
 Semiparametric Inference*, Springer. **Filed in the library under its
@@ -57,11 +57,18 @@ ksr056 ksr059 — the functional delta method, Frechet differentiability,
 continuous invertibility, both Kaplan-Meier Hadamard derivatives,
 M-estimator expansions, the LAD Lipschitz bound and the KMT bound.
 
-**Remaining (13)**: ksr040 ksr041 ksr043 ksr044 ksr045 ksr054 ksr061
-ksr062 ksr065 and the ksr0xx stragglers — bootstrap Donsker
-characterisations, quantile Hadamard bounds, the delta-method
-bootstrap, LAN/quadratic mean differentiability and efficient
-influence functions.
+**Tranche 4 (8 modules) — DONE**
+
+ksr040 ksr041 ksr043 ksr044 ksr045 ksr061 ksr062 ksr065 — the two
+bootstrap Donsker characterisations, the quantile Hadamard sandwich
+and its first-order collapse, the bootstrap delta method,
+differentiability in quadratic mean, pathwise differentiability and
+the efficient influence function via the information operator.
+
+## COMPLETE — 39/39 modules, 192 tests green
+
+All four cluster files plus 39 re-fixtured legacy tests run in 3.3 s
+via `scripts/audit/run_fn_subset.sh`.
 
 ## Defects found
 

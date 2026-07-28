@@ -1,26 +1,16 @@
-"""Tests for ksr035.kosorok_ch2_donsker_bracketing_integral."""
+"""Tests for ksr035 (Kosorok shelf)."""
 
 import numpy as np
+import pytest
 
 from morie.fn.ksr035 import kosorok_ch2_donsker_bracketing_integral
 
 
 def test_ksr035_basic():
-    """Test basic functionality."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    r = 10
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_donsker_bracketing_integral(F, P, r, delta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = kosorok_ch2_donsker_bracketing_integral(lambda e: (1 / e) ** 3)
+    assert out["finite"] is True  # sqrt(log N) integrable for polynomial N
 
 
 def test_ksr035_edge():
-    """Test edge cases."""
-    F = np.random.default_rng(43).normal(0, 1, 100)
-    P = np.random.default_rng(42).normal(0, 1, 100)
-    r = 10
-    delta = np.random.default_rng(42).normal(0, 1, 100)
-    result = kosorok_ch2_donsker_bracketing_integral(F, P, r, delta)
-    assert isinstance(result, dict)
+    with pytest.raises(ValueError):
+        kosorok_ch2_donsker_bracketing_integral(lambda e: 2.0, delta=0.0)
