@@ -1,62 +1,50 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Appendix: Nadaraya-Watson kernel regression estimator."""
+"""Nadaraya-Watson regression."""
 
 import numpy as np
 
+from ._horowitz import nw_regression
 from ._richresult import RichResult
 
-__all__ = ["horowitz_nw_regression"]
+__all__ = ["hrz_nw_regression"]
 
 
-def horowitz_nw_regression(x, y, bandwidth):
-    """
-    Appendix: Nadaraya-Watson kernel regression estimator
+def hrz_nw_regression(x, y, grid=None, h=None, kernel_name="gaussian"):
+    r"""Nadaraya-Watson kernel regression (Horowitz Ch. 2):
 
-    Formula: m_hat(x) = sum K_h(x-X_i)*Y_i / sum K_h(x-X_i)
+    .. math:: \hat m(x) = \frac{\sum_i K_h(x - X_i) Y_i}
+                                {\sum_i K_h(x - X_i)}.
+
+    A local CONSTANT fit. Its bias is O(h^2) in the interior but only
+    O(h) at the boundary, where the kernel window becomes one-sided --
+    exactly the defect local linear regression
+    (:mod:`morie.fn.hrzllr`) was designed to remove.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
+    x, y : array-like
+        Regressor and response.
+    grid : array-like, optional
+        Evaluation points.
+    h : float, optional
+        Bandwidth.
+    kernel_name : str
+        Kernel.
 
     Returns
     -------
-    result : dict
-        Keys: m_hat, se
-
+    RichResult
+        keys: ``grid``, ``fitted``, ``bandwidth``, ``n``, ``method``.
     References
     ----------
-    Horowitz Appendix A.2.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 2 (kernel regression).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Appendix: Nadaraya-Watson kernel regression estimator"}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Appendix: Nadaraya-Watson kernel regression estimator",
-        }
-    )
+    g, m, hh = nw_regression(x, y, grid=grid, h=h, name=kernel_name)
+    return RichResult(payload={"grid": g, "fitted": m, "bandwidth": hh,
+                               "n": int(np.asarray(x).size),
+                               "method": "NW local constant; O(h) boundary bias"})
 
 
 def cheatsheet():
-    return "hrznwr: Appendix: Nadaraya-Watson kernel regression estimator"
+    return "hrznwr: local constant, so the boundary bias is O(h) not O(h^2)"

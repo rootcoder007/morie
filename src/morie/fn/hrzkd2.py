@@ -1,60 +1,78 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Appendix: Multidimensional kernel density estimation."""
+"""Multivariate kernel density estimate."""
 
 import numpy as np
 
+from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["horowitz_multivariate_kde"]
+__all__ = ["hrz_kde_multivariate"]
 
 
-def horowitz_multivariate_kde(x, bandwidths):
-    """
-    Appendix: Multidimensional kernel density estimation
+def hrz_kde_multivariate(x, grid=None, h=None, kernel_name="gaussian"):
+    r"""Product-kernel density estimate in d dimensions (Horowitz
+    Ch. 2):
 
-    Formula: f_hat(x) = (1/(n*prod(h_j)))*sum K((x-X_i)/H) where H=diag(h)
+    .. math:: \hat f(x) = \frac{1}{n \prod_j h_j}\sum_i
+              K\!\left(H^{-1}(x - X_i)\right),
+              \qquad H = \mathrm{diag}(h).
+
+    The rate degrades to :math:`n^{-2/(4+d)}`: the curse of
+    dimensionality in its exact form. At d = 5 the rate is already
+    :math:`n^{-2/9}`, which is why the book turns to index and
+    additive restrictions rather than estimating high-dimensional
+    densities. The effective rate is returned so the cost is explicit.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    bandwidths : array-like
-        Input data.
+    x : array-like, shape (n, d)
+        Sample.
+    grid : array-like, shape (m, d), optional
+        Evaluation points; the sample itself if omitted.
+    h : float or array-like, optional
+        Per-dimension bandwidths.
+    kernel_name : str
+        Kernel.
 
     Returns
     -------
-    result : dict
-        Keys: density_estimate
-
+    RichResult
+        keys: ``grid``, ``density``, ``bandwidths``,
+        ``rate_exponent``, ``d``, ``n``, ``method``.
     References
     ----------
-    Horowitz Appendix A.1.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 2 (multivariate density estimation).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Appendix: Multidimensional kernel density estimation"}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Appendix: Multidimensional kernel density estimation",
-        }
-    )
+    X = np.atleast_2d(np.asarray(x, dtype=float))
+    if X.shape[0] == 1 and X.shape[1] > 1:
+        X = X.T
+    n, d = X.shape
+    if n < 2:
+        raise ValueError("need at least 2 observations.")
+    if h is None:
+        hs = np.array([silverman_bw(X[:, j]) for j in range(d)])
+    else:
+        hs = np.atleast_1d(np.asarray(h, dtype=float))
+        if hs.size == 1:
+            hs = np.full(d, float(hs[0]))
+        if hs.size != d:
+            raise ValueError(f"h must have 1 or {d} entries.")
+    if np.any(hs <= 0):
+        raise ValueError("bandwidths must be positive.")
+    G = X if grid is None else np.atleast_2d(np.asarray(grid, dtype=float))
+    if G.shape[1] != d:
+        raise ValueError(f"grid must have {d} columns.")
+    dens = np.empty(G.shape[0])
+    for i, pt in enumerate(G):
+        u = (pt[None, :] - X) / hs[None, :]
+        dens[i] = np.prod(kernel(u, kernel_name), axis=1).sum()
+    dens /= n * np.prod(hs)
+    return RichResult(payload={"grid": G, "density": dens, "bandwidths": hs,
+                               "rate_exponent": -2.0 / (4.0 + d), "d": int(d),
+                               "n": int(n),
+                               "method": "Product kernel; rate n^{-2/(4+d)} -- the curse, exactly"})
 
 
 def cheatsheet():
-    return "hrzkd2: Appendix: Multidimensional kernel density estimation"
+    return "hrzkd2: rate n^{-2/(4+d)}; d=5 already gives n^{-2/9}"

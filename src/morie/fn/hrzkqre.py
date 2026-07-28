@@ -1,68 +1,82 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Appendix: Kernel-type nonparametric quantile regression estimator."""
+"""Kernel conditional quantile."""
 
 import numpy as np
 
+from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["horowitz_kernel_quantile_reg"]
+__all__ = ["hrz_kernel_quantile"]
 
 
-def horowitz_kernel_quantile_reg(x, y, bandwidth, tau):
-    """
-    Appendix: Kernel-type nonparametric quantile regression estimator
+def hrz_kernel_quantile(x, y, tau=0.5, grid=None, h=None, kernel_name="gaussian"):
+    r"""Conditional quantile from a kernel conditional CDF (Horowitz
+    Ch. 3):
 
-    Formula: q_tau_hat(x) = inf{y: F_hat(y|x) >= tau} where F_hat(y|x) kernel estimate of F(y|x)
+    .. math:: \hat q_\tau(x) = \inf\{y : \hat F(y|x) \ge \tau\},
+              \qquad \hat F(y|x) = \frac{\sum_i K_h(x-X_i)
+              \mathbf 1\{Y_i \le y\}}{\sum_i K_h(x-X_i)}.
+
+    Inverting a kernel-smoothed CDF rather than minimising a check
+    loss. The estimate is automatically monotone in tau at each x --
+    the crossing problem of independently fitted quantiles
+    (:mod:`morie.fn.hrzsieqr`) cannot arise, because all quantiles
+    come from one CDF.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
-    tau : array-like
-        Input data.
+    x, y : array-like
+        Regressor and response.
+    tau : float in (0, 1) or array-like
+        Quantile level(s).
+    grid : array-like, optional
+        Evaluation points.
+    h : float, optional
+        Bandwidth.
+    kernel_name : str
+        Kernel.
 
     Returns
     -------
-    result : dict
-        Keys: q_hat
-
+    RichResult
+        keys: ``grid``, ``quantile`` (len(grid) x len(tau)), ``tau``,
+        ``bandwidth``, ``monotone_in_tau`` (True), ``method``.
     References
     ----------
-    Horowitz Appendix A.3.1
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 3 (conditional quantile estimation).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "Appendix: Kernel-type nonparametric quantile regression estimator",
-            }
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Appendix: Kernel-type nonparametric quantile regression estimator",
-        }
-    )
+    x = np.asarray(x, dtype=float).ravel()
+    y = np.asarray(y, dtype=float).ravel()
+    if x.size != y.size:
+        raise ValueError("x and y must have the same length.")
+    taus = np.atleast_1d(np.asarray(tau, dtype=float))
+    if np.any((taus <= 0) | (taus >= 1)):
+        raise ValueError("tau values must lie in (0, 1).")
+    h = silverman_bw(x) if h is None else float(h)
+    if h <= 0:
+        raise ValueError(f"bandwidth must be positive, got {h}.")
+    g = np.linspace(x.min(), x.max(), 100) if grid is None else \
+        np.atleast_1d(np.asarray(grid, dtype=float))
+    order = np.argsort(y)
+    ys = y[order]
+    out = np.empty((g.size, taus.size))
+    for i, pt in enumerate(g):
+        w = kernel((pt - x[order]) / h, kernel_name)
+        tot = w.sum()
+        if tot <= 0:
+            out[i] = np.nan
+            continue
+        cdf = np.cumsum(w) / tot
+        for j, t in enumerate(taus):
+            k = int(np.searchsorted(cdf, t, side="left"))
+            out[i, j] = ys[min(k, ys.size - 1)]
+    return RichResult(payload={"grid": g,
+                               "quantile": out[:, 0] if taus.size == 1 else out,
+                               "tau": taus[0] if taus.size == 1 else taus,
+                               "bandwidth": h, "monotone_in_tau": True,
+                               "method": "Invert a kernel conditional CDF; no quantile crossing"})
 
 
 def cheatsheet():
-    return "hrzkqre: Appendix: Kernel-type nonparametric quantile regression estimator"
+    return "hrzkqre: one CDF for all tau, so crossing cannot happen"

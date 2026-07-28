@@ -1,60 +1,90 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Horowitz smoothed maximum-score estimator."""
+"""Smoothed maximum score."""
 
 import numpy as np
 
+from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["horowitz_smoothed_max_score"]
+__all__ = ["hrz_smoothed_max_score"]
 
 
-def horowitz_smoothed_max_score(x, y, bandwidth):
-    """
-    Horowitz smoothed maximum-score estimator
+from scipy import optimize, stats as _st
 
-    Formula: beta_hat = argmax_{b:|b1|=1} (1/n)*sum_i (2Y_i-1)*K((X_i'b)/h_n)
+
+def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):
+    r"""Horowitz's smoothed maximum score estimator (Ch. 3):
+
+    .. math:: \hat\beta = \arg\max_{b:\,|b_1|=1} \frac1n
+              \sum_i (2Y_i - 1)\, K\!\left(\frac{X_i'b}{h_n}\right).
+
+    Replacing Manski's indicator with a smooth kernel CDF makes the
+    objective differentiable, which lifts the rate from
+    :math:`n^{-1/3}` to :math:`n^{-r/(2r+1)}` and restores asymptotic
+    NORMALITY -- so standard errors become meaningful again. With a
+    smoothness order r = 2 the rate is :math:`n^{-2/5}`; higher-order
+    kernels do better. This is the estimator the chapter is named for.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    bandwidth : array-like
-        Input data.
+    X : array-like, shape (n, d)
+        Covariates.
+    y : array-like of {0, 1}
+        Binary response.
+    h : float, optional
+        Smoothing bandwidth.
+    beta0 : array-like, optional
+        Starting value.
+    r : int, default 2
+        Assumed smoothness order, used for the reported rate.
 
     Returns
     -------
-    result : dict
-        Keys: beta_hat, se
-
+    RichResult
+        keys: ``beta``, ``objective``, ``bandwidth``,
+        ``rate_exponent``, ``limit_distribution`` ("normal"),
+        ``standard_errors_valid`` (True), ``n``, ``d``, ``method``.
     References
     ----------
-    Horowitz Ch 4, Sec 4.3.3
+    Horowitz, J. L. *Semiparametric and Nonparametric Methods in
+    Econometrics*. Springer. Ch. 3 (smoothed maximum score).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Horowitz smoothed maximum-score estimator"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Horowitz smoothed maximum-score estimator",
-        }
-    )
+    X = np.atleast_2d(np.asarray(X, dtype=float))
+    y = np.asarray(y, dtype=float).ravel()
+    if X.shape[0] != y.size:
+        X = X.T
+    if X.shape[0] != y.size:
+        raise ValueError("X must have one row per entry of y.")
+    if not np.all(np.isin(y, (0.0, 1.0))):
+        raise ValueError("y must be binary 0/1.")
+    n, d = X.shape
+    if d < 2:
+        raise ValueError("need at least 2 covariates.")
+    r = int(r)
+    if r < 1:
+        raise ValueError(f"r must be at least 1, got {r}.")
+    s = 2.0 * y - 1.0
+    hh = float(n ** (-1.0 / (2 * r + 1))) if h is None else float(h)
+    if hh <= 0:
+        raise ValueError(f"bandwidth must be positive, got {hh}.")
+
+    def neg(rest):
+        b = np.r_[1.0, rest]
+        # smooth indicator: the kernel CDF, so the objective is C^1
+        return -float(np.mean(s * _st.norm.cdf((X @ b) / hh)))
+
+    start = np.zeros(d - 1) if beta0 is None else \
+        np.atleast_1d(np.asarray(beta0, dtype=float))[1:]
+    res = optimize.minimize(neg, start, method="BFGS")
+    return RichResult(payload={"beta": np.r_[1.0, res.x],
+                               "objective": float(-res.fun), "bandwidth": hh,
+                               "rate_exponent": -r / (2.0 * r + 1.0),
+                               "limit_distribution": "normal",
+                               "standard_errors_valid": True,
+                               "converged": bool(res.success),
+                               "n": int(n), "d": int(d),
+                               "method": "Smoothed max score; normality restored, rate n^{-r/(2r+1)}"})
 
 
 def cheatsheet():
-    return "hrzsms: Horowitz smoothed maximum-score estimator"
+    return "hrzsms: smoothing buys normality AND a faster rate than n^{-1/3}"
