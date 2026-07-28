@@ -1,4 +1,5 @@
-"""Time-averaged weighted cross-correlation vector in RLS.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""RLS cross-correlation vector."""
 
 import numpy as np
 
@@ -7,53 +8,65 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_rls_theta_vector"]
 
 
-def rangayyan_ch3_rls_theta_vector(r, x, lam, n):
-    """
-    Time-averaged weighted cross-correlation vector in RLS.
+def rangayyan_ch3_rls_theta_vector(r, x, lam=0.99, n=None):
+    r"""RLS exponentially weighted cross-correlation vector
+    (Rangayyan Ch. 3):
 
-    Formula: Theta(n) = sum_{i=1}^{n} lambda^(n-i) * r(i) * x(i)
+    .. math:: \Theta(n) = \sum_{i=1}^{n} \lambda^{n-i}\,
+              \mathbf{r}(i)\, x(i).
+
+    Paired with :mod:`morie.fn.rng165`: the RLS weight vector solves
+    :math:`\Phi(n)\mathbf{w}(n) = \Theta(n)`, which is the
+    normal-equation form the recursion updates without ever inverting
+    Phi directly. The solved weights are returned alongside.
 
     Parameters
     ----------
-    r : array-like
-        Input data.
-    x : array-like
-        Input data.
-    lam : array-like
-        Input data.
-    n : array-like
-        Input data.
+    r : array-like, shape (N, p)
+        Reference vectors.
+    x : array-like, shape (N,)
+        Primary input.
+    lam : float in (0, 1], default 0.99
+        Forgetting factor.
+    n : int, optional
+        Time index.
 
     Returns
     -------
-    result : dict
-        Keys: array
-
+    RichResult
+        keys: ``Theta``, ``weights`` (solving Phi w = Theta),
+        ``lam``, ``n``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.209, p. 187
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (the RLS algorithm).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Time-averaged weighted cross-correlation vector in RLS."}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Time-averaged weighted cross-correlation vector in RLS.",
-        }
-    )
+    from .rng165 import rangayyan_ch3_rls_phi_matrix
+
+    R = np.atleast_2d(np.asarray(r, dtype=float))
+    xv = np.asarray(x, dtype=float).ravel()
+    if R.shape[0] != xv.size:
+        R = R.T
+    if R.shape[0] != xv.size:
+        raise ValueError("r must have one row per sample of x.")
+    lam = float(lam)
+    if not 0 < lam <= 1:
+        raise ValueError(f"lam must lie in (0, 1], got {lam}.")
+    N = R.shape[0]
+    idx = N if n is None else int(n)
+    if not 1 <= idx <= N:
+        raise ValueError(f"n must lie in 1..{N}, got {idx}.")
+    w = lam ** (idx - 1 - np.arange(idx))
+    Theta = (R[:idx] * w[:, None]).T @ xv[:idx]
+    Phi = rangayyan_ch3_rls_phi_matrix(R, lam=lam, n=idx)["Phi"]
+    try:
+        weights = np.linalg.solve(Phi, Theta)
+    except np.linalg.LinAlgError:
+        weights = np.linalg.lstsq(Phi, Theta, rcond=None)[0]
+    return RichResult(payload={"Theta": Theta, "weights": weights, "lam": lam,
+                               "n": idx,
+                               "method": "Theta(n) = sum lambda^(n-i) r(i) x(i); Phi w = Theta"})
 
 
 def cheatsheet():
-    return "rng166: Time-averaged weighted cross-correlation vector in RLS."
+    return "rng166: RLS solves Phi w = Theta without inverting Phi"

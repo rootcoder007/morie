@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Moving-average (MA) filter (causal and symmetric)."""
+"""Moving-average filter."""
 
 import numpy as np
 
@@ -8,53 +8,44 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_moving_average"]
 
 
-def rangayyan_moving_average(x, M):
-    """
-    Moving-average (MA) filter (causal and symmetric)
+def rangayyan_moving_average(x, M=8):
+    r"""Causal moving-average (boxcar) filter (Rangayyan Ch. 3):
 
-    Formula: y[n] = (1/M) sum_{k=0}^{M-1} x[n-k]
+    .. math:: y[n] = \frac1M \sum_{k=0}^{M-1} x[n-k].
+
+    A lowpass filter whose magnitude response is a sinc: it has zeros
+    at multiples of fs/M, which is why an M chosen to place a zero on
+    the interference frequency removes it exactly. The group delay is
+    (M-1)/2 samples and is returned, because the output is NOT aligned
+    with the input.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    M : array-like
-        Input data.
+        Input signal.
+    M : int, default 8
+        Window length.
 
     Returns
     -------
-    result : dict
-        Keys: y
-
+    RichResult
+        keys: ``y``, ``group_delay``, ``M``, ``N``, ``method``.
     References
     ----------
-    Rangayyan Ch 3.6.1
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (moving-average filters).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Moving-average (MA) filter (causal and symmetric)"}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Moving-average (MA) filter (causal and symmetric)",
-        }
-    )
+    x = np.asarray(x, dtype=float).ravel()
+    M = int(M)
+    if M < 1:
+        raise ValueError(f"M must be at least 1, got {M}.")
+    if x.size < M:
+        raise ValueError(f"need at least M = {M} samples, got {x.size}.")
+    y = np.convolve(x, np.ones(M) / M, mode="full")[: x.size]
+    return RichResult(payload={"y": y, "group_delay": (M - 1) / 2.0, "M": M,
+                               "N": int(x.size),
+                               "method": "y[n] = (1/M) sum x[n-k]; sinc response, delay (M-1)/2"})
 
 
 def cheatsheet():
-    return "rgmavg: Moving-average (MA) filter (causal and symmetric)"
+    return "rgmavg: boxcar lowpass; zeros at fs/M multiples; delay (M-1)/2"

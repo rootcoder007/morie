@@ -1,4 +1,5 @@
-"""Heart rate computed from average RR interval (in seconds).."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Heart rate from RR interval."""
 
 import numpy as np
 
@@ -8,46 +9,42 @@ __all__ = ["rangayyan_ch4_heart_rate_from_rr"]
 
 
 def rangayyan_ch4_heart_rate_from_rr(RR_a):
-    """
-    Heart rate computed from average RR interval (in seconds).
+    r"""Instantaneous heart rate from the RR interval (Rangayyan
+    Ch. 4):
 
-    Formula: HR = 60 / RR_a
+    .. math:: HR = \frac{60}{RR_a},
+
+    with RR in seconds and HR in beats per minute. Vectorised, so a
+    series of RR intervals gives the instantaneous rate at each beat;
+    the mean of those is NOT the same as 60 / mean(RR) (Jensen), and
+    both are returned.
 
     Parameters
     ----------
-    RR_a : array-like
-        Input data.
+    RR_a : float or array-like
+        RR interval(s) in seconds, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: value
-
+    RichResult
+        keys: ``heart_rate``, ``mean_instantaneous_hr``,
+        ``hr_from_mean_rr``, ``n``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 4, Eq 4.20, p. 224
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 4.
     """
-    RR_a = np.atleast_1d(np.asarray(RR_a, dtype=float))
-    n = len(RR_a)
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Heart rate computed from average RR interval (in seconds)."}
-        )
-    estimate = np.median(RR_a)
-    se = 1.2533 * np.std(RR_a, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
+    rr = np.atleast_1d(np.asarray(RR_a, dtype=float))
+    if np.any(rr <= 0):
+        raise ValueError("RR intervals must be strictly positive.")
+    hr = 60.0 / rr
+    scalar = np.ndim(RR_a) == 0
     return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Heart rate computed from average RR interval (in seconds).",
-        }
-    )
+        payload={"heart_rate": float(hr[0]) if scalar else hr,
+                 "mean_instantaneous_hr": float(np.mean(hr)),
+                 "hr_from_mean_rr": float(60.0 / np.mean(rr)), "n": int(rr.size),
+                 "method": "HR = 60/RR; mean of rates != rate of mean interval"})
 
 
 def cheatsheet():
-    return "rng194: Heart rate computed from average RR interval (in seconds)."
+    return "rng194: HR = 60/RR; mean(60/RR) != 60/mean(RR)"

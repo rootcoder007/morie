@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Yule-Walker equations for AR model estimation."""
+"""Yule-Walker AR estimation."""
 
 import numpy as np
 
@@ -8,53 +8,61 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_yule_walker"]
 
 
-def rangayyan_yule_walker(x, order):
-    """
-    Yule-Walker equations for AR model estimation
+from .rgacf import rangayyan_acf_estimate
 
-    Formula: [R_xx] * [a] = -[r]; R_xx(i,j) = R_xx(|i-j|) (Toeplitz)
+
+def rangayyan_yule_walker(x, order=4):
+    r"""Yule-Walker autoregressive parameter estimation (Rangayyan
+    Ch. 3):
+
+    .. math:: \mathbf{R}_{xx}\,\mathbf{a} = -\mathbf{r},
+              \qquad R_{xx}(i,j) = R_{xx}(|i-j|),
+
+    a Toeplitz system solved for the AR coefficients. The BIASED
+    autocorrelation is used deliberately: it is positive
+    semi-definite, which guarantees the Toeplitz matrix is invertible
+    and the fitted AR model is stable. The unbiased estimate can yield
+    an unstable model, so it is the wrong input here even though it is
+    the better estimate of the ACF itself.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    order : array-like
-        Input data.
+        Signal.
+    order : int, default 4
+        AR order.
 
     Returns
     -------
-    result : dict
-        Keys: a_coeffs, sigma_sq
-
+    RichResult
+        keys: ``a`` (AR coefficients), ``sigma2`` (innovation
+        variance), ``order``, ``stable`` (all roots inside the unit
+        circle), ``method``.
     References
     ----------
-    Rangayyan Ch 7.5
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (Yule-Walker / AR modelling).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Yule-Walker equations for AR model estimation"}
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Yule-Walker equations for AR model estimation",
-        }
-    )
+    x = np.asarray(x, dtype=float).ravel()
+    p = int(order)
+    if p < 1:
+        raise ValueError(f"order must be at least 1, got {p}.")
+    if x.size < p + 1:
+        raise ValueError(f"need more than order = {p} samples, got {x.size}.")
+    R = rangayyan_acf_estimate(x, max_lag=p, biased=True)["acf_biased"]
+    Rm = np.array([[R[abs(i - j)] for j in range(p)] for i in range(p)])
+    r = R[1 : p + 1]
+    try:
+        a = np.linalg.solve(Rm, -r)
+    except np.linalg.LinAlgError:
+        a = np.linalg.lstsq(Rm, -r, rcond=None)[0]
+    sigma2 = float(R[0] + a @ r)
+    roots = np.roots(np.r_[1.0, a])
+    return RichResult(payload={"a": a, "sigma2": sigma2, "order": p,
+                               "stable": bool(np.all(np.abs(roots) < 1.0)),
+                               "reflection_roots": roots,
+                               "method": "Toeplitz Yule-Walker on the BIASED ACF (guarantees stability)"})
 
 
 def cheatsheet():
-    return "rgyw: Yule-Walker equations for AR model estimation"
+    return "rgyw: biased ACF here is a feature -- it keeps the AR model stable"

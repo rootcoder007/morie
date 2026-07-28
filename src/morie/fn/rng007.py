@@ -1,4 +1,5 @@
-"""Sample mean estimator from N observed samples.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample mean."""
 
 import numpy as np
 
@@ -7,49 +8,35 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_sample_mean"]
 
 
-def rangayyan_ch3_sample_mean(eta, N):
-    """
-    Sample mean estimator from N observed samples.
+def rangayyan_ch3_sample_mean(eta, N=None):
+    r"""Sample mean of a noise process (Rangayyan Ch. 3):
 
-    Formula: mu_eta = (1/N) * sum_{n=0}^{N-1} eta(n)
+    .. math:: \mu_\eta = \frac1N \sum_{n=0}^{N-1} \eta(n).
 
     Parameters
     ----------
     eta : array-like
-        Input data.
-    N : array-like
-        Input data.
+        Signal or noise samples.
+    N : int, optional
+        Length; taken from the data.
 
     Returns
     -------
-    result : dict
-        Keys: value
-
+    RichResult
+        keys: ``mean``, ``N``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.7, p. 95
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    if n < 1:
-        return RichResult(
-            payload={"estimate": np.nan, "n": 0, "method": "Sample mean estimator from N observed samples."}
-        )
-    estimate = np.median(eta)
-    se = 1.2533 * np.std(eta, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Sample mean estimator from N observed samples.",
-        }
-    )
+    eta = np.asarray(eta, dtype=float).ravel()
+    if eta.size < 1:
+        raise ValueError("eta must be non-empty.")
+    if N is not None and int(N) != eta.size:
+        raise ValueError(f"N = {N} does not match len(eta) = {eta.size}.")
+    return RichResult(payload={"mean": float(np.mean(eta)), "N": int(eta.size),
+                               "method": "mu_eta = (1/N) sum eta(n)"})
 
 
 def cheatsheet():
-    return "rng007: Sample mean estimator from N observed samples."
+    return "rng007: sample mean of the noise process"

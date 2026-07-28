@@ -1,4 +1,5 @@
-"""General difference equation of a moving-average (MA) filter of order N.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""General FIR filter."""
 
 import numpy as np
 
@@ -7,57 +8,56 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_ma_filter_general"]
 
 
-def rangayyan_ch3_ma_filter_general(x, b_k, n, N):
-    """
-    General difference equation of a moving-average (MA) filter of order N.
+def rangayyan_ch3_ma_filter_general(x, b_k, n=None, N=None):
+    r"""General FIR (moving-average) filter (Rangayyan Ch. 3):
 
-    Formula: y(n) = sum_{k=0}^{N} b_k * x(n-k)
+    .. math:: y(n) = \sum_{k=0}^{N} b_k\, x(n-k).
+
+    The boxcar filters are the special case :math:`b_k = 1/M`. With
+    arbitrary taps the response is no longer a sinc, and the filter is
+    linear-phase only when the taps are symmetric -- which is checked
+    and reported rather than assumed.
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Input.
     b_k : array-like
-        Input data.
-    n : array-like
-        Input data.
-    N : array-like
-        Input data.
+        Filter taps.
+    n : int, optional
+        Index to report.
+    N : int, optional
+        Interface compatibility (order taken from b_k).
 
     Returns
     -------
-    result : dict
-        Keys: array
-
+    RichResult
+        keys: ``y``, ``y_at_n``, ``linear_phase`` (symmetric taps),
+        ``dc_gain``, ``order``, ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.98, p. 139
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "General difference equation of a moving-average (MA) filter of order N.",
-            }
-        )
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "General difference equation of a moving-average (MA) filter of order N.",
-        }
-    )
+    x = np.asarray(x, dtype=float).ravel()
+    b = np.atleast_1d(np.asarray(b_k, dtype=float)).ravel()
+    if b.size < 1:
+        raise ValueError("b_k must be non-empty.")
+    if x.size < b.size:
+        raise ValueError(f"need at least {b.size} samples, got {x.size}.")
+    y = np.convolve(x, b, mode="full")[: x.size]
+    at_n = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < y.size:
+            raise ValueError(f"n must lie in 0..{y.size - 1}, got {idx}.")
+        at_n = float(y[idx])
+    return RichResult(payload={"y": y, "y_at_n": at_n,
+                               "linear_phase": bool(np.allclose(b, b[::-1])),
+                               "dc_gain": float(b.sum()),
+                               "order": int(b.size - 1),
+                               "method": "y(n) = sum b_k x(n-k); linear phase iff taps symmetric"})
 
 
 def cheatsheet():
-    return "rng087: General difference equation of a moving-average (MA) filter of order N."
+    return "rng087: general FIR; linear phase only for symmetric taps"

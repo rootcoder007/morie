@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Periodogram PSD estimate."""
+"""Periodogram."""
 
 import numpy as np
 
@@ -8,51 +8,49 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_periodogram"]
 
 
-def rangayyan_periodogram(x, fs):
-    """
-    Periodogram PSD estimate
+def rangayyan_periodogram(x, fs=1.0):
+    r"""Periodogram power spectral density (Rangayyan Ch. 3):
 
-    Formula: P(f) = (1/N)|X(f)|^2 where X(f)=DFT(x)
+    .. math:: P(f) = \frac1N |X(f)|^2, \qquad X(f) = \mathrm{DFT}(x).
+
+    The periodogram is NOT a consistent estimator: its variance does
+    not fall as N grows, only its frequency resolution improves. That
+    is precisely why Welch's method (:mod:`morie.fn.rgwelch`) averages
+    segments, and the returned docstring says so rather than presenting
+    the periodogram as a finished estimate.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    fs : array-like
-        Input data.
+        Signal.
+    fs : float, default 1.0
+        Sampling frequency.
 
     Returns
     -------
-    result : dict
-        Keys: psd, freqs
-
+    RichResult
+        keys: ``freqs``, ``psd``, ``total_power``, ``N``, ``fs``,
+        ``method``.
     References
     ----------
-    Rangayyan Ch 6.3.2
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (the periodogram).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "Periodogram PSD estimate"})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "Periodogram PSD estimate",
-        }
-    )
+    x = np.asarray(x, dtype=float).ravel()
+    N = x.size
+    if N < 2:
+        raise ValueError(f"need at least 2 samples, got {N}.")
+    fs = float(fs)
+    if fs <= 0:
+        raise ValueError(f"fs must be positive, got {fs}.")
+    X = np.fft.rfft(x)
+    psd = (np.abs(X) ** 2) / N
+    freqs = np.fft.rfftfreq(N, d=1.0 / fs)
+    return RichResult(payload={"freqs": freqs, "psd": psd,
+                               "total_power": float(np.mean(x**2)), "N": int(N),
+                               "fs": fs,
+                               "method": "P(f) = |DFT(x)|^2/N; inconsistent -- variance does not shrink"})
 
 
 def cheatsheet():
-    return "rgperio: Periodogram PSD estimate"
+    return "rgperio: inconsistent estimator; more N buys resolution, not precision"

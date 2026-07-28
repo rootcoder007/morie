@@ -1,4 +1,5 @@
-"""11-point moving-average (MA) filter.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""11-point moving average."""
 
 import numpy as np
 
@@ -7,47 +8,46 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_ch3_ma_filter_11pt"]
 
 
-def rangayyan_ch3_ma_filter_11pt(x, n):
-    """
-    11-point moving-average (MA) filter.
+from .rgmavg import rangayyan_moving_average
 
-    Formula: y(n) = (1/11) * sum_{k=0}^{10} x(n - k)
+
+def rangayyan_ch3_ma_filter_11pt(x, n=None):
+    r"""The 11-point moving-average filter (Rangayyan Ch. 3):
+
+    .. math:: y(n) = \frac{1}{11} \sum_{k=0}^{10} x(n-k).
+
+    The specific case used in the text for smoothing; delay is 5
+    samples.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    n : array-like
-        Input data.
+        Input.
+    n : int, optional
+        Index to report.
 
     Returns
     -------
-    result : dict
-        Keys: array
-
+    RichResult
+        keys: ``y``, ``y_at_n``, ``group_delay`` (5.0), ``N``,
+        ``method``.
     References
     ----------
-    Rangayyan (2024), Ch 3, Eq 3.41, p. 114
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "11-point moving-average (MA) filter."})
-    estimate = np.median(x)
-    se = 1.2533 * np.std(x, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "11-point moving-average (MA) filter.",
-        }
-    )
+    out = rangayyan_moving_average(x, M=11)
+    y = out["y"]
+    at_n = None
+    if n is not None:
+        idx = int(n)
+        if not 0 <= idx < y.size:
+            raise ValueError(f"n must lie in 0..{y.size - 1}, got {idx}.")
+        at_n = float(y[idx])
+    return RichResult(payload={"y": y, "y_at_n": at_n, "group_delay": 5.0,
+                               "N": int(y.size),
+                               "method": "11-point moving average, delay 5 samples"})
 
 
 def cheatsheet():
-    return "rng039: 11-point moving-average (MA) filter."
+    return "rng039: M = 11 boxcar, delay 5"

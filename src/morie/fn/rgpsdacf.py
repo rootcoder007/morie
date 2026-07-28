@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ACF estimation from PSD via inverse DFT (Wiener-Khintchine theorem)."""
+"""PSD to autocorrelation."""
 
 import numpy as np
 
@@ -8,57 +8,50 @@ from ._richresult import RichResult
 __all__ = ["rangayyan_psd_to_acf"]
 
 
-def rangayyan_psd_to_acf(psd, freqs):
-    """
-    ACF estimation from PSD via inverse DFT (Wiener-Khintchine theorem)
+def rangayyan_psd_to_acf(psd, freqs=None):
+    r"""Autocorrelation from the power spectral density (Rangayyan
+    Ch. 3):
 
-    Formula: R_xx(m) = IDFT(S_xx(f))
+    .. math:: R_{xx}(m) = \mathrm{IDFT}\{S_{xx}(f)\},
+
+    the Wiener-Khinchin relation. Because the PSD supplied is
+    one-sided (rfft convention), the inverse uses ``irfft`` so the
+    result is real by construction -- taking a complex ifft and
+    discarding the imaginary part would silently hide an asymmetric
+    input.
 
     Parameters
     ----------
     psd : array-like
-        Input data.
-    freqs : array-like
-        Input data.
+        One-sided power spectral density.
+    freqs : array-like, optional
+        Frequency grid, used only to report the lag spacing.
 
     Returns
     -------
-    result : dict
-        Keys: acf, lags
-
+    RichResult
+        keys: ``acf``, ``lags``, ``r0`` (total power), ``method``.
     References
     ----------
-    Rangayyan Ch 6.3.5
+    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
+    Wiley-IEEE Press. Ch. 3 (Wiener-Khinchin).
     """
-    psd = np.asarray(psd, dtype=float)
-    n = int(psd) if psd.ndim == 0 else len(psd)
-    if psd.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 1:
-        return RichResult(
-            payload={
-                "estimate": np.nan,
-                "n": 0,
-                "method": "ACF estimation from PSD via inverse DFT (Wiener-Khintchine theorem)",
-            }
-        )
-    estimate = np.median(psd)
-    se = 1.2533 * np.std(psd, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "ACF estimation from PSD via inverse DFT (Wiener-Khintchine theorem)",
-        }
-    )
+    S = np.asarray(psd, dtype=float).ravel()
+    if S.size < 2:
+        raise ValueError("psd must have at least 2 points.")
+    if np.any(S < 0):
+        raise ValueError("a power spectral density cannot be negative.")
+    acf = np.fft.irfft(S)
+    n_lag = acf.size // 2 + 1
+    lags = np.arange(n_lag)
+    if freqs is not None:
+        f = np.asarray(freqs, dtype=float).ravel()
+        if f.size != S.size:
+            raise ValueError("freqs must match the length of psd.")
+    return RichResult(payload={"acf": acf[:n_lag], "lags": lags,
+                               "r0": float(acf[0]),
+                               "method": "R_xx = irfft(S_xx); real by construction"})
 
 
 def cheatsheet():
-    return "rgpsdacf: ACF estimation from PSD via inverse DFT (Wiener-Khintchine theorem)"
+    return "rgpsdacf: Wiener-Khinchin via irfft, so the result is real by construction"
