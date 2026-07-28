@@ -9,7 +9,7 @@ __all__ = ["hrz_tikhonov_iv"]
 
 
 def hrz_tikhonov_iv(T, Ey_w, alpha=None, alphas=None):
-    r"""Tikhonov regularisation for nonparametric IV (Horowitz Ch. 6):
+    r"""Tikhonov regularisation for nonparametric IV (Horowitz Sec. 5.3-5.5):
 
     .. math:: \hat g = \arg\min_{g \in H}
               \big[\|\widehat{E}(Y|W) - \hat T g\|^2
@@ -44,7 +44,8 @@ def hrz_tikhonov_iv(T, Ey_w, alpha=None, alphas=None):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 6 (nonparametric instrumental variables).
+    Econometrics*. Springer. Ch. 5, Sec. 5.3.1 and 5.4.1 (regularization methods;
+    estimation by Tikhonov regularization when T is unknown).
     """
     Tm = np.atleast_2d(np.asarray(T, dtype=float))
     b = np.asarray(Ey_w, dtype=float).ravel()

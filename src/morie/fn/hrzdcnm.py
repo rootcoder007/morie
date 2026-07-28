@@ -10,7 +10,7 @@ __all__ = ["hrz_deconv_normality"]
 
 def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
     r"""Asymptotic normality of the deconvolution estimator (Horowitz
-    Ch. 5):
+    Sec. 5.1.3):
 
     .. math:: \left[\frac{n h_n}{b_n}\right]^{1/2}
               \big(\hat f_U(u) - f_U(u) - \mathrm{bias}\big)
@@ -44,7 +44,8 @@ def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 5 (asymptotic distribution of deconvolution estimators).
+    Econometrics*. Springer. Ch. 5, Sec. 5.1.3 (asymptotic normality of the density
+    estimator).
     """
     from scipy import stats
 

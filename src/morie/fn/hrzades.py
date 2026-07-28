@@ -12,7 +12,7 @@ from .hrzade import hrz_average_derivative
 
 
 def hrz_average_derivative_hat(X, y, h=None):
-    r"""Sample average derivative (Horowitz Ch. 2):
+    r"""Sample average derivative (Horowitz Sec. 2.6):
 
     .. math:: \hat\delta = -\frac2n \sum_i \hat f'(X_i)
               \big[Y_i - \hat E(Y|X_i)\big] \Big/
@@ -41,7 +41,8 @@ def hrz_average_derivative_hat(X, y, h=None):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 2 (average derivative estimators).
+    Econometrics*. Springer. Ch. 2, Sec. 2.6.1-2.6.2 (average-derivative estimators;
+    an improved average-derivative estimator).
     """
     from ._horowitz import silverman_bw
 

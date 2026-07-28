@@ -9,7 +9,7 @@ __all__ = ["hrz_npiv_operator"]
 
 
 def hrz_npiv_operator(X, W, K=5, kind="poly"):
-    r"""Kernel/sieve estimate of the NPIV operator (Horowitz Ch. 6):
+    r"""Kernel/sieve estimate of the NPIV operator (Horowitz Sec. 5.3-5.5):
 
     .. math:: (Tg)(w) = \int g(x)\, f_{X|W}(x|w)\, dx,
 
@@ -40,7 +40,8 @@ def hrz_npiv_operator(X, W, K=5, kind="poly"):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 6 (the NPIV operator and ill-posedness).
+    Econometrics*. Springer. Ch. 5, Sec. 5.3 (nonparametric instrumental-variables
+    estimation).
     """
     from ._horowitz import sieve_basis
 
