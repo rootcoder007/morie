@@ -39,8 +39,8 @@ exists — implement from the Gibbons formula, then cross-check.
 - [x] E two-sample/linear rank (10) -- ties vs scipy asymptotic
 - [x] F ARE/fundamentals (17) -- Table 13.3.1 re-derived from densities
 - [x] Legacy tests re-fixtured
-- [ ] Full sweep green
-- [ ] R collision scan + parity
+- [x] Full run green: 179 tests, 4 cluster files + 74 legacy, 3.4s on L14
+- [x] R collision scan + parity: R/gibbons_native.R, 69 tests green, mirrored both trees
 
 ## Findings during implementation
 
@@ -63,3 +63,20 @@ exists — implement from the Gibbons formula, then cross-check.
   arrangement (all C(n1+n2, n1) sequences), cell by cell -- Theorem
   3.2.1/3.2.2, the marginal, both run-length theorems, and the
   moments all match exactly.
+
+## Why the combined run appeared to hang
+
+`tests/fn` holds 36,310 files in one directory. pytest re-globs that
+directory **once per file argument**, so passing 78 `tests/fn/*.py`
+paths cost roughly 13 s each -- over 16 minutes with no output, which
+read as a hang. Verified: one file 13.9 s, eight files 102 s (8x), and
+the same 78 files copied into a scratch directory run in **3.4 s**.
+
+`scripts/audit/run_fn_subset.sh` does the scratch-directory dance;
+use it for any multi-file `tests/fn` run.
+
+Running that way immediately surfaced one real failure the per-cluster
+runs had not: `test_gb251` asserted a single seed's K-S p-value above
+0.01, but under the true generator that p is Uniform(0,1) and so dips
+below 0.01 about 1% of the time (seed 1 gives 0.0066). Rewritten as a
+rate over 20 draws.
