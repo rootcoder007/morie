@@ -30,13 +30,16 @@ _RK_GAUSS = 1.0 / (2.0 * np.sqrt(np.pi))
 
 
 def _silverman_h(x):
-    n = len(x)
-    s = np.std(x, ddof=1)
-    iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.34
-    sigma = min(s, iqr) if iqr > 0 else s
-    if sigma <= 0:
-        sigma = 1.0
-    return 1.06 * sigma * n ** (-1.0 / 5.0)
+    """DISTRIBUTION-function bandwidth, 4^(1/3) sigma n^(-1/3).
+
+    Not the n^(-1/5) density rule: this module smooths with the
+    INTEGRATED kernel, so the bandwidth enters the variance at
+    O(h/n) rather than O(1/(nh)) and the optimiser is a cube root.
+    See morie.fn._fauzi.kdfe_bandwidth for the derivation from the
+    book's (2.3), (2.4) and Sec. 5.3.2.
+    """
+    from ._fauzi import kdfe_bandwidth
+    return kdfe_bandwidth(x)
 
 
 def _kdfe(x, t, h):

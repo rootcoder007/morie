@@ -58,7 +58,8 @@ def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
     Eqs. (4.8)-(4.9), Theorem 4.1 and Remark 4.2. Transcribed from the PDF: the distilled text file in the
     reference library omits the Jacobian factor and truncates (4.24).
     """
-    from ._fauzi import boundary_free_transform, kernel_V
+    from ._fauzi import (boundary_free_transform, kdfe_bandwidth,
+                         kernel_V)
 
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size
@@ -73,7 +74,10 @@ def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
         raise ValueError("t_grid must lie strictly inside the support.")
     zx = tr["g_inv"](xv)
     zt = tr["g_inv"](tg)
-    hh = float(np.std(zx, ddof=1) * n ** -0.2) if h is None else float(h)
+    # a survival / cumulative-survival estimator is
+    # distribution-function-type, not density-type: its variance is
+    # O(1/n) - O(h/n) (Theorem 4.3), so the optimiser is a cube root
+    hh = kdfe_bandwidth(zx) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
     # V_{1,h}(x, y) = int_x^inf g'(z) V((z - y)/h) dz, by quadrature

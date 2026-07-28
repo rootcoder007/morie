@@ -187,12 +187,63 @@ def test_kdfe_beats_the_edf_where_the_edf_jumps():
         truth = 1 - np.exp(-g)
         err_s.append(np.mean((o["F_hat"] - truth) ** 2))
         err_e.append(np.mean((o["F_empirical"] - truth) ** 2))
+        sd = np.std(x, ddof=1)
+        iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.349
+        sig = min(sd, iqr) if iqr > 0 else sd
         assert o["bandwidth"] == pytest.approx(
-            np.std(x, ddof=1) * 120 ** (-1 / 3), rel=1e-12)
+            4 ** (1 / 3) * sig * 120 ** (-1 / 3), rel=1e-12)
     # this comparison is the reason the bandwidth rule matters: under
     # the n^{-1/5} density rule the estimator OVERSMOOTHS and loses to
     # the step function it is supposed to improve on
     assert np.mean(err_s) < np.mean(err_e)
+
+
+def test_the_density_bandwidth_rule_would_lose_to_the_empirical_df():
+    """The concrete cost of getting the rate wrong, measured rather
+    than asserted. h_opt for a distribution function is a CUBE root:
+    (2.3)-(2.4) put the bandwidth in the variance at O(h/n), with a
+    negative sign, not at O(1/(nh)). Substituting the density rule
+    n^{-1/5} oversmooths, and the smoothed estimate then has a LARGER
+    mean squared error than the raw step function."""
+    rng = np.random.default_rng(101)
+    right, wrong, edf = [], [], []
+    for _ in range(12):
+        x = rng.exponential(1.0, 200)
+        g = np.linspace(0.2, 4, 60)
+        truth = 1 - np.exp(-g)
+        sd = np.std(x, ddof=1)
+        iqr = np.subtract(*np.percentile(x, [75, 25])) / 1.349
+        sig = min(sd, iqr) if iqr > 0 else sd
+        o = fauzi_kdfe(x, grid=g)
+        w = fauzi_kdfe(x, grid=g, h=1.06 * sig * 200 ** (-1 / 5))
+        right.append(np.mean((o["F_hat"] - truth) ** 2))
+        wrong.append(np.mean((w["F_hat"] - truth) ** 2))
+        edf.append(np.mean((o["F_empirical"] - truth) ** 2))
+    assert np.mean(right) < np.mean(edf)     # the estimator earns its keep
+    assert np.mean(wrong) > np.mean(edf)     # under the density rule it does not
+    assert np.mean(right) < np.mean(wrong)
+
+
+def test_the_two_bandwidth_rates_diverge_as_n_grows():
+    """n^{-1/3} and n^{-1/5} are not a constant apart: the ratio
+    grows like n^{2/15}, so the error compounds with sample size
+    rather than washing out."""
+    from morie.fn._fauzi import kdfe_bandwidth
+    prev = None
+    for n in (100, 10_000, 1_000_000):
+        df = kdfe_bandwidth(None, sigma=1.0, n=n)
+        density = 1.06 * 1.0 * n ** (-1 / 5)
+        assert df == pytest.approx(4 ** (1 / 3) * n ** (-1 / 3), rel=1e-12)
+        r = density / df
+        if prev is not None:
+            assert r > prev
+        prev = r
+    # the ratio is exactly (1.06 / 4^(1/3)) n^(2/15): slow, but it
+    # never stops growing, and by n = 10^6 the density rule is more
+    # than four times too wide
+    assert prev == pytest.approx(
+        1.06 / 4 ** (1 / 3) * 1_000_000 ** (2 / 15), rel=1e-12)
+    assert prev > 4
 
 
 # --------------------------------------------------------------- Ch. 4

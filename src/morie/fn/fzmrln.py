@@ -44,14 +44,17 @@ def fauzi_mrl_naive(x, t_grid, h=None):
     Fauzi and Maesono (2023), Eq. (4.2) and Remark 4.5. Transcribed
     from the PDF.
     """
-    from ._fauzi import kernel_V
+    from ._fauzi import kdfe_bandwidth, kernel_V
 
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size
     if n < 2:
         raise ValueError(f"need at least 2 observations, got {n}.")
     tg = np.atleast_1d(np.asarray(t_grid, dtype=float))
-    hh = float(np.std(xv, ddof=1) * n ** -0.2) if h is None else float(h)
+    # a survival / cumulative-survival estimator is
+    # distribution-function-type, not density-type: its variance is
+    # O(1/n) - O(h/n) (Theorem 4.3), so the optimiser is a cube root
+    hh = kdfe_bandwidth(xv) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
     upper = float(xv.max() + 8 * hh)

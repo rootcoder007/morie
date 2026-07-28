@@ -53,7 +53,7 @@ def fauzi_kdfe(x, grid=None, h=None):
     of a distribution function and quantiles by a kernel method",
     *Biometrika* 68:326-328 (reference [9] of the book).
     """
-    from ._fauzi import kernel_W
+    from ._fauzi import kdfe_bandwidth, kernel_W
 
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size
@@ -69,8 +69,7 @@ def fauzi_kdfe(x, grid=None, h=None):
     # a cube root. Using the density rule oversmooths badly enough
     # that the estimator loses to the empirical df it is meant to
     # improve on.
-    hh = float(np.std(xv, ddof=1) * n ** (-1.0 / 3.0)) if h is None \
-        else float(h)
+    hh = kdfe_bandwidth(xv) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
     g = np.linspace(xv.min() - 3 * hh, xv.max() + 3 * hh, 200) \
