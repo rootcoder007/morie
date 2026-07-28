@@ -98,9 +98,20 @@ def wald_estimator(y, d, z, alpha=0.05):
     n1, n0 = int(m1.sum()), int(m0.sum())
     v_rf = yv[m1].var(ddof=1) / n1 + yv[m0].var(ddof=1) / n0
     v_fs = dv[m1].var(ddof=1) / n1 + dv[m0].var(ddof=1) / n0
-    # delta method on the ratio, treating numerator and denominator as
-    # independent across the two instrument arms
-    se = float(np.sqrt(v_rf / fs ** 2 + rf ** 2 * v_fs / fs ** 4))
+    # Delta method on the ratio, INCLUDING the Cov(num, den) term. Y and
+    # D are measured on the same subjects, so the numerator and
+    # denominator are correlated and dropping the covariance -- which
+    # most textbook presentations do -- biases the standard error. The
+    # sign of the bias follows the sign of Cov(Y, D): with the usual
+    # positive correlation the naive SE is too LARGE.
+    c_yd = (np.cov(yv[m1], dv[m1], ddof=1)[0, 1] / n1
+            + np.cov(yv[m0], dv[m0], ddof=1)[0, 1] / n0)
+    se = float(np.sqrt(max(
+        v_rf / fs ** 2
+        + rf ** 2 * v_fs / fs ** 4
+        - 2.0 * (rf / fs ** 3) * c_yd,
+        0.0,
+    )))
     f = float(fs ** 2 / v_fs) if v_fs > 0 else np.inf
     z95 = 1.959963984540054
     return RichResult(
@@ -111,6 +122,13 @@ def wald_estimator(y, d, z, alpha=0.05):
             "ci": (beta - z95 * se, beta + z95 * se),
             "reduced_form": rf,
             "first_stage": fs,
+            "cov_term": float(c_yd),
+            "cov_note": (
+                "Y and D are measured on the same subjects, so the "
+                "reduced form and first stage are correlated; the "
+                "delta method here keeps that covariance, which most "
+                "textbook formulas drop"
+            ),
             "first_stage_f": f,
             "weak_instrument": bool(f < 10.0),
             "weak_note": (
