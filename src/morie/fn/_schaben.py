@@ -373,6 +373,13 @@ def composite_likelihood_fit(coords, z, model="exponential",
         variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12
     )
     val = float(np.sum((t3 - 2.0 * g_fin) ** 2 / (8.0 * g_fin ** 2)))
+    # A bounded model cannot fit an unbounded variogram. Under a linear
+    # trend the semivariance keeps climbing (equation 5.35), and the fit
+    # answers by pushing the range towards infinity -- observed running
+    # to 1e11 on a pure-trend design. That is a diagnosis, not a fit, so
+    # it is reported rather than returned as though it were a sill.
+    hmax = float(np.max(h))
+    diverged = bool(theta[2] > 10.0 * hmax)
     return {
         "nugget": float(theta[0]),
         "psill": float(theta[1]),
@@ -382,6 +389,16 @@ def composite_likelihood_fit(coords, z, model="exponential",
         "objective": val,
         "iterations": it + 1,
         "n_pairs": int(h.size),
+        "converged": not diverged,
+        "diverged_note": (
+            None if not diverged else
+            "the fitted range (%.3g) exceeds ten times the largest "
+            "separation in the data (%.3g), which means no bounded sill was "
+            "found; the usual cause is a trend in the mean, whose squared "
+            "difference is added to the semivariance by equation (5.35). "
+            "Detrend first, or fit the 'linear' model."
+            % (theta[2], hmax)
+        ),
     }
 
 
