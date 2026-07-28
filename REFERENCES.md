@@ -6,8 +6,10 @@
      citeproc. `suppress-bibliography: false` in the front matter
      stops Pandoc emitting a second copy at build time.
      Regenerate after editing paper.bib:
-       pandoc paper.md --citeproc --bibliography=paper.bib -t gfm -o - \
+       pandoc paper.md --citeproc -t gfm -o - \
          | sed -n '/^# References/,$p'
+# do NOT also pass --bibliography=paper.bib: the YAML already names
+# it, and loading the file twice renders every entry twice
      Last regenerated 2026-07-28. -->
 
 <div id="refs" class="references csl-bib-body hanging-indent">
