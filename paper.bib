@@ -1007,6 +1007,17 @@
 % Book-as-spec sources for the morie.fn audit series. Each shelf is
 % implemented against the primary source below, and every module
 % docstring cites the specific section or numbered equation.
+%
+% Journal, volume, page and DOI details for every entry in this
+% block were CHECKED against the bibliographic record on 2026-07-28,
+% not recalled. The check earned its keep: Dong and Lewbel was first
+% written from memory as a 2012 working paper and is in fact the
+% 2015 Econometric Reviews article, and the Kooreman and Melenberg
+% discussion-paper number was initially unknown and had to be
+% located before the entry could be used.
+%
+% Horowitz (2009) ISBN and DOI are transcribed from the title page
+% of the copy in the project reference library.
 % ---------------------------------------------------------------
 
 @book{horowitz2009semiparametric,
@@ -1041,6 +1052,7 @@
   publisher = {Springer},
   address   = {Cham},
   year      = {2019},
+  isbn      = {978-3-030-13784-7},
   doi       = {10.1007/978-3-030-13785-4}
 }
 
@@ -1272,4 +1284,15 @@
   pages   = {89--99},
   year    = {1974},
   doi     = {10.2307/2529620}
+}
+
+@techreport{kooremanMelenberg1989maximum,
+  author      = {Kooreman, Peter and Melenberg, Bertrand},
+  title       = {Maximum Score Estimation in the Ordered Response Model},
+  institution = {Tilburg University, Center for Economic Research},
+  type        = {Discussion Paper},
+  number      = {1989-48},
+  year        = {1989},
+  note        = {Source of Theorem 4.11 and equation (4.43) in
+                 Horowitz (2009); implemented in morie.fn.hrzormsc}
 }
