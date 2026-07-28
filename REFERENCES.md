@@ -819,6 +819,15 @@ Practical Testing Problems*. Lawrence Erlbaum Associates.
 
 </div>
 
+<div id="ref-lu2017bracken" class="csl-entry">
+
+Lu, Jennifer, Florian P. Breitwieser, Peter Thielen, and Steven L.
+Salzberg. 2017. “Bracken: Estimating Species Abundance in Metagenomics
+Data.” *PeerJ Computer Science* 3: e104.
+<https://doi.org/10.7717/peerj-cs.104>.
+
+</div>
+
 <div id="ref-lumley2010complex" class="csl-entry">
 
 Lumley, Thomas. 2010. *Complex Surveys: A Guide to Analysis Using R*.
@@ -1070,6 +1079,14 @@ Complexity.” *Proceedings of the National Academy of Sciences* 88 (6):
 
 </div>
 
+<div id="ref-poole1985spatial" class="csl-entry">
+
+Poole, Keith T., and Howard Rosenthal. 1985. “A Spatial Model for
+Legislative Roll Call Analysis.” *American Journal of Political Science*
+29 (2): 357–84. <https://doi.org/10.2307/2111172>.
+
+</div>
+
 <div id="ref-powellStockStoker1989semiparametric" class="csl-entry">
 
 Powell, James L., James H. Stock, and Thomas M. Stoker. 1989.
@@ -1098,6 +1115,15 @@ Tests.” *Entropy* 19 (2): 47. <https://doi.org/10.3390/e19020047>.
 
 Ramsay, James O., and Bernard W. Silverman. 2005. *Functional Data
 Analysis*. 2nd ed. Springer. <https://doi.org/10.1007/b98888>.
+
+</div>
+
+<div id="ref-ramsey1969reset" class="csl-entry">
+
+Ramsey, J. B. 1969. “Tests for Specification Errors in Classical Linear
+Least-Squares Regression Analysis.” *Journal of the Royal Statistical
+Society, Series B* 31 (2): 350–71.
+<https://doi.org/10.1111/j.2517-6161.1969.tb00796.x>.
 
 </div>
 
@@ -1393,6 +1419,13 @@ Predictions.” *Journal of Dairy Science* 91 (11): 4414–23.
 
 </div>
 
+<div id="ref-veitch2020text" class="csl-entry">
+
+Veitch, Victor, Dhanya Sridhar, and David M. Blei. 2020. *Adapting Text
+Embeddings for Causal Inference*. <https://arxiv.org/abs/1905.12741>.
+
+</div>
+
 <div id="ref-veroniki2016methods" class="csl-entry">
 
 Veroniki, Areti Angeliki, Dan Jackson, Wolfgang Viechtbauer, et al.
@@ -1524,6 +1557,15 @@ Panel Data*. 2nd ed. MIT Press.
 Wooldridge, Jeffrey M. 2021. *Two-Way Fixed Effects, the Two-Way Mundlak
 Regression, and Difference-in-Differences Estimators*. No. 3906345.
 SSRN. <https://doi.org/10.2139/ssrn.3906345>.
+
+</div>
+
+<div id="ref-xiao2016face" class="csl-entry">
+
+Xiao, Luo, Vadim Zipunnikov, David Ruppert, and Ciprian Crainiceanu.
+2016. “Fast Covariance Estimation for High-Dimensional Functional Data.”
+*Statistics and Computing* 26 (1–2): 409–21.
+<https://doi.org/10.1007/s11222-014-9485-x>.
 
 </div>
 
