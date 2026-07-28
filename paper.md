@@ -296,6 +296,11 @@ measured numbers are recorded here and asserted in the test suite.
 | BayesC$\pi$, proportion of null markers | 0.950 | 0.925 | -- | -- |
 | MINE mutual information, $\rho = 0.6$ | 0.2231 | 0.2100 | -- | -- |
 | MINE mutual information, $\rho = 0.9$ | 0.8304 | 0.6811 | -- | -- |
+| AIPW ATE against Hahn's efficiency bound | 1.000 | 0.999 | 0.0559 | 0.0542 |
+| Minimax regret constant $\max_t t\Phi(-t)$ | 0.169971 | 0.169971 | -- | -- |
+| Plug-in treatment rule, worst-case regret | 0.007601 | 0.007625 | -- | -- |
+| Private mean interval coverage, honest | 0.950 | 0.982 | -- | -- |
+| Private mean interval coverage, naive | 0.950 | 0.336 | -- | -- |
 
 Several identities are checked as identities rather than
 approximately, and hold to machine precision: the mediation relation
@@ -354,6 +359,43 @@ the sample size as it must: 0.065, 0.0080 and 0.0021 at $n$ = 250,
 gradient printed in the source's own appendix is stated up to an
 additive constant, so the mean-zero form is used instead --
 matching what the authors' reference implementation computes.
+
+*A bound is only useful if something is measured against it.* The
+semiparametric efficiency bound for the average treatment effect
+[@hahn1998propensity] and the local asymptotic minimax regret bound
+for treatment choice [@hirano2009asymptotics] are both computed here
+and then tested for attainment rather than quoted. Over 600
+replications at $n = 1500$, the augmented inverse-probability
+estimator has a sampling variance 1.064 times the bound while Hajek
+weighting sits above 1.3 times it, which is the ordering the theory
+requires. The minimax constant is solved from its own stationarity
+condition $\Phi(-t) = t\phi(t)$ rather than taken from the
+literature's two significant figures, giving 0.169971; simulating
+the local experiment the bound describes, the plug-in rule's
+worst-case regret comes to 0.007625 against a bound of 0.007601, so
+it attains the bound to within 0.3 per cent. The bound is also
+decomposed into the term driven by overlap and the term driven by
+effect heterogeneity, and the second of these does not fall as
+nuisance estimation improves -- reporting an average over a
+heterogeneous population has an irreducible price.
+
+*The price of a privacy guarantee has to appear in the interval, and
+usually does not.* For a differentially private mean the mechanism
+noise is a second source of uncertainty on top of sampling error. An
+interval that accounts only for the sampling error is the one
+commonly reported. At $\epsilon = 0.05$ on $n = 200$ observations,
+that naive interval covers the true mean 33.6 per cent of the time
+against a nominal 95; the interval that carries the mechanism noise
+covers 98.2 per cent. The same module also corrects a claim this
+work initially made in the other direction: the clipping width is
+usually described as trading bias against noise, and it does not
+always do so. Clipping a symmetric distribution with a window centred
+on its mean removes equal mass from both tails, so the bias cancels
+at every width -- measured on a standard normal, it stays below 0.006
+while the noise grows four-hundred-fold. The trade-off requires skew,
+and the reported error curve now flags the case where no interior
+optimum exists rather than returning the edge of the search grid as
+though it were one.
 
 Cross-language agreement is treated as a second, independent
 implementation rather than a formality. The targeting step of the
@@ -454,8 +496,15 @@ the local average treatment effect follows Imbens and Angrist
 [-@angrist1996identification]; the doubly robust estimator follows
 Robins, Rotnitzky and Zhao [-@robins1994estimation]; double machine
 learning follows Chernozhukov and colleagues
-[-@chernozhukov2018double]; and the interaction-weighted event
-study follows Sun and Abraham [-@sun2021estimating]. The
+[-@chernozhukov2018double]; the semiparametric efficiency bound
+follows Hahn [-@hahn1998propensity] and the minimax bound for
+treatment choice Hirano and Porter [-@hirano2009asymptotics]; the
+differentially private mean follows Dwork and Roth
+[-@dwork2014algorithmic] with the finite-sample intervals of Karwa
+and Vadhan [-@karwa2018finite]; the permutation language-model
+objective follows Yang and colleagues [-@yang2019xlnet]; and the
+interaction-weighted event study follows Sun and Abraham
+[-@sun2021estimating]. The
 partial-identification modules follow Manski
 [-@manski1990nonparametric] and Manski and Tamer
 [-@manskiTamer2002inference] for worst-case bounds, Imbens and
@@ -913,6 +962,14 @@ Canada, File T-539-20, Application Record Vol. 3 of 5, pp. 778–795.
 
 </div>
 
+<div id="ref-dwork2014algorithmic" class="csl-entry">
+
+Dwork, Cynthia, and Aaron Roth. 2014. “The Algorithmic Foundations of
+Differential Privacy.” *Foundations and Trends in Theoretical Computer
+Science* 9 (3–4): 211–487. <https://doi.org/10.1561/0400000042>.
+
+</div>
+
 <div id="ref-efron1979bootstrap" class="csl-entry">
 
 Efron, Bradley. 1979. “Bootstrap Methods: Another Look at the
@@ -1072,6 +1129,14 @@ Outcome.” *International Journal of Biostatistics* 6 (1): Article 26.
 
 </div>
 
+<div id="ref-hahn1998propensity" class="csl-entry">
+
+Hahn, Jinyong. 1998. “On the Role of the Propensity Score in Efficient
+Semiparametric Estimation of Average Treatment Effects.” *Econometrica*
+66 (2): 315–31. <https://doi.org/10.2307/2998560>.
+
+</div>
+
 <div id="ref-han1987nonparametric" class="csl-entry">
 
 Han, Aaron K. 1987. “Non-Parametric Analysis of a Generalized Regression
@@ -1120,6 +1185,14 @@ the Fractal Theory.” *Physica D: Nonlinear Phenomena* 31 (2): 277–83.
 Hill, Bruce M. 1975. “A Simple General Approach to Inference about the
 Tail of a Distribution.” *The Annals of Statistics* 3 (5): 1163–74.
 <https://doi.org/10.1214/aos/1176343247>.
+
+</div>
+
+<div id="ref-hirano2009asymptotics" class="csl-entry">
+
+Hirano, Keisuke, and Jack R. Porter. 2009. “Asymptotics for Statistical
+Treatment Rules.” *Econometrica* 77 (5): 1683–701.
+<https://doi.org/10.3982/ECTA6630>.
 
 </div>
 
@@ -1255,6 +1328,13 @@ Partially Identified Parameters.” *Econometrica* 72 (6): 1845–57.
 Jacquez, Geoffrey M. 1996. “A k Nearest Neighbour Test for Space-Time
 Interaction.” *Statistics in Medicine* 15 (18): 1935–49.
 [https://doi.org/10.1002/(SICI)1097-0258(19960930)15:18\<1935::AID-SIM406\>3.0.CO;2-I](https://doi.org/10.1002/(SICI)1097-0258(19960930)15:18<1935::AID-SIM406>3.0.CO;2-I).
+
+</div>
+
+<div id="ref-karwa2018finite" class="csl-entry">
+
+Karwa, Vishesh, and Salil Vadhan. 2017. *Finite Sample Differentially
+Private Confidence Intervals*. <https://arxiv.org/abs/1711.03908>.
 
 </div>
 
@@ -2036,6 +2116,15 @@ Panel Data*. 2nd ed. MIT Press.
 Wooldridge, Jeffrey M. 2021. *Two-Way Fixed Effects, the Two-Way Mundlak
 Regression, and Difference-in-Differences Estimators*. No. 3906345.
 SSRN. <https://doi.org/10.2139/ssrn.3906345>.
+
+</div>
+
+<div id="ref-yang2019xlnet" class="csl-entry">
+
+Yang, Zhilin, Zihang Dai, Yiming Yang, Jaime Carbonell, Ruslan
+Salakhutdinov, and Quoc V. Le. 2019. *XLNet: Generalized Autoregressive
+Pretraining for Language Understanding*.
+<https://arxiv.org/abs/1906.08237>.
 
 </div>
 
