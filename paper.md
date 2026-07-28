@@ -296,6 +296,11 @@ measured numbers are recorded here and asserted in the test suite.
 | BayesC$\pi$, proportion of null markers | 0.950 | 0.925 | -- | -- |
 | MINE mutual information, $\rho = 0.6$ | 0.2231 | 0.2100 | -- | -- |
 | MINE mutual information, $\rho = 0.9$ | 0.8304 | 0.6811 | -- | -- |
+| LD50, probit, known design | 4.000 | 4.001 | 0.0879 | -- |
+| Fieller interval coverage, LD50 | 0.950 | 0.953 | -- | -- |
+| Median SE, normal electorate, $n=4000$ | 0.01982 | 0.02000 | 0.01971 | -- |
+| Dual-frame total, Hartley | 504.4 | 505.2 | 15.0 | -- |
+| Same population, naive pooling | 504.4 | 608.8 | 10.7 | -- |
 | AIPW ATE against Hahn's efficiency bound | 1.000 | 0.999 | 0.0559 | 0.0542 |
 | Minimax regret constant $\max_t t\Phi(-t)$ | 0.169971 | 0.169971 | -- | -- |
 | Plug-in treatment rule, worst-case regret | 0.007601 | 0.007625 | -- | -- |
@@ -396,6 +401,35 @@ while the noise grows four-hundred-fold. The trade-off requires skew,
 and the reported error curve now flags the case where no interior
 optimum exists rather than returning the edge of the search grid as
 though it were one.
+
+*A diagnostic that fires on noise is worse than none.* The
+goodness-of-fit check on a quantal dose-response fit is conventionally
+stated as a heterogeneity *factor* -- residual deviance over its
+degrees of freedom -- with values above 1 taken as evidence that
+subjects did not respond independently. That rule is not a test. The
+deviance has expectation equal to its degrees of freedom, so over 400
+correctly specified replications the factor averaged 0.69 and still
+exceeded 1 in 20.5 per cent of them. Keying the warning to the
+:math:`\chi^2` tail probability instead brings the false-alarm rate to
+where it belongs.
+
+Doing so exposes a second effect, which is a property of the assay
+design rather than of the code. A dose group whose fitted probability
+sits within $10^{-5}$ of 0 or 1 contributes essentially no deviance
+while still spending a degree of freedom, so the reference
+distribution is wrong in a predictable direction. Holding everything
+else fixed and varying only the dose range:
+
+| Dose range | Fitted probabilities | Mean null $p$ | Fires at 5% |
+|---|---|---|---|
+| 0.5 to 32 (saturated ends) | 0.00002 to 0.99998 | 0.645 | 1.5% |
+| 2 to 8 (all informative) | 0.083 to 0.917 | 0.479 | 5.5% |
+
+The narrow design is essentially uniform, as a correctly calibrated
+test should be. The wide one is conservative: it under-warns rather
+than over-warns, which is the safe direction, but it is not the
+nominal level and the implementation says so rather than quietly
+reporting a $p$-value it cannot support.
 
 Cross-language agreement is treated as a second, independent
 implementation rather than a formality. The targeting step of the
@@ -502,9 +536,13 @@ treatment choice Hirano and Porter [-@hirano2009asymptotics]; the
 differentially private mean follows Dwork and Roth
 [-@dwork2014algorithmic] with the finite-sample intervals of Karwa
 and Vadhan [-@karwa2018finite]; the permutation language-model
-objective follows Yang and colleagues [-@yang2019xlnet]; and the
-interaction-weighted event study follows Sun and Abraham
-[-@sun2021estimating]. The
+objective follows Yang and colleagues [-@yang2019xlnet]; the median
+voter theorem follows Black [-@black1948rationale]; dual-frame
+estimation follows Hartley [-@hartley1962multiple] and Lohr and Rao
+[-@lohrRao2000dualframe]; quantal dose-response analysis follows
+Finney [-@finney1971probit] with the ratio intervals of Fieller
+[-@fieller1954interval]; and the interaction-weighted event study
+follows Sun and Abraham [-@sun2021estimating]. The
 partial-identification modules follow Manski
 [-@manski1990nonparametric] and Manski and Tamer
 [-@manskiTamer2002inference] for worst-case bounds, Imbens and
@@ -757,6 +795,14 @@ Bettencourt, Luı́s M. A., José Lobo, Dirk Helbing, Christian Kühnert, and
 Geoffrey B. West. 2007. “Growth, Innovation, Scaling, and the Pace of
 Life in Cities.” *Proceedings of the National Academy of Sciences* 104
 (17): 7301–6.
+
+</div>
+
+<div id="ref-black1948rationale" class="csl-entry">
+
+Black, Duncan. 1948. “On the Rationale of Group Decision-Making.”
+*Journal of Political Economy* 56 (1): 23–34.
+<https://doi.org/10.1086/256633>.
 
 </div>
 
@@ -1035,6 +1081,21 @@ Series B* 65 (2): 545–56. <https://doi.org/10.1111/1467-9868.00401>.
 
 </div>
 
+<div id="ref-fieller1954interval" class="csl-entry">
+
+Fieller, E. C. 1954. “Some Problems in Interval Estimation.” *Journal of
+the Royal Statistical Society, Series B* 16 (2): 175–85.
+<https://doi.org/10.1111/j.2517-6161.1954.tb00159.x>.
+
+</div>
+
+<div id="ref-finney1971probit" class="csl-entry">
+
+Finney, D. J. 1971. *Probit Analysis*. 3rd ed. Cambridge University
+Press.
+
+</div>
+
 <div id="ref-fisher1921probable" class="csl-entry">
 
 Fisher, Ronald A. 1921. “On the ‘Probable Error’ of a Coefficient of
@@ -1151,6 +1212,13 @@ Econometrics* 35 (2–3): 303–16.
 Han, Te Sun. 1978. “Nonnegative Entropy Measures of Multivariate
 Symmetric Correlations.” *Information and Control* 36 (2): 133–56.
 <https://doi.org/10.1016/S0019-9958(78)90275-9>.
+
+</div>
+
+<div id="ref-hartley1962multiple" class="csl-entry">
+
+Hartley, H. O. 1962. “Multiple Frame Surveys.” *Proceedings of the
+Social Statistics Section*, 203–6.
 
 </div>
 
@@ -1401,6 +1469,14 @@ Lewbel, Arthur. 2000. “Semiparametric Qualitative Response Model
 Estimation with Unknown Heteroscedasticity or Instrumental Variables.”
 *Journal of Econometrics* 97 (1): 145–77.
 <https://doi.org/10.1016/S0304-4076(00)00015-4>.
+
+</div>
+
+<div id="ref-lohrRao2000dualframe" class="csl-entry">
+
+Lohr, Sharon L., and J. N. K. Rao. 2000. “Inference from Dual Frame
+Surveys.” *Journal of the American Statistical Association* 95 (449):
+271–80. <https://doi.org/10.1080/01621459.2000.10473920>.
 
 </div>
 

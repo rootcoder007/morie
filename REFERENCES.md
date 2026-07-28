@@ -130,6 +130,14 @@ Life in Cities.” *Proceedings of the National Academy of Sciences* 104
 
 </div>
 
+<div id="ref-black1948rationale" class="csl-entry">
+
+Black, Duncan. 1948. “On the Rationale of Group Decision-Making.”
+*Journal of Political Economy* 56 (1): 23–34.
+<https://doi.org/10.1086/256633>.
+
+</div>
+
 <div id="ref-bock1981marginal" class="csl-entry">
 
 Bock, R. Darrell, and Murray Aitkin. 1981. “Marginal Maximum Likelihood
@@ -405,6 +413,21 @@ Series B* 65 (2): 545–56. <https://doi.org/10.1111/1467-9868.00401>.
 
 </div>
 
+<div id="ref-fieller1954interval" class="csl-entry">
+
+Fieller, E. C. 1954. “Some Problems in Interval Estimation.” *Journal of
+the Royal Statistical Society, Series B* 16 (2): 175–85.
+<https://doi.org/10.1111/j.2517-6161.1954.tb00159.x>.
+
+</div>
+
+<div id="ref-finney1971probit" class="csl-entry">
+
+Finney, D. J. 1971. *Probit Analysis*. 3rd ed. Cambridge University
+Press.
+
+</div>
+
 <div id="ref-fisher1921probable" class="csl-entry">
 
 Fisher, Ronald A. 1921. “On the ‘Probable Error’ of a Coefficient of
@@ -521,6 +544,13 @@ Econometrics* 35 (2–3): 303–16.
 Han, Te Sun. 1978. “Nonnegative Entropy Measures of Multivariate
 Symmetric Correlations.” *Information and Control* 36 (2): 133–56.
 <https://doi.org/10.1016/S0019-9958(78)90275-9>.
+
+</div>
+
+<div id="ref-hartley1962multiple" class="csl-entry">
+
+Hartley, H. O. 1962. “Multiple Frame Surveys.” *Proceedings of the
+Social Statistics Section*, 203–6.
 
 </div>
 
@@ -771,6 +801,14 @@ Lewbel, Arthur. 2000. “Semiparametric Qualitative Response Model
 Estimation with Unknown Heteroscedasticity or Instrumental Variables.”
 *Journal of Econometrics* 97 (1): 145–77.
 <https://doi.org/10.1016/S0304-4076(00)00015-4>.
+
+</div>
+
+<div id="ref-lohrRao2000dualframe" class="csl-entry">
+
+Lohr, Sharon L., and J. N. K. Rao. 2000. “Inference from Dual Frame
+Surveys.” *Journal of the American Statistical Association* 95 (449):
+271–80. <https://doi.org/10.1080/01621459.2000.10473920>.
 
 </div>
 
