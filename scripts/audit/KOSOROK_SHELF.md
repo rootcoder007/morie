@@ -1,4 +1,4 @@
-# Kosorok shelf (batch 5) — 39 placeholders — **COMPLETE**
+# Kosorok shelf (batch 5) — 39 placeholders — **COMPLETE (Python + R)**
 
 Spec: Kosorok, M. R. (2008), *Introduction to Empirical Processes and
 Semiparametric Inference*, Springer. **Filed in the library under its
@@ -126,3 +126,32 @@ is therefore higher than previously reported by 333.
 eq. (3.4) and the Breslow baseline, with standard errors from the
 observed information. The remaining 331 template-B modules are
 unaudited and should be swept like template A.
+
+## R parity — added after the fact
+
+The shelf was marked COMPLETE when only the Python side existed. That
+was wrong; the standing rule is that nothing stays Python-only. Fixed
+now.
+
+Collision scan first, and it mattered: R already carried **twenty**
+`morie_ksrNN_*` functions (empirical process, Donsker class,
+Glivenko-Cantelli, VC dimension, bracketing number, maximal
+inequality, both bootstraps, Z- and M-estimators, efficient score,
+information bound, tangent space, profile likelihood, one-step
+estimator, influence function, counting process, Nelson-Aalen, Cox
+partial likelihood, censoring survival), plus eighteen `morie_dsp_*`
+signal-processing functions.
+
+`R/kosorok_native2.R` therefore adds only the genuinely absent
+surface: bridge covariance, the exact sup norm, LIL and Chung
+constants, the KMT bound, U-processes, the entropy integral with both
+Donsker/GC envelope conditions, the functional delta method, the
+Frechet check, the Kaplan-Meier Hadamard derivative, DQM, the quantile
+sandwich, the BL metric and the tightness check. 42 tests green.
+
+**One R-only bug the cross-language anchor caught:**
+`morie_functional_delta` used the raw Jacobian where the delta method
+needs it APPLIED to the observed deviation, matching
+`morie.fn.ksr042`'s directional derivative. The remainder came out as
+−395.99 instead of 0.01 — a factor of 1/deviation. Both the
+directional derivative and the Jacobian are now returned separately.
