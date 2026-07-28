@@ -56,8 +56,14 @@ def test_entropy_integral_separates_polynomial_from_exponential_growth():
     poly = kosorok_ch2_donsker_bracketing_integral(lambda e: (1 / e) ** 3)
     assert poly["finite"] is True
     assert poly["J"] < 5
-    # exponential growth: J blows up, so the Donsker condition fails
-    expo = kosorok_ch2_donsker_bracketing_integral(lambda e: np.exp(1 / e**2))
+    # exp(1/eps^2) is exactly the growth rate that makes J DIVERGE:
+    # sqrt(log N) = 1/eps, whose integral is logarithmic. The N values
+    # overflow to +inf near 0 and that is the mathematically correct
+    # outcome, not an error -- capping the exponent would make J
+    # finite and destroy the very contrast being tested. errstate
+    # silences the notice while keeping the infinity.
+    with np.errstate(over="ignore"):
+        expo = kosorok_ch2_donsker_bracketing_integral(lambda e: np.exp(1 / e**2))
     assert expo["J"] > poly["J"] * 10
     assert kosorok_ch2_donsker_bracketing_theorem(lambda e: (1 / e) ** 3)[
         "sufficient_condition_met"

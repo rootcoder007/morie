@@ -100,3 +100,29 @@ via `scripts/audit/run_fn_subset.sh`.
   Kaplan-Meier `L` is an at-risk probability and positive there. The
   guard stays; the test now uses a proper at-risk `L` and separately
   asserts the refusal.
+
+## A SECOND placeholder template, found via the warnings
+
+Chasing the 9 pytest warnings turned up `ksr064` and `ksr069`, which
+compute
+
+```python
+estimate = np.median(beta)
+se = 1.2533 * np.std(beta, ddof=1) / np.sqrt(n)
+```
+
+`beta` is a scalar, so `np.std(..., ddof=1)` divides by zero degrees
+of freedom and **`se` is silently NaN**. Worse, both functions ignore
+`Z`, `V` and `d` entirely while their docstrings state the Cox partial
+likelihood.
+
+This is a **different placeholder template** from the
+`result = np.mean / se = np.std` one the earlier census counted.
+Repo-wide: **333 modules** carry it, with **zero overlap** with the
+16,182 template-A placeholders. The true hand-named placeholder count
+is therefore higher than previously reported by 333.
+
+`ksr064` and `ksr069` are now real: the Cox partial likelihood of
+eq. (3.4) and the Breslow baseline, with standard errors from the
+observed information. The remaining 331 template-B modules are
+unaudited and should be swept like template A.
