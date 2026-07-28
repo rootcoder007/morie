@@ -1,32 +1,20 @@
 # References
 
-
 <!-- Written out in full so the bibliography is readable in the
      repository and on GitHub, which renders markdown without
-     citeproc. `suppress-bibliography: false` in the front matter
-     stops Pandoc emitting a second copy at build time.
-     Regenerate after editing paper.bib:
-       pandoc paper.md --citeproc -t gfm -o - \
-         | sed -n '/^# References/,$p'
-# do NOT also pass --bibliography=paper.bib: the YAML already names
-# it, and loading the file twice renders every entry twice
+     citeproc. `suppress-bibliography: true` in paper.md's front
+     matter stops Pandoc emitting a second copy at build time, so
+     the list below is spliced from a render of the body ALONE.
+     Regenerate after editing paper.bib or paper.md's prose:
+       head -437 paper.md | grep -v '^suppress-bibliography: true$' \
+         > /tmp/body.md
+       pandoc /tmp/body.md --citeproc -t gfm -o - \
+         | sed -n '/^<div id="refs"/,$p' > /tmp/refs.md
+     then paste /tmp/refs.md under this comment, and splice the same
+     block into paper.md after its own `# References` heading.
+     Do NOT also pass --bibliography=paper.bib: the YAML already
+     names it, and loading the file twice renders every entry twice.
      Last regenerated 2026-07-28. -->
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-aitchison1986compositional" class="csl-entry">
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-aitchison1986compositional" class="csl-entry">
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-aitchison1986compositional" class="csl-entry">
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-aitchison1986compositional" class="csl-entry">
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
@@ -103,6 +91,23 @@ Bettencourt, Luı́s M. A., José Lobo, Dirk Helbing, Christian Kühnert, and
 Geoffrey B. West. 2007. “Growth, Innovation, Scaling, and the Pace of
 Life in Cities.” *Proceedings of the National Academy of Sciences* 104
 (17): 7301–6.
+
+</div>
+
+<div id="ref-bock1981marginal" class="csl-entry">
+
+Bock, R. Darrell, and Murray Aitkin. 1981. “Marginal Maximum Likelihood
+Estimation of Item Parameters: Application of an EM Algorithm.”
+*Psychometrika* 46 (4): 443–59. <https://doi.org/10.1007/BF02293801>.
+
+</div>
+
+<div id="ref-bock1982adaptive" class="csl-entry">
+
+Bock, R. Darrell, and Robert J. Mislevy. 1982. “Adaptive EAP Estimation
+of Ability in a Microcomputer Environment.” *Applied Psychological
+Measurement* 6 (4): 431–44.
+<https://doi.org/10.1177/014662168200600405>.
 
 </div>
 
@@ -624,6 +629,13 @@ Estimation with Unknown Heteroscedasticity or Instrumental Variables.”
 
 </div>
 
+<div id="ref-lord1980applications" class="csl-entry">
+
+Lord, Frederic M. 1980. *Applications of Item Response Theory to
+Practical Testing Problems*. Lawrence Erlbaum Associates.
+
+</div>
+
 <div id="ref-lumley2010complex" class="csl-entry">
 
 Lumley, Thomas. 2010. *Complex Surveys: A Guide to Analysis Using R*.
@@ -693,12 +705,28 @@ Acta (BBA) — Protein Structure* 405 (2): 442–51.
 
 </div>
 
+<div id="ref-mcgraw1996forming" class="csl-entry">
+
+McGraw, Kenneth O., and S. P. Wong. 1996. “Forming Inferences about Some
+Intraclass Correlation Coefficients.” *Psychological Methods* 1 (1):
+30–46. <https://doi.org/10.1037/1082-989X.1.1.30>.
+
+</div>
+
 <div id="ref-melenbergVanSoest1996parametric" class="csl-entry">
 
 Melenberg, Bertrand, and Arthur van Soest. 1996. “Measuring the Costs of
 Children: Parametric and Semiparametric Estimators.” *Statistica
 Neerlandica* 50 (1): 171–92.
 <https://doi.org/10.1111/j.1467-9574.1996.tb01486.x>.
+
+</div>
+
+<div id="ref-mislevy1986bayes" class="csl-entry">
+
+Mislevy, Robert J. 1986. “Bayes Modal Estimation in Item Response
+Models.” *Psychometrika* 51 (2): 177–95.
+<https://doi.org/10.1007/BF02293979>.
 
 </div>
 
@@ -771,6 +799,14 @@ Variance of the Rate of Return.” *Journal of Business* 53 (1): 61–65.
 Parzen, Emanuel. 1962. “On Estimation of a Probability Density Function
 and Mode.” *The Annals of Mathematical Statistics* 33 (3): 1065–76.
 <https://doi.org/10.1214/aoms/1177704472>.
+
+</div>
+
+<div id="ref-paule1982consensus" class="csl-entry">
+
+Paule, Robert C., and John Mandel. 1982. “Consensus Values and Weighting
+Factors.” *Journal of Research of the National Bureau of Standards* 87
+(5): 377–85. <https://doi.org/10.6028/jres.087.022>.
 
 </div>
 
@@ -933,6 +969,15 @@ Psychometric Society.
 
 </div>
 
+<div id="ref-samejima1973reliability" class="csl-entry">
+
+Samejima, Fumiko. 1973. “A Comment on
+<span class="nocase">Birnbaum’s</span> Three-Parameter Logistic Model in
+the Latent Trait Theory.” *Psychometrika* 38 (2): 221–33.
+<https://doi.org/10.1007/BF02291116>.
+
+</div>
+
 <div id="ref-sargan1958estimation" class="csl-entry">
 
 Sargan, John D. 1958. “The Estimation of Economic Relationships Using
@@ -978,6 +1023,14 @@ Correlation Estimator.” *Econometrica* 61 (1): 123–37.
 Short, M. B., M. R. D’Orsogna, V. B. Pasour, et al. 2008. “A Statistical
 Model of Criminal Behavior.” *Mathematical Models and Methods in Applied
 Sciences* 18 (Suppl.): 1249–67.
+
+</div>
+
+<div id="ref-shrout1979intraclass" class="csl-entry">
+
+Shrout, Patrick E., and Joseph L. Fleiss. 1979. “Intraclass
+Correlations: Uses in Assessing Rater Reliability.” *Psychological
+Bulletin* 86 (2): 420–28. <https://doi.org/10.1037/0033-2909.86.2.420>.
 
 </div>
 
@@ -1076,6 +1129,14 @@ Akademie van Wetenschappen* 53: 386–92, 521–25, 1397–412.
 
 </div>
 
+<div id="ref-tipton2015small" class="csl-entry">
+
+Tipton, Elizabeth. 2015. “Small Sample Adjustments for Robust Variance
+Estimation with Meta-Regression.” *Psychological Methods* 20 (3):
+375–93. <https://doi.org/10.1037/met0000011>.
+
+</div>
+
 <div id="ref-tsay2010analysis" class="csl-entry">
 
 Tsay, Ruey S. 2010. *Analysis of Financial Time Series*. 3rd ed. Wiley.
@@ -1107,6 +1168,40 @@ Predictions.” *Journal of Dairy Science* 91 (11): 4414–23.
 
 </div>
 
+<div id="ref-veroniki2016methods" class="csl-entry">
+
+Veroniki, Areti Angeliki, Dan Jackson, Wolfgang Viechtbauer, et al.
+2016. “Methods to Estimate the Between-Study Variance and Its
+Uncertainty in Meta-Analysis.” *Research Synthesis Methods* 7 (1):
+55–79. <https://doi.org/10.1002/jrsm.1164>.
+
+</div>
+
+<div id="ref-viechtbauer2005bias" class="csl-entry">
+
+Viechtbauer, Wolfgang. 2005. “Bias and Efficiency of Meta-Analytic
+Variance Estimators in the Random-Effects Model.” *Journal of
+Educational and Behavioral Statistics* 30 (3): 261–93.
+<https://doi.org/10.3102/10769986030003261>.
+
+</div>
+
+<div id="ref-viechtbauer2010conducting" class="csl-entry">
+
+Viechtbauer, Wolfgang. 2010. “Conducting Meta-Analyses in R with the
+<span class="nocase">metafor</span> Package.” *Journal of Statistical
+Software* 36 (3): 1–48. <https://doi.org/10.18637/jss.v036.i03>.
+
+</div>
+
+<div id="ref-viechtbauer2010outlier" class="csl-entry">
+
+Viechtbauer, Wolfgang, and Mike W.-L. Cheung. 2010. “Outlier and
+Influence Diagnostics for Meta-Analysis.” *Research Synthesis Methods* 1
+(2): 112–25. <https://doi.org/10.1002/jrsm.11>.
+
+</div>
+
 <div id="ref-villani2009optimal" class="csl-entry">
 
 Villani, Cédric. 2009. *Optimal Transport: Old and New*. Vol. 338.
@@ -1121,6 +1216,14 @@ Wallace, Marnie, John Turner, Anthony Matarazzo, and Colin Babyak. 2009.
 *Measuring Crime in Canada: Introducing the Crime Severity Index and
 Improvements to the Uniform Crime Reporting Survey*. 85-004-X.
 Statistics Canada.
+
+</div>
+
+<div id="ref-warm1989weighted" class="csl-entry">
+
+Warm, Thomas A. 1989. “Weighted Likelihood Estimation of Ability in Item
+Response Theory.” *Psychometrika* 54 (3): 427–50.
+<https://doi.org/10.1007/BF02294627>.
 
 </div>
 

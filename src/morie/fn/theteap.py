@@ -1,4 +1,5 @@
-"""EAP estimator of theta."""
+# morie.fn -- function file (rootcoder007/morie)
+"""EAP theta -- alias entry point."""
 
 import numpy as np
 
@@ -7,49 +8,53 @@ from ._richresult import RichResult
 __all__ = ["theta_eap"]
 
 
-def theta_eap(X, items, prior):
-    """
-    EAP estimator of theta
+def theta_eap(X, items, prior=(0.0, 1.0), n_nodes=61):
+    """Expected a posteriori theta for one or many response
+    patterns. One implementation: each row is passed to
+    :func:`morie.fn.eapth.eap_theta_estimator`, so the two catalogue
+    entries cannot drift apart. This entry point adds the
+    convenience of a response MATRIX (examinees by items) and an
+    ``items`` table, which is the shape test-scoring code actually
+    holds.
 
-    Formula: E[theta | X, items, prior]
-
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    items : array-like
-        Input data.
-    prior : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+    ``items`` is an array with columns ``a``, ``b`` and optionally
+    ``c`` -- one row per item, matching the columns of ``X``.
 
     References
     ----------
-    Bock-Mislevy (1982)
+    Bock, R. D. and Mislevy, R. J. (1982), *Applied Psychological
+    Measurement* 6:431-444.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    if n < 1:
-        return RichResult(payload={"estimate": np.nan, "n": 0, "method": "EAP estimator of theta"})
-    estimate = np.median(X)
-    se = 1.2533 * np.std(X, ddof=1) / np.sqrt(n)
-    ci_lower = estimate - 1.96 * se
-    ci_upper = estimate + 1.96 * se
-    return RichResult(
-        payload={
-            "estimate": float(estimate),
-            "se": float(se),
-            "ci_lower": float(ci_lower),
-            "ci_upper": float(ci_upper),
-            "n": n,
-            "method": "EAP estimator of theta",
-        }
-    )
+    from .eapth import eap_theta_estimator
+
+    Xm = np.atleast_2d(np.asarray(X, dtype=float))
+    it = np.atleast_2d(np.asarray(items, dtype=float))
+    if it.shape[0] != Xm.shape[1]:
+        it = it.T
+    if it.shape[0] != Xm.shape[1]:
+        raise ValueError(
+            f"items has {it.shape[0]} rows for {Xm.shape[1]} item columns.")
+    if it.shape[1] < 2:
+        raise ValueError("items needs at least an a and a b column.")
+    a = it[:, 0]
+    b = it[:, 1]
+    c = it[:, 2] if it.shape[1] > 2 else None
+    thetas = np.empty(Xm.shape[0])
+    ses = np.empty(Xm.shape[0])
+    for i in range(Xm.shape[0]):
+        o = eap_theta_estimator(Xm[i], a=a, b=b, c=c, prior=prior,
+                                n_nodes=n_nodes)
+        thetas[i] = o["theta"]
+        ses[i] = o["se"]
+    return RichResult(payload={
+        "theta": thetas if thetas.size > 1 else float(thetas[0]),
+        "se": ses if ses.size > 1 else float(ses[0]),
+        "n_examinees": int(Xm.shape[0]), "n_items": int(Xm.shape[1]),
+        "prior_mean": float(prior[0]), "prior_sd": float(prior[1]),
+        "n_nodes": int(n_nodes),
+        "alias_of": "morie.fn.eapth.eap_theta_estimator",
+        "method": "EAP theta over a response matrix (Bock-Mislevy 1982)"})
 
 
 def cheatsheet():
-    return "theteap: EAP estimator of theta"
+    return "theteap: EAP over a response MATRIX -- same implementation as eapth"
