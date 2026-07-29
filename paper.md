@@ -612,6 +612,25 @@ the three tests that reached a partition of $n \le 3$, and only
 because the suite enumerated every partition of every $n$ from 1
 rather than starting where the interesting shapes are.
 
+The analytic-combinatorics modules extend the discipline from counts
+to *asymptotics*. An asymptotic estimate is a theorem about exact
+coefficients, so every estimate is computed alongside the exact value
+it approximates: Hardy--Ramanujan against $p(n)$ from the pentagonal
+recurrence in arbitrary precision (the estimate is still 4.6 per cent
+high at $n = 100$, which the fame of the formula tends to obscure);
+the transfer theorem's $n^{\alpha-1}/\Gamma(\alpha)$ against the exact
+product $\prod (\alpha + i - 1)/i$; Stirling's series against
+$\ln\Gamma(n+1)$ with the alternating-envelope bound *checked*, not
+cited --- which surfaced its own subtlety, that the bound outruns
+double precision by $n = 50$ and a naive check would measure the
+rounding of the comparison rather than the series. The rounding
+identity $D_n = \mathrm{round}(n!/e)$ is verified by *two independent
+exact routes*: Python encloses $e$ in rational arithmetic and bounds
+the distance directly, while R recomputes $D_n$ from the
+inclusion--exclusion sum and requires digit-for-digit agreement with
+the recurrence. Two derivations of the same claim are a stronger check
+than one derivation copied twice.
+
 That is the general argument for the parity discipline. A second
 implementation in a second language is not duplicated effort; it is the
 only check that catches defects which are invisible from inside one
