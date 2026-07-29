@@ -1,6 +1,6 @@
-r"""Bertscore f1.."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 8.9: BERTScore F1."""
 
 from ._richresult import RichResult
 
@@ -8,33 +8,30 @@ __all__ = ["kamath_ch8_bertscore_f1"]
 
 
 def kamath_ch8_bertscore_f1(P_BERT, R_BERT):
-    r"""
-    Bertscore f1.
+    r"""F_BERT = 2 * P * R / (P + R), the harmonic mean.
 
-    Formula: F_{BERT} = 2\cdot\frac{P_{BERT}\cdot R_{BERT}}{P_{BERT}+R_{BERT}}
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 8, Eq 8.9, printed
+    p. 325.
 
-    Parameters
-    ----------
-    P_BERT : array-like
-        Input data.
-    R_BERT : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 8, Eq 8.9, p. 325
-    r"""
-    P_BERT = np.atleast_1d(np.asarray(P_BERT, dtype=float))
-    n = len(P_BERT)
-    result = float(np.mean(P_BERT))
-    se = float(np.std(P_BERT, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bertscore f1."})
+    Examples
+    --------
+    >>> out = kamath_ch8_bertscore_f1(1.0, 0.5)
+    >>> round(out["estimate"], 6)      # 2*0.5/1.5
+    0.666667
+    """
+    p = float(P_BERT)
+    r = float(R_BERT)
+    if p + r == 0:
+        raise ValueError("precision and recall are both 0, so the "
+                         "harmonic mean is 0/0 -- undefined.")
+    if p + r < 0:
+        raise ValueError("a negative precision+recall has no harmonic "
+                         "mean on this scale; check the inputs.")
+    return RichResult(payload={
+        "estimate": 2.0 * p * r / (p + r), "precision": p, "recall": r,
+        "n": 2, "method": "BERTScore F1 (Kamath Eq 8.9)"})
 
 
 def cheatsheet():
-    return "km121: Bertscore f1."
+    return "km121: harmonic mean of BERTScore precision and recall"

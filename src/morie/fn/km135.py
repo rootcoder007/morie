@@ -1,4 +1,6 @@
-"""Clip contrastive total.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 9.7: the total CLIP contrastive loss."""
 
 import numpy as np
 
@@ -8,33 +10,33 @@ __all__ = ["kamath_ch9_clip_contrastive_total"]
 
 
 def kamath_ch9_clip_contrastive_total(L_i2t, L_t2i):
+    r"""L_CL = L_i2t + L_t2i.
+
+    Both halves are cross-entropies and so are non-negative; a
+    negative input means one of them was computed with a sign error
+    and is rejected here rather than silently summed.
+
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 9, Eq 9.7, printed
+    p. 386.
+
+    Examples
+    --------
+    >>> out = kamath_ch9_clip_contrastive_total(0.25, 0.75)
+    >>> out["estimate"]
+    1.0
     """
-    Clip contrastive total.
-
-    Formula: L_{CL} = L_{i2t} + L_{t2i}
-
-    Parameters
-    ----------
-    L_i2t : array-like
-        Input data.
-    L_t2i : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 9, Eq 9.7, p. 386
-    """
-    L_i2t = np.atleast_1d(np.asarray(L_i2t, dtype=float))
-    n = len(L_i2t)
-    result = float(np.mean(L_i2t))
-    se = float(np.std(L_i2t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Clip contrastive total."})
+    a = float(L_i2t)
+    b = float(L_t2i)
+    if not (np.isfinite(a) and np.isfinite(b)):
+        raise ValueError("both contrastive losses must be finite.")
+    if a < 0 or b < 0:
+        raise ValueError("a contrastive cross-entropy cannot be "
+                         f"negative; got {a} and {b}.")
+    return RichResult(payload={
+        "estimate": a + b, "L_i2t": a, "L_t2i": b, "n": 2,
+        "method": "total CLIP contrastive loss (Kamath Eq 9.7)"})
 
 
 def cheatsheet():
-    return "km135: Clip contrastive total."
+    return "km135: L_i2t + L_t2i, both halves checked non-negative"

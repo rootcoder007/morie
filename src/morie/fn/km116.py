@@ -1,4 +1,6 @@
-r"""Brevity penalty.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 8.4: BLEU brevity penalty."""
 
 import numpy as np
 
@@ -8,33 +10,38 @@ __all__ = ["kamath_ch8_brevity_penalty"]
 
 
 def kamath_ch8_brevity_penalty(c, r):
-    r"""
-    Brevity penalty.
+    r"""BP = 1 if c > r, else exp(1 - r/c).
 
-    Formula: \mathrm{BP} = \begin{cases} 1 & c>r \\ e^{1-r/c} & c\le r \end{cases}
+    ``c`` is the candidate length and ``r`` the (effective) reference
+    length, both in tokens. The penalty is applied exactly at the
+    boundary c == r, where exp(1 - 1) = 1 anyway, so the piecewise
+    definition is continuous.
 
-    Parameters
-    ----------
-    c : array-like
-        Input data.
-    r : array-like
-        Input data.
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 8, Eq 8.4, printed
+    p. 323.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 8, Eq 8.4, p. 323
-    r"""
-    c = np.atleast_1d(np.asarray(c, dtype=float))
-    n = len(c)
-    result = float(np.mean(c))
-    se = float(np.std(c, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Brevity penalty."})
+    Examples
+    --------
+    >>> import math
+    >>> out = kamath_ch8_brevity_penalty(3, 5)
+    >>> abs(out["estimate"] - math.exp(1 - 5 / 3)) < 1e-12
+    True
+    >>> kamath_ch8_brevity_penalty(7, 5)["estimate"]
+    1.0
+    """
+    c = float(c)
+    r = float(r)
+    if c <= 0:
+        raise ValueError("the candidate length c must be positive; "
+                         "1 - r/c is a pole at c = 0.")
+    if r < 0:
+        raise ValueError("the reference length r cannot be negative.")
+    bp = 1.0 if c > r else float(np.exp(1.0 - r / c))
+    return RichResult(payload={
+        "estimate": bp, "c": c, "r": r, "penalized": bool(c <= r),
+        "n": 1, "method": "BLEU brevity penalty (Kamath Eq 8.4)"})
 
 
 def cheatsheet():
-    return "km116: Brevity penalty."
+    return "km116: 1 when longer than the reference, exp(1-r/c) when not"
