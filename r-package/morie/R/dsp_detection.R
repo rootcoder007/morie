@@ -199,7 +199,7 @@ morie_dsp_shannon_energy <- function(x) {
 
 #' Teager-Kaiser energy operator
 #'
-#' `psi[n] = x[n]^2 - x[n-1] * x[n+1]`; sensitive to instantaneous
+#' `psi\[n\] = x\[n\]^2 - x\[n-1\] * x\[n+1\]`; sensitive to instantaneous
 #' amplitude AND frequency.
 #'
 #' @param x Numeric vector.
@@ -230,7 +230,7 @@ morie_dsp_teager_energy <- function(x) {
 #' t <- seq.int(0, 1023) / fs
 #' x <- 2 * sin(2 * pi * 64 * t)
 #' env <- morie_dsp_hilbert_envelope(x)
-#' mean(env[20:1004])  # ~2 (the amplitude)
+#' mean(env\[20:1004\])  # ~2 (the amplitude)
 #' @export
 morie_dsp_hilbert_envelope <- function(x) {
   # Module 20: native analytic signal in the FFT domain.
@@ -305,7 +305,7 @@ morie_dsp_dicrotic_notch <- function(pulse, fs = 125) {
 
 #' T-wave detection by post-QRS argmax search
 #'
-#' For each QRS index, searches `[loc + 0.2 * fs, loc + 0.5 * fs]` for
+#' For each QRS index, searches `\[loc + 0.2 * fs, loc + 0.5 * fs\]` for
 #' the absolute maximum and records its global index.
 #'
 #' @param ecg ECG vector.

@@ -24,7 +24,7 @@
 #'   (two-way). \code{NULL} gives the i.i.d. (non-clustered) SE.
 #' @param n_folds Cross-fitting folds (default 5).
 #' @param seed Integer seed (default 123).
-#' @param eps Propensity clip bound in \code{[eps, 1-eps]} (default 0.02).
+#' @param eps Propensity clip bound in \code{\[eps, 1-eps\]} (default 0.02).
 #' @param ps Optional length-\code{nrow(data)} vector of externally supplied
 #'   propensity scores (e.g. from a mixed-effects / cluster-level model); when
 #'   given it replaces the cross-fitted propensity.
@@ -41,7 +41,7 @@
 #' set.seed(1)
 #' G <- 40L; ng <- 10L; n <- G * ng
 #' g <- rep(seq_len(G), each = ng)
-#' u <- stats::rnorm(G)[g]                       # cluster effect
+#' u <- stats::rnorm(G)\[g\]                       # cluster effect
 #' x <- stats::rnorm(n)
 #' d <- stats::rbinom(n, 1, stats::plogis(0.5 * x + u))
 #' y <- 2 * d + x + u + stats::rnorm(n)          # true ATE = 2

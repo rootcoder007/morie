@@ -151,7 +151,7 @@ morie_matching_estimate_propensity <- function(data, treatment, covariates,
 
 #' Trim propensity scores to a fixed range
 #'
-#' Clips propensity scores to \code{[lower, upper]}.  Mirrors Python
+#' Clips propensity scores to \code{\[lower, upper\]}.  Mirrors Python
 #' \code{morie.matching.trim_propensity_scores}.
 #'
 #' @param ps Numeric vector of propensity scores.

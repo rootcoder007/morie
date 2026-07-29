@@ -362,7 +362,7 @@ morie_survival_parametric <- function(time, event,
 #'
 #' Uses `survival::concordance()` (which handles ties + censoring correctly).
 #' @inheritParams morie_survival_params
-#' @return Single numeric scalar in `[0, 1]`: Harrell's C-statistic.
+#' @return Single numeric scalar in `\[0, 1\]`: Harrell's C-statistic.
 #' @export
 morie_survival_concordance <- function(time, event, risk_score) {
   .req_survival()

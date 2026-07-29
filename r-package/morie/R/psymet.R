@@ -171,7 +171,7 @@ morie_psymet_alphadel <- function(data) {
 #' Composite reliability from standardized factor loadings.
 #' CR = (sum lambda)^2 / ((sum lambda)^2 + sum(1 - lambda^2))
 #' @param loads Numeric vector of standardised factor loadings (lambda).
-#' @return Single numeric scalar in `[0, 1]`: the composite reliability (CR).
+#' @return Single numeric scalar in `\[0, 1\]`: the composite reliability (CR).
 #' @examples
 #' lam <- c(0.7, 0.8, 0.6)
 #' morie_psymet_cr(lam)
