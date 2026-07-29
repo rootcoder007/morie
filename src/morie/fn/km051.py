@@ -1,4 +1,6 @@
-"""Qa trigger template.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 3.10: the QA prompt shape carrying adversarial triggers."""
 
 import numpy as np
 
@@ -7,38 +9,44 @@ from ._richresult import RichResult
 __all__ = ["kamath_ch3_qa_trigger_template"]
 
 
-def kamath_ch3_qa_trigger_template(x, y, T, z_adv):
+def kamath_ch3_qa_trigger_template(x, y, T, z_adv, n_triggers=3):
+    """"Question: [x] Context: [y] Answer: [T][T][T][z_adv]".
+
+    ``T`` is the trigger token repeated ``n_triggers`` times (three in
+    the book) immediately before the adversarial answer ``z_adv``; the
+    gradient-directed search of Wallace et al. optimises exactly those
+    repeated slots, so their count is a parameter, not a constant baked
+    into a string.
+
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 3, Eq 3.10, printed
+    p. 105.
+
+    Examples
+    --------
+    >>> out = kamath_ch3_qa_trigger_template(
+    ...     "Where?", "Paris.", "the", "Rome")
+    >>> out["prompt"]
+    'Question: Where? Context: Paris. Answer: the the the Rome'
+    >>> out["n_triggers"]
+    3
     """
-    Qa trigger template.
-
-    Formula: \text{Question: }[x]\text{ Context: }[y]\text{ Answer: }[T][T][T][z_{adv}]
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    T : array-like
-        Input data.
-    z_adv : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 3, Eq 3.10, p. 105
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Qa trigger template."})
+    for name, v in (("x", x), ("y", y), ("T", T), ("z_adv", z_adv)):
+        if not isinstance(v, str) or not v.strip():
+            raise ValueError(f"{name} must be a non-empty string.")
+    k = int(n_triggers)
+    if k < 1:
+        raise ValueError("n_triggers must be at least 1; a trigger prompt "
+                         "with no triggers is just a QA prompt.")
+    triggers = " ".join([T] * k)
+    prompt = f"Question: {x} Context: {y} Answer: {triggers} {z_adv}"
+    tokens = prompt.split()
+    return RichResult(payload={
+        "prompt": prompt, "trigger": T, "n_triggers": k,
+        "adversarial_answer": z_adv, "tokens": tokens,
+        "estimate": float(len(tokens)), "n": len(tokens),
+        "method": "adversarial-trigger QA prompt (Kamath Eq 3.10)"})
 
 
 def cheatsheet():
-    return "km051: Qa trigger template."
+    return "km051: 'Question: [x] Context: [y] Answer: [T]x3 [z_adv]'"

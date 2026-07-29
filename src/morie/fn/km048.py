@@ -1,40 +1,37 @@
-"""Cloze prompt template.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 3.7: the sentiment CLOZE prompt template."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .km046 import _fill_template, _result
 
 __all__ = ["kamath_ch3_cloze_prompt_template"]
 
+TEMPLATE = "[x] This is a [z] movie."
 
-def kamath_ch3_cloze_prompt_template(x, z):
+
+def kamath_ch3_cloze_prompt_template(x, z=None, template=TEMPLATE):
+    """x' = [x] This is a [z] movie. -- template tokens on BOTH sides
+    of the answer slot, which is what makes it a cloze rather than a
+    prefix prompt. Slot filling delegates to km046's shared filler.
+
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 3, Eq 3.7, printed
+    p. 101.
+
+    Examples
+    --------
+    >>> kamath_ch3_cloze_prompt_template("Cannot watch this.")["prompt"]
+    'Cannot watch this. This is a [z] movie.'
+    >>> out = kamath_ch3_cloze_prompt_template("Loved it.", "great")
+    >>> out["prompt"]
+    'Loved it. This is a great movie.'
     """
-    Cloze prompt template.
-
-    Formula: x' = [x] \text{ This is a } [z] \text{ movie.}
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    z : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 3, Eq 3.7, p. 101
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Cloze prompt template."})
+    prompt, filled = _fill_template(template, x, z)
+    return _result(prompt, filled, "3.7", template)
 
 
 def cheatsheet():
-    return "km048: Cloze prompt template."
+    return "km048: cloze template '[x] This is a [z] movie.'"
