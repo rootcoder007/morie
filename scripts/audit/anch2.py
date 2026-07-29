@@ -1,0 +1,72 @@
+import json, math, sys
+import numpy as np
+import morie.fn as F
+from morie.fn import km042
+assert "/src/morie/fn/" in km042.__file__
+A={}
+def rec(k,v): A[k]=v
+g=lambda n: getattr(F,n)
+rec("km077",g("kamath_ch6_factscore")(lambda x: None if x=="p2" else "r"+x, ["p1","p2","p3"], lambda r:["f1","f2"], ["f1"])["estimate"])
+rec("km078",g("kamath_ch6_alignment_function")("a","b","3way",lambda a,b:"CONTRADICT")["estimate"])
+rec("km079",g("kamath_ch6_alignscore_total_loss")(1.0,2.0,3.0,[0.5,0.25,0.25])["estimate"])
+W1=[[1.0,0.0],[0.0,1.0]]; W2=[[-1.0,0.0],[0.0,-1.0]]
+A1=[[1.0,0.0],[0.0,1.0]]; A2=[[1.0,1.0],[2.0,0.0]]
+rec("km081",g("kamath_ch6_weat_similarity")([1.0,0.0],W1,W2)["estimate"])
+o=g("kamath_ch6_weat_function")(A1,A2,W1,W2); rec("km080",[o["estimate"],o["s_A1"],o["s_A2"]])
+o=g("kamath_ch6_weat_effect_size")(A1,A2,W1,W2); rec("km082",[o["estimate"],o["std"]])
+rec("km083",g("kamath_ch6_ceat_random_effects")([A1,A1],[A2,A2],[W1,W1],[W2,W2],[1.0,3.0])["estimate"])
+rec("km084",g("kamath_ch6_lpbs_bias")([0.6,0.4],[0.5,0.5])["estimate"])
+o=g("kamath_ch6_cbs_variance")(["w1","w2"],["g1","g2"],[[0.6,0.4],[0.3,0.7]],[[0.5,0.5],[0.5,0.5]])
+rec("km085",[o["estimate"],o["per_word"]])
+rec("km086",g("kamath_ch6_pll")([0.5,0.25,0.5])["estimate"])
+rec("km087",g("kamath_ch6_cps_metric")([0.5,0.25],["m"])["estimate"])
+rec("km088",g("kamath_ch6_cat_metric")([0.5,0.25],["u1","u2"])["estimate"])
+o=g("kamath_ch6_sgs_invariance")(["a","b","c"],["a","x","c"]); rec("km089",[o["estimate"],o["n_invariant"]])
+o=g("kamath_ch6_co_occurrence_bias")("w",{"w":3.0,"z":1.0},{"w":1.0,"z":3.0}); rec("km090",[o["estimate"],o["p_given_Ai"]])
+o=g("kamath_ch6_demographic_representation")("G",["he","him"],["he saw him","she saw"]) ; rec("km091",[o["estimate"],o["share_of_tokens"]])
+o=g("kamath_ch6_stereotypical_assoc")("nurse",["she","he"],["she is a nurse","he is a doctor"]); rec("km092",[o["estimate"],o["n_outputs_with_w"]])
+o=g("kamath_ch6_honest_score")([["a","b"],["c","d"]],2,hurtlex=["b","d"]); rec("km093",[o["estimate"],o["n_hurtful"]])
+E={"m1":[1.0,0.0],"f1":[0.0,1.0],"m2":[2.0,0.0],"f2":[0.0,2.0]}
+P=[("m1","f1"),("m2","f2")]
+rec("km094",g("kamath_ch6_debias_regularizer")(P,E,0.5)["estimate"])
+o=g("kamath_ch6_gender_direction")(P,E); rec("km095",[o["g"],o["norm"]])
+rec("km096",g("kamath_ch6_gender_projection_reg")([[1.0,1.0],[2.0,0.0]],[0.0,3.0])["estimate"])
+rec("km097",g("kamath_ch6_ear_entropy_reg")([[[0.5,0.5],[1.0,0.0]]],lam=2.0)["estimate"])
+rec("km098",g("kamath_ch6_log_prob_ratio_attr")([0.6,0.4],[0.4,0.6],lam=2.0)["estimate"])
+o=g("kamath_ch6_emt_metric")(["a","b","c"],[0.1,0.9,0.4]); rec("km099",[o["estimate"],o["argmax_index"]])
+rec("km101",g("kamath_ch6_toxic_fraction")(["a","b","c"],[0.1,0.9,0.5])["estimate"])
+rec("km100",g("kamath_ch6_toxicity_probability")([["a","b"],["c","d"]],lambda y: {"a":0.9,"b":0.1,"c":0.1,"d":0.2}[y])["estimate"])
+o=g("kamath_ch6_lstm_chain_rule")([0.5,0.25,0.5]); rec("km102",[o["estimate"],o["log_prob"]])
+o=g("kamath_ch6_lstm_softmax_word")([[1.0,0.0],[0.0,1.0]],None,[1.0,0.0],[0.0,0.5])
+rec("km103",[o["p"],o["argmax"]])
+o=g("kamath_ch6_affect_lm")([[1.0,0.0],[0.0,1.0]],[[0.0,1.0],[1.0,0.0]],None,None,[1.0,0.0],[1.0,0.0],2.0,[0.0,0.5])
+rec("km104",[o["p"],o["affect_term"]])
+rec("km105",g("kamath_ch6_gedi_combined_loss")(2.0,4.0,0.25)["estimate"])
+rec("km106",g("kamath_ch6_self_diagnosis_prob")("t","tox",lambda p:{"Yes":0.3,"No":0.5})["estimate"])
+o=g("kamath_ch6_pii_likelihood")([0.5,0.25],["a"],["q"],1,2); rec("km107",[o["estimate"],o["context_lengths"]])
+o=g("kamath_ch6_differential_privacy")(lambda D: {"s1":0.6,"s2":0.4} if D=="A" else {"s1":0.4,"s2":0.6},"A","B",["s1"],0.5)
+rec("km108",[o["estimate"],o["satisfied"],o["bound"]])
+o=g("kamath_ch6_perplexity_leakage")(["s1","s2"],{"s1":10.0,"s2":5.0},{"s1":2.0,"s2":4.0})
+rec("km109",[o["estimate"],o["argmax"],o["n_leaking"]])
+rec("km111",g("kamath_ch7_faithfulness_metric")([1,0,1,1])["estimate"])
+o=g("kamath_ch7_answer_relevance")([[1.0,0.0],[0.0,1.0]],[1.0,1.0]); rec("km112",[o["estimate"],o["similarities"]])
+o=g("kamath_ch8_perplexity")(["a","b"],p_theta=[0.5,0.25]); rec("km113",[o["estimate"],o["mean_nll"]])
+rec("km114",g("kamath_ch8_bleu_precision")([[2,4],[1,3]])["p_n"])
+o=g("kamath_ch8_bleu_n_geom_mean")([0.5,0.25]); rec("km115",[o["estimate"],o["log_mean"]])
+rec("km116",[g("kamath_ch8_brevity_penalty")(5,7)["estimate"],g("kamath_ch8_brevity_penalty")(9,7)["estimate"]])
+rec("km117",g("kamath_ch8_bleu_final")(0.8,[0.5,0.25])["estimate"])
+rec("km118",g("kamath_ch8_rouge_n")([["a","b","c"],["a","b","d"]],2,candidate=["a","b","c","a"])["estimate"])
+X=[[1.0,0.0],[0.0,1.0]]; Y=[[1.0,1.0],[2.0,0.0]]
+o=g("kamath_ch8_bertscore_recall")(X,Y); rec("km119",[o["estimate"],o["greedy_match"]])
+o=g("kamath_ch8_bertscore_precision")(X,Y); rec("km120",[o["estimate"],o["greedy_match"]])
+rec("km121",g("kamath_ch8_bertscore_f1")(0.5,0.25)["estimate"])
+C=[[0.0,2.0,1.0],[3.0,1.0,4.0]]
+o=g("kamath_ch8_wmd")([0.5,0.5],[0.2,0.5,0.3],C)
+rec("km122",[o["estimate"],o["flow"],o["dual_objective"],o["optimal"]])
+rec("km123",g("kamath_ch8_moverscore_distance")([1.0,2.0],[4.0,6.0])["estimate"])
+o=g("kamath_ch8_ngram_embedding")([1.0,2.0,3.0,4.0],1,2); rec("km124",[o["estimate"],o["window"]])
+o=g("kamath_ch8_ngram_weight")([[1.0,2.0],[3.0,4.0]]); rec("km125",[o["weights"],o["Z"]])
+rec("km126",g("kamath_ch8_smd")([1.0,2.0],[4.0,6.0])["estimate"])
+rec("km127",g("kamath_ch8_geval_score")([1,2,3],[0.2,0.5,0.3])["estimate"])
+rec("km128",[g("kamath_ch8_pass_at_k")(10,3,2)["estimate"],g("kamath_ch8_pass_at_k")(5,0,2)["estimate"]])
+print(json.dumps(A))
