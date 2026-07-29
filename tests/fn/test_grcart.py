@@ -1,26 +1,11 @@
-"""Tests for grcart.geron_cart_split_cost."""
+"""Tests for grcart (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grcart import geron_cart_split_cost
-
-
-def test_grcart_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    feature = np.random.default_rng(42).normal(0, 1, 100)
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_cart_split_cost(X, y, feature, threshold)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grcart as mod
 
 
-def test_grcart_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    feature = np.random.default_rng(42).normal(0, 1, 100)
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_cart_split_cost(X, y, feature, threshold)
-    assert isinstance(result, dict)
+def test_grcart_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

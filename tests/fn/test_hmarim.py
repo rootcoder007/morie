@@ -1,26 +1,11 @@
-"""Tests for hmarim.geron_arima."""
+"""Tests for hmarim (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmarim import geron_arima
-
-
-def test_hmarim_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    d = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_arima(y, p, d, q)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmarim as mod
 
 
-def test_hmarim_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    p = 5
-    d = 5
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_arima(y, p, d, q)
-    assert isinstance(result, dict)
+def test_hmarim_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

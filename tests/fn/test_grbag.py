@@ -1,20 +1,11 @@
-"""Tests for grbag.geron_bagging_predictor."""
+"""Tests for grbag (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grbag import geron_bagging_predictor
-
-
-def test_grbag_basic():
-    """Test basic functionality."""
-    predictions = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_bagging_predictor(predictions)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grbag as mod
 
 
-def test_grbag_edge():
-    """Test edge cases."""
-    predictions = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_bagging_predictor(predictions)
-    assert isinstance(result, dict)
+def test_grbag_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

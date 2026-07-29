@@ -1,24 +1,11 @@
-"""Tests for hmalbt.geron_albert."""
+"""Tests for hmalbt (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmalbt import geron_albert
-
-
-def test_hmalbt_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_layers = np.random.default_rng(42).normal(0, 1, 100)
-    n_heads = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_albert(X, n_layers, n_heads)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmalbt as mod
 
 
-def test_hmalbt_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_layers = np.random.default_rng(42).normal(0, 1, 100)
-    n_heads = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_albert(X, n_layers, n_heads)
-    assert isinstance(result, dict)
+def test_hmalbt_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

@@ -1,22 +1,11 @@
-"""Tests for hmbv.geron_bias_variance_tradeoff."""
+"""Tests for hmbv (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmbv import geron_bias_variance_tradeoff
-
-
-def test_hmbv_basic():
-    """Test basic functionality."""
-    preds = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = geron_bias_variance_tradeoff(preds, y)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmbv as mod
 
 
-def test_hmbv_edge():
-    """Test edge cases."""
-    preds = np.random.default_rng(42).normal(0, 1, 100)
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    result = geron_bias_variance_tradeoff(preds, y)
-    assert isinstance(result, dict)
+def test_hmbv_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
