@@ -1,42 +1,62 @@
-r"""Dpo loss.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 5.12: the DPO loss."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .km065 import _bt_loss
+from .km075 import _implicit_rewards
 
 __all__ = ["kamath_ch5_dpo_loss"]
 
 
 def kamath_ch5_dpo_loss(pi_theta, pi_ref, beta):
-    r"""
-    Dpo loss.
+    """L_DPO = -E[log sigma(beta log[pi_theta(y_w)/pi_ref(y_w)]
+    - beta log[pi_theta(y_l)/pi_ref(y_l)])].
 
-    Formula: L_{DPO}(\pi_{\theta};\pi_{ref}) = -E_{(x,y_w,y_l)\sim D}[\log\sigma(\beta\log\frac{\pi_{\theta}(y_w|x)}{\pi_{ref}(y_w|x)} - \beta\log\frac{\pi_{\theta}(y_l|x)}{\pi_{ref}(y_l|x)})]
+    The maximum-likelihood loss over Eq 5.11's preference probability:
+    a Bradley-Terry loss whose implicit reward is the policy's log
+    ratio, so the MARGIN construction is km075's and the loss is
+    km065's, both delegated. ``pi_theta`` and ``pi_ref`` are (n, 2)
+    arrays of (winner, loser) probabilities.
 
-    Parameters
-    ----------
-    pi_theta : array-like
-        Input data.
-    pi_ref : array-like
-        Input data.
-    beta : array-like
-        Input data.
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 5, Eq 5.12, printed
+    p. 210.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 5, Eq 5.12, p. 210
-    r"""
-    pi_theta = np.atleast_1d(np.asarray(pi_theta, dtype=float))
-    n = len(pi_theta)
-    result = float(np.mean(pi_theta))
-    se = float(np.std(pi_theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Dpo loss."})
+    Examples
+    --------
+    >>> import math
+    >>> out = kamath_ch5_dpo_loss([[0.75, 0.25]], [[0.5, 0.5]], 1.0)
+    >>> abs(out["estimate"] + math.log(0.75)) < 1e-12
+    True
+    >>> kamath_ch5_dpo_loss([[0.5, 0.5]], [[0.5, 0.5]], 1.0)["margins"]
+    [0.0]
+    """
+    pairs_t = list(pi_theta)
+    pairs_r = list(pi_ref)
+    if not pairs_t:
+        raise ValueError("no preference pairs; an expectation over an "
+                         "empty dataset is undefined, not 0.")
+    if len(pairs_t) != len(pairs_r):
+        raise ValueError(
+            f"pi_theta has {len(pairs_t)} pairs but pi_ref has "
+            f"{len(pairs_r)}.")
+    margins, rw_all, rl_all = [], [], []
+    for p_i, q_i in zip(pairs_t, pairs_r):
+        rw, rl, _ = _implicit_rewards(p_i, q_i, beta)
+        margins.append(float(rw - rl))
+        rw_all.append(float(rw))
+        rl_all.append(float(rl))
+    loss, per = _bt_loss(margins)
+    return RichResult(payload={
+        "estimate": loss, "margins": margins,
+        "per_pair": [float(v) for v in per],
+        "implicit_reward_w": rw_all, "implicit_reward_l": rl_all,
+        "beta": float(beta), "n": len(margins),
+        "method": "DPO loss (Kamath Eq 5.12)"})
 
 
 def cheatsheet():
-    return "km076: Dpo loss."
+    return "km076: -mean log sigma(beta log-ratio margin)"

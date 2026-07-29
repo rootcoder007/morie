@@ -1,52 +1,69 @@
-r"""Affect lm.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 6.28: Affect-LM's affect-shifted vocabulary softmax."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .km103 import _hidden, _softmax_logits, kamath_ch6_lstm_softmax_word
 
 __all__ = ["kamath_ch6_affect_lm"]
 
 
 def kamath_ch6_affect_lm(U, V, f, g, c, e, beta, b):
-    r"""
-    Affect lm.
+    """P(w_t = i | c_{t-1}, e_{t-1}) = softmax(U_i^T f(c) +
+    beta V_i^T g(e) + b_i).
 
-    Formula: P(w_t=i|c_{t-1},e_{t-1}) = \frac{\exp(U_i^T f(c_{t-1}) + \beta V_i^T g(e_{t-1}) + b_i)}{\sum_{j=1}^V \exp(U_j^T f(c_{t-1}) + \beta V_j^T g(e_{t-1}) + b_j)}
+    Eq 6.27 with one extra term: the affect category's contribution,
+    scaled by the affect strength beta. beta = 0 collapses it EXACTLY
+    to km103's distribution -- the tests check that composition
+    identity -- and large beta drives generation toward the affect
+    category, which is how the vocabulary shift detoxifies.
 
-    Parameters
-    ----------
-    U : array-like
-        Input data.
-    V : array-like
-        Input data.
-    f : array-like
-        Input data.
-    g : array-like
-        Input data.
-    c : array-like
-        Input data.
-    e : array-like
-        Input data.
-    beta : array-like
-        Input data.
-    b : array-like
-        Input data.
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 6, Eq 6.28, printed
+    p. 253.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 6, Eq 6.28, p. 253
-    r"""
-    U = np.atleast_1d(np.asarray(U, dtype=float))
-    n = len(U)
-    result = float(np.mean(U))
-    se = float(np.std(U, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Affect lm."})
+    Examples
+    --------
+    >>> U = [[1.0, 0.0], [0.0, 1.0]]
+    >>> Vm = [[0.0, 0.0], [1.0, 0.0]]
+    >>> out = kamath_ch6_affect_lm(U, Vm, None, None, [1.0, 0.0],
+    ...                            [1.0, 0.0], 2.0, [0.0, 0.0])
+    >>> round(out["p"][1], 10)
+    0.7310585786
+    """
+    Um = np.atleast_2d(np.asarray(U, dtype=float))
+    Vm = np.atleast_2d(np.asarray(V, dtype=float))
+    hc = _hidden(f, c, "f")
+    he = _hidden(g, e, "g")
+    bv = np.atleast_1d(np.asarray(b, dtype=float))
+    beta = float(beta)
+    if not np.isfinite(beta):
+        raise ValueError("beta must be finite.")
+    if Um.shape[1] != hc.shape[0]:
+        raise ValueError(
+            f"U has width {Um.shape[1]} but f(c) has {hc.shape[0]}.")
+    if Vm.shape[1] != he.shape[0]:
+        raise ValueError(
+            f"V has width {Vm.shape[1]} but g(e) has {he.shape[0]}.")
+    if Vm.shape[0] != Um.shape[0]:
+        raise ValueError(
+            f"V covers {Vm.shape[0]} words but U covers {Um.shape[0]}.")
+    if bv.shape[0] != Um.shape[0]:
+        raise ValueError(
+            f"b has {bv.shape[0]} entries but the vocabulary has "
+            f"{Um.shape[0]}.")
+    base = Um @ hc
+    affect = beta * (Vm @ he)
+    p = _softmax_logits(base + affect + bv)
+    return RichResult(payload={
+        "p": [float(v) for v in p],
+        "affect_term": [float(v) for v in affect],
+        "argmax": int(np.argmax(p)), "beta": beta,
+        "estimate": float(p.max()), "n": int(p.size),
+        "method": "Affect-LM vocabulary softmax (Kamath Eq 6.28)"})
 
 
 def cheatsheet():
-    return "km104: Affect lm."
+    return "km104: km103's softmax plus beta V g(e), affect shift"

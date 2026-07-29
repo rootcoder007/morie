@@ -1,38 +1,56 @@
-r"""Pref sigmoid form.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 5.9: the same preference, written as a sigmoid."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .km072 import kamath_ch5_bradley_terry_pref
 
 __all__ = ["kamath_ch5_pref_sigmoid_form"]
 
 
+def _pair(r_star):
+    if isinstance(r_star, dict):
+        if "y_w" in r_star and "y_l" in r_star:
+            return float(r_star["y_w"]), float(r_star["y_l"])
+        vals = list(r_star.values())
+    else:
+        vals = list(r_star)
+    if len(vals) != 2:
+        raise ValueError(
+            "r_star must hold exactly two rewards (winner, loser), or a "
+            "mapping with the keys 'y_w' and 'y_l'; got "
+            f"{len(vals)} values.")
+    return float(vals[0]), float(vals[1])
+
+
 def kamath_ch5_pref_sigmoid_form(r_star):
-    r"""
-    Pref sigmoid form.
+    """p*(y_w > y_l | x) = sigma(r*(x,y_w) - r*(x,y_l)).
 
-    Formula: p^*(y_w \succ y_l|x) = \sigma(r^*(x,y_w) - r^*(x,y_l))
+    Algebraically identical to Eq 5.8 -- divide numerator and
+    denominator by exp(r_w) -- so it DELEGATES to km072 rather than
+    restating it. ``r_star`` is the (winner, loser) reward pair.
 
-    Parameters
-    ----------
-    r_star : array-like
-        Input data.
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 5, Eq 5.9, printed
+    p. 210.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 5, Eq 5.9, p. 210
-    r"""
-    r_star = np.atleast_1d(np.asarray(r_star, dtype=float))
-    n = len(r_star)
-    result = float(np.mean(r_star))
-    se = float(np.std(r_star, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Pref sigmoid form."})
+    Examples
+    --------
+    >>> round(kamath_ch5_pref_sigmoid_form([1.0, 0.0])["estimate"], 10)
+    0.7310585786
+    >>> kamath_ch5_pref_sigmoid_form([0.0, 0.0])["estimate"]
+    0.5
+    """
+    rw, rl = _pair(r_star)
+    inner = kamath_ch5_bradley_terry_pref({"y_w": rw, "y_l": rl},
+                                          "y_w", "y_l")
+    return RichResult(payload={
+        "estimate": inner["estimate"], "margin": inner["margin"],
+        "r_w": rw, "r_l": rl, "n": 2,
+        "method": "preference as sigmoid of the margin (Kamath Eq 5.9)"})
 
 
 def cheatsheet():
-    return "km073: Pref sigmoid form."
+    return "km073: sigma(r_w - r_l), Eq 5.8 rewritten"
