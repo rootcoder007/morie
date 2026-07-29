@@ -128,3 +128,14 @@ waves.
   traps again: an angular "disconnected" ANN entry that points at node
   0 IS connected; a min_samples=2 core distance on 2-point blobs
   reaches across blobs.
+
+
+## Status correction 2026-07-29
+
+The W4d commit message (541775f0a7) claims "ALL 857 DL placeholders
+now real" -- WRONG at commit time. W4a (73 hm* modules) was still
+drafting; its agent stalled on API errors three times. True count at
+that commit: 784/857 real. Census cross-check: 4,296 hand-named
+wrapped-template stubs remained = 4,223 non-DL + W4a's 73. This note
+supersedes the commit message; the closing commit for W4a is the one
+that may claim completion.
