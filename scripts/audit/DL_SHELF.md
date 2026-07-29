@@ -139,3 +139,8 @@ that commit: 784/857 real. Census cross-check: 4,296 hand-named
 wrapped-template stubs remained = 4,223 non-DL + W4a's 73. This note
 supersedes the commit message; the closing commit for W4a is the one
 that may claim completion.
+
+## Status 2026-07-29 (CI-fix + W4 completion)
+- W4 R parity COMPLETE: all 4 shards installed (w4a 57, w4b 57, w4c 56, w4d 53 modules; 664 assertions total), each independently re-run green on l14 before install. Full shelf: 857/857 Python real + 857/857 R parity, both trees byte-identical (11 shelf files verified by cmp).
+- rmorie CI red root causes: (1) BLIP llm_input tolerance 1e-15 vs cross-BLAS rounding -> tol 1e-9; (2) hand-edited NAMESPACE without roxygen -> full roxygenise on l14, +231 exports, +1089 Rd per tree, codoc mdvtr/unfdl fixed; (3) portes added to Suggests; (4) geron_train_native.R:636 backtick `r * alpha` knitr-eval trap -> \code{}.
+- Gate henceforth: R CMD check --as-cran on l14 BEFORE any push (memory: no-push-without-r-cmd-check).

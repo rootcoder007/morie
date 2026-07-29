@@ -31,6 +31,6 @@ here a simple rank-match).}
 Data frame with \code{Gamma}, \code{p_lower}, \code{p_upper}.
 }
 \description{
-Wraps \pkg{rbounds} when available; otherwise computes normal-
-approximation Wilcoxon signed-rank bounds in base R.
+Computes normal-approximation Wilcoxon signed-rank bounds natively
+in base R.
 }

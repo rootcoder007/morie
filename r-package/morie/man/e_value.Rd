@@ -17,8 +17,8 @@ e_value(ate, se, null = 0)
 Scalar E-value (>= 1).
 }
 \description{
-Wraps \pkg{EValue} when available. Otherwise applies the same
-continuous-scale z-stat -> RR approximation as the Python port.
+Applies the continuous-scale z-stat -> RR approximation natively,
+matching the Python port.
 }
 \examples{
 e_value(ate = 0.5, se = 0.1)

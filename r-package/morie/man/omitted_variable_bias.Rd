@@ -38,6 +38,6 @@ partial R^2.}
 A \code{morie_ovb} named-list.
 }
 \description{
-Wraps \pkg{sensemakr} when available; otherwise applies the
-closed-form Cinelli-Hazlett robustness-value formulas in base R.
+Applies the closed-form Cinelli-Hazlett robustness-value formulas
+natively in base R.
 }

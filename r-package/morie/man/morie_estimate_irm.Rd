@@ -31,18 +31,16 @@ A list with components: \code{ate}, \code{se}, \code{ci_lower}, \code{ci_upper},
 \code{n}, \code{method} (\code{"IRM (DoubleML)"}).
 }
 \description{
-Thin R wrapper that dispatches to the CRAN \code{DoubleML} package's
-\code{DoubleML::DoubleMLIRM} \link[R6]{R6Class}, mirroring the Python sibling
-\code{morie.estimate_irm()} (which dispatches to the Python \code{DoubleML} package).
+Native implementation of the Chernozhukov et al. (2018) interactive
+regression model: cross-fit logistic propensity scores and GCV-ridge
+outcome regressions, combined through the doubly-robust (AIPW) score.
+Mirrors the Python sibling \code{morie.estimate_irm()}.
 }
 \details{
-Following the DoubleML R package's own conventions, this uses
-the \code{mlr3} ecosystem for the nuisance learners (\code{ml_g} for
-\eqn{E[Y|T,X]} and \code{ml_m} for \eqn{P(T=1|X)}). Defaults are
-\code{lrn("regr.lm")} and \code{lrn("classif.log_reg")}, which require nothing
-beyond \code{stats}. For higher-capacity defaults, install \code{ranger} and pass
-\code{lrn("regr.ranger")} / \code{lrn("classif.ranger")} via the underlying
-\code{DoubleML::DoubleMLIRM$new()} directly.
+Nothing beyond \code{stats} is required at runtime. The estimator is
+cross-validated against \pkg{DoubleML} in the package's cross tests,
+but \pkg{DoubleML}, \pkg{mlr3}, and \pkg{mlr3learners} are not
+loaded or called.
 
 Following Chernozhukov et al. (2018), the IRM extends the partially linear
 model by allowing fully heterogeneous treatment effects:
@@ -57,23 +55,17 @@ If any are unavailable, the function raises an informative error.
 }
 
 \examples{
-\donttest{
-if (requireNamespace("DoubleML", quietly = TRUE) &&
-  requireNamespace("mlr3", quietly = TRUE) &&
-  requireNamespace("mlr3learners", quietly = TRUE)) {
-  set.seed(1)
-  n <- 200
-  X <- matrix(rnorm(n * 5), n, 5)
-  ps <- plogis(X[, 1] - X[, 2])
-  T <- rbinom(n, 1, ps)
-  Y <- 0.5 * T + X[, 1] + rnorm(n)
-  df <- data.frame(Y = Y, T = T, X)
-  morie_estimate_irm(df,
-    treatment = "T", outcome = "Y",
-    covariates = paste0("X", 1:5)
-  )
-}
-}
+set.seed(1)
+n <- 200
+X <- matrix(rnorm(n * 5), n, 5)
+ps <- plogis(X[, 1] - X[, 2])
+T <- rbinom(n, 1, ps)
+Y <- 0.5 * T + X[, 1] + rnorm(n)
+df <- data.frame(Y = Y, T = T, X)
+morie_estimate_irm(df,
+  treatment = "T", outcome = "Y",
+  covariates = paste0("X", 1:5)
+)
 }
 \references{
 Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C.,
