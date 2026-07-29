@@ -20,12 +20,12 @@ def test_covsp_basic():
     cov = np.asarray(result["coverages"], dtype=float)
     assert cov.size == x.size + 1
     assert np.all(np.isfinite(cov))
-    assert result["expected"] == 1.0 / (x.size + 1)
+    assert np.isclose(result["expected"], 1 / (x.size + 1))
     # equally spaced data splits its interior evenly
-    assert np.allclose(cov, 1.0 / (x.size + 1))
+    assert np.allclose(cov, 1 / (x.size + 1))
     assert result["n"] == x.size
-    assert result["sample_min"] == 1.0
-    assert result["sample_max"] == 5.0
+    assert result["sample_min"] == x.min()
+    assert result["sample_max"] == x.max()
 
 
 def test_covsp_cumulative_is_interior_mass():
