@@ -631,6 +631,32 @@ inclusion--exclusion sum and requires digit-for-digit agreement with
 the recurrence. Two derivations of the same claim are a stronger check
 than one derivation copied twice.
 
+The geometric and topological modules close the combinatorics
+programme with two further verification postures. Pick's theorem is
+*checked, not used*: area, boundary count and interior count are
+computed by three independent routes --- integer shoelace, edge gcds,
+and exact-integer ray casting over every lattice point of the bounding
+box --- and the theorem is the assertion that they cohere; deriving
+one side from the other two would be a tautology. A self-intersecting
+polygon then shows up as a disagreement between formula and count,
+which is the detection working, and the fuzz harness itself supplied
+the demonstration: an angular sort around the *origin* produces
+self-intersecting polygons whenever the origin falls outside the hull,
+and Pick flagged all fourteen of them before the construction was
+corrected to sort around the vertex centroid, after which 400 of 400
+verify. Homology is computed over $\mathbb{F}_2$, trading torsion for
+exact arithmetic, with $\partial^2 = 0$ verified entry by entry before
+any rank is trusted and the Euler--Poincar\'e identity computed from
+both sides independently; the 6-vertex projective plane fixture was
+not recalled from a book but *found* by backtracking search over the
+triangles of $K_6$ and then certified by the homology itself
+($b = 1, 1, 1$ over $\mathbb{F}_2$ with $\chi = 1$ pins
+$\mathbb{RP}^2$ uniquely). Sperner's lemma asserts the rainbow count
+*odd* --- the full strength of the result --- across labellings driven
+by the shared cross-language congruential generator, and refuses an
+improper labelling loudly, since an improper labelling is exactly the
+case where the lemma is false.
+
 That is the general argument for the parity discipline. A second
 implementation in a second language is not duplicated effort; it is the
 only check that catches defects which are invisible from inside one
