@@ -49,6 +49,14 @@ def geron_ridge_normal(X, y, alpha, intercept_index=0):
     >>> [round(float(v), 6) for v in geron_ridge_normal(X, [1.0, 2.0, 3.0], 1.0)["theta"]]
     [0.666667, 0.666667]
 
+    NOTE the alpha conventions differ across the pair: the cost
+    form penalises the MEAN squared error with (alpha/2)||theta||^2
+    while hmridg's closed form adds alpha into the RSS normal
+    equations, so the same nominal alpha shrinks differently; the
+    cost-form equivalent of the closed form's alpha is 2*alpha/m.
+    Found by the cross-language parity suite. Both are
+    self-consistent; the mismatch is across the pair.
+
     References
     ----------
     Geron Ch 4

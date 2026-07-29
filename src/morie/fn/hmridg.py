@@ -55,6 +55,14 @@ def geron_ridge_cost(X, y, theta, alpha, intercept_index=0):
     >>> [float(v) for v in r["gradient"]]
     [0.0, 1.0]
 
+    NOTE the alpha conventions differ across the pair: the cost
+    form penalises the MEAN squared error with (alpha/2)||theta||^2
+    while hmridn's closed form adds alpha into the RSS normal
+    equations, so the same nominal alpha shrinks differently; the
+    cost-form equivalent of the closed form's alpha is 2*alpha/m.
+    Found by the cross-language parity suite. Both are
+    self-consistent; the mismatch is across the pair.
+
     References
     ----------
     Geron Ch 4
