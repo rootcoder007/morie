@@ -657,6 +657,43 @@ by the shared cross-language congruential generator, and refuses an
 improper labelling loudly, since an improper labelling is exactly the
 case where the lemma is false.
 
+The machine-learning and language-model modules follow the same
+book-as-spec contract, with four primary texts serving as the
+specifications: Burkov's *Hundred-Page Language Models Book* (2025),
+Alammar and Grootendorst's *Hands-On Large Language Models* (2024),
+Kamath, Keenan, Somers and Sorenson's *Large Language Models: A Deep
+Dive* (Springer, 2024) and G\'eron's *Hands-On Machine Learning*, with
+the method papers each formula originates from cited at the function
+level (Vaswani et al. 2017 for attention; Shazeer 2019 and Ainslie et
+al. 2023 for the multi-query and grouped-query variants; van den Oord
+et al. 2018, Henderson et al. 2017, Gao et al. 2021 and Radford et al.
+2021 for the contrastive family; Griffiths and Steyvers 2004 for the
+collapsed Gibbs sampler; Malkov and Yashunin 2020, Campello et al.
+2013 and McInnes et al. 2018 for the search and clustering geometry;
+Kingma and Ba's bias correction wherever an adaptive optimiser is
+stated with it). Equation and page citations are verified against the
+PDFs before use --- Kamath's printed page equals the PDF page minus 27,
+established the same way as the Tsay map before it --- and the
+implementations are native throughout: attention, the pretraining loss
+families, reverse-mode automatic differentiation, the
+Jonker--Volgenant assignment under DETR's matching costs, byte-pair
+encoding with a stated deterministic tie-break, and the BERT-family
+forward passes all run in plain array arithmetic with no deep-learning
+framework behind them.
+
+Two convention traps from this shelf are worth recording. Kamath's
+Eq 2.19 places the additive attention mask *inside* the scaling ---
+$(QK^{\top} + M)/\sqrt{d_k}$ --- where the Vaswani convention adds the
+mask after; for $-\infty$ masks the two agree exactly, for finite
+masks they do not, and the implementation follows the book it cites
+while the tests pin the difference so neither convention can silently
+impersonate the other. And the repetition-penalty rule of the decoding
+literature guarantees less than it appears to: with several tokens
+penalised at once, softmax renormalisation can *raise* a penalised
+token's absolute probability when another falls further, so the
+invariant the implementation asserts is the odds against every
+unpenalised token, which is what the rule actually delivers.
+
 That is the general argument for the parity discipline. A second
 implementation in a second language is not duplicated effort; it is the
 only check that catches defects which are invisible from inside one
