@@ -1,24 +1,13 @@
 """Tests for b104.burkov_lm_ch1_linear_vector."""
 
-import numpy as np
-
 from morie.fn.b104 import burkov_lm_ch1_linear_vector
 
 
 def test_b104_basic():
-    """Test basic functionality."""
-    w = np.random.default_rng(45).exponential(1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_lm_ch1_linear_vector(w, x, b)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert burkov_lm_ch1_linear_vector([1.0, 2.0], [3.0, 4.0], 0.5)["estimate"] == 11.5
 
 
 def test_b104_edge():
-    """Test edge cases."""
-    w = np.random.default_rng(45).exponential(1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_lm_ch1_linear_vector(w, x, b)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="same length"):
+        burkov_lm_ch1_linear_vector([1.0], [1.0, 2.0], 0.0)

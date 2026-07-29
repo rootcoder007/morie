@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Repetition penalty: discount logits of previously generated tokens."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 5: the repetition penalty on decoder logits."""
 
 import numpy as np
 
@@ -8,43 +9,36 @@ from ._richresult import RichResult
 __all__ = ["burkov_repetition_penalty"]
 
 
-def burkov_repetition_penalty(logits, prev_tokens, penalty):
+def burkov_repetition_penalty(logits, prev_tokens, penalty=1.2):
+    """Divide positive logits of seen tokens by the penalty, multiply
+    negative ones -- both move the token DOWN in probability, which is
+    why the sign split exists (dividing a negative logit would move it
+    UP).
+
+    References: Burkov LM (2025), Ch 5, repetition penalty (the CTRL
+    rule of Keskar et al. 2019).
+
+    Examples
+    --------
+    >>> burkov_repetition_penalty([2.0, -2.0, 1.0], [0, 1], 2.0)["penalised"]
+    [1.0, -4.0, 1.0]
     """
-    Repetition penalty: discount logits of previously generated tokens
-
-    Formula: for t in prev_tokens: logits[t] = logits[t] / penalty if logits[t] > 0 else logits[t] * penalty
-
-    Parameters
-    ----------
-    logits : array-like
-        Input data.
-    prev_tokens : array-like
-        Input data.
-    penalty : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: logits_adjusted
-
-    References
-    ----------
-    Burkov Ch 5, Repetition Penalty section
-    """
-    logits = np.atleast_1d(np.asarray(logits, dtype=float))
-    n = len(logits)
-    result = float(np.mean(logits))
-    se = float(np.std(logits, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Repetition penalty: discount logits of previously generated tokens",
-        }
-    )
+    z = np.atleast_1d(np.asarray(logits, dtype=float)).copy()
+    r = float(penalty)
+    if r <= 0:
+        raise ValueError(f"penalty must be positive; got {penalty}.")
+    prev = sorted({int(t) for t in np.atleast_1d(
+        np.asarray(prev_tokens)).astype(int)})
+    for t in prev:
+        if not 0 <= t < len(z):
+            raise ValueError(
+                f"token index {t} is out of range for {len(z)} logits.")
+        z[t] = z[t] / r if z[t] > 0 else z[t] * r
+    return RichResult(payload={
+        "penalised": [float(v) for v in z], "estimate": float(z[0]),
+        "penalty": r, "tokens_hit": prev, "n": len(z),
+        "method": "Repetition penalty on logits (Burkov Ch 5)"})
 
 
 def cheatsheet():
-    return "bkrep: Repetition penalty: discount logits of previously generated tokens"
+    return "bkrep: repetition penalty, sign-split divide/multiply (Burkov Ch 5)"

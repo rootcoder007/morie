@@ -1,4 +1,6 @@
-r"""Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov's Eq 2.1: categorical cross-entropy with a one-hot target."""
 
 import numpy as np
 
@@ -8,40 +10,34 @@ __all__ = ["burkov_lm_ch2_categorical_cross_entropy"]
 
 
 def burkov_lm_ch2_categorical_cross_entropy(y_hat, c):
-    r"""
-    Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c.
+    """loss = -log(y_hat[c]) for the correct class c (0-based).
 
-    Formula: \operatorname{loss}(\hat{\mathbf{y}}, \mathbf{y}) = -\log\!\bigl(\hat{y}^{(c)}\bigr)
+    y_hat must be a probability distribution; a vector that does not
+    sum to 1 is refused, because -log of an unnormalised score is not
+    the cross-entropy however much it looks like it.
 
-    Parameters
-    ----------
-    y_hat : array-like
-        Input data.
-    c : array-like
-        Input data.
+    References: Burkov LM (2025), Ch 2, Eq 2.1, p. 57.
 
-    Returns
-    -------
-    result : dict
-        Keys: negative log-likelihood of correct class
-
-    References
-    ----------
-    Burkov LM (2025), Ch 2, Eq 2.1, p. 57
+    Examples
+    --------
+    >>> round(burkov_lm_ch2_categorical_cross_entropy(
+    ...     [0.7, 0.2, 0.1], 0)["estimate"], 10)
+    0.3566749439
     """
-    y_hat = np.atleast_1d(np.asarray(y_hat, dtype=float))
-    n = len(y_hat)
-    result = float(np.mean(y_hat))
-    se = float(np.std(y_hat, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c.",
-        }
-    )
+    p = np.atleast_1d(np.asarray(y_hat, dtype=float))
+    c = int(c)
+    if not 0 <= c < len(p):
+        raise ValueError(f"class {c} is out of range for {len(p)} classes.")
+    if np.any(p < 0) or abs(float(p.sum()) - 1.0) > 1e-8:
+        raise ValueError(
+            "y_hat must be a probability distribution (non-negative, "
+            f"summing to 1); it sums to {float(p.sum()):.6g}.")
+    loss = float(-np.log(p[c])) if p[c] > 0 else float("inf")
+    return RichResult(payload={
+        "estimate": loss, "p_correct": float(p[c]), "n_classes": len(p),
+        "n": len(p),
+        "method": "Categorical cross-entropy -log p_c (Burkov Eq 2.1)"})
 
 
 def cheatsheet():
-    return "b201: Simplified categorical cross-entropy loss when the target is one-hot, reducing to the negative log-probability of the correct class c."
+    return "b201: categorical cross-entropy -log(y_hat[c]) (Burkov Eq 2.1)"

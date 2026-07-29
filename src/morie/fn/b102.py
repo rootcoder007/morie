@@ -1,4 +1,6 @@
-r"""Squared error between the predicted value and the target for a single example.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov's Eq 1.2: squared error for a single example."""
 
 import numpy as np
 
@@ -8,40 +10,26 @@ __all__ = ["burkov_lm_ch1_squared_error"]
 
 
 def burkov_lm_ch1_squared_error(y_hat_i, y_i):
-    r"""
-    Squared error between the predicted value and the target for a single example.
+    """err(y_hat, y) = (y_hat - y)^2, elementwise over paired inputs.
 
-    Formula: \operatorname{err}(\hat{y}_i, y_i) \stackrel{\text{def}}{=} (\hat{y}_i - y_i)^2
+    References: Burkov LM (2025), Ch 1, Eq 1.2, p. 22 (PDF-verified).
 
-    Parameters
-    ----------
-    y_hat_i : array-like
-        Input data.
-    y_i : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: non-negative squared error
-
-    References
-    ----------
-    Burkov LM (2025), Ch 1, Eq 1.2, p. 22
+    Examples
+    --------
+    >>> burkov_lm_ch1_squared_error(3.0, 1.0)["estimate"]
+    4.0
     """
-    y_hat_i = np.atleast_1d(np.asarray(y_hat_i, dtype=float))
-    n = len(y_hat_i)
-    result = float(np.mean(y_hat_i))
-    se = float(np.std(y_hat_i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Squared error between the predicted value and the target for a single example.",
-        }
-    )
+    yh = np.atleast_1d(np.asarray(y_hat_i, dtype=float))
+    y = np.atleast_1d(np.asarray(y_i, dtype=float))
+    if yh.shape != y.shape:
+        raise ValueError(
+            f"y_hat and y must have the same shape; got {yh.shape} and "
+            f"{y.shape}.")
+    err = (yh - y) ** 2
+    return RichResult(payload={
+        "errors": [float(v) for v in err], "estimate": float(err[0]),
+        "n": len(y), "method": "Squared error (Burkov Eq 1.2)"})
 
 
 def cheatsheet():
-    return "b102: Squared error between the predicted value and the target for a single example."
+    return "b102: squared error (y_hat - y)^2 (Burkov Eq 1.2)"

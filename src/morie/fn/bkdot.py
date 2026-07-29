@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Vector dot product (scalar product) of two vectors a and b."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 1: the dot product."""
 
 import numpy as np
 
@@ -9,40 +10,25 @@ __all__ = ["burkov_dot_product"]
 
 
 def burkov_dot_product(a, b):
-    """
-    Vector dot product (scalar product) of two vectors a and b
+    """a . b = sum a_i b_i.
 
-    Formula: a . b = sum_{i=1..n} a_i b_i
+    References: Burkov LM (2025), Ch 1, dot product.
 
-    Parameters
-    ----------
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: dot
-
-    References
-    ----------
-    Burkov Ch 1, Dot Product section
+    Examples
+    --------
+    >>> burkov_dot_product([1.0, 2.0, 3.0], [4.0, 5.0, 6.0])["estimate"]
+    32.0
     """
     a = np.atleast_1d(np.asarray(a, dtype=float))
-    n = len(a)
-    result = float(np.mean(a))
-    se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Vector dot product (scalar product) of two vectors a and b",
-        }
-    )
+    b = np.atleast_1d(np.asarray(b, dtype=float))
+    if a.shape != b.shape:
+        raise ValueError(
+            f"vectors must have the same length; got {len(a)} and "
+            f"{len(b)}.")
+    return RichResult(payload={
+        "estimate": float(np.dot(a, b)), "n": len(a),
+        "method": "Dot product (Burkov Ch 1)"})
 
 
 def cheatsheet():
-    return "bkdot: Vector dot product (scalar product) of two vectors a and b"
+    return "bkdot: dot product sum a_i b_i (Burkov Ch 1)"

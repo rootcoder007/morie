@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""L2 (Euclidean) norm of a vector."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 1: the Euclidean norm."""
 
 import numpy as np
 
@@ -9,31 +10,21 @@ __all__ = ["burkov_vector_norm"]
 
 
 def burkov_vector_norm(a):
-    """
-    L2 (Euclidean) norm of a vector
+    """||a||_2 = sqrt(sum a_i^2).
 
-    Formula: ||a||_2 = sqrt( sum_{i=1..n} a_i^2 )
+    References: Burkov LM (2025), Ch 1, vector norm.
 
-    Parameters
-    ----------
-    a : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: norm
-
-    References
-    ----------
-    Burkov Ch 1, Vector Norm section
+    Examples
+    --------
+    >>> burkov_vector_norm([3.0, 4.0])["estimate"]
+    5.0
     """
     a = np.atleast_1d(np.asarray(a, dtype=float))
-    n = len(a)
-    result = float(np.mean(a))
-    se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "L2 (Euclidean) norm of a vector"})
+    return RichResult(payload={
+        "estimate": float(np.linalg.norm(a)),
+        "squared": float(np.dot(a, a)), "n": len(a),
+        "method": "L2 norm (Burkov Ch 1)"})
 
 
 def cheatsheet():
-    return "bknrm: L2 (Euclidean) norm of a vector"
+    return "bknrm: Euclidean norm sqrt(sum a_i^2) (Burkov Ch 1)"

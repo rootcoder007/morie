@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 3: one step of the Elman RNN."""
 
 import numpy as np
 
@@ -9,50 +10,42 @@ __all__ = ["burkov_elman_rnn"]
 
 
 def burkov_elman_rnn(x_t, h_prev, Wh, Wx, Wy, bh, by):
+    """h_t = tanh(Wh h_prev + Wx x_t + bh); y_t = Wy h_t + by.
+
+    References: Burkov LM (2025), Ch 3, Elman RNN (Elman 1990).
+
+    Examples
+    --------
+    >>> out = burkov_elman_rnn([1.0], [0.0], [[0.0]], [[0.0]],
+    ...                        [[1.0]], [0.0], [0.0])
+    >>> out["h"]
+    [0.0]
     """
-    Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)
-
-    Formula: h_t = tanh(W_h h_{t-1} + W_x x_t + b_h);  y_t = W_y h_t + b_y
-
-    Parameters
-    ----------
-    x_t : array-like
-        Input data.
-    h_prev : array-like
-        Input data.
-    Wh : array-like
-        Input data.
-    Wx : array-like
-        Input data.
-    Wy : array-like
-        Input data.
-    bh : array-like
-        Input data.
-    by : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: h_t, y_t
-
-    References
-    ----------
-    Burkov Ch 3, Elman RNN section
-    """
-    x_t = np.atleast_1d(np.asarray(x_t, dtype=float))
-    n = len(x_t)
-    result = float(np.mean(x_t))
-    se = float(np.std(x_t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)",
-        }
-    )
+    x = np.atleast_1d(np.asarray(x_t, dtype=float))
+    h0 = np.atleast_1d(np.asarray(h_prev, dtype=float))
+    Wh = np.atleast_2d(np.asarray(Wh, dtype=float))
+    Wx = np.atleast_2d(np.asarray(Wx, dtype=float))
+    Wy = np.atleast_2d(np.asarray(Wy, dtype=float))
+    bh = np.atleast_1d(np.asarray(bh, dtype=float))
+    by = np.atleast_1d(np.asarray(by, dtype=float))
+    if Wh.shape != (len(h0), len(h0)):
+        raise ValueError(
+            f"Wh must be {len(h0)} x {len(h0)}; got {Wh.shape}.")
+    if Wx.shape != (len(h0), len(x)):
+        raise ValueError(
+            f"Wx must be {len(h0)} x {len(x)}; got {Wx.shape}.")
+    if Wy.shape[1] != len(h0):
+        raise ValueError(
+            f"Wy must have {len(h0)} columns; got {Wy.shape}.")
+    if len(bh) != len(h0) or len(by) != Wy.shape[0]:
+        raise ValueError("bias lengths must match Wh rows and Wy rows.")
+    h = np.tanh(Wh @ h0 + Wx @ x + bh)
+    y = Wy @ h + by
+    return RichResult(payload={
+        "h": [float(v) for v in h], "y": [float(v) for v in y],
+        "estimate": float(y[0]), "n": len(h),
+        "method": "Elman RNN step (Burkov Ch 3)"})
 
 
 def cheatsheet():
-    return "bkelm: Elman RNN hidden-state recurrence (vanilla simple-RNN formulation)"
+    return "bkelm: Elman RNN recurrence h_t = tanh(Wh h + Wx x + bh) (Burkov Ch 3)"

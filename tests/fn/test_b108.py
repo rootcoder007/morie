@@ -1,24 +1,12 @@
 """Tests for b108.burkov_lm_ch1_logistic_regression."""
 
-import numpy as np
-
 from morie.fn.b108 import burkov_lm_ch1_logistic_regression
 
 
 def test_b108_basic():
-    """Test basic functionality."""
-    w = np.random.default_rng(45).exponential(1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_lm_ch1_logistic_regression(w, x, b)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert burkov_lm_ch1_logistic_regression([0.0], [5.0], 0.0)["estimate"] == 0.5
 
 
 def test_b108_edge():
-    """Test edge cases."""
-    w = np.random.default_rng(45).exponential(1, 100)
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    result = burkov_lm_ch1_logistic_regression(w, x, b)
-    assert isinstance(result, dict)
+    out = burkov_lm_ch1_logistic_regression([10.0], [1.0], 0.0)
+    assert out["predicted_class"] == 1
