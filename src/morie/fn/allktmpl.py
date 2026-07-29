@@ -1,48 +1,48 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Instruction-data templating: (instruction, input?, output) formatted for SFT."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Instruction-tuning template with output-region loss mask
+(Alammar Ch 11)."""
 
 from ._richresult import RichResult
 
 __all__ = ["alammar_instruction_data_template"]
 
 
-def alammar_instruction_data_template(records, template):
+def alammar_instruction_data_template(records, template=None):
+    """text = fmt(instruction, input, output); the SFT loss is masked
+    to the OUTPUT region, so its character span is returned per record
+    -- training on the instruction tokens too is the classic silent
+    bug this template exists to prevent.
+
+    Examples
+    --------
+    >>> out = alammar_instruction_data_template(
+    ...     [{"instruction": "add", "input": "2 2", "output": "4"}])
+    >>> t = out["texts"][0]
+    >>> s, e = out["output_spans"][0]
+    >>> t[s:e]
+    '4'
     """
-    Instruction-data templating: (instruction, input?, output) formatted for SFT
-
-    Formula: record = fmt(instruction, input, output);  SFT loss masked to the output region
-
-    Parameters
-    ----------
-    records : array-like
-        Input data.
-    template : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: formatted
-
-    References
-    ----------
-    Alammar Ch 12, instruction data templating section
-    """
-    records = np.atleast_1d(np.asarray(records, dtype=float))
-    n = len(records)
-    result = float(np.mean(records))
-    se = float(np.std(records, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Instruction-data templating: (instruction, input?, output) formatted for SFT",
-        }
-    )
+    tmpl = template or ("### Instruction:\n{instruction}\n"
+                        "### Input:\n{input}\n### Response:\n")
+    texts = []
+    spans = []
+    for i, rec in enumerate(records):
+        for key in ("instruction", "output"):
+            if key not in rec:
+                raise ValueError(f"record {i} is missing {key!r}.")
+        head = tmpl.format(instruction=rec["instruction"],
+                           input=rec.get("input", ""))
+        out = str(rec["output"])
+        texts.append(head + out)
+        spans.append((len(head), len(head) + len(out)))
+    if not texts:
+        raise ValueError("no records supplied.")
+    return RichResult(payload={
+        "texts": texts, "output_spans": spans,
+        "estimate": float(len(texts)), "n": len(texts),
+        "method": "Instruction template with output loss mask (Alammar Ch 11)"})
 
 
 def cheatsheet():
-    return "allktmpl: Instruction-data templating: (instruction, input?, output) formatted for SFT"
+    return "allktmpl: rendered SFT text + the exact span the loss may see"

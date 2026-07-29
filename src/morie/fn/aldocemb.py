@@ -1,5 +1,7 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Document-level embedding via mean-pool over contextual token vectors."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Mean-pooled document embedding with an attention mask
+(Alammar Ch 8)."""
 
 import numpy as np
 
@@ -8,41 +10,36 @@ from ._richresult import RichResult
 __all__ = ["alammar_document_embedding_pool"]
 
 
-def alammar_document_embedding_pool(token_embeddings, attention_mask):
+def alammar_document_embedding_pool(token_embeddings, attention_mask=None):
+    """d = sum(mask_i h_i) / sum(mask_i): padding must NOT dilute the
+    mean, which is the whole reason the mask is part of the formula.
+
+    References: Alammar and Grootendorst, Ch 8 (sentence embeddings).
+
+    Examples
+    --------
+    >>> alammar_document_embedding_pool([[2.0], [4.0], [99.0]],
+    ...     [1, 1, 0])["embedding"]
+    [3.0]
     """
-    Document-level embedding via mean-pool over contextual token vectors
-
-    Formula: d_vec = (1/L) sum_{i=1..L} h_i
-
-    Parameters
-    ----------
-    token_embeddings : array-like
-        Input data.
-    attention_mask : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: d_vec
-
-    References
-    ----------
-    Alammar Ch 2, Document-Level Embeddings section
-    """
-    token_embeddings = np.atleast_1d(np.asarray(token_embeddings, dtype=float))
-    n = len(token_embeddings)
-    result = float(np.mean(token_embeddings))
-    se = float(np.std(token_embeddings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Document-level embedding via mean-pool over contextual token vectors",
-        }
-    )
+    H = np.atleast_2d(np.asarray(token_embeddings, dtype=float))
+    if attention_mask is None:
+        m = np.ones(H.shape[0])
+    else:
+        m = np.atleast_1d(np.asarray(attention_mask, dtype=float))
+    if len(m) != H.shape[0]:
+        raise ValueError(
+            f"mask length {len(m)} does not match {H.shape[0]} tokens.")
+    if m.sum() == 0:
+        raise ValueError("the mask excludes every token; an all-padding "
+                         "document has no embedding.")
+    d = (H * m[:, None]).sum(axis=0) / m.sum()
+    return RichResult(payload={
+        "embedding": [float(v) for v in d],
+        "tokens_pooled": int(m.sum()),
+        "estimate": float(d[0]), "n": H.shape[0],
+        "method": "Masked mean pooling (Alammar Ch 8)"})
 
 
 def cheatsheet():
-    return "aldocemb: Document-level embedding via mean-pool over contextual token vectors"
+    return "aldocemb: masked mean pool; padding never dilutes the mean"

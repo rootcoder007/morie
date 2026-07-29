@@ -56,6 +56,16 @@ NotImplementedError with a written reason — never a mean-of-inputs.
   optimisers, regularisation.
 - [ ] R parity per cluster, not at the end (Kosorok lesson).
 
+## Repo-wide residue (census 2026-07-28, post-W1)
+
+36,491 fn modules. ~16,170 still carry the wrapped template:
+11,121 auto-extracted (long book filenames; triaged in
+AUTOEXTRACTED_TRIAGE.md but NOT implemented) + ~5,050 hand-named.
+Hand-named split: 828 DL shelf (this worklist) + **4,223 hand-named
+stubs outside any worklist** (a2cv, abcgp, abcrej, adamopt, ...) citing
+other books. Those 4,223 need their own shelf census after the DL
+waves.
+
 ## Findings
 
 - The wrapped template evaded the placeholder census: albow claims

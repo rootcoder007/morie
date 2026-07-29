@@ -1,50 +1,49 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""SetFit two-step: contrastive pairs then a logistic head
+(Tunstall et al. 2022; Alammar Ch 11)."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .alembc import alammar_embedding_classifier
 
 __all__ = ["alammar_setfit_twostep"]
 
 
-def alammar_setfit_twostep(few_shot_pairs, encoder, classifier):
+def alammar_setfit_twostep(embeddings, labels, n_pairs_report=True):
+    """Step 1 builds the contrastive pair set (same-class positive,
+    cross-class negative -- the pair GENERATION is the SetFit recipe);
+    step 2 fits the classification head on the embeddings, natively.
+    The encoder fine-tune itself belongs to the caller's model; what
+    is computed here is everything the paper specifies around it.
+
+    References: Alammar and Grootendorst, Ch 11; Tunstall et al.
+    (2022).
     """
-    SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head
-
-    Formula: step1: L_contrast on pairs; step2: LogReg on frozen embeddings
-
-    Parameters
-    ----------
-    few_shot_pairs : array-like
-        Input data.
-    encoder : array-like
-        Input data.
-    classifier : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: model
-
-    References
-    ----------
-    Alammar Ch 11, SetFit section
-    """
-    few_shot_pairs = np.atleast_1d(np.asarray(few_shot_pairs, dtype=float))
-    n = len(few_shot_pairs)
-    result = float(np.mean(few_shot_pairs))
-    se = float(np.std(few_shot_pairs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head",
-        }
-    )
+    X = np.atleast_2d(np.asarray(embeddings, dtype=float))
+    y = np.atleast_1d(np.asarray(labels)).astype(int)
+    if X.shape[0] != len(y):
+        raise ValueError("need one label per embedding.")
+    n = len(y)
+    pos = []
+    neg = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            (pos if y[i] == y[j] else neg).append((i, j))
+    if not pos or not neg:
+        raise ValueError(
+            "contrastive pairs need at least two classes with at least "
+            "two members each.")
+    head = alammar_embedding_classifier(X, y)
+    return RichResult(payload={
+        "positive_pairs": pos, "negative_pairs": neg,
+        "n_positive": len(pos), "n_negative": len(neg),
+        "head_train_accuracy": head["train_accuracy"],
+        "head_predictions": head["predictions"],
+        "estimate": head["train_accuracy"], "n": n,
+        "method": "SetFit pair generation + head (Tunstall et al. 2022)"})
 
 
 def cheatsheet():
-    return "alsft: SetFit two-step: (1) contrastive fine-tune encoder on few-shot pairs, (2) classifier head"
+    return "alsft: same/cross-class pair sets + native logistic head"

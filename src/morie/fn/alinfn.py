@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""InfoNCE contrastive loss with in-batch negatives."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""InfoNCE loss (van den Oord et al. 2018; Alammar Ch 10)."""
 
 import numpy as np
 
@@ -8,40 +9,39 @@ from ._richresult import RichResult
 __all__ = ["alammar_infonce_loss"]
 
 
-def alammar_infonce_loss(anchor, positive, negatives, tau):
+def _cos(a, b):
+    a = np.asarray(a, dtype=float); b = np.asarray(b, dtype=float)
+    na = np.linalg.norm(a); nb = np.linalg.norm(b)
+    if na == 0 or nb == 0:
+        raise ValueError("a zero vector has no direction; cosine "
+                         "similarity with it is undefined.")
+    return float(np.dot(a, b) / (na * nb))
+
+
+def alammar_infonce_loss(anchor, positive, negatives, tau=0.07):
+    """L = -log exp(s(a,p)/tau) / [exp(s(a,p)/tau) + sum exp(s(a,n)/tau)].
+
+    References: Alammar and Grootendorst, Ch 10; van den Oord et al.
+    (2018).
     """
-    InfoNCE contrastive loss with in-batch negatives
-
-    Formula: L = - log( exp(sim(a, p)/tau) / sum_{n in negs + {p}} exp(sim(a, n)/tau) )
-
-    Parameters
-    ----------
-    anchor : array-like
-        Input data.
-    positive : array-like
-        Input data.
-    negatives : array-like
-        Input data.
-    tau : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: loss
-
-    References
-    ----------
-    Alammar Ch 10, InfoNCE section
-    """
-    anchor = np.atleast_1d(np.asarray(anchor, dtype=float))
-    n = len(anchor)
-    result = float(np.mean(anchor))
-    se = float(np.std(anchor, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "InfoNCE contrastive loss with in-batch negatives"}
-    )
+    t = float(tau)
+    if t <= 0:
+        raise ValueError("the temperature must be positive.")
+    a = np.atleast_1d(np.asarray(anchor, dtype=float))
+    p = np.atleast_1d(np.asarray(positive, dtype=float))
+    N = np.atleast_2d(np.asarray(negatives, dtype=float))
+    sp = _cos(a, p) / t
+    sn = np.array([_cos(a, N[i]) / t for i in range(N.shape[0])])
+    zs = np.concatenate([[sp], sn])
+    m = zs.max()
+    logZ = m + np.log(np.exp(zs - m).sum())
+    loss = float(logZ - sp)
+    return RichResult(payload={
+        "estimate": loss, "positive_similarity": sp * t,
+        "negative_similarities": [float(v * t) for v in sn],
+        "n": N.shape[0] + 1,
+        "method": "InfoNCE (van den Oord et al. 2018)"})
 
 
 def cheatsheet():
-    return "alinfn: InfoNCE contrastive loss with in-batch negatives"
+    return "alinfn: -log softmax over positive vs negatives at temperature tau"

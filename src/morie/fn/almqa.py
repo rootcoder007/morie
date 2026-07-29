@@ -1,52 +1,37 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Multi-Query Attention: single K/V head shared across all Q heads."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Multi-query attention (Shazeer 2019; Alammar Ch 3)."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .attsdp import scaled_dot_product_attention
 
 __all__ = ["alammar_multi_query_attention"]
 
 
-def alammar_multi_query_attention(Q, K_shared, V_shared, n_query_heads):
+def alammar_multi_query_attention(Q_heads, K_shared, V_shared,
+                                  n_query_heads):
+    """Every query head attends over ONE shared K and V.
+
+    References: Alammar and Grootendorst, Ch 3; Shazeer (2019).
     """
-    Multi-Query Attention: single K/V head shared across all Q heads
-
-    Formula: head_i = Attn(Q_i, K_shared, V_shared);  Concat W_O
-
-    Parameters
-    ----------
-    Q : array-like
-        Input data.
-    K_shared : array-like
-        Input data.
-    V_shared : array-like
-        Input data.
-    n_query_heads : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: output
-
-    References
-    ----------
-    Alammar Ch 3, Multi-Query Attention section
-    """
-    Q = np.atleast_1d(np.asarray(Q, dtype=float))
-    n = len(Q)
-    result = float(np.mean(Q))
-    se = float(np.std(Q, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Multi-Query Attention: single K/V head shared across all Q heads",
-        }
-    )
+    H = int(n_query_heads)
+    if H < 1:
+        raise ValueError("n_query_heads must be positive.")
+    if len(Q_heads) != H:
+        raise ValueError(f"expected {H} query heads; got {len(Q_heads)}.")
+    outs = []
+    for i in range(H):
+        h = scaled_dot_product_attention(Q_heads[i], K_shared, V_shared)
+        outs.append(np.asarray(h["output"]))
+    concat = np.concatenate(outs, axis=1)
+    return RichResult(payload={
+        "output": [[float(v) for v in row] for row in concat],
+        "kv_cache_ratio": 1.0 / H,
+        "estimate": float(concat[0, 0]), "n": H,
+        "method": "Multi-query attention (Shazeer 2019)"})
 
 
 def cheatsheet():
-    return "almqa: Multi-Query Attention: single K/V head shared across all Q heads"
+    return "almqa: all query heads share one K and one V"

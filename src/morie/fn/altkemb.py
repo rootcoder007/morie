@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Token embedding table lookup."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Token embedding lookup (Alammar Ch 2)."""
 
 import numpy as np
 
@@ -9,33 +10,32 @@ __all__ = ["alammar_token_embedding_lookup"]
 
 
 def alammar_token_embedding_lookup(ids, E_tok):
+    """E_tok[ids]: rows of the V x d table, in sequence order.
+
+    An out-of-vocabulary id is refused, not clamped -- clamping is how
+    silent garbage enters a pipeline.
+
+    References: Alammar and Grootendorst, Ch 2.
+
+    Examples
+    --------
+    >>> alammar_token_embedding_lookup([1, 0],
+    ...     [[1.0, 2.0], [3.0, 4.0]])["embeddings"]
+    [[3.0, 4.0], [1.0, 2.0]]
     """
-    Token embedding table lookup
-
-    Formula: E_tok[ids]  where E_tok in R^{V x d} and ids in {0,...,V-1}^L
-
-    Parameters
-    ----------
-    ids : array-like
-        Input data.
-    E_tok : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: embeddings
-
-    References
-    ----------
-    Alammar Ch 2, Token Embedding section
-    """
-    ids = np.atleast_1d(np.asarray(ids, dtype=float))
-    n = len(ids)
-    result = float(np.mean(ids))
-    se = float(np.std(ids, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Token embedding table lookup"})
+    E = np.atleast_2d(np.asarray(E_tok, dtype=float))
+    ids = np.atleast_1d(np.asarray(ids)).astype(int)
+    if np.any((ids < 0) | (ids >= E.shape[0])):
+        bad = ids[(ids < 0) | (ids >= E.shape[0])][0]
+        raise ValueError(
+            f"token id {bad} is outside the vocabulary of {E.shape[0]}.")
+    out = E[ids]
+    return RichResult(payload={
+        "embeddings": [[float(v) for v in r] for r in out],
+        "estimate": float(out[0, 0]), "vocab_size": E.shape[0],
+        "dim": E.shape[1], "n": len(ids),
+        "method": "Token embedding lookup (Alammar Ch 2)"})
 
 
 def cheatsheet():
-    return "altkemb: Token embedding table lookup"
+    return "altkemb: E[ids] row lookup with OOV refused"

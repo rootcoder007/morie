@@ -1,5 +1,7 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Zero-shot classification via NLI entailment scoring."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Zero-shot classification via entailment scores (Yin et al. 2019;
+Alammar Ch 4)."""
 
 import numpy as np
 
@@ -8,38 +10,40 @@ from ._richresult import RichResult
 __all__ = ["alammar_zero_shot_classification"]
 
 
-def alammar_zero_shot_classification(text, candidate_labels, nli_model):
+def alammar_zero_shot_classification(text, candidate_labels, nli_model,
+                                     hypothesis_template="This example "
+                                     "is about {}."):
+    """p(label | text) = softmax over the entailment scores of
+    "text entails hypothesis(label)".
+
+    ``nli_model`` is a callable (premise, hypothesis) -> entailment
+    score; the hypothesis construction, softmax and argmax -- the
+    algorithm of Yin et al. -- are computed here.
+
+    References: Alammar and Grootendorst, Ch 4; Yin, Hay and Roth
+    (2019).
     """
-    Zero-shot classification via NLI entailment scoring
-
-    Formula: p(label_c | text) = softmax_c [ entailment(text, hypothesis(c)) ]
-
-    Parameters
-    ----------
-    text : array-like
-        Input data.
-    candidate_labels : array-like
-        Input data.
-    nli_model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: probs
-
-    References
-    ----------
-    Alammar Ch 4, Zero-Shot Classification section
-    """
-    text = np.atleast_1d(np.asarray(text, dtype=float))
-    n = len(text)
-    result = float(np.mean(text))
-    se = float(np.std(text, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Zero-shot classification via NLI entailment scoring"}
-    )
+    labels = [str(l) for l in candidate_labels]
+    if not labels:
+        raise ValueError("no candidate labels supplied.")
+    if len(set(labels)) != len(labels):
+        raise ValueError("candidate labels contain duplicates.")
+    if not callable(nli_model):
+        raise ValueError("nli_model must be a callable "
+                         "(premise, hypothesis) -> score.")
+    scores = np.array([float(nli_model(str(text),
+                                       hypothesis_template.format(l)))
+                       for l in labels])
+    z = scores - scores.max()
+    p = np.exp(z) / np.exp(z).sum()
+    order = np.argsort(-p)
+    return RichResult(payload={
+        "probabilities": {labels[i]: float(p[i]) for i in range(len(labels))},
+        "predicted_label": labels[int(order[0])],
+        "entailment_scores": [float(s) for s in scores],
+        "estimate": float(p[int(order[0])]), "n": len(labels),
+        "method": "Zero-shot NLI classification (Yin et al. 2019)"})
 
 
 def cheatsheet():
-    return "alzsc: Zero-shot classification via NLI entailment scoring"
+    return "alzsc: softmax over entailment(text, hypothesis(label))"

@@ -1,22 +1,16 @@
 """Tests for allktmpl.alammar_instruction_data_template."""
 
-import numpy as np
-
 from morie.fn.allktmpl import alammar_instruction_data_template
 
 
 def test_allktmpl_basic():
-    """Test basic functionality."""
-    records = np.random.default_rng(42).normal(0, 1, 100)
-    template = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_instruction_data_template(records, template)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_instruction_data_template(
+        [{"instruction": "add", "input": "2 2", "output": "4"}])
+    s, e = out["output_spans"][0]
+    assert out["texts"][0][s:e] == "4"
 
 
 def test_allktmpl_edge():
-    """Test edge cases."""
-    records = np.random.default_rng(42).normal(0, 1, 100)
-    template = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_instruction_data_template(records, template)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="missing"):
+        alammar_instruction_data_template([{"instruction": "x"}])

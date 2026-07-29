@@ -1,5 +1,7 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Continued pretraining on domain corpus with MLM objective before fine-tuning."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Continued MLM pretraining before task fine-tuning
+(Gururangan et al. 2020; Alammar Ch 11)."""
 
 import numpy as np
 
@@ -8,43 +10,35 @@ from ._richresult import RichResult
 __all__ = ["alammar_continued_pretraining_mlm"]
 
 
-def alammar_continued_pretraining_mlm(domain_corpus, encoder, n_mlm_steps):
+def alammar_continued_pretraining_mlm(domain_corpus, mlm_loss_fn,
+                                      n_mlm_steps, task_loss_fn=None):
+    """Phase 1: n steps of the MLM loss on the domain corpus; phase 2:
+    the task loss. ``mlm_loss_fn`` is (corpus, step) -> loss, so the
+    caller's model closes over its own state; the loss CURVE comes
+    back, and the payload reports whether it decreased -- domain
+    adaptation that does not reduce the domain loss did nothing.
+
+    References: Alammar and Grootendorst, Ch 11; Gururangan et al.
+    (2020).
     """
-    Continued pretraining on domain corpus with MLM objective before fine-tuning
-
-    Formula: L_MLM over domain corpus for N steps;  then L_task on labeled data
-
-    Parameters
-    ----------
-    domain_corpus : array-like
-        Input data.
-    encoder : array-like
-        Input data.
-    n_mlm_steps : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: encoder_adapted
-
-    References
-    ----------
-    Alammar Ch 11, Continued Pretraining section
-    """
-    domain_corpus = np.atleast_1d(np.asarray(domain_corpus, dtype=float))
-    n = len(domain_corpus)
-    result = float(np.mean(domain_corpus))
-    se = float(np.std(domain_corpus, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Continued pretraining on domain corpus with MLM objective before fine-tuning",
-        }
-    )
+    if not callable(mlm_loss_fn):
+        raise ValueError("mlm_loss_fn must be callable (corpus, step) "
+                         "-> loss.")
+    steps = int(n_mlm_steps)
+    if steps < 1:
+        raise ValueError("n_mlm_steps must be positive.")
+    docs = list(domain_corpus)
+    if not docs:
+        raise ValueError("the domain corpus is empty.")
+    curve = [float(mlm_loss_fn(docs, s)) for s in range(steps)]
+    task_loss = float(task_loss_fn()) if callable(task_loss_fn) else None
+    return RichResult(payload={
+        "mlm_loss_curve": curve,
+        "mlm_improved": curve[-1] < curve[0] if steps > 1 else None,
+        "task_loss": task_loss,
+        "estimate": curve[-1], "n": steps,
+        "method": "Continued domain pretraining (Gururangan et al. 2020)"})
 
 
 def cheatsheet():
-    return "alcont: Continued pretraining on domain corpus with MLM objective before fine-tuning"
+    return "alcont: MLM loss curve on domain corpus, improvement reported"

@@ -1,24 +1,14 @@
 """Tests for alcsl.alammar_cosine_similarity_loss."""
 
-import numpy as np
-
 from morie.fn.alcsl import alammar_cosine_similarity_loss
 
 
 def test_alcsl_basic():
-    """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    result = alammar_cosine_similarity_loss(a, b, y_true)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_cosine_similarity_loss([[1.0, 0.0]], [[1.0, 0.0]], [1.0])
+    assert out["estimate"] == 0.0
 
 
 def test_alcsl_edge():
-    """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    b = np.random.default_rng(42).normal(0, 1, 100)
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    result = alammar_cosine_similarity_loss(a, b, y_true)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="lie in"):
+        alammar_cosine_similarity_loss([[1.0]], [[1.0]], [2.0])

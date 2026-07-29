@@ -1,5 +1,7 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Image captioning pipeline: visual encoder -> projector -> LLM decoder."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Image-captioning composition: project visual features into the
+LM's space (Alammar Ch 9)."""
 
 import numpy as np
 
@@ -8,45 +10,37 @@ from ._richresult import RichResult
 __all__ = ["alammar_image_captioning_pipeline"]
 
 
-def alammar_image_captioning_pipeline(img, visual_encoder, projector, llm):
+def alammar_image_captioning_pipeline(image, visual_encoder, projector,
+                                      llm, prompt="Describe the image."):
+    """z = W_proj VisEnc(img); caption = LLM([z; prompt]).
+
+    Encoder and LLM are the caller's callables; the projection -- the
+    piece the book's diagram actually specifies -- is computed here
+    when ``projector`` is a matrix, and its dimensional contract is
+    enforced.
+
+    References: Alammar and Grootendorst, Ch 9 (LLaVA-style
+    composition).
     """
-    Image captioning pipeline: visual encoder -> projector -> LLM decoder
-
-    Formula: z = Proj(VisEnc(img));  caption = LLM(inputs=[z; prompt])
-
-    Parameters
-    ----------
-    img : array-like
-        Input data.
-    visual_encoder : array-like
-        Input data.
-    projector : array-like
-        Input data.
-    llm : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: caption
-
-    References
-    ----------
-    Alammar Ch 9, Image Captioning Pipeline section
-    """
-    img = np.atleast_1d(np.asarray(img, dtype=float))
-    n = len(img)
-    result = float(np.mean(img))
-    se = float(np.std(img, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Image captioning pipeline: visual encoder -> projector -> LLM decoder",
-        }
-    )
+    if not callable(visual_encoder) or not callable(llm):
+        raise ValueError("visual_encoder and llm must be callable.")
+    feats = np.atleast_1d(np.asarray(visual_encoder(image), dtype=float))
+    if callable(projector):
+        z = np.atleast_1d(np.asarray(projector(feats), dtype=float))
+    else:
+        W = np.atleast_2d(np.asarray(projector, dtype=float))
+        if W.shape[1] != len(feats):
+            raise ValueError(
+                f"projector has {W.shape[1]} columns but the encoder "
+                f"produced {len(feats)} features.")
+        z = W @ feats
+    caption = str(llm([float(v) for v in z], str(prompt)))
+    return RichResult(payload={
+        "caption": caption, "projected": [float(v) for v in z],
+        "feature_dim": len(feats), "projected_dim": len(z),
+        "estimate": float(len(caption)), "n": len(z),
+        "method": "Visual projection into the LM (Alammar Ch 9)"})
 
 
 def cheatsheet():
-    return "alcap: Image captioning pipeline: visual encoder -> projector -> LLM decoder"
+    return "alcap: caption = LLM([W VisEnc(img); prompt]), dims enforced"
