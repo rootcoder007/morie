@@ -1,5 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Soft voting ensemble prediction (argmax mean probability)."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Soft voting ensemble prediction (argmax of the mean probability)."""
 
 import numpy as np
 
@@ -7,40 +8,103 @@ from ._richresult import RichResult
 
 __all__ = ["geron_soft_voting"]
 
+_METHOD = "Soft voting ensemble"
 
-def geron_soft_voting(probabilities):
-    """
-    Soft voting ensemble prediction (argmax mean probability)
 
-    Formula: y_hat = argmax_k (1/L) sum_{l=1..L} p_l(y=k | x)
+def geron_soft_voting(probabilities, weights=None):
+    r"""Average the predicted probabilities, then take the argmax.
+
+    .. math::
+        \hat y = \arg\max_k \frac{1}{L}\sum_{l=1}^{L} p_l(y = k \mid x)
+
+    Soft voting usually beats hard voting for the reason visible in the
+    numbers: a classifier that is 95% sure counts more than one that is
+    51% sure, whereas hard voting throws that confidence away.  The cost
+    is that it only works when the probabilities are comparable across
+    models -- an overconfident member dominates the average whether or
+    not it is right.  Rows are checked to be genuine distributions for
+    that reason.
 
     Parameters
     ----------
-    probabilities : array-like
-        Input data.
+    probabilities : array-like, shape (L, m, K) or (L, K)
+        Per-classifier class probabilities.
+    weights : array-like, shape (L,), optional
+        Non-negative classifier weights; default uniform.
 
     Returns
     -------
-    result : dict
-        Keys: y_pred
+    RichResult
+        Payload keys ``y_hat``, ``mean_probabilities``, ``confidence``,
+        ``margin`` (top minus runner-up), ``estimate``, ``n``,
+        ``method``.
 
     References
     ----------
-    Géron Ch 6, Voting Classifier (soft) section
+    Géron Ch 6, Voting Classifier (soft) section.
+
+    Examples
+    --------
+    One confident vote for class 1 outweighs two lukewarm votes for
+    class 0 -- the case where soft and hard voting disagree:
+
+    >>> P = [[[0.55, 0.45]], [[0.55, 0.45]], [[0.05, 0.95]]]
+    >>> r = geron_soft_voting(P)
+    >>> [round(v, 6) for v in r["mean_probabilities"][0]]
+    [0.383333, 0.616667]
+    >>> r["y_hat"]
+    [1]
+
+    Weights are honoured:
+
+    >>> w = geron_soft_voting(P, weights=[5.0, 5.0, 1.0])
+    >>> w["y_hat"]
+    [0]
     """
-    probabilities = np.asarray(probabilities, dtype=float)
-    n = int(probabilities) if probabilities.ndim == 0 else len(probabilities)
-    result = float(np.mean(probabilities))
-    se = float(np.std(probabilities, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    A = np.asarray(probabilities, dtype=float)
+    if A.ndim == 2:
+        A = A[:, None, :]
+    if A.ndim != 3 or A.size == 0:
+        raise ValueError(
+            f"probabilities must be (L, m, K) or (L, K), got shape {A.shape}."
+        )
+    if not np.all(np.isfinite(A)):
+        raise ValueError("probabilities contains non-finite values.")
+    if np.any(A < 0):
+        raise ValueError("probabilities must be non-negative.")
+    if not np.allclose(A.sum(axis=2), 1.0, atol=1e-6):
+        raise ValueError("each classifier's rows must sum to 1; these are not probabilities.")
+    L = A.shape[0]
+
+    if weights is None:
+        w = np.ones(L) / L
+    else:
+        w = np.asarray(weights, dtype=float).ravel()
+        if w.size != L:
+            raise ValueError(f"weights has {w.size} entries but there are {L} classifiers.")
+        if np.any(w < 0) or w.sum() <= 0:
+            raise ValueError("weights must be non-negative with a positive sum.")
+        w = w / w.sum()
+
+    M = np.tensordot(w, A, axes=(0, 0))
+    yhat = np.argmax(M, axis=1)
+    srt = np.sort(M, axis=1)
+    margin = srt[:, -1] - (srt[:, -2] if M.shape[1] > 1 else 0.0)
+
     return RichResult(
+        title="Soft voting",
+        summary_lines=[("Voters", int(L)), ("Instances", int(M.shape[0]))],
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Soft voting ensemble prediction (argmax mean probability)",
-        }
+            "y_hat": yhat.astype(int).tolist(),
+            "mean_probabilities": M.tolist(),
+            "confidence": M.max(axis=1).tolist(),
+            "margin": np.atleast_1d(margin).tolist(),
+            "estimate": yhat.astype(int).tolist(),
+            "n": int(M.shape[0]),
+            "method": _METHOD,
+        },
     )
 
 
 def cheatsheet():
-    return "grvots: Soft voting ensemble prediction (argmax mean probability)"
+    return "grvots: y_hat = argmax mean_l p_l(k|x); confidence-weighted, so it beats hard voting when calibrated"
