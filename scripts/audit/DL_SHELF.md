@@ -59,6 +59,14 @@ NotImplementedError with a written reason — never a mean-of-inputs.
   on l14 green FIRST RUN -- the LCG sampler, LDA chain and TSDAE
   deletions reproduce Python token for token.
 - [ ] W3 Kamath (243): by chapter, eq-numbered — the most spec-like.
+  Chapter census (km modules citing "Kamath et al (2024), Ch N"):
+  Ch2 41 (encoders/attention basics), Ch3 12, Ch4 11, Ch5 12, Ch6 33,
+  Ch7 3, Ch8 16, Ch9 22, unparsed-header 93 (section-style citations —
+  re-grep with looser pattern when starting). Verify the Kamath page
+  map against the PDF before citing; km001 = Ch 2, Eq 2.1, p. 30.
+  Suggested tranches: Ch2 first (overlaps the W2 attention core —
+  collision-scan against attsdp/attmh family before writing), then
+  Ch6, Ch9, Ch8, the small chapters, then the 93 unparsed.
 - [ ] W4 Géron hm* (329): classic ML — losses, metrics, trees, SVM,
   ensembles, RL. Many have scipy/sklearn oracles for cross-checks.
 - [ ] W5 Géron gr* (201): training mechanics — schedules, inits,
