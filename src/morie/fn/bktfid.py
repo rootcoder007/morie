@@ -1,5 +1,8 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""TF-IDF score: term frequency weighted by inverse document frequency."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 2: TF-IDF."""
+
+import math
 
 import numpy as np
 
@@ -9,42 +12,38 @@ __all__ = ["burkov_tf_idf"]
 
 
 def burkov_tf_idf(term, document, corpus):
+    """TF-IDF = TF(t, d) * log(|D| / df(t)).
+
+    A term appearing in NO document has df = 0 and an undefined IDF;
+    that is refused, since it can only happen when the query document
+    is not in the corpus, which is a caller error worth hearing about.
+
+    References: Burkov LM (2025), Ch 2, TF-IDF.
+
+    Examples
+    --------
+    >>> corpus = [["a", "b"], ["b", "c"], ["b"]]
+    >>> round(burkov_tf_idf("a", ["a", "b"], corpus)["estimate"], 10)
+    1.0986122887
     """
-    TF-IDF score: term frequency weighted by inverse document frequency
-
-    Formula: TF-IDF(t, d, D) = TF(t, d) * log( |D| / |{d' in D : t in d'}| )
-
-    Parameters
-    ----------
-    term : array-like
-        Input data.
-    document : array-like
-        Input data.
-    corpus : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: tfidf
-
-    References
-    ----------
-    Burkov Ch 2, TF-IDF section
-    """
-    term = np.atleast_1d(np.asarray(term, dtype=float))
-    n = len(term)
-    result = float(np.mean(term))
-    se = float(np.std(term, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "TF-IDF score: term frequency weighted by inverse document frequency",
-        }
-    )
+    t = str(term)
+    doc = [str(x) for x in np.atleast_1d(np.asarray(document, dtype=object))]
+    if not corpus:
+        raise ValueError("the corpus is empty.")
+    docs = [[str(x) for x in np.atleast_1d(np.asarray(d, dtype=object))]
+            for d in corpus]
+    tf = doc.count(t)
+    df = sum(1 for d in docs if t in d)
+    if df == 0:
+        raise ValueError(
+            f"term {t!r} appears in no corpus document, so IDF is "
+            "undefined; is the query document part of the corpus?")
+    idf = math.log(len(docs) / df)
+    return RichResult(payload={
+        "estimate": tf * idf, "tf": tf, "df": df, "idf": idf,
+        "n_documents": len(docs), "n": len(doc),
+        "method": "TF-IDF (Burkov Ch 2)"})
 
 
 def cheatsheet():
-    return "bktfid: TF-IDF score: term frequency weighted by inverse document frequency"
+    return "bktfid: TF-IDF tf * log(|D|/df) (Burkov Ch 2)"

@@ -1,20 +1,13 @@
 """Tests for bkunit.burkov_unit_vector."""
 
-import numpy as np
-
 from morie.fn.bkunit import burkov_unit_vector
 
 
 def test_bkunit_basic():
-    """Test basic functionality."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    result = burkov_unit_vector(a)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    assert burkov_unit_vector([3.0, 4.0])["unit"] == [0.6, 0.8]
 
 
 def test_bkunit_edge():
-    """Test edge cases."""
-    a = np.random.default_rng(44).normal(0, 1, 100)
-    result = burkov_unit_vector(a)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="zero vector"):
+        burkov_unit_vector([0.0, 0.0])

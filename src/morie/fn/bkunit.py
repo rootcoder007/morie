@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Unit vector: normalize a vector to unit L2 norm."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 1: the unit vector."""
 
 import numpy as np
 
@@ -9,33 +10,26 @@ __all__ = ["burkov_unit_vector"]
 
 
 def burkov_unit_vector(a):
-    """
-    Unit vector: normalize a vector to unit L2 norm
+    """a_hat = a / ||a||_2; the zero vector is refused.
 
-    Formula: a_hat = a / ||a||_2
+    References: Burkov LM (2025), Ch 1, unit vector.
 
-    Parameters
-    ----------
-    a : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: unit_vector
-
-    References
-    ----------
-    Burkov Ch 1, Unit Vector section
+    Examples
+    --------
+    >>> burkov_unit_vector([3.0, 4.0])["unit"]
+    [0.6, 0.8]
     """
     a = np.atleast_1d(np.asarray(a, dtype=float))
-    n = len(a)
-    result = float(np.mean(a))
-    se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Unit vector: normalize a vector to unit L2 norm"}
-    )
+    n = float(np.linalg.norm(a))
+    if n == 0.0:
+        raise ValueError("the zero vector has no direction and cannot "
+                         "be normalised.")
+    u = a / n
+    return RichResult(payload={
+        "unit": [float(v) for v in u], "estimate": float(u[0]),
+        "norm": n, "n": len(a),
+        "method": "Unit vector a/||a|| (Burkov Ch 1)"})
 
 
 def cheatsheet():
-    return "bkunit: Unit vector: normalize a vector to unit L2 norm"
+    return "bkunit: unit vector a/||a||_2 (Burkov Ch 1)"

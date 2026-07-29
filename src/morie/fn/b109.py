@@ -1,4 +1,6 @@
-r"""Binary cross-entropy (logistic) loss for a single example in binary classification.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov's Eq 1.9: binary cross-entropy for one example."""
 
 import numpy as np
 
@@ -8,40 +10,37 @@ __all__ = ["burkov_lm_ch1_binary_cross_entropy"]
 
 
 def burkov_lm_ch1_binary_cross_entropy(y_hat_i, y_i):
-    r"""
-    Binary cross-entropy (logistic) loss for a single example in binary classification.
+    """loss = -[y log(y_hat) + (1 - y) log(1 - y_hat)].
 
-    Formula: \operatorname{loss}(\hat{y}_i, y_i) \stackrel{\text{def}}{=} -\bigl[y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i)\bigr]
+    A prediction of exactly 0 or 1 gives infinite loss when it is
+    wrong; that is the mathematics, and it is returned as inf rather
+    than clipped away silently.
 
-    Parameters
-    ----------
-    y_hat_i : array-like
-        Input data.
-    y_i : array-like
-        Input data.
+    References: Burkov LM (2025), Ch 1, Eq 1.9, p. 40.
 
-    Returns
-    -------
-    result : dict
-        Keys: non-negative loss
-
-    References
-    ----------
-    Burkov LM (2025), Ch 1, Eq 1.9, p. 40
+    Examples
+    --------
+    >>> round(burkov_lm_ch1_binary_cross_entropy(0.5, 1.0)["estimate"], 10)
+    0.6931471806
     """
-    y_hat_i = np.atleast_1d(np.asarray(y_hat_i, dtype=float))
-    n = len(y_hat_i)
-    result = float(np.mean(y_hat_i))
-    se = float(np.std(y_hat_i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Binary cross-entropy (logistic) loss for a single example in binary classification.",
-        }
-    )
+    yh = np.atleast_1d(np.asarray(y_hat_i, dtype=float))
+    y = np.atleast_1d(np.asarray(y_i, dtype=float))
+    if yh.shape != y.shape:
+        raise ValueError(
+            f"y_hat and y must have the same shape; got {yh.shape} and "
+            f"{y.shape}.")
+    if np.any((yh < 0) | (yh > 1)):
+        raise ValueError("predicted probabilities must lie in [0, 1].")
+    if np.any((y != 0) & (y != 1)):
+        raise ValueError("targets must be 0 or 1 for Eq 1.9.")
+    with np.errstate(divide="ignore", invalid="ignore"):
+        loss = -(y * np.log(yh) + (1.0 - y) * np.log(1.0 - yh))
+    loss = np.where(np.isnan(loss), 0.0, loss)   # 0*log0 limit is 0
+    return RichResult(payload={
+        "losses": [float(v) for v in loss], "estimate": float(loss[0]),
+        "mean_loss": float(np.mean(loss)), "n": len(y),
+        "method": "Binary cross-entropy (Burkov Eq 1.9)"})
 
 
 def cheatsheet():
-    return "b109: Binary cross-entropy (logistic) loss for a single example in binary classification."
+    return "b109: binary cross-entropy loss (Burkov Eq 1.9)"

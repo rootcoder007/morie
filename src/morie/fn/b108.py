@@ -1,4 +1,6 @@
-r"""Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov's Eq 1.8: logistic regression y = sigma(w.x + b)."""
 
 import numpy as np
 
@@ -8,42 +10,28 @@ __all__ = ["burkov_lm_ch1_logistic_regression"]
 
 
 def burkov_lm_ch1_logistic_regression(w, x, b):
-    r"""
-    Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification.
+    """y = 1 / (1 + exp(-(w.x + b))).
 
-    Formula: y = \sigma(\mathbf{w} \cdot \mathbf{x} + b)
+    References: Burkov LM (2025), Ch 1, Eq 1.8, p. 40.
 
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    x : array-like
-        Input data.
-    b : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: probability in (0, 1)
-
-    References
-    ----------
-    Burkov LM (2025), Ch 1, Eq 1.8, p. 40
+    Examples
+    --------
+    >>> burkov_lm_ch1_logistic_regression([0.0], [1.0], 0.0)["estimate"]
+    0.5
     """
+    w = np.atleast_1d(np.asarray(w, dtype=float))
     x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification.",
-        }
-    )
+    if w.shape != x.shape:
+        raise ValueError(
+            f"w and x must have the same length; got {len(w)} and "
+            f"{len(x)}.")
+    z = float(np.dot(w, x) + float(b))
+    p = float(1.0 / (1.0 + np.exp(-z)))
+    return RichResult(payload={
+        "estimate": p, "logit": z, "predicted_class": int(p >= 0.5),
+        "n": len(x),
+        "method": "Logistic regression sigma(w.x + b) (Burkov Eq 1.8)"})
 
 
 def cheatsheet():
-    return "b108: Logistic regression model applying the sigmoid to a linear combination of inputs for binary classification."
+    return "b108: logistic regression sigma(w.x + b) (Burkov Eq 1.8)"

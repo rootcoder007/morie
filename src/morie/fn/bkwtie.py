@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Weight tying: share the embedding matrix with the output projection."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 4: weight tying -- logits through the shared embedding."""
 
 import numpy as np
 
@@ -9,40 +10,29 @@ __all__ = ["burkov_weight_tying"]
 
 
 def burkov_weight_tying(h_last, E):
+    """logits = h_L E^T with E the input embedding matrix (V x d).
+
+    References: Burkov LM (2025), Ch 4, weight tying (Press and Wolf
+    2017).
+
+    Examples
+    --------
+    >>> burkov_weight_tying([1.0, 0.0], [[2.0, 0.0], [0.0, 3.0]])["logits"]
+    [2.0, 0.0]
     """
-    Weight tying: share the embedding matrix with the output projection
-
-    Formula: logits = h_L * E^T  where E is the input embedding matrix (shared)
-
-    Parameters
-    ----------
-    h_last : array-like
-        Input data.
-    E : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: logits
-
-    References
-    ----------
-    Burkov Ch 4, Weight Tying section
-    """
-    h_last = np.atleast_1d(np.asarray(h_last, dtype=float))
-    n = len(h_last)
-    result = float(np.mean(h_last))
-    se = float(np.std(h_last, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Weight tying: share the embedding matrix with the output projection",
-        }
-    )
+    h = np.atleast_1d(np.asarray(h_last, dtype=float))
+    E = np.atleast_2d(np.asarray(E, dtype=float))
+    if E.shape[1] != len(h):
+        raise ValueError(
+            f"E is {E.shape[0]} x {E.shape[1]} but the hidden state has "
+            f"{len(h)} dimensions; weight tying needs E's columns to "
+            "match the hidden width.")
+    logits = E @ h
+    return RichResult(payload={
+        "logits": [float(v) for v in logits], "estimate": float(logits[0]),
+        "vocab_size": E.shape[0], "hidden_size": E.shape[1], "n": len(h),
+        "method": "Weight tying logits = h E^T (Burkov Ch 4)"})
 
 
 def cheatsheet():
-    return "bkwtie: Weight tying: share the embedding matrix with the output projection"
+    return "bkwtie: weight-tied output logits h E^T (Burkov Ch 4)"

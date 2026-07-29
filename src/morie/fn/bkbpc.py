@@ -1,7 +1,8 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Bits-per-character (BPC): cross-entropy per character of an LM."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Burkov Ch 2: bits per character from token-level cross-entropy."""
 
-import numpy as np
+import math
 
 from ._richresult import RichResult
 
@@ -9,42 +10,26 @@ __all__ = ["burkov_bits_per_character"]
 
 
 def burkov_bits_per_character(ce_loss, n_tokens, n_characters):
+    """BPC = (L_CE * N_tokens) / (ln 2 * N_characters), L_CE in nats.
+
+    References: Burkov LM (2025), Ch 2, bits per character.
+
+    Examples
+    --------
+    >>> round(burkov_bits_per_character(math.log(2), 100, 100)["estimate"], 12)
+    1.0
     """
-    Bits-per-character (BPC): cross-entropy per character of an LM
-
-    Formula: BPC = (L_CE * N_tokens) / (ln(2) * N_characters)
-
-    Parameters
-    ----------
-    ce_loss : array-like
-        Input data.
-    n_tokens : array-like
-        Input data.
-    n_characters : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: bpc
-
-    References
-    ----------
-    Burkov Ch 2, Bits-per-Character section
-    """
-    ce_loss = np.atleast_1d(np.asarray(ce_loss, dtype=float))
-    n = len(ce_loss)
-    result = float(np.mean(ce_loss))
-    se = float(np.std(ce_loss, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bits-per-character (BPC): cross-entropy per character of an LM",
-        }
-    )
+    l = float(ce_loss); nt = int(n_tokens); nc = int(n_characters)
+    if l < 0:
+        raise ValueError("cross-entropy cannot be negative.")
+    if nt < 1 or nc < 1:
+        raise ValueError("token and character counts must be positive.")
+    bpc = (l * nt) / (math.log(2.0) * nc)
+    return RichResult(payload={
+        "estimate": bpc, "bits_per_token": l / math.log(2.0),
+        "chars_per_token": nc / nt, "n": nt,
+        "method": "Bits per character (Burkov Ch 2)"})
 
 
 def cheatsheet():
-    return "bkbpc: Bits-per-character (BPC): cross-entropy per character of an LM"
+    return "bkbpc: bits per character from cross-entropy (Burkov Ch 2)"
