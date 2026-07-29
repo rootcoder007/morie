@@ -314,6 +314,11 @@ measured numbers are recorded here and asserted in the test suite.
 | Text-confounded ATE, adjusted | 1.0000 | 1.0541 | 0.0903 | -- |
 | Same design, unadjusted | 1.0000 | 2.5381 | -- | -- |
 | RESET $F$, response scaled $\times 10^{6}$ | 315.076 | 315.076 | -- | -- |
+| Exact $\binom{100}{50}$ vs base R `choose` | 100891344545564193334812497256 | exact (R: ...563076171808112640) | -- | -- |
+| $p(1000)$, both languages | 32 digits | agree at all 32 | -- | -- |
+| Bell(25), both languages | 4638590332229999353 | agree at all 19 | -- | -- |
+| Goodman identity vs enumeration | 0 | 0 residual, 200 colourings | -- | -- |
+| $R(3,3)$ by exhausting $K_6$ | 6 | 6 (min 2 mono triangles) | -- | -- |
 | AIPW ATE against Hahn's efficiency bound | 1.000 | 0.999 | 0.0559 | 0.0542 |
 | Minimax regret constant $\max_t t\Phi(-t)$ | 0.169971 | 0.169971 | -- | -- |
 | Plug-in treatment rule, worst-case regret | 0.007601 | 0.007625 | -- | -- |
@@ -505,6 +510,61 @@ six orders of magnitude of response scale. This one had been shipping
 in the R implementation, and was found only because the Python port
 disagreed with it.
 
+# Exactness
+
+Two languages, two different failure modes, and neither announces
+itself.
+
+*R has no exact integer beyond $2^{53}$.* This is usually described as
+a precision limit, which understates it. `2^53 + 1 == 2^53` evaluates
+to `TRUE`, and base R's own `choose(100, 50)` returns
+100891344545563076171808112640 where the exact value is
+100891344545564193334812497256 --- wrong from the thirteenth
+significant digit, off by more than $10^{15}$, with nothing in the
+output to say so. Every exact count in the combinatorics modules is
+therefore routed through an arbitrary-precision integer layer written
+from scratch for this package: sign plus a little-endian base-$10^6$
+limb vector, with schoolbook multiplication carrying row by row so
+every intermediate stays below $10^{12} + 10^6$ and remains an exactly
+representable double. Binomial coefficients use the multiplicative
+recurrence $\prod_{i=1}^{k} (n-k+i)/i$, in which each partial product
+is exactly divisible by $i$, so the computation needs only
+multiplication and division by a small integer and never long
+division. `gmp` is deliberately not a dependency.
+
+The parity tests compare **decimal strings**, not doubles. That choice
+is the point: comparing through a double would let a silent loss of
+low-order digits pass, which is precisely the failure being guarded
+against. On that basis $p(1000)$ agrees across the two languages at all
+32 digits, and Bell(25) $= 4638590332229999353$ at all 19.
+
+*Two subtleties surfaced while building it, both corrections to our own
+first version.*
+
+The rule $|v| \le 2^{53}$ for "exactly representable as a double" is
+sufficient but **not necessary**, and treating it as necessary
+mislabels exact values as lossy. $20! \approx 2.4 \times 10^{18}$ sits
+far above the threshold and is nonetheless exact, because it is
+$2^{18}$ times an odd number and its low-order bits are already zero.
+The test now round-trips the value through a double; the threshold rule
+is retained separately with its status stated.
+
+The second is a cross-language trap rather than a numerical one. In R
+the integer-division operator `%/%` binds *more tightly* than `*`, so
+`k * (3*k - 1) %/% 2` parses as `k * ((3*k - 1) %/% 2)` and evaluates
+to 4 at $k = 2$, where the second pentagonal number is 5. Python's `//`
+shares precedence with `*` and associates left to right, so the
+character-for-character identical expression is correct there. The
+consequence in the partition-counting routine was $p(4) = 4$ instead of
+5 and every subsequent value wrong. It was caught by the cross-language
+parity test and by nothing else: the R code is well-formed, runs
+without warning, and returns plausible-looking integers.
+
+That is the general argument for the parity discipline. A second
+implementation in a second language is not duplicated effort; it is the
+only check that catches defects which are invisible from inside one
+language's semantics.
+
 Cross-language agreement is treated as a second, independent
 implementation rather than a formality. The targeting step of the
 average-treatment-effect estimator is deterministic, so the Python
@@ -610,7 +670,11 @@ treatment choice Hirano and Porter [-@hirano2009asymptotics]; the
 differentially private mean follows Dwork and Roth
 [-@dwork2014algorithmic] with the finite-sample intervals of Karwa
 and Vadhan [-@karwa2018finite]; the permutation language-model
-objective follows Yang and colleagues [-@yang2019xlnet]; the median
+objective follows Yang and colleagues [-@yang2019xlnet]; the
+enumerative combinatorics follow Stanley [-@stanley2011enumerative] and
+Andrews [-@andrews1984partitions], the monochromatic-triangle identity
+Goodman [-@goodman1959acquaintances], and the Ramsey values and bounds
+Radziszowski's dynamic survey [-@radziszowski2024ramsey]; the median
 voter theorem follows Black [-@black1948rationale]; dual-frame
 estimation follows Hartley [-@hartley1962multiple] and Lohr and Rao
 [-@lohrRao2000dualframe]; quantal dose-response analysis follows
@@ -807,6 +871,14 @@ Anderson, Theodore W., and Herman Rubin. 1949. “Estimation of the
 Parameters of a Single Equation in a Complete System of Stochastic
 Equations.” *The Annals of Mathematical Statistics* 20 (1): 46–63.
 <https://doi.org/10.1214/aoms/1177730090>.
+
+</div>
+
+<div id="ref-andrews1984partitions" class="csl-entry">
+
+Andrews, George E. 1984. *The Theory of Partitions*. Cambridge
+Mathematical Library. Cambridge University Press.
+<https://doi.org/10.1017/CBO9780511608650>.
 
 </div>
 
@@ -1228,6 +1300,14 @@ Monographs. Chapman & Hall/CRC.
 
 Goffman, Erving. 1961. *Asylums: Essays on the Social Situation of
 Mental Patients and Other Inmates*. Anchor Books.
+
+</div>
+
+<div id="ref-goodman1959acquaintances" class="csl-entry">
+
+Goodman, A. W. 1959. “On Sets of Acquaintances and Strangers at Any
+Party.” *The American Mathematical Monthly* 66 (9): 778–83.
+<https://doi.org/10.1080/00029890.1959.11989408>.
 
 </div>
 
@@ -1852,6 +1932,14 @@ Time-Series.” *Journal of the Royal Statistical Society, Series B* 11
 
 </div>
 
+<div id="ref-radziszowski2024ramsey" class="csl-entry">
+
+Radziszowski, Stanisław P. 2024. *Small Ramsey Numbers*. Electronic
+Journal of Combinatorics, Dynamic Survey DS1, revision 17.
+<https://doi.org/10.37236/21>.
+
+</div>
+
 <div id="ref-ramdas2017wasserstein" class="csl-entry">
 
 Ramdas, Aaditya, Nicolás García Trillos, and Marco Cuturi. 2017. “On
@@ -2091,6 +2179,14 @@ Independent External Decision Makers Ensure That “an Inmate’s
 Confinement in a Structured Intervention Unit Is to End as Soon as
 Possible”? \[Corrections and Conditional Release Act, Section 33\]*.
 Schulich School of Law, Dalhousie University.
+
+</div>
+
+<div id="ref-stanley2011enumerative" class="csl-entry">
+
+Stanley, Richard P. 2011. *Enumerative Combinatorics, Volume 1*. 2nd ed.
+Vol. 49. Cambridge Studies in Advanced Mathematics. Cambridge University
+Press.
 
 </div>
 
