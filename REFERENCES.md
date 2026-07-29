@@ -61,6 +61,14 @@ Equations.” *The Annals of Mathematical Statistics* 20 (1): 46–63.
 
 </div>
 
+<div id="ref-andrews1984partitions" class="csl-entry">
+
+Andrews, George E. 1984. *The Theory of Partitions*. Cambridge
+Mathematical Library. Cambridge University Press.
+<https://doi.org/10.1017/CBO9780511608650>.
+
+</div>
+
 <div id="ref-angrist1996identification" class="csl-entry">
 
 Angrist, Joshua D., Guido W. Imbens, and Donald B. Rubin. 1996.
@@ -479,6 +487,14 @@ Monographs. Chapman & Hall/CRC.
 
 Goffman, Erving. 1961. *Asylums: Essays on the Social Situation of
 Mental Patients and Other Inmates*. Anchor Books.
+
+</div>
+
+<div id="ref-goodman1959acquaintances" class="csl-entry">
+
+Goodman, A. W. 1959. “On Sets of Acquaintances and Strangers at Any
+Party.” *The American Mathematical Monthly* 66 (9): 778–83.
+<https://doi.org/10.1080/00029890.1959.11989408>.
 
 </div>
 
@@ -1103,6 +1119,14 @@ Time-Series.” *Journal of the Royal Statistical Society, Series B* 11
 
 </div>
 
+<div id="ref-radziszowski2024ramsey" class="csl-entry">
+
+Radziszowski, Stanisław P. 2024. *Small Ramsey Numbers*. Electronic
+Journal of Combinatorics, Dynamic Survey DS1, revision 17.
+<https://doi.org/10.37236/21>.
+
+</div>
+
 <div id="ref-ramdas2017wasserstein" class="csl-entry">
 
 Ramdas, Aaditya, Nicolás García Trillos, and Marco Cuturi. 2017. “On
@@ -1342,6 +1366,14 @@ Independent External Decision Makers Ensure That “an Inmate’s
 Confinement in a Structured Intervention Unit Is to End as Soon as
 Possible”? \[Corrections and Conditional Release Act, Section 33\]*.
 Schulich School of Law, Dalhousie University.
+
+</div>
+
+<div id="ref-stanley2011enumerative" class="csl-entry">
+
+Stanley, Richard P. 2011. *Enumerative Combinatorics, Volume 1*. 2nd ed.
+Vol. 49. Cambridge Studies in Advanced Mathematics. Cambridge University
+Press.
 
 </div>
 
