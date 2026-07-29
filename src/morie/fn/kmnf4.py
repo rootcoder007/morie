@@ -40,7 +40,11 @@ def kamath_nf4_datatype(n_bins=16):
     optimal for N(0, 1) weights. ``normalized`` rescales the grid to
     [-1, 1] as the datatype is stored in practice; both are returned
     so nothing has to be recomputed, and neither is silently
-    substituted for the other.
+    substituted for the other. Note the shipped NF4 of Dettmers et al.
+    additionally pins an EXACT zero level via an asymmetric 8/7 split;
+    this function computes the book's symmetric equal-mass grid, which
+    has no zero -- the difference is the storage engineering, not the
+    quantile mathematics.
 
     Reference: Kamath, Keenan, Somers and Sorenson (2024), *Large
     Language Models: A Deep Dive*, Springer, Ch 4, NF4 (Dettmers et al.
