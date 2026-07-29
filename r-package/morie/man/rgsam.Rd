@@ -3,7 +3,7 @@
 \name{rgsam}
 \alias{rgsam}
 \alias{morie_rangayyan_sample_entropy}
-\title{Sample entropy -- Rangayyan Ch 7}
+\title{Sample entropy -- Richman & Moorman (2000); NOT covered by Rangayyan}
 \usage{
 rgsam(x, m = 2L, r = NULL)
 
@@ -34,6 +34,13 @@ set.seed(0)
 rgsam(rnorm(100), m = 2)$SampEn
 }
 \references{
-Richman & Moorman (2000), AJP Heart 278:H2039.
+Richman, J. S. & Moorman, J. R. (2000). Physiological time-series
+analysis using approximate entropy and sample entropy. Am J Physiol Heart
+Circ Physiol 278(6):H2039-H2049. doi:10.1152/ajpheart.2000.278.6.H2039
+
+Note: this method is NOT in Rangayyan -- the 2024 edition contains no
+occurrence of "sample entropy", "approximate entropy", "Pincus" or
+"Richman". Both counts use the SAME N-m templates and self-matches are
+excluded; these are the two ways SampEn differs from ApEn.
 }
 \keyword{internal}
