@@ -52,3 +52,25 @@ call contracts. Options: (a) delete them from the package as noise,
 (b) keep as documented formula references without executable claims,
 (c) implement the minority with clear contracts. Needs Vee's call —
 they inflate the module count without carrying tested semantics.
+
+
+## Census correction 2026-07-29: 656 of the 4,223 are auto-extracted
+
+The "hand-named backlog" slice was not clean. Splitting by function
+name (`*_chapter_N_unnumbered_M`, `*_eq_N`) gives:
+
+- **3,567 genuinely hand-named** modules -> `backlog_real.txt`
+- **656 auto-extracted equation fragments** -> `backlog_autoextracted.txt`
+
+The whole Wilcox "shelf" (73/73) is auto-extracted: names like
+`wilcox_chapter_4_unnumbered_22`, bodies that are a single lifted
+equation with no call contract. These belong to the 11,121
+auto-extracted population, whose disposition (delete / keep as
+documented formula references / implement the minority with clear
+contracts) is Vee's decision and NOT implement-by-default. Phase 1's
+real content is therefore Hastie 68 + Schabenberger 69 + Rangayyan 450
+= 587, with Wasserman 66 already complete.
+
+Practical rule for every future slice: filter the worklist through the
+name test before costing or launching anything, or the estimate silently
+includes fragments that should not be implemented at all.
