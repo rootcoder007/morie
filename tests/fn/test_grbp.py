@@ -1,24 +1,11 @@
-"""Tests for grbp.geron_backpropagation_gradient."""
+"""Tests for grbp (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.grbp import geron_backpropagation_gradient
-
-
-def test_grbp_basic():
-    """Test basic functionality."""
-    activations = np.random.default_rng(42).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    result = geron_backpropagation_gradient(activations, weights, y_true)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.grbp as mod
 
 
-def test_grbp_edge():
-    """Test edge cases."""
-    activations = np.random.default_rng(42).normal(0, 1, 100)
-    weights = np.random.default_rng(45).exponential(1, 100)
-    y_true = np.random.default_rng(43).integers(0, 2, 100)
-    result = geron_backpropagation_gradient(activations, weights, y_true)
-    assert isinstance(result, dict)
+def test_grbp_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

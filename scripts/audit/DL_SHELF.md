@@ -73,10 +73,27 @@ NotImplementedError with a written reason — never a mean-of-inputs.
   masks split, -inf agrees); the Eq 2.20-2.33 loss family shares one
   validated -mean-log-P core; MoE gate sparsity exact. 35 cluster
   tests + 82 re-fixtured legacy = 107 green. R parity DONE: kamath_ch2_native.R (26 exports, Eq 2.12/2.15 delegating to the alammar core), 59 assertions green on the first l14 run, mirrored to rmorie.
-- [ ] W4 Géron hm* (329): classic ML — losses, metrics, trees, SVM,
-  ensembles, RL. Many have scipy/sklearn oracles for cross-checks.
-- [ ] W5 Géron gr* (201): training mechanics — schedules, inits,
-  optimisers, regularisation.
+- [~] W4 Géron hm* (329): **tranche 1 (40) Python DONE 2026-07-29**
+  via the Opus-draft + lead-verify pipeline. Real implementations
+  incl. a reverse-mode autodiff tape, full MLP backprop, Mann-Whitney
+  AUC, bit-exact bfloat16 rounding, AdaBoost stumps, LCG-bootstrap
+  bagging with OOB, and forward passes for the BERT family with
+  LCG-deterministic weights. 102 agent tests + 247 doctests, all
+  re-verified by the lead against the installed repo tree; lead's
+  independent probes: AlexNet param count 62,378,344 vs hand
+  arithmetic, AUC vs brute-force pair counting. 289 remain.
+- [~] W5 Géron gr* (201): **tranche 1 (40) Python DONE 2026-07-29**,
+  same pipeline. Real: Adam/AdamW/Adamax with bias correction pinned
+  at t=1 (a version without correction is off by 100x and a test
+  asserts it), 1cycle and other schedules as full curves, BPTT with
+  the hand-unrolled convention documented, a pure-numpy
+  Jonker-Volgenant Hungarian verified against exhaustive permutation
+  search, deterministic BPE, DCGAN/DDIM/DDQN steps. 94 agent tests +
+  231 doctests re-verified; lead probes: Hungarian vs brute force on 3
+  LCG matrices, BPE determinism, Adam first-step size == eta.
+  161 remain.
+- **R parity for W4/W5 tranche 1: PENDING** (the Kosorok lesson says
+  do it per cluster — next session's first job).
 - [ ] R parity per cluster, not at the end (Kosorok lesson).
 
 ## Repo-wide residue (census 2026-07-28, post-W1)

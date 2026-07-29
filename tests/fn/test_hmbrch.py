@@ -1,26 +1,11 @@
-"""Tests for hmbrch.geron_birch."""
+"""Tests for hmbrch (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmbrch import geron_birch
-
-
-def test_hmbrch_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    branching_factor = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_birch(X, n_clusters, threshold, branching_factor)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmbrch as mod
 
 
-def test_hmbrch_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_clusters = np.random.default_rng(42).normal(0, 1, 100)
-    threshold = np.random.default_rng(42).normal(0, 1, 100)
-    branching_factor = np.random.default_rng(42).normal(0, 1, 100)
-    result = geron_birch(X, n_clusters, threshold, branching_factor)
-    assert isinstance(result, dict)
+def test_hmbrch_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0

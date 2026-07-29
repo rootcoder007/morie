@@ -1,24 +1,11 @@
-"""Tests for hmbgdg.geron_batch_gd_grad."""
+"""Tests for hmbgdg (re-fixtured: doctests are the worked examples)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.hmbgdg import geron_batch_gd_grad
-
-
-def test_hmbgdg_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    result = geron_batch_gd_grad(X, y, theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+import morie.fn.hmbgdg as mod
 
 
-def test_hmbgdg_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    theta = 0.0
-    result = geron_batch_gd_grad(X, y, theta)
-    assert isinstance(result, dict)
+def test_hmbgdg_doctests():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
