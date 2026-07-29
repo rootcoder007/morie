@@ -1,20 +1,18 @@
-"""Tests for km003.kamath_ch2_context_simplest."""
+"""Tests for km003.kamath_ch2_context_simplest (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km003 import kamath_ch2_context_simplest
+import morie.fn.km003 as mod
 
 
-def test_km003_basic():
-    """Test basic functionality."""
-    h_T = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_context_simplest(h_T)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km003_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km003_edge():
-    """Test edge cases."""
-    h_T = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_context_simplest(h_T)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km003 import kamath_ch2_context_simplest
+    with pytest.raises(ValueError):
+        kamath_ch2_context_simplest([9.0], all_states=[[1.0]])

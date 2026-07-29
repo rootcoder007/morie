@@ -1,4 +1,6 @@
-r"""Gpt unsupervised obj.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.34: GPT's unsupervised objective."""
 
 import numpy as np
 
@@ -7,36 +9,39 @@ from ._richresult import RichResult
 __all__ = ["kamath_ch2_gpt_unsupervised_obj"]
 
 
-def kamath_ch2_gpt_unsupervised_obj(U, k, Theta):
-    r"""
-    Gpt unsupervised obj.
+def kamath_ch2_gpt_unsupervised_obj(U, k=None, Theta=None):
+    """L1(U) = sum_i log P(u_i | u_i-k..u_i-1; Theta). ``U`` holds the
+    model's per-token probabilities under a context of size k; the
+    objective is MAXIMISED, so it is the sum of LOGS, negative for any
+    imperfect model, and the payload also gives the equivalent
+    per-token cross-entropy.
 
-    Formula: L_1(U) = \sum_i \log P(u_i|u_{i-k},\dots,u_{i-1};\Theta)
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.34, printed
+    p. 70.
 
-    Parameters
-    ----------
-    U : array-like
-        Input data.
-    k : array-like
-        Input data.
-    Theta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.34, p. 70
-    r"""
-    U = np.atleast_1d(np.asarray(U, dtype=float))
-    n = len(U)
-    result = float(np.mean(U))
-    se = float(np.std(U, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gpt unsupervised obj."})
+    Examples
+    --------
+    >>> import math
+    >>> abs(kamath_ch2_gpt_unsupervised_obj([0.5, 0.5])["estimate"]
+    ...     + 2 * math.log(2)) < 1e-12
+    True
+    """
+    p = np.atleast_1d(np.asarray(U, dtype=float))
+    if len(p) == 0:
+        raise ValueError("no token probabilities supplied.")
+    if np.any((p < 0) | (p > 1)):
+        raise ValueError("probabilities must lie in [0, 1].")
+    if k is not None and int(k) < 1:
+        raise ValueError("the context size k must be positive.")
+    with np.errstate(divide="ignore"):
+        logs = np.log(p)
+    return RichResult(payload={
+        "estimate": float(logs.sum()),
+        "cross_entropy": float(-logs.mean()),
+        "context_size": None if k is None else int(k), "n": len(p),
+        "method": "GPT unsupervised objective L1 (Kamath Eq 2.34)"})
 
 
 def cheatsheet():
-    return "km034: Gpt unsupervised obj."
+    return "km034: sum of log-probs, maximised; CE reported alongside"

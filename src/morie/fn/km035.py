@@ -1,4 +1,6 @@
-r"""Gpt supervised softmax.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.35: GPT's supervised softmax head."""
 
 import numpy as np
 
@@ -8,35 +10,36 @@ __all__ = ["kamath_ch2_gpt_supervised_softmax"]
 
 
 def kamath_ch2_gpt_supervised_softmax(x, h, W_y):
-    r"""
-    Gpt supervised softmax.
+    """P(y | x) = softmax(h_m^l W_y): the final hidden state through
+    the label projection. ``x`` is recorded for the signature; the
+    computation reads h and W_y.
 
-    Formula: P(y|x_1,\dots,x_m) = \mathrm{softmax}(h_m^l W_y)
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.35, printed
+    p. 70.
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h : array-like
-        Input data.
-    W_y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.35, p. 70
-    r"""
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Gpt supervised softmax."})
+    Examples
+    --------
+    >>> out = kamath_ch2_gpt_supervised_softmax("doc", [1.0, 0.0],
+    ...     [[2.0, 0.0], [0.0, 2.0]])
+    >>> out["predicted_class"]
+    0
+    """
+    h = np.atleast_1d(np.asarray(h, dtype=float))
+    W = np.atleast_2d(np.asarray(W_y, dtype=float))
+    if W.shape[1] != len(h):
+        raise ValueError(
+            f"W_y has {W.shape[1]} columns but h has {len(h)} "
+            "dimensions (row convention h W_y^T).")
+    logits = W @ h
+    z = logits - logits.max()
+    p = np.exp(z) / np.exp(z).sum()
+    return RichResult(payload={
+        "probabilities": [float(v) for v in p],
+        "predicted_class": int(np.argmax(p)),
+        "estimate": float(p.max()), "n": len(p),
+        "method": "GPT supervised softmax head (Kamath Eq 2.35)"})
 
 
 def cheatsheet():
-    return "km035: Gpt supervised softmax."
+    return "km035: softmax(h W_y) over task labels"

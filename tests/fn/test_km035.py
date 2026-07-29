@@ -1,24 +1,18 @@
-"""Tests for km035.kamath_ch2_gpt_supervised_softmax."""
+"""Tests for km035.kamath_ch2_gpt_supervised_softmax (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km035 import kamath_ch2_gpt_supervised_softmax
+import morie.fn.km035 as mod
 
 
-def test_km035_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    W_y = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_gpt_supervised_softmax(x, h, W_y)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km035_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km035_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    h = 0.3
-    W_y = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_gpt_supervised_softmax(x, h, W_y)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km035 import kamath_ch2_gpt_supervised_softmax
+    with pytest.raises(ValueError):
+        kamath_ch2_gpt_supervised_softmax("d", [1.0, 2.0], [[1.0]])

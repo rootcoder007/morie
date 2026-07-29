@@ -1,4 +1,6 @@
-"""Unidirectional encoder state.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.1: the unidirectional encoder recurrence."""
 
 import numpy as np
 
@@ -7,34 +9,35 @@ from ._richresult import RichResult
 __all__ = ["kamath_ch2_unidirectional_encoder_state"]
 
 
-def kamath_ch2_unidirectional_encoder_state(h_t_1, x_t):
+def kamath_ch2_unidirectional_encoder_state(h_t_1, x_t, f=None):
+    """h_t = f(h_{t-1}, x_t); the default f is the elementwise
+    tanh(h + x), the simplest recurrence with the stated signature.
+    Pass any callable f(h, x) -> h to use a parameterised cell.
+
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.1, printed
+    p. 30 (PDF-verified page map: printed = PDF - 27).
+
+    Examples
+    --------
+    >>> kamath_ch2_unidirectional_encoder_state([0.0], [0.0])["h"]
+    [0.0]
     """
-    Unidirectional encoder state.
-
-    Formula: h_t = f(h_{t-1}, x_t)
-
-    Parameters
-    ----------
-    h_t_1 : array-like
-        Input data.
-    x_t : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.1, p. 30
-    """
-    h_t_1 = np.atleast_1d(np.asarray(h_t_1, dtype=float))
-    n = len(h_t_1)
-    result = float(np.mean(h_t_1))
-    se = float(np.std(h_t_1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Unidirectional encoder state."})
+    h = np.atleast_1d(np.asarray(h_t_1, dtype=float))
+    x = np.atleast_1d(np.asarray(x_t, dtype=float))
+    if f is None:
+        if h.shape != x.shape:
+            raise ValueError(
+                f"the default cell needs matching shapes; got {h.shape} "
+                f"and {x.shape}. Pass a callable f for projected inputs.")
+        out = np.tanh(h + x)
+    else:
+        out = np.atleast_1d(np.asarray(f(h, x), dtype=float))
+    return RichResult(payload={
+        "h": [float(v) for v in out], "estimate": float(out[0]),
+        "n": len(out),
+        "method": "Encoder recurrence h_t = f(h_t-1, x_t) (Kamath Eq 2.1)"})
 
 
 def cheatsheet():
-    return "km001: Unidirectional encoder state."
+    return "km001: encoder recurrence, default cell tanh(h + x)"

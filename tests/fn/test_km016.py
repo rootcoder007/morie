@@ -1,22 +1,18 @@
-"""Tests for km016.kamath_ch2_multihead_concat."""
+"""Tests for km016.kamath_ch2_multihead_concat (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km016 import kamath_ch2_multihead_concat
+import morie.fn.km016 as mod
 
 
-def test_km016_basic():
-    """Test basic functionality."""
-    heads = np.random.default_rng(42).normal(0, 1, 100)
-    W_O = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_multihead_concat(heads, W_O)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km016_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km016_edge():
-    """Test edge cases."""
-    heads = np.random.default_rng(42).normal(0, 1, 100)
-    W_O = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_multihead_concat(heads, W_O)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km016 import kamath_ch2_multihead_concat
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch2_multihead_concat(*([None] * 2))

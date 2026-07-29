@@ -1,24 +1,18 @@
-"""Tests for km004.kamath_ch2_decoder_hidden_state."""
+"""Tests for km004.kamath_ch2_decoder_hidden_state (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km004 import kamath_ch2_decoder_hidden_state
+import morie.fn.km004 as mod
 
 
-def test_km004_basic():
-    """Test basic functionality."""
-    s_t_1 = np.random.default_rng(42).normal(0, 1, 100)
-    y_t_1 = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_decoder_hidden_state(s_t_1, y_t_1, c)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km004_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km004_edge():
-    """Test edge cases."""
-    s_t_1 = np.random.default_rng(42).normal(0, 1, 100)
-    y_t_1 = np.random.default_rng(42).normal(0, 1, 100)
-    c = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_decoder_hidden_state(s_t_1, y_t_1, c)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km004 import kamath_ch2_decoder_hidden_state
+    with pytest.raises(ValueError):
+        kamath_ch2_decoder_hidden_state([1.0], [1.0], [1.0, 2.0])
