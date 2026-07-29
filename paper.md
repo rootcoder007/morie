@@ -560,6 +560,58 @@ consequence in the partition-counting routine was $p(4) = 4$ instead of
 parity test and by nothing else: the R code is well-formed, runs
 without warning, and returns plausible-looking integers.
 
+*A third case shows the same layer being used to check a theorem
+rather than to report one.* The hook length formula states that
+$f^\lambda = n! / \prod_{(i,j)} h(i,j)$ counts standard Young tableaux
+of shape $\lambda$. That a product of hook lengths should divide $n!$
+exactly is not obvious, and it is the kind of claim an implementation
+can appear to satisfy while doing something else. Both languages
+therefore compute the count from *prime exponents* --- Legendre's
+formula for the exponent of $p$ in $n!$, minus the exponents obtained
+by factoring each hook --- which cannot overflow at any shape, and
+then multiply the result back against the hook product and compare it
+with $n!$ in arbitrary precision. The residual is reported rather than
+assumed to be zero. At shape $(10, 9, \ldots, 1)$, 55 cells, the two
+languages agree on all 35 digits of
+$f^\lambda = 44261486084874072183645699204710400$, on all 39 digits of
+the hook product, and on all 74 digits of $55!$; the same holds at the
+$8 \times 8$ square, 64 cells. None of those three numbers is
+representable as a double, and none of the comparisons would mean
+anything if they were made numerically.
+
+The corollary $\sum_\lambda (f^\lambda)^2 = n!$ is then checked as an
+identity in both languages, which tests the tableau count against
+Robinson--Schensted rather than against a table of remembered values.
+Robinson--Schensted itself is a bijection, so it is round-tripped over
+*every* permutation of $n \le 6$ in both languages --- 873 words ---
+and the recovered permutation must equal the original exactly. A
+formula can be checked only against another formula; a bijection can
+be checked against itself.
+
+The same standard applies to counting up to symmetry. Burnside's lemma
+is frequently taught as "divide by the symmetry", which is wrong
+whenever some arrangements have symmetry of their own: two-colour
+necklaces of length four admit 16 colourings and 4 rotations but 6
+orbits, not 4. Both implementations return that naive quotient
+alongside the correct count and flag the disagreement, and both are
+checked against orbits enumerated *directly* --- every colouring
+generated, every image under every group element marked --- for all
+cyclic groups to $n = 6$ at two and three colours. The closed form for
+necklaces, $n^{-1} \sum_{d \mid n} \varphi(n/d) k^{d}$, is a shortcut
+over that enumeration, and shortcuts are where errors hide, so it is
+computed both ways and the two are compared at every $n \le 12$ for
+$k \in \{2, 3, 4\}$.
+
+One more R-specific trap surfaced here, and it is the mirror image of
+the `%/%` one. The idiom `for (p in 2:floor(sqrt(n)))` for a sieve is
+correct for every $n \ge 4$ and silently reverses for $n < 4$, where
+`2:1` counts *down* and hands `seq.int` a negative step. In Python
+`range(2, int(n**0.5) + 1)` is simply empty. The failure was loud when
+it came --- `wrong sign in 'by' argument` --- but it appeared only in
+the three tests that reached a partition of $n \le 3$, and only
+because the suite enumerated every partition of every $n$ from 1
+rather than starting where the interesting shapes are.
+
 That is the general argument for the parity discipline. A second
 implementation in a second language is not duplicated effort; it is the
 only check that catches defects which are invisible from inside one
