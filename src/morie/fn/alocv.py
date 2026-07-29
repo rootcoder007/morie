@@ -1,7 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Output verification: second LLM checks response against criteria."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Output verification gate (Alammar Ch 7)."""
 
 from ._richresult import RichResult
 
@@ -9,42 +8,36 @@ __all__ = ["alammar_output_verification"]
 
 
 def alammar_output_verification(response, criteria, verifier_model):
+    """passed = every criterion's verdict is PASS.
+
+    The verifier is a callable (response, criterion) -> verdict; any
+    verdict other than the literal strings "PASS"/"FAIL" is refused,
+    because a verifier that answers in prose has not answered.
+
+    References: Alammar and Grootendorst, Ch 7.
     """
-    Output verification: second LLM checks response against criteria
-
-    Formula: passed = LLM_verifier(response, criteria) ∈ {PASS, FAIL}
-
-    Parameters
-    ----------
-    response : array-like
-        Input data.
-    criteria : array-like
-        Input data.
-    verifier_model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: passed
-
-    References
-    ----------
-    Alammar Ch 6, Output Verification section
-    """
-    response = np.atleast_1d(np.asarray(response, dtype=float))
-    n = len(response)
-    result = float(np.mean(response))
-    se = float(np.std(response, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output verification: second LLM checks response against criteria",
-        }
-    )
+    if not callable(verifier_model):
+        raise ValueError("verifier_model must be callable "
+                         "(response, criterion) -> 'PASS' | 'FAIL'.")
+    crits = [str(c) for c in criteria]
+    if not crits:
+        raise ValueError("no criteria supplied; an empty gate passes "
+                         "everything and verifies nothing.")
+    verdicts = {}
+    for c in crits:
+        v = verifier_model(str(response), c)
+        if v not in ("PASS", "FAIL"):
+            raise ValueError(
+                f"verifier returned {v!r} for {c!r}; only 'PASS' or "
+                "'FAIL' count as answers.")
+        verdicts[c] = v
+    passed = all(v == "PASS" for v in verdicts.values())
+    return RichResult(payload={
+        "passed": passed, "verdicts": verdicts,
+        "failed_criteria": [c for c, v in verdicts.items() if v == "FAIL"],
+        "estimate": float(passed), "n": len(crits),
+        "method": "Criterion-gated output verification (Alammar Ch 7)"})
 
 
 def cheatsheet():
-    return "alocv: Output verification: second LLM checks response against criteria"
+    return "alocv: all-criteria PASS gate, prose verdicts refused"

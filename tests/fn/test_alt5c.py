@@ -1,24 +1,15 @@
 """Tests for alt5c.alammar_t5_text_to_text_classify."""
 
-import numpy as np
-
 from morie.fn.alt5c import alammar_t5_text_to_text_classify
 
 
 def test_alt5c_basic():
-    """Test basic functionality."""
-    input = np.random.default_rng(42).normal(0, 1, 100)
-    label_tokens = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_t5_text_to_text_classify(input, label_tokens, model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    m = lambda inp, lab: 0.0 if lab == "yes" else -5.0
+    out = alammar_t5_text_to_text_classify("q", ["yes", "no"], m)
+    assert out["predicted_label"] == "yes"
 
 
 def test_alt5c_edge():
-    """Test edge cases."""
-    input = np.random.default_rng(42).normal(0, 1, 100)
-    label_tokens = np.random.default_rng(42).normal(0, 1, 100)
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_t5_text_to_text_classify(input, label_tokens, model)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="label tokens"):
+        alammar_t5_text_to_text_classify("q", [], lambda i, l: 0)

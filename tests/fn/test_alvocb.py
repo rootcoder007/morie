@@ -1,22 +1,14 @@
 """Tests for alvocb.alammar_tokenizer_vocab_overlap."""
 
-import numpy as np
-
 from morie.fn.alvocb import alammar_tokenizer_vocab_overlap
 
 
 def test_alvocb_basic():
-    """Test basic functionality."""
-    vocab_a = np.random.default_rng(42).normal(0, 1, 100)
-    vocab_b = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_tokenizer_vocab_overlap(vocab_a, vocab_b)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_tokenizer_vocab_overlap(["a", "b"], ["b", "c"])
+    assert abs(out["estimate"] - 1 / 3) < 1e-12
 
 
 def test_alvocb_edge():
-    """Test edge cases."""
-    vocab_a = np.random.default_rng(42).normal(0, 1, 100)
-    vocab_b = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_tokenizer_vocab_overlap(vocab_a, vocab_b)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="empty"):
+        alammar_tokenizer_vocab_overlap([], [])

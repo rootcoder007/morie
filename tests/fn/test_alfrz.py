@@ -1,22 +1,15 @@
 """Tests for alfrz.alammar_layer_freezing."""
 
-import numpy as np
-
 from morie.fn.alfrz import alammar_layer_freezing
 
 
 def test_alfrz_basic():
-    """Test basic functionality."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    schedule = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_layer_freezing(model, schedule)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_layer_freezing(3)
+    assert out["masks"][0] == [False, False, True]
+    assert out["trainable_per_stage"] == [1, 2, 3]
 
 
 def test_alfrz_edge():
-    """Test edge cases."""
-    model = np.random.default_rng(42).normal(0, 1, 100)
-    schedule = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_layer_freezing(model, schedule)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="n_stages"):
+        alammar_layer_freezing(3, 5)

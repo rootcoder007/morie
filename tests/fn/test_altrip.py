@@ -1,26 +1,15 @@
 """Tests for altrip.alammar_sbert_triplet_loss."""
 
-import numpy as np
-
 from morie.fn.altrip import alammar_sbert_triplet_loss
 
 
 def test_altrip_basic():
-    """Test basic functionality."""
-    anchor = np.random.default_rng(42).normal(0, 1, 100)
-    positive = np.random.default_rng(42).normal(0, 1, 100)
-    negative = np.random.default_rng(42).normal(0, 1, 100)
-    margin = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_sbert_triplet_loss(anchor, positive, negative, margin)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_sbert_triplet_loss([[0.0]], [[0.0]], [[5.0]], margin=1.0)
+    assert out["estimate"] == 0.0
+    assert out["active"] == [False]
 
 
 def test_altrip_edge():
-    """Test edge cases."""
-    anchor = np.random.default_rng(42).normal(0, 1, 100)
-    positive = np.random.default_rng(42).normal(0, 1, 100)
-    negative = np.random.default_rng(42).normal(0, 1, 100)
-    margin = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_sbert_triplet_loss(anchor, positive, negative, margin)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="non-negative"):
+        alammar_sbert_triplet_loss([[0.0]], [[0.0]], [[1.0]], margin=-1)

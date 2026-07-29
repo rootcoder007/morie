@@ -1,26 +1,15 @@
 """Tests for alumap.alammar_umap_projection."""
 
-import numpy as np
-
 from morie.fn.alumap import alammar_umap_projection
 
 
 def test_alumap_basic():
-    """Test basic functionality."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_neighbors = np.random.default_rng(42).normal(0, 1, 100)
-    min_dist = np.random.default_rng(42).normal(0, 1, 100)
-    d_out = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_umap_projection(X, n_neighbors, min_dist, d_out)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    X = [[0, 0], [0.2, 0], [0, 0.2], [8, 8], [8.2, 8], [8, 8.2]]
+    out = alammar_umap_projection(X, n_neighbors=2, n_steps=50)
+    assert out["objective_decreased"] is True
 
 
 def test_alumap_edge():
-    """Test edge cases."""
-    X = np.random.default_rng(42).normal(0, 1, (100, 5))
-    n_neighbors = np.random.default_rng(42).normal(0, 1, 100)
-    min_dist = np.random.default_rng(42).normal(0, 1, 100)
-    d_out = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_umap_projection(X, n_neighbors, min_dist, d_out)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="n_neighbors"):
+        alammar_umap_projection([[0, 0], [1, 1]], n_neighbors=5)

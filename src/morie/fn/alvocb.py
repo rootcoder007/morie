@@ -1,7 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Tokenizer vocabulary overlap (Alammar Ch 2)."""
 
 from ._richresult import RichResult
 
@@ -9,40 +8,24 @@ __all__ = ["alammar_tokenizer_vocab_overlap"]
 
 
 def alammar_tokenizer_vocab_overlap(vocab_a, vocab_b):
+    """Jaccard J = |A intersect B| / |A union B|.
+
+    Examples
+    --------
+    >>> alammar_tokenizer_vocab_overlap(["a", "b"], ["b", "c"])["estimate"]
+    0.3333333333333333
     """
-    Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs
-
-    Formula: J(V_A, V_B) = |V_A ∩ V_B| / |V_A ∪ V_B|
-
-    Parameters
-    ----------
-    vocab_a : array-like
-        Input data.
-    vocab_b : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: jaccard
-
-    References
-    ----------
-    Alammar Ch 2, Tokenizer Vocabulary Comparison section
-    """
-    vocab_a = np.atleast_1d(np.asarray(vocab_a, dtype=float))
-    n = len(vocab_a)
-    result = float(np.mean(vocab_a))
-    se = float(np.std(vocab_a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs",
-        }
-    )
+    A = {str(v) for v in vocab_a}
+    B = {str(v) for v in vocab_b}
+    if not A and not B:
+        raise ValueError("both vocabularies are empty; 0/0.")
+    inter = len(A & B)
+    union = len(A | B)
+    return RichResult(payload={
+        "estimate": inter / union, "intersection": inter, "union": union,
+        "only_a": len(A - B), "only_b": len(B - A), "n": union,
+        "method": "Jaccard vocabulary overlap (Alammar Ch 2)"})
 
 
 def cheatsheet():
-    return "alvocb: Tokenizer vocabulary comparison: Jaccard overlap between two tokenizer vocabs"
+    return "alvocb: Jaccard |A&B|/|A|B| over token vocabularies"

@@ -1,22 +1,14 @@
 """Tests for aldocemb.alammar_document_embedding_pool."""
 
-import numpy as np
-
 from morie.fn.aldocemb import alammar_document_embedding_pool
 
 
 def test_aldocemb_basic():
-    """Test basic functionality."""
-    token_embeddings = np.random.default_rng(42).normal(0, 1, 100)
-    attention_mask = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_document_embedding_pool(token_embeddings, attention_mask)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_document_embedding_pool([[2.0], [4.0], [99.0]], [1, 1, 0])
+    assert out["embedding"] == [3.0]
 
 
 def test_aldocemb_edge():
-    """Test edge cases."""
-    token_embeddings = np.random.default_rng(42).normal(0, 1, 100)
-    attention_mask = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_document_embedding_pool(token_embeddings, attention_mask)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="all-padding"):
+        alammar_document_embedding_pool([[1.0]], [0])

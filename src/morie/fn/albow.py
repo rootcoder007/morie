@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Bag-of-words vector: per-document term-count vector over the fixed vocabulary."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Bag-of-words vector (Alammar Ch 1)."""
 
 import numpy as np
 
@@ -9,40 +10,40 @@ __all__ = ["alammar_bag_of_words"]
 
 
 def alammar_bag_of_words(tokens, vocab):
+    """bow[v] = count of vocabulary word v in the document.
+
+    Out-of-vocabulary tokens are counted and reported, not silently
+    dropped into nothing -- their number is exactly what the vector
+    fails to represent.
+
+    Examples
+    --------
+    >>> out = alammar_bag_of_words(["a", "b", "a", "z"], ["a", "b", "c"])
+    >>> out["bow_vector"]
+    [2, 1, 0]
+    >>> out["oov_count"]
+    1
     """
-    Bag-of-words vector: per-document term-count vector over the fixed vocabulary
-
-    Formula: bow_d[v] = count(v in d)
-
-    Parameters
-    ----------
-    tokens : array-like
-        Input data.
-    vocab : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: bow_vector
-
-    References
-    ----------
-    Alammar Ch 1, Bag-of-Words section
-    """
-    tokens = np.atleast_1d(np.asarray(tokens, dtype=float))
-    n = len(tokens)
-    result = float(np.mean(tokens))
-    se = float(np.std(tokens, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bag-of-words vector: per-document term-count vector over the fixed vocabulary",
-        }
-    )
+    toks = [str(t) for t in np.atleast_1d(np.asarray(tokens, dtype=object))]
+    voc = [str(v) for v in np.atleast_1d(np.asarray(vocab, dtype=object))]
+    if len(set(voc)) != len(voc):
+        raise ValueError("the vocabulary contains duplicates.")
+    if not voc:
+        raise ValueError("the vocabulary is empty.")
+    idx = {v: i for i, v in enumerate(voc)}
+    bow = [0] * len(voc)
+    oov = 0
+    for t in toks:
+        if t in idx:
+            bow[idx[t]] += 1
+        else:
+            oov += 1
+    return RichResult(payload={
+        "bow_vector": bow, "oov_count": oov,
+        "estimate": float(bow[0]), "vocab_size": len(voc),
+        "n": len(toks),
+        "method": "Bag-of-words counts over a fixed vocabulary (Alammar Ch 1)"})
 
 
 def cheatsheet():
-    return "albow: Bag-of-words vector: per-document term-count vector over the fixed vocabulary"
+    return "albow: per-vocab counts, OOV counted not dropped"

@@ -1,5 +1,6 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Mean Reciprocal Rank over Q queries."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Mean reciprocal rank (Alammar Ch 8)."""
 
 import numpy as np
 
@@ -9,33 +10,40 @@ __all__ = ["alammar_mean_reciprocal_rank"]
 
 
 def alammar_mean_reciprocal_rank(rankings, relevant_indices):
+    """MRR = mean over queries of 1 / rank of the first relevant item.
+
+    ``rankings`` is a list of ranked id lists; ``relevant_indices`` a
+    list of relevant-id sets. A query whose relevant items never
+    appear contributes 0, and how many did is reported -- averaging
+    away missing answers silently is how retrieval demos lie.
+
+    Examples
+    --------
+    >>> alammar_mean_reciprocal_rank([[3, 1, 2]], [[1]])["estimate"]
+    0.5
     """
-    Mean Reciprocal Rank over Q queries
-
-    Formula: MRR = (1/|Q|) sum_{q in Q} 1 / rank_of_first_relevant(q)
-
-    Parameters
-    ----------
-    rankings : array-like
-        Input data.
-    relevant_indices : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: mrr
-
-    References
-    ----------
-    Alammar Ch 8, MRR section
-    """
-    rankings = np.atleast_1d(np.asarray(rankings, dtype=float))
-    n = len(rankings)
-    result = float(np.mean(rankings))
-    se = float(np.std(rankings, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean Reciprocal Rank over Q queries"})
+    if len(rankings) != len(relevant_indices):
+        raise ValueError("need one relevant set per ranking.")
+    if not rankings:
+        raise ValueError("no queries supplied.")
+    rrs = []
+    missed = 0
+    for ranked, rel in zip(rankings, relevant_indices):
+        rel = set(rel)
+        rr = 0.0
+        for pos, item in enumerate(ranked, start=1):
+            if item in rel:
+                rr = 1.0 / pos
+                break
+        if rr == 0.0:
+            missed += 1
+        rrs.append(rr)
+    return RichResult(payload={
+        "estimate": float(np.mean(rrs)),
+        "reciprocal_ranks": rrs, "queries_missed": missed,
+        "n": len(rrs),
+        "method": "Mean reciprocal rank (Alammar Ch 8)"})
 
 
 def cheatsheet():
-    return "almrr: Mean Reciprocal Rank over Q queries"
+    return "almrr: mean 1/rank-of-first-relevant, misses counted not hidden"

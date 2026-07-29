@@ -1,24 +1,15 @@
 """Tests for alembc.alammar_embedding_classifier."""
 
-import numpy as np
-
 from morie.fn.alembc import alammar_embedding_classifier
 
 
 def test_alembc_basic():
-    """Test basic functionality."""
-    embeddings = np.random.default_rng(42).normal(0, 1, 100)
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    classifier = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_embedding_classifier(embeddings, labels, classifier)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_embedding_classifier([[0, 0], [0.1, 0], [5, 5], [5.1, 5]],
+                                       [0, 0, 1, 1])
+    assert out["train_accuracy"] == 1.0
 
 
 def test_alembc_edge():
-    """Test edge cases."""
-    embeddings = np.random.default_rng(42).normal(0, 1, 100)
-    labels = np.random.default_rng(43).integers(0, 2, 100)
-    classifier = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_embedding_classifier(embeddings, labels, classifier)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="at least 2 classes"):
+        alammar_embedding_classifier([[0, 0], [1, 1]], [0, 0])

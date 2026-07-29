@@ -1,48 +1,47 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Chat template: interleave system/user/assistant roles with role tokens."""
-
-import numpy as np
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Chat template rendering (Alammar Ch 6)."""
 
 from ._richresult import RichResult
 
 __all__ = ["alammar_chat_template"]
 
 
-def alammar_chat_template(turns, template_tokens):
+def alammar_chat_template(turns, template_tokens=None):
+    """prompt = concat(role_open + content + role_close per turn).
+
+    ``template_tokens`` maps role -> (open, close). An unknown role is
+    refused: rendering it with empty markers would make the turn
+    invisible to the model while looking fine in a log.
+
+    Examples
+    --------
+    >>> out = alammar_chat_template(
+    ...     [("user", "hi"), ("assistant", "hello")],
+    ...     {"user": ("<u>", "</u>"), "assistant": ("<a>", "</a>")})
+    >>> out["prompt"]
+    '<u>hi</u><a>hello</a>'
     """
-    Chat template: interleave system/user/assistant roles with role tokens
-
-    Formula: prompt = concat( role_tokens[r_i] + content_i  for i in turns )
-
-    Parameters
-    ----------
-    turns : array-like
-        Input data.
-    template_tokens : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: prompt
-
-    References
-    ----------
-    Alammar Ch 12, chat templates section
-    """
-    turns = np.atleast_1d(np.asarray(turns, dtype=float))
-    n = len(turns)
-    result = float(np.mean(turns))
-    se = float(np.std(turns, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Chat template: interleave system/user/assistant roles with role tokens",
-        }
-    )
+    tt = template_tokens or {
+        "system": ("<|system|>\n", "\n"),
+        "user": ("<|user|>\n", "\n"),
+        "assistant": ("<|assistant|>\n", "\n"),
+    }
+    parts = []
+    for role, content in turns:
+        role = str(role)
+        if role not in tt:
+            raise ValueError(
+                f"role {role!r} has no template tokens; rendering it "
+                "unmarked would hide the turn from the model.")
+        o, c = tt[role]
+        parts.append(f"{o}{content}{c}")
+    prompt = "".join(parts)
+    return RichResult(payload={
+        "prompt": prompt, "n_turns": len(list(turns)),
+        "estimate": float(len(prompt)), "n": len(list(turns)),
+        "method": "Chat template rendering (Alammar Ch 6)"})
 
 
 def cheatsheet():
-    return "alchat: Chat template: interleave system/user/assistant roles with role tokens"
+    return "alchat: role-token concatenation, unknown roles refused"

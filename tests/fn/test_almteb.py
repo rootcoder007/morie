@@ -1,22 +1,15 @@
 """Tests for almteb.alammar_mteb_benchmark_score."""
 
-import numpy as np
-
 from morie.fn.almteb import alammar_mteb_benchmark_score
 
 
 def test_almteb_basic():
-    """Test basic functionality."""
-    task_scores = np.random.default_rng(42).normal(0, 1, 100)
-    category_map = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_mteb_benchmark_score(task_scores, category_map)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_mteb_benchmark_score({"a": 1.0, "b": 0.0},
+                                       {"a": "x", "b": "y"})
+    assert out["estimate"] == 0.5
 
 
 def test_almteb_edge():
-    """Test edge cases."""
-    task_scores = np.random.default_rng(42).normal(0, 1, 100)
-    category_map = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_mteb_benchmark_score(task_scores, category_map)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="no category"):
+        alammar_mteb_benchmark_score({"a": 1.0}, {})

@@ -1,22 +1,14 @@
 """Tests for alspl.alammar_sampling_decoding."""
 
-import numpy as np
-
 from morie.fn.alspl import alammar_sampling_decoding
 
 
 def test_alspl_basic():
-    """Test basic functionality."""
-    logits = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = alammar_sampling_decoding(logits, seed)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_sampling_decoding([[9.0, 0.0]], seed=1)
+    assert out["tokens"] == [0]
 
 
 def test_alspl_edge():
-    """Test edge cases."""
-    logits = np.random.default_rng(42).normal(0, 1, 100)
-    seed = 42
-    result = alammar_sampling_decoding(logits, seed)
-    assert isinstance(result, dict)
+    a = alammar_sampling_decoding([[1.0, 1.0]] * 5, seed=3)
+    b = alammar_sampling_decoding([[1.0, 1.0]] * 5, seed=3)
+    assert a["tokens"] == b["tokens"]

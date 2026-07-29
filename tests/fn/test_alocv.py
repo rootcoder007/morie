@@ -1,24 +1,14 @@
 """Tests for alocv.alammar_output_verification."""
 
-import numpy as np
-
 from morie.fn.alocv import alammar_output_verification
 
 
 def test_alocv_basic():
-    """Test basic functionality."""
-    response = np.random.default_rng(42).normal(0, 1, 100)
-    criteria = np.random.default_rng(42).normal(0, 1, 100)
-    verifier_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_output_verification(response, criteria, verifier_model)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_output_verification("x", ["c1"], lambda r, c: "PASS")
+    assert out["passed"] is True
 
 
 def test_alocv_edge():
-    """Test edge cases."""
-    response = np.random.default_rng(42).normal(0, 1, 100)
-    criteria = np.random.default_rng(42).normal(0, 1, 100)
-    verifier_model = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_output_verification(response, criteria, verifier_model)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="empty gate"):
+        alammar_output_verification("x", [], lambda r, c: "PASS")

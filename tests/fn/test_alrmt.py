@@ -1,22 +1,14 @@
 """Tests for alrmt.alammar_reward_model_training_bt."""
 
-import numpy as np
-
 from morie.fn.alrmt import alammar_reward_model_training_bt
 
 
 def test_alrmt_basic():
-    """Test basic functionality."""
-    scores_w = np.random.default_rng(42).normal(0, 1, 100)
-    scores_l = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_reward_model_training_bt(scores_w, scores_l)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+    out = alammar_reward_model_training_bt([2.0], [0.0])
+    assert out["pair_accuracy"] == 1.0
 
 
 def test_alrmt_edge():
-    """Test edge cases."""
-    scores_w = np.random.default_rng(42).normal(0, 1, 100)
-    scores_l = np.random.default_rng(42).normal(0, 1, 100)
-    result = alammar_reward_model_training_bt(scores_w, scores_l)
-    assert isinstance(result, dict)
+    import pytest
+    with pytest.raises(ValueError, match="loser score"):
+        alammar_reward_model_training_bt([1.0, 2.0], [0.0])
