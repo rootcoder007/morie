@@ -72,7 +72,7 @@ NotImplementedError with a written reason — never a mean-of-inputs.
   mask-INSIDE-the-scaling convention pinned against Vaswani's (finite
   masks split, -inf agrees); the Eq 2.20-2.33 loss family shares one
   validated -mean-log-P core; MoE gate sparsity exact. 35 cluster
-  tests + 82 re-fixtured legacy = 107 green. R parity PENDING.
+  tests + 82 re-fixtured legacy = 107 green. R parity DONE: kamath_ch2_native.R (26 exports, Eq 2.12/2.15 delegating to the alammar core), 59 assertions green on the first l14 run, mirrored to rmorie.
 - [ ] W4 Géron hm* (329): classic ML — losses, metrics, trees, SVM,
   ensembles, RL. Many have scipy/sklearn oracles for cross-checks.
 - [ ] W5 Géron gr* (201): training mechanics — schedules, inits,
