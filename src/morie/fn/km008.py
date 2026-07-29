@@ -1,4 +1,6 @@
-r"""Attention softmax weights.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.8: attention weights b = softmax(a)."""
 
 import numpy as np
 
@@ -8,31 +10,28 @@ __all__ = ["kamath_ch2_attention_softmax_weights"]
 
 
 def kamath_ch2_attention_softmax_weights(a):
-    r"""
-    Attention softmax weights.
+    """b = softmax(a); sums to 1 and preserves the ordering of a.
 
-    Formula: b = \mathrm{softmax}(a)
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.8, printed
+    p. 32 (PDF-verified page map: printed = PDF - 27).
 
-    Parameters
-    ----------
-    a : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.8, p. 32
-    r"""
+    Examples
+    --------
+    >>> out = kamath_ch2_attention_softmax_weights([0.0, 0.0])
+    >>> out["weights"]
+    [0.5, 0.5]
+    """
     a = np.atleast_1d(np.asarray(a, dtype=float))
-    n = len(a)
-    result = float(np.mean(a))
-    se = float(np.std(a, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Attention softmax weights."})
+    if len(a) == 0:
+        raise ValueError("no scores supplied.")
+    z = a - a.max()
+    b = np.exp(z) / np.exp(z).sum()
+    return RichResult(payload={
+        "weights": [float(v) for v in b], "estimate": float(b[0]),
+        "n": len(a),
+        "method": "Attention softmax weights (Kamath Eq 2.8)"})
 
 
 def cheatsheet():
-    return "km008: Attention softmax weights."
+    return "km008: softmax over attention scores, max-shifted"

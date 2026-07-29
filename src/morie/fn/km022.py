@@ -1,4 +1,6 @@
-r"""Mlm loss.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.22: the masked language modelling (MLM) pretraining loss."""
 
 import numpy as np
 
@@ -7,34 +9,51 @@ from ._richresult import RichResult
 __all__ = ["kamath_ch2_mlm_loss"]
 
 
+def _validate_probs(p, name):
+    p = np.atleast_1d(np.asarray(p, dtype=float))
+    if len(p) == 0:
+        raise ValueError(f"{name} is empty.")
+    if np.any((p < 0) | (p > 1)):
+        raise ValueError(f"every entry of {name} must lie in [0, 1].")
+    return p
+
+
 def kamath_ch2_mlm_loss(x, M_x):
-    r"""
-    Mlm loss.
+    """L = -(1/|S|) sum over the masked positions M_x of log P.
 
-    Formula: L^{(x)}_{MLM} = -\frac{1}{|M_x|}\sum_{i\in M_x} \log P(x_i|x_{\setminus M_x})
+    ``x`` holds the model's probability of the TRUE token at every
+    position; the index set selects which positions the loss reads.
+    A probability of 0 at a scored position gives infinite
+    loss, which is the mathematics and is returned, not clipped.
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    M_x : array-like
-        Input data.
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.22, printed
+    p. 51.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.22, p. 51
-    r"""
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mlm loss."})
+    Examples
+    --------
+    >>> import math
+    >>> out = kamath_ch2_mlm_loss([0.5, 1.0, 0.25], [0, 2])
+    >>> abs(out["estimate"] - (math.log(2) + math.log(4)) / 2) < 1e-12
+    True
+    """
+    p = _validate_probs(x, "x")
+    idx = np.atleast_1d(np.asarray(M_x)).astype(int)
+    if len(idx) == 0:
+        raise ValueError("the scored index set is empty; a loss over "
+                         "nothing is not 0, it is undefined.")
+    if np.any((idx < 0) | (idx >= len(p))):
+        raise ValueError("an index lies outside the sequence.")
+    if len(set(int(i) for i in idx)) != len(idx):
+        raise ValueError("the index set contains duplicates.")
+    with np.errstate(divide="ignore"):
+        losses = -np.log(p[idx])
+    return RichResult(payload={
+        "estimate": float(np.mean(losses)),
+        "per_position": [float(v) for v in losses],
+        "positions_scored": [int(i) for i in idx], "n": len(p),
+        "method": "masked language modelling (MLM) loss (Kamath Eq 2.22)"})
 
 
 def cheatsheet():
-    return "km022: Mlm loss."
+    return "km022: -mean log P over the masked positions M_x"

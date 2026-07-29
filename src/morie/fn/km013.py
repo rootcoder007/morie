@@ -1,4 +1,6 @@
-r"""Positional encoding sin.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.13/2.14: sinusoidal positional encodings."""
 
 import numpy as np
 
@@ -8,35 +10,34 @@ __all__ = ["kamath_ch2_positional_encoding_sin"]
 
 
 def kamath_ch2_positional_encoding_sin(i, j, d):
-    r"""
-    Positional encoding sin.
+    """P[i, 2j] = sin(i / 10000^(2j/d)).
 
-    Formula: P_{i,2j} = \sin(i/10000^{2j/d})
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.13, printed
+    p. 35 (PDF-verified page map: printed = PDF - 27).
 
-    Parameters
-    ----------
-    i : array-like
-        Input data.
-    j : array-like
-        Input data.
-    d : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.13, p. 35
-    r"""
-    i = np.atleast_1d(np.asarray(i, dtype=float))
-    n = len(i)
-    result = float(np.mean(i))
-    se = float(np.std(i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Positional encoding sin."})
+    Examples
+    --------
+    >>> kamath_ch2_positional_encoding_sin(0, 0, 4)["estimate"]
+    0.0
+    """
+    i = int(i); j = int(j); d = int(d)
+    if d < 1:
+        raise ValueError("the model dimension d must be positive.")
+    if i < 0 or j < 0:
+        raise ValueError("position and index must be non-negative.")
+    if 2 * j >= d:
+        raise ValueError(
+            f"2j = {2 * j} must lie below d = {d}; the pair (sin, cos) "
+            "fills dimensions 2j and 2j+1.")
+    val = float(np.sin(i / 10000.0 ** (2.0 * j / d)))
+    return RichResult(payload={
+        "estimate": val, "wavelength": float(2 * np.pi
+                                             * 10000.0 ** (2.0 * j / d)),
+        "n": d,
+        "method": "Sinusoidal positional encoding, even dims "
+                  "(Kamath Eq 2.13)"})
 
 
 def cheatsheet():
-    return "km013: Positional encoding sin."
+    return "km013: P[i,2j] = sin(i/10000^(2j/d))"

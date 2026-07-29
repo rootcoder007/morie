@@ -1,4 +1,6 @@
-r"""Attention output.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.10: the attention output o = sum b_i v_i."""
 
 import numpy as np
 
@@ -8,33 +10,31 @@ __all__ = ["kamath_ch2_attention_output"]
 
 
 def kamath_ch2_attention_output(b, v):
-    r"""
-    Attention output.
+    """o = sum_i b_i v_i -- a convex combination when b comes from a
+    softmax, which the payload checks and reports.
 
-    Formula: o = \sum_{i=1}^n b_i v_i
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.10, printed
+    p. 32 (PDF-verified page map: printed = PDF - 27).
 
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    v : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.10, p. 32
-    r"""
+    Examples
+    --------
+    >>> kamath_ch2_attention_output([0.5, 0.5], [[2.0], [4.0]])["output"]
+    [3.0]
+    """
     b = np.atleast_1d(np.asarray(b, dtype=float))
-    n = len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Attention output."})
+    V = np.atleast_2d(np.asarray(v, dtype=float))
+    if V.shape[0] != len(b):
+        raise ValueError(
+            f"need one value row per weight; got {V.shape[0]} rows for "
+            f"{len(b)} weights.")
+    o = b @ V
+    convex = bool(np.all(b >= 0) and abs(float(b.sum()) - 1.0) < 1e-9)
+    return RichResult(payload={
+        "output": [float(x) for x in o], "is_convex_combination": convex,
+        "estimate": float(o[0]), "n": len(b),
+        "method": "Attention output sum b_i v_i (Kamath Eq 2.10)"})
 
 
 def cheatsheet():
-    return "km010: Attention output."
+    return "km010: weighted value sum, convexity reported"

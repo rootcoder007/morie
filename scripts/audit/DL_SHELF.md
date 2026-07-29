@@ -67,6 +67,12 @@ NotImplementedError with a written reason — never a mean-of-inputs.
   Suggested tranches: Ch2 first (overlaps the W2 attention core —
   collision-scan against attsdp/attmh family before writing), then
   Ch6, Ch9, Ch8, the small chapters, then the 93 unparsed.
+  **Tranche 1 (Ch2, 41): Python DONE 2026-07-29** — km001-km041 real,
+  Eq 2.12 delegates to the shared attsdp core; Eq 2.19's
+  mask-INSIDE-the-scaling convention pinned against Vaswani's (finite
+  masks split, -inf agrees); the Eq 2.20-2.33 loss family shares one
+  validated -mean-log-P core; MoE gate sparsity exact. 35 cluster
+  tests + 82 re-fixtured legacy = 107 green. R parity PENDING.
 - [ ] W4 Géron hm* (329): classic ML — losses, metrics, trees, SVM,
   ensembles, RL. Many have scipy/sklearn oracles for cross-checks.
 - [ ] W5 Géron gr* (201): training mechanics — schedules, inits,

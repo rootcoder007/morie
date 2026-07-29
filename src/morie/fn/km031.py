@@ -1,42 +1,38 @@
-r"""Sop loss.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 2.31: sentence order prediction (SOP)."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from .km030 import kamath_ch2_nsp_loss
 
 __all__ = ["kamath_ch2_sop_loss"]
 
 
 def kamath_ch2_sop_loss(x, y, d):
-    r"""
-    Sop loss.
+    """L_SOP = -log P(d | x, y): the same binary form as Eq 2.30 with
+    d meaning IN-ORDER (1) versus swapped (0). The form is shared, so
+    the implementation is too; what differs is the task the caller's
+    model was trained on, which no formula can check.
 
-    Formula: L^{(x,y)}_{SOP} = -\log P(d|x,y)
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 2, Eq 2.31, printed
+    p. 54.
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    d : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 2, Eq 2.31, p. 54
-    r"""
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sop loss."})
+    Examples
+    --------
+    >>> import math
+    >>> abs(kamath_ch2_sop_loss(0.5, "s2", 0)["estimate"]
+    ...     - math.log(2)) < 1e-12
+    True
+    """
+    inner = kamath_ch2_nsp_loss(x, y, d)
+    return RichResult(payload={
+        "estimate": inner["estimate"], "p_in_order": inner["p_next"],
+        "label": inner["label"], "n": 1,
+        "method": "Sentence order prediction loss (Kamath Eq 2.31)"})
 
 
 def cheatsheet():
-    return "km031: Sop loss."
+    return "km031: SOP shares Eq 2.30's binary form, d = in-order"

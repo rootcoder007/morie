@@ -1,24 +1,18 @@
-"""Tests for km034.kamath_ch2_gpt_unsupervised_obj."""
+"""Tests for km034.kamath_ch2_gpt_unsupervised_obj (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km034 import kamath_ch2_gpt_unsupervised_obj
+import morie.fn.km034 as mod
 
 
-def test_km034_basic():
-    """Test basic functionality."""
-    U = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    Theta = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_gpt_unsupervised_obj(U, k, Theta)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km034_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km034_edge():
-    """Test edge cases."""
-    U = np.random.default_rng(42).normal(0, 1, 100)
-    k = 5
-    Theta = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_gpt_unsupervised_obj(U, k, Theta)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km034 import kamath_ch2_gpt_unsupervised_obj
+    with pytest.raises(ValueError):
+        kamath_ch2_gpt_unsupervised_obj([2.0])

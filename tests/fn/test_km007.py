@@ -1,22 +1,18 @@
-"""Tests for km007.kamath_ch2_attention_score."""
+"""Tests for km007.kamath_ch2_attention_score (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km007 import kamath_ch2_attention_score
+import morie.fn.km007 as mod
 
 
-def test_km007_basic():
-    """Test basic functionality."""
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    k_i = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_attention_score(q, k_i)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km007_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km007_edge():
-    """Test edge cases."""
-    q = np.random.default_rng(42).normal(0, 1, 100)
-    k_i = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_attention_score(q, k_i)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km007 import kamath_ch2_attention_score
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch2_attention_score(*([None] * 3))

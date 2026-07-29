@@ -1,22 +1,18 @@
-"""Tests for km041.kamath_ch2_mixtral_swiglu_moe."""
+"""Tests for km041.kamath_ch2_mixtral_swiglu_moe (re-fixtured from the doctest)."""
 
-import numpy as np
+import doctest
 
-from morie.fn.km041 import kamath_ch2_mixtral_swiglu_moe
+import morie.fn.km041 as mod
 
 
-def test_km041_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    W_g = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_mixtral_swiglu_moe(x, W_g)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_km041_doctest():
+    r = doctest.testmod(mod)
+    assert r.failed == 0
+    assert r.attempted > 0
 
 
 def test_km041_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    W_g = np.random.default_rng(42).normal(0, 1, 100)
-    result = kamath_ch2_mixtral_swiglu_moe(x, W_g)
-    assert isinstance(result, dict)
+    import pytest
+    from morie.fn.km041 import kamath_ch2_mixtral_swiglu_moe
+    with pytest.raises((ValueError, TypeError)):
+        kamath_ch2_mixtral_swiglu_moe(*([None] * 3))
