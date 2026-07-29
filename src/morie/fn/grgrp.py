@@ -113,7 +113,7 @@ def geron_gaussian_random_projection(X, d, seed=0):
         title="Gaussian random projection",
         summary_lines=[("n -> d", f"{n} -> {d}"),
                        ("Var target", 1.0 / d),
-                       ("Var achieved", float(np.var(R)))],
+                       ("Var achieved", float(np.var(R, ddof=1)) if R.size > 1 else 0.0)],
         payload={
             "projected": Z.tolist(),
             "R": R.tolist(),
