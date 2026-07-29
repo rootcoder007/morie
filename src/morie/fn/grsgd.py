@@ -53,6 +53,12 @@ def geron_stochastic_gradient_descent(X, y, theta, eta, n_iter, seed=42, t0=None
         ``cost_path`` (full-sample MSE), ``learning_rates``,
         ``sample_order``, ``estimate``, ``n``, ``method``.
 
+    NOTE the schedule t0/(t + t1) is driven by the 0-based loop
+    counter, so the first step's rate is t0/t1; Geron's text presents
+    the same schedule starting at t = 1. The two differ only by one
+    index shift and this implementation states its choice rather than
+    silently mixing them.
+
     References
     ----------
     Géron Ch 4, Stochastic Gradient Descent section.

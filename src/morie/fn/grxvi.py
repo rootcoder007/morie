@@ -58,6 +58,12 @@ def geron_glorot_xavier_init(fan_in, fan_out, distribution="normal", seed=42):
         ``achieved_variance``, ``scale`` (sigma or the uniform limit),
         ``estimate``, ``n``, ``method``.
 
+    NOTE the normal branch fills the whole cosine block then the
+    whole sine block of the Box-Muller pairs, where the sibling
+    initialisers (grhei, grgrp, grdpmf) interleave the pairs; the
+    distributions are identical, the draw ORDER is not, so streams
+    are not interchangeable across the two layouts.
+
     References
     ----------
     Géron Ch 11, Eq 11-1 (Glorot initialization).

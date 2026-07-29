@@ -64,6 +64,12 @@ def geron_reparameterization_trick(mu, logvar, eps=None, seed=42):
         ``dz_dlogvar``, ``sample_mean``, ``sample_variance``,
         ``estimate``, ``n``, ``method``.
 
+    NOTE this module clamps the Box-Muller u1 at 1e-12 where the
+    sibling initialisers do not; the clamp only matters on the
+    measure-zero event u1 == 0 from the LCG, which the shared stream
+    never actually produces, but the difference is stated so the
+    conventions cannot be assumed identical.
+
     References
     ----------
     Géron Ch 18, Reparameterization Trick (VAE).
