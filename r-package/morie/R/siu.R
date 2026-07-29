@@ -52,7 +52,7 @@
 #' parser themselves, which is fair use of public oversight reports.
 #'
 #' @param cache_dir Output directory. Defaults to a session-scoped
-#'   subdirectory of \code{\link[base]{tempdir}()} that R cleans up
+#'   subdirectory of \code{\link\[base\]{tempdir}()} that R cleans up
 #'   automatically. For persistent cross-session caching pass
 #'   \code{cache_dir = morie_cache_dir("siu")} instead; see
 #'   \code{\link{morie_cache_dir}} and \code{\link{morie_cache_clear}}.
@@ -2338,12 +2338,12 @@ morie_siu_translate_fr_to_en <- function(
 #' )
 #' csv <- morie_fetch_siu(cache_html = TRUE)
 #' df <- utils::read.csv(csv, colClasses = "character")
-#' sample <- sample(df$case_number[nzchar(df$case_number)], 50L)
+#' sample <- sample(df$case_number\[nzchar(df$case_number)\], 50L)
 #' audit <- morie_siu_audit_columns(sample, model = "ollama")
 #' # Worst 8 fields, ripe for parser fixes:
 #' head(audit, 8)
 #' # See concrete disagreements for the worst field:
-#' attr(audit, "examples")[[audit$field[1L]]]
+#' attr(audit, "examples")\[\[audit$field\[1L\]\]\]
 #' }
 #' @export
 morie_siu_audit_columns <- function(case_numbers, model = c("ollama", "gemini"),

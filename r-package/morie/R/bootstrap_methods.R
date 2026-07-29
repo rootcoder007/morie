@@ -784,9 +784,9 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 #'
 #' Bootstrap-flavoured K-fold cross-validation (internal).
 #'
-#' Lower-level CV used by [repeated_cv()] / [leave_one_out_cv()].
+#' Lower-level CV used by \[repeated_cv()\] / \[leave_one_out_cv()\].
 #' Public CV with `(fit_fn, predict_fn, X, y, ...)` signature lives in
-#' [cross_validate()] (validation.R). Renamed to avoid the symbol
+#' \[cross_validate()\] (validation.R). Renamed to avoid the symbol
 #' collision that R CMD check surfaced as unused-arg notes.
 #'
 #' @param X Numeric design matrix.

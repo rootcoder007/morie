@@ -808,7 +808,7 @@ morie_sensitivity_rosenbaum <- function(treated, control,
 #' G-computation (outcome regression) ATE estimator
 #'
 #' Estimates the ATE by:
-#' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr]}{ATE_hat = (1)/(n)sum_i bigl[mu_hat_1(X_i) - mu_hat_0(X_i)bigr]}
+#' \deqn{\widehat{ATE} = \frac{1}{n}\sum_i \bigl\[\hat{\mu}_1(X_i) - \hat{\mu}_0(X_i)\bigr\]}{ATE_hat = (1)/(n)sum_i bigl\[mu_hat_1(X_i) - mu_hat_0(X_i)bigr\]}
 #'
 #' Delegates the standardisation step to \code{stdReg::stdGlm()} when
 #' \pkg{stdReg} is installed; otherwise computes the contrast inline
@@ -953,9 +953,9 @@ morie_estimate_g_computation <- function(data, treatment, outcome,
 #' set.seed(1)
 #' n <- 200
 #' X <- matrix(rnorm(n * 3), n, 3)
-#' d <- rbinom(n, 1, plogis(X[, 1]))
-#' y <- 0.5 * d + X[, 1] + rnorm(n)
-#' df <- data.frame(y = y, d = d, x1 = X[, 1], x2 = X[, 2], x3 = X[, 3])
+#' d <- rbinom(n, 1, plogis(X\[, 1\]))
+#' y <- 0.5 * d + X\[, 1\] + rnorm(n)
+#' df <- data.frame(y = y, d = d, x1 = X\[, 1\], x2 = X\[, 2\], x3 = X\[, 3\])
 #' morie_estimate_double_ml(df, "y", "d", c("x1", "x2", "x3"))
 #' @references
 #' Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E.,
