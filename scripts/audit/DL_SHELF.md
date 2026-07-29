@@ -46,9 +46,18 @@ NotImplementedError with a written reason — never a mean-of-inputs.
   88 green; gradients pinned to central finite differences. R parity
   `burkov_lm_native.R` (28 exports), 87 assertions on l14, mirrored
   byte-identical to rmorie.
-- [ ] W2 Vaswani (2) + Alammar (53): tokenisation, BoW, TF-IDF,
-  embeddings arithmetic, similarity, attention, sampling strategies,
-  RAG scoring.
+- [x] W2 Vaswani (2) + Alammar (53): COMPLETE 2026-07-29. All 55
+  real: full attention family (SDP/MHA/GQA/MQA/sliding-window/KV
+  cache, the cache step proven equal to full attention recomputed),
+  heads + embeddings, the contrastive loss family, retrieval metrics,
+  greedy/sampled decoding on the shared LCG, text/RAG utilities,
+  HDBSCAN-style clustering, UMAP objective descent, LDA collapsed
+  Gibbs, BERTopic, a trainable softmax head, NSW ANN measuring its
+  own accuracy, and 13 orchestration modules around caller-supplied
+  models. 42 cluster tests + 55 re-fixtured legacy = 240 Python green;
+  R port `alammar_llm_native.R` (55 exports), 141 parity assertions
+  on l14 green FIRST RUN -- the LCG sampler, LDA chain and TSDAE
+  deletions reproduce Python token for token.
 - [ ] W3 Kamath (243): by chapter, eq-numbered — the most spec-like.
 - [ ] W4 Géron hm* (329): classic ML — losses, metrics, trees, SVM,
   ensembles, RL. Many have scipy/sklearn oracles for cross-checks.
@@ -80,3 +89,11 @@ waves.
 - W1 legacy tests passed 100-length arrays where scalars belong
   (w as a vector into float(w)); all 29 re-fixtured with worked
   values and refusal cases.
+- W2: Prim's MST in the HDBSCAN core needs an explicit visited mask --
+  np.minimum resurrects in-tree nodes and every edge connects the same
+  two points; caught on planted blobs. A single largest-gap flat cut
+  merges blobs when one far outlier dominates the gap ladder; replaced
+  with the cluster-count-maximising cut. Repetition-penalty-style test
+  traps again: an angular "disconnected" ANN entry that points at node
+  0 IS connected; a min_samples=2 core distance on 2-point blobs
+  reaches across blobs.
