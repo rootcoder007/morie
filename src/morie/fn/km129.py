@@ -1,4 +1,6 @@
-r"""Modality encoder.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 9.1: the multimodal modality encoder."""
 
 import numpy as np
 
@@ -8,33 +10,42 @@ __all__ = ["kamath_ch9_modality_encoder"]
 
 
 def kamath_ch9_modality_encoder(I_X, ME_X):
-    r"""
-    Modality encoder.
+    r"""F_X = ME_X(I_X): encode a modality's input into features.
 
-    Formula: F_X = \mathrm{ME}_X(I_X)
+    Eq 9.1 is a composition, not a closed form, so ``ME_X`` is the
+    caller's encoder and the contract is enforced here: it must be
+    callable, and it must return a finite real feature array. The
+    reported ``estimate`` is the L2 norm of the features -- the one
+    scalar summary of an encoder output that is not a re-average of
+    the input.
 
-    Parameters
-    ----------
-    I_X : array-like
-        Input data.
-    ME_X : array-like
-        Input data.
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 9, Eq 9.1, printed
+    p. 378.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
-
-    References
-    ----------
-    Kamath et al (2024), Ch 9, Eq 9.1, p. 378
-    r"""
-    I_X = np.atleast_1d(np.asarray(I_X, dtype=float))
-    n = len(I_X)
-    result = float(np.mean(I_X))
-    se = float(np.std(I_X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Modality encoder."})
+    Examples
+    --------
+    >>> out = kamath_ch9_modality_encoder([3.0, 4.0],
+    ...                                   lambda z: [z[0], z[1], 0.0])
+    >>> out["estimate"]
+    5.0
+    >>> out["features"]
+    [3.0, 4.0, 0.0]
+    """
+    if not callable(ME_X):
+        raise ValueError("ME_X must be a callable modality encoder.")
+    F = np.asarray(ME_X(I_X), dtype=float)
+    if F.size == 0:
+        raise ValueError("the modality encoder returned no features.")
+    if not np.all(np.isfinite(F)):
+        raise ValueError("the modality encoder returned non-finite "
+                         "features.")
+    return RichResult(payload={
+        "estimate": float(np.linalg.norm(F)),
+        "features": [float(v) for v in F.ravel()],
+        "shape": list(F.shape), "n": int(F.size),
+        "method": "modality encoder F_X = ME_X(I_X) (Kamath Eq 9.1)"})
 
 
 def cheatsheet():
-    return "km129: Modality encoder."
+    return "km129: runs the caller's modality encoder, checks its output"

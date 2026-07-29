@@ -1,5 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Canary exposure: rank of a canary string among candidate strings by model PLL."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Ch 6: canary exposure as a memorization measure."""
+
+import math
 
 import numpy as np
 
@@ -9,40 +12,43 @@ __all__ = ["kamath_memorization_exposure"]
 
 
 def kamath_memorization_exposure(canary_ll, candidate_lls):
+    r"""exposure = log2(|Candidates|) - log2(rank(canary)).
+
+    ``candidate_lls`` are the model log-likelihoods of the other
+    candidate strings in the canary's randomness space; the canary
+    itself completes that space, so |Candidates| is one more than the
+    number given. Rank 1 (the canary is the single most likely string)
+    gives the maximum exposure log2(|Candidates|); a canary sitting at
+    chance gets about 1 bit. Candidates that TIE with the canary are
+    counted as ahead of it, which is the conservative reading.
+
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 6, Memorization
+    Exposure; Carlini et al. (2019).
+
+    Examples
+    --------
+    >>> out = kamath_memorization_exposure(-1.0, [-2.0, -3.0, -0.5])
+    >>> out["rank"], out["estimate"]      # log2(4) - log2(2)
+    (2, 1.0)
     """
-    Canary exposure: rank of a canary string among candidate strings by model PLL
-
-    Formula: exposure = log2(|Candidates|) - log2(rank(canary))
-
-    Parameters
-    ----------
-    canary_ll : array-like
-        Input data.
-    candidate_lls : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: exposure
-
-    References
-    ----------
-    Kamath Ch 6, Memorization Exposure section
-    """
-    canary_ll = np.atleast_1d(np.asarray(canary_ll, dtype=float))
-    n = len(canary_ll)
-    result = float(np.mean(canary_ll))
-    se = float(np.std(canary_ll, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Canary exposure: rank of a canary string among candidate strings by model PLL",
-        }
-    )
+    c = float(canary_ll)
+    others = np.atleast_1d(np.asarray(candidate_lls, dtype=float))
+    if others.size == 0:
+        raise ValueError("no competing candidates were given; a rank "
+                         "in a space of one is not informative.")
+    if not (np.isfinite(c) and np.all(np.isfinite(others))):
+        raise ValueError("log-likelihoods must be finite.")
+    total = int(others.size) + 1
+    rank = 1 + int(np.sum(others >= c))
+    exposure = math.log2(total) - math.log2(rank)
+    return RichResult(payload={
+        "estimate": exposure, "exposure": exposure, "rank": rank,
+        "n_candidates": total,
+        "max_exposure": math.log2(total),
+        "n": total,
+        "method": "canary exposure (Kamath Ch 6)"})
 
 
 def cheatsheet():
-    return "kmexp: Canary exposure: rank of a canary string among candidate strings by model PLL"
+    return "kmexp: log2(candidate space) - log2(the canary's rank)"

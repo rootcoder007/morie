@@ -1,4 +1,6 @@
-r"""Faithfulness metric.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Kamath Eq 7.2: RAG answer-faithfulness metric."""
 
 import numpy as np
 
@@ -8,31 +10,46 @@ __all__ = ["kamath_ch7_faithfulness_metric"]
 
 
 def kamath_ch7_faithfulness_metric(facts):
-    r"""
-    Faithfulness metric.
+    r"""Faithfulness = (# facts inferable from the context) / (# facts).
 
-    Formula: \mathrm{Faithfulness} = \frac{|\#\text{ facts in answer inferable from context}|}{|\#\text{ total facts in answer}|}
+    ``facts`` is one indicator per atomic fact in the answer: 1/True
+    when a judge (an LLM, in the book) says the retrieved context
+    entails it, 0/False otherwise.
 
-    Parameters
-    ----------
-    facts : array-like
-        Input data.
+    This is the shared "supported fraction" core: ``km_fact`` (
+    FactScore) and ``kmcrel`` (RAGAS context relevance) delegate here
+    rather than repeat the ratio.
 
-    Returns
-    -------
-    result : dict
-        Keys: result
+    References: Kamath, Keenan, Somers and Sorenson (2024), *Large
+    Language Models: A Deep Dive*, Springer, Ch 7, Eq 7.2, printed
+    p. 300.
 
-    References
-    ----------
-    Kamath et al (2024), Ch 7, Eq 7.2, p. 300
-    r"""
-    facts = np.atleast_1d(np.asarray(facts, dtype=float))
-    n = len(facts)
-    result = float(np.mean(facts))
-    se = float(np.std(facts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Faithfulness metric."})
+    Examples
+    --------
+    >>> out = kamath_ch7_faithfulness_metric([1, 1, 0, 1])
+    >>> out["estimate"]
+    0.75
+    >>> out["n_supported"]
+    3
+    """
+    f = np.atleast_1d(np.asarray(facts))
+    if f.size == 0:
+        raise ValueError("the answer contains no facts; faithfulness "
+                         "is 0/0, which is undefined, not 1.")
+    if f.dtype == bool:
+        v = f.astype(float)
+    else:
+        v = f.astype(float)
+        if not np.all((v == 0) | (v == 1)):
+            raise ValueError("facts must be 0/1 (or boolean) support "
+                             "indicators, one per atomic fact.")
+    n_sup = int(v.sum())
+    return RichResult(payload={
+        "estimate": float(n_sup / v.size), "n_supported": n_sup,
+        "n_facts": int(v.size), "n": int(v.size),
+        "method": "RAG faithfulness = supported / total facts "
+                  "(Kamath Eq 7.2)"})
 
 
 def cheatsheet():
-    return "km111: Faithfulness metric."
+    return "km111: supported facts / total facts in the answer"
