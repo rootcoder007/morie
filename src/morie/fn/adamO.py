@@ -1,49 +1,79 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Adam optimizer update rule."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Adam update applied to a parameter vector."""
 
-import numpy as np
+from __future__ import annotations
 
 from ._richresult import RichResult
+from .adamopt import adam
 
 __all__ = ["adam_optimizer"]
 
 
-def adam_optimizer(theta, grad, lr, beta1, beta2, eps):
-    """
-    Adam optimizer update rule
+def adam_optimizer(theta, grad, lr=1e-3, beta1=0.9, beta2=0.999, eps=1e-8, state=None):
+    r"""Adam, expressed as a parameter-in / parameter-out step.
 
-    Formula: m_t = beta1*m_{t-1} + (1-beta1)*g_t; v_t = beta2*v_{t-1} + (1-beta2)*g_t^2; theta -= alpha*m_hat_t/(sqrt(v_hat_t)+eps)
+    Thin front-end over :func:`~morie.fn.adamopt.adam` for callers that would
+    rather hand over the parameters than apply the increment themselves. The
+    arithmetic is identical; only the calling convention differs.
 
     Parameters
     ----------
     theta : array-like
-        Input data.
+        Current parameters.
     grad : array-like
-        Input data.
-    lr : array-like
-        Input data.
-    beta1 : array-like
-        Input data.
-    beta2 : array-like
-        Input data.
-    eps : array-like
-        Input data.
+        Gradient at ``theta``; must match its size.
+    lr, beta1, beta2, eps : float
+        As for :func:`~morie.fn.adamopt.adam`.
+    state : dict, optional
+        ``state`` from the previous call.
 
     Returns
     -------
-    result : dict
-        Keys: {'theta_new': 'array'}
+    RichResult
+        ``theta`` (updated), ``update``, ``state``, ``m``, ``v``.
 
     References
     ----------
-    Montesinos Lopez Ch 10
+    Kingma, D. P., & Ba, J. (2015). Adam: A method for stochastic
+        optimization. *ICLR 2015*. arXiv:1412.6980.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> th, st = np.zeros(2), None
+    >>> for _ in range(4000):
+    ...     r = adam_optimizer(th, 2 * (th - np.array([1.0, -2.0])), lr=0.05, state=st)
+    ...     th, st = r["theta"], r["state"]
+    >>> [float(round(v, 3)) for v in th]
+    [1.0, -2.0]
+
+    >>> adam_optimizer([0.0, 0.0], [1.0])
+    Traceback (most recent call last):
+        ...
+    ValueError: grad has 1 entries but theta has 2
     """
-    theta = np.asarray(theta, dtype=float)
-    n = int(theta) if theta.ndim == 0 else len(theta)
-    result = float(np.mean(theta))
-    se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Adam optimizer update rule"})
+    import numpy as np
+
+    th = np.atleast_1d(np.asarray(theta, dtype=float)).ravel()
+    gr = np.atleast_1d(np.asarray(grad, dtype=float)).ravel()
+    if gr.size != th.size:
+        raise ValueError(f"grad has {gr.size} entries but theta has {th.size}")
+    r = adam(gr, beta1=beta1, beta2=beta2, lr=lr, eps=eps, state=state)
+    return RichResult(
+        title="Adam optimizer step",
+        summary_lines=[("step", int(r["t"])), ("|update|", float(r["step_norm"]))],
+        payload={
+            "theta": th + r["update"],
+            "update": r["update"],
+            "state": r["state"],
+            "m": r["m"],
+            "v": r["v"],
+            "t": int(r["t"]),
+            "step_norm": float(r["step_norm"]),
+            "method": "adam_optimizer",
+        },
+    )
 
 
 def cheatsheet():
-    return "adamO: Adam optimizer update rule"
+    return "adamO: parameter-in/parameter-out Adam; same math as adamopt.adam, different calling convention"

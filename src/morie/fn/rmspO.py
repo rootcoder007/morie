@@ -1,47 +1,72 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""RMSProp optimizer update rule."""
+"""RMSProp update applied to a parameter vector."""
 
-import numpy as np
+from __future__ import annotations
 
 from ._richresult import RichResult
+from .rmsoptm import rmsprop
 
 __all__ = ["rmsprop_optimizer"]
 
 
-def rmsprop_optimizer(theta, grad, lr, rho, eps):
-    """
-    RMSProp optimizer update rule
+def rmsprop_optimizer(theta, grad, lr=0.001, rho=0.9, eps=1e-8, state=None):
+    r"""RMSProp, expressed as a parameter-in / parameter-out step.
 
-    Formula: E[g^2]_t = rho*E[g^2]_{t-1} + (1-rho)*g_t^2; theta -= (alpha / sqrt(E[g^2]_t + eps)) * g_t
+    Thin front-end over :func:`~morie.fn.rmsoptm.rmsprop`; identical
+    arithmetic, different calling convention.
 
     Parameters
     ----------
     theta : array-like
-        Input data.
+        Current parameters.
     grad : array-like
-        Input data.
-    lr : array-like
-        Input data.
-    rho : array-like
-        Input data.
-    eps : array-like
-        Input data.
+        Gradient at ``theta``; must match its size.
+    lr, rho, eps : float
+        As for :func:`~morie.fn.rmsoptm.rmsprop`.
+    state : dict, optional
+        ``state`` from the previous call.
 
     Returns
     -------
-    result : dict
-        Keys: {'theta_new': 'array'}
+    RichResult
+        ``theta`` (updated), ``update``, ``state``, ``v``.
 
     References
     ----------
-    Montesinos Lopez Ch 10
+    Tieleman, T., & Hinton, G. (2012). Lecture 6.5 -- RMSProp. *COURSERA:
+        Neural Networks for Machine Learning*.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> th, st = np.zeros(1), None
+    >>> for _ in range(5000):
+    ...     r = rmsprop_optimizer(th, 2 * (th - 3.0), lr=0.05, state=st)
+    ...     th, st = r["theta"], r["state"]
+    >>> bool(abs(th[0] - 3.0) < 1e-2)
+    True
     """
-    theta = np.asarray(theta, dtype=float)
-    n = int(theta) if theta.ndim == 0 else len(theta)
-    result = float(np.mean(theta))
-    se = float(np.std(theta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RMSProp optimizer update rule"})
+    import numpy as np
+
+    th = np.atleast_1d(np.asarray(theta, dtype=float)).ravel()
+    gr = np.atleast_1d(np.asarray(grad, dtype=float)).ravel()
+    if gr.size != th.size:
+        raise ValueError(f"grad has {gr.size} entries but theta has {th.size}")
+    r = rmsprop(gr, rho=rho, lr=lr, eps=eps, state=state)
+    return RichResult(
+        title="RMSProp optimizer step",
+        summary_lines=[("step", int(r["t"])), ("|update|", float(r["step_norm"]))],
+        payload={
+            "theta": th + r["update"],
+            "update": r["update"],
+            "state": r["state"],
+            "v": r["v"],
+            "t": int(r["t"]),
+            "step_norm": float(r["step_norm"]),
+            "method": "rmsprop_optimizer",
+        },
+    )
 
 
 def cheatsheet():
-    return "rmspO: RMSProp optimizer update rule"
+    return "rmspO: parameter-in/parameter-out RMSProp; same math as rmsoptm.rmsprop"

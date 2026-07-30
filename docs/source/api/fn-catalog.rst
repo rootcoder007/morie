@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **36,049 single-purpose callables** -- every one
+``morie.fn`` ships **36,050 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -104,6 +104,7 @@ Full list
    "adam_optimize", "adamm"
    "adam_optimizer", "adamO"
    "adamw", "adamw"
+   "adamw_step", "adwopt"
    "adaptg", "adaptg"
    "adaptive_design", "adptv"
    "adaptive_segment", "adseg"
