@@ -71,7 +71,7 @@ def rank_normalize(C):
     from scipy.stats import norm
 
     flat = C.ravel()
-    ranks = np.argsort(np.argsort(flat)) + 1
+    ranks = np.argsort(np.argsort(flat, kind="stable"), kind="stable") + 1
     z = norm.ppf((ranks - 0.375) / (flat.size + 0.25))
     return z.reshape(C.shape)
 
