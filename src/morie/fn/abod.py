@@ -86,7 +86,7 @@ def abod(X, k=None):
             raise ValueError(f"k must be between 2 and {n - 1}")
         D = np.sqrt(np.maximum(((X[:, None] - X[None]) ** 2).sum(-1), 0.0))
         np.fill_diagonal(D, np.inf)
-        nbrs = np.argsort(D, axis=1)[:, :k]
+        nbrs = np.argsort(D, axis=1, kind="stable")[:, :k]
 
     abof = np.empty(n)
     for i in range(n):
@@ -108,7 +108,7 @@ def abod(X, k=None):
         abof[i] = float((ww * (vv - mean) ** 2).sum() / wsum)
 
     score = -abof
-    order = np.argsort(-score)
+    order = np.argsort(-score, kind="stable")
     rank = np.empty(n, dtype=int)
     rank[order] = np.arange(n)
     return RichResult(

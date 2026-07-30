@@ -91,7 +91,7 @@ def local_outlier_factor(X, k=20):
 
     D = np.sqrt(np.maximum(((X[:, None] - X[None]) ** 2).sum(-1), 0.0))
     np.fill_diagonal(D, np.inf)
-    order = np.argsort(D, axis=1)
+    order = np.argsort(D, axis=1, kind="stable")
     nbrs = order[:, :k]
     kdist = D[np.arange(n), order[:, k - 1]]
 
@@ -100,7 +100,7 @@ def local_outlier_factor(X, k=20):
     lrd = 1.0 / np.maximum(reach.mean(axis=1), 1e-12)
     lof = (lrd[nbrs].mean(axis=1)) / np.maximum(lrd, 1e-12)
 
-    ordr = np.argsort(-lof)
+    ordr = np.argsort(-lof, kind="stable")
     rank = np.empty(n, dtype=int)
     rank[ordr] = np.arange(n)
     return RichResult(

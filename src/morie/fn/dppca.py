@@ -91,7 +91,7 @@ def dp_pca(X, k=2, epsilon=1.0, delta=1e-5, C=1.0, seed=None):
         raise ValueError(f"k must be between 1 and {p}")
     cov = dp_covariance(X, C=C, epsilon=epsilon, delta=delta, seed=seed)
     vals, vecs = np.linalg.eigh(cov["release"])
-    order = np.argsort(vals)[::-1]
+    order = np.argsort(vals, kind="stable")[::-1]
     vals, vecs = vals[order], vecs[:, order]
     gap = float(vals[k - 1] - vals[k]) if k < p else float("inf")
     total = float(np.sum(np.clip(vals, 0, None)))

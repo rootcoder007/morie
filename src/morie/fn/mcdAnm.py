@@ -104,7 +104,7 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
             except np.linalg.LinAlgError:
                 break
             d = np.einsum("ij,jk,ik->i", X - mu, Si, X - mu)
-            new = np.argsort(d)[:h]
+            new = np.argsort(d, kind="stable")[:h]
             if np.array_equal(np.sort(new), np.sort(idx)):
                 break
             idx = new

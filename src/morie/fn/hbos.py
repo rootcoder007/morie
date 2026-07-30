@@ -114,7 +114,7 @@ def hbos(X, bins=10, mode="static"):
         edges_all.append(edges)
 
     score = -np.log(dens).sum(axis=1)
-    order = np.argsort(-score)
+    order = np.argsort(-score, kind="stable")
     rank = np.empty(n, dtype=int)
     rank[order] = np.arange(n)
     return RichResult(

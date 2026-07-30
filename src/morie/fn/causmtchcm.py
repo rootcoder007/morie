@@ -112,7 +112,7 @@ def causal_caliper_matching(ps, treat, caliper=None, k=1, replace=True,
     for a, i in enumerate(ti):
         d = np.abs(scale[ci] - scale[i])
         picked = 0
-        for j in np.argsort(d):
+        for j in np.argsort(d, kind="stable"):
             if not replace and used[j] > 0:
                 continue
             if d[j] > caliper:
