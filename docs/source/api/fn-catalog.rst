@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **36,062 single-purpose callables** -- every one
+``morie.fn`` ships **36,064 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -10582,6 +10582,7 @@ Full list
    "effective_sample_size_bayes", "bayess"
    "effective_sample_size_bulk", "essbk"
    "effective_sample_size_tail", "esstl"
+   "effective_sample_size_weights", "esstst"
    "effective_srs", "adjsrs"
    "effic", "effic"
    "efficiency_bound", "bnseff"
@@ -21746,6 +21747,7 @@ Full list
    "outlier_detection_am", "outam"
    "overla", "overla"
    "overlap_add", "oladd"
+   "overlap_coefficient", "ovrlp"
    "overlap_diagnostics", "over"
    "overlap_save", "olsav"
    "overlap_weight", "ovrla"
