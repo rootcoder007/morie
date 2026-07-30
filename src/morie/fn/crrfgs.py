@@ -48,6 +48,9 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     cause : int
         Cause of interest.
     ties : {"efron", "breslow"}
+        Accepted for API symmetry but NOT used: the IPCW-weighted
+        subdistribution likelihood here handles ties Breslow-style
+        regardless of this argument.
         Tie handling.
 
     Returns
@@ -122,8 +125,7 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     # decays as censoring accumulates. Evaluating it at the subject's own time
     # gives 1 for everyone and silently collapses Fine-Gray back to the
     # cause-specific fit.
-    beta, ll, I, U = _fg_newton(t, e, Xm, competing, G, Gi)
-    it, conv = 0, True
+    beta, ll, I, U, it, conv = _fg_newton(t, e, Xm, competing, G, Gi)
     from scipy.stats import norm
 
     try:
@@ -151,6 +153,7 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
 
 
 def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
+    converged = False
     """Newton-Raphson on the weighted Fine-Gray partial likelihood."""
     n, p = X.shape
     beta = np.zeros(p)
@@ -158,7 +161,7 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
     ll = 0.0
     I = np.zeros((p, p))
     U = np.zeros(p)
-    for _ in range(max_iter):
+    for it in range(max_iter):
         w = np.exp(np.clip(X @ beta, -500, 500))
         ll = 0.0
         U = np.zeros(p)
@@ -190,8 +193,9 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
             step = np.linalg.lstsq(I, U, rcond=None)[0]
         beta = beta + step
         if np.max(np.abs(step)) < tol:
+            converged = True
             break
-    return beta, float(ll), I, U
+    return beta, float(ll), I, U, it + 1, converged
 
 
 def cheatsheet():

@@ -55,7 +55,7 @@ def dp_gaussian_mechanism(y, sensitivity=1.0, epsilon=1.0, delta=1e-5, seed=None
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
         differential privacy. *Foundations and Trends in Theoretical
-        Computer Science*, 9(3-4), 211-407.
+        Computer Science*, 9(3-4), 211-487.
 
     Examples
     --------

@@ -12,7 +12,8 @@ def vol_garch_ged(r, nu=None):
 
     nu = 2 recovers the Gaussian; nu < 2 is fat-tailed, nu > 2 thin.
 
-    Fitted by Gaussian quasi-maximum-likelihood on the shared
+    Fitted by maximum likelihood under GED errors (the shared
+    recursion's dist="ged" branch), not Gaussian QMLE, on the shared
     recursion in :mod:`morie.fn._garch`.
 
     Parameters

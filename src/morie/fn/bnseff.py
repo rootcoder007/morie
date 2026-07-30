@@ -58,6 +58,11 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
     ----------
     Hahn (1998), *Econometrica* 66:315-331.
     Hirano, Imbens and Ridder (2003), *Econometrica* 71:1161-1189.
+    Note: the conditional variances sigma_1^2(X), sigma_0^2(X) in the
+    bound are estimated here by a single pooled residual variance per
+    arm, i.e. a homoskedastic plug-in approximation of Hahn's bound,
+    exact only when the outcome noise does not vary with X.
+
     Robins, J. M., Rotnitzky, A., & Zhao, L. P. (1994). Estimation of
         regression coefficients when some regressors are not always
         observed. *Journal of the American Statistical Association*,

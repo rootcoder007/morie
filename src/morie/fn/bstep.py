@@ -27,7 +27,9 @@ def bayesian_changepoint(
 
     References
     ----------
-    Barry, D. & Hartigan, J. A. (1993). *Annals of Statistics*, 21(1), 159--177.
+    Barry, D. & Hartigan, J. A. (1993). A Bayesian analysis for change
+    point problems. *Journal of the American Statistical Association*,
+    88(421), 309-319.
     """
     x = np.asarray(data, dtype=float).ravel()
     n = len(x)

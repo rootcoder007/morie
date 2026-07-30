@@ -494,6 +494,76 @@
       "source": "https://web.stanford.edu/class/ee364b/lectures/subgrad_method_notes.pdf",
       "verified": "2026-07-30",
       "note": "Boyd & Vandenberghe (2004) does NOT cover the subgradient method."
+    },
+    "barry-hartigan-1993": {
+      "year": 1993,
+      "volume": "88",
+      "issue": "421",
+      "pages": "309-319",
+      "container": "Journal of the American Statistical Association",
+      "source": "doi:10.1080/01621459.1993.10594323",
+      "verified": "2026-07-30",
+      "note": "bstep had cited 'Annals of Statistics 21(1), 159-177', which matches no record."
+    },
+    "barndorff-nielsen-shephard-2004": {
+      "year": 2004,
+      "volume": "2",
+      "issue": "1",
+      "pages": "1-37",
+      "container": "Journal of Financial Econometrics",
+      "source": "doi:10.1093/jjfinec/nbh001",
+      "verified": "2026-07-30",
+      "note": "Four Python modules had 1-48; title 'Power and Bipower Variation with Stochastic Volatility and Jumps'."
+    },
+    "hoeting-1999-bma": {
+      "year": 1999,
+      "volume": "14",
+      "issue": "4",
+      "pages": "382-417",
+      "container": "Statistical Science",
+      "source": "https://projecteuclid.org/journals/statistical-science/volume-14/issue-4/Bayesian-model-averaging--a-tutorial-with-comments-by-M/10.1214/ss/1009212519.full",
+      "verified": "2026-07-30",
+      "note": "Registered item includes the comments and rejoinder in its own title; the 382-417 range covers them."
+    },
+    "lohr-2021-sampling-ch4": {
+      "year": 2021,
+      "volume": null,
+      "issue": null,
+      "pages": "121-166",
+      "container": "Sampling: Design and Analysis (3rd ed.), Chapman & Hall/CRC",
+      "source": "doi:10.1201/9780429298899-4",
+      "verified": "2026-07-30",
+      "note": "Chapter 'Ratio and Regression Estimation'; source for reglmd, which had no References."
+    },
+    "kosorok-2008-book": {
+      "year": 2008,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "container": "Springer Series in Statistics",
+      "source": "doi:10.1007/978-0-387-74978-5",
+      "verified": "2026-07-30",
+      "note": "Introduction to Empirical Processes and Semiparametric Inference; full text in corpus as 978-0-387-74978-5.txt. Eq. (2.13) verified at txt line 1554."
+    },
+    "wasserman-2004-ch23": {
+      "year": 2004,
+      "volume": null,
+      "issue": null,
+      "pages": "381-401",
+      "container": "All of Statistics, Springer",
+      "source": "https://api.crossref.org/works?filter=container-title:All%20of%20Statistics",
+      "verified": "2026-07-30",
+      "note": "Ch 23 is 'Probability Redux: Stochastic Processes', not an HMM chapter."
+    },
+    "geron-handson-ml3-chapters": {
+      "year": 2022,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "container": "Hands-On Machine Learning (3rd ed.), O'Reilly",
+      "source": "https://api.github.com/repos/ageron/handson-ml3/contents/",
+      "verified": "2026-07-30",
+      "note": "Author's own repo: ch 08 = dimensionality reduction, ch 12 = custom models/training, ch 14 = CNNs (pooling)."
     }
   }
 }

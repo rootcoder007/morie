@@ -55,7 +55,7 @@ def dp_synthetic_data(X, epsilon=1.0, n_synth=None, bins=10, bounds=None, seed=N
     References
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

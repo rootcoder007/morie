@@ -44,11 +44,19 @@ def hrz_density_derivative(x, grid=None, h=None, kernel_name="gaussian", r=1):
     Econometrics*. Springer. Ch. 2 (derivative estimation).
     """
     r = int(r)
+    if r != 1:
+        raise ValueError(
+            "only the first derivative (r=1) is implemented: the shared"
+            " kde_deriv kernel computes f' only, and silently returning"
+            " it labelled as an r-th derivative would be wrong.")
     if r < 1:
         raise ValueError(f"r must be at least 1, got {r}.")
     g, d, hh = kde_deriv(x, grid=grid, h=h, name=kernel_name)
     return RichResult(payload={"grid": g, "derivative": d, "bandwidth": hh,
-                               "rate_exponent": -r / (2.0 * r + 3.0), "r": r,
+                               # RMSE rate for the r-th derivative with a second-order kernel
+                               # is n^(-2/(2r+5)): -2/7 at r=1, matching the
+                               # n^(-1/7) bandwidth _horowitz.kde_deriv uses.
+                               "rate_exponent": -2.0 / (2.0 * r + 5.0), "r": r,
                                "method": "f-hat'(x) via K'; needs a WIDER bandwidth than the density"})
 
 

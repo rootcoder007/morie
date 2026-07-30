@@ -18,8 +18,11 @@ def dp_density(
     """
     Dirichlet process density estimation via the Polya urn (CRP) scheme.
 
-    Each data point is assigned to a cluster; cluster parameters are
-    drawn from a Normal-Inverse-Gamma base measure.
+    Each data point is assigned to a cluster by a CRP sweep. Cluster
+    means/variances are PLUG-IN empirical estimates recomputed after
+    each sweep (new clusters start at the point with unit variance),
+    and the new-cluster weight uses a fixed standard-normal kernel --
+    a pragmatic scheme, not a conjugate Normal-Inverse-Gamma sampler.
 
     :param data: Observed data (1-D array).
     :param alpha: Concentration parameter.

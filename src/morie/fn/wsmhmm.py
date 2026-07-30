@@ -38,7 +38,8 @@ def wasserman_hmm_forward(obs, A, B, pi):
 
     References
     ----------
-    Wasserman (2004), Ch 23 (hidden Markov models); Rabiner (1989).
+    Wasserman (2004), Ch 23 (Probability Redux: Stochastic Processes --
+    Markov chains); the HMM forward algorithm follows Rabiner (1989).
 
     Examples
     --------

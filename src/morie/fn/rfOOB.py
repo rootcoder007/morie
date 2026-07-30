@@ -112,7 +112,10 @@ def random_forest_oob(y, predictions, in_bag=None, task="regression",
         payload={
             "estimate": err,
             "oob_error": err,
-            "oob_r2": float(1 - err / var) if var > 0 else np.nan,
+            "oob_r2": (float(1 - err / var)
+                       if (task == "regression" and var > 0) else np.nan),
+            "oob_accuracy": (float(1 - err)
+                             if task == "classification" else np.nan),
             "oob_prediction": pred,
             "oob_curve": curve,
             "curve_at": np.asarray(steps),

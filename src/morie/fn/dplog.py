@@ -111,23 +111,53 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
     rng = np.random.default_rng(seed)
     p = Xc.shape[1]
 
-    b = np.zeros(p)
-    if method == "objective":
-        # Noise enters the objective, so the optimiser absorbs it.
-        scale = 2.0 * C / (n * epsilon)
+    # Work on UNIT-norm rows so Chaudhuri et al.'s constants apply
+    # verbatim (the paper assumes ||x|| <= 1); coefficients are mapped
+    # back to the clipped-feature scale at the end.
+    Xu = Xc / C
+
+    def draw_b(scale):
+        # Density (4) of the paper: nu(b) proportional to exp(-||b||/scale)
+        # -- a random DIRECTION with a Gamma(p, scale) NORM, not
+        # per-coordinate Laplace.
         direction = rng.normal(size=p)
         direction /= max(np.linalg.norm(direction), 1e-12)
-        b = direction * rng.gamma(p, scale)
+        return direction * rng.gamma(p, scale)
+
+    b = np.zeros(p)
+    extra_reg = 0.0
+    if method == "objective":
+        # Algorithm 2 exactly. c bounds |l''| for logistic loss: 1/4.
+        # The privacy budget must first pay the slack
+        # log(1 + 2c/(n lam) + c^2/(n^2 lam^2)); if nothing is left,
+        # the regulariser is raised by Delta and eps' = eps/2.
+        # The noise scale is 2/eps' -- NO 1/n: the 1/n lives in the
+        # objective term b'theta/n, and putting it in both places
+        # (the previous code) under-noised by a factor of n and voided
+        # the stated epsilon.
+        c_s = 0.25
+        slack = np.log(1.0 + 2.0 * c_s / (n * lam)
+                       + c_s * c_s / (n * n * lam * lam))
+        if epsilon > slack:
+            eps_p = epsilon - slack
+        else:
+            extra_reg = c_s / (n * (np.exp(epsilon / 4.0) - 1.0)) - lam
+            extra_reg = max(extra_reg, 0.0)
+            eps_p = epsilon / 2.0
+        b = draw_b(2.0 / eps_p)
 
     beta = np.zeros(p)
     for _ in range(int(n_iter)):
-        mu = 1.0 / (1.0 + np.exp(-np.clip(Xc @ beta, -500, 500)))
-        grad = Xc.T @ (mu - y) / n + lam * beta + b / n
+        mu = 1.0 / (1.0 + np.exp(-np.clip(Xu @ beta, -500, 500)))
+        grad = Xu.T @ (mu - y) / n + (lam + extra_reg) * beta + b / n
         beta = beta - lr * grad
 
     if method == "output":
-        beta = beta + rng.laplace(0.0, 2.0 * C / (n * lam * epsilon), p)
+        # Algorithm 1: sensitivity 2/(n lam) under unit-norm rows, noise
+        # drawn from density (4) with beta = n lam eps / 2.
+        beta = beta + draw_b(2.0 / (n * lam * epsilon))
 
+    beta = beta / C  # back to the clipped-feature scale
     prob = 1.0 / (1.0 + np.exp(-np.clip(Xc @ beta, -500, 500)))
     return RichResult(
         title=f"DP logistic regression ({method})",

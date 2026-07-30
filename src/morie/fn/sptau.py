@@ -1,4 +1,4 @@
-"""Spatial autocorrelation (Moran I/Geary C unified)."""
+"""Spatial autocorrelation: Moran's I with Cliff-Ord moments."""
 
 import numpy as np
 from scipy import stats as _scistats
@@ -10,7 +10,8 @@ __all__ = ["spatial_autocorrelation", "morani"]
 
 def spatial_autocorrelation(x, w):
     """
-    Spatial autocorrelation (Moran I/Geary C unified).
+    Spatial autocorrelation: Moran's I under the randomisation
+    (Cliff-Ord) moments. Geary's C is NOT computed here.
 
     Formula: I = n/S0 * sum_ij w_ij(x_i-xbar)(x_j-xbar) / sum(x_i-xbar)^2
     where S0 = sum_ij w_ij.

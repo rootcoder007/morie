@@ -38,7 +38,11 @@ def compute_waic(
     elpd_waic_i = lppd_i - p_waic_i
     waic = float(-2.0 * np.sum(elpd_waic_i))
 
-    se = float(np.sqrt(n_obs * np.var(elpd_waic_i, ddof=1)))
+    # se on the SAME -2 deviance scale as `waic` -- the pointwise WAIC
+    # is -2*elpd_i, so its variance carries the factor 4. Sibling
+    # waic.py computes this from the pointwise -2 values directly;
+    # the two modules now agree instead of differing by a factor of 2.
+    se = float(2.0 * np.sqrt(n_obs * np.var(elpd_waic_i, ddof=1)))
 
     return {
         "waic": waic,

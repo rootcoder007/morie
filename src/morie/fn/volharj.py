@@ -43,8 +43,9 @@ def vol_har_rv_jump(RV, BPV):
     and forecasting of return volatility. *The Review of Economics
     and Statistics*, 89(4), 701-720. (HAR-RV-J)
 
-    Barndorff-Nielsen, O. E. & Shephard, N. (2004). *Journal of
-    Financial Econometrics*, 2(1), 1-48. (the jump measure)
+    Barndorff-Nielsen, O. E. & Shephard, N. (2004). Power and bipower
+    variation with stochastic volatility and jumps. *Journal of
+    Financial Econometrics*, 2(1), 1-37. (the jump measure)
     """
     RV = np.asarray(RV, dtype=float).ravel()
     BPV = np.asarray(BPV, dtype=float).ravel()

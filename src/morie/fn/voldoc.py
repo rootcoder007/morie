@@ -33,8 +33,9 @@ def vol_decomposed_realised(RV, BPV):
 
     References
     ----------
-    Barndorff-Nielsen, O. E. & Shephard, N. (2004). *Journal of
-    Financial Econometrics*, 2(1), 1-48.
+    Barndorff-Nielsen, O. E. & Shephard, N. (2004). Power and bipower
+    variation with stochastic volatility and jumps. *Journal of
+    Financial Econometrics*, 2(1), 1-37.
     """
     rv = np.atleast_1d(np.asarray(RV, dtype=float))
     bpv = np.atleast_1d(np.asarray(BPV, dtype=float))

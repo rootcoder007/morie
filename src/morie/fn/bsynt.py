@@ -20,7 +20,10 @@ def bayesian_synthetic_control(
     """
     Bayesian synthetic control method.
 
-    Uses a Dirichlet prior on weights with Gibbs sampling.
+    Weights are sampled by Gibbs from Gaussian conditionals truncated
+    at zero and then renormalised to the simplex -- a pragmatic
+    projected sampler, NOT a draw from a Dirichlet (or any conjugate)
+    prior on the weights.
 
     :param y_treat: Treated unit outcomes over time (T,).
     :param Y_donors: Donor unit outcomes (T, J).

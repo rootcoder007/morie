@@ -24,7 +24,9 @@ def bayesian_model_averaging(
 
     References
     ----------
-    Hoeting, J. A., et al. (1999). *Statistical Science*, 14(4), 382--401.
+    Hoeting, J. A., Madigan, D., Raftery, A. E., & Volinsky, C. T. (1999).
+    Bayesian model averaging: a tutorial (with comments and a rejoinder).
+    *Statistical Science*, 14(4), 382-417.
     """
     preds = np.asarray(predictions, dtype=float)
     log_ml = np.asarray(log_marginal_likelihoods, dtype=float)

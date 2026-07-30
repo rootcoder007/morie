@@ -54,7 +54,7 @@ def dp_covariance(X, C=1.0, epsilon=1.0, delta=1e-5, seed=None, project_psd=True
     References
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

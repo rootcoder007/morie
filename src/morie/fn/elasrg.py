@@ -14,8 +14,10 @@ def elastic_net_regression(y, X, lambda1, lambda2, max_iter=10000, tol=1e-12):
     """
     Elastic net stated with SEPARATE L1 and L2 penalties.
 
-    Formula: min ||y - X beta||^2 + lambda1 ||beta||_1 +
-    lambda2 ||beta||^2, the original Zou-Hastie form. Note the
+    Formula: min (1/2)||y - X beta||^2 + lambda1 ||beta||_1 +
+    (lambda2/2) ||beta||^2 -- note the halves on the loss and the L2
+    term: that is what the shared solver minimises, and the doctest
+    values follow from it (soft threshold at lambda1, not lambda1/2). Note the
     argument order is (y, X) here, not (X, y): it follows the module's
     published signature, and getting it backwards is the obvious
     mistake, so the shapes are checked and a mismatch raises rather
