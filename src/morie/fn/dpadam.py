@@ -59,7 +59,10 @@ def dp_adam(grads, C=1.0, sigma=1.0, lr=1e-3, betas=(0.9, 0.999), eps=1e-8,
 
     References
     ----------
-    Abadi, M., Chu, A., Goodfellow, I., et al. (2016). *CCS 2016*, 308-318.
+    Abadi, M., Chu, A., Goodfellow, I., McMahan, H. B., Mironov, I.,
+        Talwar, K., & Zhang, L. (2016). Deep learning with differential
+        privacy. *Proceedings of the 2016 ACM SIGSAC Conference on
+        Computer and Communications Security*, 308-318.
 
     Examples
     --------

@@ -47,7 +47,7 @@ def ecod(X):
 
     References
     ----------
-    Li, Z., Zhao, Y., Hu, X., Botta, N., Ionescu, C., & Chen, G. H. (2022).
+    Li, Z., Zhao, Y., Hu, X., Botta, N., Ionescu, C., & Chen, G. H. (2023).
         ECOD: Unsupervised outlier detection using empirical cumulative
         distribution functions. *IEEE TKDE*, 35(12), 12181-12193.
 

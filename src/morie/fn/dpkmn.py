@@ -56,7 +56,7 @@ def dp_kmeans(X, k=3, epsilon=1.0, n_iter=5, bounds=None, seed=None):
     Blum, A., Dwork, C., McSherry, F., & Nissim, K. (2005). Practical privacy:
         the SuLQ framework. *PODS 2005*, 128-138.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

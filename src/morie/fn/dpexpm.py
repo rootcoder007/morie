@@ -57,7 +57,7 @@ def dp_exponential_mechanism(candidates, utility, epsilon=1.0, sensitivity=1.0,
         privacy. *FOCS 2007*, 94-103.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
         differential privacy. *Foundations and Trends in Theoretical
-        Computer Science*, 9(3-4), 211-407.
+        Computer Science*, 9(3-4), 211-487.
 
     Examples
     --------

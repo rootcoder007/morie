@@ -63,7 +63,7 @@ def dp_logistic(X, y, epsilon=1.0, method="objective", lam=0.01, C=1.0,
     Chaudhuri, K., Monteleoni, C., & Sarwate, A. D. (2011). Differentially
         private empirical risk minimization. *JMLR*, 12, 1069-1109.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

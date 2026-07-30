@@ -18719,6 +18719,7 @@
 "htp_functional_predictor": "htpfn",
 "hubbl": "hubbl",
 "huber": "huber",
+"huber_ipw_mediation": "medipw",
 "huber_loss": "hubrho",
 "huber_regression": "hux",
 "huber_weight": "huberw",

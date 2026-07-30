@@ -50,7 +50,7 @@ def renyi_dp_composition(epsilons, alpha=2.0, delta=1e-5):
     ----------
     Mironov, I. (2017). Renyi differential privacy. *CSF 2017*, 263-275.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------
