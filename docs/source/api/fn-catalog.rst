@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **36,050 single-purpose callables** -- every one
+``morie.fn`` ships **36,051 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -6180,6 +6180,7 @@ Full list
    "causal_transportability_weights", "caustrnsp"
    "causalbert_text", "cbnrt"
    "cause_specific_hazard", "csrh"
+   "cause_specific_hazard_all", "csrh"
    "cause_specific_mortality", "cdmrt"
    "cb_chapter_10_unnumbered_1", "cb10u1"
    "cb_chapter_10_unnumbered_2", "cb10u2"
