@@ -88,7 +88,7 @@ def cox_schoenfeld_residuals(fit, transform="km"):
     w = np.exp(np.clip(X @ beta, -500, 500))
 
     ev_idx = np.flatnonzero(e == 1)
-    ev_idx = ev_idx[np.argsort(t[ev_idx])]
+    ev_idx = ev_idx[np.argsort(t[ev_idx], kind="stable")]
     res = np.empty((ev_idx.size, X.shape[1]))
     for r_i, i in enumerate(ev_idx):
         at_risk = t >= t[i]
@@ -103,7 +103,7 @@ def cox_schoenfeld_residuals(fit, transform="km"):
         idx = np.clip(np.searchsorted(ut, times, side="right") - 1, 0, surv.size - 1)
         g = 1.0 - surv[idx]
     elif transform == "rank":
-        g = np.argsort(np.argsort(times)).astype(float)
+        g = np.argsort(np.argsort(times, kind="stable"), kind="stable").astype(float)
     elif transform == "identity":
         g = times
     else:
