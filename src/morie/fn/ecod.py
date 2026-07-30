@@ -69,7 +69,7 @@ def ecod(X):
     are ordinary in. An outlier in one of ``d`` features competes against
     points mildly extreme in all ``d``.
 
-    >>> bool(np.argsort(-r["score"])[0] < 500)
+    >>> bool(np.argsort(-r["score"], kind="stable")[0] < 500)
     True
 
     Deterministic -- no seed, no hyperparameter, so two runs agree exactly.
@@ -104,7 +104,7 @@ def ecod(X):
     auto = -np.log(np.maximum(np.where(skew < 0, left, right), 1.0 / n)).sum(axis=1)
     score = np.maximum(np.maximum(lo, hi), auto)
 
-    order = np.argsort(-score)
+    order = np.argsort(-score, kind="stable")
     rank = np.empty(n, dtype=int)
     rank[order] = np.arange(n)
     return RichResult(

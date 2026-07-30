@@ -125,7 +125,7 @@ def causal_mahalanobis_match(X, treat, k=1, replace=True, caliper=None):
     dists = np.full((ti.size, k), np.nan)
     used = np.zeros(ci.size, dtype=int)
     for a in range(ti.size):
-        order = np.argsort(D[a])
+        order = np.argsort(D[a], kind="stable")
         picked = 0
         for j in order:
             if not replace and used[j] > 0:

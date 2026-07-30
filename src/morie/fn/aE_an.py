@@ -97,7 +97,7 @@ def autoencoder_anomaly(X, k=2, n_iter=300, lr=0.05, seed=0, contamination=0.05)
         W, _ = np.linalg.qr(W)
     rec = Z @ W @ W.T
     err = ((Z - rec) ** 2).sum(axis=1)
-    order = np.argsort(-err)
+    order = np.argsort(-err, kind="stable")
     rank = np.empty(n, dtype=int)
     rank[order] = np.arange(n)
     cut = float(np.quantile(err, 1.0 - contamination))

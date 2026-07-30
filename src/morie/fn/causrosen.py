@@ -95,7 +95,7 @@ def causal_rosenbaum_bound(paired_diff, gamma_max=3.0, n_gamma=25, alpha=0.05):
     if gamma_max < 1:
         raise ValueError("gamma_max must be at least 1")
 
-    ranks = np.argsort(np.argsort(np.abs(d))) + 1.0
+    ranks = np.argsort(np.argsort(np.abs(d), kind="stable"), kind="stable") + 1.0
     w_plus = float(np.sum(ranks[d > 0]))
     total = n * (n + 1) / 2.0
     grid = np.linspace(1.0, float(gamma_max), int(n_gamma))

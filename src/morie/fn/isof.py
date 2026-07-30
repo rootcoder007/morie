@@ -124,7 +124,7 @@ def isolation_forest(X, n_trees=100, sample_size=256, seed=0):
             lengths[i] += path(X[i], idx0, 0, sub)
     lengths /= n_trees
     score = 2.0 ** (-lengths / max(c(psi), 1e-12))
-    order = np.argsort(-score)
+    order = np.argsort(-score, kind="stable")
     rank = np.empty(n, dtype=int)
     rank[order] = np.arange(n)
     return RichResult(
