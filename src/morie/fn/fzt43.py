@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_theorem_4_3"]
+__all__ = ["fauzi_theorem_4_3", "fauzi_thm4_3_mrl_bias_var"]
 
 
 def fauzi_theorem_4_3(t, S_X, S_bar_X, m_X, b1, b2=None, b3=None, n=100,
@@ -110,3 +110,7 @@ def fauzi_theorem_4_3(t, S_X, S_bar_X, m_X, b1, b2=None, b3=None, n=100,
 
 def cheatsheet():
     return "fzt43: the two estimators differ ONLY by b_2 vs b_3; variance is O(1/n) with h only at O(h/n)"
+
+
+#: Catalogue alias for :func:`fauzi_theorem_4_3`.
+fauzi_thm4_3_mrl_bias_var = fauzi_theorem_4_3

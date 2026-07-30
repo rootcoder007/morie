@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["tpe_suggest"]
+__all__ = ["tpe_suggest", "geron_optuna"]
 
 
 def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0,
@@ -141,3 +141,7 @@ def cheatsheet():
         "hmoptn: TPE next-point suggestion from the l/g density ratio, with "
         "how much it has actually learned"
     )
+
+
+#: Catalogue alias for :func:`tpe_suggest`.
+geron_optuna = tpe_suggest

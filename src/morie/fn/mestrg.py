@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["m_regression"]
+__all__ = ["m_regression", "m_estimator_regression"]
 
 
 def m_regression(X, y, psi="huber", c=None, max_iter=100):
@@ -107,3 +107,7 @@ def m_regression(X, y, psi="huber", c=None, max_iter=100):
 
 def cheatsheet():
     return "mestrg: monotone psi = unique solution; redescending psi = start-dependent, use MM"
+
+
+#: Catalogue alias for :func:`m_regression`.
+m_estimator_regression = m_regression

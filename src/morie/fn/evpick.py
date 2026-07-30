@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_pickands"]
+__all__ = ["ev_pickands", "evt_pickands_estimator"]
 
 
 def ev_pickands(x, k=None):
@@ -87,3 +87,7 @@ def ev_pickands(x, k=None):
 
 def cheatsheet():
     return "evpick: works for every xi, pays in variance -- Hill wins when xi > 0 is known"
+
+
+#: Catalogue alias for :func:`ev_pickands`.
+evt_pickands_estimator = ev_pickands

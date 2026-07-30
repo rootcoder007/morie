@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["polya_tree_density"]
+__all__ = ["polya_tree_density", "polya_tree_prior"]
 
 
 def polya_tree_density(x, at=None, depth=8, c=1.0, base="normal",
@@ -174,3 +174,7 @@ def cheatsheet():
         "poltre: Polya tree density with Ferguson's absolute-continuity "
         "condition enforced and partition artefacts named"
     )
+
+
+#: Catalogue alias for :func:`polya_tree_density`.
+polya_tree_prior = polya_tree_density

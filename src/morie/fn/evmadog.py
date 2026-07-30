@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_madogram"]
+__all__ = ["ev_madogram", "evt_madogram"]
 
 
 def ev_madogram(x, y, t=None):
@@ -97,3 +97,7 @@ def ev_madogram(x, y, t=None):
 
 def cheatsheet():
     return "evmadog: A from the lambda-madogram -- clip to the envelope, and report the clipping"
+
+
+#: Catalogue alias for :func:`ev_madogram`.
+evt_madogram = ev_madogram

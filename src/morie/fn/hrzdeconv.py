@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_deconvolution"]
+__all__ = ["hrz_deconvolution", "horowitz_deconvolution_density"]
 
 
 def hrz_deconvolution(W, sigma_eps, grid=None, h=None, error="normal"):
@@ -106,3 +106,7 @@ def hrz_deconvolution(W, sigma_eps, grid=None, h=None, error="normal"):
 
 def cheatsheet():
     return "hrzdeconv: normal error => LOGARITHMIC rate; damping is mandatory"
+
+
+#: Catalogue alias for :func:`hrz_deconvolution`.
+horowitz_deconvolution_density = hrz_deconvolution

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["vol_parkinson"]
+__all__ = ["vol_parkinson", "vol_parkinson_range"]
 
 
 def vol_parkinson(high, low, periods_per_year=None):
@@ -82,3 +82,7 @@ def vol_parkinson(high, low, periods_per_year=None):
 
 def cheatsheet():
     return "volpark: (log H/L)^2 / (4 log 2) -- unbiased for driftless BM, and drift reads high"
+
+
+#: Catalogue alias for :func:`vol_parkinson`.
+vol_parkinson_range = vol_parkinson

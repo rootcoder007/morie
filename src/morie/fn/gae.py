@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["generalized_advantage_estimation"]
+__all__ = ["generalized_advantage_estimation", "gae"]
 
 
 def generalized_advantage_estimation(rewards, values, gamma=0.99, lam=0.95,
@@ -141,3 +141,7 @@ def cheatsheet():
         "gae: GAE(gamma, lambda) advantages with the effective horizon and "
         "a rollout-truncation warning"
     )
+
+
+#: Catalogue alias for :func:`generalized_advantage_estimation`.
+gae = generalized_advantage_estimation

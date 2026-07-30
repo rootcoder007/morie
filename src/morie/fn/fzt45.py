@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_theorem_4_5"]
+__all__ = ["fauzi_theorem_4_5", "fauzi_thm4_5_mrl_consistency"]
 
 
 def fauzi_theorem_4_5(mrl_hat, mrl_true, t_grid, interval=None):
@@ -78,3 +78,7 @@ def fauzi_theorem_4_5(mrl_hat, mrl_true, t_grid, interval=None):
 
 def cheatsheet():
     return "fzt45: uniform + a.s. is what lets you use the WHOLE curve, not one point"
+
+
+#: Catalogue alias for :func:`fauzi_theorem_4_5`.
+fauzi_thm4_5_mrl_consistency = fauzi_theorem_4_5

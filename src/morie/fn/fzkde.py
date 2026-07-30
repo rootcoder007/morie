@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_kde"]
+__all__ = ["fauzi_kde", "fauzi_standard_kde"]
 
 
 def fauzi_kde(x, grid=None, h=None):
@@ -78,3 +78,7 @@ def fauzi_kde(x, grid=None, h=None):
 
 def cheatsheet():
     return "fzkde: O(h^2) inside, O(h) at a boundary -- inconsistent exactly at the edge"
+
+
+#: Catalogue alias for :func:`fauzi_kde`.
+fauzi_standard_kde = fauzi_kde

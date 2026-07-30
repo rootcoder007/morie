@@ -5,7 +5,7 @@ from scipy import stats as _scistats
 
 from ._richresult import RichResult
 
-__all__ = ["spatial_autocorrelation"]
+__all__ = ["spatial_autocorrelation", "morani"]
 
 
 def spatial_autocorrelation(x, w):
@@ -118,3 +118,7 @@ def cheatsheet():
 # W = 5x5 path-graph contiguity: W[i,j]=1 iff |i-j|==1, else 0  (S0 = 8)
 # Expected:  I = (5/8) * ( sum z_i z_{i+1} + sum z_{i+1} z_i ) / sum z_i^2
 #          ~ 0.4
+
+
+#: Catalogue alias for :func:`spatial_autocorrelation`.
+morani = spatial_autocorrelation

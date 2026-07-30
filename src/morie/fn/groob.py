@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["geron_oob_evaluation"]
+__all__ = ["geron_oob_evaluation", "geron_oob_error"]
 
 
 def geron_oob_evaluation(y, predictions, in_bag, task="regression"):
@@ -117,3 +117,7 @@ def cheatsheet():
         "groob: out-of-bag error from bag masks, with the 1/e leave-out rate "
         "and the pessimism it carries"
     )
+
+
+#: Catalogue alias for :func:`geron_oob_evaluation`.
+geron_oob_error = geron_oob_evaluation

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["bits_per_byte"]
+__all__ = ["bits_per_byte", "kamath_bits_per_byte"]
 
 
 def bits_per_byte(log_probs, n_bytes=None, bytes_per_token=None, base="e"):
@@ -123,3 +123,7 @@ def cheatsheet():
         "kmbpb: bits-per-byte, the tokeniser-independent counterpart of "
         "perplexity"
     )
+
+
+#: Catalogue alias for :func:`bits_per_byte`.
+kamath_bits_per_byte = bits_per_byte

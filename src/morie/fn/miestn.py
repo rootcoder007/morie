@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["mine_mutual_information"]
+__all__ = ["mine_mutual_information", "mi_neural_estimator"]
 
 
 def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
@@ -200,3 +200,7 @@ def cheatsheet():
         "miestn: MINE lower bound with a held-out estimate exposing the "
         "optimisation bias, and a Gaussian reference for scale"
     )
+
+
+#: Catalogue alias for :func:`mine_mutual_information`.
+mi_neural_estimator = mine_mutual_information

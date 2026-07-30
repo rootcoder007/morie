@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_sieve_iv"]
+__all__ = ["hrz_sieve_iv", "horowitz_sieve_npiv"]
 
 
 def hrz_sieve_iv(T, Ey_w, K=None):
@@ -66,3 +66,7 @@ def hrz_sieve_iv(T, Ey_w, K=None):
 
 def cheatsheet():
     return "hrzsitr: K IS the regularisation -- too large and instability returns"
+
+
+#: Catalogue alias for :func:`hrz_sieve_iv`.
+horowitz_sieve_npiv = hrz_sieve_iv

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_kernel_quantile"]
+__all__ = ["fauzi_kernel_quantile", "fauzi_kernel_quantile_estimator"]
 
 
 def fauzi_kernel_quantile(x, p, h=None):
@@ -81,3 +81,7 @@ def fauzi_kernel_quantile(x, p, h=None):
 
 def cheatsheet():
     return "fzkqe: smooths in p, not in x -- averages neighbouring order statistics"
+
+
+#: Catalogue alias for :func:`fauzi_kernel_quantile`.
+fauzi_kernel_quantile_estimator = fauzi_kernel_quantile

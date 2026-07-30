@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_no_bias"]
+__all__ = ["kosorok_no_bias", "kosorok_ch3_z_estimator_no_bias"]
 
 
 def kosorok_no_bias(eff_scores, theta_seq, theta0, n_seq):
@@ -80,3 +80,7 @@ def kosorok_no_bias(eff_scores, theta_seq, theta0, n_seq):
 
 def cheatsheet():
     return "ksr066: orthogonality is what lets a slower-than-root-n nuisance be harmless"
+
+
+#: Catalogue alias for :func:`kosorok_no_bias`.
+kosorok_ch3_z_estimator_no_bias = kosorok_no_bias

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_joint_convergence"]
+__all__ = ["kosorok_joint_convergence", "kosorok_ch3_max_likelihood_efficiency_corollary"]
 
 
 def kosorok_joint_convergence(psi_dot, scores, n=None):
@@ -81,3 +81,7 @@ def kosorok_joint_convergence(psi_dot, scores, n=None):
 
 def cheatsheet():
     return "ksr073: theta-hat and eta-hat are correlated -- the JOINT law is what you need"
+
+
+#: Catalogue alias for :func:`kosorok_joint_convergence`.
+kosorok_ch3_max_likelihood_efficiency_corollary = kosorok_joint_convergence

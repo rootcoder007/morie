@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_mrl_boundary_free_2"]
+__all__ = ["fauzi_mrl_boundary_free_2", "fauzi_mrl_est2"]
 
 
 def fauzi_mrl_boundary_free_2(x, t_grid, h=None, transform="log"):
@@ -79,3 +79,7 @@ def fauzi_mrl_boundary_free_2(x, t_grid, h=None, transform="log"):
 
 def cheatsheet():
     return "fzmr2: O(h^2) bias at the BOUNDARY too, and the variance vanishes there"
+
+
+#: Catalogue alias for :func:`fauzi_mrl_boundary_free_2`.
+fauzi_mrl_est2 = fauzi_mrl_boundary_free_2

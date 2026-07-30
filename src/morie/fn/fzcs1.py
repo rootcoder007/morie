@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_cumulative_survival_1"]
+__all__ = ["fauzi_cumulative_survival_1", "fauzi_cum_surv_est1"]
 
 
 def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
@@ -100,3 +100,7 @@ def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
 
 def cheatsheet():
     return "fzcs1: preserves d/dt S_cum = -S exactly -- prefer it when that relation matters"
+
+
+#: Catalogue alias for :func:`fauzi_cumulative_survival_1`.
+fauzi_cum_surv_est1 = fauzi_cumulative_survival_1

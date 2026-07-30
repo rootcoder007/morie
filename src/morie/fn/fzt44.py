@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_theorem_4_4"]
+__all__ = ["fauzi_theorem_4_4", "fauzi_thm4_4_mrl_normality"]
 
 
 def fauzi_theorem_4_4(mrl_hat, mrl_true, variance):
@@ -71,3 +71,7 @@ def fauzi_theorem_4_4(mrl_hat, mrl_true, variance):
 
 def cheatsheet():
     return "fzt44: V bounded in [0,1] is what makes Lyapunov automatic -- no moment assumption needed"
+
+
+#: Catalogue alias for :func:`fauzi_theorem_4_4`.
+fauzi_thm4_4_mrl_normality = fauzi_theorem_4_4

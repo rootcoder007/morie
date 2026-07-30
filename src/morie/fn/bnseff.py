@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["efficiency_bound"]
+__all__ = ["efficiency_bound", "bound_efficient"]
 
 
 def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
@@ -187,3 +187,7 @@ def cheatsheet():
         "bnseff: Hahn's efficiency bound split into outcome, heterogeneity "
         "and overlap terms, with IPW's loss against it"
     )
+
+
+#: Catalogue alias for :func:`efficiency_bound`.
+bound_efficient = efficiency_bound

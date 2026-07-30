@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_tikhonov_iv"]
+__all__ = ["hrz_tikhonov_iv", "horowitz_tikhonov_npiv"]
 
 
 def hrz_tikhonov_iv(T, Ey_w, alpha=None, alphas=None):
@@ -82,3 +82,7 @@ def hrz_tikhonov_iv(T, Ey_w, alpha=None, alphas=None):
 
 def cheatsheet():
     return "hrztikr: ill-posed by construction -- the L-curve is returned, not hidden"
+
+
+#: Catalogue alias for :func:`hrz_tikhonov_iv`.
+horowitz_tikhonov_npiv = hrz_tikhonov_iv

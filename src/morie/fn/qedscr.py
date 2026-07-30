@@ -7,7 +7,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["qed_score"]
+__all__ = ["qed_score", "qed_drug_likeness"]
 
 # Bickerton et al. (2012), Table 1: ADS parameters for the eight
 # descriptors, in the order MW, ALOGP, HBA, HBD, PSA, ROTB, AROM, ALERTS.
@@ -162,3 +162,7 @@ def cheatsheet():
         "qedscr: Bickerton QED as a weighted geometric mean of eight "
         "desirabilities, naming the limiting one"
     )
+
+
+#: Catalogue alias for :func:`qed_score`.
+qed_drug_likeness = qed_score

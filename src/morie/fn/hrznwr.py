@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import nw_regression
 from ._richresult import RichResult
 
-__all__ = ["hrz_nw_regression"]
+__all__ = ["hrz_nw_regression", "horowitz_nw_regression"]
 
 
 def hrz_nw_regression(x, y, grid=None, h=None, kernel_name="gaussian"):
@@ -48,3 +48,7 @@ def hrz_nw_regression(x, y, grid=None, h=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrznwr: local constant, so the boundary bias is O(h) not O(h^2)"
+
+
+#: Catalogue alias for :func:`hrz_nw_regression`.
+horowitz_nw_regression = hrz_nw_regression

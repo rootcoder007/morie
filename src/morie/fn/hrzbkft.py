@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import local_linear, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_backfitting"]
+__all__ = ["hrz_backfitting", "horowitz_backfitting"]
 
 
 def hrz_backfitting(X, y, h=None, max_iter=50, tol=1e-6, kernel_name="gaussian"):
@@ -81,3 +81,7 @@ def hrz_backfitting(X, y, h=None, max_iter=50, tol=1e-6, kernel_name="gaussian")
 
 def cheatsheet():
     return "hrzbkft: components centred each sweep -- only their SUM is identified"
+
+
+#: Catalogue alias for :func:`hrz_backfitting`.
+horowitz_backfitting = hrz_backfitting

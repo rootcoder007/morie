@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["s_regression_estimator"]
+__all__ = ["s_regression_estimator", "s_estimator_regression"]
 
 
 def s_regression_estimator(X, y, n_subsets=200, seed=0):
@@ -73,3 +73,7 @@ def s_regression_estimator(X, y, n_subsets=200, seed=0):
 
 def cheatsheet():
     return "sestrg: 50% breakdown bought at 28.7% efficiency -- a starting point, not an endpoint"
+
+
+#: Catalogue alias for :func:`s_regression_estimator`.
+s_estimator_regression = s_regression_estimator

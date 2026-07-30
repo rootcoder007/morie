@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["vol_noise_variance"]
+__all__ = ["vol_noise_variance", "vol_noise_variance_est"]
 
 
 def vol_noise_variance(r_intraday, K=None):
@@ -97,3 +97,7 @@ def vol_noise_variance(r_intraday, K=None):
 
 def cheatsheet():
     return "volnois: RV diverges as 2n eps^2 -- the divergence IS the noise estimate, TSRV recovers IV"
+
+
+#: Catalogue alias for :func:`vol_noise_variance`.
+vol_noise_variance_est = vol_noise_variance

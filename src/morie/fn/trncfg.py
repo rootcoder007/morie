@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict
 
-__all__ = ["trimmed_causal_effect"]
+__all__ = ["trimmed_causal_effect", "truncated_cf_estimator"]
 
 
 def trimmed_causal_effect(y, d, X=None, propensity=None, alpha=None,
@@ -203,3 +203,7 @@ def cheatsheet():
         "trncfg: Crump-optimal propensity trimming, reporting the precision "
         "gained and the estimand given up"
     )
+
+
+#: Catalogue alias for :func:`trimmed_causal_effect`.
+truncated_cf_estimator = trimmed_causal_effect

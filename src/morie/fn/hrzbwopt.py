@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kernel
 from ._richresult import RichResult
 
-__all__ = ["hrz_bandwidth_optimal"]
+__all__ = ["hrz_bandwidth_optimal", "horowitz_optimal_bandwidth_kde"]
 
 
 def hrz_bandwidth_optimal(x, kernel_name="gaussian", f_second_deriv_l2=None):
@@ -70,3 +70,7 @@ def hrz_bandwidth_optimal(x, kernel_name="gaussian", f_second_deriv_l2=None):
 
 def cheatsheet():
     return "hrzbwopt: depends on unknown int(f'')^2 -- every practical rule approximates it"
+
+
+#: Catalogue alias for :func:`hrz_bandwidth_optimal`.
+horowitz_optimal_bandwidth_kde = hrz_bandwidth_optimal

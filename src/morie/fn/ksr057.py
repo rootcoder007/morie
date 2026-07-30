@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_m_normality"]
+__all__ = ["kosorok_m_normality", "kosorok_ch2_m_estimator_master_theorem"]
 
 
 def kosorok_m_normality(m_dot_scores, V=None):
@@ -70,3 +70,7 @@ def kosorok_m_normality(m_dot_scores, V=None):
 
 def cheatsheet():
     return "ksr057: V is curvature, Sigma is gradient variance -- equal only for a correct likelihood"
+
+
+#: Catalogue alias for :func:`kosorok_m_normality`.
+kosorok_ch2_m_estimator_master_theorem = kosorok_m_normality

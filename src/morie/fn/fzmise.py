@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_mise"]
+__all__ = ["fauzi_mise", "fauzi_mise_kdfe"]
 
 
 def fauzi_mise(n, h=None, R_K=None, mu2_K=1.0, R_f2=1.0, sigma=1.0):
@@ -82,3 +82,7 @@ def fauzi_mise(n, h=None, R_K=None, mu2_K=1.0, R_f2=1.0, sigma=1.0):
 
 def cheatsheet():
     return "fzmise: h ~ n^{-1/5} gives MISE ~ n^{-4/5} -- the ceiling, and short of parametric n^{-1}"
+
+
+#: Catalogue alias for :func:`fauzi_mise`.
+fauzi_mise_kdfe = fauzi_mise

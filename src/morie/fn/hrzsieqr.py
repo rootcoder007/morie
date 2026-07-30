@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import sieve_basis
 from ._richresult import RichResult
 
-__all__ = ["hrz_series_quantile"]
+__all__ = ["hrz_series_quantile", "horowitz_series_quantile"]
 
 
 from scipy import optimize
@@ -81,3 +81,7 @@ def hrz_series_quantile(x, y, tau=0.5, K=5, kind="poly", grid=None):
 
 def cheatsheet():
     return "hrzsieqr: separate tau fits can cross -- monotonicity is not built in"
+
+
+#: Catalogue alias for :func:`hrz_series_quantile`.
+horowitz_series_quantile = hrz_series_quantile

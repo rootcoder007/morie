@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["cross_fit_estimator"]
+__all__ = ["cross_fit_estimator", "cross_fit_one_step"]
 
 
 def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
@@ -184,3 +184,7 @@ def cheatsheet():
         "crsfit: cross-fitted AIPW with the own-observation bias measured "
         "against the no-cross-fitting version"
     )
+
+
+#: Catalogue alias for :func:`cross_fit_estimator`.
+cross_fit_one_step = cross_fit_estimator

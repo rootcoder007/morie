@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["burkov_nce_loss"]
+__all__ = ["burkov_nce_loss", "burkov_noise_contrastive_estimation"]
 
 
 def burkov_nce_loss(pos_scores, neg_scores, noise_prob=None, k=None):
@@ -131,3 +131,7 @@ def cheatsheet():
         "bknce: NCE loss, and the log(kq) correction that separates it from "
         "negative sampling"
     )
+
+
+#: Catalogue alias for :func:`burkov_nce_loss`.
+burkov_noise_contrastive_estimation = burkov_nce_loss

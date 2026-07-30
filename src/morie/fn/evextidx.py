@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_extremal_runs"]
+__all__ = ["ev_extremal_runs", "evt_extremal_index_runs"]
 
 
 def ev_extremal_runs(x, threshold, run_length=1):
@@ -91,3 +91,7 @@ def ev_extremal_runs(x, threshold, run_length=1):
 
 def cheatsheet():
     return "evextidx: clusters / exceedances -- and the run length is a real tuning parameter"
+
+
+#: Catalogue alias for :func:`ev_extremal_runs`.
+evt_extremal_index_runs = ev_extremal_runs

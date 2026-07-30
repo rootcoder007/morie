@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import local_linear
 from ._richresult import RichResult
 
-__all__ = ["hrz_local_linear"]
+__all__ = ["hrz_local_linear", "horowitz_local_linear"]
 
 
 def hrz_local_linear(x, y, grid=None, h=None, kernel_name="gaussian"):
@@ -51,3 +51,7 @@ def hrz_local_linear(x, y, grid=None, h=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrzllr: boundary bias fixed automatically; slope estimates m'(x) free"
+
+
+#: Catalogue alias for :func:`hrz_local_linear`.
+horowitz_local_linear = hrz_local_linear

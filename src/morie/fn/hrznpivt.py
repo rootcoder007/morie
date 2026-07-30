@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_npiv_operator"]
+__all__ = ["hrz_npiv_operator", "horowitz_npiv_unknown_T"]
 
 
 def hrz_npiv_operator(X, W, K=5, kind="poly"):
@@ -66,3 +66,7 @@ def hrz_npiv_operator(X, W, K=5, kind="poly"):
 
 def cheatsheet():
     return "hrznpivt: singular values decaying to zero is what makes NPIV ill-posed"
+
+
+#: Catalogue alias for :func:`hrz_npiv_operator`.
+horowitz_npiv_unknown_T = hrz_npiv_operator

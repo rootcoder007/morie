@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_asymptotic_linearity"]
+__all__ = ["kosorok_asymptotic_linearity", "kosorok_ch2_z_master_linearization"]
 
 
 def kosorok_asymptotic_linearity(psi_dot, psi_n, psi, theta_n, theta0, n,
@@ -81,3 +81,7 @@ def kosorok_asymptotic_linearity(psi_dot, psi_n, psi, theta_n, theta0, n,
 
 def cheatsheet():
     return "ksr049: this one representation is what everything after Chapter 2 is built on"
+
+
+#: Catalogue alias for :func:`kosorok_asymptotic_linearity`.
+kosorok_ch2_z_master_linearization = kosorok_asymptotic_linearity

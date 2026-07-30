@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_lipschitz_envelope"]
+__all__ = ["kosorok_lipschitz_envelope", "kosorok_ch2_m_estimator_lipschitz_envelope"]
 
 
 def kosorok_lipschitz_envelope(m, m_dot, thetas, x):
@@ -86,3 +86,7 @@ def kosorok_lipschitz_envelope(m, m_dot, thetas, x):
 
 def cheatsheet():
     return "ksr054: no envelope means not Donsker -- that is why maximum score is n^{-1/3}"
+
+
+#: Catalogue alias for :func:`kosorok_lipschitz_envelope`.
+kosorok_ch2_m_estimator_lipschitz_envelope = kosorok_lipschitz_envelope

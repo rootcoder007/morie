@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["vol_harmonic"]
+__all__ = ["vol_harmonic", "vol_harmonic_volatility"]
 
 
 def vol_harmonic(sigma):
@@ -81,3 +81,7 @@ def vol_harmonic(sigma):
 
 def cheatsheet():
     return "volharm: HM <= GM <= AM always -- and integrated variance aggregates ARITHMETICALLY"
+
+
+#: Catalogue alias for :func:`vol_harmonic`.
+vol_harmonic_volatility = vol_harmonic

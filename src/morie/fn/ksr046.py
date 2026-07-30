@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_z_consistency"]
+__all__ = ["kosorok_z_consistency", "kosorok_ch2_z_estimator_consistency"]
 
 
 def kosorok_z_consistency(psi_n, psi, theta_seq, theta0, grid=None):
@@ -82,3 +82,7 @@ def kosorok_z_consistency(psi_n, psi, theta_seq, theta0, grid=None):
 
 def cheatsheet():
     return "ksr046: a near-root alone proves nothing -- uniform convergence rules out distant near-roots"
+
+
+#: Catalogue alias for :func:`kosorok_z_consistency`.
+kosorok_ch2_z_estimator_consistency = kosorok_z_consistency

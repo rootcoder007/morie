@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kernel_density"]
+__all__ = ["kernel_density", "kernel_density_fda"]
 
 KERNELS = ("gaussian", "epanechnikov", "biweight", "uniform", "triangular")
 
@@ -160,3 +160,7 @@ def cheatsheet():
         "kerd: univariate KDE with the bandwidth rule surfaced and the "
         "boundary-bias region flagged"
     )
+
+
+#: Catalogue alias for :func:`kernel_density`.
+kernel_density_fda = kernel_density

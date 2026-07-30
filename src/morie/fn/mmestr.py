@@ -3,7 +3,7 @@
 
 from ._richresult import RichResult
 
-__all__ = ["mm_estimator"]
+__all__ = ["mm_estimator", "mm_estimator_regression"]
 
 
 def mm_estimator(X, y, n_subsets=200, seed=0):
@@ -29,3 +29,7 @@ def mm_estimator(X, y, n_subsets=200, seed=0):
 
 def cheatsheet():
     return "mmestr: same estimator as mmreg, one implementation -- see mmreg"
+
+
+#: Catalogue alias for :func:`mm_estimator`.
+mm_estimator_regression = mm_estimator

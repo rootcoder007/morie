@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["prompt_ensemble"]
+__all__ = ["prompt_ensemble", "kamath_prompt_ensemble"]
 
 
 def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
@@ -135,3 +135,7 @@ def cheatsheet():
         "kmpens: prompt ensembling by arithmetic or geometric mean, "
         "reporting the phrasing spread it is averaging out"
     )
+
+
+#: Catalogue alias for :func:`prompt_ensemble`.
+kamath_prompt_ensemble = prompt_ensemble

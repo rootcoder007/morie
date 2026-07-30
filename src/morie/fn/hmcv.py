@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["k_fold_cross_validation"]
+__all__ = ["k_fold_cross_validation", "geron_cross_validation"]
 
 
 def k_fold_cross_validation(y, fold_predictions, folds, task="regression"):
@@ -132,3 +132,7 @@ def cheatsheet():
         "hmcv: K-fold CV error with both weighting conventions and the "
         "warning that its standard error is not trustworthy"
     )
+
+
+#: Catalogue alias for :func:`k_fold_cross_validation`.
+geron_cross_validation = k_fold_cross_validation

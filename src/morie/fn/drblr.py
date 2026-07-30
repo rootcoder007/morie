@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict, ols_fit
 
-__all__ = ["doubly_robust_ate"]
+__all__ = ["doubly_robust_ate", "doubly_robust_learner"]
 
 
 def doubly_robust_ate(y, d, X, propensity=None, mu1=None, mu0=None,
@@ -146,3 +146,7 @@ def cheatsheet():
         "drblr: AIPW ATE with both single-model estimates exposed, since "
         "their disagreement is the real diagnostic"
     )
+
+
+#: Catalogue alias for :func:`doubly_robust_ate`.
+doubly_robust_learner = doubly_robust_ate

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["tau_regression"]
+__all__ = ["tau_regression", "tau_estimator_regression"]
 
 
 def tau_regression(X, y, n_subsets=200, seed=0, c1=1.5476, c2=6.08):
@@ -126,3 +126,7 @@ def tau_regression(X, y, n_subsets=200, seed=0, c1=1.5476, c2=6.08):
 
 def cheatsheet():
     return "taubrg: one objective carries both rhos -- the tau-scale is efficient AND 50%-breakdown"
+
+
+#: Catalogue alias for :func:`tau_regression`.
+tau_estimator_regression = tau_regression

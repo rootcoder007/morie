@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_hill"]
+__all__ = ["ev_hill", "evt_hill_estimator"]
 
 
 def ev_hill(x, k=None):
@@ -97,3 +97,7 @@ def ev_hill(x, k=None):
 
 def cheatsheet():
     return "evhill: consistent only for xi > 0, and k is THE problem -- look at the plot"
+
+
+#: Catalogue alias for :func:`ev_hill`.
+evt_hill_estimator = ev_hill

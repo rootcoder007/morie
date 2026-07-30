@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_residual_edf"]
+__all__ = ["kosorok_residual_edf", "kosorok_ch1_residual_empirical_distribution"]
 
 
 def kosorok_residual_edf(y, z, beta, t=None):
@@ -74,3 +74,7 @@ def kosorok_residual_edf(y, z, beta, t=None):
 
 def cheatsheet():
     return "ksr021: beta-hat inside the indicator means the limit is NOT a Brownian bridge"
+
+
+#: Catalogue alias for :func:`kosorok_residual_edf`.
+kosorok_ch1_residual_empirical_distribution = kosorok_residual_edf

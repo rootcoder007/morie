@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict
 
-__all__ = ["g_estimation_snmm"]
+__all__ = ["g_estimation_snmm", "g_estimation_snm"]
 
 
 def g_estimation_snmm(y, d, X, grid=None, n_grid=401, span=None):
@@ -150,3 +150,7 @@ def cheatsheet():
         "gestid: g-estimation by solving the residualised score, with a "
         "test-inversion interval for weak identification"
     )
+
+
+#: Catalogue alias for :func:`g_estimation_snmm`.
+g_estimation_snm = g_estimation_snmm

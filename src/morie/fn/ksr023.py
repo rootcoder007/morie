@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_cox_score_process"]
+__all__ = ["kosorok_cox_score_process", "kosorok_ch1_cox_estimating_equation"]
 
 
 def kosorok_cox_score_process(beta, z, time, event, t_grid=None):
@@ -97,3 +97,7 @@ def kosorok_cox_score_process(beta, z, time, event, t_grid=None):
 
 def cheatsheet():
     return "ksr023: the score is a PROCESS in t -- its weak convergence licences Cox inference"
+
+
+#: Catalogue alias for :func:`kosorok_cox_score_process`.
+kosorok_ch1_cox_estimating_equation = kosorok_cox_score_process

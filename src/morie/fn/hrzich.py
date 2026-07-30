@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_ichimura"]
+__all__ = ["hrz_ichimura", "horowitz_ichimura_estimator"]
 
 
 from .hrznls import hrz_semiparametric_ls
@@ -52,3 +52,7 @@ def hrz_ichimura(X, y, h=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrzich: beta is root-n even though G is not -- the semiparametric point"
+
+
+#: Catalogue alias for :func:`hrz_ichimura`.
+horowitz_ichimura_estimator = hrz_ichimura

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_fn_eps_fn_U"]
+__all__ = ["horowitz_fn_eps_fn_U", "horowitz_panel_density_estimators"]
 
 
 def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None,
@@ -98,3 +98,7 @@ def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None,
 
 def cheatsheet():
     return "hrzfneps: f_eps never divides by the root, f_U does -- hence separate bandwidths"
+
+
+#: Catalogue alias for :func:`horowitz_fn_eps_fn_U`.
+horowitz_panel_density_estimators = horowitz_fn_eps_fn_U

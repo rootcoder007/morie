@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["geron_average_pooling_2d"]
+__all__ = ["geron_average_pooling_2d", "geron_average_pooling"]
 
 
 def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
@@ -125,3 +125,7 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
 
 def cheatsheet():
     return "grapl: 2D average pooling with valid/same padding"
+
+
+#: Catalogue alias for :func:`geron_average_pooling_2d`.
+geron_average_pooling = geron_average_pooling_2d

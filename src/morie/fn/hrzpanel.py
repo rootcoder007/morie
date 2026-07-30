@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_panel_deconvolution"]
+__all__ = ["horowitz_panel_deconvolution", "horowitz_panel_deconv"]
 
 
 def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
@@ -107,3 +107,7 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
 
 def cheatsheet():
     return "hrzpanel: differencing kills U_j so eta identifies eps; the root needs SYMMETRY"
+
+
+#: Catalogue alias for :func:`horowitz_panel_deconvolution`.
+horowitz_panel_deconv = horowitz_panel_deconvolution

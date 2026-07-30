@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict, ols_fit
 
-__all__ = ["regime_value"]
+__all__ = ["regime_value", "value_function_eval"]
 
 
 def regime_value(y, d, X, regime, propensity=None, method="aipw",
@@ -181,3 +181,7 @@ def cheatsheet():
         "vlfctn: regime value against the static policies, with the "
         "non-regularity share and the same-data optimism warning"
     )
+
+
+#: Catalogue alias for :func:`regime_value`.
+value_function_eval = regime_value

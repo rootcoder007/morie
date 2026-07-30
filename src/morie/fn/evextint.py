@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_extremal_intervals"]
+__all__ = ["ev_extremal_intervals", "evt_extremal_index_intervals"]
 
 
 def ev_extremal_intervals(x, threshold):
@@ -88,3 +88,7 @@ def ev_extremal_intervals(x, threshold):
 
 def cheatsheet():
     return "evextint: theta from interexceedance-time moments -- no run length to tune"
+
+
+#: Catalogue alias for :func:`ev_extremal_intervals`.
+evt_extremal_index_intervals = ev_extremal_intervals

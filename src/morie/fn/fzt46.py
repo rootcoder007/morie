@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_theorem_4_6"]
+__all__ = ["fauzi_theorem_4_6", "fauzi_thm4_6_mean_value"]
 
 
 def fauzi_theorem_4_6(x, a1, mrl_at_a1, h=None):
@@ -74,3 +74,7 @@ def fauzi_theorem_4_6(x, a1, mrl_at_a1, h=None):
 
 def cheatsheet():
     return "fzt46: MRL at the support's start plus that start IS the sample mean -- a real diagnostic"
+
+
+#: Catalogue alias for :func:`fauzi_theorem_4_6`.
+fauzi_thm4_6_mean_value = fauzi_theorem_4_6
