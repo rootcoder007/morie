@@ -52,6 +52,12 @@ class CausalForest:
         Features tried per split; default ceil(sqrt(p)).
     subsample : float, default 0.5
         Fraction of rows drawn (without replacement) per tree.
+    imbalance_penalty : float, default 0.0
+        GRF's regularizer on child imbalance. The raw heterogeneity
+        criterion is happiest carving off a tiny extreme leaf, whose
+        tau is then estimated from almost nothing; subtracting
+        ``imbalance_penalty * (1/n_L + 1/n_R)`` prices that in. Zero
+        recovers the plain Athey-Imbens criterion.
     seed : int, default 0
 
     References
@@ -65,18 +71,22 @@ class CausalForest:
     estimation)
     """
 
-    def __init__(self, n_trees=200, min_leaf=10, max_depth=6, mtry=None, subsample=0.5, seed=0):
+    def __init__(self, n_trees=200, min_leaf=10, max_depth=6, mtry=None, subsample=0.5,
+                 imbalance_penalty=0.0, seed=0):
         if n_trees < 1:
             raise ValueError(f"n_trees must be at least 1, got {n_trees}.")
         if min_leaf < 1:
             raise ValueError(f"min_leaf must be at least 1, got {min_leaf}.")
         if not 0 < subsample <= 1:
             raise ValueError(f"subsample must lie in (0, 1], got {subsample}.")
+        if imbalance_penalty < 0:
+            raise ValueError(f"imbalance_penalty must be non-negative, got {imbalance_penalty}.")
         self.n_trees = int(n_trees)
         self.min_leaf = int(min_leaf)
         self.max_depth = int(max_depth)
         self.mtry = mtry
         self.subsample = float(subsample)
+        self.imbalance_penalty = float(imbalance_penalty)
         self.seed = int(seed)
         self.trees_ = []
         self.in_bag_ = []
@@ -106,8 +116,11 @@ class CausalForest:
                 tl, tr = _tau(y[lsp], d[lsp]), _tau(y[rsp], d[rsp])
                 if np.isnan(tl) or np.isnan(tr):
                     continue
-                # Athey-Imbens criterion: reward heterogeneity between children
+                # Athey-Imbens criterion: reward heterogeneity between children,
+                # less GRF's imbalance regularizer.
                 score = lsp.size * rsp.size / rows_split.size * (tl - tr) ** 2
+                if self.imbalance_penalty:
+                    score -= self.imbalance_penalty * (1.0 / lsp.size + 1.0 / rsp.size)
                 if score > best[0]:
                     best = (score, f, thr)
 
