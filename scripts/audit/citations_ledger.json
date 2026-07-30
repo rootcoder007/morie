@@ -564,6 +564,16 @@
       "source": "https://api.github.com/repos/ageron/handson-ml3/contents/",
       "verified": "2026-07-30",
       "note": "Author's own repo: ch 08 = dimensionality reduction, ch 12 = custom models/training, ch 14 = CNNs (pooling)."
+    },
+    "makalic-schmidt-2016": {
+      "year": 2016,
+      "volume": "23",
+      "issue": "1",
+      "pages": "179-182",
+      "container": "IEEE Signal Processing Letters",
+      "source": "doi:10.1109/lsp.2015.2503725",
+      "verified": "2026-07-30",
+      "note": "The horseshoe Gibbs sampler bshrk implements; full text in corpus (Makalic-Schmidt_1508.03884v4.pdf), conditionals at Eqs. (9)-(11)."
     }
   }
 }
