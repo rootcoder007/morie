@@ -31,7 +31,8 @@ def bayesian_lasso(
 
     References
     ----------
-    Park, T. & Casella, G. (2008). *JASA*, 103(482), 681--686.
+    Park, T., & Casella, G. (2008). The Bayesian lasso. *Journal of the
+        American Statistical Association*, 103(482), 681-686.
     """
     rng = np.random.default_rng(seed)
     X_arr = np.asarray(X, dtype=float)

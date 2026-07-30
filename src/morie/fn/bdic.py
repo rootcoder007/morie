@@ -25,7 +25,10 @@ def bayesian_dic(
 
     References
     ----------
-    Spiegelhalter, D. J., et al. (2002). *JRSS-B*, 64(4), 583--639.
+    Spiegelhalter, D. J., Best, N. G., Carlin, B. P., & van der Linde, A.
+        (2002). Bayesian measures of model complexity and fit.
+        *Journal of the Royal Statistical Society Series B*, 64(4),
+        583-639.
     """
     samples = np.asarray(posterior_samples, dtype=float)
     if samples.ndim == 1:

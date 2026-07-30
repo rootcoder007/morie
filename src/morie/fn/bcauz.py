@@ -34,7 +34,8 @@ def bayesian_ate(
 
     References
     ----------
-    Rubin, D. B. (1978). *Annals of Statistics*, 6(1), 34--58.
+    Rubin, D. B. (1978). Bayesian inference for causal effects: the role
+        of randomization. *The Annals of Statistics*, 6(1), 34-58.
     """
     rng = np.random.default_rng(seed)
     y_arr = np.asarray(y, dtype=float).ravel()
