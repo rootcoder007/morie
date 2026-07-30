@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["bridge_sampling"]
+__all__ = ["bridge_sampling", "bridge_sampling_marginal"]
 
 
 def bridge_sampling(log_p_posterior, log_q_posterior, log_p_proposal,
@@ -155,3 +155,7 @@ def cheatsheet():
         "bdgsm: iterated optimal-bridge marginal likelihood, with the "
         "overlap it actually depends on"
     )
+
+
+#: Catalogue alias for :func:`bridge_sampling`.
+bridge_sampling_marginal = bridge_sampling

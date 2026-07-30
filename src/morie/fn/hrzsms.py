@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_smoothed_max_score"]
+__all__ = ["hrz_smoothed_max_score", "horowitz_smoothed_max_score"]
 
 
 from scipy import optimize, stats as _st
@@ -89,3 +89,7 @@ def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):
 
 def cheatsheet():
     return "hrzsms: smoothing buys normality AND a faster rate than n^{-1/3}"
+
+
+#: Catalogue alias for :func:`hrz_smoothed_max_score`.
+horowitz_smoothed_max_score = hrz_smoothed_max_score

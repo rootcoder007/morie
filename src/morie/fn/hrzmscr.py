@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_maximum_score"]
+__all__ = ["hrz_maximum_score", "horowitz_manski_max_score"]
 
 
 from scipy import optimize
@@ -87,3 +87,7 @@ def hrz_maximum_score(X, y, beta0=None, n_restarts=8, seed=0):
 
 def cheatsheet():
     return "hrzmscr: n^{-1/3} Chernoff limit -- ordinary SEs do NOT apply"
+
+
+#: Catalogue alias for :func:`hrz_maximum_score`.
+horowitz_manski_max_score = hrz_maximum_score

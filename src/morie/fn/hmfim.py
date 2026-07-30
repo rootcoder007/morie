@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["feature_importance_trees"]
+__all__ = ["feature_importance_trees", "geron_feature_importance"]
 
 
 def feature_importance_trees(impurity_decrease, n_features=None,
@@ -128,3 +128,7 @@ def cheatsheet():
         "hmfim: mean impurity decrease per feature, with the cardinality and "
         "correlation biases stated and the spread quantified"
     )
+
+
+#: Catalogue alias for :func:`feature_importance_trees`.
+geron_feature_importance = feature_importance_trees

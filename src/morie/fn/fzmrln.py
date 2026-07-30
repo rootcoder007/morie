@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_mrl_naive"]
+__all__ = ["fauzi_mrl_naive", "fauzi_naive_mrl"]
 
 
 def fauzi_mrl_naive(x, t_grid, h=None):
@@ -79,3 +79,7 @@ def fauzi_mrl_naive(x, t_grid, h=None):
 
 def cheatsheet():
     return "fzmrln: interior O(h^2), boundary O(h) or worse -- the baseline, not the recommendation"
+
+
+#: Catalogue alias for :func:`fauzi_mrl_naive`.
+fauzi_naive_mrl = fauzi_mrl_naive

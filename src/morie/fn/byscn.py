@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["bayes_c_pi"]
+__all__ = ["bayes_c_pi", "bayes_cpi_prior"]
 
 
 def bayes_c_pi(y, X, n_iter=2000, burn_in=500, pi_a=1.0, pi_b=1.0,
@@ -198,3 +198,7 @@ def cheatsheet():
         "byscn: BayesCpi spike-and-slab with pi drawn each sweep, returning "
         "posterior inclusion probabilities and a mixing check"
     )
+
+
+#: Catalogue alias for :func:`bayes_c_pi`.
+bayes_cpi_prior = bayes_c_pi

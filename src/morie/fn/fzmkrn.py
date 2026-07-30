@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_muller_kernel"]
+__all__ = ["fauzi_muller_kernel", "fauzi_muller_fourth_order_kernel"]
 
 
 def fauzi_muller_kernel(u):
@@ -55,3 +55,7 @@ def fauzi_muller_kernel(u):
 
 def cheatsheet():
     return "fzmkrn: (3 - u^2)phi(u)/2 -- mu_2 = 0, and negative past |u| = sqrt(3)"
+
+
+#: Catalogue alias for :func:`fauzi_muller_kernel`.
+fauzi_muller_fourth_order_kernel = fauzi_muller_kernel

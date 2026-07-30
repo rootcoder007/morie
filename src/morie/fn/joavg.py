@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["average_forecast"]
+__all__ = ["average_forecast", "joseph_average_forecast"]
 
 
 def average_forecast(y, horizon=1, window=None, seasonal_period=None):
@@ -138,3 +138,7 @@ def cheatsheet():
         "joavg: mean forecast baseline with naive and drift alternatives and "
         "a recommendation based on the measured autocorrelation"
     )
+
+
+#: Catalogue alias for :func:`average_forecast`.
+joseph_average_forecast = average_forecast

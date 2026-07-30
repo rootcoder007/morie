@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ensemble_evaluate"]
+__all__ = ["ensemble_evaluate", "geron_ensemble_eval"]
 
 
 def ensemble_evaluate(predictions, y=None, weights=None, task="regression"):
@@ -145,3 +145,7 @@ def cheatsheet():
         "hmense: ensemble mean or vote with the Krogh-Vedelsby "
         "error-minus-ambiguity decomposition"
     )
+
+
+#: Catalogue alias for :func:`ensemble_evaluate`.
+geron_ensemble_eval = ensemble_evaluate

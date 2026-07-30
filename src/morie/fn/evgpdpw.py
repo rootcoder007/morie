@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_gpd_pwm"]
+__all__ = ["ev_gpd_pwm", "evt_gpd_pwm"]
 
 
 def ev_gpd_pwm(x, threshold=None):
@@ -93,3 +93,7 @@ def ev_gpd_pwm(x, threshold=None):
 
 def cheatsheet():
     return "evgpdpw: k = l1/l2 - 2, sigma = l1(1+k) -- and k <= -0.5 means the theory stopped"
+
+
+#: Catalogue alias for :func:`ev_gpd_pwm`.
+evt_gpd_pwm = ev_gpd_pwm

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_gev_lmoments"]
+__all__ = ["ev_gev_lmoments", "evt_gev_lmoments"]
 
 
 def ev_gev_lmoments(block_maxima):
@@ -89,3 +89,7 @@ def ev_gev_lmoments(block_maxima):
 
 def cheatsheet():
     return "evgevlm: Hosking's k = -xi -- and L-moments beat ML in small block-maxima samples"
+
+
+#: Catalogue alias for :func:`ev_gev_lmoments`.
+evt_gev_lmoments = ev_gev_lmoments

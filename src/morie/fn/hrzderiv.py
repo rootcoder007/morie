@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kde_deriv
 from ._richresult import RichResult
 
-__all__ = ["hrz_density_derivative"]
+__all__ = ["hrz_density_derivative", "horowitz_density_derivative"]
 
 
 def hrz_density_derivative(x, grid=None, h=None, kernel_name="gaussian", r=1):
@@ -54,3 +54,7 @@ def hrz_density_derivative(x, grid=None, h=None, kernel_name="gaussian", r=1):
 
 def cheatsheet():
     return "hrzderiv: reusing the density bandwidth undersmooths the derivative"
+
+
+#: Catalogue alias for :func:`hrz_density_derivative`.
+horowitz_density_derivative = hrz_density_derivative

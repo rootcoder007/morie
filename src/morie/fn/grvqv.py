@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["geron_vqvae_quantize"]
+__all__ = ["geron_vqvae_quantize", "geron_vq_vae_codebook_loss"]
 
 
 def geron_vqvae_quantize(z_e, codebook, beta=0.25):
@@ -129,3 +129,7 @@ def cheatsheet():
         "grvqv: VQ-VAE quantisation with codebook and commitment losses, "
         "straight-through gradient and a collapse check"
     )
+
+
+#: Catalogue alias for :func:`geron_vqvae_quantize`.
+geron_vq_vae_codebook_loss = geron_vqvae_quantize

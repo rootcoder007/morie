@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import local_linear_quantile
 from ._richresult import RichResult
 
-__all__ = ["hrz_local_linear_quantile"]
+__all__ = ["hrz_local_linear_quantile", "horowitz_local_linear_quantile"]
 
 
 def hrz_local_linear_quantile(x, y, tau=0.5, grid=None, h=None,
@@ -54,3 +54,7 @@ def hrz_local_linear_quantile(x, y, tau=0.5, grid=None, h=None,
 
 def cheatsheet():
     return "hrzllqr: conditional quantile, not mean -- shows the whole distribution move"
+
+
+#: Catalogue alias for :func:`hrz_local_linear_quantile`.
+horowitz_local_linear_quantile = hrz_local_linear_quantile

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["normalizing_flow_density"]
+__all__ = ["normalizing_flow_density", "normalizing_flow"]
 
 
 def normalizing_flow_density(x, at=None, n_layers=8, n_iter=400, lr=0.05,
@@ -171,3 +171,7 @@ def cheatsheet():
         "normfl: 1-D normalizing flow with exact likelihood and a "
         "unit-integral check on the Jacobian term"
     )
+
+
+#: Catalogue alias for :func:`normalizing_flow_density`.
+normalizing_flow = normalizing_flow_density

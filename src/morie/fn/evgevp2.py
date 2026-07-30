@@ -3,7 +3,7 @@
 
 from ._richresult import RichResult
 
-__all__ = ["ev_gev_pwm"]
+__all__ = ["ev_gev_pwm", "evt_gev_pwm"]
 
 
 def ev_gev_pwm(block_maxima):
@@ -41,3 +41,7 @@ def ev_gev_pwm(block_maxima):
 
 def cheatsheet():
     return "evgevp2: PWM fit == L-moment fit, one implementation"
+
+
+#: Catalogue alias for :func:`ev_gev_pwm`.
+evt_gev_pwm = ev_gev_pwm

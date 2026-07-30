@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["random_common_cause_refutation"]
+__all__ = ["random_common_cause_refutation", "random_cause_refutation"]
 
 
 def random_common_cause_refutation(estimator, y, d, X, n_sims=50, seed=0,
@@ -126,3 +126,7 @@ def cheatsheet():
         "rcaus: add an independent covariate and check the estimate holds, "
         "with a control that catches a trivial pass"
     )
+
+
+#: Catalogue alias for :func:`random_common_cause_refutation`.
+random_cause_refutation = random_common_cause_refutation

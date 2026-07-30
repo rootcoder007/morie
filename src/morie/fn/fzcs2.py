@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_cumulative_survival_2"]
+__all__ = ["fauzi_cumulative_survival_2", "fauzi_cum_surv_est2"]
 
 
 def fauzi_cumulative_survival_2(x, t_grid, h=None, transform="log"):
@@ -102,3 +102,7 @@ def fauzi_cumulative_survival_2(x, t_grid, h=None, transform="log"):
 
 def cheatsheet():
     return "fzcs2: mirror limits of fzcs1; the g' factor is what makes it estimate S_cum"
+
+
+#: Catalogue alias for :func:`fauzi_cumulative_survival_2`.
+fauzi_cum_surv_est2 = fauzi_cumulative_survival_2

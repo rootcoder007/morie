@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["mean_average_precision"]
+__all__ = ["mean_average_precision", "alammar_mean_average_precision"]
 
 
 def mean_average_precision(relevance, k=None):
@@ -123,3 +123,7 @@ def cheatsheet():
         "almap: MAP over queries, with precision/recall at k and the binary "
         "relevance limitation stated"
     )
+
+
+#: Catalogue alias for :func:`mean_average_precision`.
+alammar_mean_average_precision = mean_average_precision

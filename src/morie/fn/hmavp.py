@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from .grapl import geron_average_pooling_2d
 
-__all__ = ["average_pooling"]
+__all__ = ["average_pooling", "geron_average_pool"]
 
 
 def average_pooling(x, pool_size=2, stride=None, padding="valid",
@@ -88,3 +88,7 @@ def average_pooling(x, pool_size=2, stride=None, padding="valid",
 
 def cheatsheet():
     return "hmavp: windowed or global average pooling, the latter parameter-free"
+
+
+#: Catalogue alias for :func:`average_pooling`.
+geron_average_pool = average_pooling

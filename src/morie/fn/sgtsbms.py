@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["spectral_sbm"]
+__all__ = ["spectral_sbm", "sgt_sbm_spectral_estimate"]
 
 
 def spectral_sbm(adjacency, k=2, regularized=True, n_iter=100, seed=0):
@@ -166,3 +166,7 @@ def cheatsheet():
         "sgtsbms: spectral SBM clustering with the log-n degree condition "
         "and the eigengap that justifies K"
     )
+
+
+#: Catalogue alias for :func:`spectral_sbm`.
+sgt_sbm_spectral_estimate = spectral_sbm

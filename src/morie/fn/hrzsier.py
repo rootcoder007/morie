@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import sieve_basis
 from ._richresult import RichResult
 
-__all__ = ["hrz_series_regression"]
+__all__ = ["hrz_series_regression", "horowitz_series_regression"]
 
 
 def hrz_series_regression(x, y, K=5, kind="poly", grid=None):
@@ -66,3 +66,7 @@ def hrz_series_regression(x, y, K=5, kind="poly", grid=None):
 
 def cheatsheet():
     return "hrzsier: fixed K never becomes consistent -- K is the bandwidth here"
+
+
+#: Catalogue alias for :func:`hrz_series_regression`.
+horowitz_series_regression = hrz_series_regression

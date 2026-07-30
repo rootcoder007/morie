@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["causal_estimand"]
+__all__ = ["causal_estimand", "estimand_framework"]
 
 ESTIMANDS = ("ate", "att", "atc", "late", "cate")
 
@@ -181,3 +181,7 @@ def cheatsheet():
         "estnd: the weights each estimand implies, with overlap and the "
         "decision question each one answers"
     )
+
+
+#: Catalogue alias for :func:`causal_estimand`.
+estimand_framework = causal_estimand

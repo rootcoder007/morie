@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_boundary_free_kde"]
+__all__ = ["fauzi_boundary_free_kde", "fauzi_bdfree_kde"]
 
 
 def fauzi_boundary_free_kde(x, grid=None, h=None, transform="log"):
@@ -93,3 +93,7 @@ def fauzi_boundary_free_kde(x, grid=None, h=None, transform="log"):
 
 def cheatsheet():
     return "fzbfkd: the 1/g'(g^{-1}(t)) Jacobian is mandatory -- without it the density is on the wrong scale"
+
+
+#: Catalogue alias for :func:`fauzi_boundary_free_kde`.
+fauzi_bdfree_kde = fauzi_boundary_free_kde

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_eff_score_consistency"]
+__all__ = ["kosorok_eff_score_consistency", "kosorok_ch3_z_estimator_consistency_score"]
 
 
 def kosorok_eff_score_consistency(scores_est, scores_true):
@@ -71,3 +71,7 @@ def kosorok_eff_score_consistency(scores_est, scores_true):
 
 def cheatsheet():
     return "ksr067: a fit can converge in mean square and still explode under its own law"
+
+
+#: Catalogue alias for :func:`kosorok_eff_score_consistency`.
+kosorok_ch3_z_estimator_consistency_score = kosorok_eff_score_consistency

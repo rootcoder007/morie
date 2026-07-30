@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_stochastic_equicontinuity"]
+__all__ = ["kosorok_stochastic_equicontinuity", "kosorok_ch2_z_master_stochastic_equicontinuity"]
 
 
 def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq,
@@ -81,3 +81,7 @@ def kosorok_stochastic_equicontinuity(psi_n, psi, theta_seq, theta0, n_seq,
 
 def cheatsheet():
     return "ksr048: the 1 + sqrt(n)||theta_n - theta_0|| denominator is what makes it satisfiable"
+
+
+#: Catalogue alias for :func:`kosorok_stochastic_equicontinuity`.
+kosorok_ch2_z_master_stochastic_equicontinuity = kosorok_stochastic_equicontinuity

@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import local_linear, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_partially_linear"]
+__all__ = ["hrz_partially_linear", "horowitz_robinson_plr"]
 
 
 def hrz_partially_linear(X, Z, y, h=None, kernel_name="gaussian"):
@@ -80,3 +80,7 @@ def hrz_partially_linear(X, Z, y, h=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrzplr: partialling out leaves beta root-n; the slow g does not contaminate it"
+
+
+#: Catalogue alias for :func:`hrz_partially_linear`.
+horowitz_robinson_plr = hrz_partially_linear

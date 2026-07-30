@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kde, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_kde"]
+__all__ = ["hrz_kde", "horowitz_appendix_kde"]
 
 
 def hrz_kde(x, grid=None, h=None, kernel_name="gaussian"):
@@ -51,3 +51,7 @@ def hrz_kde(x, grid=None, h=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrzkde: n^{-2/5} rate is a ceiling, not a defect -- hence root-n functionals"
+
+
+#: Catalogue alias for :func:`hrz_kde`.
+horowitz_appendix_kde = hrz_kde

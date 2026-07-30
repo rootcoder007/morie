@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_average_derivative_hat"]
+__all__ = ["hrz_average_derivative_hat", "horowitz_improved_ade"]
 
 
 from .hrzade import hrz_average_derivative
@@ -63,3 +63,7 @@ def hrz_average_derivative_hat(X, y, h=None):
 
 def cheatsheet():
     return "hrzades: a density-optimal bandwidth would bias the CI off-centre"
+
+
+#: Catalogue alias for :func:`hrz_average_derivative_hat`.
+horowitz_improved_ade = hrz_average_derivative_hat

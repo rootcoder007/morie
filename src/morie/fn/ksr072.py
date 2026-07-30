@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_semipar_efficiency"]
+__all__ = ["kosorok_semipar_efficiency", "kosorok_ch3_z_estimator_efficiency_master"]
 
 
 def kosorok_semipar_efficiency(scores, nuisance_scores=None):
@@ -77,3 +77,7 @@ def kosorok_semipar_efficiency(scores, nuisance_scores=None):
 
 def cheatsheet():
     return "ksr072: efficient information <= full, and the gap is exactly what the nuisance costs"
+
+
+#: Catalogue alias for :func:`kosorok_semipar_efficiency`.
+kosorok_ch3_z_estimator_efficiency_master = kosorok_semipar_efficiency

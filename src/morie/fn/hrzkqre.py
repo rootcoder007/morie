@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_kernel_quantile"]
+__all__ = ["hrz_kernel_quantile", "horowitz_kernel_quantile_reg"]
 
 
 def hrz_kernel_quantile(x, y, tau=0.5, grid=None, h=None, kernel_name="gaussian"):
@@ -80,3 +80,7 @@ def hrz_kernel_quantile(x, y, tau=0.5, grid=None, h=None, kernel_name="gaussian"
 
 def cheatsheet():
     return "hrzkqre: one CDF for all tau, so crossing cannot happen"
+
+
+#: Catalogue alias for :func:`hrz_kernel_quantile`.
+horowitz_kernel_quantile_reg = hrz_kernel_quantile

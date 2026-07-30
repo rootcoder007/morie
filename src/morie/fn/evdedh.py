@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_dedh"]
+__all__ = ["ev_dedh", "evt_dekkers_einmahl_dehaan"]
 
 
 def ev_dedh(x, k=None):
@@ -92,3 +92,7 @@ def ev_dedh(x, k=None):
 
 def cheatsheet():
     return "evdedh: Hill plus a second-moment correction -- valid for every xi"
+
+
+#: Catalogue alias for :func:`ev_dedh`.
+evt_dekkers_einmahl_dehaan = ev_dedh

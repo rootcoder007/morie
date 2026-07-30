@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["smoothed_derivative"]
+__all__ = ["smoothed_derivative", "derivative_function"]
 
 
 def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
@@ -177,3 +177,7 @@ def cheatsheet():
         "derivf: derivative by differentiating a penalised basis, with the "
         "penalty-order rule and a noise-amplification check"
     )
+
+
+#: Catalogue alias for :func:`smoothed_derivative`.
+derivative_function = smoothed_derivative

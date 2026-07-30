@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["horowitz_smoothed_fU"]
+__all__ = ["horowitz_smoothed_fU", "horowitz_deconv_estimator"]
 
 
 def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None):
@@ -75,3 +75,7 @@ def horowitz_smoothed_fU(y, x, beta, nu_U=None, grid=None):
 
 def cheatsheet():
     return "hrzfnu: without psi_zeta the inversion integral does not exist -- regularisation is mandatory"
+
+
+#: Catalogue alias for :func:`horowitz_smoothed_fU`.
+horowitz_deconv_estimator = horowitz_smoothed_fU

@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from .grrmsp import geron_rmsprop_update
 
-__all__ = ["rmsprop"]
+__all__ = ["rmsprop", "geron_rmsprop"]
 
 
 def rmsprop(grads, params=None, lr=0.001, rho=0.9, eps=1e-7):
@@ -88,3 +88,7 @@ def rmsprop(grads, params=None, lr=0.001, rho=0.9, eps=1e-7):
 
 def cheatsheet():
     return "hmrmsp: RMSProp across a gradient path, exposing the effective rate"
+
+
+#: Catalogue alias for :func:`rmsprop`.
+geron_rmsprop = rmsprop

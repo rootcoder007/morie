@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_b2_coefficient"]
+__all__ = ["fauzi_b2_coefficient", "fauzi_b2_coefficient_mrl"]
 
 
 def fauzi_b2_coefficient(t, f_X, f_X_prime=None, S_X=None, transform="log"):
@@ -80,3 +80,7 @@ def fauzi_b2_coefficient(t, f_X, f_X_prime=None, S_X=None, transform="log"):
 
 def cheatsheet():
     return "fzb2t: b_2 is why the transformed bias stays O(h^2) at the edge"
+
+
+#: Catalogue alias for :func:`fauzi_b2_coefficient`.
+fauzi_b2_coefficient_mrl = fauzi_b2_coefficient

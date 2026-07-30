@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_instrument_check"]
+__all__ = ["hrz_instrument_check", "horowitz_instruments_transformation"]
 
 
 def hrz_instrument_check(X, Z, U=None, y=None):
@@ -88,3 +88,7 @@ def hrz_instrument_check(X, Z, U=None, y=None):
 
 def cheatsheet():
     return "hrzinst: weak-but-valid inflates variance; strong-but-invalid gives confident nonsense"
+
+
+#: Catalogue alias for :func:`hrz_instrument_check`.
+horowitz_instruments_transformation = hrz_instrument_check

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["genomic_ebv"]
+__all__ = ["genomic_ebv", "gebv_selection"]
 
 
 def genomic_ebv(marker_matrix, y=None, effects=None, h2=None,
@@ -186,3 +186,7 @@ def cheatsheet():
         "gebvs: GBLUP breeding values on VanRaden's G, with accuracy, "
         "selection intensity and the relatedness selection accumulates"
     )
+
+
+#: Catalogue alias for :func:`genomic_ebv`.
+gebv_selection = genomic_ebv

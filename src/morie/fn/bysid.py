@@ -73,33 +73,64 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100, seed: int = 0, 
     step_x = 0.4
     step_ab = 0.3
 
-    def loglik(xv, av, bv):
+    mask = ~np.isnan(M)
+    Msafe = np.where(mask, M, 0.0)
+
+    def _cellwise_ll(xv, av, bv):
+        """Per-cell log-likelihood, zero where the vote is missing."""
         Z = av[None, :] * (xv[:, None] - bv[None, :])
         P = _logistic(Z)
-        mask = ~np.isnan(M)
-        ll = np.where(mask, M * np.log(P + 1e-12) + (1 - M) * np.log(1 - P + 1e-12), 0.0)
-        return float(np.sum(ll))
+        return np.where(mask, Msafe * np.log(P + 1e-12) + (1 - Msafe) * np.log(1 - P + 1e-12), 0.0)
 
-    ll_cur = loglik(x_cur, a_cur, b_cur)
+    def row_ll(xv, av, bv):
+        return _cellwise_ll(xv, av, bv).sum(axis=1)  # (n,) -- x_i touches row i only
+
+    def col_ll(xv, av, bv):
+        return _cellwise_ll(xv, av, bv).sum(axis=0)  # (m,) -- a_j, b_j touch column j only
+
+    # Metropolis-within-Gibbs: x_i enters only row i and a_j/b_j only column j, so
+    # each coordinate is accepted or rejected on its own likelihood.  A single
+    # joint accept/reject over all n coordinates has acceptance falling off
+    # exponentially in n and leaves the chain pinned at its initial value.
+    ll_x = row_ll(x_cur, a_cur, b_cur)
+    acc_x = acc_a = acc_b = 0
     for t in range(n_iter):
-        # Metropolis on x
+        # Metropolis on x (per legislator)
         x_prop = x_cur + step_x * rng.normal(size=n)
-        ll_prop = loglik(x_prop, a_cur, b_cur)
-        log_a = (ll_prop - 0.5 * np.sum(x_prop**2)) - (ll_cur - 0.5 * np.sum(x_cur**2))
-        if np.log(rng.uniform()) < log_a:
-            x_cur, ll_cur = x_prop, ll_prop
-        # Metropolis on alpha
+        ll_prop = row_ll(x_prop, a_cur, b_cur)
+        log_a = (ll_prop - 0.5 * x_prop**2) - (ll_x - 0.5 * x_cur**2)
+        take = np.log(rng.uniform(size=n)) < log_a
+        x_cur = np.where(take, x_prop, x_cur)
+        ll_x = np.where(take, ll_prop, ll_x)
+        acc_x += int(take.sum())
+
+        # Metropolis on alpha (per item)
+        ll_c = col_ll(x_cur, a_cur, b_cur)
         a_prop = a_cur + step_ab * rng.normal(size=m)
-        ll_prop = loglik(x_cur, a_prop, b_cur)
-        log_a = (ll_prop - 0.5 * np.sum(a_prop**2) / 25.0) - (ll_cur - 0.5 * np.sum(a_cur**2) / 25.0)
-        if np.log(rng.uniform()) < log_a:
-            a_cur, ll_cur = a_prop, ll_prop
-        # Metropolis on beta
+        ll_prop = col_ll(x_cur, a_prop, b_cur)
+        log_a = (ll_prop - 0.5 * a_prop**2 / 25.0) - (ll_c - 0.5 * a_cur**2 / 25.0)
+        take = np.log(rng.uniform(size=m)) < log_a
+        a_cur = np.where(take, a_prop, a_cur)
+        acc_a += int(take.sum())
+
+        # Metropolis on beta (per item)
+        ll_c = col_ll(x_cur, a_cur, b_cur)
         b_prop = b_cur + step_ab * rng.normal(size=m)
-        ll_prop = loglik(x_cur, a_cur, b_prop)
-        log_a = (ll_prop - 0.5 * np.sum(b_prop**2) / 25.0) - (ll_cur - 0.5 * np.sum(b_cur**2) / 25.0)
-        if np.log(rng.uniform()) < log_a:
-            b_cur, ll_cur = b_prop, ll_prop
+        ll_prop = col_ll(x_cur, a_cur, b_prop)
+        log_a = (ll_prop - 0.5 * b_prop**2 / 25.0) - (ll_c - 0.5 * b_cur**2 / 25.0)
+        take = np.log(rng.uniform(size=m)) < log_a
+        b_cur = np.where(take, b_prop, b_cur)
+        acc_b += int(take.sum())
+
+        ll_x = row_ll(x_cur, a_cur, b_cur)
+
+        if t < burn:
+            # Robbins-Monro step tuning towards the 0.44 optimum for scalar moves.
+            step_x *= np.exp((acc_x / ((t + 1) * n) - 0.44) * 0.5)
+            step_ab *= np.exp((0.5 * (acc_a + acc_b) / ((t + 1) * m) - 0.44) * 0.5)
+            step_x = float(np.clip(step_x, 1e-3, 5.0))
+            step_ab = float(np.clip(step_ab, 1e-3, 5.0))
+
         if t >= burn:
             # Renorm for identification
             xs = (x_cur - x_cur.mean()) / (x_cur.std() + 1e-12)

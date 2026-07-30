@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["sens_slope"]
+__all__ = ["sens_slope", "sen_slope"]
 
 
 def sens_slope(y, t=None, alpha=0.05):
@@ -64,3 +64,7 @@ def sens_slope(y, t=None, alpha=0.05):
 
 def cheatsheet():
     return "sensSlp: Theil-Sen on (t, y) -- one implementation, trend read off Sen's interval"
+
+
+#: Catalogue alias for :func:`sens_slope`.
+sen_slope = sens_slope

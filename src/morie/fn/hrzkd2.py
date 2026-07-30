@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_kde_multivariate"]
+__all__ = ["hrz_kde_multivariate", "horowitz_multivariate_kde"]
 
 
 def hrz_kde_multivariate(x, grid=None, h=None, kernel_name="gaussian"):
@@ -76,3 +76,7 @@ def hrz_kde_multivariate(x, grid=None, h=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrzkd2: rate n^{-2/(4+d)}; d=5 already gives n^{-2/9}"
+
+
+#: Catalogue alias for :func:`hrz_kde_multivariate`.
+horowitz_multivariate_kde = hrz_kde_multivariate

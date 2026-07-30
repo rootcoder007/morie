@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["random_forest_oob"]
+__all__ = ["random_forest_oob", "rf_oob_error"]
 
 
 def random_forest_oob(y, predictions, in_bag=None, task="regression",
@@ -142,3 +142,7 @@ def cheatsheet():
         "rfOOB: OOB error plus the learning curve that says whether growing "
         "more trees would help"
     )
+
+
+#: Catalogue alias for :func:`random_forest_oob`.
+rf_oob_error = random_forest_oob

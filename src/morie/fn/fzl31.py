@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_lemma_3_1"]
+__all__ = ["fauzi_lemma_3_1", "fauzi_lem3_1_asymp_rep"]
 
 
 def fauzi_lemma_3_1(x, p, h=None, q_true=None):
@@ -100,3 +100,7 @@ def fauzi_lemma_3_1(x, p, h=None, q_true=None):
 
 def cheatsheet():
     return "fzl31: once it is an average plus a remainder, everything else follows from sums"
+
+
+#: Catalogue alias for :func:`fauzi_lemma_3_1`.
+fauzi_lem3_1_asymp_rep = fauzi_lemma_3_1

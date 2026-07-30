@@ -7,7 +7,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["knn_entropy"]
+__all__ = ["knn_entropy", "entropy_knn"]
 
 
 def _digamma(x):
@@ -159,3 +159,7 @@ def cheatsheet():
         "entest: k-NN differential entropy with the digamma correction and "
         "a high-dimension concentration warning"
     )
+
+
+#: Catalogue alias for :func:`knn_entropy`.
+entropy_knn = knn_entropy

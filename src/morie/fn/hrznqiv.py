@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_npiv_quantile"]
+__all__ = ["hrz_npiv_quantile", "horowitz_nonpar_quantile_iv"]
 
 
 def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
@@ -54,3 +54,7 @@ def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
 
 def cheatsheet():
     return "hrznqiv: quantile restriction makes the operator equation NONLINEAR"
+
+
+#: Catalogue alias for :func:`hrz_npiv_quantile`.
+horowitz_nonpar_quantile_iv = hrz_npiv_quantile

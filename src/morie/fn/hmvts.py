@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["soft_voting_classifier"]
+__all__ = ["soft_voting_classifier", "geron_voting_soft"]
 
 
 def soft_voting_classifier(probabilities, y=None, weights=None,
@@ -124,3 +124,7 @@ def cheatsheet():
         "hmvts: soft voting with the hard vote alongside, and the "
         "calibration caveat that decides which is better"
     )
+
+
+#: Catalogue alias for :func:`soft_voting_classifier`.
+geron_voting_soft = soft_voting_classifier

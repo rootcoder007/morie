@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["lmm_loglik"]
+__all__ = ["lmm_loglik", "lmm_log_likelihood"]
 
 
 def lmm_loglik(y, X, Z=None, D=None, R=None, V=None, reml=False):
@@ -164,3 +164,7 @@ def cheatsheet():
         "lmmll: LMM ML/REML log-likelihood with the ZDZ' correction and the "
         "likelihood-comparison rule"
     )
+
+
+#: Catalogue alias for :func:`lmm_loglik`.
+lmm_log_likelihood = lmm_loglik

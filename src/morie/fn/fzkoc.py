@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["fauzi_order_m_kernel"]
+__all__ = ["fauzi_order_m_kernel", "fauzi_kernel_order_m_condition"]
 
 
 def fauzi_order_m_kernel(u, m=4):
@@ -67,3 +67,7 @@ def fauzi_order_m_kernel(u, m=4):
 
 def cheatsheet():
     return "fzkoc: order-m kernels MUST go negative -- fine for quantiles, not for a plotted density"
+
+
+#: Catalogue alias for :func:`fauzi_order_m_kernel`.
+fauzi_kernel_order_m_condition = fauzi_order_m_kernel

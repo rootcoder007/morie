@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["regression_estimator_multi"]
+__all__ = ["regression_estimator_multi", "regression_estimator"]
 
 
 def regression_estimator_multi(y, x, X_mean, weights=None):
@@ -82,3 +82,7 @@ def regression_estimator_multi(y, x, X_mean, weights=None):
 
 def cheatsheet():
     return "reglmd: extra auxiliaries always raise R^2 and can still raise the VARIANCE"
+
+
+#: Catalogue alias for :func:`regression_estimator_multi`.
+regression_estimator = regression_estimator_multi

@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["ev_extremal_sliding"]
+__all__ = ["ev_extremal_sliding", "evt_extremal_index_slidblk"]
 
 
 def ev_extremal_sliding(x, threshold=None, block_length=None):
@@ -101,3 +101,7 @@ def ev_extremal_sliding(x, threshold=None, block_length=None):
 
 def cheatsheet():
     return "evextsl: -b log F_hat(block max) ~ Exp(theta); sliding blocks cut the variance"
+
+
+#: Catalogue alias for :func:`ev_extremal_sliding`.
+evt_extremal_index_slidblk = ev_extremal_sliding

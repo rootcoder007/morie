@@ -5,12 +5,22 @@ threshold sigma*sqrt(2 log n) and soft thresholding. Application context:
 Rangayyan & Krishnan (2024) Sec 8.14, p.493.
 """
 
+import importlib.util
+
 import numpy as np
 import pytest
 
 from morie.fn.rgwav import rangayyan_wavelet_denoise
 
+# Without pywt the function documents a moving-average fallback that reports
+# no sigma and no threshold, so the wavelet-specific properties below have
+# nothing to assert on. Length preservation and error reduction still do.
+needs_pywt = pytest.mark.skipif(
+    importlib.util.find_spec("pywt") is None, reason="pywt not installed"
+)
 
+
+@needs_pywt
 def test_rgwav_threshold_is_the_universal_threshold():
     # Donoho & Johnstone's universal threshold is sigma * sqrt(2 ln n).
     n = 1024
@@ -34,6 +44,7 @@ def test_rgwav_preserves_length():
     assert out.size == x.size
 
 
+@needs_pywt
 def test_rgwav_soft_threshold_shrinks_towards_zero():
     # Soft thresholding never increases magnitude, so a pure-noise record
     # must come back with no more energy than it went in with.
@@ -42,6 +53,7 @@ def test_rgwav_soft_threshold_shrinks_towards_zero():
     assert np.sum(out**2) <= np.sum(x**2) + 1e-9
 
 
+@needs_pywt
 def test_rgwav_estimated_sigma_tracks_the_injected_noise():
     # sigma is the MAD-based robust scale estimate of the finest detail level
     n = 4096

@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_index_nw"]
+__all__ = ["hrz_index_nw", "horowitz_nw_estimator_g"]
 
 
 def hrz_index_nw(X, y, beta, h=None, grid=None, kernel_name="gaussian"):
@@ -72,3 +72,7 @@ def hrz_index_nw(X, y, beta, h=None, grid=None, kernel_name="gaussian"):
 
 def cheatsheet():
     return "hrznwrg: index collapses d dimensions to 1, restoring the n^{-2/5} rate"
+
+
+#: Catalogue alias for :func:`hrz_index_nw`.
+horowitz_nw_estimator_g = hrz_index_nw

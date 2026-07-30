@@ -6,7 +6,7 @@ import numpy as np
 from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult
 
-__all__ = ["hrz_semiparametric_ls"]
+__all__ = ["hrz_semiparametric_ls", "horowitz_nls_sim"]
 
 
 from scipy import optimize
@@ -87,3 +87,7 @@ def hrz_semiparametric_ls(X, y, h=None, kernel_name="gaussian", beta0=None):
 
 def cheatsheet():
     return "hrznls: |b1|=1 fixes the unidentified scale; LOO stops interpolation"
+
+
+#: Catalogue alias for :func:`hrz_semiparametric_ls`.
+horowitz_nls_sim = hrz_semiparametric_ls

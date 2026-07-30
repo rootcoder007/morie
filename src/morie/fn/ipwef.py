@@ -6,7 +6,7 @@ import numpy as np
 from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict
 
-__all__ = ["ipw_ate"]
+__all__ = ["ipw_ate", "ipw_estimator"]
 
 
 def ipw_ate(y, d, X=None, propensity=None, trunc=0.01, stabilized=True,
@@ -168,3 +168,7 @@ def cheatsheet():
         "ipwef: IPW ATE/ATT with stabilised weights, effective sample size "
         "and the single-observation dominance check"
     )
+
+
+#: Catalogue alias for :func:`ipw_ate`.
+ipw_estimator = ipw_ate

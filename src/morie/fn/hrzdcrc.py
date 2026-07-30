@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_deconv_rate"]
+__all__ = ["hrz_deconv_rate", "horowitz_deconv_rate"]
 
 
 def hrz_deconv_rate(n, error="normal", s=2.0, r=2.0):
@@ -63,3 +63,7 @@ def hrz_deconv_rate(n, error="normal", s=2.0, r=2.0):
 
 def cheatsheet():
     return "hrzdcrc: at n=1e6 the logarithmic rate has barely moved"
+
+
+#: Catalogue alias for :func:`hrz_deconv_rate`.
+horowitz_deconv_rate = hrz_deconv_rate

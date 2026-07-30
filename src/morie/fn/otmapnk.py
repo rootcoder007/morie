@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["neural_kantorovich_map"]
+__all__ = ["neural_kantorovich_map", "ot_map_neural_kantorovich"]
 
 
 def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
@@ -164,3 +164,7 @@ def cheatsheet():
         "otmapnk: monotone Brenier map from a convex potential, scored "
         "against the exact 1-D quantile coupling"
     )
+
+
+#: Catalogue alias for :func:`neural_kantorovich_map`.
+ot_map_neural_kantorovich = neural_kantorovich_map

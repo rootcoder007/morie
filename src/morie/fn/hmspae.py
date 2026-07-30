@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["sparse_autoencoder_penalty"]
+__all__ = ["sparse_autoencoder_penalty", "geron_sparse_autoencoder"]
 
 
 def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0,
@@ -110,3 +110,7 @@ def cheatsheet():
         "hmspae: KL (or l1) sparsity penalty on mean activation, with dead "
         "and saturated unit counts"
     )
+
+
+#: Catalogue alias for :func:`sparse_autoencoder_penalty`.
+geron_sparse_autoencoder = sparse_autoencoder_penalty

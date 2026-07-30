@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_score_operator"]
+__all__ = ["kosorok_score_operator", "kosorok_ch3_score_operator_path"]
 
 
 def kosorok_score_operator(log_p, eta_path, x, h, t=0.0, step=1e-5):
@@ -72,3 +72,7 @@ def kosorok_score_operator(log_p, eta_path, x, h, t=0.0, step=1e-5):
 
 def cheatsheet():
     return "ksr070: B maps directions to scores, and its RANGE is the nuisance tangent space"
+
+
+#: Catalogue alias for :func:`kosorok_score_operator`.
+kosorok_ch3_score_operator_path = kosorok_score_operator

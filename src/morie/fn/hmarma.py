@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["arma_model"]
+__all__ = ["arma_model", "geron_arma"]
 
 
 def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
@@ -147,3 +147,7 @@ def cheatsheet():
         "hmarma: ARMA(p,q) by conditional least squares with stationarity "
         "and invertibility read off the fitted roots"
     )
+
+
+#: Catalogue alias for :func:`arma_model`.
+geron_arma = arma_model

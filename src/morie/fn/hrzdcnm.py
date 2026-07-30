@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["hrz_deconv_normality"]
+__all__ = ["hrz_deconv_normality", "horowitz_deconv_normality"]
 
 
 def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
@@ -67,3 +67,7 @@ def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
 
 def cheatsheet():
     return "hrzdcnm: b_n is the deconvolution price; the bias is subtracted, not wished away"
+
+
+#: Catalogue alias for :func:`hrz_deconv_normality`.
+horowitz_deconv_normality = hrz_deconv_normality

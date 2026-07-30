@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["preprocessing_pipeline"]
+__all__ = ["preprocessing_pipeline", "geron_pipeline"]
 
 STEPS = ("impute_median", "impute_mean", "standardize", "minmax", "log1p")
 
@@ -137,3 +137,7 @@ def cheatsheet():
         "hmpip: fit-on-train preprocessing chain, reporting the leak it "
         "avoided"
     )
+
+
+#: Catalogue alias for :func:`preprocessing_pipeline`.
+geron_pipeline = preprocessing_pipeline

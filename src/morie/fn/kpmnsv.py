@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kaplan_meier"]
+__all__ = ["kaplan_meier", "kaplan_meier_survival"]
 
 
 def kaplan_meier(time, event, alpha=0.05, conf_type="log-log"):
@@ -179,3 +179,7 @@ def cheatsheet():
         "kpmnsv: Kaplan-Meier with Greenwood variance, log-log intervals "
         "and a risk-set reliability flag"
     )
+
+
+#: Catalogue alias for :func:`kaplan_meier`.
+kaplan_meier_survival = kaplan_meier

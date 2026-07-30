@@ -5,7 +5,7 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_survival_psi"]
+__all__ = ["kosorok_survival_psi", "kosorok_ch2_kaplan_meier_self_consistency"]
 
 
 def kosorok_survival_psi(S, t_grid, S0, L, G):
@@ -77,3 +77,7 @@ def kosorok_survival_psi(S, t_grid, S0, L, G):
 
 def cheatsheet():
     return "ksr047: Kaplan-Meier is the ROOT of a map between function spaces"
+
+
+#: Catalogue alias for :func:`kosorok_survival_psi`.
+kosorok_ch2_kaplan_meier_self_consistency = kosorok_survival_psi
