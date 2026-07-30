@@ -53,7 +53,9 @@ def fine_gray_subdistribution_hazard(time, cause, X, of_cause=1, **kwargs):
 
     References
     ----------
-    Fine, J. P., & Gray, R. J. (1999). *JASA*, 94(446), 496-509.
+    Fine, J. P., & Gray, R. J. (1999). A proportional hazards model for
+        the subdistribution of a competing risk. *Journal of the American
+        Statistical Association*, 94(446), 496-509.
 
     Examples
     --------

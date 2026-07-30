@@ -51,7 +51,7 @@ def dp_unit_definition(records, unit=None):
         D., & Gipson, B. (2020). Differentially private SQL with bounded user
         contribution. *PoPETs*, 2020(2), 230-250.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

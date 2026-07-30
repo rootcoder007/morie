@@ -49,7 +49,13 @@ def savage_dickey_ratio(samples, prior, theta0=0.0, bandwidth=None):
 
     References
     ----------
-    Verdinelli & Wasserman (1995); Dickey (1971).
+    Verdinelli, I., & Wasserman, L. (1995). Computing Bayes factors
+        using a generalization of the Savage-Dickey density ratio.
+        *Journal of the American Statistical Association*, 90(430),
+        614-618.
+    Dickey, J. M. (1971). The weighted likelihood ratio, linear
+        hypotheses on normal location parameters. *The Annals of
+        Mathematical Statistics*, 42(1), 204-223.
 
     Examples
     --------

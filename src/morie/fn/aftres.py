@@ -50,7 +50,7 @@ def aft_residuals(fit):
     References
     ----------
     Cox, D. R., & Snell, E. J. (1968). A general definition of residuals.
-        *JRSS-B*, 30(2), 248-275.
+        *JRSS-B*, 30(2), 248-265.
     Kalbfleisch, J. D., & Prentice, R. L. (2002). *The Statistical Analysis
         of Failure Time Data* (2nd ed.). Wiley.
 

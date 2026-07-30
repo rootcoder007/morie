@@ -53,7 +53,6 @@ def theta_method(y, horizon=1, theta=2.0):
         Forecasting*, 16(4), 521-530.
     Hyndman, R. J., & Billah, B. (2003). Unmasking the Theta method.
         *International Journal of Forecasting*, 19(2), 287-290.
-{HYN}
     Examples
     --------
     On a linear trend the method extrapolates it.

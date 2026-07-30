@@ -49,9 +49,11 @@ def privacy_amplification(epsilon, q, delta=0.0):
     References
     ----------
     Balle, B., Barthe, G., & Gaboardi, M. (2018). Privacy amplification by
-        subsampling. *NeurIPS 2018*.
+        subsampling: tight analyses via couplings and divergences.
+        *Advances in Neural Information Processing Systems 31*
+        (NeurIPS 2018).
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

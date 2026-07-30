@@ -58,7 +58,10 @@ def efficiency_bound(y, d, X=None, propensity=None, mu1=None, mu0=None,
     ----------
     Hahn (1998), *Econometrica* 66:315-331.
     Hirano, Imbens and Ridder (2003), *Econometrica* 71:1161-1189.
-    Robins, Rotnitzky and Zhao (1994) for the influence function.
+    Robins, J. M., Rotnitzky, A., & Zhao, L. P. (1994). Estimation of
+        regression coefficients when some regressors are not always
+        observed. *Journal of the American Statistical Association*,
+        89(427), 846-866. (the influence function)
 
     Examples
     --------

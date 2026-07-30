@@ -56,7 +56,7 @@ def epsilon_dp(mech, D, D_prime, n_samples=20000, bins=50, seed=None):
     Ding, Z., Wang, Y., Wang, G., Zhang, D., & Kifer, D. (2018). Detecting
         violations of differential privacy. *CCS 2018*, 475-489.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

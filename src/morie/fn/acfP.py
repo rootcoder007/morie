@@ -53,7 +53,6 @@ def autocorrelation(y, lag_max=None, ci=0.95):
     ----------
     Ljung, G. M., & Box, G. E. P. (1978). On a measure of lack of fit in time
         series models. *Biometrika*, 65(2), 297-303.
-{HYN}
     Examples
     --------
     White noise shows no systematic autocorrelation and the portmanteau test

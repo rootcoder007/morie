@@ -43,7 +43,7 @@ def dp_median(x, epsilon=1.0, a=None, b=None, seed=None):
     Nissim, K., Raskhodnikova, S., & Smith, A. (2007). Smooth sensitivity and
         sampling in private data analysis. *STOC 2007*, 75-84.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

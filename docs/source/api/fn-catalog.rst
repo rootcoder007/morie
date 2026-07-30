@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **36,064 single-purpose callables** -- every one
+``morie.fn`` ships **36,065 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -18757,6 +18757,7 @@ Full list
    "htp_functional_predictor", "htpfn"
    "hubbl", "hubbl"
    "huber", "huber"
+   "huber_ipw_mediation", "medipw"
    "huber_loss", "hubrho"
    "huber_regression", "hux"
    "huber_weight", "huberw"

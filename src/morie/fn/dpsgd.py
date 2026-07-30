@@ -62,7 +62,7 @@ def dp_sgd(grads, C=1.0, sigma=1.0, lr=0.1, theta=None, seed=None):
     Abadi, M., Chu, A., Goodfellow, I., et al. (2016). Deep learning with
         differential privacy. *CCS 2016*, 308-318.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

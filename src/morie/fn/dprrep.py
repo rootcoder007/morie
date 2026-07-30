@@ -55,7 +55,7 @@ def randomized_response_dp(truth, epsilon=1.0, seed=None):
         eliminating evasive answer bias. *JASA*, 60(309), 63-69.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
         differential privacy. *Foundations and Trends in Theoretical
-        Computer Science*, 9(3-4), 211-407.
+        Computer Science*, 9(3-4), 211-487.
 
     Examples
     --------

@@ -52,7 +52,7 @@ def dp_laplace_mechanism(y, sensitivity=1.0, epsilon=1.0, seed=None):
         to sensitivity in private data analysis. *TCC 2006*, 265-284.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
         differential privacy. *Foundations and Trends in Theoretical
-        Computer Science*, 9(3-4), 211-407.
+        Computer Science*, 9(3-4), 211-487.
 
     Examples
     --------

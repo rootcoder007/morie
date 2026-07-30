@@ -53,7 +53,7 @@ def breslow_tie_correction(time, event, X, **kwargs):
     Breslow, N. (1974). Covariance analysis of censored survival data.
         *Biometrics*, 30(1), 89-99.
     Cox, D. R. (1972). Regression models and life-tables. *JRSS-B*,
-        34(2), 187-220.
+        34(2), 187-202.
 
     Examples
     --------

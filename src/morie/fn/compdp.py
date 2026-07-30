@@ -57,7 +57,7 @@ def basic_composition(epsilons, delta_prime=None, deltas=None):
     Dwork, C., Rothblum, G. N., & Vadhan, S. (2010). Boosting and differential
         privacy. *FOCS 2010*, 51-60.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------
