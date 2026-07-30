@@ -50,7 +50,7 @@ def dp_pca(X, k=2, epsilon=1.0, delta=1e-5, C=1.0, seed=None):
 
     References
     ----------
-    Chaudhuri, K., Sarwate, A. D., & Sinha, K. (2013). A near-optimal
+    Chaudhuri, K., Sarwate, A. D., & Sinha, K. (2013). Near-optimal
         algorithm for differentially-private principal components. *JMLR*, 14,
         2905-2943.
 

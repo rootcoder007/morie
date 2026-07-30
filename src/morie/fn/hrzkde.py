@@ -10,7 +10,7 @@ __all__ = ["hrz_kde", "horowitz_appendix_kde"]
 
 
 def hrz_kde(x, grid=None, h=None, kernel_name="gaussian"):
-    r"""Kernel density estimate (Horowitz Ch. 2):
+    r"""Kernel density estimate (Horowitz, Appendix pp. 233-255):
 
     .. math:: \hat f(x) = \frac{1}{nh}\sum_i
               K\!\left(\frac{x - X_i}{h}\right),
@@ -39,7 +39,8 @@ def hrz_kde(x, grid=None, h=None, kernel_name="gaussian"):
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
-    Econometrics*. Springer. Ch. 2 (kernel density estimation).
+    Econometrics*. Springer. Appendix (pp. 233-255, kernel
+    density estimation); NOT Ch. 2, which is Single-Index Models.
     """
     g, d, hh = kde(x, grid=grid, h=h, name=kernel_name)
     return RichResult(payload={"grid": g, "density": d, "bandwidth": hh,

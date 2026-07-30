@@ -41,8 +41,11 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw",
     near zero for a subset of covariates, the optimal rule is
     ill-defined there and the value function is non-differentiable, so
     standard confidence intervals undercover. ``near_indifferent``
-    reports the share of units whose estimated effect lies within one
-    standard error of zero.
+    reports the share of units whose estimated treatment effect lies
+    within one tenth of a standard deviation of zero -- a heuristic for
+    how much mass sits near the decision boundary, where the optimal
+    rule flips. It is a scale-of-the-effect measure, NOT a per-unit
+    standard-error test, and does not shrink with n.
 
     Parameters
     ----------
@@ -65,8 +68,9 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw",
 
     References
     ----------
-    Zhang, Tsiatis, Davidian, Zhang and Laber (2012), *Biometrika*
-    99:1-15.
+    Zhang, B., Tsiatis, A. A., Davidian, M., Zhang, M., & Laber, E.
+    (2012). Estimating optimal treatment regimes from a classification
+    perspective. *Stat*, 1(1), 103-114.
     Murphy (2003), *JRSS-B* 65:331-355.
     Luedtke and van der Laan (2016) on non-regularity.
 
@@ -159,7 +163,7 @@ def regime_value(y, d, X, regime, propensity=None, method="aipw",
                 "where the conditional effect is near zero the optimal rule "
                 "is ill-defined and the value function is "
                 "non-differentiable, so standard intervals undercover; this "
-                "is the share of units in that region"
+                "is the share of units within 0.1 sd of the boundary"
             ),
             "fitted_on_same_data": None,
             "optimism_note": (
