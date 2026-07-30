@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **36,051 single-purpose callables** -- every one
+``morie.fn`` ships **36,062 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -37,7 +37,18 @@ Full list
    :header: "Callable", "Module"
    :widths: 60, 40
 
+   "BracketingResult", "brkts"
+   "DonskerResult", "donsk"
+   "ECDFResult", "ecdf"
+   "EfficiencyBoundResult", "effic"
+   "EmpiricalProcessResult", "emprc"
+   "GlivenkoCantelliResult", "glivn"
+   "MEstimatorResult", "mestm"
+   "MetricEntropyResult", "entrp"
    "REFLECTION_TOKENS", "kmsrag"
+   "VCIndexResult", "vcidx"
+   "Var", "hmagrd"
+   "ZEstimatorResult", "zestm"
    "_har_design", "volhar"
    "_irt_gibbs", "mcmpp"
    "a2c", "a2cv"
