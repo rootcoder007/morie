@@ -574,6 +574,36 @@
       "source": "doi:10.1109/lsp.2015.2503725",
       "verified": "2026-07-30",
       "note": "The horseshoe Gibbs sampler bshrk implements; full text in corpus (Makalic-Schmidt_1508.03884v4.pdf), conditionals at Eqs. (9)-(11)."
+    },
+    "zhang-2012-optimal-regimes": {
+      "year": 2012,
+      "volume": "1",
+      "issue": "1",
+      "pages": "103-114",
+      "container": "Stat",
+      "source": "doi:10.1002/sta.411",
+      "verified": "2026-07-30",
+      "note": "vlfctn had cited Biometrika 99:1-15, which does not exist for these five authors."
+    },
+    "chaudhuri-sarwate-sinha-2013-dppca": {
+      "year": 2013,
+      "volume": "14",
+      "issue": null,
+      "pages": "2905-2943",
+      "container": "Journal of Machine Learning Research",
+      "source": "arxiv:1207.2812",
+      "verified": "2026-07-30",
+      "note": "Title is plural 'Near-Optimal Algorithms', no leading 'A'. JMLR not DOI-registered; volume/pages from the article, title from arXiv/Semantic Scholar."
+    },
+    "horowitz-2009-book-chapters": {
+      "year": 2009,
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "container": "Springer Series in Statistics",
+      "source": "doi:10.1007/978-0-387-92870-8",
+      "verified": "2026-07-30",
+      "note": "Ch.2 Single-Index 7-51; KDE is the Appendix 233-255. hrzkde had cited Ch.2 in all three trees."
     }
   }
 }

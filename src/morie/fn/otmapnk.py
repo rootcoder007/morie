@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Neural-Kantorovich monotone transport map."""
+"""Monotone 1-D transport map fitted to the quantile coupling."""
 
 import numpy as np
 
@@ -23,10 +23,13 @@ def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
     :math:`f'' \ge 0`, so :math:`T = f'` is non-decreasing, and the
     optimal map has the closed form
     :math:`T = F_{target}^{-1} \circ F_{source}` -- the quantile
-    coupling. That closed form is computed here as ``exact_map`` and
-    the fitted map is scored against it, which is the check that the
-    parameterisation actually solved the problem rather than merely
-    converging.
+    coupling. This module fits the monotone basis DIRECTLY to that
+    quantile coupling by least squares, so ``rmse_vs_exact`` measures
+    only how well the softplus-sigmoid basis interpolates its own
+    training target -- it is NOT an independent check that a
+    Kantorovich problem was solved, and no semi-dual objective is
+    optimised here. Treat this as a monotone-map fit to the known
+    1-D optimal coupling, not as neural OT.
 
     ``monotone`` verifies the property that Brenier guarantees. A
     fitted map that is not monotone has not just fit poorly; it is not

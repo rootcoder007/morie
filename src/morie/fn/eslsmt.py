@@ -22,7 +22,7 @@ def esl_smoothing_spline(x, y, lambda_):
     as its trace.
 
     Implemented in the standard discrete form (I + lambda K)^-1 y with
-    K = D' W D built from the second-difference operator on the
+    K = D' W^{-1} D (Reinsch) built from the second-difference operator on the
     unequally spaced design, which is the Reinsch algorithm's penalty.
     Its two limits are exact and both are checked in the doctests:
     lambda = 0 interpolates, and lambda -> infinity gives the least
@@ -90,7 +90,11 @@ def esl_smoothing_spline(x, y, lambda_):
         W[i, i] = (h[i] + h[i + 1]) / 3.0
         if i < n - 3:
             W[i, i + 1] = W[i + 1, i] = h[i + 1] / 6.0
-    K = D.T @ W @ D
+    # Reinsch/Green-Silverman penalty is K = D' W^{-1} D -- the
+    # tridiagonal W is INVERTED. Omitting the inverse (the previous
+    # code) agrees only at lam=0 and lam->inf, so both limit-case
+    # doctests passed while every intermediate lambda was wrong.
+    K = D.T @ np.linalg.solve(W, D)
     S = np.linalg.inv(np.eye(n) + lam * K)
     fit = S @ y
     resid = y - fit
