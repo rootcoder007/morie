@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Basis pursuit denoising -- Boyd & Vandenberghe Sec. 6.3.2."""
+"""Basis pursuit denoising -- Boyd & Vandenberghe Sec. 6.5.4."""
 
 from __future__ import annotations
 
