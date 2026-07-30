@@ -51,7 +51,7 @@ def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500,
     Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*.
         Cambridge University Press.
     Parikh, N., & Boyd, S. (2014). Proximal algorithms. *Foundations
-        and Trends in Optimization*, 1(3), 127-239.
+        and Trends in Optimization*, 1(3), 123-231.
 
     Examples
     --------

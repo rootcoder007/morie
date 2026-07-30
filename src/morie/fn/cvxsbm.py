@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Subgradient method -- Boyd & Vandenberghe Sec. 9.4 / EE364b."""
+"""Subgradient method -- Boyd & Vandenberghe EE364b."""
 
 from __future__ import annotations
 
@@ -49,8 +49,11 @@ def boyd_subgrad_method(f, subgrad, x0, t=None, max_iter=500, rule="sqrt"):
 
     References
     ----------
-    Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*.
-        Cambridge University Press.
+    Boyd, S., & Park, J. (2014). *Subgradient Methods*. Notes for
+        EE364b, Stanford University, Spring 2013-14. The subgradient
+        METHOD is not covered in Boyd & Vandenberghe (2004) -- the book
+        stops at descent methods for differentiable objectives -- so
+        these course notes, not the book, are the source here.
 
     Examples
     --------

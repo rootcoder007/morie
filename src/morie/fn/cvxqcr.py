@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Quadratically constrained QP -- Boyd & Vandenberghe Sec. 4.4.2."""
+"""Quadratically constrained QP -- Boyd & Vandenberghe Sec. 4.4."""
 
 from __future__ import annotations
 

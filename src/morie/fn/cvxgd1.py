@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Projected gradient descent -- Boyd & Vandenberghe Sec. 9.4 / 8.1."""
+"""Projected gradient descent -- Boyd & Vandenberghe Sec. 8.1."""
 
 from __future__ import annotations
 
@@ -54,8 +54,12 @@ def boyd_grad_proj(f, grad_f, x0, C="ball", t=0.05, max_iter=500,
 
     References
     ----------
-    Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*.
-        Cambridge University Press.
+    Boyd, S., & Vandenberghe, L. (2004). *Convex Optimization*,
+        Sec. 8.1 (projection on a set). The book covers the PROJECTION
+        but not the projected-gradient method itself.
+    Parikh, N., & Boyd, S. (2014). Proximal algorithms. *Foundations
+        and Trends in Optimization*, 1(3), 123-231. Projected gradient
+        is proximal gradient with the indicator of C as the penalty.
 
     Examples
     --------

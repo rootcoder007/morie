@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Nuclear norm -- Boyd & Vandenberghe Sec. A.1.6 / Ex. 4.28."""
+"""Nuclear norm -- Boyd & Vandenberghe Sec. A.1.6."""
 
 from __future__ import annotations
 

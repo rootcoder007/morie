@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Minimum-norm solution -- Boyd & Vandenberghe Sec. 4.1 / 6.1."""
+"""Minimum-norm solution -- Boyd & Vandenberghe Sec. 6.2."""
 
 from __future__ import annotations
 

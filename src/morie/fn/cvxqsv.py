@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""SDP relaxation of a QCQP -- Boyd & Vandenberghe Sec. 5.3.2 / App. B."""
+"""SDP relaxation of a QCQP -- Boyd & Vandenberghe Sec. 5.1.5 / App. B."""
 
 from __future__ import annotations
 

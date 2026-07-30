@@ -58,7 +58,7 @@ def boyd_proximal(h, v, t=1.0, lo=None, hi=None):
     References
     ----------
     Parikh, N., & Boyd, S. (2014). Proximal algorithms. *Foundations and
-        Trends in Optimization*, 1(3), 127-239.
+        Trends in Optimization*, 1(3), 123-231.
 
     Examples
     --------

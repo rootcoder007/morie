@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Subgradient -- Boyd & Vandenberghe Sec. 3.1.2 / 9.4."""
+"""Subgradient -- Boyd & Vandenberghe Sec. 3.1.3."""
 
 from __future__ import annotations
 
