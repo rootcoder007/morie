@@ -3,7 +3,7 @@
 The morie.fn Function Catalogue
 ===============================
 
-``morie.fn`` ships **35,770 single-purpose callables** -- every one
+``morie.fn`` ships **35,775 single-purpose callables** -- every one
 is included in the wheel and importable straight after ``pip install morie``.
 They are stored as compact archives inside the package and resolved lazily,
 so ``import morie.fn`` stays ~0.05 s and costs ~28 MB regardless of how many
@@ -10711,6 +10711,7 @@ Full list
    "ers_unit_root", "erstst"
    "esem_target_rotation", "esmoeg"
    "esl_adaboost", "eslada"
+   "esl_adaboost_predict", "eslada"
    "esl_aic_score", "eslaic"
    "esl_backprop", "eslbpr"
    "esl_basis_truncated", "esltrs"
@@ -10730,6 +10731,7 @@ Full list
    "esl_gam", "eslgam"
    "esl_gaussian_mixture", "eslmix"
    "esl_gbm", "eslgbm"
+   "esl_gbm_predict", "eslgbm"
    "esl_holm_bonferroni", "eslmht"
    "esl_ica", "eslica"
    "esl_isomap", "eslism"
@@ -10756,6 +10758,7 @@ Full list
    "esl_oob_632", "eslo63"
    "esl_partial_dependence", "eslprt"
    "esl_pca_svd", "eslpsv"
+   "esl_pca_transform", "eslpsv"
    "esl_pcr", "eslpcr"
    "esl_perceptron", "eslprc"
    "esl_pls", "eslpls"
@@ -10780,6 +10783,7 @@ Full list
    "esl_svm_kernel", "eslsvm"
    "esl_thin_plate_spline", "eslthl"
    "esl_total_sum_squares", "eslrss2"
+   "esl_tree_predict", "esldct"
    "esl_var_beta_hat", "eslvbt"
    "esl_wavelet_smooth", "eslwlt"
    "esl_weight_decay", "eslwgt"
@@ -27073,6 +27077,7 @@ Full list
    "sarvar", "sarvar"
    "sarwald", "sarwald"
    "sasrec", "sasRec"
+   "savage_dickey_ratio", "bfsd"
    "save_figure", "savfg"
    "savgol_smooth", "sgolay"
    "sawad", "sawad"

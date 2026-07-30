@@ -6,12 +6,21 @@ import numpy as np
 
 from ._richresult import RichResult
 
-__all__ = ["bayes_factor_savage_dickey"]
+__all__ = ["savage_dickey_ratio"]
 
 
-def bayes_factor_savage_dickey(samples, prior, theta0=0.0, bandwidth=None):
+def savage_dickey_ratio(samples, prior, theta0=0.0, bandwidth=None):
     """
-    Savage-Dickey density ratio BF_01 for a point null.
+    Savage-Dickey density ratio BF_01 for a point null, with an
+    ARBITRARY prior.
+
+    Distinct from morie.fn.bayes_factor_savage_dickey (module bfsdm),
+    which assumes a Normal prior, requires scipy, and returns
+    Wagenmakers evidence categories. This one takes the prior as a
+    callable or as its density value at theta0, uses a stdlib-only
+    Gaussian KDE, and adds nothing interpretive. Use bfsdm for the
+    standard psychology-style report; use this when the prior is not
+    Normal or scipy is unavailable.
 
     Formula: BF_01 = p(theta_0 | y) / p(theta_0), the posterior
     density at the null over the prior density at the null (valid
@@ -51,12 +60,12 @@ def bayes_factor_savage_dickey(samples, prior, theta0=0.0, bandwidth=None):
     >>> g = np.linspace(-3.0, 3.0, 2001)
     >>> draws = g / 3.0                            # posterior ~ Uniform(-1,1): denser at 0
     >>> flat = 1.0 / 6.0                           # Uniform(-3,3) prior
-    >>> out = bayes_factor_savage_dickey(draws, flat, 0.0)
+    >>> out = savage_dickey_ratio(draws, flat, 0.0)
     >>> 2.5 < out["estimate"] < 3.5                # ~ (1/2) / (1/6) = 3
     True
     >>> round(out["prior_density_at_null"], 12)
     0.166666666667
-    >>> bayes_factor_savage_dickey([0.0] * 5, flat)
+    >>> savage_dickey_ratio([0.0] * 5, flat)
     Traceback (most recent call last):
         ...
     ValueError: the Savage-Dickey KDE needs at least 10 posterior draws.
