@@ -10578,7 +10578,7 @@ Full list
    "effective_reproduction", "reffec"
    "effective_resistance", "esumtv"
    "effective_rt", "r_eff"
-   "effective_sample_size", "esstst"
+   "effective_sample_size", "effsiz"
    "effective_sample_size_bayes", "bayess"
    "effective_sample_size_bulk", "essbk"
    "effective_sample_size_tail", "esstl"
