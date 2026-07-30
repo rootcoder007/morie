@@ -33,7 +33,9 @@ def abc_rejection(
 
     References
     ----------
-    Beaumont, M. A., et al. (2002). *Genetics*, 162(4), 2025--2035.
+    Beaumont, M. A., Zhang, W., & Balding, D. J. (2002). Approximate
+        Bayesian computation in population genetics. *Genetics*,
+        162(4), 2025-2035.
     """
     rng = np.random.default_rng(seed)
     obs = np.asarray(observed_summary, dtype=float)

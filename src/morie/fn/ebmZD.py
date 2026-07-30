@@ -69,7 +69,7 @@ def zonal_ebm(S, albedo=0.3, A=203.3, B=2.09, k=3.8, n_zones=9, max_iter=500,
     ----------
     Budyko, M. I. (1969). The effect of solar radiation variations on the
         climate of the Earth. *Tellus*, 21(5), 611-619.
-    Sellers, W. D. (1969). A global climate model based on the energy balance
+    Sellers, W. D. (1969). A global climatic model based on the energy balance
         of the earth-atmosphere system. *Journal of Applied Meteorology*,
         8(3), 392-400.
 

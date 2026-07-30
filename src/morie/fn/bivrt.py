@@ -32,7 +32,9 @@ def bayesian_iv(
 
     References
     ----------
-    Kleibergen, F. & Zivot, E. (2003). *J. Econometrics*, 114, 29--72.
+    Kleibergen, F., & Zivot, E. (2003). Bayesian and classical approaches
+        to instrumental variable regression. *Journal of Econometrics*,
+        114(1), 29-72.
     """
     rng = np.random.default_rng(seed)
     y_arr = np.asarray(y, dtype=float).ravel()

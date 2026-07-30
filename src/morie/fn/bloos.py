@@ -19,7 +19,9 @@ def psis_loo(
 
     References
     ----------
-    Vehtari, A., et al. (2017). *Statistics and Computing*, 27(5), 1413--1432.
+    Vehtari, A., Gelman, A., & Gabry, J. (2017). Practical Bayesian model
+        evaluation using leave-one-out cross-validation and WAIC.
+        *Statistics and Computing*, 27(5), 1413-1432.
     """
     ll = np.asarray(log_lik_matrix, dtype=float)
     if ll.ndim == 1:
