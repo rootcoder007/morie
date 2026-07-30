@@ -111,8 +111,12 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
     for j in range(n_intervals):
         lo, hi = edges[j], edges[j + 1]
         # Everyone at risk at `lo` contributes; events after `hi` are censored
-        # at `hi`, which is the interval-specific risk set.
-        keep = t > lo
+        # at `hi`, which is the interval-specific risk set. The FIRST
+        # interval is closed at zero: with a strict `t > lo` a subject
+        # observed at exactly t = 0 belongs to no interval at all and
+        # vanishes from the model without a word, which shows up as the
+        # interval event counts failing to sum to the total.
+        keep = (t > lo) if j else (t >= lo)
         tj = np.minimum(t[keep], hi) - lo
         ej = np.where(t[keep] <= hi, e[keep], 0.0)
         counts[j] = int(ej.sum())
