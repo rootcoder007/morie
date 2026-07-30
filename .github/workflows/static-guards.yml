@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# static-guards.yml — the cheap checks that catch what R CMD check only
+# finds twenty minutes in, on a runner.
+#
+# 2026-07-30: an exported R alias forwarded to morie_esl_oob_632(), a
+# function that a later whole-file overwrite of esl_native.R had silently
+# deleted. Nothing failed until `checking examples` ran the alias's own
+# @examples block. A two-second parse of R/ would have caught it before
+# the push, so now it does — locally via the pre-push hook, and here so
+# the hook cannot be the only line of defence.
+#
+# Companion: scripts/audit/prepush_guards.sh (same checks, run locally)
+#            scripts/audit/check_r_undefined.R
+
+name: static-guards
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
+        with:
+          use-public-rspm: true
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: R undefined-symbol check (both package roots)
+        run: Rscript scripts/audit/check_r_undefined.R r-package/morie
+
+      - name: Python catalogue resolves
+        env:
+          MORIE_NO_UPDATE_CHECK: "1"
+        run: |
+          python -m pip install --quiet numpy scipy
+          PYTHONPATH="$PWD/src" python - <<'PY'
+          import importlib, json, os, sys
+          import morie.fn as F
+          assert os.getcwd() + "/src/" in F.__file__, F.__file__
+          m = json.load(open("src/morie/fn/_lazy_map.json"))
+          bad = []
+          for name, mod in m.items():
+              try:
+                  getattr(importlib.import_module(f"morie.fn.{mod}"), name)
+              except Exception as e:
+                  bad.append(f"{name} -> {mod}: {type(e).__name__}: {e}")
+          print(f"catalogue: {len(m)} entries, {len(bad)} unresolved")
+          for b in bad[:40]:
+              print("  ", b)
+          sys.exit(1 if bad else 0)
+          PY

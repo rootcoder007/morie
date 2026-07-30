@@ -88,6 +88,11 @@ jobs:
     uses: ./.github/workflows/version-drift.yml
     secrets: inherit
 
+  static-guards:
+    needs: setup
+    uses: ./.github/workflows/static-guards.yml
+    secrets: inherit
+
   python-test:
     needs: setup
     uses: ./.github/workflows/ci.yml
@@ -128,6 +133,7 @@ jobs:
     needs:
       - setup
       - version-drift
+      - static-guards
       - python-test
       - r-cmd-check
       - r-coverage-and-lint
@@ -143,6 +149,7 @@ jobs:
           echo "Per-leaf result table:"
           echo "  setup              = ${{ needs.setup.result }}"
           echo "  version-drift      = ${{ needs.version-drift.result }}"
+          echo "  static-guards      = ${{ needs.static-guards.result }}"
           echo "  python-test        = ${{ needs.python-test.result }}"
           echo "  r-cmd-check        = ${{ needs.r-cmd-check.result }}"
           echo "  r-coverage-and-lint= ${{ needs.r-coverage-and-lint.result }}"
@@ -156,6 +163,7 @@ jobs:
           for r in \
             "${{ needs.setup.result }}" \
             "${{ needs.version-drift.result }}" \
+            "${{ needs.static-guards.result }}" \
             "${{ needs.python-test.result }}" \
             "${{ needs.r-cmd-check.result }}" \
             "${{ needs.r-coverage-and-lint.result }}" \
