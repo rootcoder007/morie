@@ -41,6 +41,25 @@ def log_dens_surv(z, family):
     )
 
 
+def _numeric_cov(fn, theta, rel=1e-5):
+    """Inverse of the central-difference Hessian of ``fn`` at ``theta``."""
+    k = theta.size
+    h = rel * np.maximum(np.abs(theta), 1.0)
+    H = np.empty((k, k))
+    for i in range(k):
+        for j in range(i, k):
+            tp = theta.copy(); tp[i] += h[i]; tp[j] += h[j]
+            tm = theta.copy(); tm[i] -= h[i]; tm[j] -= h[j]
+            tpm = theta.copy(); tpm[i] += h[i]; tpm[j] -= h[j]
+            tmp = theta.copy(); tmp[i] -= h[i]; tmp[j] += h[j]
+            H[i, j] = H[j, i] = (fn(tp) - fn(tpm) - fn(tmp) + fn(tm)) / (
+                4.0 * h[i] * h[j])
+    try:
+        return np.linalg.inv(H)
+    except np.linalg.LinAlgError:
+        return None
+
+
 def aft_fit(t, e, X, family="weibull", max_iter=500, tol=1e-6, add_intercept=True):
     """Maximise the censored AFT log-likelihood.
 
@@ -65,7 +84,13 @@ def aft_fit(t, e, X, family="weibull", max_iter=500, tol=1e-6, add_intercept=Tru
     res = minimize(nll, start, method="BFGS",
                    options={"maxiter": max_iter, "gtol": tol})
     theta = res.x
-    cov = res.hess_inv if isinstance(res.hess_inv, np.ndarray) else None
+    # BFGS's hess_inv is a secant approximation accumulated along the path
+    # the optimiser happened to walk, not the curvature at the optimum: it
+    # depends on the starting point and on the optimiser itself, so the
+    # standard errors it implies are not reproducible across solvers. A
+    # central-difference Hessian of the same objective is, and it is what
+    # the standard errors should have been derived from all along.
+    cov = _numeric_cov(nll, theta)
 
     # BFGS reports success=False on "precision loss" even at a clean optimum,
     # so judge convergence on the gradient itself. Parameter recovery on
