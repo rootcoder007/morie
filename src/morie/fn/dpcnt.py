@@ -51,7 +51,7 @@ def dp_count(D, epsilon=1.0, predicate=None, seed=None, nonneg=True):
     References
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

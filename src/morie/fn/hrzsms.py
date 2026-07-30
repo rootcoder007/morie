@@ -69,15 +69,20 @@ def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
 
-    def neg(rest):
-        b = np.r_[1.0, rest]
+    def neg(rest, s1=1.0):
+        b = np.r_[s1, rest]
         # smooth indicator: the kernel CDF, so the objective is C^1
         return -float(np.mean(s * _st.norm.cdf((X @ b) / hh)))
 
     start = np.zeros(d - 1) if beta0 is None else \
         np.atleast_1d(np.asarray(beta0, dtype=float))[1:]
-    res = optimize.minimize(neg, start, method="BFGS")
-    return RichResult(payload={"beta": np.r_[1.0, res.x],
+    # |b_1| = 1 covers both signs; optimise each half and keep the better.
+    res, s1 = None, 1.0
+    for cand_s1 in (1.0, -1.0):
+        cand = optimize.minimize(neg, start, args=(cand_s1,), method="BFGS")
+        if res is None or cand.fun < res.fun:
+            res, s1 = cand, cand_s1
+    return RichResult(payload={"beta": np.r_[s1, res.x],
                                "objective": float(-res.fun), "bandwidth": hh,
                                "rate_exponent": -r / (2.0 * r + 1.0),
                                "limit_distribution": "normal",

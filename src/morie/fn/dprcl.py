@@ -55,7 +55,7 @@ def dp_release_calibration(sensitivity=1.0, target_error=None, epsilon=None,
     References
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

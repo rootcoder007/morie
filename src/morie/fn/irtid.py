@@ -41,9 +41,9 @@ def irt_identification_constraints(x, polarity_idx=None, pivot_idx=None):
     Clinton, J., Jackman, S. & Rivers, D. (2004). *APSR*, 98(2),
     355-370. (identification of the ideal-point model)
 
-    Armstrong, D. A. et al. (2014). *Analyzing Spatial Models of
-    Choice and Judgment*. CRC Press. Ch. 6 (Bayesian scaling and
-    identification), p. 181.
+    Armstrong, D. A. et al. (2021). *Analyzing Spatial Models of
+    Choice and Judgment* (2nd ed.). CRC Press. Ch. 6 (Bayesian scaling
+    and identification), p. 181.
     """
     x = np.asarray(x, dtype=float).ravel()
     n = x.size

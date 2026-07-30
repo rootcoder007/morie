@@ -14,7 +14,7 @@ def esl_aic_score(loglik, d):
     Formula: AIC = -2 log L + 2 d, with d the effective number of
     parameters. Lower is better. ESL Eq. 7.29 states the same
     criterion per observation and in the Gaussian case as
-    AIC = (2/N) loglik + (2 d / N) sigma^2; that scaling changes the
+    AIC = -(2/N) loglik + 2 (d/N) sigma^2; that scaling changes the
     units but not the ranking, so the classical form is the estimate
     and the per-observation variant is left to wsmaic's caller.
 

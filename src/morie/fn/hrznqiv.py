@@ -14,8 +14,12 @@ def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
     solve :math:`P(Y \le g(X) \mid W = w) = \tau` for g.
 
     The quantile restriction replaces the mean restriction of ordinary
-    NPIV, and it makes the problem NONLINEAR in g -- the operator
-    equation cannot simply be inverted, so the solve is iterative. The
+    NPIV, and in full generality it makes the problem NONLINEAR in g.
+    THIS implementation does NOT perform that nonlinear solve: it runs
+    the linear sieve-truncation solve of the mean restriction and
+    records tau alongside it, so the quantile restriction never enters
+    the arithmetic. Treat the output as the mean-NPIV solution with a
+    quantile label, not as a quantile-IV estimate. The
     same ill-posedness is present and the same regularisation is
     required; what changes is that linear-inverse intuition no longer
     transfers directly.
@@ -35,7 +39,7 @@ def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
     -------
     RichResult
         keys: ``g``, ``K``, ``residual_norm``, ``tau``,
-        ``nonlinear`` (True), ``method``.
+        ``nonlinear`` (False -- see above), ``method``.
     References
     ----------
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
@@ -48,8 +52,8 @@ def hrz_npiv_quantile(T, tau_target, K=None, tau=0.5):
     out = hrz_sieve_iv(T, tau_target, K=K)
     return RichResult(payload={"g": out["g"], "K": out["K"],
                                "residual_norm": out["residual_norm"],
-                               "tau": float(tau), "nonlinear": True,
-                               "method": "Quantile restriction; nonlinear in g, same ill-posedness"})
+                               "tau": float(tau), "nonlinear": False,
+                               "method": "Linear sieve solve of the MEAN restriction; tau recorded, not enforced"})
 
 
 def cheatsheet():

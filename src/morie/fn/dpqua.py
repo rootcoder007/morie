@@ -52,7 +52,7 @@ def dp_quantile(x, q=0.5, epsilon=1.0, a=None, b=None, seed=None):
     Smith, A. (2011). Privacy-preserving statistical estimation with optimal
         convergence rates. *STOC 2011*, 813-822.
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

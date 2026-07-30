@@ -32,8 +32,9 @@ def vol_realised_quadratic_var(x):
 
     References
     ----------
-    Barndorff-Nielsen, O. E. & Shephard, N. (2004). *Journal of
-    Financial Econometrics*, 2(1), 1-48. (QV and the quarticity
+    Barndorff-Nielsen, O. E. & Shephard, N. (2004). Power and bipower
+    variation with stochastic volatility and jumps. *Journal of
+    Financial Econometrics*, 2(1), 1-37. (QV and the quarticity
     normalisation)
     """
     x = np.asarray(x, dtype=float).ravel()

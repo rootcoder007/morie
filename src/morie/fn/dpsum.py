@@ -46,7 +46,7 @@ def dp_sum(x, a, b, epsilon=1.0, seed=None):
     References
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

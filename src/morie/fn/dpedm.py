@@ -54,7 +54,7 @@ def approx_dp(mech, D, D_prime, epsilon=1.0, n_samples=20000, bins=50, seed=None
     References
     ----------
     Dwork, C., & Roth, A. (2014). The algorithmic foundations of
-        differential privacy. *FnT-TCS*, 9(3-4), 211-407.
+        differential privacy. *FnT-TCS*, 9(3-4), 211-487.
 
     Examples
     --------

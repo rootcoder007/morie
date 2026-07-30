@@ -63,21 +63,24 @@ def hrz_maximum_score(X, y, beta0=None, n_restarts=8, seed=0):
         raise ValueError("need at least 2 covariates.")
     s = 2.0 * y - 1.0
 
-    def neg(rest):
-        b = np.r_[1.0, rest]
+    def neg(rest, s1=1.0):
+        b = np.r_[s1, rest]
         return -float(np.sum(s * (X @ b > 0)))
 
     rng = np.random.default_rng(seed)
-    best, best_val = None, np.inf
+    # |b_1| = 1 means BOTH half-spheres: a DGP whose first coefficient is
+    # negative is unreachable if only b_1 = +1 is searched.
+    best, best_val, best_s1 = None, np.inf, 1.0
     starts = [np.zeros(d - 1) if beta0 is None else
               np.atleast_1d(np.asarray(beta0, dtype=float))[1:]]
     starts += [rng.standard_normal(d - 1) for _ in range(int(n_restarts))]
-    for st in starts:
-        r = optimize.minimize(neg, st, method="Nelder-Mead",
-                              options={"maxiter": 3000, "fatol": 1e-9})
-        if r.fun < best_val:
-            best_val, best = r.fun, r.x
-    return RichResult(payload={"beta": np.r_[1.0, best], "score": -best_val,
+    for s1 in (1.0, -1.0):
+        for st in starts:
+            r = optimize.minimize(neg, st, args=(s1,), method="Nelder-Mead",
+                                  options={"maxiter": 3000, "fatol": 1e-9})
+            if r.fun < best_val:
+                best_val, best, best_s1 = r.fun, r.x, s1
+    return RichResult(payload={"beta": np.r_[best_s1, best], "score": -best_val,
                                "rate_exponent": -1.0 / 3.0,
                                "limit_distribution": "Chernoff, non-normal",
                                "standard_errors_valid": False,

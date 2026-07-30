@@ -41,8 +41,9 @@ def vol_jump_robust_var(r_intraday, threshold=None, c=3.0):
     models with stochastic diffusion coefficient and jumps.
     *Scandinavian Journal of Statistics*, 36(2), 270-296.
 
-    Barndorff-Nielsen, O. E. & Shephard, N. (2004). *Journal of
-    Financial Econometrics*, 2(1), 1-48. (the bipower local-variance
+    Barndorff-Nielsen, O. E. & Shephard, N. (2004). Power and bipower
+    variation with stochastic volatility and jumps. *Journal of
+    Financial Econometrics*, 2(1), 1-37. (the bipower local-variance
     proxy)
     """
     r = np.asarray(r_intraday, dtype=float).ravel()

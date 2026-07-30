@@ -28,7 +28,8 @@ def bayesian_propensity(
     :param prior_var: Prior variance for logistic coefficients.
     :param n_samples: Number of posterior samples.
     :param seed: Random seed.
-    :return: Dictionary with propensity_mean, propensity_samples, beta_mean.
+    :return: Dictionary with propensity_mean, propensity_sd, beta_mean,
+        beta_cov.
 
     References
     ----------

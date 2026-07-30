@@ -125,4 +125,4 @@ def wasserman_svm(X, y, C=1e6, max_iter=100000, tol=1e-12):
 
 
 def cheatsheet():
-    return "wsmsvm: dual SMO-style pairs (i,i+1); w = X'(a*y); b from free SVs"
+    return "wsmsvm: dual ascent over ALL pairs i<j; w = X'(a*y); b from free SVs"

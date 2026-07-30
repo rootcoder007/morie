@@ -23,7 +23,10 @@ def burkov_nce_loss(pos_scores, neg_scores, noise_prob=None, k=None):
 
     The trick is that the model no longer needs a normalised
     distribution. Under the proper NCE objective the score includes a
-    correction :math:`\log(k\,q(w))` for the noise distribution, and
+    correction :math:`\log(k\,q(w))` for the noise distribution --
+    note the POSITIVE term approximates :math:`q(w)` of the true word
+    by the mean noise probability of that row's sampled negatives,
+    since the true word's own noise probability is not an input -- and
     with it the learned scores converge to the true log-probabilities
     up to a constant. Dropping that correction gives NEGATIVE SAMPLING,
     which is what word2vec actually uses -- cheaper, and no longer a

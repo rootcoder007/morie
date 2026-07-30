@@ -20,7 +20,7 @@ def brr_balanced(strata, fay_k=0.0):
     unbiased variance estimate, where independent random half-samples would
     need far more.
 
-    The replicate count is the next multiple of 4 at or above :math:`H`,
+    The replicate count is the next power of two at or above :math:`H` (minimum 4),
     because Hadamard matrices exist only at those orders. Using fewer
     replicates than strata, or an unbalanced set, silently biases the variance
     estimate.
@@ -51,7 +51,7 @@ def brr_balanced(strata, fay_k=0.0):
 
     Examples
     --------
-    Replicate count is the next multiple of 4 at or above the stratum count,
+    Replicate count is the next power of two at or above the stratum count,
     which is where Hadamard matrices exist.
 
     >>> import numpy as np
@@ -90,7 +90,14 @@ def brr_balanced(strata, fay_k=0.0):
     if not 0.0 <= fay_k < 1.0:
         raise ValueError("fay_k must be in [0, 1)")
 
-    R = int(4 * np.ceil(H / 4)) if H % 4 else H
+    # Full balance needs the COLUMNS of the R x H sign matrix to be
+    # orthogonal. Slicing a Sylvester Hadamard to a non-power-of-two
+    # row count destroys that (off-diagonal inner products of 4 at
+    # H = 9..12), so R is the next power of two >= max(H, 4): a few
+    # extra replicates, exact balance.
+    R = 4
+    while R < H:
+        R *= 2
     R = max(R, 4)
     # Sylvester construction; valid for R a power of 2, padded up otherwise.
     size = 1

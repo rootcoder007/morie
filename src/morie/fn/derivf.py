@@ -12,7 +12,8 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
                         penalty_order=None):
     r"""Derivative from a penalised spline, differentiated analytically.
 
-    A B-spline basis is fitted with a roughness penalty on the
+    A global polynomial (monomial) basis is fitted with a roughness
+    penalty on the
     :math:`m`-th derivative,
 
     .. math::

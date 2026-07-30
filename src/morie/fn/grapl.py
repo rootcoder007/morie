@@ -42,7 +42,7 @@ def geron_average_pooling_2d(x, pool_size=2, stride=None, padding="valid"):
 
     References
     ----------
-    Geron (2022), *Hands-On Machine Learning*, 3rd ed., chapter 12,
+    Geron (2022), *Hands-On Machine Learning*, 3rd ed., chapter 14,
     average pooling.
 
     Examples

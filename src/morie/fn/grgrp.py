@@ -65,7 +65,7 @@ def geron_gaussian_random_projection(X, d, seed=0):
 
     References
     ----------
-    Géron Ch 7, Gaussian RP section.  See :mod:`morie.fn.grjll` for how
+    Géron Ch 8 (dimensionality reduction), Gaussian RP section.  See :mod:`morie.fn.grjll` for how
     large ``d`` has to be for a distortion guarantee.
 
     Examples
