@@ -1,0 +1,1183 @@
+[
+{
+"mod": "abod",
+"fn": "abod",
+"params": [
+"X"
+],
+"title": "Angle-based outlier detection",
+"formula": "variance of angles to other points",
+"ref": "Kriegel et al (2008)"
+},
+{
+"mod": "ecod",
+"fn": "ecod",
+"params": [
+"X"
+],
+"title": "ECOD -- empirical CDF outlier",
+"formula": "sum log(min(F_i(x), 1-F_i(x))) per dim",
+"ref": "Li et al (2022) ECOD"
+},
+{
+"mod": "hbos",
+"fn": "hbos",
+"params": [
+"X",
+"bins"
+],
+"title": "Histogram-based outlier",
+"formula": "sum log(1/p_i(x_i)) over independent histograms",
+"ref": "Goldstein-Dengel (2012)"
+},
+{
+"mod": "isof",
+"fn": "isolation_forest",
+"params": [
+"X",
+"n_trees"
+],
+"title": "Isolation forest",
+"formula": "anomaly score from avg path length over isolation trees",
+"ref": "Liu-Ting-Zhou (2008)"
+},
+{
+"mod": "lof",
+"fn": "local_outlier_factor",
+"params": [
+"X",
+"k"
+],
+"title": "Local Outlier Factor",
+"formula": "LOF = avg(LRD_neighbors)/LRD(self)",
+"ref": "Breunig et al (2000)"
+},
+{
+"mod": "mcdAnm",
+"fn": "mcd_outlier",
+"params": [
+"X"
+],
+"title": "MCD-based Mahalanobis outlier",
+"formula": "d_M from minimum-covariance-determinant",
+"ref": "Rousseeuw-Van Driessen (1999)"
+},
+{
+"mod": "dwtA",
+"fn": "discrete_wavelet_anomaly",
+"params": [
+"x",
+"wavelet",
+"threshold"
+],
+"title": "Wavelet-based anomaly",
+"formula": "flag coefficients above noise threshold",
+"ref": "Donoho (1995)"
+},
+{
+"mod": "jooutl",
+"fn": "joseph_ts_outlier_detection",
+"params": [
+"y",
+"W"
+],
+"title": "Rolling-IQR outlier detection for time series",
+"formula": "flag y_t as outlier if y_t < Q1_W - 1.5*IQR_W or y_t > Q3_W + 1.5*IQR_W, W = rolling window",
+"ref": "Joseph Ch 2, Outlier Detection section"
+},
+{
+"mod": "aE_an",
+"fn": "autoencoder_anomaly",
+"params": [
+"X",
+"ae"
+],
+"title": "Autoencoder reconstruction error",
+"formula": "||x \u2212 decode(encode(x))||",
+"ref": "Hawkins et al (2002)"
+},
+{
+"mod": "aftwbl",
+"fn": "aft_weibull",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "AFT model with Weibull baseline",
+"formula": "log T = beta X + sigma W; W ~ Gumbel",
+"ref": "Klein-Moeschberger (2003)"
+},
+{
+"mod": "aftllg",
+"fn": "aft_log_logistic",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "AFT log-logistic",
+"formula": "T = exp(beta X) * exp(sigma W); W ~ logistic",
+"ref": "Klein-Moeschberger (2003)"
+},
+{
+"mod": "aftgma",
+"fn": "aft_generalized_gamma",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "AFT generalized gamma",
+"formula": "3-parameter family containing Weibull, log-normal, gamma",
+"ref": "Stacy-Mihram (1965)"
+},
+{
+"mod": "aftres",
+"fn": "aft_residuals",
+"params": [
+"fit"
+],
+"title": "AFT model residuals (Cox-Snell, deviance)",
+"formula": "r_i = -log S(t_i | X_i)",
+"ref": "Cox-Snell (1968)"
+},
+{
+"mod": "breslot",
+"fn": "breslow_tie_correction",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "Breslow tie correction for Cox PH",
+"formula": "L = product exp(beta'sum X) / (sum exp(beta'X))^d",
+"ref": "Breslow (1974)"
+},
+{
+"mod": "efrnt",
+"fn": "efron_tie_correction",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "Efron tie correction for Cox PH",
+"formula": "L = product (sum exp(beta'X_j) - r/d * sum exp(beta'X_jin))",
+"ref": "Efron (1977)"
+},
+{
+"mod": "coxbsk",
+"fn": "cox_breslow_step",
+"params": [
+"time",
+"event",
+"X",
+"beta"
+],
+"title": "Breslow baseline cumulative hazard",
+"formula": "H_0(t) = sum_{t_i <= t} d_i / sum_{j in R_i} exp(beta X_j)",
+"ref": "Breslow (1972, 1974)"
+},
+{
+"mod": "coxmgr",
+"fn": "cox_martingale_residuals",
+"params": [
+"fit"
+],
+"title": "Cox martingale residuals",
+"formula": "M_i = N_i(t) - integral exp(beta X_i) dH_0",
+"ref": "Therneau-Grambsch-Fleming (1990)"
+},
+{
+"mod": "coxres",
+"fn": "cox_schoenfeld_residuals",
+"params": [
+"fit",
+"time"
+],
+"title": "Cox Schoenfeld residuals for PH check",
+"formula": "r_i = X_i - sum_j w_ij X_j",
+"ref": "Schoenfeld (1982); Grambsch-Therneau (1994)"
+},
+{
+"mod": "coxstr",
+"fn": "cox_stratified",
+"params": [
+"time",
+"event",
+"X",
+"stratum"
+],
+"title": "Stratified Cox proportional hazards",
+"formula": "lambda_s(t) exp(beta X) -- separate baseline per stratum",
+"ref": "Kalbfleisch-Prentice (2002)"
+},
+{
+"mod": "coxfrl",
+"fn": "cox_frailty",
+"params": [
+"time",
+"event",
+"X",
+"cluster"
+],
+"title": "Cox shared-frailty model",
+"formula": "lambda_ij(t) = lambda_0(t) z_i exp(beta X_ij)",
+"ref": "Hougaard (2000); Therneau-Grambsch (2000)"
+},
+{
+"mod": "coxdfb",
+"fn": "cox_dfbeta_influence",
+"params": [
+"fit"
+],
+"title": "Cox dfbeta influence diagnostics",
+"formula": "approx delta-beta from leaving observation i out",
+"ref": "Therneau-Grambsch (2000)"
+},
+{
+"mod": "dlbcox",
+"fn": "dfbeta_cox",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "DFBETA leverage diagnostic for Cox PH",
+"formula": "DFBETA_i = beta_hat - beta_hat^{(-i)}",
+"ref": "Therneau & Grambsch (2000) \u00a75.2"
+},
+{
+"mod": "dvres",
+"fn": "deviance_residual_cox",
+"params": [
+"time",
+"event",
+"fitted"
+],
+"title": "Deviance residual for Cox PH (symmetric martingale)",
+"formula": "d_i = sign(M_i) sqrt(-2(M_i + N_i log(N_i - M_i)))",
+"ref": "Therneau & Grambsch (2000) Ch 5"
+},
+{
+"mod": "crrcsh",
+"fn": "cause_specific_hazard",
+"params": [
+"time",
+"event_type",
+"X",
+"cause"
+],
+"title": "Cause-specific hazard model",
+"formula": "lambda_k(t) = lambda_0k(t) exp(beta_k X)",
+"ref": "Kalbfleisch-Prentice (1980)"
+},
+{
+"mod": "crrfgs",
+"fn": "competing_risks_fg",
+"params": [
+"time",
+"event_type",
+"X",
+"cause"
+],
+"title": "Fine-Gray subdistribution hazard",
+"formula": "lambda_FG = lim P(T<=t+dt, ep=1 | T>t or T<=t & ep!=1)",
+"ref": "Fine-Gray (1999)"
+},
+{
+"mod": "fgsbh",
+"fn": "fine_gray_subdistribution_hazard",
+"params": [
+"time",
+"cause",
+"X"
+],
+"title": "Fine-Gray subdistribution hazard",
+"formula": "lambda_1^FG(t) = -d/dt log(1 - F_1(t))",
+"ref": "Fine & Gray (1999)"
+},
+{
+"mod": "depcen",
+"fn": "dependent_censoring_hazard",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "Hazard model with dependent censoring (copula)",
+"formula": "S(t,c) = C(S_T(t), S_C(c); theta) copula",
+"ref": "Zheng & Klein (1995)"
+},
+{
+"mod": "chrwgt",
+"fn": "censoring_at_risk_weight",
+"params": [
+"time",
+"censor",
+"A",
+"H"
+],
+"title": "Censoring-at-risk weights for survival",
+"formula": "1/Pr(C>t|A,H)",
+"ref": "Robins-Finkelstein (2000)"
+},
+{
+"mod": "gamfr",
+"fn": "gamma_frailty_cox",
+"params": [
+"time",
+"event",
+"X",
+"cluster"
+],
+"title": "Gamma frailty model for clustered survival",
+"formula": "lambda_ij(t|w_i) = w_i lambda_0(t) exp(beta'X_ij), w_i ~ Gamma",
+"ref": "Klein (1992); Therneau & Grambsch \u00a79"
+},
+{
+"mod": "ggmaft",
+"fn": "generalized_gamma_aft",
+"params": [
+"time",
+"event",
+"X"
+],
+"title": "Generalized gamma AFT model",
+"formula": "log(T) = beta'X + sigma * Z, Z ~ generalized gamma",
+"ref": "Cox & Matheson (2014)"
+},
+{
+"mod": "coxtmv",
+"fn": "cox_time_varying",
+"params": [
+"time",
+"event",
+"X_time"
+],
+"title": "Cox model with time-varying covariates",
+"formula": "lambda(t|X(t)) = lambda_0(t) exp(beta X(t))",
+"ref": "Therneau-Grambsch (2000)"
+},
+{
+"mod": "causrosen",
+"fn": "causal_rosenbaum_bound",
+"params": [
+"paired_diff",
+"Gamma"
+],
+"title": "Rosenbaum sensitivity bound on Wilcoxon p-value",
+"formula": "Adjust matched p by multiplier \u0393 on odds ratio of unobs.",
+"ref": "Rosenbaum (2002)"
+},
+{
+"mod": "dpglap",
+"fn": "dp_laplace_mechanism",
+"params": [
+"y",
+"sensitivity",
+"epsilon"
+],
+"title": "Laplace mechanism for epsilon-DP",
+"formula": "M(x) = f(x) + Lap(0, sensitivity/epsilon)",
+"ref": "Dwork, McSherry, Nissim, Smith (2006)"
+},
+{
+"mod": "dpgaus",
+"fn": "dp_gaussian_mechanism",
+"params": [
+"y",
+"sensitivity",
+"epsilon",
+"delta"
+],
+"title": "Gaussian mechanism for (epsilon, delta)-DP",
+"formula": "M(x) = f(x) + N(0, (sensitivity^2 * 2 ln(1.25/delta))/epsilon^2)",
+"ref": "Dwork & Roth (2014) \u00a73.5"
+},
+{
+"mod": "dpexpm",
+"fn": "dp_exponential_mechanism",
+"params": [
+"y",
+"candidates",
+"utility",
+"epsilon",
+"sensitivity"
+],
+"title": "Exponential mechanism for DP categorical selection",
+"formula": "P(r) \u221d exp(epsilon * u(x,r) / (2 * sensitivity_u))",
+"ref": "McSherry & Talwar (2007)"
+},
+{
+"mod": "dprrep",
+"fn": "randomized_response_dp",
+"params": [
+"y",
+"truth",
+"epsilon"
+],
+"title": "Warner randomized response (epsilon-DP for binary)",
+"formula": "P(yes-report | true=yes) = (e^epsilon)/(e^epsilon + 1)",
+"ref": "Warner (1965); Dwork (2006) DP framing"
+},
+{
+"mod": "dpcnt",
+"fn": "dp_count",
+"params": [
+"D",
+"epsilon"
+],
+"title": "DP count",
+"formula": "|D| + Lap(1/\u03b5)",
+"ref": "Dwork et al (2006)"
+},
+{
+"mod": "dpsum",
+"fn": "dp_sum",
+"params": [
+"x",
+"a",
+"b",
+"epsilon"
+],
+"title": "DP sum (bounded)",
+"formula": "sum(clip(x,a,b)) + Lap((b\u2212a)/\u03b5)",
+"ref": "Dwork-Roth (2014)"
+},
+{
+"mod": "dpmean",
+"fn": "dp_mean",
+"params": [
+"x",
+"a",
+"b",
+"epsilon"
+],
+"title": "DP mean (clamped + Laplace)",
+"formula": "M(D) = mean(clip(x,a,b)) + Lap((b\u2212a)/(n\u03b5))",
+"ref": "Dwork-Roth (2014)"
+},
+{
+"mod": "dpmed",
+"fn": "dp_median",
+"params": [
+"x",
+"epsilon"
+],
+"title": "DP median (q=0.5 quantile)",
+"formula": "DP quantile at q=0.5",
+"ref": "Smith (2011)"
+},
+{
+"mod": "dpqua",
+"fn": "dp_quantile",
+"params": [
+"x",
+"q",
+"epsilon"
+],
+"title": "DP quantile via exponential mechanism",
+"formula": "u(D,r) = -|rank(r) \u2212 qn|; ExpM(D, u, \u03b5)",
+"ref": "Smith (2011); Gillenwater et al (2021)"
+},
+{
+"mod": "dphis",
+"fn": "dp_histogram",
+"params": [
+"x",
+"bins",
+"epsilon"
+],
+"title": "DP histogram (parallel composition)",
+"formula": "per-bin: count + Lap(1/\u03b5)",
+"ref": "Dwork-Roth (2014)"
+},
+{
+"mod": "dpcov",
+"fn": "dp_covariance",
+"params": [
+"X",
+"C",
+"epsilon"
+],
+"title": "DP covariance matrix",
+"formula": "clip rows; add Wishart-/Gaussian noise",
+"ref": "Dwork et al (2014); Amin-Joseph-Mao-Mehta (2019)"
+},
+{
+"mod": "dppca",
+"fn": "dp_pca",
+"params": [
+"X",
+"k",
+"epsilon"
+],
+"title": "DP PCA via Gaussian noise on covariance",
+"formula": "top-k eigvecs of Cov + symmetric Gaussian",
+"ref": "Dwork et al (2014); Kapralov-Talwar (2013)"
+},
+{
+"mod": "dpmnp",
+"fn": "dp_minmax",
+"params": [
+"x",
+"epsilon"
+],
+"title": "DP min/max via exponential mechanism",
+"formula": "argmin/argmax via ExpM",
+"ref": "Dwork-Roth (2014)"
+},
+{
+"mod": "dpamp",
+"fn": "privacy_amplification",
+"params": [
+"epsilon",
+"q"
+],
+"title": "Privacy amplification by subsampling",
+"formula": "if M is \u03b5-DP and we subsample at rate q, M is ~q\u03b5-DP",
+"ref": "Balle-Barthe-Gaboardi (2018)"
+},
+{
+"mod": "compdp",
+"fn": "basic_composition",
+"params": [
+"epsilons"
+],
+"title": "Basic DP composition",
+"formula": "k \u03b5-DP mechs are k\u03b5-DP",
+"ref": "Dwork-McSherry-Nissim-Smith (2006)"
+},
+{
+"mod": "dprnyi",
+"fn": "renyi_dp_composition",
+"params": [
+"y",
+"epsilons",
+"alpha"
+],
+"title": "R\u00e9nyi DP composition (alpha, epsilon)-bound",
+"formula": "epsilon_total = sum_i epsilon_i for sequential composition",
+"ref": "Mironov (2017) Renyi DP"
+},
+{
+"mod": "cdpamp",
+"fn": "cdp_subgaussian_amplification",
+"params": [
+"y",
+"epsilon",
+"delta",
+"k_compositions"
+],
+"title": "Concentrated DP subgaussian amplification",
+"formula": "epsilon_amp = epsilon * sqrt(2 ln(2/delta) / k_compositions)",
+"ref": "Dwork & Rothblum (2016) Concentrated DP"
+},
+{
+"mod": "acwhe",
+"fn": "private_accuracy_tradeoff",
+"params": [
+"sensitivity",
+"epsilon",
+"n"
+],
+"title": "Privacy-accuracy trade-off bound",
+"formula": "MSE \u2265 \u0394\u00b2/\u03b5\u00b2 for Laplace mechanism",
+"ref": "Dwork-Roth (2014) book"
+},
+{
+"mod": "dprcl",
+"fn": "dp_release_calibration",
+"params": [
+"sensitivity",
+"epsilon",
+"c"
+],
+"title": "Calibrate noise to global sensitivity",
+"formula": "\u03c3 = c \u00b7 \u0394f / \u03b5",
+"ref": "Dwork-Roth (2014)"
+},
+{
+"mod": "dpepsm",
+"fn": "epsilon_dp",
+"params": [
+"mech",
+"D",
+"D_prime"
+],
+"title": "Pure \u03b5-differential privacy definition",
+"formula": "P(M(D)\u2208S) \u2264 exp(\u03b5) \u00b7 P(M(D')\u2208S)",
+"ref": "Dwork-McSherry-Nissim-Smith (2006)"
+},
+{
+"mod": "dpedm",
+"fn": "approx_dp",
+"params": [
+"mech",
+"D",
+"D_prime",
+"delta"
+],
+"title": "(\u03b5,\u03b4)-DP relaxation",
+"formula": "P(M(D)\u2208S) \u2264 exp(\u03b5) \u00b7 P(M(D')\u2208S) + \u03b4",
+"ref": "Dwork et al (2006) Our Data Ourselves"
+},
+{
+"mod": "dpsgd",
+"fn": "dp_sgd",
+"params": [
+"loss",
+"C",
+"sigma",
+"lr"
+],
+"title": "DP-SGD with per-sample clipping + noise",
+"formula": "g\u0303 = (1/L)(sum clip(g_i, C) + N(0, \u03c3\u00b2C\u00b2I))",
+"ref": "Abadi et al (2016)"
+},
+{
+"mod": "dpadam",
+"fn": "dp_adam",
+"params": [
+"loss",
+"C",
+"sigma",
+"lr",
+"betas"
+],
+"title": "DP-Adam",
+"formula": "DP-SGD style noise + Adam moments",
+"ref": "Tang et al (2024)"
+},
+{
+"mod": "dpkmn",
+"fn": "dp_kmeans",
+"params": [
+"y",
+"lam"
+],
+"title": "DP-means: hard-clustering DP analog",
+"formula": "argmin sum dist^2 + lambda K",
+"ref": "Kulis-Jordan (2012)"
+},
+{
+"mod": "dplog",
+"fn": "dp_logistic",
+"params": [
+"X",
+"y",
+"epsilon",
+"method"
+],
+"title": "DP logistic regression (output / objective perturbation)",
+"formula": "perturb objective: J(\u03b2) + b^T \u03b2 with b ~ Lap",
+"ref": "Chaudhuri-Monteleoni-Sarwate (2011)"
+},
+{
+"mod": "dpsyn",
+"fn": "dp_synthetic_data",
+"params": [
+"X",
+"epsilon"
+],
+"title": "DP synthetic data (e.g. PrivBayes / MWEM)",
+"formula": "learn DP marginals; sample",
+"ref": "Zhang et al (2017) PrivBayes"
+},
+{
+"mod": "dpunit",
+"fn": "dp_unit_definition",
+"params": [
+"unit",
+"records"
+],
+"title": "Unit-of-privacy definition (event vs user)",
+"formula": "replace one unit and require neighboring outputs \u03b5-close",
+"ref": "Kifer-Machanavajjhala (2011) Pufferfish"
+},
+{
+"mod": "dpchpr",
+"fn": "dp_changepoint",
+"params": [
+"y",
+"alpha"
+],
+"title": "DP changepoint detection",
+"formula": "DP prior on segment-specific parameters",
+"ref": "Barry-Hartigan (1992); Adams-MacKay (2007)"
+},
+{
+"mod": "dpfed",
+"fn": "dp_fedavg",
+"params": [
+"clients",
+"C",
+"sigma"
+],
+"title": "DP FedAvg (user-level DP)",
+"formula": "clip + Gaussian noise on aggregated client updates",
+"ref": "McMahan-Ramage-Talwar-Zhang (2018)"
+},
+{
+"mod": "dpgan",
+"fn": "dp_gan",
+"params": [
+"G",
+"D",
+"C",
+"sigma"
+],
+"title": "DP-GAN -- train discriminator with DP-SGD",
+"formula": "DP-SGD on D; G learns from noisy D",
+"ref": "Xie et al (2018)"
+},
+{
+"mod": "acfP",
+"fn": "autocorrelation",
+"params": [
+"y",
+"lag_max"
+],
+"title": "Sample ACF at lag k",
+"formula": "\u03c1_k = sum (y_t\u2212\u0233)(y_{t-k}\u2212\u0233) / sum (y_t\u2212\u0233)\u00b2",
+"ref": "Brockwell-Davis (1991)"
+},
+{
+"mod": "acpra",
+"fn": "acceptance_rate_diagnostic",
+"params": [
+"chains"
+],
+"title": "MCMC acceptance rate diagnostic",
+"formula": "alpha_target \u2248 0.234 (RW MH); 0.65\u20130.85 (HMC)",
+"ref": "Roberts, Gelman, Gilks (1997); Beskos et al. (2013)"
+},
+{
+"mod": "aitbal",
+"fn": "aitchison_balance",
+"params": [
+"x",
+"row"
+],
+"title": "Balance coordinate from a single SBP row",
+"formula": "b = sqrt(rs/(r+s)) log(g_+ / g_-)",
+"ref": "Egozcue & Pawlowsky-Glahn (2005)"
+},
+{
+"mod": "astlb",
+"fn": "astle_balding_grm",
+"params": [
+"marker_matrix",
+"freq"
+],
+"title": "Astle-Balding genomic relationship matrix",
+"formula": "K_jk = (1/p) * sum_i (x_ij - 2*p_i)*(x_ik - 2*p_i) / sqrt(2*p_i*(1-p_i) * 2*p_i*(1-p_i))",
+"ref": "Montesinos Lopez Ch 2"
+},
+{
+"mod": "bayess",
+"fn": "effective_sample_size_bayes",
+"params": [
+"chain"
+],
+"title": "Effective sample size of MCMC",
+"formula": "n / (1 + 2 sum_k rho_k)",
+"ref": "Geyer (1992)"
+},
+{
+"mod": "bipMch",
+"fn": "bipartite_matching",
+"params": [
+"U",
+"V",
+"E"
+],
+"title": "Hopcroft-Karp bipartite max matching",
+"formula": "BFS layering + DFS augmentation",
+"ref": "Hopcroft-Karp (1973)"
+},
+{
+"mod": "brrest",
+"fn": "brr_balanced",
+"params": [
+"data",
+"strata",
+"brr_design"
+],
+"title": "Balanced repeated replication",
+"formula": "Hadamard half-sample design",
+"ref": "McCarthy (1969)"
+},
+{
+"mod": "brrvar",
+"fn": "brr_variance",
+"params": [
+"y",
+"weights",
+"replicates"
+],
+"title": "Balanced Repeated Replication variance",
+"formula": "Var = (1/R) sum_r (theta_r - theta_hat)^2; Hadamard half-samples",
+"ref": "McCarthy (1969); Wolter (2007) \u00a73"
+},
+{
+"mod": "btnpb",
+"fn": "boot_nonoverlap_block",
+"params": [
+"x",
+"block_len",
+"stat",
+"B"
+],
+"title": "Non-overlapping block bootstrap for time series",
+"formula": "Resample blocks of length \u2113 from disjoint partition",
+"ref": "Carlstein (1986)"
+},
+{
+"mod": "causdid3w",
+"fn": "causal_did_three_way",
+"params": [
+"y",
+"treated",
+"t"
+],
+"title": "3-period DiD with placebo (forward + backward checks)",
+"formula": "Compare DiD(t-1,t) vs DiD(t-2,t-1) for placebo",
+"ref": "Roth (2022)"
+},
+{
+"mod": "causflnk",
+"fn": "causal_falsification_test",
+"params": [
+"y_pre",
+"treat",
+"X_baseline"
+],
+"title": "Pre-treatment placebo/falsification regression",
+"formula": "Regress lagged outcome on treatment; coef should be ~0",
+"ref": "Athey-Imbens (2017)"
+},
+{
+"mod": "causipsw0",
+"fn": "causal_iptw_atoweights",
+"params": [
+"treat",
+"ps"
+],
+"title": "ATO overlap weights for restricted target population",
+"formula": "w_i = treat*(1-e) + (1-treat)*e",
+"ref": "Li-Morgan-Zaslavsky (2018)"
+},
+{
+"mod": "causmm",
+"fn": "causal_mahalanobis_match",
+"params": [
+"X",
+"treat",
+"k"
+],
+"title": "Mahalanobis-distance matching",
+"formula": "d_M(x_i,x_j) = sqrt((x_i-x_j)^T \u03a3\u0302^{-1} (x_i-x_j))",
+"ref": "Rubin (1980)"
+},
+{
+"mod": "causmtchcm",
+"fn": "causal_caliper_matching",
+"params": [
+"ps",
+"treat",
+"caliper"
+],
+"title": "Caliper-matching variant with logit-PS distance cap",
+"formula": "Allow only matches within caliper c \u00d7 \u03c3_logit_ps",
+"ref": "Cochran-Rubin (1973)"
+},
+{
+"mod": "causovlap",
+"fn": "causal_overlap_diagnostic",
+"params": [
+"ps",
+"treat"
+],
+"title": "Common-support / overlap diagnostic on PS distributions",
+"formula": "Report deciles of e(x) by treatment group",
+"ref": "Crump et al. (2009)"
+},
+{
+"mod": "covbal",
+"fn": "covariate_balance_check",
+"params": [
+"A",
+"H",
+"weights"
+],
+"title": "Covariate balance check post-IPTW",
+"formula": "weighted standardized mean difference",
+"ref": "Austin-Stuart (2015)"
+},
+{
+"mod": "croston",
+"fn": "croston",
+"params": [
+"y",
+"alpha"
+],
+"title": "Croston's method (intermittent demand)",
+"formula": "separate SES on size + interval",
+"ref": "Croston (1972)"
+},
+{
+"mod": "diffsm",
+"fn": "diffusion_score_matching",
+"params": [
+"x",
+"s_theta",
+"sigma"
+],
+"title": "Score matching for diffusion models",
+"formula": "E[||s_theta(x_t,t) - grad log q(x_t|x_0)||^2]",
+"ref": "Song-Ermon (2019); Ho-Jain-Abbeel (2020) DDPM"
+},
+{
+"mod": "driftF",
+"fn": "drift_forecast",
+"params": [
+"y",
+"h"
+],
+"title": "Random-walk-with-drift",
+"formula": "\u0177_{T+h}=y_T + h\u00b7(y_T\u2212y_1)/(T\u22121)",
+"ref": "Hyndman-Athanasopoulos (2018)"
+},
+{
+"mod": "drovw",
+"fn": "dr_overlap_weighted",
+"params": [
+"y",
+"D",
+"X"
+],
+"title": "Overlap-weighted DR-DiD",
+"formula": "weights = e(X)(1-e(X))",
+"ref": "Li-Morgan-Zaslavsky (2018)"
+},
+{
+"mod": "drpdid",
+"fn": "placebo_dr_did",
+"params": [
+"y_pre1",
+"y_pre2",
+"D",
+"X"
+],
+"title": "Placebo DR-DiD pre-period falsification",
+"formula": "DR moment on pre-event period; H0: tau_placebo=0",
+"ref": "Sant'Anna-Zhao (2020)"
+},
+{
+"mod": "ebalw",
+"fn": "entropy_balancing",
+"params": [
+"X",
+"T",
+"moments"
+],
+"title": "Entropy balancing for covariate balance (Hainmueller 2012)",
+"formula": "min_w KL(w||q) s.t. sum_i w_i*X_i = mean(X_control); weights minimize entropy deviation",
+"ref": "Molak Ch 9"
+},
+{
+"mod": "ebmZD",
+"fn": "zonal_ebm",
+"params": [
+"S",
+"alpha",
+"A",
+"B"
+],
+"title": "Zonal energy balance model (Budyko-Sellers)",
+"formula": "C dT/dt = (1-\u03b1(T))S/4 \u2212 A \u2212 B T",
+"ref": "Budyko (1969); Sellers (1969)"
+},
+{
+"mod": "effsiz",
+"fn": "effective_sample_size",
+"params": [
+"n",
+"deff"
+],
+"title": "Effective sample size n / DEFF",
+"formula": "n_eff = n / DEFF",
+"ref": "Kish (1965)"
+},
+{
+"mod": "egrgrf",
+"fn": "egregious_loss_forest",
+"params": [
+"y",
+"D",
+"X"
+],
+"title": "Loss-balanced random forest",
+"formula": "split criterion balances loss across leaves",
+"ref": "Athey-Tibshirani-Wager (2019) GRF"
+},
+{
+"mod": "eqhae",
+"fn": "equating_haebara",
+"params": [
+"y",
+"b_R",
+"b_F",
+"a_R",
+"a_F"
+],
+"title": "Haebara equating (item-by-item ICC matching)",
+"formula": "min sum_i sum_theta (P_R_i(theta) - P_F_i(A theta + B))^2",
+"ref": "Haebara (1980)"
+},
+{
+"mod": "eqsl",
+"fn": "equating_stocking_lord",
+"params": [
+"y",
+"b_R",
+"b_F",
+"a_R",
+"a_F"
+],
+"title": "Stocking-Lord equating (TCC matching)",
+"formula": "min sum_theta (T_R(theta) - T_F(A theta + B))^2",
+"ref": "Stocking & Lord (1983)"
+},
+{
+"mod": "essbk",
+"fn": "effective_sample_size_bulk",
+"params": [
+"chains"
+],
+"title": "Bulk effective sample size for posterior",
+"formula": "ESS_bulk via rank-normalized chains",
+"ref": "Vehtari et al. (2021)"
+},
+{
+"mod": "esstl",
+"fn": "effective_sample_size_tail",
+"params": [
+"chains"
+],
+"title": "Tail effective sample size (5% / 95% quantiles)",
+"formula": "ESS_tail = min(ESS@5%, ESS@95%)",
+"ref": "Vehtari et al. (2021)"
+},
+{
+"mod": "esstst",
+"fn": "effective_sample_size",
+"params": [
+"weights"
+],
+"title": "Effective sample size of weighted population",
+"formula": "ESS = (sum w)^2 / sum w^2",
+"ref": "Kish (1965)"
+},
+{
+"mod": "esttsl",
+"fn": "theta_method",
+"params": [
+"y",
+"horizon"
+],
+"title": "Theta method (M3 winner)",
+"formula": "weighted combination of theta lines",
+"ref": "Assimakopoulos-Nikolopoulos (2000)"
+},
+{
+"mod": "hwadd",
+"fn": "holt_winters_additive",
+"params": [
+"y",
+"period",
+"alpha",
+"beta",
+"gamma"
+],
+"title": "Holt-Winters additive",
+"formula": "l_t,b_t,s_t recursions with \u03b1,\u03b2,\u03b3",
+"ref": "Winters (1960); Hyndman-Athanasopoulos (2018)"
+},
+{
+"mod": "hwmul",
+"fn": "holt_winters_mult",
+"params": [
+"y",
+"period",
+"alpha",
+"beta",
+"gamma"
+],
+"title": "Holt-Winters multiplicative",
+"formula": "l_t,b_t,s_t recursions with multiplicative season",
+"ref": "Winters (1960)"
+},
+{
+"mod": "impala",
+"fn": "impala_vtrace",
+"params": [
+"trajectories",
+"behavior",
+"target",
+"clip"
+],
+"title": "IMPALA V-trace off-policy correction",
+"formula": "v_s = V(s) + sum \u03b3^t (prod_i \u03c1_i) \u00b7 \u03b4_t V",
+"ref": "Espeholt et al (2018)"
+},
+{
+"mod": "jocros",
+"fn": "joseph_croston_intermittent",
+"params": [
+"y",
+"alpha"
+],
+"title": "Croston's method for intermittent / sparse demand forecasting",
+"formula": "z_t = alpha*y_t + (1-alpha)*z_{t-1}  (nonzero demand size); p_t = alpha*q_t + (1-alpha)*p_{t-1} (inter-arrival); forecast = z_t / p_t",
+"ref": "Joseph Ch 17, Croston intermittent demand section"
+},
+{
+"mod": "jomint",
+"fn": "joseph_mint_reconciliation",
+"params": [
+"y_hat",
+"S",
+"W"
+],
+"title": "MinT reconciliation: trace-minimizing weighted least-squares reconciliation",
+"formula": "y_tilde = S (S^T W^{-1} S)^{-1} S^T W^{-1} y_hat;  W = covariance of base forecast errors",
+"ref": "Joseph Ch 17, MinT reconciliation section"
+},
+{
+"mod": "jonaiv",
+"fn": "joseph_naive_forecast",
+"params": [
+"y",
+"horizon"
+],
+"title": "Naive forecast: last observed value carried forward",
+"formula": "y_hat_{T+h} = y_T  for all h >= 1",
+"ref": "Joseph Ch 4, Naive Forecast baseline"
+},
+{
+"mod": "joses",
+"fn": "joseph_simple_exponential_smoothing",
+"params": [
+"y",
+"alpha",
+"horizon"
+],
+"title": "Simple exponential smoothing (SES) forecast",
+"formula": "l_t = alpha*y_t + (1-alpha)*l_{t-1};  y_hat_{T+h} = l_T",
+"ref": "Joseph Ch 4, Simple Exponential Smoothing section"
+}
+]
