@@ -227,3 +227,24 @@ def schab_ev():
     def make(coords, z, n_bins=15):
         return empirical_semivariogram(coords, z, n_bins=n_bins)
     return make
+
+# --- Schabenberger semivariogram fitting: a model-derived table -----------
+# The fit target is KNOWN because the table is built from the model itself,
+# perturbed deterministically. No RNG, no simulated field, so the R arm
+# receives byte-identical input and "did it recover the truth" has an actual
+# answer. A simulated field is the wrong fixture here: a trended or strongly
+# oscillating one has an unbounded or hole-effect variogram that no monotone
+# model fits, and the fit then wanders in a degenerate limb.
+
+SCHAB_FIT_TRUTH = (0.3, 2.0, 6.0)
+
+
+@pytest.fixture()
+def schab_fit_table():
+    from morie.fn._schab_vario import semivariogram
+    lags = np.arange(1, 13) * 0.5
+    gamma = semivariogram(lags, *SCHAB_FIT_TRUTH, "exponential") * (
+        1.0 + 0.02 * np.cos(np.arange(1, 13) * 1.0))
+    counts = np.array([40, 80, 120, 160, 200, 240,
+                       240, 200, 160, 120, 80, 40], float)
+    return lags, gamma, counts

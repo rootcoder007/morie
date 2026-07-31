@@ -9,8 +9,8 @@ and `spreml`.
 """
 
 import numpy as np
-from scipy.optimize import minimize
 
+from ._schab_gn import gauss_newton_semivariogram
 from ._schab_vario import correlogram, semivariogram
 
 __all__ = []
@@ -136,7 +136,14 @@ def _objective(kind, lags, ghat, counts, model):
 
 
 def fit_semivariogram(lags, ghat, counts, model="exponential", kind="wls"):
-    """Minimise (4.34) for `kind="wls"` or its OLS simplification.
+    """Fit by Gauss-Newton, the algorithm Sec. 4.5 names for this problem.
+
+    The text does not leave the numerical method open: the GEE/OLS estimates
+    (after 4.43) and the composite-likelihood/WLS estimates (after 4.44) are
+    both to be "calculated ... with a Gauss-Newton algorithm", and Sec. 4.5.1
+    adds that the weights must be refreshed as theta moves. That is what
+    `gauss_newton_semivariogram` does, with the derivatives of (4.42) taken
+    analytically.
 
     Returns (nugget, partial_sill, range, objective_value, converged).
     """
@@ -145,38 +152,11 @@ def fit_semivariogram(lags, ghat, counts, model="exponential", kind="wls"):
     f, ok = _objective(kind, lags, ghat, counts, model)
     if ok.sum() < 3:
         raise ValueError("need at least 3 usable lag classes to fit 3 parameters")
-    start, bounds = _start_and_bounds(np.asarray(lags)[ok], np.asarray(ghat)[ok])
-    lo = np.array([b[0] for b in bounds])
-    hi = np.array([b[1] for b in bounds])
-
-    def bounded(theta):
-        """Bounds enforced inside the objective, not by the solver.
-
-        R's optim() ignores bounds under Nelder-Mead, so pushing the box into
-        the function is what lets both language arms run the identical search
-        rather than two solvers that merely agree in intent.
-        """
-        t = np.asarray(theta, dtype=float)
-        if np.any(t < lo) or np.any(t > hi) or not np.all(np.isfinite(t)):
-            return np.inf
-        return f(t)
-
-    # Several starts: these objectives have a flat ridge along (nugget + sill)
-    # and a simplex launched onto it stalls. The starts span the nugget
-    # fraction, which is the direction the ridge runs in.
-    best_x, best_f = np.asarray(start, dtype=float), bounded(start)
-    for frac in (0.0, 0.1, 0.3, 0.6):
-        for rscale in (0.25, 0.5, 1.0):
-            x0 = np.clip(np.array([frac * start[1], start[1],
-                                   rscale * 2.0 * start[2]]), lo, hi)
-            res = minimize(bounded, x0, method="Nelder-Mead",
-                           options={"maxiter": 4000, "maxfev": 4000,
-                                    "xatol": 1e-10, "fatol": 1e-10})
-            if np.isfinite(res.fun) and res.fun < best_f:
-                best_x, best_f = np.asarray(res.x, dtype=float), float(res.fun)
-    nugget, sill, rng = (float(v) for v in best_x)
-    converged = bool(best_f < bounded(start)) or bool(np.allclose(best_x, start))
-    return nugget, sill, rng, float(best_f), converged
+    start, _ = _start_and_bounds(np.asarray(lags)[ok], np.asarray(ghat)[ok])
+    theta, obj, converged, _ = gauss_newton_semivariogram(
+        lags, ghat, counts, start, model=model, kind=kind)
+    return (float(theta[0]), float(theta[1]), float(theta[2]),
+            float(obj), bool(converged))
 
 
 def covariance_matrix(coords, nugget, sill, rng, model):
