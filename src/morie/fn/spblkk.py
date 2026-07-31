@@ -1,46 +1,51 @@
-"""Block kriging: prediction for areal unit B."""
+"""Block kriging: prediction for areal unit B (delegates to spatial_block_kriging)."""
 
-import numpy as np
-
-from ._richresult import RichResult
+from .spblk import spatial_block_kriging
 
 __all__ = ["schabenberger_block_kriging"]
 
 
-def schabenberger_block_kriging(coords, z, blocks, cov_model):
+def schabenberger_block_kriging(coords, z, blocks, cov_model=None):
     """
-    Block kriging: prediction for areal unit B
+    Block kriging: prediction for areal unit B.
 
-    Formula: Z_hat(B) = (1/|B|)*integral Z_hat(s)ds = lambda'*Z; sigma^2_B = C(B,B)-2*c_B'*lambda+lambda'*C*lambda
+    This is the same estimator as :func:`morie.fn.spblk.spatial_block_kriging`
+    and delegates to it rather than carrying a second implementation. The
+    argument order here is the one this module has always exposed.
 
     Parameters
     ----------
     coords : array-like
-        Input data.
+        Observation coordinates, shape (n, 2).
     z : array-like
-        Input data.
+        Observed values at ``coords``, shape (n,).
     blocks : array-like
-        Input data.
-    cov_model : array-like
-        Input data.
+        Block (areal unit) definitions, as accepted by
+        ``spatial_block_kriging``.
+    cov_model : mapping, optional
+        Covariance parameters. Recognised keys: ``nugget``, ``sill``,
+        ``range_`` (or ``range``), ``n_quad``.
 
     Returns
     -------
-    result : dict
-        Keys: block_prediction, variance
+    The result of ``spatial_block_kriging``.
 
     References
     ----------
-    Schabenberger Ch 5, Sec 5.7.1
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC. Sec. 5.7.1 "Block Kriging",
+    building on the ordinary kriging system of Sec. 5.2.
     """
-    z = np.asarray(z, dtype=float)
-    n = int(z) if z.ndim == 0 else len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Block kriging: prediction for areal unit B"}
-    )
+    kw = {}
+    cm = dict(cov_model or {})
+    if "range" in cm and "range_" not in cm:
+        cm["range_"] = cm.pop("range")
+    for k in ("nugget", "sill", "range_", "n_quad"):
+        if k in cm:
+            kw[k] = cm[k]
+    return spatial_block_kriging(z, coords, blocks, **kw)
 
 
 def cheatsheet():
-    return "spblkk: Block kriging: prediction for areal unit B"
+    return ("spblkk: block kriging for an areal unit; delegates to "
+            "spatial_block_kriging (spblk).")
