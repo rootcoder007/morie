@@ -3,41 +3,56 @@
 import numpy as np
 
 from ._richresult import RichResult
+from ._schab_vario import semivariogram
 
 __all__ = ["schabenberger_spherical_variogram"]
 
 
-def schabenberger_spherical_variogram(h, nugget, sill, range):
-    """
-    Spherical semivariogram model
+def schabenberger_spherical_variogram(h, nugget=0.0, sill=1.0, range=1.0):
+    r"""
+    Spherical semivariogram model.
 
-    Formula: gamma(h) = c0 + c1*(1.5*h/a - 0.5*(h/a)^3) if h<=a, else c0+c1
+    .. math::
+
+        \gamma(h) = c_0 + \sigma_0^2\left(\frac{3h}{2\alpha}
+        - \frac{1}{2}\left(\frac{h}{\alpha}\right)^3\right),\quad 0 < h \le \alpha
+
+    ``range`` is the PRACTICAL range in the book's parameterisation: the
+    lag at which the correlation has fallen to :math:`e^{-3} = 0.049787`
+    ("0.05 or less", p. 143).
 
     Parameters
     ----------
     h : array-like
-        Input data.
-    nugget : array-like
-        Input data.
-    sill : array-like
-        Input data.
-    range : array-like
-        Input data.
+        Lag distances, non-negative.
+    nugget : float, default 0.0
+        Nugget effect :math:`c_0`. A discontinuity AT the origin, so
+        ``gamma(0) == 0`` even when ``nugget > 0``.
+    sill : float, default 1.0
+        Partial sill :math:`\sigma_0^2`. The total sill is
+        ``nugget + sill``.
+    range : float, default 1.0
+        Practical range :math:`\alpha`, must be positive.
 
     Returns
     -------
-    result : dict
-        Keys: semivariance
+    RichResult
+        ``gamma`` (array), plus the echoed ``nugget``, ``sill``, ``range``
+        and ``model``.
 
     References
     ----------
-    Schabenberger Ch 4, Sec 4.3.3
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC. Eqs. (4.13), (4.15), pp. 146-147.
     """
-    h = np.asarray(h, dtype=float)
-    n = int(h) if h.ndim == 0 else len(h)
-    result = float(np.mean(h))
-    se = float(np.std(h, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spherical semivariogram model"})
+    g = semivariogram(h, nugget, sill, range, "spherical")
+    return RichResult(
+        title="Spherical semivariogram model",
+        summary_lines=[("nugget", nugget), ("partial sill", sill),
+                       ("practical range", range)],
+        payload={"gamma": g, "nugget": float(nugget), "sill": float(sill),
+                 "range": float(range), "model": "spherical"},
+    )
 
 
 def cheatsheet():
