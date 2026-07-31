@@ -168,3 +168,53 @@ needs the same audit.
 
 Implementing the duplicated entries would add redundant public API.
 Decide dedup before drafting.
+
+## Dedup + package-wide Schabenberger audit, 2026-07-31
+
+### Package-wide citation audit result
+
+Every Schabenberger citation in `src/morie/fn` was checked, not just the
+69-module shelf. **2,195 modules cite the book.**
+
+- **63 / 63 section-level citations verify** against the real TOC.
+  (`sarla.py` and `sarre.py` cite §6.2.2.1, which a first pass flagged as
+  missing — the section exists, "Simultaneous Autoregressive (SAR)
+  Models"; the TOC regex only captured three levels. False positive from
+  the audit, not a bad citation.)
+- Chapter-only citations were screened by checking whether any
+  distinctive title token appears in the book. **The screen must exclude
+  the back matter** — the reference list starts at page index 465 — or
+  bibliography and subject-index hits count as coverage and mask exactly
+  the failures we were looking for. Against body text only, one
+  module fell out: `sgdbn.py`, which is *implemented and shipped*.
+  Fixed to LeSage & Pace (2009) doi:10.1201/9781420064254 + Bivand §9.4.2.
+
+`spblk.py` also cited §5.2; block kriging has its own section, §5.7.1,
+now cited as extending the §5.2 system.
+
+### Only four of the suspected duplicates were real
+
+Reading both sides changed the count from six to four:
+
+- `spthom` is **not** a duplicate of `sgthm` — it computes the
+  theoretical K-function, `K(r) = pi r^2 + mu[1-exp(-r^2/4 sigma^2)]/rho`;
+  `sgthm` simulates the process. Complementary.
+- `spnst` is **not** a duplicate of `nstat` — `spnst` is §8.2.1
+  parametric models, `nstat` is the moving-window approach (§8.3.1, which
+  is `spmwst`'s territory).
+
+The four real ones now delegate instead of carrying a second
+implementation: `spblkk`→`spblk`, `spcokr`→`cokrg`, `sptrs`→`sptrn`,
+`spsdm`→`sgdbn`.
+
+### Their tests were asserting the placeholder's fake contract
+
+`test_sptrs.py` passed a 100-element random normal array as
+`poly_degree`. All four pairs were like this, and all four now compare
+against the implemented sibling.
+
+**`str()` is not a usable comparison here.** `RichResult` is a dict
+subclass whose `__str__` is empty unless built with a title, so
+`str(got) == str(ref)` compares `'' == ''` and passes no matter what. The
+tests use an array-aware deep compare on the payload, plus a
+must-differ assertion so a degenerate comparator cannot pass.

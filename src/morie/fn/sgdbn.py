@@ -35,7 +35,13 @@ def spatial_durbin_model(
 
     References
     ----------
-    Schabenberger & Gotway (2005), Ch. 6.
+    LeSage, J. and Pace, R. K. (2009) Introduction to Spatial
+    Econometrics. Chapman and Hall/CRC. doi:10.1201/9781420064254
+    Bivand, R. S., Pebesma, E., and Gomez-Rubio, V. (2013) Applied
+    Spatial Data Analysis with R, 2nd ed., Springer. Sec. 9.4.2
+    "Spatial Econometrics Approaches", pp. 307-311.
+    NOT in Schabenberger & Gotway (2005): "Durbin" appears there only
+    in the reference list.
 
     .. epigraph::
 
