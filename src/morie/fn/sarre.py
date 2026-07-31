@@ -3,6 +3,8 @@
 import numpy as np
 from scipy import optimize
 
+from ._schab_rho import safe_search_interval
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_ar_error"]
@@ -62,7 +64,11 @@ def spatial_ar_error(x, y, w):
         return 0.5 * n * np.log(2 * np.pi * sigma2) - logdetA + 0.5 * n
 
     # Search lambda inside (1/min_eig, 1/max_eig) -- approximate via (-0.99, 0.99)
-    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded", options={"xatol": 1e-5})
+    lo, hi = safe_search_interval(W, "identity")
+    res = optimize.minimize_scalar(
+        neg_ll, bounds=(lo, hi), method="bounded",
+        options={"xatol": 1e-10 * max(hi - lo, 1.0)},
+    )
     lam = float(res.x)
     A = I - lam * W
     AX = A @ X
