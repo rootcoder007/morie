@@ -29,7 +29,8 @@ def vol_garch11_fit(r):
 
     References
     ----------
-    Bollerslev, T. (1986). *Journal of Econometrics*, 31(3), 307-327.
+    Bollerslev, T. (1986). Generalized autoregressive conditional
+    heteroskedasticity. *Journal of Econometrics*, 31(3), 307-327.
 
     Tsay, R. S. (2010). *Analysis of Financial Time Series*
     (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).

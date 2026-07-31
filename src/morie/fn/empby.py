@@ -25,7 +25,8 @@ def empirical_bayes(
 
     References
     ----------
-    Morris, C. N. (1983). *JASA*, 78(381), 47--55.
+    Morris, C. N. (1983). Parametric empirical Bayes inference: theory
+    and applications. *JASA*, 78(381), 47--55.
     Efron, B. (2010). *Large-Scale Inference*, Cambridge University Press.
     """
     theta_hat = np.asarray(estimates, dtype=float).ravel()

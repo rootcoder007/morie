@@ -213,8 +213,13 @@ def judge(entry, line, ledger, is_r, strict):
     pat = R_TITLELESS if is_r else PY_TITLELESS
     m = pat.search(e)
     if m:
-        ital = re.search(r"\\emph\{([^}]+)\}" if is_r else r"\*([^*]+)\*", e)
-        tail = e[ital.end():] if ital else ""
+        # Anchor the venue to the reference that matched, not the first
+        # italics in the whole block. Otherwise a titled journal article
+        # followed by a second reference cross-matches: the year comes
+        # from the second reference, the italics from the first.
+        sub = e[m.start():]
+        ital = re.search(r"\\emph\{([^}]+)\}" if is_r else r"\*([^*]+)\*", sub)
+        tail = sub[ital.end():] if ital else ""
         if not EDITION.match(tail) and JOURNAL_LOCATOR.match(tail):
             out.append((line, "E1",
                         f"citation has a venue and locator but NO title: {e[:88]}"))

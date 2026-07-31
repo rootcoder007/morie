@@ -21,7 +21,8 @@ def effective_sample_size(
 
     References
     ----------
-    Geyer, C. J. (1992). *Statistical Science*, 7(4), 473--483.
+    Geyer, C. J. (1992). Practical Markov chain Monte Carlo.
+    *Statistical Science*, 7(4), 473--483.
     """
     x = np.asarray(samples, dtype=float).ravel()
     n = len(x)

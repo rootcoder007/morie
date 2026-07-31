@@ -40,7 +40,8 @@ def vol_har_q(RV, RQ):
     the errors: a simple approach for improved volatility
     forecasting. *Journal of Econometrics*, 192(1), 1-18. (HAR-Q)
 
-    Corsi, F. (2009). *Journal of Financial Econometrics*, 7(2),
+    Corsi, F. (2009). A simple approximate long-memory model of
+    realized volatility. *Journal of Financial Econometrics*, 7(2),
     174-196.
     """
     RV = np.asarray(RV, dtype=float).ravel()

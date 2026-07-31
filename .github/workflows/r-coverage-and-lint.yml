@@ -270,3 +270,4 @@ jobs:
         with:
           name: pkgcheck-markdown
           path: r-package/morie/pkgcheck.md
+          retention-days: 7

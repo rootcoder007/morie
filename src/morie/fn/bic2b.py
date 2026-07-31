@@ -48,7 +48,8 @@ def bayes_factor_bic(
     ----------
     Kass, R. E. & Raftery, A. E. (1995). Bayes factors. *JASA*,
     90(430), 773--795.
-    Wagenmakers, E.-J. (2007). *Psychonomic Bulletin & Review*,
+    Wagenmakers, E.-J. (2007). A practical solution to the pervasive
+    problems of p values. *Psychonomic Bulletin & Review*,
     14(5), 779--804.
     """
     diff = bic_alt - bic_null

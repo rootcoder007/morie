@@ -43,8 +43,10 @@ def unmeasured_conf_bias(RR_UD, RR_UY, RR_obs=None):
     ----------
     Ding, P. & VanderWeele, T. J. (2016). Sensitivity analysis without
     assumptions. *Epidemiology*, 27(3), 368-377.
-    VanderWeele, T. J. & Ding, P. (2017). *Annals of Internal
-    Medicine*, 167(4), 268-274 (the E-value as the diagonal case).
+    VanderWeele, T. J. & Ding, P. (2017). Sensitivity analysis in
+    observational research: introducing the E-value. *Annals of
+    Internal Medicine*, 167(4), 268-274 (the E-value as the diagonal
+    case).
     """
     a = float(RR_UD)
     b = float(RR_UY)

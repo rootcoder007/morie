@@ -14,8 +14,10 @@ def mediation_analysis(Y, T, M, X=None):
 
     References
     ----------
-    Baron, R. M. & Kenny, D. A. (1986). *J. Pers. Soc. Psychol.*,
-    51(6), 1173-1182.
+    Baron, R. M. & Kenny, D. A. (1986). The moderator-mediator
+    variable distinction in social psychological research: conceptual,
+    strategic, and statistical considerations. *J. Pers. Soc.
+    Psychol.*, 51(6), 1173-1182.
     """
     import numpy as np
 

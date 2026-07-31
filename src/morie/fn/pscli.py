@@ -38,8 +38,8 @@ def pscl_ideal(rollcall_obj, n_iter=2000, burnin=500, seed=0, polarity_idx=None,
     Jackman, S. (2024). *pscl: Political Science Computational
     Laboratory* (the ideal() workflow this mirrors).
 
-    Clinton, J., Jackman, S. & Rivers, D. (2004). *APSR*, 98(2),
-    355-370.
+    Clinton, J., Jackman, S. & Rivers, D. (2004). The statistical
+    analysis of roll call data. *APSR*, 98(2), 355-370.
     """
     try:
         votes = np.asarray(rollcall_obj["votes"], dtype=float)

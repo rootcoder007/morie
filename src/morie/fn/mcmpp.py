@@ -108,8 +108,8 @@ def mcmcpack_irt(votes, n_iter=2000, burnin=500, seed=0, polarity_idx=None):
     response curves using Gibbs sampling. *Journal of Educational
     Statistics*, 17(3), 251-269.
 
-    Clinton, J., Jackman, S. & Rivers, D. (2004). *APSR*, 98(2),
-    355-370.
+    Clinton, J., Jackman, S. & Rivers, D. (2004). The statistical
+    analysis of roll call data. *APSR*, 98(2), 355-370.
     """
     V = np.asarray(votes, dtype=float)
     if V.ndim != 2:

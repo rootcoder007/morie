@@ -32,7 +32,8 @@ def vol_garch_ged(r, nu=None):
 
     References
     ----------
-    Nelson, D. B. (1991). *Econometrica*, 59(2), 347-370 (Sec. 4,
+    Nelson, D. B. (1991). Conditional heteroskedasticity in asset
+    returns: a new approach. *Econometrica*, 59(2), 347-370 (Sec. 4,
     the generalized error distribution).
 
     Tsay, R. S. (2010). *Analysis of Financial Time Series*

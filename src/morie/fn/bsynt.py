@@ -35,7 +35,9 @@ def bayesian_synthetic_control(
 
     References
     ----------
-    Brodersen, K. H., et al. (2015). *Annals of Applied Statistics*, 9(1), 247--274.
+    Brodersen, K. H., et al. (2015). Inferring causal impact using
+    Bayesian structural time-series models. *Annals of Applied
+    Statistics*, 9(1), 247--274.
     """
     rng = np.random.default_rng(seed)
     y = np.asarray(y_treat, dtype=float).ravel()

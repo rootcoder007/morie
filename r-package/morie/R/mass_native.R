@@ -235,6 +235,11 @@ morie_glm_nb <- function(formula, data, weights, init.theta = NULL,
   fit
 }
 
+#' Summarise method for \code{negbin} objects
+#'
+#' @param object A \code{negbin} object.
+#' @param dispersion A \code{negbin} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @exportS3Method stats::summary negbin
 summary.negbin <- function(object, dispersion = 1, ...) {
   s <- stats::summary.glm(object, dispersion = dispersion, ...)
@@ -243,6 +248,10 @@ summary.negbin <- function(object, dispersion = 1, ...) {
   s
 }
 
+#' Log-likelihood of method for \code{negbin} objects
+#'
+#' @param object A \code{negbin} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @exportS3Method stats::logLik negbin
 logLik.negbin <- function(object, ...) {
   val <- object$twologlik / 2
@@ -292,6 +301,10 @@ morie_rlm <- function(formula, data, k = 1.345, maxit = 20L, acc = 1e-4) {
             class = "morie_rlm")
 }
 
+#' Summarise method for \code{morie_rlm} objects
+#'
+#' @param object A \code{morie_rlm} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @exportS3Method stats::summary morie_rlm
 summary.morie_rlm <- function(object, ...) {
   s <- object$s; coef <- object$coefficients; wresid <- object$wresid
@@ -403,6 +416,10 @@ morie_polr <- function(formula, data, weights, method = "logistic") {
             class = "morie_polr")
 }
 
+#' Log-likelihood of method for \code{morie_polr} objects
+#'
+#' @param object A \code{morie_polr} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @exportS3Method stats::logLik morie_polr
 logLik.morie_polr <- function(object, ...) {
   val <- -object$deviance / 2

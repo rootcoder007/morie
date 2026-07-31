@@ -25,7 +25,8 @@ def chinese_restaurant_process(
 
     References
     ----------
-    Aldous, D. J. (1985). *Lecture Notes in Mathematics*, 1117, 1--198.
+    Aldous, D. J. (1985). Exchangeability and related topics.
+    *Lecture Notes in Mathematics*, 1117, 1--198.
     """
     rng = np.random.default_rng(seed)
     assignments = np.zeros(n, dtype=int)

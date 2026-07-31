@@ -238,6 +238,10 @@ morie_synth_control <- function(data, outcome, unit, time,
   )
 }
 
+#' Print method for \code{morie_synth} objects
+#'
+#' @param x A \code{morie_synth} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_synth <- function(x, ...) {
   cat("Synthetic control (morie native)\n")

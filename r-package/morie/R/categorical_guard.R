@@ -181,6 +181,10 @@ morie_audit_categories <- function(data, cols = NULL) {
   out
 }
 
+#' Print method for \code{morie_category_audit} objects
+#'
+#' @param x A \code{morie_category_audit} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_category_audit <- function(x, ...) {
   cat("Categorical audit:", nrow(x), "column(s)\n")

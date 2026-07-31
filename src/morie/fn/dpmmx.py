@@ -28,7 +28,8 @@ def dp_mixture_model(
 
     References
     ----------
-    Ishwaran, H. & James, L. F. (2001). *JASA*, 96(453), 161--173.
+    Ishwaran, H. & James, L. F. (2001). Gibbs sampling methods for
+    stick-breaking priors. *JASA*, 96(453), 161--173.
     """
     rng = np.random.default_rng(seed)
     x = np.asarray(data, dtype=float)

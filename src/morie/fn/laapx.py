@@ -26,7 +26,8 @@ def laplace_approximation(
 
     References
     ----------
-    Tierney, L. & Kadane, J. (1986). *JASA*, 81(393), 82--86.
+    Tierney, L. & Kadane, J. (1986). Accurate approximations for
+    posterior moments and marginal densities. *JASA*, 81(393), 82--86.
     """
     x0 = np.asarray(init, dtype=float)
     d = len(x0)

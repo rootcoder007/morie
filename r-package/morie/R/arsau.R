@@ -820,6 +820,10 @@ morie_arsau_describe <- function(kind, year, language = "en", data_dir = NULL,
   out
 }
 
+#' Print method for \code{morie_arsau_result} objects
+#'
+#' @param x A \code{morie_arsau_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_arsau_result <- function(x, ...) {

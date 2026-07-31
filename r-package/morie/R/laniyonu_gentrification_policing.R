@@ -377,6 +377,10 @@ morie_laniyonu_gentrification_policing <- function(
 }
 
 
+#' Print method for \code{morie_laniyonu_gp_result} objects
+#'
+#' @param x A \code{morie_laniyonu_gp_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_laniyonu_gp_result <- function(x, ...) {

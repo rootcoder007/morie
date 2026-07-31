@@ -231,7 +231,7 @@ morie_tps_ripley_k <- function(df,
 #' Returns Gi* per neighbourhood (count vector aggregated from the
 #' incident data.frame), using a binary k-NN spatial weights matrix
 #' with self-inclusion (Gi* convention). z-score interpretation: Gi*
-#' > 1.96 = significant hot spot at alpha=0.05; Gi* < -1.96 =
+#' `> 1.96` = significant hot spot at alpha=0.05; `Gi* < -1.96` =
 #' significant cold spot.
 #'
 #' @param df Incident-level data.frame.

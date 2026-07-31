@@ -30,8 +30,9 @@ def validity_discriminant(
 
     References
     ----------
-    Fornell, C., & Larcker, D. F. (1981). *Journal of Marketing Research*,
-    18(1), 39--50.
+    Fornell, C., & Larcker, D. F. (1981). Evaluating structural
+    equation models with unobservable variables and measurement error.
+    *Journal of Marketing Research*, 18(1), 39--50.
     """
     if isinstance(data, np.ndarray):
         data = pd.DataFrame(data, columns=[f"i{i}" for i in range(data.shape[1])])

@@ -275,6 +275,10 @@ mrm_gentrification_panel <- function(df,
 # Print method (shared across MRM primitives)
 # ---------------------------------------------------------------------------
 
+#' Print method for \code{morie_mrm_result} objects
+#'
+#' @param x A \code{morie_mrm_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_mrm_result <- function(x, ...) {

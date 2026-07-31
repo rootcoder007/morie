@@ -252,6 +252,10 @@ morie_hawkes_st_fit <- function(events, end_time = NULL, area = 1,
   out
 }
 
+#' Print method for \code{morie_hawkes_st_fit} objects
+#'
+#' @param x A \code{morie_hawkes_st_fit} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_hawkes_st_fit <- function(x, ...) {
   p <- x$params

@@ -38,8 +38,10 @@ def vol_multi_kernel_rk(r_intraday, n_grids=5, H=None):
     (2008). Designing realized kernels. *Econometrica*, 76(6),
     1481-1536.
 
-    Zhang, L., Mykland, P. A. & Ait-Sahalia, Y. (2005). *JASA*,
-    100(472), 1394-1411. (subsample averaging)
+    Zhang, L., Mykland, P. A. & Ait-Sahalia, Y. (2005). A tale of two
+    time scales: determining integrated volatility with noisy
+    high-frequency data. *JASA*, 100(472), 1394-1411. (subsample
+    averaging)
     """
     r = np.asarray(r_intraday, dtype=float).ravel()
     g = int(n_grids)

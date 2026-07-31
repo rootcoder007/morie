@@ -29,7 +29,8 @@ def vol_igarch_fit(r):
 
     References
     ----------
-    Engle, R. F. & Bollerslev, T. (1986). *Econometric Reviews*, 5(1), 1-50.
+    Engle, R. F. & Bollerslev, T. (1986). Modelling the persistence of
+    conditional variances. *Econometric Reviews*, 5(1), 1-50.
 
     Tsay, R. S. (2010). *Analysis of Financial Time Series*
     (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).

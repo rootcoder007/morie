@@ -130,6 +130,10 @@ morie_mrm_reconcile <- function(primary, secondary, keys,
     class = c("morie_mrm_reconciliation", "list"))
 }
 
+#' Print method for \code{morie_mrm_reconciliation} objects
+#'
+#' @param x A \code{morie_mrm_reconciliation} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_mrm_reconciliation <- function(x, ...) {
   cat("MRM reconciliation\n")
@@ -286,6 +290,10 @@ morie_mrm_estimate_causal_effect <- function(data, treatment, outcome,
     class = c("morie_mrm_effect", "list"))
 }
 
+#' Print method for \code{morie_mrm_effect} objects
+#'
+#' @param x A \code{morie_mrm_effect} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_mrm_effect <- function(x, ...) {
   cat(morie_mrm_report(x, format = "text"), sep = "\n")

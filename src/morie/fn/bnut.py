@@ -35,7 +35,9 @@ def nuts_sampler(
 
     References
     ----------
-    Hoffman, M. D. & Gelman, A. (2014). *JMLR*, 15, 1593--1623.
+    Hoffman, M. D. & Gelman, A. (2014). The No-U-Turn sampler:
+    adaptively setting path lengths in Hamiltonian Monte Carlo.
+    *JMLR*, 15, 1593--1623.
     """
     rng = np.random.default_rng(seed)
     theta = np.asarray(init, dtype=float).copy()

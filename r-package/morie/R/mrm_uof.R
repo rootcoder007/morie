@@ -1011,6 +1011,10 @@ mrm_uof_data_quality_audit <- function(df, sidecar = NULL, expected_schema = NUL
 # Print method
 # ---------------------------------------------------------------------------
 
+#' Print method for \code{morie_mrm_uof_result} objects
+#'
+#' @param x A \code{morie_mrm_uof_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_mrm_uof_result <- function(x, ...) {

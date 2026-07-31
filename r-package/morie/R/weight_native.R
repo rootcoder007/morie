@@ -21,6 +21,10 @@
   out
 }
 
+#' Print method for \code{morie_weight} objects
+#'
+#' @param x A \code{morie_weight} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_weight <- function(x, ...) {
   cat(sprintf("morie_weight: %s (estimand %s)\n", x$method, x$estimand))

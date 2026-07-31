@@ -85,6 +85,10 @@ morie_crim_etas <- function(times, magnitudes = NULL, m0 = NULL,
   out
 }
 
+#' Print method for \code{morie_etas} objects
+#'
+#' @param x A \code{morie_etas} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_etas <- function(x, ...) {
   cat("ETAS (Ogata 1988), n =", x$n, "\n")
@@ -172,6 +176,10 @@ morie_crim_hawkes_multivariate <- function(times, marks, t_max = NULL,
   out
 }
 
+#' Print method for \code{morie_mv_hawkes} objects
+#'
+#' @param x A \code{morie_mv_hawkes} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_mv_hawkes <- function(x, ...) {
   cat(sprintf("Multivariate Hawkes (K = %d, beta = %.3g), n = %d\n",
@@ -231,6 +239,10 @@ morie_crim_near_repeat <- function(x, y, times, s_threshold,
   out
 }
 
+#' Print method for \code{morie_knox} objects
+#'
+#' @param x A \code{morie_knox} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_knox <- function(x, ...) {
   cat("Knox near-repeat test\n")
@@ -305,6 +317,10 @@ morie_crim_risk_terrain <- function(incidents, layers, n_grid = 25L,
   out
 }
 
+#' Print method for \code{morie_rtm} objects
+#'
+#' @param x A \code{morie_rtm} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_rtm <- function(x, ...) {
   cat("Risk terrain model,", x$n, "incidents\n")

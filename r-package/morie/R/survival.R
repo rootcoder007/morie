@@ -420,7 +420,7 @@ morie_survival_rmst_diff <- function(time1, event1, time2, event2,
 #'
 #' Wraps `survival::survfit()` with multi-state `Surv()`.
 #' @param event Integer event code: 0 = censored, 1 = event of interest,
-#'   >=2 = competing event.
+#'   `>=2` = competing event.
 #' @inheritParams morie_survival_params
 #' @return A named list with \code{times}, \code{cif} (estimated CIF for
 #'   the event of interest), \code{ci_lower}, \code{ci_upper},

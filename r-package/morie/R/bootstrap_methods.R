@@ -855,7 +855,6 @@ bootstrap_632 <- function(X, y, model_fn, score_fn,
 
 #' Repeated K-fold cross-validation
 #'
-#' @inheritParams .boot_cross_validate
 #' @param X Numeric matrix or data.frame of predictors.
 #' @param y Numeric or factor outcome vector aligned with rows of `X`.
 #' @param model_fn Function `(X, y) -> fitted-model` used on each training fold.
@@ -889,7 +888,6 @@ repeated_cv <- function(X, y, model_fn, score_fn,
 
 #' Leave-one-out cross-validation
 #'
-#' @inheritParams .boot_cross_validate
 #' @param X Numeric matrix or data.frame of predictors.
 #' @param y Numeric or factor outcome vector aligned with rows of `X`.
 #' @param model_fn Function `(X, y) -> fitted-model` used on each training fold.
