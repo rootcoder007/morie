@@ -115,3 +115,56 @@ So Phase 1 as scoped (Hastie 68 + Schabenberger 69 + Rangayyan 450 =
 than the ~3,567 estimated — but distributed across far more books than
 the plan assumed, most of which still need PDF confirmation before any
 of their modules can be book-certified.
+
+## Schabenberger shelf (69) — citation audit 2026-07-31
+
+All **51** section-level citations verify against the actual PDF table of
+contents of Schabenberger & Gotway (2005), *Statistical Methods for
+Spatial Data Analysis*. Zero fabricated sections.
+
+Of the 18 chapter-only citations, six named things the book does not
+contain. Each was checked by reading the page, not by inference, and
+replaced with a source verified against Crossref or against a printed
+bibliography in the corpus:
+
+| module | was | now |
+|---|---|---|
+| `spmidw` | "Schabenberger supplement" | Bivand, Pebesma & Gómez-Rubio (2013) §8.3.1, p. 215. In S&G "inverse distance" occurs only in the subject index. |
+| `spsdm` | Schabenberger Ch 6 | Bivand et al. (2013) §9.4.2, pp. 307–311. In S&G "Durbin" occurs only in the reference list. |
+| `spthom` | Schabenberger Ch 3 | Marjorie Thomas (1949) *Biometrika* 36(1–2):18–25, doi:10.1093/biomet/36.1-2.18. All four "Thomas" hits in S&G are the people Thomas Mueller / Thomas A. Louis. |
+| `spmsim` | Schabenberger Ch 6 | Fotheringham, Yang & Kang (2017) *Annals AAG* 107(6):1247–1265, doi:10.1080/24694452.2017.1352480. MGWR postdates the 2005 book; "multiscale" has 0 hits. |
+| `spgwrb` | Schabenberger Ch 6 | Bivand et al. (2013) §9.4.3, p. 318 (Gaussian kernel, leave-one-out CV). The **AIC selector claim was dropped** — no source here states it. |
+| `spgwrk` | Schabenberger Ch 6 | Brunsdon, Fotheringham & Charlton (1996), doi:10.1111/j.1538-4632.1996.tb00936.x; Fotheringham et al. (2002). **bisquare / tricube / boxcar are attributed to the spgwr and GWmodel implementations, not to a book** — the only corpus hit for "bisquare" is Tukey's robust loss, and "tricube" has none. |
+
+S&G *does* cover GWR, at pp. 316–317 — confirmed directly and
+cross-confirmed by Bivand et al. (2013) p. 318 citing exactly that range.
+So the GWR modules keep a legitimate secondary pointer to §6.1.3.
+
+### Do not rename these six
+
+The obvious cleanup — dropping the misleading `schabenberger_` prefix —
+collides with existing exports: `spatial_durbin_model` (`sdurbm.py`),
+`thomas_process` (`sgthm.py`, `ptthm.py`), `gwr_bandwidth` (`xrgwb.py`).
+
+### Duplicate check before drafting
+
+Several shelf entries duplicate modules that are **already implemented**:
+
+- `spsdm` ↔ `sgdbn.py` (98 lines, implemented) and `sdurbm.py`
+- `spthom` ↔ `sgthm.py` (70 lines, implemented)
+- `spblkk` ↔ `spblk.py` `spatial_block_kriging` (127 lines)
+- `spcokr` ↔ `cokrg.py` `cokriging` (110 lines)
+- `spnst` ↔ `nstat.py` `nonstationary_covariance` (79 lines)
+- `sptrs` ↔ `sptrn.py` `spatial_trend_surface` (83 lines)
+
+(`splfun`→`boyd_dual_function` and `spblup`→`gblup_full` are false
+matches from substring overlap; `spperiod`→`rangayyan_periodogram` needs
+a judgement call — signal vs lattice periodogram.)
+
+Note also that `sgdbn.py` and `sgthm.py` carry the **same false
+Schabenberger attribution** in already-implemented code, so the
+misattribution is not confined to this shelf. The wider `sg*` family
+needs the same audit.
+
+Implementing the duplicated entries would add redundant public API.
+Decide dedup before drafting.

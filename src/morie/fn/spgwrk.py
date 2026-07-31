@@ -29,7 +29,18 @@ def schabenberger_gwr_kernels(distance, bandwidth, kernel_type):
 
     References
     ----------
-    Schabenberger Ch 6
+    Brunsdon, C., Fotheringham, A. S., and Charlton, M. E. (1996)
+    Geographically weighted regression: a method for exploring spatial
+    nonstationarity. Geographical Analysis 28(4).
+    doi:10.1111/j.1538-4632.1996.tb00936.x
+    Fotheringham, A. S., Brunsdon, C., and Charlton, M. E. (2002)
+    Geographically Weighted Regression: The Analysis of Spatially Varying
+    Relationships. Wiley, Chichester.
+    Bivand et al. (2013) Sec. 9.4.3, p. 318 documents the Gaussian kernel
+    with fixed and adaptive bandwidths. The bisquare / tricube / boxcar
+    kernels are the spgwr and GWmodel implementation set; no primary
+    source available here states them, so they are attributed to the
+    software, not to a book.
     """
     distance = np.asarray(distance, dtype=float)
     n = int(distance) if distance.ndim == 0 else len(distance)

@@ -29,7 +29,11 @@ def schabenberger_mgwr_bandwidth(x, y, coords):
 
     References
     ----------
-    Schabenberger Ch 6
+    Fotheringham, A. S., Yang, W., and Kang, W. (2017) Multiscale
+    Geographically Weighted Regression (MGWR). Annals of the American
+    Association of Geographers 107(6):1247-1265.
+    doi:10.1080/24694452.2017.1352480
+    MGWR postdates Schabenberger & Gotway (2005) and is not in that book.
     """
     x = np.asarray(x, dtype=float)
     n = int(x) if x.ndim == 0 else len(x)
