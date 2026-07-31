@@ -74,3 +74,44 @@ real content is therefore Hastie 68 + Schabenberger 69 + Rangayyan 450
 Practical rule for every future slice: filter the worklist through the
 name test before costing or launching anything, or the estimate silently
 includes fragments that should not be implemented at all.
+
+## Census correction 2026-07-31: the name test must run on the FUNCTION name
+
+The 2026-07-29 correction applied the auto-extracted name test to the
+*filename*. Filenames are frequently short or hashed
+(`msm111.py`, `..._wit2u10.py`) while the marker lives in the exported
+function name. Re-running the test against `__all__` instead moves a
+large slice from "real work" to "auto-extracted":
+
+| Source | Phase-1 estimate | Actual hand-named |
+|---|---|---|
+| Rangayyan | 450 | **450** (confirmed) |
+| Schabenberger | 69 | **69** (confirmed) |
+| Hastie | 68 | **0** |
+| Wilcox | 73 | 0 (already known) |
+| Wasserman | 66 | 0 — complete |
+
+All 213 Hastie-citing placeholders are auto-extracted. Most are not even
+ESL: they cite James/Witten/Hastie/Tibshirani *ISLR*, a different book,
+via `..._chapter_N_unnumbered_M`. Two independent tells confirm it
+without opening the PDF — the docstring says "auto-extracted", and the
+"Formula" field holds unparsed OCR
+(`tstatistic for H0 : β=0t a k e st h ef o r m...`).
+
+Whole-corpus recount, placeholder-bodied modules:
+
+- **15,040** total
+- **11,524** auto-extracted (NOT implement-by-default — Vee's call)
+- **3,516** genuinely hand-named — the real backlog
+
+Hand-named work not in the Phase-1 plan, by source: Morin *Probability*
+174, criminology handbook 120, Brus *Spatial Sampling with R* 97,
+*Analysis of Categorical Data with R* 69, Coles 29, Ghosal & van der
+Vaart 25, no-reference 25, Aitchison 24. Full per-source worklist:
+`scripts/audit/backlog_real_by_source.json` (1,863 sources).
+
+So Phase 1 as scoped (Hastie 68 + Schabenberger 69 + Rangayyan 450 =
+587) is really **519**, and the whole hand-named backlog is 3,516 rather
+than the ~3,567 estimated — but distributed across far more books than
+the plan assumed, most of which still need PDF confirmation before any
+of their modules can be book-certified.
