@@ -5,7 +5,7 @@ from .sgcar import conditional_autoregressive
 __all__ = ["schabenberger_car_model"]
 
 
-def schabenberger_car_model(z, w, covariates=None):
+def schabenberger_car_model(z, w, covariates=None, parameterization="weighted"):
     r"""
     Conditional autoregressive model: the conditional specification.
 
@@ -35,6 +35,10 @@ def schabenberger_car_model(z, w, covariates=None):
         Adjacency weights, shape (n, n).
     covariates : array-like, optional
         Covariates; an intercept when omitted.
+    parameterization : {'weighted', 'identity'}
+        Which one-parameter CAR form to fit. These are different models:
+        'weighted' has conditional variance sigma^2/d_i, 'identity' has
+        it constant. Forwarded to ``conditional_autoregressive``.
 
     Returns
     -------
@@ -46,7 +50,7 @@ def schabenberger_car_model(z, w, covariates=None):
     Spatial Data Analysis. Chapman & Hall/CRC. Sec. 6.2.2.2, eqs.
     (6.43)-(6.45), pp. 338-339.
     """
-    return conditional_autoregressive(z, w, covariates)
+    return conditional_autoregressive(z, w, covariates, parameterization)
 
 
 def cheatsheet():
