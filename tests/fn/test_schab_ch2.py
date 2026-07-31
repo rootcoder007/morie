@@ -26,7 +26,11 @@ def test_a_nugget_destroys_mean_square_continuity():
     mean square continuous" (p. 50)."""
     r = continuity(NUGGET)
     assert not r["is_continuous"]
-    assert r["nugget"] == pytest.approx(0.3, abs=1e-6)
+    # The limit is probed at a finite h, so the estimate is the nugget
+    # PLUS the continuous part's decay over that lag: at h = 1e-6 the
+    # exponential component contributes 3e-6. Demanding 1e-6 here asks
+    # for more precision than probing a limit at finite h can give.
+    assert r["nugget"] == pytest.approx(0.3, abs=1e-4)
 
 
 def test_the_decision_is_shrinkage_not_a_fixed_threshold():
