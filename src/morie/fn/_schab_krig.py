@@ -53,3 +53,44 @@ def simple_kriging(coords, z, target, cov_model=None, mu=None):
     pred = mu + lam.T @ (z - mu)
     var = sigma2 - np.einsum("ij,ij->j", sig, lam)
     return pred, np.maximum(var, 0.0), lam
+
+
+def ordinary_kriging(coords, z, target, semivariogram_fn):
+    """Ordinary kriging in terms of the semivariogram, Sec. 5.2.2.2.
+
+    The system is eqs (5.19)-(5.22), written with Gamma = [gamma(s_i - s_j)]
+    and gamma(s0) = [gamma(s0 - s_1), ..., gamma(s0 - s_n)]':
+
+        lambda = [gamma(s0) + 1 (1 - 1'Gamma^-1 gamma(s0)) / (1'Gamma^-1 1)]'
+                 Gamma^-1                                            (5.19)
+        m      = -(1 - 1'Gamma^-1 gamma(s0)) / (1'Gamma^-1 1)         (5.20)
+        p_ok   = lambda' Z(s)                                         (5.21)
+        s2_ok  = lambda' gamma(s0) + m = 2 lambda' gamma(s0)
+                 - lambda' Gamma lambda                               (5.22)
+
+    The SIGN of m matters downstream: the trans-Gaussian correction (5.58)
+    uses (sigma^2_ok - 2 m), so a flipped multiplier would silently move
+    every prediction. (5.22) gives two expressions for the same variance,
+    which the suites assert against each other.
+
+    Returns (prediction, variance, weights, lagrange).
+    """
+    coords = np.atleast_2d(np.asarray(coords, dtype=float))
+    z = np.asarray(z, dtype=float).ravel()
+    target = np.asarray(target, dtype=float).ravel()
+    n = z.size
+    if coords.shape[0] != n:
+        raise ValueError("`coords` and `z` must have the same number of rows")
+    gamma_mat = semivariogram_fn(_dist(coords, coords))
+    gamma_0 = semivariogram_fn(_dist(coords, target[None, :]).ravel())
+    ones = np.ones(n)
+    ginv = np.linalg.pinv(gamma_mat)
+    denom = float(ones @ ginv @ ones)
+    if denom == 0.0:
+        raise ValueError("singular ordinary-kriging system")
+    slack = (1.0 - float(ones @ ginv @ gamma_0)) / denom
+    lam = ginv @ (gamma_0 + ones * slack)
+    m = -slack
+    pred = float(lam @ z)
+    var = float(lam @ gamma_0 + m)
+    return pred, var, lam, float(m)
