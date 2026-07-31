@@ -7,7 +7,7 @@ from ._richresult import RichResult
 __all__ = ["schabenberger_mean_square_diff"]
 
 
-def schabenberger_mean_square_diff(cov_func, m=1, h=1e-3, tol=1e6):
+def schabenberger_mean_square_diff(cov_func, m=1, h=None, tol=1e6):
     r"""
     Mean-square differentiability, from the even derivatives of C at 0.
 
@@ -36,8 +36,11 @@ def schabenberger_mean_square_diff(cov_func, m=1, h=1e-3, tol=1e6):
         ``C(h)``, taking an array of lags and returning an array.
     m : int, default 1
         Order of differentiability to test.
-    h : float, default 1e-3
-        Stencil spacing.
+    h : float, optional
+        Stencil spacing. Defaults to ``eps**(1/(2m+2))``, which balances
+        truncation against cancellation: a 2m-th central difference
+        divides by ``h**(2m)``, so a step chosen for m = 1 is badly
+        conditioned for m = 2 and meaningless by m = 3.
     tol : float, default 1e6
         Magnitude above which the derivative is judged not finite.
 
@@ -61,6 +64,9 @@ def schabenberger_mean_square_diff(cov_func, m=1, h=1e-3, tol=1e6):
     m = int(m)
     if m < 1:
         raise ValueError("`m` must be >= 1")
+    eps = float(np.finfo(float).eps)
+    if h is None:
+        h = eps ** (1.0 / (2 * m + 2))
     if h <= 0:
         raise ValueError("`h` must be > 0")
 
@@ -80,6 +86,9 @@ def schabenberger_mean_square_diff(cov_func, m=1, h=1e-3, tol=1e6):
     # model at h = 1e-3 gives about -6e3, comfortably under any generous
     # bound, yet has no second derivative at all.
     d1, d2 = deriv_at(h), deriv_at(h / 2.0)
+    # digits actually carried: cancellation costs eps / h**k
+    rel_noise = eps / h**k
+    digits = max(0.0, -np.log10(max(rel_noise, 1e-300)))
     growth = abs(d2) / max(abs(d1), 1e-300)
     converged = bool(np.isfinite(d1) and np.isfinite(d2) and growth < 1.5)
     finite = bool(converged and abs(d2) <= tol)
@@ -87,11 +96,13 @@ def schabenberger_mean_square_diff(cov_func, m=1, h=1e-3, tol=1e6):
         title="Mean-square differentiability",
         summary_lines=[("order m", m), ("d^{2m}C/dh^{2m} at 0", d2),
                        ("growth on halving h", growth),
+                       ("significant digits", round(digits, 1)),
                        ("differentiable", finite)],
         payload={"is_differentiable": finite, "order": m,
                  "derivative_2m": d2, "derivative_coarse": d1,
                  "growth_ratio": float(growth), "converged": converged,
-                 "derivative_cov": float((-1) ** m * d2), "h": float(h)},
+                 "derivative_cov": float((-1) ** m * d2), "h": float(h),
+                 "significant_digits": float(digits)},
     )
 
 
