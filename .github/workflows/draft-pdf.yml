@@ -38,3 +38,4 @@ jobs:
           name: joss-paper-pdf
           path: paper.pdf
           if-no-files-found: error
+          retention-days: 14

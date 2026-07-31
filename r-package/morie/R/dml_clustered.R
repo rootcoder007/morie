@@ -125,6 +125,10 @@ morie_dml_clustered <- function(data, treatment, outcome, covariates,
   out
 }
 
+#' Print method for \code{morie_dml_clustered} objects
+#'
+#' @param x A \code{morie_dml_clustered} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_dml_clustered <- function(x, ...) {
   cat(sprintf("Cluster-robust DML (AIPW)\n  ATE = %.4g  SE = %.4g [%s]\n",

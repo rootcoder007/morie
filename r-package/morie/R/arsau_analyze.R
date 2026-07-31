@@ -766,6 +766,10 @@ morie_arsau_analyze_detailed_dataset <- function(year_range = "2020-2022",
 }
 
 
+#' Print method for \code{morie_arsau_analysis_result} objects
+#'
+#' @param x A \code{morie_arsau_analysis_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_arsau_analysis_result <- function(x, ...) {

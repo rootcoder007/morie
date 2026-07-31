@@ -47,7 +47,9 @@ def bayesian_am_scaling(survey_data, n_iter=2000, burnin=500, seed=0, prior_sd=1
     citizens' ideological preferences and perceptions. *AJPS*, 59(3),
     759-774.
 
-    Aldrich, J. H. & McKelvey, R. D. (1977). *APSR*, 71(1), 111-130.
+    Aldrich, J. H. & McKelvey, R. D. (1977). A method of scaling with
+    applications to the 1968 and 1972 presidential elections. *APSR*,
+    71(1), 111-130.
     """
     Z = np.asarray(survey_data, dtype=float)
     if Z.ndim != 2:

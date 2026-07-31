@@ -33,7 +33,9 @@ def bayesian_propensity(
 
     References
     ----------
-    McCandless, L. C., et al. (2009). *Statistics in Medicine*, 28(1), 94--112.
+    McCandless, L. C., et al. (2009). Bayesian propensity score
+    analysis for observational data. *Statistics in Medicine*, 28(1),
+    94--112.
     """
     rng = np.random.default_rng(seed)
     X_arr = np.asarray(X, dtype=float)

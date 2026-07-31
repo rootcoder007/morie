@@ -558,6 +558,10 @@ morie_laniyonu_actuarial_risk_disparity <- function(
 }
 
 
+#' Print method for \code{morie_laniyonu_ard_result} objects
+#'
+#' @param x A \code{morie_laniyonu_ard_result} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @return Invisibly returns \code{x} unchanged.
 #' @export
 print.morie_laniyonu_ard_result <- function(x, ...) {

@@ -37,7 +37,8 @@ def vol_realised_log_vol_ar(RV, h=1):
     (2003). Modeling and forecasting realized volatility.
     *Econometrica*, 71(2), 579-625. (log-RV autoregressions)
 
-    Corsi, F. (2009). *Journal of Financial Econometrics*, 7(2),
+    Corsi, F. (2009). A simple approximate long-memory model of
+    realized volatility. *Journal of Financial Econometrics*, 7(2),
     174-196. (the HAR that this benchmark motivates)
     """
     RV = np.asarray(RV, dtype=float).ravel()

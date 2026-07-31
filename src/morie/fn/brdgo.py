@@ -43,7 +43,8 @@ def bridge_observations(ideal_points_periods, bridge_ids):
     and institutions for the court, congress, and presidency. *AJPS*,
     51(3), 433-448. (bridging as the identification device)
 
-    Schoenemann, P. H. (1966). *Psychometrika*, 31(1), 1-10. (the
+    Schoenemann, P. H. (1966). A generalized solution of the
+    orthogonal Procrustes problem. *Psychometrika*, 31(1), 1-10. (the
     orthogonal alignment step)
     """
 

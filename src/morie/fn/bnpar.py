@@ -32,7 +32,8 @@ def dp_density(
 
     References
     ----------
-    Neal, R. M. (2000). *JCGS*, 9(2), 249--265.
+    Neal, R. M. (2000). Markov chain sampling methods for Dirichlet
+    process mixture models. *JCGS*, 9(2), 249--265.
     """
     rng = np.random.default_rng(seed)
     x = np.asarray(data, dtype=float).ravel()

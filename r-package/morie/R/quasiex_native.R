@@ -112,6 +112,10 @@ morie_did <- function(data, outcome, unit, time, treatment_time,
   out
 }
 
+#' Print method for \code{morie_did} objects
+#'
+#' @param x A \code{morie_did} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_did <- function(x, ...) {
   cat("Difference-in-differences --", x$method, "\n")
@@ -222,6 +226,10 @@ morie_iv_2sls <- function(data, outcome, endogenous, instruments,
   out
 }
 
+#' Print method for \code{morie_iv} objects
+#'
+#' @param x A \code{morie_iv} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_iv <- function(x, ...) {
   cat("Two-stage least squares --", x$method, "\n")
@@ -332,6 +340,10 @@ morie_rdd <- function(data, outcome, running, cutoff = 0,
   out
 }
 
+#' Print method for \code{morie_rdd} objects
+#'
+#' @param x A \code{morie_rdd} object.
+#' @param ... Ignored; accepted for S3 consistency.
 #' @export
 print.morie_rdd <- function(x, ...) {
   cat(sprintf("Regression discontinuity (%s), bandwidth = %.4f\n",

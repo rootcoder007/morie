@@ -39,8 +39,9 @@ def shepard_diagram(delta, D_config):
     multidimensional scaling with an unknown distance function. I.
     *Psychometrika*, 27(2), 125-140.
 
-    Kruskal, J. B. (1964). *Psychometrika*, 29(1), 1-27. (the diagram
-    as the visual companion of stress)
+    Kruskal, J. B. (1964). Multidimensional scaling by optimizing
+    goodness of fit to a nonmetric hypothesis. *Psychometrika*, 29(1),
+    1-27. (the diagram as the visual companion of stress)
     """
     Delta = np.asarray(delta, dtype=float)
     Dc = np.asarray(D_config, dtype=float)

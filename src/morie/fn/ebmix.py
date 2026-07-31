@@ -28,7 +28,8 @@ def eb_mixture(
 
     References
     ----------
-    Efron, B. (2004). *JASA*, 99(465), 96--104.
+    Efron, B. (2004). Large-scale simultaneous hypothesis testing.
+    *JASA*, 99(465), 96--104.
     Efron, B. (2010). *Large-Scale Inference*, Cambridge University Press.
     """
     z = np.asarray(z_scores, dtype=float).ravel()

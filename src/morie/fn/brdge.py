@@ -36,7 +36,8 @@ def bayesian_ridge(
 
     References
     ----------
-    MacKay, D. J. C. (1992). *Neural Computation*, 4(3), 415--447.
+    MacKay, D. J. C. (1992). Bayesian interpolation. *Neural
+    Computation*, 4(3), 415--447.
     """
     X_arr = np.asarray(X, dtype=float)
     y_arr = np.asarray(y, dtype=float).ravel()

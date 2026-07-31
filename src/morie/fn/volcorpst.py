@@ -86,8 +86,9 @@ def vol_corradi_swan_persistence(r, horizons=(1, 5, 20), cdf=None, n_mc=500, see
     Corradi, V. & Swanson, N. R. (2006). Predictive density and
     conditional confidence interval accuracy tests. *Journal of
     Econometrics*, 135(1-2), 187-228.
-    Lilliefors, H. W. (1967). *JASA*, 62(318), 399-402 (the fitted-
-    parameter null by simulation).
+    Lilliefors, H. W. (1967). On the Kolmogorov-Smirnov test for
+    normality with mean and variance unknown. *JASA*, 62(318), 399-402
+    (the fitted-parameter null by simulation).
     """
     r = np.asarray(r, dtype=float).ravel()
     n = r.size

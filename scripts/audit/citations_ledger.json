@@ -591,7 +591,7 @@
       "issue": null,
       "pages": "2905-2943",
       "container": "Journal of Machine Learning Research",
-      "source": "arxiv:1207.2812",
+      "source": "https://arxiv.org/abs/1207.2812",
       "verified": "2026-07-30",
       "note": "Title is plural 'Near-Optimal Algorithms', no leading 'A'. JMLR not DOI-registered; volume/pages from the article, title from arXiv/Semantic Scholar."
     },

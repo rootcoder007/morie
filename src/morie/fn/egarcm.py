@@ -33,7 +33,8 @@ def egarch_nelson(x, p=1, q=1):
 
     References
     ----------
-    Nelson, D. B. (1991). *Econometrica*, 59(2), 347-370.
+    Nelson, D. B. (1991). Conditional heteroskedasticity in asset
+    returns: a new approach. *Econometrica*, 59(2), 347-370.
 
     Tsay, R. S. (2010). *Analysis of Financial Time Series*
     (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).

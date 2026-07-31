@@ -20,8 +20,12 @@ def compute_waic(
 
     References
     ----------
-    Watanabe, S. (2010). *JMLR*, 11, 3571--3594.
-    Vehtari, A., et al. (2017). *Statistics and Computing*, 27(5), 1413--1432.
+    Watanabe, S. (2010). Asymptotic equivalence of Bayes cross
+    validation and widely applicable information criterion in singular
+    learning theory. *JMLR*, 11, 3571--3594.
+    Vehtari, A., et al. (2017). Practical Bayesian model evaluation
+    using leave-one-out cross-validation and WAIC. *Statistics and
+    Computing*, 27(5), 1413--1432.
     """
     ll = np.asarray(log_lik_matrix, dtype=float)
     if ll.ndim == 1:

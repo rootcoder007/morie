@@ -29,8 +29,10 @@ def vol_gjr_garch(r):
 
     References
     ----------
-    Glosten, L. R., Jagannathan, R. & Runkle, D. E. (1993).
-    *Journal of Finance*, 48(5), 1779-1801.
+    Glosten, L. R., Jagannathan, R. & Runkle, D. E. (1993). On the
+    relation between the expected value and the volatility of the
+    nominal excess return on stocks. *Journal of Finance*, 48(5),
+    1779-1801.
 
     Tsay, R. S. (2010). *Analysis of Financial Time Series*
     (3rd ed.). Wiley. Ch. 3 (conditional heteroscedastic models).

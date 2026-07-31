@@ -51,6 +51,7 @@ jobs:
         with:
           name: dist-sdist
           path: dist/*.tar.gz
+          retention-days: 30
 
   wheels:
     name: Build wheels / ${{ matrix.os }}
@@ -73,6 +74,7 @@ jobs:
         with:
           name: dist-wheels-${{ matrix.os }}
           path: wheelhouse/*.whl
+          retention-days: 30
 
   test:
     name: Test built wheel
