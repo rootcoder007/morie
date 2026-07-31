@@ -1,49 +1,53 @@
-"""Conditional autoregressive (CAR) model: conditional specification."""
+"""Conditional autoregressive (CAR) model (delegates to sgcar)."""
 
-import numpy as np
-
-from ._richresult import RichResult
+from .sgcar import conditional_autoregressive
 
 __all__ = ["schabenberger_car_model"]
 
 
-def schabenberger_car_model(z, w, covariates):
-    """
-    Conditional autoregressive (CAR) model: conditional specification
+def schabenberger_car_model(z, w, covariates=None):
+    r"""
+    Conditional autoregressive model: the conditional specification.
 
-    Formula: Z_i|Z_{-i} ~ N(mu_i + rho*sum_j w_{ij}(Z_j-mu_j), sigma_i^2)
+    Rather than specifying one multivariate model, the CAR approach
+    models each conditional distribution
+    :math:`f(Z(s_i) \mid Z(s_j), s_j \in N_i)`:
+
+    .. math::
+
+        E[Z(s_i) \mid Z(s)_{-i}] = x(s_i)'\beta
+            + \sum_j c_{ij}(Z(s_j) - x(s_i)'\beta),
+        \qquad \mathrm{Var}[Z(s_i) \mid Z(s)_{-i}] = \sigma_i^2
+
+    The Hammersley-Clifford theorem gives the conditions under which
+    those conditionals define a valid joint distribution; in the Gaussian
+    case they do, with :math:`\Sigma_{CAR} = (I - C)^{-1}\Sigma_c`.
+
+    Same estimator as
+    :func:`morie.fn.sgcar.conditional_autoregressive`; this delegates
+    rather than carrying a second implementation.
 
     Parameters
     ----------
     z : array-like
-        Input data.
+        Response, shape (n,).
     w : array-like
-        Input data.
-    covariates : array-like
-        Input data.
+        Adjacency weights, shape (n, n).
+    covariates : array-like, optional
+        Covariates; an intercept when omitted.
 
     Returns
     -------
-    result : dict
-        Keys: rho, beta, se
+    The result of ``conditional_autoregressive``.
 
     References
     ----------
-    Schabenberger Ch 6, Sec 6.2.2
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC. Sec. 6.2.2.2, eqs.
+    (6.43)-(6.45), pp. 338-339.
     """
-    z = np.asarray(z, dtype=float)
-    n = int(z) if z.ndim == 0 else len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Conditional autoregressive (CAR) model: conditional specification",
-        }
-    )
+    return conditional_autoregressive(z, w, covariates)
 
 
 def cheatsheet():
-    return "spcar: Conditional autoregressive (CAR) model: conditional specification"
+    return "spcar: CAR model; delegates to conditional_autoregressive (sgcar)."
