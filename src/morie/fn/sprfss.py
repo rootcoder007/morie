@@ -105,7 +105,7 @@ def schabenberger_random_field_stationarity(coords, z, n_blocks=4, n_bins=10,
     # VECTOR, E[Z(s+h) - Z(s)] = 0 for each h.
     flip = lagvec[:, 0] < 0 if lagvec.shape[1] >= 1 else np.zeros(dv.size, bool)
     if lagvec.shape[1] >= 2:
-        onaxis = np.isclose(lagvec[:, 0], 0.0)
+        onaxis = lagvec[:, 0] == 0.0
         flip = np.where(onaxis, lagvec[:, 1] < 0, flip)
     dv = np.where(flip, -dv, dv)
     dd = np.linalg.norm(lagvec, axis=1)
@@ -114,7 +114,9 @@ def schabenberger_random_field_stationarity(coords, z, n_blocks=4, n_bins=10,
                  0, n_bins - 1)
     inc_means = np.array([dv[ke == b].mean() if np.any(ke == b) else np.nan
                           for b in range(n_bins)])
-    inc_sd = float(np.nanstd(dv)) or 1.0
+    # ddof=1 to match `overall_sd` below -- this is a scale normaliser for the
+    # increments, and the two spreads in one result must be the same estimator.
+    inc_sd = float(np.nanstd(dv, ddof=1)) or 1.0
     inc_bias = float(np.nanmax(np.abs(inc_means)) / inc_sd)
 
     overall_sd = float(z.std(ddof=1))
