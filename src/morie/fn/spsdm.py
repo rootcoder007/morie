@@ -29,7 +29,12 @@ def schabenberger_spatial_durbin_model(x, y, w):
 
     References
     ----------
-    Schabenberger Ch 6
+    Bivand, R. S., Pebesma, E., and Gomez-Rubio, V. (2013) Applied Spatial
+    Data Analysis with R, 2nd ed., Springer. Sec. 9.4.2 "Spatial
+    Econometrics Approaches", pp. 307-311 (spatial Durbin model = spatial
+    lag model including the spatially lagged covariates).
+    NOT in Schabenberger & Gotway (2005): "Durbin" appears there only in
+    the reference list.
     """
     x = np.asarray(x, dtype=float)
     n = int(x) if x.ndim == 0 else len(x)

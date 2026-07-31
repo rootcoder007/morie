@@ -31,7 +31,13 @@ def schabenberger_thomas_process(r, rho, mu, sigma):
 
     References
     ----------
-    Schabenberger Ch 3
+    Thomas, M. (1949) A generalization of Poisson's binomial limit for use in
+    ecology. Biometrika 36(1-2):18-25. doi:10.1093/biomet/36.1-2.18
+    The Thomas process is the Neyman-Scott process with Poisson offspring
+    counts and radially symmetric Gaussian displacements; the general
+    cluster-process framework is Schabenberger & Gotway (2005) Sec. 3.7.2
+    "Clustered Processes", pp. 126-130, which does not name this special
+    case.
     """
     r = np.asarray(r, dtype=float)
     n = int(r) if r.ndim == 0 else len(r)

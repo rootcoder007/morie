@@ -31,7 +31,11 @@ def schabenberger_idw(coords, z, target, power):
 
     References
     ----------
-    Schabenberger supplement
+    Bivand, R. S., Pebesma, E., and Gomez-Rubio, V. (2013) Applied Spatial
+    Data Analysis with R, 2nd ed., Springer. Sec. 8.3.1 "Inverse Distance
+    Weighted Interpolation", p. 215.
+    NOT in Schabenberger & Gotway (2005): "inverse distance" appears there
+    only in the subject index, with no body treatment.
     """
     z = np.atleast_1d(np.asarray(z, dtype=float))
     n = len(z)
