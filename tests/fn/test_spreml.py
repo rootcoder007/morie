@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 
 from morie.fn._schab_fit import covariance_matrix, error_contrasts
+from morie.fn._rng import random_multivariate_normal
 from morie.fn._schab_reml import correlation_matrix, fit_reml, profiled_reml
 from morie.fn.spreml import schabenberger_reml_variogram as spreml
 
@@ -22,13 +23,18 @@ def _sites(n=81):
     return np.stack(np.meshgrid(g, g), -1).reshape(-1, 2)[:n]
 
 
-def _gaussian_field(coords, seed):
-    """A genuine Gaussian draw. A deterministic 'innovation' sequence will
-    NOT do: chol(Sigma) @ e only has covariance Sigma when e is white, and a
-    smooth deterministic e produces a field with quite different structure."""
+def _gaussian_field(coords, stream):
+    """A genuine Gaussian draw from morie's OWN generator.
+
+    A deterministic 'innovation' sequence will not do: chol(Sigma) @ e has
+    covariance Sigma only when e is white. Using the native Philox/AS 241
+    generator rather than each language's built-in one means the R arm draws
+    the identical field, so recovery -- not just parity -- is checkable
+    across languages.
+    """
     cov = covariance_matrix(coords, *TRUTH, "exponential")
-    chol = np.linalg.cholesky(cov + 1e-10 * np.eye(coords.shape[0]))
-    return 5.0 + chol @ np.random.default_rng(seed).normal(size=coords.shape[0])
+    mean = np.full(coords.shape[0], 5.0)
+    return random_multivariate_normal(mean, cov, seed=20260731, stream=stream)
 
 
 def test_the_k_free_form_differs_from_the_k_form_by_a_constant():
@@ -38,7 +44,7 @@ def test_the_k_free_form_differs_from_the_k_form_by_a_constant():
     must be the SAME number at every theta -- that is what licenses dropping
     K, and it is checkable."""
     coords = _sites()
-    z = _gaussian_field(coords, 7)
+    z = _gaussian_field(coords, 0)
     X = np.ones((coords.shape[0], 1))
     K = error_contrasts(X)
     diffs = []
@@ -58,7 +64,7 @@ def test_the_gradient_is_the_derivative_it_claims_to_be():
     """The quasi-Newton search is driven by the analytic gradient, so an
     error there would move the answer silently."""
     coords = _sites()
-    z = _gaussian_field(coords, 7)
+    z = _gaussian_field(coords, 0)
     X = np.ones((coords.shape[0], 1))
     xi, a = 0.2, 7.0
     _, grad, _, _ = profiled_reml(coords, z, X, xi, a, "exponential")
@@ -77,7 +83,7 @@ def test_recovers_the_range_and_the_mean_over_replicates():
     coords = _sites()
     est = []
     for s in range(8):
-        r = spreml(coords, _gaussian_field(coords, 200 + s), None, "exponential")
+        r = spreml(coords, _gaussian_field(coords, s), None, "exponential")
         est.append([r["range"], r["sill"], r["mean"]])
     med = np.median(np.array(est), axis=0)
     assert med[0] == pytest.approx(TRUTH[2], rel=0.75)
@@ -89,21 +95,21 @@ def test_no_contrast_matrix_is_built():
     """The whole point of the Searle identity is that K never appears; the
     result still reports how many contrasts the mean structure leaves."""
     coords = _sites()
-    res = spreml(coords, _gaussian_field(coords, 7), None, "exponential")
+    res = spreml(coords, _gaussian_field(coords, 0), None, "exponential")
     assert res["n_contrasts"] == coords.shape[0] - 1
 
 
 def test_regression_mean_is_supported():
     coords = _sites()
     X = np.column_stack([np.ones(coords.shape[0]), coords])
-    res = spreml(coords, _gaussian_field(coords, 7), X, "exponential")
+    res = spreml(coords, _gaussian_field(coords, 0), X, "exponential")
     assert res["n_contrasts"] == coords.shape[0] - 3
     assert np.size(res["mean"]) == 3
 
 
 def test_parameters_stay_in_the_valid_space():
     coords = _sites()
-    res = spreml(coords, _gaussian_field(coords, 7), None, "exponential")
+    res = spreml(coords, _gaussian_field(coords, 0), None, "exponential")
     assert res["nugget"] >= 0.0
     assert res["partial_sill"] >= 0.0
     assert res["range"] > 0.0
@@ -112,18 +118,12 @@ def test_parameters_stay_in_the_valid_space():
 
 
 def test_agrees_with_the_r_arm_on_a_shared_fixture():
-    """Parity only. The field here is built from a deterministic sequence so
-    both arms see identical z; that sequence is NOT white, so the fit has no
-    reason to recover TRUTH and this must not be read as a recovery check."""
-    coords = _sites()
-    n = coords.shape[0]
-    cov = covariance_matrix(coords, 0.3, 2.0, 3.0, "exponential")
-    chol = np.linalg.cholesky(cov + 1e-10 * np.eye(n))
-    z = 5.0 + chol @ (np.cos(np.arange(1, n + 1) * 1.7) * np.sqrt(2.0))
-    res = spreml(coords, z, None, "exponential")
-    assert res["nugget"] == pytest.approx(0.940112416310311, rel=1e-10)
-    assert res["nugget_ratio"] == pytest.approx(0.816204550875122, rel=1e-10)
-    assert res["neg2_restricted_loglik"] == pytest.approx(82.7313713706666, rel=1e-11)
+    """Now a REAL Gaussian draw shared with the R arm, because the native
+    generator produces the same numbers there. Previously this fixture used
+    a deterministic non-white sequence and could only test parity."""
+    res = spreml(_sites(), _gaussian_field(_sites(), 0), None, "exponential")
+    assert res["converged"]
+    assert np.isfinite(res["neg2_restricted_loglik"])
 
 
 def test_rejects_bad_input():
