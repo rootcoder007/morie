@@ -3,49 +3,54 @@
 import numpy as np
 
 from ._richresult import RichResult
+from ._schab_vario import _as_lag
 
 __all__ = ["schabenberger_stationary_cov_semivario"]
 
 
 def schabenberger_stationary_cov_semivario(cov_func, h):
-    """
-    Relationship between covariance and semivariogram under stationarity
+    r"""
+    Covariance and semivariogram of a second-order stationary field.
 
-    Formula: gamma(h) = C(0) - C(h)
+    For a second-order stationary process,
+
+    .. math::
+
+        \gamma(h) = C(0) - C(h)
+
+    so the semivariogram rises to the sill :math:`C(0)` exactly as the
+    covariance decays. The identity requires second-order stationarity:
+    an intrinsically stationary process has a semivariogram but need not
+    have a covariance function at all.
 
     Parameters
     ----------
-    cov_func : array-like
-        Input data.
+    cov_func : callable
+        ``C(h)``, accepting an array of lags and returning an array.
     h : array-like
-        Input data.
+        Lag distances, non-negative.
 
     Returns
     -------
-    result : dict
-        Keys: relationship
+    RichResult
+        ``gamma``, ``covariance``, ``sill`` (:math:`C(0)`).
 
     References
     ----------
-    Schabenberger Ch 1
+    Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
+    Spatial Data Analysis. Chapman & Hall/CRC. Sec. 1.4.2 / Ch. 2.
     """
-    if callable(cov_func):
-        _xs = np.linspace(-3, 3, 100)
-        cov_func = np.asarray([cov_func(_x) for _x in _xs], dtype=float)
-    else:
-        cov_func = np.asarray(cov_func, dtype=float)
-    n = len(cov_func)
-    result = float(np.mean(cov_func))
-    se = float(np.std(cov_func, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    if not callable(cov_func):
+        raise TypeError("`cov_func` must be callable, C(h) -> array")
+    h = _as_lag(h)
+    c0 = float(np.asarray(cov_func(np.zeros(1))).ravel()[0])
+    ch = np.asarray(cov_func(h), dtype=float).ravel()
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Relationship between covariance and semivariogram under stationarity",
-        }
+        title="Covariance and semivariogram under second-order stationarity",
+        summary_lines=[("sill C(0)", c0)],
+        payload={"gamma": c0 - ch, "covariance": ch, "sill": c0},
     )
 
 
 def cheatsheet():
-    return "spssoc: Relationship between covariance and semivariogram under stationarity"
+    return "spssoc: gamma(h) = C(0) - C(h) for a second-order stationary field."
