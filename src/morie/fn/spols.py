@@ -1,42 +1,63 @@
-"""Ordinary least squares fitting of variogram model."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Ordinary least squares fitting of a semivariogram model."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from ._schab_fit import as_empirical_variogram, fit_semivariogram
+from ._schab_vario import semivariogram
 
 __all__ = ["schabenberger_ols_variogram"]
 
 
-def schabenberger_ols_variogram(empirical_variogram, variogram_model):
-    """
-    Ordinary least squares fitting of variogram model
+def schabenberger_ols_variogram(empirical_variogram, variogram_model="exponential"):
+    """Fit a semivariogram model by ordinary least squares.
 
-    Formula: minimize sum_k [gamma_hat(h_k) - gamma(h_k;theta)]^2
+    Minimises
+
+        sum_m {gamma_hat(h_m) - gamma(h_m; theta)}^2
+
+    which is the generalized sum of squares (4.31) under the simplification
+    R = phi * I named in the text immediately after eq (4.34). OLS therefore
+    ignores both the correlation among the gamma-hat(h_m) and their unequal
+    dispersion. Schabenberger & Gotway report Zimmerman and Zimmerman's
+    (1991) finding that OLS and WLS perform "more or less equally well", and
+    that the greater loss of efficiency comes from ignoring the correlations
+    rather than from preferring OLS to WLS -- so this is a serviceable
+    estimator, not a strawman.
 
     Parameters
     ----------
-    empirical_variogram : array-like
-        Input data.
-    variogram_model : array-like
-        Input data.
+    empirical_variogram : mapping or array-like
+        Either a mapping carrying ``lags``, ``gamma`` and optionally
+        ``counts``, or an (n_lags, 2) / (n_lags, 3) array of those columns.
+    variogram_model : {"exponential", "gaussian", "spherical"}
+        Which parametric family of Sec. 4.3 to fit.
 
     Returns
     -------
-    result : dict
-        Keys: parameters
+    RichResult
+        Keys: ``nugget``, ``partial_sill``, ``sill``, ``range``,
+        ``objective``, ``converged``, ``n_lags``, ``fitted``.
 
     References
     ----------
     Schabenberger Ch 4, Sec 4.5.1
     """
-    empirical_variogram = np.asarray(empirical_variogram, dtype=float)
-    n = int(empirical_variogram) if empirical_variogram.ndim == 0 else len(empirical_variogram)
-    result = float(np.mean(empirical_variogram))
-    se = float(np.std(empirical_variogram, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    lags, ghat, counts = as_empirical_variogram(empirical_variogram)
+    nugget, sill, rng, obj, ok = fit_semivariogram(
+        lags, ghat, counts, model=variogram_model, kind="ols")
+    fitted = semivariogram(lags, nugget, sill, rng, variogram_model)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Ordinary least squares fitting of variogram model"}
+        title="OLS semivariogram fit",
+        summary_lines=[("nugget", nugget), ("partial sill", sill),
+                       ("range", rng), ("residual sum of squares", obj)],
+        payload={"nugget": nugget, "partial_sill": sill, "sill": nugget + sill,
+                 "range": rng, "objective": obj, "converged": ok,
+                 "n_lags": int(np.size(lags)), "fitted": fitted,
+                 "model": variogram_model, "method": "ordinary least squares"},
     )
 
 
 def cheatsheet():
-    return "spols: Ordinary least squares fitting of variogram model"
+    return "spols: OLS fit of a semivariogram model (Schabenberger Sec 4.5.1)"

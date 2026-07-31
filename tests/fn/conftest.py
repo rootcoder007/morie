@@ -184,3 +184,46 @@ def ecg_synthetic(rng):
         ecg += 1.5 * np.exp(-0.5 * ((np.arange(n) - pk) / 10) ** 2)
     ecg += rng.standard_normal(n) * 0.05
     return ecg, fs, r_peaks
+
+
+
+# --- Schabenberger semivariogram-fitting family (spols / spwls / spreml) ---
+# A Gaussian field drawn from a KNOWN exponential covariance, so "does the fit
+# recover the truth" is a real question with a checkable answer rather than a
+# self-consistency check.
+
+SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE = 0.3, 2.0, 6.0
+
+
+@pytest.fixture()
+def schab_truth():
+    return SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE
+
+
+@pytest.fixture()
+def schab_sites():
+    def make(n=160, seed=7):
+        return np.random.default_rng(seed).random((n, 2)) * 20.0
+    return make
+
+
+@pytest.fixture()
+def schab_simulate():
+    from morie.fn._schab_fit import covariance_matrix
+
+    def make(coords, seed):
+        cov = covariance_matrix(coords, SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE,
+                                "exponential")
+        chol = np.linalg.cholesky(cov + 1e-10 * np.eye(coords.shape[0]))
+        gen = np.random.default_rng(seed)
+        return 5.0 + chol @ gen.normal(size=coords.shape[0])
+    return make
+
+
+@pytest.fixture()
+def schab_ev():
+    from morie.fn._schab_vario import empirical_semivariogram
+
+    def make(coords, z, n_bins=15):
+        return empirical_semivariogram(coords, z, n_bins=n_bins)
+    return make
