@@ -132,6 +132,7 @@ Suggests:
   smacof,
   smotefamily,
   sodium,
+  srr,
   stdReg,
   survey,
   survival,
