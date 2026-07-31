@@ -49,27 +49,27 @@
     .Call(`_morie_morie_crypto_mldsa65_verify`, pk_sxp, message_sxp, signature_sxp)
 }
 
-.rmorie_slhdsa128s_keygen_impl <- function() {
+.morie_slhdsa128s_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_slhdsa128s_keygen`)
 }
 
-.rmorie_slhdsa128s_sign_impl <- function(sk_sxp, message_sxp) {
+.morie_slhdsa128s_sign_impl <- function(sk_sxp, message_sxp) {
     .Call(`_morie_morie_crypto_slhdsa128s_sign`, sk_sxp, message_sxp)
 }
 
-.rmorie_slhdsa128s_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
+.morie_slhdsa128s_verify_impl <- function(pk_sxp, message_sxp, signature_sxp) {
     .Call(`_morie_morie_crypto_slhdsa128s_verify`, pk_sxp, message_sxp, signature_sxp)
 }
 
-.rmorie_hqc128_keygen_impl <- function() {
+.morie_hqc128_keygen_impl <- function() {
     .Call(`_morie_morie_crypto_hqc128_keygen`)
 }
 
-.rmorie_hqc128_encaps_impl <- function(pk_sxp) {
+.morie_hqc128_encaps_impl <- function(pk_sxp) {
     .Call(`_morie_morie_crypto_hqc128_encaps`, pk_sxp)
 }
 
-.rmorie_hqc128_decaps_impl <- function(sk_sxp, ct_sxp) {
+.morie_hqc128_decaps_impl <- function(sk_sxp, ct_sxp) {
     .Call(`_morie_morie_crypto_hqc128_decaps`, sk_sxp, ct_sxp)
 }
 
