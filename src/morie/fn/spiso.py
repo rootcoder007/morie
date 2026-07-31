@@ -69,13 +69,34 @@ def schabenberger_isotropy_condition(coords, z, n_dir=4, n_bins=10,
     i, j = np.triu_indices(z.size, k=1)
     d = coords[j] - coords[i]
     dist = np.linalg.norm(d, axis=1)
-    # a lag and its negation are the same direction, so fold onto [0, pi)
+    # A lag and its negation are the same direction, so the angle folds onto
+    # [0, pi). Orient every lag into one half-space BEFORE atan2 rather than
+    # folding after: for a pair enumerated in the opposite order atan2 returns
+    # the supplement, and folding that back mod pi lands one ulp away from the
+    # direct value. That is invisible except for lags sitting exactly on a
+    # sector boundary -- on a regular lattice thousands of them do -- where it
+    # silently reassigns the pair to the neighbouring direction and makes the
+    # result depend on the order the points were listed in.
+    flip = (d[:, 0] < 0.0) | ((d[:, 0] == 0.0) & (d[:, 1] < 0.0))
+    d = np.where(flip[:, None], -d, d)
     ang = np.mod(np.arctan2(d[:, 1], d[:, 0]), np.pi)
     sq = (z[i] - z[j]) ** 2
     if max_dist is None:
         max_dist = dist.max() / 2.0 if dist.size else 1.0
 
     edges = np.linspace(0.0, np.pi, n_dir + 1)
+    # A lag whose true direction lies exactly on a sector boundary lands a few
+    # ulp either side of the edge: atan2 is not correctly rounded and differs
+    # between platforms' libm, and the lattice offsets themselves are not
+    # exact in binary. On a regular grid that is not a rare event -- thousands
+    # of pairs sit on the diagonals -- so letting the last bit decide the
+    # sector makes the answer platform-dependent. Snap to the edge at the
+    # resolution of the angle computation and let the half-open
+    # [edge_a, edge_a+1) convention place them.
+    ang_tol = 8.0 * float(np.spacing(np.pi))
+    for e in edges:
+        ang = np.where(np.abs(ang - e) < ang_tol, e, ang)
+    ang = np.where(np.abs(ang - np.pi) < ang_tol, 0.0, ang)
     lagedges = np.linspace(0.0, max_dist, n_bins + 1)
     gam = np.full((n_dir, n_bins), np.nan)
     for a in range(n_dir):
