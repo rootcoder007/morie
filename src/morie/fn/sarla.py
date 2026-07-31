@@ -3,6 +3,8 @@
 import numpy as np
 from scipy import optimize
 
+from ._schab_rho import safe_search_interval
+
 from ._richresult import RichResult
 
 __all__ = ["spatial_ar_lag"]
@@ -54,7 +56,11 @@ def spatial_ar_lag(x, y, w):
             return 1e12
         return 0.5 * n * np.log(2 * np.pi * sigma2) - logdetA + 0.5 * n
 
-    res = optimize.minimize_scalar(neg_ll, bounds=(-0.99, 0.99), method="bounded", options={"xatol": 1e-5})
+    lo, hi = safe_search_interval(W, "identity")
+    res = optimize.minimize_scalar(
+        neg_ll, bounds=(lo, hi), method="bounded",
+        options={"xatol": 1e-10 * max(hi - lo, 1.0)},
+    )
     rho = float(res.x)
     Wy = W @ y
     # OLS of (y - rho Wy) on X

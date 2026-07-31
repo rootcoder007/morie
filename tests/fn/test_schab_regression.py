@@ -164,8 +164,19 @@ def test_sar_delegates_to_spatial_ar_lag():
 
 
 def test_car_delegates_to_conditional_autoregressive():
+    # CAR needs a SYMMETRIC W: an asymmetric C gives a non-symmetric
+    # precision and no valid joint distribution. _spatial_case()
+    # row-standardises, which is fine for SAR/GWR but not for CAR.
     _, y, W, _ = _spatial_case()
-    assert car(y, W).statistic == conditional_autoregressive(y, W).statistic
+    Wsym = (W + W.T) / 2.0
+    assert car(y, Wsym).statistic == conditional_autoregressive(y, Wsym).statistic
+
+
+def test_car_rejects_the_row_standardised_weights_used_elsewhere():
+    """The same W that is valid for SAR is invalid for CAR."""
+    _, y, W, _ = _spatial_case()
+    with pytest.raises(ValueError, match="symmetric"):
+        car(y, W)
 
 
 def test_gwr_delegates_to_geographically_weighted_regression():
