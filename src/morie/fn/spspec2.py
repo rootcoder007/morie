@@ -1,49 +1,71 @@
-"""Spectral decomposition simulation of Gaussian random fields."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Spectral-decomposition simulation of a Gaussian random field."""
 
 import numpy as np
 
 from ._richresult import RichResult
+from ._schab_sim import simulate_unconditional, spectral_root
 
 __all__ = ["schabenberger_spectral_sim"]
 
 
-def schabenberger_spectral_sim(spectral_density, coords, n_freqs):
-    """
-    Spectral decomposition simulation of Gaussian random fields
+def schabenberger_spectral_sim(mu, cov_matrix, seed=0, stream=0):
+    """Simulate a Gaussian random field via the spectral root, Sec. 7.1.2.
 
-    Formula: Z = sum_k sqrt(S(omega_k)) * [a_k*cos(omega_k'*s) + b_k*sin(omega_k'*s)]
+    A second choice of square root. For a real symmetric A there is an
+    orthogonal P with A = P Delta P', Delta the eigenvalues; since P'P = I,
+
+        Sigma^(1/2) = P Delta^(1/2) P'
+
+    "has the needed properties to function as the square root matrix to
+    generate G(mu, Sigma) deviates by y = mu + Sigma^(1/2) x".
+
+    This root is SYMMETRIC where the Cholesky root is triangular, so from
+    the same random stream the two produce different fields -- both with
+    covariance Sigma. That is not a discrepancy; it is what choosing a
+    different square root means.
+
+    Note on the previous docstring of this module, which gave the formula as
+    ``Z = sum_k sqrt(S(omega_k)) [a_k cos(omega_k's) + b_k sin(omega_k's)]``:
+    that is the spectral-DENSITY method, which builds a field from harmonics
+    of the spectral density. It is a different technique from Sec. 7.1.2,
+    which decomposes the covariance MATRIX. The module title and the cited
+    section both say the latter, so the latter is what is implemented.
 
     Parameters
     ----------
-    spectral_density : array-like
-        Input data.
-    coords : array-like
-        Input data.
-    n_freqs : array-like
-        Input data.
+    mu : array-like, shape (n,)
+        Mean vector.
+    cov_matrix : array-like, shape (n, n)
+        Covariance matrix; must be positive semi-definite.
+    seed, stream : int
+        Generator handles.
 
     Returns
     -------
-    result : dict
-        Keys: simulated_field
+    RichResult
+        Keys: ``field``, ``root``, ``eigenvalues``, ``n``, ``method``.
 
     References
     ----------
     Schabenberger Ch 7, Sec 7.1.2
     """
-    spectral_density = np.asarray(spectral_density, dtype=float)
-    n = int(spectral_density) if spectral_density.ndim == 0 else len(spectral_density)
-    result = float(np.mean(spectral_density))
-    se = float(np.std(spectral_density, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    mu = np.asarray(mu, dtype=float).ravel()
+    cov = np.atleast_2d(np.asarray(cov_matrix, dtype=float))
+    if cov.shape != (mu.size, mu.size):
+        raise ValueError("`cov_matrix` must be square and match `mu`")
+    field = simulate_unconditional(mu, cov, method="spectral",
+                                   seed=seed, stream=stream)
+    vals = np.linalg.eigvalsh(0.5 * (cov + cov.T))
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Spectral decomposition simulation of Gaussian random fields",
-        }
+        title="Spectral simulation of a Gaussian random field",
+        summary_lines=[("n", mu.size), ("field mean", float(field.mean())),
+                       ("smallest eigenvalue", float(vals.min()))],
+        payload={"field": field, "root": spectral_root(cov),
+                 "eigenvalues": vals, "n": int(mu.size),
+                 "method": "spectral decomposition"},
     )
 
 
 def cheatsheet():
-    return "spspec2: Spectral decomposition simulation of Gaussian random fields"
+    return "spspec2: spectral simulation of a Gaussian field (Schabenberger Sec 7.1.2)"
