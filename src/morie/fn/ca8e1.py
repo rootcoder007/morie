@@ -1,54 +1,44 @@
-"""CentralTendency expression involving 'sampling' (auto-extracted; see reference for full context).."""
+"""Generic noncentrality delta = mean(pop stat) - mean(null stat).
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_8_equation_1"]
 
 
-def ca_chapter_8_equation_1(x):
-    """
-    CentralTendency expression involving 'sampling' (auto-extracted; see reference for full context).
+def ca_chapter_8_equation_1(mean_population, mean_null):
+    """Generic noncentrality delta = mean(pop stat) - mean(null stat)
 
-    Formula: δ = Mean test statistic population − Mean test statistic null
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: delta = mean test statistic (population) - mean (null)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca8e1')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.8 eq.8.1
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.8 eq.8.1
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _ca_crim.noncentrality_delta_generic(mean_population, mean_null)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (8.1)"
     return RichResult(
-        title="CentralTendency expression involving 'sampling' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency expression involving 'sampling' (auto-extracted; see reference for full context).",
-        },
+        title='Generic noncentrality delta = mean(pop stat) - mean(null stat)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca8e1: CentralTendency expression involving 'sampling' (auto-extracted; see reference for full context)."
+    return 'ca8e1: delta = mean test statistic (population) - mean (null) [Weisburd et al. 2022, eq. 8.1]'

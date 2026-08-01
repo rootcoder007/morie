@@ -1,54 +1,44 @@
-"""Regression expression involving 'likelihood' (auto-extracted; see reference for full context).."""
+"""Likelihood ratio chi2 = (-2LLreduced) - (-2LLfull).
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_4_equation_18"]
 
 
-def ca_chapter_4_equation_18(x):
-    """
-    Regression expression involving 'likelihood' (auto-extracted; see reference for full context).
+def ca_chapter_4_equation_18(neg2ll_reduced, neg2ll_full):
+    """Likelihood ratio chi2 = (-2LLreduced) - (-2LLfull)
 
-    Formula: Likelihood ratio χ2 =− 2LLreduced model() − − 2LLfull()
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: LR chi2 = (-2LL_reduced) - (-2LL_full)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca4e18')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.4 eq.4.18
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.4 eq.4.18
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _ca_crim.likelihood_ratio_chi2(neg2ll_reduced, neg2ll_full)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (4.18)"
     return RichResult(
-        title="Regression expression involving 'likelihood' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'likelihood' (auto-extracted; see reference for full context).",
-        },
+        title='Likelihood ratio chi2 = (-2LLreduced) - (-2LLfull)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca4e18: Regression expression involving 'likelihood' (auto-extracted; see reference for full context)."
+    return 'ca4e18: LR chi2 = (-2LL_reduced) - (-2LL_full) [Weisburd et al. 2022, eq. 4.18]'

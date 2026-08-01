@@ -1,68 +1,44 @@
-"""Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context).."""
+"""Noncentrality delta for a correlation coefficient.
 
-import numpy as np
-from scipy import stats
+Book-as-spec implementation; see reference for context.
+"""
 
-from ._richresult import hypothesis_test_result
+import math as _math  # noqa: F401
+
+from . import _ca_crim
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_8_equation_6"]
 
 
-def ca_chapter_8_equation_6(x, y=None):
-    """
-    Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context).
+def ca_chapter_8_equation_6(r, n):
+    """Noncentrality delta for a correlation coefficient
 
-    Formula: δ = r
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: delta = r sqrt(n-2) / sqrt(1 - r^2)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca8e6')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.8 eq.8.6
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.8 eq.8.6
     """
-    if y is None:
-        # Auto-extracted single-input stub: correlate x against itself so
-        # the call is well-defined instead of raising UnboundLocalError.
-        y = x
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return hypothesis_test_result(
-            test_name="Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<3: insufficient pairs for correlation."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context).",
-            },
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return hypothesis_test_result(
-        test_name="Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context).",
-        statistic=float(result.statistic),
-        pvalue=float(result.pvalue),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context).",
-            "p_value": float(result.pvalue),
-        },
+    value = _ca_crim.noncentrality_delta_r(r, n)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (8.6)"
+    return RichResult(
+        title='Noncentrality delta for a correlation coefficient',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca8e6: Correlation expression involving 'noncentrality' (auto-extracted; see reference for full context)."
+    return 'ca8e6: delta = r sqrt(n-2) / sqrt(1 - r^2) [Weisburd et al. 2022, eq. 8.6]'

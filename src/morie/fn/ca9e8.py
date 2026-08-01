@@ -1,81 +1,44 @@
-"""GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context).."""
+"""Repeated measures MS_subjects.
 
-import numpy as np
-from scipy import stats
+Book-as-spec implementation; see reference for context.
+"""
 
-from ._richresult import hypothesis_test_result
+import math as _math  # noqa: F401
+
+from . import _ca_crim
+from ._richresult import RichResult
 
 __all__ = ["ca_chapter_9_equation_8"]
 
 
-def ca_chapter_9_equation_8(x, cdf=None):
-    """
-    GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context).
+def ca_chapter_9_equation_8(groups):
+    """Repeated measures MS_subjects
 
-    Formula: N − a
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    Formula: MS_subjects = b sum(ybar_ij - ybar_.j)^2 / (N - a)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca9e8')`` for the full guide.
+        dict subclass; headline key 'ms_subjects' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.9 eq.9.8
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.9 eq.9.8
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return hypothesis_test_result(
-            test_name="GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context).",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<2: insufficient data."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context).",
-                "p_value": float("nan"),
-            },
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return hypothesis_test_result(
-        test_name="GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context).",
-        statistic=float(statistic),
-        pvalue=float(p_value),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context).",
-            "p_value": float(p_value),
-        },
+    payload = dict(_ca_crim.repeated_measures_ms(groups))
+    value = payload['ms_subjects']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (9.8)"
+    return RichResult(
+        title='Repeated measures MS_subjects',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca9e8: GeneralStatistics expression involving 'subjects' (auto-extracted; see reference for full context)."
+    return 'ca9e8: MS_subjects = b sum(ybar_ij - ybar_.j)^2 / (N - a) [Weisburd et al. 2022, eq. 9.8]'

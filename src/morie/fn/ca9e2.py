@@ -1,54 +1,44 @@
-"""Regression expression involving 'treatment' (auto-extracted; see reference for full context).."""
+"""Treatment coefficient under randomization b_t = r_yt s_y/s_t.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_9_equation_2"]
 
 
-def ca_chapter_9_equation_2(x):
-    """
-    Regression expression involving 'treatment' (auto-extracted; see reference for full context).
+def ca_chapter_9_equation_2(r_yt, s_y, s_t):
+    """Treatment coefficient under randomization b_t = r_yt s_y/s_t
 
-    Formula: −· sy
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: b_t = r_yt (s_y / s_t)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca9e2')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.9 eq.9.2
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.9 eq.9.2
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _ca_crim.treatment_b_randomized(r_yt, s_y, s_t)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (9.2)"
     return RichResult(
-        title="Regression expression involving 'treatment' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'treatment' (auto-extracted; see reference for full context).",
-        },
+        title='Treatment coefficient under randomization b_t = r_yt s_y/s_t',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca9e2: Regression expression involving 'treatment' (auto-extracted; see reference for full context)."
+    return 'ca9e2: b_t = r_yt (s_y / s_t) [Weisburd et al. 2022, eq. 9.2]'
