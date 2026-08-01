@@ -8,17 +8,21 @@ Data Analysis*, Sec. 6.3-6.4, supplies the conditional specification
 (6.73)-(6.74), the pseudo-likelihood machinery (6.78)-(6.85), prediction
 (6.87)-(6.91), and the disease-mapping hierarchy (6.99)-(6.104).
 
+Besag, J., York, J. & Mollie, A. (1991), "Bayesian Image Restoration, with
+Two Applications in Spatial Statistics", *Annals of the Institute of
+Statistical Mathematics* 43(1):1-59, Sec. 4, is the primary source for the
+convolution model: the intrinsic autoregression (4.2) with its conditional
+moments (4.3), the median-based alternative (4.4), the joint posterior
+(4.5), and the hyperprior (4.6). Schabenberger cites this paper but never
+states the convolution, so implementing `bym_*` from the textbook alone
+would have meant inventing it.
+
 Tonui, B., Mwalili, S. & Wanjoya, A. (2018), "Spatio-Temporal Variation of
 HIV Infection in Kenya", *Open Journal of Statistics* 8:811-830, supplies
-what Schabenberger does not develop: the ICAR structure matrix and its full
-conditional (their eqs 3-5), the Besag-York-Mollie convolution, the Leroux
-LCAR prior (6)-(7), the random-walk temporal priors, the Kronecker
-space-time interaction structures with their rank deficiencies (Table 1),
-and the null-space constraint that restores identifiability (12).
-
-Schabenberger cites Besag, York and Mollie (1991) but never states the
-convolution, so implementing `bym_*` from this book alone would have meant
-inventing it. That is the reason for the second source.
+the matrix form of the ICAR structure (their eqs 3-5), the Leroux LCAR
+prior (6)-(7), the random-walk temporal priors, the Kronecker space-time
+interaction structures with their rank deficiencies (Table 1), and the
+null-space constraint (12) that restores identifiability.
 
 Everything here is internal.
 """
@@ -503,10 +507,18 @@ def lcar_full_conditional(u, adjacency, rho, sigma2=1.0):
 def bym_convolution(u, v):
     """The Besag-York-Mollie convolution: psi = u + v.
 
-    u carries spatially structured variation under an ICAR prior; v carries
-    unstructured heterogeneity under a Gaussian exchangeable prior. The
-    convolution is what BYM contributes; Schabenberger gives the two
-    components separately, at (6.104) and (6.102), but never their sum.
+    u carries spatially structured variation under an intrinsic
+    autoregression; v carries unstructured heterogeneity under a Gaussian
+    exchangeable prior. Besag, York and Mollie (1991) Sec. 4 write the log
+    relative risk as x = u + v and the relative risk as exp{u + v}.
+    Schabenberger gives the two components separately, at (6.104) and
+    (6.102), but never their sum.
+
+    Their reading of the two scale parameters is worth carrying: "kappa
+    tends to 0 implies constant u_i's, whereas kappa large implies
+    correspondingly large but spatially structured variation. Similarly,
+    lambda tends to 0 implies v = 0, whereas lambda large implies
+    substantial but unstructured extra-Poisson variability."
 
     IDENTIFIABILITY. Only the sum enters the likelihood, so the data cannot
     separate sigma_u^2 from sigma_v^2 -- Tonui et al. state that "the
@@ -683,3 +695,166 @@ def nonparametric_log_risk(alpha, u, phi, gamma, delta=None):
             raise ValueError(f"`delta` must be shaped {out.shape}")
         out = out + D
     return out
+
+# --------------------------------------------------------------------------
+# Besag, York & Mollie (1991) Sec. 4 -- the convolution model itself
+# --------------------------------------------------------------------------
+
+def bym_icar_log_prior(u, adjacency, kappa):
+    """eq (4.2): p(u | kappa) ~ kappa^{-n/2} exp{-(1/2 kappa) sum_{i~j}(u_i-u_j)^2}.
+
+    A Gaussian intrinsic autoregression. The pairwise sum is u' R u with R
+    the structure matrix, so the implied precision is R / kappa. The paper
+    is explicit that this "is strictly improper because it only addresses
+    differences in the u_i's and not their overall level" -- R has zero row
+    sums, so adding a constant to every u_i leaves the density unchanged.
+
+    Returns the log density up to the additive constant.
+    """
+    u = np.asarray(u, dtype=float).ravel()
+    R = neighbour_structure(adjacency)
+    kappa = float(kappa)
+    if kappa <= 0:
+        raise ValueError("`kappa` must be positive")
+    n = u.size
+    return -0.5 * n * np.log(kappa) - float(u @ R @ u) / (2.0 * kappa)
+
+
+def bym_icar_conditional_moments(u, adjacency, kappa):
+    """eq (4.3): E(u_i | ...) = ubar_i, Var(u_i | ...) = kappa / n_i.
+
+    Identical in form to `icar_full_conditional` with sigma^2 = kappa; kept
+    under the BYM name because the paper's kappa is the scale that appears
+    in (4.2) and (4.5), and conflating the two symbols is how sign and
+    scaling errors get in.
+    """
+    return icar_full_conditional(u, adjacency, sigma2=kappa)
+
+
+def bym_median_log_prior(u, adjacency, kappa):
+    """eq (4.4), the alternative with phi(z) = |z| / kappa.
+
+        p_i(u_i | ...) ~ (1/kappa) exp{-(1/kappa) sum_{j in di} |u_i - u_j|}
+
+    Its mode is at the MEDIAN rather than the mean of the contiguous u_i's,
+    which the paper argues is "more appropriate than (4.2) if
+    discontinuities in the risk surface are expected" -- a stochastic
+    version of the median filter. Sec. 4 reports the estimated risks were
+    "almost identical when the prior (4.2) was replaced by (4.4)" on their
+    data, so the choice is not always consequential.
+    """
+    u = np.asarray(u, dtype=float).ravel()
+    A = np.atleast_2d(np.asarray(adjacency, dtype=float))
+    kappa = float(kappa)
+    if kappa <= 0:
+        raise ValueError("`kappa` must be positive")
+    i, j = np.triu_indices(u.size, k=1)
+    pairs = A[i, j] > 0
+    total = float(np.sum(np.abs(u[i][pairs] - u[j][pairs])))
+    return -u.size * np.log(kappa) - total / kappa
+
+
+def bym_log_posterior(y, c, u, v, kappa, lam, adjacency, epsilon=0.01):
+    """eq (4.5) with the hyperprior (4.6), up to an additive constant.
+
+        P(u,v,kappa,lambda | y) ~ prod_i {exp(-c_i e^{x_i}) (c_i e^{x_i})^{y_i} / y_i!}
+            x kappa^{-n/2} exp{-(1/2 kappa) sum_{i~j} (u_i - u_j)^2}
+            x lambda^{-n/2} exp{-(1/2 lambda) sum_i v_i^2}
+            x prior(kappa, lambda)
+
+    with x_i = u_i + v_i, and (4.6) prior(kappa, lambda) ~
+    exp{-eps/2kappa} exp{-eps/2lambda}, eps = 0.01.
+
+    The reason (4.6) exists is worth recording. The "obvious choice"
+    proportional to kappa^-1 lambda^-1 leaves (4.5) improper near the
+    origin, and the paper notes this "does not stem from any spatial
+    aspects of the formulation but is a common and unpleasant feature of
+    Bayesian hierarchical models in general". Even once proper, a
+    singularity at the origin "invalidates the Gibbs sampler, because the
+    origin becomes an absorbing state of the Markov chain". eps is the fix.
+    """
+    y = np.asarray(y, dtype=float).ravel()
+    c = np.asarray(c, dtype=float).ravel()
+    u = np.asarray(u, dtype=float).ravel()
+    v = np.asarray(v, dtype=float).ravel()
+    if not (y.size == c.size == u.size == v.size):
+        raise ValueError("`y`, `c`, `u` and `v` must have the same length")
+    if np.any(c <= 0):
+        raise ValueError("`c` (expected counts) must be positive")
+    kappa, lam, eps = float(kappa), float(lam), float(epsilon)
+    if kappa <= 0 or lam <= 0:
+        raise ValueError("`kappa` and `lam` must be positive")
+    n = y.size
+    x = u + v
+    loglik = float(np.sum(-c * np.exp(x) + y * (np.log(c) + x)))
+    return (loglik
+            + bym_icar_log_prior(u, adjacency, kappa)
+            - 0.5 * n * np.log(lam) - float(v @ v) / (2.0 * lam)
+            - eps / (2.0 * kappa) - eps / (2.0 * lam))
+
+
+def bym_map(y, c, adjacency, kappa, lam, max_iter=200, tol=1e-11):
+    """Conditional MAP estimates u*, v* given kappa and lambda, Sec. 4.
+
+    Maximises the log of (4.5) over (u, v). The paper guarantees this is
+    well posed: "the logarithm of the joint posterior density of u and v,
+    given kappa, lambda and y, is a strictly concave differentiable function
+    of u and v and therefore possesses a single maximum". So Newton's method
+    converges to the global optimum and there is no multi-start question.
+
+    Gradients, with x = u + v:
+        dL/du = y - c e^x - R u / kappa
+        dL/dv = y - c e^x - v / lambda
+    Hessian blocks: -diag(c e^x) - R/kappa, -diag(c e^x) - I/lambda, and
+    -diag(c e^x) off-diagonal; negative definite, hence the concavity.
+
+    TWO IDENTITIES COME FREE, and the paper states both as properties of
+    u*, v*: "sum_i v*_i = 0" and "sum_i c_i e^{u*_i + v*_i} = sum_i y_i, so
+    that the fitted total number of cases matches the observed total".
+
+    They are consequences of stationarity rather than imposed constraints.
+    Summing dL/du over i annihilates the ICAR term because R has zero row
+    sums, leaving sum(y - c e^x) = 0; substituting that into the sum of
+    dL/dv leaves sum(v) = 0. Both are asserted in the tests, which makes
+    them a genuine check that a true stationary point was reached rather
+    than a decorative post-condition.
+    """
+    y = np.asarray(y, dtype=float).ravel()
+    c = np.asarray(c, dtype=float).ravel()
+    R = neighbour_structure(adjacency)
+    n = y.size
+    if c.size != n or R.shape[0] != n:
+        raise ValueError("`y`, `c` and `adjacency` must agree on the number of areas")
+    if np.any(c <= 0):
+        raise ValueError("`c` (expected counts) must be positive")
+    kappa, lam = float(kappa), float(lam)
+    if kappa <= 0 or lam <= 0:
+        raise ValueError("`kappa` and `lam` must be positive")
+
+    u = np.zeros(n)
+    v = np.zeros(n)
+    I = np.eye(n)
+    converged = False
+    for it in range(int(max_iter)):
+        w = c * np.exp(u + v)
+        g_u = y - w - R @ u / kappa
+        g_v = y - w - v / lam
+        H = np.block([[-np.diag(w) - R / kappa, -np.diag(w)],
+                      [-np.diag(w), -np.diag(w) - I / lam]])
+        step = np.linalg.solve(H, np.concatenate([g_u, g_v]))
+        u_new, v_new = u - step[:n], v - step[n:]
+        delta = float(np.max(np.abs(np.concatenate([u_new - u, v_new - v]))))
+        u, v = u_new, v_new
+        if delta < tol:
+            converged = True
+            break
+
+    x = u + v
+    fitted = c * np.exp(x)
+    return {"u": u, "v": v, "x": x, "relative_risk": np.exp(x),
+            "fitted": fitted, "n_iter": it + 1, "converged": converged,
+            "sum_v": float(v.sum()),
+            "fitted_total": float(fitted.sum()),
+            "observed_total": float(y.sum()),
+            "log_posterior": bym_log_posterior(y, c, u, v, kappa, lam,
+                                               adjacency)}
