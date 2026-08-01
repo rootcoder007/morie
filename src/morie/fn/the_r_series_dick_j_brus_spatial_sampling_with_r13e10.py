@@ -1,54 +1,44 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Variance under optimal allocation with costs.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10(weights, s_h, c_h, n):
+    """Variance under optimal allocation with costs
 
-    Formula: from a linear regression model: ̂ 𝑧 = 𝑧 + 𝜖, with 𝜖 the prediction error. So, this
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: V = (1/n)(sum w S sqrt(c))(sum w S/sqrt(c))
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r13e10')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.13 eq.13.10
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (13.10).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.optimal_allocation_variance(weights, s_h, c_h, n)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (13.10)"
     return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Variance under optimal allocation with costs',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r13e10: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r13e10: V = (1/n)(sum w S sqrt(c))(sum w S/sqrt(c)) [Brus 2022, eq. 13.10]'

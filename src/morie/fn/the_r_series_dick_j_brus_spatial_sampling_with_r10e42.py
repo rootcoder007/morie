@@ -1,54 +1,44 @@
-"""Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Variance of the calibration estimator via residuals.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_42"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_42(x):
-    """
-    Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_42(e, pi, n_population):
+    """Variance of the calibration estimator via residuals
 
-    Formula: [EQ] ∑𝑘∈𝒮{ ̂ 𝑚(x𝑘) − ̄ 𝑚𝒮}2 , (10.41)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: V_hat(zbar_MC) = V_hat(ebar_pi)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r10e42')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.10 eq.10.42
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (10.42).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.mc_variance_via_residuals(e, pi, n_population)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (10.42)"
     return RichResult(
-        title="Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Variance of the calibration estimator via residuals',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e42: Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r10e42: V_hat(zbar_MC) = V_hat(ebar_pi) [Brus 2022, eq. 10.42]'

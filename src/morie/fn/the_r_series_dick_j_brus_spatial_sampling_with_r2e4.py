@@ -1,54 +1,44 @@
-"""CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Horvitz-Thompson estimator of the population mean.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_4"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_4(x):
-    """
-    CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_4(z, pi, n_population):
+    """Horvitz-Thompson estimator of the population mean
 
-    Formula: with 𝑒𝑘 = ̂ 𝑧𝑘 − 𝑧𝑘 the prediction
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: zbar_hat_pi = (1/N) sum_{k in S} z_k/pi_k
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r2e4')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.2 eq.2.4
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (2.4).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.ht_mean(z, pi, n_population)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (2.4)"
     return RichResult(
-        title="CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Horvitz-Thompson estimator of the population mean',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r2e4: CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r2e4: zbar_hat_pi = (1/N) sum_{k in S} z_k/pi_k [Brus 2022, eq. 2.4]'

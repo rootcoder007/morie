@@ -1,54 +1,45 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Population GLS regression coefficient.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4(x, z, sigma2):
+    """Population GLS regression coefficient
 
-    Formula: [EQ] ̂b = (∑
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: b = (sum x x^T/sig2)^-1 sum x z/sig2
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r10e4')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.10 eq.10.4
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (10.4).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    arr = np.asarray(_brus.gls_population_slope(x, z, sigma2), dtype=float)
+    value = float(arr.ravel()[0])
+    payload = {"values": arr.tolist(), "value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (10.4)"
     return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Population GLS regression coefficient',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e4: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r10e4: b = (sum x x^T/sig2)^-1 sum x z/sig2 [Brus 2022, eq. 10.4]'

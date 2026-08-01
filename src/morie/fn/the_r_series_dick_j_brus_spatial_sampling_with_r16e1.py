@@ -1,54 +1,44 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Simple linear working model for mapping.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1(beta0, beta1, x):
+    """Simple linear working model for mapping
 
-    Formula: [EQ] 𝑍𝑘 = 𝛽0 + 𝛽1𝑥𝑘 + 𝜖𝑘 , (16.1)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: Z_k = beta0 + beta1 x_k + eps_k
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r16e1')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.16 eq.16.1
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (16.1).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.linear_model_prediction(beta0, beta1, x)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (16.1)"
     return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Simple linear working model for mapping',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r16e1: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r16e1: Z_k = beta0 + beta1 x_k + eps_k [Brus 2022, eq. 16.1]'

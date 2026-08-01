@@ -1,54 +1,44 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Simple regression estimator under SI.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_10"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_10(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_10(zbar_sample, b_hat, xbar_true, xbar_sample):
+    """Simple regression estimator under SI
 
-    Formula: [EQ] ̂𝑡regr(𝑧) =̂𝑡𝜋(𝑧) +̂𝑏 (𝑡(𝑥) −̂𝑡𝜋(𝑥)) , (9.2)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: zbar_regr = zbar_S + b_hat (xbar - xbar_S)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r10e10')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.10 eq.10.10
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (10.10).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.regression_estimator_slopes(zbar_sample, [b_hat], [xbar_true], [xbar_sample])
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (10.10)"
     return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Simple regression estimator under SI',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e10: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r10e10: zbar_regr = zbar_S + b_hat (xbar - xbar_S) [Brus 2022, eq. 10.10]'

@@ -1,54 +1,44 @@
-"""Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Exponential semivariogram.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_13"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_13(x):
-    """
-    Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_13(h, c0, c1, phi):
+    """Exponential semivariogram
 
-    Formula: framesamp = frame, method = "spatia
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: gamma(h) = 0 at h = 0, else c0 + c1(1 - exp(-h/phi)) (book prose: 95 percent of sill at 3 phi; the printed exp form is a display typo)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r21e13')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.21 eq.21.13
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (21.13).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.exponential_semivariogram(h, c0, c1, phi)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (21.13)"
     return RichResult(
-        title="Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Exponential semivariogram',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r21e13: Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r21e13: gamma(h) = 0 at h = 0, else c0 + c1(1 - exp(-h/phi)) (book prose: 95 percent of sill at 3 phi; the printed exp form is a display typo) [Brus 2022, eq. 21.13]'

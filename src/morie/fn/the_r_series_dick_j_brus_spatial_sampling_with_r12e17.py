@@ -1,54 +1,44 @@
-"""CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Bayesian average length criterion (continuous data).
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_17"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_17(x):
-    """
-    CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_17(lengths, probs, l_max):
+    """Bayesian average length criterion (continuous data)
 
-    Formula: [EQ] , 𝑛 − 𝑧 + 𝑑)𝑝𝑧+𝑐−1(1 − 𝑝)𝑛−𝑧+𝑑−1 . (12.24)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: E[l(z, n)] <= l_max over the predictive distribution
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r12e17')`` for the full guide.
+        dict subclass; headline key 'expected_length' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.12 eq.12.17
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (12.17).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict(_brus.average_length_criterion(lengths, probs, l_max))
+    value = payload['expected_length']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (12.17)"
     return RichResult(
-        title="CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Bayesian average length criterion (continuous data)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r12e17: CountModels equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r12e17: E[l(z, n)] <= l_max over the predictive distribution [Brus 2022, eq. 12.17]'
