@@ -1,54 +1,37 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).
+
+Implements eq (5.14) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14(x, n):
+    """Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.14).
     """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: √πn/2
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner5e14')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.5 eq.5.14
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _morin.gaussian_approx_n(x, n)
+    payload = {"x": float(x), "n": int(n), "PG": value}
+    lines = [("PG(x)", value)]
     return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e14: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner5e14: Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2). Morin (2016) eq (5.14)."
