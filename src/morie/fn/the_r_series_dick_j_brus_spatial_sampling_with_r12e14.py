@@ -1,54 +1,44 @@
-"""PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Design-effect-adjusted sample size.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14(x):
-    """
-    PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14(design_effect, n_si):
+    """Design-effect-adjusted sample size
 
-    Formula: [EQ] 𝑛(𝑝,̂̄𝑧 ) =√
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: n(p, zbar) = sqrt(de) n(SI, pi)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r12e14')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.12 eq.12.14
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (12.14).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.n_design_effect(design_effect, n_si)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (12.14)"
     return RichResult(
-        title="PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Design-effect-adjusted sample size',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r12e14: PowerAndDesign equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r12e14: n(p, zbar) = sqrt(de) n(SI, pi) [Brus 2022, eq. 12.14]'

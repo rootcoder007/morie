@@ -1,54 +1,44 @@
-"""Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Augmented kriging variance AKV = V_OK + E[tau2].
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4(x):
-    """
-    Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4(v_ok, e_tau2):
+    """Augmented kriging variance AKV = V_OK + E[tau2]
 
-    Formula: [EQ] 𝐴𝐾𝑉 (s0) = 𝑉OK(s0) +E[𝜏2(s0)] , (24.4)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: AKV = V_OK + E[tau^2]
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r24e4')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.24 eq.24.4
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (24.4).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.augmented_kriging_variance(v_ok, e_tau2)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (24.4)"
     return RichResult(
-        title="Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Augmented kriging variance AKV = V_OK + E[tau2]',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r24e4: Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r24e4: AKV = V_OK + E[tau^2] [Brus 2022, eq. 24.4]'

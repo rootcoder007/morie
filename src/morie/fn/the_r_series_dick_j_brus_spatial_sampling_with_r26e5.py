@@ -1,54 +1,44 @@
-"""Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Design-based variance with finite population correction.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_5"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_5(x):
-    """
-    Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_5(s2, n, n_population):
+    """Design-based variance with finite population correction
 
-    Formula: [EQ] 𝑉 (̂̄ 𝑧) = (1 −𝑛
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: V(zbar_hat) = (1 - n/N) S2/n
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r26e5')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.26 eq.26.5
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (26.5).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.fpc_mean_variance(s2, n, n_population)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (26.5)"
     return RichResult(
-        title="Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Design-based variance with finite population correction',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r26e5: Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r26e5: V(zbar_hat) = (1 - n/N) S2/n [Brus 2022, eq. 26.5]'

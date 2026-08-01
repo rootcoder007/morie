@@ -1,54 +1,44 @@
-"""Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Model-expected stratum variance (print eq 13.16).
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_16"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_16(x):
-    """
-    Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_16(d2_upper_sum, n_h):
+    """Model-expected stratum variance (print eq 13.16)
 
-    Formula: [EQ] 𝑅2 + 𝑆2(𝜖𝑖) + 𝑆2(𝜖𝑗)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: E_xi[S2_h(z)] = (1/N_h^2) sum_{i<j} E_xi[d2_ij]
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r13e16')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.13 eq.13.16
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (13.16).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.expected_stratum_variance(d2_upper_sum, n_h)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (13.16)"
     return RichResult(
-        title="Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Model-expected stratum variance (print eq 13.16)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r13e16: Regression equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r13e16: E_xi[S2_h(z)] = (1/N_h^2) sum_{i<j} E_xi[d2_ij] [Brus 2022, eq. 13.16]'

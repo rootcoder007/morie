@@ -1,54 +1,44 @@
-"""Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Gaussian log-likelihood of the geostatistical model.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23(x):
-    """
-    Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23(z, mu, cov):
+    """Gaussian log-likelihood of the geostatistical model
 
-    Formula: [EQ] 2(z− 𝜇𝜇𝜇)T C−1 (z−𝜇𝜇𝜇)} , (21.23)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: ln f(z|mu, theta) = -0.5(n ln 2pi + ln|C| + (z-mu)^T C^-1 (z-mu))
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r21e23')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.21 eq.21.23
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (21.23).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.gaussian_loglikelihood(z, mu, cov)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (21.23)"
     return RichResult(
-        title="Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Gaussian log-likelihood of the geostatistical model',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r21e23: Dispersion equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r21e23: ln f(z|mu, theta) = -0.5(n ln 2pi + ln|C| + (z-mu)^T C^-1 (z-mu)) [Brus 2022, eq. 21.23]'

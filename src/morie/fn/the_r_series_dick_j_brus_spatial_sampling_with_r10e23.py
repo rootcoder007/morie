@@ -1,54 +1,44 @@
-"""CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.."""
+"""Ratio estimator of the total.
+
+Book-as-spec implementation; see reference for context.
+"""
 
 import numpy as np
 
+from . import _brus
 from ._richresult import RichResult
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_23"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_23(x):
-    """
-    CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_23(t_pi_z, t_pi_x, t_x_true):
+    """Ratio estimator of the total
 
-    Formula: 𝑘 = 1, 𝑘 = 1, … , 𝑁 , ̂𝑡𝜋(𝑥)in Equation
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: t_ratio = (t_pi(z)/t_pi(x)) t(x)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('the_r_series_dick_j_brus_spatial_sampling_with_r10e23')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    [The R Series] Dick J. Brus - Spatial Sampling with R, ch.10 eq.10.23
+    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
+    eq. (10.23).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _brus.ratio_total(t_pi_z, t_pi_x, t_x_true)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Brus (2022) eq. (10.23)"
     return RichResult(
-        title="CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R.",
-        },
+        title='Ratio estimator of the total',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "the_r_series_dick_j_brus_spatial_sampling_with_r10e23: CentralTendency equation extracted from [The R Series] Dick J. Brus - Spatial Sampling with R."
+    return 'r10e23: t_ratio = (t_pi(z)/t_pi(x)) t(x) [Brus 2022, eq. 10.23]'
