@@ -1,54 +1,35 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.
+
+Implements eq (1.5) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5(N, n):
+    """Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.5).
     """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: N PN = N! (remember that 0! = 1) of course, because if n = N then we’re forming an ordered list of all N objects. That is, we’re forming a permutation of all N
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner1e5')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.1 eq.1.5
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _morin.partial_permutations(N, n)
+    payload = {"N": int(N), "n": int(n), "partial_permutations": value}
+    lines = [("N", int(N)), ("n", int(n)), ("N_P_n", value)]
     return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e5: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner1e5: Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!. Morin (2016) eq (1.5)."

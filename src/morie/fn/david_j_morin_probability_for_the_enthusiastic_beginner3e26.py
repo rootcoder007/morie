@@ -1,54 +1,37 @@
-"""CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Var(X + Y) expansion with the cross term 2Cov(X, Y).
+
+Implements eq (3.26) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_26"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_26(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_26(var_x, var_y, cov_xy=0.0):
+    """Var(X + Y) expansion with the cross term 2Cov(X, Y).
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.26).
     """
-    CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] [( ( X + Y ) − ( µX + µY
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner3e26')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.3 eq.3.26
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _morin.var_sum_with_cov(var_x, var_y, cov_xy)
+    payload = {"var_sum": value, "cov_xy": float(cov_xy)}
+    lines = [("Var(X+Y)", value)]
     return RichResult(
-        title="CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Var(X + Y) expansion with the cross term 2Cov(X, Y).",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e26: CentralTendency equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner3e26: Var(X + Y) expansion with the cross term 2Cov(X, Y). Morin (2016) eq (3.26)."
