@@ -1,54 +1,41 @@
-"""Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Worked sigma of the average: sigma_tot / n = 0.0037.
+
+Implements eq (3.57) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_57"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_57(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_57(n=10000, p=1.0/6.0):
+    """Worked sigma of the average: sigma_tot / n = 0.0037.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.57).
     """
-    Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: standard deviation of a single roll as σsingle = √pq = √(1/6)( 5/6) = 0.37. So
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner3e57')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.3 eq.3.57
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    sd_tot = _morin.sd_binomial(n, p)
+    value = sd_tot / int(n)
+    check = _morin.sd_of_mean(_morin.sd_bernoulli(p), n)
+    if abs(value - check) > 1e-12:
+        raise AssertionError("sigma_tot/n != sigma_single/sqrt(n)")
+    payload = {"sd_avg": value, "sd_tot": sd_tot}
+    lines = [("sigma_avg", value)]
     return RichResult(
-        title="Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Worked sigma of the average: sigma_tot / n = 0.0037.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e57: Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner3e57: Worked sigma of the average: sigma_tot / n = 0.0037. Morin (2016) eq (3.57)."

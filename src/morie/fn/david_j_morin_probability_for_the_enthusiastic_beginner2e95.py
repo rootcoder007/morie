@@ -1,54 +1,38 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Pairwise and triple intersections of i.i.d. independent events.
+
+Implements eq (2.95) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_95"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_95(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_95(p, k=2):
+    """Pairwise and triple intersections of i.i.d. independent events.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.95).
     """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] P( A and B) = P( A and C) = P(B and C) = 1
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner2e95')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.2 eq.2.95
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    p_f = float(p)
+    if not 0.0 <= p_f <= 1.0:
+        raise ValueError("p must be in [0, 1]")
+    value = p_f ** int(k)
+    payload = {"p": p_f, "k": int(k), "p_intersection": value}
+    lines = [("P(all k events)", value)]
     return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Pairwise and triple intersections of i.i.d. independent events.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e95: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner2e95: Pairwise and triple intersections of i.i.d. independent events. Morin (2016) eq (2.95)."

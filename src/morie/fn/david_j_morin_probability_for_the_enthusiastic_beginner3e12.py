@@ -1,54 +1,42 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""E(X + Y) from the convolution equals E(X) + E(Y).
+
+Implements eq (3.12) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_12"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_12(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_12(values_x, probs_x, values_y, probs_y):
+    """E(X + Y) from the convolution equals E(X) + E(Y).
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.12).
     """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: This is indeed equal to E(X ) + E(Y ) = 1.5 + 2 = 3.5, as Eq. (3.7) claim
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner3e12')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.3 eq.3.12
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    values, probs = _morin.pmf_sum_convolution(values_x, probs_x, values_y, probs_y)
+    e_sum = _morin.pmf_expectation(values, probs)
+    e_parts = (_morin.pmf_expectation(values_x, probs_x)
+               + _morin.pmf_expectation(values_y, probs_y))
+    if abs(e_sum - e_parts) > 1e-9:
+        raise AssertionError("E(X+Y) != E(X) + E(Y)")
+    payload = {"e_sum": e_sum, "e_x_plus_e_y": e_parts}
+    lines = [("E(X+Y)", e_sum)]
     return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="E(X + Y) from the convolution equals E(X) + E(Y).",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e12: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner3e12: E(X + Y) from the convolution equals E(X) + E(Y). Morin (2016) eq (3.12)."

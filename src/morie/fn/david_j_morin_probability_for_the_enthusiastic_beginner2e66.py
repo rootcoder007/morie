@@ -1,54 +1,37 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Stirling approximation: P(n Heads in 2n flips) ~ 1/sqrt(pi n).
+
+Implements eq (2.66) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_66"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_66(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_66(n):
+    """Stirling approximation: P(n Heads in 2n flips) ~ 1/sqrt(pi n).
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.66).
     """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: The 1/ √πn result in Eq. (2.66) is extremely clean. It is much simpler than the
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner2e66')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.2 eq.2.66
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    approx = _morin.stirling_half_heads(n)
+    exact = _morin.exact_half_heads(n)
+    payload = {"n": int(n), "approx": approx, "exact": exact,
+               "relative_error": abs(approx - exact) / exact}
+    lines = [("1/sqrt(pi n)", approx), ("exact", exact)]
     return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Stirling approximation: P(n Heads in 2n flips) ~ 1/sqrt(pi n).",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e66: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner2e66: Stirling approximation: P(n Heads in 2n flips) ~ 1/sqrt(pi n). Morin (2016) eq (2.66)."

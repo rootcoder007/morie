@@ -1,54 +1,36 @@
-"""Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Hockey-stick identity: sum_{j=k-1}^{n-1} C(j,k-1) = C(n,k).
+
+Implements eq (1.29) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_29"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_29(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_29(n, k):
+    """Hockey-stick identity: sum_{j=k-1}^{n-1} C(j,k-1) = C(n,k).
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.29).
     """
-    Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: number equals n − (k − 1)), in which case there is just
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner1e29')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.1 eq.1.29
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    lhs, rhs = _morin.hockey_stick(n, k)
+    payload = {"n": int(n), "k": int(k), "sum": lhs, "binomial": rhs,
+               "identity_holds": lhs == rhs}
+    lines = [("sum along diagonal", lhs), ("C(n, k)", rhs)]
     return RichResult(
-        title="Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Hockey-stick identity: sum_{j=k-1}^{n-1} C(j,k-1) = C(n,k).",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e29: Probability equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner1e29: Hockey-stick identity: sum_{j=k-1}^{n-1} C(j,k-1) = C(n,k). Morin (2016) eq (1.29)."
