@@ -1,54 +1,44 @@
-"""CentralTendency expression involving 'variable' (auto-extracted; see reference for full context).."""
+"""Expected Moran's I under no autocorrelation E(I) = -1/(n-1).
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_12_equation_2"]
 
 
-def ca_chapter_12_equation_2(x):
-    """
-    CentralTendency expression involving 'variable' (auto-extracted; see reference for full context).
+def ca_chapter_12_equation_2(n):
+    """Expected Moran's I under no autocorrelation E(I) = -1/(n-1)
 
-    Formula: EI()= − 1
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: E(I) = -1 / (n - 1)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca12e2')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.12 eq.12.2
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.12 eq.12.2
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _ca_crim.morans_i_expected(n)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (12.2)"
     return RichResult(
-        title="CentralTendency expression involving 'variable' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency expression involving 'variable' (auto-extracted; see reference for full context).",
-        },
+        title="Expected Moran's I under no autocorrelation E(I) = -1/(n-1)",
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca12e2: CentralTendency expression involving 'variable' (auto-extracted; see reference for full context)."
+    return 'ca12e2: E(I) = -1 / (n - 1) [Weisburd et al. 2022, eq. 12.2]'

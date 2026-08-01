@@ -1,54 +1,44 @@
-"""Regression expression involving 'cluster' (auto-extracted; see reference for full context).."""
+"""Per-cluster level-1 models y_ij = beta0j + e_ij.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_7_equation_4"]
 
 
-def ca_chapter_7_equation_4(x):
-    """
-    Regression expression involving 'cluster' (auto-extracted; see reference for full context).
+def ca_chapter_7_equation_4(groups):
+    """Per-cluster level-1 models y_ij = beta0j + e_ij
 
-    Formula: yij = β0 + u j + Eij
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: y_i1 = beta0,1 + e_i1; ...; y_ik = beta0,k + e_ik
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca7e4')`` for the full guide.
+        dict subclass; headline key 'grand_mean' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.7 eq.7.4
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.7 eq.7.4
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict(_ca_crim.cluster_means_model(groups))
+    value = payload['grand_mean']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (7.4)"
     return RichResult(
-        title="Regression expression involving 'cluster' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'cluster' (auto-extracted; see reference for full context).",
-        },
+        title='Per-cluster level-1 models y_ij = beta0j + e_ij',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca7e4: Regression expression involving 'cluster' (auto-extracted; see reference for full context)."
+    return 'ca7e4: y_i1 = beta0,1 + e_i1; ...; y_ik = beta0,k + e_ik [Weisburd et al. 2022, eq. 7.4]'

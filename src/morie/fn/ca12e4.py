@@ -1,54 +1,44 @@
-"""Regression expression involving 'variable' (auto-extracted; see reference for full context).."""
+"""Spatial lag (SAR) model y = rho W y + x beta + e.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import math as _math  # noqa: F401
+
+from . import _ca_crim
 from ._richresult import RichResult
 
 __all__ = ["ca_chapter_12_equation_4"]
 
 
-def ca_chapter_12_equation_4(x):
-    """
-    Regression expression involving 'variable' (auto-extracted; see reference for full context).
+def ca_chapter_12_equation_4(rho, w, xb, e):
+    """Spatial lag (SAR) model y = rho W y + x beta + e
 
-    Formula: y = ρWy + xβ + e
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: y = rho W y + x beta + e  (solved via y = (I - rho W)^-1 (xb + e))
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('ca12e4')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Advanced Statistics in Criminology and Criminal Justice (Weisburd, Wilson, Wooditch & Britt, 5th ed, Springer 2022), ch.12 eq.12.4
+    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
+    ch.12 eq.12.4
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict({"y": _ca_crim.spatial_lag_reduced_form(rho, w, xb, e).tolist(), "value": float(_ca_crim.spatial_lag_reduced_form(rho, w, xb, e)[0])})
+    value = payload['value']
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Weisburd et al. (2022) eq. (12.4)"
     return RichResult(
-        title="Regression expression involving 'variable' (auto-extracted; see reference for full context).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression expression involving 'variable' (auto-extracted; see reference for full context).",
-        },
+        title='Spatial lag (SAR) model y = rho W y + x beta + e',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "ca12e4: Regression expression involving 'variable' (auto-extracted; see reference for full context)."
+    return 'ca12e4: y = rho W y + x beta + e  (solved via y = (I - rho W)^-1 (xb + e)) [Weisburd et al. 2022, eq. 12.4]'
