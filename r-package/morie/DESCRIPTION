@@ -33,7 +33,6 @@ License: AGPL-3
 LazyData: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd", "srr::srr_stats_roclet"))
-RoxygenNote: 7.3.3
 Depends:
   R (>= 4.3.0)
 Note: Tested on R 4.3.0, 4.4.x, 4.5.2, 4.5.3 (CRAN). Use CRAN R on Apple
@@ -162,3 +161,4 @@ biocViews:
 Remotes:
   rootcoder007/rmoriedata,
   synth-inference/synthdid
+Config/roxygen2/version: 8.0.0
