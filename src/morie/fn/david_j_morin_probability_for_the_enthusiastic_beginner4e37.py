@@ -1,54 +1,43 @@
-"""CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""(1 - lambda eps)^n ~ e^(-n lambda eps) inside the Poisson limit.
+
+Implements eq (4.37) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_37"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_37(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_37(lam_eps, n):
+    """(1 - lambda eps)^n ~ e^(-n lambda eps) inside the Poisson limit.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.37).
     """
-    CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] (1 − λϵ )n ≈ e−nλϵ . (4.37)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner4e37')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.4 eq.4.37
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    x = float(lam_eps)
+    n_i = int(n)
+    if not 0 <= x < 1 or n_i < 1:
+        raise ValueError("need 0 <= lam_eps < 1 and n >= 1")
+    exact = (1.0 - x) ** n_i
+    approx = math.exp(-n_i * x)
+    payload = {"exact": exact, "approx": approx,
+               "rel_error": abs(exact - approx) / max(exact, 1e-300)}
+    lines = [("(1-x)^n", exact), ("e^(-nx)", approx)]
     return RichResult(
-        title="CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="(1 - lambda eps)^n ~ e^(-n lambda eps) inside the Poisson limit.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e37: CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner4e37: (1 - lambda eps)^n ~ e^(-n lambda eps) inside the Poisson limit. Morin (2016) eq (4.37)."

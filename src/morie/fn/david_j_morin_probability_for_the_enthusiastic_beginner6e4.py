@@ -1,54 +1,37 @@
-"""Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Mean of Y = mX + Z: mu_y = m mu_x + mu_z.
+
+Implements eq (6.4) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_4(m, mu_x, mu_z):
+    """Mean of Y = mX + Z: mu_y = m mu_x + mu_z.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.4).
     """
-    Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] Z : µ = 0, σ = σz . (6.3)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner6e4')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.6 eq.6.4
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    mu_y = float(m) * float(mu_x) + float(mu_z)
+    payload = {"mu_y": mu_y}
+    lines = [("mu_y", mu_y)]
     return RichResult(
-        title="Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Mean of Y = mX + Z: mu_y = m mu_x + mu_z.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e4: Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e4: Mean of Y = mX + Z: mu_y = m mu_x + mu_z. Morin (2016) eq (6.4)."

@@ -1,54 +1,37 @@
-"""CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Typos worked example: P(0) = e^(-a), a = 7 gives ~0.1%.
+
+Implements eq (4.99) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_99"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_99(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_99(a=7.0):
+    """Typos worked example: P(0) = e^(-a), a = 7 gives ~0.1%.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.99).
     """
-    CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] 0! = e−a = e−7 ≈ 9 · 10−4 ≈ 0.1%. (4.99)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner4e99')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.4 eq.4.99
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _morin.poisson_pmf(0, a)
+    payload = {"a": float(a), "p_zero": value}
+    lines = [("P(0)", value)]
     return RichResult(
-        title="CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Typos worked example: P(0) = e^(-a), a = 7 gives ~0.1%.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e99: CountModels equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner4e99: Typos worked example: P(0) = e^(-a), a = 7 gives ~0.1%. Morin (2016) eq (4.99)."

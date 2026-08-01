@@ -1,54 +1,37 @@
-"""Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Poisson variance: E(k^2) - a^2 = a.
+
+Implements eq (4.94) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_94(a):
+    """Poisson variance: E(k^2) - a^2 = a.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.94).
     """
-    Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] (a2 + a) − a2 = a, (4.94)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner4e94')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.4 eq.4.94
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    mean, var = _morin.poisson_mean_var(a)
+    payload = {"variance": var}
+    lines = [("variance", var)]
     return RichResult(
-        title="Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Poisson variance: E(k^2) - a^2 = a.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e94: Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner4e94: Poisson variance: E(k^2) - a^2 = a. Morin (2016) eq (4.94)."

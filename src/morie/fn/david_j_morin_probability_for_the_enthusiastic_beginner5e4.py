@@ -1,54 +1,39 @@
-"""Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Stirling-reduced Gaussian form e^(-x^2/n)/sqrt(pi n) vs exact.
+
+Implements eq (5.4) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_4"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_4(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_4(x, n):
+    """Stirling-reduced Gaussian form e^(-x^2/n)/sqrt(pi n) vs exact.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.4).
     """
-    Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: [EQ] 2π(5.4)2 e−(x−35)2/2(5.4)2
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner5e4')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.5 eq.5.4
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    approx = _morin.gaussian_approx_2n(x, n)
+    exact = _morin.binomial_centered_pmf(int(round(float(x))), n)
+    payload = {"approx": approx, "exact": exact,
+               "rel_error": abs(approx - exact) / max(exact, 1e-300)}
+    lines = [("PG(x)", approx), ("PB(x)", exact)]
     return RichResult(
-        title="Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Stirling-reduced Gaussian form e^(-x^2/n)/sqrt(pi n) vs exact.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e4: Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner5e4: Stirling-reduced Gaussian form e^(-x^2/n)/sqrt(pi n) vs exact. Morin (2016) eq (5.4)."

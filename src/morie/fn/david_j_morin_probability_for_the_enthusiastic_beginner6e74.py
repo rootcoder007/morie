@@ -1,54 +1,38 @@
-"""Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Strip mean via the upper regression line: x = (r sigma_x/sigma_y) y0.
+
+Implements eq (6.74) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_74"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_74(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_74(r, sigma_x, sigma_y, y0):
+    """Strip mean via the upper regression line: x = (r sigma_x/sigma_y) y0.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.74).
     """
-    Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: x =⇒ x = rσx
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner6e74')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.6 eq.6.74
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    slope = _morin.reverse_regression_slope(r, sigma_x, sigma_y)
+    value = slope * float(y0)
+    payload = {"x": value, "slope": slope}
+    lines = [("x", value)]
     return RichResult(
-        title="Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Strip mean via the upper regression line: x = (r sigma_x/sigma_y) y0.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e74: Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e74: Strip mean via the upper regression line: x = (r sigma_x/sigma_y) y0. Morin (2016) eq (6.74)."

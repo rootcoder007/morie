@@ -1,54 +1,37 @@
-"""Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Excess-score factor sqrt((1-r)/(1+r)).
+
+Implements eq (6.81) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81(r):
+    """Excess-score factor sqrt((1-r)/(1+r)).
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.81).
     """
-    Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: 1 − r2 from Eq. (6.18). So for our given person with X = σx , a score
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner6e81')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.6 eq.6.81
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _morin.excess_score_factor(r)
+    payload = {"factor": value}
+    lines = [("sqrt((1-r)/(1+r))", value)]
     return RichResult(
-        title="Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Excess-score factor sqrt((1-r)/(1+r)).",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e81: Regression equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner6e81: Excess-score factor sqrt((1-r)/(1+r)). Morin (2016) eq (6.81)."

@@ -1,54 +1,41 @@
-"""Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Binomial mean E(k) = np, verified against the pmf series.
+
+Implements eq (4.61) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_61"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_61(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_61(n, p):
+    """Binomial mean E(k) = np, verified against the pmf series.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.61).
     """
-    Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: −k =⇒ np =
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner4e61')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.4 eq.4.61
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _morin.binomial_mean(n, p)
+    pmf = _morin.binomial_pmf_vector(n, p)
+    series = float(np.sum(np.arange(int(n) + 1) * pmf))
+    if abs(series - value) > 1e-9 * max(1.0, value):
+        raise AssertionError("series mean disagrees with np")
+    payload = {"mean": value, "series_mean": series}
+    lines = [("np", value)]
     return RichResult(
-        title="Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Binomial mean E(k) = np, verified against the pmf series.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e61: Dispersion equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner4e61: Binomial mean E(k) = np, verified against the pmf series. Morin (2016) eq (4.61)."

@@ -1,54 +1,38 @@
-"""PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
+"""Series product check used for the Poisson normalization.
+
+Implements eq (7.10) of Morin (2016), Probability: For the
+Enthusiastic Beginner. The auto-extracted placeholder returned the
+sample mean of an arbitrary vector; this module now computes the
+book's actual result.
+"""
+
+import math
 
 import numpy as np
 
+from . import _morin
 from ._richresult import RichResult
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_10"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_10(x):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_10(a, terms=40):
+    """Series product check used for the Poisson normalization.
+
+    Reference
+    ---------
+    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.10).
     """
-    PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.
-
-    Formula: (n − 1)/n and (n − 2)/n are both equal to 1 if n = ∞. So we have
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('david_j_morin_probability_for_the_enthusiastic_beginner7e10')`` for the full guide.
-
-    References
-    ----------
-    David J. Morin - Probability  For the Enthusiastic Beginner, ch.7 eq.7.10
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    partials, closed = _morin.exp_taylor(a, terms)
+    total = partials[-1] * math.exp(-float(a))
+    payload = {"normalization": total, "error": abs(total - 1.0)}
+    lines = [("sum P(k)", total)]
     return RichResult(
-        title="PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.",
-        },
+        title="Series product check used for the Poisson normalization.",
+        summary_lines=lines,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e10: PowerAndDesign equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner."
+    return "david_j_morin_probability_for_the_enthusiastic_beginner7e10: Series product check used for the Poisson normalization. Morin (2016) eq (7.10)."
