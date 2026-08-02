@@ -17,7 +17,28 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
-from sklearn.base import BaseEstimator, clone
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.base import BaseEstimator, clone
+except ImportError:
+    BaseEstimator = _MissingDep('BaseEstimator')
+    clone = _MissingDep('clone')
 
 logger = logging.getLogger(__name__)
 

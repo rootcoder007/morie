@@ -41,9 +41,38 @@ from typing import Any, Union
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.experimental import enable_iterative_imputer  # noqa: F401
-from sklearn.linear_model import BayesianRidge, LinearRegression, LogisticRegression
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+except ImportError:
+    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+    RandomForestRegressor = _MissingDep('RandomForestRegressor')
+try:
+    from sklearn.experimental import enable_iterative_imputer  # noqa: F401
+except ImportError:
+    enable_iterative_imputer = _MissingDep('enable_iterative_imputer')
+try:
+    from sklearn.linear_model import BayesianRidge, LinearRegression, LogisticRegression
+except ImportError:
+    BayesianRidge = _MissingDep('BayesianRidge')
+    LinearRegression = _MissingDep('LinearRegression')
+    LogisticRegression = _MissingDep('LogisticRegression')
 
 logger = logging.getLogger(__name__)
 

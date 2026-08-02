@@ -37,8 +37,33 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 from scipy.optimize import minimize
-from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
-from sklearn.linear_model import LinearRegression, LogisticRegression
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+except ImportError:
+    GradientBoostingClassifier = _MissingDep('GradientBoostingClassifier')
+    GradientBoostingRegressor = _MissingDep('GradientBoostingRegressor')
+try:
+    from sklearn.linear_model import LinearRegression, LogisticRegression
+except ImportError:
+    LinearRegression = _MissingDep('LinearRegression')
+    LogisticRegression = _MissingDep('LogisticRegression')
 
 logger = logging.getLogger(__name__)
 
