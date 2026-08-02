@@ -284,7 +284,11 @@ class marr:
         return marr(self)
 
     def copy(self):
-        return marr(self)
+        out = marr([])
+        out.data = [row[:] for row in self.data] \
+            if len(self.shape) == 2 else self.data[:]
+        out.shape = self.shape
+        return out
 
     def astype(self, dtype=None, copy=True):
         del dtype, copy
@@ -1725,7 +1729,12 @@ class _SplitMix64:
             if flat_scalar:
                 return out[0]
             return marr([float(v) for v in out])
-        pool = list(range(int(a))) if isinstance(a, int)             else list(asarray(a)._flat())
+        if isinstance(a, int):
+            pool = list(range(int(a)))
+        elif isinstance(a, (list, tuple)):
+            pool = list(a)          # keep the element type; numpy
+        else:                       # returns int64 for an int pool
+            pool = list(asarray(a)._flat())
         if size is None:
             return pool[self._next() % len(pool)]
         if isinstance(size, (tuple, list)):
@@ -2851,34 +2860,80 @@ def _nan_filter(x):
     return [v for v in asarray(x)._flat() if v == v]
 
 
-def nanmean(x):
+def _keepdims_wrap(out, axis, keepdims):
+    if not keepdims:
+        return out
+    if isinstance(out, marr):
+        return marr([out.tolist()]) if axis in (0, -2) else \
+            marr([[v] for v in out._flat()])
+    return marr([float(out)])
+
+
+def _nan_axis(x, axis, red):
+    """Apply a nan-skipping reduction along an axis of a 2-D array."""
+    a = atleast_2d(asarray(x))
+    if axis in (0, -2):
+        cols = [[a.data[r][c] for r in range(a.shape[0])
+                 if a.data[r][c] == a.data[r][c]]
+                for c in range(a.shape[1])]
+        return marr([red(col) for col in cols])
+    rows = [[v for v in row if v == v] for row in a.data]
+    return marr([red(r) for r in rows])
+
+
+def _median_of(v):
+    if not v:
+        return nan
+    sv = sorted(v)
+    n = len(sv)
+    return sv[n // 2] if n % 2 else 0.5 * (sv[n // 2 - 1] + sv[n // 2])
+
+
+def nanmean(x, axis=None, keepdims=False):
+    if axis is not None and len(asarray(x).shape) == 2:
+        return _keepdims_wrap(
+            _nan_axis(x, axis,
+                      lambda v: _math.fsum(v) / len(v) if v else nan),
+            axis, keepdims)
     f = _nan_filter(x)
-    return float(_math.fsum(f) / len(f))
+    return _keepdims_wrap(float(_math.fsum(f) / len(f)), axis, keepdims)
 
 
-def nansum(x):
+def nansum(x, axis=None, keepdims=False):
+    if axis is not None and len(asarray(x).shape) == 2:
+        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _math.fsum(v)),
+                              axis, keepdims)
     return float(_math.fsum(_nan_filter(x)))
 
 
-def nanstd(x, ddof=0):
+def nanstd(x, axis=None, ddof=0, keepdims=False):
     f = _nan_filter(x)
     m = _math.fsum(f) / len(f)
     return _math.sqrt(_math.fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
 
 
-def nanvar(x, ddof=0):
+def nanvar(x, axis=None, ddof=0, keepdims=False):
     return nanstd(x, ddof=ddof) ** 2
 
 
-def nanmax(x):
+def nanmax(x, axis=None, keepdims=False):
+    if axis is not None and len(asarray(x).shape) == 2:
+        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _bi.max(v) if v else nan),
+                              axis, keepdims)
     return float(_bi.max(_nan_filter(x)))
 
 
-def nanmin(x):
+def nanmin(x, axis=None, keepdims=False):
+    if axis is not None and len(asarray(x).shape) == 2:
+        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _bi.min(v) if v else nan),
+                              axis, keepdims)
     return float(_bi.min(_nan_filter(x)))
 
 
-def nanmedian(x):
+def nanmedian(x, axis=None, keepdims=False):
+    if axis is not None and len(asarray(x).shape) == 2:
+        return _keepdims_wrap(_nan_axis(x, axis, lambda v: _median_of(v)),
+                              axis, keepdims)
     return median(_nan_filter(x))
 
 

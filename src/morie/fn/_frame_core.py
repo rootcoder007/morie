@@ -1007,7 +1007,8 @@ class DataFrame:
     def reset_index(self, drop=False):
         out = DataFrame({c: list(v) for c, v in self._cols.items()})
         if not drop:
-            out._cols = {"index": list(self.index), **out._cols}
+            name = getattr(self, "index_name", None) or "index"
+            out._cols = {name: list(self.index), **out._cols}
         return out
 
     def set_index(self, col):
@@ -1021,10 +1022,18 @@ class DataFrame:
         def match(kind, spec):
             spec = [spec] if isinstance(spec, str) else list(spec)
             for s in spec:
-                if s in ("number", "float", "float64", "int") \
+                # accept dtype objects/classes as well as the strings
+                if not isinstance(s, str):
+                    s = getattr(s, "__name__", None) or \
+                        getattr(s, "name", None) or str(s)
+                    if s in ("float", "float64", "int", "int64"):
+                        s = "number"
+                if s in ("number", "float", "float64", "int",
+                         "int64", "floating", "integer") \
                         and kind == "float64":
                     return True
-                if s in ("object", "string") and kind == "object":
+                if s in ("object", "string", "str", "category") \
+                        and kind == "object":
                     return True
                 if s == "bool" and kind == "bool":
                     return True
@@ -1243,8 +1252,10 @@ class DataFrame:
             out._cols[name] = list(val)
         return out
 
-    def groupby(self, by, sort=True):
-        return GroupBy(self, by, sort=sort)
+    def groupby(self, by, sort=True, dropna=True, observed=True,
+                as_index=True):
+        del observed, as_index
+        return GroupBy(self, by, sort=sort, dropna=dropna)
 
     @property
     def T(self):
@@ -1455,13 +1466,15 @@ def _cov(x, y, ddof=1):
 # ===================================================== GroupBy
 
 class GroupBy:
-    def __init__(self, df, by, sort=True):
+    def __init__(self, df, by, sort=True, dropna=True):
         self._df = df
         self._by = by if isinstance(by, (list, tuple)) else [by]
         self._sort = bool(sort)
         self._groups = {}
         for i in range(df.shape[0]):
             key = tuple(df._cols[c][i] for c in self._by)
+            if dropna and any(_isnan(k) for k in key):
+                continue
             self._groups.setdefault(key, []).append(i)
 
     def _keys(self):
@@ -1551,12 +1564,26 @@ class GroupBy:
 
     aggregate = agg
 
-    def apply(self, fn):
+    def apply(self, fn, include_groups=True):
+        del include_groups
         keys = self._keys()
         out = [fn(self._df._take(self._groups[k])) for k in keys]
         ix = [k[0] if len(self._by) == 1 else k for k in keys]
         if all(isinstance(v, (int, float)) for v in out):
             return Series(out, index=ix)
+        if out and all(isinstance(v, Series) for v in out):
+            # pandas: Series-per-group stacks into a frame whose
+            # columns are the Series index
+            cols = list(out[0].index)
+            res = DataFrame(
+                {c: [float(o[c]) if isinstance(o[c], (int, float))
+                     else o[c] for o in out] for c in cols},
+                index=ix)
+            if len(self._by) == 1:
+                res.index_name = self._by[0]
+            return res
+        if out and all(isinstance(v, DataFrame) for v in out):
+            return concat(out)
         return dict(zip(ix, out))
 
     def transform(self, fn):
