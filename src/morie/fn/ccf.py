@@ -2,6 +2,7 @@
 """Cross-correlation function between two time series."""
 
 from . import _array_core as np
+from . import _stats_core as _stats
 
 
 def ccf(
@@ -64,7 +65,7 @@ def ccf(
         else:
             ccf_vals[i] = np.sum(xm[-h:] * ym[: n + h]) / denom
 
-    z = __import__("scipy").stats.norm.ppf(1 - alpha / 2)
+    z = _stats.norm.ppf(1 - alpha / 2)
     ci = z / np.sqrt(n)
 
     return {

@@ -2,6 +2,7 @@
 """Competing risks -- Cumulative Incidence Function (CIF)."""
 
 from . import _array_core as np
+from . import _stats_core as _stats
 
 
 def crisk(
@@ -59,7 +60,7 @@ def crisk(
 
     unique_times = np.unique(t_sorted)
     n_times = len(unique_times)
-    z = __import__("scipy").stats.norm.ppf(1 - alpha / 2)
+    z = _stats.norm.ppf(1 - alpha / 2)
 
     # Overall KM survival (all event types as events)
     S = np.ones(n_times + 1)  # S[0] = 1 (before first time)
