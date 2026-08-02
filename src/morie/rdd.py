@@ -1346,10 +1346,11 @@ def rd_plot_data(
         try:
             bins = pd.qcut(x_s, min(n_bins, len(np.unique(x_s))), duplicates="drop")
             for b, grp_idx in pd.Series(range(len(x_s))).groupby(bins, observed=False):
+                pos = [int(v) for v in grp_idx.values]
                 bin_records.append(
                     {
-                        "x_mid": float(x_s[grp_idx.values].mean()),
-                        "y_mean": float(y_s[grp_idx.values].mean()),
+                        "x_mid": float(x_s[pos].mean()),
+                        "y_mean": float(y_s[pos].mean()),
                         "n": len(grp_idx),
                         "side": label,
                     }

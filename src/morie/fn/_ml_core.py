@@ -165,8 +165,22 @@ class LinearRegression:
                 for j in range(k)] for i in range(k)]
         Xty = [_math.fsum(Xd[r][i] * yv[r] for r in range(n))
                for i in range(k)]
-        b = list(_ac.linalg.solve(_ac.marr(XtX),
-                                  _ac.marr(Xty))._flat())
+        try:
+            b = list(_ac.linalg.solve(_ac.marr(XtX),
+                                      _ac.marr(Xty))._flat())
+        except Exception:
+            # rank-deficient design: minimum-norm least squares via
+            # SVD, matching sklearn (scipy.linalg.lstsq)
+            u, sv, vt = _ac.linalg.svd(_ac.marr(Xd))
+            svl = list(sv._flat())
+            cut = (max(svl) if svl else 0.0) * max(n, k) * 2.2e-16
+            uy = [_math.fsum(u.data[r][c] * yv[r] for r in range(n))
+                  for c in range(len(svl))]
+            z = [uy[c] / svl[c] if svl[c] > cut else 0.0
+                 for c in range(len(svl))]
+            b = [_math.fsum(vt.data[c][j] * z[c]
+                            for c in range(len(svl)))
+                 for j in range(k)]
         if self.fit_intercept:
             self.intercept_ = b[0]
             self.coef_ = _ac.marr(b[1:])

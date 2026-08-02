@@ -918,7 +918,7 @@ def group_time_att(
     with multiple time periods. *Journal of Econometrics*, 225(2), 200--230.
     """
     rng = np.random.default_rng(seed)
-    df = data.copy()
+    df = pd._coerce_frame(data).copy()
     df["_g"] = df[treatment_time].astype(float)
 
     cohorts = sorted(df.loc[np.isfinite(df["_g"]), "_g"].unique())

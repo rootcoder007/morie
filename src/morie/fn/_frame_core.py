@@ -181,6 +181,8 @@ class Series:
     def __getitem__(self, key):
         if isinstance(key, Series):
             key = key.tolist()
+        elif type(key).__name__ == "marr":
+            key = [bool(v) for v in key._flat()]
         elif hasattr(key, "dtype") and hasattr(key, "tolist"):
             key = list(key.tolist())        # real-pandas/numpy mask
         if isinstance(key, list) and key and isinstance(key[0], bool):
@@ -197,6 +199,8 @@ class Series:
     def __setitem__(self, key, value):
         if isinstance(key, Series):
             key = key.tolist()
+        elif type(key).__name__ == "marr":
+            key = [bool(v) for v in key._flat()]
         elif hasattr(key, "dtype") and hasattr(key, "tolist"):
             key = list(key.tolist())        # real-pandas/numpy mask
         if isinstance(key, list) and key and isinstance(key[0], bool):
@@ -840,6 +844,8 @@ class DataFrame:
     def __getitem__(self, key):
         if isinstance(key, Series):
             key = key.tolist()
+        elif type(key).__name__ == "marr":
+            key = [bool(v) for v in key._flat()]
         if isinstance(key, list) and key \
                 and isinstance(key[0], bool):
             keep = [i for i, m in enumerate(key) if m]
@@ -1348,6 +1354,8 @@ class _Loc:
             rk, ck = key
             if isinstance(rk, Series):
                 rk = rk.tolist()
+            elif type(rk).__name__ == "marr":
+                rk = [bool(v) for v in rk._flat()]
             if isinstance(rk, list) and rk \
                     and isinstance(rk[0], bool):
                 sub = df[rk]
@@ -1365,6 +1373,8 @@ class _Loc:
             return sub[list(ck)]
         if isinstance(key, Series):
             key = key.tolist()
+        elif type(key).__name__ == "marr":
+            key = [bool(v) for v in key._flat()]
         if isinstance(key, list) and key and isinstance(key[0], bool):
             return df[key]
         i = df.index.index(key)
@@ -1376,6 +1386,8 @@ class _Loc:
             rk, ck = key
             if isinstance(rk, Series):
                 rk = rk.tolist()
+            elif type(rk).__name__ == "marr":
+                rk = [bool(v) for v in rk._flat()]
             if isinstance(value, Series):
                 value = list(value._data)
             if isinstance(rk, list) and rk \
