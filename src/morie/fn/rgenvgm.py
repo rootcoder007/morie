@@ -44,7 +44,7 @@ def rangayyan_envelogram(pcg, ecg=None, fs=1000.0, r_peaks=None, n_beats=None):
     Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
     Wiley-IEEE Press. Ch. 3 (envelope extraction, envelograms).
     """
-    from scipy import signal as sig
+    from ._signal_core import signal as sig
 
     x = np.asarray(pcg, dtype=float).ravel()
     fs = float(fs)

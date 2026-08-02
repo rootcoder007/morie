@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.signal import welch as _welch
+from ._signal_core import welch as _welch
 
 from ._containers import SignalResult
 

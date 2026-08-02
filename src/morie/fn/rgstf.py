@@ -32,7 +32,7 @@ def rangayyan_stft(x, fs=1.0, nperseg=256, noverlap=None, window="hann"):
         (3rd ed.). Wiley-IEEE Press. Sec 8.4.1 "The short-time Fourier
         transform", p.438. The previous docstring cited Ch 4.
     """
-    from scipy.signal import spectrogram
+    from ._signal_core import spectrogram
 
     x = np.asarray(x, dtype=float)
     nperseg = min(int(nperseg), x.size)

@@ -56,7 +56,7 @@ def rangayyan_psd(x, fs=1.0, nperseg=None, noverlap=None, window="hann"):
         of power spectra. *IEEE Transactions on Audio and Electroacoustics*,
         15(2), 70-73.
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     x = np.asarray(x, dtype=float)
     if nperseg is None:

@@ -50,7 +50,7 @@ def coherence(
     Rangayyan, R.M. & Krishnan, S. (2024). *Biomedical Signal
     Analysis*, 3rd ed. IEEE/Wiley, Chapter 6.
     """
-    from scipy.signal import csd, welch
+    from ._signal_core import csd, welch
 
     x = np.asarray(x, dtype=float).ravel()
     y = np.asarray(y, dtype=float).ravel()

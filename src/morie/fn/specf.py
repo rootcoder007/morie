@@ -51,7 +51,7 @@ def spectral_density(x, fs=1.0, nperseg=None):
     nperseg = int(min(nperseg, n))
 
     try:
-        from scipy import signal as sps
+        from ._signal_core import signal as sps
 
         f, S = sps.welch(r, fs=fs, nperseg=nperseg)
         return RichResult(

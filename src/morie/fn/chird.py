@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.signal import hilbert
+from ._signal_core import hilbert
 from ._stats_core import linregress
 
 from ._containers import DescriptiveResult

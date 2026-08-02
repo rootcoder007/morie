@@ -19,7 +19,7 @@ def hrv_freq_domain(
     :param fs_interp: Interpolation frequency for uniform resampling (default 4 Hz).
     :return: DescriptiveResult with power bands in ``extra``.
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     rr = np.asarray(rr, dtype=float).ravel()
     if len(rr) < 10:

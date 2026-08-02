@@ -44,7 +44,7 @@ def hrvfq(
     -------
     DescriptiveResult
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     rr = np.asarray(rr_intervals, dtype=float).ravel()
     if len(rr) < 4:

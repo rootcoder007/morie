@@ -50,7 +50,7 @@ def epidemic_smooth(
         raise ValueError("incidence must be 1-D with >= 3 points.")
 
     if method == "savgol":
-        from scipy.signal import savgol_filter
+        from ._signal_core import savgol_filter
 
         if window % 2 == 0:
             window += 1
