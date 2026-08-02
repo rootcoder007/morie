@@ -8,7 +8,7 @@ book's actual result.
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 from . import _morin
 from ._richresult import RichResult

@@ -12,7 +12,7 @@ math.comb); probability helpers validate their inputs and fail loudly.
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 __all__: list = []
 
