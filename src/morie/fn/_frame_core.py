@@ -489,6 +489,11 @@ class Series:
             i = j + 1
         return Series(ranks, index=list(self.index), name=self.name)
 
+    def rename(self, name):
+        out = self.copy()
+        out.name = name
+        return out
+
     def to_frame(self, name=None):
         return DataFrame({name or self.name or 0: list(self._data)},
                          index=list(self.index))
@@ -1585,9 +1590,15 @@ def concat(objs, axis=0, ignore_index=False):
     if axis == 1:
         out = {}
         index = objs[0].index
+        used = 0
         for o in objs:
-            for c in o._cols:
-                out[c] = list(o._cols[c])
+            if isinstance(o, Series):
+                key = o.name if o.name is not None else used
+                out[key] = list(o._data)
+            else:
+                for c in o._cols:
+                    out[c] = list(o._cols[c])
+            used += 1
         return DataFrame(out, index=list(index))
     cols = []
     for o in objs:

@@ -23,11 +23,24 @@ from . import _array_core as _ac
 
 
 def _X2d(X):
+    if hasattr(X, "_cols"):            # native DataFrame
+        cols = list(X._cols.values())
+        return [[float(c[i]) for c in cols]
+                for i in range(X.shape[0])]
+    if hasattr(X, "columns") and hasattr(X, "values"):  # real pandas
+        return [[float(v) for v in row] for row in X.values.tolist()]
+    if hasattr(X, "_data") and hasattr(X, "index"):  # native Series
+        return [[float(v)] for v in X._data]
     a = _ac.atleast_2d(X)
     return [list(map(float, r)) for r in a.data]
 
 
 def _y1d(y):
+    if hasattr(y, "_data") and hasattr(y, "index"):  # native Series
+        return [float(v) for v in y._data]
+    if hasattr(y, "values") and hasattr(y, "index") \
+            and not hasattr(y, "_flat"):             # real pandas
+        return [float(v) for v in y.values.tolist()]
     return [float(v) for v in _ac.asarray(y)._flat()]
 
 
