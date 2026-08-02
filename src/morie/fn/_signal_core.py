@@ -1051,3 +1051,120 @@ for _n in ("cheby1", "cheby2", "iirnotch", "firwin", "freqz",
            "dpss", "iirfilter"):
     setattr(signal, _n, staticmethod(globals()[_n]))
 signal.windows = windows
+
+
+# ------------------------------------------------------- elliptic filter
+
+def _landen_seq(k, m=12):
+    v = []
+    for _ in range(m):
+        k = (k / (1.0 + _math.sqrt(1.0 - k * k))) ** 2
+        v.append(k)
+    return v
+
+
+def _ellipk_agm(k):
+    a, b = 1.0, _math.sqrt(1.0 - k * k)
+    for _ in range(60):
+        a, b = (a + b) / 2.0, _math.sqrt(a * b)
+        if abs(a - b) < 1e-16:
+            break
+    return _math.pi / (2.0 * a)
+
+
+def _cde(u, k):
+    """Jacobi cd(u*K, k) for complex u (Orfanidis descending Landen)."""
+    vs = _landen_seq(k)
+    w = _cmath.cos(u * _math.pi / 2.0)
+    for v in reversed(vs):
+        w = (1.0 + v) * w / (1.0 + v * w * w)
+    return w
+
+
+def _asne(w, k):
+    """Inverse sn: u with sn(u*K, k) = w (complex)."""
+    vs = _landen_seq(k)
+    kp = k
+    for v in vs:
+        w = 2.0 * w / ((1.0 + v) * (1.0 + _cmath.sqrt(
+            1.0 - kp * kp * w * w)))
+        kp = v
+    return 2.0 / _math.pi * _cmath.asin(w)
+
+
+def _ellipdeg(n, k1):
+    """Solve the degree equation for k given N and k1 (nome method)."""
+    kp1 = _math.sqrt(1.0 - k1 * k1)
+    K1 = _ellipk_agm(k1)
+    K1p = _ellipk_agm(kp1)
+    q1 = _math.exp(-_math.pi * K1p / K1)
+    q = q1 ** (1.0 / n)
+    # k from nome via theta functions
+    num = _math.fsum(q ** (m * (m + 1)) for m in range(15))
+    den = 1.0 + 2.0 * _math.fsum(q ** (m * m) for m in range(1, 16))
+    return 4.0 * _math.sqrt(q) * (num / den) ** 2
+
+
+def _ellip_analog_zpk(n, rp, rs):
+    eps_p = _math.sqrt(10.0 ** (0.1 * rp) - 1.0)
+    eps_s = _math.sqrt(10.0 ** (0.1 * rs) - 1.0)
+    k1 = eps_p / eps_s
+    k = _ellipdeg(n, k1)
+    z = []
+    p = []
+    l_ = n % 2
+    v0 = -1j * _asne(1j / eps_p, k1) / n
+    for i in range(1, (n - l_) // 2 + 1):
+        ui = (2.0 * i - 1.0) / n
+        zeta = _cde(ui, k)
+        zr = 1j / (k * zeta)
+        z.append(zr)
+        z.append(zr.conjugate())
+        pi_ = 1j * _cde(ui - 1j * v0, k)
+        p.append(pi_)
+        p.append(pi_.conjugate())
+    if l_:
+        p.append(1j * _cde(1.0 - 1j * v0, k))
+    num = complex(1.0)
+    den = complex(1.0)
+    for zi in z:
+        num *= -zi
+    for pi_ in p:
+        den *= -pi_
+    kgain = (den / num).real
+    if l_ == 0:
+        kgain /= _math.sqrt(1.0 + eps_p * eps_p)
+    return z, p, kgain
+
+
+def ellip(N, rp, rs, Wn, btype="low", output="ba", fs=None):
+    if fs is not None:
+        Wn = 2.0 * float(Wn) / fs
+    z, p, k = _ellip_analog_zpk(int(N), float(rp), float(rs))
+    fs2 = 2.0
+    if btype in ("low", "lowpass"):
+        warped = 2.0 * fs2 * _math.tan(_math.pi * float(Wn) / fs2)
+        z = [zi * warped for zi in z]
+        pn = [pi * warped for pi in p]
+        k *= warped ** (len(p) - len(z))
+        p = pn
+    elif btype in ("high", "highpass"):
+        warped = 2.0 * fs2 * _math.tan(_math.pi * float(Wn) / fs2)
+        num = complex(1.0)
+        den = complex(1.0)
+        for zi in z:
+            num *= -zi
+        for pi_ in p:
+            den *= -pi_
+        k *= (num / den).real
+        z = [warped / zi for zi in z] + [0j] * (len(p) - len(z))
+        p = [warped / pi_ for pi_ in p]
+    else:
+        raise NotImplementedError("ellip: lowpass/highpass only")
+    zd, pd, kd = _bilinear_zpk(z, p, k, fs2)
+    if output == "ba":
+        return _zpk2tf(zd, pd, kd)
+    return _ac.marr(_zpk2sos(zd, pd, kd))
+
+
+signal.ellip = staticmethod(ellip)
