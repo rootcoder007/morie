@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging as _logging
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn.aipw import estimate_aipw
 

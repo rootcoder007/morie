@@ -2,8 +2,8 @@
 """Empirical-Bayes hyper-parameter selection for a DP prior."""
 
 from . import _array_core as np
-from scipy.optimize import minimize_scalar
-from scipy.special import gammaln
+from ._sci_core import minimize_scalar
+from ._sci_core import gammaln
 
 from ._richresult import RichResult
 

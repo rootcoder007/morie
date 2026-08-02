@@ -32,7 +32,7 @@ from collections.abc import Callable
 from typing import Union
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 import scipy.stats as stats
 
 class _MissingDep:

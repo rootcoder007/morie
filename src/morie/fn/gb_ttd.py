@@ -2,7 +2,7 @@
 """Tabulated exact probabilities of runs test statistic R for small n1, n2."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 r"""CentralTendency equation extracted from Density estimation for statistics and data analysis -- Silverman, B  W -- Monographs on statistics and applied probability.."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 

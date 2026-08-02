@@ -39,7 +39,7 @@ def gibbons_pp_plot(x, F0=None):
     Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
     Statistical Inference* (5th ed.). CRC Press. Ch. 4.8.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     x = np.sort(np.asarray(x, dtype=float).ravel())
     n = x.size

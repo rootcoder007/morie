@@ -980,7 +980,7 @@ def _main_impl() -> int:
             elif args.dataset == "siu-toy":
                 # Single-row "DataFrame" carrying the synthetic report text
                 # for parity with the other pull verbs.
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 df = _pd.DataFrame([{"report_id": "24-OFD-001", "text": md.siu_report_text(offline=True)}])
             elif args.dataset == "siu-index":
@@ -1310,7 +1310,7 @@ def _handle_exec(args: argparse.Namespace) -> int:
     ns = {"__name__": "__morie_exec__"}
     try:
         import numpy as np
-        import pandas as pd
+        from morie.fn import _frame_core as pd
 
         ns["np"] = np
         ns["pd"] = pd

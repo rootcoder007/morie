@@ -79,7 +79,7 @@ def cox_schoenfeld_residuals(fit, transform="km"):
     >>> bool(abs(float(r["residuals"].mean())) < 0.1)
     True
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     t = np.asarray(fit["time"], dtype=float)
     e = np.asarray(fit["event"], dtype=float)

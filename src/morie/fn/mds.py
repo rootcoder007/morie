@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
-from scipy.spatial.distance import pdist, squareform
+from . import _frame_core as pd
+from ._sci_core import pdist, squareform
 
 from morie.fn._containers import MdsRes
 

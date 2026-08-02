@@ -22,7 +22,7 @@ def rank_transform(x, method="average"):
     Conover WJ & Iman RL (1981). Rank Transformations as a Bridge
     Between Parametric and Nonparametric Statistics. Am Stat 35(3):124-129.
     """
-    from scipy.stats import rankdata
+    from ._stats_core import rankdata
 
     arr = np.asarray(x, dtype=np.float64).ravel()
     ranks = rankdata(arr, method=method)

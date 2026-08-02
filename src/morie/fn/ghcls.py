@@ -2,7 +2,7 @@
 """Bayesian-nonparametric classification -- probit-link GP."""
 
 from . import _array_core as np
-from scipy.stats import norm
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

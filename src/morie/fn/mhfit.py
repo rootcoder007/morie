@@ -66,7 +66,7 @@ def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
         def maj_obj(x_new):
             return majorizer(x_new, x)
 
-        from scipy.optimize import minimize as scipy_minimize
+        from ._sci_core import minimize as scipy_minimize
 
         result = scipy_minimize(maj_obj, x, method="BFGS", options={"maxiter": 50})
         x_new = result.x

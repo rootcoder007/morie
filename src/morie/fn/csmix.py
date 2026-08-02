@@ -56,7 +56,7 @@ def csmix(
     d = p + 1
 
     def neg_loglik(beta):
-        from scipy.special import expit
+        from ._sci_core import expit
 
         eta = X_aug @ beta
         prob = expit(eta)

@@ -12,8 +12,8 @@ are deferred to v0.3.0 (see ``NotImplementedError`` branch).
 """
 
 from . import _array_core as np
-from scipy import optimize
-from scipy.spatial.distance import cdist
+from ._sci_core import optimize
+from ._sci_core import cdist
 
 from ._richresult import RichResult
 

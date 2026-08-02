@@ -50,8 +50,8 @@ import warnings
 from dataclasses import dataclass, field
 
 import numpy as np
-import pandas as pd
-from scipy import optimize
+from morie.fn import _frame_core as pd
+from morie.fn._sci_core import optimize
 
 from ..mrm_primitives.synthetic_exposure import synthetic_area_exposure
 
@@ -383,7 +383,7 @@ def smi_force_disparity(
         # NB2 log-pmf:
         #   log Gamma(y+phi) - log Gamma(phi) - log Gamma(y+1)
         #     + phi*log(phi/(phi+mu)) + y*log(mu/(phi+mu))
-        from scipy.special import gammaln
+        from morie.fn._sci_core import gammaln
 
         ll = (
             gammaln(y_count + phi)

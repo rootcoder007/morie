@@ -2,7 +2,7 @@
 """Sign test for median using count of positive differences K_N."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

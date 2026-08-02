@@ -21,7 +21,7 @@ from __future__ import annotations
 from typing import Any
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 
 def _design(data: pd.DataFrame, covariates: list[str]) -> np.ndarray:

@@ -34,7 +34,7 @@ def attack_rate(
     Rothman, K. J., Greenland, S., & Lash, T. L. (2008). *Modern
     Epidemiology* (3rd ed.). Lippincott Williams & Wilkins.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if population <= 0:
         raise ValueError("population must be positive.")

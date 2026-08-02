@@ -32,9 +32,9 @@ from pathlib import Path
 from typing import Literal
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 from scipy import stats as sps
-from scipy.optimize import minimize
+from morie.fn._sci_core import minimize
 from scipy.special import gammainc, gammaln  # noqa: F401 -- used inline
 
 from .fn._richresult import RichResult

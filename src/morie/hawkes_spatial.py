@@ -25,8 +25,8 @@ from __future__ import annotations
 from typing import Any
 
 import numpy as np
-import pandas as pd
-from scipy.optimize import minimize
+from morie.fn import _frame_core as pd
+from morie.fn._sci_core import minimize
 
 
 def _check_params(p: dict[str, float]) -> None:

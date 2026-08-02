@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
-from scipy import special
+from . import _frame_core as pd
+from ._sci_core import special
 
 from ._containers import RegressionResult
 from ._helpers import _validate_df
@@ -67,7 +67,7 @@ def firth_logistic(
     except np.linalg.LinAlgError:
         se_arr = np.full(p, float("nan"))
 
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     z_vals = beta / (se_arr + 1e-12)
     pvals = 2 * (1 - _st.norm.cdf(np.abs(z_vals)))

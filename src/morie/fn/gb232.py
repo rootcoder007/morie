@@ -40,7 +40,7 @@ def gibbons_glivenko_cantelli(x, F=None):
     Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
     Statistical Inference* (5th ed.). CRC Press. Theorem 2.3.2.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     x = np.sort(np.asarray(x, dtype=float).ravel())
     n = x.size

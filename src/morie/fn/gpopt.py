@@ -9,9 +9,9 @@ from collections.abc import Callable
 from typing import Any, Union
 
 from . import _array_core as np
-from scipy import stats
-from scipy.optimize import minimize as sp_minimize
-from scipy.spatial.distance import cdist
+from . import _stats_core as stats
+from ._sci_core import minimize as sp_minimize
+from ._sci_core import cdist
 
 
 def _rbf_kernel(X1, X2, length_scale=1.0, variance=1.0, cdf=None):

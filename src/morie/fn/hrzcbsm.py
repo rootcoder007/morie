@@ -107,7 +107,7 @@ def horowitz_choice_based_sms(x, y, sampling_weights, smoothed=True, h=None,
     Econometrics*. Springer. Sec. 4.4.1, eqs. (4.33)-(4.35) and
     Theorems 4.7-4.8.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._horowitz import optimize_scale_normalized
 

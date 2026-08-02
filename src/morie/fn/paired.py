@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import ttest_rel
+from ._stats_core import ttest_rel
 
 
 def paired(x: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray]):

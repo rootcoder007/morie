@@ -1,6 +1,6 @@
 """Age-specific substance use rates."""
 
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 

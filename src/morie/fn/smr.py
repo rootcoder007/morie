@@ -35,7 +35,7 @@ def standardized_mortality_ratio(
     Research, Vol. II: The Design and Analysis of Cohort Studies*. IARC
     Scientific Publications No. 82, Ch. 2.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if observed < 0:
         raise ValueError("observed must be non-negative.")

@@ -126,7 +126,7 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     # gives 1 for everyone and silently collapses Fine-Gray back to the
     # cause-specific fit.
     beta, ll, I, U, it, conv = _fg_newton(t, e, Xm, competing, G, Gi)
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     try:
         se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))

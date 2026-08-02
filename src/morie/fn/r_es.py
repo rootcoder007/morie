@@ -5,8 +5,8 @@ import math
 from typing import Union
 
 from . import _array_core as np
-import pandas as pd
-import scipy.stats as stats
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import ESRes
 from ._helpers import _arr

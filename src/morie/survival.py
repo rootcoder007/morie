@@ -39,9 +39,9 @@ from dataclasses import dataclass, field
 from typing import Union
 
 import numpy as np
-import pandas as pd
-import scipy.stats as stats
-from scipy.optimize import minimize
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
+from morie.fn._sci_core import minimize
 
 logger = logging.getLogger(__name__)
 

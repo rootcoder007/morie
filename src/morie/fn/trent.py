@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.stats import chi2
+from ._stats_core import chi2
 
 from ._richresult import RichResult
 

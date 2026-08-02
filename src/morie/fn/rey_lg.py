@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
-from scipy import stats
-from scipy.special import expit
+from . import _frame_core as pd
+from . import _stats_core as stats
+from ._sci_core import expit
 
 from ._containers import RegressionResult
 from ._helpers import _validate_df

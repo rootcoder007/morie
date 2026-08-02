@@ -2,8 +2,8 @@
 """Ordinal logistic regression (proportional odds model)."""
 
 from . import _array_core as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from ._sci_core import minimize
+from ._stats_core import norm
 
 
 def rey_ol(df, y: str = "y", x: list | str = "x", alpha: float = 0.05, cdf=None) -> dict:

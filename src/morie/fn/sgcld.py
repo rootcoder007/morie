@@ -22,7 +22,7 @@ def variogram_cloud(Z, coords):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
-    from scipy.spatial.distance import pdist, squareform
+    from ._sci_core import pdist, squareform
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)

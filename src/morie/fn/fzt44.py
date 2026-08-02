@@ -47,7 +47,7 @@ def fauzi_theorem_4_4(mrl_hat, mrl_true, variance):
     ----------
     Fauzi and Maesono (2023), Theorem 4.4. Transcribed from the PDF.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     mh = np.atleast_1d(np.asarray(mrl_hat, dtype=float)).ravel()
     mt = np.atleast_1d(np.asarray(mrl_true, dtype=float)).ravel()

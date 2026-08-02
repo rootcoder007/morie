@@ -91,7 +91,7 @@ def breslow_tie_correction(time, event, X, **kwargs):
 
 
 def _cox_result(t, e, beta, ll, I, it, conv, label, method, X=None):
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     try:
         cov = np.linalg.inv(I)

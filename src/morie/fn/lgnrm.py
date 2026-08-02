@@ -72,8 +72,8 @@ def lgnrm(
     Kalbfleisch, J.D. & Prentice, R.L. (2002). The Statistical Analysis of
     Failure Time Data (2nd ed.). Wiley.
     """
-    from scipy import optimize as _opt
-    from scipy import stats as _stats
+    from ._sci_core import optimize as _opt
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

@@ -3,7 +3,7 @@
 
 import math
 
-import scipy.stats as stats
+from . import _stats_core as stats
 
 
 def rate_ratio_ci(n1: int, t1: float, n2: int, t2: float, *, alpha: float = 0.05) -> dict:

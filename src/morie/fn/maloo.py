@@ -50,7 +50,7 @@ def ma_leave_one_out(yi, vi, method="PM"):
     influence diagnostics for meta-analysis", *Research Synthesis
     Methods* 1:112-125. Viechtbauer, W. (2010), *JSS* 36(3).
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._psycho import dersimonian_laird
 

@@ -65,7 +65,7 @@ def wasserman_mle(data, f, theta0, bounds=None, se=True):
     Semiparametric Inference*, Springer, Ch. 14 (M-estimators) and
     Sec. 2.2.6. Fisher (1922) for maximum likelihood itself.
     """
-    from scipy import optimize
+    from ._sci_core import optimize
 
     d = np.asarray(data, dtype=float)
     n = d.shape[0]

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import pandas as pd
+from . import _frame_core as pd
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""

@@ -56,7 +56,7 @@ def ma_random_reml(yi, vi, max_iter=200, tol=1e-12):
     Viechtbauer, W. (2010), *Journal of Statistical Software*
     36(3), for the metafor implementation.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._psycho import dersimonian_laird, fixed_effect_pool
 

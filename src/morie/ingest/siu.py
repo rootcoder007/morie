@@ -53,7 +53,7 @@ from typing import Any
 from urllib.parse import urljoin
 
 import httpx
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 DEFAULT_USER_AGENT = "morie/0.8.0 (+https://github.com/rootcoder007/morie)"
 DEFAULT_TIMEOUT_SECONDS = 60.0

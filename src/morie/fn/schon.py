@@ -2,7 +2,7 @@
 """Schoenfeld residuals for proportional hazards assumption testing."""
 
 from . import _array_core as np
-from scipy.stats import pearsonr
+from ._stats_core import pearsonr
 
 
 def schon(

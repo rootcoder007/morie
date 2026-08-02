@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
-from scipy import stats as sp
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 
 def rirr(

@@ -15,7 +15,7 @@ from typing import Any
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 from scipy import stats as sp_stats
 
 logger = logging.getLogger(__name__)
@@ -1726,7 +1726,7 @@ def distribution_comparison_plot(
 
 def _kde_line(values: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Compute KDE for a ridge plot."""
-    from scipy.stats import gaussian_kde
+    from morie.fn._stats_core import gaussian_kde
 
     vals = values[np.isfinite(values)]
     if len(vals) < 2:

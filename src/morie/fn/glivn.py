@@ -73,7 +73,7 @@ def glivn(x: np.ndarray, cdf=None, *, cdf_fn: object | None = None, alpha: float
     Cantelli, F.P. (1933). Sulla determinazione empirica delle leggi di
     probabilita. *Giornale dell'Istituto Italiano degli Attuari*, 4, 421--424.
     """
-    from scipy.stats import norm as _norm
+    from ._stats_core import norm as _norm
 
     x = np.asarray(x, dtype=float).ravel()
     if x.size == 0:

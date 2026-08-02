@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import nbinom
+from ._stats_core import nbinom
 
 
 def qnbm(p: Union[float, np.ndarray], size: float, prob: float) -> Union[float, np.ndarray]:

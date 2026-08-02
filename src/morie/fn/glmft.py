@@ -48,7 +48,7 @@ def glm_fit(
     :return: RegressionResult with coefficients, SE, p-values, deviance, AIC.
     :raises ValueError: If family is not recognized.
     """
-    from scipy import stats as sp_stats
+    from . import _stats_core as sp_stats
 
     family = family.lower()
     if family not in _FAMILIES:

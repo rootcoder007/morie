@@ -82,7 +82,7 @@ def bayesian_linear_regression(
         post_cov = Lambda_n_inv  # fallback
 
     # Credible intervals (using t-distribution with 2*a_n degrees of freedom)
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     df = 2.0 * a_n
     post_sd = np.sqrt(np.diag(post_cov))

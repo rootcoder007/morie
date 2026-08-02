@@ -45,7 +45,7 @@ def gibbons_are_logistic(distribution="logistic", cdf=None):
             f"this module carries the logistic case, got {distribution!r}."
         )
     from morie.fn import _array_core as np
-    from scipy import stats
+    from . import _stats_core as stats
 
     dens = {
         "uniform": lambda x: stats.uniform.pdf(x, loc=-np.sqrt(3), scale=2 * np.sqrt(3)),

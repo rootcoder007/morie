@@ -42,7 +42,7 @@ def kwlcx(data: np.ndarray, cdf=None, *, mu0: float = 0.0, bw: float | None = No
     Hettmansperger, T. P. (1984). *Statistical Inference Based on Ranks*.
         Wiley. Chapter 3.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

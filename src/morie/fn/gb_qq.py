@@ -42,7 +42,7 @@ def gibbons_qq_plot(x, F0_inv=None):
     Filliben, J. J. (1975). The probability plot correlation
     coefficient test for normality. *Technometrics*, 17(1), 111-117.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     x = np.sort(np.asarray(x, dtype=float).ravel())
     n = x.size

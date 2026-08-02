@@ -57,7 +57,7 @@ def mtbf_estimate(
     mtbf_val = T / n
     failure_rate = n / T if T > 0 else float("inf")
 
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     ci_lo = 2 * T / chi2.ppf(0.975, 2 * n + 2) if n > 0 else 0.0
     ci_hi = 2 * T / chi2.ppf(0.025, max(2 * n, 2)) if n > 0 else float("inf")

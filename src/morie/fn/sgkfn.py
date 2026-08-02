@@ -39,7 +39,7 @@ def ripley_k_function(points, window, r_values=None, correction="ripley"):
     else:
         r_values = np.asarray(r_values, dtype=np.float64)
 
-    from scipy.spatial.distance import pdist, squareform
+    from ._sci_core import pdist, squareform
 
     D = squareform(pdist(pts))
 

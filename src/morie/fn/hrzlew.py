@@ -90,7 +90,7 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
     secondary description of this estimator states ``I(V < 0)``,
     which changes the estimand.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._horowitz import kernel, silverman_bw
 

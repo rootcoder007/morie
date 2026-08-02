@@ -19,7 +19,7 @@ def svpbp(voter, cA, cB=None, cdf=None, *, beta=1.0):
         cB = np.zeros_like(cA)
     else:
         cB = np.asarray(cB, dtype=float)
-    from scipy.stats import norm as _norm
+    from ._stats_core import norm as _norm
 
     dA = float(np.sum((voter - cA) ** 2))
     dB = float(np.sum((voter - cB) ** 2))

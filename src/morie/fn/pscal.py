@@ -37,7 +37,7 @@ def ps_calibrate(
     def _logistic(x):
         return 1.0 / (1.0 + np.exp(-np.clip(x, -500, 500)))
 
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     def neg_loglik(params):
         a, b = params

@@ -8,7 +8,7 @@ model used by IPW, AIPW, ATT, ATC, and other causal estimators in morie.
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""

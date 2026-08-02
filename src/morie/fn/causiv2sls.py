@@ -58,7 +58,7 @@ def causal_iv_2sls(y, X, Z, cluster=None):
     and Panel Data*, 2nd ed., MIT Press, Ch. 5. Sargan, J. D. (1958),
     *Econometrica* 26:393-415, for the overidentification test.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._caus_iv import add_intercept, annihilator, first_stage_f, projection
 

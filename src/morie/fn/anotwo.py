@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import pandas as pd
-from scipy import stats
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 from ._containers import TestResult
 from ._helpers import _validate_df

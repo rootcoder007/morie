@@ -1088,7 +1088,7 @@ def _register_descriptive() -> int:
                         "max": series.max(),
                     }
                 if op == "ci_mean":
-                    from scipy import stats
+                    from morie.fn import _stats_core as stats
 
                     n = len(series)
                     m = series.mean()
@@ -1105,16 +1105,16 @@ def _register_descriptive() -> int:
                     q = args[2] if len(args) > 2 else 0.5
                     return series.quantile(float(q))
                 if op == "trimmed_mean":
-                    from scipy import stats
+                    from morie.fn import _stats_core as stats
 
                     pct = float(args[2]) if len(args) > 2 else 0.1
                     return stats.trim_mean(series.values, pct)
                 if op == "geometric_mean":
-                    from scipy import stats
+                    from morie.fn import _stats_core as stats
 
                     return stats.gmean(series[series > 0].values)
                 if op == "harmonic_mean":
-                    from scipy import stats
+                    from morie.fn import _stats_core as stats
 
                     return stats.hmean(series[series > 0].values)
 

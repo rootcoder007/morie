@@ -30,7 +30,7 @@ def overlap_diagnostics(
     Imbens, G. W. (2015). Matching methods in practice: Three examples.
     *Journal of Human Resources*, 50(2), 373--419.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     pt = np.asarray(ps_treated, dtype=float)
     pc = np.asarray(ps_control, dtype=float)

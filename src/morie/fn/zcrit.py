@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """z critical value."""
 
-from scipy.stats import norm
+from ._stats_core import norm
 
 
 def zcrit(alpha: float = 0.05, two_sided: bool = True) -> float:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.stats import kurtosis, skew
+from ._stats_core import kurtosis, skew
 
 from ._containers import DescriptiveResult
 

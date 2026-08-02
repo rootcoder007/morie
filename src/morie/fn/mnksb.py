@@ -147,7 +147,7 @@ def _bounds(mu1, mu0, p1, p0, y0, y1, mtr):
 
 
 def _norm_ppf(q):
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     return float(norm.ppf(q))
 

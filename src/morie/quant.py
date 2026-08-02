@@ -144,7 +144,7 @@ def _beta_pdf(x: F64, d: int) -> F64:
 
     For large d, this concentrates around 0 with variance ~1/d.
     """
-    from scipy.special import gammaln
+    from morie.fn._sci_core import gammaln
 
     log_coeff = gammaln(d / 2) - 0.5 * np.log(np.pi) - gammaln((d - 1) / 2)
     exponent = (d - 3) / 2

@@ -2,7 +2,7 @@
 """Mean and variance of Wilcoxon signed-rank statistic T+ under H0."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

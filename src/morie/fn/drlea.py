@@ -20,8 +20,8 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from scipy.special import expit
-from scipy.stats import norm as _norm
+from ._sci_core import expit
+from ._stats_core import norm as _norm
 
 __all__ = ["drlea"]
 

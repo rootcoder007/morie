@@ -62,7 +62,7 @@ def ma_robust_variance_est(yi, X, cluster, w=None, small_sample=True):
     E. (2015), *Psychological Methods* 20:375-393, for the
     small-sample correction.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     y = np.asarray(yi, dtype=float).ravel()
     A = np.atleast_2d(np.asarray(X, dtype=float))

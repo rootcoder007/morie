@@ -88,7 +88,7 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
         ...
     ValueError: n_intervals must be at least 1
     """
-    from scipy.stats import chi2, norm
+    from ._stats_core import chi2, norm
 
     t, e, Xm = prepare(time, event, X)
     n_intervals = int(n_intervals)

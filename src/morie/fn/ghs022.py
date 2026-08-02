@@ -1,7 +1,7 @@
 """Cell-count sufficient statistic N_epsilon counting how many of n observations fall into the partition set A_epsilon.."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

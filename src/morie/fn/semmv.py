@@ -120,7 +120,7 @@ def spatial_error_ml(
 
     ll_0, _, _ = _concentrated_ll(0.0)
     lr_stat = 2.0 * (ll_hat - ll_0)
-    from scipy.stats import chi2 as _chi2
+    from ._stats_core import chi2 as _chi2
 
     p_value = float(1.0 - _chi2.cdf(max(lr_stat, 0), df=1))
 

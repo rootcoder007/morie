@@ -885,7 +885,7 @@ class PolyglotEngine:
     def _preload_python(self) -> None:
         try:
             import numpy as np
-            import pandas as pd
+            from morie.fn import _frame_core as pd
 
             self._py_ns["np"] = np
             self._py_ns["pd"] = pd
@@ -1339,7 +1339,7 @@ class PolyglotEngine:
                 body = "\n".join(" | ".join(str(v) for v in row) for row in rows[:100])
                 stdout = f"{header}\n{sep}\n{body}" if rows else f"{header}\n(0 rows)"
                 try:
-                    import pandas as pd
+                    from morie.fn import _frame_core as pd
 
                     df = pd.DataFrame(rows, columns=cols)
                     self._py_ns["_last_query"] = df

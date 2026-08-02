@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from ._containers import DescriptiveResult
 from ._helpers import _extract_col

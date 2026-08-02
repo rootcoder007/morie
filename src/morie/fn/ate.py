@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """IPW-weighted OLS ATE estimator."""
 
-import pandas as pd
+from . import _frame_core as pd
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""

@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import f as f_dist
+from ._stats_core import f as f_dist
 
 
 def pf(

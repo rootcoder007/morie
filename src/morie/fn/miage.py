@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn.mi_cf import mi_configural
 from morie.fn.mi_mt import mi_metric

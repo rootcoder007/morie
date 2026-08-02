@@ -2,7 +2,7 @@
 """Empirical semivariogram estimation."""
 
 from . import _array_core as np
-from scipy.spatial.distance import pdist
+from ._sci_core import pdist
 
 from ._containers import DescriptiveResult
 

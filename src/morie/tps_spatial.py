@@ -13,7 +13,7 @@ All emit RichResult.
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult
 
@@ -238,7 +238,7 @@ def kde_density(df: pd.DataFrame, *, bandwidth: float = 0.005, ds_name: str = "?
     coords = coords[(coords["LAT_WGS84"] != 0) & (coords["LONG_WGS84"] != 0)]
     if coords.shape[0] < 50:
         return RichResult(title=f"KDE -- {ds_name}", warnings=[f"only {coords.shape[0]} geocoded"])
-    from scipy.stats import gaussian_kde
+    from morie.fn._stats_core import gaussian_kde
 
     pts = coords.values.T
     kde = gaussian_kde(pts, bw_method=bandwidth)

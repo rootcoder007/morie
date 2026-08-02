@@ -42,7 +42,7 @@ def doubling_time(
     Vynnycky, E., & White, R. G. (2010). *An Introduction to
     Infectious Disease Modelling*. Oxford University Press, Ch. 2.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if r is None and incidence is None:
         raise ValueError("Provide either r or incidence.")

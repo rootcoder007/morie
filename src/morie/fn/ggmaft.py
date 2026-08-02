@@ -88,9 +88,9 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
     ...      < generalized_gamma_aft(t2, e2, X)["lr_vs_weibull"])
     True
     """
-    from scipy.optimize import minimize
-    from scipy.special import gammaln
-    from scipy.stats import chi2, gamma as gamma_dist
+    from ._sci_core import minimize
+    from ._sci_core import gammaln
+    from ._stats_core import chi2, gamma as gamma_dist
 
     t, e, Xm = prepare(time, event, X)
     if np.any(t <= 0):
@@ -104,7 +104,7 @@ def generalized_gamma_aft(time, event, X, max_iter=500, tol=1e-6):
         sigma = np.exp(np.clip(ls, -20, 20))
         z = (logt - A @ b) / sigma
         if abs(q) < 1e-6:                       # log-normal limit
-            from scipy.stats import norm
+            from ._stats_core import norm
 
             ld, lsv = norm.logpdf(z), norm.logsf(z)
         else:

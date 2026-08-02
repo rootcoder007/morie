@@ -2,7 +2,7 @@
 """Mean and variance of linear rank statistic T_N = sum a_i Z_i under H0."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

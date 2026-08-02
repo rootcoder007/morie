@@ -2,7 +2,7 @@
 """Inverse distance weighting interpolation."""
 
 from . import _array_core as np
-from scipy.spatial.distance import cdist
+from ._sci_core import cdist
 
 from ._containers import DescriptiveResult
 

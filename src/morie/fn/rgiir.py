@@ -37,7 +37,7 @@ def rangayyan_iir_filter(x, cutoff, order=4, fs=1.0, btype="low"):
         of low-frequency noise: Butterworth highpass filters", p.161
         (Sec 3.7 "Frequency-domain Filters", p.153).
     """
-    from scipy.signal import butter, sosfiltfilt
+    from ._signal_core import butter, sosfiltfilt
 
     x = np.asarray(x, dtype=float)
     nyq = 0.5 * fs

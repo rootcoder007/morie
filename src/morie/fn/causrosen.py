@@ -85,7 +85,7 @@ def causal_rosenbaum_bound(paired_diff, gamma_max=3.0, n_gamma=25, alpha=0.05):
         ...
     ValueError: gamma_max must be at least 1
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     d = np.atleast_1d(np.asarray(paired_diff, dtype=float)).ravel()
     d = d[d != 0]

@@ -86,7 +86,7 @@ def autocorrelation(y, lag_max=None, ci=0.95):
         ...
     ValueError: lag_max must be between 1 and 2
     """
-    from scipy.stats import chi2, norm
+    from ._stats_core import chi2, norm
 
     y = np.atleast_1d(np.asarray(y, dtype=float)).ravel()
     n = y.size

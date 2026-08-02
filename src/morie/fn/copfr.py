@@ -48,7 +48,7 @@ def copula_frailty(time1, event1, time2, event2, family="clayton", theta=None):
     Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas*.
     Springer. Ch. 3, Table 3.2 p. 54.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if family not in FAMILIES:
         raise ValueError(f"family must be one of {FAMILIES}, got {family!r}.")

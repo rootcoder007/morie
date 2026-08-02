@@ -44,7 +44,7 @@ def copod(X, skew_correction=True):
     copula-based outlier detection. *Proceedings of the IEEE
     International Conference on Data Mining (ICDM)*, 1118-1123.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     X = np.asarray(X, dtype=float)
     if X.ndim == 1:

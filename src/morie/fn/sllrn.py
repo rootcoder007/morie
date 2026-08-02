@@ -84,7 +84,7 @@ def sllrn(
         for k, (_, predict_fn) in enumerate(learners):
             Z[val_idx, k] = predict_fn(X[train_idx], y[train_idx], X[val_idx])
 
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     def cv_loss(w):
         pred = Z @ w

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Partially Linear Regression (PLR) ATE via DoubleML."""
 
-import pandas as pd
+from . import _frame_core as pd
 
 
 def estimate_plr(

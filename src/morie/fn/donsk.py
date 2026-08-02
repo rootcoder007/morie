@@ -86,7 +86,7 @@ def donsk(
     van der Vaart, A.W. & Wellner, J.A. (1996). *Weak Convergence and
     Empirical Processes*, Sec. 2.5. Springer.
     """
-    from scipy.stats import norm as _norm
+    from ._stats_core import norm as _norm
 
     x = np.asarray(x, dtype=float).ravel()
     if x.size == 0:

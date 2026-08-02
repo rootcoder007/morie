@@ -37,7 +37,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 __all__ = [
     "mrm_standardised_difference",

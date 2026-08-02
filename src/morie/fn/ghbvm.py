@@ -2,7 +2,7 @@
 """Semiparametric Bernstein–von Mises diagnostic."""
 
 from . import _array_core as np
-from scipy.stats import kstest, norm
+from ._stats_core import kstest, norm
 
 from ._richresult import RichResult
 

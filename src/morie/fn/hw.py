@@ -2,7 +2,7 @@
 """Hardy-Weinberg equilibrium chi-square test."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._containers import GenomicsResult
 

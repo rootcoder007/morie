@@ -25,7 +25,7 @@ def trimmed_mean(
     -------
     ESRes
     """
-    from scipy.stats import trim_mean
+    from ._stats_core import trim_mean
 
     a = np.asarray(x, dtype=float)
     a = a[np.isfinite(a)]

@@ -9,7 +9,7 @@ Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5t
 """
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 __all__ = ["runsq"]
 

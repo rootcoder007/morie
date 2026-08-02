@@ -21,7 +21,7 @@ from itertools import combinations
 from typing import Any
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 __all__ = ["pcalg"]
 

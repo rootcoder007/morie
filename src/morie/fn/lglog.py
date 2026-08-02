@@ -72,7 +72,7 @@ def lglog(
     Bennett, S. (1983). Journal of the Royal Statistical Society, Series C,
     32(2), 165-171.
     """
-    from scipy import optimize as _opt
+    from ._sci_core import optimize as _opt
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

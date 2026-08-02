@@ -11,7 +11,7 @@ All emit RichResult.
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult
 
@@ -75,7 +75,7 @@ def seasonal_pattern(df: pd.DataFrame, *, ds_name: str = "?") -> RichResult:
     """Month / day-of-week / hour-of-day cyclic patterns + chi-square
     test of uniformity.
     """
-    from scipy.stats import chisquare
+    from morie.fn._stats_core import chisquare
 
     sections = []
 

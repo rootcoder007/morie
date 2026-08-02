@@ -50,7 +50,7 @@ def conjugate_posterior(
     if len(arr) == 0:
         raise ValueError("data must not be empty.")
 
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     if model == "normal":
         p = prior_params or {"mu": 0.0, "var": 1.0}

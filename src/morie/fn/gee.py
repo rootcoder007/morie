@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import stats as _st
+from . import _stats_core as _st
 
 from ._containers import RegressionResult
 
@@ -55,7 +55,7 @@ def gee_regression(
         X = np.column_stack([np.ones(n), X])
     k = X.shape[1]
 
-    from scipy import special
+    from ._sci_core import special
 
     def _link(eta):
         if family == "binomial":

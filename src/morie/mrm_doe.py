@@ -40,7 +40,7 @@ from __future__ import annotations
 from collections.abc import Callable, Sequence
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 from scipy import stats
 
 __all__ = [

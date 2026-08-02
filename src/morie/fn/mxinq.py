@@ -48,7 +48,7 @@ def mxinq(
         raise ValueError("x must be non-empty.")
 
     if cdf_func is None:
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         cdf_func = norm.cdf
 

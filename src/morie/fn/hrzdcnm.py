@@ -47,7 +47,7 @@ def hrz_deconv_normality(fn_u, f_u, n, h, b, bias=0.0, sigma=1.0):
     Econometrics*. Springer. Ch. 5, Sec. 5.1.3 (asymptotic normality of the density
     estimator).
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     n = int(n)
     h = float(h)

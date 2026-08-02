@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn.rsem import rsem
 
@@ -86,7 +86,7 @@ def rmci(
             }
         )
 
-    from scipy import stats as sp
+    from . import _stats_core as sp
 
     z_crit = sp.norm.ppf(1.0 - alpha / 2.0)
 

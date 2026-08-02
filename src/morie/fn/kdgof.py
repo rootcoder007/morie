@@ -55,7 +55,7 @@ def kdgof(
     Fan, Y. (1994). Testing the goodness of fit of a parametric density
         function by kernel method. *Econometric Theory*, 10(2), 316-356.
     """
-    from scipy.stats import norm, uniform
+    from ._stats_core import norm, uniform
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

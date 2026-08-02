@@ -1,7 +1,7 @@
 """Spatial autoregressive lag model (SAR lag, ML)."""
 
 from . import _array_core as np
-from scipy import optimize
+from ._sci_core import optimize
 
 from ._schab_rho import safe_search_interval
 

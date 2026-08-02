@@ -2,9 +2,9 @@
 """Negative binomial regression (GLM) via IRLS."""
 
 from . import _array_core as np
-from scipy.optimize import minimize
-from scipy.special import gammaln
-from scipy.stats import norm
+from ._sci_core import minimize
+from ._sci_core import gammaln
+from ._stats_core import norm
 
 from morie.fn._containers import RegressionResult
 

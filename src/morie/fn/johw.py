@@ -69,7 +69,7 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
     Principles and Practice* (3rd ed.). OTexts. Sec. 8.3
     (Holt-Winters' seasonal method).
     """
-    from scipy import optimize
+    from ._sci_core import optimize
 
     y = np.asarray(y, dtype=float).ravel()
     n = y.size

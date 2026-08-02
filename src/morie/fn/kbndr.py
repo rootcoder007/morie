@@ -100,7 +100,7 @@ def kbndr(
             mask &= x_eval <= upper
         density[~mask] = 0.0
     elif method == "renormalization":
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         density = _gauss_kde(x_eval, data)
         a_lo = (lower - data[None, :]) / bw if not np.isneginf(lower) else -np.inf

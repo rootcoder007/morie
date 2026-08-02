@@ -121,7 +121,7 @@ def spatial_did(
     se_delta = float(se[did_idx])
     t_stat = delta / se_delta if se_delta > 0 else 0.0
 
-    from scipy.stats import t as t_dist
+    from ._stats_core import t as t_dist
 
     p_value = float(2 * (1 - t_dist.cdf(abs(t_stat), df=max(n - p, 1))))
 

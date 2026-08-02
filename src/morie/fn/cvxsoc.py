@@ -108,7 +108,7 @@ def boyd_socp(f, A, b, c, d, x0=None):
     >>> bool(np.all(r["rhs"] >= -1e-08))
     True
     """
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     fv = np.atleast_1d(np.asarray(f, dtype=float)).ravel()
     n = fv.size

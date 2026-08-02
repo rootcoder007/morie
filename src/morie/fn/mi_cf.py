@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._cfa_engine import (
     cov_from_data,
@@ -86,7 +86,7 @@ def mi_configural(
         total_df += result["df"]
         total_n += n
 
-    from scipy import stats as sp
+    from . import _stats_core as sp
 
     pooled_p = float(1 - sp.chi2.cdf(total_chi2, total_df)) if total_df > 0 else 1.0
 

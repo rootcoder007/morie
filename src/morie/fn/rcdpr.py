@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -87,7 +87,7 @@ def recidivism_predictors(
     except np.linalg.LinAlgError:
         se = np.full(len(beta), np.nan)
 
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     z_vals = beta / np.where(se > 0, se, np.nan)
     p_vals = 2 * _st.norm.sf(np.abs(z_vals))

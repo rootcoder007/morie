@@ -22,7 +22,7 @@ from typing import Any
 # pandas / the envhealth deps.
 def _load_deps():
     import numpy as np
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     from morie import envhealth
 

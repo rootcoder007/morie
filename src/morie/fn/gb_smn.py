@@ -2,7 +2,7 @@
 """Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

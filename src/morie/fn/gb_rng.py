@@ -38,7 +38,7 @@ def gibbons_range_dist(w, n, f=None, F=None):
     Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
     Statistical Inference* (5th ed.). CRC Press. Ch. 2.7.2.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     w = float(w)
     if w <= 0:

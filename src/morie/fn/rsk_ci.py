@@ -5,7 +5,7 @@ import math
 from typing import Union
 
 from . import _array_core as np
-import scipy.stats as stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

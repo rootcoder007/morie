@@ -2,7 +2,7 @@
 """Friedman two-way ANOVA by ranks (repeated measures)."""
 
 from . import _array_core as np
-from scipy import stats as sp_stats
+from . import _stats_core as sp_stats
 
 __all__ = ["frdmt"]
 

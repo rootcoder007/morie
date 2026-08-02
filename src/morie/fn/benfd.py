@@ -21,7 +21,7 @@ def benfords_law_test(data, cdf=None):
     Benford F (1938). The Law of Anomalous Numbers. Proc APS 78(4):551-572.
     Nigrini MJ (2012). Benford's Law. Wiley.
     """
-    from scipy import stats as sp_stats
+    from . import _stats_core as sp_stats
 
     arr = np.abs(np.asarray(data, dtype=np.float64).ravel())
     arr = arr[arr > 0]

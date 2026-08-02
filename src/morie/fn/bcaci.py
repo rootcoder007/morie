@@ -6,7 +6,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from . import _array_core as np
-from scipy import stats as _st
+from . import _stats_core as _st
 
 from ._containers import DescriptiveResult
 

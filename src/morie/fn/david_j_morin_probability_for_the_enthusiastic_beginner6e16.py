@@ -1,7 +1,7 @@
 """Correlation equation extracted from David J. Morin - Probability  For the Enthusiastic Beginner.."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.stats import gaussian_kde
+from ._stats_core import gaussian_kde
 
 
 def dirichlet_process_kde(

@@ -1037,7 +1037,7 @@ def verify_chi2(observed: list[list[int]]) -> dict:
     0.0
     """
     import numpy as np
-    from scipy import stats as sps
+    from morie.fn import _stats_core as sps
 
     obs = np.asarray(observed, dtype=float)
     n = obs.sum()

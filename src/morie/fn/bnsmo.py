@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import stats
-from scipy.optimize import minimize
+from . import _stats_core as stats
+from ._sci_core import minimize
 
 
 def bnsmo(y: np.ndarray, X: np.ndarray, cdf=None, *, bandwidth: float | None = None, seed: int | None = None) -> dict:

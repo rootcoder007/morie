@@ -23,7 +23,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from scipy.special import expit, logit
+from ._sci_core import expit, logit
 
 from ._richresult import RichResult
 
@@ -101,7 +101,7 @@ def calbt(
             p = np.clip(p, 1e-8, 1 - 1e-8)
             return -float(np.sum(y_true * np.log(p) + (1 - y_true) * np.log(1 - p)))
 
-        from scipy.optimize import minimize
+        from ._sci_core import minimize
 
         res = minimize(
             _nll, x0=[1.0, 0.0], method="Nelder-Mead", options={"xatol": 1e-6, "fatol": 1e-6, "maxiter": 500}

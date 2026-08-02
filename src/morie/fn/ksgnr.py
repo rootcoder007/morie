@@ -45,7 +45,7 @@ def ksgnr(data: np.ndarray, cdf=None, *, mu0: float = 0.0, bw: float | None = No
         kernel-type sign test and other nonparametric tests. *Biometrika*,
         73(3), 723-726.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

@@ -2,7 +2,7 @@
 """EDF statistic T_n(x) = nS_n(x) has binomial distribution with params n and F(x)."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

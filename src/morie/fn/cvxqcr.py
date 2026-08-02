@@ -100,7 +100,7 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
         ...
     ValueError: constraint 0 has an indefinite P (min eigenvalue -2), so the QCQP is nonconvex and NP-hard in general; pass require_convex=False to accept a local solution, or use boyd_qcqp_relaxation for a certified lower bound
     """
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     P0m = np.atleast_2d(np.asarray(P0, dtype=float))
     q0v = np.atleast_1d(np.asarray(q0, dtype=float)).ravel()

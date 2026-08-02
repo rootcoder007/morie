@@ -2,7 +2,7 @@
 """Multinomial probit for spatial choice (Train 2009, GHK simulator)."""
 
 from . import _array_core as np
-from scipy.stats import norm
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

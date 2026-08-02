@@ -23,7 +23,7 @@ def ljung_box_test_fn(residuals: np.ndarray, nlags: int = 20, cdf=None) -> Descr
     :param nlags: Number of lags h (default 20).
     :return: DescriptiveResult with Q statistic and p-value.
     """
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     residuals = np.asarray(residuals, dtype=float).ravel()
     n = len(residuals)

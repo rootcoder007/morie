@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Any, Union
 
 from . import _array_core as np
-from scipy.optimize import minimize
+from ._sci_core import minimize
 
 
 def bayesian_propensity(

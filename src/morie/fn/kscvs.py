@@ -55,7 +55,7 @@ def kscvs(
     Li, Q. & Racine, J. S. (2007). *Nonparametric Econometrics*.
         Princeton University Press. Chapter 12.
     """
-    from scipy.stats import norm, uniform
+    from ._stats_core import norm, uniform
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

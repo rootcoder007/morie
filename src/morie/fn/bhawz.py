@@ -51,7 +51,7 @@ def bayesian_hazard(
                 d_k[k] += d[i]
                 break
 
-    from scipy import stats as st
+    from . import _stats_core as st
 
     post_a = prior_a + d_k
     post_b = prior_b + e_k

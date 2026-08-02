@@ -102,7 +102,7 @@ def boyd_qp_dual(P, q, G, h):
         ...
     ValueError: P must be positive definite; smallest eigenvalue -1
     """
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     Pm = np.atleast_2d(np.asarray(P, dtype=float))
     qv = np.atleast_1d(np.asarray(q, dtype=float)).ravel()

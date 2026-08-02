@@ -53,7 +53,7 @@ def gibbons_pitman_efficiency(test1, test2, sampler, theta0=0.0, delta=0.5,
     Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
     Statistical Inference* (5th ed.). CRC Press. Ch. 1.2.11.
     """
-    from scipy import stats as st
+    from . import _stats_core as st
 
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must lie in (0, 1), got {alpha}.")

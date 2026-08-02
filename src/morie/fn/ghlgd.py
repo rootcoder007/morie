@@ -2,7 +2,7 @@
 """Log-density estimation by exponential-family expansion."""
 
 from . import _array_core as np
-from scipy.optimize import minimize
+from ._sci_core import minimize
 
 from ._richresult import RichResult
 

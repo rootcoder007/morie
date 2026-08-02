@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult
 from .tps_datasets import (

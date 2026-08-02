@@ -35,7 +35,7 @@ def edge_correction(points, window, method="ripley"):
     )
 
     if method == "ripley":
-        from scipy.spatial.distance import pdist, squareform
+        from ._sci_core import pdist, squareform
 
         D = squareform(pdist(pts))
         weights = np.ones((n, n))

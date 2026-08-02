@@ -1,7 +1,7 @@
 """Spatio-temporal prediction intervals (Schabenberger & Gotway Ch 9)."""
 
 from . import _array_core as np
-from scipy.spatial.distance import cdist
+from ._sci_core import cdist
 
 
 def stprd(
@@ -40,7 +40,7 @@ def stprd(
     ----------
     Schabenberger & Gotway (2005), Ch. 9.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     coords = np.asarray(coords, dtype=float)
     times = np.asarray(times, dtype=float)

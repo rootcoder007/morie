@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import stats as sp_stats
+from . import _stats_core as sp_stats
 
 from morie.fn._containers import ESRes
 

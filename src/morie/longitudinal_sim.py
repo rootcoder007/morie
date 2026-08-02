@@ -40,7 +40,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 __all__ = [
     "sync_rng",
