@@ -1730,8 +1730,8 @@ def _ruhela_aggregate_on(
         instead of including it as a categorical FE
     """
     try:
-        import statsmodels.api as sm
-        import statsmodels.formula.api as smf
+        from morie.fn import _glm_core as sm
+        from morie.fn._glm_core import formula as smf
     except ImportError:
         return RichResult(
             title=title,

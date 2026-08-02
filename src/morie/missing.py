@@ -64,7 +64,7 @@ except ImportError:
     RandomForestClassifier = _MissingDep('RandomForestClassifier')
     RandomForestRegressor = _MissingDep('RandomForestRegressor')
 try:
-    from sklearn.experimental import enable_iterative_imputer  # noqa: F401
+    from morie.fn._ml_core import enable_iterative_imputer  # noqa: F401
 except ImportError:
     enable_iterative_imputer = _MissingDep('enable_iterative_imputer')
 try:

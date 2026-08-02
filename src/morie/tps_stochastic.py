@@ -249,7 +249,7 @@ def sarima_forecast(
 ) -> RichResult:
     """Seasonal ARIMA forecast on monthly incident counts."""
     try:
-        import statsmodels.api as sm
+        from morie.fn import _glm_core as sm
     except ImportError:
         return RichResult(title=f"SARIMA -- {ds_name}", warnings=["statsmodels not installed"])
     dt = _date_series(df)

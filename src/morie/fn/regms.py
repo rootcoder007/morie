@@ -47,9 +47,7 @@ def regime_switching(x, k_regimes=2):
         raise ValueError(f"Need at least 4*K obs, got {n}, K={k_regimes}.")
 
     try:
-        from statsmodels.tsa.regime_switching.markov_regression import (
-            MarkovRegression,
-        )
+        from ._ts_core import MarkovRegression
 
         mod = MarkovRegression(y, k_regimes=k_regimes, switching_variance=True)
         fit = mod.fit(disp=False)

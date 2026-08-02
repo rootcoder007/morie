@@ -916,7 +916,7 @@ def anova_table(
     -------
     DataFrame or str
     """
-    import statsmodels.api as sm_api
+    from morie.fn import _glm_core as sm_api
 
     anova_df = sm_api.stats.anova_lm(model, typ=typ)
 

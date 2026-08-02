@@ -2031,3 +2031,72 @@ def precision_recall_fscore_support(y_true, y_pred, average=None,
 
 metrics.precision_recall_fscore_support = staticmethod(
     precision_recall_fscore_support)
+
+
+# ===================================================== imputation
+
+def enable_iterative_imputer():
+    """No-op: native IterativeImputer is always available."""
+
+
+class IterativeImputer:
+    """Round-robin regression imputation (BayesianRidge per column)."""
+
+    def __init__(self, max_iter=10, random_state=0, tol=1e-3, **kw):
+        del kw
+        self.max_iter = max_iter
+        self.tol = tol
+
+    def fit_transform(self, X, y=None):
+        del y
+        Xd = [[float(v) if v is not None and v == v else None
+               for v in row]
+              for row in (X.tolist() if hasattr(X, "tolist")
+                          else X)]
+        n, d = len(Xd), len(Xd[0])
+        miss = [(r, c) for r in range(n) for c in range(d)
+                if Xd[r][c] is None]
+        # initial fill: column means
+        means = []
+        for c in range(d):
+            vals = [Xd[r][c] for r in range(n)
+                    if Xd[r][c] is not None]
+            means.append(_math.fsum(vals) / len(vals)
+                         if vals else 0.0)
+        for r, c in miss:
+            Xd[r][c] = means[c]
+        for _sweep in range(self.max_iter):
+            delta = 0.0
+            for c in range(d):
+                rows_c = [r for r, cc in miss if cc == c]
+                if not rows_c:
+                    continue
+                obs = [r for r in range(n) if r not in set(rows_c)]
+                feats = [j for j in range(d) if j != c]
+                reg = BayesianRidge().fit(
+                    [[Xd[r][j] for j in feats] for r in obs],
+                    [Xd[r][c] for r in obs])
+                pred = reg.predict(
+                    [[Xd[r][j] for j in feats] for r in rows_c])
+                for k, r in enumerate(rows_c):
+                    new = float(pred[k])
+                    delta = _bi.max(delta, abs(new - Xd[r][c]))
+                    Xd[r][c] = new
+            if delta < self.tol:
+                break
+        return _ac.marr(Xd)
+
+    def fit(self, X, y=None):
+        self._fitted = self.fit_transform(X)
+        return self
+
+    def transform(self, X):
+        return self.fit_transform(X)
+
+
+class impute:
+    IterativeImputer = IterativeImputer
+
+
+class experimental:
+    enable_iterative_imputer = staticmethod(enable_iterative_imputer)

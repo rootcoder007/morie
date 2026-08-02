@@ -1126,7 +1126,7 @@ def estimate_late(
 
     # Try linearmodels IV2SLS first
     try:
-        from linearmodels.iv import IV2SLS as LM_IV2SLS
+        from morie.fn._glm_core import IV2SLS_LM as LM_IV2SLS
 
         if covariates:
             exog = sm.add_constant(frame[covariates].values.astype(float))
@@ -1163,7 +1163,7 @@ def estimate_late(
 
     # Try statsmodels IV2SLS
     try:
-        from statsmodels.sandbox.regression.gmm import IV2SLS as SM_IV2SLS
+        from morie.fn._glm_core import IV2SLS as SM_IV2SLS
 
         if covariates:
             exog = np.column_stack(

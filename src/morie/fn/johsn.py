@@ -64,7 +64,7 @@ def johansen_cointegration(x, k_ar_diff=1):
 
     # Prefer statsmodels if available -- robust treatment of trends/lags.
     try:
-        from statsmodels.tsa.vector_ar.vecm import coint_johansen
+        from ._ts_core import coint_johansen
 
         jres = coint_johansen(Y, det_order=0, k_ar_diff=k_ar_diff)
         eig = np.asarray(jres.eig)

@@ -775,3 +775,688 @@ class power:  # namespace mirror for statsmodels.stats.power
 def proportion_effectsize(prop1, prop2):
     return 2.0 * _math.asin(_math.sqrt(prop1)) \
         - 2.0 * _math.asin(_math.sqrt(prop2))
+
+
+# ------------------------------------------------------------ formula *
+
+def _expand_star(rhs):
+    """Expand a*b into a + b + a:b inside a formula RHS."""
+    out = []
+    for t in [s.strip() for s in rhs.split("+")]:
+        if "*" in t and not t.startswith("- "):
+            a, b = [s.strip() for s in t.split("*", 1)]
+            out += [a, b, "%s:%s" % (a, b)]
+        else:
+            out.append(t)
+    return " + ".join(out)
+
+
+_parse_formula_base = _parse_formula
+
+
+def _parse_formula(formula, data):  # noqa: F811
+    lhs, rhs = [s.strip() for s in formula.split("~")]
+    return _parse_formula_base("%s ~ %s" % (lhs, _expand_star(rhs)),
+                               data)
+
+
+def _cat_interaction_cols(t, data, n):
+    """C(a):C(b) -> product dummies with patsy-style names."""
+    left, right = [s.strip() for s in t.split(":")]
+    la = left[2:-1].strip()
+    lb = right[2:-1].strip()
+    va = list(data[la])
+    vb = list(data[lb])
+    lev_a = sorted(set(va), key=str)[1:]
+    lev_b = sorted(set(vb), key=str)[1:]
+    cols = []
+    names = []
+    for A in lev_a:
+        for B in lev_b:
+            cols.append([1.0 if va[i] == A and vb[i] == B else 0.0
+                         for i in range(n)])
+            names.append("C(%s)[T.%s]:C(%s)[T.%s]" % (la, A, lb, B))
+    return cols, names
+
+
+# patch base parser to handle C():C() interactions
+_parse_formula_base2 = _parse_formula_base
+
+
+def _parse_formula_base(formula, data):  # noqa: F811
+    lhs, rhs = [s.strip() for s in formula.split("~")]
+    y = [float(v) for v in data[lhs]]
+    n = len(y)
+    terms = [t.strip() for t in rhs.split("+")]
+    plain = []
+    extra_cols = []
+    extra_names = []
+    for t in terms:
+        if ":" in t and t.count("C(") == 2:
+            cols, names = _cat_interaction_cols(t, data, n)
+            extra_cols += cols
+            extra_names += names
+        else:
+            plain.append(t)
+    y2, X, names = _parse_formula_base2(
+        "%s ~ %s" % (lhs, " + ".join(plain) if plain else "1"), data)
+    for c, nm in zip(extra_cols, extra_names):
+        for i in range(n):
+            X[i].append(c[i])
+        names.append(nm)
+    return y2, X, names
+
+
+# ------------------------------------------------------------ anova_lm
+
+def anova_lm(fit, typ=2):
+    """Type-II ANOVA table for a formula-fitted OLS result."""
+    from . import _frame_core as _fc
+    model = fit.model
+    X = model.X
+    y = model.y
+    names = model.exog_names
+    n = len(y)
+
+    def rss_of(cols):
+        if not cols:
+            ybar = _math.fsum(y) / n
+            return _math.fsum((v - ybar) ** 2 for v in y)
+        k = len(cols)
+        A = [[_math.fsum(X[r][i] * X[r][j] for r in range(n))
+              for j in cols] for i in cols]
+        b = [_math.fsum(X[r][i] * y[r] for r in range(n))
+             for i in cols]
+        beta = list(_ac.linalg.solve(_ac.marr(A),
+                                     _ac.marr(b))._flat())
+        return _math.fsum(
+            (y[r] - _math.fsum(X[r][cols[j]] * beta[j]
+                               for j in range(k))) ** 2
+            for r in range(n))
+
+    # group columns into terms by patsy-style base name
+    def term_of(nm):
+        if nm == "Intercept":
+            return None
+        if ":" in nm:
+            parts = nm.split(":")
+            return ":".join(p.split("[")[0] for p in parts)
+        return nm.split("[")[0]
+
+    terms = []
+    cols_by_term = {}
+    for j, nm in enumerate(names):
+        t = term_of(nm)
+        if t is None:
+            continue
+        if t not in cols_by_term:
+            cols_by_term[t] = []
+            terms.append(t)
+        cols_by_term[t].append(j)
+    full = list(range(len(names)))
+    rss_full = rss_of(full)
+    df_resid = n - len(names)
+    del typ
+    rows_ss, rows_df, rows_F, rows_p = [], [], [], []
+    for t in terms:
+        # type II: drop the term AND any higher-order term containing it
+        drop = set(cols_by_term[t])
+        base_parts = set(t.split(":"))
+        keep_hi = []
+        for u in terms:
+            if u != t and base_parts < set(u.split(":")):
+                keep_hi += cols_by_term[u]
+        reduced = [j for j in full
+                   if j not in drop and j not in set(keep_hi)]
+        comparison = [j for j in full if j not in set(keep_hi)]
+        ss = rss_of(reduced) - rss_of(comparison)
+        dft = len(cols_by_term[t])
+        Fv = (ss / dft) / (rss_full / df_resid)
+        rows_ss.append(ss)
+        rows_df.append(float(dft))
+        rows_F.append(Fv)
+        rows_p.append(_stats.f.sf(Fv, dft, df_resid))
+    rows_ss.append(rss_full)
+    rows_df.append(float(df_resid))
+    rows_F.append(float("nan"))
+    rows_p.append(float("nan"))
+    df = _fc.DataFrame({"sum_sq": rows_ss, "df": rows_df,
+                        "F": rows_F, "PR(>F)": rows_p},
+                       index=terms + ["Residual"])
+    return df
+
+
+class _StatsNS:
+    anova_lm = staticmethod(anova_lm)
+
+
+stats = _StatsNS()
+
+
+# ------------------------------------------------------------ IV2SLS
+
+class IV2SLS:
+    """Two-stage least squares, statsmodels sandbox signature:
+    IV2SLS(endog_y, exog, instrument)."""
+
+    _use_t = True
+
+    def __init__(self, endog, exog, instrument):
+        self.y = _tolist1(endog)
+        self.X = _tolists(exog)
+        self.Z = _tolists(instrument)
+
+    def fit(self, **kw):
+        del kw
+        y, X, Z = self.y, self.X, self.Z
+        n = len(y)
+        kx = len(X[0])
+        kz = len(Z[0])
+        ZtZ = [[_math.fsum(Z[r][i] * Z[r][j] for r in range(n))
+                for j in range(kz)] for i in range(kz)]
+        ZtZinv = _ac.linalg.inv(_ac.marr(ZtZ)).tolist()
+        ZtX = [[_math.fsum(Z[r][i] * X[r][j] for r in range(n))
+                for j in range(kx)] for i in range(kz)]
+        Zty = [_math.fsum(Z[r][i] * y[r] for r in range(n))
+               for i in range(kz)]
+        # Xhat'X = X'Z (Z'Z)^-1 Z'X ; Xhat'y likewise
+        XtPZX = [[_math.fsum(ZtX[a][i] * ZtZinv[a][b] * ZtX[b][j]
+                             for a in range(kz) for b in range(kz))
+                  for j in range(kx)] for i in range(kx)]
+        XtPZy = [_math.fsum(ZtX[a][i] * ZtZinv[a][b] * Zty[b]
+                            for a in range(kz) for b in range(kz))
+                 for i in range(kx)]
+        beta = list(_ac.linalg.solve(_ac.marr(XtPZX),
+                                     _ac.marr(XtPZy))._flat())
+        fitted = [_math.fsum(X[r][j] * beta[j] for j in range(kx))
+                  for r in range(n)]
+        resid = [y[r] - fitted[r] for r in range(n)]
+        df_resid = n - kx
+        sigma2 = _math.fsum(v * v for v in resid) / df_resid
+        cov = [[_ac.linalg.inv(_ac.marr(XtPZX)).tolist()[i][j]
+                * sigma2 for j in range(kx)] for i in range(kx)]
+        names = ["x%d" % (i + 1) for i in range(kx)]
+        llf = float("nan")
+        return RegressionResults(self, beta, cov, df_resid, sigma2,
+                                 fitted, resid, llf, names)
+
+    def predict(self, params, exog=None):
+        X = self.X if exog is None else _tolists(exog)
+        return _ac.marr([
+            _math.fsum(row[j] * params[j]
+                       for j in range(len(params))) for row in X])
+
+
+# ------------------------------------------------------------ tukey
+
+def _ptukey_cdf(q, k, df):
+    """P(Q <= q) for the studentized range (double quadrature)."""
+    if q <= 0:
+        return 0.0
+
+    def inner(u):
+        # k * int phi(z) [Phi(z) - Phi(z - q*u)]^(k-1) dz
+        def f(z):
+            base = _stats.norm.cdf(z) - _stats.norm.cdf(z - q * u)
+            if base <= 0:
+                return 0.0
+            return _math.exp(-0.5 * z * z) / _math.sqrt(
+                2.0 * _math.pi) * base ** (k - 1)
+        total = 0.0
+        m = 160
+        lo, hi = -8.0, 8.0 + q * u
+        for i in range(m):
+            z = lo + (i + 0.5) * (hi - lo) / m
+            total += f(z)
+        return k * total * (hi - lo) / m
+    if df > 200:
+        return _bi.min(1.0, inner(1.0))
+    # integrate over s ~ chi_df / sqrt(df)
+    from ._sci_core import quad as _quad
+
+    def g(s):
+        # density of s: 2 (df/2)^(df/2) / Gamma(df/2) s^(df-1) e^{-df s^2/2}
+        logd = (_math.log(2.0) + 0.5 * df * _math.log(df / 2.0)
+                - _math.lgamma(df / 2.0)
+                + (df - 1.0) * _math.log(s) - df * s * s / 2.0)
+        if logd < -700:
+            return 0.0
+        return _math.exp(logd) * inner(s)
+    val, _ = _quad(g, 1e-4, 4.0, epsabs=1e-9)
+    return _bi.min(1.0, val)
+
+
+def _qsturng(p, k, df):
+    lo, hi = 0.01, 50.0
+    for _ in range(60):
+        mid = 0.5 * (lo + hi)
+        if _ptukey_cdf(mid, k, df) < p:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+class _TukeyResult:
+    def __init__(self, rows, groups):
+        self._rows = rows
+        self.groupsunique = groups
+
+    def summary(self):
+        lines = ["%-10s %-10s %9s %9s %9s %7s" % (
+            "group1", "group2", "meandiff", "lower", "upper",
+            "reject")]
+        for r in self._rows:
+            lines.append("%-10s %-10s %9.4f %9.4f %9.4f %7s" % (
+                str(r["group1"])[:10], str(r["group2"])[:10],
+                r["meandiff"], r["lower"], r["upper"],
+                str(r["reject"])))
+        return "\n".join(lines)
+
+    @property
+    def reject(self):
+        return [r["reject"] for r in self._rows]
+
+    @property
+    def meandiffs(self):
+        return _ac.marr([r["meandiff"] for r in self._rows])
+
+    @property
+    def pvalues(self):
+        return _ac.marr([r["p-adj"] for r in self._rows])
+
+
+def pairwise_tukeyhsd(endog, groups, alpha=0.05):
+    yv = _tolist1(endog)
+    gv = list(groups.tolist() if hasattr(groups, "tolist")
+              else groups)
+    uniq = sorted(set(gv), key=str)
+    k = len(uniq)
+    n = len(yv)
+    means = {}
+    ns = {}
+    for g in uniq:
+        vals = [yv[i] for i in range(n) if gv[i] == g]
+        means[g] = _math.fsum(vals) / len(vals)
+        ns[g] = len(vals)
+    df = n - k
+    mse = _math.fsum((yv[i] - means[gv[i]]) ** 2
+                     for i in range(n)) / df
+    qcrit = _qsturng(1.0 - alpha, k, df)
+    rows = []
+    for a in range(k - 1):
+        for b in range(a + 1, k):
+            g1, g2 = uniq[a], uniq[b]
+            diff = means[g2] - means[g1]
+            se = _math.sqrt(mse / 2.0 * (1.0 / ns[g1]
+                                         + 1.0 / ns[g2]))
+            hw = qcrit * se
+            qstat = abs(diff) / se
+            padj = 1.0 - _ptukey_cdf(qstat, k, df)
+            rows.append({"group1": g1, "group2": g2,
+                         "meandiff": diff, "lower": diff - hw,
+                         "upper": diff + hw,
+                         "reject": abs(diff) > hw,
+                         "p-adj": _bi.max(0.0, _bi.min(1.0, padj))})
+    return _TukeyResult(rows, uniq)
+
+
+class multicomp:
+    pairwise_tukeyhsd = staticmethod(pairwise_tukeyhsd)
+
+
+stats.multicomp = multicomp
+
+
+# ------------------------------------------------------------ lowess/KDE
+
+def lowess(endog, exog, frac=2.0 / 3.0, it=3, return_sorted=True):
+    """Cleveland LOWESS: local linear, tricube weights, robustness
+    iterations."""
+    yv = _tolist1(endog)
+    xv = _tolist1(exog)
+    n = len(xv)
+    order = sorted(range(n), key=lambda i: xv[i])
+    xs = [xv[i] for i in order]
+    ys = [yv[i] for i in order]
+    r = _bi.max(2, int(_math.ceil(frac * n)))
+    delta = [1.0] * n
+    fitted = [0.0] * n
+    for _iter in range(it + 1):
+        for i in range(n):
+            dists = sorted(abs(xs[j] - xs[i]) for j in range(n))
+            h = dists[_bi.min(r - 1, n - 1)] or 1e-300
+            w = []
+            for j in range(n):
+                u = abs(xs[j] - xs[i]) / h
+                wt = (1.0 - u ** 3) ** 3 if u < 1.0 else 0.0
+                w.append(wt * delta[j])
+            sw = _math.fsum(w)
+            if sw <= 0:
+                fitted[i] = ys[i]
+                continue
+            xm = _math.fsum(w[j] * xs[j] for j in range(n)) / sw
+            ym = _math.fsum(w[j] * ys[j] for j in range(n)) / sw
+            sxx = _math.fsum(w[j] * (xs[j] - xm) ** 2
+                             for j in range(n))
+            if sxx <= 1e-300:
+                fitted[i] = ym
+            else:
+                b1 = _math.fsum(w[j] * (xs[j] - xm) * (ys[j] - ym)
+                                for j in range(n)) / sxx
+                fitted[i] = ym + b1 * (xs[i] - xm)
+        if _iter == it:
+            break
+        resid = [ys[j] - fitted[j] for j in range(n)]
+        ar = sorted(abs(v) for v in resid)
+        s = ar[n // 2] if n % 2 else 0.5 * (ar[n // 2 - 1]
+                                            + ar[n // 2])
+        if s <= 0:
+            break
+        delta = [(1.0 - _bi.min(1.0, (abs(resid[j])
+                                      / (6.0 * s))) ** 2) ** 2
+                 for j in range(n)]
+    if return_sorted:
+        return _ac.marr([[xs[i], fitted[i]] for i in range(n)])
+    inv = [0] * n
+    for pos, i in enumerate(order):
+        inv[i] = pos
+    return _ac.marr([fitted[inv[i]] for i in range(n)])
+
+
+class KDEUnivariate:
+    def __init__(self, endog):
+        from . import _stats_core as _sc
+        self._data = _tolist1(endog)
+        self._kde = None
+        self._sc = _sc
+
+    def fit(self, bw=None, **kw):
+        del kw
+        self._kde = self._sc.gaussian_kde(
+            self._data, bw_method=bw if isinstance(bw, float)
+            else None)
+        lo = min(self._data)
+        hi = max(self._data)
+        pad = (hi - lo) * 0.1 or 1.0
+        self.support = _ac.marr(
+            [lo - pad + (hi - lo + 2 * pad) * i / 255.0
+             for i in range(256)])
+        self.density = _ac.marr(self._kde(list(
+            self.support._flat())))
+        return self
+
+    def evaluate(self, points):
+        return _ac.marr(self._kde(
+            [float(v) for v in _ac.asarray(points)._flat()]))
+
+
+class nonparametric:
+    lowess = staticmethod(lowess)
+    KDEUnivariate = KDEUnivariate
+
+
+# ------------------------------------------------------------ GEE
+
+class NegativeBinomial(Family):
+    name = "nbinom"
+
+    def __init__(self, alpha=1.0, link=None):
+        self.alpha_nb = alpha
+        super().__init__(link)
+
+    @staticmethod
+    def default_link():
+        return _LogLink()
+
+    def variance(self, mu):
+        return mu + self.alpha_nb * mu * mu
+
+    def loglike_obs(self, y, mu, scale):
+        a = 1.0 / self.alpha_nb
+        return (_math.lgamma(y + a) - _math.lgamma(a)
+                - _math.lgamma(y + 1.0)
+                + a * _math.log(a / (a + mu))
+                + y * _math.log(mu / (a + mu) + 1e-300))
+
+
+families.NegativeBinomial = NegativeBinomial
+
+
+class Exchangeable:
+    name = "exchangeable"
+
+
+class Independence:
+    name = "independence"
+
+
+class cov_struct:
+    Exchangeable = Exchangeable
+    Independence = Independence
+
+
+class GEE:
+    """GEE with independence/exchangeable working correlation and
+    cluster-robust (sandwich) covariance."""
+
+    _use_t = False
+
+    def __init__(self, endog, exog, groups, family=None,
+                 cov_struct=None, exog_names=None):
+        self.y = _tolist1(endog)
+        self.X = _tolists(exog)
+        self.groups = list(groups.tolist()
+                           if hasattr(groups, "tolist") else groups)
+        self.family = family or Gaussian()
+        self.cs = cov_struct or Independence()
+        k = len(self.X[0])
+        self.exog_names = exog_names or ["x%d" % (i + 1)
+                                         for i in range(k)]
+
+    def fit(self, maxiter=60, **kw):
+        del kw
+        y, X = self.y, self.X
+        n = len(y)
+        k = len(X[0])
+        fam = self.family
+        link = fam.link
+        clusters = {}
+        for i, g in enumerate(self.groups):
+            clusters.setdefault(g, []).append(i)
+        # start from GLM
+        beta = list(GLM(y, X, family=fam,
+                        exog_names=self.exog_names)
+                    .fit().params._flat())
+        rho = 0.0
+        for _it in range(maxiter):
+            eta = [_math.fsum(X[r][j] * beta[j] for j in range(k))
+                   for r in range(n)]
+            mu = [link.ginv(e) for e in eta]
+            var = [_bi.max(fam.variance(m), 1e-10) for m in mu]
+            pres = [(y[r] - mu[r]) / _math.sqrt(var[r])
+                    for r in range(n)]
+            if isinstance(self.cs, Exchangeable):
+                num = 0.0
+                cnt = 0
+                for idx in clusters.values():
+                    m = len(idx)
+                    for a in range(m - 1):
+                        for b in range(a + 1, m):
+                            num += pres[idx[a]] * pres[idx[b]]
+                            cnt += 1
+                rho = num / _bi.max(cnt - k, 1) if cnt else 0.0
+                rho = _bi.max(-0.49, _bi.min(0.99, rho))
+            dmu = [link.dmu_deta(e) for e in eta]
+            # score + information cluster by cluster
+            U = [0.0] * k
+            H = [[0.0] * k for _ in range(k)]
+            meat = [[0.0] * k for _ in range(k)]
+            for idx in clusters.values():
+                m = len(idx)
+                D = [[X[i][j] * dmu[i] for j in range(k)]
+                     for i in idx]
+                A = [_math.sqrt(var[i]) for i in idx]
+                # R^{-1} for exchangeable: (I - rho J/(1+(m-1)rho))/(1-rho)
+                res = [y[i] - mu[i] for i in idx]
+                if isinstance(self.cs, Exchangeable) and m > 1 \
+                        and abs(rho) > 1e-12:
+                    c1 = 1.0 / (1.0 - rho)
+                    c2 = -rho / ((1.0 - rho)
+                                 * (1.0 + (m - 1) * rho))
+                    def rinvv(v):
+                        s = _math.fsum(v)
+                        return [c1 * v[a] + c2 * s
+                                for a in range(m)]
+                else:
+                    def rinvv(v):
+                        return list(v)
+                # V^{-1} r = A^-1 R^-1 A^-1 r
+                arn = rinvv([res[a] / A[a] for a in range(m)])
+                vinv_r = [arn[a] / A[a] for a in range(m)]
+                ui = [_math.fsum(D[a][j] * vinv_r[a]
+                                 for a in range(m))
+                      for j in range(k)]
+                for j in range(k):
+                    U[j] += ui[j]
+                for j1 in range(k):
+                    for j2 in range(k):
+                        meat[j1][j2] += ui[j1] * ui[j2]
+                # H = D' V^-1 D
+                for j2 in range(k):
+                    col = rinvv([D[a][j2] / A[a] for a in range(m)])
+                    vinv_d = [col[a] / A[a] for a in range(m)]
+                    for j1 in range(k):
+                        H[j1][j2] += _math.fsum(
+                            D[a][j1] * vinv_d[a] for a in range(m))
+            step = list(_ac.linalg.solve(_ac.marr(H),
+                                         _ac.marr(U))._flat())
+            beta = [beta[j] + step[j] for j in range(k)]
+            if max(abs(s) for s in step) < 1e-10:
+                break
+        Hinv = _ac.linalg.inv(_ac.marr(H)).tolist()
+        cov = [[_math.fsum(Hinv[i][a] * meat[a][b] * Hinv[b][j]
+                           for a in range(k) for b in range(k))
+                for j in range(k)] for i in range(k)]
+        eta = [_math.fsum(X[r][j] * beta[j] for j in range(k))
+               for r in range(n)]
+        mu = [link.ginv(e) for e in eta]
+        resid = [y[r] - mu[r] for r in range(n)]
+        res = RegressionResults(self, beta, cov, n - k, 1.0, mu,
+                                resid, float("nan"),
+                                self.exog_names)
+        res.cov_struct_rho = rho
+        return res
+
+    def predict(self, params, exog=None):
+        X = self.X if exog is None else _tolists(exog)
+        link = self.family.link
+        return _ac.marr([link.ginv(
+            _math.fsum(row[j] * params[j]
+                       for j in range(len(params)))) for row in X])
+
+
+def _smf_gee(formula_str, groups, data, family=None,
+             cov_struct=None):
+    y, X, names = _parse_formula(formula_str, data)
+    g = data[groups] if isinstance(groups, str) else groups
+    return GEE(y, X, list(g), family=family, cov_struct=cov_struct,
+               exog_names=names)
+
+
+_Smf.gee = staticmethod(_smf_gee)
+
+
+# ------------------------------------------------------------ IV (LM API)
+
+class _IVDiag:
+    def __init__(self, fstat):
+        self._rows = [{"f.stat": fstat}]
+
+    @property
+    def iloc(self):
+        return self._rows
+
+
+class _IVFirstStage:
+    def __init__(self, fstat):
+        self.diagnostics = _IVDiag(fstat)
+
+
+class _IVLMResults:
+    def __init__(self, params, std_errors, fstat):
+        self.params = _ac.marr(params)
+        self.std_errors = _ac.marr(std_errors)
+        self.first_stage = _IVFirstStage(fstat)
+
+
+class IV2SLS_LM:
+    """linearmodels.iv.IV2SLS-compatible wrapper: named kwargs,
+    robust (HC0) covariance, first-stage F diagnostic."""
+
+    def __init__(self, dependent, exog, endog, instruments):
+        self.y = _tolist1(dependent)
+        self.Xex = _tolists(exog)
+        self.Xen = _tolists(endog)
+        self.Zin = _tolists(instruments)
+
+    def fit(self, cov_type="robust", **kw):
+        del kw
+        n = len(self.y)
+        X = [self.Xex[r] + self.Xen[r] for r in range(n)]
+        Z = [self.Xex[r] + self.Zin[r] for r in range(n)]
+        base = IV2SLS(self.y, X, Z)
+        res = base.fit()
+        beta = list(res.params._flat())
+        k = len(beta)
+        if cov_type == "robust":
+            # HC0 sandwich with Xhat = P_Z X
+            kz = len(Z[0])
+            ZtZ = [[_math.fsum(Z[r][i] * Z[r][j] for r in range(n))
+                    for j in range(kz)] for i in range(kz)]
+            ZtZinv = _ac.linalg.inv(_ac.marr(ZtZ)).tolist()
+            ZtX = [[_math.fsum(Z[r][i] * X[r][j] for r in range(n))
+                    for j in range(k)] for i in range(kz)]
+            Xhat = [[_math.fsum(Z[r][a] * ZtZinv[a][b] * ZtX[b][j]
+                                for a in range(kz)
+                                for b in range(kz))
+                     for j in range(k)] for r in range(n)]
+            resid = [self.y[r] - _math.fsum(X[r][j] * beta[j]
+                                            for j in range(k))
+                     for r in range(n)]
+            bread = _ac.linalg.inv(_ac.marr(
+                [[_math.fsum(Xhat[r][i] * Xhat[r][j]
+                             for r in range(n))
+                  for j in range(k)] for i in range(k)])).tolist()
+            meat = [[_math.fsum(Xhat[r][i] * resid[r] ** 2
+                                * Xhat[r][j] for r in range(n))
+                     for j in range(k)] for i in range(k)]
+            cov = [[_math.fsum(bread[i][a] * meat[a][b]
+                               * bread[b][j]
+                               for a in range(k) for b in range(k))
+                    for j in range(k)] for i in range(k)]
+            se = [_math.sqrt(_bi.max(cov[i][i], 0.0))
+                  for i in range(k)]
+        else:
+            se = list(res.bse._flat())
+        # first-stage F for the instruments (single endog column)
+        en = [row[0] for row in self.Xen]
+        fs_full = OLS(en, Z).fit()
+        fs_red = OLS(en, self.Xex).fit()
+        q = len(self.Zin[0])
+        dfr = n - len(Z[0])
+        F = ((fs_red.ssr - fs_full.ssr) / q) / (fs_full.ssr / dfr) \
+            if fs_full.ssr > 0 else float("inf")
+        return _IVLMResults(beta, se, F)
+
+
+# time-series namespace (native _ts_core)
+from ._ts_core import (  # noqa: E402
+    ARIMA,
+    SARIMAX,
+    MarkovRegression,
+    UnobservedComponents,
+    VECM,
+    coint_johansen,
+    tsa,
+)
