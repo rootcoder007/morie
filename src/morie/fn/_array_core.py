@@ -661,6 +661,48 @@ class _Linalg:
         return beta, None, None, None
 
 
+    @staticmethod
+    def qr(a, mode="reduced"):
+        """Householder QR; returns (Q, R) with Q (m,k), R (k,n), k=min(m,n)."""
+        A = asarray(a)
+        m_, n_ = A.shape
+        R = [row[:] for row in A.data]
+        Q = [[1.0 if i == j else 0.0 for j in range(m_)]
+             for i in range(m_)]
+        for k in range(_bi.min(m_ - 1, n_)):
+            # Householder vector for column k
+            x = [R[i][k] for i in range(k, m_)]
+            normx = _math.sqrt(_math.fsum(v * v for v in x))
+            if normx == 0.0:
+                continue
+            alpha = -normx if x[0] >= 0 else normx
+            v = list(x)
+            v[0] -= alpha
+            vnorm2 = _math.fsum(u * u for u in v)
+            if vnorm2 == 0.0:
+                continue
+            # R = H R
+            for j in range(k, n_):
+                dot = _math.fsum(v[i] * R[k + i][j]
+                                 for i in range(len(v)))
+                c = 2.0 * dot / vnorm2
+                for i in range(len(v)):
+                    R[k + i][j] -= c * v[i]
+            # Q = Q H
+            for i in range(m_):
+                dot = _math.fsum(Q[i][k + t] * v[t]
+                                 for t in range(len(v)))
+                c = 2.0 * dot / vnorm2
+                for t in range(len(v)):
+                    Q[i][k + t] -= c * v[t]
+        kk = _bi.min(m_, n_)
+        if mode == "complete":
+            return marr(Q), marr(R)
+        Qr = [[Q[i][j] for j in range(kk)] for i in range(m_)]
+        Rr = [[R[i][j] for j in range(n_)] for i in range(kk)]
+        return marr(Qr), marr(Rr)
+
+
 linalg = _Linalg()
 
 
@@ -1198,7 +1240,7 @@ def argmin(x):
     return f.index(_bi.min(f))
 
 
-def argsort(x):
+def argsort(x, kind=None):
     f = asarray(x)._flat()
     return marr([float(i) for i in
                  sorted(range(len(f)), key=lambda k: f[k])])
