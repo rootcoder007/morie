@@ -323,32 +323,57 @@ class marr:
         return f.index(_bi.max(f))
 
     # -- reductions ----------------------------------------------------
-    def sum(self, axis=None):
+    def sum(self, axis=None, keepdims=False):
         if axis is None:
-            return float(_math.fsum(self._flat()))
+            v = float(_math.fsum(self._flat()))
+            return marr([v]) if keepdims else v
         if len(self.shape) != 2:
-            raise ValueError("axis reduction needs a 2-D array")
+            # numpy: axis 0 / -1 on a 1-D array is the full reduction
+            v = float(_math.fsum(self._flat()))
+            return marr([v]) if keepdims else v
         if axis == 0:
-            return marr([_math.fsum(self.data[i][j]
-                                    for i in range(self.shape[0]))
-                         for j in range(self.shape[1])])
-        return marr([_math.fsum(row) for row in self.data])
+            out = [_math.fsum(self.data[i][j]
+                              for i in range(self.shape[0]))
+                   for j in range(self.shape[1])]
+            return marr([out]) if keepdims else marr(out)
+        out = [_math.fsum(row) for row in self.data]
+        return marr([[v] for v in out]) if keepdims else marr(out)
 
-    def mean(self, axis=None):
-        if axis is None:
+    def mean(self, axis=None, keepdims=False):
+        if axis is None or len(self.shape) != 2:
             f = self._flat()
-            return float(_math.fsum(f) / len(f))
+            v = float(_math.fsum(f) / len(f))
+            return marr([v]) if keepdims else v
         s = self.sum(axis=axis)
         d = self.shape[0] if axis == 0 else self.shape[1]
-        return s / float(d)
+        out = s / float(d)
+        if keepdims:
+            return marr([out.tolist()]) if axis == 0 else \
+                marr([[v] for v in out._flat()])
+        return out
 
-    def var(self, ddof=0):
+    def var(self, axis=None, ddof=0):
+        if axis is not None and len(self.shape) == 2:
+            m = self.mean(axis=axis)
+            if axis == 0:
+                return marr([_math.fsum(
+                    (self.data[i][j] - m.data[j]) ** 2
+                    for i in range(self.shape[0]))
+                    / (self.shape[0] - ddof)
+                    for j in range(self.shape[1])])
+            return marr([_math.fsum((v - m.data[i]) ** 2
+                                    for v in row)
+                         / (self.shape[1] - ddof)
+                         for i, row in enumerate(self.data)])
         f = self._flat()
         m = _math.fsum(f) / len(f)
         return float(_math.fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
 
-    def std(self, ddof=0):
-        return _math.sqrt(self.var(ddof=ddof))
+    def std(self, axis=None, ddof=0):
+        v = self.var(axis=axis, ddof=ddof)
+        if isinstance(v, marr):
+            return marr([_math.sqrt(u) for u in v._flat()])
+        return _math.sqrt(v)
 
     def max(self):
         return float(_bi.max(self._flat()))
@@ -563,16 +588,16 @@ def sum(x, axis=None):  # noqa: A001
     return asarray(x).sum(axis=axis)
 
 
-def mean(x):
-    return asarray(x).mean()
+def mean(x, axis=None):
+    return asarray(x).mean(axis=axis)
 
 
-def std(x, ddof=0):
-    return asarray(x).std(ddof=ddof)
+def std(x, axis=None, ddof=0):
+    return asarray(x).std(axis=axis, ddof=ddof)
 
 
-def var(x, ddof=0):
-    return asarray(x).var(ddof=ddof)
+def var(x, axis=None, ddof=0):
+    return asarray(x).var(axis=axis, ddof=ddof)
 
 
 def max(x):  # noqa: A001
@@ -584,7 +609,10 @@ def min(x):  # noqa: A001
 
 
 def _axis_reduce(x, axis, red):
-    a = atleast_2d(x)
+    ax = asarray(x)
+    if len(ax.shape) == 1:
+        return red(ax._flat())
+    a = atleast_2d(ax)
     if axis == 0:
         return marr([red(a.data[i][j] for i in range(a.shape[0]))
                      for j in range(a.shape[1])])
@@ -663,8 +691,24 @@ class _Linalg:
         return _Linalg.solve(aa, eye(aa.shape[0]))
 
     @staticmethod
-    def norm(x):
-        return _math.sqrt(_math.fsum(v * v for v in asarray(x)._flat()))
+    def norm(x, ord=None, axis=None):  # noqa: A002
+        a = asarray(x)
+        if axis is not None and len(a.shape) == 2:
+            rows = a.data if axis in (1, -1) else \
+                [[a.data[i][j] for i in range(a.shape[0])]
+                 for j in range(a.shape[1])]
+            return marr([_Linalg.norm(marr(r), ord=ord)
+                         for r in rows])
+        f = a._flat()
+        if ord in (None, 2, "fro"):
+            return _math.sqrt(_math.fsum(v * v for v in f))
+        if ord == 1:
+            return _math.fsum(_bi.abs(v) for v in f)
+        if ord == _math.inf:
+            return _bi.max(_bi.abs(v) for v in f)
+        if ord == -_math.inf:
+            return _bi.min(_bi.abs(v) for v in f)
+        return _math.fsum(_bi.abs(v) ** ord for v in f) ** (1.0 / ord)
 
     @staticmethod
     def lstsq(a, b, rcond=None):
@@ -922,9 +966,21 @@ def isclose(a, b, rtol=1e-5, atol=1e-8):
                                              abs_tol=atol) else 0.0)
 
 
-def diff(x):
-    f = asarray(x)._flat()
-    return marr([f[i + 1] - f[i] for i in range(len(f) - 1)])
+def diff(x, n=1, axis=-1):
+    a = asarray(x)
+    if len(a.shape) == 2:
+        rows = a.data if axis in (1, -1) else \
+            [[a.data[i][j] for i in range(a.shape[0])]
+             for j in range(a.shape[1])]
+        out = [list(diff(marr(r), n=n)._flat()) for r in rows]
+        if axis in (1, -1):
+            return marr(out)
+        return marr([[out[j][i] for j in range(len(out))]
+                     for i in range(len(out[0]))])
+    f = list(a._flat())
+    for _ in range(int(n)):
+        f = [f[i + 1] - f[i] for i in range(len(f) - 1)]
+    return marr(f)
 
 
 def trace(a):
