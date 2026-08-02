@@ -1,6 +1,6 @@
 """Tests for b205.burkov_lm_ch2_perplexity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.b205 import burkov_lm_ch2_perplexity
 

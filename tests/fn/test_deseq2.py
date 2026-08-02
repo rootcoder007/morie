@@ -1,6 +1,6 @@
 """Tests for deseq2.deseq2_differential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.deseq2 import deseq2_differential
 

@@ -1,6 +1,6 @@
 """Tests for rng196.rangayyan_ch4_dicrotic_notch_second_derivative."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng196 import rangayyan_ch4_dicrotic_notch_second_derivative

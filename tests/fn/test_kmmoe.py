@@ -1,6 +1,6 @@
 """Tests for kmmoe.kamath_moe_router_softmax."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmmoe import kamath_moe_router_softmax
 

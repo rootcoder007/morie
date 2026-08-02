@@ -4,7 +4,7 @@ unitnr, spwgts, msmest, prsmtd.
 Assertions are hand-computable identities plus parameter recovery under
 known DGPs, with rates over seeds for anything stochastic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.aiptdd import _logit_fit

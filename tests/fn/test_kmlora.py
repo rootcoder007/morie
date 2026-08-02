@@ -1,6 +1,6 @@
 """Tests for kmlora.kamath_lora_weight_update."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmlora import kamath_lora_weight_update
 

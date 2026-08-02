@@ -1,6 +1,6 @@
 """Tests for tukeyw.tukey_biweight."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tukeyw import tukey_biweight
 

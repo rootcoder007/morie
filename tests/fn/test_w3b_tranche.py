@@ -11,7 +11,7 @@ module under test. A mean-of-inputs stub fails all of them.
 import math
 from itertools import permutations
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.km110 import kamath_ch7_rrf_score

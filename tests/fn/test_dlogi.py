@@ -1,6 +1,6 @@
 """Tests for morie.fn.dlogi -- Logistic PDF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dlogi import dlogi

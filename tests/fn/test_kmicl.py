@@ -1,6 +1,6 @@
 """Tests for kmicl.kamath_in_context_learning_prob."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmicl import kamath_in_context_learning_prob
 

@@ -1,6 +1,6 @@
 """Tests for km111.kamath_ch7_faithfulness_metric."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km111 import kamath_ch7_faithfulness_metric
 

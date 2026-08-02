@@ -13,7 +13,7 @@ re-derivation of the correlation sum plus the dimensions the estimator is
 defined to recover for signals whose attractor dimension is known a priori.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgcrl import rangayyan_correlation_dimension

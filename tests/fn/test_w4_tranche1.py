@@ -12,7 +12,7 @@ stub cannot satisfy.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hma2c import geron_a2c

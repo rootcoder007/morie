@@ -1,6 +1,6 @@
 """Tests for ksr036 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr036 import kosorok_ch2_donsker_bracketing_theorem

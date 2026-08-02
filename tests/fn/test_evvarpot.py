@@ -1,6 +1,6 @@
 """Tests for evvarpot.evt_pot_var."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evvarpot import evt_pot_var
 

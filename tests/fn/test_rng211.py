@@ -1,6 +1,6 @@
 """Tests for rng211.rangayyan_ch4_average_output_noise_power."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng211 import rangayyan_ch4_average_output_noise_power
 

@@ -1,6 +1,6 @@
 """Tests for rng047.rangayyan_ch3_lsi_parallel_combined_h."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng047 import rangayyan_ch3_lsi_parallel_combined_h
 

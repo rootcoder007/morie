@@ -1,6 +1,6 @@
 """Tests for grdpmf.geron_ddpm_forward_process."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grdpmf import geron_ddpm_forward_process
 

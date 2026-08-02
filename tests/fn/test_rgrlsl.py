@@ -1,6 +1,6 @@
 """Tests for rgrlsl.rangayyan_rls_lattice."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgrlsl import rangayyan_rls_lattice
 

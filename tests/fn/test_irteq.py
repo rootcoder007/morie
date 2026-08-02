@@ -1,6 +1,6 @@
 """Tests for irteq -- IRT true-score equating."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.irteq import irt_equating

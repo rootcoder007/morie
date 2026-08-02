@@ -1,6 +1,6 @@
 """Tests for eslkrn.esl_kernel_density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslkrn import esl_kernel_density
 

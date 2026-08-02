@@ -1,6 +1,6 @@
 """Tests for kmverb.kamath_verbalizer_mapping."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmverb import kamath_verbalizer_mapping
 

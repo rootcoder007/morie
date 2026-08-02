@@ -1,6 +1,6 @@
 """Tests for hrzplri.horowitz_plr_identification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzplri import horowitz_plr_identification
 

@@ -1,6 +1,6 @@
 """Tests for hrzecfw.horowitz_empirical_cf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzecfw import horowitz_empirical_cf
 

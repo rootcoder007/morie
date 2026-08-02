@@ -1,6 +1,6 @@
 """Tests for msmcox.msm_cox_marginal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msmcox import msm_cox_marginal
 

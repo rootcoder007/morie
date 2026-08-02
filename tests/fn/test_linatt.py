@@ -1,6 +1,6 @@
 """Tests for linatt.linformer_linear_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.linatt import linformer_linear_attention
 

@@ -1,6 +1,6 @@
 """Tests for rgrespsnd.rangayyan_respiratory_sound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgrespsnd import rangayyan_respiratory_sound
 

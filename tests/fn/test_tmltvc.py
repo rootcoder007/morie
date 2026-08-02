@@ -1,6 +1,6 @@
 """Tests for tmltvc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tmltvc import tmle_time_varying_confound

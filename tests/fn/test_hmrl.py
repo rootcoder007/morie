@@ -1,6 +1,6 @@
 """Tests for hmrl.geron_reinforcement_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmrl import geron_reinforcement_learning
 

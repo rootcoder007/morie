@@ -1,6 +1,6 @@
 """Tests for cttdif.ctt_difficulty."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cttdif import ctt_difficulty
 

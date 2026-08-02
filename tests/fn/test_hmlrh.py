@@ -1,6 +1,6 @@
 """Tests for hmlrh.geron_learning_rate_heuristic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlrh import geron_learning_rate_heuristic
 

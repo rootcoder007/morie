@@ -1,6 +1,6 @@
 """Tests for morie.fn.lrank — Log-rank test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lrank import log_rank, lrank
 

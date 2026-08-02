@@ -1,6 +1,6 @@
 """Tests for tmlnde.tmle_natural_direct."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlnde import tmle_natural_direct
 

@@ -1,6 +1,6 @@
 """sppql -- pseudo-likelihood for spatial GLMMs, Schabenberger Sec. 6.3.5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import _schab_glmm as gm

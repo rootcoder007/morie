@@ -1,6 +1,6 @@
 """Tests for morie.fn.cpchg — PELT change point detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cpchg import changepoint_pelt, cpchg

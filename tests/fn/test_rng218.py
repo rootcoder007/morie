@@ -1,6 +1,6 @@
 """Tests for rng218.rangayyan_ch4_cauchy_schwarz_vectors."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng218 import rangayyan_ch4_cauchy_schwarz_vectors
 

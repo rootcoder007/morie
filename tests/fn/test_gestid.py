@@ -1,6 +1,6 @@
 """Tests for gestid.g_estimation_snm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gestid import g_estimation_snm
 

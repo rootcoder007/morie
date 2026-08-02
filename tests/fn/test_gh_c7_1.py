@@ -1,6 +1,6 @@
 """Tests for gh_c7_1.ghosal_pt_kl_prop."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c7_1 import ghosal_pt_kl_prop
 

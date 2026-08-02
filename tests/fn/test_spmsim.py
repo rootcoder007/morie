@@ -5,7 +5,7 @@ Algorithm source: mgwr (Oshan, Li, Kang, Wolf & Fotheringham), mgwr/search.py
 (Fotheringham, Yang & Kang 2017) is paywalled and was not read.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_gwr import gwr_fit, pairwise_distances, select_bandwidth

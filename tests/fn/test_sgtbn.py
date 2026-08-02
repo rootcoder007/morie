@@ -1,6 +1,6 @@
 """Tests for turning bands simulation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtbn import sgtbn
 

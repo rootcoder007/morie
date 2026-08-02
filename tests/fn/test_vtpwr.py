@@ -10,7 +10,7 @@ Both indices are finite enumerations, so the values below follow from the
 definitions and need no text to certify them.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.vtpwr import voting_power_index as vpi

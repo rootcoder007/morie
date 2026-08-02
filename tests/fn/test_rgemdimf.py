@@ -1,6 +1,6 @@
 """Tests for rgemdimf.rangayyan_emd_imf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgemdimf import rangayyan_emd_imf
 

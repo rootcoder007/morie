@@ -1,6 +1,6 @@
 """Tests for mrkcsr.csr_test (Ripley's K with Monte Carlo envelopes)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mrkcsr import _ripley_k, csr_test

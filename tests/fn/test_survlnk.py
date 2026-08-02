@@ -1,6 +1,6 @@
 """Tests for survlnk.link_function_survival."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survlnk import link_function_survival
 

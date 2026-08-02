@@ -1,6 +1,6 @@
 """Tests for alfpaf.alphafold_pair_repr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfpaf import alphafold_pair_repr
 

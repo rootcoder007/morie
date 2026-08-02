@@ -1,6 +1,6 @@
 """Tests for polqnt.polar_quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.polqnt import polar_quantization
 

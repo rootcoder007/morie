@@ -1,6 +1,6 @@
 """Tests for morie.fn.rskci — risk concordance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import ESRes
 from morie.fn.rskci import risk_concordance

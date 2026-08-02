@@ -1,6 +1,6 @@
 """Tests for morie.fn.sceff — score-based efficient estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sceff import sceff

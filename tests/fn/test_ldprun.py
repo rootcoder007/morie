@@ -1,6 +1,6 @@
 """Tests for ldprun.ld_pruning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ldprun import ld_pruning
 

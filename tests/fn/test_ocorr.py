@@ -1,6 +1,6 @@
 """Tests for morie.fn.ocorr — Correlation matrix."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.ocorr import otis_correlation
 

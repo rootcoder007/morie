@@ -1,6 +1,6 @@
 """Tests for km062.kamath_ch4_krona_tuned_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km062 import kamath_ch4_krona_tuned_weights
 

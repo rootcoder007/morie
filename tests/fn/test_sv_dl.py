@@ -1,6 +1,6 @@
 """Tests for sv_dl.structural_variant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sv_dl import structural_variant
 

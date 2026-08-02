@@ -1,6 +1,6 @@
 """Tests for morie.fn.page -- Page's L trend test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._containers import TestResult

@@ -1,6 +1,6 @@
 """Tests for morie.fn.gcomp — G-computation time-varying."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gcomp import gcomp

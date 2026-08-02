@@ -1,6 +1,6 @@
 """Tests for npbqr.np_bayes_quant_reg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.npbqr import np_bayes_quant_reg
 

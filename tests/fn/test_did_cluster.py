@@ -1,6 +1,6 @@
 """DiD cluster: causdid2, drovrl, drbqs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causdid2 import causal_did_2x2

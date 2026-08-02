@@ -1,6 +1,6 @@
 """Tests for rgpcg.rangayyan_pcg_segments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpcg import rangayyan_pcg_segments
 

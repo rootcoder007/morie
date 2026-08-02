@@ -1,6 +1,6 @@
 """Tests for comgir.girvan_newman."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.comgir import girvan_newman
 

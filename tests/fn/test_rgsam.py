@@ -9,7 +9,7 @@ No transcribable worked example exists in the library, so the checks here are
 a direct re-derivation of the definition plus its analytic limits.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgapn import rangayyan_approximate_entropy

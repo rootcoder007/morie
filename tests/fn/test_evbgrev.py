@@ -1,6 +1,6 @@
 """Tests for evbgrev.evt_bayes_gev."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evbgrev import evt_bayes_gev
 

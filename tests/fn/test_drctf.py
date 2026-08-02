@@ -1,6 +1,6 @@
 """Tests for drctf.dr_continuous_treatment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drctf import dr_continuous_treatment
 

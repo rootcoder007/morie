@@ -1,6 +1,6 @@
 """Tests for gh_c14_20.ghosal_probit_sbp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_20 import ghosal_probit_sbp
 

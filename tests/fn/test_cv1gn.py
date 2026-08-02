@@ -1,6 +1,6 @@
 """Tests for cv1gn.cv1_genomic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cv1gn import cv1_genomic
 

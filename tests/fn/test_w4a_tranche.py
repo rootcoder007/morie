@@ -10,7 +10,7 @@ satisfy. Data is explicit or from the LCG.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 # ---------------------------------------------------------------- helpers

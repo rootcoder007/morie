@@ -1,6 +1,6 @@
 """Tests for morie.fn.mutl — mutual information."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mutl import mutual_information
 

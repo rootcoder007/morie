@@ -1,6 +1,6 @@
 """Tests for volopn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volopn import _bs_price, vol_implied_volatility_bs

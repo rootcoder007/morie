@@ -6,7 +6,7 @@ replaced by tests of what the procedure must actually do: hold its size
 under the null, and have power against clustered and regular patterns.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.csrkstst import kstest_csr

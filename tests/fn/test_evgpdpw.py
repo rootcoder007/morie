@@ -1,6 +1,6 @@
 """Tests for evgpdpw.evt_gpd_pwm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgpdpw import evt_gpd_pwm
 

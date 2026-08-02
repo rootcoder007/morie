@@ -3,7 +3,7 @@
     x_hat = (x - mu) / sqrt(var + eps);   y = gamma * x_hat + beta
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bnfwd import batch_norm_forward as bn

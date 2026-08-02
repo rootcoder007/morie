@@ -1,6 +1,6 @@
 """Tests for spintp.schabenberger_intensity_estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spintp import schabenberger_intensity_estimation
 

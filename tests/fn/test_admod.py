@@ -1,6 +1,6 @@
 """Tests for morie.fn.admod — Additive model via marginal integration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.admod import admod

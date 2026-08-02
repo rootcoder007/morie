@@ -1,6 +1,6 @@
 """Tests for morie.fn.lmhe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lmhe import lmhe
 

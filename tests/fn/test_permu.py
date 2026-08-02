@@ -1,6 +1,6 @@
 """Tests for morie.fn.permu."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.permu import permu
 

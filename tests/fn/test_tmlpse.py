@@ -1,6 +1,6 @@
 """Tests for tmlpse.tmle_path_specific."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlpse import tmle_path_specific
 

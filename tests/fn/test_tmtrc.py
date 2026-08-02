@@ -1,6 +1,6 @@
 """Tests for morie.fn.tmtrc -- trace over time."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmtrc import tmtrc, trace_over_time
 

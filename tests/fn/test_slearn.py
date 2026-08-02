@@ -1,6 +1,6 @@
 """Tests for slearn.s_learner."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.slearn import s_learner
 

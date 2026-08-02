@@ -1,6 +1,6 @@
 """Tests for rng041.rangayyan_ch3_lsi_series_intermediate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng041 import rangayyan_ch3_lsi_series_intermediate
 

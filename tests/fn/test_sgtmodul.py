@@ -1,6 +1,6 @@
 """Tests for sgtmodul.sgt_modularity_matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtmodul import sgt_modularity_matrix
 

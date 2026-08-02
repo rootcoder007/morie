@@ -1,6 +1,6 @@
 """Ch. 2 definitional family. Schabenberger & Gotway (2005) Secs 2.3, 2.4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spcont import schabenberger_spatial_continuity as continuity

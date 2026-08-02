@@ -1,6 +1,6 @@
 """Tests for trdpd.tree_depth_saturation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trdpd import tree_depth_saturation
 

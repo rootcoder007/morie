@@ -1,6 +1,6 @@
 """Tests for rgemdtwa.rangayyan_emd_twa."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgemdtwa import rangayyan_emd_twa
 

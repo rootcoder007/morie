@@ -1,6 +1,6 @@
 """Tests for ghs028.ghosal_ch3_polya_tree_first_two_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs028 import ghosal_ch3_polya_tree_first_two_moments
 

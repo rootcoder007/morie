@@ -9,7 +9,7 @@ entirely. The test encoded the bug.
 Schabenberger & Gotway (2005), Sec 6.2.2.2, eqs (6.43)-(6.48).
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sgcar import (car_rho_bounds, car_rho_ols,

@@ -1,6 +1,6 @@
 """Test spectral_rolloff (sprof)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sprof import spectral_rolloff, sprof

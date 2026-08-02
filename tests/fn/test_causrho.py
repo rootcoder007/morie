@@ -1,6 +1,6 @@
 """Tests for causrho.causal_proximal_proxy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causrho import causal_proximal_proxy

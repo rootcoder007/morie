@@ -1,6 +1,6 @@
 """Tests for kmap.kamath_autoprompt_gradient_search."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmap import kamath_autoprompt_gradient_search
 

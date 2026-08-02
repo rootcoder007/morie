@@ -1,6 +1,6 @@
 """Panel-data deconvolution and first-passage times (Horowitz Sec. 5.2)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzfneps import horowitz_fn_eps_fn_U

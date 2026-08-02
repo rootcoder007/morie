@@ -1,6 +1,6 @@
 """Tests for dinopr.dino_self_distill."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dinopr import dino_self_distill
 

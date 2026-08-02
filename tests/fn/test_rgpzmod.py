@@ -1,6 +1,6 @@
 """Tests for rgpzmod.rangayyan_pole_zero_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpzmod import rangayyan_pole_zero_model
 

@@ -1,6 +1,6 @@
 """Tests for kcusum.kernel_cusum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kcusum import kernel_cusum
 

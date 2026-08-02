@@ -1,6 +1,6 @@
 """Tests for gb_kw2.gibbons_kw_alt_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_kw2 import gibbons_kw_alt_form
 

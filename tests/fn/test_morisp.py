@@ -1,6 +1,6 @@
 """morisp: Moran's I (Schabenberger & Gotway Eq. 1.14 p.21; Moran 1950)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.morisp import morans_i

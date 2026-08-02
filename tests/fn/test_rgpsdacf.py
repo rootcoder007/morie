@@ -1,6 +1,6 @@
 """Tests for rgpsdacf.rangayyan_psd_to_acf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpsdacf import rangayyan_psd_to_acf
 

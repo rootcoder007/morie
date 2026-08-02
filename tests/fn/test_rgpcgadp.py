@@ -1,6 +1,6 @@
 """Tests for rgpcgadp.rangayyan_pcg_adaptive_seg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpcgadp import rangayyan_pcg_adaptive_seg
 

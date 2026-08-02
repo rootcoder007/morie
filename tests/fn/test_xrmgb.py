@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrmgb -- MGWR variable bandwidths"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrmgb import mgwr_bandwidths
 

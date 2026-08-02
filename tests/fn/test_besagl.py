@@ -1,6 +1,6 @@
 """Tests for besagl.besag_York_Mollie."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.besagl import besag_York_Mollie
 

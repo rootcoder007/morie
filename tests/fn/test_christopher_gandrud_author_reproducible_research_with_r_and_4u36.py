@@ -1,6 +1,6 @@
 """The happiness of your life depends upon the quality of your thoughts. — Marcus Aurelius"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u36 import (
     christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_36,

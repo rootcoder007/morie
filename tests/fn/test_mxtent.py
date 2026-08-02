@@ -1,6 +1,6 @@
 """Tests for mxtent.max_entropy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mxtent import max_entropy
 

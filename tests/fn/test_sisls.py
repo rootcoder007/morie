@@ -1,6 +1,6 @@
 """Tests for morie.fn.sisls — Single-index via iterative SLS."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sisls import sisls

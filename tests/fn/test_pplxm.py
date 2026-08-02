@@ -6,7 +6,7 @@ The input is per-token LOG-PROBABILITIES (negative), not losses, and `base`
 is the string "e" or "2" describing the log base of the input.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pplxm import perplexity_metric as pp

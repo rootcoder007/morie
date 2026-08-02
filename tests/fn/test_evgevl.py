@@ -1,6 +1,6 @@
 """Tests for evgevl.evt_gev_loglik."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgevl import evt_gev_loglik
 

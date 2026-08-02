@@ -1,6 +1,6 @@
 """Tests for rgseizwv.rangayyan_seizure_wavelet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgseizwv import rangayyan_seizure_wavelet
 

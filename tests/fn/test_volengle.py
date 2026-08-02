@@ -1,6 +1,6 @@
 """Tests for volengle.vol_engle_lagrange (ARCH-LM)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volengle import vol_engle_lagrange

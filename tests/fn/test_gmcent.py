@@ -1,6 +1,6 @@
 """Tests for gmcent.grand_mean_centering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gmcent import grand_mean_centering
 

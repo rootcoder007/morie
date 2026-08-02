@@ -1,6 +1,6 @@
 """Tests for pacor.predictive_ability_pearson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pacor import predictive_ability_pearson
 

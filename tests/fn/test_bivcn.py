@@ -1,6 +1,6 @@
 """Tests for bivcn -- the front-end over anmod."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.anmod import additive_noise_model

@@ -1,6 +1,6 @@
 """Tests for spkpe.schabenberger_kriging_pred_error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spkpe import schabenberger_kriging_pred_error
 

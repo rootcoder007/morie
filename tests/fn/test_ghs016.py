@@ -1,6 +1,6 @@
 """Tests for ghs016.ghosal_ch3_dirichlet_posterior_cov."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs016 import ghosal_ch3_dirichlet_posterior_cov
 

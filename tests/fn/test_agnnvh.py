@@ -1,6 +1,6 @@
 """Tests for agnnvh.alphazero_value_head."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agnnvh import alphazero_value_head
 

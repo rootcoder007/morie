@@ -1,6 +1,6 @@
 """Tests for hmarma.geron_arma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmarma import geron_arma
 

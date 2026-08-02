@@ -6,7 +6,7 @@ screens for that by computing directional semivariograms and asking how far
 apart they spread relative to their common level.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spiso import schabenberger_isotropy_condition as spiso

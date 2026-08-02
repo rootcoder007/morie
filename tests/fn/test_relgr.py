@@ -1,6 +1,6 @@
 """Tests for morie.fn.relgr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.relgr import relgr
 

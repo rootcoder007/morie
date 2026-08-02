@@ -1,6 +1,6 @@
 """Tests for dpgan.dp_gan."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpgan import dp_gan
 

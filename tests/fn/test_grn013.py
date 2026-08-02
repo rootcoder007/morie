@@ -1,6 +1,6 @@
 """Tests for grn013.geron_ch4_elastic_net_cost_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grn013 import geron_ch4_elastic_net_cost_function
 

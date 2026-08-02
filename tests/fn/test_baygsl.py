@@ -1,6 +1,6 @@
 """Tests for baygsl.gibbs_slice."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.baygsl import gibbs_slice
 

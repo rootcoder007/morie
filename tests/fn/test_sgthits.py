@@ -1,6 +1,6 @@
 """Tests for sgthits.sgt_hits_kleinberg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgthits import sgt_hits_kleinberg
 

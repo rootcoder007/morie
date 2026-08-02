@@ -1,6 +1,6 @@
 """Tests for morie.fn.rmstd -- Restricted mean survival time difference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rmstd import rmstd

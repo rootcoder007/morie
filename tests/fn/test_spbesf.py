@@ -3,7 +3,7 @@
 Book identities live in test_schab_matern_family.py.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spbesf import schabenberger_bessel_function

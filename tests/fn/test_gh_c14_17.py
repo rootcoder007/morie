@@ -1,6 +1,6 @@
 """Tests for gh_c14_17.ghosal_disc_rp_rel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_17 import ghosal_disc_rp_rel
 

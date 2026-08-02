@@ -1,6 +1,6 @@
 """Tests for morie.fn.cstag — custody age profile."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.cstag import custody_age_profile

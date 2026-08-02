@@ -1,6 +1,6 @@
 """Tests for rgosflt.rangayyan_order_stat_flt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgosflt import rangayyan_order_stat_flt
 

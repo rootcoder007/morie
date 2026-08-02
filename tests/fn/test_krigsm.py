@@ -1,6 +1,6 @@
 """Tests for krigsm.ordinary_kriging."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.krigsm import ordinary_kriging
 

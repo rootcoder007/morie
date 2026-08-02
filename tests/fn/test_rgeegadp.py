@@ -1,6 +1,6 @@
 """Tests for rgeegadp.rangayyan_eeg_adaptive_seg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeegadp import rangayyan_eeg_adaptive_seg
 

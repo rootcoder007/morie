@@ -1,6 +1,6 @@
 """Tests for morie.fn.sveut."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sveut import sveut
 

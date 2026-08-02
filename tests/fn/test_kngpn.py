@@ -1,6 +1,6 @@
 """Tests for morie.fn.kngpn -- network centrality measures."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.kngpn import crime_network_centrality, kngpn

@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxutm -- UTM coordinate conversion"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxutm import utm_convert
 

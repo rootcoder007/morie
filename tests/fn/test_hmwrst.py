@@ -1,6 +1,6 @@
 """Tests for hmwrst.geron_warm_restarts."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmwrst import geron_warm_restarts
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.tqmse — TurboQuant MSE-optimal quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tqmse import turboquant_mse

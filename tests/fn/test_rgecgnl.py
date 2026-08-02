@@ -1,6 +1,6 @@
 """Tests for rgecgnl.rangayyan_ecg_normal_ectopic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgecgnl import rangayyan_ecg_normal_ectopic
 

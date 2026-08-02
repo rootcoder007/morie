@@ -1,6 +1,6 @@
 """Tests for pdf_estimate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pdfen import pdf_estimate, pdfen

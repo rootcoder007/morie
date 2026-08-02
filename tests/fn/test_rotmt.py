@@ -1,6 +1,6 @@
 """Tests for morie.fn.rotmt -- rotation matrix 2D."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rotmt import rotation_matrix_2d, rotmt
 

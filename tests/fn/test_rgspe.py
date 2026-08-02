@@ -1,6 +1,6 @@
 """Tests for rgspe.rangayyan_specificity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgspe import rangayyan_specificity
 

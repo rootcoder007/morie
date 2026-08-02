@@ -1,6 +1,6 @@
 """Tests for mfovsm.mfo_vsm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mfovsm import mfo_vsm
 

@@ -1,6 +1,6 @@
 """Tests for mgrch."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mgrch import bekk_garch_multivariate

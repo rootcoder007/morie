@@ -1,6 +1,6 @@
 """Tests for tqalg1.turboquant_online_key_quantizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqalg1 import turboquant_online_key_quantizer
 

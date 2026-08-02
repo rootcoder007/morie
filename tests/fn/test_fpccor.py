@@ -1,6 +1,6 @@
 """fpccor: integrated functional correlation (Ramsay & Silverman 2005)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.fpccor import functional_correlation as fcorr

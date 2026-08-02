@@ -1,6 +1,6 @@
 """Tests for localS.local_shift."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.localS import local_shift
 

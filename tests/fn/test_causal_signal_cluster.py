@@ -1,7 +1,7 @@
 """Causal signal/NN cluster: rng032, rng033, rng036, rng037, rng049,
 rng053, rng103, rng196, rgztf, hmc1d, grc1d, kmclm, kmprf, nchunk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.grc1d import geron_causal_1d_cnn

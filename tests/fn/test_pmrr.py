@@ -1,6 +1,6 @@
 """Tests for PM relative-risk model (ACS / Harvard Six Cities)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pmrr import pm_relative_risk, pmrr

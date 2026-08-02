@@ -1,6 +1,6 @@
 """Tests for agmurc.muzero_recurrent_inf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agmurc import muzero_recurrent_inf
 

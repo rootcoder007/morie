@@ -1,6 +1,6 @@
 """Tests for rng209.rangayyan_ch4_white_noise_psd_input."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng209 import rangayyan_ch4_white_noise_psd_input
 

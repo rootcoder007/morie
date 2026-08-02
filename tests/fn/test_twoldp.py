@@ -1,6 +1,6 @@
 """Tests for twoldp.two_locus_dprime."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.twoldp import two_locus_dprime
 

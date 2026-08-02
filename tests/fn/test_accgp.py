@@ -1,6 +1,6 @@
 """Tests for accgp.prediction_accuracy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.accgp import prediction_accuracy
 

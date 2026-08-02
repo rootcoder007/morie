@@ -1,6 +1,6 @@
 """Tests for agpar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.agpar import party_unity_score

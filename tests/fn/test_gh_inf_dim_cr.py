@@ -1,6 +1,6 @@
 """Tests for gh_inf_dim_cr.ghosal_inf_dim_credible."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_inf_dim_cr import ghosal_inf_dim_credible
 

@@ -1,6 +1,6 @@
 """Tests for rgcomb.rangayyan_comb_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgcomb import rangayyan_comb_filter
 

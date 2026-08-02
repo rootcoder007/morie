@@ -1,6 +1,6 @@
 """spnst -- Hughes-Oliver point-source model, Schabenberger & Gotway Sec. 8.2.1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spnst import schabenberger_nonstationary_cov as nst

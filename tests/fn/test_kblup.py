@@ -1,6 +1,6 @@
 """Tests for kblup.kernel_blup."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kblup import kernel_blup
 

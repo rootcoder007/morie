@@ -1,6 +1,6 @@
 """Tests for cwcm.centering_within_cluster_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cwcm import centering_within_cluster_mean
 

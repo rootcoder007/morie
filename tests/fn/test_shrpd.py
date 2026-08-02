@@ -1,6 +1,6 @@
 """Tests for shrpd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.shrpd import shepard_diagram

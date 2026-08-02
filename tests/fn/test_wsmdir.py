@@ -1,6 +1,6 @@
 """Tests for wsmdir.wasserman_directed_graph."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmdir import wasserman_directed_graph
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.sclst -- Semiparametric censored least squares."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sclst import sclst

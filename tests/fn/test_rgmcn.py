@@ -1,6 +1,6 @@
 """Tests for rgmcn.rangayyan_mcnemar_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgmcn import rangayyan_mcnemar_test
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.svwht -- Wittman divergence model (policy-motivated)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svwht import wittman_model
 

@@ -1,6 +1,6 @@
 """Tests for eslnsl.esl_natural_spline."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslnsl import esl_natural_spline
 

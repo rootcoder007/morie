@@ -1,6 +1,6 @@
 """Tests for klmsm1.kl_molecular_smooth."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.klmsm1 import kl_molecular_smooth
 

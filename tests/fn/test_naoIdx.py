@@ -1,6 +1,6 @@
 """Tests for naoIdx.nao_index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.naoIdx import nao_index
 

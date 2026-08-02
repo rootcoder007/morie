@@ -1,6 +1,6 @@
 """Tests for chrwgt.censoring_at_risk_weight."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chrwgt import censoring_at_risk_weight
 

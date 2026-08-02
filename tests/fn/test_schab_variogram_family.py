@@ -7,7 +7,7 @@ Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
 Spatial Data Analysis*. Chapman & Hall/CRC.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spexp import schabenberger_exponential_variogram as exponential

@@ -1,6 +1,6 @@
 """Tests for spsarml.schabenberger_sar_ml."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spsarml import schabenberger_sar_ml
 

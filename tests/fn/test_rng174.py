@@ -1,6 +1,6 @@
 """Tests for rng174.rangayyan_ch3_rls_weight_update_compact."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng174 import rangayyan_ch3_rls_weight_update_compact
 

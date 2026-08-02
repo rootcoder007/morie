@@ -3,7 +3,7 @@
     SwiGLU(x) = SiLU(xW + b) * (xV + c)
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.swigl import swiglu_activation as sg

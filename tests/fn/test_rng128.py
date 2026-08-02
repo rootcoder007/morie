@@ -1,6 +1,6 @@
 """Tests for rng128.rangayyan_ch3_bilinear_unit_circle_relation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng128 import rangayyan_ch3_bilinear_unit_circle_relation
 

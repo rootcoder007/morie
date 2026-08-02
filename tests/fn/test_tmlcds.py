@@ -1,6 +1,6 @@
 """Tests for tmlcds.tmle_cdrs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlcds import tmle_cdrs
 

@@ -1,6 +1,6 @@
 """Tests for sctraj.scrnaseq_trajectory."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sctraj import scrnaseq_trajectory
 

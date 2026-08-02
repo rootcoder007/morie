@@ -1,6 +1,6 @@
 """Tests for kmrope.kamath_rotary_positional_embedding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmrope import kamath_rotary_positional_embedding
 

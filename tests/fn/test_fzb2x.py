@@ -1,6 +1,6 @@
 """Tests for fzb2x.fauzi_b2_coefficient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzb2x import fauzi_b2_coefficient
 

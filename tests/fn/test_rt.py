@@ -1,6 +1,6 @@
 """Tests for morie.fn.rt — Student t random variates."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rt import rt

@@ -1,6 +1,6 @@
 """Tests for hrzsmsrc.horowitz_sms_rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzsmsrc import horowitz_sms_rate
 

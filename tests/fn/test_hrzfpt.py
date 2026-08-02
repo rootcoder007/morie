@@ -1,6 +1,6 @@
 """Tests for hrzfpt.horowitz_first_passage_time."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzfpt import horowitz_first_passage_time
 

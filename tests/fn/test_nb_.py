@@ -1,6 +1,6 @@
 """Tests for morie.fn.nb_ -- Gaussian Naive Bayes."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nb_ import naive_bayes, naive_bayes_fit, naive_bayes_predict, nb_

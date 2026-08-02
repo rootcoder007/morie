@@ -1,6 +1,6 @@
 """Tests for rng126.rangayyan_ch3_butterworth_analog_transfer_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng126 import rangayyan_ch3_butterworth_analog_transfer_function
 

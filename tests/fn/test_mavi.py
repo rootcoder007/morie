@@ -1,6 +1,6 @@
 """mavi: variance inflation for correlated effects (Hedges, Tipton & Johnson 2010)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mavi import ma_var_inflation_correlated as inflate

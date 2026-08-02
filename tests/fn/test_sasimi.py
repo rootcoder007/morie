@@ -1,6 +1,6 @@
 """Tests for sasimi.tanimoto_similarity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sasimi import tanimoto_similarity
 

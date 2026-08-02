@@ -16,9 +16,9 @@ including the places where the sources contradict the placeholder
 docstrings.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn._wsm import adaptive_spread, silverman_bandwidth
 from morie.fn.wsmadm import wasserman_admissible

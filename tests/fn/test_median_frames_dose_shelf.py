@@ -8,7 +8,7 @@ Sect ASA* 203-206 and Lohr and Rao (2000) *JASA* 95:271-280; Finney
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ld50r import acute_toxicity_ld50, effective_dose

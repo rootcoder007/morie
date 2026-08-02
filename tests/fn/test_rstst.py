@@ -1,6 +1,6 @@
 """Tests for morie.fn.rstst -- Restricted survival time test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rstst import rstst

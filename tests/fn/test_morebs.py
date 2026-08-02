@@ -1,6 +1,6 @@
 """Tests for morebs.empirical_bayes_moran."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.morebs import empirical_bayes_moran
 

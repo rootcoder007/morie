@@ -1,6 +1,6 @@
 """Tests for xwvlt.py - Cross-wavelet spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xwvlt import cross_wavelet, xwvlt
 

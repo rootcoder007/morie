@@ -1,6 +1,6 @@
 """Tests for manski.manski_no_assumption_bounds."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.manski import manski_no_assumption_bounds
 

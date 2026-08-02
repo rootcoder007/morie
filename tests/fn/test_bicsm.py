@@ -1,6 +1,6 @@
 """Tests for bicsm.bic_score_dag."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bicsm import bic_score_dag
 

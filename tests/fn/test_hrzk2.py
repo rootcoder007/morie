@@ -1,6 +1,6 @@
 """Tests for hrzk2.horowitz_kernel_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzk2 import horowitz_kernel_regression
 

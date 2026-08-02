@@ -1,6 +1,6 @@
 """Tests for rng051.rangayyan_ch3_lti_convolution_property."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng051 import rangayyan_ch3_lti_convolution_property
 

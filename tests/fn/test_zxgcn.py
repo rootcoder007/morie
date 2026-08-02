@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxgcn -- Graph convolution spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxgcn import graph_conv_sp
 

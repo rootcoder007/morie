@@ -1,6 +1,6 @@
 """Tests for rng120.rangayyan_ch3_baseline_wander_filter_z_form_a."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng120 import rangayyan_ch3_baseline_wander_filter_z_form_a
 

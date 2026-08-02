@@ -1,6 +1,6 @@
 """Tests for hdglm (Hodges-Lehmann estimator)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hdglm import hdglm

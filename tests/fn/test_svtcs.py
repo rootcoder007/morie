@@ -1,6 +1,6 @@
 """Tests for morie.fn.svtcs -- Top cycle set computation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svtcs import top_cycle_set
 

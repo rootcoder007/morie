@@ -1,6 +1,6 @@
 """Tests for likelihood_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lkrat import likelihood_ratio, lkrat

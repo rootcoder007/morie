@@ -1,6 +1,6 @@
 """Tests for grlogc.geron_logistic_cross_entropy_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlogc import geron_logistic_cross_entropy_cost
 

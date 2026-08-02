@@ -1,6 +1,6 @@
 """Tests for fzt15.fauzi_thm1_5_consistency_mgkde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt15 import fauzi_thm1_5_consistency_mgkde
 

@@ -1,6 +1,6 @@
 """Tests for dssoot.bootstrap_indirect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dssoot import bootstrap_indirect
 

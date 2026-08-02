@@ -1,6 +1,6 @@
 """Tests for vepan.vep_annotation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vepan import vep_annotation
 

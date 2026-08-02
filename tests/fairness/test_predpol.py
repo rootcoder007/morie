@@ -7,8 +7,8 @@ must produce no disparity signal (no false positive), and an injected
 group over-prediction must be detected (no false negative).
 """
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fairness.cityprofile import (

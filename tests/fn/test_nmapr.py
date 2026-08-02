@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmapr -- Aggregate PRE"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmapr import apre_stat
 

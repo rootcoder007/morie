@@ -1,6 +1,6 @@
 """Tests for survnnr.survival_neural_net."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survnnr import survival_neural_net
 

@@ -1,6 +1,6 @@
 """Tests for wsmcb.wasserman_dkw_cb."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmcb import wasserman_dkw_cb
 

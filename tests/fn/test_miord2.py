@@ -1,6 +1,6 @@
 """Tests for miord2.mi_chained_eq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.miord2 import mi_chained_eq
 

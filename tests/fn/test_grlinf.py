@@ -1,6 +1,6 @@
 """Tests for grlinf.geron_linear_layer_forward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlinf import geron_linear_layer_forward
 

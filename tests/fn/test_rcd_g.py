@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcd_g — recidivism by gender."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rcd_g import recidivism_by_gender
 

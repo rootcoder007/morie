@@ -1,6 +1,6 @@
 """Tests for cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u11.cornelius_llewellyn_j_harrington_donna_a_social_justice_appr_chapter_7_unnumbered_11."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cornelius_llewellyn_j_harrington_donna_a_social_justice_appr7u11 import (
     cornelius_llewellyn_j_harrington_donna_a_social_justice_appr_chapter_7_unnumbered_11,

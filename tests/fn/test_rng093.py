@@ -1,6 +1,6 @@
 """Tests for rng093.rangayyan_ch3_hann_frequency_response_raw."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng093 import rangayyan_ch3_hann_frequency_response_raw
 

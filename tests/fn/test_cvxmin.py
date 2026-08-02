@@ -1,6 +1,6 @@
 """Tests for cvxmin.boyd_minimum_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxmin import boyd_minimum_norm
 

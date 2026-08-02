@@ -1,6 +1,6 @@
 """Tests for semthe.sem_theta (IRT standard error)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.semthe import sem_theta

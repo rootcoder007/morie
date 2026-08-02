@@ -1,6 +1,6 @@
 """Tests for morie.fn.pscal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pscal import pscal
 

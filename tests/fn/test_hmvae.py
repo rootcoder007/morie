@@ -1,6 +1,6 @@
 """Tests for hmvae.geron_vae."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmvae import geron_vae
 

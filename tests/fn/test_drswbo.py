@@ -1,6 +1,6 @@
 """Tests for drswbo.dr_did_stratified_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drswbo import dr_did_stratified_block
 

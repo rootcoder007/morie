@@ -1,6 +1,6 @@
 """Test cross_psd (xpsd)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.xpsd import cross_psd, xpsd

@@ -1,6 +1,6 @@
 """Tests for pcm.partial_credit_masters."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pcm import partial_credit_masters
 

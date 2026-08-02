@@ -1,6 +1,6 @@
 """Tests for kmperm.kamath_permutation_lm_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmperm import kamath_permutation_lm_loss
 

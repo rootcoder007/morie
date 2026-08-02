@@ -1,6 +1,6 @@
 """Tests for wsmmgf.wasserman_mgf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmmgf import wasserman_mgf
 

@@ -1,6 +1,6 @@
 """Tests for rng164.rangayyan_ch3_rls_normal_equation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng164 import rangayyan_ch3_rls_normal_equation
 

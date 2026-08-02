@@ -1,6 +1,6 @@
 """Tests for cvxlsq.boyd_least_squares."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxlsq import boyd_least_squares
 

@@ -1,6 +1,6 @@
 """Tests for kmhyde.kamath_hyde_hypothetical_doc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmhyde import kamath_hyde_hypothetical_doc
 

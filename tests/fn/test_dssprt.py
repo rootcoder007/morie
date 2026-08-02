@@ -1,6 +1,6 @@
 """Tests for dssprt.dssp_secondary."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dssprt import dssp_secondary
 

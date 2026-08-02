@@ -1,6 +1,6 @@
 """Tests for morie.fn.svclv -- Coalition value in spatial game"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svclv import coalition_value
 

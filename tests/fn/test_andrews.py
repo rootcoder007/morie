@@ -1,6 +1,6 @@
 """Tests for andrews.andrews_sine."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.andrews import andrews_sine
 

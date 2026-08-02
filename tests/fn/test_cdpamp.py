@@ -1,6 +1,6 @@
 """Tests for cdpamp.cdp_subgaussian_amplification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cdpamp import cdp_subgaussian_amplification
 

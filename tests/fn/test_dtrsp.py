@@ -1,6 +1,6 @@
 """Tests for dtrsp.decision_tree_split."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dtrsp import decision_tree_split

@@ -1,6 +1,6 @@
 """Tests for morie.fn.chzrd -- Cause-specific hazard ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.chzrd import chzrd

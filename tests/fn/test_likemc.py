@@ -1,6 +1,6 @@
 """Tests for likemc.likelihood_mcmc_epi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.likemc import likelihood_mcmc_epi
 

@@ -1,6 +1,6 @@
 """Tests for kmspd.kamath_speculative_decoding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmspd import kamath_speculative_decoding
 

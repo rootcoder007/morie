@@ -1,6 +1,6 @@
 """Tests for bndnpr.bound_nonparam_regr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndnpr import bound_nonparam_regr
 

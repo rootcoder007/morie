@@ -1,6 +1,6 @@
 """Tests for hmhpt.geron_hyperparameter_tuning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmhpt import geron_hyperparameter_tuning
 

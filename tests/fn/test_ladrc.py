@@ -1,6 +1,6 @@
 """Tests for ladrc.ladder_of_causation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ladrc import ladder_of_causation
 

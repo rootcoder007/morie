@@ -1,6 +1,6 @@
 """Tests for morie.fn.ameig — A-M eigensolve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ameig import ameig
 

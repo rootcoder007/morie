@@ -1,6 +1,6 @@
 """Tests for morie.fn.jsdiv — Jensen-Shannon divergence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.jsdiv import js_divergence

@@ -1,6 +1,6 @@
 """Tests for gradds.gradient_descent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gradds import gradient_descent
 

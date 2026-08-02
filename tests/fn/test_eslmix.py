@@ -1,6 +1,6 @@
 """Tests for eslmix.esl_gaussian_mixture."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslmix import esl_gaussian_mixture
 

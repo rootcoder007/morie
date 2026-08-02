@@ -1,6 +1,6 @@
 """Tests for rgpsync.rangayyan_pcg_sync_avg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpsync import rangayyan_pcg_sync_avg
 

@@ -1,6 +1,6 @@
 """Tests for mltan.py - Multiresolution analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mltan import mltan, multiresolution_analysis
 

@@ -1,6 +1,6 @@
 """Tests for causivft.causal_iv_first_stage."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causivft import causal_iv_first_stage
 

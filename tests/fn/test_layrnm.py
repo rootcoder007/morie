@@ -1,6 +1,6 @@
 """Tests for layrnm.layer_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.layrnm import layer_norm
 

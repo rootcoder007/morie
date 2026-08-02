@@ -1,6 +1,6 @@
 """Tests for swsmp.systematic_with_random_start."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.swsmp import systematic_with_random_start
 

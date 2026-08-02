@@ -1,6 +1,6 @@
 """Tests for sprto.py - spectral power ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sprto import spectral_ratio, sprto
 

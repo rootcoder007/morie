@@ -1,6 +1,6 @@
 """Tests for morie.fn.kbias — bias-reduced KDE."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kbias import kbias

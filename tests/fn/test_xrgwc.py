@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrgwc -- GWR local coefficients"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrgwc import gwr_coefficients
 

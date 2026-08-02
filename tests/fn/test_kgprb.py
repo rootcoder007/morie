@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgprb -- Kriging probability map"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgprb import kriging_prob_map
 

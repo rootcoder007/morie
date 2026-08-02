@@ -1,6 +1,6 @@
 """Tests for morie.fn.swcond."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.swcond import swcond
 

@@ -1,6 +1,6 @@
 """Tests for arimab.arima_box_jenkins."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.arimab import arima_box_jenkins
 

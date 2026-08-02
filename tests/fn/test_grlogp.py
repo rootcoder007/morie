@@ -1,6 +1,6 @@
 """Tests for grlogp.geron_logistic_regression_probability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlogp import geron_logistic_regression_probability
 

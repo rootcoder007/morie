@@ -1,6 +1,6 @@
 """Tests for morie.fn.sephy — separating hyperplane."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sephy import sephy
 

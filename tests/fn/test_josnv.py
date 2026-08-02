@@ -1,6 +1,6 @@
 """Tests for josnv.joseph_seasonal_naive."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.josnv import joseph_seasonal_naive
 

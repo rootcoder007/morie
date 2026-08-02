@@ -1,6 +1,6 @@
 """Tests for ksr044 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr044 import kosorok_ch2_quantile_taylor_bounds

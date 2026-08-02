@@ -1,6 +1,6 @@
 """Kosorok Z/M-estimator theory and semiparametric efficiency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr021 import kosorok_residual_edf

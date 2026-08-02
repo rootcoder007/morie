@@ -1,6 +1,6 @@
 """Tests for gb_kt2 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_kt2 import gibbons_kendall_exact

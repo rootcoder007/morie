@@ -1,6 +1,6 @@
 """Tests for causdidwd.causal_did_wooldridge_eta."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causdidwd import causal_did_wooldridge_eta
 

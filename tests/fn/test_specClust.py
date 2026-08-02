@@ -1,6 +1,6 @@
 """Tests for specClust.spectral_clustering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.specClust import spectral_clustering
 

@@ -1,6 +1,6 @@
 """Tests for survroc.time_dep_roc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survroc import time_dep_roc
 

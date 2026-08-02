@@ -1,6 +1,6 @@
 """Tests for km069.kamath_ch5_rlhf_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km069 import kamath_ch5_rlhf_objective
 

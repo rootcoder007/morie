@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgemp -- Empirical semivariogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgemp import empirical_vario
 

@@ -1,6 +1,6 @@
 """Tests for bicg.bayesian_information_criterion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bicg import bayesian_information_criterion
 

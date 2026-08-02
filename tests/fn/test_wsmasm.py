@@ -1,6 +1,6 @@
 """Tests for wsmasm.wasserman_mle_asymptotic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmasm import wasserman_mle_asymptotic
 

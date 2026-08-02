@@ -1,6 +1,6 @@
 """Tests for trclrn.tree_based_regime."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trclrn import tree_based_regime
 

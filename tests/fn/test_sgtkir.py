@@ -1,6 +1,6 @@
 """Tests for sgtkir.sgt_kirchhoff_index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtkir import sgt_kirchhoff_index
 

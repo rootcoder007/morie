@@ -1,6 +1,6 @@
 """Tests for morie.fn.frenz -- Lyapunov exponent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.frenz import frenz, lyapunov_exponent

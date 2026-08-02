@@ -1,6 +1,6 @@
 """Tests for morie.fn.oate1 — Simple ATE by region."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.oate1 import otis_ate_region
 

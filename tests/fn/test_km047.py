@@ -1,6 +1,6 @@
 """Tests for km047.kamath_ch3_translate_prefix_prompt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km047 import kamath_ch3_translate_prefix_prompt
 

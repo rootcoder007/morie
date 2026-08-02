@@ -1,6 +1,6 @@
 """Tests for chipsq.chip_seq_peak."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chipsq import chip_seq_peak
 

@@ -1,6 +1,6 @@
 """Tests for atq8.int8_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.atq8 import int8_attention
 

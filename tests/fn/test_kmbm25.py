@@ -1,6 +1,6 @@
 """Tests for kmbm25.kamath_bm25_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmbm25 import kamath_bm25_score
 

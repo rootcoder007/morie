@@ -1,6 +1,6 @@
 """Tests for survip.survey_p_value."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survip import survey_p_value
 

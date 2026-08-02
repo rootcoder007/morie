@@ -4,7 +4,11 @@ import math
 
 import pytest
 
-import scipy.signal as sp_sig
+import pytest
+
+sp_sig = pytest.importorskip(
+    "scipy.signal",
+    reason="oracle test: compares the native cores against real scipy where it exists")
 
 from morie.fn import _signal_core as ms
 

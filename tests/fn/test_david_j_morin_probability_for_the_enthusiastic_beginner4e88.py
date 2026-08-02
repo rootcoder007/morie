@@ -1,6 +1,6 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner4e88.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_88."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner4e88 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_88,

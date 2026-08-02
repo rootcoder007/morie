@@ -1,6 +1,6 @@
 """Tests for gb_wsp.gibbons_concordance_preference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_wsp import gibbons_concordance_preference
 

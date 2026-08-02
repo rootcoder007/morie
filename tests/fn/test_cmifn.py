@@ -1,6 +1,6 @@
 """Tests for conditional mutual information."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cmifn import cmifn, conditional_mutual_information

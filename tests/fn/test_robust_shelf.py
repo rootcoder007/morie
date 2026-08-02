@@ -10,9 +10,10 @@ to survive -- and the contamination it is documented NOT to survive.
 Huber's failure under bad leverage is as much a test as MM's success.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import integrate, stats
+from morie.fn import _stats_core as stats
+from morie.fn._sci_core import integrate
 
 from morie.fn._robust import (HUBER_C_95, QN_D, SN_C, TUKEY_C_95,
                               TUKEY_C_BREAKDOWN, mad_scale, s_scale,

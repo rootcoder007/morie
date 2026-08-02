@@ -1,6 +1,6 @@
 """Tests for rgeqn10b.rangayyan_ch10_roc_optimal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn10b import rangayyan_ch10_roc_optimal
 

@@ -1,6 +1,6 @@
 """spperiod -- the periodogram, Schabenberger & Gotway Sec. 4.7.1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spperiod import schabenberger_periodogram as per

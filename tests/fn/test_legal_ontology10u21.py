@@ -1,6 +1,6 @@
 """Tests for legal_ontology10u21.legal_ontology_chapter_10_unnumbered_21."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.legal_ontology10u21 import legal_ontology_chapter_10_unnumbered_21
 

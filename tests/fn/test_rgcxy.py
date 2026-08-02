@@ -1,6 +1,6 @@
 """Tests for rgcxy.rangayyan_coherence_cxy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgcxy import rangayyan_coherence_cxy
 

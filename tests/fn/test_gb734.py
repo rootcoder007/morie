@@ -1,6 +1,6 @@
 """Tests for gb734 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb734 import gibbons_linrank_symmetry_cond

@@ -1,6 +1,6 @@
 """Tests for blasf.bayesian_lasso_full."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.blasf import bayesian_lasso_full
 

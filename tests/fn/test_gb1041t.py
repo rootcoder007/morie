@@ -1,6 +1,6 @@
 """Tests for gb1041t (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1041t import gibbons_kw_ties

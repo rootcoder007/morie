@@ -1,6 +1,6 @@
 """Tests for netbtw.betweenness_centrality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netbtw import betweenness_centrality
 

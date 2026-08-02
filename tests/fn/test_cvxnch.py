@@ -1,6 +1,6 @@
 """Tests for cvxnch.boyd_nuclear_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxnch import boyd_nuclear_norm
 

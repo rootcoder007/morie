@@ -1,6 +1,6 @@
 """Tests for kmklr.kamath_kl_reward_shaping."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmklr import kamath_kl_reward_shaping
 

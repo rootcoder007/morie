@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgros -- Variogram rose diagram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgros import vario_rose
 

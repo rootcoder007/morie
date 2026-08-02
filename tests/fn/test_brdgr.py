@@ -1,6 +1,6 @@
 """brdgr: bridge observations across sessions (Bailey 2007; Armstrong Ch 6)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.brdgr import bridge_observations as bo

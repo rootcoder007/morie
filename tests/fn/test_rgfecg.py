@@ -1,6 +1,6 @@
 """Tests for rgfecg.rangayyan_fetal_ecg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfecg import rangayyan_fetal_ecg
 

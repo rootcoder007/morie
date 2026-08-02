@@ -1,6 +1,6 @@
 """Tests for bayisr.importance_resample."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayisr import importance_resample
 

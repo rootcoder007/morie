@@ -1,6 +1,6 @@
 """Tests for kmmae.kamath_multimodal_mae."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmmae import kamath_multimodal_mae
 

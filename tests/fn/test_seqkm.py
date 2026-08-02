@@ -1,6 +1,6 @@
 """Tests for morie.fn.seqkm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.seqkm import kmer_frequency
 

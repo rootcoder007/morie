@@ -1,6 +1,6 @@
 """Tests for morie.fn.svnrm -- Normal kernel vote probability"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svnrm import normal_vote
 

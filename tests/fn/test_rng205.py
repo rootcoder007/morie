@@ -1,6 +1,6 @@
 """Tests for rng205.rangayyan_ch4_csd_from_ccf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng205 import rangayyan_ch4_csd_from_ccf
 

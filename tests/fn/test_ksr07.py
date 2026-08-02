@@ -1,6 +1,6 @@
 """Tests for ksr07.kosorok_bootstrap_empirical."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr07 import kosorok_bootstrap_empirical
 

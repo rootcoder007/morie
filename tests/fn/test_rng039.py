@@ -1,6 +1,6 @@
 """Tests for rng039.rangayyan_ch3_ma_filter_11pt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng039 import rangayyan_ch3_ma_filter_11pt
 

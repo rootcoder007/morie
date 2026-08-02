@@ -5,7 +5,7 @@ Sources are Montesinos Lopez, Montesinos Lopez and Crossa (2022),
 Prediction*; section and equation numbers are the book's.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bluerg import blue_gls

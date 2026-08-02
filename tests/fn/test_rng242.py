@@ -1,6 +1,6 @@
 """Tests for rng242.rangayyan_ch4_log_minimum_phase_expansion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng242 import rangayyan_ch4_log_minimum_phase_expansion
 

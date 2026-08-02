@@ -1,6 +1,6 @@
 """Tests for mssm.marginal_structural_med."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mssm import marginal_structural_med

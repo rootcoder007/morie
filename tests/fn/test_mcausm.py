@@ -1,6 +1,6 @@
 """Tests for mcausm.multi_mediator_causal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mcausm import multi_mediator_causal

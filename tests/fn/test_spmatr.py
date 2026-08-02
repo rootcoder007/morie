@@ -4,7 +4,7 @@ Book identities for the family live in test_schab_matern_family.py.
 This pins the module's own contract.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spmatr import schabenberger_matern_covariance

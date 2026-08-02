@@ -1,6 +1,6 @@
 """Tests for gh_wn_rate_opt.ghosal_white_noise_optimal_rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_wn_rate_opt import ghosal_white_noise_optimal_rate
 

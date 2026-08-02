@@ -1,6 +1,6 @@
 """Tests for sumP.sum_pool."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sumP import sum_pool
 

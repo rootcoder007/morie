@@ -6,7 +6,7 @@ magnitude of the analytic signal, so it bounds |x| from above and recovers
 the modulator of an AM signal.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgenv import rangayyan_envelope

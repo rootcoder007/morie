@@ -1,6 +1,6 @@
 """Tests for gb_rco.gibbons_rank_corr_partial."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_rco import gibbons_rank_corr_partial
 

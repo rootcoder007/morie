@@ -1,6 +1,6 @@
 """Tests for grapl.geron_average_pooling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grapl import geron_average_pooling
 

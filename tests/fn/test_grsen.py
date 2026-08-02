@@ -1,6 +1,6 @@
 """Tests for grsen.geron_senet_squeeze_excite."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsen import geron_senet_squeeze_excite
 

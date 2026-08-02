@@ -1,6 +1,6 @@
 """Tests for gh_c5_9.ghosal_beta_ker."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c5_9 import ghosal_beta_ker
 

@@ -1,6 +1,6 @@
 """Tests for hmsft.geron_sft."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsft import geron_sft
 

@@ -1,6 +1,6 @@
 """Tests for gh_c8_14.ghosal_convex_misp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c8_14 import ghosal_convex_misp
 

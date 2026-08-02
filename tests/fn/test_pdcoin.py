@@ -1,6 +1,6 @@
 """Tests for pdcoin.pedroni_panel_cointegration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pdcoin import pedroni_panel_cointegration

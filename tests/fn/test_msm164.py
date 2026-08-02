@@ -1,6 +1,6 @@
 """Tests for msm164.hyperplane_side (MVSML Eq. 9.1)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.msm164 import hyperplane_side

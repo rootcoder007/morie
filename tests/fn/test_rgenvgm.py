@@ -1,6 +1,6 @@
 """Tests for rgenvgm.rangayyan_envelogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgenvgm import rangayyan_envelogram
 

@@ -1,6 +1,6 @@
 """Tests for ghs021.ghosal_ch3_tailfree_max_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs021 import ghosal_ch3_tailfree_max_bound
 

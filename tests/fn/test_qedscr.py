@@ -1,6 +1,6 @@
 """Tests for qedscr.qed_drug_likeness."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.qedscr import qed_drug_likeness
 

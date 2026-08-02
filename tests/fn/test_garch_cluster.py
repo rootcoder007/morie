@@ -5,7 +5,7 @@ Ch. 3, read in the PDF: GARCH Sec 3.5 p.131, IGARCH Sec 3.6 p.140,
 GARCH-M Sec 3.7 p.142 eq.(3.23), EGARCH Sec 3.8 p.143 eq.(3.24)-(3.25),
 TGARCH Sec 3.9 p.149 eq.(3.34)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._garch import SPECS, garch_fit, garch_forecast, garch_recursion

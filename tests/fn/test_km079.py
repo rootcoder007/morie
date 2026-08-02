@@ -1,6 +1,6 @@
 """Tests for km079.kamath_ch6_alignscore_total_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km079 import kamath_ch6_alignscore_total_loss
 

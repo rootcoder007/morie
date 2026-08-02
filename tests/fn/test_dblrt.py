@@ -1,6 +1,6 @@
 """Tests for morie.fn.dblrt -- population doubling time."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dblrt import population_doubling

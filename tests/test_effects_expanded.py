@@ -18,8 +18,8 @@ from __future__ import annotations
 
 import math
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.effects import e_value, estimate_ate_gcomputation

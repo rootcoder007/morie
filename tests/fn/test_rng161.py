@@ -1,6 +1,6 @@
 """Tests for rng161.rangayyan_ch3_lms_variable_step."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng161 import rangayyan_ch3_lms_variable_step
 

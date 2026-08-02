@@ -1,6 +1,6 @@
 """Tests for grmlpf.geron_mlp_forward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmlpf import geron_mlp_forward
 

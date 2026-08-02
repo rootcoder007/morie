@@ -5,7 +5,7 @@ p.228. Band limits follow the canonical delta/theta/alpha/beta/gamma
 definitions the section describes.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgeeg import rangayyan_eeg_bands

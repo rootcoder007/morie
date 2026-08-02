@@ -1,6 +1,6 @@
 """Tests for fanmd.fanova_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fanmd import fanova_decomposition
 

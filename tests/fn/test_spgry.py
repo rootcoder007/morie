@@ -1,6 +1,6 @@
 """Tests for spgry.schabenberger_geary_c."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spgry import schabenberger_geary_c
 

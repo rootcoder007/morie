@@ -1,6 +1,6 @@
 """Tests for spmor.schabenberger_moran_i."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spmor import schabenberger_moran_i
 

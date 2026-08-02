@@ -1,6 +1,6 @@
 """Tests for polkrn.polynomial_kernel_msm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.polkrn import polynomial_kernel_msm
 

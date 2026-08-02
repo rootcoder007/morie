@@ -1,6 +1,6 @@
 """Tests for causdiddc.causal_did_de_chaisemartin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causdiddc import causal_did_de_chaisemartin
 

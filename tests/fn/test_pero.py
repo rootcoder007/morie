@@ -1,6 +1,6 @@
 """Tests for pero.prioritized_experience_replay."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pero import prioritized_experience_replay
 

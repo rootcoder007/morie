@@ -1,6 +1,6 @@
 """Tests for rng245.rangayyan_ch4_complex_cepstrum_decay_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng245 import rangayyan_ch4_complex_cepstrum_decay_bound
 

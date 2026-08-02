@@ -1,6 +1,6 @@
 """Tests for gearyl.local_gearys_c."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gearyl import local_gearys_c
 

@@ -1,6 +1,6 @@
 """Tests for msmiv2.msm_iv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.msmiv2 import msm_iv

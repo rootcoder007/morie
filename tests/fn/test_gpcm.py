@@ -1,6 +1,6 @@
 """Tests for gpcm.generalized_partial_credit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpcm import generalized_partial_credit
 

@@ -1,6 +1,6 @@
 """Tests for cnvlfc.convergent_cross_mapping."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cnvlfc import convergent_cross_mapping
 

@@ -1,6 +1,6 @@
 """Tests for km117.kamath_ch8_bleu_final."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km117 import kamath_ch8_bleu_final
 

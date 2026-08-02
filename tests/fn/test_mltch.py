@@ -1,6 +1,6 @@
 """Tests for morie.fn.mltch -- combine multiple chains."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mltch import mltch, multiple_chains_combine
 

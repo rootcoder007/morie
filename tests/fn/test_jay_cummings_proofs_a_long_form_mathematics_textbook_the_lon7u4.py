@@ -1,6 +1,6 @@
 """Tests for jay_cummings_proofs_a_long_form_mathematics_textbook_the_lon7u4.jay_cummings_proofs_a_long_form_mathematics_textbook_the_lon_chapter_7_unnumbered_4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jay_cummings_proofs_a_long_form_mathematics_textbook_the_lon7u4 import (
     jay_cummings_proofs_a_long_form_mathematics_textbook_the_lon_chapter_7_unnumbered_4,

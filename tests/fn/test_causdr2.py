@@ -1,6 +1,6 @@
 """Tests for causdr2.causal_dr_orthogonal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causdr2 import causal_dr_orthogonal
 

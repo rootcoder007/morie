@@ -1,6 +1,6 @@
 """Tests for rgeqn8b.rangayyan_ch8_glr_threshold."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn8b import rangayyan_ch8_glr_threshold
 

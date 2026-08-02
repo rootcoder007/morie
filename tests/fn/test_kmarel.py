@@ -1,6 +1,6 @@
 """Tests for kmarel.kamath_ragas_answer_relevance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmarel import kamath_ragas_answer_relevance
 

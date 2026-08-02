@@ -1,6 +1,6 @@
 """Tests for chwfst.chow_forecast_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chwfst import chow_forecast_test
 

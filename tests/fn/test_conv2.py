@@ -1,6 +1,6 @@
 """Test 2D convolution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.conv2 import conv2
 

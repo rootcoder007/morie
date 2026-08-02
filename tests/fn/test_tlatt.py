@@ -1,6 +1,6 @@
 """Tests for morie.fn.tlatt — torus lattice."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tlatt import torus_lattice

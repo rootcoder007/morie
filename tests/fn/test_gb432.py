@@ -1,6 +1,6 @@
 """Tests for gb432.gibbons_ks_exact_dist."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb432 import gibbons_ks_exact_dist
 

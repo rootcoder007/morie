@@ -1,6 +1,6 @@
 """Tests for se3T.se3_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.se3T import se3_transformer
 

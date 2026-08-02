@@ -1,6 +1,6 @@
 """Tests for morie.fn.svdmt -- Dimensionality test for spatial data"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svdmt import dim_test
 

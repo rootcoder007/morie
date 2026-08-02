@@ -3,7 +3,7 @@
 Schabenberger & Gotway (2005), Secs 3.2, 3.3, 3.7.2.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sppois import schabenberger_poisson_process as hpp

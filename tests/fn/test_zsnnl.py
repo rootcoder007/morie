@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsnnl -- Laplace natural neighbor (Sibson)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsnnl import nn_laplace
 

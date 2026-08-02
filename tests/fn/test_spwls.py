@@ -8,7 +8,7 @@ because Sec 4.5.1 requires that updates to theta be followed by updates to
 R(theta).
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_fit import _objective, _start_and_bounds

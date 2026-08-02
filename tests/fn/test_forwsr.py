@@ -1,6 +1,6 @@
 """Tests for forwsr.forward_search."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.forwsr import forward_search
 

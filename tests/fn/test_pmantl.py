@@ -1,6 +1,6 @@
 """Tests for pmantl.partial_mantel_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pmantl import partial_mantel_test
 

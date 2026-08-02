@@ -1,6 +1,6 @@
 """Tests for isodst.isotropy_distance_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.isodst import isotropy_distance_test
 

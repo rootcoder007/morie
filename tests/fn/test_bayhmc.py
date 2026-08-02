@@ -1,6 +1,6 @@
 """Tests for bayhmc.hmc_dual_avg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayhmc import hmc_dual_avg
 

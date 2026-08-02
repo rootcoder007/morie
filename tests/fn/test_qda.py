@@ -1,6 +1,6 @@
 """Tests for qda.py - Quadratic Discriminant Analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.qda import qda, qda_fn
 

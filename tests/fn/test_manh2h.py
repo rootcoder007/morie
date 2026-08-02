@@ -1,6 +1,6 @@
 """Tests for manh2h.ma_network_node_split."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.manh2h import ma_network_node_split
 

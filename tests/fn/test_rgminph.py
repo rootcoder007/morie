@@ -1,6 +1,6 @@
 """Tests for rgminph.rangayyan_min_phase."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgminph import rangayyan_min_phase
 

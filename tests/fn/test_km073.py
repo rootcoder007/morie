@@ -1,6 +1,6 @@
 """Tests for km073.kamath_ch5_pref_sigmoid_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km073 import kamath_ch5_pref_sigmoid_form
 

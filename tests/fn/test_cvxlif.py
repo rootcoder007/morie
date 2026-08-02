@@ -1,6 +1,6 @@
 """Tests for cvxlif.boyd_linf_fitting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxlif import boyd_linf_fitting
 

@@ -1,6 +1,6 @@
 """Tests for magpa.ma_glmm_ipd_proportion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.magpa import ma_glmm_ipd_proportion
 

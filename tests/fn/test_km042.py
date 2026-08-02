@@ -1,6 +1,6 @@
 """Tests for km042.kamath_ch3_prompt_label_mapping."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km042 import kamath_ch3_prompt_label_mapping
 

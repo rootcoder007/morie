@@ -1,6 +1,6 @@
 """Tests for rgwhann.rangayyan_hann_window."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgwhann import rangayyan_hann_window
 

@@ -1,6 +1,6 @@
 """Tests for evbgpd.evt_bayes_gpd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evbgpd import evt_bayes_gpd
 

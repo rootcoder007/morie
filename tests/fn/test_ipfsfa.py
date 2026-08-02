@@ -1,6 +1,6 @@
 """Tests for ipfsfa.ipopt_solver."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ipfsfa import ipopt_solver
 

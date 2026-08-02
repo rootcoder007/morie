@@ -1,6 +1,6 @@
 """Tests for rgpwave.rangayyan_p_wave_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpwave import rangayyan_p_wave_detect
 

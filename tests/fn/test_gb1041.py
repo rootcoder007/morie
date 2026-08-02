@@ -1,6 +1,6 @@
 """Tests for gb1041.gibbons_kruskal_wallis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1041 import gibbons_kruskal_wallis
 

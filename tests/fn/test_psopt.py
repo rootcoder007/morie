@@ -2,7 +2,7 @@
 Tests for particle swarm optimization.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.psopt import psopt
 

@@ -1,9 +1,9 @@
 """Kosorok tranche 4: bootstrap Donsker, quantile Hadamard bounds,
 DQM/LAN and efficient influence functions."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.ksr040 import kosorok_ch2_bootstrap_donsker_iff
 from morie.fn.ksr041 import kosorok_ch2_bootstrap_donsker_almost_sure

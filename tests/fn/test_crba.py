@@ -1,6 +1,6 @@
 """Tests for crba.crba (Cronbach's alpha)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.crba import crba

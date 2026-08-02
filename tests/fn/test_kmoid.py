@@ -1,6 +1,6 @@
 """Tests for morie.fn.kmoid -- K-medoids (PAM)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.kmoid import kmedoids, kmoid

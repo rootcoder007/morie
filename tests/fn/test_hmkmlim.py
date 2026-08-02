@@ -1,6 +1,6 @@
 """Tests for hmkmlim.geron_kmeans_limits."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmkmlim import geron_kmeans_limits
 

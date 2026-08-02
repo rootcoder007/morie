@@ -1,6 +1,6 @@
 """Tests for km146.kamath_ch9_output_projector_mse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km146 import kamath_ch9_output_projector_mse
 

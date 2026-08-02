@@ -1,6 +1,6 @@
 """Tests for bookadvanced_elementsofstatisticallearning3u566.bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_566."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bookadvanced_elementsofstatisticallearning3u566 import (
     bookadvanced_elementsofstatisticallearning_chapter_3_unnumbered_566,

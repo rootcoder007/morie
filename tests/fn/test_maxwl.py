@@ -1,6 +1,6 @@
 """Tests for morie.fn.maxwl -- Maxwell equations."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.maxwl import maxwl

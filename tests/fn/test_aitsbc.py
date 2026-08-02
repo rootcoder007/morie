@@ -1,6 +1,6 @@
 """Tests for aitsbc.aitchison_subcomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitsbc import aitchison_subcomposition
 

@@ -1,6 +1,6 @@
 """Tests for grflam.geron_flamingo_cross_modal_attn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grflam import geron_flamingo_cross_modal_attn
 

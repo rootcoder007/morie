@@ -1,6 +1,6 @@
 """Tests for svmhg.svm_hinge_primal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.svmhg import svm_hinge_primal

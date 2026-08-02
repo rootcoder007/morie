@@ -1,6 +1,6 @@
 """Tests for lof.local_outlier_factor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lof import local_outlier_factor
 

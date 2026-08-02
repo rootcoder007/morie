@@ -1,6 +1,6 @@
 """Tests for rhomed.rho_critical_mediation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rhomed import rho_critical_mediation

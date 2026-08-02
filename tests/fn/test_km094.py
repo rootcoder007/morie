@@ -1,6 +1,6 @@
 """Tests for km094.kamath_ch6_debias_regularizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km094 import kamath_ch6_debias_regularizer
 

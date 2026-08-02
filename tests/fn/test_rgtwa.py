@@ -1,6 +1,6 @@
 """Tests for rgtwa.rangayyan_twave_alternans."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgtwa import rangayyan_twave_alternans
 

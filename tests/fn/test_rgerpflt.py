@@ -1,6 +1,6 @@
 """Tests for rgerpflt.rangayyan_erp_artifact_remove."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgerpflt import rangayyan_erp_artifact_remove
 

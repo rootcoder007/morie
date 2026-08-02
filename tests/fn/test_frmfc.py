@@ -1,6 +1,6 @@
 """Test form_factor_fn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.frmfc import alias, form_factor_fn

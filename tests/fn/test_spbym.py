@@ -1,6 +1,6 @@
 """spbym -- Besag-York-Mollie convolution, BYM (1991) Sec. 4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 

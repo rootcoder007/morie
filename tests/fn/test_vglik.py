@@ -1,6 +1,6 @@
 """Tests for morie.fn.vglik -- Variogram log-likelihood"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vglik import vario_loglik
 

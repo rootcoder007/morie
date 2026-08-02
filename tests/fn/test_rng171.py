@@ -1,6 +1,6 @@
 """rng171: RLS Kalman-like gain (Rangayyan 2024, Eq. 3.217, p. 188)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng171 import rangayyan_ch3_rls_kalman_gain as gain

@@ -1,6 +1,6 @@
 """Tests for colst.collider_structure."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.colst import collider_structure
 

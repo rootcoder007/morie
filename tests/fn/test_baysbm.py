@@ -1,6 +1,6 @@
 """Tests for baysbm.bayes_b_marker."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.baysbm import bayes_b_marker
 

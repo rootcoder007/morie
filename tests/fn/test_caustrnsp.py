@@ -1,6 +1,6 @@
 """Tests for caustrnsp.causal_transportability_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.caustrnsp import causal_transportability_weights
 

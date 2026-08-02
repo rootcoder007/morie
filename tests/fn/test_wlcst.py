@@ -1,6 +1,6 @@
 """Tests for wlcst: Wilcoxon (Breslow) survival test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wlcst import wlcst

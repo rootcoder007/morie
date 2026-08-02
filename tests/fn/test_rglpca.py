@@ -1,6 +1,6 @@
 """Tests for rglpca.rangayyan_lpc_analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rglpca import rangayyan_lpc_analysis
 

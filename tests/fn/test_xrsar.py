@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrsar -- SAR (Spatial Lag) model ML estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrsar import sar_ml
 

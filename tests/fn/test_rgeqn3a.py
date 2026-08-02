@@ -1,6 +1,6 @@
 """Tests for rgeqn3a.rangayyan_ch3_convolution_sum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn3a import rangayyan_ch3_convolution_sum
 

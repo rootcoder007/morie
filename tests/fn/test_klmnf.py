@@ -1,6 +1,6 @@
 """Tests for klmnf.py - Kalman filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.klmnf import kalman_fn, klmnf
 

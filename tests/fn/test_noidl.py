@@ -1,6 +1,6 @@
 """Tests for morie.fn.noidl -- extract ideal points."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.noidl import noidl, nominate_ideal_extract
 

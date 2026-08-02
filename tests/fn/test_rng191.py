@@ -1,6 +1,6 @@
 """Tests for rng191.rangayyan_ch4_pan_tompkins_thresholds."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng191 import rangayyan_ch4_pan_tompkins_thresholds
 

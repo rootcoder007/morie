@@ -4,7 +4,7 @@ Book identities for the kriging family live in test_schab_kriging.py.
 This pins the module's own contract.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spblup import schabenberger_blup

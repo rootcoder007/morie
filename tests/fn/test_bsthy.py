@@ -1,6 +1,6 @@
 """Tests for morie.fn.bsthy — basic space dimensionality test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bsthy import bsthy
 

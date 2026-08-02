@@ -1,6 +1,6 @@
 """Tests for hrzd1.horowitz_duration_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzd1 import horowitz_duration_model
 

@@ -1,6 +1,6 @@
 """Tests for aE_an.autoencoder_anomaly (linear-bottleneck anomaly score)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aE_an import autoencoder_anomaly
 

@@ -1,6 +1,6 @@
 """Tests for rgvocal.rangayyan_vocal_tract."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgvocal import rangayyan_vocal_tract
 

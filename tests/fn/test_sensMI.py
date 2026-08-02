@@ -7,7 +7,7 @@ a function of rho), and the remark that the ACME vanishes exactly at
 rho == rho-tilde.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sensMI import sensitivity_mediation_imbens

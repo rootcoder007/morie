@@ -1,6 +1,6 @@
 """Tests for morie.fn.svdm2 -- Second dimensionality test"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svdm2 import dim_test_2
 

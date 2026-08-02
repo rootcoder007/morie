@@ -1,6 +1,6 @@
 """Tests for mafrt.ma_freeman_tukey."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mafrt import ma_freeman_tukey
 

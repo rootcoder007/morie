@@ -1,6 +1,6 @@
 """Tests for gb34mn (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb34mn import gibbons_runs_ud_mean

@@ -1,6 +1,6 @@
 """Tests for aitvar.aitchison_variation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitvar import aitchison_variation
 

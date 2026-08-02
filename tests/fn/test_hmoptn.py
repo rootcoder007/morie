@@ -1,6 +1,6 @@
 """Tests for hmoptn.geron_optuna."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmoptn import geron_optuna
 

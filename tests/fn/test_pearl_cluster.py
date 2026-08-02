@@ -1,7 +1,7 @@
 """Tests for the Pearl identification cluster:
 causmedb, mdian, backDR, medfm, fdadj, fdcrt, medFront."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.backDR import back_door

@@ -1,6 +1,6 @@
 """Tests for volgjr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volgjr import vol_gjr_garch

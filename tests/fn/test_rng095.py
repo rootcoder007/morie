@@ -1,6 +1,6 @@
 """Tests for rng095.rangayyan_ch3_hann_magnitude_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng095 import rangayyan_ch3_hann_magnitude_response
 

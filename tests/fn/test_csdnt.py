@@ -1,6 +1,6 @@
 """Tests for morie.fn.csdnt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.csdnt import csdnt
 

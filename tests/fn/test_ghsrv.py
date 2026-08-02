@@ -1,6 +1,6 @@
 """Tests for ghsrv.ghosal_survival_beta_process."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ghsrv import ghosal_survival_beta_process

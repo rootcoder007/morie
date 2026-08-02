@@ -1,6 +1,6 @@
 """Tests for rng132.rangayyan_ch3_iir_difference_eq_general."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng132 import rangayyan_ch3_iir_difference_eq_general
 

@@ -1,6 +1,6 @@
 """Tests for locdp.local_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.locdp import local_dp
 

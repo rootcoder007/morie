@@ -1,6 +1,6 @@
 """Tests for whtinv.walsh_hadamard_inverse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.whtinv import walsh_hadamard_inverse
 

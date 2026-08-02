@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgsmv -- Simple kriging variance"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgsmv import sk_variance
 

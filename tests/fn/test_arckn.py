@@ -1,6 +1,6 @@
 """Tests for arckn.arc_cosine_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.arckn import arc_cosine_kernel
 

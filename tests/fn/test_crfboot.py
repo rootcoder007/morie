@@ -1,6 +1,6 @@
 """Tests for crfboot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.crfboot import causal_forest_bootstrap

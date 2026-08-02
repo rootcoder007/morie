@@ -1,6 +1,6 @@
 """Tests for cmaopt.cma_es."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cmaopt import cma_es
 

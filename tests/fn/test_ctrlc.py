@@ -4,7 +4,7 @@ Gibbons & Chakraborti 5e, Ch 10 (Tests of the Equality of k Independent
 Samples), section 10.7 "Comparisons with a control".
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ctrlc import control_comparison as cmpc

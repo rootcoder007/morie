@@ -1,6 +1,6 @@
 """rng168: RLS cross-correlation recursion (Rangayyan 2024, Eq. 3.212, p. 187)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng168 import rangayyan_ch3_rls_theta_recursion as theta_rec

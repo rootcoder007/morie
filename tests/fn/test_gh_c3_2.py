@@ -1,6 +1,6 @@
 """Tests for gh_c3_2.ghosal_stochastic_proc_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c3_2 import ghosal_stochastic_proc_prior
 

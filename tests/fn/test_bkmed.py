@@ -1,6 +1,6 @@
 """Tests for bkmed.baron_kenny."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bkmed import baron_kenny

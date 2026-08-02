@@ -1,6 +1,6 @@
 """Tests for kmcot.kamath_chain_of_thought."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmcot import kamath_chain_of_thought
 

@@ -1,6 +1,6 @@
 """Tests for hankl.py - Hankel matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hankl import hankel_matrix_fn, hankl
 

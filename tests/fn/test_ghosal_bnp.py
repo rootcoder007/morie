@@ -1,6 +1,6 @@
 """Bayesian nonparametrics (Ghosal & van der Vaart)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gh_c3_14 import ghosal_mpt_prior

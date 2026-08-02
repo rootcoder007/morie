@@ -1,6 +1,6 @@
 """Tests for spcsr.schabenberger_csr_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spcsr import schabenberger_csr_def
 

@@ -1,6 +1,6 @@
 """Tests for aitprt.aitchison_perturbation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitprt import aitchison_perturbation
 

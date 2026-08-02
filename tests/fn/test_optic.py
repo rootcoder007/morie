@@ -1,6 +1,6 @@
 """Tests for morie.fn.optic -- OPTICS clustering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.optic import optics

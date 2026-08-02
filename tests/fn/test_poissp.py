@@ -1,6 +1,6 @@
 """Tests for poissp.poisson_spatial_glm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.poissp import poisson_spatial_glm
 

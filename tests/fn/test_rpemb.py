@@ -1,6 +1,6 @@
 """Test rotary_embed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rpemb import rotary_embed, rpemb

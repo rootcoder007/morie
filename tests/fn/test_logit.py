@@ -1,6 +1,6 @@
 """Tests for morie.fn.logit — Logistic regression via IRLS."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.logit import logistic_regression

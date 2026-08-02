@@ -1,6 +1,6 @@
 """Tests for kmlb.kamath_moe_load_balance_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmlb import kamath_moe_load_balance_loss
 

@@ -1,6 +1,6 @@
 """spkcrs -- cross K-function, Schabenberger & Gotway Sec. 3.4.4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_pp import ripley_weight, ripley_weights

@@ -1,6 +1,6 @@
 """Tests for Urban Heat Island index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.uhi import uhi, urban_heat_island

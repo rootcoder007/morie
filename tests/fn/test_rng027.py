@@ -1,6 +1,6 @@
 """Tests for rng027.rangayyan_ch3_unit_step_continuous."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng027 import rangayyan_ch3_unit_step_continuous
 

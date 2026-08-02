@@ -1,6 +1,6 @@
 """Tests for morie.fn.svrce -- Roll call classification error"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svrce import roll_call_error
 

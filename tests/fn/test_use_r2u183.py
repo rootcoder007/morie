@@ -1,6 +1,6 @@
 """Tests for use_r2u183.use_r_chapter_2_unnumbered_183."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.use_r2u183 import use_r_chapter_2_unnumbered_183
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.survc — Survival concordance (C-index)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.survc import survival_concordance

@@ -1,6 +1,6 @@
 """Tests for mutual information."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.minfo import minfo, mutual_information

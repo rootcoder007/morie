@@ -1,6 +1,6 @@
 """Tests for funBand.functional_band."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.funBand import functional_band
 

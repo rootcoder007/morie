@@ -1,6 +1,6 @@
 """Tests for rotrp.rotary_position_embedding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rotrp import rotary_position_embedding

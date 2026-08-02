@@ -1,6 +1,6 @@
 """Tests for morie.fn.zefhr -- Fay-Herriot small area estimator"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zefhr import fay_herriot
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.bkde — Boundary-corrected KDE."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bkde import bkde

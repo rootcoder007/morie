@@ -1,6 +1,6 @@
 """Tests for from_impact_to_action_final_report_into_anti_black_racism_by9u8.from_impact_to_action_final_report_into_anti_black_racism_by_chapter_9_unnumbered_8."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.from_impact_to_action_final_report_into_anti_black_racism_by9u8 import (
     from_impact_to_action_final_report_into_anti_black_racism_by_chapter_9_unnumbered_8,

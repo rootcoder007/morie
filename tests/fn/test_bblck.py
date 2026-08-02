@@ -1,6 +1,6 @@
 """Tests for morie.fn.bblck — Blackbox scaling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bblck import bblck
 

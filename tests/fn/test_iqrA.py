@@ -1,6 +1,6 @@
 """Tests for iqrA.iqr_outlier."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.iqrA import iqr_outlier
 

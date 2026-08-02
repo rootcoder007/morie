@@ -1,6 +1,6 @@
 """Tests for hmt5.geron_t5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmt5 import geron_t5
 

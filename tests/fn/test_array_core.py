@@ -7,7 +7,7 @@ compares the two implementations directly.
 
 import math
 
-import numpy as real_np
+real_np = __import__("pytest").importorskip("numpy")
 import pytest
 
 from morie.fn import _array_core as mnp

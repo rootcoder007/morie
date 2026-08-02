@@ -1,6 +1,6 @@
 """Tests for pacfP.partial_autocorrelation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pacfP import partial_autocorrelation
 

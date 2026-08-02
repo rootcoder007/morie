@@ -1,6 +1,6 @@
 """Tests for rgfd1.rangayyan_first_diff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfd1 import rangayyan_first_diff
 

@@ -3,7 +3,7 @@
     Attention(Q, K, V) = softmax(Q K^T / sqrt(d_k)) V
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.attnq import scaled_dot_product_attention as attn

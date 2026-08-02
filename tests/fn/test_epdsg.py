@@ -1,6 +1,6 @@
 """Tests for morie.fn.epdsg -- epidemic curve fitting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.epdsg import epidemic_curve_fit

@@ -1,6 +1,6 @@
 """Tests for modlar.modularity_newman."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.modlar import modularity_newman
 

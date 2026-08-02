@@ -1,6 +1,6 @@
 """Tests for pains3.pains_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pains3 import pains_filter
 

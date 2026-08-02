@@ -1,6 +1,6 @@
 """Tests for yangr.yang_realized_relationship."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.yangr import yang_realized_relationship
 

@@ -1,6 +1,6 @@
 """Tests for difpst.dif_p_diff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.difpst import dif_p_diff
 

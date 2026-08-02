@@ -1,6 +1,6 @@
 """Tests for morie.fn.schfd — Schoenfeld test for PH."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.schfd import schoenfeld_test

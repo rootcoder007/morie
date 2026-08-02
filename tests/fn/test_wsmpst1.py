@@ -1,6 +1,6 @@
 """Tests for wsmpst1.wasserman_posterior_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmpst1 import wasserman_posterior_mean
 

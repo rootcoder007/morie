@@ -1,6 +1,6 @@
 """Tests for lda.lda_topic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lda import lda_topic
 

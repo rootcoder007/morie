@@ -1,6 +1,6 @@
 """Tests for tmlhte.tmle_heterogeneous."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlhte import tmle_heterogeneous
 

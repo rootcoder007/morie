@@ -1,6 +1,6 @@
 """Tests for morie.fn.stsep — Separable spatio-temporal covariance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.stsep import stsep

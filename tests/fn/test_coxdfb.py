@@ -1,6 +1,6 @@
 """Tests for coxdfb.cox_dfbeta_influence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.coxdfb import cox_dfbeta_influence
 

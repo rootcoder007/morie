@@ -1,6 +1,6 @@
 """Tests for grfad.geron_forward_mode_autodiff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grfad import geron_forward_mode_autodiff
 

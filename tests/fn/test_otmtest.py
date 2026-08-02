@@ -4,7 +4,7 @@ The estimators are checked against a direct transcription of Gretton et
 al. (2012), and the test against its own operating characteristics.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.otmtest import _gram, ot_mmd_two_sample

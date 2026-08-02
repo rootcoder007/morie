@@ -1,6 +1,6 @@
 """Tests for grgan.geron_gan_minimax."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgan import geron_gan_minimax
 

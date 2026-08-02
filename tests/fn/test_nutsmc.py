@@ -1,6 +1,6 @@
 """Tests for nutsmc.nuts_sampler."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nutsmc import nuts_sampler
 

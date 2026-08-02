@@ -3,7 +3,7 @@
 Schabenberger, O. & Gotway, C. A. (2005). Ch. 6.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spgls import schabenberger_gls_spatial as gls

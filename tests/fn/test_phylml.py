@@ -1,6 +1,6 @@
 """Tests for phylml.phylogenetic_ml."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.phylml import phylogenetic_ml
 

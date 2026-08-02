@@ -1,6 +1,6 @@
 """Tests for dpgmm.dp_gaussian_mixture."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpgmm import dp_gaussian_mixture
 

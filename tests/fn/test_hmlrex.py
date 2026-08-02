@@ -1,6 +1,6 @@
 """Tests for hmlrex.geron_lr_exponential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlrex import geron_lr_exponential
 

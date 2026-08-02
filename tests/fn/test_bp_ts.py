@@ -1,6 +1,6 @@
 """Tests for morie.fn.bp_ts — Bai-Perron structural break test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bp_ts import bp_ts
 

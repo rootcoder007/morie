@@ -1,6 +1,6 @@
 """Tests for rgcdft.rangayyan_circular_conv_dft."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgcdft import rangayyan_circular_conv_dft
 

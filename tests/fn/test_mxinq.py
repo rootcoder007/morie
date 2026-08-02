@@ -1,6 +1,6 @@
 """Tests for morie.fn.mxinq — maximal inequality bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mxinq import mxinq

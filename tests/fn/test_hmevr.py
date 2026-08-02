@@ -1,6 +1,6 @@
 """Tests for hmevr.geron_explained_variance_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmevr import geron_explained_variance_ratio
 

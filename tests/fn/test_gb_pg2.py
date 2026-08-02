@@ -1,6 +1,6 @@
 """Tests for gb_pg2.gibbons_page_asymp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_pg2 import gibbons_page_asymp
 

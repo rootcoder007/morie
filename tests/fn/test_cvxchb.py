@@ -1,6 +1,6 @@
 """Tests for cvxchb.boyd_chebyshev_center."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxchb import boyd_chebyshev_center
 

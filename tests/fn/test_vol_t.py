@@ -1,6 +1,6 @@
 """Tests for vol_t — volatility trend."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.vol_t import vol_trd
 

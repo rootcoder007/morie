@@ -1,6 +1,6 @@
 """Tests for trnsfr.transfer_learning_msm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trnsfr import transfer_learning_msm
 

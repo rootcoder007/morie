@@ -1,6 +1,6 @@
 """Tests for wsrpw.wilcoxon_power."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wsrpw import wilcoxon_power

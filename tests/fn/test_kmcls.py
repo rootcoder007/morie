@@ -1,6 +1,6 @@
 """Tests for morie.fn.kmcls -- K-means clustering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import KmeansRes
 from morie.fn.kmcls import kmcls, kmeans

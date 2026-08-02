@@ -1,6 +1,6 @@
 """Tests for grdyq.geron_dynamic_quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grdyq import geron_dynamic_quantization
 

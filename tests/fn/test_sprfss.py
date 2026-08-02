@@ -6,7 +6,7 @@ intrinsic stationarity -- the latter is about the INCREMENTS,
 E[Z(s+h) - Z(s)] = 0, not about the levels.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sprfss import schabenberger_random_field_stationarity as sprfss

@@ -1,6 +1,6 @@
 """Tests for spgogl.schabenberger_getis_ord_gstar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spgogl import schabenberger_getis_ord_gstar
 

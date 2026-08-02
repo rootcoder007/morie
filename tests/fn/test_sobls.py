@@ -1,6 +1,6 @@
 """sobls: Sobol low-discrepancy sequence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sobls import sobol_sequence as sob

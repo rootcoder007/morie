@@ -1,6 +1,6 @@
 """Tests for morie.fn.zegin -- Spatial Gini coefficient"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zegin import gini_spatial
 

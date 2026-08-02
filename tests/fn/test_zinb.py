@@ -1,6 +1,6 @@
 """Tests for zero_inflated_negbin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zinb import zero_inflated_negbin
 

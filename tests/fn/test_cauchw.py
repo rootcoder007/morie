@@ -1,6 +1,6 @@
 """Tests for cauchw.cauchy_weight."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cauchw import cauchy_weight
 

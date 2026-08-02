@@ -1,6 +1,6 @@
 """Tests for gpregb.gp_regression_bayes."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpregb import gp_regression_bayes
 

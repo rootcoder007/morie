@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsdel -- Delaunay triangulation mesh"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsdel import delaunay_mesh
 

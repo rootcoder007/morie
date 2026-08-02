@@ -1,6 +1,6 @@
 """Tests for volgkr.vol_garman_klass."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.volgkr import vol_garman_klass
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.admix — admixture proportions."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.admix import admixture_proportions

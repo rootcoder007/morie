@@ -1,6 +1,6 @@
 """Tests for morie.fn.gam -- GAM (B-spline + OLS)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gam import fit_gam, gam

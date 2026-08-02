@@ -1,6 +1,6 @@
 """Tests for rescor.rescore_consensus."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rescor import rescore_consensus
 

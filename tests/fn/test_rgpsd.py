@@ -6,7 +6,7 @@ windows" p.326; Welch (1967). The identities pinned here are Parseval
 (integrated PSD = signal power) and peak location.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgpsd import rangayyan_psd

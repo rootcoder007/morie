@@ -1,6 +1,6 @@
 """Tests for morie.fn.svclh -- Heart of spatial game"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svclh import coalition_heart
 

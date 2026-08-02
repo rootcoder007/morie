@@ -1,6 +1,6 @@
 """Tests for gh_sobol_prior.ghosal_sobolev_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_sobol_prior import ghosal_sobolev_prior
 

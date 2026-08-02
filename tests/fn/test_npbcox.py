@@ -1,6 +1,6 @@
 """Tests for npbcox.np_bayes_cox."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.npbcox import np_bayes_cox
 

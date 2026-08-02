@@ -1,6 +1,6 @@
 """spglmm -- conditional GLMM specification, Schabenberger Sec. 6.3.4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spglmm import schabenberger_glmm_conditional

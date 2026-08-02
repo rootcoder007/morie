@@ -1,6 +1,6 @@
 """Tests for hmridn.geron_ridge_normal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmridn import geron_ridge_normal
 

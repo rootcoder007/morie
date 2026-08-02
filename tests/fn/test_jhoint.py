@@ -1,6 +1,6 @@
 """Tests for jhoint.johansen_trace."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jhoint import johansen_trace
 

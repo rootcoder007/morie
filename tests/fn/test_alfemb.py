@@ -1,6 +1,6 @@
 """Tests for alfemb.alphafold_embedding_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfemb import alphafold_embedding_init
 

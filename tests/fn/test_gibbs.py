@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for morie.fn.gibbs -- Gibbs sampler for bivariate normal."""
 
 from morie.fn.gibbs import gibbs_bivariate_normal

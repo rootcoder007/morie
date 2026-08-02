@@ -1,6 +1,6 @@
 """Tests for morie.fn.ispri."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ispri import ispri
 

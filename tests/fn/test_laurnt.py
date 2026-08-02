@@ -1,6 +1,6 @@
 """Tests for laurnt.laurent_series."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.laurnt import laurent_series
 

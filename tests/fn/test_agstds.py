@@ -1,6 +1,6 @@
 """Tests for agstds.age_standardize."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agstds import age_standardize
 

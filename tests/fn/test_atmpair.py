@@ -1,6 +1,6 @@
 """Tests for atmpair.atom_pair_fp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.atmpair import atom_pair_fp
 

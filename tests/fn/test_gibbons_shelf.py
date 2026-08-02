@@ -5,7 +5,7 @@ with a known answer, and on the book's own statements. Page and equation
 numbers are from the 5th edition.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1241r import gibbons_concordance_rho_link

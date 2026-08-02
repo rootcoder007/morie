@@ -1,6 +1,6 @@
 """Tests for gb651.gibbons_ctrl_median."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb651 import gibbons_ctrl_median
 

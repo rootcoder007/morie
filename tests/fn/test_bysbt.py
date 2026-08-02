@@ -1,6 +1,6 @@
 """Tests for morie.fn.bysbt — Bayesian bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bysbt import bysbt

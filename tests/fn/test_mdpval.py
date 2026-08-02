@@ -1,6 +1,6 @@
 """Tests for mdpval.mdp_value_iteration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mdpval import mdp_value_iteration
 

@@ -1,6 +1,6 @@
 """Tests for rgbci.rangayyan_bci_nmf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgbci import rangayyan_bci_nmf
 

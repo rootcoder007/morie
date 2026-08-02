@@ -1,6 +1,6 @@
 """Test fractal_dim_from_psd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.fdspc import fdspc, fractal_dim_from_psd

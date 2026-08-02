@@ -1,6 +1,6 @@
 """Tests for rng239.rangayyan_ch4_rational_z_transform_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng239 import rangayyan_ch4_rational_z_transform_form
 

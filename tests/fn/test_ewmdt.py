@@ -1,6 +1,6 @@
 """Test ewma_detect (ewmdt)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ewmdt import ewma_detect, ewmdt

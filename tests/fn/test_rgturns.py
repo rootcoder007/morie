@@ -1,6 +1,6 @@
 """Tests for rgturns.rangayyan_turns_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgturns import rangayyan_turns_count
 

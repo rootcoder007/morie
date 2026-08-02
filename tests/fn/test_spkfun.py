@@ -4,7 +4,7 @@ Book identities for the point-pattern family live in
 test_schab_point_pattern.py. This pins the module's own contract.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spkfun import schabenberger_k_function

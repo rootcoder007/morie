@@ -1,6 +1,6 @@
 """Tests for morie.fn.vggau -- Gaussian variogram model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vggau import vario_gaussian
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.amfit — A-M fit statistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.amfit import amfit
 

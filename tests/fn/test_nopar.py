@@ -1,6 +1,6 @@
 """Tests for morie.fn.nopar -- NOMINATE parameters."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nopar import nominate_parameters, nopar
 

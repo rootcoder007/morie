@@ -1,6 +1,6 @@
 """Tests for morie.fn.sacvar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sacvar import sacvar
 

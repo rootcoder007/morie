@@ -1,6 +1,6 @@
 """Tests for coxtmv.cox_time_varying."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.coxtmv import cox_time_varying
 

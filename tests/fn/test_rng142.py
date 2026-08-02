@@ -1,6 +1,6 @@
 """rng142: Wiener cross-correlation vector (Rangayyan 2024, Eq. 3.160/3.161, p. 174)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng142 import rangayyan_ch3_cross_correlation_vector as theta_vec

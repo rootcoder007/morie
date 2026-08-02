@@ -1,6 +1,6 @@
 """Tests for laplI.inverse_laplace."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.laplI import inverse_laplace
 

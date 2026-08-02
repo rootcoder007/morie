@@ -1,6 +1,6 @@
 """Tests for morie.fn.zekls -- Circular scan statistic"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zekls import scan_circular
 

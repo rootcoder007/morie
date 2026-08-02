@@ -1,6 +1,6 @@
 """Tests for frwil.free_wilson_qsar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.frwil import free_wilson_qsar
 

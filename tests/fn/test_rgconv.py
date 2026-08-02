@@ -1,6 +1,6 @@
 """Tests for rgconv.rangayyan_linear_convolution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgconv import rangayyan_linear_convolution
 

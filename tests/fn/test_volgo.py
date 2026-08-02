@@ -1,6 +1,6 @@
 """Tests for volgo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volgo import vol_garch_orthogonal

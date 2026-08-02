@@ -1,6 +1,6 @@
 """Tests for rgeqn4.rangayyan_ch4_qrs_slope."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn4 import rangayyan_ch4_qrs_slope
 

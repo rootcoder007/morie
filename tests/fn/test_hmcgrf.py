@@ -1,6 +1,6 @@
 """Tests for hmcgrf.geron_computational_graph."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcgrf import geron_computational_graph
 

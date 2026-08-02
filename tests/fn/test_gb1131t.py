@@ -1,6 +1,6 @@
 """Tests for gb1131t (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1131t import gibbons_spearman_ties

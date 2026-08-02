@@ -1,6 +1,6 @@
 """Tests for rng030.rangayyan_ch3_continuous_convolution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng030 import rangayyan_ch3_continuous_convolution
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.rsktd — risk score trend over years."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rsktd import risk_trend
 

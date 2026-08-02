@@ -1,6 +1,6 @@
 """Tests for gb921.gibbons_mood_scale."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb921 import gibbons_mood_scale
 

@@ -1,6 +1,6 @@
 """Tests for tqpack.turboquant_bit_pack_indices."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqpack import turboquant_bit_pack_indices
 

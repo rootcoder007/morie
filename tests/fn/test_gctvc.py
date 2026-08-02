@@ -1,6 +1,6 @@
 """Tests for gctvc.g_computation_time_varying."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gctvc import g_computation_time_varying

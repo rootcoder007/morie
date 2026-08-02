@@ -1,6 +1,6 @@
 """Tests for pageH.page_hinkley."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pageH import page_hinkley
 

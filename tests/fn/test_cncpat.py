@@ -1,6 +1,6 @@
 """Tests for cncpat.controlnet_attach."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cncpat import controlnet_attach
 

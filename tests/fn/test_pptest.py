@@ -1,6 +1,6 @@
 """Tests for pptest.phillips_perron_unit_root."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pptest import phillips_perron_unit_root
 

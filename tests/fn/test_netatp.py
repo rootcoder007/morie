@@ -1,6 +1,6 @@
 """Tests for netatp.network_attack_tolerance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netatp import network_attack_tolerance
 

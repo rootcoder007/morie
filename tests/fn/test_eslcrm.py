@@ -1,6 +1,6 @@
 """Tests for eslcrm.esl_cross_entropy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslcrm import esl_cross_entropy
 

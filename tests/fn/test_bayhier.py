@@ -1,6 +1,6 @@
 """Tests for bayhier.hierarchical_pooling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayhier import hierarchical_pooling
 

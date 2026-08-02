@@ -1,6 +1,6 @@
 """Tests for rgsmom.rangayyan_spectral_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsmom import rangayyan_spectral_moments
 

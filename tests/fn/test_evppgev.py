@@ -1,6 +1,6 @@
 """Tests for evppgev.evt_gev_pp_plot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evppgev import evt_gev_pp_plot
 

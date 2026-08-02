@@ -1,6 +1,6 @@
 """Tests for smltot.survey_total."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smltot import survey_total
 

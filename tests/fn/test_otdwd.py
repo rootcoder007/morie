@@ -1,6 +1,6 @@
 """Tests for otdwd.ot_doubly_stoch_proj."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otdwd import ot_doubly_stoch_proj
 

@@ -1,6 +1,6 @@
 """Tests for barerp.barrier_method."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.barerp import barrier_method
 

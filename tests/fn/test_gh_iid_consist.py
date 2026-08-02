@@ -1,6 +1,6 @@
 """Tests for gh_iid_consist.ghosal_iid_posterior_consistency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_iid_consist import ghosal_iid_posterior_consistency
 

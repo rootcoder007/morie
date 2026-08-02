@@ -1,6 +1,6 @@
 """Tests for morie.fn.sntgn — sentence by gender."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.sntgn import sentence_by_gender
 

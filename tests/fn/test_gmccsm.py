@@ -1,6 +1,6 @@
 """Tests for gmccsm.g_methods_consistency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gmccsm import g_methods_consistency

@@ -3,7 +3,7 @@
 Schabenberger & Gotway (2005), Secs 2.4.2, 2.5, 2.5.3.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spwkth import schabenberger_wiener_khinchin as wiener_khinchin

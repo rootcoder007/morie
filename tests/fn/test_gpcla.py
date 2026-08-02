@@ -1,6 +1,6 @@
 """Tests for gpcla.gp_classification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpcla import gp_classification
 

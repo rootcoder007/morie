@@ -1,6 +1,6 @@
 """Tests for ppdks.posterior_predictive_ks."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ppdks import posterior_predictive_ks
 

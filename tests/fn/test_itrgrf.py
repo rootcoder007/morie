@@ -1,6 +1,6 @@
 """Tests for itrgrf.itr_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.itrgrf import itr_forest
 

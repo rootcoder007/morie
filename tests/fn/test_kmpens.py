@@ -1,6 +1,6 @@
 """Tests for kmpens.kamath_prompt_ensemble."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmpens import kamath_prompt_ensemble
 

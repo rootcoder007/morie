@@ -1,6 +1,6 @@
 """Tests for rgmfsnr.rangayyan_matched_filter_snr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgmfsnr import rangayyan_matched_filter_snr
 

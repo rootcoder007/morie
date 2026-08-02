@@ -1,8 +1,8 @@
 """famusm: transmission disequilibrium test (Spielman, McGinnis & Ewens 1993)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.famusm import family_based_assoc as tdt
 

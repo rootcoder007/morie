@@ -1,6 +1,6 @@
 """rng173: RLS gain identity k(n) = P(n) r(n) (Rangayyan 2024, Eq. 3.221, p. 188)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng173 import rangayyan_ch3_rls_gain_identity as gain_id

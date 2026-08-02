@@ -1,7 +1,7 @@
 """Horowitz Sec. 4.3.3-4.4 max-score extensions: choice-based samples,
 panel data with fixed effects, ordered response, and the rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzcbsm import choice_based_optimal_shares, horowitz_choice_based_sms

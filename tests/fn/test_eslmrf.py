@@ -1,6 +1,6 @@
 """Tests for eslmrf.esl_markov_rf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslmrf import esl_markov_rf
 

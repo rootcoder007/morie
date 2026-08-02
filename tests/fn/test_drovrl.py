@@ -1,6 +1,6 @@
 """Tests for drovrl.dr_did_overlap_trim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.drovrl import dr_did_overlap_trim

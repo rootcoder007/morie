@@ -1,6 +1,6 @@
 """Tests for morie.fn.zee2s -- Enhanced 2SFCA"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zee2s import enhanced_2sfca
 

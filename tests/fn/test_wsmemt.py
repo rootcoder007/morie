@@ -1,6 +1,6 @@
 """Tests for wsmemt.wasserman_em_algorithm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmemt import wasserman_em_algorithm
 

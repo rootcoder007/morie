@@ -1,6 +1,6 @@
 """Tests for rng012.rangayyan_ch3_signal_plus_noise_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng012 import rangayyan_ch3_signal_plus_noise_model
 

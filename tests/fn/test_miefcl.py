@@ -1,6 +1,6 @@
 """Tests for miefcl.multiple_imputation_combine."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.miefcl import multiple_imputation_combine
 

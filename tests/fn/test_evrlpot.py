@@ -1,6 +1,6 @@
 """Tests for evrlpot.evt_return_level_pot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evrlpot import evt_return_level_pot
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrsdm -- Spatial Durbin model ML"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrsdm import sdm_ml
 

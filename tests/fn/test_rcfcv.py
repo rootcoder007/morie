@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Test reflection_to_ar (rcfcv)."""
 
 from morie.fn._containers import DescriptiveResult

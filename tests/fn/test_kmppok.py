@@ -1,6 +1,6 @@
 """Tests for kmppok.kamath_ppo_rlhf_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmppok import kamath_ppo_rlhf_objective
 

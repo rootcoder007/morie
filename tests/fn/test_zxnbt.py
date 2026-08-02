@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxnbt -- Network betweenness spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxnbt import network_between
 

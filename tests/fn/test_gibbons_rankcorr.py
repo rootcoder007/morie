@@ -5,9 +5,9 @@ gb_sp2 gb_spv gb_wcin gb_blt. Oracles: scipy kendalltau/spearmanr,
 exact enumeration, and the Gibbons closed forms (Ch 11-12,
 PDF-verified eq. 12.4.4)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.gb1121 import gibbons_kendall_tau
 from morie.fn.gb1122t import gibbons_kendall_ties

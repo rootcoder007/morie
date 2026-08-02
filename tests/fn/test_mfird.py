@@ -1,6 +1,6 @@
 """Tests for mfird.mirt_factor_loading."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mfird import mirt_factor_loading
 

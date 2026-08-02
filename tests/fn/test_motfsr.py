@@ -1,6 +1,6 @@
 """Tests for motfsr.motif_meme."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.motfsr import motif_meme
 

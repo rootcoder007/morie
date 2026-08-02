@@ -1,6 +1,6 @@
 """Tests for morie.fn.msprp -- Partial Procrustes"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msprp import procrustes_part
 

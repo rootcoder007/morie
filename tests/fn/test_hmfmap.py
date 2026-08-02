@@ -1,6 +1,6 @@
 """Tests for hmfmap.geron_feature_map."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmfmap import geron_feature_map
 

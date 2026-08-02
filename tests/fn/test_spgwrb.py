@@ -5,7 +5,7 @@ Cressie's sigma^2); Bivand et al. (2013) Sec. 9.4.3 p. 318 (LOO CV);
 Charlton, GWR White Paper p. 8 and spgwr R/gwr.cv.R (AICc, AIC, CV score).
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_gwr import (aic_from_parts, aicc_from_parts, cv_score,

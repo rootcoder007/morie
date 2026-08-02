@@ -1,6 +1,6 @@
 """Tests for johw."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.johw import joseph_holt_winters

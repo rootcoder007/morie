@@ -6,7 +6,7 @@ design with staggered adoption and dynamic effects has a KNOWN average
 effect, TWFE misses it, and each replacement recovers it.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.avtdid import avg_treatment_did

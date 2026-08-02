@@ -1,6 +1,6 @@
 """Tests for ghs005.ghosal_ch2_location_scale_mixture_limit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs005 import ghosal_ch2_location_scale_mixture_limit
 

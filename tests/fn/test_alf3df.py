@@ -1,6 +1,6 @@
 """Tests for alf3df.af3_diffusion_step."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alf3df import af3_diffusion_step
 

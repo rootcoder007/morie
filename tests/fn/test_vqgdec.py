@@ -1,6 +1,6 @@
 """Tests for vqgdec.vqgan_decode."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vqgdec import vqgan_decode
 

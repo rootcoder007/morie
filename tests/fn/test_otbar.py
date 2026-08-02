@@ -1,6 +1,6 @@
 """Tests for otbar.ot_barycenter_fixed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otbar import ot_barycenter_fixed
 

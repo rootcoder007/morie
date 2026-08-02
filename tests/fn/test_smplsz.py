@@ -1,6 +1,6 @@
 """Tests for smplsz.sample_size_calc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smplsz import sample_size_calc
 

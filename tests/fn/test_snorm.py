@@ -1,6 +1,6 @@
 """Tests for morie.fn.snorm -- subscale normative tables."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.snorm import subscale_norms
 

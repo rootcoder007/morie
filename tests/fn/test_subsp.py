@@ -1,6 +1,6 @@
 """Tests for morie.fn.subsp -- Subsampling inference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.subsp import subsp

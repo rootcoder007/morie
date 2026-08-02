@@ -1,6 +1,6 @@
 """Equivalence + parity tests: morie.fn._ml_core vs sklearn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 pytest.importorskip("sklearn",

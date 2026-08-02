@@ -1,6 +1,6 @@
 """Tests for evgevp.evt_gev_pdf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgevp import evt_gev_pdf
 

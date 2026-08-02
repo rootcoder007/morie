@@ -1,6 +1,6 @@
 """Tests for gh_gp_orn_uhl.ghosal_gp_ornstein_uhlenbeck."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_gp_orn_uhl import ghosal_gp_ornstein_uhlenbeck
 

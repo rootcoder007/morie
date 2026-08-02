@@ -1,6 +1,6 @@
 """Tests for sgtmix.sgt_mixing_time."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtmix import sgt_mixing_time
 

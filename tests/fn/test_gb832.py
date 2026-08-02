@@ -1,6 +1,6 @@
 """Tests for gb832.gibbons_vdw_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb832 import gibbons_vdw_test
 

@@ -1,6 +1,6 @@
 """Tests for hrzsms.horowitz_smoothed_max_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzsms import horowitz_smoothed_max_score
 

@@ -1,6 +1,6 @@
 """Tests for msmtve.msm_time_varying_exposure."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msmtve import msm_time_varying_exposure
 

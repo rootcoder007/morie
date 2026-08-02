@@ -1,6 +1,6 @@
 """Tests for bvtrA.bias_variance_tradeoff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bvtrA import bias_variance_tradeoff
 

@@ -1,6 +1,6 @@
 """Tests for moetop.moe_topk_routing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.moetop import moe_topk_routing
 

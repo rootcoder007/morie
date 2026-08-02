@@ -1,6 +1,6 @@
 """Tests for survtdc.time_dep_concordance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survtdc import time_dep_concordance
 

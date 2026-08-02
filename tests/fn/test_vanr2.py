@@ -1,6 +1,6 @@
 """Tests for vanr2.vanraden_method2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vanr2 import vanraden_method2
 

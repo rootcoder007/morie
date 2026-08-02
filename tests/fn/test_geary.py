@@ -1,6 +1,6 @@
 """Tests for morie.fn.geary — Geary's C spatial autocorrelation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.geary import gearys_c

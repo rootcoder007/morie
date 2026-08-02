@@ -7,7 +7,7 @@ and the headline number against the same anchors as the backend suite.
 import importlib
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 X21 = np.array([1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5], float)

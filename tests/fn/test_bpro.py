@@ -1,6 +1,6 @@
 """Tests for morie.fn.bpro — Brownian bridge simulation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bpro import bpro

@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgcvl -- Kriging LOO cross-validation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgcvl import kriging_cv_loo
 

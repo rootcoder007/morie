@@ -1,6 +1,6 @@
 """Tests for singsd.singular_spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.singsd import singular_spectrum
 

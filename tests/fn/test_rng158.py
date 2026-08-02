@@ -1,6 +1,6 @@
 """Tests for rng158.rangayyan_ch3_lms_steepest_descent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng158 import rangayyan_ch3_lms_steepest_descent
 

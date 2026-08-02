@@ -1,6 +1,6 @@
 """Tests for btpair.boot_pairs_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btpair import boot_pairs_regression
 

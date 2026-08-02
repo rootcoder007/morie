@@ -1,6 +1,6 @@
 """Tests for dccmd.dcc_multivariate_garch."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dccmd import dcc_multivariate_garch

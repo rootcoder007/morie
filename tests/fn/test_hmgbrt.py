@@ -1,6 +1,6 @@
 """Tests for hmgbrt.geron_gradient_boosting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmgbrt import geron_gradient_boosting
 

@@ -1,6 +1,6 @@
 """Tests for rng127.rangayyan_ch3_bilinear_transformation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng127 import rangayyan_ch3_bilinear_transformation
 

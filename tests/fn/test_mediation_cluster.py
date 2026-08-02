@@ -2,7 +2,7 @@
 tdmed, mcausm, pscme, nemed, immid, weakid, medSEM, mlmMd, longMd,
 countMd, survmd, baymed, medML, dmlMed, mssm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.baymed import bayes_mediation

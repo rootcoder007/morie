@@ -1,6 +1,6 @@
 """Tests for analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1360.analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1360."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo5u1360 import (
     analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_unnumbered_1360,

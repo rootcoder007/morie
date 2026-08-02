@@ -1,6 +1,6 @@
 """Tests for pmcrt.pepe_mori_cif_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pmcrt import pepe_mori_cif_test
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.cm -- Confusion matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cm import confusion_matrix
 

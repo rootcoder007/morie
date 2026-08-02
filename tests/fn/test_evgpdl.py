@@ -1,6 +1,6 @@
 """Tests for evgpdl.evt_gpd_loglik."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgpdl import evt_gpd_loglik
 

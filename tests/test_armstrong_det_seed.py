@@ -13,7 +13,7 @@ Verifies that the ``deterministic_seed`` kwarg added to ``bysid``
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bysid import bysid
 

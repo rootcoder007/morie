@@ -1,6 +1,6 @@
 """Tests for replwt.replicate_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.replwt import replicate_weights
 

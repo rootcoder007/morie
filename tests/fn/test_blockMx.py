@@ -1,6 +1,6 @@
 """Tests for blockMx.block_maxima."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.blockMx import block_maxima
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.mcc -- Matthews Correlation Coefficient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mcc import matthews_corrcoef

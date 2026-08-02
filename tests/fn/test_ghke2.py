@@ -1,6 +1,6 @@
 """Test ghke2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghke2 import ghke2
 

@@ -1,6 +1,6 @@
 """Test clemb."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clemb import clemb
 

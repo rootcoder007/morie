@@ -1,6 +1,6 @@
 """Tests for pareff.population_attributable."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pareff import population_attributable
 

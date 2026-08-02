@@ -1,6 +1,6 @@
 """Tests for cmark.causal_markov_condition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cmark import causal_markov_condition

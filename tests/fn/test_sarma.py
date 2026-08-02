@@ -1,6 +1,6 @@
 """Tests for morie.fn.sarma — seasonal ARMA."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sarma import seasonal_arma

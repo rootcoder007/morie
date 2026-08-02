@@ -1,6 +1,6 @@
 """Tests for rng091.rangayyan_ch3_hann_z_output."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng091 import rangayyan_ch3_hann_z_output
 

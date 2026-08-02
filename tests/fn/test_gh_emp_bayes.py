@@ -1,6 +1,6 @@
 """Tests for gh_emp_bayes.ghosal_empirical_bayes_np."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_emp_bayes import ghosal_empirical_bayes_np
 

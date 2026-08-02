@@ -1,6 +1,6 @@
 """Tests for gwasem.emmax_gwas."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwasem import emmax_gwas
 

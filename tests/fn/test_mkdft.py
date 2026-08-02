@@ -1,6 +1,6 @@
 """Tests for morie.fn.mkdft — multivariate product kernel density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mkdft import mkdft
