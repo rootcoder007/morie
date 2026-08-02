@@ -14,7 +14,7 @@ def logistic_data():
     rng = np.random.default_rng(42)
     n = 300
     x = rng.normal(0, 1, n)
-    from scipy.special import expit
+    from morie.fn._sci_core import expit
 
     p = expit(-1 + 2 * x)
     y = rng.binomial(1, p, n).astype(float)

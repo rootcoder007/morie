@@ -4,7 +4,6 @@ from morie.fn import _array_core as np
 import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")
-pytest.importorskip("scipy")
 
 from morie.fn.holo_q import holo_qq
 

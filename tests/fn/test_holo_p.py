@@ -4,7 +4,7 @@ from morie.fn import _array_core as np
 import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")
-pd = pytest.importorskip("pandas")
+from morie.fn import _frame_core as pd
 
 from morie.fn.holo_p import holo_pair
 

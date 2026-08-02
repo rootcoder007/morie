@@ -436,7 +436,7 @@ class TestSummaryHelper:
 
     def test_summary_with_dataframe_arg(self):
         """summary(df) should not raise ValueError about truth value."""
-        import pandas as pd
+        from morie.fn import _frame_core as pd
 
         from morie.tui import ReplScreen
 
@@ -448,7 +448,7 @@ class TestSummaryHelper:
         ns["summary"](df)
 
     def test_summary_with_string_arg(self):
-        import pandas as pd
+        from morie.fn import _frame_core as pd
 
         from morie.tui import ReplScreen
 
@@ -696,8 +696,8 @@ class TestAliasExecution:
 
     def test_no_arg_helpers_show_usage_not_crash(self):
         """All helpers with required args should show usage when called with none."""
-        import numpy as np
-        import pandas as pd
+        from morie.fn import _array_core as np
+        from morie.fn import _frame_core as pd
 
         from morie.tui import ReplScreen
 

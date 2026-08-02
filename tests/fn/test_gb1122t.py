@@ -7,7 +7,7 @@ from morie.fn.gb1122t import gibbons_kendall_ties
 
 
 def test_gb1122t_basic():
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     x = np.array([1, 2, 2, 3, 4, 4], float); y = np.array([2, 1, 3, 3, 5, 4], float)
     assert gibbons_kendall_ties(x, y)["tau_b"] == pytest.approx(
         stats.kendalltau(x, y).statistic, abs=1e-12)
