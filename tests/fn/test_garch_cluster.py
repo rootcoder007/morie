@@ -72,7 +72,7 @@ def test_fitted_model_beats_a_constant_variance():
     e = simulate_garch(seed=1)
     f = garch_fit(e, "garch")
     z = f["std_residuals"]
-    from scipy import stats as st
+    from morie.fn import _stats_core as st
 
     def arch_lm(x, lags=5):
         x2 = x**2

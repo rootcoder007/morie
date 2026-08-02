@@ -8,7 +8,7 @@ from morie.fn.lambd import genomic_inflation
 
 class TestGenomicInflation:
     def test_no_inflation(self):
-        from scipy import stats
+        from morie.fn import _stats_core as stats
 
         chi2 = stats.chi2.rvs(1, size=1000, random_state=42)
         res = genomic_inflation(chi2_stats=chi2)

@@ -50,7 +50,7 @@ def test_grm_category_probs_sum_to_one():
 
     Samejima (1969) Ch 5, eqs (5-4) with (5-8) and (5-9), p.23-24.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.fn.irtgr import _grm_category_probs
 
@@ -81,7 +81,7 @@ def test_grm_cumulative_boundaries_are_monotone():
     P*_x(theta) sequence must be non-increasing across categories. If a
     threshold vector were ever passed unsorted, this is what would catch it.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.fn.irtgr import _grm_category_probs
 

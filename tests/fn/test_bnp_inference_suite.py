@@ -47,7 +47,7 @@ def test_bnp_modules_have_docstrings():
 def test_the_ewens_sampler_produces_a_valid_partition():
     """Smoke-run one representative end to end: the sampled partition must
     cover {0..n-1} exactly once, and class_sizes must sum to n."""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from morie.fn.ewens import ewens_partition
 

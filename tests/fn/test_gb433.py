@@ -7,7 +7,7 @@ from morie.fn.gb433 import gibbons_ks_kolmogorov_limit
 
 
 def test_gb433_basic():
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     assert gibbons_ks_kolmogorov_limit(1.0)["L"] == pytest.approx(
         stats.kstwobign.cdf(1.0), abs=1e-10)
 

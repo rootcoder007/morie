@@ -7,7 +7,7 @@ from morie.fn.gb_psi import gibbons_pitman_efficiency
 
 
 def test_gb_psi_basic():
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     out = gibbons_pitman_efficiency(
         lambda x: stats.ttest_1samp(x, 0.0).pvalue,
         lambda x: stats.ttest_1samp(x, 0.0).pvalue,

@@ -18,7 +18,7 @@ def _same(a, b):
     built with a title, so comparing ``str(a) == str(b)`` passes vacuously.
     Compare the payload itself, array-aware.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     if isinstance(a, dict) != isinstance(b, dict):
         return False

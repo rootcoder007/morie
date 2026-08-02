@@ -40,7 +40,7 @@ def test_tolim_calibration_across_samples():
     """Wilks guarantee: with coverage 0.8 / confidence 0.9 the interval
     contains >= 80 percent of the TRUE distribution in at least ~90
     percent of repetitions. Measured 20/20 across seeds at n = 200."""
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     hits = 0
     for s in range(20):
         rng = np.random.default_rng(s)

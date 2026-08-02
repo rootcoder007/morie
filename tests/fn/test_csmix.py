@@ -11,7 +11,7 @@ def cc_data():
     rng = np.random.default_rng(42)
     n = 300
     X = rng.standard_normal((n, 2))
-    from scipy.special import expit
+    from morie.fn._sci_core import expit
 
     p = expit(0.5 * X[:, 0] - 0.3 * X[:, 1])
     case = rng.binomial(1, p).astype(float)

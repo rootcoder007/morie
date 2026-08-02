@@ -88,7 +88,7 @@ def test_imbens_manski_c_hits_both_limits_exactly():
     noise, and z_{1-alpha/2} when it collapses to a point. The
     interpolation is the content of the construction and the limits
     are exact, not approximate."""
-    from scipy import stats
+    from morie.fn import _stats_core as stats
 
     wide = bound_variance_term(0.2, 0.8, 1.0, 1.0, 400)
     point = bound_variance_term(0.5, 0.5, 1.0, 1.0, 400)

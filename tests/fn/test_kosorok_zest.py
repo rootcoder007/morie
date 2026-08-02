@@ -35,7 +35,7 @@ def test_residual_edf_is_a_distribution_function():
 
 
 def test_cox_score_is_a_process_that_vanishes_at_the_mle():
-    from scipy import optimize
+    from morie.fn import _sci_core as optimize
     rng = np.random.default_rng(1)
     n = 300
     z = rng.standard_normal(n)

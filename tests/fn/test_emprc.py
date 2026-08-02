@@ -40,7 +40,7 @@ def test_process_bounded_for_normal():
 
 
 def test_custom_cdf():
-    from scipy.stats import uniform
+    from morie.fn._stats_core import uniform
 
     rng = np.random.default_rng(7)
     x = rng.uniform(0, 1, size=200)

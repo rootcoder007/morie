@@ -294,7 +294,6 @@ class TestTurboQuantRoundTrip:
     def tq_roundtrip(self, tmp_path, monkeypatch):
         """Build checkpoint, convert with TQ3, load back."""
         torch = pytest.importorskip("torch")
-        pytest.importorskip("scipy")  # turboquant_mse needs scipy
 
         ckpt_path, config, np_dict = _build_fake_checkpoint(
             tmp_path,

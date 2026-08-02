@@ -68,7 +68,7 @@ def test_seed_makes_the_p_value_reproducible():
 
 
 def test_supplied_cdf_skips_the_simulation():
-    from scipy import stats
+    from morie.fn import _stats_core as stats
 
     res = kstest_csr(_csr(seed=8), cdf=stats.uniform(0, 0.2).cdf)
     assert res["nsim"] == 0

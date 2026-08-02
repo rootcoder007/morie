@@ -8,7 +8,7 @@ from morie.fn.epdsg import epidemic_curve_fit
 
 class TestEpiCurveFit:
     def test_lognormal_peak(self):
-        from scipy.stats import lognorm
+        from morie.fn._stats_core import lognorm
 
         t = np.arange(60, dtype=float)
         inc = 500 * lognorm.pdf(t, s=0.5, scale=np.exp(2.5))
@@ -17,7 +17,7 @@ class TestEpiCurveFit:
         assert res["rmse"] < 5.0
 
     def test_gamma_fit(self):
-        from scipy.stats import gamma
+        from morie.fn._stats_core import gamma
 
         t = np.arange(50, dtype=float)
         inc = 300 * gamma.pdf(t, a=5, scale=3)
