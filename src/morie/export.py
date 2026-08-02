@@ -315,8 +315,8 @@ def df_to_docx(
         If ``python-docx`` is not installed.
     """
     try:
-        from docx import Document
-        from docx.shared import Inches, Pt
+        from morie._docx_writer import Document
+        from morie._docx_writer import Inches, Pt
     except ImportError:
         raise ImportError("python-docx is required for DOCX export. Install with: pip install python-docx")
 
