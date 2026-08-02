@@ -1,54 +1,44 @@
-"""Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Bernoulli likelihood L = prod pi^y (1-pi)^(1-y) (log form).
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import numpy as np  # noqa: F401
+
+from . import _acd
 from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_1"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_1(x):
-    """
-    Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_1(pis, ys):
+    """Bernoulli likelihood L = prod pi^y (1-pi)^(1-y) (log form)
 
-    Formula: we can substituteπ(xi1,...,x ip) into Equation 2.1 to estimate its regression parameters
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: L(pi_1..pi_n|y) = prod pi_i^y_i (1-pi_i)^(1-y_i)
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e1')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.2 eq.2.1
+    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
+    eq. (2.1).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _acd.bernoulli_likelihood(pis, ys)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Bilder & Loughin (2025) eq. (2.1)"
     return RichResult(
-        title="Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+        title='Bernoulli likelihood L = prod pi^y (1-pi)^(1-y) (log form)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e1: Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return '2e1: L(pi_1..pi_n|y) = prod pi_i^y_i (1-pi_i)^(1-y_i) [Bilder & Loughin 2025, eq. 2.1]'
