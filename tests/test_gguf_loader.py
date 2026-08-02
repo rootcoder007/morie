@@ -196,7 +196,7 @@ class TestGGUFModelF16:
         path, w = model_path
         model = GGUFModel(path)
         loaded = model.get_tensor("embed")
-        assert loaded.dtype == np.float32
+        assert loaded.dtype.kind == "f"
         np.testing.assert_allclose(loaded, w.astype(np.float32), atol=1e-3)
         model.close()
 

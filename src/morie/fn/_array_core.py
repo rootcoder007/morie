@@ -118,6 +118,10 @@ class marr:
 
     def __getitem__(self, idx):
         if isinstance(idx, tuple):
+            if len(idx) == 0:
+                return self
+            if len(idx) == 1:
+                return self[idx[0]]
             if Ellipsis in idx:
                 rest = tuple(v for v in idx if v is not Ellipsis)
                 if len(rest) == 1:
@@ -215,7 +219,10 @@ class marr:
                 keep = [k for k, m in enumerate(vals) if m != 0]
             else:
                 keep = [int(v) for v in vals]   # fancy integer indexing
-            return marr([self.data[k] for k in keep])
+            out = marr([self.data[k] for k in keep])
+            if getattr(self, "_is_index", False):
+                out._is_index = True
+            return out
         if hasattr(idx, "dtype") and hasattr(idx, "tolist"):
             # foreign (numpy) index array
             vals = idx.tolist()
@@ -223,7 +230,10 @@ class marr:
                 keep = [k for k, m in enumerate(vals) if m]
             else:
                 keep = [int(v) for v in vals]
-            return marr([self.data[k] for k in keep])
+            out = marr([self.data[k] for k in keep])
+            if getattr(self, "_is_index", False):
+                out._is_index = True
+            return out
         if isinstance(idx, (list, tuple)):
             if idx and _pyall(isinstance(b, bool) for b in idx) \
                     and len(idx) == len(self.data):
@@ -265,8 +275,8 @@ class marr:
     def copy(self):
         return marr(self)
 
-    def astype(self, dtype=None):
-        del dtype
+    def astype(self, dtype=None, copy=True):
+        del dtype, copy
         return marr(self)
 
     def flatten(self):
@@ -276,7 +286,7 @@ class marr:
         if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
             shape = tuple(shape[0])
         f = self._flat()
-        if shape == (-1,) or shape == (len(f),):
+        if len(shape) == 1 and (shape[0] == -1 or shape[0] == len(f)):
             return marr(f)
         if len(shape) == 2:
             n, m = shape
@@ -336,8 +346,43 @@ class marr:
         return f[0] != 0
 
     def __setitem__(self, idx, value):
+        if isinstance(idx, tuple) and len(idx) == 0:
+            v = asarray(value)
+            f = v._flat() if isinstance(v, marr) else [float(v)]
+            if len(self.shape) == 2:
+                m2 = self.shape[1]
+                if len(f) == 1:
+                    f = f * (self.shape[0] * m2)
+                for r2 in range(self.shape[0]):
+                    self.data[r2] = [float(x)
+                                     for x in f[r2 * m2:(r2 + 1) * m2]]
+            else:
+                if len(f) == 1:
+                    f = f * len(self.data)
+                self.data[:] = [float(x) for x in f]
+            return
+        if isinstance(idx, tuple) and len(idx) == 1:
+            self[idx[0]] = value
+            return
         if isinstance(idx, tuple) and len(self.shape) == 2:
             i, j = idx
+            if isinstance(i, slice) and isinstance(j, (marr, list)):
+                # x[:, mask_or_idx] = v
+                jv = j._flat() if isinstance(j, marr) else list(j)
+                if getattr(j, "_is_mask", False) or (
+                        not getattr(j, "_is_index", False)
+                        and len(jv) == self.shape[1]
+                        and _pyall(v2 in (0.0, 1.0) for v2 in jv)):
+                    cols = [c for c, m2 in enumerate(jv) if m2]
+                else:
+                    cols = [int(v2) for v2 in jv]
+                va = asarray(value)
+                vf = va._flat() if isinstance(va, marr) else [float(va)]
+                for r2 in range(*i.indices(self.shape[0])):
+                    for ci, c in enumerate(cols):
+                        self.data[r2][c] = float(
+                            vf[0] if len(vf) == 1 else vf[ci % len(vf)])
+                return
             if isinstance(i, (marr, list, tuple)) \
                     and isinstance(j, (marr, list, tuple)):
                 iv = [int(v) for v in
@@ -641,7 +686,11 @@ class marr:
 
     def var(self, axis=None, dtype=None, out=None, ddof=0,
             keepdims=False):
-        del dtype, out, keepdims
+        del dtype, out
+        if keepdims and axis is not None and len(self.shape) == 2:
+            v = self.var(axis=axis, ddof=ddof)
+            return marr([v.tolist()]) if axis in (0, -2) else \
+                marr([[x] for x in v._flat()])
         if axis is not None and len(self.shape) == 2:
             m = self.mean(axis=axis)
             if axis == 0:
@@ -660,7 +709,11 @@ class marr:
 
     def std(self, axis=None, dtype=None, out=None, ddof=0,
             keepdims=False):
-        del dtype, out, keepdims
+        del dtype, out
+        if keepdims and axis is not None and len(self.shape) == 2:
+            v = self.std(axis=axis, ddof=ddof)
+            return marr([v.tolist()]) if axis in (0, -2) else \
+                marr([[x] for x in v._flat()])
         v = self.var(axis=axis, ddof=ddof)
         if isinstance(v, marr):
             return marr([_math.sqrt(u) for u in v._flat()])
@@ -1067,8 +1120,32 @@ def minimum(x, y):
 def where(cond, a=None, b=None):
     c = asarray(cond)
     if a is None:                       # np.where(mask) -> (indices,)
-        return (marr([float(i) for i, v in enumerate(c._flat())
-                      if v != 0]),)
+        if len(c.shape) == 2:
+            rows, cols = [], []
+            for r in range(c.shape[0]):
+                for cc in range(c.shape[1]):
+                    if c.data[r][cc]:
+                        rows.append(float(r))
+                        cols.append(float(cc))
+            ri, ci = marr(rows), marr(cols)
+            ri._is_index = ci._is_index = True
+            return (ri, ci)
+        out = marr([float(i) for i, v in enumerate(c._flat())
+                    if v != 0])
+        out._is_index = True
+        return (out,)
+    if len(c.shape) == 2:
+        # full broadcasting over the condition's shape
+        ab = _b2(asarray(a))
+        bb2 = _b2(asarray(b))
+
+        def pick(src, r, cc):
+            row = src.data[r if src.shape[0] > 1 else 0]
+            return row[cc if src.shape[1] > 1 else 0]
+        return marr([[pick(ab, r, cc) if c.data[r][cc]
+                      else pick(bb2, r, cc)
+                      for cc in range(c.shape[1])]
+                     for r in range(c.shape[0])])
     aa, bb = asarray(a), asarray(b)
     if aa.shape == (1,):
         aa = full(c.shape[0], aa.data[0])
@@ -1789,6 +1866,17 @@ def squeeze(x, axis=None):
 
 
 def repeat(x, reps, axis=None):
+    if isinstance(reps, (list, tuple, marr)) or (
+            hasattr(reps, "tolist") and not isinstance(reps, (int, float))):
+        rl = [int(v) for v in
+              (reps._flat() if isinstance(reps, marr) else
+               (reps.tolist() if hasattr(reps, "tolist") else reps))]
+        a2 = asarray(x)
+        f2 = a2._flat() if isinstance(a2, marr) else list(a2)
+        out2 = marr([v for v, r2 in zip(f2, rl) for _ in range(r2)])
+        if isinstance(a2, marr) and getattr(a2, "_is_index", False):
+            out2._is_index = True
+        return out2
     if isinstance(x, list) and x and isinstance(x[0], (list, marr)) \
             and _nested_shape(x) and len(_nested_shape(x)) == 3:
         # rank-3 nested-list block: repeat whole blocks along axis 0
@@ -2044,7 +2132,34 @@ def sliding_window_view(x, window):
     return marr([f[i:i + w] for i in range(len(f) - w + 1)])
 
 
-float32 = float
+class _DTypeNarrow:
+    """float32/float16 marker: equal to float for comparisons but
+    carrying its own name so binary readers (frombuffer) pick the
+    right struct format."""
+
+    def __init__(self, name):
+        self.__name__ = name
+        self.name = name
+        self.kind = "f"
+
+    def __call__(self, v):
+        return float(v)
+
+    def __eq__(self, other):
+        return other is float or other == self.name \
+            or getattr(other, "__name__", "") in (self.name, "float")
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __repr__(self):
+        return "dtype(%r)" % self.name
+
+
+float32 = _DTypeNarrow("float32")
 int64 = int
 int32 = int
 
@@ -2141,7 +2256,7 @@ def argsort(x, axis=None, kind=None):
                  sorted(range(len(f)), key=lambda k: f[k])])
 
 
-float16 = float
+float16 = _DTypeNarrow("float16")
 
 
 class _FInfo:
@@ -2164,9 +2279,9 @@ def finfo(dtype=None):
     return _FInfo(dtype)
 
 
-int16 = int
-int8 = int
-uint8 = int
+int16 = _DTypeNarrow("int16")
+int8 = _DTypeNarrow("int8")
+uint8 = _DTypeNarrow("uint8")
 
 bool_ = bool
 
@@ -3056,6 +3171,27 @@ def _svd(a, full_matrices=False, compute_uv=True):
 linalg.eigh = _eigh
 linalg.det = _det
 linalg.cholesky = _cholesky
+def _lstsq(a, b, rcond=None):
+    del rcond
+    aa = atleast_2d(asarray(a))
+    bv = asarray(b)._flat()
+    n, k = aa.shape
+    u, sv, vt = _svd(aa)
+    svl = list(sv._flat())
+    cut = (_bi.max(svl) if svl else 0.0) * _bi.max(n, k) * 2.2e-16
+    uy = [_math.fsum(u.data[r][c] * bv[r] for r in range(n))
+          for c in range(len(svl))]
+    z = [uy[c] / svl[c] if svl[c] > cut else 0.0
+         for c in range(len(svl))]
+    x = marr([_math.fsum(vt.data[c][j] * z[c]
+                         for c in range(len(svl)))
+              for j in range(k)])
+    resid = marr([])
+    rank = _pysum(1 for v in svl if v > cut)
+    return x, resid, rank, sv
+
+
+linalg.lstsq = _lstsq
 linalg.svd = _svd
 
 
@@ -3823,7 +3959,9 @@ random = _RandomNS()
 def frombuffer(buf, dtype="float64", count=-1):
     import struct
     fmt_map = {"float64": ("d", 8), "float32": ("f", 4),
+               "float16": ("e", 2),
                "int64": ("q", 8), "int32": ("i", 4),
+               "int8": ("b", 1), "int16": ("h", 2),
                "uint8": ("B", 1), "uint64": ("Q", 8)}
     key = dtype if isinstance(dtype, str) else getattr(
         dtype, "__name__", "float64")

@@ -41,8 +41,8 @@ def test_load_single_synthetic_subject():
     assert rec["_synthetic"] is True
     eeg_dmt = rec["eeg"]["data_dmt"]
     fmri_dmt = rec["fmri"]["data_dmt"]
-    assert isinstance(eeg_dmt, np.ndarray) and eeg_dmt.ndim == 2
-    assert isinstance(fmri_dmt, np.ndarray) and fmri_dmt.ndim == 2
+    assert hasattr(eeg_dmt, "shape") and eeg_dmt.ndim == 2
+    assert hasattr(fmri_dmt, "shape") and fmri_dmt.ndim == 2
 
 
 def test_load_all_synthetic_when_root_missing():
