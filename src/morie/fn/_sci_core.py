@@ -1293,3 +1293,505 @@ class CubicSpline:
 class interpolate:  # namespace mirror
     interp1d = interp1d
     CubicSpline = CubicSpline
+
+
+# ------------------------------------------------------------ Bessel K
+
+def kv(v, x):
+    """Modified Bessel K_v via integral representation (adaptive quad).
+
+    K_v(x) = int_0^inf exp(-x cosh t) cosh(v t) dt, x > 0.
+    """
+    def one(xx):
+        xx = float(xx)
+        if xx <= 0:
+            return float("inf")
+
+        def f(t):
+            e = -xx * _math.cosh(t)
+            if e < -700.0:
+                return 0.0
+            return _math.exp(e) * _math.cosh(float(v) * t)
+        # integrand decays like exp(-x cosh t); upper cut where dead
+        hi = 1.0
+        while xx * _math.cosh(hi) < 720.0 and hi < 60.0:
+            hi += 1.0
+        val, _err = quad(f, 0.0, hi, epsabs=1e-12)
+        return val
+    if isinstance(x, (list, tuple)) or hasattr(x, "tolist"):
+        return _ac.asarray(x)._map(one)
+    return one(x)
+
+
+special.kv = staticmethod(kv)
+LinAlgError = _ac.linalg.LinAlgError if hasattr(
+    _ac.linalg, "LinAlgError") else ValueError
+cholesky = linalg.cholesky
+solve = linalg.solve
+
+
+# ------------------------------------------------------------ fft (dct)
+
+def dct(x, type=2, norm=None):
+    """DCT-II (default) via FFT of the even extension."""
+    xs = [float(v) for v in _ac.asarray(x)._flat()]
+    n = len(xs)
+    if type != 2:
+        raise NotImplementedError("only DCT-II implemented")
+    ext = xs + xs[::-1]
+    F = _ac.fft.fft(ext).tolist()
+    out = []
+    for k in range(n):
+        w = complex(_math.cos(-_math.pi * k / (2.0 * n)),
+                    _math.sin(-_math.pi * k / (2.0 * n)))
+        out.append((w * F[k]).real)
+    if norm == "ortho":
+        out[0] *= _math.sqrt(1.0 / (4.0 * n))
+        for k in range(1, n):
+            out[k] *= _math.sqrt(1.0 / (2.0 * n))
+    return _ac.marr(out)
+
+
+def idct(x, type=2, norm=None):
+    """Inverse of DCT-II (= DCT-III up to scaling)."""
+    xs = [float(v) for v in _ac.asarray(x)._flat()]
+    n = len(xs)
+    if type != 2:
+        raise NotImplementedError("only DCT-II inverse implemented")
+    if norm == "ortho":
+        xs = [xs[0] / _math.sqrt(1.0 / (4.0 * n))] \
+            + [v / _math.sqrt(1.0 / (2.0 * n)) for v in xs[1:]]
+    out = []
+    for i in range(n):
+        acc = xs[0] / 2.0
+        for k in range(1, n):
+            acc += xs[k] * _math.cos(_math.pi * k * (2 * i + 1)
+                                     / (2.0 * n))
+        out.append(acc * 2.0 / (2.0 * n))
+    return _ac.marr(out)
+
+
+class fft:  # namespace mirror for `from scipy import fft`
+    dct = staticmethod(dct)
+    idct = staticmethod(idct)
+
+    @staticmethod
+    def fft(x, n=None):
+        return _ac.fft.fft(x, n)
+
+    @staticmethod
+    def ifft(x, n=None):
+        return _ac.fft.ifft(x, n)
+
+    @staticmethod
+    def rfft(x, n=None):
+        return _ac.fft.rfft(x, n)
+
+    @staticmethod
+    def irfft(x, n=None):
+        return _ac.fft.irfft(x, n)
+
+    @staticmethod
+    def fftfreq(n, d=1.0):
+        return _ac.fft.fftfreq(n, d)
+
+    @staticmethod
+    def rfftfreq(n, d=1.0):
+        return _ac.fft.rfftfreq(n, d)
+
+
+# ------------------------------------------------------------ cluster
+
+def kmeans2(data, k, iter=10, seed=1, minit="points"):
+    X = _ac.atleast_2d(data)
+    n, d = X.shape
+    rng = _ac.random.default_rng(seed)
+    if minit == "points" or True:
+        idx = []
+        while len(idx) < int(k):
+            j = int(rng.integers(0, n))
+            if j not in idx:
+                idx.append(j)
+        cents = [list(X.data[j]) for j in idx]
+    labels = [0] * n
+    for _ in range(int(iter)):
+        for i in range(n):
+            best, bj = None, 0
+            for j in range(int(k)):
+                dist = _math.fsum((X.data[i][t] - cents[j][t]) ** 2
+                                  for t in range(d))
+                if best is None or dist < best:
+                    best, bj = dist, j
+            labels[i] = bj
+        for j in range(int(k)):
+            members = [i for i in range(n) if labels[i] == j]
+            if members:
+                cents[j] = [
+                    _math.fsum(X.data[i][t] for i in members)
+                    / len(members) for t in range(d)]
+    return _ac.marr(cents), _ac.marr([float(v) for v in labels])
+
+
+def linkage(y, method="single"):
+    """Agglomerative clustering (Lance-Williams); y condensed or (n,d)."""
+    a = _ac.asarray(y)
+    if len(a.shape) == 2:
+        D = {}
+        n = a.shape[0]
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                D[(i, j)] = _math.sqrt(_math.fsum(
+                    (a.data[i][t] - a.data[j][t]) ** 2
+                    for t in range(a.shape[1])))
+    else:
+        cond = [float(v) for v in a._flat()]
+        m = len(cond)
+        n = int(round((1 + _math.sqrt(1 + 8 * m)) / 2))
+        D = {}
+        idx = 0
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                D[(i, j)] = cond[idx]
+                idx += 1
+
+    def dget(i, j):
+        return D[(i, j) if i < j else (j, i)]
+
+    active = {i: 1 for i in range(n)}   # cluster id -> size
+    Z = []
+    next_id = n
+    for _step in range(n - 1):
+        ids = sorted(active)
+        best = None
+        for ii in range(len(ids) - 1):
+            for jj in range(ii + 1, len(ids)):
+                dv = dget(ids[ii], ids[jj])
+                if best is None or dv < best[0]:
+                    best = (dv, ids[ii], ids[jj])
+        dv, ci, cj = best
+        si, sj = active[ci], active[cj]
+        Z.append([float(min(ci, cj)), float(max(ci, cj)), dv,
+                  float(si + sj)])
+        # Lance-Williams update
+        for ck in ids:
+            if ck in (ci, cj):
+                continue
+            dik = dget(ci, ck)
+            djk = dget(cj, ck)
+            sk = active[ck]
+            if method == "single":
+                dnew = min(dik, djk)
+            elif method == "complete":
+                dnew = max(dik, djk)
+            elif method == "average":
+                dnew = (si * dik + sj * djk) / (si + sj)
+            elif method == "ward":
+                tot = si + sj + sk
+                dnew = _math.sqrt(
+                    ((si + sk) * dik * dik + (sj + sk) * djk * djk
+                     - sk * dv * dv) / tot)
+            else:
+                raise ValueError("unsupported method %r" % method)
+            D[(min(ck, next_id), max(ck, next_id))] = dnew
+        del active[ci], active[cj]
+        active[next_id] = si + sj
+        next_id += 1
+    return _ac.marr(Z)
+
+
+def fcluster(Z, t, criterion="distance"):
+    Zd = [list(map(float, r)) for r in _ac.atleast_2d(Z).data]
+    n = len(Zd) + 1
+    if criterion == "maxclust":
+        # find smallest distance threshold giving <= t clusters
+        heights = sorted(r[2] for r in Zd)
+        for h in heights:
+            labels = fcluster(Zd, h + 1e-12, "distance")
+            if len(set(labels._flat())) <= int(t):
+                return labels
+        return fcluster(Zd, heights[-1] + 1.0, "distance")
+    parent = list(range(2 * n - 1))
+
+    def find(u):
+        while parent[u] != u:
+            parent[u] = parent[parent[u]]
+            u = parent[u]
+        return u
+    for k, (a, b, dist, _size) in enumerate(Zd):
+        if dist <= float(t):
+            parent[find(int(a))] = n + k
+            parent[find(int(b))] = n + k
+    roots = {}
+    labels = []
+    for i in range(n):
+        r = find(i)
+        if r not in roots:
+            roots[r] = len(roots) + 1
+        labels.append(float(roots[r]))
+    return _ac.marr(labels)
+
+
+def cophenet(Z, Y=None):
+    Zd = [list(map(float, r)) for r in _ac.atleast_2d(Z).data]
+    n = len(Zd) + 1
+    members = {i: [i] for i in range(n)}
+    coph = [[0.0] * n for _ in range(n)]
+    for k, (a, b, dist, _s) in enumerate(Zd):
+        ma, mb = members[int(a)], members[int(b)]
+        for i in ma:
+            for j in mb:
+                coph[i][j] = coph[j][i] = dist
+        members[n + k] = ma + mb
+    cond = []
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            cond.append(coph[i][j])
+    if Y is None:
+        return _ac.marr(cond)
+    yv = [float(v) for v in _ac.asarray(Y)._flat()]
+    my, mc = _math.fsum(yv) / len(yv), _math.fsum(cond) / len(cond)
+    num = _math.fsum((yv[i] - my) * (cond[i] - mc)
+                     for i in range(len(yv)))
+    den = _math.sqrt(_math.fsum((v - my) ** 2 for v in yv)
+                     * _math.fsum((v - mc) ** 2 for v in cond))
+    return num / den, _ac.marr(cond)
+
+
+class _ClusterHierarchy:
+    linkage = staticmethod(linkage)
+    fcluster = staticmethod(fcluster)
+    cophenet = staticmethod(cophenet)
+
+
+class _ClusterVQ:
+    kmeans2 = staticmethod(kmeans2)
+
+
+class cluster:  # namespace mirror
+    hierarchy = _ClusterHierarchy()
+    vq = _ClusterVQ()
+
+
+# ------------------------------------------------------------ ndimage
+
+def uniform_filter1d(x, size, mode="reflect"):
+    xs = [float(v) for v in _ac.asarray(x)._flat()]
+    n = len(xs)
+    half_lo = size // 2
+    out = []
+    for i in range(n):
+        acc = 0.0
+        for o in range(-half_lo, size - half_lo):
+            idx = i + o
+            if idx < 0:
+                idx = -idx - 1 if mode == "reflect" else 0
+            elif idx >= n:
+                idx = 2 * n - idx - 1 if mode == "reflect" else n - 1
+            acc += xs[_bi.max(0, _bi.min(idx, n - 1))]
+        out.append(acc / size)
+    return _ac.marr(out)
+
+
+def gaussian_filter1d(x, sigma, truncate=4.0, mode="reflect"):
+    xs = [float(v) for v in _ac.asarray(x)._flat()]
+    n = len(xs)
+    r = int(truncate * float(sigma) + 0.5)
+    w = [_math.exp(-0.5 * (o / float(sigma)) ** 2)
+         for o in range(-r, r + 1)]
+    s = _math.fsum(w)
+    w = [v / s for v in w]
+    out = []
+    for i in range(n):
+        acc = 0.0
+        for k, o in enumerate(range(-r, r + 1)):
+            idx = i + o
+            if idx < 0:
+                idx = -idx - 1
+            elif idx >= n:
+                idx = 2 * n - idx - 1
+            acc += w[k] * xs[_bi.max(0, _bi.min(idx, n - 1))]
+        out.append(acc)
+    return _ac.marr(out)
+
+
+def gaussian_filter(x, sigma, truncate=4.0, mode="reflect"):
+    a = _ac.asarray(x)
+    if len(a.shape) == 1:
+        return gaussian_filter1d(a, sigma, truncate, mode)
+    # separable: rows then columns
+    rows = [gaussian_filter1d(r, sigma, truncate, mode)._flat()
+            for r in a.data]
+    nr, nc = len(rows), len(rows[0])
+    cols = []
+    for j in range(nc):
+        col = gaussian_filter1d([rows[i][j] for i in range(nr)],
+                                sigma, truncate, mode)
+        cols.append(list(col._flat()))
+    return _ac.marr([[cols[j][i] for j in range(nc)]
+                     for i in range(nr)])
+
+
+def median_filter(x, size=3, mode="reflect"):
+    a = _ac.asarray(x)
+    if len(a.shape) == 1:
+        xs = list(a._flat())
+        n = len(xs)
+        half_lo = size // 2
+        out = []
+        for i in range(n):
+            win = []
+            for o in range(-half_lo, size - half_lo):
+                idx = i + o
+                if idx < 0:
+                    idx = -idx - 1
+                elif idx >= n:
+                    idx = 2 * n - idx - 1
+                win.append(xs[_bi.max(0, _bi.min(idx, n - 1))])
+            win.sort()
+            out.append(win[len(win) // 2])
+        return _ac.marr(out)
+    raise NotImplementedError("median_filter: 1-D only for now")
+
+
+def _nd_convolve(x, weights, mode="reflect"):
+    xs = [float(v) for v in _ac.asarray(x)._flat()]
+    wv = [float(v) for v in _ac.asarray(weights)._flat()]
+    n, m = len(xs), len(wv)
+    # ndimage convolve centers the (flipped) kernel
+    origin = m // 2
+    out = []
+    for i in range(n):
+        acc = 0.0
+        for k in range(m):
+            idx = i + origin - k
+            if idx < 0:
+                idx = -idx - 1
+            elif idx >= n:
+                idx = 2 * n - idx - 1
+            acc += wv[k] * xs[_bi.max(0, _bi.min(idx, n - 1))]
+        out.append(acc)
+    return _ac.marr(out)
+
+
+class ndimage:  # namespace mirror
+    uniform_filter1d = staticmethod(uniform_filter1d)
+    gaussian_filter1d = staticmethod(gaussian_filter1d)
+    gaussian_filter = staticmethod(gaussian_filter)
+    median_filter = staticmethod(median_filter)
+    convolve = staticmethod(_nd_convolve)
+
+
+# ------------------------------------------------------------ optimize: root etc.
+
+class LinearConstraint:
+    def __init__(self, A, lb=-_math.inf, ub=_math.inf):
+        self.A = _ac.atleast_2d(A)
+        self.lb = lb
+        self.ub = ub
+
+
+def least_squares(fun, x0, args=(), **kw):
+    del kw
+    x0v = list(_ac.asarray(x0)._flat())
+
+    def sse(p, *a):
+        r = fun(p, *a)
+        rv = [float(v) for v in (r._flat() if hasattr(r, "_flat")
+                                 else r)]
+        return _math.fsum(v * v for v in rv)
+    res = minimize(sse, x0v, args=args, method="BFGS")
+    r = fun(list(res.x._flat()), *args)
+    rv = [float(v) for v in (r._flat() if hasattr(r, "_flat") else r)]
+    return OptimizeResult(x=res.x, cost=0.5 * _math.fsum(
+        v * v for v in rv), fun=_ac.marr(rv), success=res.success,
+        nfev=res.nfev)
+
+
+def root(fun, x0, args=(), method=None, tol=None, **kw):
+    """Multidimensional root via damped Newton with numeric Jacobian."""
+    del method, kw
+    x = list(_ac.asarray(x0)._flat()) \
+        if not isinstance(x0, (int, float)) else [float(x0)]
+    n = len(x)
+
+    def fv(p):
+        out = fun(p if n > 1 else (p if isinstance(x0, (list, tuple))
+                                   or hasattr(x0, "tolist")
+                                   else p[0]), *args)
+        if isinstance(out, (int, float)):
+            return [float(out)]
+        return [float(v) for v in (out._flat()
+                                   if hasattr(out, "_flat") else out)]
+    ftol = tol or 1e-10
+    F = fv(x)
+    for _ in range(200):
+        nrm = max(abs(v) for v in F)
+        if nrm < ftol:
+            break
+        J = []
+        for j in range(n):
+            xp = list(x)
+            h = 1e-7 * _bi.max(abs(xp[j]), 1.0)
+            xp[j] += h
+            Fp = fv(xp)
+            J.append([(Fp[i] - F[i]) / h for i in range(n)])
+        Jm = _ac.marr([[J[j][i] for j in range(n)]
+                       for i in range(n)])
+        try:
+            dx = _ac.linalg.solve(Jm, _ac.marr([-v for v in F]))
+        except Exception:
+            break
+        step = 1.0
+        for _ls in range(40):
+            xn = [x[i] + step * float(dx[i]) for i in range(n)]
+            Fn = fv(xn)
+            if max(abs(v) for v in Fn) < nrm:
+                x, F = xn, Fn
+                break
+            step *= 0.5
+        else:
+            break
+    return OptimizeResult(x=_ac.marr(x), fun=_ac.marr(F),
+                          success=max(abs(v) for v in F) < 1e-6)
+
+
+def differential_evolution(func, bounds, args=(), maxiter=200,
+                           popsize=15, seed=1, tol=1e-8, **kw):
+    del kw
+    rng = _ac.random.default_rng(seed)
+    lo = [float(b[0]) for b in bounds]
+    hi = [float(b[1]) for b in bounds]
+    d = len(bounds)
+    np_ = _bi.max(popsize * d, 8)
+    pop = [[lo[j] + (hi[j] - lo[j]) * rng.uniform()
+            for j in range(d)] for _ in range(np_)]
+    fit = [float(func(p, *args)) for p in pop]
+    for _gen in range(maxiter):
+        for i in range(np_):
+            idxs = [k for k in range(np_) if k != i]
+            a = pop[int(rng.integers(0, len(idxs)))]
+            b = pop[int(rng.integers(0, len(idxs)))]
+            c = pop[int(rng.integers(0, len(idxs)))]
+            jrand = int(rng.integers(0, d))
+            trial = []
+            for j in range(d):
+                if rng.uniform() < 0.7 or j == jrand:
+                    v = a[j] + 0.8 * (b[j] - c[j])
+                else:
+                    v = pop[i][j]
+                trial.append(_bi.min(hi[j], _bi.max(lo[j], v)))
+            ft = float(func(trial, *args))
+            if ft < fit[i]:
+                pop[i], fit[i] = trial, ft
+        best = min(fit)
+        worst = max(fit)
+        if worst - best < tol * (abs(best) + 1e-12):
+            break
+    bi_ = min(range(np_), key=lambda k: fit[k])
+    return OptimizeResult(x=_ac.marr(pop[bi_]), fun=fit[bi_],
+                          success=True)
+
+
+for _n in ("root", "least_squares", "differential_evolution"):
+    setattr(optimize, _n, staticmethod(globals()[_n]))
+optimize.LinearConstraint = LinearConstraint
