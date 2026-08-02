@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Union
 
 from . import _array_core as np
-from scipy.special import digamma
+from ._sci_core import digamma
 
 
 def vb_gaussian_mixture(

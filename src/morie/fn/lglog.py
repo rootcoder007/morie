@@ -149,7 +149,7 @@ def lglog(
 
     # SE via numerical Hessian
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         eps = 1e-5
         hess = np.zeros((p_full, p_full))

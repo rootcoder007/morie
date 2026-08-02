@@ -2,7 +2,7 @@
 """Gaussian-process regression -- Matern kernel."""
 
 from . import _array_core as np
-from scipy.special import gamma as gammafn
+from ._sci_core import gamma as gammafn
 from scipy.special import kv
 
 from ._richresult import RichResult

@@ -71,7 +71,7 @@ def boyd_support_hyperplane(C, x0, tol=1e-07):
     >>> bool(c["supports"]), bool(c["is_corner"])
     (True, True)
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     S = np.atleast_2d(np.asarray(C, dtype=float))
     x0 = np.atleast_1d(np.asarray(x0, dtype=float)).ravel()

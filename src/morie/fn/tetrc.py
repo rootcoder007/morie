@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as sp_stats
-from scipy.optimize import brentq
+from ._sci_core import brentq
 
 from ._containers import ESRes
 

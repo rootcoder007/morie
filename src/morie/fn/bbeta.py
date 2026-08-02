@@ -9,7 +9,7 @@ from typing import Any, Union
 
 from . import _array_core as np
 from . import _stats_core as stats
-from scipy.special import betaln, gammaln
+from ._sci_core import betaln, gammaln
 
 
 def bayesian_beta_binomial(

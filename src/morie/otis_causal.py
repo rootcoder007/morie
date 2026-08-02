@@ -877,7 +877,7 @@ def otis_aipw_superlearner(
         ym = target[mask]
         # Solve constrained NNLS via simple grid + projection (fallback)
         try:
-            from scipy.optimize import nnls
+            from morie.fn._sci_core import nnls
 
             w, _ = nnls(Pm, ym)
             if w.sum() > 0:

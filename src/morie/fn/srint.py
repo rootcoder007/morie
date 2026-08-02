@@ -53,7 +53,7 @@ def serial_interval(
         params = {"sigma": shape, "mu": np.log(scale)}
     elif distribution == "weibull":
         shape, loc, scale = stats.weibull_min.fit(data, floc=0)
-        from scipy.special import gamma as gammafn
+        from ._sci_core import gamma as gammafn
 
         mean_val = scale * gammafn(1 + 1 / shape)
         var_val = scale**2 * (gammafn(1 + 2 / shape) - gammafn(1 + 1 / shape) ** 2)

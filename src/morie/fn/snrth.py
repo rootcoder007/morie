@@ -26,7 +26,7 @@ def snr_threshold(snr_db, target_ber=1e-3, **kwargs) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.special import erfc, erfcinv
+    from ._sci_core import erfc, erfcinv
 
     snr_linear = 10 ** (snr_db / 10.0)
     ber = 0.5 * erfc(np.sqrt(snr_linear))

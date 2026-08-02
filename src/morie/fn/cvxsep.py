@@ -83,7 +83,7 @@ def boyd_separating_hyperplane(C, D, tol=1e-08):
     >>> bool(boyd_separating_hyperplane(C, G)["separable"])
     False
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     Cm = np.atleast_2d(np.asarray(C, dtype=float))
     Dm = np.atleast_2d(np.asarray(D, dtype=float))

@@ -46,7 +46,7 @@ def bayesian_binomial(
     ci_lower = float(stats.beta.ppf(alpha_half, post_a, post_b))
     ci_upper = float(stats.beta.ppf(1 - alpha_half, post_a, post_b))
 
-    from scipy.special import betaln
+    from ._sci_core import betaln
 
     log_ml = float(betaln(post_a, post_b) - betaln(prior_a, prior_b))
 

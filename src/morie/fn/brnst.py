@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.special import comb
+from ._sci_core import comb
 
 
 def bernstein_density_estimate(
@@ -59,7 +59,7 @@ def bernstein_density_estimate(
         B_train[:, k] = comb(n_basis, k) * (x_scaled**k) * ((1 - x_scaled) ** (n_basis - k))
 
     # Non-negative LS: minimize ||By - theta||^2 subject to theta >= 0
-    from scipy.optimize import nnls
+    from ._sci_core import nnls
 
     theta, _ = nnls(B_train, np.ones(n))
     theta /= np.sum(theta)  # Normalize

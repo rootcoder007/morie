@@ -91,7 +91,7 @@ def boyd_basis_pursuit(A, b, eps=0.0):
     >>> int(z["n_nonzero"]), bool(z["trivial"])
     (0, True)
     """
-    from scipy.optimize import linprog, minimize
+    from ._sci_core import linprog, minimize
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()

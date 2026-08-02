@@ -59,7 +59,7 @@ def boyd_l1_fitting(A, b):
     >>> int(boyd_l1_fitting(A, b)["n_exact"]) >= 2
     True
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()

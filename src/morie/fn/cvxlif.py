@@ -67,7 +67,7 @@ def boyd_linf_fitting(A, b):
     >>> bool(abs(xi[1] - 1.0) > abs(x1[1] - 1.0))
     True
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()

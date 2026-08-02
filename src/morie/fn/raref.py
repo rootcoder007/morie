@@ -2,7 +2,7 @@
 """Rarefaction curve computation."""
 
 from . import _array_core as np
-from scipy.special import comb
+from ._sci_core import comb
 
 from ._containers import DescriptiveResult
 
