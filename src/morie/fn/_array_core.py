@@ -872,6 +872,13 @@ class oarr(list):
     def tolist(self):
         return list(self)
 
+    def _map(self, fn):
+        out = [fn(v) for v in self]
+        try:
+            return marr([float(v) for v in out])
+        except (TypeError, ValueError):
+            return oarr(out)
+
     @property
     def shape(self):
         return (len(self),)
@@ -1096,6 +1103,13 @@ def _uf(fn):
     def wrapped(x):
         if isinstance(x, ndlist):
             return ndlist(wrapped(marr(b)) for b in x)
+        if isinstance(x, carr) or (
+                isinstance(x, (list, tuple))
+                and x and isinstance(x[0], complex)):
+            vals = [fn(v) for v in x]
+            if any(isinstance(v, complex) for v in vals):
+                return carr(vals)
+            return marr([float(v) for v in vals])
         a = asarray(x)
         if a.shape == (1,) and not isinstance(x, (list, tuple, marr)):
             return fn(a.data[0])
@@ -1107,7 +1121,7 @@ sqrt = _uf(_math.sqrt)
 exp = _uf(_math.exp)
 log = _uf(_math.log)
 log1p = _uf(_math.log1p)
-abs = _uf(lambda v: v if v >= 0 else -v)  # noqa: A001
+abs = _uf(_bi.abs)  # noqa: A001  # builtin: complex -> magnitude
 
 
 def clip(x, lo, hi):
@@ -2680,6 +2694,22 @@ def einsum(spec, *ops):
     if len(out_labels) <= 2:
         return marr(out)
     return ndlist(out)
+
+
+
+def block(rows):
+    """numpy.block for the 2-D nested-list case: each inner list is a
+    row of blocks joined left-to-right, rows stacked top-to-bottom."""
+    out = []
+    for row in rows:
+        mats = [atleast_2d(asarray(b)) for b in row]
+        h = mats[0].shape[0]
+        for m in mats:
+            if m.shape[0] != h:
+                raise ValueError("block row heights differ")
+        for i in range(h):
+            out.append([v for m in mats for v in m.data[i]])
+    return marr(out)
 
 
 def vstack(parts):

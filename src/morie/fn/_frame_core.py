@@ -1593,7 +1593,21 @@ class GroupBy:
     def count(self):
         return self._agg(lambda s: s.count(), numeric_only=False)
 
-    def agg(self, spec):
+    def agg(self, spec=None, **named):
+        if named:
+            # pandas named aggregation: out_col=(src_col, how)
+            keys = self._keys()
+            out = {}
+            for out_col, (col, how) in named.items():
+                fn = _agg_fn(how)
+                out[out_col] = [fn(Series([self._df._cols[col][i]
+                                           for i in self._groups[k]]))
+                                for k in keys]
+            res = DataFrame(out, index=[k[0] if len(self._by) == 1
+                                        else k for k in keys])
+            if len(self._by) == 1:
+                res.index_name = self._by[0]
+            return res
         if callable(spec) or isinstance(spec, str):
             fn = _agg_fn(spec)
             return self._agg(fn, numeric_only=False)
@@ -1932,6 +1946,30 @@ def _parse_dt(v, fmt=None):
         except ValueError:
             continue
     raise ValueError("cannot parse datetime %r" % (v,))
+
+
+class _TimedeltaArray(list):
+    """Vector of datetime.timedelta; adding it to a datetime scalar
+    shifts each element and yields a Series -- the
+    ``to_datetime(start) + to_timedelta(days, unit="D")`` idiom."""
+
+    def __radd__(self, other):
+        if isinstance(other, _dt.datetime):
+            return Series([other + delta for delta in self])
+        return NotImplemented
+
+
+def to_timedelta(arg, unit="D"):
+    """pandas.to_timedelta for the units morie's callers use."""
+    key = {"D": "days", "days": "days", "W": "weeks",
+           "h": "hours", "m": "minutes", "s": "seconds"}[unit]
+    if hasattr(arg, "_flat"):
+        vals = [float(v) for v in arg._flat()]
+    elif isinstance(arg, (list, tuple)):
+        vals = [float(v) for v in arg]
+    else:
+        return _dt.timedelta(**{key: float(arg)})
+    return _TimedeltaArray(_dt.timedelta(**{key: v}) for v in vals)
 
 
 def to_datetime(arg, errors="raise", format=None):
