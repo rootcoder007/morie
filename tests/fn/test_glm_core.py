@@ -3,6 +3,8 @@
 import numpy as np
 import pytest
 
+sm_mod = pytest.importorskip(
+    "statsmodels.api", reason="equivalence baseline needs statsmodels")
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
