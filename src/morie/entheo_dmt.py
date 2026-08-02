@@ -47,7 +47,7 @@ import re
 from pathlib import Path
 from typing import Literal
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from .fn._richresult import RichResult
 

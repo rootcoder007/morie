@@ -24,7 +24,7 @@ import os
 import re
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from ..fn._richresult import RichResult
 

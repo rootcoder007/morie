@@ -8,7 +8,7 @@ and morphological waveform descriptors.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def rms(x: np.ndarray) -> float:

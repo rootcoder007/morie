@@ -32,7 +32,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn._stats_core import norm
 
@@ -200,7 +200,7 @@ def taphonomy_preservation_delta(
             # Valid inference: resample rows and refit the whole CATE procedure,
             # so the SE reflects sampling + estimation uncertainty of the mean
             # effect (not the correlated per-unit dispersion).
-            import numpy as np
+            from morie.fn import _array_core as np
 
             rng = np.random.default_rng(boot_seed)
             nrow = len(data)

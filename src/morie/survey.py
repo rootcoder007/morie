@@ -35,7 +35,7 @@ Hájek, J. (1971). Comment on "An essay on the logical foundations of survey
 import math
 import warnings
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as scipy_stats
 

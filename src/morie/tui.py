@@ -2294,7 +2294,7 @@ if _TEXTUAL_AVAILABLE:
                     if _nc:
                         print(f"  Numeric columns: {', '.join(_nc)}")
                     return
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.bootstrap_methods import bootstrap as _bs
 
@@ -2307,7 +2307,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _bh(*p_values):
                 """Benjamini-Hochberg correction. Usage: bh(0.01, 0.04, 0.03, 0.20)."""
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.multiple_testing import benjamini_hochberg
 
@@ -2343,7 +2343,7 @@ if _TEXTUAL_AVAILABLE:
                 if col is None or group_col is None:
                     print("Usage: effect_size('value_col', 'group_col')")
                     return
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 groups = data[group_col].dropna().unique()
                 x = data.loc[data[group_col] == groups[0], col].dropna().values.astype(float)
@@ -2610,11 +2610,10 @@ if _TEXTUAL_AVAILABLE:
                 print(f"  MORIE {_e.__version__}")
                 print(f"  Package: {Path(_e.__file__).parent}")
                 print(f"  Python: {sys.version.split()[0]}")
-                import numpy
                 from morie.fn import _frame_core as pandas
 
                 print(f"  pandas: {pandas.__version__}")
-                print(f"  numpy: {numpy.__version__}")
+                print("  arrays: morie native core")
                 print("  arrays/frames/stats: morie native cores")
 
             # --- Survival analysis helpers ---
@@ -2917,7 +2916,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _bonferroni(*pvals):
                 """Bonferroni correction. Usage: bonferroni(0.01, 0.04, 0.06)."""
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.multiple_testing import bonferroni
 
@@ -2937,7 +2936,7 @@ if _TEXTUAL_AVAILABLE:
                 if col is None:
                     print("Usage: jackknife('column_name')")
                     return
-                import numpy as _np
+                from morie.fn import _array_core as _np
 
                 from morie.bootstrap_methods import jackknife
 
@@ -3624,7 +3623,7 @@ if _TEXTUAL_AVAILABLE:
                     elif val_str.startswith("SV:"):
                         self._py_console_ns[var_name] = val_str[3:].split("\x01")
                     elif val_str.startswith("V:"):
-                        import numpy as np
+                        from morie.fn import _array_core as np
 
                         self._py_console_ns[var_name] = np.array([float(x) for x in val_str[2:].split(",")])
                     elif val_str.startswith("S:"):
@@ -3672,7 +3671,7 @@ if _TEXTUAL_AVAILABLE:
                     else:
                         # numpy array
                         try:
-                            import numpy as np
+                            from morie.fn import _array_core as np
 
                             if isinstance(val, np.ndarray) and val.ndim == 1:
                                 r_cmd = f"{var_name} <- c({','.join(str(v) for v in val)})"
@@ -4078,7 +4077,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  {result.interpretation}")
 
                 elif action == "bh":
-                    import numpy as np
+                    from morie.fn import _array_core as np
 
                     from .multiple_testing import benjamini_hochberg
 
@@ -4093,7 +4092,7 @@ if _TEXTUAL_AVAILABLE:
                         log.write(f"  [{i + 1}] p={orig:.4f} -> adjusted={adj:.4f} {status}")
 
                 elif action == "bootstrap" and len(parts) >= 3:
-                    import numpy as np
+                    from morie.fn import _array_core as np
                     from morie.fn import _frame_core as pd
 
                     from .bootstrap_methods import bootstrap
@@ -4257,7 +4256,7 @@ if _TEXTUAL_AVAILABLE:
                     log.write(f"  ESS: {(weights.sum() ** 2) / (weights**2).sum():.1f}")
 
                 elif action == "cohens_d" and len(parts) >= 4:
-                    import numpy as np
+                    from morie.fn import _array_core as np
                     from morie.fn import _frame_core as pd
 
                     df = pd.read_csv(parts[1])
@@ -4432,7 +4431,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Diagnostics ─────────────────────────────────
                 elif action == "vif" and len(parts) >= 3:
-                    import numpy as np
+                    from morie.fn import _array_core as np
                     from morie.fn import _frame_core as pd
 
                     from .diagnostics import collinearity_diagnostics
@@ -4482,7 +4481,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Sensitivity Analysis ────────────────────────
                 elif action == "rosenbaum" and len(parts) >= 4:
-                    import numpy as np
+                    from morie.fn import _array_core as np
                     from morie.fn import _frame_core as pd
 
                     from .sensitivity import rosenbaum_bounds
@@ -4534,7 +4533,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Multiple Testing ───────────────────────────
                 elif action == "bonferroni" and len(parts) >= 2:
-                    import numpy as np
+                    from morie.fn import _array_core as np
 
                     from .multiple_testing import bonferroni
 
@@ -4547,7 +4546,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Advanced Resampling ────────────────────────
                 elif action == "jackknife" and len(parts) >= 3:
-                    import numpy as np
+                    from morie.fn import _array_core as np
                     from morie.fn import _frame_core as pd
 
                     from .bootstrap_methods import jackknife
@@ -4628,7 +4627,7 @@ if _TEXTUAL_AVAILABLE:
 
                 # ── Model Diagnostics ──────────────────────────
                 elif action == "residuals" and len(parts) >= 4:
-                    import numpy as np
+                    from morie.fn import _array_core as np
                     from morie.fn import _frame_core as pd
 
                     from .diagnostics import compute_residuals
@@ -4637,7 +4636,7 @@ if _TEXTUAL_AVAILABLE:
                     y = df[parts[2]].values
                     X_cols = parts[3:]
                     X = df[X_cols].values
-                    from numpy.linalg import lstsq
+                    from morie.fn._array_core.linalg import lstsq
 
                     beta, _, _, _ = lstsq(np.column_stack([np.ones(len(X)), X]), y, rcond=None)
                     y_hat = np.column_stack([np.ones(len(X)), X]) @ beta
@@ -4655,7 +4654,7 @@ if _TEXTUAL_AVAILABLE:
                     df = pd.read_csv(parts[1])
                     y = df[parts[2]].values
                     X_cols = parts[3:]
-                    import numpy as np
+                    from morie.fn import _array_core as np
 
                     X = np.column_stack([np.ones(len(df)), df[X_cols].values])
                     result = compute_influence(y, X)

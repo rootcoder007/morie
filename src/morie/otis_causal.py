@@ -138,7 +138,7 @@ import math
 import warnings
 from dataclasses import dataclass, field
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as sps
 

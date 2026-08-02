@@ -48,7 +48,7 @@ import math
 from collections.abc import Mapping
 from typing import Any
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
 
@@ -1243,7 +1243,7 @@ def mrm_uof_data_quality_audit(
 
 
 if __name__ == "__main__":
-    import numpy as np
+    from morie.fn import _array_core as np
     from morie.fn import _frame_core as pd
 
     np.random.seed(0)

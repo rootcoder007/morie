@@ -8,7 +8,7 @@ All operate on 1-D numpy arrays.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def moving_average(x: np.ndarray, window: int = 5) -> np.ndarray:

@@ -8,7 +8,7 @@ autocorrelation from PSD.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def periodogram(

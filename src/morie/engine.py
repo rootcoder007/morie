@@ -27,7 +27,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from .gguf_loader import GGUFModel
 from .kv_cache import TurboQuantKVCache

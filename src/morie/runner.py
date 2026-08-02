@@ -1309,7 +1309,7 @@ def _handle_exec(args: argparse.Namespace) -> int:
 
     ns = {"__name__": "__morie_exec__"}
     try:
-        import numpy as np
+        from morie.fn import _array_core as np
         from morie.fn import _frame_core as pd
 
         ns["np"] = np

@@ -31,7 +31,7 @@ import json
 import math
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as sps
 from morie.fn._sci_core import minimize

@@ -884,7 +884,7 @@ class PolyglotEngine:
 
     def _preload_python(self) -> None:
         try:
-            import numpy as np
+            from morie.fn import _array_core as np
             from morie.fn import _frame_core as pd
 
             self._py_ns["np"] = np
