@@ -332,3 +332,357 @@ class signal:  # namespace mirror for `from scipy import signal`
     sosfilt = staticmethod(sosfilt)
     sosfilt_zi = staticmethod(sosfilt_zi)
     sosfiltfilt = staticmethod(sosfiltfilt)
+
+
+# ------------------------------------------------------- spectral tail
+
+def _hann(n):
+    if n == 1:
+        return [1.0]
+    return [0.5 - 0.5 * _math.cos(2.0 * _math.pi * i / n)
+            for i in range(n)]
+
+
+def get_window(window, nperseg):
+    if window in ("hann", "hanning"):
+        return _hann(nperseg)
+    if window == "hamming":
+        return [0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / nperseg)
+                for i in range(nperseg)]
+    if window in ("boxcar", "rectangular", None):
+        return [1.0] * nperseg
+    if isinstance(window, tuple) and window[0] == "tukey":
+        alpha = float(window[1])
+        if alpha <= 0:
+            return [1.0] * nperseg
+        # periodic (fftbins=True) like scipy's spectral helpers:
+        # symmetric window of length n+1 with the last sample dropped
+        n = nperseg + 1
+        w = []
+        width = int(alpha * (n - 1) / 2.0)
+        for i in range(n):
+            if i <= width:
+                w.append(0.5 * (1.0 + _math.cos(_math.pi * (
+                    -1.0 + 2.0 * i / (alpha * (n - 1))))))
+            elif i >= n - width - 1:
+                w.append(0.5 * (1.0 + _math.cos(_math.pi * (
+                    -2.0 / alpha + 1.0 + 2.0 * i / (alpha * (n - 1))))))
+            else:
+                w.append(1.0)
+        return w[:-1]
+    if window == "blackman":
+        return [0.42 - 0.5 * _math.cos(2.0 * _math.pi * i / nperseg)
+                + 0.08 * _math.cos(4.0 * _math.pi * i / nperseg)
+                for i in range(nperseg)]
+    raise ValueError("unsupported window %r" % (window,))
+
+
+def _csd_core(x, y, fs, window, nperseg, noverlap, detrend):
+    xs = list(_ac.asarray(x)._flat())
+    ys = list(_ac.asarray(y)._flat())
+    n = len(xs)
+    nperseg = int(min(nperseg, n))
+    if noverlap is None:
+        noverlap = nperseg // 2
+    step = nperseg - noverlap
+    win = get_window(window, nperseg)
+    scale = 1.0 / (fs * _math.fsum(w * w for w in win))
+    nfreq = nperseg // 2 + 1
+    acc = [0j] * nfreq
+    nseg = 0
+    start = 0
+    while start + nperseg <= n:
+        segx = xs[start:start + nperseg]
+        segy = ys[start:start + nperseg]
+        if detrend in ("constant", True):
+            mx = _math.fsum(segx) / nperseg
+            my = _math.fsum(segy) / nperseg
+            segx = [v - mx for v in segx]
+            segy = [v - my for v in segy]
+        fx = _ac.fft.rfft([v * w for v, w in zip(segx, win)]).tolist()
+        fy = _ac.fft.rfft([v * w for v, w in zip(segy, win)]).tolist()
+        for k in range(nfreq):
+            acc[k] += fx[k].conjugate() * fy[k]
+        nseg += 1
+        start += step
+    if nseg == 0:
+        raise ValueError("signal shorter than nperseg")
+    pxy = [v * scale / nseg for v in acc]
+    # one-sided: double everything but DC (and Nyquist when even)
+    for k in range(1, nfreq - (1 if nperseg % 2 == 0 else 0)):
+        pxy[k] *= 2.0
+    freqs = [k * fs / nperseg for k in range(nfreq)]
+    return _ac.marr(freqs), pxy
+
+
+def welch(x, fs=1.0, window="hann", nperseg=256, noverlap=None,
+          detrend="constant", **kw):
+    del kw
+    freqs, pxy = _csd_core(x, x, fs, window, nperseg, noverlap,
+                           detrend)
+    return freqs, _ac.marr([v.real for v in pxy])
+
+
+def csd(x, y, fs=1.0, window="hann", nperseg=256, noverlap=None,
+        detrend="constant", **kw):
+    del kw
+    freqs, pxy = _csd_core(x, y, fs, window, nperseg, noverlap,
+                           detrend)
+    from . import _array_core as _ac2
+    return freqs, _ac2.carr(pxy)
+
+
+def coherence(x, y, fs=1.0, window="hann", nperseg=256,
+              noverlap=None, **kw):
+    del kw
+    f1, pxx = welch(x, fs, window, nperseg, noverlap)
+    _, pyy = welch(y, fs, window, nperseg, noverlap)
+    _, pxy = csd(x, y, fs, window, nperseg, noverlap)
+    cxy = [abs(pxy.tolist()[k]) ** 2
+           / max(pxx.tolist()[k] * pyy.tolist()[k], 1e-300)
+           for k in range(len(f1))]
+    return f1, _ac.marr(cxy)
+
+
+def periodogram(x, fs=1.0, window="boxcar", **kw):
+    del kw
+    xs = list(_ac.asarray(x)._flat())
+    return welch(xs, fs=fs, window=window, nperseg=len(xs),
+                 noverlap=0)
+
+
+def stft(x, fs=1.0, window="hann", nperseg=256, noverlap=None, **kw):
+    del kw
+    xs = list(_ac.asarray(x)._flat())
+    n = len(xs)
+    nperseg = int(min(nperseg, n))
+    if noverlap is None:
+        noverlap = nperseg // 2
+    step = nperseg - noverlap
+    win = get_window(window, nperseg)
+    scale = 1.0 / _math.fsum(win)
+    nfreq = nperseg // 2 + 1
+    cols = []
+    times = []
+    start = 0
+    while start + nperseg <= n:
+        seg = [v * w for v, w in
+               zip(xs[start:start + nperseg], win)]
+        cols.append([v * scale for v in _ac.fft.rfft(seg).tolist()])
+        times.append((start + nperseg / 2.0) / fs)
+        start += step
+    freqs = _ac.marr([k * fs / nperseg for k in range(nfreq)])
+    z = [[cols[t][k] for t in range(len(cols))]
+         for k in range(nfreq)]
+    return freqs, _ac.marr(times), z
+
+
+def spectrogram(x, fs=1.0, window=("tukey", 0.25), nperseg=256,
+                noverlap=None, **kw):
+    del kw
+    xs = list(_ac.asarray(x)._flat())
+    n = len(xs)
+    nperseg = int(min(nperseg, n))
+    if noverlap is None:
+        noverlap = nperseg // 8
+    step = nperseg - noverlap
+    win = get_window(window, nperseg)
+    scale = 1.0 / (fs * _math.fsum(w * w for w in win))
+    nfreq = nperseg // 2 + 1
+    cols = []
+    times = []
+    start = 0
+    while start + nperseg <= n:
+        seg = xs[start:start + nperseg]
+        m = _math.fsum(seg) / nperseg
+        seg = [(v - m) * w for v, w in zip(seg, win)]
+        fx = _ac.fft.rfft(seg).tolist()
+        p = [abs(v) ** 2 * scale for v in fx]
+        for k in range(1, nfreq - (1 if nperseg % 2 == 0 else 0)):
+            p[k] *= 2.0
+        cols.append(p)
+        times.append((start + nperseg / 2.0) / fs)
+        start += step
+    freqs = _ac.marr([k * fs / nperseg for k in range(nfreq)])
+    sxx = [[cols[t][k] for t in range(len(cols))]
+           for k in range(nfreq)]
+    return freqs, _ac.marr(times), _ac.marr(sxx)
+
+
+def hilbert(x):
+    """Analytic signal via FFT (matches scipy.signal.hilbert)."""
+    xs = list(_ac.asarray(x)._flat())
+    n = len(xs)
+    X = _ac.fft.fft(xs).tolist()
+    h = [0.0] * n
+    if n % 2 == 0:
+        h[0] = h[n // 2] = 1.0
+        for k in range(1, n // 2):
+            h[k] = 2.0
+    else:
+        h[0] = 1.0
+        for k in range(1, (n + 1) // 2):
+            h[k] = 2.0
+    Y = [X[k] * h[k] for k in range(n)]
+    from . import _array_core as _ac2
+    return _ac2.carr(_ac.fft.ifft(Y).tolist())
+
+
+def fftconvolve(a, b, mode="full"):
+    av = list(_ac.asarray(a)._flat())
+    bv = list(_ac.asarray(b)._flat())
+    n = len(av) + len(bv) - 1
+    m = 1
+    while m < n:
+        m <<= 1
+    fa = _ac.fft.fft(av + [0.0] * (m - len(av))).tolist()
+    fb = _ac.fft.fft(bv + [0.0] * (m - len(bv))).tolist()
+    out = _ac.fft.ifft([fa[k] * fb[k] for k in range(m)]).tolist()
+    full = [v.real for v in out[:n]]
+    if mode == "full":
+        return _ac.marr(full)
+    if mode == "same":
+        start = (len(bv) - 1) // 2
+        return _ac.marr(full[start:start + len(av)])
+    if mode == "valid":
+        lo = min(len(av), len(bv)) - 1
+        hi = max(len(av), len(bv))
+        return _ac.marr(full[lo:hi])
+    raise ValueError("unsupported mode %r" % mode)
+
+
+def find_peaks(x, height=None, distance=None, prominence=None, **kw):
+    del kw
+    xs = list(_ac.asarray(x)._flat())
+    n = len(xs)
+    peaks = []
+    i = 1
+    while i < n - 1:
+        if xs[i - 1] < xs[i]:
+            # find right edge of any plateau
+            j = i
+            while j < n - 1 and xs[j + 1] == xs[j]:
+                j += 1
+            if j < n - 1 and xs[j + 1] < xs[j]:
+                peaks.append((i + j) // 2)
+                i = j + 1
+                continue
+        i += 1
+    props = {}
+    if height is not None:
+        hmin = height[0] if isinstance(height, (tuple, list)) \
+            else float(height)
+        peaks = [p for p in peaks if xs[p] >= hmin]
+    if prominence is not None:
+        pmin = prominence[0] if isinstance(prominence, (tuple, list)) \
+            else float(prominence)
+        kept = []
+        proms = []
+        for p in peaks:
+            lo = p
+            left_min = xs[p]
+            for k in range(p - 1, -1, -1):
+                if xs[k] > xs[p]:
+                    break
+                left_min = min(left_min, xs[k])
+            right_min = xs[p]
+            for k in range(p + 1, n):
+                if xs[k] > xs[p]:
+                    break
+                right_min = min(right_min, xs[k])
+            prom = xs[p] - max(left_min, right_min)
+            if prom >= pmin:
+                kept.append(p)
+                proms.append(prom)
+        peaks = kept
+        props["prominences"] = _ac.marr(proms)
+    if distance is not None:
+        dmin = int(distance)
+        order = sorted(range(len(peaks)),
+                       key=lambda k: -xs[peaks[k]])
+        keep = [True] * len(peaks)
+        for oi in order:
+            if not keep[oi]:
+                continue
+            for oj in range(len(peaks)):
+                if oj != oi and keep[oj] \
+                        and abs(peaks[oj] - peaks[oi]) < dmin:
+                    keep[oj] = False
+        peaks = [p for p, k in zip(peaks, keep) if k]
+    props["peak_heights"] = _ac.marr([xs[p] for p in peaks])
+    return _ac.marr([float(p) for p in peaks]), props
+
+
+def savgol_filter(x, window_length, polyorder, **kw):
+    del kw
+    xs = list(_ac.asarray(x)._flat())
+    wl = int(window_length)
+    if wl % 2 == 0:
+        raise ValueError("window_length must be odd")
+    half = wl // 2
+    # least-squares smoothing coefficients via normal equations
+    # design matrix on offsets -half..half
+    off = list(range(-half, half + 1))
+    A = [[float(o) ** j for j in range(polyorder + 1)] for o in off]
+    AtA = [[_math.fsum(A[i][a] * A[i][b] for i in range(wl))
+            for b in range(polyorder + 1)]
+           for a in range(polyorder + 1)]
+    # solve AtA c = At e_row for the smoothing (0th derivative) weights
+    At0 = [[A[i][a] for i in range(wl)]
+           for a in range(polyorder + 1)]
+    inv = _ac.linalg.inv(_ac.marr(AtA)).tolist()
+    w = [_math.fsum(inv[0][a] * At0[a][i]
+                    for a in range(polyorder + 1))
+         for i in range(wl)]
+    n = len(xs)
+    out = []
+    for i in range(n):
+        # mirror-pad edges (scipy default mode="interp" differs at the
+        # boundary; interior values match exactly)
+        acc = 0.0
+        for k, o in enumerate(off):
+            idx = i + o
+            if idx < 0:
+                idx = -idx
+            elif idx >= n:
+                idx = 2 * (n - 1) - idx
+            acc += w[k] * xs[idx]
+        out.append(acc)
+    return _ac.marr(out)
+
+
+def medfilt(x, kernel_size=3):
+    xs = list(_ac.asarray(x)._flat())
+    k = int(kernel_size)
+    half = k // 2
+    n = len(xs)
+    out = []
+    for i in range(n):
+        window = []
+        for o in range(-half, half + 1):
+            idx = i + o
+            window.append(xs[idx] if 0 <= idx < n else 0.0)
+        window.sort()
+        out.append(window[k // 2])
+    return _ac.marr(out)
+
+
+def detrend(x, type="linear"):
+    xs = list(_ac.asarray(x)._flat())
+    n = len(xs)
+    if type in ("constant", "c"):
+        m = _math.fsum(xs) / n
+        return _ac.marr([v - m for v in xs])
+    tbar = (n - 1) / 2.0
+    xbar = _math.fsum(xs) / n
+    stt = _math.fsum((i - tbar) ** 2 for i in range(n))
+    sxt = _math.fsum((i - tbar) * (xs[i] - xbar) for i in range(n))
+    slope = sxt / stt
+    return _ac.marr([xs[i] - (xbar + slope * (i - tbar))
+                     for i in range(n)])
+
+
+for _n in ("welch", "csd", "coherence", "periodogram", "stft",
+           "spectrogram", "hilbert", "fftconvolve", "find_peaks",
+           "savgol_filter", "medfilt", "detrend", "get_window"):
+    setattr(signal, _n, staticmethod(globals()[_n]))
