@@ -54,27 +54,7 @@ def xgb_classify(
     if X.shape[0] != y.shape[0]:
         raise ValueError("X and y must have the same number of rows.")
 
-    # Try xgboost
-    try:
-        from xgboost import XGBClassifier
-
-        model = XGBClassifier(
-            n_estimators=n_estimators,
-            max_depth=max_depth,
-            learning_rate=learning_rate,
-            random_state=random_state,
-            use_label_encoder=False,
-            eval_metric="logloss",
-        )
-        model.fit(X, y)
-        preds = model.predict(X)
-        imp = model.feature_importances_
-        acc = float(np.mean(preds == y))
-        return RichResult(payload={"predictions": preds, "feature_importance": imp, "accuracy": acc})
-    except ImportError:
-        pass
-
-    # Try sklearn
+    # Native gradient boosting (the _ml_core arm)
     try:
         from ._ml_core import GradientBoostingClassifier
 
