@@ -924,3 +924,31 @@ def argsort(x):
     f = asarray(x)._flat()
     return marr([float(i) for i in
                  sorted(range(len(f)), key=lambda k: f[k])])
+
+
+float16 = float
+
+
+class _FInfo:
+    """numpy.finfo subset for float64 (all our dtypes alias float)."""
+
+    def __init__(self, dtype=None):
+        del dtype
+        import sys as _sys
+        fi = _sys.float_info
+        self.eps = fi.epsilon
+        self.max = fi.max
+        self.min = -fi.max
+        self.tiny = fi.min
+        self.smallest_normal = fi.min
+        self.resolution = 1e-15
+        self.bits = 64
+
+
+def finfo(dtype=None):
+    return _FInfo(dtype)
+
+
+int16 = int
+int8 = int
+uint8 = int

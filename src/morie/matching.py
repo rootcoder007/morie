@@ -43,9 +43,35 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 from scipy.spatial.distance import cdist
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import StandardScaler
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.linear_model import LogisticRegression
+except ImportError:
+    LogisticRegression = _MissingDep('LogisticRegression')
+try:
+    from sklearn.neighbors import NearestNeighbors
+except ImportError:
+    NearestNeighbors = _MissingDep('NearestNeighbors')
+try:
+    from sklearn.preprocessing import StandardScaler
+except ImportError:
+    StandardScaler = _MissingDep('StandardScaler')
 
 logger = logging.getLogger(__name__)
 

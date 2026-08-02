@@ -38,8 +38,31 @@ import warnings
 import numpy as np
 import pandas as pd
 import scipy.stats as scipy_stats
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    import statsmodels.api as sm
+except ImportError:
+    sm = _MissingDep('sm')
+try:
+    import statsmodels.formula.api as smf
+except ImportError:
+    smf = _MissingDep('smf')
 
 
 class SurveyDesign:
