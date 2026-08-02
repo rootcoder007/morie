@@ -1426,6 +1426,13 @@ class _Loc:
                 sub = df[rk]
             elif isinstance(rk, slice):
                 sub = df.iloc[rk]
+            elif isinstance(rk, (list, Index)) or (
+                    hasattr(rk, "tolist") and not isinstance(rk, str)):
+                # label-list row selection
+                labels = list(rk.tolist() if hasattr(rk, "tolist")
+                              else rk)
+                pos = {k: i for i, k in enumerate(df.index)}
+                sub = df._take([pos[k] for k in labels])
             else:
                 i = df.index.index(rk)
                 if isinstance(ck, str) or (
