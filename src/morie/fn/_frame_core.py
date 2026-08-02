@@ -36,6 +36,29 @@ def _to_float(v):
 
 # ===================================================== Series
 
+class Index(list):
+    """Row labels with pandas-style boolean-mask selection."""
+
+    def __getitem__(self, key):
+        if isinstance(key, Series):
+            key = key.tolist()
+        elif type(key).__name__ == "marr":
+            key = [bool(v) for v in key._flat()]
+        if isinstance(key, list):
+            if key and all(isinstance(v, bool) for v in key):
+                return Index([v for v, m in zip(self, key) if m])
+            return Index([list.__getitem__(self, int(i)) for i in key])
+        out = list.__getitem__(self, key)
+        return Index(out) if isinstance(out, list) else out
+
+    def tolist(self):
+        return list(self)
+
+    @property
+    def values(self):
+        return list(self)
+
+
 class Series:
     def __init__(self, data=None, index=None, name=None, dtype=None):
         if isinstance(data, Series):
@@ -54,8 +77,8 @@ class Series:
             self._data = [data] * n
         else:
             self._data = list(data)
-        self.index = list(index) if index is not None \
-            else list(range(len(self._data)))
+        self.index = Index(index) if index is not None \
+            else Index(range(len(self._data)))
         self.name = name
         if dtype is not None:
             self._data = _cast_list(self._data, dtype)
@@ -758,8 +781,8 @@ class DataFrame:
                 c, [_NAN] * (len(index) if index else 0))
                 for c in columns}
         n = len(next(iter(self._cols.values()))) if self._cols else 0
-        self.index = list(index) if index is not None \
-            else list(range(n))
+        self.index = Index(index) if index is not None \
+            else Index(range(n))
 
     # ---- basics
     @property
@@ -884,7 +907,7 @@ class DataFrame:
                              % (len(value), n))
         self._cols[key] = list(value)
         if not self.index and value:
-            self.index = list(range(len(value)))
+            self.index = Index(range(len(value)))
 
     def _take(self, rows):
         rows = [int(i) for i in rows]
@@ -1251,6 +1274,21 @@ class DataFrame:
                 raise ValueError("assign: length mismatch for %r" % name)
             out._cols[name] = list(val)
         return out
+
+    @classmethod
+    def from_records(cls, records, columns=None, index=None):
+        """Build a frame from an iterable of row records (tuples,
+        lists or dicts), like pandas' constructor of the same name."""
+        rows = list(records)
+        if not rows:
+            return cls({c: [] for c in (columns or [])}, index=index)
+        if isinstance(rows[0], dict):
+            cols = columns or list(rows[0].keys())
+            return cls({c: [r.get(c, _NAN) for r in rows]
+                        for c in cols}, index=index)
+        cols = columns or list(range(len(rows[0])))
+        return cls({c: [r[i] for r in rows]
+                    for i, c in enumerate(cols)}, index=index)
 
     def groupby(self, by, sort=True, dropna=True, observed=True,
                 as_index=True):
