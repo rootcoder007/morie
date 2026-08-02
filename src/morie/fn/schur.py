@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import linalg as la
+from ._sci_core import linalg as la
 
 from ._containers import DescriptiveResult
 

@@ -36,7 +36,7 @@ def elliptic_filter(x, cutoff, fs, order: int = 4, rp: float = 1.0, rs: float = 
     -------
     SignalResult
     """
-    from scipy.signal import ellip, sosfiltfilt
+    from ._signal_core import ellip, sosfiltfilt
 
     x = np.asarray(x, dtype=float)
     Wn = float(cutoff) / (fs / 2.0)

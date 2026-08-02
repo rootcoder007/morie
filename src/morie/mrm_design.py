@@ -31,7 +31,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from morie.fn import _frame_core as pd
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 __all__ = [
     "TwoTreatmentResult",

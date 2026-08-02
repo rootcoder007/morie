@@ -3,7 +3,7 @@
 
 import math
 
-import scipy.stats as stats
+from . import _stats_core as stats
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""
