@@ -118,9 +118,9 @@ def test_pipeline_temporal_audit_runs_over_periods():
         d = simulate_biased_crime_data(n=2000, bias=b, base_rate=0.4, seed=20 + i)
         d = d.assign(period=f"p{i}", city="A")
         frames.append(d)
-    import pandas as pd
+    from morie.fn import _frame_core as fc
 
-    big = pd.concat(frames, ignore_index=True)
+    big = fc.concat(frames, ignore_index=True)
     res = predpol_temporal_audit(big["period"], big["city"], big["detected"], big["group"], privileged="A")
     pc = res.payload["per_city"]["A"]
     assert pc["n_periods"] == 3

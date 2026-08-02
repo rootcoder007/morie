@@ -72,8 +72,9 @@ class Series:
 
     @property
     def values(self):
-        return _ac.marr([_to_float(v) for v in self._data]) \
-            if self._is_numeric() else list(self._data)
+        if self._is_numeric():
+            return _ac.marr([_to_float(v) for v in self._data])
+        return _ac.oarr(self._data)
 
     @property
     def empty(self):
@@ -102,6 +103,18 @@ class Series:
     @property
     def dt(self):
         return _DtAccessor(self)
+
+    def mode(self):
+        counts = {}
+        for v in self.values:
+            if v is None or (isinstance(v, float) and v != v):
+                continue
+            counts[v] = counts.get(v, 0) + 1
+        if not counts:
+            return Series([])
+        top = max(counts.values())
+        vals = sorted(v for v, c in counts.items() if c == top)
+        return Series(vals)
 
     def _is_numeric(self):
         return all(isinstance(v, (int, float, bool)) or _isnan(v)
@@ -137,6 +150,8 @@ class Series:
     def __getitem__(self, key):
         if isinstance(key, Series):
             key = key.tolist()
+        elif hasattr(key, "dtype") and hasattr(key, "tolist"):
+            key = list(key.tolist())        # real-pandas/numpy mask
         if isinstance(key, list) and key and isinstance(key[0], bool):
             d = [v for v, m in zip(self._data, key) if m]
             ix = [i for i, m in zip(self.index, key) if m]
@@ -151,10 +166,18 @@ class Series:
     def __setitem__(self, key, value):
         if isinstance(key, Series):
             key = key.tolist()
+        elif hasattr(key, "dtype") and hasattr(key, "tolist"):
+            key = list(key.tolist())        # real-pandas/numpy mask
         if isinstance(key, list) and key and isinstance(key[0], bool):
+            vals = (list(value.tolist())
+                    if hasattr(value, "tolist") else value)
+            vi = 0
             for i, m in enumerate(key):
                 if m:
-                    self._data[i] = value
+                    self._data[i] = (vals[vi]
+                                     if isinstance(vals, list)
+                                     else vals)
+                    vi += 1
             return
         if key in self.index:
             self._data[self.index.index(key)] = value
@@ -1152,8 +1175,23 @@ class DataFrame:
         del how
         return DataFrame(out, index=list(self.index))
 
-    def groupby(self, by):
-        return GroupBy(self, by)
+    def assign(self, **kwargs):
+        out = DataFrame({c: list(v) for c, v in self._cols.items()},
+                        index=list(self.index))
+        for name, val in kwargs.items():
+            if callable(val):
+                val = val(out)
+            if hasattr(val, "tolist"):
+                val = val.tolist()
+            elif not isinstance(val, list):
+                val = [val] * out.shape[0]
+            if len(val) != out.shape[0]:
+                raise ValueError("assign: length mismatch for %r" % name)
+            out._cols[name] = list(val)
+        return out
+
+    def groupby(self, by, sort=True):
+        return GroupBy(self, by, sort=sort)
 
     @property
     def T(self):
@@ -1358,16 +1396,22 @@ def _cov(x, y, ddof=1):
 # ===================================================== GroupBy
 
 class GroupBy:
-    def __init__(self, df, by):
+    def __init__(self, df, by, sort=True):
         self._df = df
         self._by = by if isinstance(by, (list, tuple)) else [by]
+        self._sort = bool(sort)
         self._groups = {}
         for i in range(df.shape[0]):
             key = tuple(df._cols[c][i] for c in self._by)
             self._groups.setdefault(key, []).append(i)
 
+    def _keys(self):
+        # sort=False keeps first-appearance order (dict insertion),
+        # matching pandas
+        return sorted(self._groups) if self._sort else list(self._groups)
+
     def __iter__(self):
-        for key in sorted(self._groups):
+        for key in self._keys():
             k = key[0] if len(self._by) == 1 else key
             yield k, self._df._take(self._groups[key])
 
@@ -1385,7 +1429,7 @@ class GroupBy:
         return self._df._take(self._groups[key])
 
     def size(self):
-        keys = sorted(self._groups)
+        keys = self._keys()
         return Series([len(self._groups[k]) for k in keys],
                       index=[k[0] if len(self._by) == 1 else k
                              for k in keys])
@@ -1394,7 +1438,7 @@ class GroupBy:
         return len(self._groups)
 
     def _agg(self, fn, numeric_only=True):
-        keys = sorted(self._groups)
+        keys = self._keys()
         val_cols = [c for c in self._df._cols if c not in self._by]
         if numeric_only:
             val_cols = [c for c in val_cols
@@ -1436,7 +1480,7 @@ class GroupBy:
         if callable(spec) or isinstance(spec, str):
             fn = _agg_fn(spec)
             return self._agg(fn, numeric_only=False)
-        keys = sorted(self._groups)
+        keys = self._keys()
         out = {}
         for col, how in spec.items():
             fn = _agg_fn(how)
@@ -1449,7 +1493,7 @@ class GroupBy:
     aggregate = agg
 
     def apply(self, fn):
-        keys = sorted(self._groups)
+        keys = self._keys()
         out = [fn(self._df._take(self._groups[k])) for k in keys]
         ix = [k[0] if len(self._by) == 1 else k for k in keys]
         if all(isinstance(v, (int, float)) for v in out):

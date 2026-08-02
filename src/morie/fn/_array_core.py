@@ -45,9 +45,14 @@ class marr:
         if isinstance(data, (int, float)):
             data = [float(data)]
         if hasattr(data, "tolist") and not isinstance(data, marr):
+            fshape = tuple(int(v) for v in getattr(data, "shape", ()) or ())
             data = data.tolist()                 # foreign arrays (numpy)
             if isinstance(data, (int, float)):
                 data = [float(data)]
+            if len(fshape) == 2 and fshape[0] == 0:
+                self.data = []
+                self.shape = fshape
+                return
         data = list(data)
         if data and hasattr(data[0], "tolist") \
                 and not isinstance(data[0], marr):
@@ -122,6 +127,25 @@ class marr:
             if i is None:                       # x[None, :] -> row
                 return marr([self._flat()])
             if len(self.shape) == 2:
+                if isinstance(i, (marr, list)) or (
+                        hasattr(i, "tolist") and not isinstance(i, slice)):
+                    # array-of-rows selector: mask or integer indices
+                    iv = i._flat() if isinstance(i, marr) else (
+                        i.tolist() if hasattr(i, "tolist") else list(i))
+                    if getattr(i, "_is_mask", False) or (
+                            not getattr(i, "_is_index", False)
+                            and len(iv) == self.shape[0]
+                            and _pyall(isinstance(v, bool) or v in (0.0, 1.0)
+                                       for v in iv)
+                            and (getattr(i, "_is_mask", False)
+                                 or _pyall(isinstance(v, bool)
+                                           for v in iv))):
+                        rows = [self.data[k] for k, m in enumerate(iv) if m]
+                    else:
+                        rows = [self.data[int(v)] for v in iv]
+                    if isinstance(j, slice):
+                        return marr([r[j] for r in rows])
+                    return marr([r[int(j)] for r in rows])
                 if isinstance(i, slice) or isinstance(j, slice):
                     rows = self.data[i] if isinstance(i, slice) \
                         else [self.data[i]]
@@ -170,6 +194,12 @@ class marr:
         if isinstance(out, list):
             return marr(out)
         return out
+
+    @property
+    def dtype(self):
+        # the list-backed core is always float64; masks surface as
+        # bool through __array__, but dtype reports the storage type
+        return float64
 
     @property
     def size(self):
@@ -275,6 +305,14 @@ class marr:
                 cols = range(*j.indices(self.shape[1])) \
                     if isinstance(j, slice) else [j]
                 v = asarray(value)
+                flat = list(v._flat())
+                if len(flat) == len(rows) * len(cols) and len(flat) > 1 \
+                        and (len(v.shape) == 1
+                             or v.shape == (len(rows), len(cols))):
+                    for ri, r in enumerate(rows):
+                        for ci, c in enumerate(cols):
+                            self.data[r][c] = flat[ri * len(cols) + ci]
+                    return
                 v2 = _b2(v)
                 for ri, r in enumerate(rows):
                     for ci, c in enumerate(cols):
@@ -371,6 +409,21 @@ class marr:
 
     def __pow__(self, o):
         return self._zip(o, lambda a, b: a ** b)
+
+    def __rpow__(self, o):
+        return self._zip(o, lambda a, b: b ** a)
+
+    def __mod__(self, o):
+        return self._zip(o, lambda a, b: a % b)
+
+    def __rmod__(self, o):
+        return self._zip(o, lambda a, b: b % a)
+
+    def __floordiv__(self, o):
+        return self._zip(o, lambda a, b: a // b)
+
+    def __rfloordiv__(self, o):
+        return self._zip(o, lambda a, b: b // a)
 
     def __neg__(self):
         return self._map(lambda v: -v)
@@ -522,17 +575,163 @@ def _b2(a):
 
 
 ndarray = marr
-float64 = float
+class _DTypeF64:
+    """Storage dtype marker: equal to float, numpy.float64 (by name),
+    and the string "float64" so dtype comparisons written against any
+    of the three conventions hold."""
+
+    def __eq__(self, other):
+        if other in (float, "float64"):
+            return True
+        return getattr(other, "__name__", "") == "float64"
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash("float64")
+
+    def __repr__(self):
+        return "dtype('float64')"
+
+    name = "float64"
+    kind = "f"
+
+    def __call__(self, v):
+        return float(v)
+
+
+float64 = _DTypeF64()
 
 
 # ------------------------------------------------------------ construction
 
+class _ObjDType:
+    kind = "O"
+    name = "object"
+
+    def __eq__(self, other):
+        return other is object or other == "object" \
+            or getattr(other, "kind", "") == "O"
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    __hash__ = None
+
+    def __repr__(self):
+        return "dtype('O')"
+
+
+class oarr(list):
+    """Object-mode array: numpy's dtype=object surface for string /
+    mixed data. List-backed; comparisons yield tagged masks so the
+    usual mask-indexing pipelines work."""
+
+    def tolist(self):
+        return list(self)
+
+    @property
+    def shape(self):
+        return (len(self),)
+
+    @property
+    def size(self):
+        return len(self)
+
+    def _flat(self):
+        return list(self)
+
+    @property
+    def ndim(self):
+        return 1
+
+    @property
+    def dtype(self):
+        return _ObjDType()
+
+    def copy(self):
+        return oarr(self)
+
+    def ravel(self):
+        return oarr(self)
+
+    def flatten(self):
+        return oarr(self)
+
+    def astype(self, dtype=None):
+        if dtype is None or _is_object_like(None, dtype):
+            return oarr(self)
+        return marr([float(v) for v in self])
+
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        if shape in ((-1,), (len(self),)):
+            return oarr(self)
+        raise ValueError("oarr reshape supports 1-D only")
+
+    def __eq__(self, other):
+        out = marr([1.0 if v == other else 0.0 for v in self])
+        out._is_mask = True
+        return out
+
+    def __ne__(self, other):
+        out = marr([1.0 if v != other else 0.0 for v in self])
+        out._is_mask = True
+        return out
+
+    __hash__ = None
+
+    def __getitem__(self, key):
+        if isinstance(key, marr):
+            vals = key._flat()
+            if getattr(key, "_is_mask", False):
+                return oarr(v for v, m in zip(self, vals) if m)
+            return oarr(list(self)[int(v)] for v in vals)
+        if hasattr(key, "dtype") and hasattr(key, "tolist"):
+            vals = key.tolist()
+            if getattr(key.dtype, "kind", "") == "b":
+                return oarr(v for v, m in zip(self, vals) if m)
+            return oarr(list(self)[int(v)] for v in vals)
+        out = list.__getitem__(self, key)
+        return oarr(out) if isinstance(out, list) else out
+
+
+def _is_object_like(x, dtype):
+    if dtype is not None and (dtype is object
+                              or getattr(dtype, "__name__", "")
+                              == "object" or dtype == "object"):
+        return True
+    xdt = getattr(x, "dtype", None)
+    if xdt is not None and (xdt is object
+                            or getattr(xdt, "kind", "") in ("O", "U", "S")
+                            or str(getattr(xdt, "name", xdt)) == "object"):
+        return True
+    if isinstance(x, (list, tuple)) and x and any(
+            isinstance(v, str) for v in x):
+        return True
+    return False
+
+
 def asarray(x, dtype=None):
-    del dtype
-    return x if isinstance(x, marr) else marr(x)
+    if isinstance(x, oarr) and dtype is None:
+        return x
+    if _is_object_like(x, dtype):
+        return oarr(x.tolist() if hasattr(x, "tolist") else x)
+    if isinstance(x, marr):
+        return x
+    try:
+        return marr(x)
+    except (TypeError, ValueError):
+        # non-numeric payload (strings via an untyped container):
+        # numpy would build an object array here
+        return oarr(x.tolist() if hasattr(x, "tolist") else x)
 
 
 def array(x, dtype=None):
+    if _is_object_like(x, dtype):
+        return oarr(x.tolist() if hasattr(x, "tolist") else x)
     del dtype
     return marr(x)
 
@@ -561,7 +760,11 @@ def arange(start, stop=None, step=1.0, dtype=None):
 
 def zeros(n, dtype=None):
     if isinstance(n, tuple):
-        return marr([[0.0] * n[1] for _ in range(n[0])])
+        out = marr([[0.0] * n[1] for _ in range(n[0])]) \
+            if n[0] else marr([])
+        if not n[0]:
+            out.shape = (0, int(n[1]))
+        return out
     return marr([0.0] * int(n))
 
 
@@ -759,7 +962,11 @@ def sort(x):
 
 
 def unique(x):
-    return marr(sorted(set(asarray(x)._flat())))
+    a = asarray(x)
+    if isinstance(a, oarr):
+        return oarr(sorted(set(a), key=str))
+    return marr(sorted(set(a._flat())))
+
 
 
 def allclose(a, b, atol=1e-8, rtol=1e-5):
@@ -771,6 +978,8 @@ def allclose(a, b, atol=1e-8, rtol=1e-5):
 
 
 _pyall = _bi.all
+_pyany = _bi.any
+_pysum = _bi.sum
 _pymax = _bi.max
 
 
@@ -1072,7 +1281,44 @@ class _SplitMix64:
 
     def choice(self, a, size=None, replace=True, p=None):
         if p is not None:
-            raise NotImplementedError("weighted choice not needed yet")
+            pool = list(range(int(a))) if isinstance(a, int) \
+                else list(asarray(a)._flat())
+            w = [float(v) for v in (p._flat() if isinstance(p, marr)
+                                    else list(p))]
+            if len(w) != len(pool):
+                raise ValueError("p must have the same size as a")
+            tot = _pysum(w)
+            if tot <= 0 or _pyany(v < 0 for v in w):
+                raise ValueError("probabilities must be non-negative "
+                                 "and sum to a positive value")
+            if size is None:
+                k, flat_scalar = 1, True
+            else:
+                if isinstance(size, (tuple, list)):
+                    k = 1
+                    for d in size:
+                        k *= int(d)
+                else:
+                    k = int(size)
+                flat_scalar = False
+            out = []
+            wl, pl = list(w), list(pool)
+            for _ in range(k):
+                t = _pysum(wl)
+                u = self.random() * t
+                c = 0.0
+                pick = len(wl) - 1
+                for i2, wv in enumerate(wl):
+                    c += wv
+                    if u <= c:
+                        pick = i2
+                        break
+                out.append(pl[pick])
+                if not replace:
+                    del pl[pick], wl[pick]
+            if flat_scalar:
+                return out[0]
+            return marr([float(v) for v in out])
         pool = list(range(int(a))) if isinstance(a, int)             else list(asarray(a)._flat())
         if size is None:
             return pool[self._next() % len(pool)]
@@ -1153,8 +1399,25 @@ def logaddexp(a, b):
 
 
 def tile(x, reps):
-    f = asarray(x)._flat()
-    return marr(f * int(reps))
+    a = asarray(x)
+    if isinstance(reps, (tuple, list)):
+        reps = [int(r) for r in reps]
+        if len(reps) == 1:
+            reps = reps[0]
+        elif len(reps) == 2:
+            m, k = reps
+            if len(a.shape) == 1:
+                row = list(a._flat()) * k
+                return marr([list(row) for _ in range(m)])
+            if len(a.shape) == 2:
+                rows = [list(r) * k for r in a.data]
+                return marr([list(r) for _ in range(m) for r in rows])
+            raise ValueError("tile: unsupported input rank")
+        else:
+            raise ValueError("tile: reps rank > 2 unsupported")
+    if len(a.shape) == 2:
+        return marr(a.data * int(reps))
+    return marr(a._flat() * int(reps))
 
 
 def repeat(x, reps):
@@ -1551,8 +1814,9 @@ def percentile(x, q):
 
 
 def quantile(x, q):
-    if isinstance(q, (list, tuple)):
-        return percentile(x, [100.0 * float(v) for v in q])
+    if isinstance(q, (list, tuple, marr)):
+        qf = q._flat() if isinstance(q, marr) else q
+        return percentile(x, [100.0 * float(v) for v in qf])
     return percentile(x, 100.0 * float(q))
 
 
