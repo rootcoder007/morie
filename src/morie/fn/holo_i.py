@@ -33,7 +33,7 @@ def holo_roc(
         Recognition Letters*, 27(8), 861--874.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_roc requires matplotlib. Install via: pip install matplotlib")
         return None

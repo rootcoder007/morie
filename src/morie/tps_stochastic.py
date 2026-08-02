@@ -53,7 +53,7 @@ def _try_savefig(name: str, fig) -> str | None:
         _ensure_dirs()
         out = FIG_OUT / name
         fig.savefig(out, dpi=120, bbox_inches="tight")
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         plt.close(fig)
         return str(out.relative_to(PROJECT))
@@ -166,7 +166,7 @@ def hawkes_temporal_fit(df: pd.DataFrame, *, ds_name: str = "?", max_n: int = 50
     # Visualisation
     fig_path = None
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(2, 1, figsize=(8, 6), gridspec_kw={"height_ratios": [3, 1]})
         # Top: empirical intensity (rolling) vs Poisson rate
@@ -281,7 +281,7 @@ def sarima_forecast(
     # Visualisation
     fig_path = None
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(9, 4))
         ax.plot(monthly.index, monthly.values, color="#3584e4", label="actual")
@@ -377,7 +377,7 @@ def langevin_simulate(
 
     fig_path = None
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(9, 4.5))
         ax.plot(daily.index, x, color="#5e5c64", lw=1, alpha=0.8, label="historical (daily count)")
@@ -486,7 +486,7 @@ def fokker_planck_grid(df: pd.DataFrame, *, ds_name: str = "?", n_grid: int = 64
 
     fig_path = None
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(9, 4))
         ax.hist(x, bins=30, density=True, alpha=0.5, color="#3584e4", label="empirical density")

@@ -37,7 +37,7 @@ def holo_hist(
         und verwandte Gebiete*, 57(4), 453--476.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_hist requires matplotlib. Install via: pip install matplotlib")
         return None

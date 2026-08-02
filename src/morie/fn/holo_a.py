@@ -36,7 +36,7 @@ def holo_acf(
         Analysis: Forecasting and Control* (5th ed.). Wiley.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_acf requires matplotlib. Install via: pip install matplotlib")
         return None

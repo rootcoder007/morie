@@ -29,8 +29,8 @@ def holo_dag(
     Pearl, J. (2009). *Causality* (2nd ed.). Cambridge University Press.
     """
     try:
-        import matplotlib.patches as mpatches
-        import matplotlib.pyplot as plt
+        from morie.fn._plot_core import patches as mpatches
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_dag requires matplotlib. Install via: pip install matplotlib")
         return None
