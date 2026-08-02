@@ -127,6 +127,15 @@ class marr:
             if i is None:                       # x[None, :] -> row
                 return marr([self._flat()])
             if len(self.shape) == 2:
+                if isinstance(i, (marr, list)) and \
+                        isinstance(j, (marr, list)):
+                    # np.ix_-style outer gather
+                    iv = [int(v) for v in
+                          (i._flat() if isinstance(i, marr) else i)]
+                    jv = [int(v) for v in
+                          (j._flat() if isinstance(j, marr) else j)]
+                    return marr([[self.data[r2][c2] for c2 in jv]
+                                 for r2 in iv])
                 if isinstance(i, (marr, list)) or (
                         hasattr(i, "tolist") and not isinstance(i, slice)):
                     # array-of-rows selector: mask or integer indices
@@ -987,7 +996,17 @@ abs = _uf(lambda v: v if v >= 0 else -v)  # noqa: A001
 
 
 def clip(x, lo, hi):
-    return asarray(x)._map(lambda v: lo if v < lo else hi if v > hi else v)
+    # numpy allows None for an open bound
+    def one(v):
+        if lo is not None and v < lo:
+            return float(lo)
+        if hi is not None and v > hi:
+            return float(hi)
+        return v
+    a = asarray(x)
+    if isinstance(a, marr):
+        return a._map(one)
+    return one(float(a))
 
 
 def maximum(x, y):
@@ -2602,8 +2621,11 @@ def kron(a, b):
 
 
 def ix_(rows, cols):
-    return (marr([float(v) for v in asarray(rows)._flat()]),
-            marr([float(v) for v in asarray(cols)._flat()]))
+    r = marr([float(v) for v in asarray(rows)._flat()])
+    c = marr([float(v) for v in asarray(cols)._flat()])
+    r._is_index = True
+    c._is_index = True
+    return (r, c)
 
 
 def cumprod(x):

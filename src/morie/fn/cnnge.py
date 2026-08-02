@@ -11,15 +11,21 @@ __all__ = ["cnn_genomic"]
 
 
 def _conv1d(M, W, b, stride: int = 1):
-    """Single-channel 1D valid convolution with bias."""
+    """Single-channel 1D valid convolution with bias, rank-2: one
+    (n, out_len) activation matrix per filter (the native array core
+    is deliberately 2-D; the (n, L, f) tensor becomes a list over f)."""
     n, m = M.shape
     k, f = W.shape
     out_len = (m - k) // stride + 1
-    out = np.zeros((n, out_len, f))
-    for s in range(out_len):
-        seg = M[:, s * stride : s * stride + k]
-        out[:, s, :] = seg @ W + b
-    return out
+    outs = []
+    for j in range(f):
+        acc = np.zeros((n, out_len))
+        for s in range(out_len):
+            seg = M[:, s * stride : s * stride + k]
+            col = seg @ W[:, j] + float(b[j])
+            acc[:, s] = col
+        outs.append(acc)
+    return outs
 
 
 def cnn_genomic(
@@ -93,9 +99,9 @@ def cnn_genomic(
 
     losses = []
     for _ in range(n_epochs):
-        z = _conv1d(Ms, Wc, bc)  # (n, L, f)
-        a = np.maximum(z, 0)  # ReLU
-        p = a.mean(axis=1)  # (n, f)
+        z = _conv1d(Ms, Wc, bc)              # list of f (n, L)
+        a = [np.maximum(zj, 0) for zj in z]  # ReLU
+        p = np.column_stack([aj.mean(axis=1) for aj in a])  # (n, f)
         h_pre = p @ W1 + b1
         h = np.tanh(h_pre)
         y_hat = h @ w2 + b2
@@ -109,16 +115,21 @@ def cnn_genomic(
         dW1 = p.T @ dh_pre + l2 * W1
         db1 = dh_pre.sum(axis=0)
         dp = dh_pre @ W1.T  # (n, f)
-        # Backprop through mean-pool
-        L = a.shape[1]
-        da = np.repeat(dp[:, None, :], L, axis=1) / L
-        dz = da * (z > 0)
+        # Backprop through mean-pool + ReLU, per filter
+        L = a[0].shape[1]
+        dz = []
+        for j in range(len(a)):
+            daj = np.outer(dp[:, j], np.ones(L)) / L
+            dz.append(daj * (z[j] > 0))
         # Conv1D backward
         dWc = np.zeros_like(Wc)
-        dbc = dz.sum(axis=(0, 1))
+        dbc = np.asarray([float(dzj.sum()) for dzj in dz])
         for s in range(L):
-            seg = Ms[:, s : s + kernel]
-            dWc += seg.T @ dz[:, s, :]
+            seg = Ms[:, s : s + kernel]           # (n, kernel)
+            for j in range(len(dz)):
+                # dWc[:, j] += seg.T @ dz_j[:, s]
+                contrib = seg.T @ dz[j][:, s]
+                dWc[:, j] = dWc[:, j] + contrib
         dWc += l2 * Wc
         # Step
         Wc -= lr * dWc
@@ -130,8 +141,8 @@ def cnn_genomic(
         losses.append(float(np.mean(resid**2)))
     # Final
     z = _conv1d(Ms, Wc, bc)
-    a = np.maximum(z, 0)
-    p = a.mean(axis=1)
+    a = [np.maximum(zj, 0) for zj in z]
+    p = np.column_stack([aj.mean(axis=1) for aj in a])
     h = np.tanh(p @ W1 + b1)
     y_hat = h @ w2 + b2
     resid = y - y_hat
