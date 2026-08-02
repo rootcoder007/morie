@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.optimize import minimize
+from ._sci_core import minimize
 
 
 def bnklw(

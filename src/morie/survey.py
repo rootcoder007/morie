@@ -36,8 +36,8 @@ import math
 import warnings
 
 import numpy as np
-import pandas as pd
-import scipy.stats as scipy_stats
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as scipy_stats
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""

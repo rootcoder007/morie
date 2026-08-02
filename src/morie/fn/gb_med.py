@@ -40,7 +40,7 @@ def gibbons_median_dist(x, n, F=None):
     Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
     Statistical Inference* (5th ed.). CRC Press. Ch. 2.7.1.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     n = int(n)
     if n < 1 or n % 2 == 0:

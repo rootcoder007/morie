@@ -132,7 +132,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
     else:
         mu = np.exp(np.clip(eta, -500, 500))
         w = np.clip(mu, 1e-10, None)
-        from scipy.special import gammaln
+        from ._sci_core import gammaln
 
         ll = float(np.sum(y * np.log(mu + 1e-300) - mu - gammaln(y + 1)))
 
@@ -150,7 +150,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
         se = np.full(p, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):
         zstat = beta / se
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     warn = []
     if not converged:

@@ -2,7 +2,7 @@
 """Simulated power of sign test via Monte Carlo."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

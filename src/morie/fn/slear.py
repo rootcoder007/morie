@@ -18,7 +18,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from scipy.special import expit
+from ._sci_core import expit
 
 __all__ = ["slear"]
 
@@ -91,7 +91,7 @@ def slear(
     cate = mu1 - mu0
     ate = float(np.mean(cate))
     se = float(np.std(cate, ddof=1) / np.sqrt(n))
-    from scipy.stats import norm as _norm
+    from ._stats_core import norm as _norm
 
     z = _norm.ppf(1.0 - alpha / 2.0)
 

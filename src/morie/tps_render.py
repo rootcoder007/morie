@@ -30,7 +30,7 @@ from collections.abc import Iterable
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 # ----------------------------------------------------------------------
 # Toronto rotation constants
@@ -286,7 +286,7 @@ def render_quad(
     import matplotlib.pyplot as plt
     from matplotlib.collections import PolyCollection
     from matplotlib.colors import Normalize
-    from scipy.stats import gaussian_kde
+    from morie.fn._stats_core import gaussian_kde
 
     from .tps_datasets import load_tps_dataset
     from .tps_io import load_tps

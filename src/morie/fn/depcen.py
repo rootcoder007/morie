@@ -78,7 +78,7 @@ def dependent_censoring_hazard(time, event, X, ties="efron"):
     True
     """
     t, e, Xm = prepare(time, event, X)
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     b_ev, *_ = cox_fit(t, e, Xm, ties=ties)
     cen = 1.0 - e

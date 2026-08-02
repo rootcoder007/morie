@@ -57,7 +57,7 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
     Peto, R. & Peto, J. (1972). Journal of the Royal Statistical Society,
     Series A, 135(2), 185-207.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

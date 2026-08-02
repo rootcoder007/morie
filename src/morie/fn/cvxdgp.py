@@ -110,7 +110,7 @@ def boyd_dual_problem(g, n_lambda=0, n_nu=0, lambda0=None, nu0=None,
     >>> round(float(e["nu"][0]), 6)
     -2.0
     """
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     n_lambda = int(n_lambda)
     n_nu = int(n_nu)

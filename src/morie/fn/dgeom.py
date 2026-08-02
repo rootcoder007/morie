@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import geom
+from ._stats_core import geom
 
 
 def dgeom(x: Union[int, np.ndarray], prob: float) -> Union[float, np.ndarray]:

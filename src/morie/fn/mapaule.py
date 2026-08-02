@@ -60,7 +60,7 @@ def ma_paule_mandel(yi, vi, max_iter=200, tol=1e-12):
     the NBS* 87:377-385. Veroniki et al. (2016), *Research Synthesis
     Methods* 7:55-79, for the comparison of tau^2 estimators.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._psycho import dersimonian_laird, fixed_effect_pool
 

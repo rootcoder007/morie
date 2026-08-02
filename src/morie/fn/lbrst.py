@@ -29,7 +29,7 @@ def lilliefors_test(x, cdf=None) -> TestResult:
     if n < 4:
         raise ValueError("Need at least 4 finite observations.")
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     z = (a - np.mean(a)) / np.std(a, ddof=1)
     z_sorted = np.sort(z)

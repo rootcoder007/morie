@@ -1,7 +1,7 @@
 """GeneralStatistics equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 

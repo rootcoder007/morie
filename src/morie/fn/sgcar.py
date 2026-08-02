@@ -136,7 +136,7 @@ def conditional_autoregressive(Z, W, X=None, parameterization="weighted"):
     Spatial Data Analysis. Chapman & Hall/CRC. Sec. 6.2.2.2, eqs.
     (6.43)-(6.48), pp. 338-341. Besag (1974). Haining (1990), p. 130.
     """
-    from scipy.optimize import minimize_scalar
+    from ._sci_core import minimize_scalar
 
     Z = np.asarray(Z, dtype=float).ravel()
     W = np.asarray(W, dtype=float)

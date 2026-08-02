@@ -2,7 +2,7 @@
 """CV2 genomic cross-validation: both train and test lines evaluated in at least one environment."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

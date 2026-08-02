@@ -49,7 +49,7 @@ def gibbons_large_sample_moments(r, n, f=None, F_inv=None, f_prime=None):
     David, H. A. & Nagaraja, H. N. (2003). *Order Statistics*
     (3rd ed.). Wiley. Sec. 4.6.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     r, n = int(r), int(n)
     if not 1 <= r <= n:

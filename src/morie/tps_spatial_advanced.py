@@ -18,8 +18,8 @@ from __future__ import annotations
 import math
 
 import numpy as np
-import pandas as pd
-from scipy import stats as sps
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
 

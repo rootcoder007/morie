@@ -2,7 +2,7 @@
 """Wavelet spike-and-slab prior for function estimation."""
 
 from . import _array_core as np
-from scipy.stats import norm
+from ._stats_core import norm
 
 from ._richresult import RichResult
 

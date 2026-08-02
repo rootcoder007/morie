@@ -95,7 +95,7 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
     if x.size > padlen:
         y = filtfilt(taps, [1.0], x)
     else:
-        from scipy.signal import lfilter
+        from ._signal_core import lfilter
 
         y = lfilter(taps, [1.0], x)
     res = RichResult(

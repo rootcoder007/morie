@@ -63,7 +63,7 @@ def kdist(
     Azzalini, A. (1981). A note on the estimation of a distribution function
         and quantiles by a kernel method. *Biometrika*, 68(1), 326-328.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

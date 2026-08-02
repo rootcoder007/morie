@@ -33,8 +33,8 @@ from __future__ import annotations
 from typing import Any
 
 import numpy as np
-import pandas as pd
-from scipy.stats import norm
+from morie.fn import _frame_core as pd
+from morie.fn._stats_core import norm
 
 from .causal import estimate_cate, estimate_irm
 from .sensitivity import e_value_d

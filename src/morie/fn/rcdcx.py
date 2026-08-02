@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn._otis_const import DEFAULT_COLS
 
@@ -83,7 +83,7 @@ def recidivism_cox(
             beta = score / info
             se = 1.0 / np.sqrt(info)
             z = beta / se
-            from scipy import stats as _st
+            from . import _stats_core as _st
 
             p = float(2 * _st.norm.sf(abs(z)))
         else:

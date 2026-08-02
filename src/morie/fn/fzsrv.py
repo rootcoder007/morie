@@ -10,7 +10,7 @@ the KDFE variance: S(t)(1-S(t))/n + O(h/n).
 """
 
 from . import _array_core as np
-from scipy import stats as _sps
+from . import _stats_core as _sps
 
 from ._richresult import RichResult
 

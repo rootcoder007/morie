@@ -65,7 +65,7 @@ def bayesian_spline(
     pred_var = noise_var + np.sum(B @ S * B, axis=1)
     pred_sd = np.sqrt(pred_var)
 
-    from scipy import stats as st
+    from . import _stats_core as st
 
     z = st.norm.ppf(1 - (1 - prob) / 2)
 

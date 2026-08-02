@@ -8,7 +8,7 @@ __all__ = ["bayes_factor_savage_dickey", "bfact"]
 from typing import Any, Union
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 
 def bayes_factor_savage_dickey(

@@ -22,7 +22,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 __all__ = [
     "mrm_siu_case_to_decision_km",

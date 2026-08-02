@@ -1,7 +1,7 @@
 """GeneralStatistics expression involving 'eparately' (auto-extracted; see reference for full context).."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 

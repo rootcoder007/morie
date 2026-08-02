@@ -20,7 +20,7 @@ def pan_tompkins(
     :param fs: Sampling frequency in Hz.
     :return: SignalResult with R-peak indices.
     """
-    from scipy.signal import butter, sosfiltfilt
+    from ._signal_core import butter, sosfiltfilt
 
     ecg = np.asarray(ecg, dtype=float).ravel()
     n = len(ecg)

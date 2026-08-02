@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import shapiro
+from ._stats_core import shapiro
 
 
 def shapir(x: Union[Sequence, np.ndarray]):

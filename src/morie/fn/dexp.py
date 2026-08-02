@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import expon
+from ._stats_core import expon
 
 
 def dexp(x: Union[float, np.ndarray], rate: float = 1.0) -> Union[float, np.ndarray]:

@@ -2,7 +2,7 @@
 """KS statistics D_n, D+_n, D-_n are distribution-free under H0."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

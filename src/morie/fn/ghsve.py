@@ -2,7 +2,7 @@
 """Sieve prior construction (truncated log-spline / Bernstein basis)."""
 
 from . import _array_core as np
-from scipy.special import gammaln
+from ._sci_core import gammaln
 
 from ._richresult import RichResult
 

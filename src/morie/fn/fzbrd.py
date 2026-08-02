@@ -11,7 +11,7 @@ the cost of a slight variance inflation by factor (c^4 + 1)/(c^2 - 1)^2.
 """
 
 from . import _array_core as np
-from scipy import stats as _sps
+from . import _stats_core as _sps
 
 from ._richresult import RichResult
 

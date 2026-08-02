@@ -20,7 +20,7 @@ def kendall_concordance(ratings, cdf=None) -> TestResult:
     -------
     TestResult
     """
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     R = np.asarray(ratings, dtype=float)
     if R.ndim != 2:

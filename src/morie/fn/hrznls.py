@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["hrz_semiparametric_ls", "horowitz_nls_sim"]
 
 
-from scipy import optimize
+from ._sci_core import optimize
 
 
 def hrz_semiparametric_ls(X, y, h=None, kernel_name="gaussian", beta0=None):

@@ -56,7 +56,7 @@ def kgamm(
         kernels. *Annals of the Institute of Statistical Mathematics*,
         52(3), 471-480.
     """
-    from scipy.special import gammaln
+    from ._sci_core import gammaln
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

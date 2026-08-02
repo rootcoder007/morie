@@ -16,7 +16,7 @@ formula in Ichimura (1993, Eq. 4.2).
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.optimize import minimize
+from ._sci_core import minimize
 
 from ._richresult import RichResult
 

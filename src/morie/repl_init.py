@@ -14,7 +14,7 @@ from __future__ import annotations
 def setup_repl(ns: dict) -> None:
     """Inject all MORIE REPL helpers into namespace `ns`."""
     import numpy as np
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     ns["np"] = np
     ns["pd"] = pd
@@ -83,7 +83,7 @@ def _inject_convenience(ns: dict) -> None:
             pass
         from pathlib import Path
 
-        import pandas as _pd
+        from morie.fn import _frame_core as _pd
 
         for p in [Path(path_or_name), Path.cwd() / path_or_name]:
             if p.exists():
@@ -285,7 +285,7 @@ def _inject_convenience(ns: dict) -> None:
         if c1 is None or c2 is None:
             print("Usage: crosstab('c1', 'c2')")
             return
-        import pandas as _pd
+        from morie.fn import _frame_core as _pd
 
         ct = _pd.crosstab(data[c1], data[c2])
         print(ct.to_string())

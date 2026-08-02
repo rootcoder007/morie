@@ -75,7 +75,7 @@ def hzrat(
     Cox, D.R. (1972). Journal of the Royal Statistical Society, Series B,
     34(2), 187-220.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

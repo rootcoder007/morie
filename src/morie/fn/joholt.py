@@ -66,7 +66,7 @@ def joseph_holt_linear(y, alpha=None, beta=None, horizon=1, damped=False, phi=0.
     Principles and Practice* (3rd ed.). OTexts. Sec. 8.2 (trend
     methods).
     """
-    from scipy import optimize
+    from ._sci_core import optimize
 
     y = np.asarray(y, dtype=float).ravel()
     n = y.size

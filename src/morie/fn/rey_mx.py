@@ -2,7 +2,7 @@
 """Mixed-effects model (random intercept via EM algorithm)."""
 
 from . import _array_core as np
-from scipy.stats import norm
+from ._stats_core import norm
 
 
 def rey_mx(

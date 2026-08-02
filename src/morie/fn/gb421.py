@@ -2,7 +2,7 @@
 """Chi-square goodness-of-fit test statistic Q with grouped data."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

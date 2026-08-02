@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from scipy import stats as sp
+from . import _stats_core as sp
 
 
 def cfa_compare(fit1: dict, fit2: dict, cdf=None, *, alpha: float = 0.05) -> dict:

@@ -57,7 +57,7 @@ def capture_recapture(
     var_N = ((n1 + 1) * (n2 + 1) * (n1 - m) * (n2 - m)) / ((m + 1) ** 2 * (m + 2))
     se = np.sqrt(var_N)
 
-    import scipy.stats as st
+    from . import _stats_core as st
 
     z = st.norm.ppf((1 + confidence) / 2)
 

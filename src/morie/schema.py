@@ -54,7 +54,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from difflib import SequenceMatcher
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 # Synonyms that come up across criminology / public-health datasets.
 # Used to nudge the fuzzy matcher when the literal column names diverge

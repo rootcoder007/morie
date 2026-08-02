@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import pandas as pd
-from scipy import stats
+from . import _frame_core as pd
+from . import _stats_core as stats
 
 
 def otis_pairwise_compare(

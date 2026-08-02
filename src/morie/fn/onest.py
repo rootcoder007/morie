@@ -22,7 +22,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 
 def onest(
@@ -115,7 +115,7 @@ def onest(
 
 
 def _logistic_predict(X, y):
-    from scipy import special
+    from ._sci_core import special
 
     beta = np.zeros(X.shape[1])
     for _ in range(25):

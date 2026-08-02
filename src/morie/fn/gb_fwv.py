@@ -2,7 +2,7 @@
 """Variance of Friedman chi_r^2 statistic for small b."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

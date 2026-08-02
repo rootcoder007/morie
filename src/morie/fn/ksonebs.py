@@ -5,7 +5,7 @@ from collections.abc import Callable, Sequence
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import ks_1samp, ks_2samp
+from ._stats_core import ks_1samp, ks_2samp
 
 
 def ksonebs(
@@ -14,7 +14,7 @@ def ksonebs(
     alternative: str = "two-sided",
 ):
     """Kolmogorov-Smirnov goodness-of-fit / two-sample test."""
-    from scipy import stats as _ss
+    from . import _stats_core as _ss
 
     from ._richresult import hypothesis_test_result
 

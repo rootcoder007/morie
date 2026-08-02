@@ -2,7 +2,7 @@
 """Granger causality as conditional mutual information."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 from .ggrcst import _lag_design, _rss

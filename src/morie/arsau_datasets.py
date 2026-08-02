@@ -92,7 +92,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie._datapaths import resolve_data_dir
 from morie.dataset_dictionary import (

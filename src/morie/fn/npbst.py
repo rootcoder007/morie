@@ -84,7 +84,7 @@ def npbst(
         ci_lo = 2 * theta_hat - float(np.percentile(boot_stats, hi_q * 100))
         ci_hi = 2 * theta_hat - float(np.percentile(boot_stats, lo_q * 100))
     else:
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         z = norm.ppf(hi_q)
         ci_lo = theta_hat - z * se

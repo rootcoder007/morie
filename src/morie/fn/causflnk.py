@@ -86,7 +86,7 @@ def causal_falsification_test(y_pre, treat, X_baseline=None):
         ...
     ValueError: both treatment groups must be non-empty
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     y = np.atleast_1d(np.asarray(y_pre, dtype=float)).ravel()
     tr = np.atleast_1d(np.asarray(treat, dtype=float)).ravel()

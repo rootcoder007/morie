@@ -71,7 +71,7 @@ def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
     Econometrics*. Springer. Sec. 4.4.2, eqs. (4.37)-(4.40),
     Theorems 4.9-4.10; Manski (1987), Charlier et al. (1995).
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from ._horowitz import optimize_scale_normalized
 

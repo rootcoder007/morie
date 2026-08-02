@@ -15,7 +15,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from ..fn._richresult import RichResult
 

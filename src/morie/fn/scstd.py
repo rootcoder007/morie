@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 
 def score_standardize(

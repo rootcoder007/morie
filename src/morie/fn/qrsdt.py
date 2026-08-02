@@ -45,7 +45,7 @@ def qrsdt(
     DescriptiveResult
         ``extra`` has ``r_peaks``, ``rr_intervals``, ``heart_rate_bpm``.
     """
-    from scipy.signal import butter, sosfiltfilt
+    from ._signal_core import butter, sosfiltfilt
 
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)

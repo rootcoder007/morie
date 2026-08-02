@@ -96,7 +96,7 @@ def cause_specific_hazard(time, event_type, X, cause=1, ties="efron"):
     _, _, Xm = prepare(t, e, X)
     beta, ll, I, _, it, conv = cox_fit(t, e, Xm, ties=ties)
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     try:
         se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))

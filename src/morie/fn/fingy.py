@@ -72,7 +72,7 @@ def fingy(
     Fine, J.P. & Gray, R.J. (1999). Journal of the American Statistical
     Association, 94(446), 496-509.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=int)

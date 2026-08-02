@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import stats as sp
+from . import _stats_core as sp
 
 
 def validity_incremental(y: np.ndarray, x_base: np.ndarray, x_new: np.ndarray, cdf=None) -> dict:

@@ -40,7 +40,7 @@ def kbwpi(data: np.ndarray) -> dict:
         selection method for kernel density estimation. *JRSS-B*,
         53(3), 683-690.
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

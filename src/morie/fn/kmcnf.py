@@ -75,7 +75,7 @@ def kmcnf(
     Borgan, O. & Liestol, K. (1990). Scandinavian Journal of Statistics,
     17(1), 35-41.
     """
-    from scipy import stats as _stats
+    from . import _stats_core as _stats
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)

@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import hmean
+from ._stats_core import hmean
 
 
 def harmean(x: Union[Sequence[float], np.ndarray]):

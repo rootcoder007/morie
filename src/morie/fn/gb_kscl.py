@@ -2,7 +2,7 @@
 """KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

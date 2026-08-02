@@ -20,7 +20,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult
 from .otis import project_root

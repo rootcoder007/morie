@@ -26,7 +26,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 # ---------------------------------------------------------------------------
 # Result containers (≤6 chars)
@@ -125,7 +125,7 @@ def crba(
         avgr = 0.0
     std = (k * avgr) / (1 + (k - 1) * avgr)
 
-    from scipy import stats as sp
+    from morie.fn import _stats_core as sp
 
     df1 = n - 1
     df2 = (n - 1) * (k - 1)
@@ -283,7 +283,7 @@ def bart(data: pd.DataFrame | np.ndarray) -> BrtRes:
 
     H0: correlation matrix = identity. Reject (p<0.05) -> factorable.
     """
-    from scipy import stats as sp
+    from morie.fn import _stats_core as sp
 
     X = np.asarray(data, dtype=np.float64)
     n, k = X.shape

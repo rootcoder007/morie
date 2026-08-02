@@ -87,7 +87,7 @@ def boyd_proximal(h, v, t=1.0, lo=None, hi=None):
     v = np.atleast_1d(np.asarray(v, dtype=float)).ravel()
 
     if callable(h):
-        from scipy.optimize import minimize
+        from ._sci_core import minimize
 
         obj = lambda x: float(h(x)) + np.sum((x - v) ** 2) / (2 * t)  # noqa: E731
         x = minimize(obj, v, method="Nelder-Mead").x

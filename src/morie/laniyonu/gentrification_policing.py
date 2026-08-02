@@ -34,7 +34,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from ..mrm_primitives.gentrification import gentrification_panel
 from ..mrm_primitives.spatial_spillover import (

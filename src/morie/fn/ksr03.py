@@ -8,7 +8,7 @@ By Glivenko-Cantelli the statistic -> 0 a.s. when F is correct.
 """
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

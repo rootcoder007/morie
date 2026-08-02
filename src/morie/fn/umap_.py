@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.spatial.distance import pdist, squareform
+from ._sci_core import pdist, squareform
 
 from morie.fn._containers import UmapRes
 

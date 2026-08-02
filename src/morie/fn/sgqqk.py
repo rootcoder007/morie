@@ -29,7 +29,7 @@ def qq_plot_kriging(standardized_errors: np.ndarray) -> SpatialResult:
     .. epigraph::
 
     """
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     se = np.sort(np.asarray(standardized_errors, dtype=np.float64).ravel())
     n = len(se)

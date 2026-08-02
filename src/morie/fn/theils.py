@@ -51,7 +51,7 @@ def theil_sen(x, y, alpha=0.05):
     Sen, P. K. (1968), "Estimates of the regression coefficient based
     on Kendall's tau", *JASA* 63:1379-1389, Secs. 3 and 5.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     xv = np.asarray(x, dtype=float).ravel()
     yv = np.asarray(y, dtype=float).ravel()

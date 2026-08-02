@@ -41,7 +41,7 @@ def negative_control(
     observational studies. *Epidemiology*, 21(3), 383-388.
     """
     z_neg = negative_control_estimate / se_negative if se_negative > 0 else 0
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     p_neg = float(2 * norm.sf(abs(z_neg)))
 

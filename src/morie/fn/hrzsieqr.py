@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["hrz_series_quantile", "horowitz_series_quantile"]
 
 
-from scipy import optimize
+from ._sci_core import optimize
 
 
 def hrz_series_quantile(x, y, tau=0.5, K=5, kind="poly", grid=None):

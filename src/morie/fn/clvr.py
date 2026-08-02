@@ -61,7 +61,7 @@ def clvr(
 
 
 def _logistic_predict(X, y):
-    from scipy.special import expit
+    from ._sci_core import expit
 
     beta = np.zeros(X.shape[1])
     for _ in range(25):

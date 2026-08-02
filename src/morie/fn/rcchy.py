@@ -2,7 +2,7 @@
 """Cauchy distribution random variate generation."""
 
 from . import _array_core as np
-import scipy.stats as stats
+from . import _stats_core as stats
 
 
 def rcchy(n: int, loc: float = 0.0, scale: float = 1.0, seed: int | None = None) -> np.ndarray:

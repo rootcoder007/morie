@@ -117,8 +117,8 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
             "every cluster has one member, so a shared frailty is not identifiable"
         )
 
-    from scipy.optimize import minimize_scalar
-    from scipy.special import gammaln
+    from ._sci_core import minimize_scalar
+    from ._sci_core import gammaln
 
     from ._surv import baseline_hazard
 
@@ -173,7 +173,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
     beta, frail, d_k, r_k, ll, it, converged = _inner(th)
     logw = np.log(np.maximum(frail[idx], 1e-12))
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     _, _, I, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw, max_iter=1)
     # Cluster-robust variance: the frailty inflates uncertainty relative to an

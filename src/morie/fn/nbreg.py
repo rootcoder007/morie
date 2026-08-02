@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import stats as sp_stats
-from scipy.optimize import minimize_scalar
+from . import _stats_core as sp_stats
+from ._sci_core import minimize_scalar
 
 from ._containers import DescriptiveResult
 

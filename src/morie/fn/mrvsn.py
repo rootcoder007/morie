@@ -31,7 +31,7 @@ def granger_causality(x: np.ndarray | list, y: np.ndarray | list, cdf=None, *, m
     Granger, C. W. J. (1969). Investigating causal relations by econometric
     models and cross-spectral methods. Econometrica, 37(3), 424-438.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     x_arr = np.asarray(x, dtype=np.float64)
     y_arr = np.asarray(y, dtype=np.float64)

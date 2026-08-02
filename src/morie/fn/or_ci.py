@@ -5,7 +5,7 @@ import math
 from typing import Union
 
 from . import _array_core as np
-import scipy.stats as stats
+from . import _stats_core as stats
 
 
 def odds_ratio_ci(table_2x2: Union[list, np.ndarray], *, alpha: float = 0.05) -> dict:

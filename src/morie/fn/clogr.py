@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import optimize
+from ._sci_core import optimize
 
 from ._containers import RegressionResult
 
@@ -88,7 +88,7 @@ def conditional_logistic(
     except Exception:
         se_arr = np.full(p, float("nan"))
 
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     z_vals = beta / (se_arr + 1e-300)
     p_vals = 2.0 * _st.norm.sf(np.abs(z_vals))

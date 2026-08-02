@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["hrz_maximum_score", "horowitz_manski_max_score"]
 
 
-from scipy import optimize
+from ._sci_core import optimize
 
 
 def hrz_maximum_score(X, y, beta0=None, n_restarts=8, seed=0):

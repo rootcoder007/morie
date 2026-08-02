@@ -2,7 +2,7 @@
 """Moving window variogram (Schabenberger & Gotway Ch 8)."""
 
 from . import _array_core as np
-from scipy.spatial.distance import pdist, squareform
+from ._sci_core import pdist, squareform
 
 
 def mvkov(

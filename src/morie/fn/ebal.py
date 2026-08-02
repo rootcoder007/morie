@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
-from scipy.optimize import minimize
+from . import _frame_core as pd
+from ._sci_core import minimize
 
 from ._helpers import _validate_df
 

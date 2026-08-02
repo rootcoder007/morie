@@ -15,8 +15,8 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
-import pandas as pd
-from scipy import stats as sp_stats
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as sp_stats
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""

@@ -134,7 +134,7 @@ def cox_stratified(time, event, X, stratum, ties="efron", max_iter=50, tol=1e-9)
             converged = True
             break
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     try:
         se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_total)), 0, None))

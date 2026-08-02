@@ -116,7 +116,7 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
     if mu is None:
         mu, S = X.mean(axis=0), np.cov(X, rowvar=False).reshape(p, p)
 
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     Si = np.linalg.pinv(S)
     d2 = np.einsum("ij,jk,ik->i", X - mu, Si, X - mu)

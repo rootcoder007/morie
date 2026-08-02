@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from scipy import stats as _st
+from . import _stats_core as _st
 
 
 def case_fatality_rate(

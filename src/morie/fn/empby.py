@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Any, Union
 
 from . import _array_core as np
-from scipy.optimize import minimize_scalar
+from ._sci_core import minimize_scalar
 
 
 def empirical_bayes(

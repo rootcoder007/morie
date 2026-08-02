@@ -8,7 +8,7 @@ CvM asymptotic distribution applies and we use its tabulated tail.
 """
 
 from . import _array_core as np
-from scipy import stats as _sps
+from . import _stats_core as _sps
 
 from ._richresult import RichResult
 

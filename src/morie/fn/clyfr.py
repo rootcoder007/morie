@@ -63,7 +63,7 @@ def clayton_copula_frailty(time1, event1, time2, event2, theta=None):
     Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas*.
     Springer. Table 3.2 p. 54 (tau = theta/(theta + 2)).
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     t1 = np.asarray(time1, dtype=float).ravel()
     t2 = np.asarray(time2, dtype=float).ravel()

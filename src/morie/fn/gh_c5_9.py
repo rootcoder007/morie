@@ -50,7 +50,7 @@ def ghosal_beta_ker(x, grid=None, alpha=1.0, precision=20.0, K=50, seed=0,
     ----------
     Ghosal and van der Vaart, Sec. 5.5 (examples of kernels).
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     from ._ghosal import stick_breaking
 

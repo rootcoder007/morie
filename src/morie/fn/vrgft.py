@@ -2,7 +2,7 @@
 
 from . import _array_core as np
 from scipy import optimize
-from scipy.spatial.distance import pdist, squareform
+from ._sci_core import pdist, squareform
 
 from ._richresult import RichResult
 

@@ -2,8 +2,8 @@
 """Zero-inflated Poisson regression via EM algorithm."""
 
 from . import _array_core as np
-from scipy.optimize import minimize
-from scipy.stats import norm
+from ._sci_core import minimize
+from ._stats_core import norm
 
 
 def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: float = 1e-6, cdf=None) -> dict:

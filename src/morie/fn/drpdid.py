@@ -86,7 +86,7 @@ def placebo_dr_did(y_pre1, y_pre2, D, X, **kwargs):
     r = dr_overlap_weighted(y2 - y1, D, X, **kwargs)
     est, se = float(r["ate"]), float(r["se"])
     z = est / se if se > 0 else np.nan
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     p = float(2 * norm.sf(abs(z))) if se > 0 else float("nan")
     return RichResult(

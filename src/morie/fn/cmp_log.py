@@ -10,7 +10,7 @@ deviance/AIC/pseudo-R-squared, and extracts per-predictor Wald tests.
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 class _MissingDep:
     """Placeholder for a dependency being nativized (task #141)."""

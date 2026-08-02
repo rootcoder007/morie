@@ -24,7 +24,7 @@ The function returns a three-level factor:
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 
 def gentrification_panel(

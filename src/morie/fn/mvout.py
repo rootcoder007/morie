@@ -30,7 +30,7 @@ def multivariate_outlier(
     -------
     ESRes
     """
-    from scipy.stats import chi2
+    from ._stats_core import chi2
 
     X = np.asarray(X, dtype=float)
     if X.ndim == 1:

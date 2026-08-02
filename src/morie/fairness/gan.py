@@ -355,7 +355,7 @@ class CTGANDebiaser:
             feature columns — re-auditable with the morie.fairness
             metrics.
         """
-        import pandas as pd
+        from morie.fn import _frame_core as pd
 
         if self._gp is None:
             raise RuntimeError("CTGANDebiaser is not fitted; call fit()")

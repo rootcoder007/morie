@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import pandas as pd
-from scipy import stats as sp
+from . import _frame_core as pd
+from . import _stats_core as sp
 
 from morie.fn._containers import DIFResult
 

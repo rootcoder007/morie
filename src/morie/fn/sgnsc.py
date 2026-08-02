@@ -36,7 +36,7 @@ def normal_score_transform(Z: np.ndarray) -> SpatialResult:
         We must know. We will know.
         -- David Hilbert
     """
-    from scipy.stats import norm, shapiro
+    from ._stats_core import norm, shapiro
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     n = len(Z)

@@ -35,8 +35,8 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
-import pandas as pd
-import scipy.stats as stats
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
 
 logger = logging.getLogger(__name__)
 

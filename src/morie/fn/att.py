@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from morie.fn.ess import effective_sample_size
 from morie.fn.ps_fit import compute_propensity_scores

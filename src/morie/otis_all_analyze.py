@@ -46,7 +46,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult
 from .otis import project_root
@@ -4208,7 +4208,7 @@ def _chi2_cramer(table: pd.DataFrame) -> dict:
     fields when the table fails the χ² minimum-cell-count rule of
     thumb (expected counts < 5 in any cell).
     """
-    from scipy import stats as sps
+    from morie.fn import _stats_core as sps
 
     if table.size == 0:
         return {"chi2": float("nan"), "dof": 0, "pvalue": float("nan"), "cramer_v": float("nan"), "n": 0, "min_cell": 0}
@@ -4352,7 +4352,7 @@ def analyze_d_aggregate() -> RichResult:
     no per-individual alert columns, so the Ruhela dual is structurally
     impossible here.
     """
-    from scipy import stats as sps
+    from morie.fn import _stats_core as sps
 
     from .otis_datasets import load_otis_dataset
 

@@ -1,7 +1,7 @@
 """Spatial GLM with spatial errors (Schabenberger & Gotway Ch 7)."""
 
 from . import _array_core as np
-from scipy.spatial.distance import cdist
+from ._sci_core import cdist
 
 
 def spglm(

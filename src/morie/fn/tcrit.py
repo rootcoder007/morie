@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """t critical value."""
 
-from scipy.stats import t as _t
+from ._stats_core import t as _t
 
 
 def tcrit(df: int, alpha: float = 0.05, two_sided: bool = True) -> float:

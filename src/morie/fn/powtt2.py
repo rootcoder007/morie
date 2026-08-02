@@ -2,7 +2,7 @@
 """Power for two-sample t-test with R-style verbose result."""
 
 from scipy.stats import nct
-from scipy.stats import t as _t
+from ._stats_core import t as _t
 
 
 def powtt2(d: float, n1: int, n2: int, alpha: float = 0.05):

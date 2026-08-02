@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-from scipy.stats import f as _f
+from ._stats_core import f as _f
 
 
 def hotelt2(X: Union[Sequence, np.ndarray], mu0: Union[Sequence, np.ndarray]):

@@ -342,7 +342,7 @@ _TEMPLATES["analysis"] = textwrap.dedent("""\
     ## Setup
 
     ```{{python}}
-    import pandas as pd
+    from morie.fn import _frame_core as pd
     import numpy as np
     import morie
     ```
@@ -415,7 +415,7 @@ _TEMPLATES["report"] = textwrap.dedent("""\
 
     ```{{python}}
     #| echo: false
-    import pandas as pd
+    from morie.fn import _frame_core as pd
     import numpy as np
     import morie
     ```
@@ -458,7 +458,7 @@ _TEMPLATES["causal"] = textwrap.dedent("""\
     ### Setup
 
     ```{{python}}
-    import pandas as pd
+    from morie.fn import _frame_core as pd
     import numpy as np
     from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
     import morie
@@ -517,7 +517,7 @@ _TEMPLATES["table1"] = textwrap.dedent("""\
     ---
 
     ```{{python}}
-    import pandas as pd
+    from morie.fn import _frame_core as pd
     import numpy as np
     import morie
 
@@ -547,9 +547,9 @@ _TEMPLATES["survival"] = textwrap.dedent("""\
     ## Survival Analysis
 
     ```{{python}}
-    import pandas as pd
+    from morie.fn import _frame_core as pd
     import numpy as np
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     import morie
     ```
 

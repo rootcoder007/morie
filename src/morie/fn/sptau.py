@@ -1,7 +1,7 @@
 """Spatial autocorrelation: Moran's I with Cliff-Ord moments."""
 
 from . import _array_core as np
-from scipy import stats as _scistats
+from . import _stats_core as _scistats
 
 from ._richresult import RichResult
 

@@ -116,7 +116,7 @@ def causal_did_three_way(y, treated, post, group):
     ddd = d1 - d0
     var = sum(v for (_, v) in cells.values())
     se = float(np.sqrt(var))
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     z = ddd / se if se > 0 else np.nan
     return RichResult(

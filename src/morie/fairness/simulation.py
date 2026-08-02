@@ -177,7 +177,7 @@ def simulate_biased_crime_data(
         ``risk_score`` — directly consumable by the morie.fairness
         audits.
     """
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     groups = list(groups)
     G = len(groups)

@@ -53,7 +53,7 @@ def disjunctive_kriging(
     n = len(Z)
 
     ranks = np.argsort(np.argsort(Z))
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     Y = norm.ppf((ranks + 0.5) / n)
 

@@ -8,7 +8,7 @@ from collections.abc import Callable
 from typing import Any, Union
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 
 def tpe_minimize(

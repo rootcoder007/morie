@@ -48,7 +48,7 @@ def loglinear_model(table: np.ndarray, max_iter: int = 100, tol: float = 1e-8, c
     mask = (T > 0) & (fitted > 0)
     g2 = 2.0 * float(np.sum(T[mask] * np.log(T[mask] / fitted[mask])))
     dof = (r - 1) * (c - 1)
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     p_value = float(1.0 - _st.chi2.cdf(g2, df=dof)) if dof > 0 else 1.0
     return DescriptiveResult(

@@ -3,7 +3,7 @@
 from typing import Union
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 
 def standardized_coefficients(

@@ -4,7 +4,7 @@
 from typing import Union
 
 from . import _array_core as np
-import scipy.stats as stats
+from . import _stats_core as stats
 
 
 def fisher_exact_test(table_2x2: Union[list, np.ndarray]) -> dict:

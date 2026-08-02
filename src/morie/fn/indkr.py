@@ -1,7 +1,7 @@
 """Indicator kriging for exceedance probability."""
 
 from . import _array_core as np
-from scipy.spatial.distance import cdist
+from ._sci_core import cdist
 
 from ._richresult import RichResult
 

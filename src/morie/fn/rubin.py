@@ -104,7 +104,7 @@ def rubins_rules(
 def _t_quantile(p: float, df: float) -> float:
     """Approximate t-distribution quantile.  Falls back to scipy if available."""
     try:
-        from scipy.stats import t
+        from ._stats_core import t
 
         return float(t.ppf(p, df))
     except ImportError:

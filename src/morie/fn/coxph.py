@@ -122,7 +122,7 @@ def coxph(
     except np.linalg.LinAlgError:
         se = np.full(p, np.nan)
 
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     z = beta / np.where(se > 0, se, np.nan)
     pvals = 2 * (1 - norm.cdf(np.abs(z)))

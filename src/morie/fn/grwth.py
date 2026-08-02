@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from scipy import stats as _st
+from . import _stats_core as _st
 
 
 def exponential_growth_rate(

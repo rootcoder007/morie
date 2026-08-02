@@ -54,7 +54,7 @@ def goodman_kruskal_gamma(
     if denom > 0 and n > 2:
         se = 2.0 * np.sqrt(concordant * discordant) / (denom * np.sqrt(n))
     z = gamma / se if se > 1e-12 else 0.0
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     pval = 2.0 * norm.sf(abs(z)) if se > 1e-12 else 1.0
 

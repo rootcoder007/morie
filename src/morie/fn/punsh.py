@@ -92,7 +92,7 @@ def penalty_regression(
             se_approx[f"x{j}"] = 0.0
     se_approx["intercept"] = float(np.sqrt(mse / n))
 
-    from scipy import stats
+    from . import _stats_core as stats
 
     p_vals = {}
     for key in coefs:

@@ -67,7 +67,7 @@ def causal_iv_instrumental_dag(y, D, Z, homogeneous=False):
     62:467-475. Angrist, Imbens and Rubin (1996), *JASA*
     91:444-455, for the graph-and-assumptions presentation.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     from .causivla import causal_iv_late
 

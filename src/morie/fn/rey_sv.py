@@ -2,7 +2,7 @@
 """Survey-weighted regression with robust (sandwich) standard errors."""
 
 from . import _array_core as np
-from scipy.stats import t as t_dist
+from ._stats_core import t as t_dist
 
 from morie.fn._containers import RegressionResult
 

@@ -40,7 +40,7 @@ def causal_mediation(
     effects in structural equation models. *Sociological Methodology*,
     13, 290--312.
     """
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     Xv = np.asarray(X, dtype=float).ravel()
     Mv = np.asarray(M, dtype=float).ravel()

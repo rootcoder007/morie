@@ -1,7 +1,7 @@
 """Dispersion equation extracted from Schabenberger & Gotway (2005) Statistical Methods for Spatial Data Analysis.."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 

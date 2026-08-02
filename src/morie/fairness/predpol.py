@@ -88,7 +88,7 @@ def predpol_aggregate_areas(
         ``areas``, ``mean_risk``, ``outcome_rate``, ``group`` (majority,
         or ``None``), ``n_records`` — aligned, one entry per area.
     """
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     area = np.asarray(list(area), dtype=object)
     risk = np.asarray(list(risk), dtype=float)
@@ -184,7 +184,7 @@ def predpol_calibration_audit(
     >>> res.payload["spearman"] < 0      # perfectly miscalibrated
     True
     """
-    from scipy.stats import rankdata, spearmanr
+    from morie.fn._stats_core import rankdata, spearmanr
 
     areas = np.asarray(list(areas), dtype=object)
     mean_risk = np.asarray(list(mean_risk), dtype=float)
@@ -380,7 +380,7 @@ def predpol_score_disparity(
     >>> round(float(res), 1)   # group means 10 and 20
     10.0
     """
-    from scipy.stats import f_oneway
+    from morie.fn._stats_core import f_oneway
 
     score = np.asarray(list(score), dtype=float)
     group = np.asarray(list(group), dtype=object)

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """z-based confidence interval half-width."""
 
-from scipy.stats import norm
+from ._stats_core import norm
 
 
 def zci(sigma: float, n: int, conf: float = 0.95) -> float:

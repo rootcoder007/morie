@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Error function via scipy."""
 
-from scipy.special import erf
+from ._sci_core import erf
 
 
 def erfunc(x):

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.special import expit
+from ._sci_core import expit
 
 from ._containers import DescriptiveResult
 

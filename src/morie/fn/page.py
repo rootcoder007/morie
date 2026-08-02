@@ -4,7 +4,7 @@
 from typing import Union
 
 from . import _array_core as np
-import scipy.stats as stats
+from . import _stats_core as stats
 
 from ._containers import TestResult
 
@@ -45,7 +45,7 @@ def page_trend_test(
         raise ValueError("Page's L requires at least 2 treatments (columns).")
 
     # Rank within each row (block)
-    from scipy.stats import rankdata
+    from ._stats_core import rankdata
 
     ranks = np.apply_along_axis(rankdata, axis=1, arr=mat)
 

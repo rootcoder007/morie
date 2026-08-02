@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import pandas as pd
+from . import _frame_core as pd
 
 from ._richresult import RichResult
 
@@ -137,7 +137,7 @@ def _chi2_sf(x: float, k: int) -> float:
     Falls back to scipy if available, otherwise uses pure-Python approx.
     """
     try:
-        from scipy.stats import chi2
+        from ._stats_core import chi2
 
         return float(chi2.sf(x, k))
     except ImportError:

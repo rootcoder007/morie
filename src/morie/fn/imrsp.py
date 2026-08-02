@@ -26,7 +26,7 @@ def impulse_response(b, a, N: int = 100) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.signal import lfilter
+    from ._signal_core import lfilter
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)

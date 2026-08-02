@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-import scipy.stats as stats
+from . import _stats_core as stats
 
 
 def rt_effective(

@@ -55,7 +55,7 @@ def ghosal_empirical_bayes_np(x, alpha_grid=None, sigma=1.0):
     Ghosal and van der Vaart, Ch. 4 (Dirichlet process marginals)
     and Ch. 6; the Polya urn factorisation is Sec. 4.1.4.
     """
-    from scipy.special import gammaln
+    from ._sci_core import gammaln
 
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size

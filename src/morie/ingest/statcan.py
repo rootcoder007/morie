@@ -30,7 +30,7 @@ def _csv_from_zip(zip_path: str, member: str | None = None, **read_csv_kwargs: A
 
     If ``member`` is omitted the first ``.csv`` entry is used.
     """
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     with zipfile.ZipFile(zip_path) as zf:
         names = zf.namelist()

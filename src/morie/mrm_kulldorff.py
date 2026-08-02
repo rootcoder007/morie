@@ -23,7 +23,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 
 import numpy as np
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 __all__ = [
     "ScanCluster",

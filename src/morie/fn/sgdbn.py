@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.optimize import minimize_scalar
+from ._sci_core import minimize_scalar
 
 from ._schab_rho import safe_search_interval
 

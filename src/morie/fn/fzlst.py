@@ -59,7 +59,7 @@ def fauzi_l_statistic(x, score=None, n_quad=200):
     if sigma <= 0:
         sigma = 1.0
     h = 1.06 * sigma * n ** (-1.0 / 5.0)
-    from scipy import stats as _sps
+    from . import _stats_core as _sps
 
     f_Q = np.array([np.mean(_sps.norm.pdf((q - x) / h) / h) for q in Q])
     J_at_u = np.asarray(score(uu), dtype=float)

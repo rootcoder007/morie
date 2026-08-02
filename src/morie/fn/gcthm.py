@@ -32,7 +32,7 @@ def gcthm(x: np.ndarray, cdf=None, *, cdf_func: callable | None = None, alpha: f
         raise ValueError(f"alpha must be in (0, 1), got {alpha}.")
 
     if cdf_func is None:
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         cdf_func = norm.cdf
 

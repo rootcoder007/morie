@@ -49,8 +49,8 @@ from collections.abc import Mapping
 from typing import Any
 
 import numpy as np
-import pandas as pd
-from scipy import stats
+from morie.fn import _frame_core as pd
+from morie.fn import _stats_core as stats
 
 from morie.fn._richresult import RichResult
 
@@ -1244,7 +1244,7 @@ def mrm_uof_data_quality_audit(
 
 if __name__ == "__main__":
     import numpy as np
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     np.random.seed(0)
     df = pd.DataFrame(

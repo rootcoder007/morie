@@ -36,7 +36,7 @@ from __future__ import annotations
 from typing import Any
 
 import httpx
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 DEFAULT_USER_AGENT = "morie/0.9.4 (+https://github.com/rootcoder007/morie)"
 DEFAULT_TIMEOUT_SECONDS = 60.0

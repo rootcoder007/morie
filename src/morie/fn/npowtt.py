@@ -2,7 +2,7 @@
 """Required n for two-sample t-test power with R-style verbose result."""
 
 from scipy.stats import nct
-from scipy.stats import t as _t
+from ._stats_core import t as _t
 
 
 def npowtt(d: float, target_power: float = 0.8, alpha: float = 0.05, max_n: int = 10000):

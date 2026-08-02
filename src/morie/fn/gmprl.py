@@ -68,7 +68,7 @@ def gmprl(
     Collett, D. (2003). Modelling Survival Data in Medical Research (2nd ed.).
     Chapman & Hall/CRC.
     """
-    from scipy import optimize as _opt
+    from ._sci_core import optimize as _opt
 
     time = np.asarray(time, dtype=float)
     event = np.asarray(event, dtype=float)
