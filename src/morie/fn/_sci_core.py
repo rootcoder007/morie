@@ -9,6 +9,7 @@ tests/fn/test_sci_core.py.
 
 from __future__ import annotations
 
+import builtins as _bi
 import math as _math
 
 from . import _array_core as _ac
@@ -1017,3 +1018,278 @@ class integrate:  # namespace mirror
     cumulative_trapezoid = staticmethod(cumulative_trapezoid)
     odeint = staticmethod(odeint)
     solve_ivp = staticmethod(solve_ivp)
+
+
+# ------------------------------------------------------------ linalg extras
+
+def toeplitz(c, r=None):
+    cv = [float(v) for v in _ac.asarray(c)._flat()]
+    rv = [float(v) for v in _ac.asarray(r)._flat()] if r is not None \
+        else list(cv)
+    n, m = len(cv), len(rv)
+    return _ac.marr([[cv[i - j] if i >= j else rv[j - i]
+                      for j in range(m)] for i in range(n)])
+
+
+def solve_triangular(a, b, lower=False):
+    A = _ac.atleast_2d(a)
+    bv = [float(v) for v in _ac.asarray(b)._flat()]
+    n = A.shape[0]
+    x = [0.0] * n
+    if lower:
+        for i in range(n):
+            s = _math.fsum(A.data[i][j] * x[j] for j in range(i))
+            x[i] = (bv[i] - s) / A.data[i][i]
+    else:
+        for i in range(n - 1, -1, -1):
+            s = _math.fsum(A.data[i][j] * x[j]
+                           for j in range(i + 1, n))
+            x[i] = (bv[i] - s) / A.data[i][i]
+    return _ac.marr(x)
+
+
+def lu(a):
+    """Doolittle with partial pivoting; returns (P, L, U) like scipy."""
+    A = _ac.atleast_2d(a)
+    n = A.shape[0]
+    U = [row[:] for row in A.data]
+    L = [[0.0] * n for _ in range(n)]
+    perm = list(range(n))
+    for k in range(n):
+        piv = max(range(k, n), key=lambda i: abs(U[i][k]))
+        if piv != k:
+            U[k], U[piv] = U[piv], U[k]
+            L[k], L[piv] = L[piv], L[k]
+            perm[k], perm[piv] = perm[piv], perm[k]
+        L[k][k] = 1.0
+        for i in range(k + 1, n):
+            if U[k][k] == 0.0:
+                continue
+            fac = U[i][k] / U[k][k]
+            L[i][k] = fac
+            for j in range(k, n):
+                U[i][j] -= fac * U[k][j]
+    P = [[1.0 if perm[i] == j else 0.0 for j in range(n)]
+         for i in range(n)]
+    # scipy returns P with A = P @ L @ U
+    PT = [[P[j][i] for j in range(n)] for i in range(n)]
+    return _ac.marr(PT), _ac.marr(L), _ac.marr(U)
+
+
+def sqrtm(a):
+    """Symmetric square root via eigendecomposition (SPD input)."""
+    A = _ac.atleast_2d(a)
+    w, V = _ac.linalg.eigh(A)
+    n = A.shape[0]
+    wl = [max(float(v), 0.0) ** 0.5 for v in w._flat()]
+    Vd = V.tolist()
+    return _ac.marr([[_math.fsum(Vd[i][k] * wl[k] * Vd[j][k]
+                                 for k in range(n))
+                      for j in range(n)] for i in range(n)])
+
+
+def expm(a):
+    """Matrix exponential: scaling-and-squaring + Pade(6)."""
+    A = _ac.atleast_2d(a)
+    n = A.shape[0]
+    norm = max(_math.fsum(abs(v) for v in row) for row in A.data)
+    s = max(0, int(_math.ceil(_math.log2(max(norm, 1e-300)))) + 1) \
+        if norm > 0.5 else 0
+    Ad = [[v / (2.0 ** s) for v in row] for row in A.data]
+
+    def mm(X, Y):
+        return [[_math.fsum(X[i][k] * Y[k][j] for k in range(n))
+                 for j in range(n)] for i in range(n)]
+
+    def madd(X, Y, ca=1.0, cb=1.0):
+        return [[ca * X[i][j] + cb * Y[i][j] for j in range(n)]
+                for i in range(n)]
+    ident = [[1.0 if i == j else 0.0 for j in range(n)]
+             for i in range(n)]
+    c = [1.0, 0.5, 12 / 120.0, 1 / 120.0 * 10 / 6.0]
+    # Pade(6) coefficients: c_k = (6! (12-k)!) / (12! k! (6-k)!)
+    coef = []
+    for k in range(7):
+        coef.append(_math.factorial(6) * _math.factorial(12 - k)
+                    / (_math.factorial(12) * _math.factorial(k)
+                       * _math.factorial(6 - k)))
+    # N = sum c_k A^k ; D = sum c_k (-A)^k
+    Ak = ident
+    N = [[coef[0] * ident[i][j] for j in range(n)] for i in range(n)]
+    D = [[coef[0] * ident[i][j] for j in range(n)] for i in range(n)]
+    for k in range(1, 7):
+        Ak = mm(Ak, Ad)
+        sgn = -1.0 if k % 2 else 1.0
+        N = madd(N, Ak, 1.0, coef[k])
+        D = madd(D, Ak, 1.0, sgn * coef[k])
+    # solve D X = N column-wise
+    X = []
+    Dm = _ac.marr(D)
+    for j in range(n):
+        col = _ac.linalg.solve(Dm, _ac.marr([N[i][j]
+                                             for i in range(n)]))
+        X.append(list(col._flat()))
+    R = [[X[j][i] for j in range(n)] for i in range(n)]
+    for _ in range(s):
+        R = mm(R, R)
+    return _ac.marr(R)
+
+
+class linalg:  # namespace mirror for `from scipy import linalg`
+    toeplitz = staticmethod(toeplitz)
+    solve_triangular = staticmethod(solve_triangular)
+    lu = staticmethod(lu)
+    sqrtm = staticmethod(sqrtm)
+    expm = staticmethod(expm)
+
+    @staticmethod
+    def solve(a, b):
+        return _ac.linalg.solve(a, b)
+
+    @staticmethod
+    def inv(a):
+        return _ac.linalg.inv(a)
+
+    @staticmethod
+    def cholesky(a, lower=False):
+        L = _ac.linalg.cholesky(a)          # lower by convention
+        if lower:
+            return L
+        Ld = L.tolist()
+        n = len(Ld)
+        return _ac.marr([[Ld[j][i] for j in range(n)]
+                         for i in range(n)])
+
+    @staticmethod
+    def eigh(a):
+        return _ac.linalg.eigh(a)
+
+    @staticmethod
+    def svd(a, **kw):
+        return _ac.linalg.svd(a, **kw)
+
+    @staticmethod
+    def qr(a, mode="reduced"):
+        return _ac.linalg.qr(a, mode=mode)
+
+    @staticmethod
+    def lstsq(a, b):
+        return _ac.linalg.lstsq(a, b)
+
+
+# ------------------------------------------------------------ interpolate
+
+class interp1d:
+    def __init__(self, x, y, kind="linear", fill_value=None,
+                 bounds_error=True):
+        self.x = [float(v) for v in _ac.asarray(x)._flat()]
+        self.y = [float(v) for v in _ac.asarray(y)._flat()]
+        self.kind = kind
+        self.fill_value = fill_value
+        self.bounds_error = bounds_error
+        if kind == "cubic":
+            self._spline = CubicSpline(self.x, self.y)
+
+    def _one(self, v):
+        v = float(v)
+        xs, ys = self.x, self.y
+        if v < xs[0] or v > xs[-1]:
+            if self.fill_value == "extrapolate":
+                pass
+            elif self.bounds_error:
+                raise ValueError("x out of interpolation range")
+            elif self.fill_value is not None:
+                return float(self.fill_value)
+            else:
+                return float("nan")
+        if self.kind == "cubic":
+            return self._spline(v)
+        import bisect
+        i = bisect.bisect_right(xs, v) - 1
+        i = _bi.max(0, _bi.min(i, len(xs) - 2))
+        t = (v - xs[i]) / (xs[i + 1] - xs[i])
+        if self.kind in ("linear", None):
+            return ys[i] + t * (ys[i + 1] - ys[i])
+        if self.kind in ("nearest",):
+            return ys[i] if t < 0.5 else ys[i + 1]
+        if self.kind in ("previous", "zero"):
+            return ys[i]
+        if self.kind == "next":
+            return ys[i + 1]
+        raise ValueError("unsupported kind %r" % self.kind)
+
+    def __call__(self, xnew):
+        if isinstance(xnew, (int, float)):
+            return self._one(xnew)
+        return _ac.marr([self._one(v)
+                         for v in _ac.asarray(xnew)._flat()])
+
+
+class CubicSpline:
+    """Not-a-knot cubic spline (scipy default bc_type)."""
+
+    def __init__(self, x, y, bc_type="not-a-knot"):
+        xs = [float(v) for v in _ac.asarray(x)._flat()]
+        ys = [float(v) for v in _ac.asarray(y)._flat()]
+        n = len(xs)
+        h = [xs[i + 1] - xs[i] for i in range(n - 1)]
+        # solve for second-derivative-like coefficients via the
+        # standard tridiagonal system on spline slopes (m = y')
+        A = [[0.0] * n for _ in range(n)]
+        rhs = [0.0] * n
+        for i in range(1, n - 1):
+            A[i][i - 1] = h[i]
+            A[i][i] = 2.0 * (h[i - 1] + h[i])
+            A[i][i + 1] = h[i - 1]
+            rhs[i] = 3.0 * (h[i] * (ys[i] - ys[i - 1]) / h[i - 1]
+                            + h[i - 1] * (ys[i + 1] - ys[i]) / h[i])
+        if bc_type == "natural":
+            A[0][0] = 2.0
+            A[0][1] = 1.0
+            rhs[0] = 3.0 * (ys[1] - ys[0]) / h[0]
+            A[n - 1][n - 2] = 1.0
+            A[n - 1][n - 1] = 2.0
+            rhs[n - 1] = 3.0 * (ys[n - 1] - ys[n - 2]) / h[n - 2]
+        else:  # not-a-knot
+            A[0][0] = h[1]
+            A[0][1] = h[0] + h[1]
+            rhs[0] = ((h[0] + 2.0 * (h[0] + h[1])) * h[1]
+                      * (ys[1] - ys[0]) / h[0]
+                      + h[0] * h[0] * (ys[2] - ys[1]) / h[1]) \
+                / (h[0] + h[1])
+            A[n - 1][n - 2] = h[n - 2] + h[n - 3]
+            A[n - 1][n - 1] = h[n - 3]
+            rhs[n - 1] = (h[n - 2] * h[n - 2]
+                          * (ys[n - 2] - ys[n - 3]) / h[n - 3]
+                          + (2.0 * (h[n - 2] + h[n - 3]) + h[n - 2])
+                          * h[n - 3]
+                          * (ys[n - 1] - ys[n - 2]) / h[n - 2]) \
+                / (h[n - 2] + h[n - 3])
+        m = list(_ac.linalg.solve(_ac.marr(A), _ac.marr(rhs))._flat())
+        self.x = xs
+        self.y = ys
+        self._m = m
+        self._h = h
+
+    def __call__(self, xnew):
+        def one(v):
+            v = float(v)
+            xs, ys, m, h = self.x, self.y, self._m, self._h
+            import bisect
+            i = bisect.bisect_right(xs, v) - 1
+            i = _bi.max(0, _bi.min(i, len(xs) - 2))
+            t = (v - xs[i]) / h[i]
+            h00 = 2 * t ** 3 - 3 * t ** 2 + 1
+            h10 = t ** 3 - 2 * t ** 2 + t
+            h01 = -2 * t ** 3 + 3 * t ** 2
+            h11 = t ** 3 - t ** 2
+            return (h00 * ys[i] + h10 * h[i] * m[i]
+                    + h01 * ys[i + 1] + h11 * h[i] * m[i + 1])
+        if isinstance(xnew, (int, float)):
+            return one(xnew)
+        return _ac.marr([one(v) for v in _ac.asarray(xnew)._flat()])
+
+
+class interpolate:  # namespace mirror
+    interp1d = interp1d
+    CubicSpline = CubicSpline
