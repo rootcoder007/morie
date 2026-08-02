@@ -77,6 +77,12 @@ class Series:
         return _ac.oarr(self._data)
 
     @property
+    def dtype(self):
+        if self._is_numeric():
+            return _ac.float64
+        return _ac.oarr([]).dtype
+
+    @property
     def empty(self):
         return len(self._data) == 0
 
@@ -1908,11 +1914,27 @@ def read_csv(path, sep=",", header=0, names=None, dtype=None,
     return df
 
 
+def _foreign_kind(obj):
+    """dtype.kind of a real pandas/numpy series-like, else None.
+    Foreign objects reach these predicates when caller code hands a
+    real pandas frame to a module running on the native core."""
+    if isinstance(obj, Series):
+        return None
+    return getattr(getattr(obj, "dtype", None), "kind", None)
+
+
+def _foreign_values(obj):
+    return list(obj.tolist()) if hasattr(obj, "tolist") else None
+
+
 class _PdApiTypes:
     @staticmethod
     def is_numeric_dtype(obj):
         if isinstance(obj, Series):
             return obj._is_numeric()
+        k = _foreign_kind(obj)
+        if k is not None:
+            return k in "iufc"
         return isinstance(obj, (int, float))
 
     @staticmethod
@@ -1920,23 +1942,40 @@ class _PdApiTypes:
         if isinstance(obj, Series):
             return all(isinstance(v, str) or _isnan(v)
                        for v in obj._data)
+        k = _foreign_kind(obj)
+        if k is not None:
+            if k in ("U", "S", "T"):
+                return True
+            if k == "O":
+                v = _foreign_values(obj)
+                return bool(v) and all(
+                    isinstance(x, str) for x in v if x == x)
+            return False
         return isinstance(obj, str)
 
     @staticmethod
     def is_categorical_dtype(obj):
-        return isinstance(obj, Categorical)
+        if isinstance(obj, Categorical):
+            return True
+        return type(getattr(obj, "dtype", None)).__name__             == "CategoricalDtype"
 
     @staticmethod
     def is_datetime64_any_dtype(obj):
         if isinstance(obj, Series):
             return any(isinstance(v, (_dt.date, _dt.datetime))
                        for v in obj._data)
+        k = _foreign_kind(obj)
+        if k is not None:
+            return k == "M"
         return isinstance(obj, (_dt.date, _dt.datetime))
 
     @staticmethod
     def is_object_dtype(obj):
         if isinstance(obj, Series):
             return not obj._is_numeric()
+        k = _foreign_kind(obj)
+        if k is not None:
+            return k == "O"
         return isinstance(obj, str)
 
     @staticmethod
@@ -1944,12 +1983,18 @@ class _PdApiTypes:
         if isinstance(obj, Series):
             return obj._is_numeric() and any(
                 isinstance(v, float) for v in obj._data)
+        k = _foreign_kind(obj)
+        if k is not None:
+            return k == "f"
         return isinstance(obj, float)
 
     @staticmethod
     def is_bool_dtype(obj):
         if isinstance(obj, Series):
             return all(isinstance(v, bool) for v in obj._data)
+        k = _foreign_kind(obj)
+        if k is not None:
+            return k == "b"
         return isinstance(obj, bool)
 
     @staticmethod
@@ -1957,6 +2002,9 @@ class _PdApiTypes:
         if isinstance(obj, Series):
             return all(isinstance(v, int) and not isinstance(v, bool)
                        for v in obj._data)
+        k = _foreign_kind(obj)
+        if k is not None:
+            return k in "iu"
         return isinstance(obj, int)
 
 
