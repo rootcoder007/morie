@@ -234,6 +234,20 @@ class marr:
                 vals = vals * len(rng)
             for k, r in zip(rng, vals):
                 self.data[k] = r
+        elif isinstance(idx, (list, tuple, marr)):
+            ids = [int(v) for v in (idx._flat()
+                                    if isinstance(idx, marr) else idx)]
+            if ids and all(v in (0, 1) for v in ids) \
+                    and len(ids) == len(self.data) \
+                    and any(isinstance(b, bool) for b in
+                            (idx if not isinstance(idx, marr)
+                             else [])):
+                ids = [k for k, b in enumerate(ids) if b]
+            vals = list(asarray(value)._flat()) \
+                if not isinstance(value, (int, float)) else None
+            for k, r in enumerate(ids):
+                self.data[r] = float(value) if vals is None \
+                    else float(vals[k if len(vals) > 1 else 0])
         else:
             self.data[idx] = float(value)
 
@@ -401,19 +415,19 @@ def arange(start, stop=None, step=1.0, dtype=None):
     return marr(out)
 
 
-def zeros(n):
+def zeros(n, dtype=None):
     if isinstance(n, tuple):
         return marr([[0.0] * n[1] for _ in range(n[0])])
     return marr([0.0] * int(n))
 
 
-def ones(n):
+def ones(n, dtype=None):
     if isinstance(n, tuple):
         return marr([[1.0] * n[1] for _ in range(n[0])])
     return marr([1.0] * int(n))
 
 
-def full(n, v):
+def full(n, v, dtype=None):
     return marr([float(v)] * int(n))
 
 
@@ -1181,14 +1195,14 @@ int64 = int
 int32 = int
 
 
-def zeros_like(x):
+def zeros_like(x, dtype=None):
     a = asarray(x)
     if len(a.shape) == 2:
         return marr([[0.0] * a.shape[1] for _ in range(a.shape[0])])
     return marr([0.0] * a.shape[0])
 
 
-def ones_like(x):
+def ones_like(x, dtype=None):
     a = asarray(x)
     if len(a.shape) == 2:
         return marr([[1.0] * a.shape[1] for _ in range(a.shape[0])])
@@ -1312,7 +1326,7 @@ def quantile(x, q):
     return percentile(x, 100.0 * float(q))
 
 
-def empty(n):
+def empty(n, dtype=None):
     return zeros(n)
 
 
@@ -1811,7 +1825,7 @@ def split(x, k):
     return [marr(f[i * step:(i + 1) * step]) for i in range_(int(k))]
 
 
-def empty_like(x):
+def empty_like(x, dtype=None):
     return zeros_like(x)
 
 

@@ -26,7 +26,9 @@ def test_aE_an_flags_planted_outlier():
 def test_aE_an_rank_and_explained_fraction():
     x = _data_with_outlier()
     result = autoencoder_anomaly(x, k=2, seed=0)
-    assert result["rank"] == 2
+    ranks = [int(v) for v in result["rank"]]
+    assert sorted(ranks) == list(range(60))   # a permutation of 0..n-1
+    assert ranks[7] == 0                      # planted outlier ranked first
     # rank-2 data (plus tiny noise): bottleneck of 2 explains almost all
     assert result["explained_fraction"] > 0.8
     assert len(result["reconstruction"]) == 60
