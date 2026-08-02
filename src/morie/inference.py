@@ -31,7 +31,7 @@ import math
 from collections.abc import Callable
 from typing import Union
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
 

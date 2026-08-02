@@ -47,8 +47,8 @@ import math
 from dataclasses import dataclass
 from typing import Any
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 # ---------------------------------------------------------------------------
 # Paper references -- see also references.bib

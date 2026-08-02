@@ -35,8 +35,8 @@ from ctypes import (
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 logger = logging.getLogger(__name__)
 

@@ -1132,7 +1132,7 @@ def tool_compare_methods(methods: str, data_code: str = "") -> str:
     context: dict[str, Any] = {}
     if data_code:
         try:
-            import numpy as np
+            from morie.fn import _array_core as np
 
             from morie._exec_guard import guarded_exec
 
@@ -1193,7 +1193,7 @@ def tool_run_suite(domain: str, data_code: str = "") -> str:
     context: dict[str, Any] = {}
     if data_code:
         try:
-            import numpy as np
+            from morie.fn import _array_core as np
 
             from morie._exec_guard import guarded_exec
 

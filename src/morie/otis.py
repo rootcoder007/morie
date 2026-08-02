@@ -30,7 +30,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 
@@ -386,7 +386,7 @@ def otdml(
     n = len(y)
 
     # Simple Frisch-Waugh-Lovell partialling out (portable, no DoubleML dep)
-    from numpy.linalg import lstsq
+    from morie.fn._array_core.linalg import lstsq
 
     rng = np.random.default_rng(seed)
 

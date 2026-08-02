@@ -343,7 +343,7 @@ _TEMPLATES["analysis"] = textwrap.dedent("""\
 
     ```{{python}}
     from morie.fn import _frame_core as pd
-    import numpy as np
+    from morie.fn import _array_core as np
     import morie
     ```
 
@@ -416,7 +416,7 @@ _TEMPLATES["report"] = textwrap.dedent("""\
     ```{{python}}
     #| echo: false
     from morie.fn import _frame_core as pd
-    import numpy as np
+    from morie.fn import _array_core as np
     import morie
     ```
 
@@ -459,7 +459,7 @@ _TEMPLATES["causal"] = textwrap.dedent("""\
 
     ```{{python}}
     from morie.fn import _frame_core as pd
-    import numpy as np
+    from morie.fn import _array_core as np
     from morie.fn._ml_core import GradientBoostingClassifier, GradientBoostingRegressor
     import morie
     from morie.causal import compute_propensity_scores, calculate_ipw_weights
@@ -518,7 +518,7 @@ _TEMPLATES["table1"] = textwrap.dedent("""\
 
     ```{{python}}
     from morie.fn import _frame_core as pd
-    import numpy as np
+    from morie.fn import _array_core as np
     import morie
 
     # df = pd.read_csv("data/your_data.csv")
@@ -548,7 +548,7 @@ _TEMPLATES["survival"] = textwrap.dedent("""\
 
     ```{{python}}
     from morie.fn import _frame_core as pd
-    import numpy as np
+    from morie.fn import _array_core as np
     from morie.fn import _stats_core as stats
     import morie
     ```

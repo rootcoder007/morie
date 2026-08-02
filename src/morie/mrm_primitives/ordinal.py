@@ -32,7 +32,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 

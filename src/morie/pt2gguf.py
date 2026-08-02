@@ -32,7 +32,7 @@ import pickle
 import struct
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 
 log = logging.getLogger("morie.pt2gguf")
 

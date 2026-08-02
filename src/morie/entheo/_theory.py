@@ -24,7 +24,7 @@ These are stand-ins for the rc1 calibrated formulations.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 __all__ = [
     "binding_per_frame",

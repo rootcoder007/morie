@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.crypto._ecc import goppa_generate
 

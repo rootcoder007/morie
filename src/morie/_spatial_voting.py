@@ -8,8 +8,8 @@ All functions are pure NumPy/SciPy -- no external R packages required.
 
 from __future__ import annotations
 
-import numpy as np
-from numpy.typing import NDArray
+from morie.fn import _array_core as np
+from morie.fn._array_core import NDArray
 
 
 def aldrich_mckelvey(

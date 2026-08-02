@@ -7,7 +7,7 @@ bidomain cardiac model.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def smuap_point_process(

@@ -32,7 +32,7 @@ import warnings
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)

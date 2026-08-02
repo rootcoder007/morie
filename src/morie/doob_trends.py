@@ -63,7 +63,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from .fn._richresult import RichResult
 

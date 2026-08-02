@@ -852,6 +852,42 @@ class _Linalg:
         return marr(Qr), marr(Rr)
 
 
+    @staticmethod
+    def eigvals(a):
+        from ._sci_core import eigvals as _ev
+        return _ev(a)
+
+    @staticmethod
+    def eig(a):
+        """General eigen-decomposition: values via Faddeev-LeVerrier +
+        Durand-Kerner, vectors via inverse iteration. Real output when
+        the spectrum is real."""
+        from ._sci_core import eigvals as _ev
+        A = atleast_2d(a)
+        n = A.shape[0]
+        vals = _ev(A).tolist()
+        real_ok = _bi.all(_bi.abs(v.imag) < 1e-9 for v in vals)
+        vecs = []
+        for lam in vals:
+            lam_use = lam.real if real_ok else lam
+            M = [[A.data[i][j] - ((lam_use + 1e-10) if i == j
+                                  else 0.0)
+                  for j in range(n)] for i in range(n)]
+            v = [1.0] * n
+            for _ in range(60):
+                try:
+                    v = list(_Linalg.solve(marr(M), marr(v))._flat())
+                except Exception:
+                    break
+                nrm = _math.sqrt(_math.fsum(u * u for u in v)) \
+                    or 1.0
+                v = [u / nrm for u in v]
+            vecs.append(v)
+        w = marr([v.real for v in vals]) if real_ok else carr(vals)
+        V = marr([[vecs[j][i] for j in range(n)] for i in range(n)])
+        return w, V
+
+
 linalg = _Linalg()
 
 
@@ -2342,3 +2378,510 @@ for _pname in ("isnan", "isfinite", "isinf", "isin", "isclose"):
     if _pname in globals():
         globals()[_pname] = _tag_predicate(globals()[_pname])
 del _pname
+
+
+# --------------------------------------------------------------- final tail
+
+def full_like(a, fill_value, dtype=None):
+    del dtype
+    x = asarray(a)
+    if len(x.shape) == 2:
+        return marr([[float(fill_value)] * x.shape[1]
+                     for _ in range(x.shape[0])])
+    return marr([float(fill_value)] * x.shape[0])
+
+
+def ascontiguousarray(a, dtype=None):
+    del dtype
+    return asarray(a).copy()
+
+
+def array_split(a, sections, axis=0):
+    x = asarray(a)
+    n = x.shape[0]
+    k = int(sections)
+    sizes = [n // k + (1 if i < n % k else 0) for i in range(k)]
+    out = []
+    pos = 0
+    if len(x.shape) == 2 and axis in (1, -1):
+        m = x.shape[1]
+        sizes = [m // k + (1 if i < m % k else 0) for i in range(k)]
+        for s in sizes:
+            out.append(marr([row[pos:pos + s] for row in x.data]))
+            pos += s
+        return out
+    for s in sizes:
+        out.append(marr(x.data[pos:pos + s]))
+        pos += s
+    return out
+
+
+def logspace(start, stop, num=50, base=10.0):
+    step = (stop - start) / (num - 1) if num > 1 else 0.0
+    return marr([base ** (start + i * step) for i in range(num)])
+
+
+def hanning(n):
+    if n == 1:
+        return marr([1.0])
+    return marr([0.5 - 0.5 * _math.cos(2.0 * _math.pi * i / (n - 1))
+                 for i in range(n)])
+
+
+def hamming(n):
+    if n == 1:
+        return marr([1.0])
+    return marr([0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / (n - 1))
+                 for i in range(n)])
+
+
+def blackman(n):
+    if n == 1:
+        return marr([1.0])
+    return marr([0.42 - 0.5 * _math.cos(2.0 * _math.pi * i / (n - 1))
+                 + 0.08 * _math.cos(4.0 * _math.pi * i / (n - 1))
+                 for i in range(n)])
+
+
+def bartlett(n):
+    if n == 1:
+        return marr([1.0])
+    return marr([1.0 - _bi.abs(2.0 * i / (n - 1) - 1.0)
+                 for i in range(n)])
+
+
+def _bessel_i0(x):
+    total = 1.0
+    term = 1.0
+    for k in range(1, 60):
+        term *= (x / 2.0) ** 2 / (k * k)
+        total += term
+        if term < 1e-18 * total:
+            break
+    return total
+
+
+def kaiser(n, beta):
+    if n == 1:
+        return marr([1.0])
+    d = _bessel_i0(beta)
+    return marr([_bessel_i0(beta * _math.sqrt(
+        1.0 - (2.0 * i / (n - 1) - 1.0) ** 2)) / d
+        for i in range(n)])
+
+
+def correlate(a, v, mode="valid"):
+    av = list(asarray(a)._flat())
+    vv = list(asarray(v)._flat())
+    # np.correlate: sum a[k+j] * conj(v[j])
+    full = []
+    n, m = len(av), len(vv)
+    for lag in range(-(m - 1), n):
+        s = 0.0
+        for j in range(m):
+            k = lag + j
+            if 0 <= k < n:
+                s += av[k] * vv[j]
+        full.append(s)
+    if mode == "full":
+        return marr(full)
+    if mode == "same":
+        start = (m - 1) // 2
+        return marr(full[start:start + n])
+    lo = m - 1
+    return marr(full[lo:len(full) - (m - 1)])
+
+
+def unwrap(p, discont=None):
+    v = list(asarray(p)._flat())
+    d = discont if discont is not None else _math.pi
+    out = [v[0]]
+    offset = 0.0
+    for i in range(1, len(v)):
+        diff = v[i] - v[i - 1]
+        if diff > d:
+            offset -= 2.0 * _math.pi * _math.ceil(
+                (diff - d) / (2.0 * _math.pi))
+        elif diff < -d:
+            offset += 2.0 * _math.pi * _math.ceil(
+                (-diff - d) / (2.0 * _math.pi))
+        out.append(v[i] + offset)
+    return marr(out)
+
+
+def roll(a, shift, axis=None):
+    x = asarray(a)
+    if len(x.shape) == 2 and axis is not None:
+        if axis == 0:
+            s = int(shift) % x.shape[0]
+            return marr(x.data[-s:] + x.data[:-s])
+        s = int(shift) % x.shape[1]
+        return marr([row[-s:] + row[:-s] for row in x.data])
+    f = list(x._flat())
+    s = int(shift) % len(f)
+    return marr(f[-s:] + f[:-s])
+
+
+def power(a, b):
+    return asarray(a)._zip(b, lambda x, y: x ** y)
+
+
+def gradient(f, *varargs):
+    v = list(asarray(f)._flat())
+    dx = float(varargs[0]) if varargs and isinstance(
+        varargs[0], (int, float)) else 1.0
+    xs = (list(asarray(varargs[0])._flat())
+          if varargs and not isinstance(varargs[0], (int, float))
+          else None)
+    n = len(v)
+    out = []
+    for i in range(n):
+        if i == 0:
+            h = (xs[1] - xs[0]) if xs else dx
+            out.append((v[1] - v[0]) / h)
+        elif i == n - 1:
+            h = (xs[-1] - xs[-2]) if xs else dx
+            out.append((v[-1] - v[-2]) / h)
+        else:
+            h2 = (xs[i + 1] - xs[i - 1]) if xs else 2.0 * dx
+            out.append((v[i + 1] - v[i - 1]) / h2)
+    return marr(out)
+
+
+def arctanh(x):
+    return _map_unary(x, _math.atanh)
+
+
+def arctan2(y, x):
+    ya = asarray(y)
+    return ya._zip(x, lambda a, b: _math.atan2(a, b))
+
+
+def degrees(x):
+    return _map_unary(x, _math.degrees)
+
+
+def deg2rad(x):
+    return _map_unary(x, _math.radians)
+
+
+rad2deg = degrees
+radians = deg2rad
+
+
+def _map_unary(x, fn):
+    if isinstance(x, (int, float)):
+        return fn(float(x))
+    return asarray(x)._map(fn)
+
+
+def unravel_index(indices, shape):
+    if isinstance(indices, (int, float)):
+        idx = int(indices)
+        return (idx // shape[1], idx % shape[1]) \
+            if len(shape) == 2 else (idx,)
+    out_r, out_c = [], []
+    for v in asarray(indices)._flat():
+        out_r.append(float(int(v) // shape[1]))
+        out_c.append(float(int(v) % shape[1]))
+    return marr(out_r), marr(out_c)
+
+
+def trapz(y, x=None, dx=1.0):
+    return trapezoid(y, x=x, dx=dx)
+
+
+def ptp(a, axis=None):
+    x = asarray(a)
+    if axis is None or len(x.shape) == 1:
+        f = x._flat()
+        return _bi.max(f) - _bi.min(f)
+    if axis == 0:
+        return marr([_bi.max(x.data[i][j] for i in range(x.shape[0]))
+                     - _bi.min(x.data[i][j]
+                               for i in range(x.shape[0]))
+                     for j in range(x.shape[1])])
+    return marr([_bi.max(row) - _bi.min(row) for row in x.data])
+
+
+def pad(a, pad_width, mode="constant", constant_values=0.0):
+    v = list(asarray(a)._flat())
+    if isinstance(pad_width, int):
+        lo = hi = pad_width
+    else:
+        lo, hi = pad_width
+    if mode == "constant":
+        c = float(constant_values)
+        return marr([c] * lo + v + [c] * hi)
+    if mode == "edge":
+        return marr([v[0]] * lo + v + [v[-1]] * hi)
+    if mode == "reflect":
+        n = len(v)
+
+        def refl(i):
+            # reflect without repeating the edge, numpy 'reflect'
+            if n == 1:
+                return 0
+            period = 2 * (n - 1)
+            i %= period
+            return i if i < n else period - i
+        left = [v[refl(-i)] for i in range(lo, 0, -1)]
+        right = [v[refl(n - 1 + i)] for i in range(1, hi + 1)]
+        return marr(left + v + right)
+    if mode == "wrap":
+        return marr(v[-lo:] + v + v[:hi])
+    raise ValueError("unsupported pad mode %r" % mode)
+
+
+def packbits(a):
+    bits = [1 if v != 0 else 0 for v in asarray(a)._flat()]
+    while len(bits) % 8:
+        bits.append(0)
+    out = []
+    for i in range(0, len(bits), 8):
+        byte = 0
+        for b in bits[i:i + 8]:
+            byte = (byte << 1) | b
+        out.append(float(byte))
+    return marr(out)
+
+
+def unpackbits(a):
+    out = []
+    for v in asarray(a)._flat():
+        byte = int(v) & 0xFF
+        for k in range(7, -1, -1):
+            out.append(float((byte >> k) & 1))
+    return marr(out)
+
+
+def nan_to_num(x, nan=0.0, posinf=None, neginf=None):
+    big = 1.7976931348623157e308
+
+    def one(v):
+        if v != v:
+            return float(nan)
+        if v == _math.inf:
+            return float(posinf) if posinf is not None else big
+        if v == -_math.inf:
+            return float(neginf) if neginf is not None else -big
+        return v
+    return _map_unary(x, one)
+
+
+def isscalar(x):
+    return isinstance(x, (int, float, complex, bool, str))
+
+
+def isinf(x):
+    out = _map_unary(x, lambda v: 1.0 if v in (_math.inf, -_math.inf)
+                     else 0.0)
+    if isinstance(out, marr):
+        out._is_mask = True
+    return out
+
+
+def digitize(x, bins, right=False):
+    import bisect
+    bv = list(asarray(bins)._flat())
+    f = bisect.bisect_left if right else bisect.bisect_right
+
+    def one(v):
+        return float(f(bv, v))
+    return _map_unary(x, one)
+
+
+def histogram2d(x, y, bins=10, range=None):  # noqa: A002
+    xv = list(asarray(x)._flat())
+    yv = list(asarray(y)._flat())
+    if isinstance(bins, int):
+        bx = by = bins
+    else:
+        bx, by = bins
+    if range is not None:
+        (xlo, xhi), (ylo, yhi) = range
+    else:
+        xlo, xhi = _bi.min(xv), _bi.max(xv)
+        ylo, yhi = _bi.min(yv), _bi.max(yv)
+    H = [[0.0] * by for _ in _pyrange(bx)]
+    for a, b in zip(xv, yv):
+        i = int((a - xlo) / (xhi - xlo) * bx) if xhi > xlo else 0
+        j = int((b - ylo) / (yhi - ylo) * by) if yhi > ylo else 0
+        i = _bi.max(0, _bi.min(i, bx - 1))
+        j = _bi.max(0, _bi.min(j, by - 1))
+        H[i][j] += 1.0
+    xe = [xlo + (xhi - xlo) * k / bx for k in _pyrange(bx + 1)]
+    ye = [ylo + (yhi - ylo) * k / by for k in _pyrange(by + 1)]
+    return marr(H), marr(xe), marr(ye)
+
+
+_pyrange = __import__("builtins").range
+
+
+def ndindex(*shape):
+    import itertools
+    return itertools.product(*(
+        _pyrange(int(s)) for s in shape))
+
+
+def roots(coeffs):
+    """Polynomial roots via Durand-Kerner (complex output)."""
+    c = [float(v) for v in asarray(coeffs)._flat()]
+    while c and c[0] == 0.0:
+        c = c[1:]
+    n = len(c) - 1
+    if n < 1:
+        return carr([])
+    c = [v / c[0] for v in c]
+    rs = [complex(0.4, 0.9) ** k for k in _pyrange(n)]
+    for _ in _pyrange(500):
+        new = []
+        for i in _pyrange(n):
+            num = complex(1.0)
+            for j in _pyrange(n):
+                if j != i:
+                    num *= (rs[i] - rs[j])
+            pv = complex(0.0)
+            for cf in c:
+                pv = pv * rs[i] + cf
+            new.append(rs[i] - pv / num if num != 0 else rs[i])
+        if _bi.max(_bi.abs(a - b) for a, b in zip(new, rs)) < 1e-13:
+            rs = new
+            break
+        rs = new
+    return carr(rs)
+
+
+newaxis = None
+complex128 = complex
+NDArray = marr          # typing shim for `from numpy.typing import`
+
+
+class datetime64:
+    """Thin ISO-date wrapper for the single call site using it."""
+
+    def __init__(self, value):
+        import datetime as _dt
+        if isinstance(value, str):
+            self._d = _dt.datetime.fromisoformat(value)
+        else:
+            self._d = value
+
+    def __repr__(self):
+        return "datetime64(%r)" % self._d.isoformat()
+
+    def item(self):
+        return self._d
+
+
+# --------------------------------------------------------------- random tail
+
+class RandomState(_SplitMix64):
+    """numpy legacy RandomState API on the native stream."""
+
+    def __init__(self, seed=None):
+        super().__init__(seed if seed is not None else 0)
+
+    def rand(self, *shape):
+        if not shape:
+            return self.uniform()
+        if len(shape) == 1:
+            return self.uniform(0.0, 1.0, shape[0])
+        return self.uniform(0.0, 1.0, shape)
+
+    def randn(self, *shape):
+        if not shape:
+            return self.normal()
+        if len(shape) == 1:
+            return self.normal(0.0, 1.0, shape[0])
+        return self.normal(0.0, 1.0, shape)
+
+    def randint(self, low, high=None, size=None):
+        return self.integers(low, high, size)
+
+    def rand_seed(self, s):
+        self.__init__(s)
+
+    seed = rand_seed
+
+
+Generator = _SplitMix64
+
+
+class Philox:
+    """Seed container accepted by default_rng (native SplitMix stream;
+    the bit-exact R-parity Philox lives in morie_core — see
+    reference_morie_native_rng)."""
+
+    def __init__(self, key=0):
+        self.key = int(key)
+
+
+class _RandomNS(_Random):
+    RandomState = RandomState
+    Generator = Generator
+    Philox = Philox
+
+    def __init__(self):
+        self._global = RandomState(0)
+
+    def seed(self, s=None):
+        self._global = RandomState(s if s is not None else 0)
+
+    def rand(self, *shape):
+        return self._global.rand(*shape)
+
+    def randn(self, *shape):
+        return self._global.randn(*shape)
+
+    def randint(self, low, high=None, size=None):
+        return self._global.randint(low, high, size)
+
+    def random(self, size=None):
+        return self._global.random(size)
+
+    def uniform(self, low=0.0, high=1.0, size=None):
+        return self._global.uniform(low, high, size)
+
+    def normal(self, loc=0.0, scale=1.0, size=None):
+        return self._global.normal(loc, scale, size)
+
+    def poisson(self, lam=1.0, size=None):
+        return self._global.poisson(lam, size)
+
+    def binomial(self, n, p, size=None):
+        return self._global.binomial(n, p, size)
+
+    def exponential(self, scale=1.0, size=None):
+        return self._global.exponential(scale, size)
+
+    def choice(self, a, size=None, replace=True, p=None):
+        return self._global.choice(a, size, replace, p)
+
+    def shuffle(self, seq):
+        return self._global.shuffle(seq)
+
+    def permutation(self, n):
+        return self._global.permutation(n)
+
+    @staticmethod
+    def default_rng(seed=None):
+        if isinstance(seed, Philox):
+            seed = seed.key
+        return _SplitMix64(seed if seed is not None else 0)
+
+
+random = _RandomNS()
+
+
+def frombuffer(buf, dtype="float64", count=-1):
+    import struct
+    fmt_map = {"float64": ("d", 8), "float32": ("f", 4),
+               "int64": ("q", 8), "int32": ("i", 4),
+               "uint8": ("B", 1), "uint64": ("Q", 8)}
+    key = dtype if isinstance(dtype, str) else getattr(
+        dtype, "__name__", "float64")
+    fmt, size = fmt_map.get(key, ("d", 8))
+    n = len(buf) // size if count in (-1, None) else int(count)
+    vals = struct.unpack("<%d%s" % (n, fmt), bytes(buf[:n * size]))
+    return marr([float(v) for v in vals])

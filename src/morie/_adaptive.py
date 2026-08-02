@@ -7,7 +7,7 @@ ACF-based distance, GLR change detection, and Kalman filter.
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def stft(

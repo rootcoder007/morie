@@ -35,7 +35,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)

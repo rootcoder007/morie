@@ -45,7 +45,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 from .fn._richresult import RichResult

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 def setup_repl(ns: dict) -> None:
     """Inject all MORIE REPL helpers into namespace `ns`."""
-    import numpy as np
+    from morie.fn import _array_core as np
     from morie.fn import _frame_core as pd
 
     ns["np"] = np

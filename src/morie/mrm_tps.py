@@ -21,7 +21,7 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
+from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 __all__ = [

@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 
 try:
     from numba import njit, prange
