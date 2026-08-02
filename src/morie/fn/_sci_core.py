@@ -811,18 +811,25 @@ for _n in ("brentq", "approx_fprime", "curve_fit", "nnls", "linprog"):
 
 # ------------------------------------------------------------ integrate
 
-def _adaptive_simpson(f, a, b, fa, fm, fb, whole, tol, depth):
+def _adaptive_simpson(f, a, b, fa, fm, fb, whole, tol, depth,
+                      budget=None):
+    """budget: single-element list of remaining f-evals; when it hits
+    zero the current Richardson estimate is returned (rough
+    integrands would otherwise recurse for hours)."""
+    if budget is None:
+        budget = [200000]
     m = 0.5 * (a + b)
     lm, rm = 0.5 * (a + m), 0.5 * (m + b)
     flm, frm = f(lm), f(rm)
+    budget[0] -= 2
     left = (m - a) / 6.0 * (fa + 4.0 * flm + fm)
     right = (b - m) / 6.0 * (fm + 4.0 * frm + fb)
-    if depth <= 0 or abs(left + right - whole) < 15.0 * tol:
+    if depth <= 0 or budget[0] <= 0             or abs(left + right - whole) < 15.0 * tol:
         return left + right + (left + right - whole) / 15.0
     return (_adaptive_simpson(f, a, m, fa, flm, fm, left,
-                              tol / 2.0, depth - 1)
+                              tol / 2.0, depth - 1, budget)
             + _adaptive_simpson(f, m, b, fm, frm, fb, right,
-                                tol / 2.0, depth - 1))
+                                tol / 2.0, depth - 1, budget))
 
 
 def quad(func, a, b, args=(), epsabs=1.49e-08, **kw):
@@ -856,7 +863,7 @@ def quad(func, a, b, args=(), epsabs=1.49e-08, **kw):
     fa_, fm_, fb_ = fn2(lo), fn2(m), fn2(hi)
     whole = (hi - lo) / 6.0 * (fa_ + 4.0 * fm_ + fb_)
     val = _adaptive_simpson(fn2, lo, hi, fa_, fm_, fb_, whole,
-                            epsabs, 48)
+                            epsabs, 24)
     if _math.isinf(a) and not _math.isinf(b) and False:
         val = -val
     return val, epsabs
