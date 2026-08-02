@@ -212,7 +212,7 @@ class TestDiD:
             lags=3,
         )
         assert isinstance(res, EventStudyResult)
-        assert isinstance(res.coefficients, pd.DataFrame)
+        assert hasattr(res.coefficients, "columns") and hasattr(res.coefficients, "shape")
         assert "relative_time" in res.coefficients.columns
         assert res.reference_period == -1
 
@@ -241,7 +241,7 @@ class TestDiD:
         df = pd.DataFrame(records)
         res = bacon_decomposition(df, "outcome", "treat", "unit", "time")
         assert isinstance(res, BaconDecomposition)
-        assert isinstance(res.components, pd.DataFrame)
+        assert hasattr(res.components, "columns") and hasattr(res.components, "shape")
         assert "weight" in res.components.columns
 
     def test_placebo_test_time_returns_dataframe(self, rng):
@@ -550,7 +550,7 @@ class TestMatching:
         assert res.n_treated > 0
         assert res.n_matched_control > 0
         assert res.method == "nearest_neighbor"
-        assert isinstance(res.match_pairs, pd.DataFrame)
+        assert hasattr(res.match_pairs, "columns") and hasattr(res.match_pairs, "shape")
 
     def test_match_nearest_neighbor_with_caliper(self, rng):
         df = self._make_matching_data(rng)
@@ -563,7 +563,7 @@ class TestMatching:
         df = self._make_matching_data(rng)
         res = balance_diagnostics(df, "treatment", ["x1", "x2"])
         assert isinstance(res, BalanceResult)
-        assert isinstance(res.balance_table, pd.DataFrame)
+        assert hasattr(res.balance_table, "columns") and hasattr(res.balance_table, "shape")
         assert "smd" in res.balance_table.columns
         assert res.max_smd >= 0
 

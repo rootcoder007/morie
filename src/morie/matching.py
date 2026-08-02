@@ -375,7 +375,7 @@ def match_nearest_neighbor(
     for i, t_idx in enumerate(treated_idx):
         matched = []
         for j in range(indices.shape[1]):
-            c_pos = indices[i, j]
+            c_pos = int(indices[i, j])
             c_idx = control_idx[c_pos]
             dist = distances[i, j]
 

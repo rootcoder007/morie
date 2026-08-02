@@ -34,7 +34,7 @@ nan = float("nan")
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
-    __slots__ = ("data", "shape", "_is_mask", "_is_index")
+    __slots__ = ("data", "shape", "_is_mask", "_is_index", "_aif_keep")
 
     def __init__(self, data):
         if isinstance(data, marr):
@@ -146,6 +146,12 @@ class marr:
                     if isinstance(j, slice):
                         return marr([r[j] for r in rows])
                     return marr([r[int(j)] for r in rows])
+                if isinstance(i, slice) and isinstance(j, (marr, list)):
+                    # column-array selector: x[:, idx]
+                    jv = [int(v) for v in
+                          (j._flat() if isinstance(j, marr) else j)]
+                    return marr([[r[c] for c in jv]
+                                 for r in self.data[i]])
                 if isinstance(i, slice) or isinstance(j, slice):
                     rows = self.data[i] if isinstance(i, slice) \
                         else [self.data[i]]
@@ -156,11 +162,31 @@ class marr:
                     if isinstance(i, slice):
                         return marr([row[0] for row in picked])
                     return marr(picked[0])
+                if isinstance(j, (marr, list)) and isinstance(i, int):
+                    # x[row, mask_or_index]
+                    row = self.data[i]
+                    jv = j._flat() if isinstance(j, marr) else list(j)
+                    if getattr(j, "_is_mask", False) or (
+                            not getattr(j, "_is_index", False)
+                            and len(jv) == len(row)
+                            and _pyall(v in (0.0, 1.0) for v in jv)):
+                        return marr([v for v, m2 in zip(row, jv) if m2])
+                    return marr([row[int(v)] for v in jv])
                 return self.data[i][j]
             raise ValueError("unsupported index for 1-D")
         if isinstance(idx, marr):
-            if len(idx.shape) == 2 and not getattr(idx, "_is_mask",
-                                                   False):
+            if len(idx.shape) == 2:
+                same_shape = idx.shape == self.shape
+                is_mask2 = getattr(idx, "_is_mask", False) or (
+                    same_shape and not getattr(idx, "_is_index", False)
+                    and _pyall(v in (0.0, 1.0) for v in idx._flat()))
+                if is_mask2 and same_shape:
+                    # 2-D boolean mask: numpy returns the selected
+                    # elements as a flat array, row-major
+                    return marr([self.data[r][c]
+                                 for r in range(self.shape[0])
+                                 for c in range(self.shape[1])
+                                 if idx.data[r][c]])
                 # 2-D fancy index: gather preserving the index shape
                 return marr([[self.data[int(v)] for v in row]
                              for row in idx.data])
@@ -378,13 +404,46 @@ class marr:
                 return
             self.data[idx] = float(value)
 
+    @property
+    def __array_interface__(self):
+        """numpy consumes this BEFORE the PEP-3118 buffer, so tagged
+        masks surface as bool and index arrays as int64 — the raw
+        buffer stays float64 for the compiled kernels."""
+        import array as _pa
+        import ctypes as _ct
+        f = self._flat()
+        if getattr(self, "_is_mask", False):
+            buf = bytes(bytearray(1 if v else 0 for v in f))
+            typestr = "|b1"
+        elif getattr(self, "_is_index", False):
+            buf = _pa.array("q", [int(v) for v in f]).tobytes()
+            typestr = "<i8"
+        else:
+            buf = _pa.array("d", [float(v) for v in f]).tobytes()
+            typestr = "<f8"
+        self._aif_keep = buf
+        addr = _ct.cast(_ct.c_char_p(buf), _ct.c_void_p).value
+        return {"version": 3, "shape": self.shape,
+                "typestr": typestr, "data": (addr, True)}
+
     def __buffer__(self, flags):
         """PEP 688 buffer protocol (Python >= 3.12): expose the flat
         float64 data so nanobind kernels and memoryview consumers get
         the array without numpy. Snapshot semantics: the exported
         buffer is a copy, matching the immutable-input contract of the
-        compiled kernels."""
+        compiled kernels. Tagged masks/index arrays refuse the buffer
+        (numpy >= 2.5 prefers it over __array_interface__, which would
+        surface them as float64 and break real-numpy indexing)."""
         del flags
+        if getattr(self, "_is_mask", False) or \
+                getattr(self, "_is_index", False):
+            raise BufferError("tagged mask/index arrays export via "
+                              "__array_interface__")
+        if len(getattr(self, "shape", (0,))) == 2:
+            # a flat buffer would lose the 2-D shape; numpy falls back
+            # to __array_interface__, which carries it
+            raise BufferError("2-D arrays export via "
+                              "__array_interface__")
         import array as _pa
         buf = _pa.array("d", [float(v) for v in self._flat()])
         return memoryview(buf)
@@ -790,6 +849,10 @@ def _is_object_like(x, dtype):
 def asarray(x, dtype=None):
     if isinstance(x, oarr) and dtype is None:
         return x
+    if hasattr(x, "columns") and hasattr(x, "to_numpy") \
+            and not isinstance(x, marr):
+        # frame-like (native or real pandas): take its array form
+        x = x.to_numpy()
     if _is_object_like(x, dtype):
         return oarr(x.tolist() if hasattr(x, "tolist") else x)
     if isinstance(x, marr):
@@ -859,9 +922,11 @@ def linspace(a, b, n):
     return marr([a + i * step for i in range(n)])
 
 
-def eye(n):
-    return marr([[1.0 if i == j else 0.0 for j in range(n)]
-                 for i in range(n)])
+def eye(n, m=None, dtype=None):
+    del dtype
+    m = int(n) if m is None else int(m)
+    return marr([[1.0 if i == j else 0.0 for j in range(m)]
+                 for i in range(int(n))])
 
 
 def diag(x):
@@ -948,9 +1013,12 @@ def where(cond, a=None, b=None):
 
 
 def isfinite(x):
-    if not isinstance(x, (list, tuple, marr)):
+    if isinstance(x, (int, float)):
         return _math.isfinite(float(x))
-    return asarray(x)._map(lambda v: 1.0 if _math.isfinite(v) else 0.0)
+    a = asarray(x)
+    if not isinstance(a, marr):
+        a = marr([float(v) for v in a])
+    return a._map(lambda v: 1.0 if _math.isfinite(v) else 0.0)
 
 
 def dot(a, b):
@@ -1047,11 +1115,37 @@ def sort(x):
     return marr(sorted(asarray(x)._flat()))
 
 
-def unique(x):
+def unique(x, return_inverse=False, return_counts=False,
+           return_index=False):
     a = asarray(x)
     if isinstance(a, oarr):
-        return oarr(sorted(set(a), key=str))
-    return marr(sorted(set(a._flat())))
+        vals = list(a)
+        uniq = sorted(set(vals), key=str)
+    else:
+        vals = a._flat()
+        uniq = sorted(set(vals))
+    if not (return_inverse or return_counts or return_index):
+        return oarr(uniq) if isinstance(a, oarr) else marr(uniq)
+    pos = {v: i for i, v in enumerate(uniq)}
+    out = [oarr(uniq) if isinstance(a, oarr) else marr(uniq)]
+    if return_index:
+        first = {}
+        for i, v in enumerate(vals):
+            if v not in first:
+                first[v] = i
+        ix = marr([float(first[v]) for v in uniq])
+        ix._is_index = True
+        out.append(ix)
+    if return_inverse:
+        inv = marr([float(pos[v]) for v in vals])
+        inv._is_index = True
+        out.append(inv)
+    if return_counts:
+        cnt = {}
+        for v in vals:
+            cnt[v] = cnt.get(v, 0) + 1
+        out.append(marr([float(cnt[v]) for v in uniq]))
+    return tuple(out)
 
 
 
@@ -1934,9 +2028,24 @@ def median(x):
     return 0.5 * (f[mid - 1] + f[mid])
 
 
-def percentile(x, q):
+def percentile(x, q, axis=None):
     """Linear-interpolation percentile (numpy default method)."""
-    f = sorted(asarray(x)._flat())
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        if axis in (0, -2):
+            cols = [[a.data[r][c] for r in range(a.shape[0])]
+                    for c in range(a.shape[1])]
+            per_col = [percentile(col, q) for col in cols]
+            if isinstance(q, (list, tuple, marr)):
+                return marr([[float(pc[i2]) for pc in per_col]
+                             for i2 in range(len(list(q)))])
+            return marr([float(v) for v in per_col])
+        rows_p = [percentile(row, q) for row in a.data]
+        if isinstance(q, (list, tuple, marr)):
+            return marr([[float(rp[i2]) for rp in rows_p]
+                         for i2 in range(len(list(q)))])
+        return marr([float(v) for v in rows_p])
+    f = sorted(a._flat())
     n = len(f)
 
     def one(qq):
@@ -2043,9 +2152,11 @@ linalg.LinAlgError = _LinAlgError
 
 # ------------------------------------------- batch 2: gap-scan closure
 
-def corrcoef(x, y=None):
+def corrcoef(x, y=None, rowvar=True):
     if y is None:
         a = atleast_2d(x)
+        if not rowvar:
+            a = a.T
         rows = [marr(r) for r in a.data]
     else:
         rows = [asarray(x), asarray(y)]
@@ -2076,6 +2187,102 @@ def cov(x, y=None, ddof=1):
             yd = rows[j] - rows[j].mean()
             out[i][j] = dot(xd, yd) / (m - ddof)
     return marr(out)
+
+
+
+def _nested_shape(x):
+    sh = []
+    v = x
+    while isinstance(v, (list, tuple)) or isinstance(v, marr):
+        if isinstance(v, marr):
+            return tuple(sh) + v.shape
+        sh.append(len(v))
+        if not len(v):
+            break
+        v = v[0]
+    return tuple(sh)
+
+
+def _nested_get(x, idx):
+    v = x.tolist() if isinstance(x, marr) else x
+    for i in idx:
+        v = v[i]
+    return float(v)
+
+
+def einsum(spec, *ops):
+    """General Einstein summation over nested-list / marr operands of
+    any rank (explicit and implicit forms; ellipsis expanded against
+    the operand rank). Index extents are validated across operands.
+    Rank <= 2 results return marr; higher ranks return nested lists
+    (the native core is rank-2)."""
+    import itertools as _it
+    spec = spec.replace(" ", "")
+    if "->" in spec:
+        lhs, out_labels = spec.split("->")
+    else:
+        lhs, out_labels = spec, None
+    in_specs = lhs.split(",")
+    if len(in_specs) != len(ops):
+        raise ValueError("einsum: operand count mismatch")
+    shapes = [_nested_shape(op) for op in ops]
+
+    # expand ellipsis against actual ranks
+    if "..." in spec:
+        free = [c for c in "zyxwvu" if c not in spec]
+        ell_rank = 0
+        for sp, sh in zip(in_specs, shapes):
+            if "..." in sp:
+                ell_rank = _bi.max(ell_rank,
+                                   len(sh) - (len(sp) - 3))
+        ell = "".join(free[:ell_rank])
+        in_specs = [sp.replace("...", ell) for sp in in_specs]
+        if out_labels is not None:
+            out_labels = out_labels.replace("...", ell)
+
+    dims = {}
+    for sp, sh in zip(in_specs, shapes):
+        if len(sp) != len(sh):
+            raise ValueError("einsum: spec %r vs shape %r" % (sp, sh))
+        for c, d in zip(sp, sh):
+            if c in dims and dims[c] != d:
+                raise ValueError("einsum: size mismatch for %r" % c)
+            dims[c] = d
+    if out_labels is None:
+        counts = {}
+        for sp in in_specs:
+            for c in sp:
+                counts[c] = counts.get(c, 0) + 1
+        out_labels = "".join(sorted(c for c, n in counts.items()
+                                    if n == 1))
+    sum_labels = sorted(set("".join(in_specs)) - set(out_labels))
+
+    raw = [op.tolist() if isinstance(op, marr) else op for op in ops]
+
+    def cell(out_idx):
+        env = dict(zip(out_labels, out_idx))
+        total = 0.0
+        for combo in _it.product(*(range(dims[c]) for c in sum_labels)):
+            env.update(zip(sum_labels, combo))
+            prod = 1.0
+            for sp, op in zip(in_specs, raw):
+                prod *= _nested_get(op, [env[c] for c in sp])
+            total += prod
+        return total
+
+    if not out_labels:
+        return cell(())
+
+    def build(labels, prefix):
+        if not labels:
+            return cell(tuple(prefix))
+        return [build(labels[1:], prefix + [i])
+                for i in range(dims[labels[0]])]
+
+    out = build(list(out_labels), [])
+    if len(out_labels) <= 2:
+        return marr(out)
+    return out
 
 
 def vstack(parts):
@@ -2258,8 +2465,18 @@ def append(x, v):
     return marr(f)
 
 
-def delete(x, idx):
-    f = asarray(x)._flat()
+def delete(x, idx, axis=None):
+    a = asarray(x)
+    if axis is not None and len(a.shape) == 2:
+        drop = {int(i) for i in (asarray(idx)._flat()
+                                 if isinstance(idx, (list, tuple, marr))
+                                 else [idx])}
+        if axis in (0, -2):
+            return marr([r[:] for i, r in enumerate(a.data)
+                         if i not in drop])
+        return marr([[v for j, v in enumerate(r) if j not in drop]
+                     for r in a.data])
+    f = a._flat()
     drop = {int(i) for i in (asarray(idx)._flat()
                              if isinstance(idx, (list, tuple, marr))
                              else [idx])}
@@ -2638,8 +2855,14 @@ class carr:
         float64 data so nanobind kernels and memoryview consumers get
         the array without numpy. Snapshot semantics: the exported
         buffer is a copy, matching the immutable-input contract of the
-        compiled kernels."""
+        compiled kernels. Tagged masks/index arrays refuse the buffer
+        (numpy >= 2.5 prefers it over __array_interface__, which would
+        surface them as float64 and break real-numpy indexing)."""
         del flags
+        if getattr(self, "_is_mask", False) or \
+                getattr(self, "_is_index", False):
+            raise BufferError("tagged mask/index arrays export via "
+                              "__array_interface__")
         import array as _pa
         buf = _pa.array("d", [float(v) for v in self._flat()])
         return memoryview(buf)
