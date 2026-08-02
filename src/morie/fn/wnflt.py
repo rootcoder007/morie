@@ -68,7 +68,7 @@ def wiener_filter(
     else:
         noise_est = np.asarray(noise_psd, dtype=float).ravel()
         if len(noise_est) != len(power):
-            from scipy.interpolate import interp1d
+            from ._sci_core import interp1d
 
             old_f = np.linspace(0, 1, len(noise_est))
             new_f = np.linspace(0, 1, len(power))

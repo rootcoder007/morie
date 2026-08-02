@@ -11,7 +11,7 @@ Cox, T. F., & Cox, M. A. (2001). Multidimensional Scaling (2nd ed.). Chapman & H
 """
 
 from . import _array_core as np
-from scipy import linalg as la
+from ._sci_core import linalg as la
 
 __all__ = ["mdscl"]
 

@@ -11,7 +11,7 @@ Jackson, J. E. (1991). A User's Guide to Principal Components. Wiley.
 """
 
 from . import _array_core as np
-from scipy import linalg as la
+from ._sci_core import linalg as la
 
 __all__ = ["pcana"]
 
