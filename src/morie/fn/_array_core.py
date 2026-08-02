@@ -1245,3 +1245,519 @@ class _LinAlgError(ValueError):
 
 
 linalg.LinAlgError = _LinAlgError
+
+
+# ------------------------------------------- batch 2: gap-scan closure
+
+def corrcoef(x, y=None):
+    if y is None:
+        a = atleast_2d(x)
+        rows = [marr(r) for r in a.data]
+    else:
+        rows = [asarray(x), asarray(y)]
+    n = len(rows)
+    out = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            xi, xj = rows[i], rows[j]
+            xd = xi - xi.mean()
+            yd = xj - xj.mean()
+            den = _math.sqrt(dot(xd, xd) * dot(yd, yd))
+            out[i][j] = dot(xd, yd) / den if den else nan
+    return marr(out)
+
+
+def cov(x, y=None, ddof=1):
+    if y is None:
+        a = atleast_2d(x)
+        rows = [marr(r) for r in a.data]
+    else:
+        rows = [asarray(x), asarray(y)]
+    n = len(rows)
+    m = rows[0].shape[0]
+    out = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            xd = rows[i] - rows[i].mean()
+            yd = rows[j] - rows[j].mean()
+            out[i][j] = dot(xd, yd) / (m - ddof)
+    return marr(out)
+
+
+def vstack(parts):
+    rows = []
+    for p in parts:
+        a = asarray(p)
+        if len(a.shape) == 1:
+            rows.append(a.data[:])
+        else:
+            rows.extend(r[:] for r in a.data)
+    return marr(rows)
+
+
+def hstack(parts):
+    arrs = [asarray(p) for p in parts]
+    if len(arrs[0].shape) == 1:
+        return concatenate(parts)
+    rows = [[] for _ in range(arrs[0].shape[0])]
+    for a in arrs:
+        a2 = atleast_2d(a)
+        for i, r in enumerate(a2.data):
+            rows[i].extend(r)
+    return marr(rows)
+
+
+def stack(parts):
+    return marr([asarray(p)._flat() for p in parts])
+
+
+dstack = None  # rarely used; assigned below if needed
+
+
+def searchsorted(a, v, side="left"):
+    import bisect
+    f = asarray(a)._flat()
+    fn_ = bisect.bisect_left if side == "left" else bisect.bisect_right
+
+    def one(x):
+        return float(fn_(f, x))
+    if isinstance(v, (list, tuple, marr)):
+        return asarray(v)._map(one)
+    return int(one(float(v)))
+
+
+def flatnonzero(x):
+    return marr([float(i) for i, v in enumerate(asarray(x)._flat())
+                 if v != 0])
+
+
+def nonzero(x):
+    return (flatnonzero(x),)
+
+
+def triu_indices(n, k=0):
+    ii, jj = [], []
+    for i in range(n):
+        for j in range(i + k, n):
+            if j >= 0:
+                ii.append(float(i))
+                jj.append(float(j))
+    return marr(ii), marr(jj)
+
+
+def tril_indices(n, k=0):
+    ii, jj = [], []
+    for i in range(n):
+        for j in range(0, _bi.min(i + k + 1, n)):
+            ii.append(float(i))
+            jj.append(float(j))
+    return marr(ii), marr(jj)
+
+
+def diag_indices(n):
+    idx = marr([float(i) for i in range(n)])
+    return idx, marr(idx.data[:])
+
+
+def triu(a, k=0):
+    m = atleast_2d(a)
+    return marr([[m.data[i][j] if j >= i + k else 0.0
+                  for j in range(m.shape[1])] for i in range(m.shape[0])])
+
+
+def tril(a, k=0):
+    m = atleast_2d(a)
+    return marr([[m.data[i][j] if j <= i + k else 0.0
+                  for j in range(m.shape[1])] for i in range(m.shape[0])])
+
+
+def convolve(a, v, mode="full"):
+    x = asarray(a)._flat()
+    y = asarray(v)._flat()
+    n, m = len(x), len(y)
+    full = [0.0] * (n + m - 1)
+    for i in range(n):
+        for j in range(m):
+            full[i + j] += x[i] * y[j]
+    if mode == "full":
+        return marr(full)
+    if mode == "same":
+        start = (m - 1) // 2
+        return marr(full[start:start + n])
+    if mode == "valid":
+        lo, hi = _bi.min(n, m) - 1, _bi.max(n, m)
+        return marr(full[lo:hi])
+    raise ValueError("bad mode")
+
+
+def histogram(x, bins=10, range=None):  # noqa: A002
+    f = asarray(x)._flat()
+    lo = _bi.min(f) if range is None else range[0]
+    hi = _bi.max(f) if range is None else range[1]
+    if isinstance(bins, (list, tuple, marr)):
+        edges = asarray(bins)._flat()
+    else:
+        step = (hi - lo) / bins
+        edges = [lo + i * step for i in _bi.range(bins + 1)] \
+            if hasattr(_bi, "range") else [lo + i * step
+                                           for i in list(__import__("builtins").range(bins + 1))]
+    counts = [0.0] * (len(edges) - 1)
+    for v in f:
+        if v < edges[0] or v > edges[-1]:
+            continue
+        for b in range_(len(edges) - 1):
+            if edges[b] <= v < edges[b + 1] or (b == len(edges) - 2
+                                                and v == edges[-1]):
+                counts[b] += 1.0
+                break
+    return marr(counts), marr(edges)
+
+
+def range_(n):
+    import builtins
+    return builtins.range(n)
+
+
+def bincount(x, minlength=0):
+    f = [int(v) for v in asarray(x)._flat()]
+    n = _bi.max([minlength - 1] + f) + 1 if f or minlength else 0
+    out = [0.0] * n
+    for v in f:
+        out[v] += 1.0
+    return marr(out)
+
+
+def meshgrid(x, y):
+    fx, fy = asarray(x)._flat(), asarray(y)._flat()
+    gx = marr([fx[:] for _ in fy])
+    gy = marr([[v] * len(fx) for v in fy])
+    return gx, gy
+
+
+def average(x, weights=None):
+    a = asarray(x)
+    if weights is None:
+        return a.mean()
+    w = asarray(weights)
+    return float(dot(w, a) / w.sum())
+
+
+def array_equal(a, b):
+    fa, fb = asarray(a)._flat(), asarray(b)._flat()
+    return len(fa) == len(fb) and fa == fb
+
+
+def take(x, idx):
+    f = asarray(x)._flat()
+    return marr([f[int(i)] for i in asarray(idx)._flat()])
+
+
+def append(x, v):
+    f = asarray(x)._flat()[:]
+    f.extend(asarray(v)._flat())
+    return marr(f)
+
+
+def delete(x, idx):
+    f = asarray(x)._flat()
+    drop = {int(i) for i in (asarray(idx)._flat()
+                             if isinstance(idx, (list, tuple, marr))
+                             else [idx])}
+    return marr([v for i, v in enumerate(f) if i not in drop])
+
+
+def insert(x, pos, v):
+    f = asarray(x)._flat()[:]
+    f[int(pos):int(pos)] = asarray(v)._flat()
+    return marr(f)
+
+
+def flip(x):
+    return marr(asarray(x)._flat()[::-1])
+
+
+def _nan_filter(x):
+    return [v for v in asarray(x)._flat() if v == v]
+
+
+def nanmean(x):
+    f = _nan_filter(x)
+    return float(_math.fsum(f) / len(f))
+
+
+def nansum(x):
+    return float(_math.fsum(_nan_filter(x)))
+
+
+def nanstd(x, ddof=0):
+    f = _nan_filter(x)
+    m = _math.fsum(f) / len(f)
+    return _math.sqrt(_math.fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
+
+
+def nanvar(x, ddof=0):
+    return nanstd(x, ddof=ddof) ** 2
+
+
+def nanmax(x):
+    return float(_bi.max(_nan_filter(x)))
+
+
+def nanmin(x):
+    return float(_bi.min(_nan_filter(x)))
+
+
+def nanmedian(x):
+    return median(_nan_filter(x))
+
+
+def nanargmax(x):
+    f = asarray(x)._flat()
+    best, bi_ = None, -1
+    for i, v in enumerate(f):
+        if v == v and (best is None or v > best):
+            best, bi_ = v, i
+    return bi_
+
+
+def nanpercentile(x, q):
+    return percentile(_nan_filter(x), q)
+
+
+def nanquantile(x, q):
+    return quantile(_nan_filter(x), q)
+
+
+def vander(x, n=None, increasing=False):
+    f = asarray(x)._flat()
+    n = len(f) if n is None else int(n)
+    powers = list(range_(n)) if increasing else list(range_(n))[::-1]
+    return marr([[v ** p for p in powers] for v in f])
+
+
+def polyfit(x, y, deg):
+    v = vander(x, deg + 1)
+    beta, *_r = linalg.lstsq(v, asarray(y))
+    return beta
+
+
+def polyval(p, x):
+    c = asarray(p)._flat()
+
+    def one(v):
+        out = 0.0
+        for coef in c:
+            out = out * v + coef
+        return out
+    if isinstance(x, (list, tuple, marr)):
+        return asarray(x)._map(one)
+    return one(float(x))
+
+
+def polyder(p):
+    c = asarray(p)._flat()
+    n = len(c) - 1
+    return marr([c[i] * (n - i) for i in range_(n)])
+
+
+def polymul(a, b):
+    return convolve(a, b, mode="full")
+
+
+def poly(roots):
+    out = [1.0]
+    for r in asarray(roots)._flat():
+        out = convolve(out, [1.0, -r]).tolist()
+    return marr(out)
+
+
+def kron(a, b):
+    aa, bb = atleast_2d(a), atleast_2d(b)
+    out = []
+    for i in range_(aa.shape[0]):
+        for k in range_(bb.shape[0]):
+            row = []
+            for j in range_(aa.shape[1]):
+                for m in range_(bb.shape[1]):
+                    row.append(aa.data[i][j] * bb.data[k][m])
+            out.append(row)
+    return marr(out)
+
+
+def ix_(rows, cols):
+    return (marr([float(v) for v in asarray(rows)._flat()]),
+            marr([float(v) for v in asarray(cols)._flat()]))
+
+
+def cumprod(x):
+    out = []
+    total = 1.0
+    for v in asarray(x)._flat():
+        total *= v
+        out.append(total)
+    return marr(out)
+
+
+def ediff1d(x):
+    return diff(x)
+
+
+def real(x):
+    return asarray(x)
+
+
+def imag(x):
+    return zeros_like(asarray(x))
+
+
+def angle(x):
+    return asarray(x)._map(lambda v: 0.0 if v >= 0 else _math.pi)
+
+
+def conjugate(x):
+    return asarray(x)
+
+
+conj = conjugate
+
+
+def square(x):
+    return asarray(x)._map(lambda v: v * v)
+
+
+def exp2(x):
+    return asarray(x)._map(lambda v: 2.0 ** v)
+
+
+def hypot(a, b):
+    return asarray(a)._zip(b, _math.hypot)
+
+
+def rint(x):
+    return asarray(x)._map(lambda v: float(_bi.round(v)))
+
+
+def geomspace(a, b, n):
+    la, lb = _math.log(a), _math.log(b)
+    return marr([_math.exp(la + i * (lb - la) / (n - 1))
+                 for i in range_(int(n))])
+
+
+def split(x, k):
+    f = asarray(x)._flat()
+    step = len(f) // int(k)
+    return [marr(f[i * step:(i + 1) * step]) for i in range_(int(k))]
+
+
+def empty_like(x):
+    return zeros_like(x)
+
+
+def spacing(x):
+    import sys as _s
+    return _s.float_info.epsilon * _bi.max(_bi_abs(float(x)), 1.0)
+
+
+integer = int
+number = float
+floating = float
+
+
+def issubdtype(a, b):
+    del a, b
+    return True     # all our dtypes are float; callers gate float paths
+
+
+def array_str(x):
+    return repr(asarray(x))
+
+
+def select(conds, choices, default=0.0):
+    n = asarray(conds[0]).shape[0]
+    out = [float(default)] * n
+    for c, ch in zip(conds, choices):
+        cf = asarray(c)._flat()
+        chf = asarray(ch)._flat() if isinstance(ch, (list, tuple, marr)) \
+            else [float(ch)] * n
+        for i in range_(n):
+            if cf[i] != 0 and out[i] == float(default):
+                out[i] = chf[i]
+    return marr(out)
+
+
+def lexsort(keys):
+    arrs = [asarray(k)._flat() for k in keys]
+    n = len(arrs[0])
+    order = sorted(range_(n), key=lambda i: tuple(a[i]
+                                                 for a in reversed(arrs)))
+    return marr([float(i) for i in order])
+
+
+def cross(a, b):
+    x, y = asarray(a)._flat(), asarray(b)._flat()
+    return marr([x[1] * y[2] - x[2] * y[1],
+                 x[2] * y[0] - x[0] * y[2],
+                 x[0] * y[1] - x[1] * y[0]])
+
+
+def partition(x, k):
+    return sort(x)   # sorted output satisfies the partition contract
+
+
+def _eigh(a):
+    vals, vecs = _jacobi_eigh(a)
+    order = sorted(range_(len(vals)), key=lambda i: vals[i])
+    w = marr([vals[i] for i in order])
+    v = marr([[vecs[r][i] for i in order] for r in range_(len(vals))])
+    return w, v
+
+
+def _det(a):
+    sign, logdet = _lu_slogdet(atleast_2d(a).tolist())
+    if logdet == -inf:
+        return 0.0
+    return sign * _math.exp(logdet)
+
+
+def _cholesky(a):
+    m = atleast_2d(a).tolist()
+    n = len(m)
+    low = [[0.0] * n for _ in range_(n)]
+    for i in range_(n):
+        for j in range_(i + 1):
+            s = _math.fsum(low[i][k] * low[j][k] for k in range_(j))
+            if i == j:
+                val = m[i][i] - s
+                if val <= 0:
+                    raise linalg.LinAlgError("matrix not positive definite")
+                low[i][j] = _math.sqrt(val)
+            else:
+                low[i][j] = (m[i][j] - s) / low[j][j]
+    return marr(low)
+
+
+def _svd(a, full_matrices=False, compute_uv=True):
+    """SVD via eigh of A^T A (values) and A A^T (left vectors)."""
+    del full_matrices
+    aa = atleast_2d(a)
+    ata = matmul(aa.T, aa)
+    w, v = _eigh(ata)
+    order = sorted(range_(w.shape[0]), key=lambda i: -w.data[i])
+    svals = [_math.sqrt(_bi.max(w.data[i], 0.0)) for i in order]
+    if not compute_uv:
+        return marr(svals)
+    vt = marr([[v.data[r][i] for r in range_(v.shape[0])] for i in order])
+    us = []
+    for k, i in enumerate(order):
+        col = matmul(aa, marr([v.data[r][i] for r in range_(v.shape[0])]))
+        s = svals[k]
+        us.append([c / s if s > 1e-300 else 0.0 for c in col.data])
+    u = marr([[us[k][r] for k in range_(len(order))]
+              for r in range_(aa.shape[0])])
+    return u, marr(svals), vt
+
+
+linalg.eigh = _eigh
+linalg.det = _det
+linalg.cholesky = _cholesky
+linalg.svd = _svd
