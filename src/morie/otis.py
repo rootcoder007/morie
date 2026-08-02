@@ -376,6 +376,7 @@ def otdml(
     data = df[[outcome, treatment] + covariates].dropna().copy()
 
     # Encode categoricals as dummies
+    data = pd._coerce_frame(data)
     cat_cols = data.select_dtypes(include=["object", "string", "category"]).columns.tolist()
     if cat_cols:
         data = pd.get_dummies(data, columns=cat_cols, drop_first=True)
@@ -386,7 +387,8 @@ def otdml(
     n = len(y)
 
     # Simple Frisch-Waugh-Lovell partialling out (portable, no DoubleML dep)
-    from morie.fn._array_core.linalg import lstsq
+    from morie.fn._array_core import linalg as _la
+    lstsq = _la.lstsq
 
     rng = np.random.default_rng(seed)
 

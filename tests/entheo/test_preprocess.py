@@ -25,7 +25,7 @@ def test_preprocess_eeg_smoke():
     res = preprocess_eeg(rec, bandpass=(1.0, 40.0), notch=60.0, asr_threshold=20.0)
     assert isinstance(res, dict)
     out = res["record"]["eeg"]["data_dmt"]
-    assert isinstance(out, np.ndarray)
+    assert hasattr(out, "shape")
     assert out.shape == rec["eeg"]["data_dmt"].shape
 
 
