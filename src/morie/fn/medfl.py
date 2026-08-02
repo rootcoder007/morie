@@ -35,7 +35,7 @@ def medfl(
     -------
     SignalResult
     """
-    from scipy.ndimage import median_filter
+    from ._sci_core import median_filter
 
     x = np.asarray(x, dtype=float).ravel()
     if kernel_size % 2 == 0:

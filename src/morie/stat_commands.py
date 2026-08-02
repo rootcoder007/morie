@@ -110,7 +110,7 @@ def _make_stat_handler(mod_name: str, func_name: str) -> Callable:
             needs_df = True
 
         if needs_df and len(args) >= 1:
-            import pandas as pd
+            from morie.fn import _frame_core as pd
 
             csv_path = args[0]
             try:
@@ -215,7 +215,7 @@ def _make_repl_handler(mod_name: str, func_name: str) -> Callable:
 
 def _display_result(result: Any, log: Any) -> None:
     """Display a result object in the RichLog."""
-    import pandas as pd
+    from morie.fn import _frame_core as pd
 
     if isinstance(result, pd.DataFrame):
         log.write(result.to_string(max_rows=30))
@@ -912,7 +912,7 @@ def _register_wrangling() -> int:
 
         def _make_wgl_repl(cn: str) -> Callable:
             def handler(*args: Any, **kwargs: Any) -> Any:
-                import pandas as pd
+                from morie.fn import _frame_core as pd
 
                 op = cn.replace("wgl_", "")
                 if args and isinstance(args[0], pd.DataFrame):
@@ -1026,7 +1026,7 @@ def _register_descriptive() -> int:
         def _make_desc_repl(cn: str) -> Callable:
             def handler(*args: Any, **kwargs: Any) -> Any:
                 import numpy as np
-                import pandas as pd
+                from morie.fn import _frame_core as pd
 
                 op = cn.replace("desc_", "")
 

@@ -35,7 +35,7 @@ def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None, scramble: bool = Tr
     RichResult: sample, [estimate, se], N, d, method.
     """
     try:
-        from scipy.stats import qmc
+        from ._stats_core import qmc
     except Exception as e:  # pragma: no cover
         return RichResult(payload={"error": f"scipy.stats.qmc unavailable: {e}", "method": "Sobol (Sobol 1967)"})
     if x is not None:

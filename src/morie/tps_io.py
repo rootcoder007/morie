@@ -37,7 +37,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from .tps_datasets import TPS_DATA_DIR, TPS_REGISTRY
 

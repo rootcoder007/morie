@@ -43,7 +43,7 @@ def psdmt(
     -------
     DescriptiveResult
     """
-    from scipy.signal.windows import dpss
+    from ._signal_core import dpss
 
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)

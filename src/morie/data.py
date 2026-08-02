@@ -9,7 +9,7 @@ from typing import Any
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 _SAFE_TABLE_RE = re.compile(r"^[A-Za-z0-9_]+$")
 

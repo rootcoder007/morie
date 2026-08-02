@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.ndimage import uniform_filter1d
+from ._sci_core import uniform_filter1d
 
 from ._containers import TimeSeriesResult
 
