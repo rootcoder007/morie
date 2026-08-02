@@ -37,12 +37,12 @@ Functions
     Drop-in for ``np.linalg.norm(a - b)``.
 
 ``is_jit_available()``
-    Returns ``True`` iff numba is importable and ``MORIE_DISABLE_JIT``
-    is not set.
+    Returns ``True`` iff the compiled C++ core is loaded and
+    ``MORIE_DISABLE_JIT`` is not set.
 
 ``jit_if_available(*args, **kwargs)``
-    Decorator factory that passes through to ``numba.njit`` when
-    numba is installed, otherwise no-ops.  For users decorating their
+    Identity decorator factory (kept for API stability; the
+    compiled core does the accelerating). For users decorating their
     own kernels::
 
         from morie.fast import jit_if_available
@@ -51,10 +51,6 @@ Functions
         def my_hot_loop(arr):
             ...
 
-When numba is NOT installed (e.g. Python 3.15+, where numba wheels are
-not yet available), every function still runs as plain numpy.
-Numerically identical, just slower.  ``is_jit_available()`` lets the
-caller branch on this if perf-sensitive reporting matters.
 """
 
 from __future__ import annotations
@@ -91,20 +87,16 @@ def jit_if_available(*args, **kwargs):
         @jit_if_available(cache=True, nogil=True)
         def f(x): ...
     """
-    if not is_jit_available():
-        # Identity-decorator forms — handle both bare and call-style:
-        if len(args) == 1 and callable(args[0]) and not kwargs:
-            return args[0]
+    # The compiled C++ core (morie._core) is the acceleration layer;
+    # the numba path was removed with the external-dependency purge.
+    # Both decorator forms stay valid as identities.
+    if len(args) == 1 and callable(args[0]) and not kwargs:
+        return args[0]
 
-        def _passthrough(fn):
-            return fn
+    def _passthrough(fn):
+        return fn
 
-        return _passthrough
-
-    # numba is available; defer to it
-    import numba  # noqa: WPS433 — local on purpose; never eager-imported
-
-    return numba.njit(*args, **kwargs)
+    return _passthrough
 
 
 __all__ = [
