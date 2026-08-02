@@ -15,7 +15,7 @@ risk-ratio confidence intervals, and a CKAN-aware data-quality audit.
 
 All callables are pure (no IO, no class state), accept ``pandas``
 inputs, depend only on ``numpy`` + ``scipy.stats`` (with an optional
-soft import of ``ruptures``), and produce results suitable for
+native PELT change-point detector), and produce results suitable for
 inclusion in MRM empirical papers without further post-processing.
 
 Functions
@@ -27,7 +27,7 @@ mrm_uof_weapon_diversity
     Weapon-by-service contingency: chi-square, Cramer's V, top-3
     standardised residuals.
 mrm_uof_yoy_change
-    Year-on-year percentage change with optional ``ruptures``-based
+    Year-on-year percentage change with native PELT-based
     change-point detection (PELT / rbf) or a manual largest-gap
     fallback.
 mrm_uof_region_locality
@@ -609,30 +609,54 @@ def mrm_uof_yoy_change(
     if n_years < 3:
         warnings.append(f"Only {n_years} year(s) supplied; too few for change-point detection.")
     else:
-        try:
-            import ruptures as rpt  # type: ignore
+        # Native PELT (Killick, Fearnhead & Eckley 2012, JASA
+        # 107(500), eq. 4 with the pruning rule of thm 3.1): exact
+        # penalised optimal partitioning under the Gaussian mean-shift
+        # cost C(y_{a:b}) = sum (y - ybar)^2, pen = 10. Standardising
+        # the series first makes the L2 cost scale-free -- the role
+        # the RBF cost played in the previous ruptures.Pelt call on
+        # this 1-D series.
+        yv = [float(v) for v in counts_arr._flat()] \
+            if hasattr(counts_arr, "_flat") \
+            else [float(v) for v in counts_arr]
+        mu = sum(yv) / len(yv)
+        sd = (sum((v - mu) ** 2 for v in yv) / len(yv)) ** 0.5 or 1.0
+        zv = [(v - mu) / sd for v in yv]
+        pen = 10.0
+        csum, csq = [0.0], [0.0]
+        for v in zv:
+            csum.append(csum[-1] + v)
+            csq.append(csq[-1] + v * v)
 
-            algo = rpt.Pelt(model="rbf").fit(counts_arr.reshape(-1, 1))
-            bkps = algo.predict(pen=10)
-            # ruptures returns breakpoints as INDEX-AFTER positions, with
-            # the final entry == n. Drop the trailing sentinel.
-            real_bkps = [b for b in bkps if b < n_years]
-            if real_bkps:
-                change_point_year = int(years_sorted[real_bkps[0]])
-                change_point_method = "ruptures.Pelt(model='rbf', pen=10)"
-        except ImportError:
-            diffs = np.abs(np.diff(counts_arr))
-            if diffs.size > 0:
-                idx = int(np.argmax(diffs)) + 1  # change at year[idx]
-                change_point_year = int(years_sorted[idx])
-                change_point_method = "largest-abs-diff fallback (ruptures not installed)"
-        except Exception as exc:  # noqa: BLE001
-            warnings.append(f"ruptures failed ({type(exc).__name__}); using fallback.")
-            diffs = np.abs(np.diff(counts_arr))
-            if diffs.size > 0:
-                idx = int(np.argmax(diffs)) + 1
-                change_point_year = int(years_sorted[idx])
-                change_point_method = "largest-abs-diff fallback (ruptures errored)"
+        def _cost(a, b):
+            sm = csum[b] - csum[a]
+            return (csq[b] - csq[a]) - sm * sm / (b - a)
+
+        F = [0.0] * (n_years + 1)
+        F[0] = -pen
+        prev_cp = [0] * (n_years + 1)
+        cands = [0]
+        for t in range(1, n_years + 1):
+            best, barg = None, 0
+            for sme in cands:
+                val = F[sme] + _cost(sme, t) + pen
+                if best is None or val < best:
+                    best, barg = val, sme
+            F[t] = best
+            prev_cp[t] = barg
+            cands = [sme for sme in cands
+                     if F[sme] + _cost(sme, t) <= F[t]] + [t]
+        bkps = []
+        t = n_years
+        while t > 0:
+            bkps.append(t)
+            t = prev_cp[t]
+        bkps = sorted(bkps)     # INDEX-AFTER; final entry == n_years
+        real_bkps = [b for b in bkps if b < n_years]
+        if real_bkps:
+            change_point_year = int(years_sorted[real_bkps[0]])
+            change_point_method = \
+                "native PELT (Killick et al. 2012, L2 cost, pen=10)"
 
     finite_yoy = [v for v in yoy_pct if v is not None and math.isfinite(v)]
     mean_abs_yoy = float(np.mean([abs(v) for v in finite_yoy])) if finite_yoy else float("nan")

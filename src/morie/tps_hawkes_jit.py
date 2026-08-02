@@ -2,7 +2,7 @@
 
 Reason this exists: ``tps_hawkes_advanced._neg_loglik_general`` did a pure-
 Python O(n²) inner loop over events; at n=21,160 the optimizer spent
-hours per fit.  This module replaces that hot loop with @njit'd code
+hours per fit.  This module replaces that hot loop with kernel code
 plus the well-known O(n) recursive update for the exponential kernel,
 so a 21k-event 2019-contiguous Markovian fit lands in seconds and the
 Weibull×sinusoidal non-Markovian fit lands in minutes.
@@ -24,23 +24,22 @@ import math as _math
 
 from morie.fn import _array_core as np
 
-try:
-    from numba import njit, prange
+HAS_NUMBA = False  # numba path removed with the dependency purge
+# The compiled C++ kernels in morie._core carry the hot loops; the
+# numba path is gone with the external-dependency purge. njit stays as
+# an identity decorator so the kernel functions read unchanged.
+prange = range
 
-    HAS_NUMBA = True
-except ImportError:  # pragma: no cover -- env without numba
-    HAS_NUMBA = False
-    prange = range  # type: ignore[assignment]
 
-    def njit(*args, **kwargs):  # type: ignore[no-redef]
-        # passthrough decorator so module still imports
-        if args and callable(args[0]):
-            return args[0]
+def njit(*args, **kwargs):
+    if len(args) == 1 and callable(args[0]) and not kwargs:
+        return args[0]
 
-        def _wrap(f):
-            return f
+    def _passthrough(fn):
+        return fn
 
-        return _wrap
+    return _passthrough
+
 
 
 # Phase 2 (v0.9.1): the compiled C++ core (morie._core) provides the
@@ -585,24 +584,28 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
 # overhead. numba is an optional dependency: the morie[callbacks] extra.
 
 
-def _as_cfunc(fn):
-    """Return a numba @cfunc for *fn* (returned unchanged if already one).
+def _hawkes_ll_custom_py(t, T, nu, eta, g, G):
+    """Pure-Python Hawkes negative log-likelihood for an arbitrary
+    triggering kernel (Daley & Vere-Jones 2003, prop. 7.2.III):
 
-    The returned object owns the compiled native code -- the caller
-    must keep a reference to it while the native pointer is in use.
-    Compiling a plain Python callable needs the morie[callbacks] extra.
+        -ll = -sum_i log(nu + eta * sum_{j<i} g(t_i - t_j))
+              + nu*T + eta * sum_j G(T - t_j)
+
+    O(n^2) like the C++ custom-kernel engine, evaluated with the
+    caller's plain Python callables -- no compiler required.
     """
-    if hasattr(fn, "address"):  # already a numba CFunc
-        return fn
-    try:
-        from numba import cfunc, types
-    except ImportError as exc:  # pragma: no cover -- callbacks extra absent
-        raise ImportError(
-            "hawkes_loglik_custom needs numba to compile a plain Python "
-            "kernel -- install morie[callbacks], or pass a pre-built "
-            "numba @cfunc."
-        ) from exc
-    return cfunc(types.float64(types.float64))(fn)
+    ts = [float(v) for v in t]
+    n = len(ts)
+    loglam = 0.0
+    for i in range(n):
+        lam = nu
+        for j in range(i):
+            lam += eta * g(ts[i] - ts[j])
+        if lam <= 0.0:
+            return 1e30
+        loglam += math.log(lam)
+    comp = nu * T + eta * sum(G(T - tj) for tj in ts)
+    return -(loglam - comp)
 
 
 def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
@@ -622,13 +625,12 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
         Constant baseline intensity (must be > 0).
     eta : float
         Branching ratio.
-    kernel : callable or numba CFunc
-        The triggering kernel ``g(dt)``. A numba ``@cfunc`` -- decorated
-        ``@cfunc(numba.types.float64(numba.types.float64))`` -- is
-        called natively inside morie's C++ O(n^2) loop, GIL-free. A
-        plain Python callable is compiled to a ``@cfunc`` on the fly
-        (needs the ``morie[callbacks]`` extra).
-    kernel_integral : callable or numba CFunc
+    kernel : callable
+        The triggering kernel ``g(dt)``. A plain Python callable runs
+        in the pure-Python O(n^2) engine; a pre-built native callback
+        (an object exposing ``.address``, the C-function-pointer
+        convention) runs GIL-free inside the C++ engine.
+    kernel_integral : callable
         ``G(u)`` = the integral of ``g`` over ``[0, u]`` -- the
         compensator term.
 
@@ -640,29 +642,26 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
     Examples
     --------
     >>> import math
-    >>> from numba import cfunc, types
-    >>> @cfunc(types.float64(types.float64))
-    ... def g(u):
+    >>> def g(u):
     ...     return 1.5 * math.exp(-1.5 * u)
-    >>> @cfunc(types.float64(types.float64))
-    ... def G(u):
+    >>> def G(u):
     ...     return 1.0 - math.exp(-1.5 * u)
     >>> hawkes_loglik_custom(t, T, nu=0.4, eta=0.3,
     ...                      kernel=g, kernel_integral=G)  # doctest: +SKIP
     """
-    if not HAS_CORE:
-        raise RuntimeError(
-            "hawkes_loglik_custom requires the compiled morie C++ core "
-            "(morie._core), which is not available in this install."
-        )
-    # Hold the CFunc objects in locals -- they own the compiled native
-    # code, and the synchronous C++ call below dereferences their
-    # addresses.
-    g_cf = _as_cfunc(kernel)
-    G_cf = _as_cfunc(kernel_integral)
-    return _core_ext.hawkes_ll_custom(
-        np.ascontiguousarray(t, dtype=np.float64), float(T), float(nu), float(eta), int(g_cf.address), int(G_cf.address)
-    )
+    if HAS_CORE and hasattr(kernel, "address") \
+            and hasattr(kernel_integral, "address"):
+        # A pre-built native callback (anything exposing .address, the
+        # C-function-pointer convention) still runs GIL-free in the
+        # C++ O(n^2) engine.
+        return _core_ext.hawkes_ll_custom(
+            np.ascontiguousarray(t, dtype=np.float64), float(T),
+            float(nu), float(eta), int(kernel.address),
+            int(kernel_integral.address))
+    # Plain Python callables evaluate in the pure-Python engine -- the
+    # same likelihood, no compiler dependency.
+    return _hawkes_ll_custom_py(t, float(T), float(nu), float(eta),
+                                kernel, kernel_integral)
 
 
 # --- sum-of-exponentials (SoE) fit, task #73 -------------------------------
