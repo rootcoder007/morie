@@ -12,8 +12,32 @@ from typing import Any
 
 from . import _array_core as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.preprocessing import LabelEncoder
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+except ImportError:
+    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+    RandomForestRegressor = _MissingDep('RandomForestRegressor')
+try:
+    from sklearn.preprocessing import LabelEncoder
+except ImportError:
+    LabelEncoder = _MissingDep('LabelEncoder')
 
 
 def estimate_irm(

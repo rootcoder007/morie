@@ -5,8 +5,32 @@ import warnings
 
 from . import _array_core as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.preprocessing import StandardScaler
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.linear_model import LinearRegression, LogisticRegression
+except ImportError:
+    LinearRegression = _MissingDep('LinearRegression')
+    LogisticRegression = _MissingDep('LogisticRegression')
+try:
+    from sklearn.preprocessing import StandardScaler
+except ImportError:
+    StandardScaler = _MissingDep('StandardScaler')
 
 
 def estimate_ate_gcomputation(

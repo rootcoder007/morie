@@ -135,11 +135,13 @@ class marr:
                 return self.data[i][j]
             raise ValueError("unsupported index for 1-D")
         if isinstance(idx, marr):
-            if idx.shape != (self.shape[0],):
-                raise ValueError("mask shape mismatch")
-            keep = [k for k, m in enumerate(idx.data) if m != 0]
-            if len(self.shape) == 1:
-                return marr([self.data[k] for k in keep])
+            vals = idx._flat()
+            is_mask = (idx.shape == (self.shape[0],)
+                       and _pyall(v in (0.0, 1.0) for v in vals))
+            if is_mask:
+                keep = [k for k, m in enumerate(vals) if m != 0]
+            else:
+                keep = [int(v) for v in vals]   # fancy integer indexing
             return marr([self.data[k] for k in keep])
         if isinstance(idx, (list, tuple)):
             return marr([self.data[int(k)] for k in idx])
@@ -161,6 +163,29 @@ class marr:
 
     def ravel(self):
         return marr(self._flat())
+
+    def copy(self):
+        return marr(self)
+
+    def flatten(self):
+        return marr(self._flat())
+
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        f = self._flat()
+        if shape == (-1,) or shape == (len(f),):
+            return marr(f)
+        if len(shape) == 2:
+            n, m = shape
+            if n == -1:
+                n = len(f) // m
+            if m == -1:
+                m = len(f) // n
+            if n * m != len(f):
+                raise ValueError("cannot reshape")
+            return marr([f[i * m:(i + 1) * m] for i in range(n)])
+        raise ValueError("unsupported reshape %r" % (shape,))
 
     def __float__(self):
         f = self._flat()
@@ -407,7 +432,7 @@ def diag(x):
         n = a.shape[0]
         return marr([[a.data[i] if i == j else 0.0 for j in range(n)]
                      for i in range(n)])
-    return marr([a.data[i][i] for i in range(min(a.shape))])
+    return marr([a.data[i][i] for i in range(_bi.min(a.shape))])
 
 
 def column_stack(cols):
@@ -540,12 +565,28 @@ def min(x):  # noqa: A001
     return asarray(x).min()
 
 
-def all(x):  # noqa: A001
-    return asarray(x).all()
+def _axis_reduce(x, axis, red):
+    a = atleast_2d(x)
+    if axis == 0:
+        return marr([red(a.data[i][j] for i in range(a.shape[0]))
+                     for j in range(a.shape[1])])
+    return marr([red(row) for row in a.data])
 
 
-def any(x):  # noqa: A001
-    return asarray(x).any()
+def all(x, axis=None):  # noqa: A001
+    if axis is None:
+        return asarray(x).all()
+    return _axis_reduce(x, axis,
+                        lambda it: 1.0 if _bi.all(v != 0 for v in it)
+                        else 0.0)
+
+
+def any(x, axis=None):  # noqa: A001
+    if axis is None:
+        return asarray(x).any()
+    return _axis_reduce(x, axis,
+                        lambda it: 1.0 if _bi.any(v != 0 for v in it)
+                        else 0.0)
 
 
 def sort(x):
@@ -654,6 +695,41 @@ class _SplitMix64:
         if size is None:
             return one()
         return marr([one() for _ in range(int(size))])
+
+    def shuffle(self, seq):
+        # Fisher-Yates in place on a plain list
+        if isinstance(seq, marr):
+            data = seq.data
+        else:
+            data = seq
+        for i in range(len(data) - 1, 0, -1):
+            j = self._next() % (i + 1)
+            data[i], data[j] = data[j], data[i]
+
+    def permutation(self, n):
+        if isinstance(n, int):
+            out = list(range(n))
+        else:
+            out = list(asarray(n)._flat())
+        self.shuffle(out)
+        return marr([float(v) for v in out])
+
+    def choice(self, a, size=None, replace=True, p=None):
+        if p is not None:
+            raise NotImplementedError("weighted choice not needed yet")
+        pool = list(range(int(a))) if isinstance(a, int)             else list(asarray(a)._flat())
+        if size is None:
+            return pool[self._next() % len(pool)]
+        k = int(size)
+        if replace:
+            return marr([float(pool[self._next() % len(pool)])
+                         for _ in range(k)])
+        if k > len(pool):
+            raise ValueError("cannot sample more than population without "
+                             "replacement")
+        idx = list(range(len(pool)))
+        self.shuffle(idx)
+        return marr([float(pool[i]) for i in idx[:k]])
 
     def integers(self, low, high=None, size=None):
         if high is None:
@@ -790,6 +866,106 @@ class _LinalgExt:
         return fro(aa) * fro(ai)
 
 
+def _matrix_rank(a, tol=None):
+    """Rank via row-reduction with partial pivoting (float tolerance)."""
+    m = [row[:] for row in atleast_2d(a).tolist()]
+    nrow = len(m)
+    ncol = len(m[0])
+    if tol is None:
+        scale = _pymax((_pymax(_bi.abs(v) for v in row) for row in m),
+                       default=0.0)
+        tol = 1e-12 * _pymax(scale, 1.0)
+    rank = 0
+    row = 0
+    for col in range(ncol):
+        piv = None
+        best = tol
+        for r in range(row, nrow):
+            if _bi.abs(m[r][col]) > best:
+                best = _bi.abs(m[r][col])
+                piv = r
+        if piv is None:
+            continue
+        m[row], m[piv] = m[piv], m[row]
+        pv = m[row][col]
+        for r in range(nrow):
+            if r != row and _bi.abs(m[r][col]) > 0:
+                fct = m[r][col] / pv
+                m[r] = [m[r][j] - fct * m[row][j] for j in range(ncol)]
+        rank += 1
+        row += 1
+        if row == nrow:
+            break
+    return rank
+
+
+def _jacobi_eigh(a):
+    """Symmetric eigendecomposition (values, vectors) via cyclic Jacobi."""
+    m = [row[:] for row in atleast_2d(a).tolist()]
+    n = len(m)
+    v = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    for _sweep in range(100):
+        off = _math.sqrt(_math.fsum(m[i][j] ** 2 for i in range(n)
+                                    for j in range(n) if i != j))
+        if off < 1e-14:
+            break
+        for p_ in range(n - 1):
+            for q_ in range(p_ + 1, n):
+                if _bi.abs(m[p_][q_]) < 1e-300:
+                    continue
+                theta = (m[q_][q_] - m[p_][p_]) / (2.0 * m[p_][q_])
+                t = (1.0 if theta >= 0 else -1.0) / (
+                    _bi.abs(theta) + _math.sqrt(theta * theta + 1.0))
+                c = 1.0 / _math.sqrt(t * t + 1.0)
+                s = t * c
+                for k in range(n):
+                    mkp, mkq = m[k][p_], m[k][q_]
+                    m[k][p_] = c * mkp - s * mkq
+                    m[k][q_] = s * mkp + c * mkq
+                for k in range(n):
+                    mpk, mqk = m[p_][k], m[q_][k]
+                    m[p_][k] = c * mpk - s * mqk
+                    m[q_][k] = s * mpk + c * mqk
+                for k in range(n):
+                    vkp, vkq = v[k][p_], v[k][q_]
+                    v[k][p_] = c * vkp - s * vkq
+                    v[k][q_] = s * vkp + c * vkq
+    vals = [m[i][i] for i in range(n)]
+    return vals, v
+
+
+def _pinv(a, rcond=1e-15):
+    """Moore-Penrose pseudoinverse.
+
+    Symmetric input: Jacobi eigendecomposition.  General input: routed
+    through the symmetric case via A+ = (A^T A)+ A^T.
+    """
+    aa = atleast_2d(a)
+    n, mcols = aa.shape
+    sym = n == mcols and _pyall(
+        _bi.abs(aa.data[i][j] - aa.data[j][i]) < 1e-10
+        for i in range(n) for j in range(i + 1, n))
+    if not sym:
+        ata = matmul(aa.T, aa)
+        return matmul(_pinv(ata, rcond), aa.T)
+    vals, vecs = _jacobi_eigh(aa)
+    vmax = _pymax((_bi.abs(x) for x in vals), default=0.0)
+    cut = rcond * _pymax(vmax, 1.0) * n
+    out = [[0.0] * n for _ in range(n)]
+    for k in range(n):
+        if _bi.abs(vals[k]) <= cut:
+            continue
+        inv_l = 1.0 / vals[k]
+        for i in range(n):
+            for j in range(n):
+                out[i][j] += vecs[i][k] * inv_l * vecs[j][k]
+    return marr(out)
+
+
+_LinalgExt.pinv = staticmethod(_pinv)
+_LinalgExt.matrix_rank = staticmethod(_matrix_rank)
+linalg.matrix_rank = _matrix_rank
+linalg.pinv = _pinv
 linalg.slogdet = _LinalgExt.slogdet
 linalg.eigvalsh = _LinalgExt.eigvalsh
 linalg.cond = _LinalgExt.cond
@@ -952,3 +1128,86 @@ def finfo(dtype=None):
 int16 = int
 int8 = int
 uint8 = int
+
+bool_ = bool
+
+
+def median(x):
+    f = sorted(asarray(x)._flat())
+    n = len(f)
+    if n == 0:
+        raise ValueError("median of empty array")
+    mid = n // 2
+    if n % 2:
+        return f[mid]
+    return 0.5 * (f[mid - 1] + f[mid])
+
+
+def percentile(x, q):
+    """Linear-interpolation percentile (numpy default method)."""
+    f = sorted(asarray(x)._flat())
+    n = len(f)
+
+    def one(qq):
+        if not 0 <= qq <= 100:
+            raise ValueError("q in [0, 100]")
+        pos = qq / 100.0 * (n - 1)
+        lo = int(_math.floor(pos))
+        hi = int(_math.ceil(pos))
+        if lo == hi:
+            return f[lo]
+        return f[lo] + (pos - lo) * (f[hi] - f[lo])
+    if isinstance(q, (list, tuple)):
+        return marr([one(float(v)) for v in q])
+    return one(float(q))
+
+
+def quantile(x, q):
+    if isinstance(q, (list, tuple)):
+        return percentile(x, [100.0 * float(v) for v in q])
+    return percentile(x, 100.0 * float(q))
+
+
+def empty(n):
+    return zeros(n)
+
+
+def subtract(a, b):
+    if not isinstance(a, (list, tuple, marr)) \
+            and not isinstance(b, (list, tuple, marr)):
+        return float(a) - float(b)
+    return asarray(a)._zip(b, lambda x, y: x - y)
+
+
+def add(a, b):
+    if not isinstance(a, (list, tuple, marr)) \
+            and not isinstance(b, (list, tuple, marr)):
+        return float(a) + float(b)
+    return asarray(a)._zip(b, lambda x, y: x + y)
+
+
+def multiply(a, b):
+    if not isinstance(a, (list, tuple, marr)) \
+            and not isinstance(b, (list, tuple, marr)):
+        return float(a) * float(b)
+    return asarray(a)._zip(b, lambda x, y: x * y)
+
+
+def divide(a, b):
+    if not isinstance(a, (list, tuple, marr)) \
+            and not isinstance(b, (list, tuple, marr)):
+        return float(a) / float(b)
+    return asarray(a)._zip(b, lambda x, y: x / y)
+
+
+def fill_diagonal(a, val):
+    m = atleast_2d(a)
+    for i in range(_bi.min(m.shape)):
+        m.data[i][i] = float(val)
+    # in-place on the caller's 2-D marr (same list objects)
+
+
+def shape(x):
+    if isinstance(x, marr):
+        return x.shape
+    return asarray(x).shape

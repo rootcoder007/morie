@@ -9,8 +9,32 @@ model used by IPW, AIPW, ATT, ATC, and other causal estimators in morie.
 from __future__ import annotations
 
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from sklearn.linear_model import LogisticRegression
+except ImportError:
+    LogisticRegression = _MissingDep('LogisticRegression')
+try:
+    from sklearn.preprocessing import LabelEncoder, StandardScaler
+except ImportError:
+    LabelEncoder = _MissingDep('LabelEncoder')
+    StandardScaler = _MissingDep('StandardScaler')
 
 
 def compute_propensity_scores(data: pd.DataFrame, treatment: str, covariates: list) -> pd.Series:
