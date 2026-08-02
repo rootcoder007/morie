@@ -2885,3 +2885,81 @@ def frombuffer(buf, dtype="float64", count=-1):
     n = len(buf) // size if count in (-1, None) else int(count)
     vals = struct.unpack("<%d%s" % (n, fmt), bytes(buf[:n * size]))
     return marr([float(v) for v in vals])
+
+
+# --------------------------------------------------------------- C dispatch
+
+# Compiled morie._core kernels (nanobind, see libmorie/linalg_core.hpp)
+# take over the hot paths when the extension is importable; the pure-
+# Python implementations above remain the reference arm and the
+# fallback on source-only installs.
+try:
+    from morie import _core as _CK
+    _HAS_CORE = hasattr(_CK, "matmul")
+except Exception:                       # pragma: no cover - env-specific
+    _CK = None
+    _HAS_CORE = False
+
+if _HAS_CORE:
+    import array as _pyarray
+
+    _py_matmul = matmul
+
+    def _buf(flat):
+        out = _pyarray.array("d")
+        out.fromlist([float(v) for v in flat])
+        return out
+
+    def _unbuf(bts):
+        out = _pyarray.array("d")
+        out.frombytes(bts)
+        return list(out)
+
+    def matmul(a, b):  # noqa: F811
+        A = asarray(a)
+        B = asarray(b)
+        if len(A.shape) != 2 or len(B.shape) != 2:
+            return _py_matmul(a, b)
+        n, m = A.shape
+        m2, p = B.shape
+        if m != m2:
+            return _py_matmul(a, b)     # let the reference arm raise
+        flat = _CK.matmul(_buf(A._flat()), _buf(B._flat()), n, m, p)
+        vals = _unbuf(flat)
+        return marr([vals[i * p:(i + 1) * p] for i in range(n)])
+
+    _py_solve = _Linalg.solve
+
+    def _c_solve(a, b):
+        A = atleast_2d(a)
+        n = A.shape[0]
+        bv = asarray(b)
+        k = 1 if len(bv.shape) == 1 else bv.shape[1]
+        try:
+            flat = _CK.solve(_buf(A._flat()), _buf(bv._flat()), n, k)
+        except Exception:
+            raise linalg.LinAlgError("singular matrix") from None
+        vals = _unbuf(flat)
+        if k == 1:
+            return marr(vals)
+        return marr([vals[i * k:(i + 1) * k] for i in range(n)])
+
+    _Linalg.solve = staticmethod(_c_solve)
+
+    _py_fft_any = _fft_any
+
+    def _fft_any(a, invert):  # noqa: F811
+        n = len(a)
+        if n == 0:
+            return []
+        re, im = _CK.fft(_buf(v.real for v in a),
+                         _buf(v.imag for v in a), invert)
+        rev, imv = _unbuf(re), _unbuf(im)
+        out = [complex(rev[i], imv[i]) for i in range(n)]
+        if invert and n & (n - 1) == 0:
+            # compiled fft returns unscaled inverse for pow2 to match
+            # the pure-Python contract used by fft.ifft
+            return out
+        return out
+    # rebind the FFT namespace onto the dispatched transform
+    _FFT_dispatch_note = "compiled"
