@@ -854,3 +854,73 @@ def sliding_window_view(x, window):
     if w < 1 or w > len(f):
         raise ValueError("invalid window length")
     return marr([f[i:i + w] for i in range(len(f) - w + 1)])
+
+
+float32 = float
+int64 = int
+int32 = int
+
+
+def zeros_like(x):
+    a = asarray(x)
+    if len(a.shape) == 2:
+        return marr([[0.0] * a.shape[1] for _ in range(a.shape[0])])
+    return marr([0.0] * a.shape[0])
+
+
+def ones_like(x):
+    a = asarray(x)
+    if len(a.shape) == 2:
+        return marr([[1.0] * a.shape[1] for _ in range(a.shape[0])])
+    return marr([1.0] * a.shape[0])
+
+
+tanh = _uf(_math.tanh)
+sinh = _uf(_math.sinh)
+cosh = _uf(_math.cosh)
+sin = _uf(_math.sin)
+cos = _uf(_math.cos)
+tan = _uf(_math.tan)
+arctan = _uf(_math.atan)
+arcsin = _uf(_math.asin)
+arccos = _uf(_math.acos)
+sign = _uf(lambda v: 0.0 if v == 0 else (1.0 if v > 0 else -1.0))
+floor = _uf(_math.floor)
+ceil = _uf(_math.ceil)
+round = _uf(lambda v: float(_bi.round(v)))  # noqa: A001
+log2 = _uf(_math.log2)
+log10 = _uf(_math.log10)
+expm1 = _uf(_math.expm1)
+isnan = _uf(lambda v: 1.0 if v != v else 0.0)
+
+
+def vectorize(fn):
+    def wrapped(x, *args, **kw):
+        if isinstance(x, (list, tuple, marr)):
+            return asarray(x)._map(lambda v: float(fn(v, *args, **kw)))
+        return fn(x, *args, **kw)
+    return wrapped
+
+
+def cumsum(x):
+    out = []
+    total = 0.0
+    for v in asarray(x)._flat():
+        total += v
+        out.append(total)
+    return marr(out)
+
+
+def argmax(x):
+    return asarray(x).argmax()
+
+
+def argmin(x):
+    f = asarray(x)._flat()
+    return f.index(_bi.min(f))
+
+
+def argsort(x):
+    f = asarray(x)._flat()
+    return marr([float(i) for i in
+                 sorted(range(len(f)), key=lambda k: f[k])])
