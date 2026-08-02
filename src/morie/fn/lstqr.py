@@ -32,7 +32,18 @@ def lstsq_qr(
     b = np.asarray(b, dtype=float)
     m, n = A.shape
     Q, R = np.linalg.qr(A, mode="reduced")
-    x = np.linalg.solve(R, Q.T @ b)
+    # A rank-deficient A leaves a diagonal entry of R at rounding scale
+    # rather than exactly zero, so back-substitution "succeeds" and
+    # blows up.  Test the rank of R and fall back to the minimum-norm
+    # least-squares solution (Golub & Van Loan 2013, Matrix
+    # Computations 4th ed., sec. 5.5).
+    Rd = R.tolist()
+    diag = [abs(Rd[i][i]) for i in range(min(len(Rd), len(Rd[0])))]
+    dmax = max(diag) if diag else 0.0
+    if diag and min(diag) <= dmax * max(m, n) * 2.220446049250313e-16:
+        x = np.linalg.lstsq(A, b)[0]
+    else:
+        x = np.linalg.solve(R, Q.T @ b)
     residual = float(np.linalg.norm(A @ x - b))
     return DescriptiveResult(
         name="Least Squares (QR)",
