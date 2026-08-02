@@ -167,6 +167,10 @@ class marr:
     def copy(self):
         return marr(self)
 
+    def astype(self, dtype=None):
+        del dtype
+        return marr(self)
+
     def flatten(self):
         return marr(self._flat())
 
@@ -685,6 +689,12 @@ class _SplitMix64:
         if size is None:
             return one()
         return marr([one() for _ in range(int(size))])
+
+    def standard_normal(self, size=None):
+        return self.normal(0.0, 1.0, size)
+
+    def random(self, size=None):
+        return self.uniform(0.0, 1.0, size)
 
     def normal(self, loc=0.0, scale=1.0, size=None):
         def one():
@@ -1211,3 +1221,27 @@ def shape(x):
     if isinstance(x, marr):
         return x.shape
     return asarray(x).shape
+
+
+def ndim(x):
+    return asarray(x).ndim
+
+
+class errstate:
+    """No-op numpy.errstate stand-in (Python floats already raise/inf)."""
+
+    def __init__(self, **kw):
+        del kw
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+class _LinAlgError(ValueError):
+    pass
+
+
+linalg.LinAlgError = _LinAlgError
