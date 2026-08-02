@@ -376,9 +376,12 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
         return node
     d = len(Xd[0])
     feats = list(range(d))
+    if rng is not None:
+        # sklearn's splitter draws features in random order even with
+        # max_features = n_features; equal-improvement ties then break
+        # by seed (verified against sklearn 1.8)
+        rng.shuffle(feats)
     if max_features is not None and max_features < d:
-        if rng is not None:
-            rng.shuffle(feats)
         feats = feats[:max_features]
     best = None
     for f in feats:
@@ -399,7 +402,10 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
                 gl = 1.0 - _math.fsum((v / nl) ** 2 for v in lc)
                 gr = 1.0 - _math.fsum((v / nr) ** 2 for v in rc)
                 score = (nl * gl + nr * gr) / n
-                if best is None or score < best[0]:
+                if best is None or score < best[0] - 1e-10:
+                    # EPSILON guard mirrors sklearn's splitter: scores
+                    # within float noise keep the first feature found
+                    # in the (seeded) random order
                     thr = 0.5 * (Xd[order[pos]][f]
                                  + Xd[order[pos + 1]][f])
                     best = (score, f, thr)
@@ -418,7 +424,10 @@ def _build_tree(Xd, yv, idx, depth, max_depth, min_samples_split,
                     continue
                 nl, nr = pos + 1.0, n - pos - 1.0
                 score = (sl2 - sl * sl / nl) + (sr2 - sr * sr / nr)
-                if best is None or score < best[0]:
+                if best is None or score < best[0] - 1e-10:
+                    # EPSILON guard mirrors sklearn's splitter: scores
+                    # within float noise keep the first feature found
+                    # in the (seeded) random order
                     thr = 0.5 * (Xd[order[pos]][f]
                                  + Xd[order[pos + 1]][f])
                     best = (score, f, thr)
@@ -516,13 +525,16 @@ class DecisionTreeClassifier:
 class _ForestBase:
     def __init__(self, n_estimators=100, max_depth=None,
                  min_samples_split=2, max_features=None,
-                 random_state=0, **kw):
+                 random_state=0, oob_score=False, bootstrap=True,
+                 **kw):
         del kw
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.max_features = max_features
         self.random_state = random_state or 0
+        self.oob_score = bool(oob_score)
+        self.bootstrap = bool(bootstrap)
 
     def _fit_forest(self, Xd, yv, classify, n_classes):
         n = len(yv)
@@ -539,12 +551,57 @@ class _ForestBase:
             mf = int(self.max_features)
         rng = _ac.random.default_rng(self.random_state)
         self._trees = []
+        boot_sets = []
         for _t in range(self.n_estimators):
-            boot = [int(rng.integers(0, n)) for _ in range(n)]
+            if self.bootstrap:
+                boot = [int(rng.integers(0, n)) for _ in range(n)]
+            else:
+                boot = list(range(n))
+            boot_sets.append(set(boot))
             self._trees.append(_build_tree(
                 Xd, yv, boot, 0, self.max_depth,
                 self.min_samples_split, mf, rng, classify,
                 n_classes))
+        if self.oob_score and self.bootstrap:
+            # Breiman (1996) out-of-bag estimate: each sample scored
+            # only by the trees whose bootstrap excluded it
+            correct = 0.0
+            counted = 0
+            sse = 0.0
+            oob_pairs = []
+            for i in range(n):
+                preds = [_tree_predict(t, Xd[i])
+                         for t, bs in zip(self._trees, boot_sets)
+                         if i not in bs]
+                if not preds:
+                    continue
+                counted += 1
+                if classify:
+                    votes = {}
+                    for p in preds:
+                        if isinstance(p, list):
+                            # class-count leaf: argmax class
+                            k = _bi.max(range(len(p)),
+                                        key=lambda c2: p[c2])
+                        else:
+                            k = int(round(p))
+                        votes[k] = votes.get(k, 0) + 1
+                    pred = _bi.max(votes, key=votes.get)
+                    if pred == int(round(yv[i])):
+                        correct += 1.0
+                else:
+                    p = _math.fsum(preds) / len(preds)
+                    sse += (p - yv[i]) ** 2
+                    oob_pairs.append((p, yv[i]))
+            if counted == 0:
+                self.oob_score_ = float("nan")
+            elif classify:
+                self.oob_score_ = correct / counted
+            else:
+                ybar = _math.fsum(y2 for _p, y2 in oob_pairs) / counted
+                tss = _math.fsum((y2 - ybar) ** 2
+                                 for _p, y2 in oob_pairs)
+                self.oob_score_ = 1.0 - sse / tss if tss > 0 else 0.0
 
 
 class RandomForestRegressor(_ForestBase):
@@ -625,6 +682,24 @@ class RandomForestClassifier(_ForestBase):
                          for j in range(d)])
 
 
+def _split_count_importances(trees, n_features):
+    """Frequency-weighted split counts (the same proxy importance the
+    forest classes report)."""
+    d_counts = {}
+
+    def walk(node, w):
+        if node is None or node.feat < 0:
+            return
+        d_counts[node.feat] = d_counts.get(node.feat, 0.0) + w
+        walk(node.left, w)
+        walk(node.right, w)
+    for t in trees:
+        walk(t, 1.0)
+    tot = _math.fsum(d_counts.values()) or 1.0
+    return _ac.marr([d_counts.get(j, 0.0) / tot
+                     for j in range(n_features)])
+
+
 class GradientBoostingRegressor:
     def __init__(self, n_estimators=100, learning_rate=0.1,
                  max_depth=3, random_state=0, **kw):
@@ -632,18 +707,22 @@ class GradientBoostingRegressor:
         self.n_estimators = n_estimators
         self.learning_rate = learning_rate
         self.max_depth = max_depth
+        self.random_state = random_state or 0
 
     def fit(self, X, y):
         Xd = _X2d(X)
         yv = _y1d(y)
         n = len(yv)
+        rng = _ac.random.default_rng(self.random_state)
+        self._n_features = len(Xd[0]) if Xd else 0
         self._f0 = _math.fsum(yv) / n
         pred = [self._f0] * n
         self._trees = []
         for _ in range(self.n_estimators):
             resid = [yv[i] - pred[i] for i in range(n)]
             t = _build_tree(Xd, resid, list(range(n)), 0,
-                            self.max_depth, 2, None, None, False, 0)
+                            self.max_depth, 2, self._n_features, rng,
+                            False, 0)
             self._trees.append(t)
             for i in range(n):
                 pred[i] += self.learning_rate * _tree_predict(
@@ -668,6 +747,10 @@ class GradientBoostingRegressor:
         tss = _math.fsum((a - ybar) ** 2 for a in yv)
         return 1.0 - ssr / tss if tss > 0 else 0.0
 
+    @property
+    def feature_importances_(self):
+        return _split_count_importances(self._trees, self._n_features)
+
 
 class GradientBoostingClassifier:
     """Binary log-loss boosting on the logit scale."""
@@ -678,6 +761,7 @@ class GradientBoostingClassifier:
         self.n_estimators = n_estimators
         self.learning_rate = learning_rate
         self.max_depth = max_depth
+        self.random_state = random_state or 0
 
     def fit(self, X, y):
         Xd = _X2d(X)
@@ -685,16 +769,19 @@ class GradientBoostingClassifier:
         self.classes_ = sorted(set(yraw), key=str)
         yv = [1.0 if v == self.classes_[1] else 0.0 for v in yraw]
         n = len(yv)
+        self._n_features = len(Xd[0]) if Xd else 0
         pbar = _bi.min(_bi.max(_math.fsum(yv) / n, 1e-10),
                        1.0 - 1e-10)
         self._f0 = _math.log(pbar / (1.0 - pbar))
         f = [self._f0] * n
+        rng = _ac.random.default_rng(self.random_state)
         self._trees = []
         for _ in range(self.n_estimators):
             p = [1.0 / (1.0 + _math.exp(-v)) for v in f]
             resid = [yv[i] - p[i] for i in range(n)]
             t = _build_tree(Xd, resid, list(range(n)), 0,
-                            self.max_depth, 2, None, None, False, 0)
+                            self.max_depth, 2, self._n_features, rng,
+                            False, 0)
             self._trees.append(t)
             for i in range(n):
                 f[i] += self.learning_rate * _tree_predict(t, Xd[i])
@@ -716,6 +803,10 @@ class GradientBoostingClassifier:
             p1 = 1.0 / (1.0 + _math.exp(-v))
             out.append([1.0 - p1, p1])
         return _ac.marr(out)
+
+    @property
+    def feature_importances_(self):
+        return _split_count_importances(self._trees, self._n_features)
 
     def predict(self, X):
         return [self.classes_[1] if p[1] >= 0.5 else self.classes_[0]
@@ -1577,6 +1668,7 @@ class GridSearchCV:
     def fit(self, X, y):
         import copy
         best = None
+        all_params, all_scores = [], []
         for params in self._grid():
             est = copy.deepcopy(self.estimator)
             for k, v in params.items():
@@ -1584,8 +1676,12 @@ class GridSearchCV:
             sc = cross_val_score(est, X, y, cv=self.cv,
                                  scoring=self.scoring)
             m = _math.fsum(sc._flat()) / len(sc._flat())
+            all_params.append(dict(params))
+            all_scores.append(m)
             if best is None or m > best[0]:
                 best = (m, params)
+        self.cv_results_ = {"params": all_params,
+                            "mean_test_score": _ac.marr(all_scores)}
         self.best_score_, self.best_params_ = best
         self.best_estimator_ = copy.deepcopy(self.estimator)
         for k, v in self.best_params_.items():
@@ -1611,8 +1707,15 @@ class RandomizedSearchCV(GridSearchCV):
         rng = _ac.random.default_rng(self.random_state)
         keys = list(self.param_grid)
         for _ in range(self.n_iter):
-            yield {k: self.param_grid[k][int(rng.integers(
-                0, len(self.param_grid[k])))] for k in keys}
+            out = {}
+            for k in keys:
+                dist = self.param_grid[k]
+                if hasattr(dist, "rvs"):
+                    # scipy-style frozen distribution
+                    out[k] = float(dist.rvs(random_state=rng))
+                else:
+                    out[k] = dist[int(rng.integers(0, len(dist)))]
+            yield out
 
 
 def learning_curve(estimator, X, y, train_sizes=(0.1, 0.33, 0.55,
@@ -1824,13 +1927,14 @@ class TSNE:
 
     def __init__(self, n_components=2, perplexity=30.0,
                  learning_rate=200.0, n_iter=500, random_state=0,
-                 **kw):
+                 init="random", **kw):
         del kw
         self.n_components = n_components
         self.perplexity = perplexity
         self.learning_rate = learning_rate
         self.n_iter = n_iter
         self.random_state = random_state or 0
+        self.init = init
 
     def fit_transform(self, X, y=None):
         del y
@@ -1872,8 +1976,28 @@ class TSNE:
                 v = (P[i][j] + P[j][i]) / (2.0 * n)
                 P[i][j] = P[j][i] = _bi.max(v, 1e-12)
         rng = _ac.random.default_rng(self.random_state)
-        Y = [[rng.normal(0.0, 1e-4)
-              for _ in range(self.n_components)] for _ in range(n)]
+        lr = self.learning_rate
+        if lr == "auto":
+            # sklearn: max(N / early_exaggeration / 4, 50)
+            lr = _bi.max(n / 12.0 / 4.0, 50.0)
+        lr = float(lr)
+        if self.init == "pca":
+            # PCA init scaled to 1e-4 std on the first component,
+            # matching sklearn's deterministic pca init
+            mu = [_math.fsum(r[j] for r in Xd) / n for j in range(d)]
+            Xc = _ac.marr([[r[j] - mu[j] for j in range(d)] for r in Xd])
+            _u, _sv, _vt = _ac.linalg.svd(Xc)
+            comp = [[_vt.data[c][j] for j in range(d)]
+                    for c in range(self.n_components)]
+            Y = [[_math.fsum(Xd[i][j2] - mu[j2] for j2 in range(0)) or
+                  _math.fsum((Xd[i][j2] - mu[j2]) * comp[c][j2]
+                             for j2 in range(d))
+                  for c in range(self.n_components)] for i in range(n)]
+            s0 = _math.sqrt(_math.fsum(y0[0] ** 2 for y0 in Y) / n)                 or 1.0
+            Y = [[v / s0 * 1e-4 for v in row] for row in Y]
+        else:
+            Y = [[rng.normal(0.0, 1e-4)
+                  for _ in range(self.n_components)] for _ in range(n)]
         vel = [[0.0] * self.n_components for _ in range(n)]
         for it in range(self.n_iter):
             mom = 0.5 if it < 250 else 0.8
@@ -1897,13 +2021,21 @@ class TSNE:
                     for t in range(self.n_components):
                         grad[t] += coef * (Y[i][t] - Y[j][t])
                 for t in range(self.n_components):
-                    vel[i][t] = mom * vel[i][t] \
-                        - self.learning_rate * grad[t]
+                    vel[i][t] = mom * vel[i][t] - lr * grad[t]
                     # clamp step to keep the exact-gradient descent
                     # stable at high learning rates
                     vel[i][t] = _bi.max(-5.0, _bi.min(5.0,
                                                       vel[i][t]))
                     Y[i][t] += vel[i][t]
+        # final KL(P || Q) on the converged embedding
+        kl = 0.0
+        for i in range(n):
+            for j in range(n):
+                if i == j or P[i][j] <= 0.0:
+                    continue
+                q = _bi.max(Q[i][j] / qs, 1e-12)
+                kl += P[i][j] * _math.log(P[i][j] / q)
+        self.kl_divergence_ = kl
         return _ac.marr(Y)
 
 

@@ -82,9 +82,12 @@ def multi_head_attention_full(
     K = x @ W_k
     V = x @ W_v
 
-    Q_h = Q.reshape(seq_len, num_heads, d_k).transpose(1, 0, 2)
-    K_h = K.reshape(seq_len, num_heads, d_k).transpose(1, 0, 2)
-    V_h = V.reshape(seq_len, num_heads, d_k).transpose(1, 0, 2)
+    # head-split written rank-2: head h owns the contiguous column
+    # block [h*d_k, (h+1)*d_k) — identical to the reshape/transpose
+    # form on a (seq, d_model) input
+    Q_h = [Q[:, h * d_k:(h + 1) * d_k] for h in range(num_heads)]
+    K_h = [K[:, h * d_k:(h + 1) * d_k] for h in range(num_heads)]
+    V_h = [V[:, h * d_k:(h + 1) * d_k] for h in range(num_heads)]
 
     head_outputs = []
     head_attns = []

@@ -138,6 +138,25 @@ class Series:
         return Series(list(self._data), index=list(self.index),
                       name=self.name)
 
+    def groupby(self, by, sort=True, observed=True):
+        """Iterate (key, sub-Series) grouped by an aligned key
+        sequence (the SeriesGroupBy surface morie modules use)."""
+        del observed
+        keys = list(by.tolist() if hasattr(by, "tolist") else by)
+        groups = {}
+        for i, k in enumerate(keys):
+            groups.setdefault(k, []).append(i)
+        if sort:
+            try:
+                order = sorted(groups)
+            except TypeError:
+                order = list(groups)
+        else:
+            order = list(groups)
+        return [(k, Series([self._data[i] for i in groups[k]],
+                           index=[self.index[i] for i in groups[k]],
+                           name=self.name)) for k in order]
+
     def reindex(self, index, fill_value=None):
         pos = {k: i for i, k in enumerate(self.index)}
         fv = _NAN if fill_value is None else fill_value
@@ -1823,15 +1842,20 @@ def cut(x, bins, labels=None, right=True, include_lowest=False):
     return Series(out)
 
 
-def qcut(x, q, labels=None):
+def qcut(x, q, labels=None, duplicates="raise"):
+    del duplicates  # edges are always deduped below, matching
+    # pandas duplicates="drop"
     vals = x.tolist() if hasattr(x, "tolist") else list(x)
     s = Series(vals)
     if isinstance(q, int):
         qs = [i / q for i in range(q + 1)]
     else:
         qs = list(q)
-    edges = [s.quantile(v) for v in qs]
-    # dedupe equal edges like pandas duplicates='drop' would complain
+    edges = []
+    for v in qs:
+        e = s.quantile(v)
+        if not edges or e > edges[-1]:
+            edges.append(e)
     return cut(x, edges, labels=labels, right=True,
                include_lowest=True)
 

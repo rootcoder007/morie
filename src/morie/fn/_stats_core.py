@@ -2255,7 +2255,17 @@ class _LogUniform:
         return _LogUniform(a, b)
 
     def rvs(self, size=None, random_state=None):
-        raise NotImplementedError("use morie native rng")
+        from . import _array_core as _ac2
+        if hasattr(random_state, "random"):
+            rng = random_state
+        else:
+            rng = _ac2.random.default_rng(random_state)
+
+        def one(u):
+            return self.a * (self.b / self.a) ** u
+        if size is None:
+            return one(rng.random())
+        return _ac2.marr([one(rng.random()) for _ in range(int(size))])
 
     def pdf(self, x, a=None, b=None):
         a = a if a is not None else self.a
