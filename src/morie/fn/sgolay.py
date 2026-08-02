@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.signal import savgol_filter
+from ._signal_core import savgol_filter
 
 from ._containers import SignalResult
 

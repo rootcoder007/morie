@@ -34,7 +34,7 @@ def rangayyan_coherence(x, y, fs=1.0, nperseg=None):
         (3rd ed.). Wiley-IEEE Press. Sec 4.5.1 "Coherence analysis of EEG
         channels", p.235.
     """
-    from scipy.signal import coherence
+    from ._signal_core import coherence
 
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)

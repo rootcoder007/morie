@@ -28,7 +28,7 @@ def pcg_murmur_score(
 
     pcg_envelope(pcg, fs)
 
-    from scipy.signal import butter, sosfiltfilt, welch
+    from ._signal_core import butter, sosfiltfilt, welch
 
     sos = butter(4, [100, 400], btype="band", fs=fs, output="sos")
     hf_band = sosfiltfilt(sos, pcg)

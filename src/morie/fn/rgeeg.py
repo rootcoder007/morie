@@ -50,7 +50,7 @@ def rangayyan_eeg_bands(x, fs, bands=None, nperseg=None):
         (3rd ed.). Wiley-IEEE Press. Sec 4.4.1 "Detection of EEG rhythms",
         p.228. The previous docstring cited Ch 9.
     """
-    from scipy.signal import welch
+    from ._signal_core import welch
 
     x = np.asarray(x, dtype=float)
     if nperseg is None:

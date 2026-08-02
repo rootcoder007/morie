@@ -44,7 +44,7 @@ def spcgm(
     DescriptiveResult
         ``extra`` has ``frequencies``, ``times``, ``Sxx``.
     """
-    from scipy.signal import spectrogram
+    from ._signal_core import spectrogram
 
     x = np.asarray(x, dtype=float).ravel()
     seg = min(nperseg, len(x))

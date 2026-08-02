@@ -72,7 +72,7 @@ def rangayyan_qrs_detect(x, fs=360.0):
     indices with a causal implementation should expect an offset there and
     not here.
     """
-    from scipy.signal import butter, find_peaks, sosfiltfilt
+    from ._signal_core import butter, find_peaks, sosfiltfilt
 
     x = np.asarray(x, dtype=float).ravel()
     if fs <= 0:

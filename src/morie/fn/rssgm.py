@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.signal import stft
+from ._signal_core import stft
 
 from ._containers import DescriptiveResult
 

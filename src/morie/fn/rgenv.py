@@ -31,7 +31,7 @@ def rangayyan_envelope(x):
         (3rd ed.). Wiley-IEEE Press. Sec 5.5.3 "The envelogram", p.281
         (Sec 5.5 "Envelope Extraction and Analysis", p.277).
     """
-    from scipy.signal import hilbert
+    from ._signal_core import hilbert
 
     x = np.asarray(x, dtype=float)
     z = hilbert(x)

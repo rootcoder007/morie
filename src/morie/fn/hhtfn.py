@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from scipy.interpolate import CubicSpline
-from scipy.signal import hilbert
+from ._signal_core import hilbert
 
 from ._containers import DescriptiveResult
 

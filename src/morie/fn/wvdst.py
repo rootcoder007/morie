@@ -53,7 +53,7 @@ def wigner_ville(
     distribution -- A tool for time-frequency signal analysis. *Philips
     J. Res.*, 35, 217--250.
     """
-    from scipy.signal import hilbert
+    from ._signal_core import hilbert
 
     x_raw = np.asarray(x, dtype=float).ravel()
     n = len(x_raw)
