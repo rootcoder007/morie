@@ -58,13 +58,23 @@ def add_constant(X, prepend=True):
         return out
     frows = _frame_rows(X)
     if frows is not None:
-        rows = frows
+        # keep frame-ness so downstream fits get named columns and
+        # frame-typed results
+        from . import _frame_core as _fc
+        names = ([str(c) for c in X._cols]
+                 if hasattr(X, "_cols")
+                 else [str(c) for c in X.columns])
+        cols = {"const": [1.0] * len(frows)} if prepend else {}
+        for j, nm in enumerate(names):
+            cols[nm] = [frows[i][j] for i in range(len(frows))]
+        if not prepend:
+            cols["const"] = [1.0] * len(frows)
+        return _fc.DataFrame(cols)
+    a = _ac.asarray(X)
+    if len(a.shape) == 1:
+        rows = [[v] for v in a._flat()]
     else:
-        a = _ac.asarray(X)
-        if len(a.shape) == 1:
-            rows = [[v] for v in a._flat()]
-        else:
-            rows = [list(r) for r in a.data]
+        rows = [list(r) for r in a.data]
     if prepend:
         rows = [[1.0] + r for r in rows]
     else:
@@ -275,7 +285,13 @@ class RegressionResults:
                          for i in range(len(p))])
 
     def predict(self, exog=None):
-        return self.model.predict(list(self.params._flat()), exog)
+        out = self.model.predict(list(self.params._flat()), exog)
+        if getattr(self.model, "_frame_in", False) or (
+                exog is not None and (hasattr(exog, "_cols")
+                                      or hasattr(exog, "columns"))):
+            from . import _frame_core as _fc
+            return _fc.Series(list(out._flat()))
+        return out
 
     def summary(self):
         lines = ["%-14s %10s %10s %10s %10s" % (

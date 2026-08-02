@@ -20,7 +20,9 @@ def synth_data():
 
 def test_returns_series(synth_data):
     ps = compute_propensity_scores(synth_data, treatment="treatment", covariates=["x1", "x2"])
-    assert isinstance(ps, pd.Series)
+    # native or pandas Series: check the Series interface, not class
+    assert hasattr(ps, "index") and hasattr(ps, "tolist")
+    assert ps.name == "ps"
 
 
 def test_values_in_unit_interval(synth_data):
