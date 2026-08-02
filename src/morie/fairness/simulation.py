@@ -89,8 +89,16 @@ def noisy_or_detection(
     if officer.shape[0] == 0:
         k = np.zeros(crime.shape[0], dtype=int)
     else:
-        d = np.sqrt(((crime[:, None, :] - officer[None, :, :]) ** 2).sum(-1))
-        k = (d <= radius).sum(axis=1)
+        # Pairwise coverage counts, written rank-2: the native array
+        # core is deliberately 2-D, so the (n, m, 2) broadcast becomes
+        # an explicit squared-distance comparison per (crime, officer).
+        r2 = float(radius) * float(radius)
+        od = officer.tolist()
+        k = np.asarray([
+            float(sum(1 for ox, oy in od
+                      if (cx - ox) ** 2 + (cy - oy) ** 2 <= r2))
+            for cx, cy in crime.tolist()
+        ])
     prob = 1.0 - (1.0 - p_detect) ** k
 
     detected = None
@@ -200,13 +208,13 @@ def simulate_biased_crime_data(
         props = props / props.sum()
 
     gi = rng.choice(G, size=n, p=props)
-    group = np.array([groups[i] for i in gi], dtype=object)
+    group = np.array([groups[int(i)] for i in gi], dtype=object)
 
     # Areas are segregated — each area belongs to a single group.
     area_group = np.arange(n_areas) % G
     areas_by_group = {i: np.where(area_group == i)[0] for i in range(G)}
-    area_idx = np.array([rng.choice(areas_by_group[i]) for i in gi])
-    area = np.array([f"area_{a:02d}" for a in area_idx], dtype=object)
+    area_idx = np.array([rng.choice(areas_by_group[int(i)]) for i in gi])
+    area = np.array([f"area_{int(a):02d}" for a in area_idx], dtype=object)
 
     # true_outcome: group-INDEPENDENT Bernoulli(base_rate).
     true_outcome = (rng.random(n) < base_rate).astype(int)

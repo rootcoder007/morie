@@ -373,16 +373,30 @@ def xai_shap_values(
     contrib = np.zeros(d)
     for _ in range(int(n_samples)):
         perm = rng.permutation(d)
-        # (nb, d+1, d): for every background row, the cumulative
-        # coalitions along this permutation. Averaging the marginal
-        # contributions over the *whole* background keeps the
-        # local-accuracy identity (Σ SHAP = f(x) − E[f]) exact.
-        rows = np.tile(background[:, None, :], (1, d + 1, 1))
+        # For every background row, the d+1 cumulative coalitions
+        # along this permutation, built as one flat (nb*(d+1), d)
+        # batch. Averaging the marginal contributions over the *whole*
+        # background keeps the local-accuracy identity
+        # (Σ SHAP = f(x) − E[f]) exact. (Explicit 2-D construction:
+        # the native array core is deliberately rank-2.)
+        bg = background.tolist()
+        pm = [int(v) for v in perm]
+        xs = [float(v) for v in x]
+        flat = []
+        for b in range(nb):
+            row = list(bg[b])
+            flat.append(list(row))
+            for k in range(d):
+                row[pm[k]] = xs[pm[k]]
+                flat.append(list(row))
+        preds = _predict(predict_fn, np.asarray(flat))
+        pv = [float(v) for v in preds]
         for k in range(d):
-            rows[:, k + 1 :, perm[k]] = x[perm[k]]
-        preds = _predict(predict_fn, rows.reshape(nb * (d + 1), d))
-        preds = preds.reshape(nb, d + 1)
-        contrib[perm] += np.diff(preds, axis=1).mean(axis=0)
+            m = 0.0
+            for b in range(nb):
+                base_ix = b * (d + 1)
+                m += pv[base_ix + k + 1] - pv[base_ix + k]
+            contrib[pm[k]] += m / nb
     shap = contrib / float(n_samples)
 
     shap_map = {names[j]: float(shap[j]) for j in range(d)}

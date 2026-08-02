@@ -644,7 +644,8 @@ def rankdata(a, method="average"):
         else:
             raise ValueError("unsupported method %r" % method)
         i = j + 1
-    return ranks
+    from . import _array_core as _ac
+    return _ac.marr(ranks)
 
 
 def _pearson_r(x, y):
@@ -918,6 +919,13 @@ def f_oneway(*groups):
     ssw = _math.fsum(_math.fsum((v - _mean(g)) ** 2 for v in g)
                      for g in gs)
     dfb, dfw = k - 1, n - k
+    if dfw <= 0 or (ssw == 0.0 and ssb == 0.0):
+        # scipy: constant input (or no within-group df) yields nan
+        return _TestResult(float("nan"), float("nan"))
+    if ssw == 0.0:
+        # zero within-group variance with real between-group spread:
+        # F diverges; scipy reports inf with p = 0
+        return _TestResult(float("inf"), 0.0)
     stat = (ssb / dfb) / (ssw / dfw)
     return _TestResult(stat, f.sf(stat, dfb, dfw))
 
