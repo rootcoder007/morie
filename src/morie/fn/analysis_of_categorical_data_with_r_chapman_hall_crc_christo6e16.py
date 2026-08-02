@@ -1,54 +1,44 @@
-"""Probability equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Complete independence for three MRCVs.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import numpy as np  # noqa: F401
+
+from . import _acd
 from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_16"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_16(x):
-    """
-    Probability equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_16(b0, beta_w_a, beta_y_b, beta_z_c):
+    """Complete independence for three MRCVs
 
-    Formula: ab(ij) +δbc +δY
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: log(mu_abc(ijk)) = b0 + bW_a + bY_b + bZ_c
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.6 eq.6.16
+    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
+    eq. (6.16).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _acd.three_mrcv_mean(b0, beta_w_a, beta_y_b, beta_z_c)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Bilder & Loughin (2025) eq. (6.16)"
     return RichResult(
-        title="Probability equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+        title='Complete independence for three MRCVs',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16: Probability equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return '6e16: log(mu_abc(ijk)) = b0 + bW_a + bY_b + bZ_c [Bilder & Loughin 2025, eq. 6.16]'

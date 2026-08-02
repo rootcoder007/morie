@@ -1,54 +1,44 @@
-"""CentralTendency equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Loglinear independence model (indicator form).
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import numpy as np  # noqa: F401
+
+from . import _acd
 from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_4"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_4(x):
-    """
-    CentralTendency equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_4(b0, beta_x_i, beta_z_j):
+    """Loglinear independence model (indicator form)
 
-    Formula: i = log(µi+/µ1+) (see Exercise 8)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: log(mu) = b0 + bX_2 x2 + ... + bZ_2 z2 + ...
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e4')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.4 eq.4.4
+    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
+    eq. (4.4).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _acd.loglinear_independence_mean(b0, beta_x_i, beta_z_j)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Bilder & Loughin (2025) eq. (4.4)"
     return RichResult(
-        title="CentralTendency equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+        title='Loglinear independence model (indicator form)',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e4: CentralTendency equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return '4e4: log(mu) = b0 + bX_2 x2 + ... + bZ_2 z2 + ... [Bilder & Loughin 2025, eq. 4.4]'

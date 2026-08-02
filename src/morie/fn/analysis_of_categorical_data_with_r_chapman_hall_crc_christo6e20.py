@@ -1,54 +1,44 @@
-"""Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Logistic GLMM for clustered binary falls data.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import numpy as np  # noqa: F401
+
+from . import _acd
 from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_20"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_20(x):
-    """
-    Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_20(b0, bs, xs, random_intercept):
+    """Logistic GLMM for clustered binary falls data
 
-    Formula: For example, the model described in Equation 6.20 specifies that the conditional distribution of the binary response
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: logit(pi_ik) = b0 + b2 x2 + b3 x3 + b4 x4 + b_0i
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e20')`` for the full guide.
+        dict subclass; headline key 'value' plus the full payload.
 
     References
     ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.6 eq.6.20
+    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
+    eq. (6.20).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    value = _acd.glmm_linear_predictor(b0, 1.0, float(np.dot(np.atleast_1d(np.asarray(bs, dtype=float)), np.atleast_1d(np.asarray(xs, dtype=float)))), random_intercept)
+    payload = {"value": value}
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Bilder & Loughin (2025) eq. (6.20)"
     return RichResult(
-        title="Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+        title='Logistic GLMM for clustered binary falls data',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e20: Regression equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return '6e20: logit(pi_ik) = b0 + b2 x2 + b3 x3 + b4 x4 + b_0i [Bilder & Loughin 2025, eq. 6.20]'

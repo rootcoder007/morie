@@ -1,54 +1,44 @@
-"""PowerAndDesign equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
+"""Kott-Carr effective-sample-size interval for a proportion.
 
-import numpy as np
+Book-as-spec implementation; see reference for context.
+"""
 
+import numpy as np  # noqa: F401
+
+from . import _acd
 from ._richresult import RichResult
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_11"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_11(x):
-    """
-    PowerAndDesign equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_11(pi_hat, var_pi, t_crit):
+    """Kott-Carr effective-sample-size interval for a proportion
 
-    Formula: t <- co
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Formula: Wilson-type interval with n* = pi(1-pi)/Var(pi) and t critical
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e11')`` for the full guide.
+        dict subclass; headline key 'lower' plus the full payload.
 
     References
     ----------
-    Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ), ch.6 eq.6.11
+    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
+    eq. (6.11).
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    payload = dict(_acd.kott_carr_interval(pi_hat, var_pi, t_crit))
+    value = float(payload['lower'])
+    summary = [(k, v) for k, v in payload.items()
+               if isinstance(v, (int, float))][:4]
+    payload = dict(payload)
+    payload.setdefault("value", value)
+    payload["method"] = "Bilder & Loughin (2025) eq. (6.11)"
     return RichResult(
-        title="PowerAndDesign equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PowerAndDesign equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).",
-        },
+        title='Kott-Carr effective-sample-size interval for a proportion',
+        summary_lines=summary,
+        payload=payload,
     )
 
 
 def cheatsheet():
-    return "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e11: PowerAndDesign equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M )."
+    return '6e11: Wilson-type interval with n* = pi(1-pi)/Var(pi) and t critical [Bilder & Loughin 2025, eq. 6.11]'
