@@ -77,6 +77,21 @@ def hawkes_st_loglik(events, params: dict[str, float],
     if n == 0:
         return -params["mu"] * T_h * area
 
+    try:
+        from . import _core as _ck
+        _st = _ck.hawkes_st_loglik
+    except (ImportError, AttributeError):
+        _st = None
+    if _st is not None:
+        import array as _pa
+        return float(_st(
+            _pa.array("d", [float(v) for v in t.tolist()]),
+            _pa.array("d", [float(v) for v in x.tolist()]),
+            _pa.array("d", [float(v) for v in y.tolist()]),
+            float(params["mu"]), float(params["alpha"]),
+            float(params["beta"]), float(params["sigma"]),
+            T_h, float(area)))
+
     loglam = 0.0
     for j in range(n):
         lam = params["mu"]

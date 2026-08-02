@@ -34,6 +34,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <complex>
 #include <cstddef>
 #include <vector>
@@ -544,6 +545,51 @@ inline bool eig_general(double *a, std::size_t n, double *wr, double *wi) {
         } while (l < nn - 1 && nn >= 0);
     }
     return true;
+}
+
+
+// ---------------------------------------------------------------------
+// Spatio-temporal Hawkes log-likelihood (exponential temporal decay,
+// isotropic Gaussian spatial kernel):
+//
+//   lambda(t, x, y) = mu + sum_{t_j < t} alpha*beta*exp(-beta*(t-t_j))
+//                          * (1 / (2*pi*sigma^2))
+//                          * exp(-((x-x_j)^2 + (y-y_j)^2) / (2*sigma^2))
+//
+//   loglik = sum_i log lambda(t_i, x_i, y_i)
+//            - mu*T*area - sum_j alpha*(1 - exp(-beta*(T - t_j)))
+//
+// (Reinhart 2018, "A review of self-exciting spatio-temporal point
+// processes", Statist. Sci. 33(3), eq. 2.4; the compensator assumes the
+// spatial density integrates to 1 over the region.)
+// Events must be sorted by time. Returns the log-likelihood; the caller
+// checks parameter feasibility.
+inline double hawkes_st_loglik(const double *t, const double *x,
+                               const double *y, std::size_t n,
+                               double mu, double alpha, double beta,
+                               double sigma, double T, double area) {
+    const double kPi = 3.14159265358979323846;
+    const double s2 = sigma * sigma;
+    const double spatial_norm = 1.0 / (2.0 * kPi * s2);
+    const double inv_2s2 = 1.0 / (2.0 * s2);
+    double loglam = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+        double lam = mu;
+        for (std::size_t j = 0; j < i; ++j) {
+            const double dt = t[i] - t[j];
+            const double dx = x[i] - x[j];
+            const double dy = y[i] - y[j];
+            const double d2 = dx * dx + dy * dy;
+            lam += alpha * beta * std::exp(-beta * dt) * spatial_norm *
+                   std::exp(-d2 * inv_2s2);
+        }
+        if (lam <= 0.0) return -std::numeric_limits<double>::infinity();
+        loglam += std::log(lam);
+    }
+    double comp = mu * T * area;
+    for (std::size_t j = 0; j < n; ++j)
+        comp += alpha * (1.0 - std::exp(-beta * (T - t[j])));
+    return loglam - comp;
 }
 
 }  // namespace core
