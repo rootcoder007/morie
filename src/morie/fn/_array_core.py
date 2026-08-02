@@ -1937,3 +1937,220 @@ linalg.eigh = _eigh
 linalg.det = _det
 linalg.cholesky = _cholesky
 linalg.svd = _svd
+
+
+# --------------------------------------------------------------- fft
+
+class carr:
+    """Minimal 1-D complex array for FFT results."""
+
+    def __init__(self, data):
+        self.data = [complex(v) for v in data]
+
+    def __len__(self):
+        return len(self.data)
+
+    def __iter__(self):
+        return iter(self.data)
+
+    def __getitem__(self, i):
+        if isinstance(i, slice):
+            return carr(self.data[i])
+        return self.data[i]
+
+    def tolist(self):
+        return self.data[:]
+
+    @property
+    def real(self):
+        return marr([v.real for v in self.data])
+
+    @property
+    def imag(self):
+        return marr([v.imag for v in self.data])
+
+    def conj(self):
+        return carr([v.conjugate() for v in self.data])
+
+    conjugate = conj
+
+    @property
+    def shape(self):
+        return (len(self.data),)
+
+    def __abs__(self):
+        return marr([_bi.abs(v) for v in self.data])
+
+    def _binop(self, other, fn):
+        if isinstance(other, carr):
+            return carr([fn(a, b) for a, b in zip(self.data, other.data)])
+        if isinstance(other, marr):
+            return carr([fn(a, b) for a, b in
+                         zip(self.data, other._flat())])
+        if isinstance(other, (list, tuple)):
+            return carr([fn(a, b) for a, b in zip(self.data, other)])
+        return carr([fn(a, other) for a in self.data])
+
+    def __mul__(self, o):
+        return self._binop(o, lambda a, b: a * b)
+
+    __rmul__ = __mul__
+
+    def __add__(self, o):
+        return self._binop(o, lambda a, b: a + b)
+
+    __radd__ = __add__
+
+    def __sub__(self, o):
+        return self._binop(o, lambda a, b: a - b)
+
+    def __truediv__(self, o):
+        return self._binop(o, lambda a, b: a / b)
+
+
+def _fft_pow2(a, invert):
+    n = len(a)
+    if n == 1:
+        return a[:]
+    # iterative Cooley-Tukey, bit-reversal
+    j = 0
+    a = a[:]
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j |= bit
+        if i < j:
+            a[i], a[j] = a[j], a[i]
+    ln = 2
+    while ln <= n:
+        ang = (2.0 if invert else -2.0) * _math.pi / ln
+        wl = complex(_math.cos(ang), _math.sin(ang))
+        for i in range(0, n, ln):
+            w = complex(1.0)
+            for k in range(ln // 2):
+                u = a[i + k]
+                v = a[i + k + ln // 2] * w
+                a[i + k] = u + v
+                a[i + k + ln // 2] = u - v
+                w *= wl
+        ln <<= 1
+    return a
+
+
+def _fft_bluestein(a, invert):
+    n = len(a)
+    sign = 1.0 if invert else -1.0
+    # chirp
+    w = [complex(_math.cos(sign * _math.pi * (k * k % (2 * n)) / n),
+                 _math.sin(sign * _math.pi * (k * k % (2 * n)) / n))
+         for k in range(n)]
+    m = 1
+    while m < 2 * n - 1:
+        m <<= 1
+    fa = [a[k] * w[k] for k in range(n)] + [0j] * (m - n)
+    fb = [0j] * m
+    for k in range(n):
+        fb[k] = w[k].conjugate()
+        if k:
+            fb[m - k] = w[k].conjugate()
+    fa = _fft_pow2(fa, False)
+    fb = _fft_pow2(fb, False)
+    fc = [x * y for x, y in zip(fa, fb)]
+    fc = _fft_pow2(fc, True)
+    fc = [v / m for v in fc]
+    return [fc[k] * w[k] for k in range(n)]
+
+
+def _fft_any(a, invert):
+    n = len(a)
+    if n == 0:
+        return []
+    if n & (n - 1) == 0:
+        return _fft_pow2(a, invert)
+    return _fft_bluestein(a, invert)
+
+
+def _tocomplex(x):
+    if isinstance(x, carr):
+        return x.data[:]
+    if hasattr(x, "_flat"):
+        return [complex(v) for v in x._flat()]
+    if hasattr(x, "tolist"):
+        x = x.tolist()
+    return [complex(v) for v in x]
+
+
+class _FFT:
+    @staticmethod
+    def fft(x, n=None):
+        a = _tocomplex(x)
+        if n is not None:
+            a = a[:n] + [0j] * _bi.max(0, n - len(a))
+        return carr(_fft_any(a, False))
+
+    @staticmethod
+    def ifft(x, n=None):
+        a = _tocomplex(x)
+        if n is not None:
+            a = a[:n] + [0j] * _bi.max(0, n - len(a))
+        out = _fft_any(a, True)
+        return carr([v / len(a) for v in out])
+
+    @staticmethod
+    def rfft(x, n=None):
+        a = _tocomplex(x)
+        if n is not None:
+            a = a[:n] + [0j] * _bi.max(0, n - len(a))
+        full = _fft_any(a, False)
+        return carr(full[:len(a) // 2 + 1])
+
+    @staticmethod
+    def irfft(x, n=None):
+        half = _tocomplex(x)
+        m = len(half)
+        if n is None:
+            n = 2 * (m - 1)
+        full = half[:]
+        for k in range(1, m - 1 if n % 2 == 0 else m):
+            idx = n - k
+            if idx >= len(full):
+                full += [0j] * (idx - len(full) + 1)
+            full[idx] = half[k].conjugate()
+        full = full[:n] + [0j] * _bi.max(0, n - len(full))
+        out = _fft_any(full, True)
+        return marr([(v / n).real for v in out])
+
+    @staticmethod
+    def fftfreq(n, d=1.0):
+        out = []
+        half = (n - 1) // 2 + 1
+        for k in range(half):
+            out.append(k / (n * d))
+        for k in range(-(n // 2), 0):
+            out.append(k / (n * d))
+        return marr(out)
+
+    @staticmethod
+    def rfftfreq(n, d=1.0):
+        return marr([k / (n * d) for k in range(n // 2 + 1)])
+
+    @staticmethod
+    def fftshift(x):
+        a = _tocomplex(x) if isinstance(x, carr) else None
+        if a is not None:
+            n = len(a)
+            return carr(a[(n + 1) // 2:] + a[:(n + 1) // 2])
+        v = list(asarray(x)._flat())
+        n = len(v)
+        return marr(v[(n + 1) // 2:] + v[:(n + 1) // 2])
+
+    @staticmethod
+    def ifftshift(x):
+        v = list(asarray(x)._flat())
+        n = len(v)
+        return marr(v[n // 2:] + v[:n // 2])
+
+
+fft = _FFT()
