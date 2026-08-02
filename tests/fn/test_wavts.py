@@ -74,22 +74,21 @@ def test_details_are_ordered_deepest_first():
     assert sizes == sorted(sizes), f"expected coarsest-first, got sizes {sizes}"
 
 
-def test_refuses_a_non_haar_wavelet_without_pywavelets():
-    """Asking for db4 without PyWavelets must raise, not return Haar.
 
-    The previous code wrapped the whole pywt path in `except Exception: pass`,
-    so a request for db4 -- or a typo -- fell through to the Haar fallback and
-    returned coefficients in the wrong basis with no warning.
+def test_refuses_an_unknown_wavelet_and_runs_db4_natively():
+    """db4 is a native family now; unknown names still raise.
+
+    The old guard tested that db4 without PyWavelets raised -- that
+    library is gone and db2-db4 run on the native periodized pyramid,
+    so the surviving contract is: known families work, unknown names
+    raise instead of silently substituting a different basis.
     """
-    pytest.importorskip  # noqa: B018  (documented below)
-    import importlib.util
-    if importlib.util.find_spec("pywt") is not None:
-        pytest.skip("PyWavelets installed; the no-pywt guard cannot be exercised")
     x = np.random.default_rng(17).standard_normal(64)
-    for bad in ("db4", "sym8", "coif3", "not_a_wavelet"):
-        with pytest.raises(ValueError, match="needs PyWavelets"):
+    r = wavelet_time_series(x, wavelet="db4", level=3)
+    assert abs(sum(r["energies"]) - float((x * x).sum())) < 1e-8
+    for bad in ("sym8", "coif3", "not_a_wavelet"):
+        with pytest.raises(ValueError, match="not a native family"):
             wavelet_time_series(x, wavelet=bad)
-
 
 def test_haar_still_works_without_pywavelets():
     """The native path covers Haar, so the base install stays useful."""

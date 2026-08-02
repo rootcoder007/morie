@@ -1318,48 +1318,10 @@ def estimate_irm(
     treatment and structural parameters. *The Econometrics Journal*, 21(1),
     C1--C68. https://doi.org/10.1111/ectj.12097
     """
-    try:
-        import doubleml as dml
-    except ImportError as exc:
-        raise ImportError("DoubleML is required for estimate_irm(). Install with: pip install DoubleML") from exc
-
-    frame = data[[treatment, outcome, *covariates]].dropna().copy()
-
-    # Encode non-numeric covariates
-    for col in covariates:
-        if not pd.api.types.is_numeric_dtype(frame[col]):
-            le = LabelEncoder()
-            frame[col] = le.fit_transform(frame[col].astype(str))
-
-    np.random.seed(random_state)
-
-    dml_data = dml.DoubleMLData(
-        frame,
-        y_col=outcome,
-        d_cols=treatment,
-        x_cols=covariates,
-    )
-
-    # ml_g: outcome regression E[Y|T,X] -- regressor
-    # ml_m: propensity score P(T=1|X) -- classifier
-    ml_g = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=random_state)
-    ml_m = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=random_state)
-
-    dml_irm = dml.DoubleMLIRM(dml_data, ml_g, ml_m, n_folds=n_folds)
-    dml_irm.fit()
-
-    ate = float(dml_irm.coef[0])
-    se = float(dml_irm.se[0])
-    z = 1.959964
-
-    return {
-        "ate": ate,
-        "se": se,
-        "ci_lower": ate - z * se,
-        "ci_upper": ate + z * se,
-        "n": len(frame),
-        "method": "IRM (DoubleML)",
-    }
+    from morie.fn.irm import estimate_irm as _native_irm
+    return _native_irm(data, treatment=treatment, outcome=outcome,
+                       covariates=covariates, n_folds=n_folds,
+                       random_state=random_state)
 
 
 _DOUBLEML_RANDOM_STATE: int = 42
@@ -1416,9 +1378,9 @@ def estimate_double_ml(
     :type n_folds: int, optional
     :param n_rep: Number of repeated cross-fitting repetitions.  Default 1.
     :type n_rep: int, optional
-    :return: A fitted :class:`doubleml.DoubleMLPLR` object containing the
-        causal estimate and inference results.
-    :rtype: doubleml.DoubleMLPLR
+    :return: dict with ``ate``, ``se``, ``ci_lower``, ``ci_upper``,
+        ``pval``, ``n_obs`` from the native cross-fitted PLR.
+    :rtype: dict
 
     References
     ----------
@@ -1427,30 +1389,8 @@ def estimate_double_ml(
     treatment and structural parameters. *The Econometrics Journal*, 21(1),
     C1–C68. https://doi.org/10.1111/ectj.12097
     """
-    try:
-        import doubleml as dml
-    except ImportError as exc:  # pragma: no cover - depends on optional dependency
-        raise ImportError(
-            "DoubleML is required for estimate_double_ml(). "
-            "Install the project dependencies in the repo venv before using this function."
-        ) from exc
-
-    # Seed numpy's global RNG before constructing the learners so that the
-    # internal random state of the DoubleML cross-fitting splits is fully
-    # deterministic for a given random_state value.
-    np.random.seed(random_state)
-
-    dml_data = dml.DoubleMLData(data, y_col=outcome, d_cols=treatment, x_cols=covariates)
-
-    # ml_l: outcome regression E[Y|X] -- always a regressor.
-    # ml_m: treatment model P(T=1|X) -- classifier for binary treatment so that
-    #       DoubleML receives probability predictions, not continuous predictions.
-    #       Using a Regressor here would silently fit E[T|X] as a number in [0,1]
-    #       rather than a probability, producing incorrect Neyman-orthogonal scores.
-    ml_l = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=random_state)
-    ml_m = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=random_state)
-
-    dml_plr = dml.DoubleMLPLR(dml_data, ml_l, ml_m, n_folds=n_folds, n_rep=n_rep)
-    dml_plr.fit()
-
-    return dml_plr
+    del n_rep  # single-rep native estimator; kept for signature compat
+    from morie.fn.plr import estimate_plr as _native_plr
+    return _native_plr(data, treatment=treatment, outcome=outcome,
+                       covariates=covariates, n_folds=n_folds,
+                       random_state=random_state)
