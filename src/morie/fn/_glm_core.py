@@ -18,12 +18,32 @@ from . import _array_core as _ac
 from . import _stats_core as _stats
 
 
+def _frame_rows(X):
+    """Rows of floats from native OR real-pandas frames, else None."""
+    if hasattr(X, "_cols"):            # native DataFrame
+        cols = list(X._cols.values())
+        return [[float(c[i]) for c in cols]
+                for i in range(X.shape[0])]
+    if hasattr(X, "columns") and hasattr(X, "values"):  # real pandas
+        return [[float(v) for v in row] for row in X.values.tolist()]
+    return None
+
+
 def _tolists(X):
+    rows = _frame_rows(X)
+    if rows is not None:
+        return rows
+    if hasattr(X, "_data") and hasattr(X, "index"):  # native Series
+        return [[float(v)] for v in X._data]
     a = _ac.atleast_2d(X)
     return [list(map(float, r)) for r in a.data]
 
 
 def _tolist1(y):
+    if hasattr(y, "_data") and hasattr(y, "index"):  # native Series
+        return [float(v) for v in y._data]
+    if hasattr(y, "values") and hasattr(y, "index"):  # real pandas
+        return [float(v) for v in y.values.tolist()]
     return [float(v) for v in _ac.asarray(y)._flat()]
 
 
@@ -36,11 +56,15 @@ def add_constant(X, prepend=True):
         else:
             out["const"] = col
         return out
-    a = _ac.asarray(X)
-    if len(a.shape) == 1:
-        rows = [[v] for v in a._flat()]
+    frows = _frame_rows(X)
+    if frows is not None:
+        rows = frows
     else:
-        rows = [list(r) for r in a.data]
+        a = _ac.asarray(X)
+        if len(a.shape) == 1:
+            rows = [[v] for v in a._flat()]
+        else:
+            rows = [list(r) for r in a.data]
     if prepend:
         rows = [[1.0] + r for r in rows]
     else:
@@ -215,8 +239,13 @@ class RegressionResults:
         self.cov = cov
         self.df_resid = df_resid
         self.scale = scale
-        self.fittedvalues = _ac.marr(fittedvalues)
-        self.resid = _ac.marr(resid)
+        if getattr(model, "_frame_in", False):
+            from . import _frame_core as _fc
+            self.fittedvalues = _fc.Series(list(fittedvalues))
+            self.resid = _fc.Series(list(resid))
+        else:
+            self.fittedvalues = _ac.marr(fittedvalues)
+            self.resid = _ac.marr(resid)
         self.llf = llf
         self.exog_names = exog_names
         k = len(params)
@@ -287,6 +316,12 @@ class OLS:
     _use_t = True
 
     def __init__(self, endog, exog, weights=None, exog_names=None):
+        self._frame_in = hasattr(exog, "_cols") or (
+            hasattr(exog, "columns") and hasattr(exog, "values"))
+        if self._frame_in and exog_names is None:
+            exog_names = [str(c) for c in (
+                exog._cols if hasattr(exog, "_cols")
+                else list(exog.columns))]
         self.y = _tolist1(endog)
         self.X = _tolists(exog)
         self.w = [float(v) for v in weights] if weights is not None \
@@ -381,6 +416,12 @@ class GLM:
     _use_t = False
 
     def __init__(self, endog, exog, family=None, exog_names=None):
+        self._frame_in = hasattr(exog, "_cols") or (
+            hasattr(exog, "columns") and hasattr(exog, "values"))
+        if self._frame_in and exog_names is None:
+            exog_names = [str(c) for c in (
+                exog._cols if hasattr(exog, "_cols")
+                else list(exog.columns))]
         self.y = _tolist1(endog)
         self.X = _tolists(exog)
         self.family = family or Gaussian()
