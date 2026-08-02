@@ -1,0 +1,334 @@
+"""morie signal core: scipy.signal subset (butter / lfilter / filtfilt /
+sosfilt / sosfiltfilt).
+
+Native Butterworth design: analog prototype poles, frequency pre-warp,
+lp2lp/lp2hp/lp2bp transforms, bilinear transform, zpk -> ba or sos.
+Zero-phase filtering reproduces scipy's odd-extension padding and
+steady-state initial conditions (lfilter_zi / sosfilt_zi), so outputs
+match scipy.signal to ~1e-9 (equivalence-tested in
+tests/fn/test_signal_core.py).  Pure Python; complex arithmetic uses the
+builtin complex type internally, all public outputs are real.
+"""
+
+from __future__ import annotations
+
+import cmath as _cmath
+import math as _math
+
+from . import _array_core as _ac
+
+
+# ------------------------------------------------------------ helpers
+
+def _poly(roots):
+    """Monic polynomial coefficients from roots (complex ok, real out)."""
+    c = [complex(1.0)]
+    for r in roots:
+        c = [c[0]] + [c[i + 1] - r * c[i] for i in range(len(c) - 1)] \
+            + [-r * c[-1]]
+        # rebuild properly: convolve c with (1, -r)
+    return c
+
+
+def _polymulroot(c, r):
+    out = [complex(0.0)] * (len(c) + 1)
+    for i, v in enumerate(c):
+        out[i] += v
+        out[i + 1] -= v * r
+    return out
+
+
+def _poly_from_roots(roots):
+    c = [complex(1.0)]
+    for r in roots:
+        c = _polymulroot(c, r)
+    return c
+
+
+def _real(coeffs):
+    return [v.real for v in coeffs]
+
+
+# ------------------------------------------------------------ design
+
+def _butter_analog_poles(n):
+    return [_cmath.exp(1j * _math.pi * (2.0 * k + n + 1.0) / (2.0 * n))
+            for k in range(n)]
+
+
+def _bilinear_zpk(z, p, k, fs):
+    fs2 = 2.0 * fs
+    zd = [(fs2 + zi) / (fs2 - zi) for zi in z]
+    pd = [(fs2 + pi) / (fs2 - pi) for pi in p]
+    zd += [-1.0 + 0j] * (len(p) - len(z))
+    num = complex(1.0)
+    den = complex(1.0)
+    for zi in z:
+        num *= (fs2 - zi)
+    for pi in p:
+        den *= (fs2 - pi)
+    kd = (k * num / den).real
+    return zd, pd, kd
+
+
+def _butter_zpk(n, wn, btype):
+    """Digital Butterworth zpk; wn normalized (Nyquist = 1)."""
+    p = _butter_analog_poles(n)
+    z = []
+    k = 1.0
+    fs = 2.0
+    if btype in ("low", "lowpass"):
+        warped = 2.0 * fs * _math.tan(_math.pi * float(wn) / fs)
+        p = [pi * warped for pi in p]
+        k *= warped ** n
+    elif btype in ("high", "highpass"):
+        warped = 2.0 * fs * _math.tan(_math.pi * float(wn) / fs)
+        prod = complex(1.0)
+        for pi in p:
+            prod *= -pi
+        k /= prod.real if abs(prod.imag) < 1e-12 * abs(prod.real) \
+            else prod.real
+        z = [0j] * n
+        p = [warped / pi for pi in p]
+    elif btype in ("band", "bandpass"):
+        lo, hi = float(wn[0]), float(wn[1])
+        w1 = 2.0 * fs * _math.tan(_math.pi * lo / fs)
+        w2 = 2.0 * fs * _math.tan(_math.pi * hi / fs)
+        bw = w2 - w1
+        w0 = _math.sqrt(w1 * w2)
+        pn = []
+        for pi in p:
+            pb = pi * bw / 2.0
+            disc = _cmath.sqrt(pb * pb - w0 * w0)
+            pn.append(pb + disc)
+            pn.append(pb - disc)
+        z = [0j] * n
+        p = pn
+        k *= bw ** n
+    else:
+        raise ValueError("unsupported btype %r" % btype)
+    return _bilinear_zpk(z, p, k, fs)
+
+
+def _zpk2tf(z, p, k):
+    b = [k * c for c in _poly_from_roots(z)]
+    a = _poly_from_roots(p)
+    return _real(b), _real(a)
+
+
+def _zpk2sos(z, p, k):
+    """Pair conjugate poles/zeros into second-order sections.
+
+    ponytail: simple conjugate pairing (Butterworth-only inputs here) —
+    scipy's nearest-neighbour pairing if other filters ever need it.
+    """
+    def split(vals):
+        cplx, real = [], []
+        used = [False] * len(vals)
+        for i, v in enumerate(vals):
+            if used[i]:
+                continue
+            if abs(v.imag) > 1e-12:
+                for j in range(i + 1, len(vals)):
+                    if not used[j] and abs(vals[j] - v.conjugate()) < 1e-8:
+                        used[j] = True
+                        break
+                used[i] = True
+                cplx.append(v)
+            else:
+                used[i] = True
+                real.append(v.real)
+        return cplx, real
+
+    pc, pr = split(p)
+    zc, zr = split(z)
+    sections = []
+    # complex pole pairs first (each with a zero pair if available)
+    for pp in pc:
+        a = _real(_poly_from_roots([pp, pp.conjugate()]))
+        if zc:
+            zz = zc.pop()
+            b = _real(_poly_from_roots([zz, zz.conjugate()]))
+        elif len(zr) >= 2:
+            b = _real(_poly_from_roots([zr.pop(), zr.pop()]))
+        elif zr:
+            b = _real(_poly_from_roots([zr.pop()])) + [0.0]
+        else:
+            b = [1.0, 0.0, 0.0]
+        sections.append(b + a)
+    # leftover real poles in pairs
+    while pr:
+        if len(pr) >= 2:
+            a = _real(_poly_from_roots([pr.pop(), pr.pop()]))
+        else:
+            a = _real(_poly_from_roots([pr.pop()])) + [0.0]
+        if len(zr) >= 2:
+            b = _real(_poly_from_roots([zr.pop(), zr.pop()]))
+        elif zr:
+            b = _real(_poly_from_roots([zr.pop()])) + [0.0]
+        else:
+            b = [1.0, 0.0, 0.0]
+        sections.append(b + a)
+    if not sections:
+        sections.append([1.0, 0.0, 0.0, 1.0, 0.0, 0.0])
+    sections[0][0] *= k
+    sections[0][1] *= k
+    sections[0][2] *= k
+    return sections
+
+
+def butter(N, Wn, btype="low", output="ba", fs=None):
+    if fs is not None:
+        if isinstance(Wn, (list, tuple)):
+            Wn = [2.0 * w / fs for w in Wn]
+        else:
+            Wn = 2.0 * float(Wn) / fs
+    if hasattr(Wn, "tolist"):
+        Wn = Wn.tolist()
+    z, p, k = _butter_zpk(int(N), Wn, btype)
+    if output == "ba":
+        return _zpk2tf(z, p, k)
+    if output == "sos":
+        return _ac.marr(_zpk2sos(z, p, k))
+    raise ValueError("unsupported output %r" % output)
+
+
+# ------------------------------------------------------------ filtering
+
+def lfilter(b, a, x, zi=None):
+    b = list(_ac.asarray(b)._flat())
+    a = list(_ac.asarray(a)._flat())
+    xs = list(_ac.asarray(x)._flat())
+    if a[0] != 1.0:
+        b = [v / a[0] for v in b]
+        a = [v / a[0] for v in a]
+    n = max(len(a), len(b))
+    b = b + [0.0] * (n - len(b))
+    a = a + [0.0] * (n - len(a))
+    z = list(zi) if zi is not None else [0.0] * (n - 1)
+    y = []
+    for xv in xs:
+        yv = b[0] * xv + (z[0] if n > 1 else 0.0)
+        for i in range(n - 2):
+            z[i] = b[i + 1] * xv + z[i + 1] - a[i + 1] * yv
+        if n > 1:
+            z[n - 2] = b[n - 1] * xv - a[n - 1] * yv
+        y.append(yv)
+    if zi is None:
+        return _ac.marr(y)
+    return _ac.marr(y), z
+
+
+def lfilter_zi(b, a):
+    b = list(_ac.asarray(b)._flat())
+    a = list(_ac.asarray(a)._flat())
+    if a[0] != 1.0:
+        b = [v / a[0] for v in b]
+        a = [v / a[0] for v in a]
+    n = max(len(a), len(b))
+    b = b + [0.0] * (n - len(b))
+    a = a + [0.0] * (n - len(a))
+    m = n - 1
+    # (I - A^T) zi = B,  A = companion(a)^T convention of scipy.lfilter_zi
+    ImA = [[(1.0 if i == j else 0.0) for j in range(m)] for i in range(m)]
+    for i in range(m):
+        ImA[i][0] += a[i + 1]
+        if i + 1 < m:
+            ImA[i][i + 1] -= 1.0
+    B = [b[i + 1] - a[i + 1] * b[0] for i in range(m)]
+    sol = _ac.linalg.solve(_ac.marr(ImA), _ac.marr(B))
+    return list(sol._flat())
+
+
+def _odd_ext(xs, n):
+    left = [2.0 * xs[0] - xs[i] for i in range(n, 0, -1)]
+    right = [2.0 * xs[-1] - xs[-2 - i] for i in range(n)]
+    return left + xs + right
+
+
+def filtfilt(b, a, x):
+    bs = list(_ac.asarray(b)._flat())
+    as_ = list(_ac.asarray(a)._flat())
+    xs = list(_ac.asarray(x)._flat())
+    edge = 3 * max(len(as_), len(bs))
+    if len(xs) <= edge:
+        raise ValueError("input too short for padlen %d" % edge)
+    ext = _odd_ext(xs, edge)
+    zi = lfilter_zi(bs, as_)
+    y, _ = lfilter(bs, as_, ext, zi=[z * ext[0] for z in zi])
+    y = list(y._flat())[::-1]
+    y2, _ = lfilter(bs, as_, y, zi=[z * y[0] for z in zi])
+    y2 = list(y2._flat())[::-1]
+    return _ac.marr(y2[edge:len(y2) - edge])
+
+
+def _sos_rows(sos):
+    a = _ac.asarray(sos)
+    return [list(map(float, r)) for r in a.data]
+
+
+def sosfilt(sos, x, zi=None):
+    rows = _sos_rows(sos)
+    xs = list(_ac.asarray(x)._flat())
+    z = [list(zs) for zs in zi] if zi is not None \
+        else [[0.0, 0.0] for _ in rows]
+    for s, r in enumerate(rows):
+        b0, b1, b2, a0, a1, a2 = r
+        if a0 != 1.0:
+            b0, b1, b2, a1, a2 = (b0 / a0, b1 / a0, b2 / a0,
+                                  a1 / a0, a2 / a0)
+        z0, z1 = z[s]
+        out = []
+        for xv in xs:
+            yv = b0 * xv + z0
+            z0 = b1 * xv + z1 - a1 * yv
+            z1 = b2 * xv - a2 * yv
+            out.append(yv)
+        z[s] = [z0, z1]
+        xs = out
+    if zi is None:
+        return _ac.marr(xs)
+    return _ac.marr(xs), z
+
+
+def sosfilt_zi(sos):
+    rows = _sos_rows(sos)
+    scale = 1.0
+    zi = []
+    for r in rows:
+        b = r[:3]
+        a = r[3:]
+        zi.append([scale * v for v in lfilter_zi(b, a)])
+        scale *= sum(b) / sum(a)
+    return zi
+
+
+def sosfiltfilt(sos, x):
+    rows = _sos_rows(sos)
+    xs = list(_ac.asarray(x)._flat())
+    n_sections = len(rows)
+    ntaps = 2 * n_sections + 1
+    ntaps -= min(sum(1 for r in rows if r[2] == 0.0),
+                 sum(1 for r in rows if r[5] == 0.0))
+    edge = ntaps * 3
+    if len(xs) <= edge:
+        raise ValueError("input too short for padlen %d" % edge)
+    ext = _odd_ext(xs, edge)
+    zi = sosfilt_zi(rows)
+    y, _ = sosfilt(rows, ext,
+                   zi=[[v * ext[0] for v in zs] for zs in zi])
+    y = list(y._flat())[::-1]
+    y2, _ = sosfilt(rows, y,
+                    zi=[[v * y[0] for v in zs] for zs in zi])
+    y2 = list(y2._flat())[::-1]
+    return _ac.marr(y2[edge:len(y2) - edge])
+
+
+class signal:  # namespace mirror for `from scipy import signal`
+    butter = staticmethod(butter)
+    lfilter = staticmethod(lfilter)
+    lfilter_zi = staticmethod(lfilter_zi)
+    filtfilt = staticmethod(filtfilt)
+    sosfilt = staticmethod(sosfilt)
+    sosfilt_zi = staticmethod(sosfilt_zi)
+    sosfiltfilt = staticmethod(sosfiltfilt)
