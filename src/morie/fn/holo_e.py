@@ -34,7 +34,7 @@ def holo_effect(
         Confidence Intervals, and Meta-Analysis*. Routledge.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_effect requires matplotlib. Install via: pip install matplotlib")
         return None

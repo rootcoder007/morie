@@ -31,7 +31,7 @@ def holo_violin(
         52(2), 181--184.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_violin requires matplotlib. Install via: pip install matplotlib")
         return None

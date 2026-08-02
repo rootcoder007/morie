@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 try:
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 except ImportError as _exc:  # pragma: no cover - depends on extras
     raise ImportError(
         "morie.export needs matplotlib, which is optional: "

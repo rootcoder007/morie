@@ -411,7 +411,7 @@ def hawkes_advanced_fit(
     # QQ figure
     fig_path = None
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         u = np.array(result["rescaled_uniforms"])
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))

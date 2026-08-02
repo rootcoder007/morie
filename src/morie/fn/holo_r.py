@@ -33,7 +33,7 @@ def holo_resid(
         American Statistician*, 27(1), 17--21.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_resid requires matplotlib. Install via: pip install matplotlib")
         return None
