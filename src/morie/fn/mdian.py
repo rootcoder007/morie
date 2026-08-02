@@ -19,7 +19,7 @@ def mediation_analysis(Y, T, M, X=None):
     strategic, and statistical considerations. *J. Pers. Soc.
     Psychol.*, 51(6), 1173-1182.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     from .bkmed import baron_kenny
 

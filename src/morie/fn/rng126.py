@@ -1,6 +1,6 @@
 """Analog Butterworth transfer function from N left-half-plane poles.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

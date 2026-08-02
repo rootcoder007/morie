@@ -3,7 +3,7 @@
 """TSDAE denoising objective bookkeeping (Wang et al. 2021;
 Alammar Ch 10)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

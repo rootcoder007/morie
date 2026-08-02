@@ -7,7 +7,7 @@ plus its exact KS asymptotic p-value (Marsaglia-Tsang-Wang series).
 By Glivenko-Cantelli the statistic -> 0 a.s. when F is correct.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

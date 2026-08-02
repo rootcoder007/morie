@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """G(theta): distribution function of (X_1+X_2)/2 used in Wilcoxon moments."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

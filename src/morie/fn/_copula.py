@@ -7,7 +7,7 @@ recalled. Theorem 3.9 eq. (3.17) gives the general Archimedean
 integral; the closed forms below are that table's rows.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import integrate, special, stats
 
 __all__ = ["copula_cdf", "copula_tau", "tau_to_theta", "FAMILIES"]

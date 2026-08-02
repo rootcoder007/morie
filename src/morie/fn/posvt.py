@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Positivity (overlap) assumption: every unit has non-zero probability of treatment."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

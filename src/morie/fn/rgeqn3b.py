@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-correlation via convolution: R_xy[m] = x[-n] conv y[n]."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

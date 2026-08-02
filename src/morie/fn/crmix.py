@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cure rate mixture model -- long-term survivors."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize
 
 from ._containers import DescriptiveResult

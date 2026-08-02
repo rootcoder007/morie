@@ -1,6 +1,6 @@
 """Decomposition of a signal into weighted delta functions via sifting.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -3,7 +3,7 @@
 """Continued MLM pretraining before task fine-tuning
 (Gururangan et al. 2020; Alammar Ch 11)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -4,7 +4,7 @@ Capture-mark-recapture
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlcmr(abundance=None, coords=None, n=50):

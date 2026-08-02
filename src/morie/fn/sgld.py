@@ -4,7 +4,7 @@ Stochastic gradient Langevin dynamics for Bayesian sampling.
 Adds noise to SGD for posterior sampling without convergence to point estimate.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["sgld"]
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet spike-and-slab prior for function estimation."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import norm
 
 from ._richresult import RichResult

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Multilabel classification: independent binary decisions per label."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grf1 import geron_f1_score

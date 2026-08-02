@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shrinkage propensity model via a Bayesian (ridge) prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

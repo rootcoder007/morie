@@ -5,7 +5,7 @@ Incidence-based mortality
 Category: SpatEpi2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def seibm(cases=None, population=None, coords=None, n=50):

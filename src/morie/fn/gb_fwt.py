@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fligner-Wolfe test against simple tree alternative using sum of U statistics."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

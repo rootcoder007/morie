@@ -1,6 +1,6 @@
 """Pole positions on the Butterworth circle in the s-plane.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

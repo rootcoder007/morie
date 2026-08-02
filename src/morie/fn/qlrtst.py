@@ -1,6 +1,6 @@
 """Quandt likelihood ratio (sup-LR) for unknown break."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

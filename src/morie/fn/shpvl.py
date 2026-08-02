@@ -21,7 +21,7 @@ from itertools import combinations
 from math import comb
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["shpvl"]
 

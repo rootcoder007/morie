@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Covariance between S_tilde_X,2 and S_tilde_X."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

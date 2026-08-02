@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """KL property for exponential density families: log-series prior has KL support."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

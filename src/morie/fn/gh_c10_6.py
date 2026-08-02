@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Finite random series prior: f = sum_{k<=K} beta_k phi_k, K ~ pi_n adaptive."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

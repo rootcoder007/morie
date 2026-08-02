@@ -20,7 +20,7 @@ def stress_per_point(D_obs, D_model):
     DescriptiveResult
         value = stress per point array (length n).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D_obs = np.asarray(D_obs, dtype=float)
     D_model = np.asarray(D_model, dtype=float)

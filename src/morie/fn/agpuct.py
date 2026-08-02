@@ -1,6 +1,6 @@
 """PUCT (Predictor Upper Confidence Tree) score for AlphaZero MCTS."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

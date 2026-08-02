@@ -19,7 +19,7 @@ def elbow_mds_dim(stress_values):
     DescriptiveResult
         value = optimal dimension count (int).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     sv = np.asarray(stress_values, dtype=float)
     n = len(sv)

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution of median of DP sample: quantile functional of random CDF."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

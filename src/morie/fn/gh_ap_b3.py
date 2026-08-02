@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Renyi divergence of order alpha: D_alpha(P||Q) = log integral p^alpha q^{1-alpha} / (alpha-1)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

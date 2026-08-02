@@ -24,7 +24,7 @@ what this particular construction rests on (Horowitz and Markatou
 1996 show how to relax it).
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["panel_residuals", "char_funcs", "smoothing_cf", "deconvolve_pair"]
 

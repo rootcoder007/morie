@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Zero-padding around an input for valid/same convolutions."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

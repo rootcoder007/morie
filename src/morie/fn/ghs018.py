@@ -1,6 +1,6 @@
 """Splitting variables V at level epsilon defined as the conditional probabilities of the offspring sets given the parent set in a tree-based prior.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

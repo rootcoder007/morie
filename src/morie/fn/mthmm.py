@@ -5,7 +5,7 @@ Hidden Markov movement
 Category: MovTyp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def mthmm(trajectory=None, n=50, dt=1.0):

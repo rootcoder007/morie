@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multiple-index model with several indices x'beta_1, x'beta_2,...."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

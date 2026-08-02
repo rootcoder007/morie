@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Ch 1: the emergent-ability step at a scale threshold."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

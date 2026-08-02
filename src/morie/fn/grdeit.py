@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """DeiT distillation loss: CE on the class token + CE on the distillation token."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

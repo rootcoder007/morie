@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """VideoBERT: transformer on discretized video tokens + text."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmsdp import geron_scaled_dot_product

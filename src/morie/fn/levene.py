@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Levene's test for equality of variances."""
 
-import numpy as np
+from . import _array_core as np
 import scipy.stats as stats
 
 

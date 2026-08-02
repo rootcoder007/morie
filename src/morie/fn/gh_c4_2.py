@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean of DP: E[G(A)] = G0(A) for all measurable A."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Neutral-to-the-right process -- Doksum (1974) survival prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -3,7 +3,7 @@
 
 __all__ = ["gxenv"]
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import f as _f_dist
 
 from ._containers import GenomicsResult

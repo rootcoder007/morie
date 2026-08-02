@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Neutral-to-the-right process: F(t) = 1 - prod_{s<=t}(1-dM(s)) from NTR measure M."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

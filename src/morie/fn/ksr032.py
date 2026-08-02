@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weak convergence characterisation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .ksr031 import kosorok_ch2_weak_convergence_tightness

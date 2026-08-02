@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """CART decision tree (pure numpy, recursive splitting)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from ._richresult import RichResult

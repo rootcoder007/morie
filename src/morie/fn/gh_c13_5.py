@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Continuous-time Beta process as a Lévy process with specific Levy measure."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

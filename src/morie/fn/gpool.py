@@ -12,7 +12,7 @@ arXiv preprint arXiv:1312.4400.
 
 __all__ = ["gpool"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def gpool(x):

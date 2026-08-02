@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rank-order statistics: rank of |D_i| among |D_1|,...,|D_n|."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

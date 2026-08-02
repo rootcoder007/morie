@@ -1,6 +1,6 @@
 """Posterior expected density given hyperparameter theta for a Polya-tree mixture with elicited mean density g_theta and rate sequence a_m.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

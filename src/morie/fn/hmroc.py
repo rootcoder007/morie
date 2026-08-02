@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Receiver operating characteristic: FPR vs TPR over thresholds."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmauc import geron_auc_roc

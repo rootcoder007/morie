@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wavelet cross-correlation between two signals at each scale."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

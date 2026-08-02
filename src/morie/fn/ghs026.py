@@ -1,6 +1,6 @@
 """Finite-level density p_m of a tail-free measure obtained by averaging P(A_epsilon)/mu(A_epsilon) over the level-m partition cells.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

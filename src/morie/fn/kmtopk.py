@@ -3,7 +3,7 @@
 """Top-k expert gating: keep the k largest gate scores, renormalise,
 zero the rest."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

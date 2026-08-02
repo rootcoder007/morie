@@ -1,6 +1,6 @@
 """Peto one-step odds ratio for sparse 2x2."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

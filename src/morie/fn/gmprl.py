@@ -12,7 +12,7 @@ of London, 115, 513-583. MLE parameterisation follows Collett (2003).
 
 __all__ = ["gmprl"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def gmprl(

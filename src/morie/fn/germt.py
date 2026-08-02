@@ -5,7 +5,7 @@ Remittance flow spatial
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def germt(gdp=None, trade=None, coords=None, n=50):

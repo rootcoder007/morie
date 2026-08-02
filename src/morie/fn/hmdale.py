@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """DALL-E: text-to-image generation via discrete VAE + autoregressive transformer."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grdal import geron_dalle_autoregressive_token

@@ -15,7 +15,7 @@ Under H0:theta=theta0 (symmetric F around theta0),
     z = W_n / sqrt(Var)  ->  N(0, 1).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

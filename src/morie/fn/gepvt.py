@@ -5,7 +5,7 @@ Poverty spatial mapping
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gepvt(gdp=None, trade=None, coords=None, n=50):

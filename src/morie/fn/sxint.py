@@ -2,7 +2,7 @@
 
 __all__ = ["sxint"]
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import chi2 as _chi2
 
 from ._containers import GenomicsResult

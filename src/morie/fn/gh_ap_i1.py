@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GP sample path continuity: Kolmogorov-Chentsov criterion for path continuity."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

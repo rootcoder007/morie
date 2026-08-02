@@ -28,7 +28,7 @@ depends on assumptions that the arithmetic cannot see.
   estimator is part of the result, not an implementation detail.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["anova_two_way", "logistic_3pl", "logistic_3pl_deriv",
            "gauss_hermite", "dersimonian_laird", "fixed_effect_pool",

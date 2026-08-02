@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bernstein polynomial prior contraction rate for density on [0,1]."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

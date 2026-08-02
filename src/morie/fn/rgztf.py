@@ -34,7 +34,7 @@ def rangayyan_z_transform(x_coeffs, z=None):
     Rangayyan, R. M. (2024). *Biomedical Signal Analysis* (3rd ed.).
     Wiley-IEEE Press. Ch. 3.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     x = np.asarray(x_coeffs, dtype=float).ravel()
     if x.size == 0:

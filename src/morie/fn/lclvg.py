@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Local variogram estimation (Schabenberger & Gotway Ch 8)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import cdist
 
 

@@ -10,7 +10,7 @@ This kills the leading h^2 bias term, leaving an O(h^4) residual at
 the cost of a slight variance inflation by factor (c^4 + 1)/(c^2 - 1)^2.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

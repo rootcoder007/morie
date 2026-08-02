@@ -7,7 +7,7 @@ __all__ = ["em_variational_bayes", "emvb"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import digamma
 
 

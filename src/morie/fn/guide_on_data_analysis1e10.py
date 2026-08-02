@@ -1,6 +1,6 @@
 """Regression equation extracted from guide on data analysis.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

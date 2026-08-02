@@ -1,6 +1,6 @@
 """Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Additive model with known non-identity link function g."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

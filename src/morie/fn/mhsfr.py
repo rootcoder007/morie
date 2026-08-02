@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SF-12 mental component summary (simplified)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 

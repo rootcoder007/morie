@@ -4,7 +4,7 @@
 by gradient descent on a small embedding (McInnes et al. 2018;
 Alammar Ch 5)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

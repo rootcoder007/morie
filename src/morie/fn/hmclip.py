@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """CLIP: contrastive image-text pretraining."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grclp import geron_clip_contrastive_loss

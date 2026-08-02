@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RKHS norm and small ball probability for GP: ||f||_H controls concentration."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

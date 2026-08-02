@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Ch 7: RAGAS answer relevance from reverse-generated questions."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km112 import kamath_ch7_answer_relevance

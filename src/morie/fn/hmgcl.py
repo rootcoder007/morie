@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Gradient clipping by global norm to stabilize training."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

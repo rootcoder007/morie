@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rolling-window volatility from squared returns."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

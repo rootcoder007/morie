@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """HAR-Q: HAR-RV with a realised-quarticity attenuation term."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .volhar import _har_design

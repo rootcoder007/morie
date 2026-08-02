@@ -1,6 +1,6 @@
 """Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

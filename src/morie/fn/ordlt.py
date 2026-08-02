@@ -8,7 +8,7 @@ collision in the Gibbons spec; both are exported via ``__all__``.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize, special, stats
 
 from ._containers import RegressionResult

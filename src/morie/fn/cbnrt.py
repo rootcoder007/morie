@@ -23,7 +23,7 @@ Nielsen RA (2020), *American Journal of Political Science*
 import math
 import re
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import add_intercept, logit_fit, logit_predict
 from ._richresult import RichResult

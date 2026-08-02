@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prior via random rectangular partitions of the sample space."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

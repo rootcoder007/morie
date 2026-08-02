@@ -3,7 +3,7 @@
 """SetFit two-step: contrastive pairs then a logistic head
 (Tunstall et al. 2022; Alammar Ch 11)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .alembc import alammar_embedding_classifier

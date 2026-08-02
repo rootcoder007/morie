@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Collider (v-structure/immorality) A->B<-C: conditioning on B opens path."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

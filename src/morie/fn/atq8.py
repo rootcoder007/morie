@@ -1,6 +1,6 @@
 """INT8 quantized attention via per-row scales."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

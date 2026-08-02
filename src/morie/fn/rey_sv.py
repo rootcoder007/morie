@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Survey-weighted regression with robust (sandwich) standard errors."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import t as t_dist
 
 from morie.fn._containers import RegressionResult

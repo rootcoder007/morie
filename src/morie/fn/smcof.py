@@ -1,6 +1,6 @@
 """SMACOF majorization scaling"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import smacof as _smacof
 from ._containers import DescriptiveResult

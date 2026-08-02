@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Synthetic difference-in-differences estimator."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import as_panel, simplex_lstsq
 from ._richresult import RichResult

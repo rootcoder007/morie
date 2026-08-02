@@ -1,6 +1,6 @@
 """Variogram model fitting (spherical/exponential/Gaussian)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize
 from scipy.spatial.distance import pdist, squareform
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.linalg import cholesky, solve_triangular
 from scipy.optimize import minimize
 

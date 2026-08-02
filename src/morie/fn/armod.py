@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """AR(p) model fitting via Yule-Walker equations."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

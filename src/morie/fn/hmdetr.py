@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """DETR: CNN-transformer hybrid for end-to-end object detection."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grdetr import geron_detr_hungarian_matching

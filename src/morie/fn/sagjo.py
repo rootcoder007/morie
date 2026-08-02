@@ -5,7 +5,7 @@ Join count statistic
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sagjo(values=None, w=None, n=50):

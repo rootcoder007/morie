@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Heteroskedastic IRT: per-legislator predictability (Lauderdale 2010)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize, stats
 
 from ._richresult import RichResult

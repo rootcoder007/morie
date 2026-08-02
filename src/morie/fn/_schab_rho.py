@@ -16,7 +16,7 @@ is (-0.504, 0.504), so a (-0.99, 0.99) search spends most of its time
 where the likelihood is undefined.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = []
 

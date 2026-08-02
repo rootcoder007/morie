@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Cross-entropy gradient vector for a single class k."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grxeng import gradient_matrix

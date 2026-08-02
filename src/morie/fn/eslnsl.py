@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Natural cubic spline basis (ESL Ch 5.2.1)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

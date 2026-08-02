@@ -14,7 +14,7 @@ def am_eigensolve(M) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     M = np.asarray(M, dtype=float)
     MtM = M.T @ M

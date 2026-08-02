@@ -5,7 +5,7 @@ Extreme event frequency
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcext(data=None, coords=None, n=50):

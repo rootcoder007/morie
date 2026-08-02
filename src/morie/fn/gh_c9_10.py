@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spline regression contraction rate: n^{-2s/(2s+1)} via sieve of splines."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

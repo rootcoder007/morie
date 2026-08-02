@@ -1,6 +1,6 @@
 """Value-cache quantization: token-wise normalize + round-to-integer."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

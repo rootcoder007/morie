@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Contrastive learning: pull positives close, push negatives far."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grctr import geron_contrastive_infonce

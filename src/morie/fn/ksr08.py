@@ -8,7 +8,7 @@ the Monte-Carlo standard deviation of the multiplier statistic
 applied to f(x)=x.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

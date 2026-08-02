@@ -5,7 +5,7 @@ Crime Markov chain
 Category: CrimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def csmrk(incidents=None, population=None, coords=None, n=50):

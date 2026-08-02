@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal continuous-time convolution form (lower limit 0, upper limit t)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

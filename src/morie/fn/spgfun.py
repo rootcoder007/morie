@@ -1,6 +1,6 @@
 """G-function: nearest-neighbour distance CDF."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_pp import as_points, as_region, intensity, nn_distances

@@ -4,7 +4,7 @@ Wind erosion soil
 Category: SoilSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sownd(data=None, depth=None, coords=None, n=50):

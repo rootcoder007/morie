@@ -21,7 +21,7 @@ The helpers here are the pieces the modern estimators share:
 * propensity and outcome fits for the doubly-robust estimators.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "as_panel",

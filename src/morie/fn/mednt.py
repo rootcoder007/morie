@@ -8,7 +8,7 @@ contingency-table approach based on pooled median.
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 5.4
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as sp_stats
 
 __all__ = ["mednt"]

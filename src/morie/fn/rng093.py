@@ -1,6 +1,6 @@
 """Frequency response of the Hann filter on the unit circle.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

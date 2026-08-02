@@ -35,7 +35,7 @@ Correctness is checked against the published Known Answer Tests rather than
 asserted -- see the test suite.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = []
 

@@ -8,7 +8,7 @@ then transform back.  The induced kernel on the X-scale is the
 log-normal kernel, which has zero density at x<=0 by construction.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

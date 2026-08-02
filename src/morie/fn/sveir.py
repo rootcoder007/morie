@@ -1,6 +1,6 @@
 """SVEIR compartmental model (vaccination + exposed)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.integrate import odeint
 
 from ._containers import SIRResult

@@ -6,7 +6,7 @@ Starting from theta_init = median(x) and IF(x; theta) = x - theta,
 one-step recovers the mean.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

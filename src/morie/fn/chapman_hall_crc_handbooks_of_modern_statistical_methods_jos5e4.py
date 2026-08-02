@@ -1,6 +1,6 @@
 """Regression equation extracted from [Chapman & Hall CRC Handbooks of Modern Statistical Methods] José R. Zubizarreta, Elizabeth A. Stuart, Dylan S. Small, Paul R - Handbook of Matching and Weighting Adjustments for Causal Inference.."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import hypothesis_test_result

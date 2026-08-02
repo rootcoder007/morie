@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 
 from ._containers import ESRes
@@ -55,7 +55,8 @@ def g_formula(
     X = df[covariates].values.astype(float) if covariates else np.ones((len(Y), 1))
 
     XA = np.column_stack([np.ones(len(Y)), A, X])
-    from numpy.linalg import lstsq
+    from morie.fn._array_core import linalg as _acl
+    lstsq = _acl.lstsq
 
     beta, _, _, _ = lstsq(XA, Y, rcond=None)
 

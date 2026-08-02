@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """.632 and .632+ estimators of prediction error, ESL Sec. 7.11."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

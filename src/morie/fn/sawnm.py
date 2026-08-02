@@ -5,7 +5,7 @@ Spatial weight normalization (minmax)
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sawnm(values=None, w=None, n=50):

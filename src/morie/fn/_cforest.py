@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shared honest causal-forest core (Wager-Athey style)."""
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["CausalForest"]
 

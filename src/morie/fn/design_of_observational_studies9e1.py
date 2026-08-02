@@ -1,6 +1,6 @@
 """Logistic equation extracted from Design of observational studies.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

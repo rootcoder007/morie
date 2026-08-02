@@ -9,7 +9,7 @@ Schabenberger, O. & Gotway, C. A. (2005). *Statistical Methods for
 Spatial Data Analysis*. Chapman & Hall/CRC. Sec. 4.3.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = []
 

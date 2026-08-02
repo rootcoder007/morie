@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bootstrap Donsker characterisation (in probability)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._kosorok import bootstrap_multiplier_process, bridge_cov
 from ._richresult import RichResult

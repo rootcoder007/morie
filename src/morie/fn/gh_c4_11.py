@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

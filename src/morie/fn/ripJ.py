@@ -1,6 +1,6 @@
 """J function = (1-G)/(1-F) -- CSR has J=1."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

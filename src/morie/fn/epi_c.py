@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Epidemic curve (epi curve) construction."""
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 
 from ._containers import DescriptiveResult

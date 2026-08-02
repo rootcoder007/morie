@@ -12,7 +12,7 @@ In Advances in neural information processing systems (pp. 396-404).
 
 __all__ = ["conv2"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def conv2(x, kernel, padding="valid", stride=1):

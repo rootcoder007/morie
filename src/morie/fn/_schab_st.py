@@ -24,7 +24,7 @@ actual design rather than trusting the construction.
 Everything here is internal.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = []
 

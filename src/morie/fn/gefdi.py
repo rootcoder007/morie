@@ -5,7 +5,7 @@ FDI flow spatial
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gefdi(gdp=None, trade=None, coords=None, n=50):

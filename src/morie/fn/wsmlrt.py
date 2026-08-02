@@ -1,6 +1,6 @@
 """Likelihood ratio test 2 log(L1/L0) ~ chi2."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

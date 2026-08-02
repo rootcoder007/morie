@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Brownian motion as prior: k(s,t)=min(s,t), Holder-1/2 paths."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Countable Dirichlet process on simplex: normalization of gamma random variables."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

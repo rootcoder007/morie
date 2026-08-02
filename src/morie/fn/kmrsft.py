@@ -3,7 +3,7 @@
 """Rejection-sampling fine-tuning: keep the best-rewarded samples per
 prompt and SFT on them."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Sobolev (negative) form of W_1 via H^{-1} norm."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

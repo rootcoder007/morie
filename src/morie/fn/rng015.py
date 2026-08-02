@@ -1,6 +1,6 @@
 """Ensemble mean of a random process at instant t1 from M observations.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

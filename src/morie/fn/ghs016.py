@@ -1,6 +1,6 @@
 """Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

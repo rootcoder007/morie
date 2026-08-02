@@ -16,7 +16,7 @@ power at user-supplied ``p_alt`` (default 0.7).
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

@@ -4,7 +4,7 @@ Soil texture classification
 Category: SoilSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sotex(data=None, depth=None, coords=None, n=50):

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 from scipy import stats
 
@@ -59,7 +59,8 @@ def otis_att_region(
             X = np.column_stack([np.ones(len(y)), data[cov_cols].values.astype(np.float64)])
 
         # Propensity score via OLS (linear probability model, clipped)
-        from numpy.linalg import lstsq
+        from morie.fn._array_core import linalg as _acl
+        lstsq = _acl.lstsq
 
         beta, _, _, _ = lstsq(X, d, rcond=None)
         ps = np.clip(X @ beta, 0.01, 0.99)

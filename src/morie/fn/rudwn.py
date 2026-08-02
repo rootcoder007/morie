@@ -8,7 +8,7 @@ and decreases (runs up/down).
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 3.4
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 __all__ = ["rudwn"]

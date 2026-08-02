@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Principal components via SVD of the centred data matrix."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .pcsvd import pca_svd

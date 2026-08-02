@@ -18,7 +18,7 @@ def hotelling_model(n_voters: int = 100, n_candidates: int = 2, seed: int = 42) 
 
     .. epigraph:: If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     voters = rng.uniform(0, 1, n_voters)

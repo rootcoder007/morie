@@ -11,7 +11,7 @@ def plot_by_party(X, party_labels) -> DescriptiveResult:
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     labels = np.asarray(party_labels)

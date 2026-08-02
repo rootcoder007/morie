@@ -3,7 +3,7 @@
 """Kamath Eq 2.19: masked attention with an additive mask INSIDE
 the scaling."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

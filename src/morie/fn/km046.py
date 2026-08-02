@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 3.5: the sentiment PREFIX prompt template."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

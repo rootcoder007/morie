@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Discreteness and support of DP: DP sample paths are discrete probability measures a.s.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

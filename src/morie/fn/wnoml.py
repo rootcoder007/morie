@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """W-NOMINATE log-likelihood of a roll-call matrix."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .wnomp import wnominate_probability

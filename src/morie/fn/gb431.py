@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """KS statistics D_n, D+_n, D-_n are distribution-free under H0."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

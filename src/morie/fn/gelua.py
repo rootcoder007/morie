@@ -12,7 +12,7 @@ arXiv preprint arXiv:1606.08415.
 
 __all__ = ["gelua"]
 
-import numpy as np
+from . import _array_core as np
 from scipy import special
 
 

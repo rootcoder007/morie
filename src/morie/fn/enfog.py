@@ -5,7 +5,7 @@ Fog frequency spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enfog(data=None, coords=None, n=50):

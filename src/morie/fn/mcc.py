@@ -59,7 +59,7 @@ def matthews_corrcoef(y_true, y_pred) -> float:
     secondary structure of T4 phage lysozyme. *Biochimica et Biophysica
     Acta*, 405(2), 442-451.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     yt = np.asarray(y_true).ravel()
     yp = np.asarray(y_pred).ravel()

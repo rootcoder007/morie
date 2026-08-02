@@ -12,7 +12,7 @@ In NIPS (pp. 1097-1105).
 
 __all__ = ["flatn"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def flatn(x, batch_size=None):

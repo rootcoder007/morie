@@ -4,7 +4,7 @@ Total dissolved solids
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqtds(data=None, coords=None, n=50):

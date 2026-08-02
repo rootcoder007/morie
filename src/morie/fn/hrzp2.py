@@ -8,7 +8,7 @@ with c = 1.06 (Silverman) by default.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

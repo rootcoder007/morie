@@ -12,7 +12,7 @@ where ``f_i = f(x_i)`` and the x's are sorted.  Uses scikit-learn's
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

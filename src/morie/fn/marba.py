@@ -1,6 +1,6 @@
 """Variance of Hedges' g for crossover/within-subject designs."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

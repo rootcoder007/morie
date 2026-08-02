@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Infant cry signal analysis: formants and fundamental frequency."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

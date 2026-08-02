@@ -3,7 +3,7 @@
 """Stiennon et al. summarisation-from-human-feedback: reward-model
 loss plus the KL-penalised RL objective."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .kmppok import kamath_ppo_rlhf_objective

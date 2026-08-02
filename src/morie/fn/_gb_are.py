@@ -8,7 +8,7 @@ Student t test (T*), and of the sign test against the signed-rank
 test, for four symmetric distributions.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import integrate
 
 __all__ = ["ARE_TABLE", "efficacy_are"]

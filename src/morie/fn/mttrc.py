@@ -5,7 +5,7 @@ Movement trajectory analysis
 Category: MovTyp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def mttrc(trajectory=None, n=50, dt=1.0):

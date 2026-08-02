@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Henderson mixed model equations (Eq 2.2): joint BLUE/BLUP system."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

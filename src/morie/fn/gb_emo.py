@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """k-th moment of r-th order statistic E[X_(r)^k]."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

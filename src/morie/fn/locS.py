@@ -1,6 +1,6 @@
 """Joint robust location-scale (e.g. M-step + MAD)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Phase response from sums of angles to zeros and poles.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

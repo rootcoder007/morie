@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exact distribution of the sample median."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import special
 
 from ._richresult import RichResult

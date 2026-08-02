@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Uniform covering number."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._kosorok import covering_number_grid
 from ._richresult import RichResult

@@ -4,7 +4,7 @@ Influent quality spatial
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqinf(data=None, coords=None, n=50):

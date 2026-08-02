@@ -9,7 +9,7 @@ deviance/AIC/pseudo-R-squared, and extracts per-predictor Wald tests.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 import statsmodels.api as sm
 

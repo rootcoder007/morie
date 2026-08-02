@@ -11,7 +11,7 @@ K samples subject to unequal patterns of censorship. Biometrika, 57(3), 579-594.
 
 __all__ = ["wlcst"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = "breslow", cdf=None) -> dict:

@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """alpha-NOMINATE MCMC estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import alpha_nominate as _alpha_nominate
 from ._containers import DescriptiveResult

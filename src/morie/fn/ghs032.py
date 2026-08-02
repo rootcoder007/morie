@@ -1,6 +1,6 @@
 """Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

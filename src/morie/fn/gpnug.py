@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GP nugget noise variance estimation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

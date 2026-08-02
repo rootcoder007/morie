@@ -11,7 +11,7 @@ def plot_coombs_data(mesh_result) -> DescriptiveResult:
 
     .. epigraph:: The whole is greater than the sum of its parts. -- Aristotle
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     if hasattr(mesh_result, "extra"):
         extra = mesh_result.extra

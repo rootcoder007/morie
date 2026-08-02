@@ -12,7 +12,7 @@ data. Statistics in Medicine, 18(17-18), 2529-2545.
 
 __all__ = ["brier"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def brier(

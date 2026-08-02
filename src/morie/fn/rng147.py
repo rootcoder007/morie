@@ -1,6 +1,6 @@
 """Minimum mean-squared error achievable by the Wiener filter.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

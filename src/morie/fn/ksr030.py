@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Brownian bridge covariance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._kosorok import bridge_cov
 from ._richresult import RichResult

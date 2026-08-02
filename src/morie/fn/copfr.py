@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """General copula frailty for clustered survival."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._copula import FAMILIES, copula_cdf, tau_to_theta
 from ._richresult import RichResult

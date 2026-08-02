@@ -3,7 +3,7 @@
 """QLoRA: NF4-quantised frozen base weights with full-precision LoRA
 adapters."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .kmlora import kamath_lora_weight_update

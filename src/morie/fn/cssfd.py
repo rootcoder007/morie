@@ -5,7 +5,7 @@ Social disorganization spatial
 Category: CrimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def cssfd(incidents=None, population=None, coords=None, n=50):

@@ -1,6 +1,6 @@
 """Simulated annealing for spatial simulation matching target statistics."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

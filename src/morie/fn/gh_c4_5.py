@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Self-similarity of DP: conditional distribution given partition is again DP."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

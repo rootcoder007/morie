@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """K-fold cross-validation: partition into k equal folds; rotate held-out fold."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcvs import geron_cross_validation_score

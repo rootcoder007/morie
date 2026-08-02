@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Multiscale GWR (MGWR): one bandwidth per covariate."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_gwr import mgwr_backfit, pairwise_distances

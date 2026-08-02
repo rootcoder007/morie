@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Magnitude-squared coherence (MSC) function."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

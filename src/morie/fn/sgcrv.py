@@ -27,7 +27,7 @@ def cross_variogram(Z1, Z2, coords, n_lags=15, max_lag=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy.spatial.distance import pdist, squareform
 
     Z1 = np.asarray(Z1, dtype=np.float64).ravel()

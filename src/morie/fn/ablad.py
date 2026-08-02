@@ -5,7 +5,7 @@ Lead dust spatial
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ablad(data=None, coords=None, n=50):

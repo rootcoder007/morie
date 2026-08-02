@@ -15,7 +15,7 @@ def am_r_squared(actual_positions, estimated) -> DescriptiveResult:
 
     .. epigraph:: Mathematics is the queen of the sciences. -- Carl Friedrich Gauss
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     y = np.asarray(actual_positions, dtype=float).ravel()
     yhat = np.asarray(estimated, dtype=float).ravel()

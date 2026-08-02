@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Horowitz estimators for T and F in fully nonparametric transformation model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

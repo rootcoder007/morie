@@ -1,6 +1,6 @@
 """Posterior Dirichlet distribution of the first l weights given multinomial cell counts N_1, ..., N_l from n observations.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

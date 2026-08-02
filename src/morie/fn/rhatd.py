@@ -7,7 +7,7 @@ __all__ = ["rhat_diagnostic", "rhatd"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def rhat_diagnostic(

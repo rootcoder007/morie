@@ -11,7 +11,7 @@ def nominate_bill_params(nv, mid) -> DescriptiveResult:
 
     .. epigraph:: If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     nv = np.asarray(nv, dtype=float)
     mid = np.asarray(mid, dtype=float)

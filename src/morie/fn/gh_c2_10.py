@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian nonparametric Poisson regression: E[Y|x] = exp(f(x)), f ~ GP."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

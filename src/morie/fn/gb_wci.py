@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Significance test for concordance W using chi-square approximation."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

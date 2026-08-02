@@ -5,7 +5,7 @@ ADMM (alternating direction method of multipliers) for convex optimization.
 Splits problem into subproblems; solves via alternating proximal updates.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["admm"]
 

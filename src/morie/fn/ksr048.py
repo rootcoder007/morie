@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stochastic equicontinuity condition for Z-estimators."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

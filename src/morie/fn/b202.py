@@ -3,7 +3,7 @@
 """Burkov's Eq 2.2: the autoregressive next-token probability,
 made operational as a bigram MLE over the supplied sequence."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

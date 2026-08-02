@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gamma GLM regression via IRLS."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import norm
 
 from morie.fn._containers import RegressionResult

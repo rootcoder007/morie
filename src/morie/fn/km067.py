@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 5.3: the Bradley-Terry reward-model objective."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km065 import kamath_ch5_reward_loss_pairwise

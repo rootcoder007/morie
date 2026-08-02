@@ -11,7 +11,7 @@ and diagnostics based on weighted residuals. Biometrika, 81(3), 515-526.
 
 __all__ = ["phchk"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def phchk(

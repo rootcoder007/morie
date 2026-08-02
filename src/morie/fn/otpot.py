@@ -1,6 +1,6 @@
 """Recover log potentials f,g from Sinkhorn marginals."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

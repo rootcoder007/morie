@@ -3,7 +3,7 @@
 """VeRA: shared frozen random matrices with per-layer learned scaling
 vectors."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

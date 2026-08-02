@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EEG rhythm band classification (delta/theta/alpha/beta/gamma)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -3,7 +3,7 @@
 """Augmented SBERT: cross-encoder silver labels train the
 bi-encoder (Thakur et al. 2021; Alammar Ch 10)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

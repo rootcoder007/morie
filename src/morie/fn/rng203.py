@@ -1,6 +1,6 @@
 """CCF of random signals as expectation of outer product of vector samples.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

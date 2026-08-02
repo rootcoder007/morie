@@ -15,7 +15,7 @@ def linear_utility(ideal, position) -> DescriptiveResult:
 
     .. epigraph:: Errors using inadequate data are much less than those using none. -- Charles Babbage
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     ideal = np.asarray(ideal, dtype=float)
     position = np.asarray(position, dtype=float)

@@ -13,7 +13,7 @@ Delta-method SEs require the GEV information matrix (from
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from . import extvm as _extvm
 from ._richresult import RichResult

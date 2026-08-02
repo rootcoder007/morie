@@ -1,6 +1,6 @@
 """Probability assigned by a tree-based random measure to a partitioning set as a product of splitting variables along the path from the root.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

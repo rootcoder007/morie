@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Elastic net cost: MSE plus a mix of L1 and L2 penalties."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grlaso import geron_lasso_cost

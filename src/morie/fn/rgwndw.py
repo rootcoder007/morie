@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Window functions: Hamming, Hann, Blackman for spectral leakage control."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

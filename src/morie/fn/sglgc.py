@@ -23,7 +23,7 @@ def lag_class_binning(distances, n_bins=15, max_dist=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     d = np.asarray(distances, dtype=np.float64).ravel()
     d = d[d > 0]

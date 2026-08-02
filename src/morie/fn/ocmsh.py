@@ -11,7 +11,7 @@ def oc_coombs_mesh(normals, cutpoints, grid_size=50) -> DescriptiveResult:
 
     .. epigraph:: Logic is the foundation of all certain knowledge. -- Leonhard Euler
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     normals = np.asarray(normals, dtype=float)
     cutpoints = np.asarray(cutpoints, dtype=float)

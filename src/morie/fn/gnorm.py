@@ -11,7 +11,7 @@ European Conference on Computer Vision (ECCV)*, 3-19.
 
 __all__ = ["gnorm"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def gnorm(

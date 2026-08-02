@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Burkov's Eq 2.3: the shorthand notations for Eq 2.2 agree."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .b202 import burkov_lm_ch2_lm_next_token

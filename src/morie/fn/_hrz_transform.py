@@ -18,7 +18,7 @@ and NO intercept in X. Estimates produced under a different
 normalisation are not comparable without the adjustment on p. 216.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["normalize_scale", "kernel_K", "kernel_Kz_sixth",
            "kernel_Kz_sixth_deriv", "SCALE_NOTE"]

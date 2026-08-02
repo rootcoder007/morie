@@ -21,7 +21,7 @@ def positive_definiteness_check(C_matrix):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     C = np.asarray(C_matrix, dtype=np.float64)
     if C.ndim != 2 or C.shape[0] != C.shape[1]:

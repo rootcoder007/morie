@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Parzen-Rosenblatt kernel density estimate, ESL Sec. 6.6."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

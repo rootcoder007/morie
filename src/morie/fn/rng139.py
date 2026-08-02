@@ -1,6 +1,6 @@
 """Wiener filter output expressed as inner product of tap-weight and input vectors.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

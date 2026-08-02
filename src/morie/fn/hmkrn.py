@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Convolutional filter (kernel): learnable weight tensor."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmhei import geron_he_init

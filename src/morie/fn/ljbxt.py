@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ljung-Box portmanteau test for autocorrelation."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._containers import DescriptiveResult

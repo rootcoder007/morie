@@ -1,6 +1,6 @@
 """Equivalent (z, not z^-1) form of the baseline-wander filter.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -5,7 +5,7 @@ Stream length analysis
 Category: HydroSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def hylen(flow=None, precip=None, coords=None, n=50):

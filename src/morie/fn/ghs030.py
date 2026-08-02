@@ -1,6 +1,6 @@
 """Posterior expected density at x for a canonical Polya tree process with rate sequence a_m, given an i.i.d. sample with level-j cell counts N_{x_1 ... x_j}.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

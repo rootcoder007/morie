@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Convert PSD to frequency-in-Hz units and compute bin-level features."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

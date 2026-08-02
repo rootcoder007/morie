@@ -17,7 +17,7 @@ def gaussian_utility(ideal, position, beta: float = 1.0, w: float = 1.0) -> Desc
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     ideal = np.asarray(ideal, dtype=float)
     position = np.asarray(position, dtype=float)

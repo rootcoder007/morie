@@ -3,7 +3,7 @@
 """PET (Pattern-Exploiting Training): verbalizer cross-entropy plus an
 auxiliary MLM term."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km022 import kamath_ch2_mlm_loss

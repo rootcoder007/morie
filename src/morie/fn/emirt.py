@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EM algorithm IRT estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import em_irt as _em_irt
 from ._containers import DescriptiveResult

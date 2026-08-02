@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Vine (C-vine) copula fitted to spatial/multivariate data."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._copula import copula_tau, tau_to_theta

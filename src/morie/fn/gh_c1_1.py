@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayes rule for infinite-dimensional parameters: posterior proportional to likelihood times prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

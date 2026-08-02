@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Jonckheere-Terpstra test for ordered alternatives H1: theta_1 <= ... <= theta_k."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

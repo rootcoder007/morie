@@ -1,6 +1,6 @@
 """Spatial equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

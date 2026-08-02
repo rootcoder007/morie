@@ -1,6 +1,6 @@
 """Power cepstrum of a convolution as sum of component power cepstra (cross-term neglected).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

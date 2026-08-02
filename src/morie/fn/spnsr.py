@@ -1,6 +1,6 @@
 """Effects of nugget, sill and range on kriging prediction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_krig import simple_kriging

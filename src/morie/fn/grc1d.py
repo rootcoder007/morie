@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal (masked) 1D convolution for time-series forecasting."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmc1d import geron_causal_1d_conv

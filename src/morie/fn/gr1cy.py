@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Smith's 1cycle LR schedule: triangular warm-up then anneal + momentum mirror."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

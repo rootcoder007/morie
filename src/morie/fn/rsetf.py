@@ -12,7 +12,7 @@ so the two languages agree on the same design to full precision.
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

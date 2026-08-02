@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Alternative formula for H statistic in terms of rank sums R_i."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

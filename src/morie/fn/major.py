@@ -23,7 +23,7 @@ def majorize_step(X, D, W=None):
     DescriptiveResult
         value = updated coordinate matrix.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     D = np.asarray(D, dtype=float)

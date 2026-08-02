@@ -25,7 +25,7 @@ def empirical_semivariogram(Z, coords, n_lags=15, max_lag=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy.spatial.distance import pdist, squareform
 
     Z = np.asarray(Z, dtype=np.float64).ravel()

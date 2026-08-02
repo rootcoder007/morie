@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Zero-inflated Poisson regression via EM algorithm."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize
 from scipy.stats import norm
 

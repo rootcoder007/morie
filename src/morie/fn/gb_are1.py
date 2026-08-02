@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE of the sign test against the Wilcoxon signed-rank test."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._gb_are import efficacy_are
 from ._richresult import RichResult

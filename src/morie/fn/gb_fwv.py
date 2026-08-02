@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variance of Friedman chi_r^2 statistic for small b."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

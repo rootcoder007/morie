@@ -13,7 +13,7 @@ Default statistic is the mean; pass `statistic=np.median` etc.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

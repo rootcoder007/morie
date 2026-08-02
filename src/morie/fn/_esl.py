@@ -15,7 +15,7 @@ overlap -- and the book shows the damage concretely: for a
 exists to repair that.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["inclusion_probability", "bootstrap_indices", "default_mtry",
            "grow_tree", "predict_tree", "gaussian_product_kernel_density",

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """CLIP contrastive image-text loss (symmetric InfoNCE over a batch)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

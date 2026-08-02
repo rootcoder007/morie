@@ -1,6 +1,6 @@
 """Deterministic seeded RNG factory for reproducible bootstrap."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

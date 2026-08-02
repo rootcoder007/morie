@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Noise exposure assessment (TWA dBA)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 

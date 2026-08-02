@@ -7,7 +7,7 @@ notably ``_safe_exp`` which is also used by ``morie.investigation``.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def _safe_exp(value):

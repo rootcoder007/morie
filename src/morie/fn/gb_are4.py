@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hodges-Lehmann efficiency bounds."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._gb_are import (
     ARE_TABLE,

@@ -1,6 +1,6 @@
 """Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

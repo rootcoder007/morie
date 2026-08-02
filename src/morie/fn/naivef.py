@@ -1,6 +1,6 @@
 """Naive ŷ_{t+h}=y_t."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

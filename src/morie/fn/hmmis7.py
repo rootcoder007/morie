@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Mistral-7B: open-weights 7B-parameter decoder-only LLM."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

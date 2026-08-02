@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """CART algorithm: greedy binary splits minimizing impurity."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcart import geron_cart_split_cost

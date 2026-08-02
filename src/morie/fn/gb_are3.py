@@ -45,7 +45,7 @@ def gibbons_are_dbl_exp(distribution="double_exponential", cdf=None):
         raise ValueError(
             f"this module carries the double_exponential case, got {distribution!r}."
         )
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy import stats
 
     dens = {

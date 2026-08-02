@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 5.1: naive kernel KS and CvM converge to empirical counterparts."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

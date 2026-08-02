@@ -13,7 +13,7 @@ Hu, L. & Bentler, P.M. (1999). Cutoff criteria for fit indexes.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize
 
 

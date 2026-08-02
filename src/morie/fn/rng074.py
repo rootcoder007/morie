@@ -1,6 +1,6 @@
 """DFT decomposed into real (cos) and imaginary (sin) parts.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

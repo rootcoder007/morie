@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal forest for heterogeneous treatment effect estimation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._cforest import CausalForest
 from ._richresult import RichResult

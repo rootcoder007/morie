@@ -3,7 +3,7 @@
 """Image-captioning composition: project visual features into the
 LM's space (Alammar Ch 9)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

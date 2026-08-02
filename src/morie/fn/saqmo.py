@@ -5,7 +5,7 @@ Quantile Moran scatter
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def saqmo(values=None, w=None, n=50):

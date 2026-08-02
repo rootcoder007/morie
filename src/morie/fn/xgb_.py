@@ -1,6 +1,6 @@
 """Simplified XGBoost (L2 regularized gradient boosting)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 from ._richresult import RichResult

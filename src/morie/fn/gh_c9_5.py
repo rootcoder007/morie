@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Approximation by normal mixtures: any smooth density approx by Gaussian mixture."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -20,7 +20,7 @@ of graphs*, Bulletin of the AMS 53:292-294.
 import math
 from itertools import combinations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -5,7 +5,7 @@ Leq equivalent level
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbleq(data=None, coords=None, n=50):

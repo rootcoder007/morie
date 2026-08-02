@@ -1,6 +1,6 @@
 """Spectral FFT-based Gaussian random field sim."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

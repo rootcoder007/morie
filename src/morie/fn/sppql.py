@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Penalized quasi-likelihood / pseudo-likelihood for spatial GLMMs."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_glmm import (canonical_link, fit_pseudo_likelihood, pql_score,

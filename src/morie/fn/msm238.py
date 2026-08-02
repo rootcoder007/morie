@@ -1,6 +1,6 @@
 """Numbered display equation (1.3) from MVSML chapter 1.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

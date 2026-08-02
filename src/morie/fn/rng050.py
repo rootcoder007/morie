@@ -1,6 +1,6 @@
 """Frequency response obtained by evaluating the Laplace transform on the imaginary axis.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

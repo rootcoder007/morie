@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Synchronized averaging of PCG envelopes (S1/S2 intensity analysis)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

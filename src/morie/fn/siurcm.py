@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-import numpy as np
+from . import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 

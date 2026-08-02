@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """PPG waveform feature extraction (systolic peak, dicrotic notch, diastolic peak)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

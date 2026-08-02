@@ -12,7 +12,7 @@ JMLR, 2(Dec), 265-292.
 
 __all__ = ["hinge"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def hinge(

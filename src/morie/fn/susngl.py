@@ -1,6 +1,6 @@
 """Single-occasion acute harm risk from BAC levels."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

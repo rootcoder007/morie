@@ -1,6 +1,6 @@
 """LR test of variance component on boundary (50:50 mixture)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

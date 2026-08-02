@@ -845,3 +845,12 @@ def trapezoid(y, x=None, dx=1.0, axis=None):
         fx = asarray(x)._flat()
     return float(_math.fsum((fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0
                             for i in range(len(fy) - 1)))
+
+
+def sliding_window_view(x, window):
+    """1-D sliding windows as a 2-D array (numpy.lib.stride_tricks subset)."""
+    f = asarray(x)._flat()
+    w = int(window)
+    if w < 1 or w > len(f):
+        raise ValueError("invalid window length")
+    return marr([f[i:i + w] for i in range(len(f) - w + 1)])

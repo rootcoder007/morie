@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.fft import dct, idct
 
 from ._containers import DescriptiveResult

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 5.9: Edgeworth expansion for smoothed Wilcoxon with fourth-order kernel."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

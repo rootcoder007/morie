@@ -1,6 +1,6 @@
 """First and second moments of partitioning-set probabilities under a Polya tree process with parameters alpha_epsilon.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

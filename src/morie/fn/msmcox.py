@@ -1,6 +1,6 @@
 """MSM Cox marginal hazard model with IPTW."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

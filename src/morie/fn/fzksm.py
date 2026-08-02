@@ -7,7 +7,7 @@ Under H0:X~F_0, sqrt(n) D_n has the same Kolmogorov limit as the
 classical KS, so we use SciPy's Kolmogorov tail.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

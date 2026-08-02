@@ -15,7 +15,7 @@ def bb_dimensionality_select(Z, max_dims: int = 5) -> DescriptiveResult:
 
     .. epigraph:: We must know. We will know. -- David Hilbert
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     Zc = Z - Z.mean(axis=0)

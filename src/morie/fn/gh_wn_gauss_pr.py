@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """White noise model with conjugate Gaussian prior: exact posterior Gaussian."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

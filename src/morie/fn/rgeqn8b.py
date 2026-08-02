@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GLR threshold selection for change detection at given FAR."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

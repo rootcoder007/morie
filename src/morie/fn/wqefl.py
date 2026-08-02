@@ -4,7 +4,7 @@ Effluent quality spatial
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqefl(data=None, coords=None, n=50):

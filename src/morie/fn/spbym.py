@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Besag-York-Mollie convolution model for disease mapping."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_glmm import (bym_identifiability_note, bym_map,

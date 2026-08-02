@@ -1,6 +1,6 @@
 """Placebo test for DR-DiD pre-trends."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

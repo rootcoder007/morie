@@ -1,6 +1,6 @@
 """Spatio-temporal IDE model (Schabenberger & Gotway Ch 9)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import cdist
 
 

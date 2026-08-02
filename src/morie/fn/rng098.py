@@ -1,6 +1,6 @@
 """Impulse response of the 8-point MA filter as a sum of shifted deltas.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

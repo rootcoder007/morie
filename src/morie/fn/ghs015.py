@@ -1,6 +1,6 @@
 """Posterior variance of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

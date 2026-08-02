@@ -1,6 +1,6 @@
 """Time-varying step size mu(n) per Zhang et al. for VAG signals.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

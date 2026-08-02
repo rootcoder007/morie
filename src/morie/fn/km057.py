@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 4.4: the LoRA objective, optimised over Theta alone."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km056 import _sequence_objective

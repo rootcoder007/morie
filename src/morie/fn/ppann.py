@@ -5,7 +5,7 @@ Nearest neighbor PP statistics
 Category: PointProc
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ppann(points=None, n=80, window=(0, 1, 0, 1), intensity=None):

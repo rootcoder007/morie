@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """UMAP: uniform manifold approximation, preserves local and some global structure."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

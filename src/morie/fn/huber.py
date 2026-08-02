@@ -12,7 +12,7 @@ Annals of Mathematical Statistics, 35(1), 73-101.
 
 __all__ = ["huber"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def huber(

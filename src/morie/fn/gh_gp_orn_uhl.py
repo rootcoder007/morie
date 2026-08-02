@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ornstein-Uhlenbeck kernel: k(s,t) = exp(-|s-t|/l), Markovian covariance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

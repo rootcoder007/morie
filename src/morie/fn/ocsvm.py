@@ -11,7 +11,7 @@ def oc_svm_classify(X, labels) -> DescriptiveResult:
 
     .. epigraph:: Number rules the universe. -- Pythagoras
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     labels = np.asarray(labels, dtype=float)

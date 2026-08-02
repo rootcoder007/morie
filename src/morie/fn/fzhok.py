@@ -20,7 +20,7 @@ where phi is the standard normal density.  Its second moment is 0
 and fourth moment is -3.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

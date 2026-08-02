@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pitman-Yor EPPF: prod (theta+j*d) / prod_{j=1}^k prod_{l=1}^{n_j-1}(l-d)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

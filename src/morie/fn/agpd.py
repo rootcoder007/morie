@@ -5,7 +5,7 @@ Patch density
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agpd(areas=None, perimeters=None, values=None, n=30):

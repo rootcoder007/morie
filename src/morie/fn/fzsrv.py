@@ -9,7 +9,7 @@ with W(u) = Phi(u) for the Gaussian kernel.  Asymptotic variance is
 the KDFE variance: S(t)(1-S(t))/n + O(h/n).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

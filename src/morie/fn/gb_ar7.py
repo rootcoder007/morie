@@ -44,7 +44,7 @@ def gibbons_are_logistic(distribution="logistic", cdf=None):
         raise ValueError(
             f"this module carries the logistic case, got {distribution!r}."
         )
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy import stats
 
     dens = {

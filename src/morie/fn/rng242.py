@@ -1,6 +1,6 @@
 """Power-series expansion of log(1 - alpha z^-1) for |z| > |alpha|.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

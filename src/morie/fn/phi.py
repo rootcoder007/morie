@@ -4,7 +4,7 @@
 import math
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def phi_coefficient(table_2x2: Union[list, np.ndarray]) -> float:

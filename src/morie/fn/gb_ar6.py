@@ -45,7 +45,7 @@ def gibbons_are_unif(distribution="uniform", cdf=None):
         raise ValueError(
             f"this module carries the uniform case, got {distribution!r}."
         )
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy import stats
 
     dens = {

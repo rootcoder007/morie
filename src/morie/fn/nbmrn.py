@@ -5,7 +5,7 @@ Marine noise spatial
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbmrn(data=None, coords=None, n=50):

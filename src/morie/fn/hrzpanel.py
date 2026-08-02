@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Panel data deconvolution: estimate fU and f_eps from Y_jt = X_jt'beta + U_j + eps_jt."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

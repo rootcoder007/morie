@@ -15,7 +15,7 @@ def separating_hyperplane(X, labels) -> DescriptiveResult:
 
     .. epigraph:: You have power over your mind, not outside events. -- Marcus Aurelius
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     labels = np.asarray(labels).ravel()

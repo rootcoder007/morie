@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Calendar/time-of-day feature engineering (day-of-week, hour, month, is_holiday)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

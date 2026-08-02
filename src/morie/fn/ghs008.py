@@ -1,6 +1,6 @@
 """Construction of a prior on the infinite simplex by normalizing positive random variables Y_j to obtain probability weights p_k.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

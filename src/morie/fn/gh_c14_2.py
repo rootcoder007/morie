@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ewens sampling formula: EPPF for DP, p(n1..nk) = alpha^k prod(n_j-1)! / alpha^{[n]}."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

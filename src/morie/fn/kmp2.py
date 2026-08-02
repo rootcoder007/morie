@@ -3,7 +3,7 @@
 """P-tuning v2: a learnable prefix at EVERY layer, not just the
 input."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

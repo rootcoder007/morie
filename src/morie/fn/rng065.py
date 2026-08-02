@@ -1,6 +1,6 @@
 """Continuous-time Fourier transform with frequency variable f in Hz.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

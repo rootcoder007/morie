@@ -42,7 +42,7 @@ predicted".
 Everything here is internal.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = []
 

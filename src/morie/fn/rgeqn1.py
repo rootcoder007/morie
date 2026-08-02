@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Basic signal statistics: mean, variance, skewness, kurtosis of biomedical signal."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

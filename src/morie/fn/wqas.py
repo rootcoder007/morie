@@ -4,7 +4,7 @@ Arsenic water spatial
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqas(data=None, coords=None, n=50):

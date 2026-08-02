@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal forest with a monotonicity constraint on the CATE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._cforest import CausalForest
 from ._richresult import RichResult

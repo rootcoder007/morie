@@ -5,7 +5,7 @@ Satellite ocean color
 Category: MarinSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def masat(depth=None, temp=None, salinity=None, coords=None, n=50):

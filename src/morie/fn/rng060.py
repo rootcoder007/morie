@@ -1,6 +1,6 @@
 """Frequency response evaluated at z_0 on the unit circle from pole-zero form.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

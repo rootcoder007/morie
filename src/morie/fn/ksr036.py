@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bracketing Donsker theorem."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .ksr035 import kosorok_ch2_donsker_bracketing_integral

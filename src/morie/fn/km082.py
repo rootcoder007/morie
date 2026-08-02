@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.6: the WEAT effect size."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km080 import _sums

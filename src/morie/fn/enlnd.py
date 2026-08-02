@@ -5,7 +5,7 @@ Landslide risk spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enlnd(data=None, coords=None, n=50):

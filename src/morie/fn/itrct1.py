@@ -1,6 +1,6 @@
 """DR-DiD with treatment × covariate interaction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

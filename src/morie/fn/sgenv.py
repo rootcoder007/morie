@@ -27,7 +27,7 @@ def simulation_envelope(points, window, stat_fn, n_sim=99, seed=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]

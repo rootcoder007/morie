@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Smoothed maximum score."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._horowitz import silverman_bw
 from ._richresult import RichResult

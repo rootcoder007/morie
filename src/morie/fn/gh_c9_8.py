@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonlinear autoregression contraction rate via Markov chain framework."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

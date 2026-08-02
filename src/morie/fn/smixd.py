@@ -9,7 +9,7 @@ log-likelihood over (phi, nu = tau2/sigma2); sigma2 is profiled in
 closed form (Patterson-Thompson 1971).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize
 from scipy.spatial.distance import cdist
 

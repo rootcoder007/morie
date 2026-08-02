@@ -5,7 +5,7 @@ Spatial weight error operator
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sawer(values=None, w=None, n=50):

@@ -11,7 +11,7 @@ calibration equation, stated at its definition below, and the tests
 recompute the ones that have closed forms.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["mad_scale", "huber_psi", "tukey_rho", "tukey_weight",
            "irls", "s_scale", "s_regression", "mm_regression",

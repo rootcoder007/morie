@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Temperature scaling of softmax logits before sampling."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grn021 import softmax_vector

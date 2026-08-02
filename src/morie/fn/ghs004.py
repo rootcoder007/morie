@@ -1,6 +1,6 @@
 """Density induced from a real-valued function f via the exponential link, normalized by c(f) = log integral exp(f) d mu.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

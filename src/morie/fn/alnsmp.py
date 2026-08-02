@@ -3,7 +3,7 @@
 """Skip-gram with negative sampling (Mikolov et al. 2013;
 Alammar Ch 2)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

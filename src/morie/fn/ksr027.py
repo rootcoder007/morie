@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pointwise strong law for the EDF."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._kosorok import empirical_df
 from ._richresult import RichResult

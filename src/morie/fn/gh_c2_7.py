@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Feller approximation via Bernstein polynomials for distribution functions."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

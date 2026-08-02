@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """KL variation V_k(P,Q): higher-order moment of log likelihood ratio."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

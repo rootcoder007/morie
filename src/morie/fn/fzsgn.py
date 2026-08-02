@@ -10,7 +10,7 @@ Under H0: median(X)=theta_0,  E[S_n]=n/2, Var[S_n]≈n/4, so
 z = (S_n - n/2)/sqrt(n/4) ~ N(0,1).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

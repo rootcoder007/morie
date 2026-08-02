@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Consistency definition: test statistic power -> 1 as n -> inf."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

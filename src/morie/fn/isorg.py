@@ -21,7 +21,7 @@ def isotonic_regression(x, w=None):
     DescriptiveResult
         value = monotonically fitted values (ndarray).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     x = np.asarray(x, dtype=float).copy()
     n = len(x)

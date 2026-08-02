@@ -17,7 +17,7 @@ Two facts drive most of what follows.
   minimax rate. A prior does not beat it, and a good one attains it.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["dp_predictive", "stick_breaking", "predictive_recursion",
            "polya_tree_density", "hellinger", "minimax_rate",

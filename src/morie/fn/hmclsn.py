@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Classification MLP: softmax output and cross-entropy loss."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmcec import geron_cross_entropy_cost

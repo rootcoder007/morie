@@ -1,6 +1,6 @@
 """MA smoothing filter applied to g_1 in the Murthy-Rangaraj QRS detector.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Manski no-assumption bounds with outcome covariates."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

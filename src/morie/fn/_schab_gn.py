@@ -27,7 +27,7 @@ arithmetic rather than two differently-tuned approximations.
 Everything here is internal.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._schab_vario import PRACTICAL_RANGE_C, correlogram, semivariogram
 

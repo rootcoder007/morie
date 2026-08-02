@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Perceiver IO: a small latent array cross-attends to a large input."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grsdpa import attend

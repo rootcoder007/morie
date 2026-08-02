@@ -8,7 +8,7 @@ probabilities, not from a model for y, which is why every estimator
 here takes ``pi`` or weights rather than a distributional assumption.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["check_weights", "ht_total", "hajek_mean", "linearise",
            "srs_variance"]

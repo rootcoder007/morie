@@ -1,6 +1,6 @@
 """Differential entropy of a continuous PDF in bits.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

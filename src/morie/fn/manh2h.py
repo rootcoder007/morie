@@ -1,6 +1,6 @@
 """Inconsistency check via Dias node-splitting on a single edge."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

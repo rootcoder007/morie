@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sliding-window CV: fixed-size train + val, both slide forward each fold."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

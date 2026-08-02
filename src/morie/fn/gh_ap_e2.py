@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spline space S_{K,r}: polynomials of degree r with K interior knots."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Heart rate computed from number of QRS complexes detected over duration T.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

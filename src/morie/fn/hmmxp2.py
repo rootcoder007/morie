@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Mixed-precision training: FP16 compute with FP32 master weights."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

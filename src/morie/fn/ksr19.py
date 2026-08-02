@@ -8,7 +8,7 @@ partial-likelihood gradient and return beta_hat with observed-
 information SE (no time ties; Breslow handling for ties).
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

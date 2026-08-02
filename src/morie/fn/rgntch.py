@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Notch filter for powerline interference removal (50/60 Hz)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

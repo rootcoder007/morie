@@ -1,6 +1,6 @@
 """Matched-filter output equals scaled, delayed ACF of the reference signal.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

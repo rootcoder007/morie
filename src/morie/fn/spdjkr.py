@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Disjunctive kriging via the Chebyshev-Hermite expansion."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_hermite import (disjunctive_kriging, hermite_coefficients,

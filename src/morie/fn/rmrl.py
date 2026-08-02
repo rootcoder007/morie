@@ -1,6 +1,6 @@
 """Reward machine -- finite-state task spec."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -14,7 +14,7 @@ def median_voter(ideal_points) -> DescriptiveResult:
 
     .. epigraph:: Errors using inadequate data are much less than those using none. -- Charles Babbage
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(ideal_points, dtype=float).ravel()
     med = float(np.median(pts))

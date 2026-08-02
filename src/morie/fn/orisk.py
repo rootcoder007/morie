@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 from scipy import stats
 
@@ -56,7 +56,8 @@ def otis_risk_table(
                 se_log = np.sqrt(1 / max(a, 1) + 1 / max(b, 1) + 1 / max(c, 1) + 1 / max(dd, 1))
         else:
             # OLS approximation for log(OR) per unit increase
-            from numpy.linalg import lstsq
+            from morie.fn._array_core import linalg as _acl
+            lstsq = _acl.lstsq
 
             X = np.column_stack([np.ones(n), x])
             beta, _, _, _ = lstsq(X, y, rcond=None)

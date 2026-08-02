@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kaplan-Meier Z-estimator map Psi(S)(t)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

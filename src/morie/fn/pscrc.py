@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Roll-call object: encode a vote matrix for spatial scaling."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

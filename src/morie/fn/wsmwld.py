@@ -1,6 +1,6 @@
 """Wald test (theta_hat - theta_0)/se ~ N(0,1)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """General M-estimator regression by IRLS."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

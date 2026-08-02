@@ -1,6 +1,6 @@
 """Two-step DerSimonian-Laird with Hedges-Eddy improvement."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

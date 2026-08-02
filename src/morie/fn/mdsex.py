@@ -21,7 +21,7 @@ def convex_hull_mds(X, groups):
     DescriptiveResult
         value = dict of group -> hull vertex indices.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     groups = np.asarray(groups)

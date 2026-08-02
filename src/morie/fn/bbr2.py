@@ -15,7 +15,7 @@ def bb_r2_per_issue(Z, fitted) -> DescriptiveResult:
 
     .. epigraph:: Give me a place to stand and I will move the earth. -- Archimedes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     fitted = np.asarray(fitted, dtype=float)

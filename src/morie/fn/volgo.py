@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Orthogonal (principal-component) GARCH."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._garch import garch_fit
 from ._richresult import RichResult

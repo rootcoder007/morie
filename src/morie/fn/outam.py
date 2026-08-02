@@ -15,7 +15,7 @@ def outlier_detection_am(residuals, threshold: float = 2.0) -> DescriptiveResult
 
     .. epigraph:: The measure of a man is what he does with power. -- Plato
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     R = np.asarray(residuals, dtype=float)
     row_rmse = np.sqrt(np.nanmean(R**2, axis=1))

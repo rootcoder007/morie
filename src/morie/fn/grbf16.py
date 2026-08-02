@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """BF16 representation: 1 sign + 8 exponent + 7 mantissa bits (FP32's exponent range)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

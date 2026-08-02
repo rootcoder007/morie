@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power function of control median test."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

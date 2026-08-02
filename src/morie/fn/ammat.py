@@ -14,7 +14,7 @@ def am_matrix_setup(Z) -> DescriptiveResult:
 
     .. epigraph:: A journey of a thousand miles begins with a single step. -- Lao Tzu
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     col_means = Z.mean(axis=0)

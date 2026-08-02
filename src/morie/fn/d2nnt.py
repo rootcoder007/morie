@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Convert Cohen's d to NNT (Kraemer and Kupfer, 2006)."""
 
-import numpy as np
+from . import _array_core as np
 import scipy.stats as stats
 
 

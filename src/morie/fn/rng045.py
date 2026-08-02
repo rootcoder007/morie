@@ -1,6 +1,6 @@
 """Output of the second branch in a parallel LSI configuration.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

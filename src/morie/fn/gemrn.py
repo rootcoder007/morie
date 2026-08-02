@@ -5,7 +5,7 @@ Moran economic spatial
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gemrn(gdp=None, trade=None, coords=None, n=50):

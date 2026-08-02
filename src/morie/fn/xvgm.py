@@ -1,6 +1,6 @@
 """Cross-variogram estimation (Schabenberger & Gotway Ch 5)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import pdist, squareform
 
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bernstein polynomial approximation: B_K(f)(x) = sum f(k/K) C(K,k) x^k (1-x)^{K-k}."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

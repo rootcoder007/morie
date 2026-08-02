@@ -3,7 +3,7 @@
 """YaRN: NTK-aware RoPE frequency rescaling for context
 extrapolation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

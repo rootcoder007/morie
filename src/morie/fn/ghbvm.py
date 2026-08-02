@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Semiparametric Bernstein–von Mises diagnostic."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import kstest, norm
 
 from ._richresult import RichResult

@@ -5,7 +5,7 @@ Asbestos spatial
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def absbs(data=None, coords=None, n=50):

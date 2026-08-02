@@ -5,7 +5,7 @@ Conjugate gradient method for unconstrained optimization.
 First-order iterative method using conjugate directions.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["cgmth"]
 

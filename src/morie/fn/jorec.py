@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Recursive multi-step: feed each prediction back as input for the next step."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

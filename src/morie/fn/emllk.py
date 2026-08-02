@@ -11,7 +11,7 @@ def em_log_likelihood(votes, theta, alpha, beta) -> DescriptiveResult:
 
     .. epigraph:: The only true wisdom is in knowing you know nothing. -- Socrates
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     votes = np.asarray(votes, dtype=float)
     theta = np.asarray(theta, dtype=float)

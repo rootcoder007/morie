@@ -1,6 +1,6 @@
 r"""CentralTendency equation extracted from Density estimation for statistics and data analysis -- Silverman, B  W -- Monographs on statistics and applied probability.."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import hypothesis_test_result

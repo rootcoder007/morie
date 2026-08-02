@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Curse of dimensionality in nonparametric regression: rate degrades with dimension."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

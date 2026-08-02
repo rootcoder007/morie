@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Gradient boosting for squared-error loss (ESL Ch 10.10)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .esldct import esl_decision_tree, esl_tree_predict

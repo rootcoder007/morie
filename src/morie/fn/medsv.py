@@ -12,7 +12,7 @@ the median survival time. Biometrics, 38(1), 29-41.
 
 __all__ = ["medsv"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def medsv(

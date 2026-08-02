@@ -9,7 +9,7 @@ the KDFE.  Its asymptotic distribution is
 with tau^2 = p(1-p) (the binomial variance of the empirical CDF at Q).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 from scipy.optimize import brentq as _brentq
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Maternal-fetal ECG separation via adaptive noise cancellation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

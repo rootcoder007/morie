@@ -8,7 +8,7 @@ __all__ = ["advi_meanfield", "advi"]
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def advi_meanfield(

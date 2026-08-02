@@ -1,6 +1,6 @@
 """Twiddle factor used in DFT and FFT formulations.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

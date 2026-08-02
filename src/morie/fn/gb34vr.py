@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variance of total runs up-and-down statistic."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

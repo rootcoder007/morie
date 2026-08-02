@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Almost-sure bootstrap Donsker characterisation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .ksr040 import kosorok_ch2_bootstrap_donsker_iff

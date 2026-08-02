@@ -3,7 +3,7 @@
 
 __all__ = ["klgrd"]
 
-import numpy as np
+from . import _array_core as np
 from scipy.integrate import solve_ivp
 
 

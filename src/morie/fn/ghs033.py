@@ -1,6 +1,6 @@
 """Polya-tree mixture of the second kind: mean density g_theta expressed as a product over levels of doubled theta-dependent alpha parameters.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

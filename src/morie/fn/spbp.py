@@ -1,6 +1,6 @@
 """Breusch-Pagan test for heteroskedasticity in spatial regression."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

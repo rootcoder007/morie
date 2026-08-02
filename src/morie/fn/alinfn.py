@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """InfoNCE loss (van den Oord et al. 2018; Alammar Ch 10)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

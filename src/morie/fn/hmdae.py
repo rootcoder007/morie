@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Denoising autoencoder: reconstruct clean input from corrupted."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grdae import geron_denoising_autoencoder as _grdae

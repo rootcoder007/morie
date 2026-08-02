@@ -5,7 +5,7 @@ Spatial overlay intersection
 Category: GeoAnalysis
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def overla(x=None, y=None, values=None, resolution=50):

@@ -11,7 +11,7 @@ subsample SE is returned as a pragmatic stand-in.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize
 
 from ._richresult import RichResult

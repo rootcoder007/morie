@@ -11,7 +11,7 @@ def bayesian_burnin_trim(chain, burnin=100) -> DescriptiveResult:
 
     .. epigraph:: It does not matter how slowly you go as long as you do not stop. -- Confucius
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     trimmed = chain[burnin:]

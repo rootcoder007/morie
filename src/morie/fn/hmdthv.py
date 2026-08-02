@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Decision trees exhibit high variance; small data changes yield very different trees."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmcart import geron_cart_algorithm, predict_tree

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Two-way fixed-effects difference-in-differences."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import as_panel, cluster_se, first_treatment, twfe_beta
 from ._richresult import RichResult

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution-free confidence interval for population p-th quantile using order statistics."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

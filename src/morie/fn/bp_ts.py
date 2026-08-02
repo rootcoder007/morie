@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bai-Perron structural break test (simplified OLS-based)."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def bp_ts(

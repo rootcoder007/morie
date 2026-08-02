@@ -5,7 +5,7 @@ Golden section search for univariate minimization.
 Iteratively brackets the minimum of a unimodal function.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["gldsc"]
 

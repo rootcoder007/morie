@@ -11,7 +11,7 @@ def pre_statistic(predicted, observed) -> DescriptiveResult:
 
     .. epigraph:: What is now proved was once only imagined. -- William Blake
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pred = np.asarray(predicted, dtype=float).round()
     obs = np.asarray(observed, dtype=float)

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multi-trait linear mixed model with Kronecker covariance."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

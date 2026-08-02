@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Alpha-posterior (power-likelihood) for robust consistency: pi_alpha(theta|X^n) proportional pi(theta) * prod p_theta(X_i)^alpha."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

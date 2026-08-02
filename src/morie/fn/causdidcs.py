@@ -1,6 +1,6 @@
 """Callaway-Sant'Anna ATT(g,t) under staggered adoption."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

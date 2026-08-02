@@ -25,7 +25,7 @@ def incremental_cer(
     delta_e = effect_new - effect_old
 
     if delta_e == 0:
-        import numpy as np
+        from morie.fn import _array_core as np
 
         icer = np.inf if delta_c > 0 else -np.inf if delta_c < 0 else 0.0
     else:

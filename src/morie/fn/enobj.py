@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Elastic net combined penalty objective."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

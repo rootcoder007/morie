@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """RNN visual attention over a spatial feature map."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

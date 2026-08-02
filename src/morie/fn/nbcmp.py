@@ -5,7 +5,7 @@ Noise compliance spatial
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbcmp(data=None, coords=None, n=50):

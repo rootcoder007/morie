@@ -1,6 +1,6 @@
 """T-period return level under POT/GPD."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

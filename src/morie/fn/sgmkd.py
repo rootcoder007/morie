@@ -23,7 +23,7 @@ def marked_point_summary(points, marks):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy.spatial.distance import pdist, squareform
 
     pts = np.asarray(points, dtype=np.float64)

@@ -10,7 +10,7 @@ Computing 26:409-421; the sandwich smoother is Xiao L, Li Y, Ruppert D
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

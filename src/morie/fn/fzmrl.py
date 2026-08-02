@@ -13,7 +13,7 @@ integrates.  Asymptotically:
 with sigma_m^2(t) computed via the Yang (1978) plug-in.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

@@ -3,7 +3,7 @@
 """Kamath Eq 2.41: the Mixtral block -- top-2 gating over SwiGLU
 experts."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km039 import kamath_ch2_moe_output

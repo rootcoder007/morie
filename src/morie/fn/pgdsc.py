@@ -5,7 +5,7 @@ Proximal gradient descent for composite optimization.
 Minimizes f(x) + g(x) where f is smooth and g is convex (possibly non-smooth).
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["pgdsc"]
 

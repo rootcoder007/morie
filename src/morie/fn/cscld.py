@@ -5,7 +5,7 @@ Call load distribution
 Category: CrimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def cscld(incidents=None, population=None, coords=None, n=50):

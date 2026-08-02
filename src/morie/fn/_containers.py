@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 
 # -- Psychometrics --

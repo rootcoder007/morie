@@ -46,7 +46,7 @@ def rmsprop_optimizer(theta, grad, lr=0.001, rho=0.9, eps=1e-8, state=None):
     >>> bool(abs(th[0] - 3.0) < 1e-2)
     True
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     th = np.atleast_1d(np.asarray(theta, dtype=float)).ravel()
     gr = np.atleast_1d(np.asarray(grad, dtype=float)).ravel()

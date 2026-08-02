@@ -3,7 +3,7 @@
 
 import math
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import erfc  # noqa: F401
 from scipy.stats import norm
 

@@ -1,6 +1,6 @@
 """Definition of the complex cepstrum via inverse z-transform of complex log of Y(z).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

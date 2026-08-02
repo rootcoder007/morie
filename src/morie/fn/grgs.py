@@ -4,7 +4,7 @@
 
 import itertools
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grkfd import geron_kfold_cv

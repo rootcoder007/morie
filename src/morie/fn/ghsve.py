@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sieve prior construction (truncated log-spline / Bernstein basis)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import gammaln
 
 from ._richresult import RichResult

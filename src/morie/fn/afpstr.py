@@ -5,7 +5,7 @@ Pasture quality spatial
 Category: AgriSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def afpstr(yield_data=None, soil=None, coords=None, n=50):

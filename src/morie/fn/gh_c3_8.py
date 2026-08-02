@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prior construction via moments: specify E[int f dG] for test functions f."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

@@ -5,7 +5,7 @@ Growing degree days spatial
 Category: AgriSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def afgdd(yield_data=None, soil=None, coords=None, n=50):

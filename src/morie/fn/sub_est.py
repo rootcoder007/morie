@@ -2,7 +2,7 @@
 
 import math
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 import scipy.stats as scipy_stats
 

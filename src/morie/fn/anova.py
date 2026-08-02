@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """One-way ANOVA F-test."""
 
-import numpy as np
+from . import _array_core as np
 import scipy.stats as stats
 
 

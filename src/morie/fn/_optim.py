@@ -18,7 +18,7 @@ dict of arrays and is safe to pickle or checkpoint.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["as_vector", "init_state", "step_result"]
 

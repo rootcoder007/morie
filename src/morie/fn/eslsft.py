@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Softmax transformation (ESL Ch 4.4 / 11.3)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

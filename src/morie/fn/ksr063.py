@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cox efficient score for beta."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._kosorok import cox_score
 from ._richresult import RichResult

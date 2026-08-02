@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """M-estimator asymptotic normality (Kosorok Thm 2.13)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

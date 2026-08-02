@@ -1,6 +1,6 @@
 """Asymptotic-independence diagnostic χ̄(u)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

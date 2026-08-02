@@ -1,6 +1,6 @@
 """Lower bound on the prior probability of approximating a target density p_0 in L1, used to establish that the total-variation support contains all densities absolutely continuous with respect to mu.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

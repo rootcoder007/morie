@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sample size determination for KS test with specified precision."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

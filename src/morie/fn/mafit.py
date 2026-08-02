@@ -8,7 +8,7 @@ conditional maximum likelihood (CML).
 Category: TimeSeries
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize
 
 

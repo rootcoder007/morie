@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Causal 1D convolution: output at time t depends only on t' <= t."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

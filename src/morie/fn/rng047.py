@@ -1,6 +1,6 @@
 """Combined impulse response of two LSI systems in parallel is their sum.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

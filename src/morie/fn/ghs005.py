@@ -1,6 +1,6 @@
 """Fejer-type theorem stating that location-scale kernel mixtures converge in L1 to f as the bandwidth sigma tends to zero.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

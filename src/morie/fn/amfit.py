@@ -17,7 +17,7 @@ def am_fit_statistic(Z, zhat, alpha, beta) -> DescriptiveResult:
 
     .. epigraph:: To understand God's thoughts we must study statistics. -- Florence Nightingale
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     zhat = np.asarray(zhat, dtype=float).ravel()

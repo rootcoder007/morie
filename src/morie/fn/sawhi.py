@@ -5,7 +5,7 @@ Spatial weight histogram
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def sawhi(values=None, w=None, n=50):

@@ -1,6 +1,6 @@
 """Spatial GEE -- generalized estimating equations (Schabenberger & Gotway Ch 7)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import cdist
 
 

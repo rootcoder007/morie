@@ -1,6 +1,6 @@
 """Hamilton's Q-statistic change-point detector."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

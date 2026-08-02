@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EGARCH with a skewed generalized-error distribution."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize, special
 
 from ._garch import garch_fit

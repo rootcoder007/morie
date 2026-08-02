@@ -3,7 +3,7 @@
 
 __all__ = ["riman"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def riman(

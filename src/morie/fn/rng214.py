@@ -1,6 +1,6 @@
 """Total energy of a signal via Parseval's theorem.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

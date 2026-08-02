@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Ch 5: the Bradley-Terry preference probability."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

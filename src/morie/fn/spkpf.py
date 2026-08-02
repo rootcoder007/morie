@@ -18,7 +18,7 @@ def single_peaked_check(preferences):
     DescriptiveResult
         value = bool (all single-peaked), extra has per-row results.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     P = np.asarray(preferences, dtype=float)
     n_resp, n_stim = P.shape

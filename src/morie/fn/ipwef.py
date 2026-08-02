@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Inverse probability weighting."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._did import add_intercept, logit_fit, logit_predict

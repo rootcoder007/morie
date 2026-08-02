@@ -1,6 +1,6 @@
 """Ripley's K-function: expected number of extra events within distance h."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_pp import as_region, intensity, k_function

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Generative adversarial network: generator vs discriminator minimax."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmdfw import lcg_normal

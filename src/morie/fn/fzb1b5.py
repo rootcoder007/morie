@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Assumptions B1-B5 for bias-reduced KDFE (kernel, bandwidth, f_X conditions)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -11,7 +11,7 @@ arXiv preprint arXiv:1710.05941.
 
 __all__ = ["swish"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def swish(x, derivative=False):

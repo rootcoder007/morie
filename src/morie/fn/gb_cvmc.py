@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer-von Mises goodness-of-fit statistic W^2."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

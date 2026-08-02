@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Vanishing gradients: small gradients shrink through many layers."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

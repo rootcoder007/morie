@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prior via quantile process: specify distribution of quantile function Q(u) = F^{-1}(u)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

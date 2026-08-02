@@ -10,7 +10,7 @@ sample size ``ESS = (sum w)^2 / sum(w^2)``.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

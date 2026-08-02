@@ -12,7 +12,7 @@ order statistics arising in its consideration. Cancer Chemotherapy Reports,
 
 __all__ = ["logrt"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def logrt(

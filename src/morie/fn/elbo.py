@@ -8,7 +8,7 @@ __all__ = ["compute_elbo", "elbo"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def compute_elbo(

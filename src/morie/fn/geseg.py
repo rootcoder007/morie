@@ -5,7 +5,7 @@ Economic segregation spatial
 Category: GeoEcon
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def geseg(gdp=None, trade=None, coords=None, n=50):

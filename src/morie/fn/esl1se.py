@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """One-standard-error rule for model selection (ESL Ch 7.10)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Orthogonal/double-robust score (Neyman-orthogonal)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

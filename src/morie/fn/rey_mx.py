@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixed-effects model (random intercept via EM algorithm)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import norm
 
 

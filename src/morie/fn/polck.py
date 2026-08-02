@@ -16,7 +16,7 @@ def polarity_check(stimulus_positions) -> DescriptiveResult:
 
     .. epigraph:: The heart has its reasons of which reason knows nothing. -- Blaise Pascal
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(stimulus_positions, dtype=float).ravel()
     flipped = False

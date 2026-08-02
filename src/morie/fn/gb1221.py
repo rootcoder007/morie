@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Friedman two-way ANOVA by ranks chi-r^2 statistic."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

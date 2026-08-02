@@ -1,6 +1,6 @@
 """ICC(3,1) two-way mixed single rater (consistency)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

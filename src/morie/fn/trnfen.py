@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Transfer entropy (information-theoretic causality)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .granci import granger_causality_info

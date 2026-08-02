@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """GPT-3: 175B-parameter autoregressive LM capable of in-context learning."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -4,7 +4,7 @@ Brownian bridge movement
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlbbm(abundance=None, coords=None, n=50):

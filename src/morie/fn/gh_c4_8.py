@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Expected number of distinct values from DP: E[K_n] ~ alpha*log(n) for large n."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
