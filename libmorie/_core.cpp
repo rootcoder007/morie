@@ -18,6 +18,7 @@
 #include <nanobind/ndarray.h>
 
 #include "kernels.h"
+#include "linalg_bind.h"
 #include "hawkes.h"
 
 namespace nb = nanobind;
@@ -58,4 +59,7 @@ NB_MODULE(_core, m) {
     register_kernels(m);
     // Hawkes-process likelihood kernels.
     register_hawkes(m);
+    // Dense linalg / elementwise / FFT kernels (the compiled arm of
+    // the pure-Python _array_core reference implementations).
+    register_linalg(m);
 }
