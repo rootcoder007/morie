@@ -23,12 +23,12 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.linear_model import LinearRegression, LogisticRegression
+    from ._ml_core import LinearRegression, LogisticRegression
 except ImportError:
     LinearRegression = _MissingDep('LinearRegression')
     LogisticRegression = _MissingDep('LogisticRegression')
 try:
-    from sklearn.preprocessing import StandardScaler
+    from ._ml_core import StandardScaler
 except ImportError:
     StandardScaler = _MissingDep('StandardScaler')
 

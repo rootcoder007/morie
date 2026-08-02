@@ -20,7 +20,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from statsmodels.stats.power import TTestIndPower, TTestPower
+    from ._glm_core import TTestIndPower, TTestPower
 except ImportError:
     TTestIndPower = _MissingDep('TTestIndPower')
     TTestPower = _MissingDep('TTestPower')

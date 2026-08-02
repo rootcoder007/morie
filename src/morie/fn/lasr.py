@@ -23,7 +23,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.linear_model import Lasso
+    from ._ml_core import Lasso
 except ImportError:
     Lasso = _MissingDep('Lasso')
 

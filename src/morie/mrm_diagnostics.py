@@ -51,7 +51,7 @@ __all__ = [
 def _logistic_propensity(D: np.ndarray, X: np.ndarray) -> np.ndarray:
     """Fit a logistic propensity model + return e(x) ∈ (0,1)."""
     try:
-        from sklearn.linear_model import LogisticRegression
+        from morie.fn._ml_core import LogisticRegression
 
         fit = LogisticRegression(max_iter=1000).fit(X, D)
         e = fit.predict_proba(X)[:, 1]

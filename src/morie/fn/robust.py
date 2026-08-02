@@ -24,11 +24,11 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.ensemble import RandomForestClassifier
+    from ._ml_core import RandomForestClassifier
 except ImportError:
     RandomForestClassifier = _MissingDep('RandomForestClassifier')
 try:
-    from sklearn.metrics import classification_report
+    from ._ml_core import classification_report
 except ImportError:
     classification_report = _MissingDep('classification_report')
 

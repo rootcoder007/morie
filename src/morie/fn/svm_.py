@@ -51,7 +51,7 @@ def svm_classify(
         raise ValueError("X and y must have the same number of rows.")
 
     try:
-        from sklearn.svm import SVC
+        from ._ml_core import SVC
 
         model = SVC(kernel=kernel, C=C, random_state=random_state)
         model.fit(X, y)

@@ -61,15 +61,15 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.linear_model import LogisticRegression
+    from morie.fn._ml_core import LogisticRegression
 except ImportError:
     LogisticRegression = _MissingDep('LogisticRegression')
 try:
-    from sklearn.neighbors import NearestNeighbors
+    from morie.fn._ml_core import NearestNeighbors
 except ImportError:
     NearestNeighbors = _MissingDep('NearestNeighbors')
 try:
-    from sklearn.preprocessing import StandardScaler
+    from morie.fn._ml_core import StandardScaler
 except ImportError:
     StandardScaler = _MissingDep('StandardScaler')
 
@@ -226,7 +226,7 @@ def estimate_propensity_score(
     X_scaled = scaler.fit_transform(X)
 
     if model == "gbm":
-        from sklearn.ensemble import GradientBoostingClassifier
+        from morie.fn._ml_core import GradientBoostingClassifier
 
         clf = GradientBoostingClassifier(n_estimators=100, max_depth=3, random_state=42)
     else:
@@ -1931,7 +1931,7 @@ def doubly_robust_matching(
     X_c = matched.loc[c_mask, covariates].values.astype(float)
     y_c = matched.loc[c_mask, outcome].values.astype(float)
 
-    from sklearn.linear_model import LinearRegression
+    from morie.fn._ml_core import LinearRegression
 
     or_model = LinearRegression()
     or_model.fit(X_c, y_c)

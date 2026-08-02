@@ -30,7 +30,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    import statsmodels.api as sm
+    from . import _glm_core as sm
 except ImportError:
     sm = _MissingDep('sm')
 

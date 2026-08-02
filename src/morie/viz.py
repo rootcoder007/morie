@@ -583,8 +583,8 @@ def roc_curve_plot(
     -------
     matplotlib.figure.Figure
     """
-    from sklearn.metrics import roc_auc_score
-    from sklearn.metrics import roc_curve as sk_roc_curve
+    from morie.fn._ml_core import roc_auc_score
+    from morie.fn._ml_core import roc_curve as sk_roc_curve
 
     y_true = np.asarray(y_true, dtype=int)
     y_score = np.asarray(y_score, dtype=float)
@@ -673,8 +673,8 @@ def precision_recall_plot(
     -------
     matplotlib.figure.Figure
     """
-    from sklearn.metrics import average_precision_score
-    from sklearn.metrics import precision_recall_curve as sk_pr_curve
+    from morie.fn._ml_core import average_precision_score
+    from morie.fn._ml_core import precision_recall_curve as sk_pr_curve
 
     y_true = np.asarray(y_true, dtype=int)
     y_score = np.asarray(y_score, dtype=float)
@@ -746,7 +746,7 @@ def calibration_plot(
     predictive analytics. *BMC Medicine*, 17(1), 230.
     https://doi.org/10.1186/s12916-019-1466-7
     """
-    from sklearn.calibration import calibration_curve
+    from morie.fn._ml_core import calibration_curve
 
     y_true = np.asarray(y_true, dtype=int)
     y_pred = np.asarray(y_pred, dtype=float)
@@ -1291,7 +1291,7 @@ def added_variable_plot(
     -------
     matplotlib.figure.Figure
     """
-    from sklearn.linear_model import LinearRegression
+    from morie.fn._ml_core import LinearRegression
 
     other = [c for c in covariates if c != focus_var]
     complete = data[[outcome, focus_var] + other].dropna()

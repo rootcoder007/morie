@@ -23,7 +23,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.metrics import roc_auc_score
+    from ._ml_core import roc_auc_score
 except ImportError:
     roc_auc_score = _MissingDep('roc_auc_score')
 

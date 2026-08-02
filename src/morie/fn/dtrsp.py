@@ -36,7 +36,7 @@ def decision_tree_split(x, y, *, criterion="gini", max_depth=None, seed=0):
     RichResult with payload: estimate (train accuracy), root_feature,
     root_threshold, root_impurity, n_leaves, feature_importances, n, method.
     """
-    from sklearn.tree import DecisionTreeClassifier
+    from ._ml_core import DecisionTreeClassifier
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

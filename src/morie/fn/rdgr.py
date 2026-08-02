@@ -23,7 +23,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.linear_model import Ridge
+    from ._ml_core import Ridge
 except ImportError:
     Ridge = _MissingDep('Ridge')
 

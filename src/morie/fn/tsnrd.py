@@ -46,7 +46,7 @@ def tsne_reduction(
     RichResult with payload: estimate (embedding shape), embedding
     (n x n_components), kl_divergence, perplexity, n, method.
     """
-    from sklearn.manifold import TSNE
+    from ._ml_core import TSNE
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:

@@ -51,7 +51,7 @@ def estimate_plr(
     """
     try:
         import doubleml as dml
-        from sklearn.linear_model import RidgeCV
+        from ._ml_core import RidgeCV
     except ImportError as exc:
         raise ImportError(
             "doubleml and scikit-learn are required for estimate_plr. Install with: pip install doubleml scikit-learn"

@@ -378,7 +378,7 @@ def two_way_anova(
         The ``extra`` dict contains per-factor and interaction F and *p* values.
     """
     import statsmodels.api as sm
-    from statsmodels.formula.api import ols
+    from morie.fn._glm_core import ols
 
     formula = f"{outcome} ~ C({factor_a}) * C({factor_b})"
     model = ols(formula, data=data.dropna(subset=[outcome, factor_a, factor_b])).fit()

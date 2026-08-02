@@ -27,7 +27,7 @@ def pca_dimension_reduction(x, *, n_components=None, seed=0):
     component), components (V' rows), explained_variance,
     explained_variance_ratio, singular_values, scores (X @ V), n, method.
     """
-    from sklearn.decomposition import PCA
+    from ._ml_core import PCA
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:

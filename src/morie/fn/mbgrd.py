@@ -31,7 +31,7 @@ def mini_batch_gradient(x, y, *, lr=0.01, n_epochs=200, batch_size=32, seed=0):
     RichResult with payload: estimate (theta with intercept), reference_ols,
     n_epochs, batch_size, loss, n, method.
     """
-    from sklearn.linear_model import LinearRegression
+    from ._ml_core import LinearRegression
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

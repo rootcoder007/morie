@@ -483,7 +483,7 @@ def render_dbscan(
     if df.empty:
         raise ValueError(f"{category}: no in-bbox LAT/LONG rows")
 
-    from sklearn.cluster import DBSCAN
+    from morie.fn._ml_core import DBSCAN
 
     xk, yk = project_xy(df["LAT_WGS84"].to_numpy(), df["LONG_WGS84"].to_numpy())
     labels = DBSCAN(eps=eps_km, min_samples=min_samples).fit_predict(np.column_stack([xk, yk]))

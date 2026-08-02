@@ -94,7 +94,7 @@ def gradient_boosting_genomic(
     method_used = "sklearn GradientBoostingRegressor"
     train_loss = []
     try:
-        from sklearn.ensemble import GradientBoostingRegressor
+        from ._ml_core import GradientBoostingRegressor
 
         gb = GradientBoostingRegressor(
             n_estimators=n_estimators,

@@ -22,7 +22,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    import statsmodels.api as sm
+    from . import _glm_core as sm
 except ImportError:
     sm = _MissingDep('sm')
 
@@ -81,7 +81,7 @@ def estimate_pliv(
 
     try:
         import doubleml as dml
-        from sklearn.linear_model import RidgeCV
+        from ._ml_core import RidgeCV
 
         dml_data = dml.DoubleMLData(
             df,

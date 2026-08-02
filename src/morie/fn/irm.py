@@ -30,12 +30,12 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+    from ._ml_core import RandomForestClassifier, RandomForestRegressor
 except ImportError:
     RandomForestClassifier = _MissingDep('RandomForestClassifier')
     RandomForestRegressor = _MissingDep('RandomForestRegressor')
 try:
-    from sklearn.preprocessing import LabelEncoder
+    from ._ml_core import LabelEncoder
 except ImportError:
     LabelEncoder = _MissingDep('LabelEncoder')
 

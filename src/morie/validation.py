@@ -35,7 +35,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.base import BaseEstimator, clone
+    from morie.fn._ml_core import BaseEstimator, clone
 except ImportError:
     BaseEstimator = _MissingDep('BaseEstimator')
     clone = _MissingDep('clone')
@@ -505,7 +505,7 @@ def nested_cross_validate(
     -------
     CVResult
     """
-    from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_val_score
+    from morie.fn._ml_core import GridSearchCV, StratifiedKFold, cross_val_score
 
     outer_cv = StratifiedKFold(n_splits=outer_folds, shuffle=True, random_state=random_state)
     inner_cv = StratifiedKFold(n_splits=inner_folds, shuffle=True, random_state=random_state)
@@ -561,7 +561,7 @@ def bootstrap_validate(
     Association*, 92(438), 548-560.
     https://doi.org/10.1080/01621459.1997.10474007
     """
-    from sklearn.metrics import get_scorer
+    from morie.fn._ml_core import get_scorer
 
     scorer = get_scorer(scoring)
     X_arr = np.asarray(X)
@@ -691,7 +691,7 @@ def assess_calibration(
     hl_p = float(sp_stats.chi2.sf(hl_stat, hl_df))
 
     # Calibration slope and intercept (logistic recalibration)
-    from sklearn.linear_model import LogisticRegression
+    from morie.fn._ml_core import LogisticRegression
 
     logit_pred = np.log(np.clip(y_pred, 1e-10, 1 - 1e-10) / (1 - np.clip(y_pred, 1e-10, 1 - 1e-10)))
     lr = LogisticRegression(penalty=None, max_iter=1000)
@@ -780,7 +780,7 @@ def assess_discrimination(
     ability of a new marker. *Statistics in Medicine*, 27(2), 157-172.
     https://doi.org/10.1002/sim.2929
     """
-    from sklearn.metrics import roc_auc_score
+    from morie.fn._ml_core import roc_auc_score
 
     y_true = np.asarray(y_true, dtype=int)
     y_pred = np.asarray(y_pred, dtype=float)
@@ -970,7 +970,7 @@ def detect_overfitting(
     Steyerberg, E. W. (2019). *Clinical Prediction Models* (2nd ed.).
     Springer. https://doi.org/10.1007/978-3-030-16399-0
     """
-    from sklearn.metrics import get_scorer
+    from morie.fn._ml_core import get_scorer
 
     scorer = get_scorer(scoring)
     X_arr = np.asarray(X)
@@ -1062,7 +1062,7 @@ def temporal_validate(
     -------
     TemporalValidationResult
     """
-    from sklearn.metrics import get_scorer
+    from morie.fn._ml_core import get_scorer
 
     scorer = get_scorer(scoring)
 

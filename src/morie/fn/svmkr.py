@@ -37,7 +37,7 @@ def svm_kernel_trick(x, y, *, kernel="rbf", C=1.0, gamma="scale", degree=3, seed
     RichResult with payload: estimate (train accuracy), n_support (per class),
     kernel, C, gamma, n, method.
     """
-    from sklearn.svm import SVC
+    from ._ml_core import SVC
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

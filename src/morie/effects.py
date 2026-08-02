@@ -46,20 +46,20 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 except ImportError:
     sm = _MissingDep('sm')
 try:
-    import statsmodels.formula.api as smf
+    from morie.fn._glm_core import formula as smf
 except ImportError:
     smf = _MissingDep('smf')
 try:
-    from sklearn.linear_model import LinearRegression, LogisticRegression
+    from morie.fn._ml_core import LinearRegression, LogisticRegression
 except ImportError:
     LinearRegression = _MissingDep('LinearRegression')
     LogisticRegression = _MissingDep('LogisticRegression')
 try:
-    from sklearn.preprocessing import StandardScaler
+    from morie.fn._ml_core import StandardScaler
 except ImportError:
     StandardScaler = _MissingDep('StandardScaler')
 
@@ -139,7 +139,7 @@ def estimate_plr(
     """
     try:
         import doubleml as dml
-        from sklearn.linear_model import RidgeCV
+        from morie.fn._ml_core import RidgeCV
     except ImportError as exc:
         raise ImportError(
             "doubleml and scikit-learn are required for estimate_plr. Install with: pip install doubleml scikit-learn"
@@ -245,7 +245,7 @@ def estimate_pliv(
 
     try:
         import doubleml as dml
-        from sklearn.linear_model import RidgeCV
+        from morie.fn._ml_core import RidgeCV
 
         dml_data = dml.DoubleMLData(
             df,

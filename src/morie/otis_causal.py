@@ -608,7 +608,7 @@ def otis_plr(
     HAS_RF = False
     if ml_outcome == "rf" or ml_treatment == "rf":
         try:
-            from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+            from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
 
             HAS_RF = True
         except ImportError:
@@ -692,7 +692,7 @@ def _calibrate_propensity(p_raw: np.ndarray, d: np.ndarray, *, method: str = "pl
             return p_raw
     if method == "isotonic":
         try:
-            from sklearn.isotonic import IsotonicRegression
+            from morie.fn._ml_core import IsotonicRegression
         except ImportError:
             return p_raw
         try:
@@ -743,8 +743,8 @@ def otis_aipw_superlearner(
       Super Learner. Stat. Appl. Genet. Mol. Biol. 6(1): Article 25.
     """
     try:
-        from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-        from sklearn.linear_model import LogisticRegression, Ridge
+        from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
+        from morie.fn._ml_core import LogisticRegression, Ridge
     except ImportError:
         # Fall back to plain AIPW with a note
         result = otis_aipw(
@@ -1333,7 +1333,7 @@ def otis_irm_dml(
 
     if ml_outcome == "rf" or ml_propensity == "rf":
         try:
-            from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+            from morie.fn._ml_core import RandomForestClassifier, RandomForestRegressor
 
             HAS_RF = True
         except ImportError:

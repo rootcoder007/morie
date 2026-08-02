@@ -20,7 +20,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from statsmodels.stats.power import FTestAnovaPower
+    from ._glm_core import FTestAnovaPower
 except ImportError:
     FTestAnovaPower = _MissingDep('FTestAnovaPower')
 
