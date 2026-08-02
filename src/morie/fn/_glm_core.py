@@ -415,7 +415,8 @@ def WLS(endog, exog, weights=None, **kw):
 class GLM:
     _use_t = False
 
-    def __init__(self, endog, exog, family=None, exog_names=None):
+    def __init__(self, endog, exog, family=None, exog_names=None,
+                 var_weights=None, freq_weights=None):
         self._frame_in = hasattr(exog, "_cols") or (
             hasattr(exog, "columns") and hasattr(exog, "values"))
         if self._frame_in and exog_names is None:
@@ -424,6 +425,11 @@ class GLM:
                 else list(exog.columns))]
         self.y = _tolist1(endog)
         self.X = _tolists(exog)
+        w = var_weights if var_weights is not None else freq_weights
+        self.prior_w = ([float(v) for v in (
+            w._data if hasattr(w, "_data") else
+            w.tolist() if hasattr(w, "tolist") else w)]
+            if w is not None else None)
         self.family = family or Gaussian()
         n = len(self.y)
         k = len(self.X[0])
@@ -457,6 +463,9 @@ class GLM:
             dmu = [link.dmu_deta(e) for e in eta]
             var = [_bi.max(fam.variance(m), 1e-12) for m in mu]
             wirls = [dmu[r] ** 2 / var[r] for r in range(n)]
+            if self.prior_w is not None:
+                wirls = [wirls[r] * self.prior_w[r]
+                         for r in range(n)]
             z = [eta[r] + (y[r] - mu[r]) / dmu[r]
                  if abs(dmu[r]) > 1e-300 else eta[r]
                  for r in range(n)]
@@ -479,6 +488,8 @@ class GLM:
         dmu = [link.dmu_deta(e) for e in eta]
         var = [_bi.max(fam.variance(m), 1e-12) for m in mu]
         wirls = [dmu[r] ** 2 / var[r] for r in range(n)]
+        if self.prior_w is not None:
+            wirls = [wirls[r] * self.prior_w[r] for r in range(n)]
         XtWX = [[_math.fsum(wirls[r] * X[r][i] * X[r][j]
                             for r in range(n))
                  for j in range(k)] for i in range(k)]
@@ -646,9 +657,12 @@ class _Smf:
         return OLS(y, X, weights=w, exog_names=names)
 
     @staticmethod
-    def glm(formula, data, family=None):
+    def glm(formula=None, data=None, family=None, var_weights=None,
+            freq_weights=None):
         y, X, names = _parse_formula(formula, data)
-        return GLM(y, X, family=family, exog_names=names)
+        return GLM(y, X, family=family, exog_names=names,
+                   var_weights=var_weights,
+                   freq_weights=freq_weights)
 
     @staticmethod
     def logit(formula, data):
