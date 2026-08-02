@@ -171,20 +171,16 @@ def wavelet_time_series(x, wavelet="haar", level=None):
             }
         )
 
-    try:
-        import pywt
-    except ImportError:
-        pywt = None
+    from .rgwav import _DEC_LO as _FAMS
 
-    if pywt is None and str(wavelet).lower() not in ("haar", "db1"):
+    wkey = str(wavelet).lower()
+    if wkey not in _FAMS:
         raise ValueError(
-            f"wavelet={wavelet!r} needs PyWavelets, which is not installed. "
-            "Install it with `pip install morie[wavelets]`, or use "
-            'wavelet="haar", which is implemented natively. Returning Haar '
-            "for a non-Haar request would be a silently wrong basis."
-        )
+            f"wavelet={wavelet!r} is not a native family; available: "
+            f"{sorted(_FAMS)}. Substituting a different basis would be "
+            "silently wrong.")
 
-    if pywt is not None:
+    if wkey not in ("haar", "db1"):
         # Errors from pywt propagate: an unknown wavelet name is a caller
         # mistake, not a reason to substitute a different basis.
         # mode="periodization", not pywt's default "symmetric".
@@ -198,7 +194,36 @@ def wavelet_time_series(x, wavelet="haar", level=None):
         # under "periodization" -- and only the latter agrees with the native
         # Haar path, so swapping PyWavelets in or out no longer changes the
         # answer.
-        coeffs = pywt.wavedec(y, wavelet, level=level, mode="periodization")
+        # Native periodized pyramid: circular convolution with the
+        # family's filters, downsample by 2 (Percival & Walden 2000,
+        # "periodized to N"; orthonormal, so the energies below sum to
+        # sum(x^2), which the return path asserts implicitly through
+        # its documented contract).
+        lo = _FAMS[wkey]
+        f = len(lo)
+        hi = [((-1) ** k) * lo[f - 1 - k] for k in range(f)]
+        cur = [float(v) for v in y]
+        cDs_native = []
+        for _ in range(int(level)):
+            if len(cur) < 2:
+                break
+            if len(cur) % 2 == 1:
+                cur = cur + [cur[-1]]
+            m_ = len(cur)
+            half = m_ // 2
+            ca_n, cd_n = [], []
+            for i in range(half):
+                a = d = 0.0
+                for k in range(f):
+                    v = cur[(2 * i + 1 - k) % m_]
+                    a += lo[k] * v
+                    d += hi[k] * v
+                ca_n.append(a)
+                cd_n.append(d)
+            cDs_native.append(cd_n)
+            cur = ca_n
+        coeffs = [np.asarray(cur)] + [np.asarray(c)
+                                      for c in cDs_native[::-1]]
         cA = coeffs[0]
         cDs = coeffs[1:]
         # coeffs is [cA_n, cD_n, ..., cD_1], so energies line up with
@@ -212,7 +237,7 @@ def wavelet_time_series(x, wavelet="haar", level=None):
                 "level": int(level),
                 "n": int(n),
                 "wavelet": wavelet,
-                "method": f"DWT via pywt (wavelet={wavelet}, level={level}, mode=periodization)",
+                "method": f"DWT (native periodized pyramid, wavelet={wavelet}, level={level})",
             }
         )
 

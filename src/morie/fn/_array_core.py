@@ -1641,6 +1641,25 @@ class _SplitMix64:
         return self._fill(one, size)
 
     def binomial(self, n, p, size=None):
+        # numpy broadcasts an array-valued p (or n) against size:
+        # one draw per element when size is omitted.
+        if hasattr(p, "_flat") or isinstance(p, (list, tuple)) or \
+                hasattr(n, "_flat") or isinstance(n, (list, tuple)):
+            def _vals(v):
+                if hasattr(v, "_flat"):
+                    return [float(x) for x in v._flat()]
+                if isinstance(v, (list, tuple)):
+                    return [float(x) for x in v]
+                return None
+            pv, nv = _vals(p), _vals(n)
+            m = len(pv) if pv is not None else len(nv)
+            if size is not None and int(size) != m:
+                raise ValueError("size does not match the length of p/n")
+            return marr([float(self.binomial(
+                int(nv[i % len(nv)]) if nv is not None else int(n),
+                pv[i % len(pv)] if pv is not None else float(p)))
+                for i in range(m)])
+
         def one():
             nn, pp = int(n), float(p)
             if nn * _bi.min(pp, 1.0 - pp) < 30.0:
