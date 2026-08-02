@@ -163,7 +163,7 @@ def fetch_report_text(
     and hard-loaded here).  Returns the concatenated text of every page.
     """
     try:
-        from pypdf import PdfReader
+        from morie._pdf_reader import PdfReader
     except ImportError as exc:
         raise SIUError(
             "siu.fetch_report_text() needs pypdf — install with `pip install 'morie[test]'` or `pip install pypdf`"

@@ -277,7 +277,7 @@ def _read_sqlite_geodatabase(name: str, nrows: int | None) -> pd.DataFrame:
 
 def _read_shapefile(name: str, nrows: int | None) -> pd.DataFrame:
     try:
-        import shapefile  # pyshp
+        from morie import _shp_reader as shapefile
     except ImportError:
         raise ImportError(
             "Shapefile reading needs `pyshp` (pip install pyshp). Falling back to CSV is recommended for now."
@@ -385,7 +385,7 @@ def available_formats() -> list[str]:
     """List of formats this build can actually load."""
     out = list(SUPPORTED_FORMATS)
     try:
-        import shapefile  # noqa: F401
+        from morie import _shp_reader as shapefile  # noqa: F401
 
         out.append("shapefile")
     except ImportError:
