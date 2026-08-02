@@ -315,6 +315,17 @@ class marr:
         else:
             self.data[idx] = float(value)
 
+    def __buffer__(self, flags):
+        """PEP 688 buffer protocol (Python >= 3.12): expose the flat
+        float64 data so nanobind kernels and memoryview consumers get
+        the array without numpy. Snapshot semantics: the exported
+        buffer is a copy, matching the immutable-input contract of the
+        compiled kernels."""
+        del flags
+        import array as _pa
+        buf = _pa.array("d", [float(v) for v in self._flat()])
+        return memoryview(buf)
+
     def __array__(self, dtype=None, copy=None):
         """numpy interop for mixed test environments: masks surface as
         bool arrays so real-numpy indexing works. Never imports numpy
@@ -1445,13 +1456,32 @@ def cumsum(x):
     return marr(out)
 
 
-def argmax(x):
-    return asarray(x).argmax()
+def argmax(x, axis=None):
+    a = asarray(x)
+    if axis is None or len(a.shape) == 1:
+        f = a._flat()
+        return f.index(_bi.max(f))
+    if axis == 0:
+        return marr([float(_bi.max(range(a.shape[0]),
+                                   key=lambda i: a.data[i][j]))
+                     for j in range(a.shape[1])])
+    return marr([float(_bi.max(range(a.shape[1]),
+                               key=lambda j: row[j]))
+                 for row in a.data])
 
 
-def argmin(x):
-    f = asarray(x)._flat()
-    return f.index(_bi.min(f))
+def argmin(x, axis=None):
+    a = asarray(x)
+    if axis is None or len(a.shape) == 1:
+        f = a._flat()
+        return f.index(_bi.min(f))
+    if axis == 0:
+        return marr([float(_bi.min(range(a.shape[0]),
+                                   key=lambda i: a.data[i][j]))
+                     for j in range(a.shape[1])])
+    return marr([float(_bi.min(range(a.shape[1]),
+                               key=lambda j: row[j]))
+                 for row in a.data])
 
 
 def argsort(x, kind=None):
@@ -2169,6 +2199,17 @@ class carr:
         if isinstance(i, slice):
             return carr(self.data[i])
         return self.data[i]
+
+    def __buffer__(self, flags):
+        """PEP 688 buffer protocol (Python >= 3.12): expose the flat
+        float64 data so nanobind kernels and memoryview consumers get
+        the array without numpy. Snapshot semantics: the exported
+        buffer is a copy, matching the immutable-input contract of the
+        compiled kernels."""
+        del flags
+        import array as _pa
+        buf = _pa.array("d", [float(v) for v in self._flat()])
+        return memoryview(buf)
 
     def __array__(self, dtype=None, copy=None):
         """numpy interop for mixed test environments: masks surface as

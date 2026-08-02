@@ -239,6 +239,18 @@ class _Dist:
 
     def logpdf(self, x, *args, **kw):
         return _maybe_map(lambda v: _math.log(self.pdf(v, *args, **kw)), x)
+    def logcdf(self, x, *a, **k):
+        c = self.cdf(x, *a, **k)
+        if isinstance(c, float):
+            return _math.log(c) if c > 0 else -_math.inf
+        return c._map(lambda v: _math.log(v) if v > 0 else -_math.inf)
+
+    def logsf(self, x, *a, **k):
+        s = self.sf(x, *a, **k)
+        if isinstance(s, float):
+            return _math.log(s) if s > 0 else -_math.inf
+        return s._map(lambda v: _math.log(v) if v > 0 else -_math.inf)
+
 
 
 class _Norm(_Dist):

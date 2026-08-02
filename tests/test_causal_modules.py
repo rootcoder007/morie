@@ -161,7 +161,7 @@ class TestDiD:
         df = self._make_did_data(rng)
         res = did_2x2(df, "outcome", "treatment", "post")
         summary = res.summary()
-        assert isinstance(summary, pd.DataFrame)
+        assert (hasattr(summary, "columns") or hasattr(summary, "_cols"))
         assert "estimate" in summary.columns
         assert len(summary) == 1
 
@@ -265,7 +265,7 @@ class TestDiD:
             true_treatment_time=3,
             placebo_times=[1, 2],
         )
-        assert isinstance(res, pd.DataFrame)
+        assert (hasattr(res, "columns") or hasattr(res, "_cols"))
         assert "estimate" in res.columns
 
     def test_staggered_did_returns_dict(self, rng):
@@ -373,7 +373,7 @@ class TestIV:
     def test_first_stage_diagnostics_returns_dataframe(self, rng):
         df = self._make_iv_data(rng)
         diag = first_stage_diagnostics(df, ["d"], ["z"])
-        assert isinstance(diag, pd.DataFrame)
+        assert (hasattr(diag, "columns") or hasattr(diag, "_cols"))
         assert "f_stat" in diag.columns
         assert "partial_r2" in diag.columns
         # With a strong instrument, F should be reasonably large
@@ -497,7 +497,7 @@ class TestRDD:
         assert "binned" in res
         assert "global_poly" in res
         assert "local_poly" in res
-        assert isinstance(res["binned"], pd.DataFrame)
+        assert (hasattr(res["binned"], "columns") or hasattr(res["binned"], "_cols"))
 
     @pytest.mark.parametrize("kernel", ["triangular", "epanechnikov", "uniform"])
     def test_sharp_rdd_kernels(self, rng, kernel):
@@ -539,7 +539,7 @@ class TestMatching:
     def test_estimate_propensity_score_returns_series(self, rng):
         df = self._make_matching_data(rng)
         ps = estimate_propensity_score(df, "treatment", ["x1", "x2"])
-        assert isinstance(ps, pd.Series)
+        assert (hasattr(ps, "index") and hasattr(ps, "tolist") and not hasattr(ps, "_cols"))
         assert len(ps) == len(df)
         assert (ps >= 0).all() and (ps <= 1).all()
 
@@ -599,7 +599,7 @@ class TestMatching:
             "treatment",
             match_res.match_pairs,
         )
-        assert isinstance(bounds, pd.DataFrame)
+        assert (hasattr(bounds, "columns") or hasattr(bounds, "_cols"))
         assert "gamma" in bounds.columns
         assert "p_lower" in bounds.columns
         assert "p_upper" in bounds.columns

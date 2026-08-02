@@ -1890,6 +1890,19 @@ class _PdApiTypes:
         return isinstance(obj, (_dt.date, _dt.datetime))
 
     @staticmethod
+    def is_object_dtype(obj):
+        if isinstance(obj, Series):
+            return not obj._is_numeric()
+        return isinstance(obj, str)
+
+    @staticmethod
+    def is_float_dtype(obj):
+        if isinstance(obj, Series):
+            return obj._is_numeric() and any(
+                isinstance(v, float) for v in obj._data)
+        return isinstance(obj, float)
+
+    @staticmethod
     def is_bool_dtype(obj):
         if isinstance(obj, Series):
             return all(isinstance(v, bool) for v in obj._data)

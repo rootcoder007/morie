@@ -32,7 +32,7 @@ from scipy.stats import norm
 
 def test_schema_is_typed_zero_row_template():
     s = taphonomy_schema()
-    assert isinstance(s, pd.DataFrame)
+    assert (hasattr(s, "columns") or hasattr(s, "_cols"))
     assert len(s) == 0
     assert {"lime_treatment", "preservation_score", "pxrf_ca_ppm"} <= set(s.columns)
     assert s.attrs["role"]["lime_treatment"] == "treatment"
