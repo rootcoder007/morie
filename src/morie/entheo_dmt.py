@@ -77,7 +77,7 @@ def _require_root() -> Path:
 def _loadmat(path: Path) -> dict:
     """Lightweight .mat loader.  Uses scipy.io.loadmat for v6/v7 files."""
     try:
-        from scipy.io import loadmat
+        from morie.fn._sci_core import loadmat
     except ImportError as exc:
         raise RuntimeError("scipy is required to read DMT_Imaging .mat files") from exc
     return loadmat(path)

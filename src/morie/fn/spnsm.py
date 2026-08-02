@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.interpolate import UnivariateSpline
+from ._sci_core import UnivariateSpline
 
 from ._containers import DescriptiveResult
 

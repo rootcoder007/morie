@@ -49,7 +49,7 @@ def tetrachoric_corr(a: int, b: int, c: int, d: int) -> ESRes:
         k1 = sp_stats.norm.ppf((a + c) / n)
 
         def _eq(rho):
-            from scipy.stats import mvn
+            from ._stats_core import mvn
 
             lo = np.array([-np.inf, -np.inf])
             hi = np.array([h1, k1])

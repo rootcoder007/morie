@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.ndimage import convolve
+from ._sci_core import convolve
 
 from ._containers import DescriptiveResult
 

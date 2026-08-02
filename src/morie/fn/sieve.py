@@ -76,7 +76,7 @@ def sieve(
                 cols.append(np.cos(np.pi * j * x_scaled))
             return np.column_stack(cols)
         else:
-            from scipy.interpolate import BSpline
+            from ._sci_core import BSpline
 
             t_interior = np.linspace(xv.min(), xv.max(), k_ - 2) if k_ > 2 else np.array([])
             degree = min(3, k_)

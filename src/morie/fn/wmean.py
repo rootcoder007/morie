@@ -25,7 +25,7 @@ def winsorized_mean(
     -------
     ESRes
     """
-    from scipy.stats.mstats import winsorize as _winsorize
+    from ._stats_core import winsorize as _winsorize
 
     a = np.asarray(x, dtype=float)
     a = a[np.isfinite(a)]

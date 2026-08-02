@@ -63,7 +63,7 @@ def network_community(
 
     features = evecs[:, :n_communities]
 
-    from scipy.cluster.vq import kmeans2
+    from ._sci_core import kmeans2
 
     centroids, labels = kmeans2(features, n_communities, minit="points")
 

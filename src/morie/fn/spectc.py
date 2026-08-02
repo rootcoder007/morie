@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.cluster.vq import kmeans2
-from scipy.sparse.linalg import eigsh
+from ._sci_core import kmeans2
+from ._sci_core import eigsh
 
 from ._containers import DescriptiveResult
 
@@ -44,7 +44,7 @@ def spectral_cluster(
 
     L_sparse = None
     try:
-        from scipy.sparse import csc_matrix
+        from ._sci_core import csc_matrix
 
         L_sparse = csc_matrix(L_sym)
         vals, vecs = eigsh(L_sparse, k=n_clusters, which="SM")

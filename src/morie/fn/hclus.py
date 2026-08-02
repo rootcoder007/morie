@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.cluster.hierarchy import fcluster, linkage
+from ._sci_core import fcluster, linkage
 from ._sci_core import pdist
 
 from ._containers import HclstRes

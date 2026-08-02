@@ -26,7 +26,7 @@ def cramer_von_mises_test(
     -------
     TestResult
     """
-    from scipy.stats import cramervonmises
+    from ._stats_core import cramervonmises
 
     a = np.asarray(x, dtype=float)
     a = a[np.isfinite(a)]

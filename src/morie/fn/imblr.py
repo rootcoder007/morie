@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.ndimage import gaussian_filter
+from ._sci_core import gaussian_filter
 
 from ._containers import DescriptiveResult
 

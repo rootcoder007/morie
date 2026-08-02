@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Beta function."""
 
-from scipy.special import beta as _b
+from ._sci_core import beta as _b
 
 
 def betafn(a, b):

@@ -44,7 +44,7 @@ def gap_statistic(
     max_k = min(max_k, n - 1)
 
     def _kmeans_wk(data: np.ndarray, k: int) -> float:
-        from scipy.cluster.vq import kmeans2
+        from ._sci_core import kmeans2
 
         centroids, lab = kmeans2(data, k, minit="points", seed=rng.integers(2**31))
         wk = 0.0

@@ -58,7 +58,7 @@ def kbwpi(data: np.ndarray) -> dict:
         """Kernel estimate of int f^(r)(x)^2 dx using Gaussian kernel."""
         coeff = (-1) ** (r // 2)
         vals = norm.pdf(diffs / g, 0, 1)
-        from scipy.special import hermite
+        from ._sci_core import hermite
 
         H = hermite(r)
         vals = vals * H(diffs / g) / (g ** (r + 1))

@@ -2,7 +2,7 @@
 """Lyapunov stability analysis."""
 
 from . import _array_core as np
-from scipy import linalg
+from ._sci_core import linalg
 
 from ._containers import DescriptiveResult
 

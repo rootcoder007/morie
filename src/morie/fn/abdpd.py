@@ -2,7 +2,7 @@
 """Three-step counterfactual inference: abduction, action, prediction."""
 
 from . import _array_core as np
-from scipy import optimize
+from ._sci_core import optimize
 
 from ._richresult import RichResult
 from .scmdf import scm_definition

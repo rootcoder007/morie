@@ -1684,7 +1684,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _load(path_or_name=None):
                 """Load a dataset. Use load('cpads') or load('path/to/file.csv')."""
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.data import list_datasets, load_dataset
 
@@ -2213,7 +2213,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: chi2('col1', 'col2')")
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.statistics import chi2_independence
 
@@ -2435,7 +2435,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: crosstab('col1', 'col2')")
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 ct = _pd.crosstab(data[col1], data[col2], margins=True)
                 print(f"  Crosstab: {col1} x {col2}")
@@ -2465,7 +2465,7 @@ if _TEXTUAL_AVAILABLE:
 
             def _summary(col=None, data=None):
                 """R-like summary. Usage: summary(), summary('col'), or summary(df)."""
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 # If col is a DataFrame, user called summary(df) -- treat as data arg
                 if isinstance(col, _pd.DataFrame):
@@ -2530,7 +2530,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: pivot('row_col', 'col_col', 'value_col')")
                     print(f"  Columns: {', '.join(data.columns[:15])}")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 pt = _pd.pivot_table(data, values=values, index=index, columns=columns, aggfunc=aggfunc)
                 ns["pivot_result"] = pt
@@ -2825,7 +2825,7 @@ if _TEXTUAL_AVAILABLE:
                 if col1 is None or col2 is None:
                     print("Usage: odds_ratio('outcome_col', 'exposure_col')")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.effect_sizes import odds_ratio
 
@@ -2848,7 +2848,7 @@ if _TEXTUAL_AVAILABLE:
                 if col1 is None or col2 is None:
                     print("Usage: nnt('outcome_col', 'treatment_col')")
                     return
-                import pandas as _pd
+                from morie.fn import _frame_core as _pd
 
                 from morie.effect_sizes import number_needed_to_treat
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _frame_core as pd
-from scipy.cluster.hierarchy import fcluster, linkage
+from ._sci_core import fcluster, linkage
 from ._sci_core import pdist
 
 from morie.fn._containers import HclstRes

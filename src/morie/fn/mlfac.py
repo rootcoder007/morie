@@ -13,7 +13,7 @@ Anderson, T. W., & Rubin, H. (1956). Statistical inference in factor analysis.
 """
 
 from . import _array_core as np
-from scipy import linalg as la
+from ._sci_core import linalg as la
 
 __all__ = ["mlfac"]
 

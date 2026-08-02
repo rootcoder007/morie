@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.fft import dct, idct
+from ._sci_core import dct, idct
 
 from ._containers import DescriptiveResult
 

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.interpolate import BSpline
+from ._sci_core import BSpline
 
 from ._containers import DescriptiveResult
 

@@ -49,7 +49,7 @@ def random_search_cv(
     RichResult with payload: estimate (best CV score), best_params,
     best_score, sampled_params, sampled_scores, n, method.
     """
-    from scipy.stats import loguniform
+    from ._stats_core import loguniform
     from sklearn.linear_model import LogisticRegression, Ridge
     from sklearn.model_selection import RandomizedSearchCV
 
