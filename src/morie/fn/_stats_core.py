@@ -204,13 +204,19 @@ def _bi_abs(v):
 
 
 def _maybe_map(fn, x):
-    if isinstance(x, (list, tuple)):
-        return [fn(float(v)) for v in x]
+    """Apply fn elementwise: scalars stay scalar, 1-D stays 1-D,
+    2-D keeps its shape (rows of lists)."""
+    if isinstance(x, (int, float)):
+        return fn(float(x))
     if hasattr(x, "tolist"):
-        flat = x.tolist()
-        if isinstance(flat, list):
-            return [fn(float(v)) for v in flat]
-        return fn(float(flat))
+        x = x.tolist()
+    if isinstance(x, (list, tuple)) and x \
+            and isinstance(x[0], (list, tuple)):
+        from . import _array_core as _ac2
+        return _ac2.marr([[fn(float(v)) for v in row] for row in x])
+    if isinstance(x, (list, tuple)):
+        from . import _array_core as _ac2
+        return _ac2.marr([fn(float(v)) for v in x])
     return fn(float(x))
 
 
@@ -311,6 +317,14 @@ class _T(_Dist):
         k = self.df if df is None else float(df)
 
         def one(v):
+            # scipy edge semantics: invalid df or nan input -> nan,
+            # +/-inf -> exact tail limits
+            if k <= 0 or k != k or v != v:
+                return float("nan")
+            if v == _math.inf:
+                return 1.0
+            if v == -_math.inf:
+                return 0.0
             if v == 0:
                 return 0.5
             ib = _betainc(k / 2.0, 0.5, k / (k + v * v))

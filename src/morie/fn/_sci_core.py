@@ -161,7 +161,7 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
         pt = list(map(float, x0))
         pt[i] = pt[i] + (0.05 * pt[i] if pt[i] != 0 else 0.00025)
         simplex.append(pt)
-    fvals = [float(fun(p, *args)) for p in simplex]
+    fvals = [float(fun(_ac.marr(p), *args)) for p in simplex]
     nfev = n + 1
     for it in range(maxiter):
         order = sorted(range(n + 1), key=lambda k: fvals[k])
@@ -176,7 +176,7 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
                     for d in range(n)]
         xr = [centroid[d] + alpha * (centroid[d] - simplex[-1][d])
               for d in range(n)]
-        fr = float(fun(xr, *args))
+        fr = float(fun(_ac.marr(xr), *args))
         nfev += 1
         if fvals[0] <= fr < fvals[-2]:
             simplex[-1], fvals[-1] = xr, fr
@@ -184,7 +184,7 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
         if fr < fvals[0]:
             xe = [centroid[d] + gamma_ * (xr[d] - centroid[d])
                   for d in range(n)]
-            fe = float(fun(xe, *args))
+            fe = float(fun(_ac.marr(xe), *args))
             nfev += 1
             if fe < fr:
                 simplex[-1], fvals[-1] = xe, fe
@@ -193,7 +193,7 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
             continue
         xc = [centroid[d] + rho_ * (simplex[-1][d] - centroid[d])
               for d in range(n)]
-        fc = float(fun(xc, *args))
+        fc = float(fun(_ac.marr(xc), *args))
         nfev += 1
         if fc < fvals[-1]:
             simplex[-1], fvals[-1] = xc, fc
@@ -202,7 +202,7 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
             simplex[k] = [simplex[0][d]
                           + sigma * (simplex[k][d] - simplex[0][d])
                           for d in range(n)]
-            fvals[k] = float(fun(simplex[k], *args))
+            fvals[k] = float(fun(_ac.marr(simplex[k]), *args))
             nfev += n
     order = sorted(range(n + 1), key=lambda k: fvals[k])
     best = simplex[order[0]]
@@ -212,13 +212,13 @@ def _nelder_mead(fun, x0, args=(), maxiter=None, xatol=1e-8, fatol=1e-8):
 
 
 def _num_grad(fun, x, args, eps=1e-7):
-    f0 = float(fun(list(x), *args))
+    f0 = float(fun(_ac.marr(list(x)), *args))
     g = []
     for i in range(len(x)):
         xp = list(x)
         h = eps * max(abs(xp[i]), 1.0)
         xp[i] += h
-        g.append((float(fun(xp, *args)) - f0) / h)
+        g.append((float(fun(_ac.marr(xp), *args)) - f0) / h)
     return g, f0
 
 
@@ -242,7 +242,7 @@ def _bfgs(fun, x0, args=(), maxiter=None, gtol=1e-6):
         slope = _math.fsum(g[i] * p[i] for i in range(n))
         for _ in range(60):
             xn = [x[i] + step * p[i] for i in range(n)]
-            fn_ = float(fun(xn, *args))
+            fn_ = float(fun(_ac.marr(xn), *args))
             nfev += 1
             if fn_ <= f + 1e-4 * step * slope:
                 break
