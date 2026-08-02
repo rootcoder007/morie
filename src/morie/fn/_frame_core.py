@@ -138,6 +138,12 @@ class Series:
         return Series(list(self._data), index=list(self.index),
                       name=self.name)
 
+    def reindex(self, index, fill_value=None):
+        pos = {k: i for i, k in enumerate(self.index)}
+        fv = _NAN if fill_value is None else fill_value
+        data = [self._data[pos[k]] if k in pos else fv for k in index]
+        return Series(data, index=list(index), name=self.name)
+
     def head(self, n=5):
         return Series(self._data[:n], index=self.index[:n],
                       name=self.name)
@@ -541,9 +547,9 @@ class Series:
 def _cast_list(data, dtype):
     d = dtype if isinstance(dtype, str) else getattr(
         dtype, "__name__", str(dtype))
-    if d in ("float", "float64", "float32"):
+    if d in ("float", "float64", "float32", "Float64"):
         return [_to_float(v) for v in data]
-    if d in ("int", "int64", "int32"):
+    if d in ("int", "int64", "int32", "Int64", "Int32"):
         return [int(v) if not _isnan(v) else v for v in data]
     if d in ("str", "object", "string"):
         return [str(v) for v in data]
@@ -1627,8 +1633,21 @@ def factorize(values):
     return _ac.marr([float(c) for c in codes]), uniq
 
 
+def _coerce_frame(o):
+    """Adopt a real pandas DataFrame/Series into the native core."""
+    if isinstance(o, (DataFrame, Series)) or o is None:
+        return o
+    if hasattr(o, "columns") and hasattr(o, "__getitem__"):
+        return DataFrame({c: list(o[c]) for c in o.columns},
+                         index=list(o.index))
+    if hasattr(o, "tolist") and hasattr(o, "index"):
+        return Series(list(o.tolist()), index=list(o.index),
+                      name=getattr(o, "name", None))
+    return o
+
+
 def concat(objs, axis=0, ignore_index=False):
-    objs = [o for o in objs if o is not None]
+    objs = [_coerce_frame(o) for o in objs if o is not None]
     if all(isinstance(o, Series) for o in objs):
         if axis == 1:
             return DataFrame({(o.name if o.name is not None else i):

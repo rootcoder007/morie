@@ -929,15 +929,24 @@ def describe(a, ddof=1):
 
 # ---------------------------------------------------- t / rank tests
 
-def ttest_1samp(a, popmean):
+def _t_pvalue(stat, df, alternative):
+    if alternative == "greater":
+        return t.sf(stat, df)
+    if alternative == "less":
+        return t.sf(-stat, df)
+    return 2.0 * t.sf(abs(stat), df)
+
+
+def ttest_1samp(a, popmean, alternative="two-sided"):
     v = _flatten(a)
     n = len(v)
     se = _math.sqrt(_var(v, ddof=1) / n)
     stat = (_mean(v) - float(popmean)) / se
-    return _TestResult(stat, 2.0 * t.sf(abs(stat), n - 1), df=n - 1)
+    return _TestResult(stat, _t_pvalue(stat, n - 1, alternative),
+                       df=n - 1)
 
 
-def ttest_ind(a, b, equal_var=True):
+def ttest_ind(a, b, equal_var=True, alternative="two-sided"):
     x, y = _flatten(a), _flatten(b)
     n1, n2 = len(x), len(y)
     v1, v2 = _var(x, ddof=1), _var(y, ddof=1)
@@ -950,7 +959,7 @@ def ttest_ind(a, b, equal_var=True):
         df = (v1 / n1 + v2 / n2) ** 2 / (
             (v1 / n1) ** 2 / (n1 - 1) + (v2 / n2) ** 2 / (n2 - 1))
     stat = (_mean(x) - _mean(y)) / se
-    return _TestResult(stat, 2.0 * t.sf(abs(stat), df), df=df)
+    return _TestResult(stat, _t_pvalue(stat, df, alternative), df=df)
 
 
 def ttest_rel(a, b):
@@ -1072,6 +1081,19 @@ def chisquare(f_obs, f_exp=None):
     return _TestResult(stat, chi2.sf(stat, len(o) - 1))
 
 
+class _Chi2ContingencyResult(tuple):
+    """scipy-compatible: unpacks as (statistic, pvalue, dof,
+    expected_freq) and exposes the same attributes."""
+
+    def __new__(cls, stat, p, dof, expected):
+        self = tuple.__new__(cls, (stat, p, dof, expected))
+        self.statistic = stat
+        self.pvalue = p
+        self.dof = dof
+        self.expected_freq = expected
+        return self
+
+
 def chi2_contingency(observed, correction=True):
     rows = observed.tolist() if hasattr(observed, "tolist") \
         else [list(r) for r in observed]
@@ -1086,8 +1108,7 @@ def chi2_contingency(observed, correction=True):
     stat = _math.fsum(
         (_bi.max(abs(rows[i][j] - exp[i][j]) - yates, 0.0)) ** 2
         / exp[i][j] for i in range(r) for j in range(c))
-    return _TestResult(stat, chi2.sf(stat, dof), dof=dof,
-                       expected_freq=exp)
+    return _Chi2ContingencyResult(stat, chi2.sf(stat, dof), dof, exp)
 
 
 def _log_comb(n, k):

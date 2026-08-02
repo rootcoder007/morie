@@ -159,6 +159,11 @@ class marr:
                 return self.data[i][j]
             raise ValueError("unsupported index for 1-D")
         if isinstance(idx, marr):
+            if len(idx.shape) == 2 and not getattr(idx, "_is_mask",
+                                                   False):
+                # 2-D fancy index: gather preserving the index shape
+                return marr([[self.data[int(v)] for v in row]
+                             for row in idx.data])
             vals = idx._flat()
             is_mask = getattr(idx, "_is_mask", False) or (
                 not getattr(idx, "_is_index", False)
@@ -650,6 +655,20 @@ class _DTypeF64:
 
     name = "float64"
     kind = "f"
+    str = "<f8"
+    itemsize = 8
+
+    @property
+    def dtype(self):
+        """numpy dtype-protocol hook: real-numpy calls that receive
+        this marker (astype/zeros with dtype=float64) resolve through
+        this attribute. Only cooperates when numpy is already loaded —
+        the core itself never imports it."""
+        import sys as _sys
+        _np = _sys.modules.get("numpy")
+        if _np is not None:
+            return _np.dtype("float64")
+        return float
 
     def __call__(self, v):
         return float(v)
@@ -870,11 +889,18 @@ def column_stack(cols):
     return marr(out)
 
 
-def concatenate(parts):
-    out = []
-    for p in parts:
-        out.extend(asarray(p)._flat())
-    return marr(out)
+def concatenate(parts, axis=0):
+    arrs = [asarray(p) for p in parts]
+    if axis in (0, None) and len(arrs[0].shape) == 1:
+        out = []
+        for a in arrs:
+            out.extend(a._flat())
+        return marr(out)
+    if axis in (0, None):
+        return vstack(arrs)
+    if axis in (1, -1):
+        return hstack(arrs)
+    raise ValueError("concatenate: unsupported axis %r" % (axis,))
 
 
 # ------------------------------------------------------------- elementwise
@@ -960,28 +986,34 @@ def matmul(a, b):
 
 # --------------------------------------------------------------- reductions
 
-def sum(x, axis=None):  # noqa: A001
-    return asarray(x).sum(axis=axis)
+def sum(x, axis=None, dtype=None, keepdims=False):  # noqa: A001
+    del dtype
+    return asarray(x).sum(axis=axis, keepdims=keepdims)
 
 
-def mean(x, axis=None):
-    return asarray(x).mean(axis=axis)
+def mean(x, axis=None, dtype=None, keepdims=False):
+    del dtype
+    return asarray(x).mean(axis=axis, keepdims=keepdims)
 
 
-def std(x, axis=None, ddof=0):
+def std(x, axis=None, ddof=0, dtype=None, keepdims=False):
+    del dtype, keepdims
     return asarray(x).std(axis=axis, ddof=ddof)
 
 
-def var(x, axis=None, ddof=0):
+def var(x, axis=None, ddof=0, dtype=None, keepdims=False):
+    del dtype, keepdims
     return asarray(x).var(axis=axis, ddof=ddof)
 
 
-def max(x):  # noqa: A001
-    return asarray(x).max()
+def max(x, axis=None, keepdims=False):  # noqa: A001
+    del keepdims
+    return asarray(x).max(axis=axis)
 
 
-def min(x):  # noqa: A001
-    return asarray(x).min()
+def min(x, axis=None, keepdims=False):  # noqa: A001
+    del keepdims
+    return asarray(x).min(axis=axis)
 
 
 def _axis_reduce(x, axis, red):
@@ -1192,6 +1224,8 @@ class _SplitMix64:
     """
 
     def __init__(self, seed):
+        if isinstance(seed, Philox):
+            seed = seed.key
         self.state = (seed or 0x9E3779B97F4A7C15) & 0xFFFFFFFFFFFFFFFF
 
     def _next(self):
@@ -1332,6 +1366,58 @@ class _SplitMix64:
             out = list(asarray(n)._flat())
         self.shuffle(out)
         return marr([float(v) for v in out])
+
+    def lognormal(self, mean=0.0, sigma=1.0, size=None):
+        def one():
+            return _math.exp(self.normal(float(mean), float(sigma)))
+        return self._fill(one, size)
+
+    def _gamma_variate(self, shape):
+        # Marsaglia & Tsang (2000) squeeze method; shape < 1 boosted
+        # via Gamma(a+1) * U^(1/a)
+        a = float(shape)
+        if a < 1.0:
+            u = self.random()
+            while u <= 0.0:
+                u = self.random()
+            return self._gamma_variate(a + 1.0) * u ** (1.0 / a)
+        d = a - 1.0 / 3.0
+        c = 1.0 / _math.sqrt(9.0 * d)
+        while True:
+            x = self.normal()
+            v = (1.0 + c * x) ** 3
+            if v <= 0.0:
+                continue
+            u = self.random()
+            if u < 1.0 - 0.0331 * x ** 4:
+                return d * v
+            if u > 0.0 and _math.log(u) < 0.5 * x * x + d * (
+                    1.0 - v + _math.log(v)):
+                return d * v
+
+    def gamma(self, shape, scale=1.0, size=None):
+        def one():
+            return self._gamma_variate(shape) * float(scale)
+        return self._fill(one, size)
+
+    def dirichlet(self, alpha, size=None):
+        al = [float(v) for v in (alpha._flat()
+                                 if isinstance(alpha, marr) else alpha)]
+
+        def draw():
+            g = [self._gamma_variate(a) for a in al]
+            t = _pysum(g)
+            return [v / t for v in g]
+        if size is None:
+            return marr(draw())
+        return marr([draw() for _ in range(int(size))])
+
+    def beta(self, a, b, size=None):
+        def one():
+            x = self._gamma_variate(a)
+            y = self._gamma_variate(b)
+            return x / (x + y)
+        return self._fill(one, size)
 
     def choice(self, a, size=None, replace=True, p=None):
         if p is not None:
@@ -2015,8 +2101,14 @@ def hstack(parts):
     return marr(rows)
 
 
-def stack(parts):
-    return marr([asarray(p)._flat() for p in parts])
+def stack(parts, axis=0):
+    rows = [asarray(p)._flat() for p in parts]
+    if axis in (0, None):
+        return marr(rows)
+    if axis in (1, -1):
+        return marr([[rows[j][i] for j in range(len(rows))]
+                     for i in range(len(rows[0]))])
+    raise ValueError("stack: unsupported axis %r" % (axis,))
 
 
 dstack = None  # rarely used; assigned below if needed
