@@ -106,7 +106,7 @@ def _try_load_mat(path: Path) -> dict | None:
     except Exception:
         pass
     try:
-        from pymatreader import read_mat  # type: ignore
+        from morie._mat_reader import read_mat
 
         return dict(read_mat(str(path)))
     except Exception:
