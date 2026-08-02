@@ -281,8 +281,92 @@ class RegressionResults:
             crit = _stats.norm.ppf(1.0 - alpha / 2.0)
         p = list(self.params._flat())
         s = list(self.bse._flat())
-        return _ac.marr([[p[i] - crit * s[i], p[i] + crit * s[i]]
-                         for i in range(len(p))])
+        from . import _frame_core as _fc
+        names = list(getattr(self.params, "_names",
+                             range(len(p))))
+        # statsmodels returns a DataFrame with integer columns 0/1 and
+        # the parameter names as index
+        return _fc.DataFrame(
+            {0: [p[i] - crit * s[i] for i in range(len(p))],
+             1: [p[i] + crit * s[i] for i in range(len(p))]},
+            index=names)
+
+    def cov_params(self):
+        """Parameter covariance matrix (statsmodels surface)."""
+        return _ac.marr(self.cov.tolist()
+                        if hasattr(self.cov, "tolist") else self.cov)
+
+    def wald_test(self, r_matrix, scalar=True, use_f=None):
+        """Wald test of R beta = 0 (statsmodels surface).
+
+        W = (R b)' (R V R')^-1 (R b); reported as F = W / q on
+        (q, df_resid), matching statsmodels' use_f default for the
+        results classes morie fits.
+        """
+        del scalar, use_f
+        R = r_matrix.tolist() if hasattr(r_matrix, "tolist") \
+            else [list(row) for row in r_matrix]
+        b = list(self.params._flat())
+        V = self.cov_params().tolist()
+        q = len(R)
+        Rb = [_math.fsum(R[i][j] * b[j] for j in range(len(b)))
+              for i in range(q)]
+        RV = [[_math.fsum(R[i][a] * V[a][bb2] for a in range(len(b)))
+               for bb2 in range(len(b))] for i in range(q)]
+        RVR = [[_math.fsum(RV[i][a] * R[j][a] for a in range(len(b)))
+                for j in range(q)] for i in range(q)]
+        try:
+            x = list(_ac.linalg.solve(_ac.marr(RVR),
+                                      _ac.marr(Rb))._flat())
+        except Exception:
+            x = list(_ac.linalg.lstsq(_ac.marr(RVR),
+                                      _ac.marr(Rb))[0]._flat())
+        w = _math.fsum(Rb[i] * x[i] for i in range(q))
+        f = w / q
+        return _WaldResult(f, float(_stats.f.sf(f, q, self.df_resid)),
+                           q)
+
+    def wald_test_terms(self, skip_single=False, scalar=True):
+        """Joint Wald test per design term (statsmodels surface).
+
+        Groups the design columns by their term prefix (the part
+        before the first "[" of a dummy-coded name), then tests
+        R beta = 0 for that block: W = (R b)' (R V R')^-1 (R b),
+        reported as F = W / q on (q, df_resid).
+        """
+        del skip_single, scalar
+        from . import _frame_core as _fc
+        names = list(getattr(self.params, "_names", []))
+        b = list(self.params._flat())
+        V = self.cov_params()
+        Vd = V.tolist() if hasattr(V, "tolist") else V
+        groups = {}
+        for i, nm in enumerate(names):
+            if nm in ("Intercept", "const"):
+                continue
+            term = nm.split("[")[0]
+            groups.setdefault(term, []).append(i)
+        rows, index = [], []
+        for term, ix in groups.items():
+            q = len(ix)
+            sub = [[Vd[i][j] for j in ix] for i in ix]
+            bb = [b[i] for i in ix]
+            try:
+                x = list(_ac.linalg.solve(_ac.marr(sub),
+                                          _ac.marr(bb))._flat())
+            except Exception:
+                x = list(_ac.linalg.lstsq(_ac.marr(sub),
+                                          _ac.marr(bb))[0]._flat())
+            w = _math.fsum(bb[i] * x[i] for i in range(q))
+            f = w / q
+            pval = float(_stats.f.sf(f, q, self.df_resid))
+            rows.append((f, pval, q))
+            index.append(term)
+        return _WaldTerms(_fc.DataFrame(
+            {"statistic": [r[0] for r in rows],
+             "pvalue": [r[1] for r in rows],
+             "df_constraint": [float(r[2]) for r in rows]},
+            index=index))
 
     def predict(self, exog=None):
         out = self.model.predict(list(self.params._flat()), exog)
@@ -322,8 +406,29 @@ class _NamedVec(_ac.marr):
     def index(self):
         return list(self._names)
 
+    @property
+    def values(self):
+        # pandas Series surface: .values is the bare array
+        return _ac.marr(list(self.data))
+
     def to_dict(self):
         return dict(zip(self._names, self.data))
+
+
+class _WaldResult:
+    """statsmodels wald_test result surface."""
+
+    def __init__(self, statistic, pvalue, df_num):
+        self.statistic = statistic
+        self.pvalue = pvalue
+        self.df_num = df_num
+
+
+class _WaldTerms:
+    """statsmodels wald_test_terms result: exposes .table."""
+
+    def __init__(self, table):
+        self.table = table
 
 
 # ------------------------------------------------------------ models
@@ -497,8 +602,14 @@ class GLM:
                      for j in range(k)] for i in range(k)]
             XtWz = [_math.fsum(wirls[r] * X[r][i] * z[r]
                                for r in range(n)) for i in range(k)]
-            beta = list(_ac.linalg.solve(_ac.marr(XtWX),
-                                         _ac.marr(XtWz))._flat())
+            try:
+                beta = list(_ac.linalg.solve(_ac.marr(XtWX),
+                                             _ac.marr(XtWz))._flat())
+            except Exception:
+                # rank-deficient / separated design: minimum-norm
+                # least-squares step (statsmodels uses pinv here)
+                beta = list(_ac.linalg.lstsq(
+                    _ac.marr(XtWX), _ac.marr(XtWz))[0]._flat())
             llf = _math.fsum(fam.loglike_obs(y[r], link.ginv(
                 _math.fsum(X[r][j] * beta[j] for j in range(k))),
                 1.0) for r in range(n))
@@ -516,7 +627,19 @@ class GLM:
         XtWX = [[_math.fsum(wirls[r] * X[r][i] * X[r][j]
                             for r in range(n))
                  for j in range(k)] for i in range(k)]
-        cov = _ac.linalg.inv(_ac.marr(XtWX)).tolist()
+        try:
+            cov = _ac.linalg.inv(_ac.marr(XtWX)).tolist()
+        except Exception:
+            # singular information matrix: Moore-Penrose pseudo-inverse
+            # via SVD (statsmodels' pinv path)
+            A = _ac.marr(XtWX)
+            u, sv, vt = _ac.linalg.svd(A)
+            svl = list(sv._flat())
+            cut = (max(svl) if svl else 0.0) * len(svl) * 2.2e-16
+            inv_s = [1.0 / v if v > cut else 0.0 for v in svl]
+            cov = [[_math.fsum(vt.data[c][i] * inv_s[c] * u.data[j][c]
+                               for c in range(len(svl)))
+                    for j in range(k)] for i in range(k)]
         df_resid = n - k
         # scale: 1 for binomial/poisson; pearson X2/df for others
         if isinstance(fam, (Binomial, Poisson)):

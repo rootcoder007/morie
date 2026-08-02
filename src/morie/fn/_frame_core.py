@@ -496,7 +496,11 @@ class Series:
             if k not in seen:
                 seen.add(k)
                 out.append(v)
-        return out
+        # pandas returns an array: carry .size/.shape/.tolist
+        if all(isinstance(v, (int, float)) and not isinstance(v, bool)
+               for v in out):
+            return _ac.marr([float(v) for v in out])
+        return _ac.oarr(out)
 
     def nunique(self):
         return len({v for v in self._data if not _isnan(v)})
@@ -1964,6 +1968,10 @@ def qcut(x, q, labels=None, duplicates="raise"):
 def get_dummies(data, prefix=None, drop_first=False, columns=None,
                 dtype=None):
     del dtype
+    # a real pandas frame would otherwise fall through to the Series
+    # branch and be iterated as its column NAMES
+    if not isinstance(data, (DataFrame, Series)):
+        data = _coerce_frame(data)
     if isinstance(data, DataFrame):
         cols = columns if columns is not None else [
             c for c in data._cols
