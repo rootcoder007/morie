@@ -1,6 +1,6 @@
 """Tests for morie.fn.plvar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.plvar import plvar
 

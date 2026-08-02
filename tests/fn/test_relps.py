@@ -1,6 +1,6 @@
 """Tests for morie.fn.relps -- Relapse vs reinfection (Pv3Rs)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.relps import relps

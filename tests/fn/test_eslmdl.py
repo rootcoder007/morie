@@ -1,6 +1,6 @@
 """Tests for eslmdl.esl_mdl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslmdl import esl_mdl
 

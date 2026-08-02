@@ -1,6 +1,6 @@
 """Tests for grn024.geron_ch4_cross_entropy_gradient_vector."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grn024 import geron_ch4_cross_entropy_gradient_vector
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgns2 -- Nested variogram fitting"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgns2 import vario_nested_fit
 

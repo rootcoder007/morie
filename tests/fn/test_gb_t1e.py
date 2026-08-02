@@ -1,6 +1,6 @@
 """Tests for gb_t1e.gibbons_type1_error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_t1e import gibbons_type1_error
 

@@ -1,6 +1,6 @@
 """Tests for gh_ap_j1.ghosal_levy_ito."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_j1 import ghosal_levy_ito
 

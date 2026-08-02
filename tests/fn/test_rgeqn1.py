@@ -1,6 +1,6 @@
 """Tests for rgeqn1.rangayyan_ch1_signal_stats."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn1 import rangayyan_ch1_signal_stats
 

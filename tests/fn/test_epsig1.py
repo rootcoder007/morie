@@ -1,6 +1,6 @@
 """Tests for epsig1.em_algorithm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.epsig1 import em_algorithm
 

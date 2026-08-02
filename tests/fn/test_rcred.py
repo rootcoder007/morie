@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcred -- read roll-call vote matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rcred import rcred, read_roll_call
 

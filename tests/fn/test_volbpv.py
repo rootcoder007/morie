@@ -1,6 +1,6 @@
 """Tests for volbpv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volbpv import vol_bipower_variation

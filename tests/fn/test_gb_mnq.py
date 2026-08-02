@@ -1,6 +1,6 @@
 """Tests for gb_mnq.gibbons_marginal_quant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_mnq import gibbons_marginal_quant
 

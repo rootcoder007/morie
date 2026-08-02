@@ -1,6 +1,6 @@
 """kalmn: linear Kalman filter predict-update recursion (Kalman 1960)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kalmn import kalman_filter as kf

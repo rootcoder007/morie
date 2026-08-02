@@ -1,6 +1,6 @@
 """Tests for romg2 -- omega per subscale."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import ESRes
 from morie.fn.romg2 import omega_subscale

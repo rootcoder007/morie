@@ -1,6 +1,6 @@
 """Tests for morie.fn.mstnk -- Trustworthiness metric"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mstnk import trustworthiness
 

@@ -1,6 +1,6 @@
 """Tests for jntmed.joint_significance_mediation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.jntmed import joint_significance_mediation

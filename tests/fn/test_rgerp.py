@@ -1,6 +1,6 @@
 """Tests for rgerp.rangayyan_erp_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgerp import rangayyan_erp_features
 

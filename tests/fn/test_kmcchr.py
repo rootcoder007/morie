@@ -1,6 +1,6 @@
 """Tests for kmcchr.kamath_christiano_deep_rl_feedback."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmcchr import kamath_christiano_deep_rl_feedback
 

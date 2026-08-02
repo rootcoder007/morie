@@ -1,6 +1,6 @@
 """Tests for morie.fn.msans -- MDS anisotropy measure"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msans import mds_aniso
 

@@ -1,6 +1,6 @@
 """Tests for deciA.deci_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.deciA import deci_model

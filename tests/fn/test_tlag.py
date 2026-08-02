@@ -1,6 +1,6 @@
 """Tests for morie.fn.tlag — Time-lag cross-correlation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tlag import time_lag_analysis

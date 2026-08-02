@@ -1,6 +1,6 @@
 """Tests for grvpi.geron_state_value_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grvpi import geron_state_value_function
 

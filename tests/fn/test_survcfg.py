@@ -1,6 +1,6 @@
 """Tests for survcfg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.csfgrf import causal_survival_forest

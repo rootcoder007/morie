@@ -1,6 +1,6 @@
 """spglmk -- spatial prediction in GLMs, Schabenberger Sec. 6.3.6."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spglmk import schabenberger_glm_kriging

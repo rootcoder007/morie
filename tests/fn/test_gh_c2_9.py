@@ -1,6 +1,6 @@
 """Tests for gh_c2_9.ghosal_np_binary_reg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c2_9 import ghosal_np_binary_reg
 

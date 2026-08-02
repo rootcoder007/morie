@@ -1,6 +1,6 @@
 """Tests for hmfsf.geron_few_shot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmfsf import geron_few_shot
 

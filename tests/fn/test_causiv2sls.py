@@ -1,6 +1,6 @@
 """Tests for causiv2sls.causal_iv_2sls."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causiv2sls import causal_iv_2sls
 

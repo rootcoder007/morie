@@ -1,6 +1,6 @@
 """Tests for bdtrns.bound_transport."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bdtrns import bound_transport
 

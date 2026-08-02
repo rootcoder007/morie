@@ -1,6 +1,6 @@
 """Tests for hrzich.horowitz_ichimura_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzich import horowitz_ichimura_estimator
 

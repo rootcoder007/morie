@@ -1,6 +1,6 @@
 """Tests for morie.fn.g -- Hedges' g effect size."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.d import cohens_d

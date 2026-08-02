@@ -1,6 +1,6 @@
 """Tests for mfomf.model_based_rl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mfomf import model_based_rl
 

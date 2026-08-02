@@ -1,6 +1,6 @@
 """Tests for divcd.divergent_transitions_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.divcd import divergent_transitions_count
 

@@ -1,6 +1,6 @@
 """Tests for meta1l.meta_learner_ensemble."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.meta1l import meta_learner_ensemble
 

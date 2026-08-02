@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmalp -- Alpha-NOMINATE posterior"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmalp import alpha_nom_post
 

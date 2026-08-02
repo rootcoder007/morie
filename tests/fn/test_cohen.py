@@ -1,6 +1,6 @@
 """Tests for morie.fn.cohen — alias for Cohen's d."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cohen import cohen
 

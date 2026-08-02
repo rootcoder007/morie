@@ -1,6 +1,6 @@
 """Tests for kmscal.kamath_scaling_laws."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmscal import kamath_scaling_laws
 

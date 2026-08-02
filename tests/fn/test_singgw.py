@@ -1,6 +1,6 @@
 """Tests for singgw.single_step_gblup."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.singgw import single_step_gblup
 

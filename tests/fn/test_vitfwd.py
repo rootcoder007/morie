@@ -1,6 +1,6 @@
 """Tests for vitfwd.vit_forward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vitfwd import vit_forward
 

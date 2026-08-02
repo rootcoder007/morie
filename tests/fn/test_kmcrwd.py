@@ -1,6 +1,6 @@
 """Tests for kmcrwd.kamath_crowspairs_bias."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmcrwd import kamath_crowspairs_bias
 

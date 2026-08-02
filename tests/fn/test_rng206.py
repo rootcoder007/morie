@@ -1,6 +1,6 @@
 """Tests for rng206.rangayyan_ch4_coherence_spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng206 import rangayyan_ch4_coherence_spectrum
 

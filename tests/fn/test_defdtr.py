@@ -1,6 +1,6 @@
 """Tests for defdtr.deformable_detr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.defdtr import deformable_detr
 

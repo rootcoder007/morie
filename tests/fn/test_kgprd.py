@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgprd -- Kriging prediction surface"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgprd import kriging_predict
 

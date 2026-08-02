@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-import pandas as real_pd
+real_pd = __import__("pytest").importorskip("pandas")
 
 from morie.fn import _frame_core as pd
 

@@ -1,6 +1,6 @@
 """Tests for zfmech.z_dp_mechanism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zfmech import z_dp_mechanism
 

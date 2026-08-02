@@ -1,6 +1,6 @@
 """Tests for hrzsitr.horowitz_sieve_npiv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzsitr import horowitz_sieve_npiv
 

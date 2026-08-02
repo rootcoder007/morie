@@ -1,6 +1,6 @@
 """Tests for rdmcbw.mse_optimal_bandwidth_rdd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rdmcbw import mse_optimal_bandwidth_rdd
 

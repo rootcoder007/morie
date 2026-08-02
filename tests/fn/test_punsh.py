@@ -1,6 +1,6 @@
 """Tests for morie.fn.punsh -- elastic net regularization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import RegressionResult
 from morie.fn.punsh import penalty_regression, punsh

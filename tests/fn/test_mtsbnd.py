@@ -1,6 +1,6 @@
 """Tests for mtsBnd.mts_bounds."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mtsbnd import mts_bounds
 

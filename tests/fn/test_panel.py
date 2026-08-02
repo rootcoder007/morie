@@ -1,6 +1,6 @@
 """Tests for morie.fn.panel — Panel data regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.panel import panel_regression

@@ -1,6 +1,6 @@
 """Tests for morie.fn.gaubea -- Gaussian beam optics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gaubea import gaubea, gaussian_beam

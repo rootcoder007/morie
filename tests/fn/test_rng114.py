@@ -1,6 +1,6 @@
 """Tests for rng114.rangayyan_ch3_first_difference_magnitude."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng114 import rangayyan_ch3_first_difference_magnitude
 

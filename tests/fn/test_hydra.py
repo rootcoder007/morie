@@ -1,6 +1,6 @@
 """Test hydra."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hydra import hydra
 

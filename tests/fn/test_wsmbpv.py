@@ -1,6 +1,6 @@
 """Tests for wsmbpv.wasserman_bootstrap_pivotal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmbpv import wasserman_bootstrap_pivotal
 

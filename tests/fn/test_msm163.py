@@ -1,6 +1,6 @@
 """Tests for msm163.mvsml_ridge_lasso_elastic_eq_9_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm163 import mvsml_ridge_lasso_elastic_eq_9_1
 

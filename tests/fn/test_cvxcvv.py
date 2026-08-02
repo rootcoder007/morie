@@ -1,6 +1,6 @@
 """Tests for cvxcvv.boyd_cvxlin_complement."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxcvv import boyd_cvxlin_complement
 

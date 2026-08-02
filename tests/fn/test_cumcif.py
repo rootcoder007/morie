@@ -1,6 +1,6 @@
 """Tests for cumcif.cumulative_incidence_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cumcif import cumulative_incidence_function
 

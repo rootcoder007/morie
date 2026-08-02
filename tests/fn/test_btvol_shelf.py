@@ -11,7 +11,7 @@ noise variance of contaminated high-frequency returns is recovered to
 a few percent while naive realized variance is two orders off.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bt632 import boot_632_estimator

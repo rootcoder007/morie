@@ -1,6 +1,6 @@
 """Tests for moelyr.moe_layer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.moelyr import moe_layer
 

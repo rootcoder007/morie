@@ -8,7 +8,7 @@ pooled-covariance linear discriminant:
     c  =  w' (mu_yea + mu_nay) / 2
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.csphr import cutting_plane_sphere as cp

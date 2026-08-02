@@ -1,6 +1,6 @@
 """Tests for rgrms.rangayyan_rms."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgrms import rangayyan_rms
 

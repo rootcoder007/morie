@@ -1,6 +1,6 @@
 """Tests for morie.fn.tdcox -- Time-dependent covariates Cox."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tdcox import tdcox

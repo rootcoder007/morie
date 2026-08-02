@@ -1,6 +1,6 @@
 """Tests for kmexp.kamath_memorization_exposure."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmexp import kamath_memorization_exposure
 

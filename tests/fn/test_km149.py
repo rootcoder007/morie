@@ -1,6 +1,6 @@
 """Tests for km149.kamath_ch9_flamingo_factorized."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km149 import kamath_ch9_flamingo_factorized
 

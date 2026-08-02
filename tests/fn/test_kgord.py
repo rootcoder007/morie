@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgord -- Ordinary kriging prediction"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgord import ordinary_kriging
 

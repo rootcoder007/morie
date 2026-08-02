@@ -1,6 +1,6 @@
 """Tests for information_theory_mackay2e25.information_theory_mackay_chapter_2_equation_25."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.information_theory_mackay2e25 import information_theory_mackay_chapter_2_equation_25
 

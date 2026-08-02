@@ -1,6 +1,6 @@
 """Tests for hmmcp.geron_model_context_protocol."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmcp import geron_model_context_protocol
 

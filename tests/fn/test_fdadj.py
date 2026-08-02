@@ -1,6 +1,6 @@
 """Tests for fdadj.frontdoor_adjustment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.fdadj import frontdoor_adjustment

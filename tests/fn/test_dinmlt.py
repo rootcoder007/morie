@@ -1,6 +1,6 @@
 """Tests for dinmlt.dino_multicrop."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dinmlt import dino_multicrop
 

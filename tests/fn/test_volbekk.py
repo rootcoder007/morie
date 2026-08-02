@@ -1,6 +1,6 @@
 """Tests for volbekk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volbekk import vol_bekk_garch

@@ -1,6 +1,6 @@
 """Tests for grpcap.geron_pca_projection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grpcap import geron_pca_projection
 

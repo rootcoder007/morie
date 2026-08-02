@@ -1,6 +1,6 @@
 """Tests for rgkatzfd.rangayyan_katz_fd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgkatzfd import rangayyan_katz_fd
 

@@ -7,7 +7,7 @@ Both correct a bias that the naive back-transform carries, so the tests
 check the CORRECTION, not merely that a number comes out.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_krig import ordinary_kriging, simple_kriging

@@ -1,6 +1,6 @@
 """Tests for getsorg.getis_ord_g."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.getsorg import getis_ord_g
 

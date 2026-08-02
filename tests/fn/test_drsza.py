@@ -1,6 +1,6 @@
 """Tests for drsza.dr_did_santanna_zhao."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drsza import dr_did_santanna_zhao
 

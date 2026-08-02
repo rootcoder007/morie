@@ -6,7 +6,7 @@ closed form: a model that uses only one feature, a linear model, an
 additive model.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fairness.xai import (

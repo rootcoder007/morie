@@ -1,6 +1,6 @@
 """Tests for hrzw1.horowitz_wild_bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzw1 import horowitz_wild_bootstrap
 

@@ -1,6 +1,6 @@
 """Tests for glides.glide_score_proxy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.glides import glide_score_proxy
 

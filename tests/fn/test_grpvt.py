@@ -1,6 +1,6 @@
 """Tests for grpvt.geron_pyramid_vit_stage."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grpvt import geron_pyramid_vit_stage
 

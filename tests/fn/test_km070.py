@@ -1,6 +1,6 @@
 """Tests for km070.kamath_ch5_rlhf_optimal_policy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km070 import kamath_ch5_rlhf_optimal_policy
 

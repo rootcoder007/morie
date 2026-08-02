@@ -11,7 +11,7 @@ the CHT criterion is exactly zero on the identified set, and the LP
 bounds land on the vertices they must land on.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bndcvx import bound_convex_estimator

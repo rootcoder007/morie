@@ -1,6 +1,6 @@
 """Tests for morie.fn.netdn — Network density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netdn import network_density
 

@@ -1,6 +1,6 @@
 """Tests for sqztf.py - Synchrosqueezed CWT."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sqztf import sqztf, synchrosqueeze
 

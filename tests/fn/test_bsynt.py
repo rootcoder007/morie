@@ -1,6 +1,6 @@
 """Tests for morie.fn.bsynt -- Bayesian synthetic control."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bsynt import bayesian_synthetic_control
 

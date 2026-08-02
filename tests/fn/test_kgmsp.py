@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgmsp -- Kriging MSPE"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgmsp import kriging_mspe
 

@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for morie.fn.midif -- delta-fit indices."""
 
 from morie.fn.midif import mi_delta_fit

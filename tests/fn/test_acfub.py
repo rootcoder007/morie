@@ -1,6 +1,6 @@
 """Test acf_unbiased (acfub)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.acfub import acf_unbiased, acfub

@@ -10,7 +10,7 @@ template vectors against phi^(m+1) over N-m. The asymmetric template count
 that is a bug in rgsam is correct here.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgapn import rangayyan_approximate_entropy

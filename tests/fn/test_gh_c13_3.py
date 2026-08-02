@@ -1,6 +1,6 @@
 """Tests for gh_c13_3.ghosal_beta_proc_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c13_3 import ghosal_beta_proc_def
 

@@ -1,6 +1,6 @@
 """Tests for crfvar.causal_forest_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crfvar import causal_forest_variance
 

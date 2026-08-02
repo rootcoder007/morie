@@ -1,6 +1,6 @@
 """Tests for depcen.dependent_censoring_hazard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.depcen import dependent_censoring_hazard
 

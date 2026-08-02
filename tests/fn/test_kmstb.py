@@ -1,6 +1,6 @@
 """Tests for kmstb.kamath_step_back_prompting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmstb import kamath_step_back_prompting
 

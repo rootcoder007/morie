@@ -1,6 +1,6 @@
 """Tests for km102.kamath_ch6_lstm_chain_rule."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km102 import kamath_ch6_lstm_chain_rule
 

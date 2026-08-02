@@ -1,6 +1,6 @@
 """Tests for rgglr.rangayyan_gen_likelihood_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgglr import rangayyan_gen_likelihood_ratio
 

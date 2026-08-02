@@ -1,6 +1,6 @@
 """Tests for gb1151.gibbons_blomqvist_q."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1151 import gibbons_blomqvist_q
 

@@ -1,6 +1,6 @@
 """Tests for resnxt.resnext_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.resnxt import resnext_block
 

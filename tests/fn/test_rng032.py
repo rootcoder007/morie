@@ -1,6 +1,6 @@
 """Tests for rng032.rangayyan_ch3_causal_convolution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng032 import rangayyan_ch3_causal_convolution

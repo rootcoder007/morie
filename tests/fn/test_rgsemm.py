@@ -1,6 +1,6 @@
 """Tests for rgsemm.rangayyan_spec_error_meas."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsemm import rangayyan_spec_error_meas
 

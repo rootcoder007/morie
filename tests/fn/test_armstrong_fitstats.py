@@ -1,7 +1,7 @@
 """Armstrong Sec 5.3.5 fit statistics (clfrt, prech, gmpre, agrmt, rollc)
 against the p.143 footnote formulas, hand-computable fixtures."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.agrmt import agreement_score

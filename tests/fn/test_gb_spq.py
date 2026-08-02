@@ -1,6 +1,6 @@
 """Tests for gb_spq.gibbons_spearman_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_spq import gibbons_spearman_test
 

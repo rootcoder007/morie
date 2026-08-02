@@ -1,6 +1,6 @@
 """Tests for hmyolo.geron_yolo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmyolo import geron_yolo
 

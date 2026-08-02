@@ -1,6 +1,6 @@
 """Tests for grvqv.geron_vq_vae_codebook_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grvqv import geron_vq_vae_codebook_loss
 

@@ -1,6 +1,6 @@
 """Tests for dpepsm.epsilon_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpepsm import epsilon_dp
 

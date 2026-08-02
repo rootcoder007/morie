@@ -1,6 +1,6 @@
 """Tests for Burnett 2018 PNAS GEMM PM₂.₅ exposure-response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pmgemm import pm_gemm_rr, pmgemm

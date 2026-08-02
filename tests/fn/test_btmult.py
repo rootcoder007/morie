@@ -1,6 +1,6 @@
 """Tests for btmult.boot_multinomial_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btmult import boot_multinomial_weights
 

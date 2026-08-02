@@ -1,6 +1,6 @@
 """Test nbl10."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nbl10 import nbl10
 

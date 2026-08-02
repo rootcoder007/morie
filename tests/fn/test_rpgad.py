@@ -1,6 +1,6 @@
 """Tests for rpgad.rdp_to_eps_delta."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rpgad import rdp_to_eps_delta
 

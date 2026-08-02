@@ -1,6 +1,6 @@
 """Tests for gh_c6_4.ghosal_df_inconsist."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c6_4 import ghosal_df_inconsist
 

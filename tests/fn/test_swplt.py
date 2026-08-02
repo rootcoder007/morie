@@ -1,6 +1,6 @@
 """Tests for morie.fn.swplt -- Solar System orbit summary."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.swplt import solar_orbit_summary, swplt

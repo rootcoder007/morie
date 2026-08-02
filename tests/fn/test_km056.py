@@ -1,6 +1,6 @@
 """Tests for km056.kamath_ch4_full_finetune_obj."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km056 import kamath_ch4_full_finetune_obj
 

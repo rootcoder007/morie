@@ -1,6 +1,6 @@
 """rng143: Wiener autocorrelation matrix (Rangayyan 2024, Eq. 3.163-3.165, pp. 174-175)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng143 import rangayyan_ch3_autocorrelation_matrix as phi_mat

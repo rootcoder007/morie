@@ -1,6 +1,6 @@
 """Tests for design_of_observational_studies6u366.design_of_observational_studies_chapter_6_unnumbered_366."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.design_of_observational_studies6u366 import design_of_observational_studies_chapter_6_unnumbered_366
 

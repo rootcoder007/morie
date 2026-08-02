@@ -1,6 +1,6 @@
 """Tests for spmani.schabenberger_mantel_standard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spmani import schabenberger_mantel_standard
 

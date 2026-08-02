@@ -1,6 +1,6 @@
 """Tests for clipxt.clip_text_encoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clipxt import clip_text_encoder
 

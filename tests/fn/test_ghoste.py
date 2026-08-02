@@ -1,6 +1,6 @@
 """Tests for ghoste.ghose_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghoste import ghose_filter
 

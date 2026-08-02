@@ -1,6 +1,6 @@
 """Tests for dpsyn.dp_synthetic_data."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpsyn import dp_synthetic_data
 

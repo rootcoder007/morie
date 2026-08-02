@@ -1,6 +1,6 @@
 """Tests for morie.fn.cstmh — custody mental health trend."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.cstmh import custody_mental_health
 

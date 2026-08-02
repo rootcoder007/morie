@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmdwt -- DW-NOMINATE trend analysis"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmdwt import dwnominate_trend
 

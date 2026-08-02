@@ -1,6 +1,6 @@
 """Tests for km104.kamath_ch6_affect_lm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km104 import kamath_ch6_affect_lm
 

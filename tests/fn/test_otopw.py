@@ -1,6 +1,6 @@
 """Tests for otopw.ot_optimised_potentials_warm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otopw import ot_optimised_potentials_warm
 

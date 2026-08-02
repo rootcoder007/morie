@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrcar -- CAR model ML"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrcar import car_ml
 

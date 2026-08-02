@@ -1,6 +1,6 @@
 """Tests for emaxr.em_step_random_effects."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.emaxr import em_step_random_effects
 

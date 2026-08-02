@@ -1,6 +1,6 @@
 """Tests for rng096.rangayyan_ch3_hann_phase_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng096 import rangayyan_ch3_hann_phase_response
 

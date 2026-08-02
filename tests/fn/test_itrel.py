@@ -1,6 +1,6 @@
 """Tests for morie.fn.itrel — item reliability index."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.itrel import item_reliability_index
 

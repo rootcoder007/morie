@@ -1,6 +1,6 @@
 """Tests for rng257.rangayyan_ch4_log_power_spectrum_signal_echo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng257 import rangayyan_ch4_log_power_spectrum_signal_echo
 

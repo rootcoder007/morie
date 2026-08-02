@@ -1,6 +1,6 @@
 """Tests for vinasc.autodock_vina_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vinasc import autodock_vina_score
 

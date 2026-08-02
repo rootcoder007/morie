@@ -1,6 +1,6 @@
 """Tests for fzt13.fauzi_thm1_3_mise_mgkde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt13 import fauzi_thm1_3_mise_mgkde
 

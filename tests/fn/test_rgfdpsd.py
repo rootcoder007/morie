@@ -1,6 +1,6 @@
 """Tests for rgfdpsd.rangayyan_fd_psd_slope."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfdpsd import rangayyan_fd_psd_slope
 

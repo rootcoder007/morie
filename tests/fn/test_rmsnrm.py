@@ -1,6 +1,6 @@
 """Tests for rmsnrm.rms_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rmsnrm import rms_norm
 

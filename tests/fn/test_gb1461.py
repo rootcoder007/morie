@@ -1,6 +1,6 @@
 """Tests for gb1461.gibbons_multinomial_gof."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1461 import gibbons_multinomial_gof
 

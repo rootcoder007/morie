@@ -1,6 +1,6 @@
 """Tests for morie.fn.densm -- density matrix operations."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.densm import densm

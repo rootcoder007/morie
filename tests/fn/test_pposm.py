@@ -1,6 +1,6 @@
 """Tests for pposm.posterior_predictive_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pposm import posterior_predictive_mean
 

@@ -1,6 +1,6 @@
 """Tests for rgsf.rangayyan_signal_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsf import rangayyan_signal_features
 

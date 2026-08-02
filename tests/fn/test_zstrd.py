@@ -1,6 +1,6 @@
 """Tests for morie.fn.zstrd -- Temporal trend estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zstrd import trend_temporal
 

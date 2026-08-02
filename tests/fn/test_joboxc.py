@@ -1,6 +1,6 @@
 """Tests for joboxc.joseph_box_cox_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.joboxc import joseph_box_cox_transform
 

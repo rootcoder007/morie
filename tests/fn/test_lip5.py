@@ -1,6 +1,6 @@
 """Tests for lip5.lipinski_rule_of_5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lip5 import lipinski_rule_of_5
 

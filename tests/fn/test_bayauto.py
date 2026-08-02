@@ -1,8 +1,8 @@
 """bayauto: MCMC autocorrelation and ESS (Geyer 1992)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy.signal import lfilter
+from morie.fn._signal_core import lfilter
 
 from morie.fn.bayauto import autocorrelation_check as ess
 

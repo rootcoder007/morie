@@ -1,6 +1,6 @@
 """Tests for morie.fn.mselb -- MDS elbow detection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mselb import mds_elbow
 

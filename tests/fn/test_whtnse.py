@@ -6,9 +6,9 @@ noise, detect serial dependence, and satisfy the algebraic identities in
 Hosking's definition.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.whtnse import _autocov, white_noise_test
 

@@ -1,6 +1,6 @@
 """Tests for gh_c11_9.ghosal_statgp_spec."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c11_9 import ghosal_statgp_spec
 

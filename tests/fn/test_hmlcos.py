@@ -1,6 +1,6 @@
 """Tests for hmlcos.geron_cosine_annealing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlcos import geron_cosine_annealing
 

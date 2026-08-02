@@ -1,6 +1,6 @@
 """Tests for nwest.newey_west_hac."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nwest import newey_west_hac
 

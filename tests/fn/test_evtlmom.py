@@ -1,6 +1,6 @@
 """Tests for evtlmom.evt_trimmed_lmom."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evtlmom import evt_trimmed_lmom
 

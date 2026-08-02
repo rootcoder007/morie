@@ -1,6 +1,6 @@
 """Tests for causmm.causal_mahalanobis_match."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causmm import causal_mahalanobis_match
 

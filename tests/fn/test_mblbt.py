@@ -1,6 +1,6 @@
 """Tests for morie.fn.mblbt -- Moving block bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mblbt import moving_block_bootstrap

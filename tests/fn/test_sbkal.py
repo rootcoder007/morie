@@ -1,6 +1,6 @@
 """Tests for morie.fn.sbkal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sbkal import sbkal
 

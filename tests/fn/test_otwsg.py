@@ -1,6 +1,6 @@
 """Tests for otwsg.ot_wasserstein_gauss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otwsg import ot_wasserstein_gauss
 

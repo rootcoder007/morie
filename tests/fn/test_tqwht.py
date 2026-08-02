@@ -1,6 +1,6 @@
 """Tests for tqwht.turboquant_walsh_hadamard_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqwht import turboquant_walsh_hadamard_transform
 

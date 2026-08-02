@@ -1,6 +1,6 @@
 """Tests for scumap.umap_singlecell."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.scumap import umap_singlecell
 

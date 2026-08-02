@@ -1,6 +1,6 @@
 """Tests for grtrc.geron_tree_classification_leaf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grtrc import geron_tree_classification_leaf
 

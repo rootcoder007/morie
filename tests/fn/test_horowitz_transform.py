@@ -1,6 +1,6 @@
 """Transformation models T(Y) = X'beta + U (Horowitz Ch. 6)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzchet import horowitz_chen_estimator_T

@@ -1,6 +1,6 @@
 """Tests for bayreg2.bayes_robust."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayreg2 import bayes_robust
 

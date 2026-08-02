@@ -1,6 +1,6 @@
 """Tests for irtdq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.irtdq import irt_quadratic_utility

@@ -1,6 +1,6 @@
 """Tests for varrd.variance_reduction_split."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.varrd import variance_reduction_split
 

@@ -1,6 +1,6 @@
 """Tests for hmpmps.geron_mps_acceleration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmpmps import geron_mps_acceleration
 

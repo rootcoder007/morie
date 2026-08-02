@@ -1,6 +1,6 @@
 """Tests for gb551.gibbons_rank_order_stat."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb551 import gibbons_rank_order_stat
 

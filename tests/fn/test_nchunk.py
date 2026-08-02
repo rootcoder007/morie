@@ -1,6 +1,6 @@
 """Tests for nchunk.causal_chunked_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.nchunk import causal_chunked_attention

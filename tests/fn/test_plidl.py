@@ -1,6 +1,6 @@
 """Tests for morie.fn.plidl -- plot ideal and stimuli."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.plidl import plidl, plot_ideal_and_stimuli
 

@@ -1,6 +1,6 @@
 """Tests for drblr.doubly_robust_learner."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drblr import doubly_robust_learner
 

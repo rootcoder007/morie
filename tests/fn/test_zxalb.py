@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxalb -- Albers equal-area projection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxalb import albers_proj
 

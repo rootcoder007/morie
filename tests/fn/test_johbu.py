@@ -1,6 +1,6 @@
 """Tests for johbu."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.johbu import joseph_bottom_up_reconciliation

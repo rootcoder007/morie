@@ -1,6 +1,6 @@
 """Tests for wsmprb.wasserman_parametric_boot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmprb import wasserman_parametric_boot
 

@@ -1,6 +1,6 @@
 """Tests for loocv.py - Leave-One-Out Cross-Validation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.loocv import loocv_fn, loocv_fn_alias
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.plam — plot A-M summary."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.plam import plam
 

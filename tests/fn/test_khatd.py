@@ -1,6 +1,6 @@
 """Tests for khatd.pareto_k_diagnostic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.khatd import pareto_k_diagnostic
 

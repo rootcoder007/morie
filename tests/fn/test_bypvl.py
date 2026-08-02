@@ -1,6 +1,6 @@
 """Tests for morie.fn.bypvl -- Bayesian p-value."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bypvl import bayesian_p_value, bypvl
 

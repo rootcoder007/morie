@@ -1,6 +1,6 @@
 """Tests for hmjl.geron_johnson_lindenstrauss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmjl import geron_johnson_lindenstrauss
 

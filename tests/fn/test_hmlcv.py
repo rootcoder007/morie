@@ -1,6 +1,6 @@
 """Tests for hmlcv.geron_learning_curves."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlcv import geron_learning_curves
 

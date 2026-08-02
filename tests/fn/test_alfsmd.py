@@ -1,6 +1,6 @@
 """Tests for alfsmd.alphafold_msa_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfsmd import alphafold_msa_attention
 

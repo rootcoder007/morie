@@ -1,6 +1,6 @@
 """Tests for scbsft.sc_with_baseline_shift."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.scbsft import sc_with_baseline_shift
 

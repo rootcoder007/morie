@@ -1,6 +1,6 @@
 """Tests for gb32asy.gibbons_runs_asymp_normal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb32asy import gibbons_runs_asymp_normal
 

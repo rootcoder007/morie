@@ -1,6 +1,6 @@
 """Tests for hybRC.hybrid_rec."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hybRC import hybrid_rec
 

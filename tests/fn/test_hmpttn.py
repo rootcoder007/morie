@@ -1,6 +1,6 @@
 """Tests for hmpttn.geron_pytorch_tensor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmpttn import geron_pytorch_tensor
 

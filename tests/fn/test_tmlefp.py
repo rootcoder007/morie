@@ -1,6 +1,6 @@
 """Tests for tmlefp.tmle_effective_pi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlefp import tmle_effective_pi
 

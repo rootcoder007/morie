@@ -1,6 +1,6 @@
 """Tests for kmglv.kamath_glove_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmglv import kamath_glove_cost
 

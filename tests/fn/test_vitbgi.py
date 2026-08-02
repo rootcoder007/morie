@@ -1,6 +1,6 @@
 """Tests for vitbgi.vit_b16_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vitbgi import vit_b16_init
 

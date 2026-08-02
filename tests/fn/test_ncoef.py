@@ -1,6 +1,6 @@
 """Tests for morie.fn.ncoef — normalize coefficients."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ncoef import ncoef
 

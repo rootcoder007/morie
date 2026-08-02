@@ -1,6 +1,6 @@
 """Tests for caussc.causal_synthetic_control."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.caussc import causal_synthetic_control

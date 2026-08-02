@@ -1,6 +1,6 @@
 """Tests for morie.fn.abcr -- ABC rejection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.abcr import abc_rejection
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.poppyr -- population pyramid."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.poppyr import population_pyramid
 

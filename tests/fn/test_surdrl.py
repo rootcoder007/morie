@@ -1,6 +1,6 @@
 """Tests for surdrl.survey_dr_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.surdrl import survey_dr_estimator
 

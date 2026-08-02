@@ -1,6 +1,6 @@
 """Tests for morie.fn.heckm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.heckm import heckm
 

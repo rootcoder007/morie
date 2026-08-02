@@ -1,6 +1,6 @@
 """Tests for morie.fn.svprx."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svprx import svprx
 

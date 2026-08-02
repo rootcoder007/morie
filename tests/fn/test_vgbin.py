@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgbin -- Binned semivariogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgbin import vario_binned
 

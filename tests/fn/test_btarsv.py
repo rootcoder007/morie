@@ -1,6 +1,6 @@
 """Tests for btarsv.boot_ar_sieve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btarsv import boot_ar_sieve
 

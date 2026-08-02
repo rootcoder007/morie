@@ -1,6 +1,6 @@
 """Tests for aitbi.aitchison_biplot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitbi import aitchison_biplot
 

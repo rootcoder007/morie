@@ -1,6 +1,6 @@
 """Tests for gh_c3_3.ghosal_dir_simplex."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c3_3 import ghosal_dir_simplex
 

@@ -1,6 +1,6 @@
 """Tests for grrad.geron_reverse_mode_autodiff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grrad import geron_reverse_mode_autodiff
 

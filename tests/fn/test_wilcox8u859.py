@@ -1,6 +1,6 @@
 """Tests for wilcox8u859.wilcox_chapter_8_unnumbered_859."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wilcox8u859 import wilcox_chapter_8_unnumbered_859
 

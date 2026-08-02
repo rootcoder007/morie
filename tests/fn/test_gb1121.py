@@ -1,6 +1,6 @@
 """Tests for gb1121 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1121 import gibbons_kendall_tau

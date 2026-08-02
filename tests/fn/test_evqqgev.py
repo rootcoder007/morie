@@ -1,6 +1,6 @@
 """Tests for evqqgev.evt_gev_qq_plot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evqqgev import evt_gev_qq_plot
 

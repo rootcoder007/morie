@@ -1,6 +1,6 @@
 """Tests for hrznqiv.horowitz_nonpar_quantile_iv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrznqiv import horowitz_nonpar_quantile_iv
 

@@ -1,6 +1,6 @@
 """Tests for rgica.rangayyan_fastica."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgica import rangayyan_fastica
 

@@ -1,6 +1,6 @@
 """Tests for gpcgs.gp_classification_svgp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpcgs import gp_classification_svgp
 

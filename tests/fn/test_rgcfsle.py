@@ -1,6 +1,6 @@
 """Tests for rgcfsle.rangayyan_coupled_freq_select."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgcfsle import rangayyan_coupled_freq_select
 

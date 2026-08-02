@@ -1,6 +1,6 @@
 """Tests for schN.schnet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.schN import schnet
 

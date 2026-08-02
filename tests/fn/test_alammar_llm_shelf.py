@@ -16,7 +16,7 @@ each docstring.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.alann import alammar_approximate_nearest_neighbor

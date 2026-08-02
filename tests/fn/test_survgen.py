@@ -1,6 +1,6 @@
 """Tests for survgen.general_estimating_eq_surv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survgen import general_estimating_eq_surv
 

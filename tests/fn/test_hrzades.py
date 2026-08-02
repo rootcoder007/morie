@@ -1,6 +1,6 @@
 """Tests for hrzades.horowitz_improved_ade."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzades import horowitz_improved_ade
 

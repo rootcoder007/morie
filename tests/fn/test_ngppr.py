@@ -1,6 +1,6 @@
 """Tests for ngppr.normalized_gamma_process."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ngppr import normalized_gamma_process
 

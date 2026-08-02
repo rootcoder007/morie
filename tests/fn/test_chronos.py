@@ -1,6 +1,6 @@
 """Tests for chronos.chronos_foundation_ts."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chronos import chronos_foundation_ts
 

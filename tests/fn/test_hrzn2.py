@@ -1,6 +1,6 @@
 """Tests for hrzn2.horowitz_deconvolution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzn2 import horowitz_deconvolution

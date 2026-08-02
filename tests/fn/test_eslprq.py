@@ -1,6 +1,6 @@
 """Tests for eslprq.esl_prototype_lvq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslprq import esl_prototype_lvq
 

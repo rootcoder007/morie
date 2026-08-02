@@ -1,6 +1,6 @@
 """Tests for ksr09.kosorok_z_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr09 import kosorok_z_estimator
 

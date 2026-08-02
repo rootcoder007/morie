@@ -1,6 +1,6 @@
 """Tests for specA.spectral_anomaly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.specA import spectral_anomaly
 

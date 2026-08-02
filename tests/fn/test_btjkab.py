@@ -1,6 +1,6 @@
 """Tests for btjkab.boot_jackknife_after_boot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btjkab import boot_jackknife_after_boot
 

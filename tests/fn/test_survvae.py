@@ -1,6 +1,6 @@
 """Tests for survvae.vae_survival."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survvae import vae_survival
 

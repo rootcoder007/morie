@@ -1,6 +1,6 @@
 """Tests for rgfeatex.rangayyan_feature_extract_bci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfeatex import rangayyan_feature_extract_bci
 

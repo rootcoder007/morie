@@ -1,6 +1,6 @@
 """Tests for grubbs.grubbs_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grubbs import grubbs_test
 

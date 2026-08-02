@@ -1,6 +1,6 @@
 """Tests for morie.fn.grind -- Rosin-Rammler particle size distribution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.grind import grind, rosin_rammler

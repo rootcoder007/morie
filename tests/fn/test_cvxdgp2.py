@@ -1,6 +1,6 @@
 """Tests for cvxdgp2.boyd_duality_gap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxdgp2 import boyd_duality_gap
 

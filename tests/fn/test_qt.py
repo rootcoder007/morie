@@ -1,6 +1,6 @@
 """Tests for morie.fn.qt — Student's t quantile function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.qt import qt

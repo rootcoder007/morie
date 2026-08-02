@@ -1,6 +1,6 @@
 """Tests for evgevlm.evt_gev_lmoments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgevlm import evt_gev_lmoments
 

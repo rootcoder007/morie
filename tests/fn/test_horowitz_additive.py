@@ -1,6 +1,6 @@
 """Nonparametric additive models (Horowitz Sec. 3.1)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzmir import horowitz_marginal_integration

@@ -1,6 +1,6 @@
 """Tests for hot.hot_sax."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hot import hot_sax
 

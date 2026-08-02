@@ -1,6 +1,6 @@
 """Tests for morie.fn.cfmwc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cfmwc import cfmwc
 

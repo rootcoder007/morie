@@ -1,7 +1,7 @@
 """Tests for volgvi."""
 
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.volgvi import vol_garch_var_impl
 

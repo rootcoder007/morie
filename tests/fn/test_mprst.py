@@ -1,6 +1,6 @@
 """Tests for mprst.py - Matching Pursuit decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mprst import matching_pursuit_fn, mprst
 

@@ -1,6 +1,6 @@
 """Tests for eapth.eap_theta_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eapth import eap_theta_estimator
 

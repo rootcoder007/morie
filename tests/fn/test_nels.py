@@ -1,6 +1,6 @@
 """Tests for morie.fn.nels — Nelson-Aalen cumulative hazard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.nels import nels

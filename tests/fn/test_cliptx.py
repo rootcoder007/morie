@@ -1,6 +1,6 @@
 """Tests for cliptx.clip_image_text."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cliptx import clip_image_text
 

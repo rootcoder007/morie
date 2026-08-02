@@ -1,6 +1,6 @@
 """Tests for perfat.performer_favor_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.perfat import performer_favor_attention
 

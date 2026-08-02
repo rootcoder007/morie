@@ -1,6 +1,6 @@
 """Tests for grridg.geron_ridge_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grridg import geron_ridge_cost
 

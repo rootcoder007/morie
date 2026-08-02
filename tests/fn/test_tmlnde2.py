@@ -1,6 +1,6 @@
 """Tests for tmlnde2.tmle_nde_interventional."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlnde2 import tmle_nde_interventional
 

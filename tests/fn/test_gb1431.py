@@ -1,6 +1,6 @@
 """Tests for gb1431.gibbons_k2_contingency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1431 import gibbons_k2_contingency
 

@@ -1,6 +1,6 @@
 """Tests for btstud.boot_studentized_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btstud import boot_studentized_ci
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.svgau -- Gaussian spatial utility function"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svgau import gauss_utility
 

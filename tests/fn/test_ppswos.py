@@ -1,6 +1,6 @@
 """Tests for ppswos.pps_without_replacement."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ppswos import pps_without_replacement
 

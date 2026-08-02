@@ -1,6 +1,6 @@
 """Tests for otcw.ot_cyclical_weight."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otcw import ot_cyclical_weight
 

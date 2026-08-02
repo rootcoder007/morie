@@ -1,6 +1,6 @@
 """Tests for sfbnds.sharp_bounds_balke_pearl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sfbnds import sharp_bounds_balke_pearl
 

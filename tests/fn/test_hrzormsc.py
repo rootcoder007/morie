@@ -1,6 +1,6 @@
 """Tests for hrzormsc.horowitz_ordered_max_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzormsc import horowitz_ordered_max_score
 

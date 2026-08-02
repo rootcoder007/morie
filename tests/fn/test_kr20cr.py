@@ -1,6 +1,6 @@
 """Tests for kr20cr.kuder_richardson_20."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kr20cr import kuder_richardson_20
 

@@ -1,6 +1,6 @@
 """Tests for hrzkde.horowitz_appendix_kde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzkde import horowitz_appendix_kde
 

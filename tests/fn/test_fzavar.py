@@ -1,6 +1,6 @@
 """Tests for fzavar.fauzi_quantile_asymp_var."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzavar import fauzi_quantile_asymp_var
 

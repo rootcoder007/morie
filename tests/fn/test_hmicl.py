@@ -1,6 +1,6 @@
 """Tests for hmicl.geron_in_context_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmicl import geron_in_context_learning
 

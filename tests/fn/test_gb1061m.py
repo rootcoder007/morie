@@ -1,6 +1,6 @@
 """Tests for gb1061m.gibbons_jt_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1061m import gibbons_jt_moments
 

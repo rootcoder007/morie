@@ -1,6 +1,6 @@
 """Tests for causrosen.causal_rosenbaum_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causrosen import causal_rosenbaum_bound
 

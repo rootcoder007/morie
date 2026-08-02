@@ -1,7 +1,7 @@
 """Tests for morie.fn.sinst -- Volatility of volatility."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sinst import sinst, vol_of_vol

@@ -1,6 +1,6 @@
 """Tests for hh.py - Hodgkin-Huxley neuron model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hh import hh, hodgkin_huxley_fn
 

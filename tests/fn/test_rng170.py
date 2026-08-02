@@ -4,7 +4,7 @@ Eq. (3.215) exists to avoid an M x M inversion at every step. The way to
 check it is therefore to do the inversion it avoids and compare.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng167 import rangayyan_ch3_rls_phi_recursion as phi_rec

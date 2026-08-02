@@ -1,6 +1,6 @@
 """Tests for trimmed_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.trimm import trimmed_mean

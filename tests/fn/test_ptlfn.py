@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptlfn -- L-function (variance-stabilized K)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptlfn import l_function
 

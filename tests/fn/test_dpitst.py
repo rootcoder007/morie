@@ -1,6 +1,6 @@
 """Tests for dpitst.data_processing_inequality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpitst import data_processing_inequality
 

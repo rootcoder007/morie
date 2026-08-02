@@ -1,6 +1,6 @@
 """Tests for guide_on_data_analysis27u1374.guide_on_data_analysis_chapter_27_unnumbered_1374."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.guide_on_data_analysis27u1374 import guide_on_data_analysis_chapter_27_unnumbered_1374
 

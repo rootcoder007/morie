@@ -1,6 +1,6 @@
 """Tests for galois.galois_group."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.galois import galois_group
 

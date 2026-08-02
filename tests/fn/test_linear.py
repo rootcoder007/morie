@@ -1,6 +1,6 @@
 """Tests for linear.linearization_se."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.linear import linearization_se
 

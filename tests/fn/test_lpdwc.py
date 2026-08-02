@@ -1,6 +1,6 @@
 """Tests for lpdwc.log_pointwise_predictive_density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lpdwc import log_pointwise_predictive_density
 

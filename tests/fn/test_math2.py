@@ -1,6 +1,6 @@
 """Tests for math2.ma_higgins_h2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.math2 import ma_higgins_h2
 

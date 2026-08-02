@@ -1,6 +1,6 @@
 """Tests for rng103.rangayyan_ch3_integral_causal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng103 import rangayyan_ch3_integral_causal

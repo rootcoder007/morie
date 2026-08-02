@@ -1,6 +1,6 @@
 """Tests for gh_c14_7.ghosal_ssp_mix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_7 import ghosal_ssp_mix
 

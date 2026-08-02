@@ -1,6 +1,6 @@
 """Tests for btci2g.boot_ci_two_groups."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btci2g import boot_ci_two_groups
 

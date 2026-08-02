@@ -1,6 +1,6 @@
 """Tests for jorolf.joseph_rolling_window_feature."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jorolf import joseph_rolling_window_feature
 

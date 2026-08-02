@@ -1,6 +1,6 @@
 """Tests for wsmmle.wasserman_mle."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmmle import wasserman_mle
 

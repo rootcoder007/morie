@@ -1,6 +1,6 @@
 """Tests for epbias.exposure_misclass_bias."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.epbias import exposure_misclass_bias
 

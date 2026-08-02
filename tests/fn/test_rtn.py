@@ -1,6 +1,6 @@
 """Tests for morie.fn.rtn — round-to-nearest quantizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rtn import round_to_nearest

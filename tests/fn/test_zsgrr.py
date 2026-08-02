@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsgrr -- Grid resampling"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsgrr import grid_resample
 

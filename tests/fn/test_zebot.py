@@ -1,6 +1,6 @@
 """Tests for morie.fn.zebot -- Bayesian outbreak detection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zebot import bayes_outbreak
 

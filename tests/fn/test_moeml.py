@@ -3,7 +3,7 @@
     g(x) = softmax(x W_g);  keep top-k, renormalise;  y = sum_k g_k E_k(x)
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.moeml import mixture_of_experts as moe

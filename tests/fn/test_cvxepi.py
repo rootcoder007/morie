@@ -1,6 +1,6 @@
 """Tests for cvxepi.boyd_epigraph."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxepi import boyd_epigraph
 

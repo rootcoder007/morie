@@ -1,6 +1,6 @@
 """Tests for hmrvat.geron_rnn_visual_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmrvat import geron_rnn_visual_attention
 

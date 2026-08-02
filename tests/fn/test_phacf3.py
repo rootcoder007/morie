@@ -1,6 +1,6 @@
 """Tests for phacf3.pharmacophore_3d."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.phacf3 import pharmacophore_3d
 

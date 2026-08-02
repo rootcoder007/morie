@@ -1,6 +1,6 @@
 """Tests for cvxcjg.boyd_conjugate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxcjg import boyd_conjugate
 

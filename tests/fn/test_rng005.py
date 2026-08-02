@@ -1,6 +1,6 @@
 """Tests for rng005.rangayyan_ch3_kurtosis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng005 import rangayyan_ch3_kurtosis
 

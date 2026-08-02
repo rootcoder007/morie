@@ -3,9 +3,9 @@ fundamentals, association. Oracles: scipy (kstwobign, mannwhitneyu,
 kruskal, chi2_contingency), exact enumeration, and the PDF-verified
 Table 13.3.1 / Sec 13.3.3 constants."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.gb433 import gibbons_ks_kolmogorov_limit
 from morie.fn.gb434bt import gibbons_ks_bt_formula

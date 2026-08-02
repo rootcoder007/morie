@@ -1,6 +1,6 @@
 """Tests for ssmkrn.s4_ssm_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ssmkrn import s4_ssm_kernel
 

@@ -1,6 +1,6 @@
 """Tests for sarla.spatial_ar_lag."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sarla import spatial_ar_lag

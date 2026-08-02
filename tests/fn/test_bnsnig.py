@@ -1,6 +1,6 @@
 """Tests for bnsnig.bound_no_unobserved_inv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnsnig import bound_no_unobserved_inv
 

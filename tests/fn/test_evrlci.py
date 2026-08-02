@@ -1,6 +1,6 @@
 """Tests for evrlci.evt_return_level_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evrlci import evt_return_level_ci
 

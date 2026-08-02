@@ -1,6 +1,6 @@
 """Tests for vae_an.vae_anomaly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vae_an import vae_anomaly
 

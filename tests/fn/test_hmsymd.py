@@ -1,6 +1,6 @@
 """Tests for hmsymd.geron_symbolic_diff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsymd import geron_symbolic_diff
 

@@ -1,6 +1,6 @@
 """Tests for tmlavp.tmle_average_predictiveness."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlavp import tmle_average_predictiveness
 

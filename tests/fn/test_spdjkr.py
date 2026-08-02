@@ -5,7 +5,7 @@ and against Parseval, not against its own output. IDW is checked against the
 three properties its source states in prose.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_hermite import (disjunctive_kriging, gauss_hermite,

@@ -1,6 +1,6 @@
 """Tests for jason_brownlee_machine_learning_mastery_with_r5u5.jason_brownlee_machine_learning_mastery_with_r_chapter_5_unnumbered_5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jason_brownlee_machine_learning_mastery_with_r5u5 import (
     jason_brownlee_machine_learning_mastery_with_r_chapter_5_unnumbered_5,

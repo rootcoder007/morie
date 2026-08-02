@@ -1,6 +1,6 @@
 """Tests for manfd.manifold_functional."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.manfd import manifold_functional
 

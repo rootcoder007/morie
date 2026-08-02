@@ -1,6 +1,6 @@
 """Tests for fzbfkf.fauzi_bdfree_kdfe_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzbfkf import fauzi_bdfree_kdfe_test
 

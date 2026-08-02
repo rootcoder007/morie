@@ -1,6 +1,6 @@
 """Tests for rnkor.rank_order_statistics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rnkor import rank_order_statistics

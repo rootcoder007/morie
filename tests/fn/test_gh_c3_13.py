@@ -1,6 +1,6 @@
 """Tests for gh_c3_13.ghosal_polya_urn_pt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c3_13 import ghosal_polya_urn_pt
 

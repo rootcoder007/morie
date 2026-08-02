@@ -1,6 +1,6 @@
 """Tests for gb1322.gibbons_are_formula."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1322 import gibbons_are_formula
 

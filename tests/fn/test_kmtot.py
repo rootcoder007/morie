@@ -1,6 +1,6 @@
 """Tests for kmtot.kamath_tree_of_thoughts."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmtot import kamath_tree_of_thoughts
 

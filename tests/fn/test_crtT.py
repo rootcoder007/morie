@@ -1,6 +1,6 @@
 """Tests for crtT.chinese_remainder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crtT import chinese_remainder
 

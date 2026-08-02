@@ -3,7 +3,7 @@
     BPB = nll_nats / (ln 2 * n_bytes)
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bpblm import bits_per_byte as bpb

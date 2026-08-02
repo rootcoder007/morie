@@ -7,7 +7,7 @@ eq (5.49), leaving the nugget ratio and the range. The optimiser is the
 quasi-Newton branch Sec 5.5.2 sanctions, driven by an exact gradient.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_fit import covariance_matrix, error_contrasts

@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmdmp -- Party divergence measure"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmdmp import party_diverge
 

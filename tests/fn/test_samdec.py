@@ -1,6 +1,6 @@
 """Tests for samdec.sam_mask_decoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.samdec import sam_mask_decoder
 

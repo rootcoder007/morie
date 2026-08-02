@@ -1,6 +1,6 @@
 """Tests for kmsrag.kamath_self_rag."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmsrag import kamath_self_rag
 

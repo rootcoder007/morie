@@ -14,7 +14,7 @@ Ghosal Bayesian-nonparametrics callables (``ghdpm``, ``ghhbp``,
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghbvm import ghosal_bernstein_von_mises
 from morie.fn.ghdpm import ghosal_dpmixture_density

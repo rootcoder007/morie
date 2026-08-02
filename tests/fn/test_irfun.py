@@ -1,6 +1,6 @@
 """Tests for morie.fn.irfun — Impulse response function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.irfun import impulse_response, irfun

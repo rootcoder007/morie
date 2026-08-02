@@ -1,6 +1,6 @@
 """Tests for pseudo.path_specific_effect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pseudo import path_specific_effect
 

@@ -1,6 +1,6 @@
 """Tests for hmcnv.geron_convolutional_layer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcnv import geron_convolutional_layer
 

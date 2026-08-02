@@ -1,6 +1,6 @@
 """Tests for morie.fn.gescd — GES causal discovery."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gescd import gescd

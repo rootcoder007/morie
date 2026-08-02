@@ -1,6 +1,6 @@
 """Tests for morie.fn.bbgrp — Blackbox group color."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bbgrp import bbgrp
 

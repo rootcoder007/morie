@@ -1,6 +1,6 @@
 """Tests for itinft.item_information_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.itinft import item_information_function
 

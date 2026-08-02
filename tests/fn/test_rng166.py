@@ -1,6 +1,6 @@
 """Tests for rng166.rangayyan_ch3_rls_theta_vector."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng166 import rangayyan_ch3_rls_theta_vector
 

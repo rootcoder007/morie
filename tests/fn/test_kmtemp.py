@@ -1,6 +1,6 @@
 """Tests for kmtemp.kamath_temperature_sampling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmtemp import kamath_temperature_sampling
 

@@ -1,6 +1,6 @@
 """Tests for kswin.kswin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kswin import kswin
 

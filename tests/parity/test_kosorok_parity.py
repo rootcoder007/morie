@@ -5,7 +5,7 @@ import importlib.util
 import os
 import sys
 
-import numpy as np
+from morie.fn import _array_core as np
 
 BASE = "/tmp/morie-feature/src/morie/fn"
 

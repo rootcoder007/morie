@@ -1,6 +1,6 @@
 """Tests for morie.fn.zssgs -- Sequential Gaussian simulation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zssgs import seq_gauss_sim
 

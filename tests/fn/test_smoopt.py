@@ -1,6 +1,6 @@
 """Tests for smoopt.smo_solver."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smoopt import smo_solver
 

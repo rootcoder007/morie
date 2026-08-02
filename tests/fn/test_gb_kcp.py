@@ -1,6 +1,6 @@
 """Tests for gb_kcp.gibbons_ks_conf_band."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_kcp import gibbons_ks_conf_band
 

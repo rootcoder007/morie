@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgblk -- Block kriging prediction"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgblk import block_kriging
 

@@ -1,6 +1,6 @@
 """Tests for logcl.py - Logistic classifier."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.logcl import logcl, logcl_fn
 

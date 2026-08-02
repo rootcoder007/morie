@@ -1,6 +1,6 @@
 """Tests for sunabr.sun_abraham_did."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sunabr import sun_abraham_did
 

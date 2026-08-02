@@ -1,4 +1,4 @@
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.investigation import (
     compare_nested_logistic_models,

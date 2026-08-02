@@ -1,6 +1,6 @@
 """Tests for nbeats.n_beats."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nbeats import n_beats
 

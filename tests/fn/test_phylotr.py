@@ -1,6 +1,6 @@
 """Tests for phylotr.phylogenetic_tree."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.phylotr import phylogenetic_tree
 

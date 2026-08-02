@@ -1,6 +1,6 @@
 """Tests for stratm.stratified_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.stratm import stratified_mean
 

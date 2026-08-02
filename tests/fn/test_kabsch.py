@@ -1,6 +1,6 @@
 """Tests for kabsch.kabsch_superpose."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kabsch import kabsch_superpose
 

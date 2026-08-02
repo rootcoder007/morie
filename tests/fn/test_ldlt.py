@@ -1,6 +1,6 @@
 """Tests for morie.fn.ldlt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ldlt import ldlt_factorize
 

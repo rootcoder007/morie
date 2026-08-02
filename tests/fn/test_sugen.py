@@ -1,6 +1,6 @@
 """Tests for morie.fn.sugen -- gender-specific substance use."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.sugen import substance_by_gender

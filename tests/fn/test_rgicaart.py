@@ -1,6 +1,6 @@
 """Tests for rgicaart.rangayyan_ica_artifact."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgicaart import rangayyan_ica_artifact
 

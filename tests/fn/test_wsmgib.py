@@ -1,6 +1,6 @@
 """Tests for wsmgib.wasserman_gibbs_sampler."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmgib import wasserman_gibbs_sampler
 

@@ -1,6 +1,6 @@
 """Tests for anmod.additive_noise_model (Hoyer et al. 2009)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.anmod import additive_noise_model, hsic

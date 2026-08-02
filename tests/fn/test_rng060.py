@@ -1,6 +1,6 @@
 """Tests for rng060.rangayyan_ch3_frequency_response_from_pole_zero."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng060 import rangayyan_ch3_frequency_response_from_pole_zero
 

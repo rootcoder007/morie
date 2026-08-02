@@ -1,6 +1,6 @@
 """Tests for grelas.geron_elastic_net_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grelas import geron_elastic_net_cost
 

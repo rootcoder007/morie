@@ -1,6 +1,6 @@
 """Tests for morie.fn.sntvl — sentence volatility."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.sntvl import sentence_volatility
 

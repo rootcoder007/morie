@@ -6,7 +6,7 @@ identically 1 when one signal is a linear time-invariant transform of the
 other -- both properties are pinned here.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgcoh import rangayyan_coherence

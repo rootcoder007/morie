@@ -1,6 +1,6 @@
 """Tests for aitgmu.aitchison_geomean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitgmu import aitchison_geomean
 

@@ -1,6 +1,6 @@
 """Tests for gb332 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb332 import gibbons_type1_run_lengths

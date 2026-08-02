@@ -1,6 +1,6 @@
 """Tests for gh_ap_e3.ghosal_wavelet_mra."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_e3 import ghosal_wavelet_mra
 

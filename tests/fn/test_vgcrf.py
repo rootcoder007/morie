@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgcrf -- Correlogram function"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgcrf import correlogram
 

@@ -1,6 +1,6 @@
 """Tests for spatial_data_analysis_with_r3u11.spatial_data_analysis_with_r_chapter_3_unnumbered_11."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spatial_data_analysis_with_r3u11 import spatial_data_analysis_with_r_chapter_3_unnumbered_11
 

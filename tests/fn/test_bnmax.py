@@ -1,6 +1,6 @@
 """Tests for morie.fn.bnmax — Maximum score estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bnmax import bnmax

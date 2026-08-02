@@ -1,6 +1,6 @@
 """Tests for fgsbh.fine_gray_subdistribution_hazard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fgsbh import fine_gray_subdistribution_hazard
 

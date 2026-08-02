@@ -1,6 +1,6 @@
 """Tests for rng102.rangayyan_ch3_integral_general."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng102 import rangayyan_ch3_integral_general
 

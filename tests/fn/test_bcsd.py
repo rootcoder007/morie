@@ -1,6 +1,6 @@
 """Tests for bcsd.bcsd_downscaling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bcsd import bcsd_downscaling
 

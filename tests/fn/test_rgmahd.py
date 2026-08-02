@@ -1,6 +1,6 @@
 """Tests for rgmahd.rangayyan_mahalanobis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgmahd import rangayyan_mahalanobis
 

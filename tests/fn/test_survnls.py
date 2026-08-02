@@ -1,6 +1,6 @@
 """Tests for survnls.nonlinear_least_squares_surv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survnls import nonlinear_least_squares_surv
 

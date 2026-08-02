@@ -1,6 +1,6 @@
 """Tests for morie.fn.varm -- VAR model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.varm import var_fit

@@ -1,6 +1,6 @@
 """Tests for morie.fn.rdanl -- Regularized discriminant analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rdanl import rda, rdanl

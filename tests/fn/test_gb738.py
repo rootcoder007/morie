@@ -1,6 +1,6 @@
 """Tests for gb738.gibbons_chernoff_savage."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb738 import gibbons_chernoff_savage
 

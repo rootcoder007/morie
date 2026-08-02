@@ -1,6 +1,6 @@
 """Tests for sgtest.sgt_estrada_index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtest import sgt_estrada_index
 

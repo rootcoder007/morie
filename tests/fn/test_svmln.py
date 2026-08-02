@@ -1,6 +1,6 @@
 """Test svm_linear (svmln)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.svmln import svm_linear, svmln

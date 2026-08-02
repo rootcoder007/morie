@@ -1,6 +1,6 @@
 """Tests for gb_jcd.gibbons_jt_cd_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_jcd import gibbons_jt_cd_form
 

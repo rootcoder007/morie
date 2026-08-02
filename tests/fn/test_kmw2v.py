@@ -1,6 +1,6 @@
 """Tests for kmw2v.kamath_word2vec_skipgram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmw2v import kamath_word2vec_skipgram
 

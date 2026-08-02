@@ -1,6 +1,6 @@
 """Single-index estimators: rank, weight function, one-step, discrete."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzasym import horowitz_one_step_efficient

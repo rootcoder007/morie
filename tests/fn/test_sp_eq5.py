@@ -1,6 +1,6 @@
 """Tests for sp_eq5.stochastic_physics_equation_5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sp_eq5 import stochastic_physics_equation_5
 

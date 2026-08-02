@@ -1,6 +1,6 @@
 """Tests for ghs008.ghosal_ch3_normalized_weights_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs008 import ghosal_ch3_normalized_weights_prior
 

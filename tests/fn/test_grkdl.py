@@ -1,6 +1,6 @@
 """Tests for grkdl.geron_knowledge_distillation_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grkdl import geron_knowledge_distillation_loss
 

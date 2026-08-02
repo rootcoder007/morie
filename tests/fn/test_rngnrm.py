@@ -1,6 +1,6 @@
 """Tests for rngnrm (range normalization)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rngnrm import rngnrm

@@ -1,6 +1,6 @@
 """Tests for vdcal.volume_of_distribution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vdcal import volume_of_distribution
 

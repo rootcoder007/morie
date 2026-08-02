@@ -1,6 +1,6 @@
 """Tests for shanen.shannon_entropy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shanen import shannon_entropy
 

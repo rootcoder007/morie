@@ -1,7 +1,7 @@
 """Tests for morie.fn.strat — Stratified mean estimator."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn.strat import strat, stratified_mean
 

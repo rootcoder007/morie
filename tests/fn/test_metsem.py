@@ -1,6 +1,6 @@
 """Tests for metsem.metagenome_assembly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.metsem import metagenome_assembly
 

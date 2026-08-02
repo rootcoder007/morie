@@ -1,6 +1,6 @@
 """Tests for morie.fn.msnm2 -- Nonmetric MDS 2D"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msnm2 import nonmetric_2d
 

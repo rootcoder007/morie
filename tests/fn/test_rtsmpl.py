@@ -1,6 +1,6 @@
 """Tests for rtsmpl.rt_serial_interval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rtsmpl import rt_serial_interval
 

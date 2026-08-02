@@ -1,6 +1,6 @@
 """Tests for sdiff.synthetic_did."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sdiff import synthetic_did
 

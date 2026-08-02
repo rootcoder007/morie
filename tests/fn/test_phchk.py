@@ -1,6 +1,6 @@
 """Tests for phchk: Schoenfeld residuals PH assumption check."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.phchk import phchk

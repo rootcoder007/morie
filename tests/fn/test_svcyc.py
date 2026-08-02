@@ -1,6 +1,6 @@
 """Tests for morie.fn.svcyc -- Condorcet cycle detection"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svcyc import condorcet_cycle
 

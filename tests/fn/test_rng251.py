@@ -1,6 +1,6 @@
 """Tests for rng251.rangayyan_ch4_log_echo_power_series_expansion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng251 import rangayyan_ch4_log_echo_power_series_expansion
 

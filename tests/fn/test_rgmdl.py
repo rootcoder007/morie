@@ -1,6 +1,6 @@
 """Tests for rgmdl.rangayyan_ar_order_mdl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgmdl import rangayyan_ar_order_mdl
 

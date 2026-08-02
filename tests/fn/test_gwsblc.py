@@ -1,6 +1,6 @@
 """Tests for gwsblc.gwas_block_combine."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwsblc import gwas_block_combine
 

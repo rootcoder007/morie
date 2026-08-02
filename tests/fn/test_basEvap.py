@@ -1,6 +1,6 @@
 """Tests for basEvap.penman_monteith."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.basEvap import penman_monteith
 

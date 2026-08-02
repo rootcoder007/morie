@@ -1,6 +1,6 @@
 """Tests for Lanphear 2005 Lead → IQ loss model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.leadiq import lead_iq_loss, leadiq

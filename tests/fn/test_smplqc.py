@@ -1,6 +1,6 @@
 """Tests for smplqc.sample_qc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smplqc import sample_qc
 

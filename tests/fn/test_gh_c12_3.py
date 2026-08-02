@@ -1,6 +1,6 @@
 """Tests for gh_c12_3.ghosal_strong_apx_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c12_3 import ghosal_strong_apx_dp
 

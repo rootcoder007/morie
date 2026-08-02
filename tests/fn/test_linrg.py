@@ -1,6 +1,6 @@
 """Tests for linrg.linear_regression_ols."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.linrg import linear_regression_ols
 

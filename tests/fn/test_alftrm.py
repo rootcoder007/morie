@@ -1,6 +1,6 @@
 """Tests for alftrm.alphafold_triangle_mult."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alftrm import alphafold_triangle_mult
 

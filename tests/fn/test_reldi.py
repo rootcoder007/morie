@@ -1,6 +1,6 @@
 """Tests for morie.fn.reldi — Reliability diagram values."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.reldi import reldi

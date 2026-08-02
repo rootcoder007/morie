@@ -1,6 +1,6 @@
 """Tests for morie.fn.dstcm -- distance comparison."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dstcm import distance_comparison, dstcm
 

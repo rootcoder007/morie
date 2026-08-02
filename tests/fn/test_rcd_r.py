@@ -1,6 +1,6 @@
 """Tests for morie.fn.rcd_r — recidivism by region."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rcd_r import recidivism_by_region
 

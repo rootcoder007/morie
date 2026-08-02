@@ -1,6 +1,6 @@
 """Tests for morie.fn.plgcv — PLM GCV bandwidth selection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.plgcv import plgcv

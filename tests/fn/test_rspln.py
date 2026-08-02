@@ -1,6 +1,6 @@
 """Tests for morie.fn.rspln."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rspln import restricted_cubic_spline
 

@@ -1,6 +1,6 @@
 """Tests for rng162.rangayyan_ch3_lms_step_size_zhang."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng162 import rangayyan_ch3_lms_step_size_zhang
 

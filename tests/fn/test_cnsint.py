@@ -1,6 +1,6 @@
 """Tests for cnsint.concurrent_calibration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cnsint import concurrent_calibration
 

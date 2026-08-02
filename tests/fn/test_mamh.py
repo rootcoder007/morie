@@ -1,6 +1,6 @@
 """Tests for mamh.ma_mantel_haenszel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mamh import ma_mantel_haenszel
 

@@ -1,6 +1,6 @@
 """Tests for driftF.drift_forecast."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.driftF import drift_forecast
 

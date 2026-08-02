@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrgrv -- Gravity spatial interaction"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrgrv import gravity_model
 

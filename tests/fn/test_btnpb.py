@@ -1,6 +1,6 @@
 """Tests for btnpb.boot_nonoverlap_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btnpb import boot_nonoverlap_block
 

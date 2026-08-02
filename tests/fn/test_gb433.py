@@ -1,6 +1,6 @@
 """Tests for gb433 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb433 import gibbons_ks_kolmogorov_limit

@@ -1,6 +1,6 @@
 """Tests for km054.kamath_ch4_series_adapter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km054 import kamath_ch4_series_adapter
 

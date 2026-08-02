@@ -2,7 +2,7 @@
 Tests for bisection method.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bsctn import bsctn

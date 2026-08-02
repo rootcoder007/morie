@@ -1,6 +1,6 @@
 """Tests for volyz."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volyz import vol_yang_zhang

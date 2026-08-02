@@ -1,6 +1,6 @@
 """Tests for gwPot.global_warming_potential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwPot import global_warming_potential
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.mtrpr -- Multi-trait genomic prediction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mtrpr import mtrpr

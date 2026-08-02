@@ -1,6 +1,6 @@
 """Tests for external drift kriging."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgdrft import sgdrft
 

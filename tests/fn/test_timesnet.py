@@ -1,6 +1,6 @@
 """Tests for timesnet.timesnet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.timesnet import timesnet
 

@@ -1,6 +1,6 @@
 """Tests for btlrt.boot_lr_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btlrt import boot_lr_test
 

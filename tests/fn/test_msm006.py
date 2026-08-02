@@ -1,6 +1,6 @@
 """Tests for msm006.mvsml_general_eq_1_5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm006 import mvsml_general_eq_1_5
 

@@ -1,6 +1,6 @@
 """Tests for volgvar.vol_garch_var_backtest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.volgvar import vol_garch_var_backtest
 

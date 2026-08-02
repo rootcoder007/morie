@@ -1,6 +1,6 @@
 """Tests for lar.py - Log Area Ratios."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lar import lar, log_area_ratio_fn
 

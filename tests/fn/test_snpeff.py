@@ -1,6 +1,6 @@
 """Tests for snpeff.variant_effect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.snpeff import variant_effect
 

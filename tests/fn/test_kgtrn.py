@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgtrn -- Kriging trend surface"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgtrn import kriging_trend_surface
 

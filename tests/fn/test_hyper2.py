@@ -1,6 +1,6 @@
 """Tests for hyper2.hyperparam_optim_gp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hyper2 import hyperparam_optim_gp
 

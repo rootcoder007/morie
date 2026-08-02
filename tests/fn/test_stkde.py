@@ -1,6 +1,6 @@
 """Tests for morie.fn.stkde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.stkde import st_kde
 

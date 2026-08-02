@@ -1,6 +1,6 @@
 """Tests for morie.fn.ahp — AHP weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ahp import ahp_weights
 

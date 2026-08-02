@@ -1,6 +1,6 @@
 """Tests for rgeqn6a.rangayyan_ch6_mean_freq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn6a import rangayyan_ch6_mean_freq
 

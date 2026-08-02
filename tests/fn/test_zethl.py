@@ -1,6 +1,6 @@
 """Tests for morie.fn.zethl -- Spatial Theil decomposition"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zethl import theil_spatial
 

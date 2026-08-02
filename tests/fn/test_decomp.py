@@ -1,6 +1,6 @@
 """Tests for morie.fn.decomp — Seasonal decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.decomp import decomp, seasonal_decompose

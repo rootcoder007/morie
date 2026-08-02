@@ -1,6 +1,6 @@
 """Tests for kmcai.kamath_constitutional_ai_loop."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmcai import kamath_constitutional_ai_loop
 

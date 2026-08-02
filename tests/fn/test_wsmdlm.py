@@ -1,6 +1,6 @@
 """Tests for wsmdlm.wasserman_delta_method."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmdlm import wasserman_delta_method
 

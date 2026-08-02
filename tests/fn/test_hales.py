@@ -1,6 +1,6 @@
 """Tests for morie.fn.hales -- health-adjusted life expectancy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hales import health_adjusted_life_expectancy

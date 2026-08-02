@@ -1,6 +1,6 @@
 """Tests for morie.fn.msbt2 -- MDS bootstrap confidence"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msbt2 import mds_bootstrap
 

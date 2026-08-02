@@ -1,6 +1,6 @@
 """Tests for ssc2009_cbabyak2e1.ssc2009_cbabyak_chapter_2_equation_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ssc2009_cbabyak2e1 import ssc2009_cbabyak_chapter_2_equation_1
 

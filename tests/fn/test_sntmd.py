@@ -1,6 +1,6 @@
 """Tests for morie.fn.sntmd — sentence by group."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.sntmd import sentence_by_group
 

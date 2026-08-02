@@ -1,6 +1,6 @@
 """Tests for rghomdc.rangayyan_homomorphic_deconv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rghomdc import rangayyan_homomorphic_deconv
 

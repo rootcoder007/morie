@@ -1,6 +1,6 @@
 """Tests for rgmavg.rangayyan_moving_average."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgmavg import rangayyan_moving_average
 

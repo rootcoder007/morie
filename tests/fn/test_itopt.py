@@ -1,6 +1,6 @@
 """Tests for morie.fn.itopt — item option frequencies."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.itopt import item_option_freq
 

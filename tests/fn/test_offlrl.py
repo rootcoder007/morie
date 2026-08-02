@@ -1,6 +1,6 @@
 """Tests for offlrl.offline_rl_cql."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.offlrl import offline_rl_cql
 

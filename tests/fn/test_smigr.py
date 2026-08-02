@@ -1,6 +1,6 @@
 """Tests for smigr.smiles_grammar_parse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smigr import smiles_grammar_parse
 

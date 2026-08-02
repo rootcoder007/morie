@@ -1,6 +1,6 @@
 """Tests for sympRe.sympy_simplify."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sympRe import sympy_simplify
 

@@ -1,6 +1,6 @@
 """Tests for gb1051.gibbons_k_rank_alt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1051 import gibbons_k_rank_alt
 

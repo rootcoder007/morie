@@ -1,6 +1,6 @@
 """Tests for morie.fn.pt — Student's t CDF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pt import pt

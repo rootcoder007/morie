@@ -1,6 +1,6 @@
 """Tests for hdpmix.hierarchical_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hdpmix import hierarchical_dp
 

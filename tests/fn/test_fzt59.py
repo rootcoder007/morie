@@ -1,6 +1,6 @@
 """Tests for fzt59.fauzi_thm5_9_edgeworth_wilcoxon."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt59 import fauzi_thm5_9_edgeworth_wilcoxon
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgrhs -- Kriging right-hand side vector"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgrhs import kriging_rhs
 

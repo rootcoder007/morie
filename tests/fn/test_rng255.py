@@ -1,6 +1,6 @@
 """Tests for rng255.rangayyan_ch4_power_cepstrum_relation_to_complex."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng255 import rangayyan_ch4_power_cepstrum_relation_to_complex
 

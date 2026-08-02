@@ -1,6 +1,6 @@
 """Tests for wsmifn.wasserman_influence_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmifn import wasserman_influence_function
 

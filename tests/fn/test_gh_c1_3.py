@@ -1,6 +1,6 @@
 """Tests for gh_c1_3.ghosal_prior_posterior_update."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c1_3 import ghosal_prior_posterior_update
 

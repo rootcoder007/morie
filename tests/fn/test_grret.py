@@ -1,6 +1,6 @@
 """Tests for grret.geron_discounted_return."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grret import geron_discounted_return
 

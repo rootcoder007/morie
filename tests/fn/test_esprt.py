@@ -1,6 +1,6 @@
 """Tests for esprt.py - ESPRIT frequency estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esprt import esprit_freq_fn, esprt
 

@@ -1,6 +1,6 @@
 """Tests for the_r_series_dick_j_brus_spatial_sampling_with_r11u30.the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_30."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r11u30 import (
     the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_unnumbered_30,

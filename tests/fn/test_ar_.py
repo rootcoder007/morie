@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for morie.fn.ar_ -- Attack rate (cumulative incidence)."""
 
 import pytest

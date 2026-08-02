@@ -1,6 +1,6 @@
 """Tests for jkrand.jackknife_repl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jkrand import jackknife_repl
 

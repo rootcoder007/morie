@@ -1,6 +1,6 @@
 """Tests for tmldyk.tmle_diff_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmldyk import tmle_diff_kernel
 

@@ -1,6 +1,6 @@
 """I cannot teach anybody anything. I can only make them think. — Socrates"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.atfla import flash_attention_block
 

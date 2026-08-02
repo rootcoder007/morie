@@ -1,6 +1,6 @@
 """Tests for agvslr.alphazero_value_lr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agvslr import alphazero_value_lr
 

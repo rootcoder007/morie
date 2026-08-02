@@ -1,6 +1,6 @@
 """Tests for rgemgfd.rangayyan_emg_fractal_dim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgemgfd import rangayyan_emg_fractal_dim
 

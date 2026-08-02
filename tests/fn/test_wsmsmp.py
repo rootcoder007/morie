@@ -1,6 +1,6 @@
 """Tests for wsmsmp.wasserman_smoothing_spline."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmsmp import wasserman_smoothing_spline
 

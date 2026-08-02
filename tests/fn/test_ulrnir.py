@@ -1,6 +1,6 @@
 """Tests for ulrnir.u_learner."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ulrnir import u_learner
 

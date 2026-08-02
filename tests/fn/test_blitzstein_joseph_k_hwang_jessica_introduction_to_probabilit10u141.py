@@ -1,6 +1,6 @@
 """Tests for blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u141.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_141."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit10u141 import (
     blitzstein_joseph_k_hwang_jessica_introduction_to_probabilit_chapter_10_unnumbered_141,

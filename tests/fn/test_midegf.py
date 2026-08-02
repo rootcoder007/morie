@@ -1,6 +1,6 @@
 """Tests for midegf.mi_degrees_of_freedom."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.midegf import mi_degrees_of_freedom
 

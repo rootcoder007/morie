@@ -1,6 +1,6 @@
 """Tests for rglift.rangayyan_liftering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rglift import rangayyan_liftering
 

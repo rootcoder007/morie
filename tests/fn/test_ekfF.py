@@ -1,6 +1,6 @@
 """Tests for ekfF.extended_kalman."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ekfF import extended_kalman
 

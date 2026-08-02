@@ -1,6 +1,6 @@
 """Tests for morie.fn.appvl — Approval voting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.appvl import appvl
 

@@ -1,6 +1,6 @@
 """Tests for bnppct.bnp_percent_quantile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnppct import bnp_percent_quantile
 

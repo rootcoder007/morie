@@ -1,6 +1,6 @@
 """Tests for rng145.rangayyan_ch3_wiener_hopf_normal_equation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng145 import rangayyan_ch3_wiener_hopf_normal_equation
 

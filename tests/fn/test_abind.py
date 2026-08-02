@@ -1,6 +1,6 @@
 """Tests for abind.ab_indirect_effect (Sobel)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.abind import ab_indirect_effect

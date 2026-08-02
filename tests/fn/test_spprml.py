@@ -1,6 +1,6 @@
 """Tests for morie.fn.spprml."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spprml import spprml
 

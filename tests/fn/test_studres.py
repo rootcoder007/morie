@@ -1,6 +1,6 @@
 """Tests for studres (internally studentized residuals)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.studres import studres

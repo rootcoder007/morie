@@ -1,6 +1,6 @@
 """Test forward_difference (frdif)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.frdif import forward_difference, frdif

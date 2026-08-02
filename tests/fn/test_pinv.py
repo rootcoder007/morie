@@ -1,6 +1,6 @@
 """Tests for morie.fn.pinv — pseudoinverse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pinv import pseudoinverse
 

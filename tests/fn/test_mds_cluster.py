@@ -1,7 +1,7 @@
 """MDS / spatial-utility cluster: mmdsf, krust, isotr, smacf, nmdsf,
 shrpd, procs, agrsc, eudst, rndut, stquo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.agrmt import agreement_score

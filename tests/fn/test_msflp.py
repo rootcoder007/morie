@@ -1,6 +1,6 @@
 """Tests for morie.fn.msflp -- MDS configuration flip check"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msflp import mds_flip
 

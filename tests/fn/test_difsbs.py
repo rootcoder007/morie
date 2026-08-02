@@ -1,6 +1,6 @@
 """Tests for difsbs.dif_sibtest (Shealy & Stout 1993)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.difsbs import dif_sibtest

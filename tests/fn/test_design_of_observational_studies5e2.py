@@ -1,6 +1,6 @@
 """Tests for design_of_observational_studies5e2.design_of_observational_studies_chapter_5_equation_2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.design_of_observational_studies5e2 import design_of_observational_studies_chapter_5_equation_2
 

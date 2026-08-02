@@ -11,7 +11,7 @@ Validates mathematical correctness against paper bounds:
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.quant import (

@@ -1,6 +1,6 @@
 """Tests for morloc.local_morans_i."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.morloc import local_morans_i
 

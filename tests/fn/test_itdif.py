@@ -1,7 +1,7 @@
 """Tests for morie.fn.itdif — item difficulty."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn.itdif import item_difficulty
 

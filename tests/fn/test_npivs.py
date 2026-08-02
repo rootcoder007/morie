@@ -1,6 +1,6 @@
 """Tests for morie.fn.npivs — Nonparametric IV via sieve estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.npivs import npivs

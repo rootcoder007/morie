@@ -1,6 +1,6 @@
 """Tests for km129.kamath_ch9_modality_encoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km129 import kamath_ch9_modality_encoder
 

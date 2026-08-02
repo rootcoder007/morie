@@ -1,6 +1,6 @@
 """Tests for morie.fn.lexlr -- Lexicographic rank aggregation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lexlr import lexico_rank, lexlr

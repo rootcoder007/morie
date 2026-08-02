@@ -1,6 +1,6 @@
 """Tests for rpl_a — placement by age."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rpl_a import rplace_by_age
 

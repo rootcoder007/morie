@@ -1,6 +1,6 @@
 """Tests for riskr.risch_integration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.riskr import risch_integration
 

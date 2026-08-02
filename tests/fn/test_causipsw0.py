@@ -1,6 +1,6 @@
 """Tests for causipsw0.causal_iptw_atoweights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causipsw0 import causal_iptw_atoweights
 

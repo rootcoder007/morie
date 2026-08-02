@@ -1,6 +1,6 @@
 """Tests for morie.fn.shkwv -- 1-D wave equation solver."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.shkwv import shkwv, wave_equation_1d

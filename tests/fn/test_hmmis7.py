@@ -1,6 +1,6 @@
 """Tests for hmmis7.geron_mistral7b."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmis7 import geron_mistral7b
 

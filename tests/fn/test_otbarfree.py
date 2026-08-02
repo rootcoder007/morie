@@ -1,6 +1,6 @@
 """Tests for otbarfree.ot_barycenter_free."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otbarfree import ot_barycenter_free
 

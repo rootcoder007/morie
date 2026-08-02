@@ -1,6 +1,6 @@
 """Tests for rng231.rangayyan_ch4_homomorphic_log_separation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng231 import rangayyan_ch4_homomorphic_log_separation
 

@@ -1,6 +1,6 @@
 """Tests for alfvio.alphafold_violation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfvio import alphafold_violation
 

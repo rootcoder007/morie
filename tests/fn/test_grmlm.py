@@ -1,6 +1,6 @@
 """Tests for grmlm.geron_bert_mlm_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmlm import geron_bert_mlm_loss
 

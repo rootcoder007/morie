@@ -1,6 +1,6 @@
 """Tests for qbcfgr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.qbcfgr import quantile_balanced_cf

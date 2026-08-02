@@ -1,6 +1,6 @@
 """Tests for cdsim2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cdsim2 import cdsim2

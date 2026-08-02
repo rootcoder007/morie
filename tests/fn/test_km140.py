@@ -1,6 +1,6 @@
 """Tests for km140.kamath_ch9_moc_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km140 import kamath_ch9_moc_loss
 

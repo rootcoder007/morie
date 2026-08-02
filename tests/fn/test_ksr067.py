@@ -1,6 +1,6 @@
 """Tests for ksr067.kosorok_ch3_z_estimator_consistency_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr067 import kosorok_ch3_z_estimator_consistency_score
 

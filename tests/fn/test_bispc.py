@@ -1,6 +1,6 @@
 """Tests for bispc.py - Bispectrum estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bispc import bispc, bispectrum_fn
 

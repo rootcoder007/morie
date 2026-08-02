@@ -1,6 +1,6 @@
 """Tests for abcsmc.abc_smc_epi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.abcsmc import abc_smc_epi
 

@@ -1,6 +1,6 @@
 """Tests for rgseiz.rangayyan_seizure_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgseiz import rangayyan_seizure_detect
 

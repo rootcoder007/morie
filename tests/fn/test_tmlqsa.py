@@ -1,6 +1,6 @@
 """Tests for tmlqsa.tmle_quasi_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlqsa import tmle_quasi_score
 

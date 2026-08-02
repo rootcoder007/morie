@@ -1,6 +1,6 @@
 """Tests for hmwpt.geron_wordpiece_tokenizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmwpt import geron_wordpiece_tokenizer
 

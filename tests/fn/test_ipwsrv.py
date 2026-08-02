@@ -1,6 +1,6 @@
 """Tests for ipwsrv.ipw_with_survey_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ipwsrv import ipw_with_survey_weights
 

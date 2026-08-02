@@ -1,6 +1,6 @@
 """Tests for jomimi.joseph_missing_data_imputation_ts."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jomimi import joseph_missing_data_imputation_ts
 

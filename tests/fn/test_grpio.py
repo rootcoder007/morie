@@ -1,6 +1,6 @@
 """Tests for grpio.geron_perceiver_io."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grpio import geron_perceiver_io
 

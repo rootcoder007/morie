@@ -1,6 +1,6 @@
 """Tests for rng107.rangayyan_ch3_integrator_phase_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng107 import rangayyan_ch3_integrator_phase_response
 

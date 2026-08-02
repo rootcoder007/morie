@@ -10,7 +10,7 @@ must satisfy -- energy preservation above all -- plus a hand-computed Haar
 transform, which is short enough to write out by hand from the definition.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wavts import wavelet_time_series

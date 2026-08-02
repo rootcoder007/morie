@@ -1,6 +1,6 @@
 """Tests for rgemgpk.rangayyan_emg_peak_freq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgemgpk import rangayyan_emg_peak_freq
 

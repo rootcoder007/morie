@@ -1,6 +1,6 @@
 """Tests for ghs020.ghosal_ch3_tree_countable_additivity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs020 import ghosal_ch3_tree_countable_additivity
 

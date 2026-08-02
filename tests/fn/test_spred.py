@@ -1,6 +1,6 @@
 """Tests for spred.shrinkage_predictor_level2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spred import shrinkage_predictor_level2
 

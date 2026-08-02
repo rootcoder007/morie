@@ -1,6 +1,6 @@
 """Test nbhrs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nbhrs import nbhrs
 

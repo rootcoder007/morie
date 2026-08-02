@@ -1,6 +1,6 @@
 """Tests for gb833.gibbons_pct_mod_rank_loc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb833 import gibbons_pct_mod_rank_loc
 

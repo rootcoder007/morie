@@ -1,6 +1,6 @@
 """Tests for jntlO.joint_loss_mixed_outcomes."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jntlO import joint_loss_mixed_outcomes
 

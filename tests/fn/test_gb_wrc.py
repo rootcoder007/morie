@@ -1,6 +1,6 @@
 """Tests for gb_wrc.gibbons_runs_critical."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_wrc import gibbons_runs_critical
 

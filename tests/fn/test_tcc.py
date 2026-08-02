@@ -1,6 +1,6 @@
 """Tests for tcc._test_characteristic_curve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tcc import test_characteristic_curve as _test_characteristic_curve
 

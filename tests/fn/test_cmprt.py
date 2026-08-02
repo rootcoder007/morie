@@ -1,6 +1,6 @@
 """Tests for morie.fn.cmprt — compliance rate."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.cmprt import compliance_rate
 

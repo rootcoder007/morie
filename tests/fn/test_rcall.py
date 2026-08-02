@@ -1,6 +1,6 @@
 """rcall: roll-call matrix summary, Poole-Rosenthal coding (Armstrong)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rcall import roll_call_analysis as rc

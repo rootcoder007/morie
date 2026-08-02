@@ -1,6 +1,6 @@
 """Tests for gb321l (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb321l import gibbons_distributing_objects

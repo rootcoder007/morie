@@ -3,7 +3,7 @@
 import importlib
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 PREFIX = "the_r_series_dick_j_brus_spatial_sampling_with_r"

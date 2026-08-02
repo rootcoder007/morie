@@ -1,6 +1,6 @@
 """Tests for morie.fn.ldscr -- LD score regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ldscr import ldscr

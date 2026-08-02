@@ -1,6 +1,6 @@
 """Tests for km137.kamath_ch9_itm_hard_negative."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km137 import kamath_ch9_itm_hard_negative
 

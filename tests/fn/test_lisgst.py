@@ -1,6 +1,6 @@
 """Tests for lisgst.local_getis_g."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lisgst import local_getis_g
 

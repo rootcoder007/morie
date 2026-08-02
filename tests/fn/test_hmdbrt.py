@@ -1,6 +1,6 @@
 """Tests for hmdbrt.geron_distilbert."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdbrt import geron_distilbert
 

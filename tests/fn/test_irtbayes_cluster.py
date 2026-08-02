@@ -1,7 +1,7 @@
 """IRT/Bayesian + survey cluster: ambtc, bayam, irtdq, irtid, foldp,
 plpol, mcmpp, pscli, hsirt, emtxt, bymds, bmdul, chopit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ambtc import am_bootstrap_se

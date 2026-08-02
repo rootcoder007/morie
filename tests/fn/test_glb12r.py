@@ -1,6 +1,6 @@
 """Tests for glb12r.greatest_lower_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.glb12r import greatest_lower_bound
 

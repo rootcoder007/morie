@@ -1,6 +1,6 @@
 """Tests for morie.fn.pdplt — Partial dependence plot values."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pdplt import pdplt

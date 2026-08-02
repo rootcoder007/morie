@@ -1,6 +1,6 @@
 """Tests for areN.asymptotic_relative_efficiency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.areN import asymptotic_relative_efficiency
 

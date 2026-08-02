@@ -1,6 +1,6 @@
 """Tests for tmlmro.tmle_marginal_or."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlmro import tmle_marginal_or
 

@@ -1,6 +1,6 @@
 """Tests for sdmmod.spatial_durbin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sdmmod import spatial_durbin
 

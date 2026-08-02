@@ -1,6 +1,6 @@
 """Tests for morie.fn.svrcp -- Roll call vote probability model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svrcp import roll_call_prob
 

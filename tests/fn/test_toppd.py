@@ -1,6 +1,6 @@
 """toppd: nucleus (top-p) sampling (Holtzman et al. 2020)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.toppd import top_p_nucleus as tp

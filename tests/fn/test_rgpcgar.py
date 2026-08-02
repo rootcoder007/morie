@@ -1,6 +1,6 @@
 """Tests for rgpcgar.rangayyan_pcg_ar_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpcgar import rangayyan_pcg_ar_model
 

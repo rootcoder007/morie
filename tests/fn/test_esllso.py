@@ -1,6 +1,6 @@
 """Tests for esllso.esl_lasso."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esllso import esl_lasso
 

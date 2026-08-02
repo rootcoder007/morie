@@ -1,6 +1,6 @@
 """Tests for morie.fn.svcwn -- Condorcet winner test"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svcwn import condorcet_winner
 

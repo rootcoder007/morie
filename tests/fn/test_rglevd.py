@@ -1,6 +1,6 @@
 """Tests for rglevd.rangayyan_levinson_durbin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rglevd import rangayyan_levinson_durbin
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgqnt -- Kriging quantile prediction"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgqnt import kriging_quantile
 

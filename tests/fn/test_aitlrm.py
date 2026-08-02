@@ -1,6 +1,6 @@
 """Tests for aitlrm.compositional_lrmean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitlrm import compositional_lrmean
 

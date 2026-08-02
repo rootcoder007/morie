@@ -1,6 +1,6 @@
 """Tests for benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u6u2.benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u_chapter_6_unnumbered_2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u6u2 import (
     benjamin_j_lovett_practical_psychometrics_a_guide_for_test_u_chapter_6_unnumbered_2,

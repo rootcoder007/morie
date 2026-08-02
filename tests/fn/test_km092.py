@@ -1,6 +1,6 @@
 """Tests for km092.kamath_ch6_stereotypical_assoc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km092 import kamath_ch6_stereotypical_assoc
 

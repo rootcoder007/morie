@@ -1,6 +1,6 @@
 """Tests for morie.fn.mestm — M-estimator with influence function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mestm import MEstimatorResult, mestm

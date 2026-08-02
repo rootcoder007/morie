@@ -1,6 +1,6 @@
 """Tests for kpmnci.km_pointwise_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kpmnci import km_pointwise_ci
 

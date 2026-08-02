@@ -1,6 +1,6 @@
 """Tests for gb_qq (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_qq import gibbons_qq_plot

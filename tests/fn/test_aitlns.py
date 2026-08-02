@@ -1,6 +1,6 @@
 """Tests for aitlns.logistic_normal_sample."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitlns import logistic_normal_sample
 

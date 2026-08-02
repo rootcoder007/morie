@@ -1,6 +1,6 @@
 """Tests for grlrex.geron_lr_exponential_schedule."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlrex import geron_lr_exponential_schedule
 

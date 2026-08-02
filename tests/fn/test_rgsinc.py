@@ -1,6 +1,6 @@
 """Tests for rgsinc.rangayyan_sinc_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsinc import rangayyan_sinc_kernel
 

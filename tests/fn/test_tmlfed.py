@@ -1,6 +1,6 @@
 """Tests for tmlfed.tmle_federated."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlfed import tmle_federated
 

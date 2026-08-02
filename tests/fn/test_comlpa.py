@@ -1,6 +1,6 @@
 """Tests for comlpa.label_propagation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.comlpa import label_propagation
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.bamsc — Bayesian Aldrich-McKelvey scaling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bamsc import bamsc
 

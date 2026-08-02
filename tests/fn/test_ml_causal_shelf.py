@@ -5,7 +5,7 @@ estimator must satisfy exactly, or a property measured over repeated
 draws. Measured values are recorded in the comments.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._did import add_intercept, ols_fit

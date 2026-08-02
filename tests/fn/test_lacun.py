@@ -1,6 +1,6 @@
 """Tests for lacun.py - Lacunarity analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lacun import lacun, lacunarity_fn
 

@@ -1,6 +1,6 @@
 """Tests for evpdfn.evt_pickands_dep_fn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evpdfn import evt_pickands_dep_fn
 

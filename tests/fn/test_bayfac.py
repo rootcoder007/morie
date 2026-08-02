@@ -1,6 +1,6 @@
 """Tests for bayfac.bayes_factor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayfac import bayes_factor
 

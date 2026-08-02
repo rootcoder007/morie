@@ -1,6 +1,6 @@
 """Tests for gh_c9_7.ghosal_whittle_crt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c9_7 import ghosal_whittle_crt
 

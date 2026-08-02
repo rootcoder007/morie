@@ -1,6 +1,6 @@
 """Tests for gh_c5_4.ghosal_splitmerge."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c5_4 import ghosal_splitmerge
 

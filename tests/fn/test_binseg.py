@@ -1,6 +1,6 @@
 """Tests for binseg.binary_segmentation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.binseg import binary_segmentation
 

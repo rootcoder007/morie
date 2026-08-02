@@ -1,6 +1,6 @@
 """Tests for survlts.life_table_smoothed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survlts import life_table_smoothed
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.gwpca."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwpca import gw_pca
 

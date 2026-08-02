@@ -1,6 +1,6 @@
 """Tests for morie.fn.scree -- scree plot data."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.scree import scree, scree_plot_data
 

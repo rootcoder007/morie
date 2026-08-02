@@ -1,6 +1,6 @@
 """Tests for eslr2.esl_r_squared."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslr2 import esl_r_squared
 

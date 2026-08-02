@@ -1,6 +1,6 @@
 """Tests for grrein.geron_reinforce_policy_gradient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grrein import geron_reinforce_policy_gradient
 

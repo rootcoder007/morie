@@ -1,6 +1,6 @@
 """Tests for otsinkit.ot_sinkhorn_iter_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otsinkit import ot_sinkhorn_iter_count
 

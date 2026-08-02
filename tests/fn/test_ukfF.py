@@ -1,6 +1,6 @@
 """Tests for ukfF.unscented_kalman."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ukfF import unscented_kalman
 

@@ -1,6 +1,6 @@
 """Tests for rgfpe.rangayyan_ar_order_fpe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfpe import rangayyan_ar_order_fpe
 

@@ -1,6 +1,6 @@
 """Tests for normfl.normalizing_flow."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.normfl import normalizing_flow
 

@@ -1,7 +1,7 @@
 """Morin (2016) chapters 1-2: tests anchored on the book's worked numbers."""
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import _morin

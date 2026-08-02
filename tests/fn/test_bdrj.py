@@ -1,6 +1,6 @@
 """Tests for bdrj.backdoor_adjustment_formula (Pearl 2009, Thm 3.3.2)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bdrj import backdoor_adjustment_formula

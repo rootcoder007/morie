@@ -1,6 +1,6 @@
 """Tests for gwrcal.gwr_bandwidth_select."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwrcal import gwr_bandwidth_select
 

@@ -1,6 +1,6 @@
 """Test enhum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.enhum import enhum
 

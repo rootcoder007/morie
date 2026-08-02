@@ -1,6 +1,6 @@
 """Tests for pinsk1.pinsker_inequality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pinsk1 import pinsker_inequality
 

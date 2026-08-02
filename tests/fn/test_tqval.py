@@ -1,6 +1,6 @@
 """Tests for tqval.turboquant_value_cache_quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqval import turboquant_value_cache_quantization
 

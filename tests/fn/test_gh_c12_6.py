@@ -1,6 +1,6 @@
 """Tests for gh_c12_6.ghosal_semipara_eff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c12_6 import ghosal_semipara_eff
 

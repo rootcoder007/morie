@@ -1,6 +1,6 @@
 """Tests for oralb.oral_bioavailability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.oralb import oral_bioavailability
 

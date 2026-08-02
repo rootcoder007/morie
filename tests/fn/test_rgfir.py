@@ -18,7 +18,7 @@ in the library carries one for this design; the identity tests carry the
 weight instead.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgfir import rangayyan_fir_filter

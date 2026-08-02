@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxgat -- Graph attention spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxgat import graph_attention_sp
 

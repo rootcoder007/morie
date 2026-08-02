@@ -1,6 +1,6 @@
 """Tests for gb_md2.gibbons_median_test_2sided."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_md2 import gibbons_median_test_2sided
 

@@ -1,6 +1,6 @@
 """Tests for hml1c.geron_one_cycle."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hml1c import geron_one_cycle
 

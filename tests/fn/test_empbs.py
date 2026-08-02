@@ -1,6 +1,6 @@
 """Tests for morie.fn.empbs — Empirical bootstrap process."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.empbs import empbs

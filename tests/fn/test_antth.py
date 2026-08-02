@@ -1,6 +1,6 @@
 """antth: antithetic-variate Monte Carlo (Hammersley & Morton 1956)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.antth import antithetic_variates as av

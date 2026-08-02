@@ -1,6 +1,6 @@
 """Tests for snpqc1.snp_qc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.snpqc1 import snp_qc
 

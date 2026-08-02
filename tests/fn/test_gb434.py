@@ -1,6 +1,6 @@
 """Tests for gb434.gibbons_ks_one_sided_dist."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb434 import gibbons_ks_one_sided_dist
 

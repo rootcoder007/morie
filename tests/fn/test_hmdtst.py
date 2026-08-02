@@ -1,6 +1,6 @@
 """Tests for hmdtst.geron_tree_sensitivity_scale."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdtst import geron_tree_sensitivity_scale
 

@@ -1,6 +1,6 @@
 """The whole is greater than the sum of its parts. — Aristotle"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_8e24 import (
     christopher_gandrud_author_reproducible_research_with_r_and__chapter_8_equation_24,

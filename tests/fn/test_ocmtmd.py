@@ -1,6 +1,6 @@
 """Tests for ocmtmd.outcome_model_diagnostic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ocmtmd import outcome_model_diagnostic
 

@@ -1,6 +1,6 @@
 """Tests for survbtr.bart_survival."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.survbtr import bart_survival
 

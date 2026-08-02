@@ -1,6 +1,6 @@
 """Tests for grnmfo.geron_nmf_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grnmfo import geron_nmf_objective
 

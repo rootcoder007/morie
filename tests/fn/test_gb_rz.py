@@ -1,6 +1,6 @@
 """Tests for gb_rz.gibbons_rz_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_rz import gibbons_rz_test
 

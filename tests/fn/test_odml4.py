@@ -1,6 +1,6 @@
 """Tests for morie.fn.odml4 — DML ATE by gender."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.odml4 import otis_dml_gender
 

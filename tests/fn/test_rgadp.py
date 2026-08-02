@@ -6,7 +6,7 @@ noise canceller is that the primary input minus the filtered reference has
 less noise than the primary input did -- that is what is pinned here.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgadp import rangayyan_adaptive_filter

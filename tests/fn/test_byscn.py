@@ -1,6 +1,6 @@
 """Tests for byscn.bayes_cpi_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.byscn import bayes_cpi_prior
 

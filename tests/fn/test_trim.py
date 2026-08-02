@@ -1,6 +1,6 @@
 """Tests for morie.fn.trim -- Propensity score trimming."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.trim import ps_trim

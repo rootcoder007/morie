@@ -1,6 +1,6 @@
 """Tests for hmnmt.geron_encoder_decoder_nmt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmnmt import geron_encoder_decoder_nmt
 

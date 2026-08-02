@@ -1,6 +1,6 @@
 """Tests for kmadap.kamath_houlsby_adapter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmadap import kamath_houlsby_adapter
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.cfshp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cfshp import cfshp
 

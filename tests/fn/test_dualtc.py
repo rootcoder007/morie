@@ -1,6 +1,6 @@
 """dualtc: dual total correlation (Han 1978)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dualtc import dual_total_correlation as dtc

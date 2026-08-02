@@ -1,6 +1,6 @@
 """Tests for gb_odi.gibbons_odds_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_odi import gibbons_odds_ratio
 

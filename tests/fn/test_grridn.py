@@ -1,6 +1,6 @@
 """Tests for grridn.geron_ridge_normal_equation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grridn import geron_ridge_normal_equation
 

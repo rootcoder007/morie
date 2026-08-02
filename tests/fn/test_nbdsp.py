@@ -1,6 +1,6 @@
 """Tests for nbdsp.negative_binomial_dispersion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nbdsp import negative_binomial_dispersion
 

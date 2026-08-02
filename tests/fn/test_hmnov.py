@@ -1,6 +1,6 @@
 """Tests for hmnov.geron_novelty_detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmnov import geron_novelty_detection
 

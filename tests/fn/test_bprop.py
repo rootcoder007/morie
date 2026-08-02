@@ -1,6 +1,6 @@
 """Tests for bprop.backpropagation_chain_rule."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bprop import backpropagation_chain_rule
 

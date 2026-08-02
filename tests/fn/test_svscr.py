@@ -1,6 +1,6 @@
 """Tests for morie.fn.svscr -- Scree test for spatial dimensions"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svscr import scree_spatial
 

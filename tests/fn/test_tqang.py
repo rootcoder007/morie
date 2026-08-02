@@ -1,6 +1,6 @@
 """Tests for tqang.turboquant_angle_quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqang import turboquant_angle_quantization
 

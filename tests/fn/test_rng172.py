@@ -1,6 +1,6 @@
 """rng172: RLS P(n) recursion via the gain vector (Rangayyan 2024, Eq. 3.218, p. 188)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng167 import rangayyan_ch3_rls_phi_recursion as phi_rec

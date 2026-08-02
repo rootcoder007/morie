@@ -1,6 +1,6 @@
 """Tests for cfafm2.cfa_multifactor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cfafm2 import cfa_multifactor
 

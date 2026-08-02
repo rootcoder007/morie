@@ -1,6 +1,6 @@
 """Tests for degcen.degree_centrality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.degcen import degree_centrality
 

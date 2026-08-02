@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrlme -- LM test for spatial error"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrlme import lm_error
 

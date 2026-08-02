@@ -1,6 +1,6 @@
 """Tests for ksr02.kosorok_donsker_class."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr02 import kosorok_donsker_class
 

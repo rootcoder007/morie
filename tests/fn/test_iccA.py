@@ -1,6 +1,6 @@
 """Tests for iccA.icc_absolute_agreement."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.iccA import icc_absolute_agreement
 

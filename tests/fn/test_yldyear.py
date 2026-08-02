@@ -1,6 +1,6 @@
 """Tests for yldyear.yld_calculation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.yldyear import yld_calculation
 

@@ -1,6 +1,6 @@
 """Tests for hmptq.geron_static_quantization_ptq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmptq import geron_static_quantization_ptq
 

@@ -1,6 +1,6 @@
 """Tests for fzt14.fauzi_thm1_4_asympnorm_mgkde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt14 import fauzi_thm1_4_asympnorm_mgkde
 

@@ -1,6 +1,6 @@
 """Tests for gb435 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb435 import gibbons_ks_onesided_asymp

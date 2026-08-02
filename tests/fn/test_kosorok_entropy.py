@@ -4,7 +4,7 @@ The theorems here are implications, so the tests check the SEPARATION
 each theorem draws -- classes satisfying the hypothesis vs classes
 violating it -- rather than only confirming the easy side."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr029 import kosorok_ch2_glivenko_cantelli_class

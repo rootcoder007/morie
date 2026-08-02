@@ -1,6 +1,6 @@
 """Tests for morie.fn.tmle — Targeted Minimum Loss-Based Estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tmle import tmle

@@ -1,6 +1,6 @@
 """Tests for ghs026.ghosal_ch3_tailfree_finite_density_pm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs026 import ghosal_ch3_tailfree_finite_density_pm
 

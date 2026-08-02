@@ -1,6 +1,6 @@
 """Tests for warpL.warp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.warpL import warp
 

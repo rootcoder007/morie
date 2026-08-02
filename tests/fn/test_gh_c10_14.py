@@ -1,6 +1,6 @@
 """Tests for gh_c10_14.ghosal_param_np_bf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c10_14 import ghosal_param_np_bf
 

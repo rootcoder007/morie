@@ -1,6 +1,6 @@
 """Tests for otunbal.ot_unbalanced."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otunbal import ot_unbalanced
 

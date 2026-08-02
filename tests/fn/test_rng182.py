@@ -1,6 +1,6 @@
 """Tests for rng182.rangayyan_ch4_pan_tompkins_lowpass_difference_eq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng182 import rangayyan_ch4_pan_tompkins_lowpass_difference_eq
 

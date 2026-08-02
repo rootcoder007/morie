@@ -1,6 +1,6 @@
 """Tests for morie.fn.svmpn -- Multi-party Nash equilibrium"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svmpn import multiparty_nash
 

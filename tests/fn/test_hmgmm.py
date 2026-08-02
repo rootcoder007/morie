@@ -1,6 +1,6 @@
 """Tests for hmgmm.geron_gaussian_mixture."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmgmm import geron_gaussian_mixture
 

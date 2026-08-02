@@ -1,6 +1,6 @@
 """Tests for eslnnk.esl_nadaraya_watson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslnnk import esl_nadaraya_watson
 

@@ -1,6 +1,6 @@
 """Tests for bndvar.bound_variance_term."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndvar import bound_variance_term
 

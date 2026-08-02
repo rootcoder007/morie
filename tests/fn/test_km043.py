@@ -1,6 +1,6 @@
 """Tests for km043.kamath_ch3_prompt_softmax_label."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km043 import kamath_ch3_prompt_softmax_label
 

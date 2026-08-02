@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgfml -- Variogram ML fitting"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgfml import vario_fit_ml
 

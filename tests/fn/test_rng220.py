@@ -1,6 +1,6 @@
 """Tests for rng220.rangayyan_ch4_matched_filter_optimal_transfer_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng220 import rangayyan_ch4_matched_filter_optimal_transfer_function
 

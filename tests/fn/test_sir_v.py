@@ -1,6 +1,6 @@
 """Tests for morie.fn.sir_v — SIR with vaccination."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sir_v import sir_vaccination

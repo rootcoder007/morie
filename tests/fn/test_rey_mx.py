@@ -1,7 +1,7 @@
 """Tests for morie.fn.rey_mx — mixed-effects model."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.rey_mx import rey_mx

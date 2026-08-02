@@ -1,6 +1,6 @@
 """Tests for adgrad.adagrad."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.adgrad import adagrad
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.krreg — Kernel ridge regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.krreg import krreg

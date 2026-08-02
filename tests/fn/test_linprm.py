@@ -1,6 +1,6 @@
 """Tests for linprm.linear_programming."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.linprm import linear_programming
 

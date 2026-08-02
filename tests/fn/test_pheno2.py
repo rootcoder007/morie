@@ -1,6 +1,6 @@
 """Tests for pheno2.phenotype_qc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pheno2 import phenotype_qc
 

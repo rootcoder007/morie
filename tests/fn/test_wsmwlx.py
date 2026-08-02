@@ -1,6 +1,6 @@
 """Tests for wsmwlx.wasserman_wilcoxon."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmwlx import wasserman_wilcoxon
 

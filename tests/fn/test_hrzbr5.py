@@ -1,6 +1,6 @@
 """Tests for hrzbr5.horowitz_bias_reduction_deconv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzbr5 import horowitz_bias_reduction_deconv
 

@@ -1,6 +1,6 @@
 """Tests for treatment_effects_11u17.treatment_effects_1_chapter_1_unnumbered_17."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.treatment_effects_11u17 import treatment_effects_1_chapter_1_unnumbered_17
 

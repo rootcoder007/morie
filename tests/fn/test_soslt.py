@@ -1,6 +1,6 @@
 """Test soslt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.soslt import soslt
 

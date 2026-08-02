@@ -1,6 +1,6 @@
 """Tests for morie.fn.svsph -- Spatial phase transition (chaos/order)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svsph import spatial_phase
 

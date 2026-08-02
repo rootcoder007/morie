@@ -1,6 +1,6 @@
 """Tests for hmpcac.geron_principal_components."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmpcac import geron_principal_components
 

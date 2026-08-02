@@ -1,6 +1,6 @@
 """Tests for alrt2 — suicide risk alert."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.alrt2 import alrt_sr
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.hotrd -- Newton's method convergence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hotrd import hotrd, newton_convergence

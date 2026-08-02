@@ -1,6 +1,6 @@
 """Tests for morie.fn.grest -- Gehan-Breslow test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.grest import grest

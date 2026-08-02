@@ -1,6 +1,6 @@
 """Tests for msm333.mvsml_elements_lin_reg_eq_3_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm333 import mvsml_elements_lin_reg_eq_3_1
 

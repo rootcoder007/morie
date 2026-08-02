@@ -1,6 +1,6 @@
 """Tests for alcmx — alert complexity."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.alcmx import alcmpx
 

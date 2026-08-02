@@ -1,6 +1,6 @@
 """Tests for grn001.geron_ch4_simple_linear_life_satisfaction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grn001 import geron_ch4_simple_linear_life_satisfaction
 

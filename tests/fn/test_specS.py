@@ -1,6 +1,6 @@
 """Tests for specS.speculative_decoding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.specS import speculative_decoding
 

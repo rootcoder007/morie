@@ -1,6 +1,6 @@
 """Tests for cwvsp.py - CWT spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cwvsp import cwt_spectrum, cwvsp
 

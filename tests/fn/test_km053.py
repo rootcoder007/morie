@@ -1,6 +1,6 @@
 """Tests for km053.kamath_ch3_prefix_tuning_obj."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km053 import kamath_ch3_prefix_tuning_obj
 

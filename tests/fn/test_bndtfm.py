@@ -1,6 +1,6 @@
 """Tests for bndtfm.bound_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndtfm import bound_transform
 

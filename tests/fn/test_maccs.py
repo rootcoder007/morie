@@ -1,6 +1,6 @@
 """Tests for maccs.maccs_keys."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.maccs import maccs_keys
 

@@ -1,6 +1,6 @@
 """Tests for rng178.rangayyan_ch4_qrs_combined_balda."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng178 import rangayyan_ch4_qrs_combined_balda
 

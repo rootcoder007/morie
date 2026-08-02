@@ -1,6 +1,6 @@
 """Tests for morie.fn.dwtst -- Durbin-Watson statistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dwtst import durbin_watson

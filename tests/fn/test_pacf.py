@@ -1,6 +1,6 @@
 """Tests for morie.fn.pacf — Partial ACF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pacf import pacf, partial_acf
 

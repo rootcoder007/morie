@@ -9,7 +9,7 @@ example around eq 5.2, and spline continuity at the knots (eq 6.35).
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import _acd as ac

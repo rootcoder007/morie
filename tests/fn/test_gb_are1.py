@@ -1,6 +1,6 @@
 """Tests for gb_are1 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_are1 import gibbons_are_sign_wilcoxon

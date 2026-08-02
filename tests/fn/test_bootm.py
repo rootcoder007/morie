@@ -1,6 +1,6 @@
 """Tests for morie.fn.bootm — Bootstrap for M-estimators."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bootm import bootm

@@ -6,7 +6,7 @@ contract: it returns a real semivariogram, not the placeholder payload
 it used to return.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spnest import schabenberger_nested_variogram

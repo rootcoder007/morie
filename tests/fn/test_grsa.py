@@ -1,6 +1,6 @@
 """Tests for grsa.geron_self_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsa import geron_self_attention
 

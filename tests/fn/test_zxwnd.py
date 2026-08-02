@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxwnd -- Wind rose directional stats"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxwnd import wind_rose
 

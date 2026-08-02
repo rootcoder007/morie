@@ -1,6 +1,6 @@
 """Tests for chasym.check_asymptote_msm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chasym import check_asymptote_msm
 

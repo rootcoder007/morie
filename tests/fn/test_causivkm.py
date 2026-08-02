@@ -1,6 +1,6 @@
 """Tests for causivkm.causal_iv_kleibergen_moreira."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causivkm import causal_iv_kleibergen_moreira
 

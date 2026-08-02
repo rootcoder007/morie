@@ -1,6 +1,6 @@
 """Equivalence tests: morie.fn._glm_core vs statsmodels."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 sm_mod = pytest.importorskip(

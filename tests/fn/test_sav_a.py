@@ -1,6 +1,6 @@
 """Tests for sav_a -- EA AVE."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import ESRes
 from morie.fn.sav_a import subscale_ea_ave

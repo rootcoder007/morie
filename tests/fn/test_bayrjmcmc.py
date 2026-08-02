@@ -1,6 +1,6 @@
 """Tests for bayrjmcmc.reversible_jump_mcmc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayrjmcmc import reversible_jump_mcmc
 

@@ -1,6 +1,6 @@
 """Tests for chapman_hall_crc_handbooks_of_modern_statistical_methods_jos19e9.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_19_equation_9."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos19e9 import (
     chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_19_equation_9,

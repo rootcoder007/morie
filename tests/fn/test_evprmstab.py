@@ -1,6 +1,6 @@
 """Tests for evprmstab.evt_param_stability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evprmstab import evt_param_stability
 

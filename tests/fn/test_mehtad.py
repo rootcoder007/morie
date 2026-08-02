@@ -1,6 +1,6 @@
 """Tests for mehtad.mehrotras_predictor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mehtad import mehrotras_predictor
 

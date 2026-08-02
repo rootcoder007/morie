@@ -1,6 +1,6 @@
 """Tests for morie.fn.zands -- Zivot-Andrews test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.zands import za_test

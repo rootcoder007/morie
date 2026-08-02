@@ -1,6 +1,6 @@
 """Tests for matransi.ma_logit_inverse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.matransi import ma_logit_inverse
 

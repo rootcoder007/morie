@@ -1,6 +1,6 @@
 """Tests for hmsfts.geron_softmax_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsfts import geron_softmax_score
 

@@ -1,6 +1,6 @@
 """Tests for smallw.small_world_sigma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smallw import small_world_sigma
 

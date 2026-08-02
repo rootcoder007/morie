@@ -1,6 +1,6 @@
 """Tests for rng007.rangayyan_ch3_sample_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng007 import rangayyan_ch3_sample_mean
 

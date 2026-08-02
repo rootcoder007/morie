@@ -1,6 +1,6 @@
 """Tests for motiff.motif_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.motiff import motif_count
 

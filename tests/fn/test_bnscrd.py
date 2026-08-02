@@ -1,6 +1,6 @@
 """Tests for bnscrd.bound_causal_rd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bnscrd import bound_causal_rd

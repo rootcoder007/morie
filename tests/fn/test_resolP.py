@@ -1,6 +1,6 @@
 """Tests for resolP.resolution_proof."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.resolP import resolution_proof
 

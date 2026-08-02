@@ -1,6 +1,6 @@
 """Tests for biweight_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bfreg import biweight_regression

@@ -1,6 +1,6 @@
 """Tests for jormse2.joseph_rmsse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jormse2 import joseph_rmsse
 

@@ -1,6 +1,6 @@
 """Tests for hrzk1.horowitz_kernel_density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzk1 import horowitz_kernel_density
 

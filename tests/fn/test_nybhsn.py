@@ -1,6 +1,6 @@
 """Tests for nybhsn.nyblom_hansen_stability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nybhsn import nyblom_hansen_stability
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeism -- Indirect standardization"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeism import indirect_std
 

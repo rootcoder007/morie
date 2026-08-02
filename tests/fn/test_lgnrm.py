@@ -1,6 +1,6 @@
 """Tests for lgnrm: log-normal AFT survival model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lgnrm import lgnrm

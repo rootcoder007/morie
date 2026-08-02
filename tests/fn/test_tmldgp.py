@@ -1,6 +1,6 @@
 """Tests for tmldgp.tmle_doubly_robust_pen."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmldgp import tmle_doubly_robust_pen
 

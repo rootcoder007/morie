@@ -1,6 +1,6 @@
 """Tests for hmlrs.geron_learning_rate_schedule."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlrs import geron_learning_rate_schedule
 

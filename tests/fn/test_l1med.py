@@ -1,6 +1,6 @@
 """Tests for l1med.l1_median."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.l1med import l1_median
 

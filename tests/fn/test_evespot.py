@@ -1,6 +1,6 @@
 """Tests for evespot.evt_pot_es."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evespot import evt_pot_es
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.dplapl -- differential privacy Laplace mechanism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dplapl import dp_laplace, dplapl

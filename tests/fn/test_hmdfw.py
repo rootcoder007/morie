@@ -1,6 +1,6 @@
 """Tests for hmdfw.geron_diffusion_forward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdfw import geron_diffusion_forward
 

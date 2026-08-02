@@ -1,6 +1,6 @@
 """Tests for tmlsen."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tmlsen import tmle_sensitivity_unmeasured

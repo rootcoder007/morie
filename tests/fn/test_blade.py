@@ -1,6 +1,6 @@
 """Tests for morie.fn.blade -- Canny edge detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.blade import blade, edge_detect

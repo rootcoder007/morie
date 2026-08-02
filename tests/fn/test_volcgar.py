@@ -1,6 +1,6 @@
 """Tests for volcgar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volcgar import vol_cgarch_fit

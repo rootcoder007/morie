@@ -1,6 +1,6 @@
 """Tests for morie.fn.msrot -- Rotation of configuration"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msrot import rotate_config
 

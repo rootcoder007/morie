@@ -1,6 +1,6 @@
 """Tests for momento.moment_foundation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.momento import moment_foundation
 

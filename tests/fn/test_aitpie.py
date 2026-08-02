@@ -1,6 +1,6 @@
 """Tests for aitpie.compositional_pielou."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitpie import compositional_pielou
 

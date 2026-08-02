@@ -1,6 +1,6 @@
 """Tests for morie.fn.hdi -- Highest Density Interval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hdi import highest_density_interval

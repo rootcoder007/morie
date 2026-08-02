@@ -1,6 +1,6 @@
 """Tests for rgeqn3b.rangayyan_ch3_correlation_sum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn3b import rangayyan_ch3_correlation_sum
 

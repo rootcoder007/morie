@@ -1,6 +1,6 @@
 """Tests for grgmll.geron_gmm_log_likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgmll import geron_gmm_log_likelihood
 

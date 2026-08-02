@@ -5,7 +5,7 @@ the delegation reaches the same estimator with the arguments mapped
 correctly, so the two must agree exactly.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spblkk import schabenberger_block_kriging
 from morie.fn.spblk import spatial_block_kriging

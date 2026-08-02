@@ -1,6 +1,6 @@
 """Tests for hmfcn.geron_fcn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmfcn import geron_fcn
 

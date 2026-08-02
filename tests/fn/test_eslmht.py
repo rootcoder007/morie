@@ -1,6 +1,6 @@
 """Tests for eslmht.esl_holm_bonferroni."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslmht import esl_holm_bonferroni
 

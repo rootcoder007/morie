@@ -1,6 +1,6 @@
 """Tests for kent_roach_benjamin_l_berger_emma_cunliffe_asad_g_kiyani_cri7u1.kent_roach_benjamin_l_berger_emma_cunliffe_asad_g_kiyani_cri_chapter_7_unnumbered_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kent_roach_benjamin_l_berger_emma_cunliffe_asad_g_kiyani_cri7u1 import (
     kent_roach_benjamin_l_berger_emma_cunliffe_asad_g_kiyani_cri_chapter_7_unnumbered_1,

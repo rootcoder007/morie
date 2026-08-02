@@ -1,6 +1,6 @@
 """Tests for rgsig2n.rangayyan_signal_to_noise."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsig2n import rangayyan_signal_to_noise
 

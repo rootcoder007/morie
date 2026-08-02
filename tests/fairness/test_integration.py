@@ -15,7 +15,7 @@ clean-room methods reproduce the papers' *mechanisms* on synthetic
 data whose ground-truth bias is known.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 # NOTE: morie.fairness.gan is NOT imported here — it needs the optional

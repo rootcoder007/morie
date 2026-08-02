@@ -1,6 +1,6 @@
 """Tests for augmn.albert_chib_augmentation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.augmn import albert_chib_augmentation
 

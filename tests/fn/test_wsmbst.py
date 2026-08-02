@@ -1,6 +1,6 @@
 """Tests for wsmbst.wasserman_boosting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmbst import wasserman_boosting
 

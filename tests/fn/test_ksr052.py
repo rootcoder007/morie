@@ -1,6 +1,6 @@
 """Tests for ksr052 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr052 import kosorok_ch2_kaplan_meier_derivative

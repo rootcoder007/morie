@@ -1,6 +1,6 @@
 """Tests for cfafit.cfa_fit_indices."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cfafit import cfa_fit_indices
 

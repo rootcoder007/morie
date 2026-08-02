@@ -1,6 +1,6 @@
 """Tests for statistics_fourth_edition_david_freeman_robert_pisani_and_ro10u7.statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_10_unnumbered_7."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.statistics_fourth_edition_david_freeman_robert_pisani_and_ro10u7 import (
     statistics_fourth_edition_david_freeman_robert_pisani_and_ro_chapter_10_unnumbered_7,

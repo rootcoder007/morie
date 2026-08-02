@@ -1,6 +1,6 @@
 """Tests for fzr1.fauzi_r1_integral."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzr1 import fauzi_r1_integral
 

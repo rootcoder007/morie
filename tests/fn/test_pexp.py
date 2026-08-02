@@ -1,6 +1,6 @@
 """Tests for morie.fn.pexp — exponential CDF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pexp import pexp

@@ -1,6 +1,6 @@
 """Tests for morie.fn.wldbt -- Wild bootstrap for heteroskedastic regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wldbt import wldbt

@@ -1,6 +1,6 @@
 """Tests for sptau.spatial_autocorrelation (Moran's I)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sptau import spatial_autocorrelation

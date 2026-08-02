@@ -1,6 +1,6 @@
 """Tests for tcmech.truncated_cdp_mechanism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tcmech import truncated_cdp_mechanism
 

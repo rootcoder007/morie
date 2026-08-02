@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgenv -- Variogram Monte Carlo envelope"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgenv import vario_envelope
 

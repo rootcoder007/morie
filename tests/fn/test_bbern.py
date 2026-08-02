@@ -1,6 +1,6 @@
 """Tests for morie.fn.bbern -- Bayesian Bernoulli model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bbern import bayesian_bernoulli
 

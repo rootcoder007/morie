@@ -1,6 +1,6 @@
 """Tests for grsnt.geron_sentiment_binary."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grsnt import geron_sentiment_binary
 

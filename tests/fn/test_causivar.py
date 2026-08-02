@@ -1,6 +1,6 @@
 """Tests for causivar.causal_iv_anderson_rubin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causivar import causal_iv_anderson_rubin
 

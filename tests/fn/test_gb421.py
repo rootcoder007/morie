@@ -1,6 +1,6 @@
 """Tests for gb421.gibbons_chisq_gof."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb421 import gibbons_chisq_gof
 

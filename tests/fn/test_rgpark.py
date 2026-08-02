@@ -1,6 +1,6 @@
 """Tests for rgpark.rangayyan_parkinson_multimodal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpark import rangayyan_parkinson_multimodal
 

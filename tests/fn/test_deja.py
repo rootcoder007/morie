@@ -1,7 +1,7 @@
 """Tests for morie.fn.deja -- near-duplicate detection."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.deja import deja, detect_duplicates

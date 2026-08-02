@@ -1,6 +1,6 @@
 """Test parzen_pdf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.przpd import parzen_pdf, przpd

@@ -1,6 +1,6 @@
 """Tests for franz_kronthaler_statistics_applied_with_the_r_commander_dat3u32.franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_32."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.franz_kronthaler_statistics_applied_with_the_r_commander_dat3u32 import (
     franz_kronthaler_statistics_applied_with_the_r_commander_dat_chapter_3_unnumbered_32,

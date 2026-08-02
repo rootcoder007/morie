@@ -1,6 +1,6 @@
 """Tests for rng106.rangayyan_ch3_integrator_magnitude_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng106 import rangayyan_ch3_integrator_magnitude_response
 

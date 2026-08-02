@@ -1,6 +1,6 @@
 """Tests for grprc.geron_precision_recall_curve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grprc import geron_precision_recall_curve
 

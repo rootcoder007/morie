@@ -1,6 +1,6 @@
 """Tests for morie.fn.pptet -- Phillips-Perron test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pptet import pp_test

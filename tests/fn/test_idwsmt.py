@@ -1,6 +1,6 @@
 """Tests for idwsmt.inverse_distance_weighting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.idwsmt import inverse_distance_weighting
 

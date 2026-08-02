@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrgwr2 -- GWR local R-squared"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrgwr2 import gwr_rsquared
 

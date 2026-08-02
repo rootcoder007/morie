@@ -1,6 +1,6 @@
 """Tests for esstl.effective_sample_size_tail."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esstl import effective_sample_size_tail
 

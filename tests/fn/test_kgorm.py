@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgorm -- Ordinary kriging matrix system"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgorm import ok_matrix
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.sspace — state-space model via Kalman filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sspace import state_space
 

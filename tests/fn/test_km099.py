@@ -1,6 +1,6 @@
 """Tests for km099.kamath_ch6_emt_metric."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km099 import kamath_ch6_emt_metric
 

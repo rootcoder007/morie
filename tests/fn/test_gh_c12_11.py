@@ -1,6 +1,6 @@
 """Tests for gh_c12_11.ghosal_cred_set_cov."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c12_11 import ghosal_cred_set_cov
 

@@ -1,6 +1,6 @@
 """Tests for rgpros.rangayyan_prosthetic_valve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpros import rangayyan_prosthetic_valve
 

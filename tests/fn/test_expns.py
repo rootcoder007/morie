@@ -1,6 +1,6 @@
 """Tests for morie.fn.expns — exponential smoothing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.expns import exponential_smooth

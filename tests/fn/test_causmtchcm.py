@@ -1,6 +1,6 @@
 """Tests for causmtchcm.causal_caliper_matching."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causmtchcm import causal_caliper_matching
 

@@ -1,6 +1,6 @@
 """Tests for rng048.rangayyan_ch3_laplace_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng048 import rangayyan_ch3_laplace_transform
 

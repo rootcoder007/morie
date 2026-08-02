@@ -1,6 +1,6 @@
 """Tests for km134.kamath_ch9_clip_text_to_image."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km134 import kamath_ch9_clip_text_to_image
 

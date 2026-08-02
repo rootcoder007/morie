@@ -1,6 +1,6 @@
 """Tests for ghs032.ghosal_ch3_polya_tree_density_bounds."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs032 import ghosal_ch3_polya_tree_density_bounds
 

@@ -1,6 +1,6 @@
 """Tests for gh_c10_3.ghosal_param_rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c10_3 import ghosal_param_rate
 

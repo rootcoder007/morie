@@ -1,6 +1,6 @@
 """Tests for morie.fn.clist — cache list."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.clist import cache_list, clist
 from morie.fn.cstor import cstor

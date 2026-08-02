@@ -1,6 +1,6 @@
 """Tests for rgsapdet.rangayyan_sleep_apnea_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsapdet import rangayyan_sleep_apnea_detect
 

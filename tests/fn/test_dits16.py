@@ -1,6 +1,6 @@
 """Tests for dits16.dit_diffusion_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dits16 import dit_diffusion_transformer
 

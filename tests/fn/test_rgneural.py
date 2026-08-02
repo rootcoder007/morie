@@ -1,6 +1,6 @@
 """Tests for rgneural.rangayyan_neural_decode."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgneural import rangayyan_neural_decode
 

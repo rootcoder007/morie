@@ -1,6 +1,6 @@
 """Tests for rgccep.rangayyan_complex_cepstrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgccep import rangayyan_complex_cepstrum
 

@@ -1,6 +1,6 @@
 """Tests for otdiv.ot_sinkhorn_divergence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otdiv import ot_sinkhorn_divergence
 

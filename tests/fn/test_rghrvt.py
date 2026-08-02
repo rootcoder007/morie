@@ -1,6 +1,6 @@
 """Tests for rghrvt.rangayyan_hrv_time_domain."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rghrvt import rangayyan_hrv_time_domain
 

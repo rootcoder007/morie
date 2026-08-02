@@ -6,7 +6,7 @@ J_min = sigma_d^2 - Theta' Phi^-1 Theta, so J(w_o) must equal J_min and no
 other w may beat it.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng141 import rangayyan_ch3_mse_cost_function as mse

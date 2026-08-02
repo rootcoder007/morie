@@ -1,6 +1,6 @@
 """Tests for rmsef.rmse_metric."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rmsef import rmse_metric
 

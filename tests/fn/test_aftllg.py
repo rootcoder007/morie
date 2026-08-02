@@ -1,6 +1,6 @@
 """Tests for aftllg.aft_log_logistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aftllg import aft_log_logistic
 

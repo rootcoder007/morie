@@ -1,6 +1,6 @@
 """Tests for kmspn.kamath_t5_span_corruption."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmspn import kamath_t5_span_corruption
 

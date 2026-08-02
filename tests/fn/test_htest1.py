@@ -1,6 +1,6 @@
 """Tests for htest1.horvitz_thompson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.htest1 import horvitz_thompson
 

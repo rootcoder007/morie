@@ -1,6 +1,6 @@
 """Tests for hmtsc.geron_torchscript."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtsc import geron_torchscript
 

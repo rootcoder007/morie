@@ -1,6 +1,6 @@
 """Tests for ghs022.ghosal_ch3_tailfree_cell_counts."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs022 import ghosal_ch3_tailfree_cell_counts
 

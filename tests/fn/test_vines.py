@@ -4,7 +4,7 @@ Czado, C. (2019). *Analyzing Dependent Data with Vine Copulas* (Springer) --
 in the library as 13 page-range volumes.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.vines import vine_copula as vc

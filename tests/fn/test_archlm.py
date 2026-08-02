@@ -1,6 +1,6 @@
 """Tests for archlm.arch_lm_engle."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.archlm import arch_lm_engle
 

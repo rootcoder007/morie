@@ -6,7 +6,7 @@ Also Armstrong et al., section 5.4 "Nonparametric Methods - Optimal
 Classification", printed p.156 (NOT a Ch 7-10; that book has six chapters).
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.optcl import optimal_classification as oc

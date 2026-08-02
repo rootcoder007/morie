@@ -1,6 +1,6 @@
 """Tests for fzt51.fauzi_thm5_1_naive_kernel_equiv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt51 import fauzi_thm5_1_naive_kernel_equiv
 

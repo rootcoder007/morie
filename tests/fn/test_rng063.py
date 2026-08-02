@@ -1,6 +1,6 @@
 """Tests for rng063.rangayyan_ch3_complex_exponential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng063 import rangayyan_ch3_complex_exponential
 

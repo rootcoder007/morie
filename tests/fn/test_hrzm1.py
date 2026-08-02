@@ -1,6 +1,6 @@
 """Tests for hrzm1.horowitz_mixture_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzm1 import horowitz_mixture_model

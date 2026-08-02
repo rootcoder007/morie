@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeidx -- IDW exposure interpolation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeidx import idw_exposure
 

@@ -1,6 +1,6 @@
 """Tests for rng003.rangayyan_ch3_variance_continuous."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng003 import rangayyan_ch3_variance_continuous
 

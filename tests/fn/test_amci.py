@@ -1,6 +1,6 @@
 """Tests for morie.fn.amci — A-M confidence intervals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.amci import amci
 

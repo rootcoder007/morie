@@ -1,6 +1,6 @@
 """spstcv -- separable spatio-temporal covariance, Schabenberger & Gotway Sec. 9.2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spstcv import schabenberger_st_cov_separable

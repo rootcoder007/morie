@@ -1,6 +1,6 @@
 """Tests for kmbpb.kamath_bits_per_byte."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmbpb import kamath_bits_per_byte
 

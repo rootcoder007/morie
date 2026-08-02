@@ -1,6 +1,6 @@
 """Tests for grmsam.graded_response_samejima."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmsam import graded_response_samejima
 

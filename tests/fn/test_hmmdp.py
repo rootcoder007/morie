@@ -1,6 +1,6 @@
 """Tests for hmmdp.geron_mdp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmdp import geron_mdp
 

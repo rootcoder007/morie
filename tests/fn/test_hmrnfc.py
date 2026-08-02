@@ -1,6 +1,6 @@
 """Tests for hmrnfc.geron_reinforce."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmrnfc import geron_reinforce
 

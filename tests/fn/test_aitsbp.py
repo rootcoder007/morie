@@ -1,6 +1,6 @@
 """Tests for aitsbp.aitchison_sbp_basis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitsbp import aitchison_sbp_basis
 

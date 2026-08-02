@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxw84 -- WGS84 to local tangent plane"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxw84 import wgs84_to_local
 

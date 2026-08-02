@@ -1,6 +1,6 @@
 """Tests for hapblk.haplotype_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hapblk import haplotype_block
 

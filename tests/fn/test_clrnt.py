@@ -1,6 +1,6 @@
 """Tests for clrnt.clearance_intrinsic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clrnt import clearance_intrinsic
 

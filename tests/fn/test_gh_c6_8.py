@@ -1,6 +1,6 @@
 """Tests for gh_c6_8.ghosal_tailfree_con."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c6_8 import ghosal_tailfree_con
 

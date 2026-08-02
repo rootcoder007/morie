@@ -1,6 +1,6 @@
 """Tests for tmldyn.tmle_dynamic_regime."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmldyn import tmle_dynamic_regime
 

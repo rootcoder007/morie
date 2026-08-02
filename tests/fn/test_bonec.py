@@ -1,6 +1,6 @@
 """Tests for morie.fn.bonec -- Weibull failure analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bonec import bonec, weibull_analysis

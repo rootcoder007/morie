@@ -1,6 +1,6 @@
 """Tests for morie.fn.netbr — Bridge centrality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netbr import network_bridge
 

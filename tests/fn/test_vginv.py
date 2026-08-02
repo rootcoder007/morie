@@ -1,6 +1,6 @@
 """Tests for morie.fn.vginv -- Indicator variogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vginv import indicator_vario
 

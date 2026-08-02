@@ -1,6 +1,6 @@
 """Tests for rng042.rangayyan_ch3_lsi_series_total."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng042 import rangayyan_ch3_lsi_series_total
 

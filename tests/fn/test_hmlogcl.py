@@ -1,6 +1,6 @@
 """Tests for hmlogcl.geron_logistic_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmlogcl import geron_logistic_cost
 

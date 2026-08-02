@@ -1,6 +1,6 @@
 """Tests for rng080.rangayyan_ch3_parseval_theorem."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng080 import rangayyan_ch3_parseval_theorem
 

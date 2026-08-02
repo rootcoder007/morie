@@ -1,6 +1,6 @@
 """Real knowledge is to know the extent of one's ignorance. — Confucius"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.flsh2 import flash_attention
 

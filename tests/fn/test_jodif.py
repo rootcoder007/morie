@@ -1,6 +1,6 @@
 """Tests for jodif.joseph_differencing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jodif import joseph_differencing
 

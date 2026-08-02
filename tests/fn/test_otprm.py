@@ -5,9 +5,9 @@ implementation of the same closed form; the test itself is checked for
 size under the null and power against location and shape differences.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.otprm import _w1, ot_permutation_test_w1
 

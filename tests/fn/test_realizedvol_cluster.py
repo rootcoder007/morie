@@ -2,7 +2,7 @@
 volrs volyz volhar volhar1 volharj volraq voldoc voltsr voljr volpow
 volmuk volopn volsk volrls volrlmt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volbpv import vol_bipower_variation

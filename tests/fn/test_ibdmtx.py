@@ -1,6 +1,6 @@
 """Tests for ibdmtx.ibd_matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ibdmtx import ibd_matrix
 

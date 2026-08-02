@@ -1,6 +1,6 @@
 """Tests for ksr031 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr031 import kosorok_ch2_weak_convergence_tightness

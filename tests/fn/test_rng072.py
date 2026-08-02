@@ -1,6 +1,6 @@
 """Tests for rng072.rangayyan_ch3_dft_via_twiddle."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng072 import rangayyan_ch3_dft_via_twiddle
 

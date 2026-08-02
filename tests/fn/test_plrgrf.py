@@ -1,6 +1,6 @@
 """Tests for plrgrf.partial_linear_grf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.plrgrf import partial_linear_grf
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 
-import numpy as np
+from morie.fn import _array_core as np
 
 
 def _record():

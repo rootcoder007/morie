@@ -1,6 +1,6 @@
 """Tests for gh_ap_g3.ghosal_dir_marginal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_g3 import ghosal_dir_marginal
 

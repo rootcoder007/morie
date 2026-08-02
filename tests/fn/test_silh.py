@@ -1,6 +1,6 @@
 """Tests for morie.fn.silh -- Silhouette score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.silh import silhouette_score

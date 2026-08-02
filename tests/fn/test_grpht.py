@@ -1,6 +1,6 @@
 """Tests for morie.fn.grpht."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grpht import graph_from_edges
 

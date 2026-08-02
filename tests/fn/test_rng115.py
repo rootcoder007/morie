@@ -1,6 +1,6 @@
 """Tests for rng115.rangayyan_ch3_first_difference_phase."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng115 import rangayyan_ch3_first_difference_phase
 

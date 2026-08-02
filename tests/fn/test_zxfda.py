@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxfda -- Functional data analysis spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxfda import fda_spatial
 

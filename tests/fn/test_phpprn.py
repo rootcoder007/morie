@@ -1,6 +1,6 @@
 """Tests for phpprn.phillips_perron."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.phpprn import phillips_perron
 

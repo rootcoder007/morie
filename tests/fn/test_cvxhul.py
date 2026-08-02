@@ -1,6 +1,6 @@
 """Tests for cvxhul.boyd_convex_hull."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxhul import boyd_convex_hull
 

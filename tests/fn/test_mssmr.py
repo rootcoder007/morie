@@ -1,6 +1,6 @@
 """Tests for morie.fn.mssmr -- Replicated SMACOF"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mssmr import smacof_replicate
 

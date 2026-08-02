@@ -1,6 +1,6 @@
 """Tests for morie.fn.svclr -- Condorcet loser identification"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svclr import condorcet_loser
 

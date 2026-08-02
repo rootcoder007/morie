@@ -1,6 +1,6 @@
 """Tests for fzmgkd.fauzi_modified_gamma_kde."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzmgkd import fauzi_modified_gamma_kde
 

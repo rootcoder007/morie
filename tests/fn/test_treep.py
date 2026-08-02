@@ -1,6 +1,6 @@
 """Tests for morie.fn.treep -- TPE optimizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.treep import tpe_minimize
 

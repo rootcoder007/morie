@@ -1,6 +1,6 @@
 """Tests for rgtwamx.rangayyan_twa_spectral_mx."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgtwamx import rangayyan_twa_spectral_mx
 

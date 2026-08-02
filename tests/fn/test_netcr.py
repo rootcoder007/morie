@@ -1,6 +1,6 @@
 """Tests for morie.fn.netcr — Partial correlation network."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netcr import network_correlation
 

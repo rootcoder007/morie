@@ -1,6 +1,6 @@
 """Tests for information_theory_mackay6u180.information_theory_mackay_chapter_6_unnumbered_180."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.information_theory_mackay6u180 import information_theory_mackay_chapter_6_unnumbered_180
 

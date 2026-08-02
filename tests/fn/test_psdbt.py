@@ -1,6 +1,6 @@
 """Test bartlett_psd (psdbt)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.psdbt import bartlett_psd, psdbt

@@ -1,6 +1,6 @@
 """Tests for nrfrad.nerf_radiance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nrfrad import nerf_radiance
 

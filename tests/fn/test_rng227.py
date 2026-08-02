@@ -1,6 +1,6 @@
 """Tests for rng227.rangayyan_ch4_matched_filter_optimal_H_eeg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng227 import rangayyan_ch4_matched_filter_optimal_H_eeg
 

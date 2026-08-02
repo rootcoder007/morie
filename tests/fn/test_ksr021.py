@@ -1,6 +1,6 @@
 """Tests for ksr021.kosorok_ch1_residual_empirical_distribution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr021 import kosorok_ch1_residual_empirical_distribution
 

@@ -1,6 +1,6 @@
 """Tests for johanc.johansen_cointegration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.johanc import johansen_cointegration
 

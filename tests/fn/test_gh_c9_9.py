@@ -1,6 +1,6 @@
 """Tests for gh_c9_9.ghosal_wn_conj_crt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c9_9 import ghosal_wn_conj_crt
 

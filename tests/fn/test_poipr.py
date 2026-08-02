@@ -1,6 +1,6 @@
 """Tests for poipr.poisson_penalized_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.poipr import poisson_penalized_regression
 

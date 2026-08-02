@@ -1,6 +1,6 @@
 """Tests for morie.fn.bamse -- posterior standard errors."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bamse import bamse, bayesian_se_from_posterior
 

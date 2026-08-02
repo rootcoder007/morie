@@ -1,6 +1,6 @@
 """Tests for flowmin.min_cut."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.flowmin import min_cut
 

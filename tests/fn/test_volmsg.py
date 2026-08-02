@@ -1,6 +1,6 @@
 """Tests for volmsg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volmsg import vol_markov_switching_garch

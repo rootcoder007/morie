@@ -1,6 +1,6 @@
 """Tests for hmdtr.geron_tree_regularization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdtr import geron_tree_regularization
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.dr_ -- Doubly-robust ATE estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dr_ import doubly_robust_ate

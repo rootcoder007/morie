@@ -1,6 +1,6 @@
 """Tests for gh_c8_3.ghosal_test_cond."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c8_3 import ghosal_test_cond
 

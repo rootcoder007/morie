@@ -1,6 +1,6 @@
 """Tests for hmpvt.geron_pvt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmpvt import geron_pvt
 

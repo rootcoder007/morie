@@ -1,6 +1,6 @@
 """Tests for morie.fn.anoiso -- isolation forest anomaly detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.anoiso import anoiso, anomaly_isolation

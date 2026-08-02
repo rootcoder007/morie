@@ -1,6 +1,6 @@
 """Tests for sgtsbms.sgt_sbm_spectral_estimate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtsbms import sgt_sbm_spectral_estimate
 

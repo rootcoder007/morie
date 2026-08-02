@@ -1,6 +1,6 @@
 """Tests for morie.fn.donsk — Donsker class membership test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.donsk import DonskerResult, donsk

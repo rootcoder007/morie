@@ -1,6 +1,6 @@
 """Tests for b204.burkov_lm_ch2_trigram_count."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.b204 import burkov_lm_ch2_trigram_count
 

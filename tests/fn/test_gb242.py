@@ -1,6 +1,6 @@
 """Tests for gb242.gibbons_order_pdf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb242 import gibbons_order_pdf
 

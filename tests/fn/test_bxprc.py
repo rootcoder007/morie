@@ -1,6 +1,6 @@
 """Tests for bxprc.box_pierce_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bxprc import box_pierce_test
 

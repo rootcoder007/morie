@@ -1,6 +1,6 @@
 """Tests for alibi.alibi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alibi import alibi
 

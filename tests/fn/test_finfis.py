@@ -1,6 +1,6 @@
 """Tests for finfis.fisher_information."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.finfis import fisher_information
 

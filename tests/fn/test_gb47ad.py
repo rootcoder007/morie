@@ -1,6 +1,6 @@
 """Tests for gb47ad.gibbons_anderson_darling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb47ad import gibbons_anderson_darling
 

@@ -1,6 +1,6 @@
 """Tests for rlhfRS.rlhf_recommendation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rlhfRS import rlhf_recommendation
 

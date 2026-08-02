@@ -1,6 +1,6 @@
 """Tests for kmret.kamath_retnet_retention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmret import kamath_retnet_retention
 

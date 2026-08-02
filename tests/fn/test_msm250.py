@@ -1,6 +1,6 @@
 """Tests for msm250.mvsml_reproducing_kernel_eq_10_12."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm250 import mvsml_reproducing_kernel_eq_10_12
 

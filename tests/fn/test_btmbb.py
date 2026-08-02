@@ -1,6 +1,6 @@
 """Tests for btmbb.boot_moving_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btmbb import boot_moving_block
 

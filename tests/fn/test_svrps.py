@@ -1,6 +1,6 @@
 """Tests for morie.fn.svrps -- Ranked probability score spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svrps import rank_prob_score
 

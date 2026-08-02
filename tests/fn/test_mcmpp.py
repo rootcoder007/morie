@@ -1,9 +1,9 @@
 """Tests for mcmpp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
-from scipy.stats import norm
+from morie.fn._stats_core import norm
 
 from morie.fn.mcmpp import mcmcpack_irt
 

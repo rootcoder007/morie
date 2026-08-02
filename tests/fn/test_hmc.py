@@ -1,6 +1,6 @@
 """Tests for morie.fn.hmc -- Hamiltonian Monte Carlo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmc import hamiltonian_mc
 

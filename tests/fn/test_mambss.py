@@ -1,6 +1,6 @@
 """Tests for mambss.mamba_ssm_step."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mambss import mamba_ssm_step
 

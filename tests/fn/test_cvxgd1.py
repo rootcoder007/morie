@@ -1,6 +1,6 @@
 """Tests for cvxgd1.boyd_grad_proj."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxgd1 import boyd_grad_proj
 

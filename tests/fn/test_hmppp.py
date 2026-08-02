@@ -1,6 +1,6 @@
 """Tests for hmppp.geron_pipeline_parallelism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmppp import geron_pipeline_parallelism
 

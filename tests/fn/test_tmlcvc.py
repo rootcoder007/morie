@@ -1,6 +1,6 @@
 """Tests for tmlcvc.tmle_cv_targeting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlcvc import tmle_cv_targeting
 

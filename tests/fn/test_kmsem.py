@@ -1,6 +1,6 @@
 """Tests for morie.fn.kmsem -- Kaplan-Meier survival estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kmsem import kmsem

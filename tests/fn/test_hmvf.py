@@ -1,6 +1,6 @@
 """Tests for hmvf.geron_value_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmvf import geron_value_function
 

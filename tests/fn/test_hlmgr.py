@@ -1,6 +1,6 @@
 """Tests for hlmgr.hlm_gamma_matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hlmgr import hlm_gamma_matrix
 

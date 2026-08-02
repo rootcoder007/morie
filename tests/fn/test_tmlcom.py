@@ -1,6 +1,6 @@
 """Tests for tmlcom.tmle_compositional."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlcom import tmle_compositional
 

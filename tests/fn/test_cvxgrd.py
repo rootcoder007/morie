@@ -1,6 +1,6 @@
 """Tests for cvxgrd.boyd_gradient_descent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxgrd import boyd_gradient_descent
 

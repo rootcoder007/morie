@@ -1,6 +1,6 @@
 """Tests for gb541.gibbons_sign_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb541 import gibbons_sign_test
 

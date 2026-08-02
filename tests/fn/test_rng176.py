@@ -1,6 +1,6 @@
 """Tests for rng176.rangayyan_ch4_qrs_first_derivative_balda."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng176 import rangayyan_ch4_qrs_first_derivative_balda
 

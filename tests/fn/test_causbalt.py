@@ -1,6 +1,6 @@
 """Tests for causbalt.causal_balance_test (Austin 2009)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causbalt import causal_balance_test

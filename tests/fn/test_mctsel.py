@@ -1,6 +1,6 @@
 """Tests for mctsel.mcts_selection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mctsel import mcts_selection
 

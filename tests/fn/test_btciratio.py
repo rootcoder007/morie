@@ -1,6 +1,6 @@
 """Tests for btciratio.boot_ci_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btciratio import boot_ci_ratio
 

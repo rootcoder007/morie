@@ -1,6 +1,6 @@
 """Tests for morie.fn.zebuf -- Buffer-based exposure assessment"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zebuf import buffer_exposure
 

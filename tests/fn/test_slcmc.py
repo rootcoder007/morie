@@ -1,6 +1,6 @@
 """Tests for slcmc.slice_sampler."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.slcmc import slice_sampler
 

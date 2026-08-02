@@ -1,6 +1,6 @@
 """Tests for rgft.rangayyan_fourier_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgft import rangayyan_fourier_transform
 

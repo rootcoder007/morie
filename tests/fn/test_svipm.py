@@ -1,6 +1,6 @@
 """Tests for morie.fn.svipm -- MLE ideal point estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svipm import ideal_point_mle
 

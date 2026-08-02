@@ -1,6 +1,6 @@
 """Test mean_absolute_error (smae)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.smae import mean_absolute_error, smae

@@ -1,6 +1,6 @@
 """Tests for tmlpoy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tmlpoy import tmle_propensity_only

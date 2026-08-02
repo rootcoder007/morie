@@ -1,6 +1,6 @@
 """Tests for causinst.causal_iv_instrumental_dag."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causinst import causal_iv_instrumental_dag
 

@@ -1,6 +1,6 @@
 """Tests for hmflmg.geron_flamingo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmflmg import geron_flamingo
 

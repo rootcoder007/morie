@@ -1,6 +1,6 @@
 """Tests for rgaic.rangayyan_ar_order_aic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgaic import rangayyan_ar_order_aic
 

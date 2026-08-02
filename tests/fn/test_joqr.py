@@ -1,6 +1,6 @@
 """Tests for joqr.joseph_quantile_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.joqr import joseph_quantile_regression
 

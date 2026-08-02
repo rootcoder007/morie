@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrmgw -- MGWR estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrmgw import mgwr_estimate
 

@@ -1,6 +1,6 @@
 """Tests for gb_cq (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_cq import gibbons_cramers_contingency

@@ -1,6 +1,6 @@
 """Tests for morie.fn.dtcnf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dtcnf import dtcnf
 

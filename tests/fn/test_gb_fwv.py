@@ -1,6 +1,6 @@
 """Tests for gb_fwv.gibbons_friedman_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_fwv import gibbons_friedman_variance
 

@@ -1,6 +1,6 @@
 """Tests for matau2pi.ma_tau2_predict_interval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.matau2pi import ma_tau2_predict_interval
 

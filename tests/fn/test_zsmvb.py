@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsmvb -- Moving block bootstrap spatial"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsmvb import moving_block_boot
 

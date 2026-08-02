@@ -1,6 +1,6 @@
 """Tests for msm121.mvsml_bayesian_regression_pt2_eq_7_6."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm121 import mvsml_bayesian_regression_pt2_eq_7_6
 

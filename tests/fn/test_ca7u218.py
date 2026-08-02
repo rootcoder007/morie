@@ -1,6 +1,6 @@
 """Tests for ca7u218.ca_chapter_7_unnumbered_218."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ca7u218 import ca_chapter_7_unnumbered_218
 

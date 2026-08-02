@@ -1,6 +1,6 @@
 """Tests for gh_ap_k2.ghosal_assouad_lemma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_k2 import ghosal_assouad_lemma
 

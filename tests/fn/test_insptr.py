@@ -1,6 +1,6 @@
 """Tests for morie.fn.insptr — inspection score trend."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.insptr import inspection_trend
 

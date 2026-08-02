@@ -1,6 +1,6 @@
 """Tests for hmsgdc.geron_sgd_classifier."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsgdc import geron_sgd_classifier
 

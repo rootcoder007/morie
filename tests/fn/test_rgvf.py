@@ -1,6 +1,6 @@
 """Tests for rgvf.rangayyan_vf_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgvf import rangayyan_vf_detect
 

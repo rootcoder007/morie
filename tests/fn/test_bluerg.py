@@ -1,6 +1,6 @@
 """Tests for bluerg.blue_gls."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bluerg import blue_gls
 

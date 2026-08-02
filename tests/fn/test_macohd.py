@@ -1,6 +1,6 @@
 """Tests for macohd.ma_cohens_d."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.macohd import ma_cohens_d
 

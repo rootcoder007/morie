@@ -1,6 +1,6 @@
 """Tests for gb571z.gibbons_wsrt_ties_zeros."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb571z import gibbons_wsrt_ties_zeros
 

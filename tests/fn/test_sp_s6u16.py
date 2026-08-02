@@ -1,6 +1,6 @@
 """Tests for sp_s6u16.stochastic_physics_section_6_unnumbered_16."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sp_s6u16 import stochastic_physics_section_6_unnumbered_16
 

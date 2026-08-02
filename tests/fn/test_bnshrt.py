@@ -1,6 +1,6 @@
 """Tests for bnshrt.bound_short_panel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnshrt import bound_short_panel
 

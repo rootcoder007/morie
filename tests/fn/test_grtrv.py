@@ -1,6 +1,6 @@
 """Tests for grtrv.geron_tree_regression_leaf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grtrv import geron_tree_regression_leaf
 

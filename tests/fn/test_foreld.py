@@ -1,6 +1,6 @@
 """Test foreld."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.foreld import foreld
 

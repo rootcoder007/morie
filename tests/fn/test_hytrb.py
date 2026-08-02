@@ -1,6 +1,6 @@
 """Test hytrb."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hytrb import hytrb
 

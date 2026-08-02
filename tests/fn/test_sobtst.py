@@ -1,6 +1,6 @@
 """Tests for sobtst.sobel_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sobtst import sobel_test
 

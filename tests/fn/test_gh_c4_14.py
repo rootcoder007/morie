@@ -1,6 +1,6 @@
 """Tests for gh_c4_14.ghosal_dp_fs_approx."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c4_14 import ghosal_dp_fs_approx
 

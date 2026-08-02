@@ -1,6 +1,6 @@
 """Tests for genmol.generative_chemistry."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.genmol import generative_chemistry
 

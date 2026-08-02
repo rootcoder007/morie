@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for EPA 2024 PFAS Hazard Index."""
 
 import pytest

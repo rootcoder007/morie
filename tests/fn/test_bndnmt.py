@@ -1,6 +1,6 @@
 """Tests for bndnmt.bound_no_monotonicity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndnmt import bound_no_monotonicity
 

@@ -1,6 +1,6 @@
 """Tests for telmt.telemetry_drift."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.telmt import telemetry_drift
 

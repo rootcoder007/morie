@@ -1,6 +1,6 @@
 """Tests for rgbwbnd.rangayyan_bandwidth."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgbwbnd import rangayyan_bandwidth
 

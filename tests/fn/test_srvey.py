@@ -1,6 +1,6 @@
 """Tests for morie.fn.srvey -- survey prevalence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.srvey import survey_prevalence

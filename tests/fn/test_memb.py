@@ -1,6 +1,6 @@
 """Tests for memb.membership_inference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.memb import membership_inference
 

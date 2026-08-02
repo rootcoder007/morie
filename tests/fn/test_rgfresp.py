@@ -1,6 +1,6 @@
 """Tests for rgfresp.rangayyan_freq_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfresp import rangayyan_freq_response
 

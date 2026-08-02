@@ -1,6 +1,6 @@
 """Tests for rgtmpl.rangayyan_template_match."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgtmpl import rangayyan_template_match
 

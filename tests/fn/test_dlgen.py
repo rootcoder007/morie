@@ -1,6 +1,6 @@
 """Tests for dlgen.deep_learning_genomic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dlgen import deep_learning_genomic
 

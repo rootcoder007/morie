@@ -1,6 +1,6 @@
 """Tests for Itakura-Saito distance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.itakr import itakr, itakura_saito

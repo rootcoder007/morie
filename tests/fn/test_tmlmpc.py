@@ -1,6 +1,6 @@
 """Tests for tmlmpc.tmle_multi_state_phc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlmpc import tmle_multi_state_phc
 

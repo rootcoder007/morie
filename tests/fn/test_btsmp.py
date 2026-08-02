@@ -1,7 +1,7 @@
 """Tests for fn/btsmp.py -- Bootstrap resampling."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn.btsmp import bootstrap_sample, btsmp
 

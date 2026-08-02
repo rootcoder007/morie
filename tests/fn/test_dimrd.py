@@ -6,7 +6,7 @@ scree gap. The module previously cited "Armstrong Ch 7"; that book has six
 chapters.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dimrd import dimensionality_test as dt

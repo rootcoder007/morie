@@ -1,6 +1,6 @@
 """Tests for hmtvt.geron_train_val_test_split."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtvt import geron_train_val_test_split
 

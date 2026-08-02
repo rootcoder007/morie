@@ -1,6 +1,6 @@
 """Tests for rgfd2.rangayyan_second_diff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfd2 import rangayyan_second_diff
 

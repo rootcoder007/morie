@@ -1,8 +1,8 @@
 """Tests for volcorpst.vol_corradi_swan_persistence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.volcorpst import vol_corradi_swan_persistence
 

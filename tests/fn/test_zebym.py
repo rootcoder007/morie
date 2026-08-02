@@ -1,6 +1,6 @@
 """Tests for morie.fn.zebym -- BYM (Besag-York-Mollie) model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zebym import bym_model
 

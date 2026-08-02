@@ -1,6 +1,6 @@
 """Tests for rng236.rangayyan_ch4_complex_cepstrum_definition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng236 import rangayyan_ch4_complex_cepstrum_definition
 

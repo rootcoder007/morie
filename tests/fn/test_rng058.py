@@ -1,6 +1,6 @@
 """Tests for rng058.rangayyan_ch3_pole_zero_factored_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng058 import rangayyan_ch3_pole_zero_factored_form
 

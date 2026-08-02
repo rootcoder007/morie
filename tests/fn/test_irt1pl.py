@@ -1,6 +1,6 @@
 """Tests for irt1pl.rasch_one_parameter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.irt1pl import rasch_one_parameter
 

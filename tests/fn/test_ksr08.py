@@ -1,6 +1,6 @@
 """Tests for ksr08.kosorok_multiplier_bootstrap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr08 import kosorok_multiplier_bootstrap
 

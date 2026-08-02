@@ -3,7 +3,7 @@
 Anchored on exact spectral identities (Parseval, Wiener-Khinchin, the
 AR spectrum of a known AR process) rather than on self-consistency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgacf import rangayyan_acf_estimate

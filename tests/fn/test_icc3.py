@@ -1,6 +1,6 @@
 """Tests for icc3.icc_two_way_mixed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.icc3 import icc_two_way_mixed
 

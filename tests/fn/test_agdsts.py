@@ -1,6 +1,6 @@
 """Tests for agdsts.alphazero_distill_student."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agdsts import alphazero_distill_student
 

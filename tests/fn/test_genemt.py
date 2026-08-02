@@ -1,6 +1,6 @@
 """Tests for genemt.gene_meta_analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.genemt import gene_meta_analysis
 

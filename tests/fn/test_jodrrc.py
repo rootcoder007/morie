@@ -1,6 +1,6 @@
 """Tests for jodrrc.joseph_dirrec_strategy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jodrrc import joseph_dirrec_strategy
 

@@ -1,6 +1,6 @@
 """Tests for grtdb.geron_transformer_decoder_block."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grtdb import geron_transformer_decoder_block
 

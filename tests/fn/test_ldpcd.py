@@ -1,6 +1,6 @@
 """Test ldpc_decode."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import CryptoResult
 from morie.fn.ldpcd import ldpc_decode, ldpcd

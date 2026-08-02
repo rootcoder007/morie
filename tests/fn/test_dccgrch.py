@@ -1,6 +1,6 @@
 """Tests for dccgrch.dcc_garch (front-end to dccmd)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dccgrch import dcc_garch

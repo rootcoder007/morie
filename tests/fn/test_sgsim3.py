@@ -1,6 +1,6 @@
 """Tests for sgsim3."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sgsim3 import sgsim3

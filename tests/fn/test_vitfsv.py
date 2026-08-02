@@ -1,6 +1,6 @@
 """Tests for vitfsv.vit_finetune."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vitfsv import vit_finetune
 

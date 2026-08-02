@@ -4,7 +4,7 @@ copjoe plkt taukcp spcoef blncop ginicop copExt clyfr copfr.
 Anchored on Czado (2019) Table 3.2 p.54 (read in the PDF) plus the
 copula axioms every family must satisfy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._copula import FAMILIES, copula_cdf, copula_tau, tau_to_theta

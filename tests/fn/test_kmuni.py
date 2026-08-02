@@ -1,6 +1,6 @@
 """Tests for kmuni.kamath_unigram_lm_tokenizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmuni import kamath_unigram_lm_tokenizer
 

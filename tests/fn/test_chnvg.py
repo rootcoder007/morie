@@ -1,6 +1,6 @@
 """Tests for morie.fn.chnvg -- chain convergence test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chnvg import chain_convergence_test, chnvg
 

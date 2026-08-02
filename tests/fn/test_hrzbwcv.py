@@ -1,6 +1,6 @@
 """Tests for hrzbwcv.horowitz_bw_cv_sim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzbwcv import horowitz_bw_cv_sim
 

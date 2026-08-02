@@ -1,6 +1,6 @@
 """Tests for otsklog.ot_sinkhorn_log."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otsklog import ot_sinkhorn_log
 

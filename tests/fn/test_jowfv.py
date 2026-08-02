@@ -1,6 +1,6 @@
 """Tests for jowfv.joseph_walk_forward_validation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jowfv import joseph_walk_forward_validation
 

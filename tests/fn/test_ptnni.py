@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptnni -- Nearest neighbor index (Clark-Evans)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptnni import nn_index
 

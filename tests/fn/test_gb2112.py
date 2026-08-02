@@ -1,6 +1,6 @@
 """Tests for gb2112 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb2112 import gibbons_block_freq_dist

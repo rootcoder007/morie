@@ -1,6 +1,6 @@
 """Tests for cluvar.cluster_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cluvar import cluster_variance
 

@@ -1,6 +1,6 @@
 """Tests for mahalanobis_distance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mrdst import mahalanobis_distance

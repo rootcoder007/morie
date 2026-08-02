@@ -1,6 +1,6 @@
 """Tests for morie.fn.fastp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fastp import fast_pca
 

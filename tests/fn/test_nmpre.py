@@ -1,6 +1,6 @@
 """Tests for morie.fn.nmpre -- Proportional Reduction in Error"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nmpre import pre_stat
 

@@ -1,6 +1,6 @@
 """Tests for pmedex.proportion_te_explained."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pmedex import proportion_te_explained
 

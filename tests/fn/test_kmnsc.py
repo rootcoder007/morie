@@ -1,6 +1,6 @@
 """Tests for kmnsc.kmeans_clustering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kmnsc import kmeans_clustering

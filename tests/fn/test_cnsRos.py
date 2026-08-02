@@ -1,6 +1,6 @@
 """Tests for cnsRos.rosenbaum_bound_signed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cnsRos import rosenbaum_bound_signed
 

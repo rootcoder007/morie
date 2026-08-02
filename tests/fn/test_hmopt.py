@@ -1,6 +1,6 @@
 """Tests for hmopt.geron_optics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmopt import geron_optics
 

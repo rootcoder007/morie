@@ -1,6 +1,6 @@
 """Tests for grn016.geron_ch4_logistic_regression_prediction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grn016 import geron_ch4_logistic_regression_prediction
 

@@ -1,6 +1,6 @@
 """Tests for rcov.py - Riemannian covariance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rcov import rcov, rcov_fn
 

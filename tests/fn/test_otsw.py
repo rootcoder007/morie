@@ -1,6 +1,6 @@
 """Tests for otsw.ot_sliced_wasserstein."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otsw import ot_sliced_wasserstein
 

@@ -1,6 +1,6 @@
 """Tests for gh_c14_22.ghosal_nested_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_22 import ghosal_nested_dp
 

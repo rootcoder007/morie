@@ -1,6 +1,6 @@
 """Tests for hmtpp.geron_tensor_parallelism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtpp import geron_tensor_parallelism
 

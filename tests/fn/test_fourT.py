@@ -1,6 +1,6 @@
 """Tests for fourT.fourier_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fourT import fourier_transform
 

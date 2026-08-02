@@ -1,6 +1,6 @@
 """Tests for eslica.esl_ica."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslica import esl_ica
 

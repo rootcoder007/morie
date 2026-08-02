@@ -1,6 +1,6 @@
 """Tests for aitalr.aitchison_alr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitalr import aitchison_alr
 

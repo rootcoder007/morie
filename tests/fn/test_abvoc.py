@@ -1,6 +1,6 @@
 """Test abvoc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.abvoc import abvoc
 

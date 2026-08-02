@@ -1,6 +1,6 @@
 """Tests for cvxstgc.boyd_strong_convex."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxstgc import boyd_strong_convex
 

@@ -5,7 +5,7 @@ the definitions of SDNN, RMSSD and pNN50. Expected values are computed by
 hand from those definitions on a short RR series.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rghrv import rangayyan_hrv

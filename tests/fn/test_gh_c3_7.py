@@ -1,6 +1,6 @@
 """Tests for gh_c3_7.ghosal_rect_partition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c3_7 import ghosal_rect_partition
 

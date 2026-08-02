@@ -1,6 +1,6 @@
 """Tests for km081.kamath_ch6_weat_similarity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km081 import kamath_ch6_weat_similarity
 

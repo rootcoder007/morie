@@ -1,6 +1,6 @@
 """Tests for gh_c14_11.ghosal_py_powerlaw."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_11 import ghosal_py_powerlaw
 

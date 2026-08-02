@@ -1,6 +1,6 @@
 """Tests for icc2k.icc_two_way_random_avg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.icc2k import icc_two_way_random_avg
 

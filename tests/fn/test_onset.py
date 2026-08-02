@@ -1,6 +1,6 @@
 """Test onset_detect_fn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.onset import alias, onset_detect_fn

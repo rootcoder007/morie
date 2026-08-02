@@ -1,6 +1,6 @@
 """Tests for km128.kamath_ch8_pass_at_k."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km128 import kamath_ch8_pass_at_k
 

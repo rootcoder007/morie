@@ -1,6 +1,6 @@
 """Tests for gh_c6_1.ghosal_weak_consist."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c6_1 import ghosal_weak_consist
 

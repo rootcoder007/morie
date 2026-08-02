@@ -1,6 +1,6 @@
 """Tests for rgam.rangayyan_am_signal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgam import rangayyan_am_signal
 

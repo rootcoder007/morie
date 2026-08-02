@@ -1,6 +1,6 @@
 """Tests for cvxadm.boyd_admm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxadm import boyd_admm
 

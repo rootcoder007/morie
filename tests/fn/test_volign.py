@@ -1,6 +1,6 @@
 """Tests for volign."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volign import vol_igarch_fit

@@ -1,6 +1,6 @@
 """Tests for morie.fn.sludg -- Herschel-Bulkley rheology."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sludg import herschel_bulkley, sludg

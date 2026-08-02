@@ -1,6 +1,6 @@
 """Tests for gh_var_dp_post.ghosal_variational_dp_posterior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_var_dp_post import ghosal_variational_dp_posterior
 

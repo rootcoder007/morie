@@ -1,6 +1,6 @@
 """Tests for hmsvm2.geron_save_load_pytorch."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmsvm2 import geron_save_load_pytorch
 

@@ -1,6 +1,6 @@
 """Tests for grgrp.geron_gaussian_random_projection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgrp import geron_gaussian_random_projection
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.pnorm — normal CDF."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pnorm import pnorm

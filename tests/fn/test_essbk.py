@@ -1,6 +1,6 @@
 """Tests for essbk.effective_sample_size_bulk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.essbk import effective_sample_size_bulk
 

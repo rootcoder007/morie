@@ -1,6 +1,6 @@
 """Tests for otgws.ot_gromov_sinkhorn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otgws import ot_gromov_sinkhorn
 

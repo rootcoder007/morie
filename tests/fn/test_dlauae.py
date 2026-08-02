@@ -1,6 +1,6 @@
 """Test dlauae."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dlauae import dlauae
 

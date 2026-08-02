@@ -1,6 +1,6 @@
 """Tests for morie.fn.irtml — MLE theta estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.irtml import irt_mle_theta

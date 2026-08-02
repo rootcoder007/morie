@@ -1,6 +1,6 @@
 """Tests for fciag.fci_algorithm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.fciag import fci_algorithm

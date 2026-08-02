@@ -1,6 +1,6 @@
 """Tests for ames3.ames_mutagenicity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ames3 import ames_mutagenicity
 

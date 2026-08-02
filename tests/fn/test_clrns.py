@@ -1,6 +1,6 @@
 """Test colored_noise_gen (clrns)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.clrns import clrns, colored_noise_gen

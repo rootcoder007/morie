@@ -1,6 +1,6 @@
 """Tests for morie.fn.svnrv -- Normal vector to cutting line"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svnrv import normal_vector
 

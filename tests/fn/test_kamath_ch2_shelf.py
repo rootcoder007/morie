@@ -13,7 +13,7 @@ Source: Kamath, Keenan, Somers and Sorenson (2024), Ch 2
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.attsdp import scaled_dot_product_attention

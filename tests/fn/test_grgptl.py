@@ -1,6 +1,6 @@
 """Tests for grgptl.geron_gpt_autoregressive_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgptl import geron_gpt_autoregressive_loss
 

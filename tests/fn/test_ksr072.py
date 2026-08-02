@@ -1,6 +1,6 @@
 """Tests for ksr072.kosorok_ch3_z_estimator_efficiency_master."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr072 import kosorok_ch3_z_estimator_efficiency_master
 

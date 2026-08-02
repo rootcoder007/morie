@@ -1,6 +1,6 @@
 """Tests for cgnonl.nonlinear_cg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cgnonl import nonlinear_cg
 

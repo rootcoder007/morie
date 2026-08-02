@@ -1,6 +1,6 @@
 """Tests for fnlm.function_on_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fnlm import function_on_function
 

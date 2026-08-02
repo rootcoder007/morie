@@ -3,7 +3,7 @@ vecmod, and the four modules the name scan misfiled here (joholt johw
 johbu mstrn -- Holt-Winters, hierarchical reconciliation and the
 Aalen-Johansen estimator, none of them Johansen cointegration)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._coint import adf_test, johansen

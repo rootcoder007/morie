@@ -1,6 +1,6 @@
 """Tests for hrzsim.horowitz_single_index_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzsim import horowitz_single_index_model
 

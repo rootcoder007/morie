@@ -1,6 +1,6 @@
 """Tests for grgmem.geron_gmm_em_step."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grgmem import geron_gmm_em_step
 

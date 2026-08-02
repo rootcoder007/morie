@@ -1,6 +1,6 @@
 """Tests for morie.fn.litlw."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.litlw import litlw
 

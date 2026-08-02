@@ -1,6 +1,6 @@
 """Tests for glmsT.linear_trend."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.glmsT import linear_trend
 

@@ -1,6 +1,6 @@
 """Tests for pcfunc.pair_correlation_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pcfunc import pair_correlation_function
 

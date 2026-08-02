@@ -1,6 +1,6 @@
 """Tests for kmrmsn.kamath_rms_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmrmsn import kamath_rms_norm
 

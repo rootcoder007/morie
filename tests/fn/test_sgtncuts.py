@@ -1,6 +1,6 @@
 """Tests for sgtncuts.sgt_normalised_cut."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtncuts import sgt_normalised_cut
 

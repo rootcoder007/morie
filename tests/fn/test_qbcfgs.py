@@ -1,6 +1,6 @@
 """Tests for qbcfgs.qb_cf_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.qbcfgs import qb_cf_score
 

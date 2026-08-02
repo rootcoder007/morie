@@ -4,7 +4,7 @@ Correctness is established against PUBLISHED Known Answer Tests, not against
 whatever the implementation happens to produce.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._rng import (normal_quantile, philox4x32, random_multivariate_normal,

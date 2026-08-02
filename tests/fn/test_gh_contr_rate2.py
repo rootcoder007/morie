@@ -1,6 +1,6 @@
 """Tests for gh_contr_rate2.ghosal_contraction_rate_iid."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_contr_rate2 import ghosal_contraction_rate_iid
 

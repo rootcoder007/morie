@@ -1,6 +1,6 @@
 """Tests for morie.fn.zeby2 -- BYM2 reparameterized model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zeby2 import bym2_model
 

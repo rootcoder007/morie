@@ -11,9 +11,9 @@ dependence. Sign conventions are load-bearing (Hosking's k = -xi)
 and tested explicitly.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn._evt import gev_from_lmoments, l_moments, pwm_b
 from morie.fn.evdedh import ev_dedh

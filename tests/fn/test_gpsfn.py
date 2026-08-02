@@ -1,6 +1,6 @@
 """Tests for gpsfn.gp_sparse_inducing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpsfn import gp_sparse_inducing
 

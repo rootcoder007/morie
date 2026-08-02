@@ -1,6 +1,6 @@
 """Tests for eaiprl.aipw_efficient_influence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eaiprl import aipw_efficient_influence
 

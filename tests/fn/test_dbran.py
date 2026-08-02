@@ -1,6 +1,6 @@
 """Test dbran."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dbran import d_brane_tension

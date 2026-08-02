@@ -1,6 +1,6 @@
 """Tests for ksr15.kosorok_one_step_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr15 import kosorok_one_step_estimator
 

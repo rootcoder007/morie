@@ -1,6 +1,6 @@
 """Tests for detrbb.detr_set_prediction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.detrbb import detr_set_prediction
 

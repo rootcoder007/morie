@@ -1,6 +1,6 @@
 """Tests for morie.fn.trajd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.trajd import trajectory_distance
 

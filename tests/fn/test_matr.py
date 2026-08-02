@@ -1,6 +1,6 @@
 """Tests for matr.ma_two_step_dl_he."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.matr import ma_two_step_dl_he
 

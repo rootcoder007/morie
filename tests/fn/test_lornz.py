@@ -1,6 +1,6 @@
 """Tests for morie.fn.lornz -- Lorenz curve and the Gini it implies (Lorenz 1905)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lornz import lorenz_curve

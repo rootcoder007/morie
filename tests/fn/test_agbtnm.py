@@ -1,6 +1,6 @@
 """Tests for agbtnm.alphazero_batch_norm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agbtnm import alphazero_batch_norm
 

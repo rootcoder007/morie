@@ -1,6 +1,6 @@
 """Tests for rgparmod.rangayyan_parametric_sysid."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgparmod import rangayyan_parametric_sysid
 

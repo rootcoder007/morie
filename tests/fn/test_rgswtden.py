@@ -1,6 +1,6 @@
 """Tests for rgswtden.rangayyan_swt_denoise."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgswtden import rangayyan_swt_denoise
 

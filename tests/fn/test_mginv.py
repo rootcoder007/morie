@@ -1,6 +1,6 @@
 """Tests for morie.fn.mginv -- Moore-Penrose pseudoinverse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mginv import mginv, pseudoinverse

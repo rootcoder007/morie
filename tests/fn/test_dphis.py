@@ -1,6 +1,6 @@
 """Tests for dphis.dp_histogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dphis import dp_histogram
 

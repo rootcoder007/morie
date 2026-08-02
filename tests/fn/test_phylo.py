@@ -1,6 +1,6 @@
 """Tests for morie.fn.phylo -- phylogenetic diversity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.phylo import phylogenetic_diversity

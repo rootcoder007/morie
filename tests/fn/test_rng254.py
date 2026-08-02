@@ -1,6 +1,6 @@
 """Tests for rng254.rangayyan_ch4_power_cepstrum_sum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng254 import rangayyan_ch4_power_cepstrum_sum
 

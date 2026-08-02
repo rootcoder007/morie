@@ -1,6 +1,6 @@
 """Tests for gb10711.gibbons_ctrl_normal_asymp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb10711 import gibbons_ctrl_normal_asymp
 

@@ -1,6 +1,6 @@
 """Tests for evextsl.evt_extremal_index_slidblk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evextsl import evt_extremal_index_slidblk
 

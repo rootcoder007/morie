@@ -1,6 +1,6 @@
 """Tests for twostg.two_stage_hazard."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.twostg import two_stage_hazard
 

@@ -1,6 +1,6 @@
 """Tests for binmed.binary_outcome_mediation (Tchetgen Tchetgen 2013)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.binmed import binary_outcome_mediation

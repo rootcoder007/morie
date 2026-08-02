@@ -1,6 +1,6 @@
 """Tests for morie.fn.scan — spatial scan statistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.scan import spatial_scan
 

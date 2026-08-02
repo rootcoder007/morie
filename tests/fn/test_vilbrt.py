@@ -1,6 +1,6 @@
 """Tests for vilbrt.vilbert_two_stream."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vilbrt import vilbert_two_stream
 

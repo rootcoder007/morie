@@ -1,6 +1,6 @@
 """Tests for drsta.dr_staggered_design."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drsta import dr_staggered_design
 

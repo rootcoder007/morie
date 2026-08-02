@@ -1,6 +1,6 @@
 """Tests for rng029.rangayyan_ch3_signal_as_delta_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng029 import rangayyan_ch3_signal_as_delta_decomposition
 

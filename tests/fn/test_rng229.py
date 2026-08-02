@@ -1,6 +1,6 @@
 """Tests for rng229.rangayyan_ch4_matched_filter_output_psd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng229 import rangayyan_ch4_matched_filter_output_psd
 

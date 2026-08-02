@@ -1,6 +1,6 @@
 """Tests for km065.kamath_ch5_reward_loss_pairwise."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km065 import kamath_ch5_reward_loss_pairwise
 

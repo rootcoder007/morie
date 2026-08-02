@@ -1,6 +1,6 @@
 """Tests for morie.fn.bdif — Bayesian DIF detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bdif import bayesian_dif

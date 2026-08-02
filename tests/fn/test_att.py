@@ -1,7 +1,7 @@
 """Tests for morie.fn.att — Average Treatment Effect on the Treated."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.att import estimate_att

@@ -1,6 +1,6 @@
 """Tests for rng083.rangayyan_ch3_even_odd_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng083 import rangayyan_ch3_even_odd_decomposition
 

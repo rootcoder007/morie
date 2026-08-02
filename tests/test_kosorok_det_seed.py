@@ -11,7 +11,7 @@ Verifies that the ``deterministic_seed`` kwarg added to ``ksr07`` /
 
 from __future__ import annotations
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr07 import kosorok_bootstrap_empirical
 from morie.fn.ksr08 import kosorok_multiplier_bootstrap

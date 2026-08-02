@@ -1,6 +1,6 @@
 """Tests for addrc (full adder)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.addrc import full_adder
 

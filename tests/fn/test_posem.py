@@ -1,6 +1,6 @@
 """Test positional encoding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.posem import posem
 

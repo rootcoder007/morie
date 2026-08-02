@@ -1,6 +1,6 @@
 """Tests for km147.kamath_ch9_output_alignment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km147 import kamath_ch9_output_alignment
 

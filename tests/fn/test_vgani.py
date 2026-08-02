@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgani -- Anisotropy ratio estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgani import anisotropy_ratio
 

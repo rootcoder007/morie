@@ -1,6 +1,6 @@
 """Tests for spackf.schabenberger_autocorrelation_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spackf import schabenberger_autocorrelation_function
 

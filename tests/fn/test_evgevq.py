@@ -1,6 +1,6 @@
 """Tests for evgevq.evt_gev_quantile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgevq import evt_gev_quantile
 

@@ -1,6 +1,6 @@
 """Tests for rgann.rangayyan_ann_mlp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgann import rangayyan_ann_mlp
 

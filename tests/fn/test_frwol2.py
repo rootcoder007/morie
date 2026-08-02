@@ -1,6 +1,6 @@
 """Tests for frwol2.frank_wolfe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.frwol2 import frank_wolfe
 

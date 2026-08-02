@@ -1,6 +1,6 @@
 """Tests for gb_hg2.gibbons_hodges_lehmann_2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_hg2 import gibbons_hodges_lehmann_2
 

@@ -1,6 +1,6 @@
 """Tests for botUp.bottom_up_aggregation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.botUp import bottom_up_aggregation
 

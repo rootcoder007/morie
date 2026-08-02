@@ -1,6 +1,6 @@
 """Tests for fzwm.fauzi_wilcoxon_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzwm import fauzi_wilcoxon_moments
 

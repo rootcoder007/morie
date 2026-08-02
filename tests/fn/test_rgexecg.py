@@ -1,6 +1,6 @@
 """Tests for rgexecg.rangayyan_exercise_ecg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgexecg import rangayyan_exercise_ecg
 

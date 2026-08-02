@@ -1,6 +1,6 @@
 """Tests for dnvtwo.dinov2_repr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dnvtwo import dinov2_repr
 

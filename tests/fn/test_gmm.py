@@ -1,6 +1,6 @@
 """Tests for morie.fn.gmm — Gaussian mixture model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gmm import gaussian_mixture
 

@@ -1,6 +1,6 @@
 """Tests for h2est.heritability_lmm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.h2est import heritability_lmm
 

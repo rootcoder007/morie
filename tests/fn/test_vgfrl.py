@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgfrl -- Variogram REML fitting"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgfrl import vario_fit_reml
 

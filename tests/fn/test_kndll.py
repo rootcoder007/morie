@@ -1,6 +1,6 @@
 """Tests for kendall_concordance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kndll import kendall_concordance

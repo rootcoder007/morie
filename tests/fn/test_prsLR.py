@@ -1,6 +1,6 @@
 """Tests for prsLR.lr_parser."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prsLR import lr_parser
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.mssm2 -- SMACOF 2D MDS"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mssm2 import smacof_2d
 

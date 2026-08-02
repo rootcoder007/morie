@@ -1,6 +1,6 @@
 """Tests for wcoef (Kendall's coefficient of concordance)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wcoef import wcoef

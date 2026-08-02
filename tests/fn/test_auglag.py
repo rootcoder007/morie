@@ -1,6 +1,6 @@
 """Tests for auglag.augmented_lagrangian."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.auglag import augmented_lagrangian
 

@@ -1,6 +1,6 @@
 """Tests for volpark.vol_parkinson_range."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.volpark import vol_parkinson_range
 

@@ -1,6 +1,6 @@
 """Tests for wmtrwn.weights_row_normalize."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wmtrwn import weights_row_normalize
 

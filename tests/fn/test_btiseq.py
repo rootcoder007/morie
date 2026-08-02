@@ -1,6 +1,6 @@
 """Tests for btiseq.boot_iter_calibrated."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btiseq import boot_iter_calibrated
 

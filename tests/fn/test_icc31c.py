@@ -1,6 +1,6 @@
 """Tests for icc31c.icc_one_way."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.icc31c import icc_one_way
 

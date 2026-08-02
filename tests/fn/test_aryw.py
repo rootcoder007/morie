@@ -1,6 +1,6 @@
 """Tests for aryw.py - AR Yule-Walker estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aryw import ar_yule_walker_fn, aryw
 

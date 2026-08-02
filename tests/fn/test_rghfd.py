@@ -13,7 +13,7 @@ direct re-derivation of (5.40)/(5.41) from the equations plus the limiting
 values the method is defined by.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rghfd import rangayyan_higuchi_fd

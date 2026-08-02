@@ -1,6 +1,6 @@
 """Tests for gryol.geron_yolo_grid_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gryol import geron_yolo_grid_loss
 

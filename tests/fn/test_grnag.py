@@ -1,6 +1,6 @@
 """Tests for grnag.geron_nesterov_accelerated_gradient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grnag import geron_nesterov_accelerated_gradient
 

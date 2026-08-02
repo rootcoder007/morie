@@ -1,6 +1,6 @@
 """Tests for chiDep.chi_dependence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chiDep import chi_dependence
 

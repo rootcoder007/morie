@@ -1,6 +1,6 @@
 """Tests for rng118.rangayyan_ch3_three_point_central_diff_magnitude."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng118 import rangayyan_ch3_three_point_central_diff_magnitude
 

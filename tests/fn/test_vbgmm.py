@@ -1,6 +1,6 @@
 """Tests for morie.fn.vbgmm -- Variational Bayes GMM."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vbgmm import vb_gaussian_mixture
 

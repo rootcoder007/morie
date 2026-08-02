@@ -1,6 +1,6 @@
 """Tests for cvxslt.boyd_slater."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxslt import boyd_slater
 

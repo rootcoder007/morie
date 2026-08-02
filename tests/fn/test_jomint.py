@@ -1,6 +1,6 @@
 """Tests for jomint.joseph_mint_reconciliation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jomint import joseph_mint_reconciliation
 

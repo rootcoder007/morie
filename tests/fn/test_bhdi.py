@@ -1,6 +1,6 @@
 """Tests for morie.fn.bhdi — Highest density interval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bhdi import bayesian_hdi

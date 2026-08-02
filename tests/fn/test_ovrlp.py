@@ -1,6 +1,6 @@
 """Tests for morie.fn.ovrlp — Overlap weights (causal inference) + Szymkiewicz-Simpson."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ovrlp import overlap_coefficient, ovrlp

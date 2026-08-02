@@ -1,6 +1,6 @@
 """Tests for airbed.emissions_inventory."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.airbed import emissions_inventory
 

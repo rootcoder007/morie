@@ -1,6 +1,6 @@
 """Tests for rocau.roc_auc_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rocau import roc_auc_score
 

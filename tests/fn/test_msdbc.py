@@ -1,6 +1,6 @@
 """Tests for morie.fn.msdbc -- Double centering matrix B"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msdbc import double_center
 

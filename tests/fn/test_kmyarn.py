@@ -1,6 +1,6 @@
 """Tests for kmyarn.kamath_yarn_context_extrapolation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmyarn import kamath_yarn_context_extrapolation
 

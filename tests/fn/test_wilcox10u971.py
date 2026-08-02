@@ -1,6 +1,6 @@
 """Tests for wilcox10u971.wilcox_chapter_10_unnumbered_971."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wilcox10u971 import wilcox_chapter_10_unnumbered_971
 

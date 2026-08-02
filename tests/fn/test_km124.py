@@ -1,6 +1,6 @@
 """Tests for km124.kamath_ch8_ngram_embedding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km124 import kamath_ch8_ngram_embedding
 

@@ -1,6 +1,6 @@
 """Tests for rng200.rangayyan_ch4_continuous_dot_product."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng200 import rangayyan_ch4_continuous_dot_product
 

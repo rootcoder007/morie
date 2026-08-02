@@ -1,6 +1,6 @@
 """Tests for morie.fn.sdemml."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sdemml import sdemml
 

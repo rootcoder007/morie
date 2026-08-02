@@ -1,6 +1,6 @@
 """Tests for frdmt (Friedman two-way ANOVA)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.frdmt import frdmt

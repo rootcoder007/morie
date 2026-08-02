@@ -1,6 +1,6 @@
 """Tests for sgpr.sparse_gp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgpr import sparse_gp
 

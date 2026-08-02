@@ -1,6 +1,6 @@
 """Tests for morie.fn.nomgr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nomgr import nomgr
 

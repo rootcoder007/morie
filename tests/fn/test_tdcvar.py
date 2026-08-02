@@ -1,6 +1,6 @@
 """Tests for tdcvar.time_dep_covariate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tdcvar import time_dep_covariate
 

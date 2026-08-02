@@ -1,6 +1,6 @@
 """Tests for tnvest._test_negative_design."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tnvest import test_negative_design as _test_negative_design
 

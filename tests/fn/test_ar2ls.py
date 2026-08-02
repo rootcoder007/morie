@@ -1,6 +1,6 @@
 """Test ar_to_lsf (ar2ls)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ar2ls import ar2ls, ar_to_lsf

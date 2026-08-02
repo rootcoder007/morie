@@ -1,6 +1,6 @@
 """Tests for dnnmt.dnn_multitrait."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dnnmt import dnn_multitrait
 

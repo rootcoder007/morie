@@ -1,6 +1,6 @@
 """Tests for morie.fn.spcae -- Sparse PCA."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import PcaRes
 from morie.fn.spcae import sparse_pca, spcae

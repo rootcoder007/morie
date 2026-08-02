@@ -1,6 +1,6 @@
 """Tests for wsmpst.wasserman_plug_in_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmpst import wasserman_plug_in_estimator
 

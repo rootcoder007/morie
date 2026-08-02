@@ -1,6 +1,6 @@
 """spmwst -- Haas moving windows, Schabenberger & Gotway Sec. 8.3.1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_nonstat import haas_window

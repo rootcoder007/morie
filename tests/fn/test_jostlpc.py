@@ -1,6 +1,6 @@
 """Tests for jostlpc.joseph_stl_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jostlpc import joseph_stl_decomposition
 

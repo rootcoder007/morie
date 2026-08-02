@@ -1,6 +1,6 @@
 """Tests for rng111.rangayyan_ch3_first_difference_operator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng111 import rangayyan_ch3_first_difference_operator
 

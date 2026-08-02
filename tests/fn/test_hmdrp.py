@@ -1,6 +1,6 @@
 """Tests for hmdrp.geron_dropout."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdrp import geron_dropout
 

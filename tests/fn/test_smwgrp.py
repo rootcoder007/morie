@@ -1,6 +1,6 @@
 """Tests for smwgrp.small_worldness."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smwgrp import small_worldness
 

@@ -1,6 +1,6 @@
 """Tests for wsmcrk.wasserman_kernel_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmcrk import wasserman_kernel_regression
 

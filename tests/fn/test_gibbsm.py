@@ -1,6 +1,6 @@
 """Tests for gibbsm.gibbs_sampler."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gibbsm import gibbs_sampler
 

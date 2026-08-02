@@ -1,6 +1,6 @@
 """Tests for morie.fn.gelrb -- Gelman-Rubin R-hat."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gelrb import gelman_rubin_rhat, gelrb
 

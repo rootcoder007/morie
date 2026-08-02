@@ -1,6 +1,6 @@
 """Tests for bdmnto.bound_monot_outcome."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bdmnto import bound_monot_outcome
 

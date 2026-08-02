@@ -1,6 +1,6 @@
 """Tests for statistical_methods_for_spatial_data_analysis1u334.statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_334."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.statistical_methods_for_spatial_data_analysis1u334 import (
     statistical_methods_for_spatial_data_analysis_chapter_1_unnumbered_334,

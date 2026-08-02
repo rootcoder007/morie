@@ -1,6 +1,6 @@
 """Tests for hmkd.geron_knowledge_distillation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmkd import geron_knowledge_distillation
 

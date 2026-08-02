@@ -1,6 +1,6 @@
 """Tests for causivlim.causal_iv_liml."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causivlim import causal_iv_liml
 

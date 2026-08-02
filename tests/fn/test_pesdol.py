@@ -1,6 +1,6 @@
 """Tests for pesdol.pesaran_shin_dols."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pesdol import pesaran_shin_dols
 

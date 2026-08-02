@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptrng -- Point pattern intensity"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptrng import pp_intensity
 

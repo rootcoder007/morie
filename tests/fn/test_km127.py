@@ -1,6 +1,6 @@
 """Tests for km127.kamath_ch8_geval_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km127 import kamath_ch8_geval_score
 

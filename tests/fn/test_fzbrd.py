@@ -1,6 +1,6 @@
 """Tests for fzbrd.fauzi_bias_reduced_kdfe."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzbrd import fauzi_bias_reduced_kdfe
 

@@ -1,6 +1,6 @@
 """Tests for sgtrwk.sgt_random_walk_kernel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtrwk import sgt_random_walk_kernel
 

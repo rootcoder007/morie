@@ -1,6 +1,6 @@
 """Tests for volrls."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volrls import vol_recursive_least_sq

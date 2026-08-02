@@ -1,6 +1,6 @@
 """Tests for fzchsp.fauzi_chung_smirnov."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzchsp import fauzi_chung_smirnov
 

@@ -1,6 +1,6 @@
 """Tests for hmdbd.geron_decision_boundary."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdbd import geron_decision_boundary
 

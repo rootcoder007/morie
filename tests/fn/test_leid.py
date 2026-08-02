@@ -1,6 +1,6 @@
 """Tests for leid.leiden_communities."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.leid import leiden_communities
 

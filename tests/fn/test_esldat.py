@@ -1,6 +1,6 @@
 """Tests for esldat.esl_dropout."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esldat import esl_dropout
 

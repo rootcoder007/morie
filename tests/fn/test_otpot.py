@@ -1,6 +1,6 @@
 """Tests for otpot.ot_pot_log_potentials."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otpot import ot_pot_log_potentials
 

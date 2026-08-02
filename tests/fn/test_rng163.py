@@ -1,6 +1,6 @@
 """Tests for rng163.rangayyan_ch3_rls_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng163 import rangayyan_ch3_rls_objective
 

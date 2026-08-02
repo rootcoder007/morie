@@ -1,6 +1,6 @@
 """Tests for semsbn.sem_sb_chi_sq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.semsbn import sem_sb_chi_sq
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.ypll -- years of potential life lost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ypll import years_potential_life_lost

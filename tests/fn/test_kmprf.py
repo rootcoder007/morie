@@ -1,6 +1,6 @@
 """Tests for kmprf.kamath_prefix_lm_mask."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kmprf import kamath_prefix_lm_mask

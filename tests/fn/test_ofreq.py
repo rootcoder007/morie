@@ -1,6 +1,6 @@
 """Tests for morie.fn.ofreq — Frequency table."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.ofreq import otis_freq_table
 

@@ -5,7 +5,7 @@ the delegation reaches the same estimator with the arguments mapped
 correctly, so the two must agree exactly.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sptrs import schabenberger_trend_surface
 from morie.fn.sptrn import spatial_trend_surface

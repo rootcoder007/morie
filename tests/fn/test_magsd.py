@@ -1,6 +1,6 @@
 """Tests for magsd.ma_glass_delta."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.magsd import ma_glass_delta
 

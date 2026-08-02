@@ -1,6 +1,6 @@
 """Tests for gb1231.gibbons_page_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1231 import gibbons_page_test
 

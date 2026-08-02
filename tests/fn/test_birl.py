@@ -1,6 +1,6 @@
 """Tests for birl.bayesian_irl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.birl import bayesian_irl
 

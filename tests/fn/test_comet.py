@@ -1,6 +1,6 @@
 """Tests for comet.comet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.comet import comet
 

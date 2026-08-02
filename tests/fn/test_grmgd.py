@@ -1,6 +1,6 @@
 """Tests for grmgd.geron_minibatch_gradient_descent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmgd import geron_minibatch_gradient_descent
 

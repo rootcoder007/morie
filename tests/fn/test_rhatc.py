@@ -1,6 +1,6 @@
 """Tests for rhatc.r_hat_convergence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rhatc import r_hat_convergence
 

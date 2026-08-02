@@ -1,6 +1,6 @@
 """Tests for poilO.poisson_loss_dnn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.poilO import poisson_loss_dnn
 

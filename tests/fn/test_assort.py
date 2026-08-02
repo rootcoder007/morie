@@ -1,6 +1,6 @@
 """Tests for assort.degree_assortativity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.assort import degree_assortativity
 

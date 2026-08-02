@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgunw -- Universal kriging weights"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgunw import uk_weights
 

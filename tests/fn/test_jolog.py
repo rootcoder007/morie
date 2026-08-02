@@ -1,6 +1,6 @@
 """Tests for jolog.joseph_log_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jolog import joseph_log_transform
 

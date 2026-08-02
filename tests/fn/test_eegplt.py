@@ -1,6 +1,6 @@
 """Tests for morie.fn.eegplt -- EEG montage plot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")

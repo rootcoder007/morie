@@ -1,6 +1,6 @@
 """Tests for morie.fn.rbnm — binomial random sample."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rbnm import rbinom

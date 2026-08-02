@@ -17,8 +17,8 @@ import os
 import sys
 import types
 
-import numpy as np
-from scipy import stats
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 
 # Load morie._det_rng directly to avoid hitting the package __init__ which
 # pulls in heavyweight optional deps (statsmodels, torch, etc.).

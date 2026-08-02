@@ -5,7 +5,7 @@ The fit is by Gauss-Newton, which is the algorithm the text names for this
 problem (after 4.43), with the derivatives of (4.42) taken analytically.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_fit import _objective, _start_and_bounds

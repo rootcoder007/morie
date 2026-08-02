@@ -1,6 +1,6 @@
 """Tests for eslrss.esl_residual_sum_squares."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslrss import esl_residual_sum_squares
 

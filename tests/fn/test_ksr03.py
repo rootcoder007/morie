@@ -5,7 +5,7 @@ Semiparametric Inference*, Ch. 2 -- in the library, filed under its ISBN
 (978-0-387-74978-5) rather than its title.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr03 import kosorok_glivenko_cantelli as gc

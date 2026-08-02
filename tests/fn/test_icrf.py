@@ -1,6 +1,6 @@
 """Tests for icrf.item_characteristic_curve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.icrf import item_characteristic_curve
 

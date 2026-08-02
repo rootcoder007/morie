@@ -9,7 +9,7 @@ precision rather than approximately.
 Schabenberger, O. & Gotway, C. A. (2005). Ch. 5.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spskrg import schabenberger_simple_kriging as simple_kriging

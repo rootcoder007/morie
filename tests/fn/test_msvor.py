@@ -1,6 +1,6 @@
 """Tests for morie.fn.msvor -- 2D Voronoi diagram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msvor import voronoi_2d
 

@@ -1,6 +1,6 @@
 """Tests for bndpl.bnp_density_pl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndpl import bnp_density_pl
 

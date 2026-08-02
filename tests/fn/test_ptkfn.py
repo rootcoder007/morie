@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptkfn -- Ripley's K-function"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptkfn import k_function
 

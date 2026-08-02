@@ -1,6 +1,6 @@
 """Tests for sirepi.sir_compartmental."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sirepi import sir_compartmental
 

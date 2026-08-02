@@ -1,6 +1,6 @@
 """Tests for spml.schabenberger_ml_variogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spml import schabenberger_ml_variogram
 

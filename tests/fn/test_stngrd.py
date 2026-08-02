@@ -1,6 +1,6 @@
 """Tests for stngrd.stn_spatial_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.stngrd import stn_spatial_transform
 
