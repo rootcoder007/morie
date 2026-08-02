@@ -431,7 +431,7 @@ def cross_validate(
     -------
     CVResult
     """
-    from sklearn.model_selection import (
+    from morie.fn._ml_core import (
         GroupKFold,
         KFold,
         LeaveOneOut,
