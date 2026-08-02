@@ -1164,7 +1164,7 @@ def plot_benchmarks(
     matplotlib.figure.Figure
         The matplotlib figure object.
     """
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 
     df = suite.to_dataframe()
     if df.empty:
@@ -1218,7 +1218,7 @@ def plot_scalability(
     -------
     matplotlib.figure.Figure
     """
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
 

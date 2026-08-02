@@ -31,7 +31,7 @@ def holo_scatter(
     Tukey, J. W. (1977). *Exploratory Data Analysis*. Addison-Wesley.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_scatter requires matplotlib. Install via: pip install matplotlib")
         return None

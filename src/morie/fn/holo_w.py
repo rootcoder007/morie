@@ -33,7 +33,7 @@ def holo_funnel(
         54(10), 1046--1055.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_funnel requires matplotlib. Install via: pip install matplotlib")
         return None

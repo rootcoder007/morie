@@ -35,7 +35,7 @@ def holo_pair(
         Statistics*, 22(1), 79--91.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_pair requires matplotlib. Install via: pip install matplotlib")
         return None

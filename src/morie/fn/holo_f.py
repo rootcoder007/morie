@@ -34,7 +34,7 @@ def holo_forest(
         and the trees. *BMJ*, 322(7300), 1479--1480.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_forest requires matplotlib. Install via: pip install matplotlib")
         return None

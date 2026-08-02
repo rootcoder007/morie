@@ -35,8 +35,8 @@ def holo_mosaic(
         89(425), 190--200.
     """
     try:
-        import matplotlib.patches as mpatches
-        import matplotlib.pyplot as plt
+        from morie.fn._plot_core import patches as mpatches
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_mosaic requires matplotlib. Install via: pip install matplotlib")
         return None

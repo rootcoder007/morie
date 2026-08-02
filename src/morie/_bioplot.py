@@ -11,10 +11,10 @@ from morie.fn import _array_core as np
 
 
 def _get_plt():
-    import matplotlib
+    from morie.fn import _plot_core as matplotlib
 
     matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
+    from morie.fn import _plot_core as plt
 
     return plt
 

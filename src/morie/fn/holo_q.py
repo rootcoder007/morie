@@ -33,7 +33,7 @@ def holo_qq(
         for the analysis of data. *Biometrika*, 55(1), 1--17.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_qq requires matplotlib. Install via: pip install matplotlib")
         return None

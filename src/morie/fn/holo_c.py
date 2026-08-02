@@ -32,7 +32,7 @@ def holo_corr(
         matrices. *The American Statistician*, 56(4), 316--324.
     """
     try:
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
     except ImportError:
         print("holo_corr requires matplotlib. Install via: pip install matplotlib")
         return None

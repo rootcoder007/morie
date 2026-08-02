@@ -155,7 +155,7 @@ def sdb_reaction_diffusion(
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, axes = plt.subplots(1, 3, figsize=(13, 3.8))
         for ax, F, t in zip(
@@ -258,7 +258,7 @@ def levy_flight_alpha(
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(6, 4))
         bins = np.logspace(np.log10(lmin_km), np.log10(steps.max()), 40)
@@ -345,7 +345,7 @@ def urban_scaling_beta(category: str = "Assault", *, year: int = 2024, save_fig:
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.scatter(sub[pop_col], sub[crime_col], s=14, alpha=0.5, edgecolor="#1a1a1a", linewidth=0.4)
@@ -424,7 +424,7 @@ def lotka_volterra_police_crime(category: str = "Assault", save_fig: bool = True
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.plot(counts.index, x, "o-", color="#d7191c", label=f"prey (x = {category} count)", lw=2)
@@ -515,7 +515,7 @@ def sdb_turing_demo(
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))
         for ax, (step, F) in zip(axes, snaps, strict=False):
@@ -607,7 +607,7 @@ def inspection_game_phase(
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(6.5, 4.5))
         im = ax.imshow(
@@ -704,7 +704,7 @@ def criminal_network_graph(
     fig_path = None
     if save_fig:
         FIG.mkdir(parents=True, exist_ok=True)
-        import matplotlib.pyplot as plt
+        from morie.fn import _plot_core as plt
 
         fig, ax = plt.subplots(figsize=(8, 8))
         # Edges
