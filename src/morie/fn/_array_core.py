@@ -397,6 +397,13 @@ class marr:
     def __abs__(self):
         return self._map(lambda v: v if v >= 0 else -v)
 
+    def __class_getitem__(cls, item):
+        # typing-generic support: NDArray[np.float64] etc. resolve to
+        # the class itself (PEP 560); dtype detail carries no runtime
+        # meaning for the list-backed core.
+        del item
+        return cls
+
     def clip(self, a_min=None, a_max=None, lower=None, upper=None):
         lo = a_min if a_min is not None else lower
         hi = a_max if a_max is not None else upper
