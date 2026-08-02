@@ -33,8 +33,8 @@ def learning_curve(x, y, *, sizes=None, cv=5, seed=0, estimator=None):
     RichResult with payload: estimate (val MSE at full size), train_sizes,
     train_scores (mean), val_scores (mean), n, method.
     """
-    from sklearn.linear_model import LinearRegression
-    from sklearn.model_selection import learning_curve as _lc
+    from ._ml_core import LinearRegression
+    from ._ml_core import learning_curve as _lc
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

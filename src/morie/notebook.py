@@ -460,7 +460,7 @@ _TEMPLATES["causal"] = textwrap.dedent("""\
     ```{{python}}
     from morie.fn import _frame_core as pd
     import numpy as np
-    from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+    from morie.fn._ml_core import GradientBoostingClassifier, GradientBoostingRegressor
     import morie
     from morie.causal import compute_propensity_scores, calculate_ipw_weights
     from morie.effects import estimate_ate

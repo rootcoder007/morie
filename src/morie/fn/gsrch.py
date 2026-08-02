@@ -31,8 +31,8 @@ def grid_search_cv(x, y, *, estimator=None, param_grid=None, cv=5, scoring=None,
     RichResult with payload: estimate (best CV score), best_params,
     best_score, cv_results (list of dicts), n, method.
     """
-    from sklearn.linear_model import LogisticRegression, Ridge
-    from sklearn.model_selection import GridSearchCV
+    from ._ml_core import LogisticRegression, Ridge
+    from ._ml_core import GridSearchCV
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

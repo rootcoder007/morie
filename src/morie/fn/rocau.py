@@ -29,8 +29,8 @@ def roc_auc_score(y_true, y_score):
     RichResult with payload: estimate (AUC), auc, fpr, tpr, thresholds,
     n, n_positive, n_negative, method.
     """
-    from sklearn.metrics import roc_auc_score as _roc_auc
-    from sklearn.metrics import roc_curve
+    from ._ml_core import roc_auc_score as _roc_auc
+    from ._ml_core import roc_curve
 
     yt = np.asarray(y_true).ravel()
     ys = np.asarray(y_score, dtype=float).ravel()

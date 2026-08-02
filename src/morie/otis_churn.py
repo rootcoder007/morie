@@ -773,8 +773,8 @@ def irr_glmm_vm(df: pd.DataFrame | None = None) -> RichResult:
     """
     df = df if df is not None else _load("b01")
     try:
-        import statsmodels.api as sm
-        import statsmodels.formula.api as smf
+        from morie.fn import _glm_core as sm
+        from morie.fn._glm_core import formula as smf
 
         from .otis_causal import make_pair_alert_to_volatility_ruhela
     except ImportError as e:

@@ -1901,7 +1901,7 @@ def iv_probit(
     and exogeneity tests for simultaneous probit models. *Journal of
     Econometrics*, 39(3), 347--366.
     """
-    from sklearn.linear_model import LogisticRegression as LR
+    from morie.fn._ml_core import LogisticRegression as LR
 
     cols = [outcome] + endogenous + instruments
     if exogenous:

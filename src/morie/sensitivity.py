@@ -592,7 +592,7 @@ def specification_curve(
     -------
     SpecificationCurveResult
     """
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 
     if model_types is None:
         model_types = ["ols"]

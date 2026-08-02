@@ -101,7 +101,7 @@ def random_forest_genomic(
         mtry = max(int(np.sqrt(p)), 1)
     method_used = "sklearn RandomForestRegressor"
     try:
-        from sklearn.ensemble import RandomForestRegressor
+        from ._ml_core import RandomForestRegressor
 
         rf = RandomForestRegressor(
             n_estimators=n_trees,

@@ -30,7 +30,7 @@ def gradient_descent_vanilla(x, y, *, lr=0.01, n_iter=1000, tol=1e-8):
     RichResult with payload: estimate (theta vector with intercept first),
     n_iter (iterations actually taken), loss (final MSE), n, method.
     """
-    from sklearn.linear_model import LinearRegression
+    from ._ml_core import LinearRegression
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

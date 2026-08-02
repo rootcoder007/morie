@@ -76,7 +76,7 @@ def xgb_classify(
 
     # Try sklearn
     try:
-        from sklearn.ensemble import GradientBoostingClassifier
+        from ._ml_core import GradientBoostingClassifier
 
         model = GradientBoostingClassifier(
             n_estimators=n_estimators,

@@ -23,7 +23,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.decomposition import PCA
+    from ._ml_core import PCA
 except ImportError:
     PCA = _MissingDep('PCA')
 

@@ -323,7 +323,7 @@ def mrm_causal_design(
 
     if estimator == "ipw" and len(covariates) > 0:
         # logistic propensity then Hájek IPW
-        from sklearn.linear_model import LogisticRegression
+        from morie.fn._ml_core import LogisticRegression
 
         X = df[list(covariates)].to_numpy(dtype=float)
         e = LogisticRegression(max_iter=1000).fit(X, D).predict_proba(X)[:, 1]

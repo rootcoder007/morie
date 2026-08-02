@@ -73,7 +73,7 @@ def isotonic_regression(x, y, weights=None, increasing: bool = True):
     ys = y[order]
     ws = np.asarray(weights, dtype=float)[order]
     try:
-        from sklearn.isotonic import IsotonicRegression
+        from ._ml_core import IsotonicRegression
 
         fit = IsotonicRegression(increasing=increasing).fit(xs, ys, sample_weight=ws)
         fitted = fit.predict(xs)

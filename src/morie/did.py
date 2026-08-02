@@ -55,12 +55,12 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+    from morie.fn._ml_core import GradientBoostingClassifier, GradientBoostingRegressor
 except ImportError:
     GradientBoostingClassifier = _MissingDep('GradientBoostingClassifier')
     GradientBoostingRegressor = _MissingDep('GradientBoostingRegressor')
 try:
-    from sklearn.linear_model import LinearRegression, LogisticRegression
+    from morie.fn._ml_core import LinearRegression, LogisticRegression
 except ImportError:
     LinearRegression = _MissingDep('LinearRegression')
     LogisticRegression = _MissingDep('LogisticRegression')

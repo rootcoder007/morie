@@ -37,7 +37,7 @@ def random_forest_ensemble(
     RichResult with payload: estimate (train accuracy for classifier, R^2
     for regressor), oob_score (if computable), feature_importances, n, method.
     """
-    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+    from ._ml_core import RandomForestClassifier, RandomForestRegressor
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

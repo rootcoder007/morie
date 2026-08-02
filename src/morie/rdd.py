@@ -583,7 +583,7 @@ def sharp_rdd(
     if covariates:
         cov_vals = df.loc[mask, covariates].values.astype(float)
         # Partial out covariates
-        from sklearn.linear_model import LinearRegression as LR
+        from morie.fn._ml_core import LinearRegression as LR
 
         lr = LR().fit(cov_vals, y_bw)
         y_adj = y_bw - lr.predict(cov_vals) + y_bw.mean()

@@ -715,7 +715,7 @@ def propensity_nonresponse_weights(
     propensity score in observational studies for causal effects.
     *Biometrika*, 70(1), 41--55.
     """
-    from sklearn.linear_model import LogisticRegression
+    from morie.fn._ml_core import LogisticRegression
 
     w = np.asarray(weights, dtype=float).copy()
     resp = np.asarray(responded, dtype=bool)

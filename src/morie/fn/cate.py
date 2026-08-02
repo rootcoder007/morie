@@ -28,11 +28,11 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.ensemble import RandomForestRegressor
+    from ._ml_core import RandomForestRegressor
 except ImportError:
     RandomForestRegressor = _MissingDep('RandomForestRegressor')
 try:
-    from sklearn.preprocessing import LabelEncoder, StandardScaler
+    from ._ml_core import LabelEncoder, StandardScaler
 except ImportError:
     LabelEncoder = _MissingDep('LabelEncoder')
     StandardScaler = _MissingDep('StandardScaler')

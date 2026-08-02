@@ -55,7 +55,7 @@ def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1, gamma: floa
         feats = np.column_stack([Xa, M])
     method_used = "sklearn SVR (epsilon-SVR, RBF)"
     try:
-        from sklearn.svm import SVR
+        from ._ml_core import SVR
 
         svr = SVR(C=C, epsilon=epsilon, gamma=gamma, kernel="rbf").fit(feats, y)
         y_hat = svr.predict(feats)

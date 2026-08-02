@@ -20,7 +20,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    import statsmodels.formula.api as smf
+    from ._glm_core import formula as smf
 except ImportError:
     smf = _MissingDep('smf')
 

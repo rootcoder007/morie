@@ -35,7 +35,7 @@ def svm_hinge_primal(x, y, *, C=1.0, seed=0):
     RichResult with payload: estimate (intercept then w), accuracy
     (training accuracy), C, n, method.
     """
-    from sklearn.svm import LinearSVC
+    from ._ml_core import LinearSVC
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()

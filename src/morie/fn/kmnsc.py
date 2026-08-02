@@ -40,7 +40,7 @@ def kmeans_clustering(x, *, n_clusters=3, n_init=10, max_iter=300, seed=0):
     RichResult with payload: estimate (inertia / WCSS), labels, centers
     (n_clusters x p), inertia, n_iter, n, method.
     """
-    from sklearn.cluster import KMeans
+    from ._ml_core import KMeans
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:

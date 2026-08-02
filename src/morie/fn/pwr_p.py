@@ -22,7 +22,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from statsmodels.stats.power import NormalIndPower
+    from ._glm_core import NormalIndPower
 except ImportError:
     NormalIndPower = _MissingDep('NormalIndPower')
 

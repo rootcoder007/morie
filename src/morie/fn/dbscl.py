@@ -28,7 +28,7 @@ def dbscan_clustering(x, *, eps=0.5, min_samples=5, metric="euclidean"):
     RichResult with payload: estimate (number of clusters), labels,
     n_clusters, n_noise, core_sample_indices, n, method.
     """
-    from sklearn.cluster import DBSCAN
+    from ._ml_core import DBSCAN
 
     X = np.asarray(x, dtype=float)
     if X.ndim == 1:

@@ -25,8 +25,8 @@ def polynomial_regression(x, y, *, degree=2):
     RichResult with payload: estimate (coefficients including intercept),
     se (classical OLS standard errors), feature_names, n, method.
     """
-    from sklearn.linear_model import LinearRegression
-    from sklearn.preprocessing import PolynomialFeatures
+    from ._ml_core import LinearRegression
+    from ._ml_core import PolynomialFeatures
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

@@ -31,7 +31,7 @@ def linear_regression_ols(x, y):
     ----------
     Hastie, Tibshirani & Friedman, ESL (2009), Ch 3.
     """
-    from sklearn.linear_model import LinearRegression
+    from ._ml_core import LinearRegression
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

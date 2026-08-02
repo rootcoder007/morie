@@ -1000,7 +1000,7 @@ def standardized_coefficients(
     DataFrame
         Columns: ``variable``, ``beta``, ``se``, ``t``, ``p_value``.
     """
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 
     if isinstance(X, pd.DataFrame):
         names = X.columns.tolist()

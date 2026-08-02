@@ -748,7 +748,7 @@ def _run_ebac_gender_smote_sensitivity(
     weight_col: str = "weight",
 ) -> dict[str, pd.DataFrame]:
     """eBAC gender interaction and SMOTE sensitivity analysis."""
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 
     from .ml import apply_smote
     from .survey import SurveyDesign

@@ -56,11 +56,11 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    import statsmodels.api as sm
+    from morie.fn import _glm_core as sm
 except ImportError:
     sm = _MissingDep('sm')
 try:
-    import statsmodels.formula.api as smf
+    from morie.fn._glm_core import formula as smf
 except ImportError:
     smf = _MissingDep('smf')
 

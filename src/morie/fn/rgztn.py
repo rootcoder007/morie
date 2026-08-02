@@ -30,7 +30,7 @@ def regularization_path(x, y, *, penalty="ridge", alphas=None, l1_ratio=0.5):
     coef_path (shape (len(alphas), p+1) including intercept), alphas, penalty,
     n, method.
     """
-    from sklearn.linear_model import ElasticNet, Lasso, Ridge
+    from ._ml_core import ElasticNet, Lasso, Ridge
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float).ravel()

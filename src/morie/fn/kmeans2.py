@@ -23,7 +23,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.cluster import KMeans
+    from ._ml_core import KMeans
 except ImportError:
     KMeans = _MissingDep('KMeans')
 

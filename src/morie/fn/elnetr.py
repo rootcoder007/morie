@@ -23,7 +23,7 @@ class _MissingDep:
             "morie implementation" % self._name)
 
 try:
-    from sklearn.linear_model import ElasticNet
+    from ._ml_core import ElasticNet
 except ImportError:
     ElasticNet = _MissingDep('ElasticNet')
 

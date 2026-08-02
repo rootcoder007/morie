@@ -50,8 +50,8 @@ def random_search_cv(
     best_score, sampled_params, sampled_scores, n, method.
     """
     from ._stats_core import loguniform
-    from sklearn.linear_model import LogisticRegression, Ridge
-    from sklearn.model_selection import RandomizedSearchCV
+    from ._ml_core import LogisticRegression, Ridge
+    from ._ml_core import RandomizedSearchCV
 
     X = np.asarray(x, dtype=float)
     y = np.asarray(y).ravel()
