@@ -760,12 +760,14 @@ def otis_aipw_superlearner(
         result.notes = ["sklearn unavailable -- fell back to plain AIPW", *result.notes]
         return result
 
-    try:
-        import xgboost as xgb
-
-        HAS_XGB = True
-    except ImportError:
-        HAS_XGB = False
+    # The Super Learner library uses the native gradient-boosting arm
+    # (_ml_core, the same second-order split rule as xgboost) instead
+    # of the external xgboost package.
+    from morie.fn._ml_core import (
+        GradientBoostingClassifier as _GBC,
+        GradientBoostingRegressor as _GBR,
+    )
+    HAS_XGB = True
 
     data = df[[treatment, outcome] + covariates].dropna().copy()
     d = _binarise(data[treatment])
@@ -787,10 +789,9 @@ def otis_aipw_superlearner(
         if HAS_XGB:
             out.append(
                 (
-                    "xgb",
-                    xgb.XGBRegressor(
-                        n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed, n_jobs=-1, verbosity=0
-                    ),
+                    "gb",
+                    _GBR(n_estimators=300, max_depth=4,
+                         learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -803,17 +804,9 @@ def otis_aipw_superlearner(
         if HAS_XGB:
             out.append(
                 (
-                    "xgb",
-                    xgb.XGBClassifier(
-                        n_estimators=300,
-                        max_depth=4,
-                        learning_rate=0.05,
-                        random_state=seed,
-                        n_jobs=-1,
-                        verbosity=0,
-                        use_label_encoder=False,
-                        eval_metric="logloss",
-                    ),
+                    "gb",
+                    _GBC(n_estimators=300, max_depth=4,
+                         learning_rate=0.05, random_state=seed),
                 )
             )
         return out
