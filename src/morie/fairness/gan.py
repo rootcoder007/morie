@@ -1,103 +1,239 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-"""JAX spatial GAN for synthetic crime-location generation.
+# morie.fairness -- native GAN module (rootcoder007/morie)
+"""GANs for spatial synthesis and CTGAN-style debiasing, implemented
+natively: pure-Python MLPs with hand-derived backpropagation, a
+hand-written Adam, and morie's own RNG. No JAX, no torch, no numpy.
 
-A small generative-adversarial network that learns the spatial
-distribution of historical crime incidents and samples synthetic
-patrol/crime locations from it — the generative core of the
-arXiv:2603.18987 simulation framework, reimplemented in **JAX**
-(Apache-2.0) rather than PyTorch so morie stays lean and runs CPU-first
-(jaxlib is ~85 MB; PyTorch's default wheels are multi-gigabyte).
-
-The network is deliberately small (two-hidden-layer MLPs) and the
-training data is standardised before fitting, which keeps adversarial
-training stable enough to be deterministically testable.
-
-This module needs the optional ``morie[sim]`` extra (``jax``).
-Importing it without JAX raises :class:`ImportError`; morie's lazy
-loader then reports the symbol as absent — the standard
-optional-dependency behaviour.
+The training objective is the non-saturating GAN of Goodfellow et al.
+(2014, "Generative Adversarial Nets", NeurIPS, sec. 3): the
+discriminator minimises binary cross-entropy on real-vs-fake logits
+and the generator maximises log D(G(z)). Adam follows Kingma & Ba
+(2015, "Adam: A Method for Stochastic Optimization", ICLR, alg. 1).
+Backprop through the leaky-ReLU MLP is the standard reverse-mode
+chain rule (Rumelhart, Hinton & Williams 1986).
 """
 
 from __future__ import annotations
 
-from morie.fn import _array_core as np
+import math
 
-try:
-    import jax
-    import jax.numpy as jnp
-except ImportError as exc:  # pragma: no cover - only hit without JAX
-    raise ImportError("morie.fairness.gan needs JAX — install the simulation extra: pip install 'morie[sim]'") from exc
+from morie.fn import _array_core as np
 
 __all__ = ["SpatialGAN", "CTGANDebiaser"]
 
+_LEAK = 0.2
 
-# ── tiny MLP ─────────────────────────────────────────────────────────
+
+# ── tiny MLP: forward + hand-derived backward ────────────────────────
 
 
-def _init_mlp(key, sizes):
-    """He-initialised MLP parameters as a list of ``(W, b)`` tuples."""
+def _init_mlp(rng, sizes):
+    """He-initialised MLP parameters as a list of ``(W, b)`` pairs."""
     params = []
     for i in range(len(sizes) - 1):
-        key, sub = jax.random.split(key)
-        w = jax.random.normal(sub, (sizes[i], sizes[i + 1]))
-        w = w * jnp.sqrt(2.0 / sizes[i])
-        params.append((w, jnp.zeros(sizes[i + 1])))
+        scale = math.sqrt(2.0 / sizes[i])
+        W = [[scale * float(v) for v in
+              rng.normal(0, 1, sizes[i + 1])._flat()]
+             for _ in range(sizes[i])]
+        b = [0.0] * sizes[i + 1]
+        params.append((W, b))
     return params
 
 
-def _mlp(params, x):
-    """Forward pass; leaky-ReLU on hidden layers, linear output."""
-    for i, (w, b) in enumerate(params):
-        x = x @ w + b
-        if i < len(params) - 1:
-            x = jax.nn.leaky_relu(x, 0.2)
-    return x
+def _forward(params, X):
+    """Forward pass; caches pre-activations for backprop.
+
+    Returns (output, cache) where cache[l] = (input_l, pre_act_l).
+    Hidden layers use leaky ReLU; the output layer is linear.
+    """
+    cache = []
+    h = X
+    L = len(params)
+    for li, (W, b) in enumerate(params):
+        n_in = len(W)
+        n_out = len(b)
+        pre = [[b[j] + sum(h[r][i] * W[i][j] for i in range(n_in))
+                for j in range(n_out)] for r in range(len(h))]
+        cache.append((h, pre))
+        if li < L - 1:
+            h = [[v if v > 0 else _LEAK * v for v in row]
+                 for row in pre]
+        else:
+            h = pre
+    return h, cache
 
 
-# ── hand-written Adam (keeps the extra to just `jax`) ────────────────
+def _backward(params, cache, dout):
+    """Gradients of the loss w.r.t. every (W, b), given dL/d(output).
+
+    Also returns dL/d(input) so a generator can chain through a frozen
+    discriminator.
+    """
+    grads = [None] * len(params)
+    delta = dout
+    for li in range(len(params) - 1, -1, -1):
+        W, b = params[li]
+        h_in, pre = cache[li]
+        n_in, n_out, B = len(W), len(b), len(h_in)
+        if li < len(params) - 1:
+            # activation derivative of THIS layer's output was applied
+            # by the layer above; here delta is already d/d(post-act),
+            # convert to d/d(pre-act) via leaky slope
+            delta = [[d * (1.0 if p > 0 else _LEAK)
+                      for d, p in zip(drow, prow)]
+                     for drow, prow in zip(delta, pre)]
+        gW = [[sum(h_in[r][i] * delta[r][j] for r in range(B))
+               for j in range(n_out)] for i in range(n_in)]
+        gb = [sum(delta[r][j] for r in range(B))
+              for j in range(n_out)]
+        grads[li] = (gW, gb)
+        if li > 0:
+            delta = [[sum(delta[r][j] * W[i][j]
+                          for j in range(n_out))
+                      for i in range(n_in)] for r in range(B)]
+    din = [[sum(delta[r][j] * params[0][0][i][j]
+                for j in range(len(params[0][1])))
+            for i in range(len(params[0][0]))]
+           for r in range(len(delta))] if False else None
+    return grads, delta
+
+
+def _input_grad(params, cache, dout):
+    """dL/d(input of the network) — chain rule all the way down."""
+    delta = dout
+    for li in range(len(params) - 1, -1, -1):
+        W, b = params[li]
+        h_in, pre = cache[li]
+        n_in, n_out, B = len(W), len(b), len(h_in)
+        if li < len(params) - 1:
+            delta = [[d * (1.0 if p > 0 else _LEAK)
+                      for d, p in zip(drow, prow)]
+                     for drow, prow in zip(delta, pre)]
+        delta = [[sum(delta[r][j] * W[i][j] for j in range(n_out))
+                  for i in range(n_in)] for r in range(B)]
+    return delta
+
+
+def _sigmoid(v):
+    if v >= 0:
+        return 1.0 / (1.0 + math.exp(-v))
+    e = math.exp(v)
+    return e / (1.0 + e)
+
+
+# ── hand-written Adam (Kingma & Ba 2015, alg. 1) ─────────────────────
 
 
 def _adam_init(params):
-    return [(jnp.zeros_like(w), jnp.zeros_like(b), jnp.zeros_like(w), jnp.zeros_like(b)) for w, b in params]
+    st = []
+    for W, b in params:
+        st.append(([[0.0] * len(W[0]) for _ in W], [0.0] * len(b),
+                   [[0.0] * len(W[0]) for _ in W], [0.0] * len(b)))
+    return st
 
 
-def _adam_step(params, grads, state, step, lr, b1=0.9, b2=0.999, eps=1e-8):
-    new_params, new_state = [], []
-    for (w, b), (gw, gb), (mw, mb, vw, vb) in zip(params, grads, state):
-        mw = b1 * mw + (1 - b1) * gw
-        mb = b1 * mb + (1 - b1) * gb
-        vw = b2 * vw + (1 - b2) * gw**2
-        vb = b2 * vb + (1 - b2) * gb**2
-        bc1 = 1.0 - b1**step
-        bc2 = 1.0 - b2**step
-        w = w - lr * (mw / bc1) / (jnp.sqrt(vw / bc2) + eps)
-        b = b - lr * (mb / bc1) / (jnp.sqrt(vb / bc2) + eps)
-        new_params.append((w, b))
-        new_state.append((mw, mb, vw, vb))
-    return new_params, new_state
+def _adam_step(params, grads, state, step, lr, b1=0.9, b2=0.999,
+               eps=1e-8):
+    bc1 = 1.0 - b1 ** step
+    bc2 = 1.0 - b2 ** step
+    for (W, b), (gW, gb), (mW, mb, vW, vb) in zip(params, grads,
+                                                  state):
+        for i in range(len(W)):
+            for j in range(len(W[0])):
+                mW[i][j] = b1 * mW[i][j] + (1 - b1) * gW[i][j]
+                vW[i][j] = b2 * vW[i][j] + (1 - b2) * gW[i][j] ** 2
+                W[i][j] -= lr * (mW[i][j] / bc1) / (
+                    math.sqrt(vW[i][j] / bc2) + eps)
+        for j in range(len(b)):
+            mb[j] = b1 * mb[j] + (1 - b1) * gb[j]
+            vb[j] = b2 * vb[j] + (1 - b2) * gb[j] ** 2
+            b[j] -= lr * (mb[j] / bc1) / (math.sqrt(vb[j] / bc2)
+                                          + eps)
 
 
-# ── GAN losses ───────────────────────────────────────────────────────
+# ── one GAN training step (shared by both classes) ───────────────────
 
 
-def _disc_loss(dp, gp, real, z):
-    fake = _mlp(gp, z)
-    real_logit = _mlp(dp, real)[:, 0]
-    fake_logit = _mlp(dp, fake)[:, 0]
-    # binary cross-entropy: real -> 1, fake -> 0.
-    # log(1 - sigmoid(x)) == log_sigmoid(-x)
-    return -jax.nn.log_sigmoid(real_logit).mean() - jax.nn.log_sigmoid(-fake_logit).mean()
+def _gan_step(gp, dp, gs, ds, t, real, zg_in, zd_in, lr):
+    """One non-saturating GAN update. Returns dl + gl.
+
+    zg_in / zd_in are the full generator INPUTS (noise, or noise ++
+    condition), and real is the full discriminator input for the real
+    batch (features, or features ++ condition). For the conditional
+    case the caller appends the condition to the generator output
+    before discriminating; here that is expressed by cond_tail: the
+    trailing columns of zg_in past the generator's noise width are
+    appended to fakes when the widths differ.
+    """
+    B = len(real)
+    d_in_w = len(dp[0][0])
+
+    def disc_in(feat, gin):
+        if len(feat[0]) == d_in_w:
+            return feat
+        tail = [row[-(d_in_w - len(feat[0])):] for row in gin]
+        return [f + tl for f, tl in zip(feat, tail)]
+
+    # ---- discriminator update
+    fake, _ = _forward(gp, zd_in)
+    dreal = disc_in(real, real)
+    dfake = disc_in(fake, zd_in)
+    r_out, r_cache = _forward(dp, dreal)
+    f_out, f_cache = _forward(dp, dfake)
+    dl = 0.0
+    dr = []
+    for row in r_out:
+        s = _sigmoid(row[0])
+        dl += -math.log(max(s, 1e-12))
+        dr.append([-(1.0 - s) / B])
+    df = []
+    for row in f_out:
+        s = _sigmoid(row[0])
+        dl += -math.log(max(1.0 - s, 1e-12))
+        df.append([s / B])
+    dl /= B
+    g_r, _ = _backward(dp, r_cache, dr)
+    g_f, _ = _backward(dp, f_cache, df)
+    dgrads = [([[a + b for a, b in zip(ra, fa)]
+                for ra, fa in zip(rW, fW)],
+               [a + b for a, b in zip(rb, fb)])
+              for (rW, rb), (fW, fb) in zip(g_r, g_f)]
+    _adam_step(dp, dgrads, ds, t, lr)
+
+    # ---- generator update (non-saturating): -log sigmoid(D(G(z)))
+    fake, g_cache = _forward(gp, zg_in)
+    dfake = disc_in(fake, zg_in)
+    f_out, f_cache = _forward(dp, dfake)
+    gl = 0.0
+    df = []
+    for row in f_out:
+        s = _sigmoid(row[0])
+        gl += -math.log(max(s, 1e-12))
+        df.append([-(1.0 - s) / B])
+    gl /= B
+    dd_in = _input_grad(dp, f_cache, df)
+    # gradient flows only into the feature part of the disc input
+    nf = len(fake[0])
+    d_feat = [row[:nf] for row in dd_in]
+    ggrads, _ = _backward(gp, g_cache, d_feat)
+    _adam_step(gp, ggrads, gs, t, lr)
+    return dl + gl
 
 
-def _gen_loss(gp, dp, z):
-    fake = _mlp(gp, z)
-    fake_logit = _mlp(dp, fake)[:, 0]
-    # non-saturating generator loss
-    return -jax.nn.log_sigmoid(fake_logit).mean()
+def _randn(rng, n, m):
+    flat = [float(v) for v in rng.normal(0, 1, n * m)._flat()]
+    return [flat[i * m:(i + 1) * m] for i in range(n)]
+
+
+class _Samples(list):
+    """(n, k) list-of-rows with the .shape the doctests check."""
+
+    @property
+    def shape(self):
+        return (len(self), len(self[0]) if self else 0)
 
 
 class SpatialGAN:
-    """A small JAX GAN over 2-D crime/patrol coordinates.
+    """A small native GAN over 2-D crime/patrol coordinates.
 
     Parameters
     ----------
@@ -110,7 +246,7 @@ class SpatialGAN:
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> from morie.fairness.gan import SpatialGAN
     >>> rng = np.random.default_rng(0)
     >>> pts = rng.normal([5.0, -3.0], 1.0, size=(800, 2))
@@ -120,113 +256,90 @@ class SpatialGAN:
     (500, 2)
     """
 
-    def __init__(self, latent_dim: int = 16, hidden: int = 64, seed: int = 0):
+    def __init__(self, latent_dim: int = 16, hidden: int = 64,
+                 seed: int = 0):
         self.latent_dim = int(latent_dim)
         self.hidden = int(hidden)
         self.seed = int(seed)
-        self._gp = None  # generator params
-        self._mean = None  # standardisation
+        self._gp = None
+        self._mean = None
         self._std = None
         self.history: list[float] = []
 
-    def fit(self, points, *, steps: int = 1500, batch_size: int = 128, lr: float = 2e-3):
+    def fit(self, points, *, steps: int = 1500, batch_size: int = 128,
+            lr: float = 2e-3):
         """Train the GAN on an ``(n, 2)`` array of coordinates."""
-        pts = np.asarray(points, dtype=np.float32)
-        if pts.ndim != 2 or pts.shape[1] != 2:
+        pts = np.asarray(points, dtype=float)
+        if len(pts.shape) != 2 or pts.shape[1] != 2:
             raise ValueError("points must be an (n, 2) array")
-        if pts.shape[0] < 2:
+        rows = pts.tolist()
+        n = len(rows)
+        if n < 2:
             raise ValueError("need at least two points to fit")
 
-        self._mean = pts.mean(axis=0)
-        self._std = pts.std(axis=0) + 1e-8
-        std_pts = jnp.asarray((pts - self._mean) / self._std)
-        n = std_pts.shape[0]
+        self._mean = [sum(r[j] for r in rows) / n for j in range(2)]
+        self._std = [math.sqrt(sum((r[j] - self._mean[j]) ** 2
+                                   for r in rows) / n) + 1e-8
+                     for j in range(2)]
+        std_pts = [[(r[j] - self._mean[j]) / self._std[j]
+                    for j in range(2)] for r in rows]
 
-        key = jax.random.PRNGKey(self.seed)
-        key, kg, kd = jax.random.split(key, 3)
-        gp = _init_mlp(kg, [self.latent_dim, self.hidden, self.hidden, 2])
-        dp = _init_mlp(kd, [2, self.hidden, self.hidden, 1])
-        gs = _adam_init(gp)
-        ds = _adam_init(dp)
-
-        @jax.jit
-        def step(gp, dp, gs, ds, t, real, zd, zg):
-            dl, dg = jax.value_and_grad(_disc_loss)(dp, gp, real, zd)
-            dp2, ds2 = _adam_step(dp, dg, ds, t, lr)
-            gl, gg = jax.value_and_grad(_gen_loss)(gp, dp2, zg)
-            gp2, gs2 = _adam_step(gp, gg, gs, t, lr)
-            return gp2, dp2, gs2, ds2, dl + gl
+        rng = np.random.default_rng(self.seed)
+        gp = _init_mlp(rng, [self.latent_dim, self.hidden,
+                             self.hidden, 2])
+        dp = _init_mlp(rng, [2, self.hidden, self.hidden, 1])
+        gs, ds = _adam_init(gp), _adam_init(dp)
 
         bs = min(batch_size, n)
         self.history = []
         for t in range(1, int(steps) + 1):
-            key, ks, kzd, kzg = jax.random.split(key, 4)
-            idx = jax.random.randint(ks, (bs,), 0, n)
-            real = std_pts[idx]
-            zd = jax.random.normal(kzd, (bs, self.latent_dim))
-            zg = jax.random.normal(kzg, (bs, self.latent_dim))
-            gp, dp, gs, ds, loss = step(gp, dp, gs, ds, t, real, zd, zg)
+            idx = [int(v) for v in rng.integers(0, n, bs)._flat()]
+            real = [std_pts[i] for i in idx]
+            zd = _randn(rng, bs, self.latent_dim)
+            zg = _randn(rng, bs, self.latent_dim)
+            loss = _gan_step(gp, dp, gs, ds, t, real, zg, zd, lr)
             if t % 50 == 0:
                 self.history.append(float(loss))
-
         self._gp = gp
         return self
 
     def sample(self, n: int, *, seed: int | None = None):
-        """Draw ``n`` synthetic coordinates as an ``(n, 2)`` numpy array."""
+        """Draw ``n`` synthetic coordinates as an ``(n, 2)`` array."""
         if self._gp is None:
-            raise RuntimeError("SpatialGAN is not fitted; call fit() first")
-        key = jax.random.PRNGKey(self.seed if seed is None else int(seed))
-        z = jax.random.normal(key, (int(n), self.latent_dim))
-        out = np.asarray(_mlp(self._gp, z))
-        return out * self._std + self._mean
-
-
-# ── conditional GAN losses (for the CTGAN-style debiaser) ────────────
-
-
-def _cond_disc_loss(dp, gp, real_feat, cond, z):
-    fake = _mlp(gp, jnp.concatenate([z, cond], axis=1))
-    real_logit = _mlp(dp, jnp.concatenate([real_feat, cond], axis=1))[:, 0]
-    fake_logit = _mlp(dp, jnp.concatenate([fake, cond], axis=1))[:, 0]
-    return -jax.nn.log_sigmoid(real_logit).mean() - jax.nn.log_sigmoid(-fake_logit).mean()
-
-
-def _cond_gen_loss(gp, dp, cond, z):
-    fake = _mlp(gp, jnp.concatenate([z, cond], axis=1))
-    fake_logit = _mlp(dp, jnp.concatenate([fake, cond], axis=1))[:, 0]
-    return -jax.nn.log_sigmoid(fake_logit).mean()
+            raise RuntimeError(
+                "SpatialGAN is not fitted; call fit() first")
+        rng = np.random.default_rng(
+            self.seed if seed is None else int(seed))
+        z = _randn(rng, int(n), self.latent_dim)
+        out, _ = _forward(self._gp, z)
+        return _Samples([[v * s + m for v, s, m in
+                          zip(row, self._std, self._mean)]
+                         for row in out])
 
 
 class CTGANDebiaser:
     """A conditional tabular GAN that rebalances a biased dataset.
 
-    A reimplementation of the *debiasing* idea from CTGAN
-    (Xu et al., 2019) as used in arXiv:2603.18987 — written in JAX, with
-    no dependency on the Business-Source-licensed ``sdv`` / ``ctgan``
-    packages.
+    A native reimplementation of the *debiasing* idea from CTGAN
+    (Xu et al., 2019) as used in arXiv:2603.18987 — with no dependency
+    on JAX or the Business-Source-licensed ``sdv``/``ctgan`` packages.
 
     The generator is **conditioned** on two discrete columns — the
     protected ``group`` and the binary ``outcome`` — and learns to
     produce realistic continuous feature columns for each
     ``(group, outcome)`` combination.  Debiasing then works exactly as
-    CTGAN's training-by-sampling prescribes: :meth:`debias` synthesises
-    a new dataset while sampling the *conditional distribution* in a
-    rebalanced way — every group's favourable-outcome rate is set to the
-    privileged group's rate — so the disparate-impact ratio of the
-    debiased data moves toward 1.  The GAN's role is to keep the
-    synthesised features realistic under that rebalanced conditioning.
+    CTGAN's training-by-sampling prescribes: :meth:`debias`
+    synthesises a new dataset while sampling the *conditional
+    distribution* in a rebalanced way — every group's
+    favourable-outcome rate is set to the privileged group's rate — so
+    the disparate-impact ratio of the debiased data moves toward 1.
 
-    This redistributes disparity; as the paper stresses, it does not by
-    itself remove structural bias without accompanying policy change.
-
-    Parameters
-    ----------
-    latent_dim, hidden, seed
-        As for :class:`SpatialGAN`.
+    This redistributes disparity; it does not by itself remove
+    structural bias without accompanying policy change.
     """
 
-    def __init__(self, latent_dim: int = 16, hidden: int = 64, seed: int = 0):
+    def __init__(self, latent_dim: int = 16, hidden: int = 64,
+                 seed: int = 0):
         self.latent_dim = int(latent_dim)
         self.hidden = int(hidden)
         self.seed = int(seed)
@@ -236,146 +349,123 @@ class CTGANDebiaser:
         self.history: list[float] = []
 
     def _cond(self, gi, oi):
-        """One-hot ``(group, outcome)`` condition matrix."""
+        """One-hot ``(group, outcome)`` condition rows."""
         ng = len(self._groups)
-        cond = np.zeros((len(gi), ng + 2), dtype=np.float32)
-        cond[np.arange(len(gi)), gi] = 1.0
-        cond[np.arange(len(gi)), ng + oi] = 1.0
-        return cond
+        out = []
+        for g, o in zip(gi, oi):
+            row = [0.0] * (ng + 2)
+            row[g] = 1.0
+            row[ng + o] = 1.0
+            out.append(row)
+        return out
 
-    def fit(
-        self,
-        df,
-        *,
-        outcome_col,
-        feature_cols,
-        group_col="group",
-        favorable=1,
-        steps: int = 1500,
-        batch_size: int = 128,
-        lr: float = 2e-3,
-    ):
-        """Train the conditional GAN on a biased :class:`~pandas.DataFrame`.
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-        outcome_col : str
-            Binary outcome column (the value ``favorable`` is the
-            favourable class).
-        feature_cols : sequence of str
-            Continuous feature columns the GAN learns to synthesise.
-        group_col : str
-            Protected-attribute column.
-        favorable : default ``1``
-            The favourable value of ``outcome_col``.
-        """
+    def fit(self, df, *, outcome_col, feature_cols,
+            group_col="group", favorable=1, steps: int = 1500,
+            batch_size: int = 128, lr: float = 2e-3):
+        """Train the conditional GAN on a biased DataFrame."""
         feature_cols = list(feature_cols)
         if not feature_cols:
             raise ValueError("need at least one feature column")
-        self._groups = sorted(df[group_col].unique(), key=str)
+        gvals = df[group_col].tolist()
+        self._groups = sorted(set(gvals), key=str)
         self._feature_cols = feature_cols
         self._group_col = group_col
         self._outcome_col = outcome_col
         self._favorable = favorable
 
         g_idx = {g: i for i, g in enumerate(self._groups)}
-        gi = df[group_col].map(g_idx).to_numpy()
-        oi = (df[outcome_col].to_numpy() == favorable).astype(int)
-        feats = df[feature_cols].to_numpy(dtype=np.float32)
-        if feats.shape[0] < 2:
+        gi = [g_idx[g] for g in gvals]
+        oi = [1 if v == favorable else 0
+              for v in df[outcome_col].tolist()]
+        feats = [[float(df[c].tolist()[r]) for c in feature_cols]
+                 for r in range(len(gvals))]
+        n = len(feats)
+        if n < 2:
             raise ValueError("need at least two rows to fit")
+        nf = len(feature_cols)
 
-        self._fmean = feats.mean(axis=0)
-        self._fstd = feats.std(axis=0) + 1e-8
-        std_feats = jnp.asarray((feats - self._fmean) / self._fstd)
+        self._fmean = [sum(f[j] for f in feats) / n
+                       for j in range(nf)]
+        self._fstd = [math.sqrt(sum((f[j] - self._fmean[j]) ** 2
+                                    for f in feats) / n) + 1e-8
+                      for j in range(nf)]
+        std_feats = [[(f[j] - self._fmean[j]) / self._fstd[j]
+                      for j in range(nf)] for f in feats]
 
         ng = len(self._groups)
-        self._group_props = np.bincount(gi, minlength=ng) / len(gi)
+        self._group_props = [gi.count(i) / n for i in range(ng)]
         self._group_fav_rate = {
-            g: float(oi[gi == i].mean()) if (gi == i).any() else 0.0 for i, g in enumerate(self._groups)
-        }
-        cond = jnp.asarray(self._cond(gi, oi))
+            g: (sum(o for gg, o in zip(gi, oi) if gg == i)
+                / max(1, gi.count(i)))
+            for i, g in enumerate(self._groups)}
+        cond = self._cond(gi, oi)
         cond_dim = ng + 2
-        n_feat = std_feats.shape[1]
-        n = std_feats.shape[0]
 
-        key = jax.random.PRNGKey(self.seed)
-        key, kg, kd = jax.random.split(key, 3)
-        gp = _init_mlp(kg, [self.latent_dim + cond_dim, self.hidden, self.hidden, n_feat])
-        dp = _init_mlp(kd, [n_feat + cond_dim, self.hidden, self.hidden, 1])
-        gs = _adam_init(gp)
-        ds = _adam_init(dp)
-
-        @jax.jit
-        def step(gp, dp, gs, ds, t, real, cnd, zd, zg):
-            dl, dg = jax.value_and_grad(_cond_disc_loss)(dp, gp, real, cnd, zd)
-            dp2, ds2 = _adam_step(dp, dg, ds, t, lr)
-            gl, gg = jax.value_and_grad(_cond_gen_loss)(gp, dp2, cnd, zg)
-            gp2, gs2 = _adam_step(gp, gg, gs, t, lr)
-            return gp2, dp2, gs2, ds2, dl + gl
+        rng = np.random.default_rng(self.seed)
+        gp = _init_mlp(rng, [self.latent_dim + cond_dim, self.hidden,
+                             self.hidden, nf])
+        dp = _init_mlp(rng, [nf + cond_dim, self.hidden, self.hidden,
+                             1])
+        gs, ds = _adam_init(gp), _adam_init(dp)
 
         bs = min(batch_size, n)
         self.history = []
         for t in range(1, int(steps) + 1):
-            key, ks, kzd, kzg = jax.random.split(key, 4)
-            idx = jax.random.randint(ks, (bs,), 0, n)
-            real = std_feats[idx]
-            cnd = cond[idx]
-            zd = jax.random.normal(kzd, (bs, self.latent_dim))
-            zg = jax.random.normal(kzg, (bs, self.latent_dim))
-            gp, dp, gs, ds, loss = step(gp, dp, gs, ds, t, real, cnd, zd, zg)
+            idx = [int(v) for v in rng.integers(0, n, bs)._flat()]
+            real = [std_feats[i] + cond[i] for i in idx]
+            zg = [zrow + cond[i] for zrow, i in
+                  zip(_randn(rng, bs, self.latent_dim), idx)]
+            zd = [zrow + cond[i] for zrow, i in
+                  zip(_randn(rng, bs, self.latent_dim), idx)]
+            loss = _gan_step(gp, dp, gs, ds, t, real, zg, zd, lr)
             if t % 50 == 0:
                 self.history.append(float(loss))
         self._gp = gp
         return self
 
     def debias(self, n: int, *, privileged, seed: int | None = None):
-        """Synthesise ``n`` rebalanced rows as a :class:`~pandas.DataFrame`.
+        """Synthesise ``n`` rebalanced rows as a native DataFrame.
 
         Every group's favourable-outcome rate is set to the privileged
-        group's rate, so the debiased dataset's disparate-impact ratio
-        moves toward 1.  Feature columns are generated by the conditional
-        GAN.
-
-        Parameters
-        ----------
-        n : int
-            Number of synthetic rows.
-        privileged
-            The group whose favourable-outcome rate the others are
-            rebalanced to.
-        seed : int, optional
-            Sampling seed.
-
-        Returns
-        -------
-        pandas.DataFrame
-            Columns: the group column, the outcome column, and the
-            feature columns — re-auditable with the morie.fairness
-            metrics.
+        group's rate, so the disparate-impact ratio of the debiased
+        data moves toward 1.
         """
         from morie.fn import _frame_core as pd
 
         if self._gp is None:
-            raise RuntimeError("CTGANDebiaser is not fitted; call fit()")
+            raise RuntimeError(
+                "CTGANDebiaser is not fitted; call fit()")
         if privileged not in self._groups:
-            raise ValueError(f"privileged group {privileged!r} not seen in training; groups: {self._groups}")
+            raise ValueError(
+                f"privileged group {privileged!r} not seen in "
+                f"training; groups: {self._groups}")
         target_rate = self._group_fav_rate[privileged]
-        rng = np.random.default_rng(seed)
-        gi = rng.choice(len(self._groups), size=int(n), p=self._group_props)
-        oi = (rng.random(int(n)) < target_rate).astype(int)
-        cond = jnp.asarray(self._cond(gi, oi))
-
-        key = jax.random.PRNGKey(self.seed if seed is None else int(seed))
-        z = jax.random.normal(key, (int(n), self.latent_dim))
-        std_feat = np.asarray(_mlp(self._gp, jnp.concatenate([z, cond], axis=1)))
-        feats = std_feat * self._fstd + self._fmean
-
+        rng = np.random.default_rng(
+            self.seed if seed is None else int(seed))
+        ng = len(self._groups)
+        cum = []
+        acc = 0.0
+        for p in self._group_props:
+            acc += p
+            cum.append(acc)
+        gi = []
+        for u in rng.uniform(0, 1, int(n))._flat():
+            for i, c in enumerate(cum):
+                if float(u) <= c or i == ng - 1:
+                    gi.append(i)
+                    break
+        oi = [1 if float(u) < target_rate else 0
+              for u in rng.uniform(0, 1, int(n))._flat()]
+        cond = self._cond(gi, oi)
+        z = [zrow + crow for zrow, crow in
+             zip(_randn(rng, int(n), self.latent_dim), cond)]
+        std_feat, _ = _forward(self._gp, z)
         out = {
             self._group_col: [self._groups[i] for i in gi],
-            self._outcome_col: np.where(oi == 1, self._favorable, 0),
+            self._outcome_col: [self._favorable if o == 1 else 0
+                                for o in oi],
         }
         for j, col in enumerate(self._feature_cols):
-            out[col] = feats[:, j]
+            out[col] = [row[j] * self._fstd[j] + self._fmean[j]
+                        for row in std_feat]
         return pd.DataFrame(out)
