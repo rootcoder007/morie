@@ -47,7 +47,7 @@ def gradient_boosting_ensemble(
     RichResult with payload: estimate (train accuracy / R^2),
     feature_importances, n_estimators, learning_rate, n, method.
     """
-    from sklearn.ensemble import (
+    from ._ml_core import (
         GradientBoostingClassifier,
         GradientBoostingRegressor,
     )

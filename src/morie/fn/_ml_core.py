@@ -1926,3 +1926,108 @@ def clone(estimator):
 class base:
     BaseEstimator = BaseEstimator
     clone = staticmethod(clone)
+
+
+# ===================================================== splitters tail
+
+class GroupKFold:
+    def __init__(self, n_splits=5):
+        self.n_splits = n_splits
+
+    def split(self, X, y=None, groups=None):
+        del y
+        gv = list(groups.tolist() if hasattr(groups, "tolist")
+                  else groups)
+        uniq = sorted(set(gv), key=str)
+        # assign groups to folds by size (largest first, greedy)
+        sizes = {g: gv.count(g) for g in uniq}
+        folds = [[] for _ in range(self.n_splits)]
+        loads = [0] * self.n_splits
+        for g in sorted(uniq, key=lambda u: -sizes[u]):
+            k = loads.index(min(loads))
+            folds[k].append(g)
+            loads[k] += sizes[g]
+        n = len(gv)
+        for k in range(self.n_splits):
+            gset = set(folds[k])
+            test = [i for i in range(n) if gv[i] in gset]
+            train = [i for i in range(n) if gv[i] not in gset]
+            yield train, test
+
+
+class LeaveOneOut:
+    def split(self, X, y=None):
+        del y
+        n = len(X.tolist() if hasattr(X, "tolist") else X)
+        for i in range(n):
+            yield [j for j in range(n) if j != i], [i]
+
+
+class ShuffleSplit:
+    def __init__(self, n_splits=10, test_size=0.1, random_state=0):
+        self.n_splits = n_splits
+        self.test_size = test_size
+        self.random_state = random_state or 0
+
+    def split(self, X, y=None):
+        del y
+        n = len(X.tolist() if hasattr(X, "tolist") else X)
+        ntest = int(round(n * self.test_size)) \
+            if self.test_size < 1 else int(self.test_size)
+        rng = _ac.random.default_rng(self.random_state)
+        for _ in range(self.n_splits):
+            idx = list(range(n))
+            rng.shuffle(idx)
+            yield idx[ntest:], idx[:ntest]
+
+
+class TimeSeriesSplit:
+    def __init__(self, n_splits=5):
+        self.n_splits = n_splits
+
+    def split(self, X, y=None):
+        del y
+        n = len(X.tolist() if hasattr(X, "tolist") else X)
+        fold = n // (self.n_splits + 1)
+        for k in range(1, self.n_splits + 1):
+            train = list(range(0, fold * k))
+            test = list(range(fold * k,
+                              min(fold * (k + 1), n)))
+            yield train, test
+
+
+for _n in ("GroupKFold", "LeaveOneOut", "ShuffleSplit",
+           "TimeSeriesSplit"):
+    setattr(model_selection, _n, globals()[_n])
+
+
+def precision_recall_fscore_support(y_true, y_pred, average=None,
+                                    **kw):
+    del kw
+    yt = list(y_true.tolist() if hasattr(y_true, "tolist")
+              else y_true)
+    classes = sorted(set(yt), key=str)
+    precs, recs, f1s, sups = [], [], [], []
+    for c in classes:
+        p, r, f1 = precision_recall_f1(y_true, y_pred, c)
+        precs.append(p)
+        recs.append(r)
+        f1s.append(f1)
+        sups.append(float(sum(1 for v in yt if v == c)))
+    if average == "macro":
+        k = len(classes)
+        return (_math.fsum(precs) / k, _math.fsum(recs) / k,
+                _math.fsum(f1s) / k, None)
+    if average == "weighted":
+        tot = _math.fsum(sups)
+        return (
+            _math.fsum(p * s for p, s in zip(precs, sups)) / tot,
+            _math.fsum(r * s for r, s in zip(recs, sups)) / tot,
+            _math.fsum(f * s for f, s in zip(f1s, sups)) / tot,
+            None)
+    return (_ac.marr(precs), _ac.marr(recs), _ac.marr(f1s),
+            _ac.marr(sups))
+
+
+metrics.precision_recall_fscore_support = staticmethod(
+    precision_recall_fscore_support)

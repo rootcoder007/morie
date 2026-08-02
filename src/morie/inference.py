@@ -51,10 +51,7 @@ class _MissingDep:
             "%s is no longer bundled; this code path awaits its native "
             "morie implementation" % self._name)
 
-try:
-    from statsmodels.stats.power import (
-except ImportError:
-    ( = _MissingDep('(')
+from morie.fn._glm_core import (
     FTestAnovaPower,
     NormalIndPower,
     TTestIndPower,

@@ -32,7 +32,7 @@ def confusion_matrix_metrics(y_true, y_pred, *, labels=None):
     RichResult with payload: estimate (accuracy), confusion_matrix, labels,
     precision, recall, f1, macro_f1, weighted_f1, accuracy, n, method.
     """
-    from sklearn.metrics import (
+    from ._ml_core import (
         accuracy_score,
         confusion_matrix,
         precision_recall_fscore_support,
