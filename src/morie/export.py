@@ -18,12 +18,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from typing import Any
 
-try:
-    from morie.fn import _plot_core as plt
-except ImportError as _exc:  # pragma: no cover - depends on extras
-    raise ImportError(
-        "morie.export needs matplotlib, which is optional: "
-        "pip install morie[plots]") from _exc
+from morie.fn import _plot_core as plt
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
