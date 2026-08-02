@@ -619,3 +619,159 @@ formula = _Smf()
 ols = _Smf.ols
 wls = _Smf.wls
 glm = _Smf.glm
+
+
+# ------------------------------------------------------------ power
+
+def _z_crit(alpha, alternative):
+    if alternative == "two-sided":
+        return _stats.norm.ppf(1.0 - alpha / 2.0)
+    return _stats.norm.ppf(1.0 - alpha)
+
+
+class NormalIndPower:
+    """Two-sample z-test power (statsmodels parametrization)."""
+
+    def power(self, effect_size, nobs1, alpha, ratio=1.0,
+              alternative="two-sided"):
+        n1 = float(nobs1)
+        delta = effect_size * _math.sqrt(
+            n1 * ratio / (1.0 + ratio))
+        zc = _z_crit(alpha, alternative)
+        if alternative == "two-sided":
+            return (_stats.norm.sf(zc - delta)
+                    + _stats.norm.cdf(-zc - delta))
+        if alternative == "larger":
+            return _stats.norm.sf(zc - delta)
+        return _stats.norm.cdf(-zc - delta)
+
+    def solve_power(self, effect_size=None, nobs1=None, alpha=0.05,
+                    power=None, ratio=1.0,
+                    alternative="two-sided"):
+        if nobs1 is None:
+            lo, hi = 2.0, 1e7
+            for _ in range(200):
+                mid = 0.5 * (lo + hi)
+                if self.power(effect_size, mid, alpha, ratio,
+                              alternative) < power:
+                    lo = mid
+                else:
+                    hi = mid
+            return 0.5 * (lo + hi)
+        if effect_size is None:
+            lo, hi = 1e-8, 10.0
+            for _ in range(200):
+                mid = 0.5 * (lo + hi)
+                if self.power(mid, nobs1, alpha, ratio,
+                              alternative) < power:
+                    lo = mid
+                else:
+                    hi = mid
+            return 0.5 * (lo + hi)
+        return self.power(effect_size, nobs1, alpha, ratio,
+                          alternative)
+
+
+class TTestPower:
+    """One-sample / paired t-test power via noncentral t."""
+
+    def power(self, effect_size, nobs, alpha,
+              alternative="two-sided"):
+        n = float(nobs)
+        df = n - 1.0
+        nc = effect_size * _math.sqrt(n)
+        if alternative == "two-sided":
+            tc = _stats.t.ppf(1.0 - alpha / 2.0, df)
+            return (_stats.nct.sf(tc, df, nc)
+                    + _stats.nct.cdf(-tc, df, nc))
+        tc = _stats.t.ppf(1.0 - alpha, df)
+        if alternative == "larger":
+            return _stats.nct.sf(tc, df, nc)
+        return _stats.nct.cdf(-tc, df, nc)
+
+    def solve_power(self, effect_size=None, nobs=None, alpha=0.05,
+                    power=None, alternative="two-sided"):
+        if nobs is None:
+            lo, hi = 3.0, 1e6
+            for _ in range(80):
+                mid = 0.5 * (lo + hi)
+                if self.power(effect_size, mid, alpha,
+                              alternative) < power:
+                    lo = mid
+                else:
+                    hi = mid
+            return 0.5 * (lo + hi)
+        return self.power(effect_size, nobs, alpha, alternative)
+
+
+class TTestIndPower:
+    """Two-sample t-test power via noncentral t."""
+
+    def power(self, effect_size, nobs1, alpha, ratio=1.0,
+              alternative="two-sided"):
+        n1 = float(nobs1)
+        n2 = n1 * ratio
+        df = n1 + n2 - 2.0
+        nc = effect_size * _math.sqrt(n1 * n2 / (n1 + n2))
+        if alternative == "two-sided":
+            tc = _stats.t.ppf(1.0 - alpha / 2.0, df)
+            return (_stats.nct.sf(tc, df, nc)
+                    + _stats.nct.cdf(-tc, df, nc))
+        tc = _stats.t.ppf(1.0 - alpha, df)
+        if alternative == "larger":
+            return _stats.nct.sf(tc, df, nc)
+        return _stats.nct.cdf(-tc, df, nc)
+
+    def solve_power(self, effect_size=None, nobs1=None, alpha=0.05,
+                    power=None, ratio=1.0,
+                    alternative="two-sided"):
+        if nobs1 is None:
+            lo, hi = 3.0, 1e6
+            for _ in range(80):
+                mid = 0.5 * (lo + hi)
+                if self.power(effect_size, mid, alpha, ratio,
+                              alternative) < power:
+                    lo = mid
+                else:
+                    hi = mid
+            return 0.5 * (lo + hi)
+        return self.power(effect_size, nobs1, alpha, ratio,
+                          alternative)
+
+
+class FTestAnovaPower:
+    """One-way ANOVA power via noncentral F (Cohen's f)."""
+
+    def power(self, effect_size, nobs, alpha, k_groups=2):
+        n = float(nobs)
+        dfn = k_groups - 1.0
+        dfd = n - k_groups
+        nc = effect_size ** 2 * n
+        fc = _stats.f.ppf(1.0 - alpha, dfn, dfd)
+        return _stats.ncf.sf(fc, dfn, dfd, nc)
+
+    def solve_power(self, effect_size=None, nobs=None, alpha=0.05,
+                    power=None, k_groups=2):
+        if nobs is None:
+            lo, hi = k_groups + 2.0, 1e6
+            for _ in range(60):
+                mid = 0.5 * (lo + hi)
+                if self.power(effect_size, mid, alpha,
+                              k_groups) < power:
+                    lo = mid
+                else:
+                    hi = mid
+            return 0.5 * (lo + hi)
+        return self.power(effect_size, nobs, alpha, k_groups)
+
+
+class power:  # namespace mirror for statsmodels.stats.power
+    NormalIndPower = NormalIndPower
+    TTestPower = TTestPower
+    TTestIndPower = TTestIndPower
+    FTestAnovaPower = FTestAnovaPower
+
+
+def proportion_effectsize(prop1, prop2):
+    return 2.0 * _math.asin(_math.sqrt(prop1)) \
+        - 2.0 * _math.asin(_math.sqrt(prop2))
