@@ -143,8 +143,8 @@ class Series:
                       name=self.name)
 
     def groupby(self, by, sort=True, observed=True):
-        """Iterate (key, sub-Series) grouped by an aligned key
-        sequence (the SeriesGroupBy surface morie modules use)."""
+        """SeriesGroupBy surface: iterable of (key, sub-Series) that
+        also aggregates (mean/sum/...) into a key-indexed Series."""
         del observed
         keys = list(by.tolist() if hasattr(by, "tolist") else by)
         groups = {}
@@ -157,9 +157,7 @@ class Series:
                 order = list(groups)
         else:
             order = list(groups)
-        return [(k, Series([self._data[i] for i in groups[k]],
-                           index=[self.index[i] for i in groups[k]],
-                           name=self.name)) for k in order]
+        return _SeriesOwnGroupBy(self, groups, order)
 
     def reindex(self, index, fill_value=None):
         pos = {k: i for i, k in enumerate(self.index)}
@@ -1582,6 +1580,73 @@ def _agg_fn(spec):
             }[spec]
 
 
+
+class _SeriesOwnGroupBy:
+    """Groups of a Series keyed by an aligned sequence."""
+
+    def __init__(self, s, groups, order):
+        self._s = s
+        self._groups = groups
+        self._order = order
+
+    def _sub(self, k):
+        ix = self._groups[k]
+        return Series([self._s._data[i] for i in ix],
+                      index=[self._s.index[i] for i in ix],
+                      name=self._s.name)
+
+    def __iter__(self):
+        return iter([(k, self._sub(k)) for k in self._order])
+
+    def _agg(self, fn):
+        return Series([fn(self._sub(k)) for k in self._order],
+                      index=list(self._order), name=self._s.name)
+
+    def mean(self):
+        return self._agg(lambda s: s.mean())
+
+    def sum(self):
+        return self._agg(lambda s: s.sum())
+
+    def count(self):
+        return self._agg(lambda s: s.count())
+
+    def median(self):
+        return self._agg(lambda s: s.median())
+
+    def std(self, ddof=1):
+        return self._agg(lambda s: s.std(ddof=ddof))
+
+    def min(self):
+        return self._agg(lambda s: s.min())
+
+    def max(self):
+        return self._agg(lambda s: s.max())
+
+    def nunique(self):
+        return self._agg(lambda s: s.nunique())
+
+    def size(self):
+        return Series([len(self._groups[k]) for k in self._order],
+                      index=list(self._order), name=self._s.name)
+
+    def agg(self, spec):
+        return self._agg(_agg_fn(spec))
+
+    def apply(self, fn):
+        return self._agg(fn)
+
+    def transform(self, fn):
+        fn = _agg_fn(fn)
+        out = [_NAN] * len(self._s._data)
+        for k in self._order:
+            v = fn(self._sub(k))
+            for i in self._groups[k]:
+                out[i] = v
+        return Series(out, index=list(self._s.index),
+                      name=self._s.name)
+
+
 class _GroupBySeries:
     def __init__(self, gb, col):
         self._gb = gb
@@ -1624,6 +1689,16 @@ class _GroupBySeries:
 
     def quantile(self, q=0.5):
         return self._agg(lambda s: s.quantile(q))
+
+    def transform(self, fn):
+        fn = _agg_fn(fn)
+        gb = self._gb
+        out = [_NAN] * gb._df.shape[0]
+        for k, rows in gb._groups.items():
+            v = fn(Series([gb._df._cols[self._col][i] for i in rows]))
+            for i in rows:
+                out[i] = v
+        return Series(out, index=list(gb._df.index), name=self._col)
 
     def agg(self, spec):
         return self._agg(_agg_fn(spec))
