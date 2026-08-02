@@ -7,7 +7,7 @@ from morie.fn.gb_pp import gibbons_pp_plot
 
 
 def test_gb_pp_basic():
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     rng = np.random.default_rng(4)
     x = rng.standard_normal(150)
     assert gibbons_pp_plot(x)["max_departure"] == pytest.approx(

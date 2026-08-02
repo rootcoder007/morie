@@ -12,7 +12,7 @@ class TestBonec:
 
     def test_basic_fit(self):
         rng = np.random.default_rng(42)
-        from scipy import stats
+        from morie.fn import _stats_core as stats
 
         t = stats.weibull_min.rvs(2.0, scale=10.0, size=100, random_state=rng)
         r = weibull_analysis(t)

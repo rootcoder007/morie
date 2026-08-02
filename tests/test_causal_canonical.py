@@ -503,7 +503,7 @@ class TestForceCanonical:
 
     def test_force_welch_ci_coverage_sanity(self) -> None:
         """CI width should equal 2 * t_crit * SE (Welch-Satterthwaite df)."""
-        from scipy import stats
+        from morie.fn import _stats_core as stats
 
         from morie.fn.force import ate_diff
 
@@ -983,7 +983,7 @@ class TestPlivCanonical:
         covs = [f"X{i + 1}" for i in range(5)]
 
         # Naive OLS of Y on D and X (no IV)
-        import statsmodels.api as sm
+        from morie.fn import _glm_core as sm
 
         X_ols = sm.add_constant(df[["D"] + covs].astype(float))
         ols = sm.OLS(df["Y"].astype(float), X_ols).fit()
@@ -1729,7 +1729,7 @@ class TestSensitivityCanonical:
     def test_yoda_s_gamma1_gives_original_pvalue(self) -> None:
         """At Γ=1 (no bias), the Rosenbaum upper p-value equals the
         standard 2-sided z-test p-value."""
-        from scipy import stats
+        from morie.fn import _stats_core as stats
 
         from morie.fn.yoda_s import sensitivity_analysis
 

@@ -20,7 +20,7 @@ def test_list_modules_includes_core_cpads_steps():
 
 def _mock_cpads_df():
     """Minimal CPADS-like DataFrame for testing without the real DB."""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(42)
     n = 100

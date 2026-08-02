@@ -22,7 +22,7 @@ def test_ksr03_statistic_vanishes_as_n_grows():
 
 
 def test_ksr03_agrees_with_scipy_kstest():
-    from scipy import stats as st
+    from morie.fn import _stats_core as st
 
     rng = np.random.default_rng(2609)
     x = rng.standard_normal(300)

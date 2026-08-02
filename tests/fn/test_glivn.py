@@ -22,7 +22,7 @@ def test_converges_for_correct_cdf(normal_sample):
 
 
 def test_does_not_converge_wrong_cdf():
-    from scipy.stats import uniform
+    from morie.fn._stats_core import uniform
 
     rng = np.random.default_rng(42)
     x = rng.standard_normal(500)

@@ -1477,6 +1477,16 @@ linalg = _Linalg()
 
 # ------------------------------------------------------------------ random
 
+
+def _pack_choice(vals):
+    """marr for numeric draws, oarr for anything else -- numpy's choice
+    keeps the pool's dtype (strings stay strings)."""
+    try:
+        return marr([float(v) for v in vals])
+    except (TypeError, ValueError):
+        return oarr(list(vals))
+
+
 class _SplitMix64:
     """Python fallback RNG (SplitMix64 -> floats).
 
@@ -1522,6 +1532,28 @@ class _SplitMix64:
         return self.uniform(0.0, 1.0, size)
 
     def normal(self, loc=0.0, scale=1.0, size=None):
+        # numpy broadcasts an array-valued loc/scale against size:
+        # loc=[0, 6] with size=(40, 2) shifts column j by loc[j].
+        if hasattr(loc, "_flat") or isinstance(loc, (list, tuple)) or \
+                hasattr(scale, "_flat") or isinstance(scale, (list, tuple)):
+            def _vals(v):
+                if hasattr(v, "_flat"):
+                    return [float(x) for x in v._flat()]
+                if isinstance(v, (list, tuple)):
+                    return [float(x) for x in v]
+                return [float(v)]
+            lv, sv = _vals(loc), _vals(scale)
+            z = self.normal(0.0, 1.0, size)
+            if len(getattr(z, "shape", (0,))) == 2:
+                nr, nc = z.shape
+                return marr([[lv[j % len(lv)] + sv[j % len(sv)]
+                              * z.data[i][j] for j in range(nc)]
+                             for i in range(nr)])
+            zf = list(z._flat()) if hasattr(z, "_flat") else [float(z)]
+            out = [lv[i % len(lv)] + sv[i % len(sv)] * zf[i]
+                   for i in range(len(zf))]
+            return marr(out) if size is not None else out[0]
+
         def one():
             u1 = _pymax(self.uniform(), 1e-300)
             u2 = self.uniform()
@@ -1533,6 +1565,13 @@ class _SplitMix64:
         return (self._next() >> 11) / (1 << 53)
 
     def poisson(self, lam=1.0, size=None):
+        # numpy draws one variate per element of an array-valued lam
+        # (broadcast against size; here: size defaults to lam.shape).
+        if hasattr(lam, "_flat") or isinstance(lam, (list, tuple)):
+            lams = list(lam._flat()) if hasattr(lam, "_flat") else \
+                [float(v) for v in lam]
+            return marr([float(self.poisson(L)) for L in lams])
+
         def one():
             L = float(lam)
             if L < 30.0:                      # Knuth product method
@@ -1719,7 +1758,7 @@ class _SplitMix64:
                     del pl[pick], wl[pick]
             if flat_scalar:
                 return out[0]
-            return marr([float(v) for v in out])
+            return _pack_choice(out)
         if isinstance(a, int):
             pool = list(range(int(a)))
         elif isinstance(a, (list, tuple)):
@@ -1733,14 +1772,14 @@ class _SplitMix64:
                 size[0]) * (int(size[1]) if len(size) > 1 else 1)
         k = int(size)
         if replace:
-            return marr([float(pool[self._next() % len(pool)])
-                         for _ in range(k)])
+            return _pack_choice([pool[self._next() % len(pool)]
+                                 for _ in range(k)])
         if k > len(pool):
             raise ValueError("cannot sample more than population without "
                              "replacement")
         idx = list(range(len(pool)))
         self.shuffle(idx)
-        return marr([float(pool[i]) for i in idx[:k]])
+        return _pack_choice([pool[i] for i in idx[:k]])
 
     def integers(self, low, high=None, size=None):
         if high is None:

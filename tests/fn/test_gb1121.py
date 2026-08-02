@@ -7,7 +7,7 @@ from morie.fn.gb1121 import gibbons_kendall_tau
 
 
 def test_gb1121_basic():
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     rng = np.random.default_rng(0)
     x = rng.standard_normal(25); y = 0.5 * x + rng.standard_normal(25)
     assert gibbons_kendall_tau(x, y)["tau"] == pytest.approx(

@@ -36,7 +36,7 @@ def _votes(seed=0, n=40, q=60):
     x = np.linspace(-2, 2, n)
     beta = rng.normal(scale=1.0, size=q)
     alpha = rng.normal(scale=0.5, size=q)
-    from scipy.stats import norm
+    from morie.fn._stats_core import norm
 
     P = norm.cdf(x[:, None] * beta[None, :] - alpha[None, :])
     return (rng.random((n, q)) < P).astype(float), x
@@ -148,7 +148,7 @@ def test_hsirt_flags_the_noisy_voter():
     x = np.linspace(-2, 2, n)
     beta = rng.normal(scale=1.2, size=q)
     alpha = rng.normal(scale=0.5, size=q)
-    from scipy.stats import norm
+    from morie.fn._stats_core import norm
 
     psi_true = np.ones(n)
     psi_true[0] = 4.0  # one unpredictable voter

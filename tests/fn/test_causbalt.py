@@ -65,7 +65,7 @@ def test_threshold_controls_the_verdict():
 def test_no_p_value_unless_a_cdf_is_supplied():
     X, t = _sample(seed=7)
     assert causal_balance_test(X, t)["p_value"] is None
-    from scipy import stats
+    from morie.fn import _stats_core as stats
 
     assert causal_balance_test(X, t, cdf=stats.norm().cdf)["p_value"] is not None
 

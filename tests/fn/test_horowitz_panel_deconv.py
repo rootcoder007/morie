@@ -111,7 +111,7 @@ def test_first_passage_beats_the_naive_independent_product():
     X = np.zeros((6, 2))
     out = horowitz_first_passage_time(6, 0.0, 1.0, X, beta, fu, gu, fe, gz)
     # marginal P(Y_k <= y*) with U integrated out per period
-    from scipy import stats
+    from morie.fn import _stats_core as stats
     marg = float(stats.norm.cdf(1.0, 0.0, np.sqrt(1.5**2 + 0.5**2)))
     assert out["probability"] > marg ** 5
     assert out["periods_conditionally_independent"] is True
