@@ -100,7 +100,7 @@ def _try_load_mat(path: Path) -> dict | None:
     fall back to the synthetic fixture and emit a warning.
     """
     try:
-        from scipy.io import loadmat  # type: ignore
+        from morie.fn._sci_core import loadmat  # type: ignore
 
         return dict(loadmat(str(path), squeeze_me=True, struct_as_record=False))
     except Exception:

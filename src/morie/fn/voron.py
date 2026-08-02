@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.spatial import Voronoi
+from ._sci_core import Voronoi
 
 from ._containers import DescriptiveResult
 
