@@ -86,16 +86,19 @@ class Tokenizer:
 
     def _load_sentencepiece(self, path: Path) -> None:
         """Load from a SentencePiece .model file."""
-        try:
-            import sentencepiece as spm
-        except ImportError:
-            raise ImportError("sentencepiece is required for .model files: pip install sentencepiece")
-        self._sp = spm.SentencePieceProcessor()
-        self._sp.Load(str(path))
-        self._vocab = [self._sp.IdToPiece(i) for i in range(self._sp.GetPieceSize())]
-        self._token_to_id = {tok: i for i, tok in enumerate(self._vocab)}
-        self._bos_id = self._sp.bos_id()
-        self._eos_id = self._sp.eos_id()
+        from morie._sp_model import load_model
+
+        pieces, scores, types, bos, eos, unk = load_model(str(path))
+        del types
+        self._sp = None                     # native path only
+        self._vocab = pieces
+        self._scores = scores
+        self._token_to_id = {tok: i for i, tok in
+                             enumerate(self._vocab)}
+        self._bos_id = bos
+        self._eos_id = eos
+        self._unk_id = unk
+        self._unigram = True                # Viterbi encode
 
     # ------------------------------------------------------------------
     # Public API
@@ -106,8 +109,12 @@ class Tokenizer:
 
         Uses SentencePiece if available, otherwise greedy BPE matching.
         """
-        if self._sp is not None:
-            ids = self._sp.Encode(text)
+        if getattr(self, "_unigram", False):
+            from morie._sp_model import encode_unigram
+
+            ids = encode_unigram(text, self._vocab, self._scores,
+                                 getattr(self, "_unk_id", 0),
+                                 self._token_to_id)
             if add_bos and (not ids or ids[0] != self._bos_id):
                 ids = [self._bos_id] + ids
             return ids
