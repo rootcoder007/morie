@@ -2182,3 +2182,275 @@ class io:  # namespace mirror
 
 
 convolve = _nd_convolve          # scipy.ndimage.convolve import site
+
+
+# ------------------------------------------------------------ spatial 2-D
+
+class Delaunay:
+    """2-D Delaunay triangulation (Bowyer-Watson)."""
+
+    def __init__(self, points):
+        P = _ac.atleast_2d(points)
+        pts = [(float(r[0]), float(r[1])) for r in P.data]
+        self.points = _ac.marr([[x, y] for x, y in pts])
+        n = len(pts)
+        # super-triangle
+        xs = [p[0] for p in pts]
+        ys = [p[1] for p in pts]
+        dx = max(xs) - min(xs) or 1.0
+        dy = max(ys) - min(ys) or 1.0
+        mx = (max(xs) + min(xs)) / 2.0
+        my = (max(ys) + min(ys)) / 2.0
+        d = 20.0 * _bi.max(dx, dy)
+        sp = [(mx - d, my - d), (mx + d, my - d), (mx, my + d)]
+        allp = pts + sp
+        tris = [(n, n + 1, n + 2)]
+
+        def circum(tri):
+            (ax, ay), (bx, by), (cx, cy) = (allp[tri[0]],
+                                            allp[tri[1]],
+                                            allp[tri[2]])
+            dd = 2.0 * (ax * (by - cy) + bx * (cy - ay)
+                        + cx * (ay - by))
+            if dd == 0:
+                return (0.0, 0.0), _math.inf
+            ux = ((ax * ax + ay * ay) * (by - cy)
+                  + (bx * bx + by * by) * (cy - ay)
+                  + (cx * cx + cy * cy) * (ay - by)) / dd
+            uy = ((ax * ax + ay * ay) * (cx - bx)
+                  + (bx * bx + by * by) * (ax - cx)
+                  + (cx * cx + cy * cy) * (bx - ax)) / dd
+            r2 = (ax - ux) ** 2 + (ay - uy) ** 2
+            return (ux, uy), r2
+
+        for pi in range(n):
+            px, py = allp[pi]
+            bad = []
+            for t in tris:
+                (ux, uy), r2 = circum(t)
+                if (px - ux) ** 2 + (py - uy) ** 2 <= r2 * (
+                        1.0 + 1e-12):
+                    bad.append(t)
+            # boundary polygon of the bad region
+            edges = {}
+            for t in bad:
+                for e in ((t[0], t[1]), (t[1], t[2]), (t[2], t[0])):
+                    key = (min(e), max(e))
+                    edges[key] = edges.get(key, 0) + 1
+            boundary = [e for e, c in edges.items() if c == 1]
+            tris = [t for t in tris if t not in bad]
+            for e in boundary:
+                tris.append((e[0], e[1], pi))
+        # drop super-triangle members
+        self.simplices = _ac.marr(
+            [[float(a), float(b), float(c)] for a, b, c in tris
+             if a < n and b < n and c < n])
+
+    def find_simplex(self, xi):
+        pts = self.points.data
+        tris = [[int(v) for v in row] for row in
+                _ac.atleast_2d(self.simplices).data]
+        q = [float(v) for v in _ac.asarray(xi)._flat()]
+
+        def inside(t, x, y):
+            (ax, ay), (bx, by), (cx, cy) = (pts[t[0]], pts[t[1]],
+                                            pts[t[2]])
+            d1 = (x - bx) * (ay - by) - (ax - bx) * (y - by)
+            d2 = (x - cx) * (by - cy) - (bx - cx) * (y - cy)
+            d3 = (x - ax) * (cy - ay) - (cx - ax) * (y - ay)
+            neg = (d1 < 0) or (d2 < 0) or (d3 < 0)
+            pos = (d1 > 0) or (d2 > 0) or (d3 > 0)
+            return not (neg and pos)
+        for ti, t in enumerate(tris):
+            if inside(t, q[0], q[1]):
+                return ti
+        return -1
+
+
+class Voronoi:
+    """2-D Voronoi from the Delaunay dual (circumcenters)."""
+
+    def __init__(self, points):
+        self._tri = Delaunay(points)
+        self.points = self._tri.points
+        pts = self.points.data
+        tris = [[int(v) for v in row] for row in
+                _ac.atleast_2d(self._tri.simplices).data]
+        verts = []
+        for t in tris:
+            (ax, ay), (bx, by), (cx, cy) = (pts[t[0]], pts[t[1]],
+                                            pts[t[2]])
+            dd = 2.0 * (ax * (by - cy) + bx * (cy - ay)
+                        + cx * (ay - by))
+            ux = ((ax * ax + ay * ay) * (by - cy)
+                  + (bx * bx + by * by) * (cy - ay)
+                  + (cx * cx + cy * cy) * (ay - by)) / dd
+            uy = ((ax * ax + ay * ay) * (cx - bx)
+                  + (bx * bx + by * by) * (ax - cx)
+                  + (cx * cx + cy * cy) * (bx - ax)) / dd
+            verts.append([ux, uy])
+        self.vertices = _ac.marr(verts) if verts else _ac.marr([[]])
+        # ridges: triangles sharing an edge -> segment between their
+        # circumcenters; region per point = incident circumcenters
+        edge_tris = {}
+        for ti, t in enumerate(tris):
+            for e in ((t[0], t[1]), (t[1], t[2]), (t[2], t[0])):
+                key = (min(e), max(e))
+                edge_tris.setdefault(key, []).append(ti)
+        self.ridge_points = _ac.marr(
+            [[float(a), float(b)] for (a, b), ts in edge_tris.items()
+             if len(ts) == 2])
+        self.ridge_vertices = [ts for ts in edge_tris.values()
+                               if len(ts) == 2]
+        npts = len(pts)
+        regions = [[] for _ in range(npts)]
+        for ti, t in enumerate(tris):
+            for v in t:
+                regions[v].append(ti)
+        # order each region's circumcenters by angle around the point
+        self.regions = []
+        self.point_region = _ac.marr(
+            [float(i) for i in range(npts)])
+        for i in range(npts):
+            cx, cy = pts[i]
+            reg = sorted(regions[i], key=lambda ti: _math.atan2(
+                verts[ti][1] - cy, verts[ti][0] - cx))
+            self.regions.append(reg)
+
+
+class spatial_full(spatial):
+    Delaunay = Delaunay
+    Voronoi = Voronoi
+
+
+spatial.Delaunay = Delaunay
+spatial.Voronoi = Voronoi
+
+
+# ------------------------------------------------------------ schur
+
+def schur(a, output="real"):
+    """Real Schur decomposition via Hessenberg + shifted QR iteration.
+
+    Returns (T, Z) with A = Z T Z^T, Z orthogonal, T quasi-upper-
+    triangular. Verified by reconstruction + eigenvalue agreement.
+    """
+    del output
+    A = _ac.atleast_2d(a)
+    n = A.shape[0]
+    H = [list(map(float, r)) for r in A.data]
+    Z = [[1.0 if i == j else 0.0 for j in range(n)]
+         for i in range(n)]
+
+    def apply_house(v, lo):
+        m = len(v)
+        vn2 = _math.fsum(u * u for u in v)
+        if vn2 == 0.0:
+            return
+        # H rows and cols, Z cols
+        for j in range(n):
+            dot = _math.fsum(v[i] * H[lo + i][j] for i in range(m))
+            c = 2.0 * dot / vn2
+            for i in range(m):
+                H[lo + i][j] -= c * v[i]
+        for i in range(n):
+            dot = _math.fsum(H[i][lo + t] * v[t] for t in range(m))
+            c = 2.0 * dot / vn2
+            for t in range(m):
+                H[i][lo + t] -= c * v[t]
+        for i in range(n):
+            dot = _math.fsum(Z[i][lo + t] * v[t] for t in range(m))
+            c = 2.0 * dot / vn2
+            for t in range(m):
+                Z[i][lo + t] -= c * v[t]
+
+    # Hessenberg reduction
+    for k in range(n - 2):
+        x = [H[i][k] for i in range(k + 1, n)]
+        nx = _math.sqrt(_math.fsum(u * u for u in x))
+        if nx == 0.0:
+            continue
+        v = list(x)
+        v[0] += _math.copysign(nx, x[0])
+        apply_house(v, k + 1)
+
+    # shifted QR with deflation (Givens-based, Wilkinson shift)
+    def givens(i, j, cth, sth):
+        for col in range(n):
+            hi, hj = H[i][col], H[j][col]
+            H[i][col] = cth * hi + sth * hj
+            H[j][col] = -sth * hi + cth * hj
+        for row in range(n):
+            hi, hj = H[row][i], H[row][j]
+            H[row][i] = cth * hi + sth * hj
+            H[row][j] = -sth * hi + cth * hj
+            zi, zj = Z[row][i], Z[row][j]
+            Z[row][i] = cth * zi + sth * zj
+            Z[row][j] = -sth * zi + cth * zj
+
+    hi_idx = n - 1
+    for _sweep in range(100 * n):
+        # deflate
+        while hi_idx > 0 and abs(H[hi_idx][hi_idx - 1]) < 1e-13 * (
+                abs(H[hi_idx][hi_idx])
+                + abs(H[hi_idx - 1][hi_idx - 1]) + 1e-300):
+            H[hi_idx][hi_idx - 1] = 0.0
+            hi_idx -= 1
+        if hi_idx == 0:
+            break
+        # 2x2 block with complex eigenvalues? test and deflate pair
+        if hi_idx >= 1:
+            a11 = H[hi_idx - 1][hi_idx - 1]
+            a12 = H[hi_idx - 1][hi_idx]
+            a21 = H[hi_idx][hi_idx - 1]
+            a22 = H[hi_idx][hi_idx]
+            tr = a11 + a22
+            det = a11 * a22 - a12 * a21
+            disc = tr * tr - 4.0 * det
+            if disc < 0 and (hi_idx == 1 or abs(
+                    H[hi_idx - 1][hi_idx - 2]) < 1e-13 * (
+                    abs(a11) + 1e-300)):
+                if hi_idx >= 2:
+                    H[hi_idx - 1][hi_idx - 2] = 0.0
+                hi_idx -= 2
+                if hi_idx <= 0:
+                    break
+                continue
+        # Wilkinson shift from trailing 2x2
+        a11 = H[hi_idx - 1][hi_idx - 1]
+        a12 = H[hi_idx - 1][hi_idx]
+        a21 = H[hi_idx][hi_idx - 1]
+        a22 = H[hi_idx][hi_idx]
+        tr = a11 + a22
+        det = a11 * a22 - a12 * a21
+        disc = tr * tr - 4.0 * det
+        if disc >= 0:
+            r1 = (tr + _math.copysign(_math.sqrt(disc), tr)) / 2.0
+            r2 = det / r1 if r1 != 0 else 0.0
+            mu = r1 if abs(r1 - a22) < abs(r2 - a22) else r2
+        else:
+            mu = a22
+        # implicit single-shift QR on active block via Givens chase
+        x = H[0][0] - mu if hi_idx == n - 1 else None
+        lo = 0
+        # find start of active block
+        lo = hi_idx
+        while lo > 0 and H[lo][lo - 1] != 0.0:
+            lo -= 1
+        x = H[lo][lo] - mu
+        y = H[lo + 1][lo]
+        for k in range(lo, hi_idx):
+            r = _math.hypot(x, y)
+            if r == 0.0:
+                x = H[k + 1][k + 1] - mu if k + 1 < hi_idx else 0.0
+                y = H[k + 2][k + 1] if k + 2 <= hi_idx else 0.0
+                continue
+            cth, sth = x / r, y / r
+            givens(k, k + 1, cth, sth)
+            if k + 2 <= hi_idx:
+                x = H[k + 1][k]
+                y = H[k + 2][k]
+    return _ac.marr(H), _ac.marr(Z)
+
+
+linalg.schur = staticmethod(schur)
