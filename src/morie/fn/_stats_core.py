@@ -1859,3 +1859,335 @@ pareto = _Pareto()
 genpareto = _GenPareto()
 nct = _NCT()
 ncf = _NCF()
+
+
+# ---------------------------------------------------- residual tail 2
+
+def bartlett(*samples):
+    gs = [_flatten(s) for s in samples]
+    k = len(gs)
+    ns = [len(g) for g in gs]
+    n = sum(ns)
+    sp2 = _math.fsum((ns[i] - 1) * _var(gs[i], ddof=1)
+                     for i in range(k)) / (n - k)
+    num = (n - k) * _math.log(sp2) - _math.fsum(
+        (ns[i] - 1) * _math.log(_var(gs[i], ddof=1))
+        for i in range(k))
+    den = 1.0 + (_math.fsum(1.0 / (ns[i] - 1) for i in range(k))
+                 - 1.0 / (n - k)) / (3.0 * (k - 1))
+    stat = num / den
+    return _TestResult(stat, chi2.sf(stat, k - 1))
+
+
+def fligner(*samples, center="median"):
+    gs = [_flatten(s) for s in samples]
+    k = len(gs)
+    n = sum(len(g) for g in gs)
+    zs = []
+    for g in gs:
+        sv = sorted(g)
+        m = len(sv)
+        c = sv[m // 2] if m % 2 else 0.5 * (sv[m // 2 - 1] + sv[m // 2])
+        if center == "mean":
+            c = _mean(g)
+        zs.append([abs(v - c) for v in g])
+    allz = [v for z in zs for v in z]
+    ranks = rankdata(allz)
+    a = [_norm_ppf(0.5 + r / (2.0 * (n + 1.0))) for r in ranks]
+    abar = _mean(a)
+    v2 = _var(a, ddof=1)
+    stat = 0.0
+    i = 0
+    for z in zs:
+        ni = len(z)
+        ai = _math.fsum(a[i:i + ni]) / ni
+        stat += ni * (ai - abar) ** 2
+        i += ni
+    stat /= v2
+    return _TestResult(stat, chi2.sf(stat, k - 1))
+
+
+def ansari(x, y):
+    xv, yv = _flatten(x), _flatten(y)
+    n1, n2 = len(xv), len(yv)
+    n = n1 + n2
+    ranks = rankdata(xv + yv)
+    # Ansari-Bradley scores: min(r, N+1-r)
+    scores = [_bi.min(r, n + 1.0 - r) for r in ranks]
+    ab = _math.fsum(scores[:n1])
+    if n % 2 == 0:
+        mu = n1 * (n + 2.0) / 4.0
+        var = n1 * n2 * (n + 2.0) * (n - 2.0) / (48.0 * (n - 1.0))
+    else:
+        mu = n1 * (n + 1.0) ** 2 / (4.0 * n)
+        var = n1 * n2 * (n + 1.0) * (3.0 + n * n) / (48.0 * n * n)
+    z = (ab - mu) / _math.sqrt(var)
+    return _TestResult(ab, _bi.min(1.0, 2.0 * norm.sf(abs(z))))
+
+
+def cramervonmises(rvs, cdf, args=()):
+    v = sorted(_flatten(rvs))
+    n = len(v)
+    if isinstance(cdf, str):
+        dist = {"norm": norm, "uniform": uniform, "expon": expon}[cdf]
+        cdfv = [dist.cdf(u, *args) for u in v]
+    else:
+        cdfv = [float(cdf(u, *args)) for u in v]
+    w2 = 1.0 / (12.0 * n) + _math.fsum(
+        (cdfv[i] - (2.0 * i + 1.0) / (2.0 * n)) ** 2
+        for i in range(n))
+    return _TestResult(w2, _cvm_asymp_sf(w2))
+
+
+def _kv_quarter(x):
+    """K_{1/4}(x) via integral representation."""
+    if x > 700.0:
+        return 0.0
+
+    def f(t):
+        e = -x * _math.cosh(t)
+        if e < -700.0:
+            return 0.0
+        return _math.exp(e) * _math.cosh(0.25 * t)
+    hi = 1.0
+    while x * _math.cosh(hi) < 720.0 and hi < 60.0:
+        hi += 1.0
+    total = 0.0
+    m = 400
+    for i in range(m):
+        t = (i + 0.5) * hi / m
+        total += f(t)
+    return total * hi / m
+
+
+def cramervonmises_2samp(x, y):
+    xv, yv = sorted(_flatten(x)), sorted(_flatten(y))
+    n, m = len(xv), len(yv)
+    allr = rankdata(xv + yv)
+    rx = allr[:n]
+    ry = allr[n:]
+    # Anderson (1962) computational form
+    u = n * _math.fsum((rx[i] - (i + 1)) ** 2
+                       for i in range(n)) \
+        + m * _math.fsum((ry[j] - (j + 1)) ** 2 for j in range(m))
+    nm = n + m
+    t = u / (n * m * nm) - (4.0 * n * m - 1.0) / (6.0 * nm)
+    return _TestResult(t, _cvm_asymp_sf(t))
+
+
+def _cvm_asymp_sf(t):
+    s = 0.0
+    for j in range(200):
+        a = 4.0 * j + 1.0
+        term = (_math.gamma(j + 0.5) / (_math.gamma(0.5)
+                * _math.factorial(j))) * _math.sqrt(a) \
+            * _math.exp(-a * a / (16.0 * t)) * _kv_quarter(
+                a * a / (16.0 * t))
+        s += term
+        if term < 1e-12 and j > 3:
+            break
+    return _bi.max(0.0, _bi.min(1.0, 1.0 - s / (_math.pi
+                                                * _math.sqrt(t))))
+
+
+def anderson_ksamp(samples, midrank=True):
+    gs = [sorted(_flatten(s)) for s in samples]
+    k = len(gs)
+    ns = [len(g) for g in gs]
+    allv = sorted(v for g in gs for v in g)
+    n = len(allv)
+    zstar = sorted(set(allv))
+    import bisect
+    if midrank:
+        # Scholz-Stephens A2akN (midrank / ties variant, scipy default)
+        a2 = 0.0
+        for gi, g in enumerate(gs):
+            inner = 0.0
+            for z in zstar:
+                zl = bisect.bisect_left(allv, z)
+                lj = bisect.bisect_right(allv, z) - zl
+                bj = zl + lj / 2.0
+                sr = bisect.bisect_right(g, z)
+                fij = sr - bisect.bisect_left(g, z)
+                mij = sr - fij / 2.0
+                denom = bj * (n - bj) - n * lj / 4.0
+                if denom > 0:
+                    inner += (lj / float(n)
+                              * (n * mij - bj * ns[gi]) ** 2 / denom)
+            a2 += inner / ns[gi]
+        a2 *= (n - 1.0) / n
+        A2kN = a2 - (k - 1)
+    else:
+        a2 = 0.0
+        for gi, g in enumerate(gs):
+            inner = 0.0
+            for z in zstar[:-1]:
+                mij = bisect.bisect_right(g, z)
+                bj = bisect.bisect_right(allv, z)
+                if 0 < bj < n:
+                    inner += (n * mij - ns[gi] * bj) ** 2 / float(
+                        bj * (n - bj))
+            a2 += inner / ns[gi]
+        a2 /= n
+        A2kN = a2 - (k - 1)
+    H = _math.fsum(1.0 / v for v in ns)
+    hs = _math.fsum(1.0 / i for i in range(1, n))
+    gsum = 0.0
+    for i in range(1, n - 1):
+        for j in range(i + 1, n):
+            gsum += 1.0 / ((n - i) * j)
+    a = (4.0 * gsum - 6.0) * (k - 1) + (10.0 - 6.0 * gsum) * H
+    b = (2.0 * gsum - 4.0) * k * k + 8.0 * hs * k \
+        + (2.0 * gsum - 14.0 * hs - 4.0) * H - 8.0 * hs \
+        + 4.0 * gsum - 6.0
+    c = (6.0 * hs + 2.0 * gsum - 2.0) * k * k \
+        + (4.0 * hs - 4.0 * gsum + 6.0) * k \
+        + (2.0 * hs - 6.0) * H + 4.0 * hs
+    d = (2.0 * hs + 6.0) * k * k - 4.0 * hs * k
+    sigsq = (a * n ** 3 + b * n ** 2 + c * n + d) / (
+        (n - 1.0) * (n - 2.0) * (n - 3.0))
+    tn = A2kN / _math.sqrt(sigsq)
+    b0 = [0.675, 1.281, 1.645, 1.960, 2.326, 2.573, 3.085]
+    b1 = [-0.245, 0.250, 0.678, 1.149, 1.822, 2.364, 3.615]
+    b2 = [-0.105, -0.305, -0.362, -0.391, -0.396, -0.345, -0.154]
+    m = k - 1.0
+    tm = [b0[i] + b1[i] / _math.sqrt(m) + b2[i] / m for i in range(7)]
+    sig = [0.25, 0.10, 0.05, 0.025, 0.01, 0.005, 0.001]
+    logsig = [_math.log(s) for s in sig]
+    if tn < tm[0]:
+        p = 0.25
+    elif tn > tm[-1]:
+        p = 0.001
+    else:
+        import bisect as _bs
+        i = _bs.bisect_left(tm, tn)
+        frac = (tn - tm[i - 1]) / (tm[i] - tm[i - 1])
+        p = _math.exp(logsig[i - 1]
+                      + frac * (logsig[i] - logsig[i - 1]))
+    return _TestResult(tn, p, significance_level=p,
+                       critical_values=tm)
+
+
+def binom_test(x, n=None, p=0.5, alternative="two-sided"):
+    return binomtest(x, n, p, alternative).pvalue
+
+
+class _LogUniform:
+    def __init__(self, a=None, b=None):
+        self.a, self.b = a, b
+
+    def __call__(self, a, b):
+        return _LogUniform(a, b)
+
+    def rvs(self, size=None, random_state=None):
+        raise NotImplementedError("use morie native rng")
+
+    def pdf(self, x, a=None, b=None):
+        a = a if a is not None else self.a
+        b = b if b is not None else self.b
+        def one(v):
+            if v < a or v > b:
+                return 0.0
+            return 1.0 / (v * _math.log(b / a))
+        return _maybe_map(one, x)
+
+    def cdf(self, x, a=None, b=None):
+        a = a if a is not None else self.a
+        b = b if b is not None else self.b
+        def one(v):
+            if v <= a:
+                return 0.0
+            if v >= b:
+                return 1.0
+            return _math.log(v / a) / _math.log(b / a)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, a=None, b=None):
+        a = a if a is not None else self.a
+        b = b if b is not None else self.b
+        def one(pp):
+            return a * (b / a) ** pp
+        return _maybe_map(one, q)
+
+
+loguniform = _LogUniform()
+
+
+class _MStats:
+    @staticmethod
+    def winsorize(a, limits=None):
+        v = _flatten(a)
+        n = len(v)
+        lo_l, hi_l = (limits if isinstance(limits, (tuple, list))
+                      else (limits, limits)) if limits is not None \
+            else (0.0, 0.0)
+        sv = sorted(v)
+        klo = int(lo_l * n)
+        khi = int(hi_l * n)
+        lo_v = sv[klo] if klo < n else sv[-1]
+        hi_v = sv[n - khi - 1] if khi < n else sv[0]
+        return [lo_v if u < lo_v else (hi_v if u > hi_v else u)
+                for u in v]
+
+
+mstats = _MStats()
+
+
+class _LatinHypercube:
+    def __init__(self, d, seed=None):
+        self.d = d
+        self._rng_seed = seed if seed is not None else 0
+
+    def random(self, n):
+        from . import _array_core as _ac2
+        rng = _ac2.random.default_rng(self._rng_seed)
+        cols = []
+        for _j in range(self.d):
+            perm = list(range(n))
+            rng.shuffle(perm)
+            cols.append([(perm[i] + rng.uniform()) / n
+                         for i in range(n)])
+        return _ac2.marr([[cols[j][i] for j in range(self.d)]
+                          for i in range(n)])
+
+
+class _QMC:
+    LatinHypercube = _LatinHypercube
+
+
+qmc = _QMC()
+
+
+class _MVN:
+    """stats.mvn.mvnun replacement: rectangle probability via
+    quasi-Monte Carlo (deterministic seed); tolerance ~1e-4."""
+
+    @staticmethod
+    def mvnun(lower, upper, means, covar, maxpts=20000, **kw):
+        del kw
+        from . import _array_core as _ac2
+        lo = [float(v) for v in lower]
+        hi = [float(v) for v in upper]
+        mu = [float(v) for v in means]
+        cov = [[float(v) for v in row]
+               for row in (covar.tolist() if hasattr(covar, "tolist")
+                           else covar)]
+        d = len(mu)
+        L = _ac2.linalg.cholesky(_ac2.marr(cov)).tolist()
+        rng = _ac2.random.default_rng(42)
+        count = 0
+        npts = int(maxpts)
+        for _ in range(npts):
+            z = [rng.normal() for _ in range(d)]
+            x = [mu[i] + _math.fsum(L[i][j] * z[j]
+                                    for j in range(i + 1))
+                 for i in range(d)]
+            if all(lo[i] <= x[i] <= hi[i] for i in range(d)):
+                count += 1
+        return count / npts, 0
+
+
+mvn = _MVN()
+
+
+winsorize = _MStats.winsorize    # scipy.stats.mstats import site

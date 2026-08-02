@@ -1795,3 +1795,390 @@ def differential_evolution(func, bounds, args=(), maxiter=200,
 for _n in ("root", "least_squares", "differential_evolution"):
     setattr(optimize, _n, staticmethod(globals()[_n]))
 optimize.LinearConstraint = LinearConstraint
+
+
+# ------------------------------------------------------------ misc tail
+
+def logsumexp(x, axis=None):
+    if axis is None:
+        v = [float(u) for u in _ac.asarray(x)._flat()]
+        m = max(v)
+        return m + _math.log(_math.fsum(_math.exp(u - m) for u in v))
+    a = _ac.atleast_2d(x)
+    if axis == 1:
+        return _ac.marr([logsumexp(row) for row in a.data])
+    return _ac.marr([logsumexp([a.data[i][j]
+                                for i in range(a.shape[0])])
+                     for j in range(a.shape[1])])
+
+
+def beta(a, b):
+    return _math.exp(betaln(a, b))
+
+
+class _Poly1d:
+    def __init__(self, coeffs):
+        self.coeffs = list(coeffs)
+
+    def __call__(self, x):
+        def one(v):
+            acc = 0.0
+            for c in self.coeffs:
+                acc = acc * v + c
+            return acc
+        if isinstance(x, (int, float)):
+            return one(float(x))
+        return _ac.asarray(x)._map(one)
+
+
+def hermite(n):
+    """Physicists' Hermite polynomial H_n as a callable."""
+    # recurrence H_{k+1} = 2x H_k - 2k H_{k-1}
+    h0 = [1.0]
+    if n == 0:
+        return _Poly1d(h0)
+    h1 = [2.0, 0.0]
+    for k in range(1, n):
+        nxt = [2.0 * c for c in h1] + [0.0]
+        for i, c in enumerate(h0):
+            nxt[len(nxt) - len(h0) + i] -= 2.0 * k * c
+        h0, h1 = h1, nxt
+    return _Poly1d(h1)
+
+
+special.logsumexp = staticmethod(logsumexp)
+special.beta = staticmethod(beta)
+special.hermite = staticmethod(hermite)
+
+
+def fsolve(func, x0, args=(), **kw):
+    del kw
+    res = root(func, x0, args=args)
+    return res.x
+
+
+optimize.fsolve = staticmethod(fsolve)
+
+
+def eigvals(a):
+    """General (nonsymmetric) eigenvalues via Faddeev-LeVerrier
+    characteristic polynomial + Durand-Kerner roots.
+
+    ponytail: fine for the small (n <= ~10) stability matrices morie
+    uses; a Francis-QR implementation if larger cases ever appear.
+    """
+    A = _ac.atleast_2d(a)
+    n = A.shape[0]
+    Ad = [list(map(float, r)) for r in A.data]
+
+    def mm(X, Y):
+        return [[_math.fsum(X[i][k] * Y[k][j] for k in range(n))
+                 for j in range(n)] for i in range(n)]
+    ident = [[1.0 if i == j else 0.0 for j in range(n)]
+             for i in range(n)]
+    coeffs = [1.0]
+    M = [row[:] for row in ident]
+    for k in range(1, n + 1):
+        M = mm(Ad, M)
+        c = -_math.fsum(M[i][i] for i in range(n)) / k
+        coeffs.append(c)
+        for i in range(n):
+            M[i][i] += c
+    # Durand-Kerner
+    rs = [complex(0.4, 0.9) ** k for k in range(n)]
+    for _ in range(500):
+        new = []
+        for i in range(n):
+            num = complex(1.0)
+            for j in range(n):
+                if j != i:
+                    num *= (rs[i] - rs[j])
+            pv = complex(0.0)
+            for cf in coeffs:
+                pv = pv * rs[i] + cf
+            new.append(rs[i] - pv / num if num != 0 else rs[i])
+        if max(abs(x - y) for x, y in zip(new, rs)) < 1e-13:
+            rs = new
+            break
+        rs = new
+    from . import _array_core as _ac2
+    return _ac2.carr(rs)
+
+
+def solve_continuous_lyapunov(a, q):
+    """Solve A X + X A^T + Q = 0 via the Kronecker linear system."""
+    A = _ac.atleast_2d(a)
+    Q = _ac.atleast_2d(q)
+    n = A.shape[0]
+    # scipy convention: A X + X A^H = Q  -> solve for X
+    big = [[0.0] * (n * n) for _ in range(n * n)]
+    rhs = [0.0] * (n * n)
+    for i in range(n):
+        for j in range(n):
+            r = i * n + j
+            rhs[r] = float(Q.data[i][j])
+            for k in range(n):
+                big[r][k * n + j] += float(A.data[i][k])
+                big[r][i * n + k] += float(A.data[j][k])
+    x = _ac.linalg.solve(_ac.marr(big), _ac.marr(rhs))
+    xv = list(x._flat())
+    return _ac.marr([[xv[i * n + j] for j in range(n)]
+                     for i in range(n)])
+
+
+linalg.eigvals = staticmethod(eigvals)
+linalg.eigvalsh = staticmethod(
+    lambda a: _ac.linalg.eigvalsh(a))
+linalg.solve_continuous_lyapunov = staticmethod(
+    solve_continuous_lyapunov)
+linalg.LinAlgError = LinAlgError
+
+
+# ------------------------------------------------------------ splines
+
+class BSpline:
+    """B-spline evaluation via Cox-de Boor recursion."""
+
+    def __init__(self, t, c, k):
+        self.t = [float(v) for v in _ac.asarray(t)._flat()]
+        self.c = [float(v) for v in _ac.asarray(c)._flat()]
+        self.k = int(k)
+
+    def _basis(self, i, k, x):
+        t = self.t
+        if k == 0:
+            # right-closed at the last interval
+            if t[i] <= x < t[i + 1]:
+                return 1.0
+            if x == t[-1] and t[i] < t[i + 1] <= t[-1] \
+                    and t[i + 1] == t[-1]:
+                return 1.0
+            return 0.0
+        out = 0.0
+        d1 = t[i + k] - t[i]
+        if d1 > 0:
+            out += (x - t[i]) / d1 * self._basis(i, k - 1, x)
+        d2 = t[i + k + 1] - t[i + 1]
+        if d2 > 0:
+            out += (t[i + k + 1] - x) / d2 * self._basis(i + 1,
+                                                         k - 1, x)
+        return out
+
+    def __call__(self, x):
+        def one(v):
+            v = float(v)
+            return _math.fsum(self.c[i] * self._basis(i, self.k, v)
+                              for i in range(len(self.c)))
+        if isinstance(x, (int, float)):
+            return one(x)
+        return _ac.marr([one(v) for v in _ac.asarray(x)._flat()])
+
+
+class UnivariateSpline:
+    """Least-squares cubic B-spline with interior knots at quantiles.
+
+    s=0 gives interpolation via CubicSpline; s>0 uses a smoothing fit
+    with fewer knots (scipy's exact GCV knot placement differs, but the
+    fitted curve agrees closely on smooth data).
+    """
+
+    def __init__(self, x, y, s=None, k=3):
+        xs = [float(v) for v in _ac.asarray(x)._flat()]
+        ys = [float(v) for v in _ac.asarray(y)._flat()]
+        order = sorted(range(len(xs)), key=lambda i: xs[i])
+        xs = [xs[i] for i in order]
+        ys = [ys[i] for i in order]
+        self._k = int(k)
+        n = len(xs)
+        if s in (None, 0, 0.0) or n <= self._k + 1:
+            self._cs = CubicSpline(xs, ys)
+            self._ls = None
+            return
+        self._cs = None
+        # number of interior knots shrinks as s grows
+        nint = _bi.max(1, _bi.min(n - self._k - 1,
+                                  int(n / (1.0 + s))))
+        qs = [xs[int((i + 1) * (n - 1) / (nint + 1))]
+              for i in range(nint)]
+        t = [xs[0]] * (self._k + 1) + qs + [xs[-1]] * (self._k + 1)
+        nb = len(t) - self._k - 1
+        sp = BSpline(t, [0.0] * nb, self._k)
+        B = [[sp._basis(j, self._k, v) for j in range(nb)]
+             for v in xs]
+        BtB = [[_math.fsum(B[r][i] * B[r][j] for r in range(n))
+                for j in range(nb)] for i in range(nb)]
+        Bty = [_math.fsum(B[r][i] * ys[r] for r in range(n))
+               for i in range(nb)]
+        for i in range(nb):
+            BtB[i][i] += 1e-10
+        coef = _ac.linalg.solve(_ac.marr(BtB), _ac.marr(Bty))
+        self._ls = BSpline(t, list(coef._flat()), self._k)
+
+    def __call__(self, x):
+        f = self._cs if self._cs is not None else self._ls
+        return f(x)
+
+
+interpolate.BSpline = BSpline
+interpolate.UnivariateSpline = UnivariateSpline
+
+
+# ------------------------------------------------------------ sparse
+
+class csc_matrix:
+    """Dense-backed sparse stand-in (morie matrices are small)."""
+
+    def __init__(self, arg, shape=None):
+        if isinstance(arg, tuple) and shape is None \
+                and len(arg) == 2 and all(isinstance(v, int)
+                                          for v in arg):
+            self._m = [[0.0] * arg[1] for _ in range(arg[0])]
+        elif isinstance(arg, tuple) and len(arg) == 3:
+            data, indices, indptr = arg
+            raise NotImplementedError("csc triplet init unused")
+        else:
+            A = _ac.atleast_2d(arg)
+            self._m = [list(map(float, r)) for r in A.data]
+        self.shape = (len(self._m), len(self._m[0]))
+
+    def toarray(self):
+        return _ac.marr([r[:] for r in self._m])
+
+    todense = toarray
+
+    def __matmul__(self, other):
+        return self.toarray() @ _ac.asarray(other)
+
+    @property
+    def T(self):
+        m, n = self.shape
+        return csc_matrix([[self._m[i][j] for i in range(m)]
+                           for j in range(n)])
+
+
+csr_matrix = csc_matrix
+
+
+def spsolve(a, b):
+    A = a.toarray() if hasattr(a, "toarray") else _ac.atleast_2d(a)
+    return _ac.linalg.solve(A, _ac.asarray(b))
+
+
+def eigsh(a, k=6, which="LM"):
+    A = a.toarray() if hasattr(a, "toarray") else _ac.atleast_2d(a)
+    w, V = _ac.linalg.eigh(A)
+    wl = list(w._flat())
+    n = len(wl)
+    if which == "LM":
+        order = sorted(range(n), key=lambda i: -abs(wl[i]))[:k]
+    else:                       # "SM" / "SA"
+        order = sorted(range(n), key=lambda i: abs(wl[i]))[:k]
+    order = sorted(order, key=lambda i: wl[i])
+    Vd = V.tolist()
+    return (_ac.marr([wl[i] for i in order]),
+            _ac.marr([[Vd[r][i] for i in order] for r in range(n)]))
+
+
+class _SparseLinalg:
+    spsolve = staticmethod(spsolve)
+    eigsh = staticmethod(eigsh)
+
+
+class sparse:  # namespace mirror
+    csc_matrix = csc_matrix
+    csr_matrix = csr_matrix
+    linalg = _SparseLinalg()
+
+    @staticmethod
+    def issparse(x):
+        return isinstance(x, csc_matrix)
+
+
+# ------------------------------------------------------------ io (MAT v5)
+
+def loadmat(path, **kw):
+    """Minimal MAT-file v5 reader: numeric/logical/char 2-D matrices,
+    uncompressed or zlib-compressed elements."""
+    del kw
+    import struct
+    import zlib
+    out = {}
+    with open(path, "rb") as fh:
+        header = fh.read(128)
+        if not header[:4] in (b"MATL",):
+            raise ValueError("not a MAT v5 file")
+        data = fh.read()
+
+    def parse_element(buf, pos):
+        dtype, nbytes = struct.unpack_from("<II", buf, pos)
+        small = dtype >> 16
+        if small:                       # small data element
+            nbytes = small
+            dtype &= 0xFFFF
+            payload = buf[pos + 4:pos + 4 + nbytes]
+            return dtype, payload, pos + 8
+        payload = buf[pos + 8:pos + 8 + nbytes]
+        adv = 8 + nbytes
+        if nbytes % 8:
+            adv += 8 - nbytes % 8
+        return dtype, payload, pos + adv
+
+    MI_MATRIX, MI_COMPRESSED = 14, 15
+    NUM_FMT = {1: ("b", 1), 2: ("B", 1), 3: ("h", 2), 4: ("H", 2),
+               5: ("i", 4), 6: ("I", 4), 7: ("f", 4), 9: ("d", 8),
+               12: ("q", 8), 13: ("Q", 8)}
+
+    def parse_matrix(payload):
+        import struct as _st
+        p = 0
+        _t, flags, p = parse_element(payload, p)
+        _t, dims_raw, p = parse_element(payload, p)
+        _t, name_raw, p = parse_element(payload, p)
+        name = name_raw.rstrip(b"\x00").decode("latin1")
+        ndim = len(dims_raw) // 4
+        dims = _st.unpack("<%di" % ndim, dims_raw)
+        cls = flags[0] if flags else 0
+        if cls in (1, 2, 5) or cls > 15:      # cell/struct/sparse: skip
+            return name, None
+        t, real_raw, p = parse_element(payload, p)
+        if t == 16 or cls == 4:               # mxCHAR
+            try:
+                txt = real_raw.decode("utf-16-le") \
+                    if t in (17, 16) and b"\x00" in real_raw \
+                    else real_raw.decode("latin1")
+            except UnicodeDecodeError:
+                txt = real_raw.decode("latin1", "replace")
+            return name, txt.replace("\x00", "")
+        fmt, size = NUM_FMT.get(t, ("d", 8))
+        cnt = len(real_raw) // size
+        vals = list(_st.unpack("<%d%s" % (cnt, fmt), real_raw))
+        if len(dims) == 2:
+            r, c = dims
+            # column-major
+            mat = [[float(vals[j * r + i]) for j in range(c)]
+                   for i in range(r)]
+            return name, _ac.marr(mat)
+        return name, _ac.marr([float(v) for v in vals])
+
+    pos = 0
+    while pos < len(data) - 8:
+        dtype, payload, pos = parse_element(data, pos)
+        if dtype == MI_COMPRESSED:
+            sub = zlib.decompress(payload)
+            t2, pl2, _ = parse_element(sub, 0)
+            if t2 == MI_MATRIX:
+                nm, val = parse_matrix(pl2)
+                if val is not None:
+                    out[nm] = val
+        elif dtype == MI_MATRIX:
+            nm, val = parse_matrix(payload)
+            if val is not None:
+                out[nm] = val
+    return out
+
+
+class io:  # namespace mirror
+    loadmat = staticmethod(loadmat)
+
+
+convolve = _nd_convolve          # scipy.ndimage.convolve import site

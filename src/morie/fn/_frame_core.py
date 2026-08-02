@@ -1896,3 +1896,193 @@ class _PdApi:
 
 api = _PdApi()
 __version__ = "0.0-morie-native"
+
+
+# ===================================================== io tail
+
+def read_json(path_or_buf, orient=None, lines=False):
+    import json as _json
+    if hasattr(path_or_buf, "read"):
+        raw = path_or_buf.read()
+    elif isinstance(path_or_buf, str) and path_or_buf.lstrip()[:1] \
+            in ("[", "{"):
+        raw = path_or_buf
+    else:
+        with open(path_or_buf) as fh:
+            raw = fh.read()
+    if lines:
+        rows = [_json.loads(ln) for ln in raw.splitlines()
+                if ln.strip()]
+        return DataFrame(rows)
+    obj = _json.loads(raw)
+    if isinstance(obj, list):
+        return DataFrame(obj)
+    if orient == "index":
+        rows = [{"index": k, **v} for k, v in obj.items()]
+        df = DataFrame(rows)
+        return df.set_index("index")
+    return DataFrame(obj)
+
+
+def read_sql(sql, con, params=None):
+    """Works with any DB-API connection (sqlite3 etc.)."""
+    cur = con.cursor() if hasattr(con, "cursor") else con
+    cur.execute(sql, params or ())
+    cols = [d[0] for d in cur.description]
+    rows = cur.fetchall()
+    return DataFrame({c: [r[i] for r in rows]
+                      for i, c in enumerate(cols)})
+
+
+read_sql_query = read_sql
+
+
+def _xlsx_shared_strings(zf):
+    import xml.etree.ElementTree as ET
+    try:
+        raw = zf.read("xl/sharedStrings.xml")
+    except KeyError:
+        return []
+    ns = {"m": "http://schemas.openxmlformats.org/"
+               "spreadsheetml/2006/main"}
+    root = ET.fromstring(raw)
+    out = []
+    for si in root.findall("m:si", ns):
+        text = "".join(t.text or "" for t in si.iter(
+            "{http://schemas.openxmlformats.org/spreadsheetml/2006/"
+            "main}t"))
+        out.append(text)
+    return out
+
+
+def _xlsx_col_index(ref):
+    col = 0
+    for ch in ref:
+        if ch.isalpha():
+            col = col * 26 + (ord(ch.upper()) - 64)
+        else:
+            break
+    return col - 1
+
+
+def read_excel(path, sheet_name=0, header=0, **kw):
+    """Native .xlsx reader (zip + XML, stdlib only)."""
+    del kw
+    import xml.etree.ElementTree as ET
+    import zipfile
+    zf = zipfile.ZipFile(path)
+    shared = _xlsx_shared_strings(zf)
+    sheets = sorted(n for n in zf.namelist()
+                    if n.startswith("xl/worksheets/sheet")
+                    and n.endswith(".xml"))
+    if isinstance(sheet_name, int):
+        target = sheets[sheet_name]
+    else:
+        # map workbook sheet names to files via workbook.xml order
+        ns = {"m": "http://schemas.openxmlformats.org/"
+                   "spreadsheetml/2006/main"}
+        wb = ET.fromstring(zf.read("xl/workbook.xml"))
+        names = [s.get("name") for s in wb.find("m:sheets", ns)]
+        target = sheets[names.index(sheet_name)]
+    ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+    root = ET.fromstring(zf.read(target))
+    grid = {}
+    maxc = 0
+    for row in root.iter(ns + "row"):
+        r = int(row.get("r")) - 1
+        for cell in row.iter(ns + "c"):
+            ref = cell.get("r")
+            c = _xlsx_col_index(ref)
+            t = cell.get("t")
+            if t == "inlineStr":
+                tnode = cell.find(ns + "is/" + ns + "t")
+                grid[(r, c)] = tnode.text if tnode is not None else ""
+                maxc = max(maxc, c + 1)
+                continue
+            vnode = cell.find(ns + "v")
+            if vnode is None:
+                continue
+            raw = vnode.text
+            if t == "s":
+                val = shared[int(raw)]
+            elif t == "b":
+                val = bool(int(raw))
+            else:
+                try:
+                    fv = float(raw)
+                    val = int(fv) if fv == int(fv) else fv
+                except (TypeError, ValueError):
+                    val = raw
+            grid[(r, c)] = val
+            maxc = max(maxc, c + 1)
+    if not grid:
+        return DataFrame({})
+    maxr = max(r for r, _ in grid) + 1
+    rows = [[grid.get((r, c), _NAN) for c in range(maxc)]
+            for r in range(maxr)]
+    if header is None:
+        return DataFrame(rows)
+    cols = [str(v) for v in rows[header]]
+    body = rows[header + 1:]
+    return DataFrame({cols[j]: [row[j] for row in body]
+                      for j in range(maxc)})
+
+
+class ExcelFile:
+    def __init__(self, path):
+        import xml.etree.ElementTree as ET
+        import zipfile
+        self._path = path
+        zf = zipfile.ZipFile(path)
+        ns = {"m": "http://schemas.openxmlformats.org/"
+                   "spreadsheetml/2006/main"}
+        wb = ET.fromstring(zf.read("xl/workbook.xml"))
+        self.sheet_names = [s.get("name")
+                            for s in wb.find("m:sheets", ns)]
+
+    def parse(self, sheet_name=0, **kw):
+        return read_excel(self._path, sheet_name=sheet_name, **kw)
+
+
+def read_parquet(path, **kw):
+    raise ImportError(
+        "read_parquet requires a parquet engine; morie stores its "
+        "native data as CSV/JSON — convert the file or install "
+        "pyarrow for this one path (path=%r)" % (path,))
+
+
+def pivot_table(data, values=None, index=None, columns=None,
+                aggfunc="mean"):
+    return data.pivot_table(values=values, index=index,
+                            columns=columns, aggfunc=aggfunc)
+
+
+class MultiIndex:
+    """Minimal from_tuples/from_product holder."""
+
+    def __init__(self, tuples):
+        self.tuples = list(tuples)
+
+    @classmethod
+    def from_tuples(cls, tuples, names=None):
+        obj = cls(tuples)
+        obj.names = names
+        return obj
+
+    @classmethod
+    def from_product(cls, iterables, names=None):
+        out = [()]
+        for it in iterables:
+            out = [t + (v,) for t in out for v in it]
+        obj = cls(out)
+        obj.names = names
+        return obj
+
+    def __iter__(self):
+        return iter(self.tuples)
+
+    def __len__(self):
+        return len(self.tuples)
+
+    def tolist(self):
+        return list(self.tuples)
