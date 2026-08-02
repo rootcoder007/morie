@@ -126,8 +126,12 @@ class Series:
         return all(isinstance(v, (int, float, bool)) or _isnan(v)
                    for v in self._data)
 
-    def to_numpy(self):
-        return self.values
+    def to_numpy(self, dtype=None):
+        v = self.values
+        if dtype is not None and hasattr(v, "_flat") is False \
+                and isinstance(v, list):
+            return _ac.marr([_to_float(x) for x in v])
+        return v
 
     def tolist(self):
         return list(self._data)
@@ -329,7 +333,8 @@ class Series:
         m = _math.fsum(c) / n
         return _math.fsum((v - m) ** 2 for v in c) / (n - ddof)
 
-    def std(self, ddof=1):
+    def std(self, ddof=1, skipna=True):
+        del skipna  # nan values are already dropped by _clean
         v = self.var(ddof=ddof)
         return _math.sqrt(v) if not _isnan(v) else _NAN
 
@@ -696,6 +701,7 @@ class _DtAccessor:
 
 class DataFrame:
     def __init__(self, data=None, index=None, columns=None):
+        self._attrs = {}
         self._cols = {}
         if data is None:
             data = {}
@@ -755,6 +761,12 @@ class DataFrame:
 
     # ---- basics
     @property
+    def attrs(self):
+        if not hasattr(self, "_attrs"):
+            self._attrs = {}
+        return self._attrs
+
+    @property
     def columns(self):
         return _Columns(self._cols.keys())
 
@@ -794,7 +806,8 @@ class DataFrame:
                 out[c] = "object"
         return Series(list(out.values()), index=list(out.keys()))
 
-    def to_numpy(self):
+    def to_numpy(self, dtype=None):
+        del dtype
         return self.values
 
     def __len__(self):
@@ -872,6 +885,7 @@ class DataFrame:
             self.index = list(range(len(value)))
 
     def _take(self, rows):
+        rows = [int(i) for i in rows]
         return DataFrame(
             {c: [v[i] for i in rows] for c, v in self._cols.items()},
             index=[self.index[i] for i in rows])
@@ -1927,7 +1941,14 @@ def read_csv(path, sep=",", header=0, names=None, dtype=None,
     na_extra = set(na_values or [])
     na_default = {"", "NA", "N/A", "NaN", "nan", "NULL", "null",
                   "None", "#N/A"}
-    f = open(path, newline="", encoding=encoding or "utf-8")
+    if hasattr(path, "read"):
+        import io as _io
+        raw = path.read()
+        if isinstance(raw, bytes):
+            raw = raw.decode(encoding or "utf-8")
+        f = _io.StringIO(raw)
+    else:
+        f = open(path, newline="", encoding=encoding or "utf-8")
     try:
         rows = list(_csv.reader(f, delimiter=sep))
     finally:

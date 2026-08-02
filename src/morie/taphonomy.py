@@ -141,7 +141,10 @@ def taphonomy_preservation_delta(
         ``estimator="cate"``), ``warnings``, ``interpretation``.
     """
     if not isinstance(data, pd.DataFrame):
-        raise TypeError("`data` must be a pandas DataFrame")
+        if hasattr(data, "columns") and hasattr(data, "__getitem__"):
+            data = pd.DataFrame({c: list(data[c]) for c in data.columns})
+        else:
+            raise TypeError("`data` must be a pandas DataFrame")
     if len(data) == 0:
         raise ValueError(
             "`data` is empty. Fill taphonomy_schema() with real comparanda; "
@@ -620,7 +623,10 @@ def taphonomy_bhm(
     unless ``group``), ``fitted``, ``n``, ``interpretation``.
     """
     if not isinstance(data, pd.DataFrame):
-        raise TypeError("`data` must be a pandas DataFrame")
+        if hasattr(data, "columns") and hasattr(data, "__getitem__"):
+            data = pd.DataFrame({c: list(data[c]) for c in data.columns})
+        else:
+            raise TypeError("`data` must be a pandas DataFrame")
     if len(data) == 0:
         raise ValueError("`data` is empty")
     if outcome not in data.columns:

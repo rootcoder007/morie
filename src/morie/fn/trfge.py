@@ -90,7 +90,7 @@ def transformer_genomic(
     pe[:, 1::2] = np.cos(pos / div[:, 1::2])
     # Compute context vector per individual
     context = np.zeros((n, d_model))
-    attentions = np.zeros((n, L, L))
+    attentions = [None] * n  # per-individual (L, L) attention maps
     for i in range(n):
         E = Ms[i].reshape(L, 1) @ W_emb + pe  # (L, d)
         Q = E @ W_Q
