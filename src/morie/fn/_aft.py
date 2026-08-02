@@ -33,7 +33,7 @@ def log_dens_surv(z, family):
         zz = np.clip(z, -500, 500)
         return zz - 2.0 * np.logaddexp(0.0, zz), -np.logaddexp(0.0, zz)
     if family == "lognormal":          # normal errors
-        from scipy.stats import norm
+        from ._stats_core import norm
 
         return norm.logpdf(z), norm.logsf(z)
     raise ValueError(
@@ -66,7 +66,7 @@ def aft_fit(t, e, X, family="weibull", max_iter=500, tol=1e-6, add_intercept=Tru
     Returns ``(beta, log_scale, loglik, cov, n_iter, converged)`` with ``beta``
     on the log-time scale.
     """
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     n = t.size
     A = np.column_stack([np.ones(n), X]) if add_intercept else np.asarray(X, dtype=float)

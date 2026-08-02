@@ -8,7 +8,9 @@ integral; the closed forms below are that table's rows.
 """
 
 from . import _array_core as np
-from scipy import integrate, special, stats
+from ._sci_core import integrate
+from ._sci_core import special
+from . import _stats_core as stats
 
 __all__ = ["copula_cdf", "copula_tau", "tau_to_theta", "FAMILIES"]
 
@@ -233,7 +235,7 @@ def tau_to_theta(family, tau):
             raise ValueError("clayton admits only tau > 0.")
         return float(2.0 * tau / (1.0 - tau))
     # frank, joe, plackett: monotone in theta, invert by bisection
-    from scipy import optimize
+    from ._sci_core import optimize
 
     lo, hi = (1e-6, 60.0) if family != "frank" else (1e-6, 60.0)
     if family == "joe":

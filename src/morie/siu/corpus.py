@@ -62,7 +62,7 @@ def siu_reports(update: bool = False, cache_dir: str | Path | None = None):
     re-downloads the snapshot (same SHA-256 pin); it never re-derives
     reviewed values.
     """
-    import pandas as pd  # heavy import stays out of the rule engine's way
+    from morie.fn import _frame_core as pd
 
     cache = (Path(cache_dir).expanduser() if cache_dir else _cache_dir())
     dest = cache / "siu_directors_reports.csv.gz"

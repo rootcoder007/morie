@@ -9,7 +9,8 @@ from ._richresult import RichResult
 __all__ = ["hrz_smoothed_max_score", "horowitz_smoothed_max_score"]
 
 
-from scipy import optimize, stats as _st
+from ._sci_core import optimize
+from . import _stats_core as _st
 
 
 def hrz_smoothed_max_score(X, y, h=None, beta0=None, r=2):

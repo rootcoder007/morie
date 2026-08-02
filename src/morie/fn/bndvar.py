@@ -63,7 +63,8 @@ def bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n,
     Eq. (6). Stoye, J. (2009), "More on confidence intervals for
     partially identified parameters", *Econometrica* 77:1299-1315.
     """
-    from scipy import optimize, stats
+    from ._sci_core import optimize
+    from . import _stats_core as stats
 
     tl, tu = float(lower_hat), float(upper_hat)
     sl, su = float(se_lower), float(se_upper)

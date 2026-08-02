@@ -288,7 +288,7 @@ def plot_eeg_bands(
     title: str = "EEG Band Analysis",
 ) -> object:
     plt = _get_plt()
-    from scipy.signal import butter, filtfilt
+    from morie.fn._signal_core import butter, filtfilt
 
     bands = {
         "Delta (0.5-4 Hz)": (0.5, 4),
@@ -324,7 +324,7 @@ def eeg_band_filter(
     fs: float = 256.0,
     band: str = "alpha",
 ) -> np.ndarray:
-    from scipy.signal import butter, filtfilt
+    from morie.fn._signal_core import butter, filtfilt
 
     bands = {"delta": (0.5, 4), "theta": (4, 8), "alpha": (8, 13), "beta": (13, 30), "gamma": (30, min(80, fs / 2 - 1))}
     band = band.lower()
@@ -407,7 +407,7 @@ def respiratory_rate(
     x: np.ndarray,
     fs: float = 100.0,
 ) -> float:
-    from scipy.signal import find_peaks
+    from morie.fn._signal_core import find_peaks
 
     nyq = fs / 2
     low = 0.1 / nyq
@@ -418,8 +418,8 @@ def respiratory_rate(
     # filtfilt. Direct-form (b, a) becomes ill-conditioned at low cutoffs
     # (here 0.002 / 0.01 of Nyquist) and produces huge transients that
     # diverge between x86 and ARM BLAS implementations. SOS is stable.
-    from scipy.signal import butter as _butter
-    from scipy.signal import sosfiltfilt
+    from morie.fn._signal_core import butter as _butter
+    from morie.fn._signal_core import sosfiltfilt
 
     sos = _butter(4, [low, high], btype="band", output="sos")
     filtered = sosfiltfilt(sos, x)

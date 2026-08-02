@@ -33,7 +33,7 @@ safe_exp = _safe_exp
 
 def _validate_df(data, *required_cols: str) -> None:
     """Validate that data is a DataFrame with required columns."""
-    import pandas as pd
+    from . import _frame_core as pd
 
     if not isinstance(data, pd.DataFrame):
         raise TypeError(f"Expected DataFrame, got {type(data).__name__}")
@@ -44,7 +44,7 @@ def _validate_df(data, *required_cols: str) -> None:
 
 def _extract_col(data, col: str) -> np.ndarray:
     """Extract a column from a DataFrame as a float64 array, dropping NaN."""
-    import pandas as pd
+    from . import _frame_core as pd
 
     if isinstance(data, pd.DataFrame):
         if col not in data.columns:
@@ -64,7 +64,7 @@ def _check_binary(x: np.ndarray) -> None:
 
 def _ci_from_se(estimate: float, se: float, alpha: float = 0.05) -> tuple[float, float]:
     """Compute normal-approximation CI from estimate and SE."""
-    from scipy import stats as _st
+    from . import _stats_core as _st
 
     z = _st.norm.ppf(1 - alpha / 2)
     return estimate - z * se, estimate + z * se

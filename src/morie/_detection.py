@@ -130,14 +130,14 @@ def teager_energy(x: np.ndarray) -> np.ndarray:
 
 
 def hilbert_envelope(x: np.ndarray) -> np.ndarray:
-    from scipy.signal import hilbert
+    from morie.fn._signal_core import hilbert
 
     analytic = hilbert(x)
     return np.abs(analytic)
 
 
 def pan_tompkins_qrs(ecg: np.ndarray, fs: float = 360.0) -> np.ndarray:
-    from scipy.signal import butter, filtfilt
+    from morie.fn._signal_core import butter, filtfilt
 
     nyq = fs / 2
     low = 5 / nyq
@@ -165,7 +165,7 @@ def pan_tompkins_qrs(ecg: np.ndarray, fs: float = 360.0) -> np.ndarray:
 
 def dicrotic_notch_detect(pulse: np.ndarray, fs: float = 125.0) -> np.ndarray:
     d2 = np.diff(pulse, n=2)
-    from scipy.signal import find_peaks
+    from morie.fn._signal_core import find_peaks
 
     peaks, _ = find_peaks(-d2, distance=int(0.1 * fs))
     systolic_end = int(0.3 * fs)
@@ -190,7 +190,7 @@ def t_wave_detect(ecg: np.ndarray, qrs_locs: np.ndarray, fs: float = 360.0) -> n
 def coherence_spectrum(
     x: np.ndarray, y: np.ndarray, fs: float = 1.0, nperseg: int = 256
 ) -> tuple[np.ndarray, np.ndarray]:
-    from scipy.signal import coherence as sp_coherence
+    from morie.fn._signal_core import coherence as sp_coherence
 
     f, Cxy = sp_coherence(x, y, fs=fs, nperseg=min(nperseg, len(x)))
     return f, Cxy
@@ -199,7 +199,7 @@ def coherence_spectrum(
 def cross_spectral_density(
     x: np.ndarray, y: np.ndarray, fs: float = 1.0, nperseg: int = 256
 ) -> tuple[np.ndarray, np.ndarray]:
-    from scipy.signal import csd
+    from morie.fn._signal_core import csd
 
     f, Pxy = csd(x, y, fs=fs, nperseg=min(nperseg, len(x)))
     return f, Pxy

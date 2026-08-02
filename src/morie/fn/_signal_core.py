@@ -246,7 +246,17 @@ def _odd_ext(xs, n):
     return left + xs + right
 
 
-def filtfilt(b, a, x):
+def filtfilt(b, a, x, axis=-1):
+    xa = _ac.asarray(x)
+    if len(xa.shape) == 2:
+        if axis in (-1, 1):
+            return _ac.marr([list(filtfilt(b, a, row)._flat())
+                             for row in xa.data])
+        cols = [list(filtfilt(b, a, [xa.data[i][j] for i in
+                                     range(xa.shape[0])])._flat())
+                for j in range(xa.shape[1])]
+        return _ac.marr([[cols[j][i] for j in range(xa.shape[1])]
+                         for i in range(xa.shape[0])])
     bs = list(_ac.asarray(b)._flat())
     as_ = list(_ac.asarray(a)._flat())
     xs = list(_ac.asarray(x)._flat())

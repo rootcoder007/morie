@@ -2,7 +2,8 @@
 """Distribution-free tolerance intervals from order statistics."""
 
 from . import _array_core as np
-from scipy import special, stats
+from ._sci_core import special
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

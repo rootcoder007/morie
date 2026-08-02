@@ -9,7 +9,7 @@ test, for four symmetric distributions.
 """
 
 from . import _array_core as np
-from scipy import integrate
+from ._sci_core import integrate
 
 __all__ = ["ARE_TABLE", "efficacy_are"]
 

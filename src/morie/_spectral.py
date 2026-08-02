@@ -136,7 +136,7 @@ def coherence(
     fs: float = 1.0,
     nperseg: int = 256,
 ) -> tuple[np.ndarray, np.ndarray]:
-    from scipy.signal import coherence as sp_coherence
+    from morie.fn._signal_core import coherence as sp_coherence
 
     f, cxy = sp_coherence(x, y, fs=fs, nperseg=nperseg)
     return f, cxy
@@ -210,7 +210,7 @@ def fbm_synthesis(N: int, H: float = 0.5) -> np.ndarray:
 def welch_psd(
     x: np.ndarray, fs: float = 1.0, nperseg: int = 256, noverlap: int | None = None
 ) -> tuple[np.ndarray, np.ndarray]:
-    from scipy.signal import welch as sp_welch
+    from morie.fn._signal_core import welch as sp_welch
 
     f, Pxx = sp_welch(x, fs=fs, nperseg=min(nperseg, len(x)), noverlap=noverlap)
     return f, Pxx

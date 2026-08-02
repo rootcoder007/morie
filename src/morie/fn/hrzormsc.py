@@ -75,7 +75,8 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
     Theorem 4.11; Kooreman and Melenberg (1989), Lee (1992),
     Melenberg and van Soest (1996).
     """
-    from scipy import optimize, stats
+    from ._sci_core import optimize
+    from . import _stats_core as stats
 
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yv = np.asarray(y).ravel()
