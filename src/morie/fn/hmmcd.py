@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Monte Carlo dropout: leave dropout on at inference for uncertainty."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

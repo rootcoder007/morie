@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 1.1: bias of modified gamma KDE is O(h^4)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

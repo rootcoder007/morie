@@ -24,7 +24,7 @@ falsified by any input would be untestable, and the placeholder it
 replaces already had that problem.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "z_estimator_map", "sup_difference", "survival_psi",

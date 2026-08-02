@@ -27,7 +27,7 @@ def spherical_variogram(h, nugget, sill, range_param):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     h = np.asarray(h, dtype=np.float64)
     gamma = np.where(

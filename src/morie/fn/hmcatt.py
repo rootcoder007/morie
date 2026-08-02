@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Cross-attention: Q from decoder, K/V from encoder."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grca import geron_cross_attention as _grca

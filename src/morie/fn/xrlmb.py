@@ -1,6 +1,6 @@
 """Robust LM test for error"""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

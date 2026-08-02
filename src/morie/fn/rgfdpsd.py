@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fractal dimension from PSD slope (1/f noise model)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

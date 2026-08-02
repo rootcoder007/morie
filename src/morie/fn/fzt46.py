@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 4.6: mean value property of boundary-free MRL estimators."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

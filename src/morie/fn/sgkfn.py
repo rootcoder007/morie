@@ -25,7 +25,7 @@ def ripley_k_function(points, window, r_values=None, correction="ripley"):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]

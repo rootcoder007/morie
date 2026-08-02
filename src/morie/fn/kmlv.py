@@ -3,7 +3,7 @@
 """LLaVA visual instruction tuning: project visual features into the
 LLM's token space."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .kmclm import kamath_causal_lm_loss

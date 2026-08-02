@@ -11,7 +11,7 @@ Analysis*, 3rd ed. IEEE/Wiley, Chapter 6.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.interpolate import CubicSpline
 
 from ._containers import DescriptiveResult

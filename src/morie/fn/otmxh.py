@@ -1,6 +1,6 @@
 """W_2 between Gaussian mixtures via OT on components."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

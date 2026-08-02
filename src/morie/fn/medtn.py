@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def causal_mediation(

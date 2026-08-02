@@ -8,7 +8,7 @@ than Kolmogorov-Smirnov for detecting departures in tails.
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 4.4
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as sp_stats
 
 __all__ = ["ander"]

@@ -1,6 +1,6 @@
 """Schwarz inequality for real functions a(t) and b(t).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

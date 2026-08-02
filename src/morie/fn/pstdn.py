@@ -11,7 +11,7 @@ def posterior_density_data(chain) -> DescriptiveResult:
 
     .. epigraph:: Knowledge is power. -- Francis Bacon
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float).ravel()
     n = len(chain)

@@ -1,6 +1,6 @@
 """GeneralStatistics equation extracted from Law and Economics, 6th Edition -- Robert B. Cooter, Thomas Ulen -- Pearson Series in Economics, 6th Edition, 2011 -- Prentice Hall -- 9780132540650 -- 4bc55da23884b7603280fecc527f4743 -- Anna’s Archive.."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import hypothesis_test_result

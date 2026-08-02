@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Engle's ARCH-LM test for conditional heteroskedasticity."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

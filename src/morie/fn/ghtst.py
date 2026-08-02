@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian nonparametric hypothesis testing via Polya-tree marginals."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import betaln
 from scipy.stats import norm
 

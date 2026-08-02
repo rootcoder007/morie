@@ -1,6 +1,6 @@
 """Wiener filter frequency response as ratio of CSD to PSD of input.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

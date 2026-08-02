@@ -14,7 +14,7 @@ def bb_sum_squares(Z) -> DescriptiveResult:
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     grand_mean = np.nanmean(Z)

@@ -5,7 +5,7 @@ Compactness index
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agcmp(areas=None, perimeters=None, values=None, n=30):

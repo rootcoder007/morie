@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Subsample-averaged realised kernel."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .volrk import vol_realised_kernel

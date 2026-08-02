@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exponential smoothing (Holt-Winters) for time series forecasting."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def ets(

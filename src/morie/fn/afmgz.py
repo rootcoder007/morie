@@ -5,7 +5,7 @@ Management zone delineation
 Category: AgriSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def afmgz(yield_data=None, soil=None, coords=None, n=50):

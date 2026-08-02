@@ -1,6 +1,6 @@
 """Sufficient condition on the splitting variables ensuring that almost all realizations of a tail-free random measure are absolutely continuous with respect to mu.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

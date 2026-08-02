@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _st
 
 from ._containers import DescriptiveResult
@@ -43,7 +43,8 @@ def heckman_correction(y: np.ndarray, x: np.ndarray, z: np.ndarray, cdf=None) ->
     s = selected.astype(float)
 
     z_aug = np.column_stack([np.ones(n), z])
-    from numpy.linalg import lstsq
+    from morie.fn._array_core import linalg as _acl
+    lstsq = _acl.lstsq
 
     gamma, _, _, _ = lstsq(z_aug, s, rcond=None)
     probit_score = z_aug @ gamma

@@ -25,7 +25,7 @@ l1 = b0, l2 = 2 b1 - b0, l3 = 6 b2 - 6 b1 + b0, and their GEV/GPD
 inversions have closed forms the tests verify against.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["pwm_b", "l_moments", "gev_from_lmoments", "gpd_from_pwm",
            "top_order", "EULER_GAMMA"]

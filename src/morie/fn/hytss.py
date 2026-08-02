@@ -5,7 +5,7 @@ Total suspended solids
 Category: HydroSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def hytss(flow=None, precip=None, coords=None, n=50):

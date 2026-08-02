@@ -11,7 +11,7 @@ def bayesian_am_mcmc_sample(Z, n_samples=500) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     n, p = Z.shape if Z.ndim == 2 else (Z.shape[0], 1)

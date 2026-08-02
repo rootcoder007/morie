@@ -8,7 +8,7 @@ of Failure Time Data, 2nd ed. Wiley.
 
 __all__ = ["lgnrm"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def lgnrm(

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nonmetric multidimensional scaling"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import nonmetric_mds as _nonmetric_mds
 from ._containers import DescriptiveResult

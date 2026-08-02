@@ -5,7 +5,7 @@ Bayesian optimization using acquisition functions.
 Uses Gaussian process surrogate with upper confidence bound or expected improvement.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize
 from scipy.stats import norm
 

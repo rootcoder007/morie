@@ -5,7 +5,7 @@ LISA differential test
 Category: SpatAutoC
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def saldf(values=None, w=None, n=50):

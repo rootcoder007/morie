@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Imai-Keele-Tingley causal mediation under sequential ignorability."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .sensIM import _lsem_fit

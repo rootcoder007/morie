@@ -13,7 +13,7 @@ that makes the L1 sensitivity 1, not 2.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["check_budget", "laplace_noise", "gaussian_sigma", "clip_to_range"]
 

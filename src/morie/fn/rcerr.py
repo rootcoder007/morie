@@ -11,7 +11,7 @@ def roll_call_errors(predicted, observed) -> DescriptiveResult:
 
     .. epigraph:: Measure what is measurable, and make measurable what is not. -- Galileo Galilei
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pred = np.asarray(predicted, dtype=float).round()
     obs = np.asarray(observed, dtype=float)

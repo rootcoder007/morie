@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Two-sided median test: count above combined median in both directions."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

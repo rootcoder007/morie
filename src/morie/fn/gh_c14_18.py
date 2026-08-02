@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kernel stick-breaking process: dependent weights via kernel function of covariate."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

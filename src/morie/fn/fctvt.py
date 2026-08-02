@@ -15,7 +15,7 @@ def factor_convert_levels(data, levels=None) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(data).ravel()
     if levels is None:

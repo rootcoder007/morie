@@ -9,7 +9,7 @@ function that computes propensity scores, IPW weights, and the Hajek
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 
 from morie.fn.ess import effective_sample_size

@@ -4,7 +4,7 @@ Industrial water quality
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqind(data=None, coords=None, n=50):

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Burkov's Eq 2.1: categorical cross-entropy with a one-hot target."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

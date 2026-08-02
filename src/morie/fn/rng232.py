@@ -1,6 +1,6 @@
 """Fourier transform of the log of a product is sum of log-FTs of the components.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

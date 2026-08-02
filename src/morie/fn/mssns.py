@@ -25,7 +25,7 @@ def missing_sensitivity_analysis(D, pcts=None, n_trials=5, seed=42):
     DescriptiveResult
         value = dict with pcts and mean_stress arrays.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     if pcts is None:
         pcts = [0.1, 0.2, 0.3]

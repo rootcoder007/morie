@@ -7,7 +7,7 @@ estimate ``\\hat\\theta = (1/N) sum f(x_i)`` for integrand ``f``.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

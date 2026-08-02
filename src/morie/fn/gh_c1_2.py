@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Absolute continuity condition for posterior existence in nonparametric Bayes."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

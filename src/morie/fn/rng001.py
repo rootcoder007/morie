@@ -1,6 +1,6 @@
 """Mean of a random process as the first-order moment of its PDF.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

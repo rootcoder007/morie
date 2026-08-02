@@ -52,7 +52,7 @@ def adam_optimizer(theta, grad, lr=1e-3, beta1=0.9, beta2=0.999, eps=1e-8, state
         ...
     ValueError: grad has 1 entries but theta has 2
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     th = np.atleast_1d(np.asarray(theta, dtype=float)).ravel()
     gr = np.atleast_1d(np.asarray(grad, dtype=float)).ravel()

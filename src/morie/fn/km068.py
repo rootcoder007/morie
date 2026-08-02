@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 5.4: the PPO loss used to update the policy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km069 import kamath_ch5_rlhf_objective

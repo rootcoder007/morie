@@ -11,7 +11,7 @@ def subset_roll_calls(votes, min_margin=0.025) -> DescriptiveResult:
 
     .. epigraph:: We must know. We will know. -- David Hilbert
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     votes = np.asarray(votes, dtype=float)
     if votes.ndim == 1:

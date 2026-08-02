@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Cross K-function for bivariate point patterns."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_pp import (as_points, as_region, cross_k_combined,

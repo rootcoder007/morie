@@ -21,7 +21,7 @@ def rectangular_matrix(respondents, stimuli):
     DescriptiveResult
         value = formatted matrix (ndarray), extra has shape info.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     R = np.asarray(respondents, dtype=float)
     n_resp, n_stim = R.shape

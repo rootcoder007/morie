@@ -12,7 +12,7 @@ In NIPS (pp. 5998-6008).
 
 __all__ = ["mhatt"]
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import softmax
 
 from ._richresult import RichResult

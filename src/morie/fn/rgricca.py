@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Steady-state Riccati equation solution for Kalman gain."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

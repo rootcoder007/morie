@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wald-Wolfowitz runs test tie-handling: randomize tied observations."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

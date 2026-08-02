@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Transformer decoder block: masked self-attention, cross-attention, FFN."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grteb import feed_forward, layer_norm, multi_head_attention

@@ -1,6 +1,6 @@
 """Nugget effect in the semivariogram: discontinuity at the origin."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_vario import semivariogram, _as_lag

@@ -12,7 +12,7 @@ is the *power function*, not a post-hoc test).
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

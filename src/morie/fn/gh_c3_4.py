@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stick-breaking construction: w_k = V_k * prod_{j<k}(1-V_j), sum w_k = 1."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

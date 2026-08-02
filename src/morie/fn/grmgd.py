@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Mini-batch gradient descent for linear regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grdlm import geron_dataloader_minibatch

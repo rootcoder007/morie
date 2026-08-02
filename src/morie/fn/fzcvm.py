@@ -7,7 +7,7 @@ Under H0, the smoothing bias is o(n^{-1/2}), so the classical
 CvM asymptotic distribution applies and we use its tabulated tail.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """REINFORCE parameter update from sampled episodes."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmpg import geron_policy_gradient

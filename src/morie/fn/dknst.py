@@ -5,7 +5,7 @@ Non-separable ST covariance
 Category: DimKrig
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dknst(x=None, y=None, z=None, values=None, n=30):

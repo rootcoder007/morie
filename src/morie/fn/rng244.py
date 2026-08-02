@@ -1,6 +1,6 @@
 """Closed-form complex cepstrum from poles/zeros (inside/outside unit circle).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

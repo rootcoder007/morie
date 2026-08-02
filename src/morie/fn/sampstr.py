@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Stratified random sample (proportional allocation)."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def sampstr(strata: dict, n_total: int, seed: int = 42) -> dict:

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """F1 score -- the harmonic mean of precision and recall."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcfm import geron_confusion_matrix

@@ -28,7 +28,7 @@ machine. *Annals of Statistics*, 29(5), 1189-1232.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["gb_fit", "gb_predict"]
 

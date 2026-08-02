@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Poisson regression via finite random series: log-linear model with series prior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

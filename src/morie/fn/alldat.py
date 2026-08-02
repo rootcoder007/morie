@@ -3,7 +3,7 @@
 """LDA by collapsed Gibbs sampling (Blei et al. 2003; Griffiths and
 Steyvers 2004; Alammar Ch 5)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

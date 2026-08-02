@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.21: entropy-based attention regularisation (EAR)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

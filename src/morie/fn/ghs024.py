@@ -1,6 +1,6 @@
 """Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

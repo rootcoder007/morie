@@ -1,6 +1,6 @@
 """Log-rank test for two-sample survival."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

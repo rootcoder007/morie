@@ -1,6 +1,6 @@
 """Functional regression Y = ∫β(t)X(t)dt + ε."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

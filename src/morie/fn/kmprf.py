@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Prefix-LM attention mask: bidirectional over the prefix, causal over the completion."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

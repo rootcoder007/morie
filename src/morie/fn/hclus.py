@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial.distance import pdist
 

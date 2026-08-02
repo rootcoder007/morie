@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ideal()-style Bayesian roll-call scaling on an encoded rollcall object."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .mcmpp import mcmcpack_irt

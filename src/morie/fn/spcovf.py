@@ -1,6 +1,6 @@
 """Spatial covariance function C(h) = Cov[Z(s), Z(s+h)]."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_vario import empirical_semivariogram

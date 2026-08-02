@@ -7,7 +7,7 @@ whether two paired samples have the same distribution.
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 2.3
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as sp_stats
 
 __all__ = ["wsrkt"]

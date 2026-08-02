@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 def condorcet_winner(preference_matrix) -> DescriptiveResult:
     """Out of chaos, comes order. -- Friedrich Nietzsche"""
-    import numpy as np
+    from morie.fn import _array_core as np
 
     M = np.asarray(preference_matrix, dtype=float)
     n = M.shape[0]

@@ -25,7 +25,7 @@ def initial_start_values(n, n_dims=2, method="random", seed=42):
     DescriptiveResult
         value = initial coordinate matrix (n x n_dims).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     if method == "grid":

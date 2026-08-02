@@ -6,7 +6,7 @@ treating censorings as the events.  Returns the KM-of-censoring at
 t_max with Greenwood SE.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

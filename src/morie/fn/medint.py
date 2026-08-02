@@ -1,6 +1,6 @@
 """Mediated interaction term in 4-way decomp."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

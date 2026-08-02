@@ -10,7 +10,7 @@ Jolliffe, I. T. (2002). Principal Component Analysis (2nd ed.). Springer.
 Jackson, J. E. (1991). A User's Guide to Principal Components. Wiley.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import linalg as la
 
 __all__ = ["pcana"]

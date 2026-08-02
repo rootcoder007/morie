@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Actor-critic with learned value baseline; advantage = r + gamma*V(s') - V(s)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

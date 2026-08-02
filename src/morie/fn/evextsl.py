@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sliding-blocks estimator of the extremal index."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 
@@ -75,7 +75,7 @@ def ev_extremal_sliding(x, threshold=None, block_length=None):
         return min(1.0, 1.0 / m)
 
     # sliding: running max of Fhat over every window of length b
-    from numpy.lib.stride_tricks import sliding_window_view
+    from morie.fn._array_core import sliding_window_view
 
     slide_max = sliding_window_view(Fhat, b).max(axis=1)
     th_slide = theta_from(slide_max, b)

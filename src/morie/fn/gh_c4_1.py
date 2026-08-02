@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dirichlet process DP(alpha, G0): finite-dimensional marginals are Dirichlet."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

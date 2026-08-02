@@ -1,6 +1,6 @@
 """ViT-B/16 initialization (768 dim, 12 heads, 12 layers)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

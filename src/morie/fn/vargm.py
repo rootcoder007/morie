@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Empirical (Matheron) variogram with a fitted model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schaben import MODELS, fit_variogram_wls, matheron, variogram_model

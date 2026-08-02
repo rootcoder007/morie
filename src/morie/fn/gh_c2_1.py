@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Random basis expansion prior: f = sum_k z_k phi_k with random coefficients z_k."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

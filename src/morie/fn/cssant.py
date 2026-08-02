@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Callaway-Sant'Anna group-time average treatment effects."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import as_panel, first_treatment
 from ._richresult import RichResult

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Laplace functional of CRM: E[exp(-integral f dM)] = exp(-integral (1-e^{-f*u}) nu(du,dx))."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

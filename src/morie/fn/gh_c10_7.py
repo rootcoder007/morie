@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Density estimation via finite random series prior: log f = sum beta_k phi_k."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

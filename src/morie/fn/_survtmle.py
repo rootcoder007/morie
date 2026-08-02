@@ -13,7 +13,7 @@ hazard. Only the failure hazard is fluctuated -- the other three are
 tangent to the parameter and are left alone.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import add_intercept, logit_fit, logit_predict
 

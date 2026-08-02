@@ -7,7 +7,7 @@ __all__ = ["gibbs_bivariate_normal", "gibbs"]
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def gibbs_bivariate_normal(

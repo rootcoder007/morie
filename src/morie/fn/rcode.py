@@ -15,7 +15,7 @@ def recode_responses(data, missing_codes=None) -> DescriptiveResult:
 
     .. epigraph:: Logic is the foundation of all certain knowledge. -- Leonhard Euler
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     if missing_codes is None:
         missing_codes = [77, 88, 99]

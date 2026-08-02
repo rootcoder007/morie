@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """One-vs-One: K(K-1)/2 binary classifiers, majority vote."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grovr import train_logreg

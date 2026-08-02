@@ -4,7 +4,7 @@ Park accessibility spatial
 Category: UrbanSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ubprk(population=None, area=None, coords=None, n=50):

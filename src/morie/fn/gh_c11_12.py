@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Self-similar GP rescaling: f(lambda*.) =_d lambda^H * f(.) for fractional BM."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -21,7 +21,7 @@ def mlsmu6_missing_impute(D, method="mean"):
     DescriptiveResult
         value = imputed matrix.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float).copy()
     mask = np.isnan(D)

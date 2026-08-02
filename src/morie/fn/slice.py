@@ -7,7 +7,7 @@ __all__ = ["slice_sampler", "slice"]
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 
 
 def slice_sampler(

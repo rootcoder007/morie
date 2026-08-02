@@ -5,7 +5,7 @@ IDP spatial mapping
 Category: GeoDem
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gdidp(population=None, births=None, deaths=None, coords=None, n=50):

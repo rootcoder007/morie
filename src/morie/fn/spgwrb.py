@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """GWR bandwidth selection by cross-validation or corrected AIC."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_gwr import (aic_from_parts, aicc_from_parts, cv_score, gwr_fit,

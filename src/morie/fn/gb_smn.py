@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

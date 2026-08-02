@@ -1,6 +1,6 @@
 """Walsh-Hadamard Transform with 1/sqrt(d) normalization (CRITICAL -- not 1/d)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

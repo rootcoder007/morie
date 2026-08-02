@@ -8,7 +8,7 @@ __all__ = ["gp_optimize", "gpopt"]
 from collections.abc import Callable
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 from scipy.optimize import minimize as sp_minimize
 from scipy.spatial.distance import cdist

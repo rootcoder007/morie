@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hurst exponent estimation via rescaled range (R/S) analysis."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def hurst(

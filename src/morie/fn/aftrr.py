@@ -5,7 +5,7 @@ Terrace design spatial
 Category: AgriSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def aftrr(yield_data=None, soil=None, coords=None, n=50):

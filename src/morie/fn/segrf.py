@@ -5,7 +5,7 @@ Geographic risk factors
 Category: SpatEpi2
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def segrf(cases=None, population=None, coords=None, n=50):

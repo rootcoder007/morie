@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Covariance of DP: Cov[G(A),G(B)] = (G0(A cap B) - G0(A)G0(B))/(alpha+1)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

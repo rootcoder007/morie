@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Momentum optimization: accumulates exponentially-decaying past gradients."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

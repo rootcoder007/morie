@@ -15,7 +15,7 @@ def issue_subset_extract(data, columns) -> DescriptiveResult:
 
     .. epigraph:: He who has a why to live can bear almost any how. -- Friedrich Nietzsche
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(data, dtype=float)
     if X.ndim == 1:

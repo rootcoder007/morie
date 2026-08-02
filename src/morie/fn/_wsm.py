@@ -24,7 +24,7 @@ Where no source in the library covers a topic, the module says so
 rather than inventing a citation.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["silverman_bandwidth", "adaptive_spread", "bootstrap_replicates"]
 

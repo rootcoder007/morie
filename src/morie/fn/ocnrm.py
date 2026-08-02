@@ -11,7 +11,7 @@ def oc_normal_vector(X, votes_j) -> DescriptiveResult:
 
     .. epigraph:: Mathematics is the queen of the sciences. -- Carl Friedrich Gauss
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     v = np.asarray(votes_j, dtype=float)

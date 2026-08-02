@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def sumxsq(x: Union[Sequence[float], np.ndarray]) -> float:

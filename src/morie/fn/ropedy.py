@@ -1,6 +1,6 @@
 """RoPE NTK-aware dynamic scaling for longer context."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

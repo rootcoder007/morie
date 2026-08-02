@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 2.4: MISE of bias-reduced KDFE is smaller than standard KDFE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

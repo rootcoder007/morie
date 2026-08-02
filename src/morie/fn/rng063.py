@@ -1,6 +1,6 @@
 """Euler's formula for the complex exponential basis function.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

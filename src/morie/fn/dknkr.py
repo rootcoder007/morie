@@ -5,7 +5,7 @@ Non-stationary kriging
 Category: DimKrig
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dknkr(x=None, y=None, z=None, values=None, n=30):

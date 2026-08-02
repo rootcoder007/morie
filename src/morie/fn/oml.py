@@ -3,9 +3,10 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
-from numpy.linalg import lstsq
+from morie.fn._array_core import linalg as _acl
+lstsq = _acl.lstsq
 from scipy import stats
 
 from morie.fn._containers import OtDmlR

@@ -1,6 +1,6 @@
 """Variance partition coefficient for logistic latent (sigma2_u + pi^2/3)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

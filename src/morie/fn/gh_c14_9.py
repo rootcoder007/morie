@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pitman-Yor process PY(d, theta, G0): two-parameter generalization of DP."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

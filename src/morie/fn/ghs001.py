@@ -1,6 +1,6 @@
 """Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

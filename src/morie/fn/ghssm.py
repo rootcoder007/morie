@@ -5,7 +5,7 @@ State-space health spatial
 Category: GeoHlth
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ghssm(cases=None, controls=None, exposure=None, coords=None, n=50):

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """EDF statistic T_n(x) = nS_n(x) has binomial distribution with params n and F(x)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

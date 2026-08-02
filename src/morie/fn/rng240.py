@@ -1,6 +1,6 @@
 """Complex log of X(z) expanded as a sum of log terms over poles and zeros.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

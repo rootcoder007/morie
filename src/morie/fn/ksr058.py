@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Law of the iterated logarithm for the empirical process."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._kosorok import sup_norm
 from ._richresult import RichResult

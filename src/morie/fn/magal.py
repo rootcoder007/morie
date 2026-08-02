@@ -1,6 +1,6 @@
 """Galbraith plot z_i vs 1/se_i."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

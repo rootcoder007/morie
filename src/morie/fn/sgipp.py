@@ -25,7 +25,7 @@ def inhomogeneous_poisson(intensity_fn, window, max_intensity=None, seed=None):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     xmin, xmax, ymin, ymax = window
     area = (xmax - xmin) * (ymax - ymin)

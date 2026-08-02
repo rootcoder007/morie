@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 9.22: Flamingo's weighted multi-dataset training loss."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km149 import kamath_ch9_flamingo_factorized

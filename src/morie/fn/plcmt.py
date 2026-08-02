@@ -9,7 +9,7 @@ Mann-Whitney statistic U_y = sum(P_j).
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

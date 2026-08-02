@@ -1,6 +1,6 @@
 """BLIP-2 Q-Former vision-language alignment."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Species sampling process: G = sum_k p_k delta_{theta_k} with random weights (p_k)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

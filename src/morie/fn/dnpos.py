@@ -16,7 +16,7 @@ def density_positive_weights(positions, weights, n_points: int = 100) -> Descrip
 
     .. epigraph:: Measure what is measurable, and make measurable what is not. -- Galileo Galilei
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(positions, dtype=float).ravel()
     w = np.asarray(weights, dtype=float).ravel()

@@ -1,6 +1,6 @@
 """Notch filter with two zeros at 60 Hz on the unit circle.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

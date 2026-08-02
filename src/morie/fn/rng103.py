@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Running integral of a causal signal over [0, t]."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import integrate
 
 from ._richresult import RichResult

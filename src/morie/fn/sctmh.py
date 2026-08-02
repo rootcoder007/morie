@@ -5,7 +5,7 @@ Secant method for root finding.
 Approximates derivative using finite differences without requiring fprime.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["sctmh"]
 

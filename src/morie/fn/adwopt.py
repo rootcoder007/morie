@@ -7,7 +7,7 @@ that also carries its own moment buffers; the arithmetic agrees.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._optim import as_vector, init_state, step_result
 

@@ -25,7 +25,7 @@ def nelder_mead_mds(D, n_dims=2, seed=42, maxiter=2000):
     DescriptiveResult
         value = coordinate matrix, extra has final stress.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy.optimize import minimize
 
     D = np.asarray(D, dtype=float)

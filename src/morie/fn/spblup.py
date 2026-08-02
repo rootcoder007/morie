@@ -1,6 +1,6 @@
 """Best Linear Unbiased Predictor (BLUP) for spatial prediction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_krig import cov_from_model, _dist

@@ -7,7 +7,7 @@ multinomial(n; 1/n,...,1/n) weights, recompute the bootstrap mean,
 and return the bootstrap sd as the SE of sqrt(n) P_n.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

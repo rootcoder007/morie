@@ -3,7 +3,7 @@
 
 __all__ = ["renrg"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def renrg(

@@ -1,6 +1,6 @@
 """Spatial panel SAR (spatial lag) estimator."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

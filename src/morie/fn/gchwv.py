@@ -5,7 +5,7 @@ Heat wave frequency
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gchwv(data=None, coords=None, n=50):

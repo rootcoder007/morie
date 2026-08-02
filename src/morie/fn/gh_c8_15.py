@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Alpha-posterior contraction rate: robust Bayes at same minimax rate as standard posterior."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

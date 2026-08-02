@@ -4,7 +4,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def logloss(p_pred: Union[Sequence, np.ndarray], y_true: Union[Sequence, np.ndarray], eps: float = 1e-15):

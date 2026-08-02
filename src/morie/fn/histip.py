@@ -15,7 +15,7 @@ def histogram_ideal_points(positions, bins: int = 30) -> DescriptiveResult:
 
     .. epigraph:: Number rules the universe. -- Pythagoras
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(positions, dtype=float).ravel()
     pos = pos[~np.isnan(pos)]

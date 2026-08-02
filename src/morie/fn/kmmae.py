@@ -3,7 +3,7 @@
 """Multimodal masked autoencoder: squared reconstruction error on the
 masked patches."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

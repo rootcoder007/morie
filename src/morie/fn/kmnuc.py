@@ -3,7 +3,7 @@
 """Top-p (nucleus) sampling: truncate to the smallest set with
 cumulative probability >= p."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .toppd import top_p_nucleus

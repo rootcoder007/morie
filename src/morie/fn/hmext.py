@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Extra-trees: randomize thresholds per feature split for extra variance reduction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcart import geron_cart_split_cost

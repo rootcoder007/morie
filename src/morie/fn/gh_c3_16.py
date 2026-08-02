@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Evenly split Polya tree: canonical Polya tree PT*(alpha, a_m) with equal partitions."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

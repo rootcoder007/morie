@@ -11,7 +11,7 @@ based residuals for survival models. Biometrika, 77(1), 147-160.
 
 __all__ = ["mrsrv"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def mrsrv(

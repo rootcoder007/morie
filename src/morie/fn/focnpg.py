@@ -5,7 +5,7 @@ Canopy gap analysis
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def focnpg(dbh=None, height=None, coords=None, n=50):

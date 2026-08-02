@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """RLAIF: a reward model fitted to AI feedback via Bradley-Terry."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .kmrmloss import kamath_reward_model_training_loss

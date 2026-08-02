@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shared TMLE core: initial fit, clever covariate, fluctuation, EIF."""
 
-import numpy as np
+from . import _array_core as np
 
 from .aiptdd import _logit_fit, _ols_predict
 

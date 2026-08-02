@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Total variation distance: dTV(P,Q) = sup_A |P(A)-Q(A)| = 1/2 * integral |p-q|."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

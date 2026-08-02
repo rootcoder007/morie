@@ -23,7 +23,7 @@ def mlsmu6_single_iteration(X, Y, D):
     DescriptiveResult
         value = (X_new, Y_new) tuple, extra has stress.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     Y = np.asarray(Y, dtype=float)

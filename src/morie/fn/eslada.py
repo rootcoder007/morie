@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """AdaBoost.M1 (ESL Ch 10.1)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

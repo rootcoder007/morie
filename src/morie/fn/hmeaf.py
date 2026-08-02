@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Error analysis via normalized confusion matrix row/column inspection."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmcfm import geron_confusion_matrix

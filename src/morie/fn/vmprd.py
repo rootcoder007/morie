@@ -4,7 +4,7 @@ Variogram predict at lag
 Category: Variogram
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def vmprd(x=None, y=None, values=None, n_lags=15, max_lag=None):

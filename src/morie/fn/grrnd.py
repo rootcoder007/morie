@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Randomized hyperparameter search with K-fold cross-validated scoring."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

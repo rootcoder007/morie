@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Top-k sampling: renormalize over the k most likely tokens."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grn021 import softmax_vector

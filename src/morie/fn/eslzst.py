@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Z-scores for coefficient significance (ESL Ch 3.2)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .eslsbt import esl_se_beta

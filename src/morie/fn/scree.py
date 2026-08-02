@@ -21,7 +21,7 @@ def scree_plot_data(D, max_dims=6):
     DescriptiveResult
         value = dict with dims and stress_values.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float)
     n = D.shape[0]

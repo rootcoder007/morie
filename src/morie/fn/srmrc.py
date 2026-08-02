@@ -1,6 +1,6 @@
 """Spearman rank correlation with confidence intervals."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as sp_stats
 
 __all__ = ["srmrc"]

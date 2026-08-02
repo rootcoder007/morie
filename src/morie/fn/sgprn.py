@@ -23,7 +23,7 @@ def practical_range(model, params, threshold=0.95):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     nugget = params["nugget"]
     sill = params["sill"]

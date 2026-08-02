@@ -5,7 +5,7 @@ Frank copula
 Category: DistTheor
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dtcpf(x=None, n=100, params=None):

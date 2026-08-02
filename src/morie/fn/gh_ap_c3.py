@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bracketing number N[](eps,T,d): min number of eps-brackets [l,u] covering T."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -5,7 +5,7 @@ Soil erosion spatial
 Category: AgriSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def afsle(yield_data=None, soil=None, coords=None, n=50):

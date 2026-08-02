@@ -4,7 +4,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def hpdint(samples: Union[Sequence[float], np.ndarray], cred: float = 0.95):

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Moments of Moran's I under Gaussianity and under randomization."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_moran import geary_c, moran_i, moran_moments, weight_sums

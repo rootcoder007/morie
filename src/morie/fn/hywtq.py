@@ -5,7 +5,7 @@ Water quality index spatial
 Category: HydroSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def hywtq(flow=None, precip=None, coords=None, n=50):

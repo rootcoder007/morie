@@ -11,7 +11,7 @@ def irt_probability(theta, alpha, beta) -> DescriptiveResult:
 
     .. epigraph:: What is now proved was once only imagined. -- William Blake
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     theta = np.asarray(theta, dtype=float)
     alpha = float(alpha)

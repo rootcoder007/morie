@@ -22,7 +22,7 @@ def feeling_thermometer_scale(ratings, lo=0, hi=100):
     DescriptiveResult
         value = standardized ratings (ndarray in [0, 1]).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     R = np.asarray(ratings, dtype=float)
     R_std = (R - lo) / (hi - lo)

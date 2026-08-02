@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kendall's tau-b correlation with ties correction."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as sp_stats
 
 __all__ = ["ktaub"]

@@ -1,6 +1,6 @@
 """Bilinear frequency warping: analog Omega from discrete omega.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

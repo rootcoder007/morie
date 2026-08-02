@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Boundary-free KDE derived from F_tilde_X by differentiation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

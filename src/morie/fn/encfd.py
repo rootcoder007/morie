@@ -5,7 +5,7 @@ CFD wind field spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def encfd(data=None, coords=None, n=50):

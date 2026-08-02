@@ -5,7 +5,7 @@ N(t) = sum_i 1{T_i <= t, delta_i = 1}.  Returns total events
 N(infty), event times array, and risk-set-size at each event.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

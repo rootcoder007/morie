@@ -5,7 +5,7 @@ Ozone spatial mapping
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def eno3s(data=None, coords=None, n=50):

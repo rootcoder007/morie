@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import expit
 
 from ._containers import DescriptiveResult
@@ -45,7 +45,8 @@ def ipcw(
         raise ValueError("Length mismatch.")
 
     Xd = np.column_stack([np.ones(len(C)), X])
-    from numpy.linalg import lstsq
+    from morie.fn._array_core import linalg as _acl
+    lstsq = _acl.lstsq
 
     beta, _, _, _ = lstsq(Xd, C, rcond=None)
     p_uncensored = np.clip(expit(Xd @ beta), 0.01, 0.99)

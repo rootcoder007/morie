@@ -31,7 +31,7 @@ with the author's own ``vimp`` R package (``measure_r_squared.R``,
 difference.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._trees_native import gb_fit, gb_predict
 

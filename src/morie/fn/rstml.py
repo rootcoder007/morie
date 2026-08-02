@@ -15,7 +15,7 @@ in Medicine, 30(19), 2409-2421.
 
 __all__ = ["rstml"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def rstml(

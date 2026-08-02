@@ -8,7 +8,7 @@ Everything here is internal; the public entry points are `spols`, `spwls`
 and `spreml`.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._schab_gn import gauss_newton_semivariogram
 from ._schab_vario import correlogram, semivariogram

@@ -17,7 +17,7 @@ def utility_uncertainty(ideal, position, sigma: float = 1.0, n_draws: int = 1000
 
     .. epigraph:: The whole is greater than the sum of its parts. -- Aristotle
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     ideal = np.asarray(ideal, dtype=float).ravel()

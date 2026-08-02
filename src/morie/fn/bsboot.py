@@ -4,7 +4,7 @@
 from collections.abc import Callable, Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def bsboot(x: Union[Sequence, np.ndarray], stat: Callable, n_boot: int = 1000, seed: int = 42) -> np.ndarray:

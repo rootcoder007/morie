@@ -1,6 +1,6 @@
 """Length transformation used to detect P, QRS, and T waves across multiple ECG channels.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

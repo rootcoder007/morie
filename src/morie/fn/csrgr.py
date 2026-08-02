@@ -5,7 +5,7 @@ Risk terrain modeling
 Category: CrimSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def csrgr(incidents=None, population=None, coords=None, n=50):

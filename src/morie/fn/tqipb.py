@@ -1,6 +1,6 @@
 """Inner-product distortion bound (Lemma 3.5 applied to packed TurboQuant blocks)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

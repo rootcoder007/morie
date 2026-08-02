@@ -3,7 +3,7 @@
 """CLIP-style symmetric contrastive loss (Radford et al. 2021;
 Alammar Ch 9)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

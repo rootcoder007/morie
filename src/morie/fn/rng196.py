@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Noncausal least-squares second derivative used to detect the dicrotic notch."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

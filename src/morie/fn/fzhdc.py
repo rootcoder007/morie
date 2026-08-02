@@ -12,7 +12,7 @@ For a symmetric kernel g(x1,x2):
 
 from itertools import combinations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

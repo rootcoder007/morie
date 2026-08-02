@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Conditions D1-D5 for boundary-free goodness-of-fit tests."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

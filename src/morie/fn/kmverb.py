@@ -3,7 +3,7 @@
 """Verbalizer: map class labels to answer tokens and aggregate their
 probabilities."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

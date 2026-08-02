@@ -1,6 +1,6 @@
 """TurboQuant KV-cache compression with MSE-optimal codebook."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

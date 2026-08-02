@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Local outlier factor (LOF) using local reachability density."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmmds import pairwise_distances

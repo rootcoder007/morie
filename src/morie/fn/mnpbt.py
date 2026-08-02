@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multinomial probit for spatial choice (Train 2009, GHK simulator)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.stats import norm
 
 from ._richresult import RichResult

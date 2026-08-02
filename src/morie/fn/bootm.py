@@ -23,7 +23,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 

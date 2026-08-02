@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-method consistency check (g-formula vs IPW vs AIPW)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .aiptdd import _logit_fit

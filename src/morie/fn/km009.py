@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 2.9: one softmax element written out."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km008 import kamath_ch2_attention_softmax_weights

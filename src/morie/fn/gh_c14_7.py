@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SSP mixture models: density f(x) = integral K(x;theta) dG(theta), G ~ SSP."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

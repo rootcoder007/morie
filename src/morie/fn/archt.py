@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ARCH(p) conditional heteroscedasticity model."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize
 
 from ._containers import DescriptiveResult

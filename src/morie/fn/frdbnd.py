@@ -1,6 +1,6 @@
 """Fréchet-Hoeffding bounds on joint distribution of potential outcomes."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

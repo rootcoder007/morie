@@ -23,7 +23,7 @@ unconstrained reparameterisation, which keeps the parameters inside
 their stationarity region without a constrained optimiser.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize, special, stats
 
 __all__ = ["garch_recursion", "garch_fit", "SPECS"]

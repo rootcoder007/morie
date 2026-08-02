@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DW-NOMINATE ideal point estimation"""
 
-import numpy as np
+from . import _array_core as np
 
 from .._spatial_voting import dw_nominate as _dw_nominate
 from ._containers import DescriptiveResult

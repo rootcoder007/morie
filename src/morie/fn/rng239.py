@@ -1,6 +1,6 @@
 """Rational z-transform expressed in pole-zero product form (used to derive complex cepstrum).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

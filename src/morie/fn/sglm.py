@@ -11,7 +11,7 @@ Other links (binomial/poisson/...) need PQL or full Laplace -- those
 are deferred to v0.3.0 (see ``NotImplementedError`` branch).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize
 from scipy.spatial.distance import cdist
 

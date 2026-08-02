@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Theorem 2.1: geometric combination of expected KDFE has O(h^4) bias."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -11,7 +11,7 @@ def cutting_plane_proximity(X, normal, cutpoint) -> DescriptiveResult:
 
     .. epigraph:: Statistics is the grammar of science. -- Karl Pearson
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     n = np.asarray(normal, dtype=float)

@@ -5,7 +5,7 @@ MM algorithm (minorization-maximization) for optimization.
 Constructs majorizing function; easier to optimize than original objective.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["mhfit"]
 

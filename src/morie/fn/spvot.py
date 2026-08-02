@@ -14,7 +14,7 @@ def spatial_vote(voter_ideal, candidates) -> DescriptiveResult:
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     voter_ideal = np.asarray(voter_ideal, dtype=float)
     candidates = np.atleast_2d(np.asarray(candidates, dtype=float))

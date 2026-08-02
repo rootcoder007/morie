@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Supervised learning paradigm: learn mapping f(x)->y from labeled examples."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmbat import geron_batch_learning

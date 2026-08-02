@@ -4,7 +4,7 @@ Least cost path wildlife
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wllcp(abundance=None, coords=None, n=50):

@@ -11,7 +11,7 @@ def plot_cutting_lines_data(normals, cutpoints, X) -> DescriptiveResult:
 
     .. epigraph:: The whole is greater than the sum of its parts. -- Aristotle
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     normals = np.asarray(normals, dtype=float)
     cutpoints = np.asarray(cutpoints, dtype=float)

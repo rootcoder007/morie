@@ -3,7 +3,7 @@
 """G-Eval: LLM-graded evaluation with probability-weighted score
 aggregation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

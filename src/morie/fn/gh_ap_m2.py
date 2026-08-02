@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gibbs sampler: iteratively sample each parameter from full conditional."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

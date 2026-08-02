@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """T-wave alternans (TWA) detection via spectral method."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """GNS dual Jacobian ln|I-rho*W| + ln|I-lam*W|."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

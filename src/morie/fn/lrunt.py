@@ -8,7 +8,7 @@ run (maximal sequence of identical outcomes).
 Reference: Gibbons & Chakraborti (2011), Nonparametric Statistical Inference, 5th Ed. § 3.3
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["lrunt"]
 

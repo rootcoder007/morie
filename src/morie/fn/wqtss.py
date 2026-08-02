@@ -4,7 +4,7 @@ Total suspended solids water
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqtss(data=None, coords=None, n=50):

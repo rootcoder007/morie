@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """BvM for Cox model: semiparametric efficient estimation of regression coefficient."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

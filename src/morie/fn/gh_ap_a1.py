@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weak convergence of probability measures: integral f dP_n -> integral f dP for all f in Cb."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

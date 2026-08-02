@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Composite likelihood estimation of semivariogram parameters."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schaben import MODELS, composite_likelihood_fit

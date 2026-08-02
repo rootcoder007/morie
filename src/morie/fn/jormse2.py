@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Root Mean Squared Scaled Error -- scale by in-sample naive RMSE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

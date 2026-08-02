@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Rate of convergence for G in single-index: same as 1D nonparametric."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

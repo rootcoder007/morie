@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """r-th order statistic from Uniform(0,1) follows Beta(r, n-r+1) distribution."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

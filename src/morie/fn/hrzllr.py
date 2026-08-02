@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Local linear regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._horowitz import local_linear
 from ._richresult import RichResult

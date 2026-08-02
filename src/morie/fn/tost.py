@@ -1,6 +1,6 @@
 """TOST equivalence test -- two one-sided t-tests."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._containers import DescriptiveResult

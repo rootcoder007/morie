@@ -4,7 +4,7 @@
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km073 import kamath_ch5_pref_sigmoid_form

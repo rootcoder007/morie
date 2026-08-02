@@ -1,6 +1,6 @@
 """Relationship between covariance and semivariogram under stationarity."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_vario import _as_lag

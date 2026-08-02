@@ -10,7 +10,7 @@ Shpitser I, VanderWeele T, Robins JM (2010) on adjustment.
 
 import math
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

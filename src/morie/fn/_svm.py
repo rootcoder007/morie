@@ -14,7 +14,7 @@ and not another's.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["kernel_matrix", "smo"]
 

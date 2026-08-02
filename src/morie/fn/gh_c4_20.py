@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mixtures of Dirichlet processes: prior is a mixture of DP(alpha, G0) over base measures."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

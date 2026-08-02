@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MISE-optimal bandwidth."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._horowitz import kernel
 from ._richresult import RichResult

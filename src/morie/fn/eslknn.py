@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """k-nearest-neighbour fit (ESL Ch 2.3.2 / 13.3)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

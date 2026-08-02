@@ -19,7 +19,7 @@ def agreement_scores(votes):
     DescriptiveResult
         value = agreement matrix (n_voters x n_voters), values in [0, 1].
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     V = np.asarray(votes, dtype=float)
     n = V.shape[0]

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Placebo (permutation) refutation test for a causal estimate."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

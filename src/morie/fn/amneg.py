@@ -14,7 +14,7 @@ def am_negative_weights(beta) -> DescriptiveResult:
 
     .. epigraph:: There is no royal road to geometry. -- Euclid
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     beta = np.asarray(beta, dtype=float).ravel()
     neg_idx = np.where(beta < 0)[0]

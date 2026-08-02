@@ -5,7 +5,7 @@ Snow cover index spatial
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agsnw(areas=None, perimeters=None, values=None, n=30):

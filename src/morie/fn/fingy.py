@@ -10,7 +10,7 @@ Association, 94(446), 496-509.
 
 __all__ = ["fingy"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def fingy(

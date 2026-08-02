@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """LM test for SARMA (lag + error)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

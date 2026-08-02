@@ -1,6 +1,6 @@
 r"""Association expression (auto-extracted; see ref).."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import hypothesis_test_result

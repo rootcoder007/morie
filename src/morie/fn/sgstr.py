@@ -26,7 +26,7 @@ def strict_stationarity_test(Z, coords, n_sub=4):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
     from scipy import stats
 
     Z = np.asarray(Z, dtype=np.float64).ravel()

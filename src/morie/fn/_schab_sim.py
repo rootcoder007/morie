@@ -22,7 +22,7 @@ distribution.
 Everything here is internal.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._rng import random_normal
 

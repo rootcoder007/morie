@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exact posterior predictive for DP: closed-form Polya urn for density estimation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

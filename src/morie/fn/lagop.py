@@ -4,7 +4,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def lagop(x: Union[Sequence, np.ndarray], k: int = 1) -> np.ndarray:

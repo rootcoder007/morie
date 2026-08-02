@@ -3,7 +3,7 @@
 
 import warnings
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.preprocessing import StandardScaler

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Recall (true positive rate, sensitivity) = TP / (TP + FN)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .recal import recall as _recall

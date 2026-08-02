@@ -16,7 +16,7 @@ def plot_blackbox_result(positions, dim1: int = 0, dim2: int = 1) -> Descriptive
 
     .. epigraph:: Luck is what happens when preparation meets opportunity. -- Seneca
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(positions, dtype=float)
     if X.ndim == 1:

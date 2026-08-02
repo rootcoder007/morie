@@ -1,6 +1,6 @@
 """Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

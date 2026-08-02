@@ -5,7 +5,7 @@ Sleep disturbance spatial
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbslp(data=None, coords=None, n=50):

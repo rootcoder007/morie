@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Use Wilcoxon signed-rank test to test symmetry of distribution."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Denoising diffusion implicit models (DDIM) for faster sampling."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grddim import geron_ddim_sampling_step

@@ -10,7 +10,7 @@ def simulate_voting_spatial(X, bills, beta=15.0) -> DescriptiveResult:
 
     .. epigraph:: Statistics is the grammar of science. -- Karl Pearson
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(42)
     X = np.asarray(X, dtype=float)

@@ -1,6 +1,6 @@
 """Manski no-assumption bounds on the ATE."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

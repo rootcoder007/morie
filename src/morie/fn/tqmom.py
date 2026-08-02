@@ -1,6 +1,6 @@
 """Fact 3.4: l-th absolute moment of N(0, sigma^2)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

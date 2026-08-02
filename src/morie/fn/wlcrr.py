@@ -4,7 +4,7 @@ Corridor identification
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlcrr(abundance=None, coords=None, n=50):

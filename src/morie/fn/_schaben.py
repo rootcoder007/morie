@@ -14,7 +14,7 @@ participates in. Example 4.3 (p. 157-161) is reproduced in the test
 suite precisely because it shows this happening.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "pair_differences",

@@ -29,7 +29,7 @@ def simulated_anneal_mds(D, n_dims=2, T0=1.0, cool=0.95, n_iter=500, seed=42):
     DescriptiveResult
         value = optimized coordinate matrix.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D = np.asarray(D, dtype=float)
     rng = np.random.default_rng(seed)

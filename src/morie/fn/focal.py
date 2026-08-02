@@ -12,7 +12,7 @@ In ICCV (pp. 2980-2988).
 
 __all__ = ["focal"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def focal(

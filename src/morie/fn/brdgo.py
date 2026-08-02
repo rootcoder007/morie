@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bridge observations for cross-period ideal-point comparison."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .procs import procrustes_rotation

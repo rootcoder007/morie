@@ -5,7 +5,7 @@ Spore spatial mapping
 Category: AirBio
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def abspor(data=None, coords=None, n=50):

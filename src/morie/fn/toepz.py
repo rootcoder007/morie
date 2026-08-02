@@ -1,6 +1,6 @@
 """Toeplitz matrix construction."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.linalg import toeplitz as _toeplitz
 
 from ._containers import DescriptiveResult

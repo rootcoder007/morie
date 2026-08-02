@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Partly linear logistic regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from scipy import optimize
 

@@ -5,7 +5,7 @@ Aircraft noise mapping
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbair(data=None, coords=None, n=50):

@@ -89,7 +89,7 @@ Two things the printed material could not be transcribed as written:
   ``scripts/audit/schab_gwr_verify.py``.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "KERNELS",

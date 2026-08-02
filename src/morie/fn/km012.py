@@ -3,7 +3,7 @@
 """Kamath Eq 2.12: full scaled dot-product attention (identical to
 Vaswani Eq 1; delegates to the shared core)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .attsdp import scaled_dot_product_attention

@@ -11,7 +11,7 @@ def multiple_chains_combine(chains) -> DescriptiveResult:
 
     .. epigraph:: If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     arrs = [np.asarray(c, dtype=float) for c in chains]
     combined = np.vstack(arrs) if arrs[0].ndim >= 2 else np.concatenate(arrs)

@@ -5,7 +5,7 @@ Habitat suitability spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enhbt(data=None, coords=None, n=50):

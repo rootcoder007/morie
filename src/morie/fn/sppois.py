@@ -1,6 +1,6 @@
 """Poisson process: independent counts, N(A) ~ Pois(lambda |A|)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from ._schab_pp import as_region, region_area

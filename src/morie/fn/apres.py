@@ -11,7 +11,7 @@ def apre_statistic(all_pre) -> DescriptiveResult:
 
     .. epigraph:: You have power over your mind, not outside events. -- Marcus Aurelius
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pre_vals = np.asarray(all_pre, dtype=float)
     apre = float(np.mean(pre_vals))

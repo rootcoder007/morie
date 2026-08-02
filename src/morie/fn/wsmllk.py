@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Log-likelihood l(theta) = sum log f(X_i; theta)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .wsmlik import wasserman_likelihood

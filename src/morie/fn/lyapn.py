@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Lyapunov stability analysis."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import linalg
 
 from ._containers import DescriptiveResult

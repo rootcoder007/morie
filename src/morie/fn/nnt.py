@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Number needed to treat (NNT) from a 2x2 table."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 from .rd_es import risk_difference

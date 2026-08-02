@@ -14,7 +14,7 @@ def ideological_constraint(issue_positions) -> DescriptiveResult:
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(issue_positions, dtype=float)
     corr = np.corrcoef(X, rowvar=False)

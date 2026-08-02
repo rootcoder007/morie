@@ -3,7 +3,7 @@
 """Text-to-text classification, T5 style (Raffel et al. 2020;
 Alammar Ch 4)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

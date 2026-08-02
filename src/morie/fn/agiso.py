@@ -5,7 +5,7 @@ Isolation index patch
 Category: AreaGeo
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def agiso(areas=None, perimeters=None, values=None, n=30):

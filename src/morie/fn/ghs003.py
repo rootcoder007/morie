@@ -1,6 +1,6 @@
 """Approximation error bound when truncating a basis expansion at J terms, decaying as a power of 1/J governed by regularity alpha and dimension k.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

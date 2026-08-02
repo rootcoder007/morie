@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ECG-derived respiration (EDR) via R-wave amplitude modulation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

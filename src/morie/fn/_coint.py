@@ -18,7 +18,7 @@ MacKinnon, J. G. (2010). Critical values for cointegration tests.
 Queen's Economics Department Working Paper 1227.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["adf_test", "engle_granger", "johansen", "vecm_fit"]
 

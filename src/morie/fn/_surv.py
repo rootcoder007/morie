@@ -13,7 +13,7 @@ for the event of interest and 0 for right-censoring. The risk set at time
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["prepare", "cox_fit", "baseline_hazard", "km_estimate"]
 

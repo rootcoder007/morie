@@ -7,7 +7,7 @@ __all__ = ["credible_interval", "bcred"]
 
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def credible_interval(

@@ -1,6 +1,6 @@
 """Algorithm 1: online per-token key-cache quantizer (QJL)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

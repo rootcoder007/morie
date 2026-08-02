@@ -1,6 +1,6 @@
 """Correlation equation extracted from Analysis of Categorical Data with R (Chapman & Hall CRC -- CHRISTOPHER R   LOUGHIN BILDER (THOMAS M ).."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import hypothesis_test_result

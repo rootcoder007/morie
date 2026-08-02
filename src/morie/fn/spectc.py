@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.cluster.vq import kmeans2
 from scipy.sparse.linalg import eigsh
 

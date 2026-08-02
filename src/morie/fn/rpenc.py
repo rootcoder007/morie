@@ -12,7 +12,7 @@ arXiv preprint arXiv:2104.09864.
 
 __all__ = ["rpenc"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def rpenc(seq_len, d_model, base=10000):

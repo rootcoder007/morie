@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Fully convolutional network (FCN) for dense prediction."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcvf import geron_conv2d_forward

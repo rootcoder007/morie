@@ -70,7 +70,7 @@ with changing prediction location, spurious discontinuities can be
 introduced". Both are reported rather than hidden.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "exponential_correlation",

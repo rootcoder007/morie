@@ -14,7 +14,7 @@ def heatmap_issue_weights(weight_matrix) -> DescriptiveResult:
 
     .. epigraph:: The only true wisdom is in knowing you know nothing. -- Socrates
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     W = np.asarray(weight_matrix, dtype=float)
     return DescriptiveResult(

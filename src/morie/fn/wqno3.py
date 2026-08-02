@@ -4,7 +4,7 @@ Nitrate water spatial
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqno3(data=None, coords=None, n=50):

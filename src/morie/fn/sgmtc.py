@@ -27,7 +27,7 @@ def matern_cluster_process(parent_intensity, n_offspring, radius, window, seed=N
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     xmin, xmax, ymin, ymax = window
     area = (xmax - xmin) * (ymax - ymin)

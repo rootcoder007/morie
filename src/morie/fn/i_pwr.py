@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Calculate statistical power for an ANOVA F-test (interaction power)."""
 
-import numpy as np
+from . import _array_core as np
 from statsmodels.stats.power import FTestAnovaPower
 
 

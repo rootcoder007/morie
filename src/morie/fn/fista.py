@@ -5,7 +5,7 @@ FISTA (fast iterative shrinkage-thresholding algorithm).
 Accelerated proximal gradient method with momentum.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["fista"]
 

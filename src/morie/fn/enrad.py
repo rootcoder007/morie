@@ -5,7 +5,7 @@ Solar radiation spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enrad(data=None, coords=None, n=50):

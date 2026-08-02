@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cox proportional hazard model: lambda(t|x) = lambda0(t)*exp(beta'x)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

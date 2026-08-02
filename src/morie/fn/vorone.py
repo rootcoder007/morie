@@ -4,7 +4,7 @@ Voronoi entropy measure
 Category: GeoAnalysis
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def vorone(x=None, y=None, values=None, resolution=50):

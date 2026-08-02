@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as sp_stats
 
 from morie.fn._containers import CrimeResult

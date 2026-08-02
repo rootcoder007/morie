@@ -1,6 +1,6 @@
 """ANOVA expression involving 'level' (auto-extracted; see reference for full context).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

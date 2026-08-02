@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

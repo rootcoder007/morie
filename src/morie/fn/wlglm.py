@@ -4,7 +4,7 @@ GLM species model
 Category: WildlSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wlglm(abundance=None, coords=None, n=50):

@@ -1,6 +1,6 @@
 """Pairs (case) bootstrap for OLS -- resample (X,y) jointly."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

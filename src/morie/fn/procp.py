@@ -9,7 +9,7 @@ References
 Gower, J. C., & Dijksterhuis, G. B. (2004). Procrustes Problems. Oxford University Press.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import linalg as la
 
 __all__ = ["procp"]

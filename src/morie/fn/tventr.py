@@ -4,7 +4,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def tventr(p: Union[Sequence, np.ndarray], q: Union[Sequence, np.ndarray]):

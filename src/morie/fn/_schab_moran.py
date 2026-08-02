@@ -40,7 +40,7 @@ Both variances are returned, named for their assumption, because the two are
 not interchangeable and the book prints them side by side.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "geary_c",

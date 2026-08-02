@@ -2,7 +2,7 @@
 
 __all__ = ["slepw"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def slepw(joint_pmf: np.ndarray) -> dict:

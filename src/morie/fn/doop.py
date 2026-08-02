@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pearl's do-operator: intervention by setting variable to value."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

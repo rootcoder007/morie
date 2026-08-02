@@ -15,7 +15,7 @@ where K_ij = phi(||x_i - x_j||) and T = [1 x].
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

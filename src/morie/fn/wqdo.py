@@ -4,7 +4,7 @@ Dissolved oxygen water
 Category: WtrQual
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def wqdo(data=None, coords=None, n=50):

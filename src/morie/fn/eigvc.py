@@ -21,7 +21,7 @@ def extract_eigenvectors(B, n_dims=2):
     DescriptiveResult
         value = eigenvector matrix (n x n_dims), extra has eigenvalues.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     B = np.asarray(B, dtype=float)
     vals, vecs = np.linalg.eigh(B)

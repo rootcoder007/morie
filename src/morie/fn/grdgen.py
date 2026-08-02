@@ -5,7 +5,7 @@ Regular grid generation
 Category: GeoProcss
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def grdgen(coords=None, n=50, source_crs="EPSG:4326", target_crs="EPSG:3857"):

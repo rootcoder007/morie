@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Covariance between r-th and s-th order statistics (r < s)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

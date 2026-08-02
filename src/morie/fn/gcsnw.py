@@ -5,7 +5,7 @@ Snow cover change spatial
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcsnw(data=None, coords=None, n=50):

@@ -1,6 +1,6 @@
 """First and second moments of the Polya-tree density p(x) for a canonical Polya tree process with absolutely-continuous realizations.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

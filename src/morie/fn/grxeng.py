@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Gradient of K-class softmax cross-entropy w.r.t. Theta."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grsmxp import probability_matrix

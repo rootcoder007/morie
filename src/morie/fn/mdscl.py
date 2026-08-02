@@ -10,7 +10,7 @@ Torgerson, W. S. (1958). Theory and Methods of Scaling. Wiley.
 Cox, T. F., & Cox, M. A. (2001). Multidimensional Scaling (2nd ed.). Chapman & Hall.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import linalg as la
 
 __all__ = ["mdscl"]

@@ -3,7 +3,7 @@
 """RWKV time-mixing: an attention-free recurrent weighted sum with
 exponential decay."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

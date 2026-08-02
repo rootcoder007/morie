@@ -11,7 +11,7 @@ def gmp_statistic(predicted_probs, observed) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     p = np.asarray(predicted_probs, dtype=float)
     y = np.asarray(observed, dtype=float)

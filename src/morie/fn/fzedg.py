@@ -15,7 +15,7 @@ This function returns the Edgeworth-corrected tail probability and the
 Cornish-Fisher correction to the Gaussian critical value.
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

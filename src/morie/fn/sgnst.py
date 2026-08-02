@@ -22,7 +22,7 @@ def nested_variogram(h, models):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     h = np.asarray(h, dtype=np.float64)
     gamma_total = np.zeros_like(h)

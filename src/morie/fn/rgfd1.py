@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """First-difference operator for baseline wander removal."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

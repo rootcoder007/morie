@@ -11,7 +11,7 @@ def bayesian_se_from_posterior(chain) -> DescriptiveResult:
 
     .. epigraph:: There is no royal road to geometry. -- Euclid
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     if chain.ndim == 1:

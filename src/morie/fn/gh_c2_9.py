@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian nonparametric binary regression via probit link: P(Y=1|x) = Phi(f(x))."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

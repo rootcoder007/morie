@@ -5,7 +5,7 @@ Biomass estimation forest
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def fobio(dbh=None, height=None, coords=None, n=50):

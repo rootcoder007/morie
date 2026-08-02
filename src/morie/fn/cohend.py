@@ -4,7 +4,7 @@
 from collections.abc import Sequence
 from typing import Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def cohend(x1: Union[Sequence[float], np.ndarray], x2: Union[Sequence[float], np.ndarray]):

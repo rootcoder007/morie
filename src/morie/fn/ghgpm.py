@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gaussian-process regression -- Matern kernel."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.special import gamma as gammafn
 from scipy.special import kv
 

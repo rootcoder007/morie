@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Frank copula (no tail dependence)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._copula import copula_cdf, copula_tau
 from ._richresult import RichResult

@@ -15,7 +15,7 @@ def am_confidence_intervals(boot_positions, alpha: float = 0.05) -> DescriptiveR
 
     .. epigraph:: There is no royal road to geometry. -- Euclid
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     B = np.asarray(boot_positions, dtype=float)
     lo = np.percentile(B, 100 * alpha / 2, axis=0)

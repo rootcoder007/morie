@@ -1,6 +1,6 @@
 """Synthetic test signal: sum of a sine and a cosine.."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

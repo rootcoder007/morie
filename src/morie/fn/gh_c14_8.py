@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gibbs-type partition process: EPPF of form prod V(n_j, k) / W(n, k)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -9,7 +9,7 @@ Kaiser, H. F. (1958). The varimax criterion for analytic rotation in factor anal
     Psychometrika, 23(3), 187-200.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["vrmxr"]
 

@@ -27,7 +27,7 @@ null-space constraint (12) that restores identifiability.
 Everything here is internal.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = []
 

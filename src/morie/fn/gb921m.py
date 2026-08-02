@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean and variance of Mood scale statistic under H0."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

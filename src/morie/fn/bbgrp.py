@@ -15,7 +15,7 @@ def bb_group_color(positions, groups) -> DescriptiveResult:
 
     .. epigraph:: We must know. We will know. -- David Hilbert
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(positions, dtype=float)
     groups = list(groups)

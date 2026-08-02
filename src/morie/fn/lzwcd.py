@@ -3,7 +3,7 @@
 
 __all__ = ["lzwcd"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def lzwcd(data: np.ndarray, *, alphabet_size: int = 256) -> dict:

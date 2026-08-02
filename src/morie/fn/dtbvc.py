@@ -5,7 +5,7 @@ Bivariate copula density
 Category: DistTheor
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dtbvc(x=None, n=100, params=None):

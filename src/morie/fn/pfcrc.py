@@ -23,7 +23,7 @@ def preference_circles(ideal_point, radius, n_points=100):
     DescriptiveResult
         value = circle coordinates (n_points x 2).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     center = np.asarray(ideal_point, dtype=float)
     theta = np.linspace(0, 2 * np.pi, n_points, endpoint=False)

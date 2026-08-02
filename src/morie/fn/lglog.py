@@ -8,7 +8,7 @@ Journal of the Royal Statistical Society, Series C, 32(2), 165-171.
 
 __all__ = ["lglog"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def lglog(

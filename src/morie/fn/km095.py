@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.19: the gender direction in embedding space."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .km094 import _pair_vectors

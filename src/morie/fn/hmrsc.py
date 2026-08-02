@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Randomized hyperparameter search."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcvs import geron_cross_validation_score

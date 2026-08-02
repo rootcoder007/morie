@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kernel conditional quantile."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._horowitz import kernel, silverman_bw
 from ._richresult import RichResult

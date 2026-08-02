@@ -1,6 +1,6 @@
 """Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """CYP450 isozyme inhibition (1A2/2C9/2C19/2D6/3A4)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

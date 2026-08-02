@@ -10,7 +10,7 @@ def trace_plot_data(chain) -> DescriptiveResult:
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     chain = np.asarray(chain, dtype=float)
     if chain.ndim == 1:

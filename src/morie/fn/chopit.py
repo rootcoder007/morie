@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CHOPIT anchoring-vignette model (King et al. 2004), simplified core."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize, stats
 
 from ._richresult import RichResult

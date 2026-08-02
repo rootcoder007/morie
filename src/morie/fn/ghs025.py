@@ -1,6 +1,6 @@
 """Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

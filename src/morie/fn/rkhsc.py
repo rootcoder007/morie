@@ -12,7 +12,7 @@ values ``yhat = K alpha``; in-sample SE from residual variance.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

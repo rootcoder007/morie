@@ -5,7 +5,7 @@ Alkalinity marine spatial
 Category: MarinSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def maalk(depth=None, temp=None, salinity=None, coords=None, n=50):

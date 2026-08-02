@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 9.12: the masked object classification (MOC) loss."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

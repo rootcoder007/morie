@@ -5,7 +5,7 @@ Leaching risk spatial
 Category: AgriSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def aflch(yield_data=None, soil=None, coords=None, n=50):

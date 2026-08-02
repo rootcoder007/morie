@@ -1,6 +1,6 @@
 """Primary input of an adaptive noise canceller (ANC): signal plus primary noise.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

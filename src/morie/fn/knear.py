@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """K-nearest neighbors spatial weights matrix."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import cdist
 
 from ._containers import DescriptiveResult

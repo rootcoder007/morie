@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tabulated exact probabilities of runs test statistic R for small n1, n2."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

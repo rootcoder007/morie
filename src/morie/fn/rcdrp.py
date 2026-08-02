@@ -21,7 +21,7 @@ def drop_influential_votes(votes, threshold=0.9):
     DescriptiveResult
         value = filtered vote matrix, extra has dropped item indices.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     V = np.asarray(votes, dtype=float)
     n = V.shape[0]

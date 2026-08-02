@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spearman's rho implied by a copula."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._copula import FAMILIES, copula_cdf
 from ._richresult import RichResult

@@ -1,6 +1,6 @@
 """Magnitude coherence spectrum between two signals from CSD and PSDs.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

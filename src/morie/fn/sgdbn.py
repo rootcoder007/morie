@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize_scalar
 
 from ._schab_rho import safe_search_interval

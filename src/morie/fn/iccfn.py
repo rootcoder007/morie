@@ -11,7 +11,7 @@ def icc_curve_data(alpha, beta, theta_range=(-3, 3)) -> DescriptiveResult:
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     theta = np.linspace(theta_range[0], theta_range[1], 200)
     logit = alpha * (theta - beta)

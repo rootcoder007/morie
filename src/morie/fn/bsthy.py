@@ -15,7 +15,7 @@ def basic_space_dim_test(data, max_dims: int = 5) -> DescriptiveResult:
 
     .. epigraph:: The Analytical Engine weaves algebraic patterns. -- Ada Lovelace
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(data, dtype=float)
     X = X - X.mean(axis=0)

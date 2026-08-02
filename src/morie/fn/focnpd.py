@@ -5,7 +5,7 @@ Canopy density spatial
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def focnpd(dbh=None, height=None, coords=None, n=50):

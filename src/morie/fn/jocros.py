@@ -66,7 +66,7 @@ def joseph_croston_intermittent(y, alpha=0.1, variant="sba"):
     >>> bool(a < b)
     True
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     r = croston(y, alpha=alpha, variant=variant)
     v = np.atleast_1d(np.asarray(y, dtype=float)).ravel()

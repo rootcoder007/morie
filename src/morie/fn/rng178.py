@@ -1,6 +1,6 @@
 """Weighted combination of first and second derivatives for QRS detection.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

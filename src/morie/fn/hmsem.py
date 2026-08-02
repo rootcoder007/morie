@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Semi-supervised learning: small labeled set plus large unlabeled pool."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

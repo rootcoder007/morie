@@ -1,6 +1,6 @@
 """GeneralStatistics equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import hypothesis_test_result

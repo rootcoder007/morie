@@ -19,7 +19,7 @@ def rotation_matrix_2d(theta):
     DescriptiveResult
         value = 2x2 rotation matrix.
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     c = np.cos(theta)
     s = np.sin(theta)

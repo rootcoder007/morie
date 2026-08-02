@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import scipy.stats as stats
 
 from ._containers import ESRes

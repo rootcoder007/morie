@@ -11,7 +11,7 @@ def fit_statistic_correct(predicted, observed) -> DescriptiveResult:
 
     .. epigraph:: The heart has its reasons of which reason knows nothing. -- Blaise Pascal
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pred = np.asarray(predicted, dtype=float).round()
     obs = np.asarray(observed, dtype=float)

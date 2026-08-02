@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Average treatment effect from a difference-in-differences design."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import add_intercept, ols_fit
 from ._richresult import RichResult

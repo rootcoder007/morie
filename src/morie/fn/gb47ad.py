@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Anderson-Darling goodness-of-fit test A^2 with stronger weight in tails."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

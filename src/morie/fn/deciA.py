@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """End-to-end causal pipeline: structure discovery then effect estimation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .bdcrt import _parse, backdoor_criterion

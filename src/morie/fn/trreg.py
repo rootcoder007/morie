@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize, stats
 
 __all__ = ["trreg"]

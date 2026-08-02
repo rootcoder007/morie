@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Doubly-robust group-time ATT (Callaway and Sant'Anna 2021)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._did import add_intercept, as_panel, first_treatment, logit_fit, \
     logit_predict, ols_fit

@@ -4,7 +4,7 @@ Bikesharing spatial
 Category: TransSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def trbks(flow_volume=None, travel_time=None, coords=None, n=50):

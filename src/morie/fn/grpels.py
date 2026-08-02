@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Peephole LSTM cell: the gates see the cell state as well."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grsig import geron_sigmoid

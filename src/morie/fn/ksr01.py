@@ -10,7 +10,7 @@ process Z_n(f) = sqrt(n)*(P_n(f) - mu0) under a hypothesised mu0,
 which is what we compute alongside the asymptotic SE sigma/sqrt(n).
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

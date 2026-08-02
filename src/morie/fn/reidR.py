@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Re-identification risk from quasi-identifier equivalence classes."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Additive log-ratio (ALR) transform with reference part."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -5,7 +5,7 @@ Genetic algorithm for global optimization.
 Population-based evolutionary approach using selection, crossover, and mutation.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["genmh"]
 

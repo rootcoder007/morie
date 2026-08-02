@@ -14,7 +14,7 @@ estimated via a discretised double-Riemann sum on the Silverman-KDE
 density-at-quantile.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

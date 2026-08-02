@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Posterior contraction rate definition: eps_n rate iff Pi(d>M*eps_n|data)->0 in P0-prob."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

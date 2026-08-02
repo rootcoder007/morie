@@ -17,7 +17,7 @@ with mu_2(K) = integral u^2 K(u) du, r(K) = integral u K(u) W(u) du.
 For Gaussian K: mu_2 = 1, r(K) = 1/(2*sqrt(pi)).
 """
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _sps
 
 from ._richresult import RichResult

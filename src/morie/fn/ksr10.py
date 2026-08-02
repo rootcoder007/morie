@@ -9,7 +9,7 @@ where psi_H is the Huber score with tuning k = 1.345.  Returns
 theta_n and its sandwich SE (Huber 1981, Section 3.2.2).
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

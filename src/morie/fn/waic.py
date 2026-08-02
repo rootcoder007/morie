@@ -7,7 +7,7 @@ __all__ = ["compute_waic", "waic"]
 import math
 from typing import Any, Union
 
-import numpy as np
+from . import _array_core as np
 
 
 def compute_waic(

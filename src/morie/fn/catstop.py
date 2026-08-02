@@ -1,6 +1,6 @@
 """CAT stopping rule (SE / SE_target)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

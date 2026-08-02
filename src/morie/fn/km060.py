@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 4.7: KronA's efficient (A (x) B) x without forming W."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

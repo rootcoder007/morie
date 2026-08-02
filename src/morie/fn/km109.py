@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.33: the worst-case perplexity leakage metric."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

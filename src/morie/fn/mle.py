@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Maximum likelihood estimation for Gaussian."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import ESRes
 

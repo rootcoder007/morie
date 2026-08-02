@@ -5,7 +5,7 @@ Exposure mapping health
 Category: GeoHlth
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ghexp(cases=None, controls=None, exposure=None, coords=None, n=50):

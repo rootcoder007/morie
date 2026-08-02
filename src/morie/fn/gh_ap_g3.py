@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Dirichlet marginals: subset-sum of Dirichlet components is Beta distributed."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

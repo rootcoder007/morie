@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 
 from ._containers import DescriptiveResult
@@ -61,7 +61,8 @@ def marginal_structural(
 
     Xd = np.column_stack([np.ones(len(X)), X])
     try:
-        from numpy.linalg import lstsq
+        from morie.fn._array_core import linalg as _acl
+        lstsq = _acl.lstsq
 
         beta, _, _, _ = lstsq(Xd, A, rcond=None)
         ps = expit(Xd @ beta)

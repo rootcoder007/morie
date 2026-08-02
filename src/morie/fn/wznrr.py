@@ -2,7 +2,7 @@
 
 __all__ = ["wznrr"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def wznrr(

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Lag feature: shift the series by k steps."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

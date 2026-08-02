@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Two-parameter Poisson-Dirichlet PD(alpha, theta): order statistics of PY weights."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

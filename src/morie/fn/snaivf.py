@@ -1,6 +1,6 @@
 """Seasonal naive ŷ_{t+h}=y_{t+h-m}."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

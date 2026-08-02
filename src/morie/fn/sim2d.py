@@ -24,7 +24,7 @@ def simulate_2d_unfolding(n_resp=30, n_stim=5, noise=0.1, seed=42):
     DescriptiveResult
         value = observed distance matrix (n_resp x n_stim).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
     X_resp = rng.standard_normal((n_resp, 2))

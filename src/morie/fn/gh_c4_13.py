@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weak convergence of DP: DP(alpha_n, G0_n) -> DP(alpha, G0) weakly."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -6,7 +6,7 @@ gives  l_p(beta) = -n/2 * log( SSR(beta)/n ) - n/2 (1 + log(2pi)),
 maximised at the OLS slope.  Returns beta_hat and observed-information SE.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution of the sample range."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import integrate
 
 from ._richresult import RichResult

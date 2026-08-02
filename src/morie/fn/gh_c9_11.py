@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Interval censoring with DP prior: contraction in Hellinger for log-concave models."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

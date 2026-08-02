@@ -5,7 +5,7 @@ Plot-level summary spatial
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def foplts(dbh=None, height=None, coords=None, n=50):

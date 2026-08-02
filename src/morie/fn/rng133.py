@@ -1,6 +1,6 @@
 """Direct discrete-domain specification of the Butterworth lowpass response.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

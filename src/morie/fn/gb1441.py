@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fisher exact test for 2x2 table using hypergeometric distribution."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

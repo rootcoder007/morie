@@ -16,7 +16,7 @@ def proximity_cost(voter, candidates, metric: str = "euclidean") -> DescriptiveR
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     voter = np.asarray(voter, dtype=float).ravel()
     candidates = np.atleast_2d(np.asarray(candidates, dtype=float))

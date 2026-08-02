@@ -5,7 +5,7 @@ Risk mapping health
 Category: GeoHlth
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def ghrsk(cases=None, controls=None, exposure=None, coords=None, n=50):

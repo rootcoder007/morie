@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

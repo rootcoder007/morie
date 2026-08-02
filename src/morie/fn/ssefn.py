@@ -20,7 +20,7 @@ def sse_mds(X, D_target):
     DescriptiveResult
         value = SSE (float).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     D_target = np.asarray(D_target, dtype=float)

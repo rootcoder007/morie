@@ -5,7 +5,7 @@ GCM downscaling spatial
 Category: GeoClim
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def gcgcm(data=None, coords=None, n=50):

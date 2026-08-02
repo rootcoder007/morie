@@ -1,6 +1,6 @@
 """Necessary-and-sufficient mean-zero conditions for a tree-based finitely additive measure on R to extend to a countably additive random measure.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

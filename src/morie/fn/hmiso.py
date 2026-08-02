@@ -4,7 +4,7 @@
 
 import heapq
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmmds import geron_mds, pairwise_distances

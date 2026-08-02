@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Permutation-based RF variable importance (MDI permutation)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

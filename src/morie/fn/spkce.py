@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Covariance-parameter estimation for kriging (LS, ML, REML)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 # imported under an alias: the public argument is also called

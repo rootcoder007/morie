@@ -1,6 +1,6 @@
 """Spatial periodogram (Schabenberger & Gotway Ch 6)."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def spper(

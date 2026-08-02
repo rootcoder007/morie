@@ -12,7 +12,7 @@ actually cross-fitted carries the regularisation bias it exists to
 remove.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["add_intercept", "projection", "annihilator", "k_class",
            "first_stage_f", "folds"]

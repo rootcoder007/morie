@@ -20,7 +20,7 @@ def stress1_measure(D_obs, D_model):
     DescriptiveResult
         value = stress-1 (float).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     D_obs = np.asarray(D_obs, dtype=float)
     D_model = np.asarray(D_model, dtype=float)

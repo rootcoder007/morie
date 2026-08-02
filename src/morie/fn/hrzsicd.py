@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Identification of single-index model when X is discrete."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

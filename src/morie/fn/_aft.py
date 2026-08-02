@@ -20,7 +20,7 @@ density.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["aft_fit", "log_dens_surv"]
 

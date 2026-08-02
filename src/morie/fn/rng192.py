@@ -1,6 +1,6 @@
 """Updated SPKI rule when a QRS is detected in the search-back procedure.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

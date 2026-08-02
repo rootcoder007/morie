@@ -3,7 +3,7 @@
 """Mean-pooled document embedding with an attention mask
 (Alammar Ch 8)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

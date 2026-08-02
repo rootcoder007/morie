@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ANOVA F-test per feature for selection."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

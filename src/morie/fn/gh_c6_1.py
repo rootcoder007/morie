@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Weak posterior consistency: Pi_n(U^c | X^n) -> 0 in P0-probability for all weak neighborhoods U of P0."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

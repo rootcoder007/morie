@@ -46,7 +46,7 @@ beta_reml is "simply an EGLS estimator evaluated at theta_reml".
 Everything here is internal.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._schab_gn import semivariogram_jacobian
 from ._schab_vario import correlogram

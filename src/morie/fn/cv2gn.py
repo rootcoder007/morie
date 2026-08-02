@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """CV2 genomic cross-validation: both train and test lines evaluated in at least one environment."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

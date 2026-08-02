@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sobolev prior: theta ~ N(0, Lambda) with Lambda = diag(j^{-2s-1}) in series model."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

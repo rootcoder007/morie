@@ -11,7 +11,7 @@ keeps the two apart: kernel objects report their bandwidth and the
 rate it implies, while root-n functionals report a standard error.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = [
     "kernel", "kernel_deriv", "silverman_bw", "kde", "kde_deriv",

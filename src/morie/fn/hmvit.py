@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Vision Transformer (ViT): transformer on image patches."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmtfm import encoder_params, geron_transformer

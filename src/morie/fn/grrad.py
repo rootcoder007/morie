@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Reverse-mode autodiff: one backward sweep of the chain rule over a graph."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

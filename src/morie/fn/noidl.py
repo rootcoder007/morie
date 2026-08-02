@@ -11,7 +11,7 @@ def nominate_ideal_extract(result) -> DescriptiveResult:
 
     .. epigraph:: I think, therefore I am. -- Rene Descartes
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     if isinstance(result, dict):
         X = np.asarray(result.get("ideal_points", result.get("X", [])), dtype=float)

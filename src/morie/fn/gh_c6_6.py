@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kullback-Leibler support condition: prior assigns positive mass to every KL ball around P0."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

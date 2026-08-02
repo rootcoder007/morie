@@ -1,6 +1,6 @@
 """Spatiotemporal ordinary kriging (separable covariance)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import cdist
 
 from ._richresult import RichResult

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Elastic net in the two-penalty (lambda1, lambda2) form."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .eslnln import _enet

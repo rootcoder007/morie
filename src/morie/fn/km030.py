@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 2.30/2.31: sentence-pair classification losses."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

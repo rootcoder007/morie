@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kernel density derivative."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._horowitz import kde_deriv
 from ._richresult import RichResult

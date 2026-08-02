@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """DCGAN generator: transposed-conv upsampling from latent z."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

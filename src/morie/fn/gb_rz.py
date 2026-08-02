@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Randomized test procedure when exact size is unavailable at a discrete level."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

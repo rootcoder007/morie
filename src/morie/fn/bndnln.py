@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Moment-inequality criterion and confidence set."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

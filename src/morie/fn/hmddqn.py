@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Double DQN: decouple action selection and evaluation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grddqn import geron_double_dqn_target

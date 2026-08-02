@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Bayesian multi-trait multi-environment model (BMTME)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

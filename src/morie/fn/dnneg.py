@@ -16,7 +16,7 @@ def density_negative_weights(positions, weights, n_points: int = 100) -> Descrip
 
     .. epigraph:: It is not what happens to you, but how you react, that matters. -- Epictetus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pos = np.asarray(positions, dtype=float).ravel()
     w = np.asarray(weights, dtype=float).ravel()

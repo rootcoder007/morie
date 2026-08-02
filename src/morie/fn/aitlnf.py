@@ -1,6 +1,6 @@
 """MLE of logistic-normal parameters from compositions."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

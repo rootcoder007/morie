@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Negative binomial regression (GLM) via IRLS."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.optimize import minimize
 from scipy.special import gammaln
 from scipy.stats import norm

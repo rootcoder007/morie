@@ -1,6 +1,6 @@
 """ICC(2,1) two-way random single rater."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

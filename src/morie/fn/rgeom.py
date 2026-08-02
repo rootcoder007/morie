@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 
 
 def rgeom(n: int, prob: float, seed: int = 42) -> np.ndarray:

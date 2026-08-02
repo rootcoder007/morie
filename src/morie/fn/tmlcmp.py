@@ -1,6 +1,6 @@
 """TMLE for cumulative incidence under competing risks."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

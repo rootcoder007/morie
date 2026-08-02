@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Propensity-score nearest-neighbour 1:1 matching."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .cipsc import caliper_psm

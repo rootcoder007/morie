@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Multi-head attention (Vaswani et al. 2017, Section 3.2.2)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .attsdp import scaled_dot_product_attention

@@ -14,7 +14,7 @@ def normalized_variance(Z, fitted) -> DescriptiveResult:
 
     .. epigraph:: It is not the strongest that survives, but the most adaptable. -- Charles Darwin
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     Z = np.asarray(Z, dtype=float)
     fitted = np.asarray(fitted, dtype=float)

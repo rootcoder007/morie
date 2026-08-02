@@ -1,6 +1,6 @@
 """COVRATIO scaled change in cov(beta) when obs i deleted."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

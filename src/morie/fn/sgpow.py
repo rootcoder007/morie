@@ -27,7 +27,7 @@ def power_variogram(h, c0, c1, alpha=1.5):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     h = np.asarray(h, dtype=np.float64)
     if not (0 < alpha < 2):

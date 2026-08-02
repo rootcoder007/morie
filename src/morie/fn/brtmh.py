@@ -5,7 +5,7 @@ Brent's method for root finding.
 Combines bisection, secant, and inverse quadratic interpolation.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["brtmh"]
 

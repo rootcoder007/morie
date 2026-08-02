@@ -1,6 +1,6 @@
 """PSD of white noise at the input of a matched filter (two-sided).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

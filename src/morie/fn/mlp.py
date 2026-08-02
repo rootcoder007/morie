@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simple MLP (1 hidden layer, numpy)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import DescriptiveResult
 

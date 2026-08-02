@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """SENet channel-wise Squeeze-and-Excitation attention."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grsig import geron_sigmoid

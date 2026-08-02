@@ -1,6 +1,6 @@
 """Convert a soft transport plan to a barycentric map."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

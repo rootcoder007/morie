@@ -5,7 +5,7 @@ Multivariate kriging
 Category: DimKrig
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dkmvk(x=None, y=None, z=None, values=None, n=30):

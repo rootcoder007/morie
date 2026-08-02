@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Variational inference for DPM: mean-field approximation q(G,theta,z) = prod q_i."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

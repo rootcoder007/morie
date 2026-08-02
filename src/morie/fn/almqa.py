@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Multi-query attention (Shazeer 2019; Alammar Ch 3)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .attsdp import scaled_dot_product_attention

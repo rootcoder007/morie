@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Knee-joint cartilage pathology classification via VAG features."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -8,7 +8,7 @@ Royal Statistical Society, Series B, 34(2), 187-220.
 
 __all__ = ["cxphr"]
 
-import numpy as np
+from . import _array_core as np
 
 
 def cxphr(

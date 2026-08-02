@@ -1,6 +1,6 @@
 """Complex cepstrum of a signal with a basic wavelet and an echo (impulses at multiples of n_0).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

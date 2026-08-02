@@ -3,7 +3,7 @@
 """Greedy navigable-small-world descent for approximate nearest
 neighbour search (Malkov and Yashunin 2020; Alammar Ch 8)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

@@ -1,6 +1,6 @@
 """Anisotropy detection by comparison of directional variograms."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats as _scistats
 
 from ._richresult import RichResult

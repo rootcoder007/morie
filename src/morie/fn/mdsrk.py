@@ -19,7 +19,7 @@ def mds_reconstruct_distances(X):
     DescriptiveResult
         value = reconstructed distance matrix (n x n).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     X = np.asarray(X, dtype=float)
     n = X.shape[0]

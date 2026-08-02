@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gamma process construction of DP: G(A) = gamma(A)/gamma(X)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

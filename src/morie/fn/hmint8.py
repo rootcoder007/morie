@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """INT8 quantization: post-training 8-bit weight+activation."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

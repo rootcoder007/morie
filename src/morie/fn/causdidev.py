@@ -1,6 +1,6 @@
 """Event-study coefficients with relative-time dummies."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

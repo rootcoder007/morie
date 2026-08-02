@@ -5,7 +5,7 @@ Weibull 3-parameter
 Category: DistTheor
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def dtwbl2(x=None, n=100, params=None):

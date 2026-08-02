@@ -8,7 +8,7 @@ with Random Forest nuisance estimators and cross-fitting.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 

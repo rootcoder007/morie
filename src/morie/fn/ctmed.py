@@ -7,7 +7,7 @@ above the pooled-sample median, test the resulting 2x2 table.
 
 from __future__ import annotations
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

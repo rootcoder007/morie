@@ -1,6 +1,6 @@
 """Complex logarithm converts the product Y(omega)=X(omega)H(omega) into a sum.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

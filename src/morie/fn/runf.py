@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Draw a random sample from a uniform distribution."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def runif(n: int, min: float = 0.0, max: float = 1.0, seed: int | None = None) -> np.ndarray:

@@ -15,7 +15,7 @@ def city_block_distance(x, y) -> DescriptiveResult:
 
     .. epigraph:: No man ever steps in the same river twice. -- Heraclitus
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     x = np.asarray(x, dtype=float).ravel()
     y = np.asarray(y, dtype=float).ravel()

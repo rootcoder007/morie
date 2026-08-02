@@ -1,6 +1,6 @@
 """Log odds ratio + variance from a 2x2 table."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

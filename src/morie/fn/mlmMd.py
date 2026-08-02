@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Multilevel (1-1-1) mediation with within/between decomposition."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

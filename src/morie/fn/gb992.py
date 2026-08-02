@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Fligner-Killeen test for equality of variances using aligned scores."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import stats
 
 from ._richresult import RichResult

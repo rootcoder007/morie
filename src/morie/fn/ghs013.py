@@ -1,6 +1,6 @@
 """Posterior Dirichlet distribution of the first k weights after marginalizing over the remaining cells, depending only on (N_1, ..., N_k).."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

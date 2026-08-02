@@ -1,6 +1,6 @@
 """Discrete random probability measure on X expressed as an infinite weighted sum of point masses at random locations theta_i with stick-breaking weights W_i.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

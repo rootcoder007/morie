@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Batch (offline) learning: train once on full dataset, then deploy."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

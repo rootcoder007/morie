@@ -5,7 +5,7 @@ Coordinate descent optimization.
 Updates one coordinate at a time, holding others fixed.
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["cdesc"]
 

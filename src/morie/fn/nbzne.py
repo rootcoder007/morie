@@ -5,7 +5,7 @@ Noise zone delineation
 Category: NoisBrd
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def nbzne(data=None, coords=None, n=50):

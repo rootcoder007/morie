@@ -31,7 +31,7 @@ def gibbons_runs_var(n1, n2):
     Gibbons, J. D. & Chakraborti, S. (2021). *Nonparametric
     Statistical Inference* (5th ed.). CRC Press. Eq. (3.2.8).
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     n1, n2 = int(n1), int(n2)
     if n1 < 1 or n2 < 1:

@@ -5,7 +5,7 @@ Relative density spatial
 Category: ForstSp
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def foreld(dbh=None, height=None, coords=None, n=50):

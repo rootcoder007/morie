@@ -8,7 +8,7 @@ return ceil(1/e^2) brackets (the canonical Kosorok/vdV-Wellner bound),
 plus the achievable count from the empirical CDF at chosen e.
 """
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

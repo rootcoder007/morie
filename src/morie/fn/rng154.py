@@ -1,6 +1,6 @@
 """Output of the ANC as the difference between primary input and adaptive filter output.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

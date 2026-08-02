@@ -23,7 +23,7 @@ def edge_correction(points, window, method="ripley"):
     -------
     DescriptiveResult
     """
-    import numpy as np
+    from morie.fn import _array_core as np
 
     pts = np.asarray(points, dtype=np.float64)
     n = pts.shape[0]

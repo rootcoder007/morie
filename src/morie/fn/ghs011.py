@@ -1,6 +1,6 @@
 """Joint Dirichlet distribution of the first k weights and the residual mass under a countable Dirichlet prior with parameters alpha_j.."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

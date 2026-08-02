@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Poisson kernel for count data in DPM: mixture of Poisson(lambda)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

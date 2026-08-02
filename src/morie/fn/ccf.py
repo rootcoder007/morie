@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cross-correlation function between two time series."""
 
-import numpy as np
+from . import _array_core as np
 
 
 def ccf(

@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """Block kriging -- areal prediction (Schabenberger & Gotway Ch 5)."""
 
-import numpy as np
+from . import _array_core as np
 from scipy.spatial.distance import cdist
 
 

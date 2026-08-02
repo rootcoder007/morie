@@ -15,7 +15,7 @@ is a way around that: gamma kernels whose support matches the data
 the whole line and back (Ch. 4).
 """
 
-import numpy as np
+from . import _array_core as np
 
 __all__ = ["kernel_K", "kernel_W", "kernel_V", "mu2", "gamma_kernel_density",
            "boundary_free_transform", "muller_order_m"]

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Hyperparameter tuning: optimize over discrete grid or random samples."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .grcvs import geron_cross_validation_score

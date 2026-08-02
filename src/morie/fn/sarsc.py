@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAR score / LM test for spatial lag."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._containers import SpatialResult
 

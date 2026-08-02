@@ -1,7 +1,7 @@
 # morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
 """ARMA(p,q) model fitting via conditional MLE."""
 
-import numpy as np
+from . import _array_core as np
 from scipy import optimize
 
 from ._containers import DescriptiveResult

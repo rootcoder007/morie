@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Log-loss (cross-entropy) cost for binary logistic regression."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 from .hmlogp import geron_logistic_probability

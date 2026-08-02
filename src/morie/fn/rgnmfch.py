@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """NMF-based EEG channel selection for BCI."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

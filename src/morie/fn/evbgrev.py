@@ -1,6 +1,6 @@
 """Bayesian GEV via Metropolis with prior π(μ,σ,ξ)."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

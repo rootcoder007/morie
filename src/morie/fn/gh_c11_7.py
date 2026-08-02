@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Riemann-Liouville process: integrated BM of order s, Holder-s paths."""
 
-import numpy as np
+from . import _array_core as np
 
 from ._richresult import RichResult
 

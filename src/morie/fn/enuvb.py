@@ -5,7 +5,7 @@ UV-B radiation spatial
 Category: EnvStat
 """
 
-import numpy as np
+from . import _array_core as np
 
 
 def enuvb(data=None, coords=None, n=50):
