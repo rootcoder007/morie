@@ -80,7 +80,7 @@ def phreg(
     baseline_haz = np.exp(log_lam)
 
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         hess_diag = np.zeros(p + K)
         eps = 1e-5

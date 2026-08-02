@@ -77,7 +77,7 @@ def dose_response(
     ld50 = -alpha / beta if abs(beta) > 1e-10 else np.inf
 
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         hess_inv = np.linalg.inv(
             np.array([[approx_fprime([alpha, beta], lambda p: neg_ll(p), 1e-5)[i] for i in range(2)]])

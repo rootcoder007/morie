@@ -72,7 +72,7 @@ def boyd_minimum_norm(A, b, norm=2):
     >>> [bool(r["feasible"]) for r in (r1, r2, ri)]
     [True, True, True]
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()

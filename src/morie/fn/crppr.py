@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Any
 
 from . import _array_core as np
-from scipy.special import loggamma
+from ._sci_core import loggamma
 
 
 def chinese_restaurant_process(

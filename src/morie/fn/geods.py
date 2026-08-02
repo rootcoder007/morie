@@ -4,7 +4,7 @@
 __all__ = ["geods"]
 
 from . import _array_core as np
-from scipy.integrate import solve_ivp
+from ._sci_core import solve_ivp
 
 
 def geods(

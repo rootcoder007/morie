@@ -4,7 +4,7 @@
 __all__ = ["cosmx"]
 
 from . import _array_core as np
-from scipy.integrate import quad
+from ._sci_core import quad
 
 
 def cosmx(

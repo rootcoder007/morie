@@ -66,7 +66,7 @@ def boyd_minimax(A, b=None):
     >>> bool(s["n_active"] >= 2)
     True
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     m, n = Am.shape

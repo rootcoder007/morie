@@ -59,7 +59,7 @@ def trmle(
     y_range = y_hi - y_lo if y_hi > y_lo else 1.0
     y_scaled = (y - y_lo) / y_range
 
-    from scipy.special import comb as _comb
+    from ._sci_core import comb as _comb
 
     def bernstein_basis(u, k, deg):
         return _comb(deg, k) * u**k * (1 - u) ** (deg - k)
@@ -120,7 +120,7 @@ def trmle(
     sigma2 = float(np.var(resid) + 1e-10)
 
     try:
-        from scipy.optimize import approx_fprime
+        from ._sci_core import approx_fprime
 
         H = np.zeros((p, p))
         for i in range(p):

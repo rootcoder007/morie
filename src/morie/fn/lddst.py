@@ -54,7 +54,7 @@ def local_dirichlet_density_estimate(
         density[i] = np.mean(weights) / bandwidth
 
     # Normalize to integrate to 1
-    from scipy.integrate import trapz
+    from ._sci_core import trapz
 
     norm = trapz(density, x_eval)
     if norm > 0:

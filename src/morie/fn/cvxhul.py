@@ -73,7 +73,7 @@ def boyd_convex_hull(S, query=None, tol=1e-09):
     >>> bool(int(np.sum(r["weights"] > 1e-9)) <= 3)
     True
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     X = np.atleast_2d(np.asarray(S, dtype=float))
     m, n = X.shape

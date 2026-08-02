@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._sci_core import minimize_scalar
-from scipy.special import gamma as gamma_fn
+from ._sci_core import gamma as gamma_fn
 
 from ._containers import DescriptiveResult
 

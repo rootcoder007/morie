@@ -28,7 +28,7 @@ def matern_variogram(h, nugget, sill, range_param, nu=1.5):
     DescriptiveResult
     """
     from morie.fn import _array_core as np
-    from scipy.special import gamma as gamma_fn
+    from ._sci_core import gamma as gamma_fn
     from scipy.special import kv
 
     h = np.asarray(h, dtype=np.float64)

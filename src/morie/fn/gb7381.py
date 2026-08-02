@@ -2,7 +2,7 @@
 """Asymptotic null variance of a linear rank statistic."""
 
 from . import _array_core as np
-from scipy import integrate
+from ._sci_core import integrate
 
 from ._richresult import RichResult
 

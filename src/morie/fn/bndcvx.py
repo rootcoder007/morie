@@ -65,7 +65,7 @@ def bound_convex_estimator(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
     treatment parameters", *Econometrica* 86:1589-1619, Prop. 2 and
     the linear-programming formulation of Sec. 4.
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     cv = np.asarray(c, dtype=float).ravel()
     k = cv.size

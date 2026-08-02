@@ -2,7 +2,7 @@
 """Running integral of a causal signal over [0, t]."""
 
 from . import _array_core as np
-from scipy import integrate
+from ._sci_core import integrate
 
 from ._richresult import RichResult
 

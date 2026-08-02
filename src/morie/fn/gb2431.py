@@ -4,7 +4,7 @@
 from math import comb
 
 from . import _array_core as np
-from scipy import special
+from ._sci_core import special
 
 from ._richresult import RichResult
 

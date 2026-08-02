@@ -53,7 +53,7 @@ def weibull_analysis(
 
     shape, loc, scale = stats.weibull_min.fit(uncensored, floc=0)
 
-    from scipy.special import gamma as gamma_fn
+    from ._sci_core import gamma as gamma_fn
 
     mttf = scale * gamma_fn(1 + 1 / shape)
 

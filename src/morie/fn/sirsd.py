@@ -1,7 +1,7 @@
 """SIRS model with demographics (births and deaths)."""
 
 from . import _array_core as np
-from scipy.integrate import odeint
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 

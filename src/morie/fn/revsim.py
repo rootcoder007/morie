@@ -48,7 +48,7 @@ def revised_simplex(
     c = np.asarray(c, dtype=float)
     n = int(c) if c.ndim == 0 else len(c)
     try:
-        from scipy.optimize import linprog
+        from ._sci_core import linprog
 
         res = linprog(
             c,

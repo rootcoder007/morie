@@ -62,7 +62,7 @@ def kbeta(
     Chen, S. X. (1999). Beta kernel estimators for density functions.
         *Computational Statistics & Data Analysis*, 31(2), 131-145.
     """
-    from scipy.special import betaln
+    from ._sci_core import betaln
 
     data = np.asarray(data, dtype=float).ravel()
     n = data.shape[0]

@@ -86,7 +86,7 @@ def boyd_chebyshev_center(A, b, max_iter=500, tol=1e-10):
     # Variables are (x, r); maximise r subject to a_i'x + r||a_i|| <= b_i.
     # Written this way the problem is a linear program, which is the whole
     # point of the ||a_i|| scaling.
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     c = np.r_[np.zeros(n), -1.0]
     A_ub = np.column_stack([Am, norms])

@@ -2,7 +2,7 @@
 """Minimax strategy for zero-sum games."""
 
 from . import _array_core as np
-from scipy.optimize import linprog
+from ._sci_core import linprog
 
 from ._containers import DescriptiveResult
 

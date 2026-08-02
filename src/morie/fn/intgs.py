@@ -29,7 +29,7 @@ def integrate_signal(x, fs: float = 1.0) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.integrate import cumulative_trapezoid
+    from ._sci_core import cumulative_trapezoid
 
     x = np.asarray(x, dtype=float)
     dt = 1.0 / fs

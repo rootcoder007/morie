@@ -64,7 +64,7 @@ def boyd_linear_program_dual(A, b, c):
     >>> bool(abs((r2["primal_value"] - r["primal_value"]) - y) < 1e-8)
     True
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     Am = np.atleast_2d(np.asarray(A, dtype=float))
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()

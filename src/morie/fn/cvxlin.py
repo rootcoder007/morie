@@ -70,7 +70,7 @@ def boyd_linear_program(c, A=None, b=None, G=None, h=None, bounds=None):
     >>> i["status"], bool(i["feasible"])
     ('infeasible', False)
     """
-    from scipy.optimize import linprog
+    from ._sci_core import linprog
 
     cv = np.atleast_1d(np.asarray(c, dtype=float)).ravel()
     n = cv.size

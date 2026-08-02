@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.integrate import odeint
+from ._sci_core import odeint
 
 from ._containers import SIRResult
 

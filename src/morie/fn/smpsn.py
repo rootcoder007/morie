@@ -23,7 +23,7 @@ def simpson_integrate(x, dx=1.0, **kwargs) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.integrate import simpson
+    from ._sci_core import simpson
 
     x = np.asarray(x, dtype=float)
     if len(x) < 3:
