@@ -26,7 +26,7 @@ def resample_signal(x, up: int, down: int) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.signal import resample_poly
+    from ._signal_core import resample_poly
 
     x = np.asarray(x, dtype=float)
     y = resample_poly(x, up, down)

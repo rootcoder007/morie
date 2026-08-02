@@ -1675,7 +1675,7 @@ def synthetic_did(
         pred = Y_ctrl_pre_mean_across_units @ lam
         return (pred - Y_ctrl_post_mean) ** 2
 
-    from scipy.optimize import LinearConstraint
+    from morie.fn._sci_core import LinearConstraint
 
     lam0 = np.ones(T_pre) / T_pre
     constraints = LinearConstraint(np.ones(T_pre), lb=1.0, ub=1.0)

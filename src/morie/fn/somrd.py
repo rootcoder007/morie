@@ -24,7 +24,7 @@ def somers_d(
     -------
     ESRes
     """
-    from scipy.stats import somersd
+    from ._stats_core import somersd
 
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)

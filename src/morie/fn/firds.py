@@ -30,7 +30,7 @@ def fir_design(numtaps: int, cutoff, fs, window: str = "hamming") -> Descriptive
     -------
     DescriptiveResult
     """
-    from scipy.signal import firwin
+    from ._signal_core import firwin
 
     coeffs = firwin(numtaps, cutoff, fs=fs, window=window)
     return DescriptiveResult(

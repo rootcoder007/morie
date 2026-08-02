@@ -2,7 +2,7 @@
 """Multi-horizon distributional accuracy test (Corradi-Swanson type)."""
 
 from . import _array_core as np
-from scipy import stats
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

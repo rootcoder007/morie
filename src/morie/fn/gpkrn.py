@@ -31,7 +31,7 @@ def matern_kernel(
     x1: np.ndarray, x2: np.ndarray, length_scale: float = 1.0, output_scale: float = 1.0, nu: float = 1.5
 ) -> np.ndarray:
     r"""Matern kernel; interpolates between exponential (nu=0.5) and SE (nu->inf)."""
-    from scipy.special import gamma, kv
+    from ._sci_core import gamma, kv
 
     x1 = np.atleast_1d(x1)
     x2 = np.atleast_1d(x2)

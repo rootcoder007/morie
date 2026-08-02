@@ -57,7 +57,7 @@ def schabenberger_matern_covariance(h, sigma2=1.0, nu=0.5, a=1.0):
     """
     from math import gamma as _gammafn
 
-    from scipy.special import kv
+    from ._sci_core import kv
 
     if nu <= 0:
         raise ValueError("`nu` must be > 0 for the Matern class")

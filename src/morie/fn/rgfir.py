@@ -68,7 +68,7 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
     response is exactly unity" at DC for a lowpass -- hence ``sum(taps) == 1``,
     which is the identity pinned in the tests.
     """
-    from scipy.signal import filtfilt, firwin
+    from ._signal_core import filtfilt, firwin
 
     x = np.asarray(x, dtype=float)
     order = int(order)

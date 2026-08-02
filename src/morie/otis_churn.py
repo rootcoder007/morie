@@ -35,7 +35,7 @@ from pathlib import Path
 
 import numpy as np
 from morie.fn import _frame_core as pd
-from scipy import stats as sps
+from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
 from .otis import project_root

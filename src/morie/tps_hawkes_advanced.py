@@ -33,7 +33,7 @@ from typing import Literal
 
 import numpy as np
 from morie.fn import _frame_core as pd
-from scipy import stats as sps
+from morie.fn import _stats_core as sps
 from morie.fn._sci_core import minimize
 from scipy.special import gammainc, gammaln  # noqa: F401 -- used inline
 

@@ -5,7 +5,7 @@ Uses a trust radius to guarantee convergence to local minima.
 """
 
 from . import _array_core as np
-from scipy.linalg import solve
+from ._sci_core import solve
 
 __all__ = ["trnrg"]
 

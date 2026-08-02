@@ -3,7 +3,7 @@
 
 from . import _array_core as np
 
-from scipy import optimize
+from ._sci_core import optimize
 
 from ._kosorok import cox_score
 from ._richresult import RichResult

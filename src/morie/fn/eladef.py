@@ -52,7 +52,7 @@ def elastic_deformation(
     kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
     kernel /= kernel.sum()
 
-    from scipy.signal import convolve2d
+    from ._signal_core import convolve2d
 
     dx = alpha * convolve2d(dx, kernel, mode="same", boundary="symm")
     dy = alpha * convolve2d(dy, kernel, mode="same", boundary="symm")

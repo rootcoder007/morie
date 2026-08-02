@@ -3,7 +3,7 @@
 
 from . import _array_core as np
 from ._sci_core import gamma as gammafn
-from scipy.special import kv
+from ._sci_core import kv
 
 from ._richresult import RichResult
 

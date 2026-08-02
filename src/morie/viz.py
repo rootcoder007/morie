@@ -16,7 +16,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 from morie.fn import _frame_core as pd
-from scipy import stats as sp_stats
+from morie.fn import _stats_core as sp_stats
 
 logger = logging.getLogger(__name__)
 

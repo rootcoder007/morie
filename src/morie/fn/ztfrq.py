@@ -27,7 +27,7 @@ def freq_response_at(b, a, freqs, fs: float = 1.0) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import freqz
+    from ._signal_core import freqz
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)
