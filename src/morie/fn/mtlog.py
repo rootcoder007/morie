@@ -46,7 +46,7 @@ def matrix_log(
         eigvals = np.linalg.eigvals(T)
         if np.any(np.real(eigvals) <= 0):
             T = np.real(np.linalg.matrix_power(T, 1))
-        from scipy.linalg import sqrtm
+        from ._sci_core import sqrtm
 
         T = np.real(sqrtm(T))
         s += 1

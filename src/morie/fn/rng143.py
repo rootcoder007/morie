@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.linalg import toeplitz
+from ._sci_core import toeplitz
 
 from ._richresult import RichResult
 
