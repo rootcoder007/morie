@@ -545,8 +545,8 @@ def matmul(a, b):
 
 # --------------------------------------------------------------- reductions
 
-def sum(x):  # noqa: A001
-    return asarray(x).sum()
+def sum(x, axis=None):  # noqa: A001
+    return asarray(x).sum(axis=axis)
 
 
 def mean(x):
@@ -683,12 +683,24 @@ class _SplitMix64:
         z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) & 0xFFFFFFFFFFFFFFFF
         return z ^ (z >> 31)
 
+    def _fill(self, one, size):
+        """size = None -> scalar; int -> 1-D marr; (n, m) -> 2-D marr."""
+        if size is None:
+            return one()
+        if isinstance(size, (tuple, list)):
+            if len(size) == 1:
+                return marr([float(one()) for _ in range(int(size[0]))])
+            if len(size) == 2:
+                n, m = int(size[0]), int(size[1])
+                return marr([[float(one()) for _ in range(m)]
+                             for _ in range(n)])
+            raise ValueError("size ndim > 2 unsupported")
+        return marr([float(one()) for _ in range(int(size))])
+
     def uniform(self, low=0.0, high=1.0, size=None):
         def one():
             return low + (high - low) * (self._next() >> 11) / (1 << 53)
-        if size is None:
-            return one()
-        return marr([one() for _ in range(int(size))])
+        return self._fill(one, size)
 
     def standard_normal(self, size=None):
         return self.normal(0.0, 1.0, size)
@@ -702,9 +714,88 @@ class _SplitMix64:
             u2 = self.uniform()
             return loc + scale * _math.sqrt(-2 * _math.log(u1)) \
                 * _math.cos(2 * _math.pi * u2)
-        if size is None:
-            return one()
-        return marr([one() for _ in range(int(size))])
+        return self._fill(one, size)
+
+    def _u(self):
+        return (self._next() >> 11) / (1 << 53)
+
+    def poisson(self, lam=1.0, size=None):
+        def one():
+            L = float(lam)
+            if L < 30.0:                      # Knuth product method
+                target = _math.exp(-L)
+                k, p = 0, 1.0
+                while True:
+                    p *= _pymax(self._u(), 1e-300)
+                    if p <= target:
+                        return float(k)
+                    k += 1
+            # normal approximation + correction for large lambda
+            while True:
+                v = L + _math.sqrt(L) * self.normal()
+                if v >= 0:
+                    return float(int(v + 0.5))
+        return self._fill(one, size)
+
+    def exponential(self, scale=1.0, size=None):
+        def one():
+            return -float(scale) * _math.log(_pymax(self._u(), 1e-300))
+        return self._fill(one, size)
+
+    def standard_gamma(self, shape, size=None):
+        return self.gamma(shape, 1.0, size)
+
+    def gamma(self, shape, scale=1.0, size=None):
+        a = float(shape)
+
+        def one():
+            # Marsaglia-Tsang (2000); boost for a < 1
+            aa = a if a >= 1.0 else a + 1.0
+            d = aa - 1.0 / 3.0
+            c = 1.0 / _math.sqrt(9.0 * d)
+            while True:
+                x = self.normal()
+                v = (1.0 + c * x) ** 3
+                if v <= 0:
+                    continue
+                u = _pymax(self._u(), 1e-300)
+                if _math.log(u) < 0.5 * x * x + d - d * v \
+                        + d * _math.log(v):
+                    g = d * v
+                    if a < 1.0:
+                        g *= _pymax(self._u(), 1e-300) ** (1.0 / a)
+                    return g * float(scale)
+        return self._fill(one, size)
+
+    def beta(self, a, b, size=None):
+        def one():
+            x = self.gamma(a)
+            y = self.gamma(b)
+            return x / (x + y)
+        return self._fill(one, size)
+
+    def binomial(self, n, p, size=None):
+        def one():
+            nn, pp = int(n), float(p)
+            if nn * _bi.min(pp, 1.0 - pp) < 30.0:
+                return float(_bi.sum(1 for _ in range(nn)
+                                     if self._u() < pp))
+            while True:                       # normal approx, clipped
+                v = nn * pp + _math.sqrt(nn * pp * (1 - pp)) \
+                    * self.normal()
+                k = int(v + 0.5)
+                if 0 <= k <= nn:
+                    return float(k)
+        return self._fill(one, size)
+
+    def chisquare(self, df, size=None):
+        return self.gamma(float(df) / 2.0, 2.0, size)
+
+    def geometric(self, p, size=None):
+        def one():
+            return float(int(_math.log(_pymax(self._u(), 1e-300))
+                             / _math.log(1.0 - float(p))) + 1)
+        return self._fill(one, size)
 
     def shuffle(self, seq):
         # Fisher-Yates in place on a plain list
@@ -730,6 +821,9 @@ class _SplitMix64:
         pool = list(range(int(a))) if isinstance(a, int)             else list(asarray(a)._flat())
         if size is None:
             return pool[self._next() % len(pool)]
+        if isinstance(size, (tuple, list)):
+            size = 1 if not size else int(
+                size[0]) * (int(size[1]) if len(size) > 1 else 1)
         k = int(size)
         if replace:
             return marr([float(pool[self._next() % len(pool)])
@@ -747,9 +841,7 @@ class _SplitMix64:
 
         def one():
             return low + self._next() % (high - low)
-        if size is None:
-            return one()
-        return marr([float(one()) for _ in range(int(size))])
+        return self._fill(one, size)
 
 
 class _Random:
@@ -1600,6 +1692,34 @@ def cumprod(x):
 
 def ediff1d(x):
     return diff(x)
+
+
+def setdiff1d(a, b):
+    bs = set(asarray(b)._flat()) if not isinstance(b, (int, float)) \
+        else {float(b)}
+    seen = set()
+    out = []
+    for v in sorted(asarray(a)._flat()):
+        if v not in bs and v not in seen:
+            seen.add(v)
+            out.append(v)
+    return marr(out)
+
+
+def union1d(a, b):
+    vals = set(asarray(a)._flat()) | set(asarray(b)._flat())
+    return marr(sorted(vals))
+
+
+def intersect1d(a, b):
+    vals = set(asarray(a)._flat()) & set(asarray(b)._flat())
+    return marr(sorted(vals))
+
+
+def in1d(a, b):
+    bs = set(asarray(b)._flat())
+    return marr([1.0 if v in bs else 0.0 for v in asarray(a)._flat()])
+
 
 
 def real(x):
