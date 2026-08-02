@@ -213,6 +213,25 @@ class marr:
     def __setitem__(self, idx, value):
         if isinstance(idx, tuple) and len(self.shape) == 2:
             i, j = idx
+            if isinstance(i, (marr, list, tuple)) \
+                    and not isinstance(i, slice):
+                flags = [bool(v) for v in (
+                    i._flat() if isinstance(i, marr) else i)]
+                if len(flags) == self.shape[0]:
+                    rows = [r for r, fl in enumerate(flags) if fl]
+                else:
+                    rows = [int(v) for v in (
+                        i._flat() if isinstance(i, marr) else i)]
+                cols = (range(*j.indices(self.shape[1]))
+                        if isinstance(j, slice) else [int(j)])
+                v = asarray(value)
+                vals = list(v._flat())
+                scalar = len(vals) == 1
+                for ri, r in enumerate(rows):
+                    for ci, c in enumerate(cols):
+                        self.data[r][c] = vals[0] if scalar else \
+                            vals[(ri * len(cols) + ci) % len(vals)]
+                return
             if isinstance(i, slice) or isinstance(j, slice):
                 rows = range(*i.indices(self.shape[0])) \
                     if isinstance(i, slice) else [i]
@@ -317,6 +336,18 @@ class marr:
 
     def __abs__(self):
         return self._map(lambda v: v if v >= 0 else -v)
+
+    def clip(self, a_min=None, a_max=None, lower=None, upper=None):
+        lo = a_min if a_min is not None else lower
+        hi = a_max if a_max is not None else upper
+
+        def one(v):
+            if lo is not None and v < lo:
+                return float(lo)
+            if hi is not None and v > hi:
+                return float(hi)
+            return v
+        return self._map(one)
 
     def argmax(self):
         f = self._flat()
