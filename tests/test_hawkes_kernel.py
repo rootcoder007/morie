@@ -421,6 +421,8 @@ def test_soe_fit_matrix_pencil_recovers_known_soe():
     k = np.arange(80)
     y = (r_true[None, :] * np.exp(-beta_true[None, :] * k[:, None] * dt)).sum(axis=1)
     beta, res = _soe_fit_matrix_pencil(y, dt)
+    beta = np.asarray(beta, dtype=np.complex128)
+    res = np.asarray(res, dtype=np.complex128)
     assert np.max(np.abs(beta.imag)) < 1e-6  # all poles real
     order = np.argsort(beta.real)
     assert np.allclose(beta.real[order], beta_true, atol=1e-6)
@@ -482,6 +484,8 @@ def test_soe_fit_gamma_tail_accuracy(alpha, beta):
 
     u_split = 2.0 * (alpha - 1.0) / beta  # 2 x the peak
     w, beta_soe, err = soe_fit_gamma_tail(alpha, beta, u_split)
+    w = np.asarray(w, dtype=np.complex128)
+    beta_soe = np.asarray(beta_soe, dtype=np.complex128)
     assert err < 1e-5
     assert np.all(beta_soe.real > 0.0)  # all modes decay
     s = np.array([0.0, 1.0 / beta, 5.0 / beta])
@@ -504,7 +508,10 @@ def test_hawkes_ll_gamma_hybrid_matches_exact(alpha, beta):
     u_split = 2.0 * (alpha - 1.0) / beta
     w, beta_soe, err = soe_fit_gamma_tail(alpha, beta, u_split)
     exact = core.hawkes_ll_gamma_const(t, T, a0, eta, alpha, beta)
-    hybrid = core.hawkes_ll_gamma_hybrid(t, T, a0, eta, alpha, beta, u_split, w, beta_soe)
+    hybrid = core.hawkes_ll_gamma_hybrid(
+        t, T, a0, eta, alpha, beta, u_split,
+        np.asarray(w, dtype=np.complex128),
+        np.asarray(beta_soe, dtype=np.complex128))
     assert np.isclose(hybrid, exact, rtol=1e-4)
 
 

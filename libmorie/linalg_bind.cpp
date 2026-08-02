@@ -22,6 +22,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
 #include <nanobind/stl/pair.h>
+#include <nanobind/stl/tuple.h>
 
 #include "linalg_core.hpp"
 
@@ -108,7 +109,32 @@ std::pair<nb::bytes, nb::bytes> fft_py(const Vec &re, const Vec &im,
 
 }  // namespace
 
+std::tuple<nb::bytes, nb::bytes, nb::bytes> jacobi_svd_py(
+        const Vec &a, std::size_t m, std::size_t n) {
+    std::vector<double> aw(a.data(), a.data() + m * n);
+    std::vector<double> v(n * n), sv(n);
+    morie::core::jacobi_svd(aw.data(), m, n, v.data(), sv.data());
+    return {make_out(aw), make_out(sv), make_out(v)};
+}
+
+std::pair<nb::bytes, nb::bytes> eig_general_py(const Vec &a,
+                                               std::size_t n) {
+    std::vector<double> aw(a.data(), a.data() + n * n);
+    std::vector<double> wr(n), wi(n);
+    if (!morie::core::eig_general(aw.data(), n, wr.data(), wi.data()))
+        throw std::runtime_error("eig: QR iteration failed to converge");
+    return {make_out(wr), make_out(wi)};
+}
+
 void register_linalg(nb::module_ &m) {
+    m.def("eig_general", &eig_general_py, "a"_a, "n"_a,
+          "Eigenvalues of a general real n*n matrix (Hessenberg + "
+          "shifted QR). Returns (real parts, imag parts) as float64 "
+          "byte buffers.");
+    m.def("jacobi_svd", &jacobi_svd_py, "a"_a, "m"_a, "n"_a,
+          "One-sided Jacobi SVD (high relative accuracy). Input a is "
+          "m*n row-major; returns (U*S columns m*n, singular values n, "
+          "V n*n) as float64 byte buffers.");
     m.def("ew2", &ew2, "a"_a, "b"_a, "op"_a,
           "Elementwise op on equal-length float64 buffers "
           "(0 add, 1 sub, 2 mul, 3 div).");

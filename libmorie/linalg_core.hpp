@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <complex>
 #include <cstddef>
@@ -268,6 +269,281 @@ inline void fft(const double *re_in, const double *im_in, double *re_out,
         re_out[k] = v.real();
         im_out[k] = v.imag();
     }
+}
+
+
+// ---------------------------------------------------------------------
+// One-sided Jacobi SVD (Golub & Van Loan, 4th ed., Sec. 8.6.3; Demmel &
+// Veselic 1992, "Jacobi's method is more accurate than QR"). Computes
+// A = U S V^T for a row-major m x n matrix with m >= n to high RELATIVE
+// accuracy in every singular value -- unlike the eig(A^T A) route,
+// which loses the values below sqrt(eps)*s_max.
+//
+// a    : in/out, m*n row-major; overwritten with U*diag(S) columns.
+// v    : out, n*n row-major; receives V (not V^T).
+// sv   : out, n singular values, descending.
+// Returns the number of sweeps used (<= max_sweeps; convergence is
+// |a_p . a_q| <= tol * ||a_p|| * ||a_q|| for every column pair).
+inline int jacobi_svd(double *a, std::size_t m, std::size_t n,
+                      double *v, double *sv,
+                      double tol = 1e-15, int max_sweeps = 60) {
+    // v = I
+    for (std::size_t i = 0; i < n; ++i)
+        for (std::size_t j = 0; j < n; ++j)
+            v[i * n + j] = (i == j) ? 1.0 : 0.0;
+
+    int sweep = 0;
+    for (; sweep < max_sweeps; ++sweep) {
+        bool rotated = false;
+        for (std::size_t p = 0; p + 1 < n; ++p) {
+            for (std::size_t q = p + 1; q < n; ++q) {
+                double app = 0.0, aqq = 0.0, apq = 0.0;
+                for (std::size_t r = 0; r < m; ++r) {
+                    const double x = a[r * n + p], y = a[r * n + q];
+                    app += x * x;
+                    aqq += y * y;
+                    apq += x * y;
+                }
+                if (app == 0.0 || aqq == 0.0) continue;
+                if (std::fabs(apq) <= tol * std::sqrt(app) * std::sqrt(aqq))
+                    continue;
+                rotated = true;
+                const double zeta = (aqq - app) / (2.0 * apq);
+                const double t =
+                    (zeta >= 0.0 ? 1.0 : -1.0) /
+                    (std::fabs(zeta) + std::sqrt(1.0 + zeta * zeta));
+                const double c = 1.0 / std::sqrt(1.0 + t * t);
+                const double s = c * t;
+                for (std::size_t r = 0; r < m; ++r) {
+                    const double x = a[r * n + p], y = a[r * n + q];
+                    a[r * n + p] = c * x - s * y;
+                    a[r * n + q] = s * x + c * y;
+                }
+                for (std::size_t r = 0; r < n; ++r) {
+                    const double x = v[r * n + p], y = v[r * n + q];
+                    v[r * n + p] = c * x - s * y;
+                    v[r * n + q] = s * x + c * y;
+                }
+            }
+        }
+        if (!rotated) break;
+    }
+
+    // Singular values = column norms; sort descending and permute the
+    // columns of both a (=> U*S) and v to match.
+    std::vector<std::size_t> ord(n);
+    for (std::size_t i = 0; i < n; ++i) {
+        double nrm = 0.0;
+        for (std::size_t r = 0; r < m; ++r) {
+            const double x = a[r * n + i];
+            nrm += x * x;
+        }
+        sv[i] = std::sqrt(nrm);
+        ord[i] = i;
+    }
+    std::sort(ord.begin(), ord.end(),
+              [&](std::size_t i, std::size_t j) { return sv[i] > sv[j]; });
+    std::vector<double> tmp_s(sv, sv + n);
+    std::vector<double> tmp_a(a, a + m * n), tmp_v(v, v + n * n);
+    for (std::size_t k = 0; k < n; ++k) {
+        sv[k] = tmp_s[ord[k]];
+        for (std::size_t r = 0; r < m; ++r)
+            a[r * n + k] = tmp_a[r * n + ord[k]];
+        for (std::size_t r = 0; r < n; ++r)
+            v[r * n + k] = tmp_v[r * n + ord[k]];
+    }
+    return sweep;
+}
+
+
+// ---------------------------------------------------------------------
+// Eigenvalues of a general real matrix: Householder reduction to upper
+// Hessenberg form followed by the shifted QR iteration on the
+// Hessenberg matrix (Golub & Van Loan, 4th ed., Alg. 7.4.2 + Sec. 7.5;
+// the QR stage follows the classic EISPACK hqr scheme, Martin,
+// Peters & Wilkinson 1970, Numer. Math. 14).
+// a: in/out n*n row-major (destroyed). wr/wi: out, n eigenvalue parts.
+// Returns true on convergence (30*n iteration budget, as in EISPACK).
+inline bool eig_general(double *a, std::size_t n, double *wr, double *wi) {
+    const std::ptrdiff_t N = static_cast<std::ptrdiff_t>(n);
+    auto A = [&](std::ptrdiff_t r, std::ptrdiff_t c) -> double & {
+        return a[r * N + c];
+    };
+
+    // -- Householder reduction to upper Hessenberg (in place) --
+    for (std::ptrdiff_t k = 1; k + 1 < N; ++k) {
+        double scale = 0.0;
+        for (std::ptrdiff_t i = k; i < N; ++i)
+            scale += std::fabs(A(i, k - 1));
+        if (scale == 0.0) continue;
+        double h = 0.0;
+        std::vector<double> u(static_cast<std::size_t>(N), 0.0);
+        for (std::ptrdiff_t i = N - 1; i >= k; --i) {
+            u[static_cast<std::size_t>(i)] = A(i, k - 1) / scale;
+            h += u[static_cast<std::size_t>(i)] *
+                 u[static_cast<std::size_t>(i)];
+        }
+        double g = std::sqrt(h);
+        if (u[static_cast<std::size_t>(k)] > 0.0) g = -g;
+        h -= u[static_cast<std::size_t>(k)] * g;
+        u[static_cast<std::size_t>(k)] -= g;
+        // apply P = I - u u^T / h from both sides
+        for (std::ptrdiff_t j = 0; j < N; ++j) {
+            double f = 0.0;
+            for (std::ptrdiff_t i = k; i < N; ++i)
+                f += u[static_cast<std::size_t>(i)] * A(i, j);
+            f /= h;
+            for (std::ptrdiff_t i = k; i < N; ++i)
+                A(i, j) -= f * u[static_cast<std::size_t>(i)];
+        }
+        for (std::ptrdiff_t i = 0; i < N; ++i) {
+            double f = 0.0;
+            for (std::ptrdiff_t j = k; j < N; ++j)
+                f += u[static_cast<std::size_t>(j)] * A(i, j);
+            f /= h;
+            for (std::ptrdiff_t j = k; j < N; ++j)
+                A(i, j) -= f * u[static_cast<std::size_t>(j)];
+        }
+        A(k, k - 1) = scale * g;
+        for (std::ptrdiff_t i = k + 1; i < N; ++i) A(i, k - 1) = 0.0;
+    }
+
+    // -- Shifted QR on the Hessenberg matrix (EISPACK hqr) --
+    double anorm = 0.0;
+    for (std::ptrdiff_t i = 0; i < N; ++i)
+        for (std::ptrdiff_t j = (i > 0 ? i - 1 : 0); j < N; ++j)
+            anorm += std::fabs(A(i, j));
+    std::ptrdiff_t nn = N - 1;
+    double t = 0.0;
+    long total_its = 0;
+    const long budget = 30L * static_cast<long>(N) + 100L;
+    while (nn >= 0) {
+        long its = 0;
+        std::ptrdiff_t l = 0;
+        do {
+            for (l = nn; l >= 1; --l) {
+                const double s =
+                    std::fabs(A(l - 1, l - 1)) + std::fabs(A(l, l));
+                const double s2 = (s == 0.0) ? anorm : s;
+                if (std::fabs(A(l, l - 1)) + s2 == s2) {
+                    A(l, l - 1) = 0.0;
+                    break;
+                }
+            }
+            double x = A(nn, nn);
+            if (l == nn) {                       // one real root found
+                wr[nn] = x + t;
+                wi[nn] = 0.0;
+                --nn;
+            } else {
+                double y = A(nn - 1, nn - 1);
+                double w = A(nn, nn - 1) * A(nn - 1, nn);
+                if (l == nn - 1) {               // a 2x2 block
+                    double p = 0.5 * (y - x);
+                    const double q = p * p + w;
+                    double z = std::sqrt(std::fabs(q));
+                    x += t;
+                    if (q >= 0.0) {              // real pair
+                        z = p + (p >= 0.0 ? z : -z);
+                        wr[nn - 1] = wr[nn] = x + z;
+                        if (z != 0.0) wr[nn] = x - w / z;
+                        wi[nn - 1] = wi[nn] = 0.0;
+                    } else {                     // complex pair
+                        wr[nn - 1] = wr[nn] = x + p;
+                        wi[nn - 1] = -(wi[nn] = z);
+                    }
+                    nn -= 2;
+                } else {                         // no root yet: QR step
+                    double p = 0.0, q = 0.0, r = 0.0, z = 0.0, s = 0.0;
+                    if (its == 10 || its == 20) {   // exceptional shift
+                        t += x;
+                        for (std::ptrdiff_t i = 0; i <= nn; ++i)
+                            A(i, i) -= x;
+                        s = std::fabs(A(nn, nn - 1)) +
+                            std::fabs(A(nn - 1, nn - 2));
+                        y = x = 0.75 * s;
+                        w = -0.4375 * s * s;
+                    }
+                    ++its;
+                    ++total_its;
+                    if (total_its > budget) return false;
+                    std::ptrdiff_t m = 0;
+                    for (m = nn - 2; m >= l; --m) {
+                        z = A(m, m);
+                        r = x - z;
+                        s = y - z;
+                        p = (r * s - w) / A(m + 1, m) + A(m, m + 1);
+                        q = A(m + 1, m + 1) - z - r - s;
+                        r = A(m + 2, m + 1);
+                        s = std::fabs(p) + std::fabs(q) + std::fabs(r);
+                        p /= s;
+                        q /= s;
+                        r /= s;
+                        if (m == l) break;
+                        const double u2 = std::fabs(A(m, m - 1)) *
+                                          (std::fabs(q) + std::fabs(r));
+                        const double v2 =
+                            std::fabs(p) *
+                            (std::fabs(A(m - 1, m - 1)) + std::fabs(z) +
+                             std::fabs(A(m + 1, m + 1)));
+                        if (u2 + v2 == v2) break;
+                    }
+                    for (std::ptrdiff_t i = m + 2; i <= nn; ++i) {
+                        A(i, i - 2) = 0.0;
+                        if (i != m + 2) A(i, i - 3) = 0.0;
+                    }
+                    for (std::ptrdiff_t k = m; k <= nn - 1; ++k) {
+                        if (k != m) {
+                            p = A(k, k - 1);
+                            q = A(k + 1, k - 1);
+                            r = (k != nn - 1) ? A(k + 2, k - 1) : 0.0;
+                            x = std::fabs(p) + std::fabs(q) + std::fabs(r);
+                            if (x != 0.0) {
+                                p /= x;
+                                q /= x;
+                                r /= x;
+                            }
+                        }
+                        s = std::sqrt(p * p + q * q + r * r);
+                        if (p < 0.0) s = -s;
+                        if (s == 0.0) continue;
+                        if (k == m) {
+                            if (l != m) A(k, k - 1) = -A(k, k - 1);
+                        } else {
+                            A(k, k - 1) = -s * x;
+                        }
+                        p += s;
+                        x = p / s;
+                        y = q / s;
+                        z = r / s;
+                        q /= p;
+                        r /= p;
+                        for (std::ptrdiff_t j = k; j <= nn; ++j) {
+                            p = A(k, j) + q * A(k + 1, j);
+                            if (k != nn - 1) {
+                                p += r * A(k + 2, j);
+                                A(k + 2, j) -= p * z;
+                            }
+                            A(k + 1, j) -= p * y;
+                            A(k, j) -= p * x;
+                        }
+                        const std::ptrdiff_t mmin =
+                            (nn < k + 3) ? nn : k + 3;
+                        for (std::ptrdiff_t i = l; i <= mmin; ++i) {
+                            p = x * A(i, k) + y * A(i, k + 1);
+                            if (k != nn - 1) {
+                                p += z * A(i, k + 2);
+                                A(i, k + 2) -= p * r;
+                            }
+                            A(i, k + 1) -= p * q;
+                            A(i, k) -= p;
+                        }
+                    }
+                }
+            }
+        } while (l < nn - 1 && nn >= 0);
+    }
+    return true;
 }
 
 }  // namespace core

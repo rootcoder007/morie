@@ -484,7 +484,7 @@ def qjl_decode(signs: I8, norm: float, S: F64) -> F64:
     """
     d = len(signs)
     scale = math.sqrt(math.pi / 2) / d
-    r_hat = scale * (S.T @ signs.astype(np.float64))
+    r_hat = scale * (S.T @ np.asarray(signs))
     # Scale to match the original residual norm
     r_hat_norm = np.linalg.norm(r_hat)
     if r_hat_norm > 1e-15:
@@ -815,26 +815,29 @@ def pack_indices(indices: U8, bits: int) -> bytes:
     bytes
         Packed byte string.
     """
+    vals = [int(v) for v in (indices.tolist()
+                             if hasattr(indices, "tolist") else indices)]
     if bits == 8:
-        return indices.tobytes()
+        return bytes(vals)
 
-    n = len(indices)
+    n = len(vals)
     total_bits = n * bits
     n_bytes = (total_bits + 7) // 8
-    packed = np.zeros(n_bytes, dtype=np.uint8)
+    packed = bytearray(n_bytes)
 
     bit_pos = 0
-    for idx in indices:
+    for idx in vals:
         byte_idx = bit_pos // 8
         bit_offset = bit_pos % 8
         # Spread across at most 2 bytes
-        packed[byte_idx] |= np.uint8((idx & ((1 << bits) - 1)) << bit_offset)
+        packed[byte_idx] |= ((idx & ((1 << bits) - 1))
+                             << bit_offset) & 0xFF
         overflow = bit_offset + bits - 8
         if overflow > 0 and byte_idx + 1 < n_bytes:
-            packed[byte_idx + 1] |= np.uint8(idx >> (bits - overflow))
+            packed[byte_idx + 1] |= (idx >> (bits - overflow)) & 0xFF
         bit_pos += bits
 
-    return packed.tobytes()
+    return bytes(packed)
 
 
 def unpack_indices(data: bytes, bits: int, count: int) -> U8:
@@ -854,23 +857,23 @@ def unpack_indices(data: bytes, bits: int, count: int) -> U8:
     ndarray of uint8
     """
     if bits == 8:
-        return np.frombuffer(data, dtype=np.uint8)[:count].copy()
+        return np.asarray([float(b) for b in data[:count]])
 
-    packed = np.frombuffer(data, dtype=np.uint8)
+    packed = bytes(data)
     mask = (1 << bits) - 1
-    indices = np.empty(count, dtype=np.uint8)
+    out = []
 
     bit_pos = 0
-    for i in range(count):
+    for _ in range(count):
         byte_idx = bit_pos // 8
         bit_offset = bit_pos % 8
-        val = int(packed[byte_idx]) >> bit_offset
+        val = packed[byte_idx] >> bit_offset
         if bit_offset + bits > 8 and byte_idx + 1 < len(packed):
-            val |= int(packed[byte_idx + 1]) << (8 - bit_offset)
-        indices[i] = val & mask
+            val |= packed[byte_idx + 1] << (8 - bit_offset)
+        out.append(float(val & mask))
         bit_pos += bits
 
-    return indices
+    return np.asarray(out)
 
 
 # ---------------------------------------------------------------------------
@@ -964,5 +967,5 @@ def turboquant_mse_outlier_decode(block: TQOutlierBlock) -> F64:
     """Decode an outlier-aware TQ block -- bulk decode then overwrite outliers."""
     out = turboquant_mse_decode(block.bulk)
     if len(block.outlier_indices) > 0:
-        out[block.outlier_indices] = block.outlier_values.astype(np.float64)
+        out[block.outlier_indices] = np.asarray(block.outlier_values)
     return out

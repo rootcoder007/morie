@@ -10,6 +10,8 @@
 #include "morie_core.hpp"
 
 #include <cstdint>
+#include <complex>
+#include <vector>
 
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
@@ -116,6 +118,35 @@ double hawkes_ll_gamma_hybrid(Vec t, double T, double a0, double eta,
         w_soe.data(), beta_soe.data(), w_soe.shape(0));
 }
 
+// Split real/imag variants: callers without a complex128 buffer type
+// (the native array core is float64-only) pass four double arrays.
+// Semantics identical to the CVec forms above.
+double hawkes_ll_soe_cplx_ri(Vec t, double T, double nu, double eta,
+                             Vec w_re, Vec w_im, Vec b_re, Vec b_im) {
+    const std::size_t m = w_re.shape(0);
+    std::vector<std::complex<double>> w(m), b(m);
+    for (std::size_t i = 0; i < m; ++i) {
+        w[i] = {w_re.data()[i], w_im.data()[i]};
+        b[i] = {b_re.data()[i], b_im.data()[i]};
+    }
+    return morie::core::hawkes_ll_soe_cplx(t.data(), t.shape(0), T, nu, eta,
+                                           w.data(), b.data(), m);
+}
+
+double hawkes_ll_gamma_hybrid_ri(Vec t, double T, double a0, double eta,
+                                 double alpha, double beta, double u_split,
+                                 Vec w_re, Vec w_im, Vec b_re, Vec b_im) {
+    const std::size_t m = w_re.shape(0);
+    std::vector<std::complex<double>> w(m), b(m);
+    for (std::size_t i = 0; i < m; ++i) {
+        w[i] = {w_re.data()[i], w_im.data()[i]};
+        b[i] = {b_re.data()[i], b_im.data()[i]};
+    }
+    return morie::core::hawkes_ll_gamma_hybrid(
+        t.data(), t.shape(0), T, a0, eta, alpha, beta, u_split,
+        w.data(), b.data(), m);
+}
+
 }  // namespace
 
 void register_hawkes(nb::module_ &m) {
@@ -184,6 +215,15 @@ void register_hawkes(nb::module_ &m) {
           "matrix-pencil fit; conjugate poles must be passed in pairs "
           "so the likelihood is real. Identical to hawkes_ll_soe for "
           "purely real poles.");
+    m.def("hawkes_ll_soe_cplx_ri", &hawkes_ll_soe_cplx_ri, "t"_a, "T"_a,
+          "nu"_a, "eta"_a, "w_re"_a, "w_im"_a, "b_re"_a, "b_im"_a,
+          "hawkes_ll_soe_cplx with w and beta split into real/imag "
+          "double arrays (for callers without complex128 buffers).");
+    m.def("hawkes_ll_gamma_hybrid_ri", &hawkes_ll_gamma_hybrid_ri, "t"_a,
+          "T"_a, "a0"_a, "eta"_a, "alpha"_a, "beta"_a, "u_split"_a,
+          "w_re"_a, "w_im"_a, "b_re"_a, "b_im"_a,
+          "hawkes_ll_gamma_hybrid with the SoE modes split into "
+          "real/imag double arrays.");
     m.def("hawkes_ll_gamma_hybrid", &hawkes_ll_gamma_hybrid, "t"_a, "T"_a,
           "a0"_a, "eta"_a, "alpha"_a, "beta"_a, "u_split"_a, "w_soe"_a,
           "beta_soe"_a,

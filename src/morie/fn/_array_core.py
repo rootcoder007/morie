@@ -242,6 +242,17 @@ class marr:
             return marr([f[i * m:(i + 1) * m] for i in range(n)])
         raise ValueError("unsupported reshape %r" % (shape,))
 
+    def __int__(self):
+        # without this, int() falls back to the buffer protocol and
+        # tries to parse the raw float64 bytes as a literal
+        return int(self.__float__())
+
+    def __index__(self):
+        v = self.__float__()
+        if v != int(v):
+            raise TypeError("only integer-valued marr can index")
+        return int(v)
+
     def __float__(self):
         f = self._flat()
         if len(f) != 1:
@@ -351,6 +362,15 @@ class marr:
                 self.data[r] = float(value) if vals is None \
                     else float(vals[k if len(vals) > 1 else 0])
         else:
+            if len(self.shape) == 2 and isinstance(idx, int):
+                v = asarray(value)
+                f = v._flat()
+                if len(f) == 1:
+                    f = f * self.shape[1]
+                if len(f) != self.shape[1]:
+                    raise ValueError("row assignment length mismatch")
+                self.data[idx] = [float(x) for x in f]
+                return
             self.data[idx] = float(value)
 
     def __buffer__(self, flags):
@@ -495,7 +515,8 @@ class marr:
         return f.index(_bi.max(f))
 
     # -- reductions ----------------------------------------------------
-    def sum(self, axis=None, keepdims=False):
+    def sum(self, axis=None, dtype=None, out=None, keepdims=False):
+        del dtype, out
         if axis is None:
             v = float(_math.fsum(self._flat()))
             return marr([v]) if keepdims else v
@@ -511,7 +532,8 @@ class marr:
         out = [_math.fsum(row) for row in self.data]
         return marr([[v] for v in out]) if keepdims else marr(out)
 
-    def mean(self, axis=None, keepdims=False):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False):
+        del dtype, out
         if axis is None or len(self.shape) != 2:
             f = self._flat()
             v = float(_math.fsum(f) / len(f))
@@ -524,7 +546,9 @@ class marr:
                 marr([[v] for v in out._flat()])
         return out
 
-    def var(self, axis=None, ddof=0):
+    def var(self, axis=None, dtype=None, out=None, ddof=0,
+            keepdims=False):
+        del dtype, out, keepdims
         if axis is not None and len(self.shape) == 2:
             m = self.mean(axis=axis)
             if axis == 0:
@@ -541,22 +565,52 @@ class marr:
         m = _math.fsum(f) / len(f)
         return float(_math.fsum((v - m) ** 2 for v in f) / (len(f) - ddof))
 
-    def std(self, axis=None, ddof=0):
+    def std(self, axis=None, dtype=None, out=None, ddof=0,
+            keepdims=False):
+        del dtype, out, keepdims
         v = self.var(axis=axis, ddof=ddof)
         if isinstance(v, marr):
             return marr([_math.sqrt(u) for u in v._flat()])
         return _math.sqrt(v)
 
-    def max(self):
+    def max(self, axis=None, out=None, keepdims=False):
+        del out, keepdims
+        if axis is not None and len(self.shape) == 2:
+            if axis in (0, -2):
+                return marr([_bi.max(r[c] for r in self.data)
+                             for c in range(self.shape[1])])
+            return marr([_bi.max(r) for r in self.data])
         return float(_bi.max(self._flat()))
 
-    def min(self):
+    def min(self, axis=None, out=None, keepdims=False):
+        del out, keepdims
+        if axis is not None and len(self.shape) == 2:
+            if axis in (0, -2):
+                return marr([_bi.min(r[c] for r in self.data)
+                             for c in range(self.shape[1])])
+            return marr([_bi.min(r) for r in self.data])
         return float(_bi.min(self._flat()))
 
-    def all(self):
+    def all(self, axis=None, out=None, keepdims=False):
+        del out, keepdims
+        if axis is not None and len(self.shape) == 2:
+            if axis in (0, -2):
+                return self._tag_mask(marr(
+                    [1.0 if _pyall(r[c] for r in self.data) else 0.0
+                     for c in range(self.shape[1])]))
+            return self._tag_mask(marr(
+                [1.0 if _pyall(r) else 0.0 for r in self.data]))
         return _bi.all(v != 0 for v in self._flat())
 
-    def any(self):
+    def any(self, axis=None, out=None, keepdims=False):
+        del out, keepdims
+        if axis is not None and len(self.shape) == 2:
+            if axis in (0, -2):
+                return self._tag_mask(marr(
+                    [1.0 if _pyany(r[c] for r in self.data) else 0.0
+                     for c in range(self.shape[1])]))
+            return self._tag_mask(marr(
+                [1.0 if _pyany(r) else 0.0 for r in self.data]))
         return _bi.any(v != 0 for v in self._flat())
 
     @property
@@ -2419,9 +2473,32 @@ def _cholesky(a):
 
 
 def _svd(a, full_matrices=False, compute_uv=True):
-    """SVD via eigh of A^T A (values) and A A^T (left vectors)."""
+    """SVD. C core: one-sided Jacobi (Demmel & Veselic 1992), high
+    relative accuracy in every singular value. Fallback: eigh of
+    A^T A (accurate only above ~sqrt(eps)*s_max)."""
     del full_matrices
     aa = atleast_2d(a)
+    if _HAS_CORE and hasattr(_CK, "jacobi_svd"):
+        import array as _pa
+        m0, n0 = aa.shape
+        transposed = m0 < n0
+        w0 = aa.T if transposed else aa
+        m, n = w0.shape
+        flat = _pa.array("d", [v for row in w0.data for v in row])
+        u_b, s_b, v_b = _CK.jacobi_svd(flat, m, n)
+        sv = _pa.array("d"); sv.frombytes(s_b)
+        svals = list(sv)
+        if not compute_uv:
+            return marr(svals)
+        ub = _pa.array("d"); ub.frombytes(u_b)
+        vb = _pa.array("d"); vb.frombytes(v_b)
+        u = marr([[ub[r * n + c] / svals[c] if svals[c] > 1e-300 else 0.0
+                   for c in range(n)] for r in range(m)])
+        vt = marr([[vb[r * n + c] for r in range(n)] for c in range(n)])
+        if transposed:
+            # A = (U S V^T)^T of the transpose: swap the factors
+            return vt.T, marr(svals), u.T
+        return u, marr(svals), vt
     ata = matmul(aa.T, aa)
     w, v = _eigh(ata)
     order = sorted(range_(w.shape[0]), key=lambda i: -w.data[i])
