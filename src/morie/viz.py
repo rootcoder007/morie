@@ -1120,7 +1120,7 @@ def residual_diagnostic_plots(
         ax.axhline(0, color="grey", linestyle="--", linewidth=0.8)
         # LOWESS smoother
         try:
-            import statsmodels.api as sm_api
+            from morie.fn import _glm_core as sm_api
 
             lowess = sm_api.nonparametric.lowess(residuals, fitted, frac=0.6)
             ax.plot(lowess[:, 0], lowess[:, 1], color="#d7191c", linewidth=1.2)
@@ -1362,7 +1362,7 @@ def component_residual_plot(
     -------
     matplotlib.figure.Figure
     """
-    import statsmodels.api as sm_api
+    from morie.fn import _glm_core as sm_api
 
     complete = data[[outcome] + covariates].dropna()
     X = sm_api.add_constant(complete[covariates])
@@ -1985,7 +1985,7 @@ def cate_heterogeneity_plot(
             ax.scatter(cov, cate, s=12, alpha=0.4, color="#2c7bb6", edgecolors="none")
             # LOWESS
             try:
-                import statsmodels.api as sm_api
+                from morie.fn import _glm_core as sm_api
 
                 lowess = sm_api.nonparametric.lowess(cate, cov, frac=0.5)
                 ax.plot(lowess[:, 0], lowess[:, 1], color="#d7191c", linewidth=1.5)

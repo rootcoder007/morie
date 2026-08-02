@@ -176,7 +176,7 @@ def changepoint_detection(df: pd.DataFrame, *, year_col: str = "OCC_YEAR", ds_na
 def arima_forecast(df: pd.DataFrame, *, h: int = 12, ds_name: str = "?") -> RichResult:
     """ARIMA(1,1,1) on monthly counts; forecast `h` periods ahead."""
     try:
-        import statsmodels.api as sm
+        from morie.fn import _glm_core as sm
     except ImportError:
         return RichResult(title=f"ARIMA -- {ds_name}", warnings=["statsmodels not installed"])
     # Build monthly time series

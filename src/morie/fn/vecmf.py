@@ -49,7 +49,7 @@ def vecm(Y, k_ar=1, coint_rank=1):
         raise ValueError(f"Need T>=20, k>=2, 1<=rank<=k; got T={T}, k={k}, r={coint_rank}.")
 
     try:
-        from statsmodels.tsa.vector_ar.vecm import VECM
+        from ._ts_core import VECM
 
         m = VECM(Y, k_ar_diff=k_ar, coint_rank=coint_rank, deterministic="ci")
         fit = m.fit()
