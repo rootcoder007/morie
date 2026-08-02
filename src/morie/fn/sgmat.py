@@ -29,7 +29,7 @@ def matern_variogram(h, nugget, sill, range_param, nu=1.5):
     """
     from morie.fn import _array_core as np
     from ._sci_core import gamma as gamma_fn
-    from scipy.special import kv
+    from ._sci_core import kv
 
     h = np.asarray(h, dtype=np.float64)
     scaled = np.sqrt(2 * nu) * h / range_param

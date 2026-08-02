@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.linalg import cholesky, solve_triangular
+from ._sci_core import cholesky, solve_triangular
 from ._sci_core import minimize
 
 from ._containers import SpatialResult

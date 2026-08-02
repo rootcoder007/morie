@@ -46,7 +46,7 @@ def chflt(
     -------
     SignalResult
     """
-    from scipy.signal import cheby1, sosfiltfilt
+    from ._signal_core import cheby1, sosfiltfilt
 
     x = np.asarray(x, dtype=float).ravel()
     nyq = fs / 2.0

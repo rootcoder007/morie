@@ -46,7 +46,7 @@ def nonlinear_least_squares_surv(time, event, model="weibull", t_grid=None):
         ``fitted``, ``km``, ``valid_for_inference`` (False), ``n``,
         ``method``.
     """
-    from scipy import optimize
+    from ._sci_core import optimize
 
     tv = np.asarray(time, dtype=float).ravel()
     ev = np.asarray(event, dtype=float).ravel()

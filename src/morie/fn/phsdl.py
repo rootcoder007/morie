@@ -26,7 +26,7 @@ def phase_delay(b, a, worN: int = 512) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import freqz
+    from ._signal_core import freqz
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)

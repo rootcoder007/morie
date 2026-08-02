@@ -26,7 +26,7 @@ def group_delay(b, a, worN: int = 512) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import group_delay as _gd
+    from ._signal_core import group_delay as _gd
 
     b = np.asarray(b, dtype=float)
     a = np.asarray(a, dtype=float)

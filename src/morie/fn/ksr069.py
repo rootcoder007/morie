@@ -54,7 +54,7 @@ def kosorok_ch3_cox_likelihood_breslow(beta, Lambda, Z, V, d, n=None):
     Breslow, N. E. (1972). Discussion of Professor Cox's paper.
     *Journal of the Royal Statistical Society B*, 34(2), 216-217.
     """
-    from scipy import optimize
+    from ._sci_core import optimize
 
     Z = np.asarray(Z, dtype=float)
     if Z.ndim == 1:

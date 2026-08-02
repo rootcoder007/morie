@@ -38,7 +38,7 @@ def holo_qq(
         print("holo_qq requires matplotlib. Install via: pip install matplotlib")
         return None
     try:
-        from scipy import stats as sp_stats
+        from . import _stats_core as sp_stats
     except ImportError:
         print("holo_qq requires scipy. Install via: pip install scipy")
         return None

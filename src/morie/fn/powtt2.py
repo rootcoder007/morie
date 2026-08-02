@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Power for two-sample t-test with R-style verbose result."""
 
-from scipy.stats import nct
+from ._stats_core import nct
 from ._stats_core import t as _t
 
 

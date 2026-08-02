@@ -30,7 +30,7 @@ def bilinear_transform(b_s, a_s, fs) -> DescriptiveResult:
     -------
     DescriptiveResult
     """
-    from scipy.signal import bilinear
+    from ._signal_core import bilinear
 
     b_s = np.asarray(b_s, dtype=float)
     a_s = np.asarray(a_s, dtype=float)

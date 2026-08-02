@@ -33,7 +33,7 @@ def notch_filter(x, freq, Q: float = 30.0, fs: float = 1.0) -> SignalResult:
     -------
     SignalResult
     """
-    from scipy.signal import filtfilt, iirnotch
+    from ._signal_core import filtfilt, iirnotch
 
     x = np.asarray(x, dtype=float)
     w0 = float(freq) / (fs / 2.0)

@@ -85,7 +85,7 @@ def schabenberger_bessel_function(x, nu=0.5):
     Spatial Data Analysis. Chapman & Hall/CRC. Sec. 4.9.2, eq. (4.73),
     p. 210.
     """
-    from scipy.special import kv
+    from ._sci_core import kv
 
     t = np.atleast_1d(np.asarray(x, dtype=float))
     if np.any(t <= 0):

@@ -34,7 +34,7 @@ def chebyshev2_filter(x, cutoff, fs, order: int = 4, rs: float = 40.0) -> Signal
     -------
     SignalResult
     """
-    from scipy.signal import cheby2, sosfiltfilt
+    from ._signal_core import cheby2, sosfiltfilt
 
     x = np.asarray(x, dtype=float)
     Wn = float(cutoff) / (fs / 2.0)

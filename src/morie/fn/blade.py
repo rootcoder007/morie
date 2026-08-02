@@ -49,7 +49,7 @@ def edge_detect(
     kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
     kernel /= kernel.sum()
 
-    from scipy.signal import convolve2d
+    from ._signal_core import convolve2d
 
     smoothed = convolve2d(img, kernel, mode="same", boundary="symm")
 

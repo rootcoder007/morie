@@ -55,7 +55,7 @@ def kosorok_ch3_cox_partial_likelihood(beta, Z, V, d, n=None):
     Cox, D. R. (1972). Regression models and life-tables. *Journal of
     the Royal Statistical Society B*, 34(2), 187-202.
     """
-    from scipy import optimize
+    from ._sci_core import optimize
 
     Z = np.asarray(Z, dtype=float)
     if Z.ndim == 1:
