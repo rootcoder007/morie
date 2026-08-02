@@ -272,6 +272,17 @@ class marr:
     def ravel(self):
         return marr(self._flat())
 
+    def squeeze(self, axis=None):
+        del axis
+        if len(self.shape) == 2:
+            if self.shape[0] == 1:
+                return marr(self.data[0][:])
+            if self.shape[1] == 1:
+                return marr([row[0] for row in self.data])
+        if self.shape == (1,):
+            return self.data[0]
+        return marr(self)
+
     def copy(self):
         return marr(self)
 
@@ -1147,6 +1158,18 @@ def where(cond, a=None, b=None):
                       for cc in range(c.shape[1])]
                      for r in range(c.shape[0])])
     aa, bb = asarray(a), asarray(b)
+    if isinstance(aa, oarr) or isinstance(bb, oarr) or \
+            isinstance(a, str) or isinstance(b, str):
+        # object branches (e.g. np.where(p < .05, "*", ""))
+        av = None if isinstance(a, str) else (
+            list(aa) if isinstance(aa, oarr) else None)
+        bv = None if isinstance(b, str) else (
+            list(bb) if isinstance(bb, oarr) else None)
+        n = c.shape[0]
+        return oarr([(av[i] if av is not None else a)
+                     if c.data[i] != 0 else
+                     (bv[i] if bv is not None else b)
+                     for i in range(n)])
     if aa.shape == (1,):
         aa = full(c.shape[0], aa.data[0])
     if bb.shape == (1,):
