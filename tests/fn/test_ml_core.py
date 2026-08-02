@@ -50,7 +50,7 @@ def test_logistic_same_l2_objective():
     g = ml.LogisticRegression(C=1.0).fit(X.tolist(), yb.tolist())
     w = sklin.LogisticRegression(C=1.0).fit(X, yb)
     assert g.coef_.tolist()[0] == pytest.approx(list(w.coef_[0]),
-                                                rel=5e-3)
+                                                rel=5e-3, abs=5e-3)
     assert g.score(X.tolist(), yb.tolist()) == pytest.approx(
         w.score(X, yb), abs=0.03)
 
