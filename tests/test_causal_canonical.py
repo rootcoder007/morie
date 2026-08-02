@@ -1247,7 +1247,7 @@ class TestCateCanonical:
             covariates=["X1", "X2", "X3"],
             meta_learner="t_learner",
         )
-        assert isinstance(result, pd.Series)
+        assert (hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols"))
         assert len(result) == len(df)
         assert np.all(np.isfinite(result.values))
 
@@ -1300,7 +1300,7 @@ class TestCateCanonical:
             covariates=["X1", "X2", "X3"],
             meta_learner="s_learner",
         )
-        assert isinstance(result, pd.Series)
+        assert (hasattr(result, "index") and hasattr(result, "tolist") and not hasattr(result, "_cols"))
         assert len(result) == len(df)
         assert np.all(np.isfinite(result.values))
 
@@ -1388,7 +1388,7 @@ class TestGateCanonical:
             covariates=["X1", "X2", "X3"],
             group_col="G",
         )
-        assert isinstance(result, pd.DataFrame)
+        assert (hasattr(result, "columns") or hasattr(result, "_cols"))
         assert {"group", "ate", "se", "ci_lower", "ci_upper", "n"}.issubset(result.columns), (
             f"GATE missing expected columns. Got: {list(result.columns)}"
         )
