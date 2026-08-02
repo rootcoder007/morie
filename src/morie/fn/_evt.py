@@ -79,7 +79,7 @@ def gev_from_lmoments(l1, l2, t3):
     xi. Heavy tails mean k < 0 and xi > 0; conflating the two flips
     every Frechet into a Weibull, so both are returned and named.
     """
-    from scipy.special import gamma as G
+    from ._sci_core import gamma as G
 
     c = 2.0 / (3.0 + t3) - np.log(2) / np.log(3)
     k = 7.8590 * c + 2.9554 * c ** 2

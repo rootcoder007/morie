@@ -1142,7 +1142,7 @@ def cjr_irt(
     :param burn_in: Burn-in.
     :return: dict with ideal_point_chain, alpha_chain, beta_chain, posteriors.
     """
-    from scipy.stats import norm
+    from morie.fn._stats_core import norm
 
     votes = np.asarray(votes, dtype=float)
     n_leg, n_vote = votes.shape
@@ -1256,7 +1256,7 @@ def bayesian_irt_likelihood(
     :param beta: (n_votes x n_dims) discrimination parameters.
     :return: dict with loglik, vote_probs, n_correct.
     """
-    from scipy.stats import norm
+    from morie.fn._stats_core import norm
 
     votes = np.asarray(votes, dtype=float)
     x = np.asarray(x, dtype=float)
@@ -1685,7 +1685,7 @@ def dw_nominate(
     :param tol: Convergence tolerance.
     :return: dict with ideal_points, dim_weights, normal_vectors, cutpoints, log_lik, gmp.
     """
-    from scipy.stats import norm as normal_dist
+    from morie.fn._stats_core import norm as normal_dist
 
     votes = np.asarray(votes, dtype=float)
     n_leg, n_votes = votes.shape
@@ -1975,7 +1975,7 @@ def ordinal_irt(
     :param seed: Random seed.
     :return: dict with ideal_points, discrimination, cutpoints, log_lik.
     """
-    from scipy.stats import norm as ndist
+    from morie.fn._stats_core import norm as ndist
 
     Y = np.asarray(Y, dtype=float)
     n, m = Y.shape

@@ -31,7 +31,7 @@ __all__ = ["preprocess_eeg", "preprocess_fmri"]
 
 def _scipy_signal():
     try:
-        import scipy.signal as sps  # type: ignore
+        from morie.fn._signal_core import signal as sps
 
         return sps
     except Exception:

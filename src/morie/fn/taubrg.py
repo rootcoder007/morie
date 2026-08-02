@@ -56,7 +56,8 @@ def tau_regression(X, y, n_subsets=200, seed=0, c1=1.5476, c2=6.08):
     estimates of regression by means of the minimization of an
     efficient scale", *JASA* 83:406-413, Secs. 2 and 4.
     """
-    from scipy import integrate, stats
+    from ._sci_core import integrate
+    from . import _stats_core as stats
 
     from ._robust import prepare_design, s_scale, tukey_rho, tukey_weight
 

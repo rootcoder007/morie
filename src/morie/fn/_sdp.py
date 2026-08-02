@@ -32,7 +32,7 @@ def _min_eig(F0, Fs, x):
 def _strictly_feasible(F0, Fs, x0, margin):
     """Phase I: any x with F(x) > 0, or None if none was found."""
     n = len(Fs)
-    from scipy.optimize import minimize
+    from ._sci_core import minimize
 
     starts = []
     if x0 is not None:

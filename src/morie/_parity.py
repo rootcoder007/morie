@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from ._migration import scan_directory
 

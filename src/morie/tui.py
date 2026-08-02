@@ -1046,13 +1046,7 @@ if _TEXTUAL_AVAILABLE:
                 log.write("[bold cyan]Version Info[/bold cyan]")
                 log.write(f"  morie: {morie.__version__}")
                 log.write(f"  Python: {sys.version.split()[0]}")
-                import numpy
-                from morie.fn import _frame_core as pandas
-                import scipy
-
-                log.write(f"  pandas: {pandas.__version__}")
-                log.write(f"  numpy: {numpy.__version__}")
-                log.write(f"  scipy: {scipy.__version__}")
+                log.write("  arrays/frames/stats: morie native cores")
                 from .llm import detect_provider_and_model
 
                 _, model_label = detect_provider_and_model()
@@ -2618,11 +2612,10 @@ if _TEXTUAL_AVAILABLE:
                 print(f"  Python: {sys.version.split()[0]}")
                 import numpy
                 from morie.fn import _frame_core as pandas
-                import scipy
 
                 print(f"  pandas: {pandas.__version__}")
                 print(f"  numpy: {numpy.__version__}")
-                print(f"  scipy: {scipy.__version__}")
+                print("  arrays/frames/stats: morie native cores")
 
             # --- Survival analysis helpers ---
 

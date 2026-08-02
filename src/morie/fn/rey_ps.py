@@ -5,7 +5,8 @@ from __future__ import annotations
 
 from . import _array_core as np
 from . import _frame_core as pd
-from scipy import optimize, stats
+from ._sci_core import optimize
+from . import _stats_core as stats
 from ._sci_core import gammaln
 
 from ._containers import RegressionResult

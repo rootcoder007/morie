@@ -262,7 +262,7 @@ def optimize_scale_normalized(objective, d, n_restarts=8, seed=0, x0=None):
     ``objective`` is always MINIMISED, so callers maximising a score
     pass its negation.
     """
-    from scipy import optimize as _opt
+    from ._sci_core import optimize as _opt
 
     d = int(d)
     if d < 2:

@@ -37,7 +37,7 @@ def kernel_W(u):
     :math:`h^2\\mu_2(K)f'(x)/2` rather than the density estimator's
     :math:`f''`.
     """
-    from scipy import stats
+    from . import _stats_core as stats
     return stats.norm.cdf(np.asarray(u, dtype=float))
 
 
@@ -72,7 +72,7 @@ def gamma_kernel_density(x, grid, h):
     symmetric kernel simply does not arise -- the estimator is
     consistent at zero, where a Gaussian-kernel estimate is not.
     """
-    from scipy import stats
+    from . import _stats_core as stats
 
     xv = np.asarray(x, dtype=float).ravel()
     g = np.atleast_1d(np.asarray(grid, dtype=float))

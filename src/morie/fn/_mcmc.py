@@ -68,7 +68,7 @@ def ess_from_chains(chains):
 
 def rank_normalize(C):
     """Rank-normalise pooled draws, then map back to the normal scale."""
-    from scipy.stats import norm
+    from ._stats_core import norm
 
     flat = C.ravel()
     ranks = np.argsort(np.argsort(flat, kind="stable"), kind="stable") + 1

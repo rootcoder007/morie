@@ -2,7 +2,8 @@
 """EGARCH with a skewed generalized-error distribution."""
 
 from . import _array_core as np
-from scipy import optimize, special
+from ._sci_core import optimize
+from ._sci_core import special
 
 from ._garch import garch_fit
 from ._richresult import RichResult

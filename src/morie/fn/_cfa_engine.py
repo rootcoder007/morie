@@ -14,7 +14,7 @@ Hu, L. & Bentler, P.M. (1999). Cutoff criteria for fit indexes.
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy.optimize import minimize
+from ._sci_core import minimize
 
 
 def _implied_cov(lam: np.ndarray, phi: np.ndarray, theta: np.ndarray) -> np.ndarray:
@@ -143,7 +143,7 @@ def fit_cfa(S: np.ndarray, n: int, structure: dict[str, list[int]], p: int, *, m
     aic = chi2 + 2 * n_free
     bic = chi2 + np.log(n) * n_free
 
-    from scipy import stats as sp
+    from . import _stats_core as sp
 
     p_value = float(1 - sp.chi2.cdf(chi2, df)) if df > 0 else 1.0
 
@@ -245,7 +245,7 @@ def get_mapq_structure(items: list[str] | None = None) -> tuple[dict[str, list[s
 
 def cov_from_data(data, item_names: list[str]) -> tuple[np.ndarray, int]:
     """Extract covariance matrix and sample size from data."""
-    import pandas as pd
+    from . import _frame_core as pd
 
     if isinstance(data, pd.DataFrame):
         X = data[item_names].to_numpy(dtype=np.float64)

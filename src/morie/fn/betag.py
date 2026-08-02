@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import optimize, special
+from ._sci_core import optimize
+from ._sci_core import special
 from . import _stats_core as _st
 
 from ._containers import RegressionResult

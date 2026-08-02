@@ -2,7 +2,8 @@
 """Heteroskedastic IRT: per-legislator predictability (Lauderdale 2010)."""
 
 from . import _array_core as np
-from scipy import optimize, stats
+from ._sci_core import optimize
+from . import _stats_core as stats
 
 from ._richresult import RichResult
 

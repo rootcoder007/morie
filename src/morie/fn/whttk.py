@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from . import _array_core as np
-from scipy import sparse
-from ._sci_core import spsolve
 
 from ._containers import DescriptiveResult
 
@@ -38,13 +36,15 @@ def whittaker_smooth(
         raise ValueError(f"lambda_ must be > 0, got {lambda_}.")
 
     n = len(y)
-    I = sparse.eye(n, format="csc")
-    D = sparse.eye(n, format="csc")
+    # d-th order difference matrix rows, built as dense lists
+    D = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     for _ in range(d):
-        D = D[1:, :] - D[:-1, :]
-
-    W = I + lambda_ * D.T @ D
-    z = spsolve(W, y)
+        D = [[D[i + 1][j] - D[i][j] for j in range(n)]
+             for i in range(len(D) - 1)]
+    W = [[(1.0 if i == j else 0.0)
+          + lambda_ * sum(D[r][i] * D[r][j] for r in range(len(D)))
+          for j in range(n)] for i in range(n)]
+    z = np.linalg.solve(np.asarray(W), y)
 
     residual = y - z
     rmse = float(np.sqrt(np.mean(residual**2)))

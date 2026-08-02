@@ -265,7 +265,7 @@ def smoothed_pseudo_wvd(
     t_smooth: int = 11,
     f_smooth: int = 11,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    from scipy.signal import windows
+    from morie.fn._signal_core import windows
 
     n = len(x)
     analytic = np.fft.ifft(np.fft.fft(x) * (2 * (np.arange(n) < n // 2)))
