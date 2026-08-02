@@ -1,6 +1,6 @@
 """Tests for gh_c13_4.ghosal_bp_discrete."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c13_4 import ghosal_bp_discrete
 

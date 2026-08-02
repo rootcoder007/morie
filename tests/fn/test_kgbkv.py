@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgbkv -- Block kriging variance"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgbkv import bk_variance
 

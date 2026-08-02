@@ -1,6 +1,6 @@
 """Tests for morie.fn.msjck -- MDS jackknife stability"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msjck import mds_jackknife
 

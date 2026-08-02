@@ -11,7 +11,7 @@ corrects .632 when the rule overfits. Each step is tested as the step
 it is, on the book's own worked numbers where it gives them.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._esl import (BOOTSTRAP_INCLUSION_LIMIT, default_mtry,

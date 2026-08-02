@@ -1,6 +1,6 @@
 """Tests for morie.fn.sird -- SIR compartmental model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sird import sir_model

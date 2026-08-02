@@ -1,6 +1,6 @@
 """Test srsdm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.srsdm import srsdm
 

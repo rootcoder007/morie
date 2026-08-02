@@ -1,7 +1,7 @@
 """Tests for morie.fn.eac_ipw — eBAC selection-adjusted IPW analysis."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.eac_ipw import run_ebac_selection_ipw_analysis

@@ -1,6 +1,6 @@
 """Tests for rgwblkm.rangayyan_blackman_window."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgwblkm import rangayyan_blackman_window
 

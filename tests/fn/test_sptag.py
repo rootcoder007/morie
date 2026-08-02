@@ -5,7 +5,7 @@ p.88 -- verified against the PDF. The module previously cited "Armstrong
 Ch 8"; that book has six chapters.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sptag import spatial_agreement as sa

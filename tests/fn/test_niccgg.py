@@ -1,6 +1,6 @@
 """Tests for niccgg.nakagawa_marginal_r2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.niccgg import nakagawa_marginal_r2
 

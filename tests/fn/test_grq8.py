@@ -1,6 +1,6 @@
 """Tests for grq8.geron_int8_quantization."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grq8 import geron_int8_quantization
 

@@ -1,6 +1,6 @@
 """Tests for rng199.rangayyan_ch4_correlation_coefficient_normalized_dot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng199 import rangayyan_ch4_correlation_coefficient_normalized_dot
 

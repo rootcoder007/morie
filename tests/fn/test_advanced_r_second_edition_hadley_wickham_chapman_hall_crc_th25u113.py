@@ -1,6 +1,6 @@
 """Tests for advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th25u113.advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th_chapter_25_unnumbered_113."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th25u113 import (
     advanced_r_second_edition_hadley_wickham_chapman_hall_crc_th_chapter_25_unnumbered_113,

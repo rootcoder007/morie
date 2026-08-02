@@ -1,6 +1,6 @@
 """Tests for rgvagadp.rangayyan_vag_adaptive_tfd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgvagadp import rangayyan_vag_adaptive_tfd
 

@@ -1,6 +1,6 @@
 """Tests for svmsl.svm_soft_margin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svmsl import svm_soft_margin
 

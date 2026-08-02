@@ -1,6 +1,6 @@
 """Test gh2sf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh2sf import gh2sf
 

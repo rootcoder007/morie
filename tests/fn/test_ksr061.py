@@ -1,6 +1,6 @@
 """Tests for ksr061 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr061 import kosorok_ch3_differentiable_quadratic_mean

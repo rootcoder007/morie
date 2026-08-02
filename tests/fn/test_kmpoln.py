@@ -1,6 +1,6 @@
 """Tests for kmpoln.kamath_post_ln_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmpoln import kamath_post_ln_transformer
 

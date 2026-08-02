@@ -1,6 +1,6 @@
 """Tests for gb733.gibbons_linrank_covariance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb733 import gibbons_linrank_covariance
 

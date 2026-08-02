@@ -1,6 +1,6 @@
 """Tests for bayslo.bayes_lasso."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayslo import bayes_lasso
 

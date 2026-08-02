@@ -1,6 +1,6 @@
 """Tests for cluseq.sequence_clustering."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cluseq import sequence_clustering
 

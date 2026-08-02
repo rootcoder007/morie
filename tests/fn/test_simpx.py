@@ -1,6 +1,6 @@
 """Tests for morie.fn.simpx -- Simplex method."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.simpx import simplex_lp, simpx

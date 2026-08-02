@@ -1,6 +1,6 @@
 """Tests for kmbrad.kamath_bradley_terry_preference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmbrad import kamath_bradley_terry_preference
 

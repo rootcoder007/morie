@@ -1,6 +1,6 @@
 """Tests for gb5417.gibbons_sign_median_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb5417 import gibbons_sign_median_ci
 

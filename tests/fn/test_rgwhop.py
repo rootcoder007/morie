@@ -1,6 +1,6 @@
 """Tests for rgwhop.rangayyan_wiener_hopf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgwhop import rangayyan_wiener_hopf
 

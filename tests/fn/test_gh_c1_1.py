@@ -1,6 +1,6 @@
 """Tests for gh_c1_1.ghosal_bayes_rule_infinite."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c1_1 import ghosal_bayes_rule_infinite
 

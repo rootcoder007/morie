@@ -1,6 +1,6 @@
 """Tests for grstae.geron_stacked_autoencoder."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grstae import geron_stacked_autoencoder
 

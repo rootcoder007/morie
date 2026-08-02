@@ -1,6 +1,6 @@
 """Tests for cvxsmh.boyd_smooth_huber_grad."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxsmh import boyd_smooth_huber_grad
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.logls -- Log loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.logls import log_loss

@@ -1,6 +1,6 @@
 """Tests for rng125.rangayyan_ch3_butterworth_pole_positions."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng125 import rangayyan_ch3_butterworth_pole_positions
 

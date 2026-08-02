@@ -1,6 +1,6 @@
 """Tests for hmpe.geron_positional_encoding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmpe import geron_positional_encoding
 

@@ -1,6 +1,6 @@
 """Tests for rgcepsp.rangayyan_cepstrum_pitch."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgcepsp import rangayyan_cepstrum_pitch
 

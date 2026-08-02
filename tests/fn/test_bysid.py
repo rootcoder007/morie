@@ -4,7 +4,7 @@ Armstrong et al., Ch 5 / Ch 6 (Unfolding Analysis of Binary Choice Data,
 printed p.129; Bayesian Scaling Models, p.181).
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bysid import bayesian_ideal_points as bip

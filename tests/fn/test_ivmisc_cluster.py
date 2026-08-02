@@ -2,7 +2,7 @@
 plcbo, causftbl, clstcr, shrtgr, causshap, abdpd, counRS, bnscrd,
 causrho, msmiv2, msmphr, fciag, deciA."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.abdpd import abduction_modification_prediction

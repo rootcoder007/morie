@@ -1,6 +1,6 @@
 """Tests for bivand201310e3.bivand2013_chapter_10_equation_3."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bivand201310e3 import bivand2013_chapter_10_equation_3
 

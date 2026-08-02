@@ -1,6 +1,6 @@
 """Tests for vargm.empirical_variogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vargm import empirical_variogram
 

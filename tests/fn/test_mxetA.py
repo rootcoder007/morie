@@ -1,6 +1,6 @@
 """Tests for mxetA.max_exceedance_curve."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mxetA import max_exceedance_curve
 

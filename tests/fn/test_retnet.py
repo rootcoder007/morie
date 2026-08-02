@@ -1,6 +1,6 @@
 """Tests for retnet.retnet_retention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.retnet import retnet_retention
 

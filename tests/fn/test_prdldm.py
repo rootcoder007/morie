@@ -1,6 +1,6 @@
 """Tests for prdldm.prox_method."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prdldm import prox_method
 

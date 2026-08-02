@@ -1,6 +1,6 @@
 """Tests for grswin.geron_swin_window_attention."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grswin import geron_swin_window_attention
 

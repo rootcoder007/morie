@@ -1,6 +1,6 @@
 """Tests for copynm.copy_number_variant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.copynm import copy_number_variant
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxcmn -- Spatial circular mean"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxcmn import circular_mean_sp
 

@@ -1,6 +1,6 @@
 """Tests for rgpcgmrm.rangayyan_pcg_murmur_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpcgmrm import rangayyan_pcg_murmur_detect
 

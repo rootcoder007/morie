@@ -5,7 +5,7 @@ reference: the Q_t recursion with a + b < 1, and R_t obtained by
 rescaling Q_t to unit diagonal.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dccmd import dcc_multivariate_garch

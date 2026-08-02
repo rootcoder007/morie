@@ -1,6 +1,6 @@
 """Tests for rgeegrhm.rangayyan_eeg_rhythm_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeegrhm import rangayyan_eeg_rhythm_detect
 

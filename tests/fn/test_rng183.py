@@ -1,6 +1,6 @@
 """Tests for rng183.rangayyan_ch4_pan_tompkins_highpass_lp_component."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng183 import rangayyan_ch4_pan_tompkins_highpass_lp_component
 

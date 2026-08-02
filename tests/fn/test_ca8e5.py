@@ -1,6 +1,6 @@
 """Tests for ca8e5.ca_chapter_8_equation_5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ca8e5 import ca_chapter_8_equation_5
 

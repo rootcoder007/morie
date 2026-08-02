@@ -1,6 +1,6 @@
 """Tests for km072.kamath_ch5_bradley_terry_pref."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km072 import kamath_ch5_bradley_terry_pref
 

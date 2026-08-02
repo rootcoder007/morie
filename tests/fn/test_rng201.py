@@ -1,6 +1,6 @@
 """Tests for rng201.rangayyan_ch4_ccf_continuous_with_delay."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng201 import rangayyan_ch4_ccf_continuous_with_delay
 

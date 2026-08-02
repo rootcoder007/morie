@@ -5,9 +5,9 @@ Pearson statistic by the ordinary (o - e)^2 / e route, and against the
 identities the correspondence-analysis construction guarantees.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.aitcsq import compositional_chisq
 

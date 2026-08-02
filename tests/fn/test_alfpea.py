@@ -1,6 +1,6 @@
 """Tests for alfpea.alphafold_pae_predict."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfpea import alphafold_pae_predict
 

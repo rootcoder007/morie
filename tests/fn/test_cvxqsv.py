@@ -1,6 +1,6 @@
 """Tests for cvxqsv.boyd_qcqp_relaxation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxqsv import boyd_qcqp_relaxation
 

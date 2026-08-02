@@ -1,6 +1,6 @@
 """Tests for morie.fn.stide — Spatio-temporal IDE model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.stide import stide

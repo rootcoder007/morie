@@ -1,6 +1,6 @@
 """Tests for morie.fn.cusum — CUSUM change detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cusum import cusum
 

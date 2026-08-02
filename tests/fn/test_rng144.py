@@ -1,6 +1,6 @@
 """Tests for rng144.rangayyan_ch3_mse_gradient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng144 import rangayyan_ch3_mse_gradient
 

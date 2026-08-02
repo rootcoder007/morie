@@ -1,6 +1,6 @@
 """Tests for esllar.esl_least_angle_reg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esllar import esl_least_angle_reg
 

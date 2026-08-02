@@ -1,6 +1,6 @@
 """Tests for rng130.rangayyan_ch3_bilinear_warping_Omega_to_omega."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng130 import rangayyan_ch3_bilinear_warping_Omega_to_omega
 

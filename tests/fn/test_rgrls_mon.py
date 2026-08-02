@@ -1,6 +1,6 @@
 """Tests for rgrls_mon.rangayyan_rls_monitor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgrls_mon import rangayyan_rls_monitor
 

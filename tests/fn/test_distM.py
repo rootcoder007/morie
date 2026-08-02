@@ -1,6 +1,6 @@
 """Tests for distM.distmult."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.distM import distmult
 

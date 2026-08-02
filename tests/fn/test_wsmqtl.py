@@ -1,6 +1,6 @@
 """Tests for wsmqtl.wasserman_empirical_quantile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmqtl import wasserman_empirical_quantile
 

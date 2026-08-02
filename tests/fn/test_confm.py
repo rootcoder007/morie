@@ -1,6 +1,6 @@
 """Tests for confm.confusion_matrix_metrics."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.confm import confusion_matrix_metrics

@@ -1,6 +1,6 @@
 """Tests for morie.fn.prohv -- Prohorov metric."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.prohv import prohorov_metric

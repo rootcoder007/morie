@@ -1,9 +1,9 @@
 """Tests for hsirt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
-from scipy.stats import norm
+from morie.fn._stats_core import norm
 
 from morie.fn.hsirt import heteroskedastic_irt
 

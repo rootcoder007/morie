@@ -1,6 +1,6 @@
 """Tests for gb_sp2 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_sp2 import gibbons_spearman_exact

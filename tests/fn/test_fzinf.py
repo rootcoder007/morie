@@ -1,6 +1,6 @@
 """Tests for morie.fn.fzinf -- Mamdani fuzzy inference (Mamdani & Assilian 1975)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.fzinf import fzinf

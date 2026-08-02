@@ -1,6 +1,6 @@
 """Tests for rgeqn10a.rangayyan_ch10_cost_matrix."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn10a import rangayyan_ch10_cost_matrix
 

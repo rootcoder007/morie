@@ -1,6 +1,6 @@
 """Tests for morie.fn.curei — Mixture cure model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.curei import cure_model

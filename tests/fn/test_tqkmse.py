@@ -1,6 +1,6 @@
 """Tests for tqkmse.turboquant_kv_mse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqkmse import turboquant_kv_mse
 

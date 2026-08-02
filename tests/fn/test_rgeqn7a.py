@@ -1,6 +1,6 @@
 """Tests for rgeqn7a.rangayyan_ch7_ar_prediction_err."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn7a import rangayyan_ch7_ar_prediction_err
 

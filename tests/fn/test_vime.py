@@ -1,6 +1,6 @@
 """Tests for vime.empirical_orthogonal_func."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vime import empirical_orthogonal_func
 

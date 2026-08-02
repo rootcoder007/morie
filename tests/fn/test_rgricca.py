@@ -1,6 +1,6 @@
 """Tests for rgricca.rangayyan_riccati_eq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgricca import rangayyan_riccati_eq
 

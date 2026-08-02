@@ -1,6 +1,6 @@
 """Tests for rgeqn9a.rangayyan_ch9_pca_reconstruction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn9a import rangayyan_ch9_pca_reconstruction
 

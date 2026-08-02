@@ -12,7 +12,7 @@ Deterministic data only -- explicit lists, or the reference LCG
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gredsq import geron_encoder_decoder_seq2seq

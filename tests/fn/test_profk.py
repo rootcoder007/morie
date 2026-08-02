@@ -1,6 +1,6 @@
 """Tests for morie.fn.profk — Profile likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.profk import profk

@@ -1,6 +1,6 @@
 """Test gcn2o."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gcn2o import gcn2o
 

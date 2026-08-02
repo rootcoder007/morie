@@ -1,6 +1,6 @@
 """Tests for mtr2sx.sex_specific_mr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mtr2sx import sex_specific_mr
 

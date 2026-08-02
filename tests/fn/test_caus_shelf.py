@@ -10,7 +10,7 @@ removes the regularisation bias, and the Sun-Abraham weights must be
 shares where the two-way fixed-effects weights are not.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._caus_iv import first_stage_f, k_class

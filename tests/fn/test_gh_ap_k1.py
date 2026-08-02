@@ -1,6 +1,6 @@
 """Tests for gh_ap_k1.ghosal_fano_ineq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_k1 import ghosal_fano_ineq
 

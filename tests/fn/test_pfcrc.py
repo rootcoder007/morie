@@ -1,6 +1,6 @@
 """Tests for morie.fn.pfcrc -- preference circles."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pfcrc import pfcrc, preference_circles
 

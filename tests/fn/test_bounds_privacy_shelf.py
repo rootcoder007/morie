@@ -7,7 +7,7 @@ Hirano and Porter (2009) *Econometrica* 77:1683-1701.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bnsadm import (

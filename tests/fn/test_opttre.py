@@ -1,6 +1,6 @@
 """Tests for opttre.optimal_tree_regime."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.opttre import optimal_tree_regime
 

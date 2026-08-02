@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgrng -- Effective range estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgrng import range_est
 

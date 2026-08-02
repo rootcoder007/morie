@@ -1,6 +1,6 @@
 """Tests for causmnde.causal_natural_decomposition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.causmnde import causal_natural_decomposition
 

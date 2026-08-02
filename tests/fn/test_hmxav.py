@@ -1,6 +1,6 @@
 """Tests for hmxav.geron_glorot_init."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmxav import geron_glorot_init
 

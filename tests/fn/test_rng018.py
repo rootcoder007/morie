@@ -1,6 +1,6 @@
 """Tests for rng018.rangayyan_ch3_ensemble_average_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng018 import rangayyan_ch3_ensemble_average_function
 

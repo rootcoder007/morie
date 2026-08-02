@@ -1,6 +1,6 @@
 """Tests for ksr027 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr027 import kosorok_ch2_law_large_numbers_pointwise

@@ -1,6 +1,6 @@
 """Tests for rglindsep.rangayyan_lin_discr_sep."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rglindsep import rangayyan_lin_discr_sep
 

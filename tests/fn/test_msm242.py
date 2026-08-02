@@ -1,6 +1,6 @@
 """Tests for msm242.mvsml_preprocessing_eq_2_3."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm242 import mvsml_preprocessing_eq_2_3
 

@@ -1,6 +1,6 @@
 """Tests for grfim.geron_feature_importance_mdi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grfim import geron_feature_importance_mdi
 

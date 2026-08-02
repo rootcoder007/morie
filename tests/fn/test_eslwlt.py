@@ -1,6 +1,6 @@
 """Tests for eslwlt.esl_wavelet_smooth."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslwlt import esl_wavelet_smooth
 

@@ -1,6 +1,6 @@
 """Tests for hmovo.geron_one_vs_one."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmovo import geron_one_vs_one
 

@@ -1,6 +1,6 @@
 """Tests for ccelO.categorical_crossentropy_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ccelO import categorical_crossentropy_loss
 

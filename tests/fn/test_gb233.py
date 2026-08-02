@@ -1,6 +1,6 @@
 """Tests for gb233 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb233 import gibbons_edf_asymp_normal

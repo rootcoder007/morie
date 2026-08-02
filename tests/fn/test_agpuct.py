@@ -1,6 +1,6 @@
 """Tests for agpuct.alphazero_puct."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agpuct import alphazero_puct
 

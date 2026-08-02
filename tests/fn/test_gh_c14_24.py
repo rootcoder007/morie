@@ -1,6 +1,6 @@
 """Tests for gh_c14_24.ghosal_ibp_stickbr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c14_24 import ghosal_ibp_stickbr
 

@@ -1,6 +1,6 @@
 """Tests for gh_c4_23.ghosal_pen_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c4_23 import ghosal_pen_dp
 

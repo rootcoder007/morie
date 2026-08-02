@@ -1,6 +1,6 @@
 """Tests for rgrbf.rangayyan_rbf_network."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgrbf import rangayyan_rbf_network
 

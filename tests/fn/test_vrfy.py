@@ -1,6 +1,6 @@
 """Tests for morie.fn.vrfy — verify statistical output."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.vrfy import verify_statistical_output, vrfy

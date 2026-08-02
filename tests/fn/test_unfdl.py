@@ -12,7 +12,7 @@ and Ch 5 (binary choice, printed p.129); the module formerly cited
 "Armstrong Ch 7", which does not exist -- that book has six chapters.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.unfdl import unfolding_analysis as unfold

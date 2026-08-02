@@ -1,6 +1,6 @@
 """Tests for kmdp.kamath_differential_privacy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmdp import kamath_differential_privacy
 

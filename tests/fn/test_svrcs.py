@@ -1,6 +1,6 @@
 """Tests for morie.fn.svrcs -- Roll call simulation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svrcs import roll_call_sim
 

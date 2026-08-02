@@ -1,6 +1,6 @@
 """Tests for eslcp.esl_mallows_cp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslcp import esl_mallows_cp
 

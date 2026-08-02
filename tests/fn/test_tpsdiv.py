@@ -1,6 +1,6 @@
 """Tests for morie.fn.tpsdiv — division compare."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.tpsdiv import tps_division_compare

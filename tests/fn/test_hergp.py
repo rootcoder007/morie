@@ -1,6 +1,6 @@
 """Tests for hergp.herg_inhibition."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hergp import herg_inhibition
 

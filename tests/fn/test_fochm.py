@@ -1,6 +1,6 @@
 """Test fochm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fochm import fochm
 

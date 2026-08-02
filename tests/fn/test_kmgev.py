@@ -1,6 +1,6 @@
 """Tests for kmgev.kamath_g_eval."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmgev import kamath_g_eval
 

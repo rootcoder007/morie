@@ -1,6 +1,6 @@
 """Tests for rng139.rangayyan_ch3_wiener_output_dot_product."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng139 import rangayyan_ch3_wiener_output_dot_product
 

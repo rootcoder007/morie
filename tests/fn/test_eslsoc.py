@@ -1,6 +1,6 @@
 """Tests for eslsoc.esl_self_organize."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslsoc import esl_self_organize
 

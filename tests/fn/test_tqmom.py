@@ -1,6 +1,6 @@
 """Tests for tqmom.turboquant_normal_moment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqmom import turboquant_normal_moment
 

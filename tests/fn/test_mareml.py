@@ -1,6 +1,6 @@
 """Tests for mareml.ma_random_reml."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mareml import ma_random_reml
 

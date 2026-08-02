@@ -1,6 +1,6 @@
 """Tests for rng217.rangayyan_ch4_schwarz_inequality_real."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng217 import rangayyan_ch4_schwarz_inequality_real
 

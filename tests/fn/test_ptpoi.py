@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptpoi -- Homogeneous Poisson point process"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptpoi import poisson_process
 

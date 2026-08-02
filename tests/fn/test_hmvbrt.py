@@ -1,6 +1,6 @@
 """Tests for hmvbrt.geron_videobert."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmvbrt import geron_videobert
 

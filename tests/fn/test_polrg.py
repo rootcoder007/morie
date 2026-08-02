@@ -1,6 +1,6 @@
 """Tests for polrg.polynomial_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.polrg import polynomial_regression
 

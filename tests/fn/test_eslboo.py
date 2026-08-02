@@ -1,6 +1,6 @@
 """Tests for eslboo.esl_bootstrap_err."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslboo import esl_bootstrap_err
 

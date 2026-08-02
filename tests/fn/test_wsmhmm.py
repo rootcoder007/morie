@@ -1,6 +1,6 @@
 """Tests for wsmhmm.wasserman_hmm_forward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmhmm import wasserman_hmm_forward
 

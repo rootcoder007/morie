@@ -21,7 +21,7 @@ _FIX = json.loads(
 )
 _EXPECT = {s["name"]: s for s in _FIX["systems"]}
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rglyp import rangayyan_lyapunov

@@ -1,6 +1,6 @@
 """Tests for morie.fn.elbmk -- Elbow method for k."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.elbmk import elbmk, elbow_method

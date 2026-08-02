@@ -1,6 +1,6 @@
 """Tests for pmfsc.pmf_potential."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pmfsc import pmf_potential
 

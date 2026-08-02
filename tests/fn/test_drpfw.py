@@ -1,6 +1,6 @@
 """drpfw: inverted dropout forward pass (Srivastava et al. 2014)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.drpfw import dropout_forward as do

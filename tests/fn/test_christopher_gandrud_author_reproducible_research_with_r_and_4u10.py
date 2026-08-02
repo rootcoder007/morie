@@ -1,6 +1,6 @@
 """Patience is bitter, but its fruit is sweet. — Aristotle"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u10 import (
     christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_10,

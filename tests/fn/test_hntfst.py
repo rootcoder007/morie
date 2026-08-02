@@ -1,6 +1,6 @@
 """Tests for hntfst.honest_random_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hntfst import honest_random_forest
 

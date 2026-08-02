@@ -1,6 +1,6 @@
 """Tests for cnn1d.conv1d_forward."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cnn1d import conv1d_forward
 

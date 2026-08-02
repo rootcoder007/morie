@@ -1,6 +1,6 @@
 """Tests for morie.fn.zsstv -- Space-time kriging variance"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zsstv import st_kriging_var
 

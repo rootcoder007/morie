@@ -1,6 +1,6 @@
 """Tests for hmkprbf.geron_kernel_pca_rbf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmkprbf import geron_kernel_pca_rbf
 

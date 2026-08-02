@@ -1,6 +1,6 @@
 """Tests for ksr12.kosorok_information_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ksr12 import kosorok_information_bound
 

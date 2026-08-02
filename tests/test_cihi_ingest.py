@@ -7,7 +7,7 @@ CIHI download is performed here.
 
 import io
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.ingest.cihi import _pick_data_sheet
 

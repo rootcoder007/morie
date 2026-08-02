@@ -1,6 +1,6 @@
 """Tests for gb2111 (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb2111 import gibbons_tolerance_beta

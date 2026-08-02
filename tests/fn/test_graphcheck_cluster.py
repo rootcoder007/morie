@@ -1,7 +1,7 @@
 """Graph/identification checker cluster: cmark, exchg, ivcrt, frkst,
 chstr, ident, scmdf, ctcfl, potef (+ _dsep helper)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._dsep import d_separated

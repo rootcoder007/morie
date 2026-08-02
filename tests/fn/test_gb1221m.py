@@ -1,6 +1,6 @@
 """Tests for gb1221m.gibbons_friedman_mult."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1221m import gibbons_friedman_mult
 

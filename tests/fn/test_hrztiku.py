@@ -1,6 +1,6 @@
 """Tests for hrztiku.horowitz_tikhonov_unknown_T."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrztiku import horowitz_tikhonov_unknown_T
 

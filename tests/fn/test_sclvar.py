@@ -1,6 +1,6 @@
 """Tests for sclvar.selection_coefficient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sclvar import selection_coefficient
 

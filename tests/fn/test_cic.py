@@ -1,6 +1,6 @@
 """Tests for morie.fn.cic -- Changes-in-Changes estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cic import changes_in_changes
 

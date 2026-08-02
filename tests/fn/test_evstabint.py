@@ -1,6 +1,6 @@
 """Tests for evstabint.evt_xi_ci_profile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evstabint import evt_xi_ci_profile
 

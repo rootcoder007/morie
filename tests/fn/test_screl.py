@@ -1,6 +1,6 @@
 """Tests for morie.fn.screl — score-level reliability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.screl import score_reliability
 

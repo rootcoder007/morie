@@ -7,7 +7,7 @@ and verifies it recovers the distribution's mean — data standardisation
 makes that deterministic enough for a non-flaky test.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 pytest.importorskip("jax", reason="morie[sim] extra (JAX) not installed")

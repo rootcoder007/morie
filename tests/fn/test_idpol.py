@@ -1,6 +1,6 @@
 """Tests for morie.fn.idpol."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.idpol import idpol
 

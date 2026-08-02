@@ -1,6 +1,6 @@
 """Tests for propc.prophet_components."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.propc import prophet_components

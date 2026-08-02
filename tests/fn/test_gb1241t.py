@@ -1,6 +1,6 @@
 """Tests for gb1241t (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1241t import gibbons_concordance_w_ties

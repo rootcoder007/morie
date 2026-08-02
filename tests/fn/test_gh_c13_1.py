@@ -1,6 +1,6 @@
 """Tests for gh_c13_1.ghosal_surv_dp_post."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c13_1 import ghosal_surv_dp_post
 

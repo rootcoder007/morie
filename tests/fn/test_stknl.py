@@ -1,6 +1,6 @@
 """Tests for morie.fn.stknl — Spatio-temporal kernel smoothing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.stknl import stknl

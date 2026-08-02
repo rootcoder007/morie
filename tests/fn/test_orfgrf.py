@@ -1,6 +1,6 @@
 """Tests for orfgrf.orthogonal_random_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.orfgrf import orthogonal_random_forest
 

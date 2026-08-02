@@ -1,6 +1,6 @@
 """Tests for fxidf.effect_modification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fxidf import effect_modification
 

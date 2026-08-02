@@ -1,6 +1,6 @@
 """Tests for wsmkbw.wasserman_kde_bandwidth."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmkbw import wasserman_kde_bandwidth
 

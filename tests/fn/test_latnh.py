@@ -1,6 +1,6 @@
 """latnh: Latin hypercube sampling (McKay, Beckman & Conover 1979)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.latnh import latin_hypercube as lh

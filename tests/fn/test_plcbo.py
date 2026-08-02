@@ -1,6 +1,6 @@
 """Tests for plcbo.placebo_refutation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.plcbo import placebo_refutation

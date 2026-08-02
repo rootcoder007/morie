@@ -1,6 +1,6 @@
 """Tests for taji_d.tajimas_d."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.taji_d import tajimas_d
 

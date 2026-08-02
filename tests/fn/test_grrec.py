@@ -1,6 +1,6 @@
 """Tests for grrec.geron_recall."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grrec import geron_recall
 

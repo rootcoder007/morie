@@ -1,6 +1,6 @@
 """Tests for morie.fn.cfafi -- CFA fit indices for any structure."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._mapq_const import SUBSCALES
 from morie.fn.cfafi import cfa_fit

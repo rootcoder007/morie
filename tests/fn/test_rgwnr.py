@@ -1,6 +1,6 @@
 """Tests for rgwnr.rangayyan_wiener_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgwnr import rangayyan_wiener_filter
 

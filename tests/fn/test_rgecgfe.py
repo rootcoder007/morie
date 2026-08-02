@@ -1,6 +1,6 @@
 """Tests for rgecgfe.rangayyan_fetal_ecg_single."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgecgfe import rangayyan_fetal_ecg_single
 

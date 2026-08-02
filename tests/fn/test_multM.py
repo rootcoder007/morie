@@ -1,6 +1,6 @@
 """Tests for multM.multiple_mediators."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.multM import multiple_mediators
 

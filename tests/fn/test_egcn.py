@@ -1,6 +1,6 @@
 """Tests for egcn.e_gcn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.egcn import e_gcn
 

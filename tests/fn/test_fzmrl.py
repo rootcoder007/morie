@@ -1,6 +1,6 @@
 """Tests for fzmrl.fauzi_mrl_asymptotic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzmrl import fauzi_mrl_asymptotic
 

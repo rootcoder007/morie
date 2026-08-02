@@ -1,6 +1,6 @@
 """Tests for morie.fn.zxsgb -- Spatial gradient boosting"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zxsgb import spatial_gbm
 

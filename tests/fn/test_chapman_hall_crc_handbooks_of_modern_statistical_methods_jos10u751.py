@@ -1,6 +1,6 @@
 """Tests for chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u751.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_751."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos10u751 import (
     chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_10_unnumbered_751,

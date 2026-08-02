@@ -3,9 +3,9 @@
 Anchors PDF-verified in Kosorok (2008): bridge covariance
 F(s^t)-F(s)F(t), LIL eq. (2.21) bound 1/2, Chung liminf pi/2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn._kosorok import (
     bootstrap_multiplier_process, bracketing_number_monotone, bridge_cov,

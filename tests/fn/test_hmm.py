@@ -1,6 +1,6 @@
 """Tests for hidden_markov."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmm import hidden_markov
 

@@ -1,6 +1,6 @@
 """Tests for gh_crm_def.ghosal_completely_random_measure."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_crm_def import ghosal_completely_random_measure
 

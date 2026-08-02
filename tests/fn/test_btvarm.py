@@ -1,6 +1,6 @@
 """Tests for btvarm.boot_var_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btvarm import boot_var_mean
 

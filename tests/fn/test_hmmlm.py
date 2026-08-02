@@ -1,6 +1,6 @@
 """Tests for hmmlm.geron_masked_lm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmmlm import geron_masked_lm
 

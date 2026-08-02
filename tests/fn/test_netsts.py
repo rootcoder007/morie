@@ -1,6 +1,6 @@
 """Tests for netsts.neural_ts_lstm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.netsts import neural_ts_lstm
 

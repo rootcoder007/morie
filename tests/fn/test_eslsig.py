@@ -1,6 +1,6 @@
 """Tests for eslsig.esl_residual_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslsig import esl_residual_variance
 

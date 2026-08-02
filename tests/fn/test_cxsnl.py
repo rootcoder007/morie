@@ -1,6 +1,6 @@
 """Tests for cxsnl: Cox-Snell residuals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cxsnl import cxsnl

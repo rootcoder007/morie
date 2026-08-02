@@ -1,6 +1,6 @@
 """Tests for vcltr.py - Vocal tract tube model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vcltr import vcltr, vocal_tract_model_fn
 

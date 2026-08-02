@@ -1,6 +1,6 @@
 """Tests for cvxlpl.boyd_linear_program_dual."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxlpl import boyd_linear_program_dual
 

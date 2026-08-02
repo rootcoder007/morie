@@ -1,6 +1,6 @@
 """Tests for causftbl.causal_frontdoor_adjustment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causftbl import causal_frontdoor_adjustment

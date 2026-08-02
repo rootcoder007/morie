@@ -1,6 +1,6 @@
 """Tests for missinM.missing_mechanism_sensitivity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.missinM import missing_mechanism_sensitivity
 

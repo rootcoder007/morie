@@ -1,6 +1,6 @@
 """Tests for morie.fn.fanlz -- Factor analysis (ML)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import FaRes
 from morie.fn.fanlz import factor_analysis_ml, fanlz

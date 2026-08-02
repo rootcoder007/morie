@@ -1,6 +1,6 @@
 """Tests for spcgme.spatial_concordance_kappa."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spcgme import spatial_concordance_kappa
 

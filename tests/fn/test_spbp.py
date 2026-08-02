@@ -1,6 +1,6 @@
 """Tests for spbp.schabenberger_breusch_pagan."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spbp import schabenberger_breusch_pagan
 

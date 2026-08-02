@@ -1,6 +1,6 @@
 """Tests for morie.fn.phoen -- structural break detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import TimeSeriesResult
 from morie.fn.phoen import phoen, phoenix_break

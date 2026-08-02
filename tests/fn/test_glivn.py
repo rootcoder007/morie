@@ -1,6 +1,6 @@
 """Tests for morie.fn.glivn — Glivenko-Cantelli uniform convergence test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.glivn import GlivenkoCantelliResult, glivn

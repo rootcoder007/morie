@@ -1,6 +1,6 @@
 """Tests for scvelo.rna_velocity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.scvelo import rna_velocity
 

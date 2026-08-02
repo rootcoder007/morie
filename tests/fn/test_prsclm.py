@@ -1,6 +1,6 @@
 """Tests for prsclm.prs_cs_clump."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prsclm import prs_cs_clump
 

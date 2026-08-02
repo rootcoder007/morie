@@ -3,7 +3,7 @@
     g <- g * min(1, max_norm / ||g||)
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.grdcl import gradient_clipping as clip

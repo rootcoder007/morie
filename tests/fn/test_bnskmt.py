@@ -1,6 +1,6 @@
 """Tests for bnskmt.bound_kernel_moment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnskmt import bound_kernel_moment
 

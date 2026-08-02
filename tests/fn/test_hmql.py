@@ -1,6 +1,6 @@
 """Tests for hmql.geron_q_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmql import geron_q_learning
 

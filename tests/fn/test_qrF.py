@@ -1,6 +1,6 @@
 """Tests for qrF.quantile_forecast."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.qrF import quantile_forecast
 

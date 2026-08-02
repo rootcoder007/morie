@@ -1,6 +1,6 @@
 """Tests for hmelu.geron_elu."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmelu import geron_elu
 

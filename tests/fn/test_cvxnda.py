@@ -1,6 +1,6 @@
 """Tests for cvxnda.boyd_newton_decrement."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxnda import boyd_newton_decrement
 

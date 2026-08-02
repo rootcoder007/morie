@@ -1,6 +1,6 @@
 """Test abend."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.abend import abend
 

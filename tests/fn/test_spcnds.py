@@ -1,6 +1,6 @@
 """Tests for spcnds.schabenberger_conditional_sim."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spcnds import schabenberger_conditional_sim
 

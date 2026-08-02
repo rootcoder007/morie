@@ -1,6 +1,6 @@
 """Test machla."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.machla import machla
 

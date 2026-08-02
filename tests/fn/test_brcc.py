@@ -1,6 +1,6 @@
 """Tests for morie.fn.brcc — Bayesian reliable change index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.brcc import bayesian_rci
 

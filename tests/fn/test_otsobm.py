@@ -1,6 +1,6 @@
 """Tests for otsobm.ot_sobolev_w1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otsobm import ot_sobolev_w1
 

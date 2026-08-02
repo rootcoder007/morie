@@ -1,6 +1,6 @@
 """Tests for rdrobu.calonico_cattaneo_titiunik."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rdrobu import calonico_cattaneo_titiunik
 

@@ -1,6 +1,6 @@
 """Tests for mafix.ma_fixed_effect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mafix import ma_fixed_effect
 

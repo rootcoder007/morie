@@ -1,6 +1,6 @@
 """Tests for wlcxsv.wilcoxon_gehan."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wlcxsv import wilcoxon_gehan
 

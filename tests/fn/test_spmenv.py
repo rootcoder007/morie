@@ -1,6 +1,6 @@
 """spmenv -- Moran's I moments, Schabenberger & Gotway Sec. 1.3.2 + Problem 1.8."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spmenv import schabenberger_moran_expectation as menv

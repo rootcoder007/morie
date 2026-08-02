@@ -1,6 +1,6 @@
 """Tests for morie.fn.kdens — Kernel density estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kdens import kdens

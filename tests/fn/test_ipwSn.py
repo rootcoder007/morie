@@ -1,6 +1,6 @@
 """Tests for ipwSn.ipw_sensitivity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ipwSn import ipw_sensitivity
 

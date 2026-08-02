@@ -1,6 +1,6 @@
 """Tests for micord.mi_pmm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.micord import mi_pmm
 

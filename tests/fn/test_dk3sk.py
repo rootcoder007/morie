@@ -1,6 +1,6 @@
 """Test dk3sk."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dk3sk import dk3sk
 

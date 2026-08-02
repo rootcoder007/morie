@@ -1,6 +1,6 @@
 """Tests for rpl_ra — region x age cross-tab."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rpl_ra import rplace_region_age
 

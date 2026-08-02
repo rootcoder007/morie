@@ -1,6 +1,6 @@
 """Tests for deepSVDD.deep_svdd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.deepSVDD import deep_svdd
 

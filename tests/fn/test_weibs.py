@@ -1,6 +1,6 @@
 """Tests for morie.fn.weibs -- Weibull survival model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.weibs import weibs

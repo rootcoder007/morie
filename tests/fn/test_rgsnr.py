@@ -1,6 +1,6 @@
 """Tests for rgsnr.rangayyan_snr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsnr import rangayyan_snr
 

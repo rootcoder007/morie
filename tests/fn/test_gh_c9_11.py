@@ -1,6 +1,6 @@
 """Tests for gh_c9_11.ghosal_icens_dp_crt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c9_11 import ghosal_icens_dp_crt
 

@@ -10,7 +10,7 @@ scale, swap) and exact counts. A mean-of-inputs stub fails these.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.km042 import kamath_ch3_prompt_label_mapping

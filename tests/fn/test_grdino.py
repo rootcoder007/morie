@@ -1,6 +1,6 @@
 """Tests for grdino.geron_dino_self_distillation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grdino import geron_dino_self_distillation
 

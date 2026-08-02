@@ -1,6 +1,6 @@
 """Tests for dicg.deviance_information_criterion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dicg import deviance_information_criterion
 

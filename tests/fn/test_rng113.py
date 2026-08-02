@@ -1,6 +1,6 @@
 """Tests for rng113.rangayyan_ch3_first_difference_frequency_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng113 import rangayyan_ch3_first_difference_frequency_response
 

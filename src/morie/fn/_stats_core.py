@@ -254,6 +254,12 @@ class _Dist:
 
 
 class _Norm(_Dist):
+    @staticmethod
+    def var(loc=0.0, scale=1.0):
+        """Variance scale**2."""
+        del loc
+        return scale * scale
+
     def __init__(self, loc=0.0, scale=1.0):
         self.loc, self.scale = float(loc), float(scale)
 
@@ -425,6 +431,12 @@ class _Gamma(_Dist):
 
 
 class _Beta(_Dist):
+    @staticmethod
+    def var(a, b):
+        """Variance ab / ((a+b)^2 (a+b+1)) (Johnson, Kotz &
+        Balakrishnan 1995, vol. 2, ch. 25)."""
+        return (a * b) / ((a + b) ** 2 * (a + b + 1.0))
+
     def __init__(self, a=1.0, b=1.0):
         self.a, self.b = float(a), float(b)
 

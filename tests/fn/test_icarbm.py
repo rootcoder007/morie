@@ -1,6 +1,6 @@
 """Tests for icarbm.icar_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.icarbm import icar_prior
 

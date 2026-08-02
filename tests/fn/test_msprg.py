@@ -1,6 +1,6 @@
 """Tests for morie.fn.msprg -- Generalized Procrustes analysis"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msprg import procrustes_gen
 

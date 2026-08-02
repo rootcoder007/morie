@@ -1,6 +1,6 @@
 """Tests for rng169.rangayyan_ch3_abcd_matrix_inversion_lemma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng169 import rangayyan_ch3_abcd_matrix_inversion_lemma
 

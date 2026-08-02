@@ -1,6 +1,6 @@
 """Tests for morie.engine_bridge — C kernel bridge with Accelerate.framework."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.engine_bridge import (
     argmax,

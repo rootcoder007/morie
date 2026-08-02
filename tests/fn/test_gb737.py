@@ -1,6 +1,6 @@
 """Tests for gb737.gibbons_linrank_properties."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb737 import gibbons_linrank_properties
 

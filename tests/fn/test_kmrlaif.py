@@ -1,6 +1,6 @@
 """Tests for kmrlaif.kamath_rlaif_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmrlaif import kamath_rlaif_objective
 

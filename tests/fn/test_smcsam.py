@@ -1,6 +1,6 @@
 """Tests for smcsam.sequential_mc_sampler."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smcsam import sequential_mc_sampler
 

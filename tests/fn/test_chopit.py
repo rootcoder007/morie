@@ -1,6 +1,6 @@
 """Tests for chopit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.chopit import chopit_vignette

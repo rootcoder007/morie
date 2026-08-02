@@ -1,6 +1,6 @@
 """Tests for ggmaft.generalized_gamma_aft."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ggmaft import generalized_gamma_aft
 

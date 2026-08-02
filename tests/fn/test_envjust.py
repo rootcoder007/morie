@@ -1,6 +1,6 @@
 """Tests for environmental-justice exposure-disparity index."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.envjust import environmental_justice_index, envjust

@@ -1,6 +1,6 @@
 """Tests for wvent.py - Wavelet entropy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wvent import wavelet_entropy, wvent
 

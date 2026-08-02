@@ -1,6 +1,6 @@
 """Tests for grlof.geron_local_outlier_factor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grlof import geron_local_outlier_factor
 

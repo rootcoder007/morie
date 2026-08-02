@@ -1,6 +1,6 @@
 """Tests for cvxbar.boyd_log_barrier."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxbar import boyd_log_barrier
 

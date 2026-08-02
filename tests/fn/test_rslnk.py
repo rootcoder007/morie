@@ -1,6 +1,6 @@
 """rslnk: residual / skip connection.  y = x + F(x)  (He et al. 2016)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rslnk import residual_connection as res

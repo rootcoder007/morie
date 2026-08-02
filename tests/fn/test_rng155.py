@@ -1,6 +1,6 @@
 """Tests for rng155.rangayyan_ch3_lms_filter_output."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng155 import rangayyan_ch3_lms_filter_output
 

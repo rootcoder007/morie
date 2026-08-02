@@ -1,6 +1,6 @@
 """Tests for hmcrg.hierarchical_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcrg import hierarchical_model
 

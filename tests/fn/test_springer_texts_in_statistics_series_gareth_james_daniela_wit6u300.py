@@ -1,6 +1,6 @@
 """Tests for springer_texts_in_statistics_series_gareth_james_daniela_wit6u300.springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_300."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.springer_texts_in_statistics_series_gareth_james_daniela_wit6u300 import (
     springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_6_unnumbered_300,

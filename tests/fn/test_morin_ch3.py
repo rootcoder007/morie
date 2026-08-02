@@ -1,7 +1,7 @@
 """Morin (2016) chapter 3: expectation and variance, book-anchored."""
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn import _morin

@@ -1,6 +1,6 @@
 """Tests for gh_c6_13.ghosal_lecam_consist."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c6_13 import ghosal_lecam_consist
 

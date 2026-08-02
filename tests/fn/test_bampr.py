@@ -1,6 +1,6 @@
 """Tests for morie.fn.bampr -- posterior summary."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bampr import bampr, bayesian_am_posterior_summary
 

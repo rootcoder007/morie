@@ -1,6 +1,6 @@
 """Tests for evangia.evt_angular_measure."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evangia import evt_angular_measure
 

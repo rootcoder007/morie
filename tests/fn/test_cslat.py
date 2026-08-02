@@ -1,6 +1,6 @@
 """cslat: causal (autoregressive) attention mask (Radford et al. 2019)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cslat import causal_attention_mask as mask

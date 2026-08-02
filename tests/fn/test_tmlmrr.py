@@ -1,6 +1,6 @@
 """Tests for tmlmrr.tmle_marginal_rr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlmrr import tmle_marginal_rr
 

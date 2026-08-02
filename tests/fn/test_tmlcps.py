@@ -1,6 +1,6 @@
 """Tests for tmlcps.tmle_continuous_treatment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tmlcps import tmle_continuous_treatment
 

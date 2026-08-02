@@ -1,6 +1,6 @@
 """Tests for grfcn.geron_fcn_upsample."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grfcn import geron_fcn_upsample
 

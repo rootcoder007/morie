@@ -1,6 +1,6 @@
 """Tests for prder.py - Forward prediction error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.prder import prder, prediction_error_fn
 

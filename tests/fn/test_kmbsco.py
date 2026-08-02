@@ -1,6 +1,6 @@
 """Tests for kmbsco.kamath_bertscore."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmbsco import kamath_bertscore
 

@@ -1,6 +1,6 @@
 """Tests for gh_hier_np.ghosal_hierarchical_np."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_hier_np import ghosal_hierarchical_np
 

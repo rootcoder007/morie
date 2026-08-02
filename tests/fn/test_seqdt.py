@@ -1,6 +1,6 @@
 """Tests for morie.fn.seqdt — sequential change-point detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.seqdt import seqdt, sequential_detect
 

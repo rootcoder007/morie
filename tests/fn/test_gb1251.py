@@ -1,6 +1,6 @@
 """Tests for gb1251.gibbons_partial_tau."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1251 import gibbons_partial_tau

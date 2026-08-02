@@ -1,6 +1,6 @@
 """Tests for morie.fn.svip1 -- 1D ideal point estimation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svip1 import ideal_point_1d
 

@@ -1,8 +1,8 @@
 """cntgc: Pearson contingency coefficient (Gibbons & Chakraborti 5e, Ch 14)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.cntgc import contingency_coefficient as cc
 

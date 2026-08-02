@@ -1,6 +1,6 @@
 """Tests for gbtcom.goodman_bacon_3way."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gbtcom import goodman_bacon_3way
 

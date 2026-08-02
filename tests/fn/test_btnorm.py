@@ -1,6 +1,6 @@
 """Tests for btnorm.boot_normal_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btnorm import boot_normal_ci
 

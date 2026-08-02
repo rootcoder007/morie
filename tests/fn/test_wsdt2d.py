@@ -1,6 +1,6 @@
 """Tests for wsdt2d.wasserstein_p_d."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsdt2d import wasserstein_p_d
 

@@ -1,6 +1,6 @@
 """Tests for fzt58.fauzi_thm5_8_smoothed_convergence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt58 import fauzi_thm5_8_smoothed_convergence
 

@@ -1,6 +1,6 @@
 """Tests for rgkfcv.rangayyan_kfold_cv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgkfcv import rangayyan_kfold_cv
 

@@ -1,6 +1,6 @@
 """Tests for bndnvg.bound_naive_gross."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndnvg import bound_naive_gross
 

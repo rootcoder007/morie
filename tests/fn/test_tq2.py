@@ -1,6 +1,6 @@
 """Tests for morie.fn.tq2 — 2-bit TurboQuant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.tq2 import turboquant_2bit

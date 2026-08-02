@@ -1,6 +1,6 @@
 """Tests for morie.fn.medtn -- Causal mediation analysis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.medtn import causal_mediation

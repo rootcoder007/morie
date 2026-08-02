@@ -1,6 +1,6 @@
 """Tests for snmcox.snm_cox."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.snmcox import snm_cox
 

@@ -1,6 +1,6 @@
 """Tests for kmrsft.kamath_rejection_sampling_finetune."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmrsft import kamath_rejection_sampling_finetune
 

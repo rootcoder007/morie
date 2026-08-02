@@ -1,6 +1,6 @@
 """Tests for rng243.rangayyan_ch4_log_maximum_phase_expansion."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng243 import rangayyan_ch4_log_maximum_phase_expansion
 

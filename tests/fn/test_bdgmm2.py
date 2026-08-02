@@ -1,6 +1,6 @@
 """Tests for bdgmm2.bound_gmm_alt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bdgmm2 import bound_gmm_alt
 

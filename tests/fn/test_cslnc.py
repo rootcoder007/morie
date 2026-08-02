@@ -1,6 +1,6 @@
 """cslnc: cosine learning-rate schedule with warmup (Loshchilov & Hutter 2017)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cslnc import cosine_lr_schedule as cos

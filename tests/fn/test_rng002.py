@@ -1,6 +1,6 @@
 """Tests for rng002.rangayyan_ch3_mean_squared_value."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng002 import rangayyan_ch3_mean_squared_value
 

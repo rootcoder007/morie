@@ -1,6 +1,6 @@
 """Tests for hierdp.hierarchical_dp_density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hierdp import hierarchical_dp_density
 

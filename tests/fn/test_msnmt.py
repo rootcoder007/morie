@@ -1,6 +1,6 @@
 """Tests for morie.fn.msnmt -- Nonmetric MDS (Kruskal)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msnmt import nonmetric_mds
 

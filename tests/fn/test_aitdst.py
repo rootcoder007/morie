@@ -1,6 +1,6 @@
 """Tests for aitdst.aitchison_distance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitdst import aitchison_distance
 

@@ -1,6 +1,6 @@
 """Tests for gb621t.gibbons_ww2_ties."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb621t import gibbons_ww2_ties
 

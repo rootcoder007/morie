@@ -13,7 +13,7 @@ test builds the beats, so the ground truth needs no transcription and no
 appeal to the implementation.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgqrs import rangayyan_qrs_detect

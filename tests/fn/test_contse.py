@@ -1,6 +1,6 @@
 """Tests for contse.contrastive_sent."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.contse import contrastive_sent
 

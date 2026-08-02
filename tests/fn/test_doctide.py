@@ -1,6 +1,6 @@
 """Tests for doctide.de_chaisemartin_dhaultfoeuille."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.doctide import de_chaisemartin_dhaultfoeuille
 

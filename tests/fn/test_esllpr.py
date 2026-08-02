@@ -1,6 +1,6 @@
 """Tests for esllpr.esl_local_linear."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esllpr import esl_local_linear
 

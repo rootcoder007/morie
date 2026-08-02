@@ -1,6 +1,6 @@
 """Tests for cwwsym.cwt_morlet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cwwsym import cwt_morlet
 

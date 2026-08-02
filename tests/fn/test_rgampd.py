@@ -1,6 +1,6 @@
 """Tests for rgampd.rangayyan_amplitude_demod."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgampd import rangayyan_amplitude_demod
 

@@ -1,6 +1,6 @@
 """Tests for unetbk.unet_backbone."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.unetbk import unet_backbone
 

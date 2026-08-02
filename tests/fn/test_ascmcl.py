@@ -1,6 +1,6 @@
 """Tests for ascmcl.augmented_synthetic_control."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ascmcl import augmented_synthetic_control

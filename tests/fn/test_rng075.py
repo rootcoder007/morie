@@ -1,6 +1,6 @@
 """Tests for rng075.rangayyan_ch3_idft_real_imag."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng075 import rangayyan_ch3_idft_real_imag
 

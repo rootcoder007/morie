@@ -1,6 +1,6 @@
 """Tests for gpdkl.deep_kernel_gp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpdkl import deep_kernel_gp
 

@@ -1,6 +1,6 @@
 """Tests for tqhs.turboquant_qjl_sign_quantizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tqhs import turboquant_qjl_sign_quantizer
 

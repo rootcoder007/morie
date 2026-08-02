@@ -1,6 +1,6 @@
 """Tests for morie.fn.stk — space-time K."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.stk import space_time_k
 

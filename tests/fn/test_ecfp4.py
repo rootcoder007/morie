@@ -1,6 +1,6 @@
 """Tests for ecfp4.ecfp_4_fingerprint."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ecfp4 import ecfp_4_fingerprint
 

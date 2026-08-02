@@ -1,6 +1,6 @@
 """Tests for esd.generalized_esd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esd import generalized_esd
 

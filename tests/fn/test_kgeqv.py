@@ -1,6 +1,6 @@
 """Tests for morie.fn.kgeqv -- Kriging equivalence to GLS"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kgeqv import kriging_equiv
 

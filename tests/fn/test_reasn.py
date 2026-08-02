@@ -1,6 +1,6 @@
 """Tests for reasn.py - Reassigned STFT."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.reasn import reasn, reassigned_stft
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.bwcv — Bandwidth selection via LOO cross-validation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.bwcv import bwcv

@@ -1,6 +1,6 @@
 """Tests for clipbn.clip_image_text_align."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clipbn import clip_image_text_align
 

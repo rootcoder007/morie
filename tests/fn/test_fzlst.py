@@ -1,6 +1,6 @@
 """Tests for fzlst.fauzi_l_statistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.fzlst import fauzi_l_statistic

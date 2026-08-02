@@ -1,6 +1,6 @@
 """Tests for kmstst.kamath_stereoset_bias."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmstst import kamath_stereoset_bias
 

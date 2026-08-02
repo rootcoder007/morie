@@ -1,6 +1,6 @@
 """Tests for morie.fn.lortz -- Lorentz transformation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lortz import lortz

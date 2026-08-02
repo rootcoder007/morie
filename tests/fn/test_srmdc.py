@@ -1,6 +1,6 @@
 """Tests for morie.fn.srmdc -- Survival model discrimination."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.srmdc import srmdc

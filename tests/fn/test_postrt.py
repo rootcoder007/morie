@@ -1,6 +1,6 @@
 """Tests for postrt.post_stratification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.postrt import post_stratification
 

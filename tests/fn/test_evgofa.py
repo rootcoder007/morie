@@ -1,6 +1,6 @@
 """Tests for evgofa.evt_gev_anderson_darling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evgofa import evt_gev_anderson_darling
 

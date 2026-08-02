@@ -1,6 +1,6 @@
 """Tests for morie.fn.kbwrt — Silverman's rule-of-thumb bandwidth."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kbwrt import kbwrt

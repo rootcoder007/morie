@@ -1,6 +1,6 @@
 """Tests for rgspres.rangayyan_spectral_resolution."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgspres import rangayyan_spectral_resolution
 

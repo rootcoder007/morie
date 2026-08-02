@@ -1,6 +1,6 @@
 """Tests for bndcvr.bound_coverage_check."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndcvr import bound_coverage_check
 

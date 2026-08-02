@@ -1,6 +1,6 @@
 """Tests for rgepidet.rangayyan_epilepsy_detect."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgepidet import rangayyan_epilepsy_detect
 

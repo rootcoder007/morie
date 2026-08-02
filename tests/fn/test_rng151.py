@@ -1,6 +1,6 @@
 """rng151: optimal Wiener filter for noise removal (Rangayyan 2024, Eq. 3.183, p. 177)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng151 import rangayyan_ch3_wiener_optimal_for_noise_removal as wiener_o

@@ -1,6 +1,6 @@
 """Tests for ksr020 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr020 import kosorok_ch1_linear_regression_model

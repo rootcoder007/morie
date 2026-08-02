@@ -1,6 +1,6 @@
 """Tests for rng194.rangayyan_ch4_heart_rate_from_rr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng194 import rangayyan_ch4_heart_rate_from_rr
 

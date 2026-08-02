@@ -1,6 +1,6 @@
 """Tests for rng153.rangayyan_ch3_anc_primary_input_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng153 import rangayyan_ch3_anc_primary_input_model
 

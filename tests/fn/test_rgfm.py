@@ -1,6 +1,6 @@
 """Tests for rgfm.rangayyan_fm_signal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfm import rangayyan_fm_signal
 

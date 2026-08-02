@@ -1,6 +1,6 @@
 """Tests for tft.temporal_fusion_transformer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tft import temporal_fusion_transformer
 

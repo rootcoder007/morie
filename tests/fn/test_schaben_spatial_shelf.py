@@ -5,7 +5,7 @@ designs with a known answer everywhere else. Page and equation numbers
 are the book's.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schaben import (fit_variogram_wls, matheron, variogram_model)

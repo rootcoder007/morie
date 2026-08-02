@@ -1,6 +1,6 @@
 """Tests for hmint8.geron_int8_quant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmint8 import geron_int8_quant
 

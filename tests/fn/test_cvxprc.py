@@ -1,6 +1,6 @@
 """Tests for cvxprc.boyd_projection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxprc import boyd_projection
 

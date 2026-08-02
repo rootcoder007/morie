@@ -1,6 +1,6 @@
 """Tests for ksr034 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr034 import kosorok_ch2_glivenko_cantelli_bracketing

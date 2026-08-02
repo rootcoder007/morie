@@ -1,6 +1,6 @@
 """Tests for eslbic.esl_bic_score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslbic import esl_bic_score
 

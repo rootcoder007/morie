@@ -7,7 +7,7 @@ extension and numba (the morie[callbacks] extra)."""
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 core = pytest.importorskip("morie._core")

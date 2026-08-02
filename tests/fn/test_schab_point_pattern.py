@@ -9,7 +9,7 @@ patterns.
 Schabenberger, O. & Gotway, C. A. (2005). Ch. 3.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spkfun import schabenberger_k_function as k_function

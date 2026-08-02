@@ -1,6 +1,6 @@
 """Tests for dppca.dp_pca."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dppca import dp_pca
 

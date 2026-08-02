@@ -1,6 +1,6 @@
 """Tests for mTriple.triply_robust_mediation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mTriple import triply_robust_mediation
 

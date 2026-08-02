@@ -1,6 +1,6 @@
 """Tests for precK.precision_at_k."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.precK import precision_at_k
 

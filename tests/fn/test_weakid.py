@@ -1,6 +1,6 @@
 """Tests for weakid.weak_identification_mediation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.weakid import weak_identification_mediation

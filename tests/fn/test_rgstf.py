@@ -6,7 +6,7 @@ time resolution against frequency resolution; a chirp is the standard
 demonstration that it tracks a frequency that changes with time.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgstf import rangayyan_stft

@@ -1,6 +1,6 @@
 """Tests for rgpdfest.rangayyan_pdf_estimate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpdfest import rangayyan_pdf_estimate
 

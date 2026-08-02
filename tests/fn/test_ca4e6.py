@@ -1,6 +1,6 @@
 """Tests for ca4e6.ca_chapter_4_equation_6."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ca4e6 import ca_chapter_4_equation_6
 

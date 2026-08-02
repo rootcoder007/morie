@@ -1,6 +1,6 @@
 """Tests for pgdsdg.projected_gd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pgdsdg import projected_gd
 

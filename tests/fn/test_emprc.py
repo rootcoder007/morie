@@ -1,6 +1,6 @@
 """Tests for morie.fn.emprc — Empirical process (centered, scaled)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.emprc import EmpiricalProcessResult, emprc

@@ -1,6 +1,6 @@
 """Tests for rng026.rangayyan_ch3_dirac_delta_limit_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng026 import rangayyan_ch3_dirac_delta_limit_form
 

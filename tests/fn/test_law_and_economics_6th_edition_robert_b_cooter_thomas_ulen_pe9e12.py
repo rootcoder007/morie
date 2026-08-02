@@ -1,6 +1,6 @@
 """Tests for law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe9e12.law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_9_equation_12."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe9e12 import (
     law_and_economics_6th_edition_robert_b_cooter_thomas_ulen_pe_chapter_9_equation_12,

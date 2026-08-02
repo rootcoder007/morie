@@ -1,6 +1,6 @@
 """Tests for otmaprc.ot_map_recovery_brenier."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otmaprc import ot_map_recovery_brenier
 

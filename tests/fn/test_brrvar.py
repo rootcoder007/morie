@@ -1,6 +1,6 @@
 """Tests for brrvar.brr_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.brrvar import brr_variance
 

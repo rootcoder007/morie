@@ -1,6 +1,6 @@
 """Tests for egan2.egan_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.egan2 import egan_filter
 

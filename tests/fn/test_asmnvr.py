@@ -1,6 +1,6 @@
 """Tests for asmnvr.genome_assembly."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.asmnvr import genome_assembly
 

@@ -1,6 +1,6 @@
 """Tests for neighborhood_structures_and_crime_a_spatial_analysis_george_3u25.neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_3_unnumbered_25."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.neighborhood_structures_and_crime_a_spatial_analysis_george_3u25 import (
     neighborhood_structures_and_crime_a_spatial_analysis_george__chapter_3_unnumbered_25,

@@ -1,6 +1,6 @@
 """Tests for swinmw.swin_msa_window."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.swinmw import swin_msa_window
 

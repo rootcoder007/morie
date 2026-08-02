@@ -1,6 +1,6 @@
 """Tests for drovw.dr_overlap_weighted."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drovw import dr_overlap_weighted
 

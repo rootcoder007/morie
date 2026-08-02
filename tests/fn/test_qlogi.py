@@ -1,6 +1,6 @@
 """Tests for morie.fn.qlogi -- Logistic quantile."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.qlogi import qlogi

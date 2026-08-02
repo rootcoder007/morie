@@ -1,6 +1,6 @@
 """Tests for evdec.evt_declustering_runs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evdec import evt_declustering_runs
 

@@ -1,6 +1,6 @@
 """Tests for mapaule.ma_paule_mandel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mapaule import ma_paule_mandel
 

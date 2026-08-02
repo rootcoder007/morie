@@ -1,6 +1,6 @@
 """Tests for esnnts.echo_state_network."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.esnnts import echo_state_network
 

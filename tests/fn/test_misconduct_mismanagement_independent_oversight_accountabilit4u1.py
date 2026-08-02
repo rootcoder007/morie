@@ -1,6 +1,6 @@
 """Tests for misconduct_mismanagement_independent_oversight_accountabilit4u1.misconduct_mismanagement_independent_oversight_accountabilit_chapter_4_unnumbered_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.misconduct_mismanagement_independent_oversight_accountabilit4u1 import (
     misconduct_mismanagement_independent_oversight_accountabilit_chapter_4_unnumbered_1,

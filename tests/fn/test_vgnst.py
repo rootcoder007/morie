@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgnst -- Nested (composite) variogram"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgnst import vario_nested
 

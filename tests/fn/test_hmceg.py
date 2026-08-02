@@ -1,6 +1,6 @@
 """Tests for hmceg.geron_cross_entropy_gradient."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmceg import geron_cross_entropy_gradient
 

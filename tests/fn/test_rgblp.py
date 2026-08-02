@@ -1,6 +1,6 @@
 """Tests for rgblp.rangayyan_butterworth_lp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgblp import rangayyan_butterworth_lp
 

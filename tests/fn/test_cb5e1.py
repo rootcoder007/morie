@@ -1,6 +1,6 @@
 """Tests for cb5e1.cb_chapter_5_equation_1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cb5e1 import cb_chapter_5_equation_1
 

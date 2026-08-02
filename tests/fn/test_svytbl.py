@@ -1,6 +1,6 @@
 """Tests for svytbl.survey_xtab."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svytbl import survey_xtab
 

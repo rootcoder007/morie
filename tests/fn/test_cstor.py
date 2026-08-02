@@ -1,6 +1,6 @@
 """Tests for morie.fn.cstor — cache store."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.cload import cload
 from morie.fn.cstor import cache_store, cstor

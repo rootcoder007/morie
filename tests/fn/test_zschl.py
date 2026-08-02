@@ -1,6 +1,6 @@
 """Tests for morie.fn.zschl -- Cholesky spatial simulation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.zschl import chol_sim
 

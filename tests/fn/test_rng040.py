@@ -1,6 +1,6 @@
 """Tests for rng040.rangayyan_ch3_linear_ramp_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng040 import rangayyan_ch3_linear_ramp_filter
 

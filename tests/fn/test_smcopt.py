@@ -1,6 +1,6 @@
 """Tests for smcopt.sequential_mc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smcopt import sequential_mc
 

@@ -1,6 +1,6 @@
 """Tests for sccsno.sccs_no_replacement."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sccsno import sccs_no_replacement
 

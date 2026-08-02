@@ -4,7 +4,7 @@ Armstrong et al., Ch 6 (Bayesian Scaling Models, printed p.181). Ideal points
 are smoothed across periods with an evolution variance sigma_w.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.dwnmn import dynamic_wnominate as dw

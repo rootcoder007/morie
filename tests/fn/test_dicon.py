@@ -1,6 +1,6 @@
 """Tests for morie.fn.dicon -- DIC."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dicon import compute_dic
 

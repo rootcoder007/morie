@@ -1,6 +1,6 @@
 """Tests for cvxsep.boyd_separating_hyperplane."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxsep import boyd_separating_hyperplane
 

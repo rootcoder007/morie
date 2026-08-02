@@ -1,6 +1,6 @@
 """Tests for morie.fn.vgpsr -- Partial sill ratio"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vgpsr import partial_sill_ratio
 

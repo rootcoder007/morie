@@ -1,6 +1,6 @@
 """Tests for unitnr.unit_nonresponse."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.unitnr import unit_nonresponse

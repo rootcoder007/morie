@@ -1,6 +1,6 @@
 """Tests for ghs014.ghosal_ch3_dirichlet_posterior_mean."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs014 import ghosal_ch3_dirichlet_posterior_mean
 

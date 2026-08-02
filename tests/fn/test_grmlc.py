@@ -1,6 +1,6 @@
 """Tests for grmlc.geron_classification_mlp_output."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grmlc import geron_classification_mlp_output
 

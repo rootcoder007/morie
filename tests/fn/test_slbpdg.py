@@ -1,6 +1,6 @@
 """Tests for slbpdg.slice_break_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.slbpdg import slice_break_dp
 

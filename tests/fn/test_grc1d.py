@@ -1,6 +1,6 @@
 """Tests for grc1d.geron_causal_1d_cnn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.grc1d import geron_causal_1d_cnn

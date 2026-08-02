@@ -1,6 +1,6 @@
 """Tests for gh_c3_14.ghosal_mpt_prior."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c3_14 import ghosal_mpt_prior
 

@@ -1,6 +1,6 @@
 """cttitc: corrected item-total correlation (Nunnally & Bernstein 1994)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cttitc import ctt_item_total_corr as itc

@@ -1,6 +1,6 @@
 """Tests for rgsavg.rangayyan_sync_average."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsavg import rangayyan_sync_average
 

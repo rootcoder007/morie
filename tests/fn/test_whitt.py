@@ -1,6 +1,6 @@
 """Tests for morie.fn.whitt — White's test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.whitt import white_test
 

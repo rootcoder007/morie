@@ -1,6 +1,6 @@
 """Tests for rng006.rangayyan_ch3_entropy_continuous."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng006 import rangayyan_ch3_entropy_continuous
 

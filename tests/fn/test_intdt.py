@@ -1,6 +1,6 @@
 """Tests for morie.fn.intdt — inter-event interval detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.intdt import intdt, interval_detect

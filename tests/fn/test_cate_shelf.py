@@ -8,7 +8,7 @@ finite-tree correction removed; the GATE reports whether its groups
 were cut from the estimate they summarise.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.catep import cate_estimation

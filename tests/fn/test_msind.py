@@ -1,6 +1,6 @@
 """Tests for morie.fn.msind -- INDSCAL individual differences MDS"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msind import indscal
 

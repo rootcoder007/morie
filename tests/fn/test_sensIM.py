@@ -1,6 +1,6 @@
 """Tests for sensIM.imai_sensitivity_rho."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sensIM import imai_sensitivity_rho

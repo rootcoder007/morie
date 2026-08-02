@@ -1,6 +1,6 @@
 """Tests for agdirn.alphazero_dirichlet_noise."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agdirn import alphazero_dirichlet_noise
 

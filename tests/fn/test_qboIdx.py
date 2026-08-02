@@ -1,6 +1,6 @@
 """Tests for qboIdx.qbo."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.qboIdx import qbo
 

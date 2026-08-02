@@ -1,6 +1,6 @@
 """Tests for acwhe.private_accuracy_tradeoff."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.acwhe import private_accuracy_tradeoff
 

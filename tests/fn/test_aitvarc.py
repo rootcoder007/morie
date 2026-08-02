@@ -1,6 +1,6 @@
 """Tests for aitvarc.aitchison_clr_covariance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitvarc import aitchison_clr_covariance
 

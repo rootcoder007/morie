@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptpcf -- Pair correlation function g(r)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptpcf import pair_corr_fn
 

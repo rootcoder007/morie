@@ -1,6 +1,6 @@
 """Tests for morie.fn.anddr -- Anderson-Darling test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.anddr import anderson_darling

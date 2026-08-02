@@ -1,6 +1,6 @@
 """Tests for wfrep.weighted_frequency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wfrep import weighted_frequency
 

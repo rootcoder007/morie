@@ -1,6 +1,6 @@
 """Tests for morie.fn.holo_h -- histogram."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")

@@ -1,6 +1,6 @@
 """Tests for abcgp.abc_gp_emulator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.abcgp import abc_gp_emulator
 

@@ -1,6 +1,6 @@
 """Tests for km044.kamath_ch3_prompt_search_argmax."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km044 import kamath_ch3_prompt_search_argmax
 

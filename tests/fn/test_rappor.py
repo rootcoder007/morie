@@ -1,6 +1,6 @@
 """Tests for rappor.rappor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rappor import rappor
 

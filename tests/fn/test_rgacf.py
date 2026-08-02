@@ -1,6 +1,6 @@
 """Tests for rgacf.rangayyan_acf_estimate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgacf import rangayyan_acf_estimate
 

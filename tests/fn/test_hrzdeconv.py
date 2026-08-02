@@ -1,6 +1,6 @@
 """Tests for hrzdeconv.horowitz_deconvolution_density."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzdeconv import horowitz_deconvolution_density
 

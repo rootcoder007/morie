@@ -1,6 +1,6 @@
 """Tests for rghompr.rangayyan_homomorphic_pred."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rghompr import rangayyan_homomorphic_pred
 

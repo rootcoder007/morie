@@ -1,6 +1,6 @@
 """Tests for km144.kamath_ch9_mm_instr_predict."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km144 import kamath_ch9_mm_instr_predict
 

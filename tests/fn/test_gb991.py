@@ -1,6 +1,6 @@
 """Tests for gb991.gibbons_conover_scale."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb991 import gibbons_conover_scale
 

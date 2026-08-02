@@ -1,7 +1,7 @@
 """Kosorok tranche 3: delta method, Kaplan-Meier derivatives,
 M-estimators, KMT, Ch. 1 models."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr022 import kosorok_ch1_multiplicative_intensity

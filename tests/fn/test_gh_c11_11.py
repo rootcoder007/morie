@@ -1,6 +1,6 @@
 """Tests for gh_c11_11.ghosal_rescal_gp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c11_11 import ghosal_rescal_gp
 

@@ -1,6 +1,6 @@
 """Tests for rgeqn5b.rangayyan_ch5_waveform_length."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn5b import rangayyan_ch5_waveform_length
 

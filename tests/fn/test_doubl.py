@@ -1,6 +1,6 @@
 """Tests for morie.fn.doubl — Doubling time."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.doubl import doubling_time

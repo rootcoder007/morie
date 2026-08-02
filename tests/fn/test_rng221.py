@@ -1,6 +1,6 @@
 """Tests for rng221.rangayyan_ch4_matched_filter_impulse_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng221 import rangayyan_ch4_matched_filter_impulse_response
 

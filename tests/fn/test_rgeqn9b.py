@@ -1,6 +1,6 @@
 """Tests for rgeqn9b.rangayyan_ch9_ica_ambiguity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn9b import rangayyan_ch9_ica_ambiguity
 

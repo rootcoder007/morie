@@ -1,6 +1,6 @@
 """Tests for morie.fn.cpelt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cpelt import cpelt
 

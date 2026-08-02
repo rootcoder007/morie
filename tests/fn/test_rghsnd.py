@@ -1,6 +1,6 @@
 """Tests for rghsnd.rangayyan_heart_sound_id."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rghsnd import rangayyan_heart_sound_id
 

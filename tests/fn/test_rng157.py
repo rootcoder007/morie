@@ -1,6 +1,6 @@
 """Tests for rng157.rangayyan_ch3_lms_squared_error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng157 import rangayyan_ch3_lms_squared_error
 

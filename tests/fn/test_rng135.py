@@ -1,6 +1,6 @@
 """Tests for rng135.rangayyan_ch3_butterworth_highpass_dft_indexed."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng135 import rangayyan_ch3_butterworth_highpass_dft_indexed
 

@@ -1,6 +1,6 @@
 """Tests for david_j_morin_probability_for_the_enthusiastic_beginner7u524.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_unnumbered_524."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7u524 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_unnumbered_524,

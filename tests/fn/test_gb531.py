@@ -1,6 +1,6 @@
 """Tests for gb531.gibbons_quantile_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb531 import gibbons_quantile_test
 

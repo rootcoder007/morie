@@ -1,6 +1,6 @@
 """Tests for gwasl1.gwas_linear."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gwasl1 import gwas_linear
 

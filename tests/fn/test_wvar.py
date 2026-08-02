@@ -1,6 +1,6 @@
 """Tests for wvar.weighted_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wvar import weighted_variance
 

@@ -1,6 +1,6 @@
 """Tests for ghstk.ghosal_stick_breaking_trunc."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghstk import ghosal_stick_breaking_trunc
 

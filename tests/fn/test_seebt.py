@@ -1,6 +1,6 @@
 """Test seebt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.seebt import seebt
 

@@ -1,6 +1,6 @@
 """Tests for longMd.longitudinal_mediation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.longMd import longitudinal_mediation

@@ -1,6 +1,6 @@
 """Tests for morie.fn.histip — histogram ideal points."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.histip import histip
 

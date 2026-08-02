@@ -1,6 +1,6 @@
 """Tests for wenge.weight_based_mediation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wenge import weight_based_mediation
 

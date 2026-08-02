@@ -1,6 +1,6 @@
 """Tests for nignst.normal_inv_gamma."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nignst import normal_inv_gamma
 

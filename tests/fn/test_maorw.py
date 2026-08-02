@@ -1,6 +1,6 @@
 """Tests for maorw.ma_orwin_fsn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.maorw import ma_orwin_fsn
 

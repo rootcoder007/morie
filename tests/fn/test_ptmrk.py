@@ -1,6 +1,6 @@
 """Tests for morie.fn.ptmrk -- Marked point pattern analysis"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ptmrk import marked_pp
 

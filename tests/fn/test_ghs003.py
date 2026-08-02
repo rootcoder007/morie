@@ -1,6 +1,6 @@
 """Tests for ghs003.ghosal_ch2_basis_truncation_error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghs003 import ghosal_ch2_basis_truncation_error
 

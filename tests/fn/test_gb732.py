@@ -1,6 +1,6 @@
 """Tests for gb732.gibbons_linrank_mean_var."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb732 import gibbons_linrank_mean_var
 

@@ -1,6 +1,6 @@
 """Tests for rcaus.random_cause_refutation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rcaus import random_cause_refutation
 

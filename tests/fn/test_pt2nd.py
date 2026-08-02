@@ -1,6 +1,6 @@
 """Tests for morie.fn.pt2nd -- Second-order point pattern stats"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pt2nd import second_order_pp
 

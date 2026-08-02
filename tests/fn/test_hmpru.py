@@ -1,6 +1,6 @@
 """Tests for hmpru.geron_weight_pruning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmpru import geron_weight_pruning
 

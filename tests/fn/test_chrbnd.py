@@ -1,6 +1,6 @@
 """Tests for chrbnd.chernozhukov_rosen_bounds."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chrbnd import chernozhukov_rosen_bounds
 

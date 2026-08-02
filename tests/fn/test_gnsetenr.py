@@ -1,6 +1,6 @@
 """Tests for gnsetenr.geneset_enrichment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gnsetenr import geneset_enrichment
 

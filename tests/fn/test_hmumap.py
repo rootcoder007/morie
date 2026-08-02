@@ -1,6 +1,6 @@
 """Tests for hmumap.geron_umap."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmumap import geron_umap
 

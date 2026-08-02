@@ -1,6 +1,6 @@
 """Tests for bpetk.bpe_tokenizer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bpetk import bpe_tokenizer
 

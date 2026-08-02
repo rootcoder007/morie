@@ -1,6 +1,6 @@
 """Tests for agmupv.muzero_predict_value."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agmupv import muzero_predict_value
 

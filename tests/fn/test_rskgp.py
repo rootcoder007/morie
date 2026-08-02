@@ -1,6 +1,6 @@
 """Tests for morie.fn.rskgp — risk group profile."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rskgp import risk_group_profile

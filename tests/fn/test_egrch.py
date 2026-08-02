@@ -1,6 +1,6 @@
 """Tests for egrch.egarch_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.egrch import egarch_model

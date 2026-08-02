@@ -1,6 +1,6 @@
 """Tests for grfp6.geron_fp16_mixed_precision."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grfp6 import geron_fp16_mixed_precision
 

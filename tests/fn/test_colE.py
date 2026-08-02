@@ -1,6 +1,6 @@
 """Tests for colE.cold_start_user."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.colE import cold_start_user
 

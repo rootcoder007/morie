@@ -1,6 +1,6 @@
 """Tests for sgtcheb.sgt_cheeger_bound."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtcheb import sgt_cheeger_bound
 

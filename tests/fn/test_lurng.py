@@ -1,6 +1,6 @@
 """Tests for lurng."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lurng import lurng

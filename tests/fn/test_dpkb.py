@@ -1,6 +1,6 @@
 """Tests for dpkb.k_anonymity."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dpkb import k_anonymity
 

@@ -1,6 +1,6 @@
 """Tests for seirep.seir_compartmental."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.seirep import seir_compartmental
 

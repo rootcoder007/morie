@@ -1,6 +1,6 @@
 """Tests for gpvarF.gp_variance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpvarF import gp_variance
 

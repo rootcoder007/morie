@@ -1,6 +1,6 @@
 """Tests for reldge.reliability_gebv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.reldge import reliability_gebv
 

@@ -1,6 +1,6 @@
 """Tests for springer_texts_in_statistics_series_gareth_james_daniela_wit8e2.springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_8_equation_2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.springer_texts_in_statistics_series_gareth_james_daniela_wit8e2 import (
     springer_texts_in_statistics_series_gareth_james_daniela_wit_chapter_8_equation_2,

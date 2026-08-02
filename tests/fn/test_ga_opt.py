@@ -1,6 +1,6 @@
 """Tests for ga_opt.genetic_algorithm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ga_opt import genetic_algorithm
 

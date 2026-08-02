@@ -1,6 +1,6 @@
 """Tests for remlf.reml_log_likelihood."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.remlf import reml_log_likelihood
 

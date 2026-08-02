@@ -1,6 +1,6 @@
 """Tests for morie.fn.nash — Nash equilibrium."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.nash import nash_equilibrium
 

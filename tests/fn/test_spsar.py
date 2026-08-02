@@ -5,7 +5,7 @@ draws rather than an (n, n) weights matrix, so it raised "shape mismatch
 among x, y, w" and had never passed.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spsar import schabenberger_sar_model

@@ -1,6 +1,6 @@
 """wdemb: word-embedding lookup (Mikolov et al. 2013)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.wdemb import word_embedding as we

@@ -1,6 +1,6 @@
 """Tests for morie.fn.agplt."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agplt import agplt
 

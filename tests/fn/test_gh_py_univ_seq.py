@@ -1,6 +1,6 @@
 """Tests for gh_py_univ_seq.ghosal_py_universal_sequence."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_py_univ_seq import ghosal_py_universal_sequence
 

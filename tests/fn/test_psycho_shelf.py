@@ -13,7 +13,7 @@ answer: a different heterogeneity estimator is a different pooled
 effect, not a footnote.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._psycho import anova_two_way, spearman_brown

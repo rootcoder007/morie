@@ -1,6 +1,6 @@
 """Tests for edward_frenkel_love_and_math_the_heart_of_hidden_reality18u36.edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_18_unnumbered_36."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.edward_frenkel_love_and_math_the_heart_of_hidden_reality18u36 import (
     edward_frenkel_love_and_math_the_heart_of_hidden_reality_chapter_18_unnumbered_36,

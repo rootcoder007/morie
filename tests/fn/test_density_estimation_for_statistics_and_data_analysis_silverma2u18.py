@@ -1,6 +1,6 @@
 """Tests for density_estimation_for_statistics_and_data_analysis_silverma2u18.density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_18."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.density_estimation_for_statistics_and_data_analysis_silverma2u18 import (
     density_estimation_for_statistics_and_data_analysis_silverma_chapter_2_unnumbered_18,

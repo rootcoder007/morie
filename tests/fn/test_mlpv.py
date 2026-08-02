@@ -1,6 +1,6 @@
 """Tests for mlpv.multilevel_pseudo_variance_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mlpv import multilevel_pseudo_variance_ratio
 

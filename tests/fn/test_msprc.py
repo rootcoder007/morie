@@ -1,6 +1,6 @@
 """Tests for morie.fn.msprc -- Procrustes correlation"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msprc import procrustes_corr
 

@@ -1,6 +1,6 @@
 """Tests for hhtfn.py - Hilbert-Huang Transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hhtfn import hhtfn, hilbert_huang
 

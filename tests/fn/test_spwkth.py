@@ -1,6 +1,6 @@
 """Tests for spwkth.schabenberger_wiener_khinchin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spwkth import schabenberger_wiener_khinchin
 

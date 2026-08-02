@@ -1,6 +1,6 @@
 """Tests for gb981.gibbons_scale_ci."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb981 import gibbons_scale_ci
 

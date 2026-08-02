@@ -1,6 +1,6 @@
 """Tests for gh_mises_eff.ghosal_mises_efficiency."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_mises_eff import ghosal_mises_efficiency
 

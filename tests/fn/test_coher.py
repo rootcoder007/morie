@@ -1,6 +1,6 @@
 """Tests for coher -- Coherence between two signals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.coher import coherence

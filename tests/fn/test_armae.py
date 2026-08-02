@@ -1,6 +1,6 @@
 """Tests for armae.py - ARMA estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.armae import arma_estimate_fn, armae
 

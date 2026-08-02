@@ -1,6 +1,6 @@
 """Tests for varcal.variant_calling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.varcal import variant_calling
 

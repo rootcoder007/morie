@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrjcn -- Join count statistic"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrjcn import join_count
 

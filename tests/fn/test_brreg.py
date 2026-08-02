@@ -1,6 +1,6 @@
 """Tests for brreg.bayesian_ridge_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.brreg import bayesian_ridge_regression
 

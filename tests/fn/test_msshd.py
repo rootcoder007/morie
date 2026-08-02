@@ -1,6 +1,6 @@
 """Tests for morie.fn.msshd -- Shepard disparities"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msshd import shepard_dist
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.pslin."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.pslin import pslin
 

@@ -1,6 +1,6 @@
 """Tests for taroni.taroni_ware."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.taroni import taroni_ware
 

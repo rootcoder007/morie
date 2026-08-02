@@ -1,6 +1,6 @@
 """Tests for gh_pd_2param.ghosal_poisson_dirichlet."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_pd_2param import ghosal_poisson_dirichlet
 

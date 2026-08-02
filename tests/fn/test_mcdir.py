@@ -1,6 +1,6 @@
 """Tests for morie.fn.mcdir -- McDiarmid bounded-differences inequality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mcdir import mcdiarmid_bound

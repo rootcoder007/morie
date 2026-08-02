@@ -1,6 +1,6 @@
 """Tests for hmcec.geron_cross_entropy_cost."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcec import geron_cross_entropy_cost
 

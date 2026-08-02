@@ -1,6 +1,6 @@
 """Tests for morie.fn.clse — Clustered standard errors."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clse import clustered_se
 

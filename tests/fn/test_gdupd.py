@@ -1,6 +1,6 @@
 """Tests for gdupd.gradient_descent_update."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gdupd import gradient_descent_update
 

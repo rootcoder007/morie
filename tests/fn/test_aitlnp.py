@@ -1,6 +1,6 @@
 """Tests for aitlnp.logistic_normal_pdf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.aitlnp import logistic_normal_pdf
 

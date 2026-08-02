@@ -1,6 +1,6 @@
 """lradw: linear learning-rate warmup (Vaswani et al. 2017)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lradw import lr_warmup as warm

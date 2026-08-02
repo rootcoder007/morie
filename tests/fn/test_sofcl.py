@@ -1,6 +1,6 @@
 """Test sofcl."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sofcl import sofcl
 

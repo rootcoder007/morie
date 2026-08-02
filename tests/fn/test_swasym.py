@@ -1,6 +1,6 @@
 """Tests for morie.fn.swasym."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.swasym import swasym
 

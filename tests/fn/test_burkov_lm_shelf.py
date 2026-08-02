@@ -12,7 +12,7 @@ Source: Burkov (2025) *The Hundred-Page Language Models Book*.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.b101 import burkov_lm_ch1_linear_function

@@ -1,9 +1,13 @@
 """Equivalence tests: _signal_core spectral tail vs scipy.signal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
-import scipy.signal as sg
+import pytest
+
+sg = pytest.importorskip(
+    "scipy.signal",
+    reason="oracle test: compares the native cores against real scipy where it exists")
 
 from morie.fn import _signal_core as mg
 

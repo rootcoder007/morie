@@ -1,6 +1,6 @@
 """Tests for rpdur — placement duration."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.rpdur import rplace_duration
 

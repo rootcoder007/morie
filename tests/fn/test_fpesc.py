@@ -1,6 +1,6 @@
 """Tests for fpesc.py - FPE score."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fpesc import fpe_score_fn, fpesc
 

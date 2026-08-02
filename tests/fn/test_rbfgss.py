@@ -1,6 +1,6 @@
 """Tests for rbfgss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rbfgss import rbfgss

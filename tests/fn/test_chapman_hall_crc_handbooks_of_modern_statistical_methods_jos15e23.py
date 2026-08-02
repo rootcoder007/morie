@@ -1,6 +1,6 @@
 """Tests for chapman_hall_crc_handbooks_of_modern_statistical_methods_jos15e23.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_15_equation_23."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.chapman_hall_crc_handbooks_of_modern_statistical_methods_jos15e23 import (
     chapman_hall_crc_handbooks_of_modern_statistical_methods_jos_chapter_15_equation_23,

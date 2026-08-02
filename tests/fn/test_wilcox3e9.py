@@ -1,6 +1,6 @@
 """Tests for wilcox3e9.wilcox_chapter_3_equation_9."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wilcox3e9 import wilcox_chapter_3_equation_9
 

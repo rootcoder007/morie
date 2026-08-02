@@ -1,6 +1,6 @@
 """Tests for kmmbi.kamath_membership_inference."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.kmmbi import kamath_membership_inference
 

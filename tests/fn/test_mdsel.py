@@ -1,6 +1,6 @@
 """Tests for morie.fn.mdsel — model selection via CV loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mdsel import mdsel

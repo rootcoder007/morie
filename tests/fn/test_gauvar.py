@@ -1,6 +1,6 @@
 """Tests for gauvar.gaussian_variogram_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gauvar import gaussian_variogram_model
 

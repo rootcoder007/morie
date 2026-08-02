@@ -1,6 +1,6 @@
 """Tests for gb731.gibbons_linrank_moments."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb731 import gibbons_linrank_moments
 

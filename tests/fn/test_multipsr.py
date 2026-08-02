@@ -1,6 +1,6 @@
 """Tests for multipsr.multi_stage_sampling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.multipsr import multi_stage_sampling
 

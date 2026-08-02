@@ -1,6 +1,6 @@
 """Tests for rng198.rangayyan_ch4_dot_product_discrete."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng198 import rangayyan_ch4_dot_product_discrete
 

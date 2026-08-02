@@ -5,7 +5,7 @@ These modules previously computed `np.median(arg)` and a NaN standard
 error while ignoring every real argument. Each test therefore asserts
 against the closed form the docstring states."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgmavg import rangayyan_moving_average

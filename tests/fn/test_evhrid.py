@@ -1,6 +1,6 @@
 """Tests for evhrid.evt_husler_reiss_dep."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.evhrid import evt_husler_reiss_dep
 

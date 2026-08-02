@@ -1,6 +1,6 @@
 """Tests for jacqkn.jacquez_k_nn_test (Jacquez 1996)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.jacqkn import _knn_indicator, jacquez_k_nn_test

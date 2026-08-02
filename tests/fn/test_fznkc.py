@@ -1,6 +1,6 @@
 """Tests for fznkc.fauzi_naive_kernel_cvm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fznkc import fauzi_naive_kernel_cvm
 

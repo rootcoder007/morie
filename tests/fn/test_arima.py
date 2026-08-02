@@ -1,6 +1,6 @@
 """Tests for morie.fn.arima — ARIMA fitting."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.arima import arima_fit

@@ -1,6 +1,6 @@
 """Tests for morie.fn.spidm -- web graph community detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spidm import spidm, web_graph_communities

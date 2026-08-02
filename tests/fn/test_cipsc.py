@@ -1,6 +1,6 @@
 """Tests for cipsc.caliper_psm."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cipsc import caliper_psm

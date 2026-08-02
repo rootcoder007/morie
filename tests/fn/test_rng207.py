@@ -1,6 +1,6 @@
 """Tests for rng207.rangayyan_ch4_matched_filter_input_ft."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng207 import rangayyan_ch4_matched_filter_input_ft
 

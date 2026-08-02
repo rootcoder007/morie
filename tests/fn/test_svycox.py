@@ -1,6 +1,6 @@
 """Tests for svycox.survey_cox."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svycox import survey_cox
 

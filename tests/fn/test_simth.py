@@ -1,6 +1,6 @@
 """Tests for morie.fn.simth -- simulate thermometer."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.simth import simth, simulate_thermometer
 

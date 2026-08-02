@@ -1,6 +1,6 @@
 """Tests for bivand20137u282.bivand2013_chapter_7_unnumbered_282."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bivand20137u282 import bivand2013_chapter_7_unnumbered_282
 

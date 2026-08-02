@@ -1,6 +1,6 @@
 """Tests for agmurt.muzero_reanalyze_target."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agmurt import muzero_reanalyze_target
 

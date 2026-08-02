@@ -1,6 +1,6 @@
 """Tests for shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a1u68.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_1_unnumbered_68."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a1u68 import (
     shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_1_unnumbered_68,

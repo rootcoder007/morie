@@ -1,4 +1,4 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for morie.fn.inspfr — inspection fail rate."""
 
 from morie.fn.inspfr import inspection_fail_rate

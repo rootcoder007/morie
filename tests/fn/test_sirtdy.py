@@ -1,6 +1,6 @@
 """Tests for sirtdy.sir_age_structured."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sirtdy import sir_age_structured
 

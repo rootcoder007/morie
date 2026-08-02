@@ -1,6 +1,6 @@
 """Tests for andmnh.andrews_monahan_hac."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.andmnh import andrews_monahan_hac
 

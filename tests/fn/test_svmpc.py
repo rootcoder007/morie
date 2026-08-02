@@ -1,6 +1,6 @@
 """Tests for morie.fn.svmpc -- Multi-party spatial competition"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svmpc import multiparty_comp
 

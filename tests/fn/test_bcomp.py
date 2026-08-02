@@ -1,6 +1,6 @@
 """Tests for morie.fn.bcomp — Bayesian model comparison."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bcomp import bayesian_model_compare
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.lmslx."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lmslx import lmslx
 

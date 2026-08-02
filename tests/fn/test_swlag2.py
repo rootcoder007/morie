@@ -1,6 +1,6 @@
 """Tests for morie.fn.swlag2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.swlag2 import swlag2
 

@@ -1,6 +1,6 @@
 """Tests for voltgr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.voltgr import vol_tgarch_fit

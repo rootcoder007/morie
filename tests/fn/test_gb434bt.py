@@ -1,6 +1,6 @@
 """Tests for gb434bt (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb434bt import gibbons_ks_bt_formula

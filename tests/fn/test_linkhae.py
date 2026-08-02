@@ -1,6 +1,6 @@
 """Tests for linkhae.linking_haebara."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.linkhae import linking_haebara
 

@@ -1,6 +1,6 @@
 """Tests for cov2s.two_sample_coverage."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cov2s import two_sample_coverage

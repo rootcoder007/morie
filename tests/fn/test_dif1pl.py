@@ -1,6 +1,6 @@
 """Tests for dif1pl.dif_mantel_haenszel."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dif1pl import dif_mantel_haenszel
 

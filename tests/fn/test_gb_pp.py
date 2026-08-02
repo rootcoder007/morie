@@ -1,6 +1,6 @@
 """Tests for gb_pp (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_pp import gibbons_pp_plot

@@ -1,6 +1,6 @@
 """Tests for gb1421t (Gibbons shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb1421t import gibbons_phi_cramers_v

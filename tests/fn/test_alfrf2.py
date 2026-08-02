@@ -1,6 +1,6 @@
 """Tests for alfrf2.rfdiffusion_protein."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.alfrf2 import rfdiffusion_protein
 

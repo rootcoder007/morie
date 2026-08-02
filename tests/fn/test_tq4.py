@@ -1,6 +1,6 @@
 """Tests for morie.fn.tq4 — 4-bit TurboQuant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.tq4 import turboquant_4bit
 

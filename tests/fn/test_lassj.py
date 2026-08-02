@@ -1,6 +1,6 @@
 """Tests for lassj.lasso_objective."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lassj import lasso_objective
 

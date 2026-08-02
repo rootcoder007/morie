@@ -1,6 +1,6 @@
 """Tests for gh_c13_13.ghosal_cox_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c13_13 import ghosal_cox_model
 

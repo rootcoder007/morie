@@ -1,6 +1,6 @@
 """Tests for drbsze.dr_did_size_correction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drbsze import dr_did_size_correction
 

@@ -1,6 +1,6 @@
 """spstvg -- spatio-temporal semivariogram, Schabenberger & Gotway Sec. 9.4."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_st import (semivariogram_from_covariance,

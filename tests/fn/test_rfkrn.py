@@ -1,6 +1,6 @@
 """Tests for rfkrn.random_fourier_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rfkrn import random_fourier_features
 

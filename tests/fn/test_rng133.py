@@ -1,6 +1,6 @@
 """Tests for rng133.rangayyan_ch3_butterworth_lowpass_direct_specification."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng133 import rangayyan_ch3_butterworth_lowpass_direct_specification
 

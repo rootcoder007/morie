@@ -1,6 +1,6 @@
 """Tests for rgsprep.rangayyan_sparse_rep."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgsprep import rangayyan_sparse_rep
 

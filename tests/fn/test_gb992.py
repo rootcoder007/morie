@@ -1,6 +1,6 @@
 """Tests for gb992.gibbons_fligner_killeen."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb992 import gibbons_fligner_killeen
 

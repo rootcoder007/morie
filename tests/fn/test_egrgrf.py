@@ -1,6 +1,6 @@
 """Tests for egrgrf.egregious_loss_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.egrgrf import egregious_loss_forest
 

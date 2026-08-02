@@ -1,6 +1,6 @@
 """Tests for volsabr.vol_sabr_implied."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.volsabr import vol_sabr_implied
 

@@ -6,7 +6,7 @@ construction. Nothing is anchored to whatever the code happened to
 print.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._did import add_intercept, ols_fit

@@ -1,6 +1,6 @@
 """Tests for gb_cvmc.gibbons_cramer_von_mises."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_cvmc import gibbons_cramer_von_mises
 

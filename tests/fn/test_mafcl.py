@@ -1,6 +1,6 @@
 """Tests for mafcl.maf_calculation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mafcl import maf_calculation
 

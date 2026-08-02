@@ -1,6 +1,6 @@
 """Tests for btvb.boot_var_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.btvb import boot_var_estimator
 

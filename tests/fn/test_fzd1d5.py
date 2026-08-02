@@ -1,6 +1,6 @@
 """Tests for fzd1d5.fauzi_conditions_d1_d5."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzd1d5 import fauzi_conditions_d1_d5
 

@@ -1,7 +1,7 @@
 """Tests for morie.fn.rvflh -- Causal reversal test."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import TestResult
 from morie.fn.rvflh import causal_reversal_test, rvflh

@@ -6,7 +6,7 @@ p.107). The 2PL item-response form is
     P(yea | x_i) = logistic(alpha_j * x_i - beta_j)
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.irtsp import irt_spatial as irt

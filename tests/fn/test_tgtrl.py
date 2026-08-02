@@ -1,6 +1,6 @@
 """Tests for morie.fn.tgtrl — Target trial emulation."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.tgtrl import target_trial

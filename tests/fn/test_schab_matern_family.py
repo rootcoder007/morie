@@ -6,9 +6,9 @@ nu = 1 must reduce to, so those are exact targets rather than
 self-generated numbers.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy.special import kv
+from morie.fn._sci_core import kv
 
 from morie.fn.spmatr import schabenberger_matern_covariance as matern
 from morie.fn.spbesf import schabenberger_bessel_function as bessel_k

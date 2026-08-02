@@ -1,6 +1,6 @@
 """He who would learn to fly one day must first learn to stand and walk. — Friedrich Nietzsche"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_4u16 import (
     christopher_gandrud_author_reproducible_research_with_r_and__chapter_4_unnumbered_16,

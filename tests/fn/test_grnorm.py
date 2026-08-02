@@ -1,6 +1,6 @@
 """Tests for grnorm.geron_normal_equation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grnorm import geron_normal_equation
 

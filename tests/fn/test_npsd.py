@@ -1,6 +1,6 @@
 """Test noise_psd (npsd)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.npsd import noise_psd, npsd

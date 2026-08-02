@@ -1,6 +1,6 @@
 """The art of doing mathematics consists in finding that special case which contains all the germs of generality. — David Hilbert"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hubsa import hits_hubs_authorities
 

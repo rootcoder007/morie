@@ -3,7 +3,7 @@
     sliding window + strided global tokens + optional random connections
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spqkv import sparse_attention as sa

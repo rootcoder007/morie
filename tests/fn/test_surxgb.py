@@ -1,6 +1,6 @@
 """Tests for surxgb.xgb_survival."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.surxgb import xgb_survival
 

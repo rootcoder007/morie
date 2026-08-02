@@ -1,6 +1,6 @@
 """Tests for morie.fn.svcmp -- Committee median voter model"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.svcmp import committee_med
 

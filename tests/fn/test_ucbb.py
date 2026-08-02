@@ -1,6 +1,6 @@
 """Tests for ucbb.ucb_bandit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ucbb import ucb_bandit
 

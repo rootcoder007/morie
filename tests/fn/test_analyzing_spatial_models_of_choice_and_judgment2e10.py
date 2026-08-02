@@ -1,6 +1,6 @@
 """Tests for analyzing_spatial_models_of_choice_and_judgment2e10.analyzing_spatial_models_of_choice_and_judgment_chapter_2_equation_10."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.analyzing_spatial_models_of_choice_and_judgment2e10 import (
     analyzing_spatial_models_of_choice_and_judgment_chapter_2_equation_10,

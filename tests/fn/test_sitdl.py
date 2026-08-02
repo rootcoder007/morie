@@ -1,6 +1,6 @@
 """Tests for morie.fn.sitdl -- per-item detail within subscale."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn.sitdl import subscale_item_detail
 

@@ -1,6 +1,6 @@
 """Tests for ssmpar.ssm_parallel_scan."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ssmpar import ssm_parallel_scan
 

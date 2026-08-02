@@ -1,6 +1,6 @@
 """Tests for morie.fn.crdsc -- scale coordinates."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crdsc import crdsc, scale_coordinates
 

@@ -1,6 +1,6 @@
 """rng016: ensemble-average ACF (Rangayyan 2024, Eq. 3.16/3.17, p. 96)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rng016 import rangayyan_ch3_acf_continuous as acf

@@ -1,6 +1,6 @@
 """Tests for morie.fn.pnreg — Penalized kernel regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.pnreg import pnreg

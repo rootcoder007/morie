@@ -1,6 +1,6 @@
 """Tests for morie.fn.powfit -- power law fit."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.powfit import power_law_fit, powfit

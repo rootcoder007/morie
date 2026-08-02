@@ -1,6 +1,6 @@
 """Tests for rgwavstr.rangayyan_wavelet_struct."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgwavstr import rangayyan_wavelet_struct
 

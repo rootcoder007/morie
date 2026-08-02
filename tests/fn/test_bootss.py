@@ -1,6 +1,6 @@
 """Tests for bootss.bootstrap_survey."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bootss import bootstrap_survey
 

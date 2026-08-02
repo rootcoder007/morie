@@ -1,6 +1,6 @@
 """Tests for rng110.rangayyan_ch3_ma_8point_sinc_frequency_response."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng110 import rangayyan_ch3_ma_8point_sinc_frequency_response
 

@@ -1,6 +1,6 @@
 """Tests for rgeqn2.rangayyan_ch2_multivariate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn2 import rangayyan_ch2_multivariate
 

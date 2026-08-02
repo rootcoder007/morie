@@ -1,6 +1,6 @@
 import sqlite3
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.modules import list_modules, run_module

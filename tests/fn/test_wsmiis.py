@@ -1,6 +1,6 @@
 """Tests for wsmiis.wasserman_importance_sampling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmiis import wasserman_importance_sampling
 

@@ -1,6 +1,6 @@
 """Tests for rng124.rangayyan_ch3_butterworth_squared_laplace."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng124 import rangayyan_ch3_butterworth_squared_laplace
 

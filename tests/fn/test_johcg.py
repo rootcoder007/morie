@@ -1,6 +1,6 @@
 """Tests for morie.fn.johcg -- Johansen cointegration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.johcg import johansen_test

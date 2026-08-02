@@ -1,6 +1,6 @@
 """Tests for sgtspc.sgt_spectrum."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtspc import sgt_spectrum
 

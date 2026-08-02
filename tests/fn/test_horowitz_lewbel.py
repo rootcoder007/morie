@@ -1,6 +1,6 @@
 """Lewbel's special-regressor estimator (Horowitz Sec. 4.5)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.hrzlew import horowitz_lewbel_estimator

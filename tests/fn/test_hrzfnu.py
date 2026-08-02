@@ -1,6 +1,6 @@
 """Tests for hrzfnu.horowitz_deconv_estimator."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzfnu import horowitz_deconv_estimator
 

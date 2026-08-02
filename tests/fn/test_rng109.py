@@ -1,6 +1,6 @@
 """Tests for rng109.rangayyan_ch3_ma_8point_recursive_transfer_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng109 import rangayyan_ch3_ma_8point_recursive_transfer_function
 

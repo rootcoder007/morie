@@ -1,6 +1,6 @@
 """Tests for otmd.ot_mahalanobis_distance_ot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otmd import ot_mahalanobis_distance_ot
 

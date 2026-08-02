@@ -1,6 +1,6 @@
 """Rangayyan biomedical template-B repairs."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgburg import rangayyan_burg_method

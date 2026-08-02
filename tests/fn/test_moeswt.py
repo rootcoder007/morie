@@ -1,6 +1,6 @@
 """Tests for moeswt.moe_switch_routing."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.moeswt import moe_switch_routing
 

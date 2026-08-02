@@ -1,6 +1,6 @@
 """Tests for morie.fn.dagre."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dagre import dagre
 

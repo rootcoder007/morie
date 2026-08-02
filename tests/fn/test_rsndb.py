@@ -1,6 +1,6 @@
 """Test rsndb."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rsndb import rsndb
 

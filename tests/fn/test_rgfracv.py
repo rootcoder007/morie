@@ -1,6 +1,6 @@
 """Tests for rgfracv.rangayyan_fractal_vag."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgfracv import rangayyan_fractal_vag
 

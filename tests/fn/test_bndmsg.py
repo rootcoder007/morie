@@ -1,6 +1,6 @@
 """Tests for bndmsg.bound_missing_outcome."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndmsg import bound_missing_outcome
 

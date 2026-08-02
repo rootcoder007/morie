@@ -1,6 +1,6 @@
 """Tests for gtruncwt.truncate_weights."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gtruncwt import truncate_weights
 

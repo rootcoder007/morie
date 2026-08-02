@@ -1,6 +1,6 @@
 """Tests for hedderich9u484.hedderich_chapter_9_unnumbered_484."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hedderich9u484 import hedderich_chapter_9_unnumbered_484
 

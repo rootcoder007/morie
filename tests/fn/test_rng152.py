@@ -1,6 +1,6 @@
 """Tests for rng152.rangayyan_ch3_wiener_frequency_response_snr_form."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng152 import rangayyan_ch3_wiener_frequency_response_snr_form
 

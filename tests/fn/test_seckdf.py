@@ -1,6 +1,6 @@
 """Tests for seckdf.hkdf_extract_expand."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.seckdf import hkdf_extract_expand
 

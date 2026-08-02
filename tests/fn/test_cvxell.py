@@ -1,6 +1,6 @@
 """Tests for cvxell.boyd_minvol_ellipsoid."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxell import boyd_minvol_ellipsoid
 

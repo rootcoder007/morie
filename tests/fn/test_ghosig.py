@@ -1,6 +1,6 @@
 """Tests for morie.fn.ghosig -- Ghost signal detection."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import TestResult
 from morie.fn.ghosig import ghosig, ghost_signal

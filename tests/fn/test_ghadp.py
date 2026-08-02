@@ -1,6 +1,6 @@
 """Tests for ghadp.ghosal_adaptation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ghadp import ghosal_adaptation
 

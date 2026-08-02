@@ -1,6 +1,6 @@
 """Tests for spansm.schabenberger_anselin_local_moran."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spansm import schabenberger_anselin_local_moran
 

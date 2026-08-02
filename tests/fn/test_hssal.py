@@ -1,6 +1,6 @@
 """Tests for morie.fn.hssal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hssal import hssal
 

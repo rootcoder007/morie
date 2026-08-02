@@ -1,6 +1,6 @@
 """Tests for morie.fn.msst1 -- Raw stress (Kruskal stress-1)"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msst1 import stress_raw
 

@@ -1,6 +1,6 @@
 """Tests for cvxgsa.boyd_generalized_p."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxgsa import boyd_generalized_p
 

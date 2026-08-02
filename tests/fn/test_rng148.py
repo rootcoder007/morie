@@ -1,6 +1,6 @@
 """Tests for rng148.rangayyan_ch3_wiener_convolution_relationship."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng148 import rangayyan_ch3_wiener_convolution_relationship
 

@@ -1,6 +1,6 @@
 """Tests for plsqs.pls_qsar."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.plsqs import pls_qsar
 

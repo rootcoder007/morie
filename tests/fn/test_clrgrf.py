@@ -1,6 +1,6 @@
 """Tests for clrgrf.clustered_grf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.clrgrf import clustered_grf
 

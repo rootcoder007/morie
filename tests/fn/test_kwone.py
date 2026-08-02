@@ -1,6 +1,6 @@
 """Tests for kwone (Kruskal-Wallis one-way ANOVA)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.kwone import kwone

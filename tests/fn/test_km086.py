@@ -1,6 +1,6 @@
 """Tests for km086.kamath_ch6_pll."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km086 import kamath_ch6_pll
 

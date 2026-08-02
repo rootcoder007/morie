@@ -1,6 +1,6 @@
 """Tests for lsdca.robust_lda."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.lsdca import robust_lda
 

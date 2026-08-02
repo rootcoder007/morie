@@ -1,6 +1,6 @@
 """Tests for hmonnx.geron_onnx_export."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmonnx import geron_onnx_export
 

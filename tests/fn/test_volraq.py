@@ -1,6 +1,6 @@
 """Tests for volraq."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volraq import vol_realised_quadratic_var

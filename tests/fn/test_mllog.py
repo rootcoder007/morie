@@ -1,6 +1,6 @@
 """Tests for mllog.ml_log_likelihood_regression."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mllog import ml_log_likelihood_regression
 

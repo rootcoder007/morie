@@ -1,6 +1,6 @@
 """Tests for morie.fn.amres — A-M residuals."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.amres import amres
 

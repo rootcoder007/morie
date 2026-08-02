@@ -1,6 +1,6 @@
 """Tests for hrzycp.horowitz_conditional_prediction."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hrzycp import horowitz_conditional_prediction
 

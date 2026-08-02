@@ -1,6 +1,6 @@
 """Tests for otpr.ot_partial_ot."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otpr import ot_partial_ot
 

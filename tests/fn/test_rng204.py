@@ -1,6 +1,6 @@
 """Tests for rng204.rangayyan_ch4_psd_from_acf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng204 import rangayyan_ch4_psd_from_acf
 

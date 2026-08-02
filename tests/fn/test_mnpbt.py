@@ -5,7 +5,7 @@ Cambridge University Press, for the GHK simulator. The module previously
 cited "Armstrong Ch 9"; that book has six chapters.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.mnpbt import multinomial_probit_spatial as mp

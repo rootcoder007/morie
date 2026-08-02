@@ -1,6 +1,6 @@
 """Tests for morie.fn.sfmemn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sfmemn import sfmemn
 

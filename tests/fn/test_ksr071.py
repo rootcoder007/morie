@@ -1,6 +1,6 @@
 """Tests for ksr071 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr071 import kosorok_ch3_log_profile_expansion

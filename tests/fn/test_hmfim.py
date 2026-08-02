@@ -1,6 +1,6 @@
 """Tests for hmfim.geron_feature_importance."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmfim import geron_feature_importance
 

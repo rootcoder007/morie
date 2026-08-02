@@ -1,6 +1,6 @@
 """Tests for heat-wave detection (WMO percentile + consecutive-days)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.heatwv import heat_wave_detect, heatwv

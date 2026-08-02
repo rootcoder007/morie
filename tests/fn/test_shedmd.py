@@ -1,6 +1,6 @@
 """Tests for shedmd.viral_shedding_model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.shedmd import viral_shedding_model
 

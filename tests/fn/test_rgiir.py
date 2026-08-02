@@ -5,7 +5,7 @@ noise: Butterworth lowpass filters" p.154 and Sec 3.7.2 "Removal of
 low-frequency noise: Butterworth highpass filters" p.161.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgiir import rangayyan_iir_filter

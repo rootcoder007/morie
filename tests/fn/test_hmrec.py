@@ -1,6 +1,6 @@
 """Tests for hmrec.geron_recall."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmrec import geron_recall
 

@@ -1,6 +1,6 @@
 """Tests for morie.fn.mscvx -- 2D convex hull"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mscvx import convex_hull_2d
 

@@ -1,6 +1,6 @@
 """Tests for spatiotemporal_methods_in_environmental_epidemiology_with_r_9u292.spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_292."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spatiotemporal_methods_in_environmental_epidemiology_with_r_9u292 import (
     spatiotemporal_methods_in_environmental_epidemiology_with_r__chapter_9_unnumbered_292,

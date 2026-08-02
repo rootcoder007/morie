@@ -1,6 +1,6 @@
 """Tests for robcov.sandwich_robust_se."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.robcov import sandwich_robust_se
 

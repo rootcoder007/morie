@@ -1,6 +1,6 @@
 """Tests for msmphr.msm_proportional_hazards."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.msmphr import msm_proportional_hazards

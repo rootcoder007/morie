@@ -1,6 +1,6 @@
 """Tests for andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u76.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_unnumbered_76."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp14u76 import (
     andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_14_unnumbered_76,

@@ -1,6 +1,6 @@
 """Tests for sntmod.sequential_target_models."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.sntmod import sequential_target_models

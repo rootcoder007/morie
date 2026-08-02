@@ -1,6 +1,6 @@
 """Tests for morie.fn.s_er -- ER subscale reliability."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.s_er import subscale_er
 

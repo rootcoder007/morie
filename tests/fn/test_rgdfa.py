@@ -13,7 +13,7 @@ control, 0.61 for the correlated one). Those anchors are what the identity
 tests below pin, alongside a re-derivation of F_d(l) from the definition.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.rgdfa import rangayyan_dfa

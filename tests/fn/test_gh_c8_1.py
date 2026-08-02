@@ -1,6 +1,6 @@
 """Tests for gh_c8_1.ghosal_crt_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c8_1 import ghosal_crt_def
 

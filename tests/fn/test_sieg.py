@@ -1,6 +1,6 @@
 """Tests for sieg.siegel_repeated."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sieg import siegel_repeated
 

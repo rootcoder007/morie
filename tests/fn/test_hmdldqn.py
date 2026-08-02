@@ -1,6 +1,6 @@
 """Tests for hmdldqn.geron_dueling_dqn."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmdldqn import geron_dueling_dqn
 

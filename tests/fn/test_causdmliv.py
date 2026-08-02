@@ -1,6 +1,6 @@
 """Tests for causdmliv.causal_dml_iv."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causdmliv import causal_dml_iv

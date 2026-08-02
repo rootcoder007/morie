@@ -9,7 +9,7 @@ Rosenthal (1985) *AJPS* 29:357-384.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.abndst import (

@@ -1,6 +1,6 @@
 """Tests for morie.fn.lambd — genomic inflation factor."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.lambd import genomic_inflation

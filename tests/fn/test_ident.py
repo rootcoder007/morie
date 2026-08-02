@@ -1,6 +1,6 @@
 """Tests for ident.identifiability_conditions."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ident import identifiability_conditions

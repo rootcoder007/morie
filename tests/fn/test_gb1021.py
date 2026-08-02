@@ -1,6 +1,6 @@
 """Tests for gb1021.gibbons_k_median_test."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1021 import gibbons_k_median_test
 

@@ -1,6 +1,6 @@
 """Tests for spvmr.schabenberger_variance_mean_ratio."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.spvmr import schabenberger_variance_mean_ratio
 

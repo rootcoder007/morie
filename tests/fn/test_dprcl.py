@@ -1,6 +1,6 @@
 """Tests for dprcl.dp_release_calibration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dprcl import dp_release_calibration
 

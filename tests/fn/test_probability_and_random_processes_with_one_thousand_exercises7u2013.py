@@ -1,6 +1,6 @@
 """Tests for probability_and_random_processes_with_one_thousand_exercises7u2013.probability_and_random_processes_with_one_thousand_exercises_chapter_7_unnumbered_2013."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.probability_and_random_processes_with_one_thousand_exercises7u2013 import (
     probability_and_random_processes_with_one_thousand_exercises_chapter_7_unnumbered_2013,

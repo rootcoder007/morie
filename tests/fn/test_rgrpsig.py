@@ -1,6 +1,6 @@
 """Tests for rgrpsig.rangayyan_resp_signal."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgrpsig import rangayyan_resp_signal
 

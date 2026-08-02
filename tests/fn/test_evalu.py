@@ -1,6 +1,6 @@
 """Tests for the E-value cluster (evalu, evaltw, causfromle, ucbias)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causfromle import causal_e_value

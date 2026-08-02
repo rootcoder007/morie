@@ -1,6 +1,6 @@
 """Tests for agmunw.muzero_n_step_value."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.agmunw import muzero_n_step_value
 

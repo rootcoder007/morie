@@ -1,6 +1,6 @@
 """Tests for ksr033 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr033 import kosorok_ch2_uniform_covering_number

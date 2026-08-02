@@ -1,6 +1,6 @@
 """Tests for morie.fn.mgwrr2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mgwrr2 import mgwrr2
 

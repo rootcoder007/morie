@@ -1,6 +1,6 @@
 """Tests for eslrft.esl_random_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.eslrft import esl_random_forest
 

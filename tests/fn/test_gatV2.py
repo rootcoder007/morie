@@ -1,6 +1,6 @@
 """Tests for gatV2.gat_v2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gatV2 import gat_v2
 

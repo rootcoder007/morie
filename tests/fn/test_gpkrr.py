@@ -1,6 +1,6 @@
 """Tests for gpkrr.gp_kernel_ridge_reg."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gpkrr import gp_kernel_ridge_reg
 

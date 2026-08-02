@@ -1,6 +1,6 @@
 """Tests for drcsa.dr_callaway_santanna."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.drcsa import dr_callaway_santanna
 

@@ -1,6 +1,6 @@
 """Tests for gb_plc.gibbons_placement_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb_plc import gibbons_placement_def
 

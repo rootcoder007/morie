@@ -1,6 +1,6 @@
 """Tests for gb1441.gibbons_fisher_exact."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb1441 import gibbons_fisher_exact
 

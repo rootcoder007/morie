@@ -1,6 +1,6 @@
 """Tests for gh_c13_9.ghosal_ntr_levy."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_c13_9 import ghosal_ntr_levy
 

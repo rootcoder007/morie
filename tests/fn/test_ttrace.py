@@ -1,6 +1,6 @@
 """Tests for ttrace.contact_tracing_yield."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ttrace import contact_tracing_yield
 

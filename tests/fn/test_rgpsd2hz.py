@@ -1,6 +1,6 @@
 """Tests for rgpsd2hz.rangayyan_psd_to_hz."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgpsd2hz import rangayyan_psd_to_hz
 

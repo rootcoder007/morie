@@ -1,6 +1,6 @@
 """Tests for wsmpsn.wasserman_pearson_corr."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.wsmpsn import wasserman_pearson_corr
 

@@ -1,6 +1,6 @@
 """Tests for sgtrnh.sgt_randic_index."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.sgtrnh import sgt_randic_index
 

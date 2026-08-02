@@ -1,6 +1,6 @@
 """Tests for rgcry.rangayyan_infant_cry."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgcry import rangayyan_infant_cry
 

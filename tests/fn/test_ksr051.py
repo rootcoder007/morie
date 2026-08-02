@@ -1,6 +1,6 @@
 """Tests for ksr051 (Kosorok shelf)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.ksr051 import kosorok_ch2_continuous_invertibility

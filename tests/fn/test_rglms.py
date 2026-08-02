@@ -1,6 +1,6 @@
 """Tests for rglms.rangayyan_lms_filter."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rglms import rangayyan_lms_filter
 

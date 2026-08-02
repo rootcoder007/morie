@@ -4,7 +4,7 @@ Properties come from the model definition H_t = D_t R D_t, equation (5)
 of the rmgarch model reference, plus the closed-form second step.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.volccc import vol_ccc_garch

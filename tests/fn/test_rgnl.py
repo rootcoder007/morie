@@ -1,6 +1,6 @@
 """Tests for rgnl.rangayyan_nonlinear_features."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgnl import rangayyan_nonlinear_features
 

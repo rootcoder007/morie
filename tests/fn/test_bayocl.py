@@ -1,6 +1,6 @@
 """Tests for bayocl.bayes_outlier_dp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayocl import bayes_outlier_dp
 

@@ -1,6 +1,6 @@
 """Tests for bnskt2.bound_kink_te."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bnskt2 import bound_kink_te
 

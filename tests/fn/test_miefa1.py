@@ -1,6 +1,6 @@
 """Tests for miefa1.mi_fmi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.miefa1 import mi_fmi
 

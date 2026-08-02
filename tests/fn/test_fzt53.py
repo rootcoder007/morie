@@ -1,6 +1,6 @@
 """Tests for fzt53.fauzi_thm5_3_bdfree_normality."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.fzt53 import fauzi_thm5_3_bdfree_normality
 

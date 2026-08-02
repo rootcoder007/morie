@@ -1,6 +1,6 @@
 """Tests for gh_ap_a1.ghosal_weak_conv_def."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gh_ap_a1 import ghosal_weak_conv_def
 

@@ -1,6 +1,6 @@
 """Tests for otsd.ot_sliced_distance_quant."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otsd import ot_sliced_distance_quant
 

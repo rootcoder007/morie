@@ -1,6 +1,6 @@
 """Tests for rmsdtr.rmsd."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rmsdtr import rmsd
 

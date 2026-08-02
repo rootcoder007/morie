@@ -1,6 +1,6 @@
 """Tests for morie.fn.rsprt -- respiratory rate estimation."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 pytest.importorskip("scipy")

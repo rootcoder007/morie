@@ -1,6 +1,6 @@
 """Tests for aiptdd.aipw_did (Sant'Anna & Zhao 2020)."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.aiptdd import aipw_did

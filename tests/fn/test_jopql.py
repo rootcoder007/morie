@@ -1,6 +1,6 @@
 """Tests for jopql.joseph_pinball_quantile_loss."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.jopql import joseph_pinball_quantile_loss
 

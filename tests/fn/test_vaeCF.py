@@ -1,6 +1,6 @@
 """Tests for vaeCF.vae_cf."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.vaeCF import vae_cf
 

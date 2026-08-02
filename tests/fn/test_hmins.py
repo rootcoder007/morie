@@ -1,6 +1,6 @@
 """Tests for hmins.geron_instance_based."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmins import geron_instance_based
 

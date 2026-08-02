@@ -8,7 +8,7 @@ the house LCG.
 
 import math
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.grn016 import geron_ch4_logistic_regression_prediction

@@ -1,6 +1,6 @@
 """Tests for mhrate.mantel_haenszel_rate."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mhrate import mantel_haenszel_rate
 

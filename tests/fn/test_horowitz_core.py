@@ -4,7 +4,7 @@ series and quantile estimators.
 Tests target the properties each method is CHOSEN for -- boundary bias,
 rate in d, identification normalisations -- not just output shape."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._horowitz import check_rate, kde, local_linear, nw_regression

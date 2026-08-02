@@ -1,6 +1,6 @@
 """Tests for baylog.bayes_logistic."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.baylog import bayes_logistic
 

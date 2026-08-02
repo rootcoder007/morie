@@ -1,6 +1,6 @@
 """Tests for smt.semiparametric_max."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.smt import semiparametric_max
 

@@ -3,9 +3,9 @@
 Truth oracles: Monte Carlo with measured rates, scipy beta/binomial
 identities, and the PDF-verified Theorem 2.11.1."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
-from scipy import special, stats
+from morie.fn import _stats_core as stats
 
 from morie.fn.gb221 import gibbons_quantile_deriv
 from morie.fn.gb2111 import gibbons_tolerance_beta

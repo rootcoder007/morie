@@ -1,6 +1,6 @@
 """Tests for causmedb.causal_mediation_baron_kenny."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.causmedb import causal_mediation_baron_kenny

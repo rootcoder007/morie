@@ -1,6 +1,6 @@
 """Tests for rng056.rangayyan_ch3_iir_transfer_function."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng056 import rangayyan_ch3_iir_transfer_function
 

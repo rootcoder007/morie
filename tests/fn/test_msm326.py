@@ -1,6 +1,6 @@
 """Tests for msm326.mvsml_functional_regression_eq_15_2."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.msm326 import mvsml_functional_regression_eq_15_2
 

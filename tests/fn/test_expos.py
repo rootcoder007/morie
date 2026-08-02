@@ -1,6 +1,6 @@
 """Tests for morie.fn.expos — Exposure assessment."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.expos import exposure_assessment

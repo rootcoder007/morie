@@ -1,7 +1,7 @@
-import numpy as np
+from morie.fn import _array_core as np
 """Tests for morie.fn.grosta -- Grouped summary statistics."""
 
-import pandas as pd
+from morie.fn import _frame_core as pd
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.grosta import grosta, grouped_stats

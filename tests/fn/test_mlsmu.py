@@ -1,6 +1,6 @@
 """Tests for morie.fn.mlsmu — ML SMACOF unfolding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mlsmu import mlsmu
 

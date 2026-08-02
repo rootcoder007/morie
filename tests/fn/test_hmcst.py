@@ -1,6 +1,6 @@
 """Tests for hmcst.geron_contrastive_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmcst import geron_contrastive_learning
 

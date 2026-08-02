@@ -1,6 +1,6 @@
 """Tests for legpb.legendre_basis."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.legpb import legendre_basis
 

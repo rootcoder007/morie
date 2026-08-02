@@ -1,6 +1,6 @@
 """Tests for bndapp.bound_application."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bndapp import bound_application
 

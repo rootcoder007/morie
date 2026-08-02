@@ -1,6 +1,6 @@
 """Tests for rdkfp.rdkit_path_fp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rdkfp import rdkit_path_fp
 

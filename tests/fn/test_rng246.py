@@ -1,6 +1,6 @@
 """Tests for rng246.rangayyan_ch4_signal_with_echo_input."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng246 import rangayyan_ch4_signal_with_echo_input
 

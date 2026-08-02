@@ -1,6 +1,6 @@
 """Test hjorth_params."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hjrth import alias, hjorth_params

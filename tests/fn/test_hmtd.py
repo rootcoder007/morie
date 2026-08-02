@@ -1,6 +1,6 @@
 """Tests for hmtd.geron_td_learning."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmtd import geron_td_learning
 

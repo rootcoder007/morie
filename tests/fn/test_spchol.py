@@ -10,7 +10,7 @@ the same matrix, and the tests below say so explicitly rather than expecting
 them to agree pointwise.
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._schab_fit import covariance_matrix

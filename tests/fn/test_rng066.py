@@ -1,6 +1,6 @@
 """Tests for rng066.rangayyan_ch3_inverse_fourier_transform."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rng066 import rangayyan_ch3_inverse_fourier_transform
 

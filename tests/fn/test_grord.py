@@ -1,6 +1,6 @@
 """Tests for grord.geron_ordinal_encoding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.grord import geron_ordinal_encoding
 

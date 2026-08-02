@@ -1,6 +1,6 @@
 """Tests for km083.kamath_ch6_ceat_random_effects."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.km083 import kamath_ch6_ceat_random_effects
 

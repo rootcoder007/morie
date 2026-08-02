@@ -1,6 +1,6 @@
 """Tests for thomp.thompson_sampling."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.thomp import thompson_sampling
 

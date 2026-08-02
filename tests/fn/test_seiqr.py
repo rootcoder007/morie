@@ -1,6 +1,6 @@
 """Tests for morie.fn.seiqr -- SEIQR compartmental model."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.seiqr import seiqr_model

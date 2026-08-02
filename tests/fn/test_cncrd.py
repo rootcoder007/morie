@@ -5,7 +5,7 @@ section 12.5 "The Coefficient of Concordance for k Sets of Incomplete
 Rankings" -- verified in the PDF (the section heading appears verbatim).
 """
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.cncrd import concordance_incomplete as W

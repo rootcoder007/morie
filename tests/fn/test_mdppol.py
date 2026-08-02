@@ -1,6 +1,6 @@
 """Tests for mdppol.mdp_policy_iteration."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mdppol import mdp_policy_iteration
 

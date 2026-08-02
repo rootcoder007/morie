@@ -1,6 +1,6 @@
 """Tests for otentr.ot_entropy_regulariser."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.otentr import ot_entropy_regulariser
 

@@ -1,6 +1,6 @@
 """Tests for crsfit.cross_fit_one_step."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.crsfit import cross_fit_one_step
 

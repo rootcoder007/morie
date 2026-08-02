@@ -1,6 +1,6 @@
 """Tests for morie.fn.xrwds -- Distance-band weights"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.xrwds import w_distance
 

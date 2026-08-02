@@ -1,6 +1,6 @@
 """Tests for cvxipm.boyd_interior_point."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.cvxipm import boyd_interior_point
 

@@ -1,6 +1,6 @@
 """Tests for bpc.bits_per_character."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bpc import bits_per_character
 

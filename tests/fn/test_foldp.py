@@ -1,6 +1,6 @@
 """Tests for foldp."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.foldp import folding_problem

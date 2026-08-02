@@ -1,6 +1,6 @@
 """Tests for gb5413.gibbons_sign_zeros."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.gb5413 import gibbons_sign_zeros
 

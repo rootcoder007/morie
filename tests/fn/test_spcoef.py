@@ -1,6 +1,6 @@
 """Tests for spcoef."""
 
-import numpy as np
+from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.spcoef import spearmans_rho_copula

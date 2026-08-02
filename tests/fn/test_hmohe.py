@@ -1,6 +1,6 @@
 """Tests for hmohe.geron_one_hot_encoding."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.hmohe import geron_one_hot_encoding
 

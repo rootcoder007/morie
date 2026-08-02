@@ -1,7 +1,7 @@
 """Tests for morie.fn.mcar -- Little's MCAR test."""
 
-import numpy as np
-import pandas as pd
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 import pytest
 
 from morie.fn.mcar import littles_mcar_test

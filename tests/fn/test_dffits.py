@@ -1,6 +1,6 @@
 """Tests for dffits.dffits."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.dffits import dffits
 

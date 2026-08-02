@@ -1,6 +1,6 @@
 """An unexamined life is not worth living. — Socrates"""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.christopher_gandrud_author_reproducible_research_with_r_and_1e29 import (
     christopher_gandrud_author_reproducible_research_with_r_and__chapter_1_equation_29,

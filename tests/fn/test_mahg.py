@@ -1,6 +1,6 @@
 """Tests for mahg.ma_hedges_g."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mahg import ma_hedges_g
 

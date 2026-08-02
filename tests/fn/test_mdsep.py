@@ -1,6 +1,6 @@
 """Tests for morie.fn.mdsep."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.mdsep import mdsep
 

@@ -1,6 +1,6 @@
 """Tests for banditRS.contextual_bandit_rec."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.banditRS import contextual_bandit_rec
 

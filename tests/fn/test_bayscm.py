@@ -1,6 +1,6 @@
 """Tests for bayscm.bayes_c_pi."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.bayscm import bayes_c_pi
 

@@ -1,6 +1,6 @@
 """Tests for rgeqn7b.rangayyan_ch7_arma_error."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.rgeqn7b import rangayyan_ch7_arma_error
 

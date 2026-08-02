@@ -1,6 +1,6 @@
 """Tests for ldppm.local_dp_planar_mechanism."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.ldppm import local_dp_planar_mechanism
 

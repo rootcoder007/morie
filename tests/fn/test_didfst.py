@@ -1,6 +1,6 @@
 """Tests for didfst.did_forest."""
 
-import numpy as np
+from morie.fn import _array_core as np
 
 from morie.fn.didfst import did_forest
 
