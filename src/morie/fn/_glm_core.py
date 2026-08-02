@@ -18,6 +18,51 @@ from . import _array_core as _ac
 from . import _stats_core as _stats
 
 
+
+def _npdiv(num, den):
+    """``num / den`` with numpy's semantics at ``den == 0``.
+
+    numpy returns inf (sign-carrying) or nan for 0/0 and warns; Python
+    raises.  Regression results rely on the numpy behaviour: a
+    saturated design (df_resid == 0) reports an infinite scale and
+    infinite standard errors rather than failing the fit.
+    """
+    if den:
+        return num / den
+    if num == 0:
+        return _math.nan
+    return _math.inf if num > 0 else -_math.inf
+
+
+def _solve_ls(a, b):
+    """Solve ``a x = b``, or return the minimum-norm least-squares
+    solution when ``a`` is singular.
+
+    Collinear columns and perfectly separated designs make the
+    normal-equation matrix ``X'WX`` singular.  statsmodels routes these
+    through ``pinv`` rather than failing the fit, and the minimum-norm
+    solution is the same estimate it reports (Greene 2018, *Econometric
+    Analysis* 8th ed., sec. A.6.11 on generalized inverses).
+    """
+    if _ac.linalg.matrix_rank(a) < a.shape[0]:
+        return _ac.linalg.lstsq(a, b)[0]
+    try:
+        return _ac.linalg.solve(a, b)
+    except Exception:
+        return _ac.linalg.lstsq(a, b)[0]
+
+
+def _inv_ls(a):
+    """Inverse of ``a``, or its Moore-Penrose pseudo-inverse when
+    singular -- the covariance counterpart of :func:`_solve_ls`."""
+    if _ac.linalg.matrix_rank(a) < a.shape[0]:
+        return _ac.linalg.pinv(a)
+    try:
+        return _ac.linalg.inv(a)
+    except Exception:
+        return _ac.linalg.pinv(a)
+
+
 def _frame_rows(X):
     """Rows of floats from native OR real-pandas frames, else None."""
     if hasattr(X, "_cols"):            # native DataFrame
@@ -243,7 +288,8 @@ families = _FamiliesNS()
 
 class RegressionResults:
     def __init__(self, model, params, cov, df_resid, scale,
-                 fittedvalues, resid, llf, exog_names):
+                 fittedvalues, resid, llf, exog_names,
+                 rank=None, nobs=None):
         self.model = model
         self.params = _NamedVec(params, exog_names)
         self.cov = cov
@@ -259,8 +305,15 @@ class RegressionResults:
         self.llf = llf
         self.exog_names = exog_names
         k = len(params)
-        self.df_model = k - (1 if "const" in exog_names else 0)
-        self.nobs = df_resid + k
+        # statsmodels reports df_model and nobs off the *rank* of the
+        # design, not its column count, so a rank-deficient fit does
+        # not claim degrees of freedom it does not have
+        # (linear_model.RegressionModel.fit: df_model = rank -
+        # k_constant, df_resid = nobs - rank).
+        eff = k if rank is None else rank
+        self.rank = eff
+        self.df_model = eff - (1 if "const" in exog_names else 0)
+        self.nobs = float(df_resid + eff) if nobs is None else float(nobs)
         se = [_math.sqrt(_bi.max(cov[i][i], 0.0)) for i in range(k)]
         self.bse = _NamedVec(se, exog_names)
         tv = [params[i] / se[i] if se[i] > 0 else float("nan")
@@ -315,12 +368,7 @@ class RegressionResults:
                for bb2 in range(len(b))] for i in range(q)]
         RVR = [[_math.fsum(RV[i][a] * R[j][a] for a in range(len(b)))
                 for j in range(q)] for i in range(q)]
-        try:
-            x = list(_ac.linalg.solve(_ac.marr(RVR),
-                                      _ac.marr(Rb))._flat())
-        except Exception:
-            x = list(_ac.linalg.lstsq(_ac.marr(RVR),
-                                      _ac.marr(Rb))[0]._flat())
+        x = list(_solve_ls(_ac.marr(RVR), _ac.marr(Rb))._flat())
         w = _math.fsum(Rb[i] * x[i] for i in range(q))
         f = w / q
         return _WaldResult(f, float(_stats.f.sf(f, q, self.df_resid)),
@@ -351,12 +399,7 @@ class RegressionResults:
             q = len(ix)
             sub = [[Vd[i][j] for j in ix] for i in ix]
             bb = [b[i] for i in ix]
-            try:
-                x = list(_ac.linalg.solve(_ac.marr(sub),
-                                          _ac.marr(bb))._flat())
-            except Exception:
-                x = list(_ac.linalg.lstsq(_ac.marr(sub),
-                                          _ac.marr(bb))[0]._flat())
+            x = list(_solve_ls(_ac.marr(sub), _ac.marr(bb))._flat())
             w = _math.fsum(bb[i] * x[i] for i in range(q))
             f = w / q
             pval = float(_stats.f.sf(f, q, self.df_resid))
@@ -460,20 +503,36 @@ class OLS:
         X, y = self.X, self.y
         n, k = self.n, self.k
         w = self.w or [1.0] * n
-        XtWX = [[_math.fsum(w[r] * X[r][i] * X[r][j]
-                            for r in range(n))
-                 for j in range(k)] for i in range(k)]
-        XtWy = [_math.fsum(w[r] * X[r][i] * y[r] for r in range(n))
-                for i in range(k)]
-        beta = list(_ac.linalg.solve(_ac.marr(XtWX),
-                                     _ac.marr(XtWy))._flat())
+        # statsmodels' default path is method="pinv": whiten by
+        # sqrt(weights), then take the pseudo-inverse of the *design*
+        # matrix -- never the normal equations.  beta = pinv(wexog)
+        # wendog and normalized_cov_params = pinv(wexog) pinv(wexog)'
+        # (statsmodels 0.14.6, regression/linear_model.py
+        # RegressionModel.fit).  Going through the design keeps a
+        # rank-deficient fit at the minimum-norm estimate instead of a
+        # singular-matrix error, and avoids squaring the condition
+        # number that forming X'WX would incur.
+        wh = [_math.sqrt(v) for v in w]
+        wexog = [[wh[r] * X[r][j] for j in range(k)] for r in range(n)]
+        wendog = [wh[r] * y[r] for r in range(n)]
+        pw, svals = _ac.linalg.pinv_extended(_ac.marr(wexog))
+        pinv_wexog = pw.tolist()
+        beta = [_math.fsum(pinv_wexog[j][r] * wendog[r]
+                           for r in range(n)) for j in range(k)]
+        XtWXinv = [[_math.fsum(pinv_wexog[i][r] * pinv_wexog[j][r]
+                               for r in range(n))
+                    for j in range(k)] for i in range(k)]
+        # rank = matrix_rank(diag(singular_values)); numpy's default
+        # tolerance is max(s) * max(M, N) * eps.
+        smax = _bi.max(svals) if svals else 0.0
+        rtol = smax * _bi.max(len(svals), 1) * 2.220446049250313e-16
+        rank = _bi.sum(1 for v in svals if v > rtol)
         fitted = [_math.fsum(X[r][j] * beta[j] for j in range(k))
                   for r in range(n)]
         resid = [y[r] - fitted[r] for r in range(n)]
-        df_resid = n - k
+        df_resid = n - rank
         ssr = _math.fsum(w[r] * resid[r] ** 2 for r in range(n))
-        scale = ssr / df_resid
-        XtWXinv = _ac.linalg.inv(_ac.marr(XtWX)).tolist()
+        scale = _npdiv(ssr, df_resid)
         if cov_type in ("HC0", "HC1", "HC2", "HC3"):
             # sandwich: (X'X)^-1 X' diag(u_i^2 adj) X (X'X)^-1
             meat = [[0.0] * k for _ in range(k)]
@@ -504,13 +563,14 @@ class OLS:
         # gaussian loglik (weights folded into ssr)
         llf = -0.5 * n * (_math.log(2.0 * _math.pi * ssr / n) + 1.0)
         res = RegressionResults(self, beta, cov, df_resid, scale,
-                                fitted, resid, llf, self.exog_names)
+                                fitted, resid, llf, self.exog_names,
+                                rank=rank, nobs=n)
         ybar = _math.fsum(w[r] * y[r] for r in range(n)) \
             / _math.fsum(w)
         tss = _math.fsum(w[r] * (y[r] - ybar) ** 2 for r in range(n))
         res.rsquared = 1.0 - ssr / tss if tss > 0 else float("nan")
-        res.rsquared_adj = 1.0 - (1.0 - res.rsquared) * (n - 1) \
-            / df_resid
+        res.rsquared_adj = 1.0 - (1.0 - res.rsquared) * _npdiv(
+            n - 1, df_resid)
         res.ssr = ssr
         res.centered_tss = tss
         if res.df_model > 0 and df_resid > 0 \
@@ -597,19 +657,19 @@ class GLM:
             z = [eta[r] + (y[r] - mu[r]) / dmu[r]
                  if abs(dmu[r]) > 1e-300 else eta[r]
                  for r in range(n)]
-            XtWX = [[_math.fsum(wirls[r] * X[r][i] * X[r][j]
-                                for r in range(n))
-                     for j in range(k)] for i in range(k)]
-            XtWz = [_math.fsum(wirls[r] * X[r][i] * z[r]
-                               for r in range(n)) for i in range(k)]
-            try:
-                beta = list(_ac.linalg.solve(_ac.marr(XtWX),
-                                             _ac.marr(XtWz))._flat())
-            except Exception:
-                # rank-deficient / separated design: minimum-norm
-                # least-squares step (statsmodels uses pinv here)
-                beta = list(_ac.linalg.lstsq(
-                    _ac.marr(XtWX), _ac.marr(XtWz))[0]._flat())
+            # statsmodels' IRLS step is _MinimalWLS.fit(method=
+            # "lstsq"), i.e. numpy.linalg.lstsq(wexog, wendog,
+            # rcond=-1) on the design whitened by sqrt(w) -- not a
+            # solve of X'WX (statsmodels 0.14.6,
+            # genmod/generalized_linear_model.py _fit_irls and
+            # regression/_tools.py _MinimalWLS).
+            wh = [_math.sqrt(v) for v in wirls]
+            wexog = [[wh[r] * X[r][j] for j in range(k)]
+                     for r in range(n)]
+            wendog = [wh[r] * z[r] for r in range(n)]
+            beta = list(_ac.linalg.lstsq(_ac.marr(wexog),
+                                         _ac.marr(wendog),
+                                         rcond=-1)[0]._flat())
             llf = _math.fsum(fam.loglike_obs(y[r], link.ginv(
                 _math.fsum(X[r][j] * beta[j] for j in range(k))),
                 1.0) for r in range(n))
@@ -624,35 +684,35 @@ class GLM:
         wirls = [dmu[r] ** 2 / var[r] for r in range(n)]
         if self.prior_w is not None:
             wirls = [wirls[r] * self.prior_w[r] for r in range(n)]
-        XtWX = [[_math.fsum(wirls[r] * X[r][i] * X[r][j]
-                            for r in range(n))
-                 for j in range(k)] for i in range(k)]
-        try:
-            cov = _ac.linalg.inv(_ac.marr(XtWX)).tolist()
-        except Exception:
-            # singular information matrix: Moore-Penrose pseudo-inverse
-            # via SVD (statsmodels' pinv path)
-            A = _ac.marr(XtWX)
-            u, sv, vt = _ac.linalg.svd(A)
-            svl = list(sv._flat())
-            cut = (max(svl) if svl else 0.0) * len(svl) * 2.2e-16
-            inv_s = [1.0 / v if v > cut else 0.0 for v in svl]
-            cov = [[_math.fsum(vt.data[c][i] * inv_s[c] * u.data[j][c]
-                               for c in range(len(svl)))
-                    for j in range(k)] for i in range(k)]
-        df_resid = n - k
+        # Final covariance comes from a WLS fit with method="pinv" on
+        # the same whitened design, so normalized_cov_params is
+        # pinv(wexog) pinv(wexog)' and the residual degrees of freedom
+        # are nobs - rank (statsmodels 0.14.6, _fit_irls promotes
+        # wls_method "lstsq" to "pinv" for the final results object).
+        wh = [_math.sqrt(v) for v in wirls]
+        wexog = [[wh[r] * X[r][j] for j in range(k)] for r in range(n)]
+        pw, svals = _ac.linalg.pinv_extended(_ac.marr(wexog))
+        pinv_wexog = pw.tolist()
+        cov = [[_math.fsum(pinv_wexog[i][r] * pinv_wexog[j][r]
+                           for r in range(n))
+                for j in range(k)] for i in range(k)]
+        smax = _bi.max(svals) if svals else 0.0
+        rtol = smax * _bi.max(len(svals), 1) * 2.220446049250313e-16
+        rank = _bi.sum(1 for v in svals if v > rtol)
+        df_resid = n - rank
         # scale: 1 for binomial/poisson; pearson X2/df for others
         if isinstance(fam, (Binomial, Poisson)):
             scale = 1.0
         else:
-            scale = _math.fsum((y[r] - mu[r]) ** 2 / var[r]
-                               for r in range(n)) / df_resid
+            scale = _npdiv(_math.fsum((y[r] - mu[r]) ** 2 / var[r]
+                                      for r in range(n)), df_resid)
             cov = [[c * scale for c in row] for row in cov]
         resid = [y[r] - mu[r] for r in range(n)]
         llf = _math.fsum(fam.loglike_obs(y[r], mu[r], scale)
                          for r in range(n))
         res = RegressionResults(self, beta, cov, df_resid, scale,
-                                mu, resid, llf, self.exog_names)
+                                mu, resid, llf, self.exog_names,
+                                rank=rank, nobs=n)
         res.mu = _ac.marr(mu)
         res.deviance = self._deviance(y, mu)
         res.pearson_chi2 = _math.fsum(
@@ -726,7 +786,7 @@ class RLM:
                      for j in range(k)] for i in range(k)]
             XtWy = [_math.fsum(w[r] * X[r][i] * y[r]
                                for r in range(n)) for i in range(k)]
-            newb = list(_ac.linalg.solve(_ac.marr(XtWX),
+            newb = list(_solve_ls(_ac.marr(XtWX),
                                          _ac.marr(XtWy))._flat())
             if max(abs(a - b) for a, b in zip(newb, beta)) < 1e-10:
                 beta = newb
@@ -736,7 +796,7 @@ class RLM:
                   for r in range(n)]
         resid = [y[r] - fitted[r] for r in range(n)]
         scale = sorted(abs(v) for v in resid)[n // 2] / 0.6745
-        XtXinv = _ac.linalg.inv(_ac.marr(
+        XtXinv = _inv_ls(_ac.marr(
             [[_math.fsum(X[r][i] * X[r][j] for r in range(n))
               for j in range(k)] for i in range(k)])).tolist()
         cov = [[XtXinv[i][j] * scale * scale for j in range(k)]
@@ -1068,7 +1128,7 @@ def anova_lm(fit, typ=2):
               for j in cols] for i in cols]
         b = [_math.fsum(X[r][i] * y[r] for r in range(n))
              for i in cols]
-        beta = list(_ac.linalg.solve(_ac.marr(A),
+        beta = list(_solve_ls(_ac.marr(A),
                                      _ac.marr(b))._flat())
         return _math.fsum(
             (y[r] - _math.fsum(X[r][cols[j]] * beta[j]
@@ -1155,7 +1215,7 @@ class IV2SLS:
         kz = len(Z[0])
         ZtZ = [[_math.fsum(Z[r][i] * Z[r][j] for r in range(n))
                 for j in range(kz)] for i in range(kz)]
-        ZtZinv = _ac.linalg.inv(_ac.marr(ZtZ)).tolist()
+        ZtZinv = _inv_ls(_ac.marr(ZtZ)).tolist()
         ZtX = [[_math.fsum(Z[r][i] * X[r][j] for r in range(n))
                 for j in range(kx)] for i in range(kz)]
         Zty = [_math.fsum(Z[r][i] * y[r] for r in range(n))
@@ -1167,14 +1227,14 @@ class IV2SLS:
         XtPZy = [_math.fsum(ZtX[a][i] * ZtZinv[a][b] * Zty[b]
                             for a in range(kz) for b in range(kz))
                  for i in range(kx)]
-        beta = list(_ac.linalg.solve(_ac.marr(XtPZX),
+        beta = list(_solve_ls(_ac.marr(XtPZX),
                                      _ac.marr(XtPZy))._flat())
         fitted = [_math.fsum(X[r][j] * beta[j] for j in range(kx))
                   for r in range(n)]
         resid = [y[r] - fitted[r] for r in range(n)]
         df_resid = n - kx
         sigma2 = _math.fsum(v * v for v in resid) / df_resid
-        cov = [[_ac.linalg.inv(_ac.marr(XtPZX)).tolist()[i][j]
+        cov = [[_inv_ls(_ac.marr(XtPZX)).tolist()[i][j]
                 * sigma2 for j in range(kx)] for i in range(kx)]
         names = ["x%d" % (i + 1) for i in range(kx)]
         llf = float("nan")
@@ -1530,12 +1590,12 @@ class GEE:
                     for j1 in range(k):
                         H[j1][j2] += _math.fsum(
                             D[a][j1] * vinv_d[a] for a in range(m))
-            step = list(_ac.linalg.solve(_ac.marr(H),
+            step = list(_solve_ls(_ac.marr(H),
                                          _ac.marr(U))._flat())
             beta = [beta[j] + step[j] for j in range(k)]
             if max(abs(s) for s in step) < 1e-10:
                 break
-        Hinv = _ac.linalg.inv(_ac.marr(H)).tolist()
+        Hinv = _inv_ls(_ac.marr(H)).tolist()
         cov = [[_math.fsum(Hinv[i][a] * meat[a][b] * Hinv[b][j]
                            for a in range(k) for b in range(k))
                 for j in range(k)] for i in range(k)]
@@ -1615,7 +1675,7 @@ class IV2SLS_LM:
             kz = len(Z[0])
             ZtZ = [[_math.fsum(Z[r][i] * Z[r][j] for r in range(n))
                     for j in range(kz)] for i in range(kz)]
-            ZtZinv = _ac.linalg.inv(_ac.marr(ZtZ)).tolist()
+            ZtZinv = _inv_ls(_ac.marr(ZtZ)).tolist()
             ZtX = [[_math.fsum(Z[r][i] * X[r][j] for r in range(n))
                     for j in range(k)] for i in range(kz)]
             Xhat = [[_math.fsum(Z[r][a] * ZtZinv[a][b] * ZtX[b][j]
@@ -1625,7 +1685,7 @@ class IV2SLS_LM:
             resid = [self.y[r] - _math.fsum(X[r][j] * beta[j]
                                             for j in range(k))
                      for r in range(n)]
-            bread = _ac.linalg.inv(_ac.marr(
+            bread = _inv_ls(_ac.marr(
                 [[_math.fsum(Xhat[r][i] * Xhat[r][j]
                              for r in range(n))
                   for j in range(k)] for i in range(k)])).tolist()

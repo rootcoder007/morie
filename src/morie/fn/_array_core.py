@@ -1395,15 +1395,6 @@ class _Linalg:
         return _math.fsum(_bi.abs(v) ** ord for v in f) ** (1.0 / ord)
 
     @staticmethod
-    def lstsq(a, b, rcond=None):
-        del rcond
-        aa = atleast_2d(a)
-        at = aa.T
-        beta = _Linalg.solve(matmul(at, aa), matmul(at, asarray(b)))
-        return beta, None, None, None
-
-
-    @staticmethod
     def qr(a, mode="reduced"):
         """Householder QR; returns (Q, R) with Q (m,k), R (k,n), k=min(m,n)."""
         A = asarray(a)
@@ -2066,38 +2057,49 @@ def _jacobi_eigh(a):
     return vals, v
 
 
-def _pinv(a, rcond=1e-15):
-    """Moore-Penrose pseudoinverse.
+def _pinv_extended(a, rcond=1e-15):
+    """Moore-Penrose pseudo-inverse together with the singular values
+    used to build it.
 
-    Symmetric input: Jacobi eigendecomposition.  General input: routed
-    through the symmetric case via A+ = (A^T A)+ A^T.
+    ``A+ = V diag(s+) U^T`` where ``s+_i = 1/s_i`` for
+    ``s_i > rcond * max(s)`` and ``0`` otherwise.  This is
+    numpy.linalg.pinv (whose default ``rcond`` is also 1e-15) with the
+    singular values returned alongside, i.e. the contract of
+    ``statsmodels.tools.tools.pinv_extended`` (0.14.6), which the
+    OLS/GLM fit path needs in order to report the rank.
+
+    Going through the SVD keeps the pseudo-inverse accurate for
+    rank-deficient and ill-conditioned input; forming ``A^T A`` first
+    would square the condition number (Golub & Van Loan 2013, *Matrix
+    Computations* 4th ed., sec. 5.5.2).
     """
     aa = atleast_2d(a)
-    n, mcols = aa.shape
-    sym = n == mcols and _pyall(
-        _bi.abs(aa.data[i][j] - aa.data[j][i]) < 1e-10
-        for i in range(n) for j in range(i + 1, n))
-    if not sym:
-        ata = matmul(aa.T, aa)
-        return matmul(_pinv(ata, rcond), aa.T)
-    vals, vecs = _jacobi_eigh(aa)
-    vmax = _pymax((_bi.abs(x) for x in vals), default=0.0)
-    cut = rcond * _pymax(vmax, 1.0) * n
-    out = [[0.0] * n for _ in range(n)]
-    for k in range(n):
-        if _bi.abs(vals[k]) <= cut:
-            continue
-        inv_l = 1.0 / vals[k]
-        for i in range(n):
-            for j in range(n):
-                out[i][j] += vecs[i][k] * inv_l * vecs[j][k]
-    return marr(out)
+    m_, n_ = aa.shape
+    u, sv, vt = _svd(aa)
+    svals = list(sv._flat())
+    cutoff = rcond * (_bi.max(svals) if svals else 0.0)
+    inv_s = [1.0 / v if v > cutoff else 0.0 for v in svals]
+    k = len(svals)
+    # V diag(s+) U^T  ->  (n, m)
+    out = [[_math.fsum(vt.data[c][i] * inv_s[c] * u.data[j][c]
+                       for c in range(k))
+            for j in range(m_)] for i in range(n_)]
+    return marr(out), svals
+
+
+def _pinv(a, rcond=1e-15):
+    """Moore-Penrose pseudo-inverse via the SVD.
+
+    See :func:`_pinv_extended`; this drops the singular values.
+    """
+    return _pinv_extended(a, rcond)[0]
 
 
 _LinalgExt.pinv = staticmethod(_pinv)
 _LinalgExt.matrix_rank = staticmethod(_matrix_rank)
 linalg.matrix_rank = _matrix_rank
 linalg.pinv = _pinv
+linalg.pinv_extended = _pinv_extended
 linalg.slogdet = _LinalgExt.slogdet
 linalg.eigvalsh = _LinalgExt.eigvalsh
 linalg.cond = _LinalgExt.cond
@@ -3250,13 +3252,28 @@ linalg.eigh = _eigh
 linalg.det = _det
 linalg.cholesky = _cholesky
 def _lstsq(a, b, rcond=None):
-    del rcond
+    """Minimum-norm least-squares solution via the SVD.
+
+    ``rcond`` follows numpy.linalg.lstsq: ``None`` means
+    ``eps * max(M, N)``; a negative value means machine precision alone
+    (the LAPACK ``dgelsd`` convention that numpy's legacy ``rcond=-1``
+    forwards, and what statsmodels passes from ``_MinimalWLS``);
+    otherwise the ratio is used as given.  Singular values at or below
+    ``rcond * max(s)`` are treated as zero.
+    """
     aa = atleast_2d(asarray(a))
     bv = asarray(b)._flat()
     n, k = aa.shape
     u, sv, vt = _svd(aa)
     svl = list(sv._flat())
-    cut = (_bi.max(svl) if svl else 0.0) * _bi.max(n, k) * 2.2e-16
+    eps = 2.220446049250313e-16
+    if rcond is None:
+        ratio = eps * _bi.max(n, k)
+    elif rcond < 0:
+        ratio = eps
+    else:
+        ratio = float(rcond)
+    cut = (_bi.max(svl) if svl else 0.0) * ratio
     uy = [_math.fsum(u.data[r][c] * bv[r] for r in range(n))
           for c in range(len(svl))]
     z = [uy[c] / svl[c] if svl[c] > cut else 0.0
