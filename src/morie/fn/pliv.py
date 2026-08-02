@@ -1,8 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Partially Linear IV (PLIV) for LATE via DoubleML or 2SLS fallback."""
 
-import warnings
 
+from . import _array_core as np
 from . import _frame_core as pd
 
 class _MissingDep:
@@ -79,60 +79,69 @@ def estimate_pliv(
     df = data[[treatment, outcome, instrument] + covariates].dropna().reset_index(drop=True)
     n_obs = len(df)
 
-    try:
-        import doubleml as dml
-        from ._ml_core import RidgeCV
+    from ._ml_core import RidgeCV
+    from ._stats_core import norm as _norm
 
-        dml_data = dml.DoubleMLData(
-            df,
-            y_col=outcome,
-            d_cols=treatment,
-            z_cols=instrument,
-            x_cols=covariates,
-        )
-        ml_l = RidgeCV()
-        ml_m = RidgeCV()
-        ml_r = RidgeCV()
+    X = [[float(df[c].tolist()[i]) for c in covariates]
+         for i in range(n_obs)] if covariates else [[] for _ in range(n_obs)]
+    y = [float(v) for v in df[outcome].tolist()]
+    d = [float(v) for v in df[treatment].tolist()]
+    z = [float(v) for v in df[instrument].tolist()]
 
-        pliv = dml.DoubleMLPLIV(
-            dml_data,
-            ml_l=ml_l,
-            ml_m=ml_m,
-            ml_r=ml_r,
-            n_folds=n_folds,
-            n_rep=1,
-        )
-        pliv.fit()
+    rng = np.random.default_rng(random_state)
+    idx = list(range(n_obs))
+    rng.shuffle(idx)
+    folds = [idx[i::n_folds] for i in range(n_folds)]
 
-        late = float(pliv.coef[0])
-        se = float(pliv.se[0])
-        ci = pliv.confint(level=0.95)
-        ci_lower = float(ci.iloc[0, 0])
-        ci_upper = float(ci.iloc[0, 1])
-        pval = float(pliv.pval[0])
-        method = "DoubleML PLIV"
+    lhat = [0.0] * n_obs
+    mhat = [0.0] * n_obs
+    rhat = [0.0] * n_obs
+    for fold in folds:
+        train = [i for i in range(n_obs) if i not in set(fold)]
+        Xtr = [X[i] for i in train]
+        if covariates:
+            ml_l = RidgeCV().fit(Xtr, [y[i] for i in train])
+            ml_m = RidgeCV().fit(Xtr, [z[i] for i in train])
+            ml_r = RidgeCV().fit(Xtr, [d[i] for i in train])
+            Xf = [X[i] for i in fold]
+            pl, pm, pr = (ml_l.predict(Xf), ml_m.predict(Xf),
+                          ml_r.predict(Xf))
+            pl = pl.tolist() if hasattr(pl, "tolist") else list(pl)
+            pm = pm.tolist() if hasattr(pm, "tolist") else list(pm)
+            pr = pr.tolist() if hasattr(pr, "tolist") else list(pr)
+        else:
+            # no covariates: the conditional means are the fold-
+            # complement sample means
+            pl = [sum(y[i] for i in train) / len(train)] * len(fold)
+            pm = [sum(z[i] for i in train) / len(train)] * len(fold)
+            pr = [sum(d[i] for i in train) / len(train)] * len(fold)
+        for j, i in enumerate(fold):
+            lhat[i] = float(pl[j])
+            mhat[i] = float(pm[j])
+            rhat[i] = float(pr[j])
 
-    except ImportError:
-        warnings.warn(
-            "doubleml not available; falling back to 2SLS via statsmodels.",
-            ImportWarning,
-            stacklevel=2,
-        )
-        # 2SLS: first stage D ~ Z + X, second stage Y ~ D_hat + X
-        X_cols = covariates + [instrument]
-        X_first = sm.add_constant(df[X_cols].astype(float))
-        first_stage = sm.OLS(df[treatment].astype(float), X_first).fit()
-        d_hat = first_stage.fittedvalues
-
-        X_second = sm.add_constant(pd.concat([d_hat.rename("d_hat"), df[covariates].astype(float)], axis=1))
-        second_stage = sm.OLS(df[outcome].astype(float), X_second).fit()
-
-        late = float(second_stage.params["d_hat"])
-        se = float(second_stage.bse["d_hat"])
-        ci_lower = float(second_stage.conf_int().loc["d_hat", 0])
-        ci_upper = float(second_stage.conf_int().loc["d_hat", 1])
-        pval = float(second_stage.pvalues["d_hat"])
-        method = "2SLS (statsmodels fallback)"
+    # IV-type orthogonal score (Chernozhukov et al. 2018, sec. 4.2):
+    # with u = Y - l(X), w = Z - m(X), v = D - r(X),
+    # psi = (u - theta v) w, so theta = E[wu]/E[wv].
+    u = [y[i] - lhat[i] for i in range(n_obs)]
+    w = [z[i] - mhat[i] for i in range(n_obs)]
+    v = [d[i] - rhat[i] for i in range(n_obs)]
+    wv = sum(a * b for a, b in zip(w, v))
+    if wv == 0.0:
+        raise ValueError("instrument residual is orthogonal to the "
+                         "treatment residual; the instrument carries "
+                         "no identifying variation")
+    late = sum(a * b for a, b in zip(w, u)) / wv
+    psi = [(u[i] - late * v[i]) * w[i] for i in range(n_obs)]
+    j0 = wv / n_obs
+    se = ((sum(p_ * p_ for p_ in psi) / n_obs) / (j0 * j0)
+          / n_obs) ** 0.5
+    zstat = late / se if se > 0 else float("inf")
+    pval = 2.0 * float(_norm.sf(abs(zstat)))
+    zc = 1.959963984540054
+    ci_lower = late - zc * se
+    ci_upper = late + zc * se
+    method = "PLIV (native DML, cross-fitted ridge nuisances)"
 
     return {
         "late": late,
