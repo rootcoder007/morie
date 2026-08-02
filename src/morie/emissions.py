@@ -216,11 +216,108 @@ def _is_apple_silicon() -> bool:
     return platform.machine() == "arm64" and sys.platform == "darwin"
 
 
+def _total_ram_gb():
+    """Total RAM in GiB from the OS, no psutil.
+
+    Linux: MemTotal in /proc/meminfo; macOS: sysctl hw.memsize;
+    fallback 16 GiB (the codecarbon default class).
+    """
+    try:
+        with open("/proc/meminfo") as fh:
+            for line in fh:
+                if line.startswith("MemTotal:"):
+                    return int(line.split()[1]) / (1024 ** 2)
+    except OSError:
+        pass
+    try:
+        import subprocess
+        out = subprocess.run(["sysctl", "-n", "hw.memsize"],
+                             capture_output=True, text=True,
+                             timeout=5)
+        return int(out.stdout.strip()) / (1024 ** 3)
+    except Exception:
+        return 16.0
+
+
+_CPU_TICKS = {"last": None}
+
+
+def _cpu_percent():
+    """System CPU utilisation in percent, no psutil.
+
+    Linux: delta of the aggregate /proc/stat jiffies between calls
+    (the same counters psutil reads); elsewhere: os.getloadavg
+    normalised by core count.
+    """
+    try:
+        with open("/proc/stat") as fh:
+            parts = fh.readline().split()[1:]
+        vals = [int(v) for v in parts[:8]]
+        idle = vals[3] + (vals[4] if len(vals) > 4 else 0)
+        total = sum(vals)
+        prev = _CPU_TICKS["last"]
+        _CPU_TICKS["last"] = (idle, total)
+        if prev is None or total == prev[1]:
+            return 0.0
+        didle = idle - prev[0]
+        dtotal = total - prev[1]
+        return max(0.0, min(100.0, 100.0 * (1.0 - didle / dtotal)))
+    except OSError:
+        try:
+            return max(0.0, min(
+                100.0,
+                100.0 * os.getloadavg()[0] / (os.cpu_count() or 1)))
+        except OSError:
+            return 0.0
+
+
+def _ram_percent():
+    """RAM utilisation percent from /proc/meminfo (MemAvailable),
+    or 0.0 where unavailable."""
+    try:
+        info = {}
+        with open("/proc/meminfo") as fh:
+            for line in fh:
+                k, v = line.split(":", 1)
+                info[k] = int(v.split()[0])
+        total = info.get("MemTotal", 0)
+        avail = info.get("MemAvailable", total)
+        if total:
+            return 100.0 * (1.0 - avail / total)
+    except OSError:
+        pass
+    return 0.0
+
+
+def _cpu_brand_native():
+    """CPU brand string, no py-cpuinfo.
+
+    Linux: "model name" in /proc/cpuinfo; macOS: sysctl
+    machdep.cpu.brand_string; fallback platform.processor().
+    """
+    try:
+        with open("/proc/cpuinfo") as fh:
+            for line in fh:
+                if line.lower().startswith("model name"):
+                    return line.split(":", 1)[1].strip()
+    except OSError:
+        pass
+    try:
+        import subprocess
+        out = subprocess.run(["sysctl", "-n",
+                              "machdep.cpu.brand_string"],
+                             capture_output=True, text=True,
+                             timeout=5)
+        if out.stdout.strip():
+            return out.stdout.strip()
+    except Exception:
+        pass
+    return platform.processor() or ""
+
+
 def _estimate_ram_power() -> float:
     """Estimate RAM power draw (Watts) using codecarbon heuristic."""
-    import psutil
-
-    total_gb = psutil.virtual_memory().total / (1024**3)
+    total_gb = _total_ram_gb()
     is_arm = platform.machine() in ("arm64", "aarch64")
     base = _RAM_POWER_PER_DIMM_ARM if is_arm else _RAM_POWER_PER_DIMM_X86
     minimum = _RAM_MIN_ARM if is_arm else _RAM_MIN_X86
@@ -292,13 +389,7 @@ def _cpu_tdp_fallback() -> float:
             pass
 
     if not brand:
-        try:
-            import cpuinfo
-
-            info = cpuinfo.get_cpu_info()
-            brand = info.get("brand_raw", "")
-        except Exception:
-            brand = platform.processor()
+        brand = _cpu_brand_native()
 
     brand_lower = brand.lower()
     # Apple Silicon (sysctl returns "Apple M1/M2/M3/M4")
@@ -557,8 +648,6 @@ class EmissionsTracker:
             self._measure_once()
 
     def _measure_once(self) -> None:
-        import psutil
-
         now = time.time()
         dt = now - self._last_measure_time
         if dt <= 0:
@@ -570,12 +659,12 @@ class EmissionsTracker:
             cpu_w, gpu_w = _read_powermetrics(500)
             if cpu_w == 0:
                 # Fallback: TDP × utilization
-                cpu_pct = psutil.cpu_percent()
+                cpu_pct = _cpu_percent()
                 tdp = _cpu_tdp_fallback()
                 cpu_w = tdp * (0.1 + 0.9 * (cpu_pct / 100.0) ** 3)
                 gpu_w = 0.0
         else:
-            cpu_pct = psutil.cpu_percent()
+            cpu_pct = _cpu_percent()
             tdp = _cpu_tdp_fallback()
             cpu_w = tdp * (0.1 + 0.9 * (cpu_pct / 100.0) ** 3)
             gpu_w = 0.0
@@ -589,10 +678,11 @@ class EmissionsTracker:
         self._total_ram_energy += self._ram_power * dt / 3_600_000
 
         # Utilization samples
-        self._cpu_util_samples.append(psutil.cpu_percent())
-        vm = psutil.virtual_memory()
-        self._ram_util_samples.append(vm.percent)
-        self._ram_used_samples.append(vm.used / (1024**3))
+        self._cpu_util_samples.append(_cpu_percent())
+        # RAM utilisation from the same native source
+        self._ram_util_samples.append(_ram_percent())
+        self._ram_used_samples.append(
+            _total_ram_gb() * _ram_percent() / 100.0)
 
     # ------------------------------------------------------------------
     # Output
@@ -605,8 +695,6 @@ class EmissionsTracker:
         energy: float,
         water: float,
     ) -> EmissionsData:
-        import psutil
-
         cpu_model = _get_cpu_model()
         avg = lambda xs: sum(xs) / len(xs) if xs else 0.0
 
@@ -638,7 +726,7 @@ class EmissionsTracker:
             gpu_model=cpu_model if self._is_apple else "",
             longitude=self._longitude,
             latitude=self._latitude,
-            ram_total_size=psutil.virtual_memory().total / (1024**3),
+            ram_total_size=_total_ram_gb(),
             tracking_mode=self._tracking_mode,
             cpu_utilization_percent=avg(self._cpu_util_samples),
             gpu_utilization_percent=0.0,

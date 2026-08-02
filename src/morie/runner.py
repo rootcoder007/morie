@@ -18,18 +18,9 @@ from .perseus import ask_percy
 # Emissions tracking -- use vendored morie.emissions, fall back to codecarbon
 # ---------------------------------------------------------------------------
 
-try:
-    from morie.emissions import EmissionsTracker as _EmissionsTracker
+from morie.emissions import EmissionsTracker as _EmissionsTracker
 
-    _CODECARBON_AVAILABLE = True
-except ImportError:  # pragma: no cover
-    try:
-        from codecarbon import EmissionsTracker as _EmissionsTracker
-
-        _CODECARBON_AVAILABLE = True
-    except ImportError:
-        _EmissionsTracker = None
-        _CODECARBON_AVAILABLE = False
+_CODECARBON_AVAILABLE = True  # the vendored tracker is always present
 
 
 def execute_pipeline(
@@ -48,7 +39,7 @@ def execute_pipeline(
     :type modules: list[str], optional
     :param silent: If True, skips the safety confirmation prompt, defaults to False.
     :type silent: bool, optional
-    :param track_carbon: If True and codecarbon is installed, track CO₂ emissions.
+    :param track_carbon: If True, track CO₂ emissions with the vendored morie.emissions tracker.
     :type track_carbon: bool, optional
     """
     selected = modules or [item["name"] for item in list_modules()]
@@ -82,21 +73,23 @@ def execute_pipeline(
     results = {}
     total = len(selected)
 
-    # Try enlighten progress bars for rich terminal output.
-    _manager = None
-    _pbar = None
+    # rich progress (rich is a core dependency; enlighten is gone).
+    _progress = None
+    _task = None
     try:
-        import enlighten
+        from rich.progress import Progress
 
-        _manager = enlighten.get_manager()
-        _pbar = _manager.counter(total=total, desc="Pipeline", unit="modules", color="green")
-    except ImportError:
-        pass
+        _progress = Progress()
+        _progress.start()
+        _task = _progress.add_task("Pipeline", total=total)
+    except Exception:  # pragma: no cover - non-tty edge cases
+        _progress = None
 
     failed: dict[str, str] = {}
     for idx, module_name in enumerate(selected, start=1):
-        if _pbar:
-            _pbar.desc = f"Running: {module_name}"
+        if _progress:
+            _progress.update(_task,
+                             description=f"Running: {module_name}")
         else:
             print(f"[{idx}/{total}] Running: {module_name}", flush=True)
         try:
@@ -111,13 +104,13 @@ def execute_pipeline(
             failed[module_name] = str(exc)
             print(f"  ERROR in {module_name}: {exc}")
             status = "FAILED"
-        if _pbar:
-            _pbar.update()
+        if _progress:
+            _progress.advance(_task)
         else:
             print(f"[{idx}/{total}] {status}: {module_name}", flush=True)
 
-    if _manager:
-        _manager.stop()
+    if _progress:
+        _progress.stop()
 
     if tracker is not None:
         try:
