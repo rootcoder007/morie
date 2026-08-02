@@ -126,7 +126,19 @@ std::pair<nb::bytes, nb::bytes> eig_general_py(const Vec &a,
     return {make_out(wr), make_out(wi)};
 }
 
+double hawkes_st_loglik_py(const Vec &t, const Vec &x, const Vec &y,
+                           double mu, double alpha, double beta,
+                           double sigma, double T, double area) {
+    return morie::core::hawkes_st_loglik(t.data(), x.data(), y.data(),
+                                         t.shape(0), mu, alpha, beta,
+                                         sigma, T, area);
+}
+
 void register_linalg(nb::module_ &m) {
+    m.def("hawkes_st_loglik", &hawkes_st_loglik_py, "t"_a, "x"_a, "y"_a,
+          "mu"_a, "alpha"_a, "beta"_a, "sigma"_a, "T"_a, "area"_a,
+          "Spatio-temporal Hawkes log-likelihood (exponential temporal "
+          "decay, Gaussian spatial kernel). Events must be time-sorted.");
     m.def("eig_general", &eig_general_py, "a"_a, "n"_a,
           "Eigenvalues of a general real n*n matrix (Hessenberg + "
           "shifted QR). Returns (real parts, imag parts) as float64 "
