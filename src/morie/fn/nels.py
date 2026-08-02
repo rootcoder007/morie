@@ -2,6 +2,7 @@
 """Nelson-Aalen cumulative hazard estimator."""
 
 from . import _array_core as np
+from . import _stats_core as _stats
 
 from morie.fn._containers import SurvivalResult
 
@@ -52,7 +53,7 @@ def nels(
     cum_hazard = np.zeros(len(unique_times))
     ci_lo = np.zeros(len(unique_times))
     ci_hi = np.zeros(len(unique_times))
-    z = __import__("scipy").stats.norm.ppf(1 - alpha / 2)
+    z = _stats.norm.ppf(1 - alpha / 2)
 
     H = 0.0
     var_H = 0.0
