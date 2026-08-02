@@ -5,7 +5,27 @@ from collections.abc import Sequence
 from typing import Union
 
 from . import _array_core as np
-import statsmodels.api as sm
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    import statsmodels.api as sm
+except ImportError:
+    sm = _MissingDep('sm')
 
 
 def glmpoi(X: Union[Sequence, np.ndarray], y: Union[Sequence, np.ndarray], add_intercept: bool = True):

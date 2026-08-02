@@ -12,8 +12,31 @@ from __future__ import annotations
 
 from . import _array_core as np
 import pandas as pd
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    import statsmodels.api as sm
+except ImportError:
+    sm = _MissingDep('sm')
+try:
+    import statsmodels.formula.api as smf
+except ImportError:
+    smf = _MissingDep('smf')
 
 from morie.fn._helpers import _safe_exp
 from morie.fn.ess import effective_sample_size

@@ -4,7 +4,27 @@
 import math
 
 import scipy.stats as stats
-from statsmodels.stats.power import NormalIndPower
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    from statsmodels.stats.power import NormalIndPower
+except ImportError:
+    NormalIndPower = _MissingDep('NormalIndPower')
 
 
 def sample_size_logistic(

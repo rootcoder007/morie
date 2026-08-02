@@ -2,7 +2,27 @@
 """IPW-weighted OLS ATE estimator."""
 
 import pandas as pd
-import statsmodels.formula.api as smf
+
+class _MissingDep:
+    """Placeholder for a dependency being nativized (task #141)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+    def __call__(self, *a, **k):
+        raise ImportError(
+            "%s is no longer bundled; this code path awaits its native "
+            "morie implementation" % self._name)
+
+try:
+    import statsmodels.formula.api as smf
+except ImportError:
+    smf = _MissingDep('smf')
 
 
 def estimate_ate(data: pd.DataFrame, outcome: str, treatment: str, weights_col: str) -> tuple[float, float]:
