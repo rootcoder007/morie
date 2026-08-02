@@ -1498,3 +1498,364 @@ geom = _Geom()
 hypergeom = _HyperGeom()
 genextreme = _GenExtreme()
 multivariate_normal = _MultivariateNormal()
+
+
+# ---------------------------------------------------- residual tail
+
+def probplot(x, dist="norm", fit=True):
+    v = sorted(_flatten(x))
+    n = len(v)
+    # Filliben order-statistic medians
+    osm_u = [1.0 - 0.5 ** (1.0 / n) if i == 0 else
+             (0.5 ** (1.0 / n) if i == n - 1 else
+              (i + 1 - 0.3175) / (n + 0.365)) for i in range(n)]
+    osm = [_norm_ppf(u) for u in osm_u]
+    if not fit:
+        return (osm, v)
+    slope_num = _math.fsum((a - _mean(osm)) * (b - _mean(v))
+                           for a, b in zip(osm, v))
+    slope_den = _math.fsum((a - _mean(osm)) ** 2 for a in osm)
+    slope = slope_num / slope_den
+    intercept = _mean(v) - slope * _mean(osm)
+    r = _pearson_r(osm, v)
+    return (osm, v), (slope, intercept, r)
+
+
+def jarque_bera(x):
+    v = _flatten(x)
+    n = len(v)
+    s = skew(v)
+    k = kurtosis(v, fisher=True)
+    jb = n / 6.0 * (s * s + k * k / 4.0)
+    return _TestResult(jb, chi2.sf(jb, 2))
+
+
+def friedmanchisquare(*samples):
+    k = len(samples)
+    cols = [_flatten(s) for s in samples]
+    n = len(cols[0])
+    rank_sums = [0.0] * k
+    ties_corr = 0.0
+    for i in range(n):
+        row = [cols[j][i] for j in range(k)]
+        r = rankdata(row)
+        for j in range(k):
+            rank_sums[j] += r[j]
+        counts = {}
+        for u in row:
+            counts[u] = counts.get(u, 0) + 1
+        ties_corr += _math.fsum(c ** 3 - c for c in counts.values())
+    stat = (12.0 / (n * k * (k + 1))
+            * _math.fsum(rs * rs for rs in rank_sums)
+            - 3.0 * n * (k + 1))
+    corr = 1.0 - ties_corr / (n * k * (k * k - 1))
+    if corr > 0:
+        stat /= corr
+    return _TestResult(stat, chi2.sf(stat, k - 1))
+
+
+def wasserstein_distance(u_values, v_values):
+    u = sorted(_flatten(u_values))
+    v = sorted(_flatten(v_values))
+    allv = sorted(u + v)
+    import bisect
+    d = 0.0
+    for i in range(len(allv) - 1):
+        cu = bisect.bisect_right(u, allv[i]) / len(u)
+        cv = bisect.bisect_right(v, allv[i]) / len(v)
+        d += abs(cu - cv) * (allv[i + 1] - allv[i])
+    return d
+
+
+def somersd(x, y):
+    xv, yv = _flatten(x), _flatten(y)
+    n = len(xv)
+    conc = disc = ty = 0
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            dx = xv[i] - xv[j]
+            dy = yv[i] - yv[j]
+            if dx == 0:
+                continue
+            if dy == 0:
+                ty += 1
+            elif dx * dy > 0:
+                conc += 1
+            else:
+                disc += 1
+    tot = conc + disc + ty
+    d = (conc - disc) / tot if tot else float("nan")
+    z = (conc - disc) / _math.sqrt(
+        n * (n - 1) * (2 * n + 5) / 18.0) if n > 2 else 0.0
+    return _TestResult(d, _bi.min(1.0, 2.0 * norm.sf(abs(z))))
+
+
+def theilslopes(y, x=None):
+    yv = _flatten(y)
+    xv = _flatten(x) if x is not None else list(range(len(yv)))
+    slopes = []
+    n = len(yv)
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            if xv[j] != xv[i]:
+                slopes.append((yv[j] - yv[i]) / (xv[j] - xv[i]))
+    slopes.sort()
+    m = len(slopes)
+    med = slopes[m // 2] if m % 2 else \
+        0.5 * (slopes[m // 2 - 1] + slopes[m // 2])
+    xs = sorted(xv)
+    xmed = xs[n // 2] if n % 2 else 0.5 * (xs[n // 2 - 1] + xs[n // 2])
+    ys = sorted(yv)
+    ymed = ys[n // 2] if n % 2 else 0.5 * (ys[n // 2 - 1] + ys[n // 2])
+    inter = ymed - med * xmed
+    out = _TestResult(med, inter)
+    out.slope = med
+    out.intercept = inter
+    return out
+
+
+def ranksums(x, y):
+    xv, yv = _flatten(x), _flatten(y)
+    n1, n2 = len(xv), len(yv)
+    ranks = rankdata(xv + yv)
+    r1 = _math.fsum(ranks[:n1])
+    expected = n1 * (n1 + n2 + 1) / 2.0
+    z = (r1 - expected) / _math.sqrt(n1 * n2 * (n1 + n2 + 1) / 12.0)
+    return _TestResult(z, 2.0 * norm.sf(abs(z)))
+
+
+def median_test(*samples):
+    allv = []
+    for s in samples:
+        allv += _flatten(s)
+    sv = sorted(allv)
+    n = len(sv)
+    grand = sv[n // 2] if n % 2 else 0.5 * (sv[n // 2 - 1] + sv[n // 2])
+    table = []
+    for s in samples:
+        v = _flatten(s)
+        above = sum(1 for u in v if u > grand)
+        below = sum(1 for u in v if u <= grand)
+        table.append([above, below])
+    tt = [[table[i][j] for i in range(len(samples))]
+          for j in range(2)]
+    res = chi2_contingency(tt)
+    return _TestResult(res.statistic, res.pvalue, median=grand,
+                       table=tt)
+
+
+class _KSTwoBign:
+    """Asymptotic two-sided KS distribution (Kolmogorov)."""
+
+    @staticmethod
+    def sf(x):
+        x = float(x)
+        if x <= 0:
+            return 1.0
+        s = 0.0
+        for j in range(1, 101):
+            term = 2.0 * (-1) ** (j - 1) * _math.exp(-2.0 * j * j * x * x)
+            s += term
+            if abs(term) < 1e-16:
+                break
+        return _bi.max(0.0, _bi.min(1.0, s))
+
+    @staticmethod
+    def cdf(x):
+        return 1.0 - _KSTwoBign.sf(x)
+
+    @staticmethod
+    def ppf(q):
+        lo, hi = 1e-8, 5.0
+        for _ in range(200):
+            mid = 0.5 * (lo + hi)
+            if _KSTwoBign.cdf(mid) < q:
+                lo = mid
+            else:
+                hi = mid
+        return 0.5 * (lo + hi)
+
+    @staticmethod
+    def isf(q):
+        return _KSTwoBign.ppf(1.0 - q)
+
+
+kstwobign = _KSTwoBign()
+
+
+class _KSTwo:
+    """Finite-n two-sided KS via asymptotic + Stephens correction."""
+
+    @staticmethod
+    def sf(d, n):
+        return _ks_sf(float(d), int(n))
+
+    @staticmethod
+    def cdf(d, n):
+        return 1.0 - _ks_sf(float(d), int(n))
+
+    @staticmethod
+    def ppf(q, n):
+        lo, hi = 1e-8, 1.0
+        for _ in range(200):
+            mid = 0.5 * (lo + hi)
+            if _KSTwo.cdf(mid, n) < q:
+                lo = mid
+            else:
+                hi = mid
+        return 0.5 * (lo + hi)
+
+    @staticmethod
+    def isf(q, n):
+        return _KSTwo.ppf(1.0 - q, n)
+
+
+kstwo = _KSTwo()
+
+
+class _HalfCauchy(_Dist):
+    def pdf(self, x, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z < 0:
+                return 0.0
+            return 2.0 / (_math.pi * scale * (1.0 + z * z))
+        return _maybe_map(one, x)
+
+    def cdf(self, x, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return 0.0 if z < 0 else 2.0 / _math.pi * _math.atan(z)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, loc=0.0, scale=1.0):
+        def one(p):
+            return loc + scale * _math.tan(_math.pi * p / 2.0)
+        return _maybe_map(one, q)
+
+
+class _Pareto(_Dist):
+    def pdf(self, x, b, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return 0.0 if z < 1.0 else b / (z ** (b + 1.0)) / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, b, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            return 0.0 if z < 1.0 else 1.0 - z ** (-b)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, b, loc=0.0, scale=1.0):
+        def one(p):
+            return loc + scale * (1.0 - p) ** (-1.0 / b)
+        return _maybe_map(one, q)
+
+
+class _GenPareto(_Dist):
+    def pdf(self, x, c, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z < 0:
+                return 0.0
+            if c == 0:
+                return _math.exp(-z) / scale
+            t_ = 1.0 + c * z
+            if t_ <= 0:
+                return 0.0
+            return t_ ** (-1.0 / c - 1.0) / scale
+        return _maybe_map(one, x)
+
+    def cdf(self, x, c, loc=0.0, scale=1.0):
+        def one(v):
+            z = (v - loc) / scale
+            if z < 0:
+                return 0.0
+            if c == 0:
+                return 1.0 - _math.exp(-z)
+            t_ = 1.0 + c * z
+            if t_ <= 0:
+                return 1.0
+            return 1.0 - t_ ** (-1.0 / c)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, c, loc=0.0, scale=1.0):
+        def one(p):
+            if c == 0:
+                return loc - scale * _math.log1p(-p)
+            return loc + scale * ((1.0 - p) ** (-c) - 1.0) / c
+        return _maybe_map(one, q)
+
+
+class _NCT(_Dist):
+    """Noncentral t via cdf integration of the defining integral."""
+
+    def cdf(self, x, df, nc):
+        def one(v):
+            # Algorithm: P(T<=t) = P(Z <= (t*sqrt(W/df) - nc)) averaged
+            # over W ~ chi2(df); Gauss-Legendre on W quantiles
+            npts = 200
+            total = 0.0
+            for i in range(npts):
+                u = (i + 0.5) / npts
+                w = chi2.ppf(u, df)
+                total += _norm_cdf(v * _math.sqrt(w / df) - nc)
+            return total / npts
+        return _maybe_map(one, x)
+
+    def sf(self, x, df, nc):
+        c = self.cdf(x, df, nc)
+        if isinstance(c, float):
+            return 1.0 - c
+        return 1.0 - c
+
+    def pdf(self, x, df, nc):
+        def one(v):
+            h = 1e-5 * _bi.max(abs(v), 1.0)
+            lo = self.cdf(v - h, df, nc)
+            hi = self.cdf(v + h, df, nc)
+            return (hi - lo) / (2.0 * h)
+        return _maybe_map(one, x)
+
+    def ppf(self, q, df, nc):
+        def one(p):
+            return _ppf_from_cdf(lambda v: self.cdf(v, df, nc), p,
+                                 -1e3, 1e3)
+        return _maybe_map(one, q)
+
+
+class _NCF(_Dist):
+    """Noncentral F via chi2 mixture average."""
+
+    def cdf(self, x, dfn, dfd, nc):
+        def one(v):
+            npts = 200
+            total = 0.0
+            for i in range(npts):
+                u = (i + 0.5) / npts
+                w = chi2.ppf(u, dfd)      # denominator chi2
+                # P(chi2_nc(dfn) <= v*dfn*w/dfd) with noncentrality nc:
+                # Poisson mixture of central chi2
+                lim = v * dfn * w / dfd
+                acc = 0.0
+                pw = _math.exp(-nc / 2.0)
+                for j in range(200):
+                    acc += pw * chi2.cdf(lim, dfn + 2 * j)
+                    pw *= (nc / 2.0) / (j + 1)
+                    if pw < 1e-14 and j > nc:
+                        break
+                total += acc
+            return total / npts
+        return _maybe_map(one, x)
+
+    def sf(self, x, dfn, dfd, nc):
+        c = self.cdf(x, dfn, dfd, nc)
+        return 1.0 - c if isinstance(c, float) else 1.0 - c
+
+
+halfcauchy = _HalfCauchy()
+pareto = _Pareto()
+genpareto = _GenPareto()
+nct = _NCT()
+ncf = _NCF()

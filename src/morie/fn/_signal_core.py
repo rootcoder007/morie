@@ -686,3 +686,368 @@ for _n in ("welch", "csd", "coherence", "periodogram", "stft",
            "spectrogram", "hilbert", "fftconvolve", "find_peaks",
            "savgol_filter", "medfilt", "detrend", "get_window"):
     setattr(signal, _n, staticmethod(globals()[_n]))
+
+
+# ------------------------------------------------------- design tail
+
+def _cheb1_analog_zpk(n, rp):
+    eps = _math.sqrt(10.0 ** (0.1 * rp) - 1.0)
+    mu = _math.asinh(1.0 / eps) / n
+    p = []
+    for k in range(n):
+        theta = _math.pi * (2.0 * k + 1.0) / (2.0 * n)
+        p.append(complex(-_math.sinh(mu) * _math.sin(theta),
+                         _math.cosh(mu) * _math.cos(theta)))
+    kgain = 1.0
+    prod = complex(1.0)
+    for pi in p:
+        prod *= -pi
+    kgain = prod.real
+    if n % 2 == 0:
+        kgain /= _math.sqrt(1.0 + eps * eps)
+    return [], p, kgain
+
+
+def _cheb2_analog_zpk(n, rs):
+    de = 1.0 / _math.sqrt(10.0 ** (0.1 * rs) - 1.0)
+    mu = _math.asinh(1.0 / de) / n
+    z = []
+    p = []
+    for k in range(n):
+        theta = _math.pi * (2.0 * k + 1.0) / (2.0 * n)
+        # chebyshev-1 pole, inverted
+        p1 = complex(-_math.sinh(mu) * _math.sin(theta),
+                     _math.cosh(mu) * _math.cos(theta))
+        p.append(1.0 / p1)
+        s = _math.sin(theta)
+        if abs(_math.cos(theta)) > 1e-15:
+            z.append(complex(0.0, 1.0 / _math.cos(theta)))
+    # pure imaginary zeros come in conjugate pairs; odd n drops one
+    kgain = 1.0
+    num = complex(1.0)
+    den = complex(1.0)
+    for zi in z:
+        num *= -zi
+    for pi in p:
+        den *= -pi
+    kgain = (den / num).real
+    return z, p, kgain
+
+
+def _design_iir(n, wn, btype, atype, ripple, output):
+    if atype == "cheby1":
+        z, p, k = _cheb1_analog_zpk(n, ripple)
+    elif atype == "cheby2":
+        z, p, k = _cheb2_analog_zpk(n, ripple)
+    else:
+        raise ValueError(atype)
+    fs = 2.0
+    if btype in ("low", "lowpass"):
+        warped = 2.0 * fs * _math.tan(_math.pi * float(wn) / fs)
+        z = [zi * warped for zi in z]
+        pn = [pi * warped for pi in p]
+        k *= warped ** (len(p) - len(z))
+        p = pn
+    elif btype in ("high", "highpass"):
+        warped = 2.0 * fs * _math.tan(_math.pi * float(wn) / fs)
+        zn = [warped / zi for zi in z]
+        pn = [warped / pi for pi in p]
+        num = complex(1.0)
+        den = complex(1.0)
+        for zi in z:
+            num *= -zi
+        for pi in p:
+            den *= -pi
+        k *= (num / den).real
+        z = zn + [0j] * (len(p) - len(z))
+        p = pn
+    else:
+        raise NotImplementedError("cheby band: lowpass/highpass only")
+    zd, pd, kd = _bilinear_zpk(z, p, k, fs)
+    if output == "ba":
+        return _zpk2tf(zd, pd, kd)
+    return _ac.marr(_zpk2sos(zd, pd, kd))
+
+
+def cheby1(N, rp, Wn, btype="low", output="ba", fs=None):
+    if fs is not None:
+        Wn = 2.0 * float(Wn) / fs
+    return _design_iir(int(N), Wn, btype, "cheby1", float(rp), output)
+
+
+def cheby2(N, rs, Wn, btype="low", output="ba", fs=None):
+    if fs is not None:
+        Wn = 2.0 * float(Wn) / fs
+    return _design_iir(int(N), Wn, btype, "cheby2", float(rs), output)
+
+
+def iirnotch(w0, Q, fs=2.0):
+    w0n = 2.0 * float(w0) / fs if fs != 2.0 else float(w0)
+    om = _math.pi * w0n
+    bw = om / float(Q)
+    gb = 1.0 / _math.sqrt(2.0)
+    beta = _math.sqrt(1.0 - gb * gb) / gb * _math.tan(bw / 2.0)
+    gain = 1.0 / (1.0 + beta)
+    b = [gain, -2.0 * _math.cos(om) * gain, gain]
+    a = [1.0, -2.0 * _math.cos(om) * gain, 2.0 * gain - 1.0]
+    return b, a
+
+
+def firwin(numtaps, cutoff, window="hamming", pass_zero=True, fs=None):
+    if fs is not None:
+        if isinstance(cutoff, (list, tuple)):
+            cutoff = [2.0 * c / fs for c in cutoff]
+        else:
+            cutoff = 2.0 * float(cutoff) / fs
+    n = int(numtaps)
+    m = (n - 1) / 2.0
+    if not isinstance(cutoff, (list, tuple)):
+        cutoff = [float(cutoff)]
+
+    def sinc(x):
+        return 1.0 if x == 0.0 else _math.sin(_math.pi * x) / (
+            _math.pi * x)
+    # ideal impulse response (lowpass or bandpass sum)
+    h = [0.0] * n
+    bands = []
+    if pass_zero:
+        bands.append((0.0, cutoff[0]))
+        for i in range(1, len(cutoff) - 1, 2):
+            bands.append((cutoff[i], cutoff[i + 1]))
+    else:
+        cl = [0.0] + list(cutoff) + [1.0]
+        for i in range(1, len(cl) - 1, 2):
+            bands.append((cl[i], cl[i + 1]))
+    for lo, hi in bands:
+        for i in range(n):
+            x = i - m
+            h[i] += hi * sinc(hi * x) - lo * sinc(lo * x)
+    win = get_window(window, n) if window != "hamming" else [
+        0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / (n - 1))
+        for i in range(n)]
+    h = [h[i] * win[i] for i in range(n)]
+    # normalize DC gain to 1 for pass_zero
+    if pass_zero:
+        s = _math.fsum(h)
+        h = [v / s for v in h]
+    return _ac.marr(h)
+
+
+def freqz(b, a=1, worN=512, fs=None):
+    bv = [float(v) for v in _ac.asarray(b)._flat()]
+    av = [float(v) for v in (_ac.asarray(a)._flat()
+                             if not isinstance(a, (int, float))
+                             else [float(a)])]
+    if isinstance(worN, int):
+        ws = [_math.pi * k / worN for k in range(worN)]
+    else:
+        ws = [float(v) for v in _ac.asarray(worN)._flat()]
+        if fs is not None:
+            ws = [2.0 * _math.pi * v / fs for v in ws]
+    from . import _array_core as _ac2
+    h = []
+    for w in ws:
+        zi = complex(_math.cos(-w), _math.sin(-w))
+        num = complex(0.0)
+        zp = complex(1.0)
+        for c in bv:
+            num += c * zp
+            zp *= zi
+        den = complex(0.0)
+        zp = complex(1.0)
+        for c in av:
+            den += c * zp
+            zp *= zi
+        h.append(num / den)
+    wout = ws if fs is None else [v * fs / (2.0 * _math.pi)
+                                  for v in ws]
+    return _ac.marr(wout), _ac2.carr(h)
+
+
+def group_delay(system, w=512, fs=None):
+    b, a = system
+    # numerical derivative of phase
+    ws, h = freqz(b, a, worN=w, fs=None)
+    wl = list(ws._flat())
+    hl = h.tolist()
+    ph = []
+    prev = None
+    acc = 0.0
+    for v in hl:
+        p = _math.atan2(v.imag, v.real)
+        if prev is not None:
+            d = p - prev
+            while d > _math.pi:
+                d -= 2.0 * _math.pi
+            while d < -_math.pi:
+                d += 2.0 * _math.pi
+            acc += d
+        ph.append(acc)
+        prev = p
+    gd = []
+    for i in range(len(wl)):
+        if i == 0:
+            gd.append(-(ph[1] - ph[0]) / (wl[1] - wl[0]))
+        elif i == len(wl) - 1:
+            gd.append(-(ph[-1] - ph[-2]) / (wl[-1] - wl[-2]))
+        else:
+            gd.append(-(ph[i + 1] - ph[i - 1])
+                      / (wl[i + 1] - wl[i - 1]))
+    return _ac.marr(wl), _ac.marr(gd)
+
+
+def bilinear(b, a, fs=1.0):
+    """Bilinear transform of an analog (b, a) to digital."""
+    bv = [float(v) for v in _ac.asarray(b)._flat()]
+    av = [float(v) for v in _ac.asarray(a)._flat()]
+    # roots via companion matrix eig? ponytail: polynomial orders in
+    # morie call sites are <= 4 — use numpy-free Durand-Kerner
+    def roots(c):
+        c = [v / c[0] for v in c]
+        n = len(c) - 1
+        if n == 0:
+            return []
+        rs = [complex(0.4, 0.9) ** k for k in range(n)]
+        for _ in range(200):
+            new = []
+            for i in range(n):
+                num = complex(1.0)
+                for j in range(n):
+                    if j != i:
+                        num *= (rs[i] - rs[j])
+                pv = complex(0.0)
+                for cf in c:
+                    pv = pv * rs[i] + cf
+                new.append(rs[i] - pv / num)
+            if max(abs(a_ - b_) for a_, b_ in zip(new, rs)) < 1e-13:
+                rs = new
+                break
+            rs = new
+        return rs
+    z = roots(bv) if len(bv) > 1 else []
+    p = roots(av) if len(av) > 1 else []
+    k = bv[0] / av[0]
+    zd, pd, kd = _bilinear_zpk(z, p, k, fs)
+    return _zpk2tf(zd, pd, kd)
+
+
+def resample_poly(x, up, down, window=("kaiser", 5.0)):
+    """Polyphase resampling: upsample, FIR lowpass, downsample."""
+    del window
+    xs = list(_ac.asarray(x)._flat())
+    up, down = int(up), int(down)
+    g = _math.gcd(up, down)
+    up //= g
+    down //= g
+    if up == down == 1:
+        return _ac.marr(xs)
+    # zero-stuff
+    ups = []
+    for v in xs:
+        ups.append(v * up)
+        ups.extend([0.0] * (up - 1))
+    # lowpass at min(1/up, 1/down), 10 taps per phase (hamming sinc)
+    cutoff = 1.0 / max(up, down)
+    ntaps = 10 * max(up, down) + 1
+    h = list(firwin(ntaps, cutoff)._flat())
+    # filter (linear-phase FIR, centered)
+    m = len(h) // 2
+    n = len(ups)
+    filt = []
+    for i in range(n):
+        acc = 0.0
+        for k in range(len(h)):
+            idx = i + m - k
+            if 0 <= idx < n:
+                acc += h[k] * ups[idx]
+        filt.append(acc)
+    return _ac.marr(filt[::down])
+
+
+def convolve2d(a, b, mode="full", boundary="fill", fillvalue=0.0):
+    A = _ac.atleast_2d(a)
+    B = _ac.atleast_2d(b)
+    ma, na = A.shape
+    mb, nb = B.shape
+    mf, nf = ma + mb - 1, na + nb - 1
+    out = [[0.0] * nf for _ in range(mf)]
+    for i in range(ma):
+        for j in range(na):
+            v = A.data[i][j]
+            if v == 0.0:
+                continue
+            for k in range(mb):
+                for l_ in range(nb):
+                    out[i + k][j + l_] += v * B.data[k][l_]
+    if mode == "full":
+        return _ac.marr(out)
+    if mode == "same":
+        r0 = (mb - 1) // 2
+        c0 = (nb - 1) // 2
+        return _ac.marr([[out[i + r0][j + c0] for j in range(na)]
+                         for i in range(ma)])
+    if mode == "valid":
+        return _ac.marr([[out[i][j]
+                          for j in range(nb - 1, na)]
+                         for i in range(mb - 1, ma)])
+    raise ValueError(mode)
+
+
+def dpss(M, NW, Kmax=None):
+    """Slepian sequences via the symmetric tridiagonal eigenproblem."""
+    M = int(M)
+    W = float(NW) / M
+    diag = [((M - 1.0 - 2.0 * i) / 2.0) ** 2
+            * _math.cos(2.0 * _math.pi * W) for i in range(M)]
+    off = [i * (M - i) / 2.0 for i in range(1, M)]
+    A = [[0.0] * M for _ in range(M)]
+    for i in range(M):
+        A[i][i] = diag[i]
+    for i in range(M - 1):
+        A[i][i + 1] = A[i + 1][i] = off[i]
+    w, V = _ac.linalg.eigh(_ac.marr(A))
+    order = sorted(range(M), key=lambda i: -float(w[i]))
+    k = int(Kmax) if Kmax is not None else 1
+    Vd = V.tolist()
+    out = []
+    for kk in range(k):
+        col = [Vd[i][order[kk]] for i in range(M)]
+        s = _math.fsum(col)
+        if s < 0:
+            col = [-v for v in col]
+        nrm = _math.sqrt(_math.fsum(v * v for v in col))
+        col = [v / nrm for v in col]
+        if Kmax is None:
+            # scipy default norm="approximate":
+            # peak to 1, then * M^2/(M^2 + NW)
+            mx = max(abs(v) for v in col)
+            corr = (M * M) / (M * M + float(NW))
+            col = [v / mx * corr for v in col]
+        out.append(col)
+    return _ac.marr(out if k > 1 else out[0])
+
+
+class windows:
+    dpss = staticmethod(dpss)
+
+    @staticmethod
+    def hann(n):
+        return _ac.marr(_hann(n))
+
+
+def iirfilter(N, Wn, rp=None, rs=None, btype="low", ftype="butter",
+              output="ba", fs=None):
+    if ftype == "butter":
+        return butter(N, Wn, btype=btype, output=output, fs=fs)
+    if ftype in ("cheby1", "chebyshev1"):
+        return cheby1(N, rp, Wn, btype=btype, output=output, fs=fs)
+    if ftype in ("cheby2", "chebyshev2"):
+        return cheby2(N, rs, Wn, btype=btype, output=output, fs=fs)
+    raise NotImplementedError("iirfilter ftype %r" % ftype)
+
+
+for _n in ("cheby1", "cheby2", "iirnotch", "firwin", "freqz",
+           "group_delay", "bilinear", "resample_poly", "convolve2d",
+           "dpss", "iirfilter"):
+    setattr(signal, _n, staticmethod(globals()[_n]))
+signal.windows = windows
