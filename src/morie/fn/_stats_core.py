@@ -456,7 +456,32 @@ class _Beta(_Dist):
 
 
 class _Binom(_Dist):
-    def pmf(self, k, n, p):
+    # supports both scipy call styles: binom.pmf(k, n, p) and the
+    # frozen form binom(n, p).pmf(k)
+    def __init__(self, n=None, p=None):
+        self._n = None if n is None else int(n)
+        self._p = None if p is None else float(p)
+
+    def _resolve(self, n, p):
+        n = self._n if n is None else int(n)
+        p = self._p if p is None else float(p)
+        if n is None or p is None:
+            raise TypeError("binom requires n and p")
+        return n, p
+
+    def mean(self, n=None, p=None):
+        n, p = self._resolve(n, p)
+        return n * p
+
+    def var(self, n=None, p=None):
+        n, p = self._resolve(n, p)
+        return n * p * (1.0 - p)
+
+    def std(self, n=None, p=None):
+        return _math.sqrt(self.var(n, p))
+
+    def pmf(self, k, n=None, p=None):
+        n, p = self._resolve(n, p)
         def one(kk):
             kk = int(round(kk))
             if kk < 0 or kk > n:
@@ -465,7 +490,9 @@ class _Binom(_Dist):
                     * (1.0 - p) ** (int(n) - kk))
         return _maybe_map(one, k)
 
-    def cdf(self, k, n, p):
+    def cdf(self, k, n=None, p=None):
+        n, p = self._resolve(n, p)
+
         def one(kk):
             kk = int(_math.floor(kk))
             if kk < 0:
@@ -476,7 +503,43 @@ class _Binom(_Dist):
             return _betainc(n - kk, kk + 1, 1.0 - p)
         return _maybe_map(one, k)
 
-    def sf(self, k, n, p):
+
+    def logpmf(self, k, n=None, p=None):
+        n, p = self._resolve(n, p)
+
+        def one(kk):
+            kk = int(round(kk))
+            if kk < 0 or kk > n:
+                return float("-inf")
+            if p == 0.0:
+                return 0.0 if kk == 0 else float("-inf")
+            if p == 1.0:
+                return 0.0 if kk == n else float("-inf")
+            return (_math.lgamma(n + 1) - _math.lgamma(kk + 1)
+                    - _math.lgamma(n - kk + 1)
+                    + kk * _math.log(p) + (n - kk) * _math.log1p(-p))
+        return _maybe_map(one, k)
+
+    def ppf(self, q, n=None, p=None):
+        n, p = self._resolve(n, p)
+
+        def one(qq):
+            if qq != qq or qq < 0.0 or qq > 1.0:
+                return float("nan")
+            if qq == 0.0:
+                return -1.0
+            if qq == 1.0:
+                return float(n)
+            c = 0.0
+            for kk in range(n + 1):
+                c += (_math.comb(n, kk) * p ** kk
+                      * (1.0 - p) ** (n - kk))
+                if c >= qq - 1e-12:
+                    return float(kk)
+            return float(n)
+        return _maybe_map(one, q)
+
+    def sf(self, k, n=None, p=None):
         c = self.cdf(k, n, p)
         if isinstance(c, list):
             return [1.0 - v for v in c]
@@ -484,7 +547,28 @@ class _Binom(_Dist):
 
 
 class _Poisson(_Dist):
-    def pmf(self, k, mu):
+    # supports both scipy call styles: poisson.pmf(k, mu) and the
+    # frozen form poisson(mu).pmf(k)
+    def __init__(self, mu=None):
+        self._mu = None if mu is None else float(mu)
+
+    def _resolve(self, mu):
+        mu = self._mu if mu is None else float(mu)
+        if mu is None:
+            raise TypeError("poisson requires mu")
+        return mu
+
+    def mean(self, mu=None):
+        return self._resolve(mu)
+
+    def var(self, mu=None):
+        return self._resolve(mu)
+
+    def std(self, mu=None):
+        return _math.sqrt(self._resolve(mu))
+
+    def pmf(self, k, mu=None):
+        mu = self._resolve(mu)
         def one(kk):
             kk = int(round(kk))
             if kk < 0:
@@ -494,7 +578,9 @@ class _Poisson(_Dist):
                 else (1.0 if kk == 0 else 0.0)
         return _maybe_map(one, k)
 
-    def cdf(self, k, mu):
+    def cdf(self, k, mu=None):
+        mu = self._resolve(mu)
+
         def one(kk):
             kk = int(_math.floor(kk))
             if kk < 0:
@@ -503,7 +589,41 @@ class _Poisson(_Dist):
             return 1.0 - _gammainc_p(kk + 1.0, mu)
         return _maybe_map(one, k)
 
-    def sf(self, k, mu):
+
+    def logpmf(self, k, mu=None):
+        mu = self._resolve(mu)
+
+        def one(kk):
+            kk = int(round(kk))
+            if kk < 0:
+                return float("-inf")
+            if mu <= 0:
+                return 0.0 if kk == 0 else float("-inf")
+            return kk * _math.log(mu) - mu - _math.lgamma(kk + 1)
+        return _maybe_map(one, k)
+
+    def ppf(self, q, mu=None):
+        mu = self._resolve(mu)
+
+        def one(qq):
+            if qq != qq or qq < 0.0 or qq > 1.0:
+                return float("nan")
+            if qq == 0.0:
+                return -1.0
+            if qq == 1.0:
+                return float("inf")
+            kk, c = 0, _math.exp(-mu)
+            term = c
+            while c < qq - 1e-12:
+                kk += 1
+                term *= mu / kk
+                c += term
+                if kk > 10_000_000:
+                    return float("nan")
+            return float(kk)
+        return _maybe_map(one, q)
+
+    def sf(self, k, mu=None):
         c = self.cdf(k, mu)
         if isinstance(c, list):
             return [1.0 - v for v in c]

@@ -231,7 +231,7 @@ class GGMLTurboQuant:
     def _quantize_numpy(vector: NDArray[np.float32], bits: int, seed: int) -> Any:
         from morie.quant import turboquant_mse
 
-        return turboquant_mse(vector.astype(np.float64), bits=bits, rotation_seed=seed)
+        return turboquant_mse(np.asarray(vector), bits=bits, rotation_seed=seed)
 
     @staticmethod
     def _dequantize_numpy(block: Any) -> NDArray[np.float32]:

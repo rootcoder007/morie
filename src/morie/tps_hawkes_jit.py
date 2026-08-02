@@ -20,6 +20,7 @@ parameter combinations no JIT path covers.
 from __future__ import annotations
 
 import math
+import math as _math
 
 from morie.fn import _array_core as np
 
@@ -496,7 +497,12 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             if alpha > 1.0 and t_c.shape[0] >= _SOE_MIN_N and _gamma_trunc_cutoff(alpha, beta) >= t_c[-1] - t_c[0]:
                 u_split = 2.0 * (alpha - 1.0) / beta
                 w, beta_soe, _ = soe_fit_gamma_tail(alpha, beta, u_split)
-                return _core_ext.hawkes_ll_gamma_hybrid(t_c, float(T), a0, eta, alpha, beta, u_split, w, beta_soe)
+                import array as _pyarray
+                w_re = _pyarray.array("d", [c.real for c in w])
+                w_im = _pyarray.array("d", [c.imag for c in w])
+                b_re = _pyarray.array("d", [c.real for c in beta_soe])
+                b_im = _pyarray.array("d", [c.imag for c in beta_soe])
+                return _core_ext.hawkes_ll_gamma_hybrid_ri(t_c, float(T), a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
             # the sliding-window form is bit-identical and sub-quadratic
             return _core_ext.hawkes_ll_gamma_const_trunc(t_c, float(T), a0, eta, alpha, beta)
     if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
@@ -797,15 +803,80 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
         order = int(np.count_nonzero(sv > rank_tol * sv[0]))
     order = max(1, min(order, pencil))
 
-    v = vh[:order].conj().T  # (pencil+1) x order
-    z = np.linalg.eigvals(np.linalg.pinv(v[:-1]) @ v[1:])
+    # y is real, so vh is real and conj() is the identity; everything
+    # up to the eigenproblem stays in real arithmetic.
+    v = vh[:order].T  # (pencil+1) x order
+    A = np.linalg.pinv(v[:-1]) @ v[1:]
+    m = order
+    Ad = A.tolist()
+    if not isinstance(Ad, list):
+        Ad = [[float(Ad)]]
+    elif Ad and not isinstance(Ad[0], list):
+        Ad = [[float(x) for x in Ad]] if m == 1 else [[x] for x in Ad]
 
-    k = np.arange(n)
-    vander = z[None, :] ** k[:, None]  # n x order
-    residue, *_ = np.linalg.lstsq(vander, y, rcond=None)
+    # Eigenvalues of the real pencil matrix via the compiled
+    # Hessenberg + shifted-QR kernel (LAPACK-grade accuracy; the
+    # char-poly route loses the small modes above order ~6).
+    import array as _pa
+    from morie import _core as _ck
+    flat = _pa.array("d", [float(x2) for row in Ad for x2 in row])
+    wr_b, wi_b = _ck.eig_general(flat, m)
+    _wr = _pa.array("d"); _wr.frombytes(wr_b)
+    _wi = _pa.array("d"); _wi.frombytes(wi_b)
+    z = [complex(a2, b2) for a2, b2 in zip(_wr, _wi)]
 
-    with np.errstate(divide="ignore", invalid="ignore"):
-        beta = -np.log(z) / dt
+    # Keep only physical poles: y is a decaying signal, so |z| must be
+    # < 1 (z = exp(-beta*dt), Re(beta) > 0). Growing or zero poles are
+    # noise artefacts of the rank truncation (Hua & Sarkar 1990 keep
+    # only the physically admissible pencil eigenvalues).
+    z = [zz for zz in z if 0.0 < abs(zz) < 1.0] or z
+    m = len(z)
+
+    # Complex least squares residue fit on the Vandermonde system,
+    # via the normal equations A^H A x = A^H y (order is small, the
+    # columns are distinct geometric modes).
+    yl = [float(vv) for vv in y.tolist()]
+    cols = []
+    for zz in z:
+        col, acc = [], complex(1.0)
+        for _i in range(n):
+            col.append(acc)
+            acc *= zz
+        cols.append(col)
+    # Least squares via modified Gram-Schmidt QR with
+    # reorthogonalization (Bjorck 1967): the Vandermonde columns are
+    # strongly correlated, and the normal equations would square the
+    # condition number and destroy the small-residual solution that
+    # the tail of a decaying signal needs.
+    Q = [list(c3) for c3 in cols]          # column-major, m columns
+    R = [[complex(0.0)] * m for _ in range(m)]
+    for j3 in range(m):
+        for _pass in range(2):             # one reorthogonalization
+            for i3 in range(j3):
+                d3 = sum(Q[i3][r3].conjugate() * Q[j3][r3]
+                         for r3 in range(n))
+                R[i3][j3] += d3
+                for r3 in range(n):
+                    Q[j3][r3] -= d3 * Q[i3][r3]
+        nrm = _math.sqrt(sum(abs(Q[j3][r3]) ** 2 for r3 in range(n)))
+        if nrm < 1e-300:
+            raise ValueError("matrix pencil: singular Vandermonde system")
+        R[j3][j3] = complex(nrm)
+        inv = 1.0 / nrm
+        for r3 in range(n):
+            Q[j3][r3] *= inv
+    qb = [sum(Q[j3][r3].conjugate() * yl[r3] for r3 in range(n))
+          for j3 in range(m)]
+    residue = [complex(0.0)] * m
+    for r3 in range(m - 1, -1, -1):
+        acc = qb[r3]
+        for c4 in range(r3 + 1, m):
+            acc -= R[r3][c4] * residue[c4]
+        residue[r3] = acc / R[r3][r3]
+
+    import cmath
+    beta = [(-cmath.log(zz) / dt) if zz != 0 else complex(float("inf"))
+            for zz in z]
     return beta, residue
 
 
@@ -849,14 +920,41 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     # rank_tol 1e-13 (vs the fitter's conservative 1e-9 default) keeps
     # more singular values -> ~12 modes -> tail relative error ~1e-6;
     # the gamma tail's slowly-varying u**(alpha-1) factor needs them.
-    scale = g[0]
-    pole_beta, pole_res = _soe_fit_matrix_pencil(g / scale, dt, rank_tol=1.0e-13)
-    w = pole_res * scale
+    import cmath
 
-    if np.any(pole_beta.real <= 0.0):
+    scale = float(g[0])
+    gl = [float(vv) for vv in g.tolist()]
+    ul = [float(vv) for vv in u.tolist()]
+
+    def _fit(order):
+        pole_beta, pole_res = _soe_fit_matrix_pencil(
+            g / scale, float(dt), order=order, rank_tol=1.0e-13)
+        w2 = [pr * scale for pr in pole_res]
+        if any(pb.real <= 0.0 for pb in pole_beta):
+            return None, None, float("inf")
+        e2 = 0.0
+        for i2 in range(len(ul)):
+            s2 = ul[i2] - u_split
+            val = sum(w2[m2] * cmath.exp(-pole_beta[m2] * s2)
+                      for m2 in range(len(w2))).real
+            rel = abs(val - gl[i2]) / gl[i2]
+            if rel > e2:
+                e2 = rel
+        return w2, pole_beta, e2
+
+    # The rank cut can land a mode short right at the singular-value
+    # threshold; the fit measures its own tail error, so escalate the
+    # order until the error stops improving (or is already tiny).
+    w, pole_beta, err = _fit(None)
+    if err > 1.0e-6:
+        base = len(w) if w is not None else 1
+        for extra in range(1, 7):
+            w2, pb2, e2 = _fit(base + extra)
+            if e2 < err:
+                w, pole_beta, err = w2, pb2, e2
+            if err <= 1.0e-6:
+                break
+
+    if w is None:
         raise ValueError("matrix-pencil fit produced a non-decaying mode")
-
-    s = u - u_split
-    g_soe = (w[None, :] * np.exp(-pole_beta[None, :] * s[:, None])).sum(axis=1).real
-    err = float(np.max(np.abs(g_soe - g) / g))
-    return (np.ascontiguousarray(w, dtype=np.complex128), np.ascontiguousarray(pole_beta, dtype=np.complex128), err)
+    return (list(w), list(pole_beta), float(err))
