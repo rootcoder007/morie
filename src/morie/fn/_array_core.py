@@ -44,7 +44,14 @@ class marr:
             return
         if isinstance(data, (int, float)):
             data = [float(data)]
+        if hasattr(data, "tolist") and not isinstance(data, marr):
+            data = data.tolist()                 # foreign arrays (numpy)
+            if isinstance(data, (int, float)):
+                data = [float(data)]
         data = list(data)
+        if data and hasattr(data[0], "tolist") \
+                and not isinstance(data[0], marr):
+            data = [r.tolist() if hasattr(r, "tolist") else r for r in data]
         if data and isinstance(data[0], (list, tuple, marr)):
             rows = [list(map(float, (r.data if isinstance(r, marr) else r)))
                     for r in data]
@@ -70,18 +77,30 @@ class marr:
 
     def _zip(self, other, fn):
         o = asarray(other)
-        if o.shape == (1,):
+        if o.shape == (1,) and len(o.shape) == 1:
             return self._map(lambda v: fn(v, o.data[0]))
-        if self.shape == (1,):
+        if self.shape == (1,) and len(self.shape) == 1:
             s = self.data[0]
             return o._map(lambda v: fn(s, v))
-        if o.shape != self.shape:
-            raise ValueError("shape mismatch %s vs %s"
-                             % (self.shape, o.shape))
-        if len(self.shape) == 1:
-            return marr([fn(a, b) for a, b in zip(self.data, o.data)])
-        return marr([[fn(a, b) for a, b in zip(r1, r2)]
-                     for r1, r2 in zip(self.data, o.data)])
+        if o.shape == self.shape:
+            if len(self.shape) == 1:
+                return marr([fn(a, b) for a, b in zip(self.data, o.data)])
+            return marr([[fn(a, b) for a, b in zip(r1, r2)]
+                         for r1, r2 in zip(self.data, o.data)])
+        # 2-D broadcasting: (n,m) with (n,1), (1,m), (n,) rows or (m,) cols
+        a2, b2 = _b2(self), _b2(o)
+        n = _bi.max(a2.shape[0], b2.shape[0])
+        m = _bi.max(a2.shape[1], b2.shape[1])
+        for arr in (a2, b2):
+            if arr.shape[0] not in (1, n) or arr.shape[1] not in (1, m):
+                raise ValueError("shape mismatch %s vs %s"
+                                 % (self.shape, o.shape))
+        out = [[fn(a2.data[i if a2.shape[0] > 1 else 0]
+                   [j if a2.shape[1] > 1 else 0],
+                   b2.data[i if b2.shape[0] > 1 else 0]
+                   [j if b2.shape[1] > 1 else 0])
+                for j in range(m)] for i in range(n)]
+        return marr(out)
 
     # -- python protocol ---------------------------------------------
     def __len__(self):
@@ -93,18 +112,99 @@ class marr:
         return iter([marr(row) for row in self.data])
 
     def __getitem__(self, idx):
-        if isinstance(idx, tuple) and len(self.shape) == 2:
+        if isinstance(idx, tuple):
             i, j = idx
-            return self.data[i][j]
+            if j is None:                       # x[:, None] -> column
+                base = self._flat() if i == slice(None) else None
+                if base is None:
+                    raise ValueError("unsupported index")
+                return marr([[v] for v in base])
+            if i is None:                       # x[None, :] -> row
+                return marr([self._flat()])
+            if len(self.shape) == 2:
+                if isinstance(i, slice) or isinstance(j, slice):
+                    rows = self.data[i] if isinstance(i, slice) \
+                        else [self.data[i]]
+                    picked = [(r[j] if isinstance(j, slice) else [r[j]])
+                              for r in rows]
+                    if isinstance(i, slice) and isinstance(j, slice):
+                        return marr(picked)
+                    if isinstance(i, slice):
+                        return marr([row[0] for row in picked])
+                    return marr(picked[0])
+                return self.data[i][j]
+            raise ValueError("unsupported index for 1-D")
+        if isinstance(idx, marr):
+            if idx.shape != (self.shape[0],):
+                raise ValueError("mask shape mismatch")
+            keep = [k for k, m in enumerate(idx.data) if m != 0]
+            if len(self.shape) == 1:
+                return marr([self.data[k] for k in keep])
+            return marr([self.data[k] for k in keep])
+        if isinstance(idx, (list, tuple)):
+            return marr([self.data[int(k)] for k in idx])
         out = self.data[idx]
         if isinstance(out, list):
             return marr(out)
         return out
 
+    @property
+    def size(self):
+        n = 1
+        for s in self.shape:
+            n *= s
+        return n
+
+    @property
+    def ndim(self):
+        return len(self.shape)
+
+    def ravel(self):
+        return marr(self._flat())
+
+    def __float__(self):
+        f = self._flat()
+        if len(f) != 1:
+            raise ValueError("only single-element marr converts to float")
+        return f[0]
+
+    def __or__(self, o):
+        return self._zip(o, lambda a, b: 1.0 if (a != 0 or b != 0) else 0.0)
+
+    def __and__(self, o):
+        return self._zip(o, lambda a, b: 1.0 if (a != 0 and b != 0) else 0.0)
+
+    def __bool__(self):
+        f = self._flat()
+        if len(f) != 1:
+            raise ValueError("truth value of multi-element marr is "
+                             "ambiguous")
+        return f[0] != 0
+
     def __setitem__(self, idx, value):
         if isinstance(idx, tuple) and len(self.shape) == 2:
             i, j = idx
+            if isinstance(i, slice) or isinstance(j, slice):
+                rows = range(*i.indices(self.shape[0])) \
+                    if isinstance(i, slice) else [i]
+                cols = range(*j.indices(self.shape[1])) \
+                    if isinstance(j, slice) else [j]
+                v = asarray(value)
+                v2 = _b2(v)
+                for ri, r in enumerate(rows):
+                    for ci, c in enumerate(cols):
+                        self.data[r][c] = v2.data[
+                            ri if v2.shape[0] > 1 else 0][
+                            ci if v2.shape[1] > 1 else 0]
+                return
             self.data[i][j] = float(value)
+        elif isinstance(idx, slice):
+            vals = asarray(value)._flat()
+            rng = range(*idx.indices(self.shape[0]))
+            if len(vals) == 1:
+                vals = vals * len(rng)
+            for k, r in zip(rng, vals):
+                self.data[k] = r
         else:
             self.data[idx] = float(value)
 
@@ -158,13 +258,46 @@ class marr:
     def __ge__(self, o):
         return self._zip(o, lambda a, b: 1.0 if a >= b else 0.0)
 
-    # -- reductions ----------------------------------------------------
-    def sum(self):
-        return float(_math.fsum(self._flat()))
+    def __eq__(self, o):
+        try:
+            return self._zip(o, lambda a, b: 1.0 if a == b else 0.0)
+        except (TypeError, ValueError):
+            return NotImplemented
 
-    def mean(self):
+    def __ne__(self, o):
+        try:
+            return self._zip(o, lambda a, b: 1.0 if a != b else 0.0)
+        except (TypeError, ValueError):
+            return NotImplemented
+
+    __hash__ = None
+
+    def __abs__(self):
+        return self._map(lambda v: v if v >= 0 else -v)
+
+    def argmax(self):
         f = self._flat()
-        return float(_math.fsum(f) / len(f))
+        return f.index(_bi.max(f))
+
+    # -- reductions ----------------------------------------------------
+    def sum(self, axis=None):
+        if axis is None:
+            return float(_math.fsum(self._flat()))
+        if len(self.shape) != 2:
+            raise ValueError("axis reduction needs a 2-D array")
+        if axis == 0:
+            return marr([_math.fsum(self.data[i][j]
+                                    for i in range(self.shape[0]))
+                         for j in range(self.shape[1])])
+        return marr([_math.fsum(row) for row in self.data])
+
+    def mean(self, axis=None):
+        if axis is None:
+            f = self._flat()
+            return float(_math.fsum(f) / len(f))
+        s = self.sum(axis=axis)
+        d = self.shape[0] if axis == 0 else self.shape[1]
+        return s / float(d)
 
     def var(self, ddof=0):
         f = self._flat()
@@ -194,6 +327,13 @@ class marr:
                      for j in range(self.shape[1])])
 
 
+def _b2(a):
+    """View as 2-D for broadcasting: 1-D (m,) becomes a (1, m) row."""
+    if len(a.shape) == 2:
+        return a
+    return marr([a.data])
+
+
 ndarray = marr
 float64 = float
 
@@ -219,7 +359,8 @@ def atleast_2d(x):
     return a if len(a.shape) == 2 else marr([a.data])
 
 
-def arange(start, stop=None, step=1.0):
+def arange(start, stop=None, step=1.0, dtype=None):
+    del dtype
     if stop is None:
         start, stop = 0.0, start
     out = []
@@ -272,9 +413,17 @@ def diag(x):
 def column_stack(cols):
     cs = [asarray(c) for c in cols]
     n = cs[0].shape[0]
-    if any(c.shape != (n,) for c in cs):
-        raise ValueError("column_stack needs equal-length 1-D inputs")
-    return marr([[c.data[i] for c in cs] for i in range(n)])
+    out = [[] for _ in range(n)]
+    for c in cs:
+        if c.shape[0] != n:
+            raise ValueError("column_stack needs equal-length inputs")
+        if len(c.shape) == 1:
+            for i in range(n):
+                out[i].append(c.data[i])
+        else:
+            for i in range(n):
+                out[i].extend(c.data[i])
+    return marr(out)
 
 
 def concatenate(parts):
@@ -314,8 +463,11 @@ def minimum(x, y):
     return asarray(x)._zip(y, lambda a, b: a if a <= b else b)
 
 
-def where(cond, a, b):
+def where(cond, a=None, b=None):
     c = asarray(cond)
+    if a is None:                       # np.where(mask) -> (indices,)
+        return (marr([float(i) for i, v in enumerate(c._flat())
+                      if v != 0]),)
     aa, bb = asarray(a), asarray(b)
     if aa.shape == (1,):
         aa = full(c.shape[0], aa.data[0])
@@ -326,6 +478,8 @@ def where(cond, a, b):
 
 
 def isfinite(x):
+    if not isinstance(x, (list, tuple, marr)):
+        return _math.isfinite(float(x))
     return asarray(x)._map(lambda v: 1.0 if _math.isfinite(v) else 0.0)
 
 
@@ -339,7 +493,9 @@ def dot(a, b):
 
 
 def matmul(a, b):
-    aa = atleast_2d(a)
+    a_arr = asarray(a)
+    a_was_1d = len(a_arr.shape) == 1
+    aa = atleast_2d(a_arr)
     b_arr = asarray(b)
     b_was_1d = len(b_arr.shape) == 1
     bb = marr([[v] for v in b_arr.data]) if b_was_1d else b_arr
@@ -349,8 +505,12 @@ def matmul(a, b):
         raise ValueError("shape mismatch")
     out = [[_math.fsum(aa.data[i][t] * bb.data[t][j] for t in range(k))
             for j in range(m)] for i in range(n)]
+    if b_was_1d and a_was_1d:
+        return out[0][0]
     if b_was_1d:
         return marr([row[0] for row in out])
+    if a_was_1d:
+        return marr(out[0])
     return marr(out)
 
 
@@ -513,3 +673,175 @@ class _Random:
 
 
 random = _Random()
+
+
+# ------------------------------------------- extended primitives (sweep 1)
+
+def isin(x, values):
+    vs = set(asarray(values)._flat())
+    return asarray(x)._map(lambda v: 1.0 if v in vs else 0.0)
+
+
+def isclose(a, b, rtol=1e-5, atol=1e-8):
+    return asarray(a)._zip(
+        b, lambda x, y: 1.0 if _math.isclose(x, y, rel_tol=rtol,
+                                             abs_tol=atol) else 0.0)
+
+
+def diff(x):
+    f = asarray(x)._flat()
+    return marr([f[i + 1] - f[i] for i in range(len(f) - 1)])
+
+
+def trace(a):
+    aa = atleast_2d(a)
+    return float(_math.fsum(aa.data[i][i]
+                            for i in range(_bi.min(aa.shape))))
+
+
+def logaddexp(a, b):
+    def f(x, y):
+        hi, lo = (x, y) if x >= y else (y, x)
+        return hi + _math.log1p(_math.exp(lo - hi))
+    return asarray(a)._zip(b, f) if isinstance(a, (marr, list, tuple)) \
+        or isinstance(b, (marr, list, tuple)) else f(float(a), float(b))
+
+
+def tile(x, reps):
+    f = asarray(x)._flat()
+    return marr(f * int(reps))
+
+
+def repeat(x, reps):
+    out = []
+    for v in asarray(x)._flat():
+        out.extend([v] * int(reps))
+    return marr(out)
+
+
+def _lu_slogdet(m):
+    n = len(m)
+    m = [row[:] for row in m]
+    sign = 1.0
+    logdet = 0.0
+    for col in range(n):
+        piv = _pymax(range(col, n), key=lambda r: _bi.abs(m[r][col]))
+        if _bi.abs(m[piv][col]) < 1e-300:
+            return 0.0, -inf
+        if piv != col:
+            m[col], m[piv] = m[piv], m[col]
+            sign = -sign
+        pv = m[col][col]
+        if pv < 0:
+            sign = -sign
+        logdet += _math.log(_bi.abs(pv))
+        for r in range(col + 1, n):
+            f = m[r][col] / pv
+            for j in range(col, n):
+                m[r][j] -= f * m[col][j]
+    return sign, logdet
+
+
+class _LinalgExt:
+    @staticmethod
+    def slogdet(a):
+        return _lu_slogdet(atleast_2d(a).tolist())
+
+    @staticmethod
+    def eigvalsh(a):
+        # cyclic Jacobi for symmetric matrices; fine for the small
+        # covariance matrices morie.fn passes here
+        m = [row[:] for row in atleast_2d(a).tolist()]
+        n = len(m)
+        for _sweep in range(100):
+            off = _math.sqrt(_math.fsum(m[i][j] ** 2 for i in range(n)
+                                        for j in range(n) if i != j))
+            if off < 1e-14:
+                break
+            for p in range(n - 1):
+                for q in range(p + 1, n):
+                    if _bi.abs(m[p][q]) < 1e-300:
+                        continue
+                    theta = (m[q][q] - m[p][p]) / (2.0 * m[p][q])
+                    t = (1.0 if theta >= 0 else -1.0) / (
+                        _bi.abs(theta) + _math.sqrt(theta * theta + 1.0))
+                    c = 1.0 / _math.sqrt(t * t + 1.0)
+                    s = t * c
+                    for k in range(n):
+                        mkp, mkq = m[k][p], m[k][q]
+                        m[k][p] = c * mkp - s * mkq
+                        m[k][q] = s * mkp + c * mkq
+                    for k in range(n):
+                        mpk, mqk = m[p][k], m[q][k]
+                        m[p][k] = c * mpk - s * mqk
+                        m[q][k] = s * mpk + c * mqk
+        return marr(sorted(m[i][i] for i in range(n)))
+
+    @staticmethod
+    def cond(a):
+        # Frobenius-norm condition estimate; morie.fn uses this only as a
+        # near-singularity guard
+        aa = atleast_2d(a)
+        try:
+            ai = _Linalg.inv(aa)
+        except ValueError:
+            return inf
+        fro = lambda m: _math.sqrt(_math.fsum(v * v for v in m._flat()))  # noqa: E731
+        return fro(aa) * fro(ai)
+
+
+linalg.slogdet = _LinalgExt.slogdet
+linalg.eigvalsh = _LinalgExt.eigvalsh
+linalg.cond = _LinalgExt.cond
+
+
+def prod(x):
+    out = 1.0
+    for v in asarray(x)._flat():
+        out *= v
+    return float(out)
+
+
+def outer(a, b):
+    fa, fb = asarray(a)._flat(), asarray(b)._flat()
+    return marr([[x * y for y in fb] for x in fa])
+
+
+def interp(x, xp, fp, left=None, right=None):
+    xs, ys = asarray(xp)._flat(), asarray(fp)._flat()
+    lo = ys[0] if left is None else float(left)
+    hi = ys[-1] if right is None else float(right)
+
+    def one(v):
+        if v < xs[0]:
+            return lo
+        if v > xs[-1]:
+            return hi
+        if v == xs[0]:
+            return ys[0]
+        if v == xs[-1]:
+            return ys[-1]
+        for i in range(len(xs) - 1):
+            if xs[i] <= v <= xs[i + 1]:
+                w = (v - xs[i]) / (xs[i + 1] - xs[i])
+                return ys[i] + w * (ys[i + 1] - ys[i])
+        return ys[-1]
+    a = asarray(x)
+    if not isinstance(x, (list, tuple, marr)):
+        return one(float(x))
+    return a._map(one)
+
+
+def trapezoid(y, x=None, dx=1.0, axis=None):
+    ya = asarray(y)
+    if len(ya.shape) == 2:
+        if axis == 0:
+            ya = ya.T
+        return marr([trapezoid(row, x=x, dx=dx) for row in ya.data])
+    fy = ya._flat()
+    if x is None:
+        fx = [i * dx for i in range(len(fy))]
+    else:
+        fx = asarray(x)._flat()
+    return float(_math.fsum((fx[i + 1] - fx[i]) * (fy[i + 1] + fy[i]) / 2.0
+                            for i in range(len(fy) - 1)))

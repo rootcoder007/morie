@@ -11,7 +11,7 @@ from __future__ import annotations
 import itertools
 import math
 
-import numpy as np
+from . import _array_core as np
 
 __all__: list = []
 
@@ -474,8 +474,9 @@ def exact_conditional_pmf(t_values, counts, beta, t_obs):
     ln -= ln.max()
     probs = np.exp(ln)
     probs /= probs.sum()
-    idx = np.where(np.isclose(ts, t_obs))[0]
-    if idx.size == 0:
+    idx = [i for i, t in enumerate(ts)
+           if abs(t - t_obs) <= 1e-8 + 1e-5 * abs(t_obs)]
+    if not idx:
         raise ValueError("t_obs not among t_values")
     return {"probs": probs, "p_at_t": float(probs[idx[0]])}
 
@@ -483,10 +484,10 @@ def exact_conditional_pmf(t_values, counts, beta, t_obs):
 def weighted_category_total(weights, ys, category):
     """N_hat_i = sum w_s I(y_s = i), eq (6.7)."""
     w = _v(weights)
-    ys = np.asarray(ys)
-    if w.size != ys.size or (w < 0).any():
+    ys = list(ys)
+    if w.size != len(ys) or (w < 0).any():
         raise ValueError("invalid inputs")
-    return float(w[ys == category].sum())
+    return float(sum(wv for wv, y in zip(w, ys) if y == category))
 
 
 def jackknife_variance(replicate_estimates, full_estimate):

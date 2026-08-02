@@ -3,7 +3,7 @@
 Book-as-spec implementation; see reference for context.
 """
 
-import numpy as np  # noqa: F401
+from . import _array_core as np  # noqa: F401
 
 from . import _acd
 from ._richresult import RichResult
