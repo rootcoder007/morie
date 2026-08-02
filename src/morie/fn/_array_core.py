@@ -34,7 +34,7 @@ nan = float("nan")
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
-    __slots__ = ("data", "shape", "_is_mask")
+    __slots__ = ("data", "shape", "_is_mask", "_is_index")
 
     def __init__(self, data):
         if isinstance(data, marr):
@@ -137,7 +137,8 @@ class marr:
         if isinstance(idx, marr):
             vals = idx._flat()
             is_mask = getattr(idx, "_is_mask", False) or (
-                idx.shape == (self.shape[0],)
+                not getattr(idx, "_is_index", False)
+                and idx.shape == (self.shape[0],)
                 and _pyall(v in (0.0, 1.0) for v in vals))
             if is_mask:
                 keep = [k for k, m in enumerate(vals) if m != 0]
@@ -158,6 +159,13 @@ class marr:
                 return marr([self.data[k]
                              for k, b in enumerate(idx) if b])
             return marr([self.data[int(k)] for k in idx])
+        if isinstance(idx, float):
+            # indices produced by where()/argmax() flow back in as
+            # whole-valued floats (marr is float-backed); numpy would
+            # hand back int64 here
+            if idx != int(idx):
+                raise TypeError("non-integer array index %r" % idx)
+            idx = int(idx)
         out = self.data[idx]
         if isinstance(out, list):
             return marr(out)
@@ -318,6 +326,8 @@ class marr:
             raise TypeError("numpy not loaded")
         if dtype is None and getattr(self, "_is_mask", False):
             dtype = bool
+        elif dtype is None and getattr(self, "_is_index", False):
+            dtype = "int64"
         return _np.asarray(self.tolist(), dtype=dtype)
 
     def tolist(self):
@@ -2171,6 +2181,8 @@ class carr:
             raise TypeError("numpy not loaded")
         if dtype is None and getattr(self, "_is_mask", False):
             dtype = bool
+        elif dtype is None and getattr(self, "_is_index", False):
+            dtype = "int64"
         return _np.asarray(self.tolist(), dtype=dtype)
 
     def tolist(self):
@@ -2941,14 +2953,17 @@ if _HAS_CORE:
         A = atleast_2d(a)
         n = A.shape[0]
         bv = asarray(b)
-        k = 1 if len(bv.shape) == 1 else bv.shape[1]
+        b_was_1d = len(bv.shape) == 1
+        k = 1 if b_was_1d else bv.shape[1]
         try:
             flat = _CK.solve(_buf(A._flat()), _buf(bv._flat()), n, k)
         except Exception:
             raise linalg.LinAlgError("singular matrix") from None
         vals = _unbuf(flat)
-        if k == 1:
+        if b_was_1d:
             return marr(vals)
+        # 2-D right-hand side keeps 2-D shape even for k == 1
+        # (inv of a 1x1 matrix must stay a matrix)
         return marr([vals[i * k:(i + 1) * k] for i in range(n)])
 
     _Linalg.solve = staticmethod(_c_solve)
@@ -2970,3 +2985,24 @@ if _HAS_CORE:
         return out
     # rebind the FFT namespace onto the dispatched transform
     _FFT_dispatch_note = "compiled"
+
+
+def _tag_index(fn):
+    def wrapped(*a, **k):
+        out = fn(*a, **k)
+        if isinstance(out, marr):
+            out._is_index = True
+        elif isinstance(out, tuple):
+            for o in out:
+                if isinstance(o, marr):
+                    o._is_index = True
+        return out
+    wrapped.__name__ = fn.__name__
+    return wrapped
+
+
+for _iname in ("argsort", "where", "nonzero", "flatnonzero",
+               "searchsorted", "digitize", "argmax", "argmin"):
+    if _iname in globals():
+        globals()[_iname] = _tag_index(globals()[_iname])
+del _iname

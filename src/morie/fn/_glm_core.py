@@ -408,12 +408,19 @@ class OLS:
             / df_resid
         res.ssr = ssr
         res.centered_tss = tss
-        res.fvalue = (res.rsquared / res.df_model) / (
-            (1.0 - res.rsquared) / df_resid) \
-            if res.df_model > 0 else float("nan")
-        res.f_pvalue = _stats.f.sf(res.fvalue, res.df_model,
-                                   df_resid) \
-            if res.df_model > 0 else float("nan")
+        if res.df_model > 0 and df_resid > 0 \
+                and res.rsquared < 1.0:
+            res.fvalue = (res.rsquared / res.df_model) / (
+                (1.0 - res.rsquared) / df_resid)
+            res.f_pvalue = _stats.f.sf(res.fvalue, res.df_model,
+                                       df_resid)
+        else:
+            # perfect fit or saturated model: statsmodels reports
+            # inf/nan rather than raising
+            res.fvalue = _math.inf if res.rsquared >= 1.0 \
+                and res.df_model > 0 else float("nan")
+            res.f_pvalue = 0.0 if res.fvalue == _math.inf \
+                else float("nan")
         return res
 
     def predict(self, params, exog=None):

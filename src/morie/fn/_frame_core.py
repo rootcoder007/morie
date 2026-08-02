@@ -1286,7 +1286,9 @@ class _Loc:
                 sub = df.iloc[rk]
             else:
                 i = df.index.index(rk)
-                if isinstance(ck, str):
+                if isinstance(ck, str) or (
+                        not isinstance(ck, (list, tuple))
+                        and ck in df._cols):
                     return df._cols[ck][i]
                 return Series([df._cols[c][i] for c in ck], index=ck)
             if isinstance(ck, str):
