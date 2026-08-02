@@ -34,7 +34,7 @@ nan = float("nan")
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
-    __slots__ = ("data", "shape")
+    __slots__ = ("data", "shape", "_is_mask")
 
     def __init__(self, data):
         if isinstance(data, marr):
@@ -136,14 +136,27 @@ class marr:
             raise ValueError("unsupported index for 1-D")
         if isinstance(idx, marr):
             vals = idx._flat()
-            is_mask = (idx.shape == (self.shape[0],)
-                       and _pyall(v in (0.0, 1.0) for v in vals))
+            is_mask = getattr(idx, "_is_mask", False) or (
+                idx.shape == (self.shape[0],)
+                and _pyall(v in (0.0, 1.0) for v in vals))
             if is_mask:
                 keep = [k for k, m in enumerate(vals) if m != 0]
             else:
                 keep = [int(v) for v in vals]   # fancy integer indexing
             return marr([self.data[k] for k in keep])
+        if hasattr(idx, "dtype") and hasattr(idx, "tolist"):
+            # foreign (numpy) index array
+            vals = idx.tolist()
+            if getattr(idx.dtype, "kind", "") == "b":
+                keep = [k for k, m in enumerate(vals) if m]
+            else:
+                keep = [int(v) for v in vals]
+            return marr([self.data[k] for k in keep])
         if isinstance(idx, (list, tuple)):
+            if idx and _pyall(isinstance(b, bool) for b in idx) \
+                    and len(idx) == len(self.data):
+                return marr([self.data[k]
+                             for k, b in enumerate(idx) if b])
             return marr([self.data[int(k)] for k in idx])
         out = self.data[idx]
         if isinstance(out, list):
@@ -198,10 +211,26 @@ class marr:
         return f[0]
 
     def __or__(self, o):
-        return self._zip(o, lambda a, b: 1.0 if (a != 0 or b != 0) else 0.0)
+        out = self._zip(o, lambda a, b: 1.0 if (a != 0 or b != 0)
+                        else 0.0)
+        if getattr(self, "_is_mask", False) \
+                or getattr(o, "_is_mask", False):
+            out._is_mask = True
+        return out
 
     def __and__(self, o):
-        return self._zip(o, lambda a, b: 1.0 if (a != 0 and b != 0) else 0.0)
+        out = self._zip(o, lambda a, b: 1.0 if (a != 0 and b != 0)
+                        else 0.0)
+        if getattr(self, "_is_mask", False) \
+                or getattr(o, "_is_mask", False):
+            out._is_mask = True
+        return out
+
+    def __invert__(self):
+        out = self._map(lambda v: 0.0 if v != 0 else 1.0)
+        if getattr(self, "_is_mask", False):
+            out._is_mask = True
+        return out
 
     def __bool__(self):
         f = self._flat()
@@ -253,15 +282,23 @@ class marr:
                 vals = vals * len(rng)
             for k, r in zip(rng, vals):
                 self.data[k] = r
-        elif isinstance(idx, (list, tuple, marr)):
-            ids = [int(v) for v in (idx._flat()
-                                    if isinstance(idx, marr) else idx)]
-            if ids and all(v in (0, 1) for v in ids) \
-                    and len(ids) == len(self.data) \
-                    and any(isinstance(b, bool) for b in
-                            (idx if not isinstance(idx, marr)
-                             else [])):
-                ids = [k for k, b in enumerate(ids) if b]
+        elif isinstance(idx, (list, tuple, marr)) or (
+                hasattr(idx, "dtype") and hasattr(idx, "tolist")):
+            if isinstance(idx, marr):
+                raw = list(idx._flat())
+            elif hasattr(idx, "dtype"):
+                raw = list(idx.tolist())
+            else:
+                raw = list(idx)
+            is_mask = getattr(idx, "_is_mask", False) or (
+                getattr(getattr(idx, "dtype", None), "kind", "")
+                == "b") or (
+                raw and len(raw) == len(self.data)
+                and _bi.all(isinstance(b, bool) for b in raw))
+            if is_mask:
+                ids = [k for k, b in enumerate(raw) if b]
+            else:
+                ids = [int(v) for v in raw]
             vals = list(asarray(value)._flat()) \
                 if not isinstance(value, (int, float)) else None
             for k, r in enumerate(ids):
@@ -269,6 +306,19 @@ class marr:
                     else float(vals[k if len(vals) > 1 else 0])
         else:
             self.data[idx] = float(value)
+
+    def __array__(self, dtype=None, copy=None):
+        """numpy interop for mixed test environments: masks surface as
+        bool arrays so real-numpy indexing works. Never imports numpy
+        itself — only cooperates when the caller already has it."""
+        del copy
+        import sys as _sys
+        _np = _sys.modules.get("numpy")
+        if _np is None:
+            raise TypeError("numpy not loaded")
+        if dtype is None and getattr(self, "_is_mask", False):
+            dtype = bool
+        return _np.asarray(self.tolist(), dtype=dtype)
 
     def tolist(self):
         return [row[:] for row in self.data] \
@@ -307,28 +357,38 @@ class marr:
     def __matmul__(self, o):
         return matmul(self, o)
 
-    # -- comparisons (return 0/1 masks) -------------------------------
+    # -- comparisons (return 0/1 masks, tagged for indexing) ----------
+    def _tag_mask(self, out):
+        out._is_mask = True
+        return out
+
     def __lt__(self, o):
-        return self._zip(o, lambda a, b: 1.0 if a < b else 0.0)
+        return self._tag_mask(
+            self._zip(o, lambda a, b: 1.0 if a < b else 0.0))
 
     def __le__(self, o):
-        return self._zip(o, lambda a, b: 1.0 if a <= b else 0.0)
+        return self._tag_mask(
+            self._zip(o, lambda a, b: 1.0 if a <= b else 0.0))
 
     def __gt__(self, o):
-        return self._zip(o, lambda a, b: 1.0 if a > b else 0.0)
+        return self._tag_mask(
+            self._zip(o, lambda a, b: 1.0 if a > b else 0.0))
 
     def __ge__(self, o):
-        return self._zip(o, lambda a, b: 1.0 if a >= b else 0.0)
+        return self._tag_mask(
+            self._zip(o, lambda a, b: 1.0 if a >= b else 0.0))
 
     def __eq__(self, o):
         try:
-            return self._zip(o, lambda a, b: 1.0 if a == b else 0.0)
+            return self._tag_mask(
+                self._zip(o, lambda a, b: 1.0 if a == b else 0.0))
         except (TypeError, ValueError):
             return NotImplemented
 
     def __ne__(self, o):
         try:
-            return self._zip(o, lambda a, b: 1.0 if a != b else 0.0)
+            return self._tag_mask(
+                self._zip(o, lambda a, b: 1.0 if a != b else 0.0))
         except (TypeError, ValueError):
             return NotImplemented
 
@@ -703,7 +763,7 @@ class _Linalg:
         for col in range(n):
             piv = _pymax(range(col, n), key=lambda r: _bi.abs(m[r][col]))
             if _bi.abs(m[piv][col]) < 1e-300:
-                raise ValueError("singular matrix")
+                raise linalg.LinAlgError("singular matrix")
             m[col], m[piv] = m[piv], m[col]
             pv = m[col][col]
             m[col] = [v / pv for v in m[col]]
@@ -1452,6 +1512,18 @@ def fill_diagonal(a, val):
     # in-place on the caller's 2-D marr (same list objects)
 
 
+def size(x):
+    a = asarray(x)
+    n = 1
+    for d in a.shape:
+        n *= d
+    return n
+
+
+def count_nonzero(x):
+    return int(_bi.sum(1 for v in asarray(x)._flat() if v != 0))
+
+
 def shape(x):
     if isinstance(x, marr):
         return x.shape
@@ -2045,6 +2117,19 @@ class carr:
             return carr(self.data[i])
         return self.data[i]
 
+    def __array__(self, dtype=None, copy=None):
+        """numpy interop for mixed test environments: masks surface as
+        bool arrays so real-numpy indexing works. Never imports numpy
+        itself — only cooperates when the caller already has it."""
+        del copy
+        import sys as _sys
+        _np = _sys.modules.get("numpy")
+        if _np is None:
+            raise TypeError("numpy not loaded")
+        if dtype is None and getattr(self, "_is_mask", False):
+            dtype = bool
+        return _np.asarray(self.tolist(), dtype=dtype)
+
     def tolist(self):
         return self.data[:]
 
@@ -2241,3 +2326,19 @@ class _FFT:
 
 
 fft = _FFT()
+
+
+def _tag_predicate(fn):
+    def wrapped(*a, **k):
+        out = fn(*a, **k)
+        if isinstance(out, marr):
+            out._is_mask = True
+        return out
+    wrapped.__name__ = fn.__name__
+    return wrapped
+
+
+for _pname in ("isnan", "isfinite", "isinf", "isin", "isclose"):
+    if _pname in globals():
+        globals()[_pname] = _tag_predicate(globals()[_pname])
+del _pname
