@@ -1,46 +1,34 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}."""
+"""Sethuraman stick-breaking representation.
+
+Implements Theorem 4.12 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_stickbr"]
 
 
-def ghosal_dp_stickbr(x):
-    """
-    Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}
-
-    Formula: w_k = V_k prod_{j<k}(1-V_j), V_k iid Beta(1,alpha), theta_k iid G0
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 4 §4.2.5
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}",
-        }
-    )
+def ghosal_dp_stickbr(n_terms, alpha, seed=42):
+    """W_j = V_j prod_{l<j}(1-V_l) with V_j iid Be(1, M), theta_j iid
+    G0-bar: sum W_j delta_{theta_j} ~ DP(M G0-bar) (Theorem 4.12).
+    Keys: estimate."""
+    M = float(alpha)
+    rng = np.random.default_rng(seed)
+    V = [float(rng.beta(1.0, M)) for _ in range(int(n_terms))]
+    W = _bnp.stick_breaking(V)
+    th = [float(v) for v in rng.uniform(0, 1, int(n_terms))._flat()]
+    mean = sum(wi * t for wi, t in zip(W, th))
+    res = RichResult(payload={"estimate": mean, "weights": W[:20],
+                              "total_mass": sum(W),
+                              "method": "Sethuraman representation (GvdV 2017 Thm 4.12)"})
+    return with_describe_pointer(res, "gh_c4_11")
 
 
 def cheatsheet():
-    return "gh_c4_11: Stick-breaking DP: V_k ~ Beta(1,alpha), G = sum_k w_k delta_{theta_k}"
+    return "gh_c4_11: Sethuraman stick-breaking representation"
