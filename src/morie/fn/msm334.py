@@ -1,55 +1,35 @@
-r"""Numbered display equation (2.22) from MVSML chapter 2.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Expected prediction error of the OLS fit.
 
-from . import _array_core as np
+Implements sec. 3.5 p.80 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the auto-generated stub name carries a topic label that does not
+match the book's chapter title; the chapter and equation numbers do
+match, and the PDF is the authority followed here.
+"""
+
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_preprocessing_eq_2_22"]
 
 
-def mvsml_preprocessing_eq_2_22(d, c, PE, xo, interval, the):
-    r"""
-    Numbered display equation (2.22) from MVSML chapter 2.
-
-    Formula: d ) < - c 2 + c = c d\lambda PE\lambda xo ( interval [0, \lambda], the expected prediction error at xo shows a decreasing behavior, which indicates that there is a value of \lambda such that with the Ridge regression estimation of beta coefﬁcients, we can get a smaller prediction error than with the OLS prediction. Figure 3.3 shows a graphic representation of this behavior of Ridge prediction, where the lower EPE is reached at about \lambda = exp
-
-    Parameters
-    ----------
-    d : array-like
-        Input data.
-    c : array-like
-        Input data.
-    PE : array-like
-        Input data.
-    xo : array-like
-        Input data.
-    interval : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (2.22) [Multivariate Statistical Machine Learnin [Pages 71-108] [2026-04-16].pdf]
-    r"""
-    d = np.atleast_1d(np.asarray(d, dtype=float))
-    n = len(d)
-    result = float(np.mean(d))
-    se = float(np.std(d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (2.22) from MVSML chapter 2.",
-        }
-    )
+def mvsml_preprocessing_eq_2_22(sigma2, x_star, eigenvalues):
+    """EPE(x_o) = sigma2 (1 + sum_j (x*_oj)^2 / lambda_j) with
+    x* = Gamma'x_o and lambda_j the eigenvalues of X'X (p.80): nearly
+    dependent features drive some lambda_j toward zero and blow the
+    prediction error up. Keys: estimate."""
+    v = _gp.expected_prediction_error(sigma2, x_star, eigenvalues)
+    res = RichResult(payload={"estimate": v,
+                              "irreducible": float(sigma2),
+                              "variance_inflation": v / float(sigma2),
+                              "method": "expected prediction error (MVSML 2022 p.80)"})
+    return with_describe_pointer(res, "msm334")
 
 
 def cheatsheet():
-    return "msm334: Numbered display equation (2.22) from MVSML chapter 2."
+    return "msm334: Expected prediction error of the OLS fit"

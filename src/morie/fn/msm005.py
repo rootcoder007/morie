@@ -1,55 +1,32 @@
-"""Numbered display equation (1.4) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Reparameterized one-way model.
 
-from . import _array_core as np
+Implements eq. (1.4) p.16 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_4"]
 
 
-def mvsml_general_eq_1_4(mental, effects, Two, drawbacks, of, the):
-    """
-    Numbered display equation (1.4) from MVSML chapter 1.
-
-    Formula: mental effects. Two drawbacks of the model with ﬁxed effects given in Eq. (1.3) are that it is unable to provide an estimate of the between-environments variability and that the number of parameters in the model increases linearly with the number of environments. Fortunately, the random effects model circumvents these problems by treating the environmental effects as random variations around a population mean. Next we reparameterize model (1.3) as a random effects model. We write -  GYij = \beta + \betai \beta + eij,
-
-    Parameters
-    ----------
-    mental : array-like
-        Input data.
-    effects : array-like
-        Input data.
-    Two : array-like
-        Input data.
-    drawbacks : array-like
-        Input data.
-    of : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.4) [Multivariate Statistical Machine Learnin [Pages 1-34] [2026-04-16].pdf]
-    """
-    mental = np.atleast_1d(np.asarray(mental, dtype=float))
-    n = len(mental)
-    result = float(np.mean(mental))
-    se = float(np.std(mental, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.4) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_4(groups):
+    """GY_ij = beta-bar + (beta_i - beta-bar) + e_ij (eq. 1.4) with
+    beta-bar = sum_i beta_i / 5: the fixed-effects fit rewritten around
+    the average level, one step from the random-effects version.
+    Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    res = RichResult(payload={"estimate": s["grand_mean"],
+                              "beta_bar": s["grand_mean"],
+                              "deviations": s["deviations"],
+                              "deviations_sum": sum(s["deviations"]),
+                              "method": "reparameterized one-way model (MVSML 2022 eq. 1.4)"})
+    return with_describe_pointer(res, "msm005")
 
 
 def cheatsheet():
-    return "msm005: Numbered display equation (1.4) from MVSML chapter 1."
+    return "msm005: Reparameterized one-way model"

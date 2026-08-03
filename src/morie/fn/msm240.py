@@ -1,55 +1,30 @@
-r"""Numbered display equation (2.1) from MVSML chapter 2.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Linear mixed model.
 
-from . import _array_core as np
+Implements eq. (2.1) p.36 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_preprocessing_eq_2_1"]
 
 
-def mvsml_preprocessing_eq_2_1(represented, by, random, variables, observed, which):
-    r"""
-    Numbered display equation (2.1) from MVSML chapter 2.
-
-    Formula: represented by random variables (not observed) which, we generally assume, have a particular distribution, the normal distribution being the most common. Due to the above, random effects are suggested when we want to perform an inference for all levels of the target population. 2.2 BLUEs and BLUPs This section presents the concepts and terminologies of BLUE and BLUP. Since these two concepts are related to a mixed model, we present the following linear mixed model as Y = X\beta + Zu + \epsilon,
-
-    Parameters
-    ----------
-    represented : array-like
-        Input data.
-    by : array-like
-        Input data.
-    random : array-like
-        Input data.
-    variables : array-like
-        Input data.
-    observed : array-like
-        Input data.
-    which : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (2.1) [Multivariate Statistical Machine Learnin [Pages 35-70] [2026-04-16].pdf]
-    r"""
-    represented = np.atleast_1d(np.asarray(represented, dtype=float))
-    n = len(represented)
-    result = float(np.mean(represented))
-    se = float(np.std(represented, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (2.1) from MVSML chapter 2.",
-        }
-    )
+def mvsml_preprocessing_eq_2_1(X, Z, y, Sigma, R=None):
+    """Y = X beta + Z u + eps with u ~ N(0, Sigma), eps ~ N(0, R)
+    (eq. 2.1). V = Z Sigma Z' + R; the BLUE is
+    beta = (X'V^-1X)^-1X'V^-1y and the BLUP is u = Sigma Z'V^-1(y - X
+    beta). Keys: estimate."""
+    beta, u = _gp.blue_blup_via_v(X, Z, y, Sigma, R)
+    res = RichResult(payload={"estimate": beta[0], "blue": beta,
+                              "blup": u,
+                              "method": "linear mixed model, V-based solution (MVSML 2022 eq. 2.1)"})
+    return with_describe_pointer(res, "msm240")
 
 
 def cheatsheet():
-    return "msm240: Numbered display equation (2.1) from MVSML chapter 2."
+    return "msm240: Linear mixed model"

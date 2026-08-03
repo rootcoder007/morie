@@ -1,55 +1,32 @@
-"""Numbered display equation (4.10) from MVSML chapter 4.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Generalized sensitivity and specificity.
 
-from . import _array_core as np
+Implements eq. (4.10)-(4.11) p.132 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_overfitting_resampling_eq_4_10"]
 
 
-def mvsml_overfitting_resampling_eq_4_10(that, the, speci, city, proportion, of):
-    """
-    Numbered display equation (4.10) from MVSML chapter 4.
-
-    Formula: that is, the speciﬁcity is the proportion of true negatives that are correctly identiﬁed by the test. Under the “one-versus-all basis,” where each category is compared with the composed information of the remaining categories, we provide the expressions for computing the generalized precision, sensitivity, and speciﬁcity for each class i: TTPall Pi = (4.9) TTPall + TFPi TTPall Sei =
-
-    Parameters
-    ----------
-    that : array-like
-        Input data.
-    the : array-like
-        Input data.
-    speci : array-like
-        Input data.
-    city : array-like
-        Input data.
-    proportion : array-like
-        Input data.
-    of : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (4.10) [Multivariate Statistical Machine Learnin [Pages 109-139] [2026-04-16].pdf]
-    """
-    that = np.atleast_1d(np.asarray(that, dtype=float))
-    n = len(that)
-    result = float(np.mean(that))
-    se = float(np.std(that, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (4.10) from MVSML chapter 4.",
-        }
-    )
+def mvsml_overfitting_resampling_eq_4_10(y_true, y_pred, class_index=0, n_classes=None):
+    """Se_i = TTP_all/(TTP_all + TFN_i) (eq. 4.10) and
+    Sp_i = TTN_i/(TTN_i + TFP_i) (eq. 4.11), with TFN_i from eq. (4.5)
+    and TTN_i from eq. (4.7). Keys: estimate."""
+    conf = _gp.confusion_counts(y_true, y_pred, n_classes)
+    m = _gp.class_metrics(conf, int(class_index))
+    res = RichResult(payload={"estimate": m["sensitivity"],
+                              "sensitivity": m["sensitivity"],
+                              "specificity": m["specificity"],
+                              "TFN": m["TFN"], "TTN": m["TTN"],
+                              "method": "generalized sensitivity/specificity (MVSML 2022 eq. 4.10-4.11)"})
+    return with_describe_pointer(res, "msm008")
 
 
 def cheatsheet():
-    return "msm008: Numbered display equation (4.10) from MVSML chapter 4."
+    return "msm008: Generalized sensitivity and specificity"
