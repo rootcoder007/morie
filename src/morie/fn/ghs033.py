@@ -1,49 +1,43 @@
-"""Polya-tree mixture of the second kind: mean density g_theta expressed as a product over levels of doubled theta-dependent alpha parameters.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Pólya tree mixture of the second kind.
 
-from . import _array_core as np
+Implements sec. 3.7.2 (theta-indexed prior mean, eq. 3.22 form) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_polya_tree_mixture_second_kind"]
 
 
-def ghosal_ch3_polya_tree_mixture_second_kind(alpha_theta, x, theta):
-    """
-    Polya-tree mixture of the second kind: mean density g_theta expressed as a product over levels of doubled theta-dependent alpha parameters.
-
-    Formula: g_theta(x) = prod_{j=1}^{infty} 2 * alpha_{x_1 ... x_j}(theta) / ( alpha_{x_1 ... x_{j-1} 0}(theta) + alpha_{x_1 ... x_{j-1} 1}(theta) )
-
-    Parameters
-    ----------
-    alpha_theta : array-like
-        Input data.
-    x : array-like
-        Input data.
-    theta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: distribution
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.26, p. 54
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Polya-tree mixture of the second kind: mean density g_theta expressed as a product over levels of doubled theta-dependent alpha parameters.",
-        }
-    )
+def ghosal_ch3_polya_tree_mixture_second_kind(x, alpha_path_of_theta,
+                                              thetas, weights=None):
+    """g_theta(x) = prod_j 2 alpha_{x_1..x_j}(theta) /
+    (alpha_..0(theta) + alpha_..1(theta)): the eq. (3.22) prior mean
+    density with theta-dependent parameters, mixed over theta
+    (GvdV 2017 sec. 3.7.2). ``alpha_path_of_theta(theta, x)`` returns
+    the (alpha_taken, alpha_other) pairs. Keys: distribution."""
+    x0 = _bnp._flat(x)[0]
+    ths = list(thetas)
+    if weights is None:
+        weights = [1.0 / len(ths)] * len(ths)
+    w = _bnp.normalize_weights(weights)
+    per = []
+    for th in ths:
+        m1 = 1.0
+        for a_take, a_other in alpha_path_of_theta(th, x0):
+            m1 *= 2.0 * float(a_take) / (float(a_take)
+                                         + float(a_other))
+        per.append(m1)
+    mix = sum(wi * gi for wi, gi in zip(w, per))
+    res = RichResult(payload={"estimate": mix, "distribution": mix,
+                              "per_theta": per,
+                              "method": "PT mixture second kind (GvdV 2017 sec. 3.7.2)"})
+    return with_describe_pointer(res, "ghs033")
 
 
 def cheatsheet():
-    return "ghs033: Polya-tree mixture of the second kind: mean density g_theta expressed as a product over levels of doubled theta-dependent alpha parameters."
+    return "ghs033: Pólya tree mixture of the second kind"

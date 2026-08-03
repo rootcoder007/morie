@@ -1,51 +1,26 @@
-"""Posterior variance of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Dirichlet posterior variance.
 
-from . import _array_core as np
+Implements the finite-Dirichlet form heading eq. (3.7), pp.32-33 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_var"]
 
 
-def ghosal_ch3_dirichlet_posterior_var(alpha_j, N_j, j, n):
-    """
-    Posterior variance of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j.
-
-    Formula: var(p_j | X_1, ..., X_n) = (alpha_j + N_j) * ( sum_{l != j} alpha_l + n - N_j ) / ( ( sum_{l=1}^{infty} alpha_l + n )^2 * ( sum_{l=1}^{infty} alpha_l + n + 1 ) )
-
-    Parameters
-    ----------
-    alpha_j : array-like
-        Input data.
-    N_j : array-like
-        Input data.
-    j : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.8, p. 33
-    """
-    alpha_j = np.atleast_1d(np.asarray(alpha_j, dtype=float))
-    n = len(alpha_j)
-    result = float(np.mean(alpha_j))
-    se = float(np.std(alpha_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Posterior variance of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j.",
-        }
-    )
+def ghosal_ch3_dirichlet_posterior_var(alpha, counts, j, alpha_total):
+    """var(p_j | X) = (alpha_j+N_j)(A + n - alpha_j - N_j) /
+    ((A+n)^2 (A+n+1)) = m_j (1-m_j)/(A+n+1). Keys: value."""
+    v = _bnp.cdp_posterior_var(alpha, counts, int(j), alpha_total)
+    res = RichResult(payload={"estimate": v, "value": v,
+                              "method": "Dirichlet posterior variance (GvdV 2017 sec. 3.3.3)"})
+    return with_describe_pointer(res, "ghs015")
 
 
 def cheatsheet():
-    return "ghs015: Posterior variance of the j-th weight in a countable Dirichlet process given n observations with cell counts N_j."
+    return "ghs015: Dirichlet posterior variance"

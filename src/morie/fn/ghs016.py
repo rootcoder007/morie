@@ -1,53 +1,27 @@
-"""Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Dirichlet posterior covariance.
 
-from . import _array_core as np
+Implements the finite-Dirichlet form heading eq. (3.7), pp.32-33 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_cov"]
 
 
-def ghosal_ch3_dirichlet_posterior_cov(alpha_j, alpha_jprime, N_j, N_jprime, n):
-    """
-    Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.
-
-    Formula: cov(p_j, p_{j'} | X_1, ..., X_n) = - (alpha_j + N_j) * (alpha_{j'} + N_{j'}) / ( ( sum_{l=1}^{infty} alpha_l + n )^2 * ( sum_{l=1}^{infty} alpha_l + n + 1 ) )
-
-    Parameters
-    ----------
-    alpha_j : array-like
-        Input data.
-    alpha_jprime : array-like
-        Input data.
-    N_j : array-like
-        Input data.
-    N_jprime : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.9, p. 33
-    """
-    alpha_j = np.atleast_1d(np.asarray(alpha_j, dtype=float))
-    n = len(alpha_j)
-    result = float(np.mean(alpha_j))
-    se = float(np.std(alpha_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations.",
-        }
-    )
+def ghosal_ch3_dirichlet_posterior_cov(alpha, counts, j, jp,
+                                       alpha_total):
+    """cov(p_j, p_j' | X) = -m_j m_j' / (A + n + 1). Keys: value."""
+    v = _bnp.cdp_posterior_cov(alpha, counts, int(j), int(jp),
+                               alpha_total)
+    res = RichResult(payload={"estimate": v, "value": v,
+                              "method": "Dirichlet posterior covariance (GvdV 2017 sec. 3.3.3)"})
+    return with_describe_pointer(res, "ghs016")
 
 
 def cheatsheet():
-    return "ghs016: Posterior covariance between the j-th and j'-th weights of a countable Dirichlet process given n observations."
+    return "ghs016: Dirichlet posterior covariance"

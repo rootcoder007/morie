@@ -1,47 +1,26 @@
-"""Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Stick-breaking weights.
 
-from . import _array_core as np
+Implements eq. (3.2), p.30 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_stick_breaking_weights"]
 
 
-def ghosal_ch3_stick_breaking_weights(V_l, j):
-    """
-    Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms.
-
-    Formula: p_j = ( prod_{l=1}^{j-1} (1 - V_l) ) * V_j
-
-    Parameters
-    ----------
-    V_l : array-like
-        Input data.
-    j : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: distribution
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.2, p. 30
-    """
-    V_l = np.atleast_1d(np.asarray(V_l, dtype=float))
-    n = len(V_l)
-    result = float(np.mean(V_l))
-    se = float(np.std(V_l, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms.",
-        }
-    )
+def ghosal_ch3_stick_breaking_weights(V):
+    """p_j = (prod_{l<j}(1-V_l)) V_j (eq. 3.2). Keys: distribution."""
+    p = _bnp.stick_breaking(V)
+    res = RichResult(payload={"estimate": p[0], "distribution": p,
+                              "remaining_mass": 1.0 - sum(p),
+                              "method": "stick breaking (GvdV 2017 eq. 3.2)"})
+    return with_describe_pointer(res, "ghs009")
 
 
 def cheatsheet():
-    return "ghs009: Stick-breaking representation of weights p_j as the product of (1 - V_l) factors times V_j, distributing unit mass over countably many atoms."
+    return "ghs009: Stick-breaking weights"

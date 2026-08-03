@@ -1,47 +1,35 @@
-"""Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Canonical summability conditions.
 
-from . import _array_core as np
+Implements Theorem 3.16, eq. (3.17), p.44 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_tailfree_canonical_summability"]
 
 
-def ghosal_ch3_tailfree_canonical_summability(V, m):
-    """
-    Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process.
-
-    Formula: sum_{m=1}^{infty} max_{epsilon in E^m} | E(V_epsilon) - 1/2 | < infty,   sum_{m=1}^{infty} max_{epsilon in E^m} var(V_epsilon) < infty
-
-    Parameters
-    ----------
-    V : array-like
-        Input data.
-    m : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.17, p. 44
-    """
-    V = np.atleast_1d(np.asarray(V, dtype=float))
-    n = len(V)
-    result = float(np.mean(V))
-    se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process.",
-        }
-    )
+def ghosal_ch3_tailfree_canonical_summability(EV_by_level,
+                                              varV_by_level):
+    """sum_m max_e |E(V) - 1/2| < infty and sum_m max_e var(V) < infty
+    (eq. 3.17) -- the two series that guarantee absolute continuity
+    for canonical partitions. Keys: value."""
+    ev = _bnp._flat(EV_by_level)
+    vv = _bnp._flat(varV_by_level)
+    s1 = sum(abs(v - 0.5) for v in ev)
+    s2 = sum(vv)
+    res = RichResult(payload={"estimate": s1 + s2,
+                              "value": [s1, s2],
+                              "mean_series": s1, "var_series": s2,
+                              "summable": math.isfinite(s1)
+                              and math.isfinite(s2),
+                              "method": "canonical summability (GvdV 2017 eq. 3.17)"})
+    return with_describe_pointer(res, "ghs024")
 
 
 def cheatsheet():
-    return "ghs024: Summability conditions on the means and variances of splitting variables that imply canonical absolute continuity of a tail-free process."
+    return "ghs024: Canonical summability conditions"
