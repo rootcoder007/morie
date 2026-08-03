@@ -28,6 +28,7 @@ __all__ = [
     "akp_effect_size", "trimmed_mean_bootstrap",
     "median_se", "median_test_2group",
     "winsorized_regression", "correlation_bootstrap_ci",
+    "brunner_dette_munk",
 ]
 
 
@@ -790,17 +791,22 @@ def percentile_bootstrap_2group(x, y, est=None, nboot=2000, alpha=0.05,
     its percentiles; the p-value is twice the smaller tail proportion.
     ``est`` defaults to the one-step M-estimator, as in WRS ``pb2gen``.
     """
-    import random
+    from . import _rrng_core as _rr
 
     xs, ys = _flat(x), _flat(y)
     if est is None:
         est = one_step_m_estimator
-    rng = random.Random(seed)
     n1, n2 = len(xs), len(ys)
+    # WRS pb2gen draws ALL of group 1's resamples first, then group 2's,
+    # each as an nboot-by-n matrix filled column-major by R's sample().
+    # Reproducing that order is what makes our stream match R's.
+    rng = _rr.RRandom(seed)
+    datax = rng.sample_int(n1, n1 * int(nboot), replace=True)
+    datay = rng.sample_int(n2, n2 * int(nboot), replace=True)
     diffs = []
-    for _ in range(int(nboot)):
-        bx = [xs[rng.randrange(n1)] for _ in range(n1)]
-        by = [ys[rng.randrange(n2)] for _ in range(n2)]
+    for b in range(int(nboot)):
+        bx = [xs[datax[b + n1_i * int(nboot)] - 1] for n1_i in range(n1)]
+        by = [ys[datay[b + n2_i * int(nboot)] - 1] for n2_i in range(n2)]
         diffs.append(est(bx, **kwargs) - est(by, **kwargs))
     diffs.sort()
     low = int(round((alpha / 2.0) * nboot))
@@ -940,15 +946,19 @@ def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
     ``onesampb``.  The p-value is twice the smaller of the proportions
     of bootstrap estimates above and below the null value.
     """
-    import random
+    from . import _rrng_core as _rr
 
     v = _flat(x)
     if est is None:
         est = one_step_m_estimator
-    rng = random.Random(seed)
     n = len(v)
-    boot = sorted(est([v[rng.randrange(n)] for _ in range(n)], **kwargs)
-                  for _ in range(int(nboot)))
+    rng = _rr.RRandom(seed)
+    # matrix(sample(x, n * nboot, replace = TRUE), nrow = nboot):
+    # R fills column-major, so row b uses entries b, b+nboot, ...
+    draw = rng.sample_int(n, n * int(nboot), replace=True)
+    nb = int(nboot)
+    boot = sorted(est([v[draw[b + j * nb] - 1] for j in range(n)], **kwargs)
+                  for b in range(nb))
     low = int(round((alpha / 2.0) * nboot))
     up = int(nboot - low) - 1
     low = min(max(low, 0), nboot - 1)
@@ -1059,30 +1069,84 @@ def boxplot_outliers(x, carling=False, gval=None):
                       else "boxplot rule on the ideal fourths"}
 
 
+def _gauss_kronrod(f, a, b):
+    """One 15-point Gauss-Kronrod panel on [a, b].
+
+    Returns the Kronrod estimate and an error estimate taken from its
+    difference with the embedded 7-point Gauss rule -- the same pairing
+    R's integrate() uses (QUADPACK's QK15).
+    """
+    xk = (0.991455371120813, 0.949107912342759, 0.864864423359769,
+          0.741531185599394, 0.586087235467691, 0.405845151377397,
+          0.207784955007898, 0.000000000000000)
+    wk = (0.022935322010529, 0.063092092629979, 0.104790010322250,
+          0.140653259715525, 0.169004726639267, 0.190350578064785,
+          0.204432940075298, 0.209482141084728)
+    wg = (0.129484966168870, 0.279705391489277, 0.381830050505119,
+          0.417959183673469)
+    c = 0.5 * (a + b)
+    h = 0.5 * (b - a)
+    resk = 0.0
+    resg = 0.0
+    for i in range(8):
+        if xk[i] == 0.0:
+            fv = f(c)
+            resk += wk[i] * fv
+            resg += wg[3] * fv
+        else:
+            fv = f(c - h * xk[i]) + f(c + h * xk[i])
+            resk += wk[i] * fv
+            if i % 2 == 1:                 # nodes shared with the Gauss rule
+                resg += wg[i // 2] * fv
+    resk *= h
+    resg *= h
+    return resk, abs(resk - resg)
+
+
+def _adaptive_quad(f, a, b, tol=1e-12, max_depth=50):
+    """Adaptive Gauss-Kronrod integration.
+
+    Bisects the interval wherever the local error estimate is too large,
+    which is what R's integrate() (and the ``area`` helper WRS uses)
+    does.  Replaces the fixed Simpson rule this module used to carry,
+    whose truncation error showed up as a 1e-9 disagreement with R in
+    the AKP effect size.
+    """
+    total, err = _gauss_kronrod(f, a, b)
+    stack = [(a, b, total, err, 0)]
+    result = 0.0
+    while stack:
+        lo, hi, val, e, depth = stack.pop()
+        if e <= tol * max(1.0, abs(val)) or depth >= max_depth:
+            result += val
+            continue
+        mid = 0.5 * (lo + hi)
+        lval, lerr = _gauss_kronrod(f, lo, mid)
+        rval, rerr = _gauss_kronrod(f, mid, hi)
+        stack.append((lo, mid, lval, lerr, depth + 1))
+        stack.append((mid, hi, rval, rerr, depth + 1))
+    return result
+
+
 def _normal_winsorized_variance(tr):
     """Winsorized variance of the standard normal at trimming ``tr``.
 
         integral_{z_tr}^{z_{1-tr}} u^2 phi(u) du + 2 z_tr^2 tr
 
     This is the ``cterm`` of WRS ``akp.effect``, which rescales the
-    robust effect size so that it equals Cohen's d under normality.
-    Evaluated by Simpson's rule, which is exact enough here because the
-    integrand is smooth and the interval finite.
+    robust effect size so it equals Cohen's d under normality.  Computed
+    with :func:`_adaptive_quad`, matching R's integrate() to machine
+    precision.
     """
     if tr <= 0:
         return 1.0
     lo = _norm_quantile(tr)
     hi = _norm_quantile(1.0 - tr)
-    m = 2000                      # even number of Simpson panels
-    step = (hi - lo) / m
 
     def f(u):
         return u * u * math.exp(-0.5 * u * u) / math.sqrt(2.0 * math.pi)
 
-    total = f(lo) + f(hi)
-    for i in range(1, m):
-        total += f(lo + i * step) * (4 if i % 2 else 2)
-    return total * step / 3.0 + 2.0 * lo * lo * tr
+    return _adaptive_quad(f, lo, hi) + 2.0 * lo * lo * tr
 
 
 def akp_effect_size(x, y, tr=0.2, equal_variance=True):
@@ -1288,12 +1352,12 @@ def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
     floor(alpha/2 * nboot + 0.5) and floor((1 - alpha/2) * nboot + 0.5),
     and the p-value is twice the smaller tail proportion about zero.
 
-    Unlike the other ported functions this one cannot be matched to R
-    digit for digit: it depends on the resampling stream, and R's
-    ``sample()`` uses the Mersenne Twister with R's own seeding.  The
-    ESTIMATOR it wraps is anchored exactly; only the resampling differs.
+    The resampling uses :mod:`morie.fn._rrng_core`, which reproduces R's
+    Mersenne-Twister stream and the ``R_unif_index`` rejection sampler,
+    so this matches R's ``corb`` exactly rather than only in
+    distribution.
     """
-    import random
+    from . import _rrng_core as _rr
 
     xs, ys = _flat(x), _flat(y)
     if len(xs) != len(ys):
@@ -1302,10 +1366,14 @@ def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
     if corfun is None:
         corfun = percentage_bend_correlation
     est = corfun(xs, ys, **kwargs)["cor"]
-    rng = random.Random(seed)
+    # WRS corb: matrix(sample(n, n * nboot, replace = TRUE), nrow = nboot),
+    # filled column-major, so row b is entries b, b + nboot, ...
+    rng = _rr.RRandom(seed)
+    nb = int(nboot)
+    draw = rng.sample_int(n, n * nb, replace=True)
     boot = []
-    for _ in range(int(nboot)):
-        idx = [rng.randrange(n) for _ in range(n)]
+    for b in range(nb):
+        idx = [draw[b + j * nb] - 1 for j in range(n)]
         try:
             boot.append(corfun([xs[i] for i in idx],
                                [ys[i] for i in idx], **kwargs)["cor"])
@@ -1324,3 +1392,97 @@ def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
             "p_value": 2.0 * min(phat, 1.0 - phat), "n": n,
             "nboot": nb,
             "method": "bootstrap confidence interval for a correlation"}
+
+
+def _matmul(A, B):
+    n, k, m = len(A), len(B), len(B[0])
+    return [[sum(A[i][t] * B[t][j] for t in range(k)) for j in range(m)]
+            for i in range(n)]
+
+
+def _trace(A):
+    return sum(A[i][i] for i in range(len(A)))
+
+
+def brunner_dette_munk(groups):
+    """Brunner-Dette-Munk rank-based one-way ANOVA.
+
+    Brunner, Dette and Munk (1997), *JASA* 92, 1494-1502.  A fully
+    nonparametric heteroscedastic one-way design: it tests equality of
+    the relative treatment effects
+
+        q_j = (Rbar_j - 0.5) / N
+
+    where Rbar_j is the mean of the MIDRANKS of group j taken over the
+    pooled sample.  Because it works on ranks it needs no assumption
+    about the shape of the distributions, and unlike the classical
+    Kruskal-Wallis test it does not assume they share a common shape
+    either -- each group gets its own variance term.
+
+    The statistic is the Box-type approximation
+
+        F = N q' C q / (c11 * tr(VN))
+
+    with C = I - J/J the centring contrast matrix, VN the diagonal
+    matrix of scaled within-group rank variances, and degrees of freedom
+
+        nu1 = c11^2 tr(VN)^2 / tr(C VN C VN)
+        nu2 = tr(VN)^2 / tr(VN VN Lambda),  Lambda = diag(1/(n_j - 1)).
+
+    Ported from WRS ``bdm`` and its helper ``bdms1``.
+    """
+    gs = [_flat(g) for g in groups]
+    J = len(gs)
+    if J < 2:
+        raise ValueError("need at least 2 groups")
+    if any(len(g) < 2 for g in gs):
+        raise ValueError("every group needs at least 2 observations")
+
+    pool = [v for g in gs for v in g]
+    N = len(pool)
+    rval = _rank(pool)
+
+    rvec, nvec, rbar = [], [], []
+    pos = 0
+    for g in gs:
+        k = len(g)
+        r = rval[pos:pos + k]
+        pos += k
+        rvec.append(r)
+        nvec.append(k)
+        rbar.append(sum(r) / k)
+
+    # relative treatment effects
+    phat = [(rbar[j] - 0.5) / N for j in range(J)]
+
+    # within-group rank variances, scaled by N^2 and by the group size
+    svec = [sum((r - rbar[j]) ** 2 for r in rvec[j]) / (nvec[j] - 1.0)
+            / (N * N) for j in range(J)]
+    VN = [[0.0] * J for _ in range(J)]
+    for j in range(J):
+        VN[j][j] = N * svec[j] / nvec[j]
+
+    # C = I - J/J, the centring contrast matrix bdm passes to bdms1
+    C = [[(1.0 if i == j else 0.0) - 1.0 / J for j in range(J)]
+         for i in range(J)]
+
+    trVN = _trace(VN)
+    c11 = C[0][0]
+    top = c11 * trVN
+    if top == 0:
+        raise ValueError("zero rank variance: the groups are degenerate")
+    quad = sum(phat[i] * C[i][j] * phat[j]
+               for i in range(J) for j in range(J))
+    F = N * quad / top
+
+    CVN = _matmul(C, VN)
+    nu1 = c11 * c11 * trVN * trVN / _trace(_matmul(CVN, CVN))
+    lam = [[0.0] * J for _ in range(J)]
+    for j in range(J):
+        lam[j][j] = 1.0 / (nvec[j] - 1.0)
+    nu2 = trVN * trVN / _trace(_matmul(_matmul(VN, VN), lam))
+
+    return {"statistic": F, "df1": nu1, "df2": nu2,
+            "p_value": 1.0 - _f_cdf(F, nu1, nu2),
+            "q_hat": phat, "n": nvec,
+            "method": "Brunner-Dette-Munk rank-based ANOVA"}
