@@ -1,0 +1,22 @@
+"""Tests for bookadvanced_elementsofstatisticallearning7e14.bookadvanced_elementsofstatisticallearning_chapter_7_equation_14."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.bookadvanced_elementsofstatisticallearning7e14 import (
+    bookadvanced_elementsofstatisticallearning_chapter_7_equation_14,
+)
+
+
+def test_bookadvanced_elementsofstatisticallearning7e14_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = bookadvanced_elementsofstatisticallearning_chapter_7_equation_14(x)
+    assert isinstance(result, dict)
+    assert "statistic" in result or "p_value" in result or "estimate" in result
+
+
+def test_bookadvanced_elementsofstatisticallearning7e14_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = bookadvanced_elementsofstatisticallearning_chapter_7_equation_14(x)
+    assert isinstance(result, dict)

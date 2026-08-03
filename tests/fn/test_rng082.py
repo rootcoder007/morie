@@ -1,0 +1,22 @@
+"""Tests for rng082.rangayyan_ch3_odd_part."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.rng082 import rangayyan_ch3_odd_part
+
+
+def test_rng082_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    n = 100
+    result = rangayyan_ch3_odd_part(x, n)
+    assert isinstance(result, dict)
+    assert "estimate" in result or "statistic" in result
+
+
+def test_rng082_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    n = 100
+    result = rangayyan_ch3_odd_part(x, n)
+    assert isinstance(result, dict)

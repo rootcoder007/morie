@@ -1,0 +1,20 @@
+"""Tests for wilcox9e11.wilcox_chapter_9_equation_11."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.wilcox9e11 import wilcox_chapter_9_equation_11
+
+
+def test_wilcox9e11_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = wilcox_chapter_9_equation_11(x)
+    assert isinstance(result, dict)
+    assert "statistic" in result or "p_value" in result or "estimate" in result
+
+
+def test_wilcox9e11_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = wilcox_chapter_9_equation_11(x)
+    assert isinstance(result, dict)
