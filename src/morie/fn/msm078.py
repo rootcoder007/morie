@@ -1,55 +1,33 @@
-r"""Numbered display equation (6.9) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Matrix-variate form of the multi-trait model.
 
-from . import _array_core as np
+Implements eq. (6.9) pp.191-193 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_9"]
 
 
-def mvsml_bayesian_regression_eq_6_9(The, complete, Bayesian, speci, cation, of):
-    r"""
-    Numbered display equation (6.9) from MVSML chapter 6.
-
-    Formula: The complete Bayesian speciﬁcation of this model assumes independent multivar- iate normal distributions for the columns of B, that is, for the ﬁxed effect of each trait -  a prior multivariate normal distribution is adopted, \betat  Np \betat0, \Sigma\betat , t = 1, . . . , nT; a ﬂat prior for the intercepts, f(\mu) / 1; and independent inverse Wishart distributions for the covariance matrices of residuals R and for \SigmaT, \SigmaT  IW(vT, ST) and R  IW (vR, SR), and also an inverse Wishart distribution for \SigmaE, \SigmaE  IW(vE, SE). The full conditional distributions of \mu, B, b1, b2, and R can be derived as in model
-
-    Parameters
-    ----------
-    The : array-like
-        Input data.
-    complete : array-like
-        Input data.
-    Bayesian : array-like
-        Input data.
-    speci : array-like
-        Input data.
-    cation : array-like
-        Input data.
-    of : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.9) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    The = np.atleast_1d(np.asarray(The, dtype=float))
-    n = len(The)
-    result = float(np.mean(The))
-    se = float(np.std(The, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.9) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_9(Y, Z1, G, X=None, n_iter=1200, burn_in=300, seed=42):
+    """Y = 1_J mu' + X B + Z_1 b_1 + E (eq. 6.9) with
+    E ~ MN(0, I_J, R) and b_1 ~ MN(0, G, Sigma_T), fitted by the
+    Gibbs sampler of p.193.  The book notes that when Sigma_T and R
+    are diagonal this is equivalent to fitting a univariate GBLUP to
+    each trait separately (p.191). Keys: estimate."""
+    f = _gp.multitrait_bayes_gibbs(Y, Z1, G, X=X, n_iter=n_iter,
+                                   burn_in=burn_in, seed=seed)
+    res = RichResult(payload={"estimate": f["mu"][0], "mu": f["mu"],
+                              "b1": f["b1"], "Sigma_T": f["Sigma_T"],
+                              "R": f["R"], "n_kept": f["n_kept"],
+                              "method": "matrix-variate multi-trait model (MVSML 2022 eq. 6.9)"})
+    return with_describe_pointer(res, "msm078")
 
 
 def cheatsheet():
-    return "msm078: Numbered display equation (6.9) from MVSML chapter 6."
+    return "msm078: Matrix-variate form of the multi-trait model"
