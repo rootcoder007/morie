@@ -69,6 +69,14 @@ to the same implementation, so nothing is written twice.
 | 8 | 10 | eq. (8.10) pp.283-285 | msm144 | `mvsml_categorical_count_eq_8_10` | msm157 | prose |
 | 8 | 11 | eq. (8.11) p.289 | msm145 | `mvsml_categorical_count_eq_8_11` | msm147, msm148, msm151, msm154 | prose |
 | 8 | 12 | eq. (8.12) p.291 | msm152 | `mvsml_categorical_count_eq_8_12` | msm153, msm155, msm156 | prose |
+| 9 | 4 | eq. (9.4) p.340 | msm171 | `mvsml_ridge_lasso_elastic_eq_9_4` | msm176 | prose |
+| 9 | 5 | eq. (9.5) p.341 | msm173 | `mvsml_ridge_lasso_elastic_eq_9_5` | msm174, msm177 | prose |
+| 9 | 28 | eq. (9.28) p.348 | msm202 | `mvsml_ridge_lasso_elastic_eq_9_28` | msm206, msm208 | prose |
+| 9 | 29 | eq. (9.29) p.348 | msm203 | `mvsml_ridge_lasso_elastic_eq_9_29` | msm209 | equation |
+| 9 | 30 | eq. (9.30) p.348 | msm204 | `mvsml_ridge_lasso_elastic_eq_9_30` | msm205, msm207 | equation |
+| 9 | 31 | eq. (9.31) p.349 | msm210 | `mvsml_ridge_lasso_elastic_eq_9_31` | msm211 | equation |
+| 9 | 32 | eq. (9.32) p.349 | msm212 | `mvsml_ridge_lasso_elastic_eq_9_32` | msm214, msm216 | equation |
+| 9 | 33 | eq. (9.33) p.349 | msm213 | `mvsml_ridge_lasso_elastic_eq_9_33` | msm215, msm217 | equation |
 | ? | ? | hyperplane_side | msm164 | `hyperplane_side` | - | empty artefact |
 | ? | ? | aalen_johansen | msmaln | `aalen_johansen` | - | empty artefact |
 | ? | ? | marginal_structural_model | msmest | `marginal_structural_model` | - | empty artefact |

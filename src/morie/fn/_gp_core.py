@@ -2324,3 +2324,135 @@ def rkhs_predict_new(K_star, beta):
     where K_s is the t x n matrix of genomic similarities between the
     new individuals and the training set."""
     return _mv(_mat(K_star), _flat(beta))
+
+
+# ---------------- support vector machines (ch. 9 pp.339-350)
+def hyperplane_side(X, beta0, beta):
+    """eq. (9.4) p.340: a point lies on one side of the hyperplane
+    when beta_0 + beta_1 x_1 + ... + beta_p x_p > 0 and on the other
+    when it is < 0, so the sign of the left-hand side says which."""
+    B = _flat(beta)
+    return [1 if (float(beta0) + sum(a * b for a, b in zip(row, B)))
+            > 0 else -1 for row in _mat(X)]
+
+
+def svm_decision_values(X, beta0, beta):
+    """eq. (9.5) p.341: f(x_i) = beta_0 + x_i' beta, the fitting
+    function whose sign classifies a new observation and whose
+    magnitude expresses confidence."""
+    B = _flat(beta)
+    return [float(beta0) + sum(a * b for a, b in zip(row, B))
+            for row in _mat(X)]
+
+
+def svm_label_matrix(X, y):
+    """The matrix Q of Example 9.1 p.350, whose rows are y_i x_i.
+    The dual objective depends on the data only through Q Q', i.e.
+    through inner products of the labelled vectors."""
+    Xm = _mat(X)
+    ys = _flat(y)
+    return [[ys[i] * v for v in Xm[i]] for i in range(len(Xm))]
+
+
+def svm_dual_objective(alpha, X, y, K=None):
+    """eq. (9.32) p.349: L(alpha) = sum_i alpha_i
+    - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j (x_i . x_j).
+    The dual depends on the data only through inner products, which
+    is exactly what lets a kernel replace them."""
+    a = _flat(alpha)
+    ys = _flat(y)
+    n = len(a)
+    G = _mat(K) if K is not None else \
+        _mm(_mat(X), _t(_mat(X)))
+    quad = sum(a[i] * a[j] * ys[i] * ys[j] * G[i][j]
+               for i in range(n) for j in range(n))
+    return sum(a) - 0.5 * quad
+
+
+def svm_dual_constraints_ok(alpha, y, C=None, tol=1e-8):
+    """eq. (9.33) p.349: alpha_i >= 0 and sum_i alpha_i y_i = 0 (with
+    an upper bound C in the soft-margin case)."""
+    a = _flat(alpha)
+    ys = _flat(y)
+    nonneg = all(v >= -tol for v in a)
+    bounded = True if C is None else all(v <= C + tol for v in a)
+    balanced = abs(sum(ai * yi for ai, yi in zip(a, ys))) < 1e-6
+    return {"nonnegative": nonneg, "bounded": bounded,
+            "balanced": balanced,
+            "feasible": nonneg and bounded and balanced}
+
+
+def svm_beta_from_alpha(alpha, X, y):
+    """eq. (9.28) p.348: setting dL/dbeta = 0 gives
+    beta = sum_i alpha_i y_i x_i, so the weights are a linear
+    combination of the training vectors; only those with alpha_i != 0
+    (the support vectors) contribute."""
+    a = _flat(alpha)
+    ys = _flat(y)
+    Xm = _mat(X)
+    p = len(Xm[0])
+    return [sum(a[i] * ys[i] * Xm[i][j] for i in range(len(a)))
+            for j in range(p)]
+
+
+def svm_intercept(alpha, X, y, K=None, tol=1e-8):
+    """p.350: averaging y_i(beta_0 + x_i'beta) = 1 over the support
+    vectors gives the numerically stable intercept
+    beta_0 = (1/N_S) sum_{i in S} (y_i
+             - sum_{j in S} alpha_j y_j (x_i . x_j))."""
+    a = _flat(alpha)
+    ys = _flat(y)
+    n = len(a)
+    G = _mat(K) if K is not None else _mm(_mat(X), _t(_mat(X)))
+    S = [i for i in range(n) if a[i] > tol]
+    if not S:
+        return 0.0
+    return sum(ys[i] - sum(a[j] * ys[j] * G[i][j] for j in S)
+               for i in S) / len(S)
+
+
+def svm_fit_dual(X, y, C=None, n_iter=4000, tol=1e-9, K=None,
+                 lr=None):
+    """Maximize the dual (9.32) subject to (9.33) by projected
+    gradient ascent, keeping sum_i alpha_i y_i = 0 on every step.
+
+    The gradient is dL/dalpha_i = 1 - y_i sum_j alpha_j y_j G_ij; the
+    balance constraint of (9.33) is maintained by removing the
+    component of the gradient along y before stepping, and alpha is
+    clipped to [0, C].  Returns alpha, the weights (9.28), the
+    intercept of p.350, and the support-vector indices.
+    """
+    Xm = _mat(X)
+    ys = _flat(y)
+    n = len(ys)
+    G = _mat(K) if K is not None else _mm(Xm, _t(Xm))
+    H = [[ys[i] * ys[j] * G[i][j] for j in range(n)]
+         for i in range(n)]
+    scale = max(abs(H[i][i]) for i in range(n)) or 1.0
+    step = (lr if lr is not None else 1.0 / (n * scale))
+    a = [0.0] * n
+    yy = sum(v * v for v in ys)
+    for _ in range(int(n_iter)):
+        grad = [1.0 - sum(H[i][j] * a[j] for j in range(n))
+                for i in range(n)]
+        # project the gradient onto {g : g . y = 0} (eq. 9.33)
+        gy = sum(g * v for g, v in zip(grad, ys)) / yy
+        grad = [g - gy * v for g, v in zip(grad, ys)]
+        new = [a[i] + step * grad[i] for i in range(n)]
+        new = [max(0.0, v if C is None else min(v, C)) for v in new]
+        if max(abs(new[i] - a[i]) for i in range(n)) < tol:
+            a = new
+            break
+        a = new
+    beta = svm_beta_from_alpha(a, Xm, ys)
+    b0 = svm_intercept(a, Xm, ys, K=K)
+    sv = [i for i in range(n) if a[i] > 1e-6]
+    return {"alpha": a, "beta": beta, "beta0": b0,
+            "support_vectors": sv,
+            "objective": svm_dual_objective(a, Xm, ys, K=K)}
+
+
+def svm_predict(X_new, beta0, beta):
+    """p.350: y-hat = sign[f-hat(x)] with f-hat from eq. (9.5)."""
+    return [1 if v > 0 else -1
+            for v in svm_decision_values(X_new, beta0, beta)]

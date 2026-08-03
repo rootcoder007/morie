@@ -1,55 +1,39 @@
-"""Numbered display equation (9.5) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Support vector classifier fitting function.
 
-from . import _array_core as np
+Implements eq. (9.5) p.341 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_5"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_5", "mvsml_svm_decision_function"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_5(xip, a, p, dimensional, vector, of):
-    """
-    Numbered display equation (9.5) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_5(X, beta0, beta):
+    """f(x_i) = beta_0 + x_i' beta (eq. 9.5): a test observation is
+    labelled 1 when f-hat is positive and -1 when negative, and large
+    magnitudes mean more confidence in the assignment.  For a
+    separable training set y_i f(x_i) > 0 holds for every observation.
+    Keys: estimate."""
+    v = _gp.svm_decision_values(X, beta0, beta)
+    res = RichResult(payload={"estimate": v[0], "f": v,
+                              "labels": [1 if u > 0 else -1
+                                         for u in v],
+                              "method": "SVM fitting function (MVSML 2022 eq. 9.5)"})
+    return with_describe_pointer(res, "msm173")
 
-    Formula: , . . ., xip) is a p- dimensional vector of predictors (inputs) measured in sample i. We also assume that 9.3 Maximum Margin Classiﬁer 341 the response variable is binary (two classes) and coded as 1 for representing class 1 and +1 for representing class 2. A ﬁtting function of the form ( ) = \beta0 + xT f xi i \beta
 
-    Parameters
-    ----------
-    xip : array-like
-        Input data.
-    a : array-like
-        Input data.
-    p : array-like
-        Input data.
-    dimensional : array-like
-        Input data.
-    vector : array-like
-        Input data.
-    of : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.5) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    xip = np.atleast_1d(np.asarray(xip, dtype=float))
-    n = len(xip)
-    result = float(np.mean(xip))
-    se = float(np.std(xip, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.5) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_decision_function = mvsml_ridge_lasso_elastic_eq_9_5
 
 
 def cheatsheet():
-    return "msm173: Numbered display equation (9.5) from MVSML chapter 9."
+    return "msm173: Support vector classifier fitting function"
