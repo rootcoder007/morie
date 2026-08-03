@@ -208,3 +208,104 @@ def test_degenerate_inputs_raise_rather_than_return_nonsense():
         rb.harrell_davis([1, 2, 3], q=0.0)
     with pytest.raises(ValueError):
         rb.percentage_bend_correlation([1, 2], [1])
+
+
+# --- one-sample and dependent-groups methods, WRS-anchored -----------
+GY8 = [18.4, 14.9, 12.5, 17.7, 15.8, 19.1, 13.9, 16.6]
+
+
+def test_trimmed_mean_se_matches_wrs_trimse():
+    assert abs(rb.trimmed_mean_se(X) - 17.0143770401) < 1e-9
+
+
+def test_trimmed_mean_ci_matches_wrs_trimci():
+    r = rb.trimmed_mean_ci(X)
+    assert abs(r["estimate"] - 49.4285714286) < 1e-9
+    assert abs(r["ci"][0] - 7.7958906093) < 1e-7
+    assert abs(r["ci"][1] - 91.0612522479) < 1e-7
+    assert abs(r["p_value"] - 0.0271530641) < 1e-9
+    assert r["df"] == len(X) - 2 * rb.trim_counts(len(X), 0.2) - 1
+
+
+def test_trimmed_mean_ci_uses_the_tukey_mclaughlin_se():
+    # se = sqrt(winvar) / ((1 - 2 tr) sqrt(n)), not the ordinary sd/sqrt(n)
+    n = len(X)
+    hand = (math.sqrt(rb.winsorized_variance(X, 0.2))
+            / ((1 - 2 * 0.2) * math.sqrt(n)))
+    assert abs(rb.trimmed_mean_se(X) - hand) < 1e-12
+    assert abs(rb.trimmed_mean_ci(X)["se"] - hand) < 1e-12
+
+
+def test_yuen_paired_matches_wrs_yuend():
+    r = rb.yuen_paired(GX, GY8)
+    assert abs(r["estimate"] - (-3.3833333333)) < 1e-9
+    assert abs(r["se"] - 1.6194649322) < 1e-9
+    assert abs(r["statistic"] - (-2.0891673948)) < 1e-8
+    assert abs(r["df"] - 5.0) < 1e-12
+    assert abs(r["p_value"] - 0.0909960208) < 1e-9
+
+
+def test_yuen_paired_se_follows_the_q1_q2_q3_formula():
+    # se = sqrt((q1 + q2 - 2 q3) / (h (h - 1))), q3 the (n-1)-scaled
+    # Winsorized COVARIANCE -- recompute it here from the definition
+    n = len(GX)
+    h = n - 2 * rb.trim_counts(n, 0.2)
+    q1 = (n - 1) * rb.winsorized_variance(GX, 0.2)
+    q2 = (n - 1) * rb.winsorized_variance(GY8, 0.2)
+    q3 = (n - 1) * rb.winsorized_correlation(GX, GY8, 0.2)["cov"]
+    hand = math.sqrt((q1 + q2 - 2 * q3) / (h * (h - 1)))
+    assert abs(rb.yuen_paired(GX, GY8)["se"] - hand) < 1e-12
+
+
+def test_pairing_helps_only_when_the_winsorized_covariance_is_positive():
+    # the -2 q3 term is the entire benefit of pairing.  For GX/GY8 the
+    # Winsorized covariance is NEGATIVE, so pairing costs precision
+    # rather than buying it -- assert the direction that actually holds.
+    cov = rb.winsorized_correlation(GX, GY8, 0.2)["cov"]
+    assert cov < 0
+    assert rb.yuen_paired(GX, GY8)["se"] > rb.yuen_test(GX, GY8, 0.2)["se"]
+
+    # and with genuinely positively related -- but not identical --
+    # pairs the SE does shrink
+    a = [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0]
+    b = [13.4, 14.7, 17.9, 18.2, 21.6, 22.1, 25.8, 26.3]
+    assert rb.winsorized_correlation(a, b, 0.2)["cov"] > 0
+    assert rb.yuen_paired(a, b)["se"] < rb.yuen_test(a, b, 0.2)["se"]
+
+
+def test_yuen_paired_reports_lockstep_pairs_instead_of_dividing_by_zero():
+    # y = x + c makes q1 + q2 - 2 q3 exactly zero
+    a = [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0]
+    r = rb.yuen_paired(a, [t + 3.0 for t in a])
+    assert r["degenerate"] is True
+    assert r["se"] == 0.0
+    assert math.isnan(r["statistic"])
+    assert abs(r["estimate"] - (-3.0)) < 1e-12
+
+
+def test_yuen_paired_requires_equal_lengths():
+    with pytest.raises(ValueError):
+        rb.yuen_paired([1, 2, 3], [1, 2])
+
+
+def test_student_t_quantile_inverts_the_cdf():
+    for df in (3, 7.5, 20, 200):
+        for p in (0.01, 0.25, 0.5, 0.9, 0.975, 0.999):
+            q = rb._student_t_quantile(p, df)
+            assert abs(rb._student_t_cdf(q, df) - p) < 1e-9
+    # standard table value
+    assert abs(rb._student_t_quantile(0.975, 10) - 2.228138852) < 1e-6
+
+
+def test_one_sample_bootstrap_is_deterministic_and_covers_the_estimate():
+    a = rb.one_sample_bootstrap(X, nboot=500, seed=11)
+    b = rb.one_sample_bootstrap(X, nboot=500, seed=11)
+    assert a["ci"] == b["ci"]
+    lo, hi = a["ci"]
+    assert lo <= a["estimate"] <= hi
+    assert 0.0 <= a["p_value"] <= 1.0
+
+
+def test_one_sample_bootstrap_rejects_a_far_null():
+    r = rb.one_sample_bootstrap(X, nboot=500, seed=5, null_value=1e6)
+    assert r["p_value"] == 0.0
