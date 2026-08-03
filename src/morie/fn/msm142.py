@@ -1,55 +1,38 @@
-r"""Numbered display equation (8.9) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Kernel BLUP with replicated individuals.
 
-from . import _array_core as np
+Implements eq. (8.9) p.282 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries the previous chapter's topic label;
+chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
+canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_9"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_9", "mvsml_kernel_blup_replicated"]
 
 
-def mvsml_categorical_count_eq_8_9(model, using, the, BGLR, package, The):
-    r"""
-    Numbered display equation (8.9) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_9(Z, K, sigma2_u=1.0):
+    """Y = 1 mu + Z u + e (eq. 8.9), the form used when individuals
+    have more than one replication.  The predictor cannot be handed to
+    BGLR directly, so its covariance K_* = Var(Z u) = Z K Z' is
+    precomputed and used as the kernel. Keys: estimate."""
+    Ks = _gp.kernel_blup_replicated(Z, K, sigma2_u=sigma2_u)
+    ok, _ = _gp.is_positive_semidefinite(Ks)
+    res = RichResult(payload={"estimate": Ks[0][0], "K_star": Ks,
+                              "positive_semidefinite": ok,
+                              "method": "replicated kernel BLUP covariance (MVSML 2022 eq. 8.9)"})
+    return with_describe_pointer(res, "msm142")
 
-    Formula: model using the BGLR package. The BGLR code to ﬁt this model is ETA = list( list( model = ‘RHKS’, K = K , df0 = vu, S0 = Su, R2 = 1-R2)) ) = BGLR(y=y, ETA = ETA, nIter = 1e4, burnIn = 1e3, S0 = S, df0 = v, R2 = A R2) When individuals had more than one replication, or a sophisticated experimental design was used for data collection, the Bayesian kernel BLUP model is speciﬁed in a more general way to take into account this structure, as follows: Y = 1n\mu + Zu + e
 
-    Parameters
-    ----------
-    model : array-like
-        Input data.
-    using : array-like
-        Input data.
-    the : array-like
-        Input data.
-    BGLR : array-like
-        Input data.
-    package : array-like
-        Input data.
-    The : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.9) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    model = np.atleast_1d(np.asarray(model, dtype=float))
-    n = len(model)
-    result = float(np.mean(model))
-    se = float(np.std(model, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.9) from MVSML chapter 8.",
-        }
-    )
+mvsml_kernel_blup_replicated = mvsml_categorical_count_eq_8_9
 
 
 def cheatsheet():
-    return "msm142: Numbered display equation (8.9) from MVSML chapter 8."
+    return "msm142: Kernel BLUP with replicated individuals"

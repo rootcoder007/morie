@@ -1,55 +1,14 @@
-r"""Numbered display equation (8.10) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (8.10) pp.283-285, re-exported from :mod:`morie.fn.msm144`.
 
-from . import _array_core as np
+The stub generator stamped several extracted page fragments with this
+same function name, so the implementation lives once in msm144.
+"""
 
-from ._richresult import RichResult
+from .msm144 import mvsml_categorical_count_eq_8_10, mvsml_kernel_blup_gxe
 
-__all__ = ["mvsml_categorical_count_eq_8_10"]
-
-
-def mvsml_categorical_count_eq_8_10(Qu2, Zu1, Kn, mK, m, mKT):
-    r"""
-    Numbered display equation (8.10) from MVSML chapter 8.
-
-    Formula: Qu2 = Zu1 Kn,mK 2 1 m,mKT ZT ZEZET u2  N 0, \sigma2 . n,m u1 Also, we decomposed K 2 1 m,m in such a way that model
-
-    Parameters
-    ----------
-    Qu2 : array-like
-        Input data.
-    Zu1 : array-like
-        Input data.
-    Kn : array-like
-        Input data.
-    mK : array-like
-        Input data.
-    m : array-like
-        Input data.
-    mKT : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.10) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    Qu2 = np.atleast_1d(np.asarray(Qu2, dtype=float))
-    n = len(Qu2)
-    result = float(np.mean(Qu2))
-    se = float(np.std(Qu2, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.10) from MVSML chapter 8.",
-        }
-    )
+__all__ = ["mvsml_categorical_count_eq_8_10", "mvsml_kernel_blup_gxe"]
 
 
 def cheatsheet():
-    return "msm157: Numbered display equation (8.10) from MVSML chapter 8."
+    return "msm157: see msm144"
