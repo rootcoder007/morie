@@ -1,46 +1,34 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Lower bounds for posterior contraction rates: cannot beat minimax rate."""
+"""Minimax lower bound for the rate.
+
+Implements sec. 8.4 (entropy balance; Ex 8.16 rate) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_crt_lower"]
 
 
-def ghosal_crt_lower(x):
-    """
-    Lower bounds for posterior contraction rates: cannot beat minimax rate
-
-    Formula: eps_n >= n^{-s/(2s+1)} for s-Holder smoothness (information-theoretic lb)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 8 §8.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Lower bounds for posterior contraction rates: cannot beat minimax rate",
-        }
-    )
+def ghosal_crt_lower(smoothness, n):
+    """No procedure beats eps_n = n^{-s/(2s+1)} over an s-Holder
+    ball (sec. 8.4): the rate solves the entropy balance
+    eps^{-1/s} = n eps^2, and the posterior rate of Thm 8.9 matches
+    it -- Bayes is minimax-optimal here. Keys: estimate."""
+    s = float(smoothness)
+    eps = float(n) ** (-s / (2.0 * s + 1.0))
+    gap = abs(eps ** (-1.0 / s) - float(n) * eps ** 2) \
+        / (float(n) * eps ** 2)
+    res = RichResult(payload={"estimate": eps,
+                              "balance_gap": gap,
+                              "exponent": s / (2.0 * s + 1.0),
+                              "method": "minimax lower bound (GvdV 2017 sec. 8.4)"})
+    return with_describe_pointer(res, "gh_c8_12")
 
 
 def cheatsheet():
-    return "gh_c8_12: Lower bounds for posterior contraction rates: cannot beat minimax rate"
+    return "gh_c8_12: Minimax lower bound for the rate"

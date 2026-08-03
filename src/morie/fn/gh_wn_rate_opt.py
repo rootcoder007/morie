@@ -1,46 +1,31 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax."""
+"""White-noise minimax rate.
+
+Implements sec. 8.3.4 context of Ex 8.6 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_white_noise_optimal_rate"]
 
 
-def ghosal_white_noise_optimal_rate(x):
-    """
-    Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax
-
-    Formula: White noise dY = theta dt + dW/sqrt(n): minimax rate R_n* = n^{-2s/(2s+1)}
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 8 §8.3.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax",
-        }
-    )
+def ghosal_white_noise_optimal_rate(smoothness, n):
+    """Minimax squared-error rate in the white-noise model over a
+    Sobolev-s ball: R_n* = n^{-2s/(2s+1)} (sec. 8.3.4); attained by
+    the conjugate prior with alpha = s (Ex 8.6). Keys: estimate."""
+    s = float(smoothness)
+    rate = float(n) ** (-2.0 * s / (2.0 * s + 1.0))
+    res = RichResult(payload={"estimate": rate,
+                              "exponent": 2.0 * s / (2.0 * s + 1.0),
+                              "attained_by_alpha_eq_s": True,
+                              "method": "white-noise minimax rate (GvdV 2017 sec. 8.3.4)"})
+    return with_describe_pointer(res, "gh_wn_rate_opt")
 
 
 def cheatsheet():
-    return "gh_wn_rate_opt: Optimal white noise contraction: rate eps_n = n^{-s/(2s+1)} is minimax"
+    return "gh_wn_rate_opt: White-noise minimax rate"
