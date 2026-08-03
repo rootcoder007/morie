@@ -29,6 +29,8 @@ __all__ = [
     "median_se", "median_test_2group",
     "winsorized_regression", "correlation_bootstrap_ci",
     "brunner_dette_munk",
+    "weights_totals", "morans_i", "morans_i_test",
+    "spatial_2sls", "gm_error_sar",
 ]
 
 
@@ -1486,3 +1488,294 @@ def brunner_dette_munk(groups):
             "p_value": 1.0 - _f_cdf(F, nu1, nu2),
             "q_hat": phat, "n": nvec,
             "method": "Brunner-Dette-Munk rank-based ANOVA"}
+
+# ---------------------------------------------------------------
+# Spatial autocorrelation inference and spatial-econometric
+# estimators.  Verified numerically against the R reference
+# implementations: spdep::Szero, spdep::moran.test, spdep::stsls and
+# spdep::GMerrorsar (Bivand, Pebesma & Gomez-Rubio, *Applied Spatial
+# Data Analysis with R*, the Use R! volume these examples come from).
+# ---------------------------------------------------------------
+
+def weights_totals(W):
+    """The S0, S1 and S2 constants of a spatial weights matrix.
+
+        S0 = sum_ij w_ij                       (spdep's Szero)
+        S1 = 0.5 sum_ij (w_ij + w_ji)^2
+        S2 = sum_i (sum_j w_ij + sum_j w_ji)^2
+
+    Every asymptotic test of spatial autocorrelation is a function of
+    these three, which is why spdep exposes Szero separately.
+    """
+    Wm = _mat_local(W)
+    n = len(Wm)
+    if any(len(r) != n for r in Wm):
+        raise ValueError("W must be square")
+    s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
+    s1 = 0.5 * sum((Wm[i][j] + Wm[j][i]) ** 2
+                   for i in range(n) for j in range(n))
+    s2 = 0.0
+    for i in range(n):
+        ri = sum(Wm[i][j] for j in range(n))
+        ci = sum(Wm[j][i] for j in range(n))
+        s2 += (ri + ci) ** 2
+    return {"S0": s0, "S1": s1, "S2": s2, "n": n}
+
+
+def morans_i(x, W):
+    """Moran's I.
+
+        I = (n / S0) * (sum_ij w_ij z_i z_j) / (sum_i z_i^2),
+        z = x - mean(x)
+    """
+    v = _flat(x)
+    Wm = _mat_local(W)
+    n = len(v)
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match x" % (n, n))
+    m = sum(v) / n
+    z = [t - m for t in v]
+    s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
+    num = sum(Wm[i][j] * z[i] * z[j]
+              for i in range(n) for j in range(n))
+    den = sum(t * t for t in z)
+    return (n / s0) * (num / den)
+
+
+def morans_i_test(x, W, randomisation=True, alternative="greater"):
+    """Asymptotic test for Moran's I (Cliff and Ord).
+
+    Mirrors ``spdep::moran.test``.  Under the null of no spatial
+    autocorrelation E[I] = -1/(n-1), and the variance takes one of two
+    forms:
+
+    randomisation (the spdep default), with b2 the sample kurtosis
+    n * sum(z^4) / (sum(z^2))^2,
+
+        Var = ( n((n^2-3n+3)S1 - n S2 + 3 S0^2)
+                - b2((n^2-n)S1 - 2n S2 + 6 S0^2) )
+              / ((n-1)(n-2)(n-3) S0^2)  -  1/(n-1)^2
+
+    normality,
+
+        Var = (n^2 S1 - n S2 + 3 S0^2) / (S0^2 (n^2-1)) - 1/(n-1)^2
+
+    The randomisation form conditions on the observed values and only
+    treats their arrangement as random, which is the honest null when
+    the data are plainly non-normal.
+    """
+    v = _flat(x)
+    n = len(v)
+    if len(_mat_local(W)) != n:
+        raise ValueError("W must be %d x %d to match x" % (n, n))
+    t = weights_totals(W)
+    s0, s1, s2 = t["S0"], t["S1"], t["S2"]
+    I = morans_i(v, W)
+    ei = -1.0 / (n - 1.0)
+    if randomisation:
+        m = sum(v) / n
+        z = [q - m for q in v]
+        s2z = sum(q * q for q in z)
+        b2 = n * sum(q ** 4 for q in z) / (s2z * s2z)
+        num = (n * ((n * n - 3 * n + 3) * s1 - n * s2 + 3 * s0 * s0)
+               - b2 * ((n * n - n) * s1 - 2 * n * s2 + 6 * s0 * s0))
+        var = num / ((n - 1.0) * (n - 2.0) * (n - 3.0) * s0 * s0) \
+            - 1.0 / ((n - 1.0) ** 2)
+    else:
+        var = (n * n * s1 - n * s2 + 3 * s0 * s0) \
+            / (s0 * s0 * (n * n - 1.0)) - 1.0 / ((n - 1.0) ** 2)
+    sd = math.sqrt(var)
+    zval = (I - ei) / sd
+    if alternative == "greater":
+        p = 1.0 - 0.5 * math.erfc(-zval / math.sqrt(2.0))
+    elif alternative == "less":
+        p = 0.5 * math.erfc(-zval / math.sqrt(2.0))
+    else:
+        p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(zval) / math.sqrt(2.0)))
+    return {"statistic": zval, "estimate": I, "expectation": ei,
+            "variance": var, "p_value": p, "S0": s0, "S1": s1, "S2": s2,
+            "randomisation": bool(randomisation), "n": n,
+            "method": "Moran's I test for spatial autocorrelation"}
+
+
+def _lag(W, v):
+    Wm = _mat_local(W)
+    return [sum(Wm[i][j] * v[j] for j in range(len(v)))
+            for i in range(len(Wm))]
+
+
+def spatial_2sls(y, X, W, add_intercept=True, robust=False):
+    """Spatial two-stage least squares for the spatial lag model.
+
+        y = rho W y + X beta + e
+
+    W y is endogenous, so it is instrumented with the spatially lagged
+    exogenous variables [X, WX, W^2 X] -- the Kelejian and Prucha (1998)
+    instrument set that ``spdep::stsls`` uses.  Ordinary least squares
+    on this model is inconsistent; 2SLS is the cheap consistent fix.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    n = len(ys)
+    Wm = _mat_local(W)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d"
+                         % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    p = len(Xm[0])
+    cols = [[Xm[i][j] for i in range(n)] for j in range(p)]
+    Wy = _lag(W, ys)
+
+    # instruments: X, WX, W^2 X (dropping the lagged intercept, which
+    # is collinear with the intercept itself)
+    inst = [c[:] for c in cols]
+    for j in range(p):
+        if add_intercept and j == 0:
+            continue
+        wx = _lag(W, cols[j])
+        inst.append(wx)
+        inst.append(_lag(W, wx))
+    Z = [[inst[k][i] for k in range(len(inst))] for i in range(n)]
+
+    # first stage: project Wy on the instruments
+    ZtZ = [[sum(Z[i][a] * Z[i][b] for i in range(n))
+            for b in range(len(Z[0]))] for a in range(len(Z[0]))]
+    ZtWy = [sum(Z[i][a] * Wy[i] for i in range(n))
+            for a in range(len(Z[0]))]
+    g = _solve_local(ZtZ, ZtWy)
+    Wy_hat = [sum(Z[i][a] * g[a] for a in range(len(Z[0])))
+              for i in range(n)]
+
+    # second stage: regress y on [Wy_hat, X]
+    D = [[Wy_hat[i]] + list(Xm[i]) for i in range(n)]
+    k = len(D[0])
+    DtD = [[sum(D[i][a] * D[i][b] for i in range(n)) for b in range(k)]
+           for a in range(k)]
+    Dty = [sum(D[i][a] * ys[i] for i in range(n)) for a in range(k)]
+    coef = _solve_local(DtD, Dty)
+    rho = coef[0]
+    beta = coef[1:]
+
+    # residuals use the ACTUAL Wy, not the fitted one
+    resid = [ys[i] - rho * Wy[i]
+             - sum(Xm[i][j] * beta[j] for j in range(p))
+             for i in range(n)]
+    s2 = sum(r * r for r in resid) / n
+    return {"rho": rho, "beta": beta, "coefficients": coef,
+            "residuals": resid, "sigma2": s2, "n": n,
+            "method": "spatial two-stage least squares (Kelejian-Prucha)"}
+
+
+def gm_error_sar(y, X, W, add_intercept=True):
+    """Generalised-moments estimator for the spatial error model.
+
+        y = X beta + u,   u = lambda W u + e
+
+    Kelejian and Prucha (1999).  Three moment conditions in
+    (lambda, lambda^2, sigma^2) are stacked into
+
+        G (lambda, lambda^2, sigma^2)' = g
+
+    and solved by nonlinear least squares.  Unlike maximum likelihood
+    this never needs the determinant of (I - lambda W), which is what
+    makes it usable on large lattices.
+
+    The moment matrix is transcribed from ``spatialreg:::.kpwuwu`` and
+    the criterion from ``spatialreg:::.kpgm``; beta is then re-estimated
+    from the spatially filtered regression, matching
+    ``spatialreg::GMerrorsar``.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    n = len(ys)
+    Wm = _mat_local(W)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    p_ = len(Xm[0])
+
+    def ols(design, target):
+        k = len(design[0])
+        A = [[sum(design[i][a] * design[i][b] for i in range(n))
+              for b in range(k)] for a in range(k)]
+        b = [sum(design[i][a] * target[i] for i in range(n))
+             for a in range(k)]
+        return _solve_local(A, b)
+
+    beta = ols(Xm, ys)
+    u = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_))
+         for i in range(n)]
+
+    wu = _lag(W, u)
+    wwu = _lag(W, wu)
+    trwpw = sum(Wm[i][j] * Wm[i][j] for i in range(n) for j in range(n))
+
+    def dot(a, b):
+        return sum(a[i] * b[i] for i in range(n))
+
+    uu = dot(u, u)
+    uwu = dot(u, wu)
+    uwpuw = dot(wu, wu)
+    uwwu = dot(u, wwu)
+    wwupwu = dot(wwu, wu)
+    wwupwwu = dot(wwu, wwu)
+
+    G = [[2 * uwu / n, -uwpuw / n, 1.0],
+         [2 * wwupwu / n, -wwupwwu / n, trwpw / n],
+         [(uwwu + uwpuw) / n, -wwupwu / n, 0.0]]
+    g = [uu / n, uwpuw / n, uwu / n]
+
+    def crit(lam, sig):
+        th = (lam, lam * lam, sig)
+        return sum((sum(G[r][c] * th[c] for c in range(3)) - g[r]) ** 2
+                   for r in range(3))
+
+    # start where GMerrorsar starts: the correlation of u with Wu, and
+    # the residual variance
+    du = math.sqrt(dot(u, u) * dot(wu, wu))
+    lam = (uwu / du) if du > 0 else 0.0
+    mu = sum(u) / n
+    sig = sum((t - mu) ** 2 for t in u) / (n - 1)
+
+    # coordinate descent: sigma is linear given lambda, lambda is
+    # one-dimensional given sigma -- both solved to convergence
+    for _ in range(400):
+        a = sum(G[r][2] * G[r][2] for r in range(3))
+        b = sum(G[r][2] * (g[r] - G[r][0] * lam - G[r][1] * lam * lam)
+                for r in range(3))
+        sig_new = b / a if a > 0 else sig
+        lo, hi = -0.999, 0.999
+        for _ in range(200):
+            m1 = lo + (hi - lo) / 3.0
+            m2 = hi - (hi - lo) / 3.0
+            if crit(m1, sig_new) < crit(m2, sig_new):
+                hi = m2
+            else:
+                lo = m1
+        lam_new = 0.5 * (lo + hi)
+        if abs(lam_new - lam) < 1e-14 and abs(sig_new - sig) < 1e-14:
+            lam, sig = lam_new, sig_new
+            break
+        lam, sig = lam_new, sig_new
+
+    # spatially filtered GLS for beta
+    lagX = [_lag(W, [Xm[q][j] for q in range(n)]) for j in range(p_)]
+    Xf = [[Xm[i][j] - lam * lagX[j][i] for j in range(p_)]
+          for i in range(n)]
+    wy = _lag(W, ys)
+    yf = [ys[i] - lam * wy[i] for i in range(n)]
+    beta = ols(Xf, yf)
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_))
+             for i in range(n)]
+    ub = [resid[i] - lam * _lag(W, resid)[i] for i in range(n)]
+    return {"lambda": lam, "beta": beta, "residuals": resid,
+            "sigma2": sig, "n": n, "criterion": crit(lam, sig),
+            "s2_residual": sum(t * t for t in ub) / n,
+            "method": "GM estimator for the spatial error model "
+                      "(Kelejian-Prucha 1999)"}
