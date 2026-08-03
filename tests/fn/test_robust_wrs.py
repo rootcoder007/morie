@@ -26,8 +26,8 @@ TOL = 1e-9
 
 
 def test_harrell_davis_matches_wrs_hd():
-    assert abs(rb.harrell_davis(X) - 46.6180132770) < 1e-8
-    assert abs(rb.harrell_davis(X, 0.25) - 23.5087932814) < 1e-8
+    assert abs(rb.harrell_davis(X) - 46.618013277041733) < 1e-12
+    assert abs(rb.harrell_davis(X, 0.25) - 23.508793281445108) < 1e-12
 
 
 def test_harrell_davis_is_bracketed_by_the_order_statistics():
@@ -44,11 +44,11 @@ def test_mom_matches_wrs_mom():
 
 
 def test_one_step_m_matches_wrs_onestep():
-    assert abs(rb.one_step_m_estimator(X) - 50.9176160000) < 1e-7
+    assert abs(rb.one_step_m_estimator(X) - 50.917616000000002) < 1e-12
 
 
 def test_pbos_matches_wrs_pbos():
-    assert abs(rb.pbos(X) - 47.7142857143) < 1e-9
+    assert abs(rb.pbos(X) - 47.714285714285715) < 1e-12
 
 
 def test_theil_sen_matches_wrs_tsp1reg():
@@ -73,13 +73,13 @@ def test_theil_sen_is_unmoved_by_an_outlier_that_wrecks_least_squares():
 
 def test_percentage_bend_correlation_matches_wrs_pbcor():
     r = rb.percentage_bend_correlation(XS, YS)
-    assert abs(r["cor"] - 0.9947292172) < 1e-9
+    assert abs(r["cor"] - 0.99472921719372798) < 1e-12
 
 
 def test_winsorized_correlation_matches_wrs_wincor():
     r = rb.winsorized_correlation(XS, YS)
-    assert abs(r["cor"] - 0.9935833618) < 1e-9
-    assert abs(r["p_value"] - 0.0000155727) < 1e-9
+    assert abs(r["cor"] - 0.99358336180582918) < 1e-12
+    assert abs(r["p_value"] - 1.5572661047569269e-05) < 1e-17
 
 
 def test_winsorized_correlation_uses_n_minus_2g_minus_2_df():
@@ -90,9 +90,9 @@ def test_winsorized_correlation_uses_n_minus_2g_minus_2_df():
 
 def test_cliff_delta_and_interval_match_wrs_cid():
     c = rb.cliff_delta(GX, GY)
-    assert abs(c["delta"] - (-0.5555555556)) < 1e-9
-    assert abs(c["ci"][0] - (-0.8511568140)) < 1e-8
-    assert abs(c["ci"][1] - 0.0075732462) < 1e-8
+    assert abs(c["delta"] - (-5.0 / 9.0)) < 1e-14
+    assert abs(c["ci"][0] - (-0.8511568140198168)) < 1e-12
+    assert abs(c["ci"][1] - 0.007573246151174589) < 1e-12
 
 
 def test_cliff_delta_probabilities_sum_to_one():
@@ -106,9 +106,9 @@ def test_cliff_delta_probabilities_sum_to_one():
 
 def test_brunner_munzel_matches_wrs_bmp():
     r = rb.brunner_munzel(GX, GY)
-    assert abs(r["statistic"] - 2.3959644869) < 1e-8
-    assert abs(r["df"] - 14.6853762121) < 1e-7
-    assert abs(r["p_value"] - 0.0303742085) < 1e-8
+    assert abs(r["statistic"] - 2.3959644869352816) < 1e-12
+    assert abs(r["df"] - 14.68537621214997) < 1e-12
+    assert abs(r["p_value"] - 0.030374208491219523) < 1e-12
     assert r["separated"] is False
 
 
@@ -172,7 +172,7 @@ def test_madn_is_exactly_mad_rescaled_with_the_book_constant():
 
 def test_estimators_default_to_the_wrs_constant_and_accept_the_books():
     # default reproduces WRS exactly (checked above against R)
-    assert abs(rb.one_step_m_estimator(X) - 50.9176160000) < 1e-7
+    assert abs(rb.one_step_m_estimator(X) - 50.917616000000002) < 1e-12
     # the book constant gives a different, also-correct answer; the
     # point is that the caller chooses rather than being surprised
     book = rb.one_step_m_estimator(X, constant=rb.BOOK_MADN_CONSTANT)
@@ -215,15 +215,15 @@ GY8 = [18.4, 14.9, 12.5, 17.7, 15.8, 19.1, 13.9, 16.6]
 
 
 def test_trimmed_mean_se_matches_wrs_trimse():
-    assert abs(rb.trimmed_mean_se(X) - 17.0143770401) < 1e-9
+    assert abs(rb.trimmed_mean_se(X) - 17.01437704011229) < 1e-12
 
 
 def test_trimmed_mean_ci_matches_wrs_trimci():
     r = rb.trimmed_mean_ci(X)
-    assert abs(r["estimate"] - 49.4285714286) < 1e-9
-    assert abs(r["ci"][0] - 7.7958906093) < 1e-7
-    assert abs(r["ci"][1] - 91.0612522479) < 1e-7
-    assert abs(r["p_value"] - 0.0271530641) < 1e-9
+    assert abs(r["estimate"] - (346.0 / 7.0)) < 1e-12
+    assert abs(r["ci"][0] - 7.7958906092718152) < 1e-12
+    assert abs(r["ci"][1] - 91.061252247871039) < 1e-12
+    assert abs(r["p_value"] - 0.027153064050245534) < 1e-12
     assert r["df"] == len(X) - 2 * rb.trim_counts(len(X), 0.2) - 1
 
 
@@ -238,11 +238,11 @@ def test_trimmed_mean_ci_uses_the_tukey_mclaughlin_se():
 
 def test_yuen_paired_matches_wrs_yuend():
     r = rb.yuen_paired(GX, GY8)
-    assert abs(r["estimate"] - (-3.3833333333)) < 1e-9
-    assert abs(r["se"] - 1.6194649322) < 1e-9
-    assert abs(r["statistic"] - (-2.0891673948)) < 1e-8
+    assert abs(r["estimate"] - (-3.3833333333333364)) < 1e-12
+    assert abs(r["se"] - 1.6194649322126944) < 1e-12
+    assert abs(r["statistic"] - (-2.0891673947583707)) < 1e-12
     assert abs(r["df"] - 5.0) < 1e-12
-    assert abs(r["p_value"] - 0.0909960208) < 1e-9
+    assert abs(r["p_value"] - 0.090996020752312834) < 1e-12
 
 
 def test_yuen_paired_se_follows_the_q1_q2_q3_formula():
@@ -319,10 +319,10 @@ G3 = [21.2, 19.8, 24.1, 17.3, 22.5, 20.4, 18.9, 23.7]
 
 def test_trimmed_mean_anova_matches_wrs_t1way():
     r = rb.trimmed_mean_anova([G1, G2, G3])
-    assert abs(r["statistic"] - 17.8615076274) < 1e-8
+    assert abs(r["statistic"] - 17.861507627355412) < 1e-12
     assert abs(r["df1"] - 2.0) < 1e-12
-    assert abs(r["df2"] - 10.6285218540) < 1e-8
-    assert abs(r["p_value"] - 0.0003990663) < 1e-9
+    assert abs(r["df2"] - 10.628521853986074) < 1e-12
+    assert abs(r["p_value"] - 0.00039906634158703991) < 1e-16
 
 
 def test_trimmed_mean_anova_on_two_groups_agrees_with_yuen():
@@ -344,14 +344,14 @@ def test_trimmed_mean_anova_rejects_medians_and_tiny_groups():
 
 def test_boxplot_rule_matches_wrs_outbox():
     r = rb.boxplot_outliers(X)
-    assert abs(r["lower"] - (-70.8333333333)) < 1e-9
-    assert abs(r["upper"] - 175.8333333333) < 1e-9
+    assert abs(r["lower"] - (-70.833333333333314)) < 1e-12
+    assert abs(r["upper"] - 175.83333333333331) < 1e-12
 
 
 def test_carling_rule_matches_wrs_outbox_mbox():
     r = rb.boxplot_outliers(X, carling=True)
-    assert abs(r["lower"] - (-81.2600454890)) < 1e-9
-    assert abs(r["upper"] - 171.2600454890) < 1e-9
+    assert abs(r["lower"] - (-81.260045489006785)) < 1e-12
+    assert abs(r["upper"] - 171.26004548900679) < 1e-12
     # Carling's fence depends on n; the plain rule's does not
     n = len(X)
     assert abs(r["gval"] - (17.63 * n - 23.64) / (7.74 * n - 3.71)) < 1e-12
@@ -435,9 +435,9 @@ def test_trimmed_mean_bootstrap_covers_the_trimmed_mean():
 # --- median standard error and Winsorized regression (WRS-anchored) --
 def test_median_se_matches_wrs_msmedse():
     assert abs(rb.median_se(X, warn_ties=False)["se"]
-               - 23.2934689878) < 1e-9
+               - 23.293468987767866) < 1e-12
     assert abs(rb.median_se(G1, warn_ties=False)["se"]
-               - 1.2423183460) < 1e-9
+               - 1.2423183460142859) < 1e-12
 
 
 def test_median_se_follows_the_mckean_shrader_order_statistics():
@@ -471,8 +471,8 @@ def test_median_test_2group_is_symmetric_under_swapping():
 
 def test_winsorized_regression_matches_wrs_winreg():
     w = rb.winsorized_regression(XS, YS)
-    assert abs(w["intercept"] - (-0.2720258730)) < 1e-9
-    assert abs(w["slope"][0] - 2.1066687702) < 1e-9
+    assert abs(w["intercept"] - (-0.27202587302805831)) < 1e-12
+    assert abs(w["slope"][0] - 2.106668770164883) < 1e-12
     assert w["converged"] is True
 
 
@@ -512,9 +512,9 @@ def test_correlation_bootstrap_matches_wrs_corb_exactly():
     # Now that the resampling uses R's Mersenne-Twister stream and
     # R_unif_index, the INTERVAL matches too, not just the estimate.
     r = rb.correlation_bootstrap_ci(XS, YS, nboot=599)
-    assert abs(r["estimate"] - 0.994729217194) < 1e-11
-    assert abs(r["ci"][0] - 0.974631846197) < 1e-11
-    assert abs(r["ci"][1] - 0.998811880769) < 1e-11
+    assert abs(r["estimate"] - 0.99472921719372798) < 1e-12
+    assert abs(r["ci"][0] - 0.97463184619707632) < 1e-12
+    assert abs(r["ci"][1] - 0.99881188076857419) < 1e-12
     assert r["p_value"] == 0.0
 
 
@@ -522,7 +522,7 @@ def test_correlation_bootstrap_wraps_the_anchored_estimator():
     w = rb.correlation_bootstrap_ci(XS, YS,
                                     corfun=rb.winsorized_correlation,
                                     nboot=299)
-    assert abs(w["estimate"] - 0.9935833618) < 1e-9
+    assert abs(w["estimate"] - 0.99358336180582918) < 1e-12
 
 
 def test_correlation_bootstrap_is_deterministic_and_brackets_the_estimate():
