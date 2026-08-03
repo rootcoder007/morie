@@ -42279,59 +42279,59 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e10",
+    "or_wald_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_10",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e10.py",
+    "Auto-wired callable from fn/or_wald_interval.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e3",
+    "mle_variance_pi",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_3",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e3.py",
+    "Auto-wired callable from fn/mle_variance_pi.py",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e4",
+    "wilson_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_4",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e4.py",
+    "Auto-wired callable from fn/wilson_interval.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e5",
+    "beta_pdf",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_5",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e5.py",
+    "Auto-wired callable from fn/beta_pdf.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e6",
+    "true_confidence_level",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_6",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e6.py",
+    "Auto-wired callable from fn/true_confidence_level.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e7",
+    "pearson_chi2_two_groups",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_7",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e7.py",
+    "Auto-wired callable from fn/pearson_chi2_two_groups.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e8",
+    "lrt_two_groups",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_8",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo1e8.py",
+    "Auto-wired callable from fn/lrt_two_groups.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e1",
+    "bernoulli_likelihood",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_1",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e1.py",
+    "Auto-wired callable from fn/bernoulli_likelihood.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -42342,38 +42342,38 @@ _r(
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e15",
+    "pi_wald_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_15",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e15.py",
+    "Auto-wired callable from fn/pi_wald_interval.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e16",
+    "linear_predictor_variance",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_16",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e16.py",
+    "Auto-wired callable from fn/linear_predictor_variance.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e2",
+    "logistic_pi",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_2",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e2.py",
+    "Auto-wired callable from fn/logistic_pi.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e22",
+    "interaction_logit",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_22",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e22.py",
+    "Auto-wired callable from fn/interaction_logit.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e3",
+    "logit_form",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_2_equation_3",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e3.py",
+    "Auto-wired callable from fn/logit_form.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -42419,10 +42419,10 @@ _r(
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e1",
+    "multinomial_pmf",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_1",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e1.py",
+    "Auto-wired callable from fn/multinomial_pmf.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -42433,45 +42433,45 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e11",
+    "proportional_odds_logit",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_11",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e11.py",
+    "Auto-wired callable from fn/proportional_odds_logit.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e12",
+    "category_prob_from_cumulative",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_12",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e12.py",
+    "Auto-wired callable from fn/category_prob_from_cumulative.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e13",
+    "polr_parameterization",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e13.py",
+    "Auto-wired callable from fn/polr_parameterization.py",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e16",
+    "nonproportional_odds_logit",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_16",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e16.py",
+    "Auto-wired callable from fn/nonproportional_odds_logit.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e2",
+    "contingency_pmf",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_2",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e2.py",
+    "Auto-wired callable from fn/contingency_pmf.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e3",
+    "product_multinomial_pmf",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_3",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e3.py",
+    "Auto-wired callable from fn/product_multinomial_pmf.py",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -42489,10 +42489,10 @@ _r(
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e8",
+    "pi_j_wald_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_8",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e8.py",
+    "Auto-wired callable from fn/pi_j_wald_interval.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -42538,38 +42538,38 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e1",
+    "poisson_score_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_1",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e1.py",
+    "Auto-wired callable from fn/poisson_score_interval.py",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e12",
+    "ordinal_score_mean_ratio",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_12",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e12.py",
+    "Auto-wired callable from fn/ordinal_score_mean_ratio.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e15",
+    "poisson_rate_mean",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_15",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e15.py",
+    "Auto-wired callable from fn/poisson_rate_mean.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e2",
+    "poisson_log_link",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_2",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e2.py",
+    "Auto-wired callable from fn/poisson_log_link.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3",
+    "poisson_loglik",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_3",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e3.py",
+    "Auto-wired callable from fn/poisson_loglik.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -42587,17 +42587,17 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e6",
+    "loglinear_saturated_mean",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_6",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e6.py",
+    "Auto-wired callable from fn/loglinear_saturated_mean.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e7",
+    "loglinear_odds_ratio",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_4_equation_7",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo4e7.py",
+    "Auto-wired callable from fn/loglinear_odds_ratio.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -42615,24 +42615,24 @@ _r(
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e2",
+    "bic_posterior_probs",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_2",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e2.py",
+    "Auto-wired callable from fn/bic_posterior_probs.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e3",
+    "model_averaged_estimate",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_3",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e3.py",
+    "Auto-wired callable from fn/model_averaged_estimate.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e4",
+    "model_averaged_variance",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_5_equation_4",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo5e4.py",
+    "Auto-wired callable from fn/model_averaged_variance.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -42797,10 +42797,10 @@ _r(
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e11",
+    "kott_carr_interval",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_11",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e11.py",
+    "Auto-wired callable from fn/kott_carr_interval.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -42832,10 +42832,10 @@ _r(
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16",
+    "three_mrcv_mean",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_16",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e16.py",
+    "Auto-wired callable from fn/three_mrcv_mean.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -42867,38 +42867,38 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e22",
+    "bayes_rule",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_22",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e22.py",
+    "Auto-wired callable from fn/bayes_rule.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e23",
+    "posterior_density_binomial",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_23",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e23.py",
+    "Auto-wired callable from fn/posterior_density_binomial.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e24",
+    "bayes_estimate_binomial",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_24",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e24.py",
+    "Auto-wired callable from fn/bayes_estimate_binomial.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e25",
+    "posterior_kernel_regression",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_25",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e25.py",
+    "Auto-wired callable from fn/posterior_kernel_regression.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e26",
+    "group_testing_expected_tests",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_26",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e26.py",
+    "Auto-wired callable from fn/group_testing_expected_tests.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -42909,38 +42909,38 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e32",
+    "group_testing_logit",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_32",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e32.py",
+    "Auto-wired callable from fn/group_testing_logit.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e34",
+    "piecewise_cubic",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_34",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e34.py",
+    "Auto-wired callable from fn/piecewise_cubic.py",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36",
+    "truncated_power_spline",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_36",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e36.py",
+    "Auto-wired callable from fn/truncated_power_spline.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e37",
+    "spline_odds_ratio",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_37",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e37.py",
+    "Auto-wired callable from fn/spline_odds_ratio.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4",
+    "logistic_joint_probability",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e4.py",
+    "Auto-wired callable from fn/logistic_joint_probability.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -42958,10 +42958,10 @@ _r(
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e7",
+    "weighted_category_total",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_7",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e7.py",
+    "Auto-wired callable from fn/weighted_category_total.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -42972,10 +42972,10 @@ _r(
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e9",
+    "survey_proportion_variance",
     "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_9",
     "Auto",
-    "Auto-wired callable from fn/analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e9.py",
+    "Auto-wired callable from fn/survey_proportion_variance.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -46557,52 +46557,52 @@ _r(
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "ca10e1",
+    "psm_standardized_bias",
     "ca_chapter_10_equation_1",
     "Auto",
-    "Auto-wired callable from fn/ca10e1.py",
+    "Auto-wired callable from fn/psm_standardized_bias.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "ca11e1",
+    "cohens_d_sample",
     "ca_chapter_11_equation_1",
     "Auto",
-    "Auto-wired callable from fn/ca11e1.py",
+    "Auto-wired callable from fn/cohens_d_sample.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "ca11e10",
+    "odds_ratio_2x2",
     "ca_chapter_11_equation_10",
     "Auto",
-    "Auto-wired callable from fn/ca11e10.py",
+    "Auto-wired callable from fn/odds_ratio_2x2.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "ca11e11",
+    "se_log_or",
     "ca_chapter_11_equation_11",
     "Auto",
-    "Auto-wired callable from fn/ca11e11.py",
+    "Auto-wired callable from fn/se_log_or.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "ca11e12",
+    "fisher_z",
     "ca_chapter_11_equation_12",
     "Auto",
-    "Auto-wired callable from fn/ca11e12.py",
+    "Auto-wired callable from fn/fisher_z.py",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "ca11e13",
+    "se_fisher_z",
     "ca_chapter_11_equation_13",
     "Auto",
-    "Auto-wired callable from fn/ca11e13.py",
+    "Auto-wired callable from fn/se_fisher_z.py",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "ca11e14",
+    "r_from_fisher_z",
     "ca_chapter_11_equation_14",
     "Auto",
-    "Auto-wired callable from fn/ca11e14.py",
+    "Auto-wired callable from fn/r_from_fisher_z.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -46641,38 +46641,38 @@ _r(
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "ca11e2",
+    "pooled_sd",
     "ca_chapter_11_equation_2",
     "Auto",
-    "Auto-wired callable from fn/ca11e2.py",
+    "Auto-wired callable from fn/pooled_sd.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "ca11e20",
+    "d_probit",
     "ca_chapter_11_equation_20",
     "Auto",
-    "Auto-wired callable from fn/ca11e20.py",
+    "Auto-wired callable from fn/d_probit.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "ca11e21",
+    "se_d_probit",
     "ca_chapter_11_equation_21",
     "Auto",
-    "Auto-wired callable from fn/ca11e21.py",
+    "Auto-wired callable from fn/se_d_probit.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "ca11e22",
+    "d_from_r_pointbiserial",
     "ca_chapter_11_equation_22",
     "Auto",
-    "Auto-wired callable from fn/ca11e22.py",
+    "Auto-wired callable from fn/d_from_r_pointbiserial.py",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "ca11e23",
+    "se_d_from_se_r",
     "ca_chapter_11_equation_23",
     "Auto",
-    "Auto-wired callable from fn/ca11e23.py",
+    "Auto-wired callable from fn/se_d_from_se_r.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -46704,24 +46704,24 @@ _r(
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "ca11e28",
+    "or_from_rr",
     "ca_chapter_11_equation_28",
     "Auto",
-    "Auto-wired callable from fn/ca11e28.py",
+    "Auto-wired callable from fn/or_from_rr.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "ca11e29",
+    "rr_from_or",
     "ca_chapter_11_equation_29",
     "Auto",
-    "Auto-wired callable from fn/ca11e29.py",
+    "Auto-wired callable from fn/rr_from_or.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "ca11e3",
+    "hedges_j",
     "ca_chapter_11_equation_3",
     "Auto",
-    "Auto-wired callable from fn/ca11e3.py",
+    "Auto-wired callable from fn/hedges_j.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -46753,10 +46753,10 @@ _r(
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "ca11e34",
+    "fixed_effect_weight",
     "ca_chapter_11_equation_34",
     "Auto",
-    "Auto-wired callable from fn/ca11e34.py",
+    "Auto-wired callable from fn/fixed_effect_weight.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -46823,17 +46823,17 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "ca11e43",
+    "random_effects_weight",
     "ca_chapter_11_equation_43",
     "Auto",
-    "Auto-wired callable from fn/ca11e43.py",
+    "Auto-wired callable from fn/random_effects_weight.py",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "ca11e44",
+    "tau2_dersimonian_laird",
     "ca_chapter_11_equation_44",
     "Auto",
-    "Auto-wired callable from fn/ca11e44.py",
+    "Auto-wired callable from fn/tau2_dersimonian_laird.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -46851,10 +46851,10 @@ _r(
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "ca11e5",
+    "d_from_t",
     "ca_chapter_11_equation_5",
     "Auto",
-    "Auto-wired callable from fn/ca11e5.py",
+    "Auto-wired callable from fn/d_from_t.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -46865,10 +46865,10 @@ _r(
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "ca11e7",
+    "se_g",
     "ca_chapter_11_equation_7",
     "Auto",
-    "Auto-wired callable from fn/ca11e7.py",
+    "Auto-wired callable from fn/se_g.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -46879,10 +46879,10 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "ca11e9",
+    "se_log_rr",
     "ca_chapter_11_equation_9",
     "Auto",
-    "Auto-wired callable from fn/ca11e9.py",
+    "Auto-wired callable from fn/se_log_rr.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -46893,24 +46893,24 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "ca12e2",
+    "morans_i_expected",
     "ca_chapter_12_equation_2",
     "Auto",
-    "Auto-wired callable from fn/ca12e2.py",
+    "Auto-wired callable from fn/morans_i_expected.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "ca12e3",
+    "ols_matrix",
     "ca_chapter_12_equation_3",
     "Auto",
-    "Auto-wired callable from fn/ca12e3.py",
+    "Auto-wired callable from fn/ols_matrix.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "ca12e4",
+    "spatial_lag_reduced_form",
     "ca_chapter_12_equation_4",
     "Auto",
-    "Auto-wired callable from fn/ca12e4.py",
+    "Auto-wired callable from fn/spatial_lag_reduced_form.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -46984,38 +46984,38 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "ca2e15",
+    "adjusted_r2",
     "ca_chapter_2_equation_15",
     "Auto",
-    "Auto-wired callable from fn/ca2e15.py",
+    "Auto-wired callable from fn/adjusted_r2.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "ca2e16",
+    "f_overall_ss",
     "ca_chapter_2_equation_16",
     "Auto",
-    "Auto-wired callable from fn/ca2e16.py",
+    "Auto-wired callable from fn/f_overall_ss.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "ca2e17",
+    "f_overall_r2",
     "ca_chapter_2_equation_17",
     "Auto",
-    "Auto-wired callable from fn/ca2e17.py",
+    "Auto-wired callable from fn/f_overall_r2.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "ca2e18",
+    "f_nested_ss",
     "ca_chapter_2_equation_18",
     "Auto",
-    "Auto-wired callable from fn/ca2e18.py",
+    "Auto-wired callable from fn/f_nested_ss.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "ca2e19",
+    "f_nested_r2",
     "ca_chapter_2_equation_19",
     "Auto",
-    "Auto-wired callable from fn/ca2e19.py",
+    "Auto-wired callable from fn/f_nested_r2.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -47026,10 +47026,10 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "ca2e20",
+    "beta_standardized",
     "ca_chapter_2_equation_20",
     "Auto",
-    "Auto-wired callable from fn/ca2e20.py",
+    "Auto-wired callable from fn/beta_standardized.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -47096,10 +47096,10 @@ _r(
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "ca3e1",
+    "tolerance",
     "ca_chapter_3_equation_1",
     "Auto",
-    "Auto-wired callable from fn/ca3e1.py",
+    "Auto-wired callable from fn/tolerance.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -47131,17 +47131,17 @@ _r(
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "ca4e12",
+    "percent_correct_predictions",
     "ca_chapter_4_equation_12",
     "Auto",
-    "Auto-wired callable from fn/ca4e12.py",
+    "Auto-wired callable from fn/percent_correct_predictions.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "ca4e13",
+    "cox_snell_r2",
     "ca_chapter_4_equation_13",
     "Auto",
-    "Auto-wired callable from fn/ca4e13.py",
+    "Auto-wired callable from fn/cox_snell_r2.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -47152,10 +47152,10 @@ _r(
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "ca4e15",
+    "wald_statistic",
     "ca_chapter_4_equation_15",
     "Auto",
-    "Auto-wired callable from fn/ca4e15.py",
+    "Auto-wired callable from fn/wald_statistic.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -47173,10 +47173,10 @@ _r(
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "ca4e18",
+    "likelihood_ratio_chi2",
     "ca_chapter_4_equation_18",
     "Auto",
-    "Auto-wired callable from fn/ca4e18.py",
+    "Auto-wired callable from fn/likelihood_ratio_chi2.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -47222,17 +47222,17 @@ _r(
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "ca4e8",
+    "odds_ratio_unit_change",
     "ca_chapter_4_equation_8",
     "Auto",
-    "Auto-wired callable from fn/ca4e8.py",
+    "Auto-wired callable from fn/odds_ratio_unit_change.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "ca4e9",
+    "derivative_at_mean",
     "ca_chapter_4_equation_9",
     "Auto",
-    "Auto-wired callable from fn/ca4e9.py",
+    "Auto-wired callable from fn/derivative_at_mean.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -47250,17 +47250,17 @@ _r(
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "ca5e3",
+    "multinomial_probs",
     "ca_chapter_5_equation_3",
     "Auto",
-    "Auto-wired callable from fn/ca5e3.py",
+    "Auto-wired callable from fn/multinomial_probs.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "ca5e4",
+    "multinomial_conditional_or",
     "ca_chapter_5_equation_4",
     "Auto",
-    "Auto-wired callable from fn/ca5e4.py",
+    "Auto-wired callable from fn/multinomial_conditional_or.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -47271,17 +47271,17 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "ca5e6",
+    "cumulative_probability",
     "ca_chapter_5_equation_6",
     "Auto",
-    "Auto-wired callable from fn/ca5e6.py",
+    "Auto-wired callable from fn/cumulative_probability.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "ca5e7",
+    "cumulative_logit",
     "ca_chapter_5_equation_7",
     "Auto",
-    "Auto-wired callable from fn/ca5e7.py",
+    "Auto-wired callable from fn/cumulative_logit.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -47341,24 +47341,24 @@ _r(
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "ca6e7",
+    "poisson_offset_predict",
     "ca_chapter_6_equation_7",
     "Auto",
-    "Auto-wired callable from fn/ca6e7.py",
+    "Auto-wired callable from fn/poisson_offset_predict.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "ca6e8",
+    "negative_binomial_variance",
     "ca_chapter_6_equation_8",
     "Auto",
-    "Auto-wired callable from fn/ca6e8.py",
+    "Auto-wired callable from fn/negative_binomial_variance.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "ca7e1",
+    "grand_mean_model",
     "ca_chapter_7_equation_1",
     "Auto",
-    "Auto-wired callable from fn/ca7e1.py",
+    "Auto-wired callable from fn/grand_mean_model.py",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -47425,10 +47425,10 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "ca7e4",
+    "cluster_means_model",
     "ca_chapter_7_equation_4",
     "Auto",
-    "Auto-wired callable from fn/ca7e4.py",
+    "Auto-wired callable from fn/cluster_means_model.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -47439,10 +47439,10 @@ _r(
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "ca7e6",
+    "variance_components_sigma2_u",
     "ca_chapter_7_equation_6",
     "Auto",
-    "Auto-wired callable from fn/ca7e6.py",
+    "Auto-wired callable from fn/variance_components_sigma2_u.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -47453,10 +47453,10 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "ca7e8",
+    "lr_test_chi2",
     "ca_chapter_7_equation_8",
     "Auto",
-    "Auto-wired callable from fn/ca7e8.py",
+    "Auto-wired callable from fn/lr_test_chi2.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -47467,24 +47467,24 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "ca8e1",
+    "noncentrality_delta_generic",
     "ca_chapter_8_equation_1",
     "Auto",
-    "Auto-wired callable from fn/ca8e1.py",
+    "Auto-wired callable from fn/noncentrality_delta_generic.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "ca8e2",
+    "cohens_d_population",
     "ca_chapter_8_equation_2",
     "Auto",
-    "Auto-wired callable from fn/ca8e2.py",
+    "Auto-wired callable from fn/cohens_d_population.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "ca8e3",
+    "power_from_delta_t",
     "ca_chapter_8_equation_3",
     "Auto",
-    "Auto-wired callable from fn/ca8e3.py",
+    "Auto-wired callable from fn/power_from_delta_t.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -47495,24 +47495,24 @@ _r(
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "ca8e5",
+    "noncentrality_lambda_f",
     "ca_chapter_8_equation_5",
     "Auto",
-    "Auto-wired callable from fn/ca8e5.py",
+    "Auto-wired callable from fn/noncentrality_lambda_f.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "ca8e6",
+    "noncentrality_delta_r",
     "ca_chapter_8_equation_6",
     "Auto",
-    "Auto-wired callable from fn/ca8e6.py",
+    "Auto-wired callable from fn/noncentrality_delta_r.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "ca8e7",
+    "r2_from_f2",
     "ca_chapter_8_equation_7",
     "Auto",
-    "Auto-wired callable from fn/ca8e7.py",
+    "Auto-wired callable from fn/r2_from_f2.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -47544,17 +47544,17 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "ca9e1",
+    "treatment_b_confounded",
     "ca_chapter_9_equation_1",
     "Auto",
-    "Auto-wired callable from fn/ca9e1.py",
+    "Auto-wired callable from fn/treatment_b_confounded.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "ca9e10",
+    "t_paired",
     "ca_chapter_9_equation_10",
     "Auto",
-    "Auto-wired callable from fn/ca9e10.py",
+    "Auto-wired callable from fn/t_paired.py",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -47572,17 +47572,17 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "ca9e13",
+    "anova_randomized_block",
     "ca_chapter_9_equation_13",
     "Auto",
-    "Auto-wired callable from fn/ca9e13.py",
+    "Auto-wired callable from fn/anova_randomized_block.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "ca9e2",
+    "treatment_b_randomized",
     "ca_chapter_9_equation_2",
     "Auto",
-    "Auto-wired callable from fn/ca9e2.py",
+    "Auto-wired callable from fn/treatment_b_randomized.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -47593,10 +47593,10 @@ _r(
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "ca9e4",
+    "chi2_2x2",
     "ca_chapter_9_equation_4",
     "Auto",
-    "Auto-wired callable from fn/ca9e4.py",
+    "Auto-wired callable from fn/chi2_2x2.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -50658,31 +50658,31 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner1e1",
+    "factorial",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_1",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner1e1.py",
+    "Auto-wired callable from fn/factorial.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner1e21",
+    "binomial_expansion",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_21",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner1e21.py",
+    "Auto-wired callable from fn/binomial_expansion.py",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner1e29",
+    "hockey_stick",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_29",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner1e29.py",
+    "Auto-wired callable from fn/hockey_stick.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner1e3",
+    "permutations_count",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner1e3.py",
+    "Auto-wired callable from fn/permutations_count.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -50700,17 +50700,17 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner1e5",
+    "partial_permutations",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner1e5.py",
+    "Auto-wired callable from fn/partial_permutations.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner1e57",
+    "stars_and_bars",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_57",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner1e57.py",
+    "Auto-wired callable from fn/stars_and_bars.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -50721,10 +50721,10 @@ _r(
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e14",
+    "prob_or_exclusive",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_14",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e14.py",
+    "Auto-wired callable from fn/prob_or_exclusive.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -50735,17 +50735,17 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e21",
+    "prob_or_general",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_21",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e21.py",
+    "Auto-wired callable from fn/prob_or_general.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e24",
+    "classify_events",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_24",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e24.py",
+    "Auto-wired callable from fn/classify_events.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -50763,38 +50763,38 @@ _r(
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e41",
+    "suit_full_house_probability",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_41",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e41.py",
+    "Auto-wired callable from fn/suit_full_house_probability.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e43",
+    "at_most_two_suits_probability",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_43",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e43.py",
+    "Auto-wired callable from fn/at_most_two_suits_probability.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e48",
+    "conditional_from_joint",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_48",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e48.py",
+    "Auto-wired callable from fn/conditional_from_joint.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e49",
+    "conditional_subset",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_49",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e49.py",
+    "Auto-wired callable from fn/conditional_subset.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e51",
+    "bayes_simple",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_51",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e51.py",
+    "Auto-wired callable from fn/bayes_simple.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -50833,10 +50833,10 @@ _r(
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e65",
+    "exact_half_heads",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_65",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e65.py",
+    "Auto-wired callable from fn/exact_half_heads.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -50854,10 +50854,10 @@ _r(
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e74",
+    "bayes_general",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e74.py",
+    "Auto-wired callable from fn/bayes_general.py",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -50868,17 +50868,17 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e9",
+    "chain_rule",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_9",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e9.py",
+    "Auto-wired callable from fn/chain_rule.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e92",
+    "inclusion_exclusion_3",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_92",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e92.py",
+    "Auto-wired callable from fn/inclusion_exclusion_3.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -50889,17 +50889,17 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner2e96",
+    "at_least_one_of_iid",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_96",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner2e96.py",
+    "Auto-wired callable from fn/at_least_one_of_iid.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e11",
+    "pmf_sum_convolution",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_11",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e11.py",
+    "Auto-wired callable from fn/pmf_sum_convolution.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -50910,10 +50910,10 @@ _r(
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e13",
+    "expectation_linear",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_13",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e13.py",
+    "Auto-wired callable from fn/expectation_linear.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -50945,17 +50945,17 @@ _r(
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e22",
+    "bernoulli_variance",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_22",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e22.py",
+    "Auto-wired callable from fn/bernoulli_variance.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e24",
+    "var_scale",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_24",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e24.py",
+    "Auto-wired callable from fn/var_scale.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -50966,10 +50966,10 @@ _r(
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e26",
+    "var_sum_with_cov",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_26",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e26.py",
+    "Auto-wired callable from fn/var_sum_with_cov.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -50994,10 +50994,10 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e33",
+    "binomial_variance",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_33",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e33.py",
+    "Auto-wired callable from fn/binomial_variance.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -51036,10 +51036,10 @@ _r(
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e41",
+    "sd_scale",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_41",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e41.py",
+    "Auto-wired callable from fn/sd_scale.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -51064,10 +51064,10 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e46",
+    "sd_bernoulli",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_46",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e46.py",
+    "Auto-wired callable from fn/sd_bernoulli.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -51092,17 +51092,17 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e52",
+    "sd_fair_coin_avg",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_52",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e52.py",
+    "Auto-wired callable from fn/sd_fair_coin_avg.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e53",
+    "sd_of_mean",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_53",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e53.py",
+    "Auto-wired callable from fn/sd_of_mean.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -51113,10 +51113,10 @@ _r(
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e55",
+    "sd_of_mean_hetero",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_55",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e55.py",
+    "Auto-wired callable from fn/sd_of_mean_hetero.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -51162,10 +51162,10 @@ _r(
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e70",
+    "e_x_squared",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_70",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e70.py",
+    "Auto-wired callable from fn/e_x_squared.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -51176,10 +51176,10 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner3e9",
+    "joint_independent",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_9",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner3e9.py",
+    "Auto-wired callable from fn/joint_independent.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -51197,24 +51197,24 @@ _r(
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e10",
+    "binomial_pmf_vector",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_10",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e10.py",
+    "Auto-wired callable from fn/binomial_pmf_vector.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e18",
+    "poisson_small_interval",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_18",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e18.py",
+    "Auto-wired callable from fn/poisson_small_interval.py",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e19",
+    "poisson_mean_rate",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_19",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e19.py",
+    "Auto-wired callable from fn/poisson_mean_rate.py",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -51239,17 +51239,17 @@ _r(
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e26",
+    "exponential_waiting_density",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_26",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e26.py",
+    "Auto-wired callable from fn/exponential_waiting_density.py",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e30",
+    "exponential_crossing_time",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_30",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e30.py",
+    "Auto-wired callable from fn/exponential_crossing_time.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -51295,17 +51295,17 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e53",
+    "poisson_zero_series",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_53",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e53.py",
+    "Auto-wired callable from fn/poisson_zero_series.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e55",
+    "density_expectation",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_55",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e55.py",
+    "Auto-wired callable from fn/density_expectation.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -51344,10 +51344,10 @@ _r(
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e71",
+    "hypergeometric_pmf",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_71",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e71.py",
+    "Auto-wired callable from fn/hypergeometric_pmf.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -51428,10 +51428,10 @@ _r(
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner4e98",
+    "poisson_binomial_peak_ratio",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_98",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner4e98.py",
+    "Auto-wired callable from fn/poisson_binomial_peak_ratio.py",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -51442,24 +51442,24 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5e13",
+    "gaussian_approx_2n",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_13",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5e13.py",
+    "Auto-wired callable from fn/gaussian_approx_2n.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5e14",
+    "gaussian_approx_n",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5e14.py",
+    "Auto-wired callable from fn/gaussian_approx_n.py",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5e15",
+    "gaussian_approx_biased",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_15",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5e15.py",
+    "Auto-wired callable from fn/gaussian_approx_biased.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -51505,10 +51505,10 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner5e31",
+    "pmf_sd",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_31",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner5e31.py",
+    "Auto-wired callable from fn/pmf_sd.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -51589,10 +51589,10 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e13",
+    "slope_from_cov",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_13",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e13.py",
+    "Auto-wired callable from fn/slope_from_cov.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -51645,10 +51645,10 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e27",
+    "prediction_improvement",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_27",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e27.py",
+    "Auto-wired callable from fn/prediction_improvement.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -51708,10 +51708,10 @@ _r(
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e40",
+    "regression_to_mean_factor",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e40.py",
+    "Auto-wired callable from fn/regression_to_mean_factor.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -51792,10 +51792,10 @@ _r(
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e64",
+    "joint_density_factorizes",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_64",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e64.py",
+    "Auto-wired callable from fn/joint_density_factorizes.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -51813,10 +51813,10 @@ _r(
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e70",
+    "gaussian_sum_density",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_70",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e70.py",
+    "Auto-wired callable from fn/gaussian_sum_density.py",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -51848,10 +51848,10 @@ _r(
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "david_j_morin_probability_for_the_enthusiastic_beginner6e81",
+    "excess_score_factor",
     "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81",
     "Auto",
-    "Auto-wired callable from fn/david_j_morin_probability_for_the_enthusiastic_beginner6e81.py",
+    "Auto-wired callable from fn/excess_score_factor.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -60825,10 +60825,10 @@ _r(
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "ghs010",
+    "discrete_hazard",
     "ghosal_ch3_discrete_hazard_rate",
     "Auto",
-    "Auto-wired callable from fn/ghs010.py",
+    "Auto-wired callable from fn/discrete_hazard.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -60853,24 +60853,24 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "ghs014",
+    "cdp_posterior_mean",
     "ghosal_ch3_dirichlet_posterior_mean",
     "Auto",
-    "Auto-wired callable from fn/ghs014.py",
+    "Auto-wired callable from fn/cdp_posterior_mean.py",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "ghs015",
+    "cdp_posterior_var",
     "ghosal_ch3_dirichlet_posterior_var",
     "Auto",
-    "Auto-wired callable from fn/ghs015.py",
+    "Auto-wired callable from fn/cdp_posterior_var.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "ghs016",
+    "cdp_posterior_cov",
     "ghosal_ch3_dirichlet_posterior_cov",
     "Auto",
-    "Auto-wired callable from fn/ghs016.py",
+    "Auto-wired callable from fn/cdp_posterior_cov.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -60930,10 +60930,10 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "ghs026",
+    "_bits",
     "ghosal_ch3_tailfree_finite_density_pm",
     "Auto",
-    "Auto-wired callable from fn/ghs026.py",
+    "Auto-wired callable from fn/_bits.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -60944,10 +60944,10 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "ghs028",
+    "pt_set_mass_mean",
     "ghosal_ch3_polya_tree_first_two_moments",
     "Auto",
-    "Auto-wired callable from fn/ghs028.py",
+    "Auto-wired callable from fn/pt_set_mass_mean.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -75998,10 +75998,10 @@ _r(
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "msm015",
+    "gblup_model",
     "mvsml_linear_mixed_models_eq_5_3",
     "Auto",
-    "Auto-wired callable from fn/msm015.py",
+    "Auto-wired callable from fn/gblup_model.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -76019,10 +76019,10 @@ _r(
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "msm018",
+    "gxe_blup_model",
     "mvsml_linear_mixed_models_eq_5_4",
     "Auto",
-    "Auto-wired callable from fn/msm018.py",
+    "Auto-wired callable from fn/gxe_blup_model.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -76117,10 +76117,10 @@ _r(
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "msm032",
+    "gxe_multitrait_model",
     "mvsml_linear_mixed_models_eq_5_6",
     "Auto",
-    "Auto-wired callable from fn/msm032.py",
+    "Auto-wired callable from fn/gxe_multitrait_model.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -76236,10 +76236,10 @@ _r(
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "msm049",
+    "bayes_gblup_gibbs",
     "mvsml_bayesian_regression_eq_6_4",
     "Auto",
-    "Auto-wired callable from fn/msm049.py",
+    "Auto-wired callable from fn/bayes_gblup_gibbs.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -76320,10 +76320,10 @@ _r(
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "msm061",
+    "extended_predictor",
     "mvsml_bayesian_regression_eq_6_6",
     "Auto",
-    "Auto-wired callable from fn/msm061.py",
+    "Auto-wired callable from fn/extended_predictor.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -76334,10 +76334,10 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "msm063",
+    "rkhs_covariances",
     "mvsml_bayesian_regression_eq_6_7",
     "Auto",
-    "Auto-wired callable from fn/msm063.py",
+    "Auto-wired callable from fn/rkhs_covariances.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -76397,10 +76397,10 @@ _r(
     "Number rules the universe. -- Pythagoras",
 )
 _r(
-    "msm072",
+    "multitrait_ridge_form",
     "mvsml_bayesian_regression_eq_6_10",
     "Auto",
-    "Auto-wired callable from fn/msm072.py",
+    "Auto-wired callable from fn/multitrait_ridge_form.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -76425,10 +76425,10 @@ _r(
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "msm076",
+    "bmtme_conditionals",
     "mvsml_bayesian_regression_eq_6_11",
     "Auto",
-    "Auto-wired callable from fn/msm076.py",
+    "Auto-wired callable from fn/bmtme_conditionals.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -76558,10 +76558,10 @@ _r(
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "msm095",
+    "ordinal_probit_gblup_gibbs",
     "mvsml_bayesian_regression_pt2_eq_7_4",
     "Auto",
-    "Auto-wired callable from fn/msm095.py",
+    "Auto-wired callable from fn/ordinal_probit_gblup_gibbs.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -76635,10 +76635,10 @@ _r(
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "msm106",
+    "multinomial_probabilities",
     "mvsml_bayesian_regression_pt2_eq_7_6",
     "Auto",
-    "Auto-wired callable from fn/msm106.py",
+    "Auto-wired callable from fn/multinomial_probabilities.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -76663,10 +76663,10 @@ _r(
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "msm110",
+    "multinomial_loglik",
     "mvsml_bayesian_regression_pt2_eq_7_8",
     "Auto",
-    "Auto-wired callable from fn/msm110.py",
+    "Auto-wired callable from fn/multinomial_loglik.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -76677,10 +76677,10 @@ _r(
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    "msm112",
+    "multinomial_block_update",
     "mvsml_bayesian_regression_pt2_eq_7_9",
     "Auto",
-    "Auto-wired callable from fn/msm112.py",
+    "Auto-wired callable from fn/multinomial_block_update.py",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -76747,10 +76747,10 @@ _r(
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "msm122",
+    "penalized_poisson_fit",
     "mvsml_bayesian_regression_pt2_eq_7_11",
     "Auto",
-    "Auto-wired callable from fn/msm122.py",
+    "Auto-wired callable from fn/penalized_poisson_fit.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -77251,31 +77251,31 @@ _r(
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "msm240",
+    "blue_blup_via_v",
     "mvsml_preprocessing_eq_2_1",
     "Auto",
-    "Auto-wired callable from fn/msm240.py",
+    "Auto-wired callable from fn/blue_blup_via_v.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "msm241",
+    "mme_solve",
     "mvsml_preprocessing_eq_2_2",
     "Auto",
-    "Auto-wired callable from fn/msm241.py",
+    "Auto-wired callable from fn/mme_solve.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "msm242",
+    "gblup_gebv",
     "mvsml_preprocessing_eq_2_3",
     "Auto",
-    "Auto-wired callable from fn/msm242.py",
+    "Auto-wired callable from fn/gblup_gebv.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "msm243",
+    "snp_blup_gebv",
     "mvsml_preprocessing_eq_2_4",
     "Auto",
-    "Auto-wired callable from fn/msm243.py",
+    "Auto-wired callable from fn/snp_blup_gebv.py",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -77377,10 +77377,10 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "msm258",
+    "ridge_fit",
     "mvsml_elements_lin_reg_eq_3_5",
     "Auto",
-    "Auto-wired callable from fn/msm258.py",
+    "Auto-wired callable from fn/ridge_fit.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -91761,24 +91761,24 @@ _r(
     "Number rules the universe. -- Pythagoras",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e17",
+    "g_weight_simple",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_17",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e17.py",
+    "Auto-wired callable from fn/g_weight_simple.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e18",
+    "g_weighted_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_18",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e18.py",
+    "Auto-wired callable from fn/g_weighted_variance.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e2",
+    "difference_estimator",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e2.py",
+    "Auto-wired callable from fn/difference_estimator.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -91789,10 +91789,10 @@ _r(
     "Number rules the universe. -- Pythagoras",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e23",
+    "ratio_total",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_23",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e23.py",
+    "Auto-wired callable from fn/ratio_total.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -91803,17 +91803,17 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e25",
+    "ratio_total_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_25",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e25.py",
+    "Auto-wired callable from fn/ratio_total_variance.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e27",
+    "ratio_g_weight",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_27",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e27.py",
+    "Auto-wired callable from fn/ratio_g_weight.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -91824,45 +91824,45 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e32",
+    "poststratified_mean",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_32",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e32.py",
+    "Auto-wired callable from fn/poststratified_mean.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e36",
+    "mixed_calibration_mean",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_36",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e36.py",
+    "Auto-wired callable from fn/mixed_calibration_mean.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e38",
+    "mixed_calibration_intercept",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e38.py",
+    "Auto-wired callable from fn/mixed_calibration_intercept.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e4",
+    "gls_population_slope",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e4.py",
+    "Auto-wired callable from fn/gls_population_slope.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e40",
+    "mixed_calibration_si",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_40",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e40.py",
+    "Auto-wired callable from fn/mixed_calibration_si.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e42",
+    "mc_variance_via_residuals",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_42",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e42.py",
+    "Auto-wired callable from fn/mc_variance_via_residuals.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -91873,10 +91873,10 @@ _r(
     "Number rules the universe. -- Pythagoras",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r10e8",
+    "regression_estimator_general",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r10e8.py",
+    "Auto-wired callable from fn/regression_estimator_general.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -91887,45 +91887,45 @@ _r(
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r11e5",
+    "twophase_stratified_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_5",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r11e5.py",
+    "Auto-wired callable from fn/twophase_stratified_variance.py",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r11e7",
+    "twophase_regression_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r11e7.py",
+    "Auto-wired callable from fn/twophase_regression_variance.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r11e8",
+    "s2_residuals",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_8",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r11e8.py",
+    "Auto-wired callable from fn/s2_residuals.py",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e10",
+    "n_for_cv",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_10",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e10.py",
+    "Auto-wired callable from fn/n_for_cv.py",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e11",
+    "n_for_proportion_length",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_11",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e11.py",
+    "Auto-wired callable from fn/n_for_proportion_length.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e14",
+    "n_design_effect",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_14",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e14.py",
+    "Auto-wired callable from fn/n_design_effect.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -91936,10 +91936,10 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e18",
+    "beta_posterior_interval_prob",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e18.py",
+    "Auto-wired callable from fn/beta_posterior_interval_prob.py",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -91950,10 +91950,10 @@ _r(
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e24",
+    "beta_posterior_pdf",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e24.py",
+    "Auto-wired callable from fn/beta_posterior_pdf.py",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -91971,17 +91971,17 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e3",
+    "n_for_proportion_se",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_3",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e3.py",
+    "Auto-wired callable from fn/n_for_proportion_se.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r12e7",
+    "n_for_mean_length",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r12e7.py",
+    "Auto-wired callable from fn/n_for_mean_length.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -91992,94 +91992,94 @@ _r(
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e10",
+    "optimal_allocation_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_10",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e10.py",
+    "Auto-wired callable from fn/optimal_allocation_variance.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e12",
+    "ospats_criterion_terms",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_12",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e12.py",
+    "Auto-wired callable from fn/ospats_criterion_terms.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e15",
+    "expected_squared_distance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_15",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e15.py",
+    "Auto-wired callable from fn/expected_squared_distance.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e16",
+    "expected_stratum_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_16",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e16.py",
+    "Auto-wired callable from fn/expected_stratum_variance.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e17",
+    "ospats_objective",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e17.py",
+    "Auto-wired callable from fn/ospats_objective.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e5",
+    "mean_semivariance_stsi_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_5",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e5.py",
+    "Auto-wired callable from fn/mean_semivariance_stsi_variance.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r13e7",
+    "mean_semivariance_equal_area",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_7",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r13e7.py",
+    "Auto-wired callable from fn/mean_semivariance_equal_area.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r14e15",
+    "small_area_mb_mean",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_14_equation_15",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r14e15.py",
+    "Auto-wired callable from fn/small_area_mb_mean.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r15e10",
+    "gls_estimator",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_10",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r15e10.py",
+    "Auto-wired callable from fn/gls_estimator.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r15e4",
+    "trend_weights",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r15e4.py",
+    "Auto-wired callable from fn/trend_weights.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r16e1",
+    "linear_model_prediction",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_16_equation_1",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r16e1.py",
+    "Auto-wired callable from fn/linear_model_prediction.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r20e2",
+    "ols_beta",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_20_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r20e2.py",
+    "Auto-wired callable from fn/ols_beta.py",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r20e3",
+    "ols_prediction_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_20_equation_3",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r20e3.py",
+    "Auto-wired callable from fn/ols_prediction_variance.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -92090,17 +92090,17 @@ _r(
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r21e11",
+    "ok_variance_semivariance_form",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_11",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r21e11.py",
+    "Auto-wired callable from fn/ok_variance_semivariance_form.py",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r21e13",
+    "exponential_semivariogram",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_13",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r21e13.py",
+    "Auto-wired callable from fn/exponential_semivariogram.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -92111,17 +92111,17 @@ _r(
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r21e23",
+    "gaussian_loglikelihood",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_23",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r21e23.py",
+    "Auto-wired callable from fn/gaussian_loglikelihood.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r21e4",
+    "kriging_weights_covariance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r21e4.py",
+    "Auto-wired callable from fn/kriging_weights_covariance.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -92132,73 +92132,73 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r21e8",
+    "ok_variance_covariance_form",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_21_equation_8",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r21e8.py",
+    "Auto-wired callable from fn/ok_variance_covariance_form.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r24e1",
+    "nested_anova_prediction",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_1",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r24e1.py",
+    "Auto-wired callable from fn/nested_anova_prediction.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r24e2",
+    "fisher_information_reml",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r24e2.py",
+    "Auto-wired callable from fn/fisher_information_reml.py",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r24e3",
+    "variance_of_kriging_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_3",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r24e3.py",
+    "Auto-wired callable from fn/variance_of_kriging_variance.py",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r24e4",
+    "augmented_kriging_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r24e4.py",
+    "Auto-wired callable from fn/augmented_kriging_variance.py",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r24e5",
+    "expected_tau2",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_5",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r24e5.py",
+    "Auto-wired callable from fn/expected_tau2.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r24e6",
+    "estimation_adjusted_criterion",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_6",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r24e6.py",
+    "Auto-wired callable from fn/estimation_adjusted_criterion.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r25e8",
+    "classification_indicator",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_25_equation_8",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r25e8.py",
+    "Auto-wired callable from fn/classification_indicator.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r26e2",
+    "iid_mean_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r26e2.py",
+    "Auto-wired callable from fn/iid_mean_variance.py",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r26e3",
+    "autocorrelated_mean_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r26e3.py",
+    "Auto-wired callable from fn/autocorrelated_mean_variance.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -92209,10 +92209,10 @@ _r(
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r26e5",
+    "fpc_mean_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_5",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r26e5.py",
+    "Auto-wired callable from fn/fpc_mean_variance.py",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -92244,10 +92244,10 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r2e2",
+    "ht_total",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r2e2.py",
+    "Auto-wired callable from fn/ht_total.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -92258,45 +92258,45 @@ _r(
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r2e4",
+    "ht_mean",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_2_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r2e4.py",
+    "Auto-wired callable from fn/ht_mean.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r3e14",
+    "si_proportion_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r3e14.py",
+    "Auto-wired callable from fn/si_proportion_variance.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r3e15",
+    "confidence_interval",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_15",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r3e15.py",
+    "Auto-wired callable from fn/confidence_interval.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r3e18",
+    "infinite_total",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_18",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r3e18.py",
+    "Auto-wired callable from fn/infinite_total.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r3e21",
+    "infinite_total_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_21",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r3e21.py",
+    "Auto-wired callable from fn/infinite_total_variance.py",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r3e6",
+    "si_proportion",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_6",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r3e6.py",
+    "Auto-wired callable from fn/si_proportion.py",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -92307,10 +92307,10 @@ _r(
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r4e18",
+    "stratified_cost",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_18",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r4e18.py",
+    "Auto-wired callable from fn/stratified_cost.py",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -92321,73 +92321,73 @@ _r(
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r4e4",
+    "stratified_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_4_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r4e4.py",
+    "Auto-wired callable from fn/stratified_variance.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r6e10",
+    "cluster_mean_from_total",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_10",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r6e10.py",
+    "Auto-wired callable from fn/cluster_mean_from_total.py",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r6e4",
+    "cluster_total_pps",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_4",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r6e4.py",
+    "Auto-wired callable from fn/cluster_total_pps.py",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r6e9",
+    "cluster_total_si",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r6e9.py",
+    "Auto-wired callable from fn/cluster_total_si.py",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e10",
+    "twostage_optimal_m",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_10",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e10.py",
+    "Auto-wired callable from fn/twostage_optimal_m.py",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e11",
+    "twostage_optimal_n_budget",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_11",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e11.py",
+    "Auto-wired callable from fn/twostage_optimal_n_budget.py",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e12",
+    "twostage_total_variance_pps",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_12",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e12.py",
+    "Auto-wired callable from fn/twostage_total_variance_pps.py",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e13",
+    "twostage_total_si",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_13",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e13.py",
+    "Auto-wired callable from fn/twostage_total_si.py",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e2",
+    "twostage_mean",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e2.py",
+    "Auto-wired callable from fn/twostage_mean.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e3",
+    "twostage_variance_components",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_3",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e3.py",
+    "Auto-wired callable from fn/twostage_variance_components.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -92405,38 +92405,38 @@ _r(
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r7e9",
+    "twostage_optimal_n_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_9",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r7e9.py",
+    "Auto-wired callable from fn/twostage_optimal_n_variance.py",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r8e2",
+    "pps_total_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_8_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r8e2.py",
+    "Auto-wired callable from fn/pps_total_variance.py",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r9e10",
+    "local_mean_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_10",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r9e10.py",
+    "Auto-wired callable from fn/local_mean_variance.py",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r9e2",
+    "regression_total",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_2",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r9e2.py",
+    "Auto-wired callable from fn/regression_total.py",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
-    "the_r_series_dick_j_brus_spatial_sampling_with_r9e3",
+    "balanced_variance",
     "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_3",
     "Auto",
-    "Auto-wired callable from fn/the_r_series_dick_j_brus_spatial_sampling_with_r9e3.py",
+    "Auto-wired callable from fn/balanced_variance.py",
     "We must know. We will know. -- David Hilbert",
 )
 _r(

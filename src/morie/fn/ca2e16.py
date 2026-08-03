@@ -1,44 +1,22 @@
-"""Overall model F-test from sums of squares.
+"""Deprecated alias for :func:`morie.fn.f_overall_ss`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .f_overall_ss import f_overall_ss as _impl
 
 __all__ = ["ca_chapter_2_equation_16"]
 
 
-def ca_chapter_2_equation_16(ss_model, ss_resid, n, k):
-    """Overall model F-test from sums of squares
-
-    Formula: F = (SS_model/df_model) / (SS_resid/df_resid)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'f' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.2 eq.2.16
-    """
-    payload = dict(_ca_crim.f_overall_ss(ss_model, ss_resid, n, k))
-    value = payload['f']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (2.16)"
-    return RichResult(
-        title='Overall model F-test from sums of squares',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_2_equation_16(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.f_overall_ss` instead."""
+    warnings.warn(
+        "ca_chapter_2_equation_16() is the book-coordinate name for f_overall_ss(); "
+        "it will be removed. Use morie.fn.f_overall_ss() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca2e16: F = (SS_model/df_model) / (SS_resid/df_resid) [Weisburd et al. 2022, eq. 2.16]'
+    return _impl(*args, **kwargs)

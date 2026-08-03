@@ -1,44 +1,22 @@
-"""Bayes estimate as a weighted average of MLE and prior mean.
+"""Deprecated alias for :func:`morie.fn.bayes_estimate_binomial`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np  # noqa: F401
+import warnings
 
-from . import _acd
-from ._richresult import RichResult
+from .bayes_estimate_binomial import bayes_estimate_binomial as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_24"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_24(w, n, a, b):
-    """Bayes estimate as a weighted average of MLE and prior mean
-
-    Formula: pi_B = (n/(n+a+b)) pi_hat + ((a+b)/(n+a+b)) E(pi)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
-    eq. (6.24).
-    """
-    value = _acd.bayes_estimate_binomial(w, n, a, b)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Bilder & Loughin (2025) eq. (6.24)"
-    return RichResult(
-        title='Bayes estimate as a weighted average of MLE and prior mean',
-        summary_lines=summary,
-        payload=payload,
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_24(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.bayes_estimate_binomial` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_24() is the book-coordinate name for bayes_estimate_binomial(); "
+        "it will be removed. Use morie.fn.bayes_estimate_binomial() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return '6e24: pi_B = (n/(n+a+b)) pi_hat + ((a+b)/(n+a+b)) E(pi) [Bilder & Loughin 2025, eq. 6.24]'
+    return _impl(*args, **kwargs)

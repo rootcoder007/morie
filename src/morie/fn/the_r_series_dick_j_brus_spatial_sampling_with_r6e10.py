@@ -1,44 +1,22 @@
-"""Cluster-sampling mean zbarbar_hat = t_hat / M.
+"""Deprecated alias for :func:`morie.fn.cluster_mean_from_total`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .cluster_mean_from_total import cluster_mean_from_total as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_10"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_10(t_hat, m_population):
-    """Cluster-sampling mean zbarbar_hat = t_hat / M
-
-    Formula: zbarbar_hat_pi = t_hat(z)/M
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (6.10).
-    """
-    value = _brus.cluster_mean_from_total(t_hat, m_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (6.10)"
-    return RichResult(
-        title='Cluster-sampling mean zbarbar_hat = t_hat / M',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_10(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cluster_mean_from_total` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_10() is the book-coordinate name for cluster_mean_from_total(); "
+        "it will be removed. Use morie.fn.cluster_mean_from_total() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r6e10: zbarbar_hat_pi = t_hat(z)/M [Brus 2022, eq. 6.10]'
+    return _impl(*args, **kwargs)

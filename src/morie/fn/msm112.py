@@ -1,37 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""Block-coordinate update for the multinomial model.
+"""Deprecated alias for :func:`morie.fn.multinomial_block_update`.
 
-Implements eq. (7.9) p.227 of Montesinos López, Montesinos López & Crossa
-(2022), *Multivariate Statistical Machine Learning Methods for Genomic
-Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _gp_core as _gp
-from ._richresult import RichResult, with_describe_pointer
+from .multinomial_block_update import multinomial_block_update as _impl
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_9"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_9(X, y, beta0, beta, lam=1.0, cls=0, baseline_last=True):
-    """beta*_c = (X*'W_c X* + lambda D)^-1 X*'W_c y* (eq. 7.9), the
-    block update of class c against a second-order Taylor
-    approximation of the log-likelihood, with working response
-    y*_ic = eta_ic + w_ic^-1(1{y_i = c} - p-tilde_c(x_i)) and
-    weights w_ic = p-tilde_c(1 - p-tilde_c).  D is the identity with a
-    zero first entry, so the intercept is unpenalized.
-    Keys: estimate."""
-    f = _gp.multinomial_block_update(X, y, beta0, beta, lam, cls,
-                                     baseline_last=baseline_last)
-    res = RichResult(payload={"estimate": f["beta0"],
-                              "beta0": f["beta0"],
-                              "beta": f["beta"],
-                              "weights": f["weights"],
-                              "working_response": f["working_response"],
-                              "method": "multinomial block update (MVSML 2022 eq. 7.9)"})
-    return with_describe_pointer(res, "msm112")
-
-
-def cheatsheet():
-    return "msm112: Block-coordinate update for the multinomial model"
+def mvsml_bayesian_regression_pt2_eq_7_9(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.multinomial_block_update` instead."""
+    warnings.warn(
+        "mvsml_bayesian_regression_pt2_eq_7_9() is the book-coordinate name for multinomial_block_update(); "
+        "it will be removed. Use morie.fn.multinomial_block_update() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

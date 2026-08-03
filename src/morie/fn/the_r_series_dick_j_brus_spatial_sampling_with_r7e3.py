@@ -1,44 +1,22 @@
-"""True two-stage variance S2_b/n + S2_w/(n m).
+"""Deprecated alias for :func:`morie.fn.twostage_variance_components`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .twostage_variance_components import twostage_variance_components as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_3"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_3(s2_between, s2_within, n, m):
-    """True two-stage variance S2_b/n + S2_w/(n m)
-
-    Formula: V = S2_b/n + S2_w/(n m)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (7.3).
-    """
-    value = _brus.twostage_variance_components(s2_between, s2_within, n, m)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (7.3)"
-    return RichResult(
-        title='True two-stage variance S2_b/n + S2_w/(n m)',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.twostage_variance_components` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_3() is the book-coordinate name for twostage_variance_components(); "
+        "it will be removed. Use morie.fn.twostage_variance_components() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r7e3: V = S2_b/n + S2_w/(n m) [Brus 2022, eq. 7.3]'
+    return _impl(*args, **kwargs)

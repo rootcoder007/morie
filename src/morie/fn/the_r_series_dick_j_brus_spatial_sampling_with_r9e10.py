@@ -1,44 +1,22 @@
-"""Local-mean variance estimator for well-spread samples.
+"""Deprecated alias for :func:`morie.fn.local_mean_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .local_mean_variance import local_mean_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_10"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_10(e, pi, e_local_mean, n, p):
-    """Local-mean variance estimator for well-spread samples
-
-    Formula: V_hat = (n/(n-p))(p/(p+1)) sum (1-pi)(e/pi - ebar_local)^2
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (9.10).
-    """
-    value = _brus.local_mean_variance(e, pi, e_local_mean, n, p)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (9.10)"
-    return RichResult(
-        title='Local-mean variance estimator for well-spread samples',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_10(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.local_mean_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_9_equation_10() is the book-coordinate name for local_mean_variance(); "
+        "it will be removed. Use morie.fn.local_mean_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r9e10: V_hat = (n/(n-p))(p/(p+1)) sum (1-pi)(e/pi - ebar_local)^2 [Brus 2022, eq. 9.10]'
+    return _impl(*args, **kwargs)

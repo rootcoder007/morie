@@ -1,30 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""SNP-BLUP mixed model equation.
+"""Deprecated alias for :func:`morie.fn.snp_blup_gebv`.
 
-Implements eq. (2.4) p.53 of Montesinos López, Montesinos López & Crossa
-(2022), *Multivariate Statistical Machine Learning Methods for Genomic
-Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _gp_core as _gp
-from ._richresult import RichResult, with_describe_pointer
+from .snp_blup_gebv import snp_blup_gebv as _impl
 
 __all__ = ["mvsml_preprocessing_eq_2_4"]
 
 
-def mvsml_preprocessing_eq_2_4(X, y, M, sigma2_m, sigma2_e=1.0):
-    """SNP-BLUP: eq. (2.2) with Z = M (the scaled marker matrix) and
-    Sigma = sigma2_M I (eq. 2.4). Here u holds marker effects and the
-    GEBV is M u-hat; the book notes GBLUP and SNP-BLUP give the same
-    breeding values. Keys: estimate."""
-    beta, u, gebv = _gp.snp_blup_gebv(X, y, M, sigma2_m, sigma2_e)
-    res = RichResult(payload={"estimate": gebv[0], "gebv": gebv,
-                              "marker_effects": u, "beta": beta,
-                              "method": "SNP-BLUP MME (MVSML 2022 eq. 2.4)"})
-    return with_describe_pointer(res, "msm243")
-
-
-def cheatsheet():
-    return "msm243: SNP-BLUP mixed model equation"
+def mvsml_preprocessing_eq_2_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.snp_blup_gebv` instead."""
+    warnings.warn(
+        "mvsml_preprocessing_eq_2_4() is the book-coordinate name for snp_blup_gebv(); "
+        "it will be removed. Use morie.fn.snp_blup_gebv() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

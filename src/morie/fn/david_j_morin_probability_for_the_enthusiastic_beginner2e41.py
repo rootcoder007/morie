@@ -1,37 +1,22 @@
-"""Suit full house: k of one suit plus the rest of another.
+"""Deprecated alias for :func:`morie.fn.suit_full_house_probability`.
 
-Implements eq (2.41) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .suit_full_house_probability import suit_full_house_probability as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_41"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_41(n_suits=4, n_ranks=13, k_major=3, k_minor=2):
-    """Suit full house: k of one suit plus the rest of another.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.41).
-    """
-    favorable, total, prob = _morin.suit_full_house_probability(
-        n_suits, n_ranks, k_major, k_minor)
-    payload = {"favorable": favorable, "total": total, "probability": prob}
-    lines = [("favorable hands", favorable), ("total hands", total),
-             ("probability", prob)]
-    return RichResult(
-        title="Suit full house: k of one suit plus the rest of another.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_41(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.suit_full_house_probability` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_41() is the book-coordinate name for suit_full_house_probability(); "
+        "it will be removed. Use morie.fn.suit_full_house_probability() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e41: Suit full house: k of one suit plus the rest of another. Morin (2016) eq (2.41)."
+    return _impl(*args, **kwargs)

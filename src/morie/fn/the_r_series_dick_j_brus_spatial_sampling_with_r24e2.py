@@ -1,45 +1,22 @@
-"""REML Fisher information of covariance parameters.
+"""Deprecated alias for :func:`morie.fn.fisher_information_reml`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .fisher_information_reml import fisher_information_reml as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_2"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_2(a, da_list):
-    """REML Fisher information of covariance parameters
-
-    Formula: I_ij = 0.5 Tr(A^-1 dA_i A^-1 dA_j)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (24.2).
-    """
-    arr = np.asarray(_brus.fisher_information_reml(a, da_list), dtype=float)
-    value = float(arr.ravel()[0])
-    payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (24.2)"
-    return RichResult(
-        title='REML Fisher information of covariance parameters',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_2(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.fisher_information_reml` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_2() is the book-coordinate name for fisher_information_reml(); "
+        "it will be removed. Use morie.fn.fisher_information_reml() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r24e2: I_ij = 0.5 Tr(A^-1 dA_i A^-1 dA_j) [Brus 2022, eq. 24.2]'
+    return _impl(*args, **kwargs)

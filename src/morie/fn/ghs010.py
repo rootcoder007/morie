@@ -1,26 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""Discrete hazard rate of weights.
+"""Deprecated alias for :func:`morie.fn.discrete_hazard`.
 
-Implements eq. (3.3), p.31 of Ghosal & van der Vaart (2017), *Fundamentals of
-Nonparametric Bayesian Inference*, CUP.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _bnp_core as _bnp
-from ._richresult import RichResult, with_describe_pointer
+from .discrete_hazard import discrete_hazard as _impl
 
 __all__ = ["ghosal_ch3_discrete_hazard_rate"]
 
 
-def ghosal_ch3_discrete_hazard_rate(p):
-    """V_j = p_j / (1 - sum_{l<j} p_l) = P(X=j | X>=j) (eq. 3.3).
-    Keys: value."""
-    V = _bnp.discrete_hazard(p)
-    res = RichResult(payload={"estimate": V[0], "value": V,
-                              "method": "discrete hazard (GvdV 2017 eq. 3.3)"})
-    return with_describe_pointer(res, "ghs010")
-
-
-def cheatsheet():
-    return "ghs010: Discrete hazard rate of weights"
+def ghosal_ch3_discrete_hazard_rate(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.discrete_hazard` instead."""
+    warnings.warn(
+        "ghosal_ch3_discrete_hazard_rate() is the book-coordinate name for discrete_hazard(); "
+        "it will be removed. Use morie.fn.discrete_hazard() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

@@ -1,37 +1,22 @@
-"""Hypergeometric distribution P(k) = C(K,k)C(N-K,n-k)/C(N,n).
+"""Deprecated alias for :func:`morie.fn.hypergeometric_pmf`.
 
-Implements eq (4.71) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .hypergeometric_pmf import hypergeometric_pmf as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_71"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_71(k, N, K, n):
-    """Hypergeometric distribution P(k) = C(K,k)C(N-K,n-k)/C(N,n).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.71).
-    """
-    value = _morin.hypergeometric_pmf(k, N, K, n)
-    payload = {"probability": value}
-    lines = [("P(k)", value)]
-    return RichResult(
-        title="Hypergeometric distribution P(k) = C(K,k)C(N-K,n-k)/C(N,n).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_71(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.hypergeometric_pmf` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_71() is the book-coordinate name for hypergeometric_pmf(); "
+        "it will be removed. Use morie.fn.hypergeometric_pmf() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e71: Hypergeometric distribution P(k) = C(K,k)C(N-K,n-k)/C(N,n). Morin (2016) eq (4.71)."
+    return _impl(*args, **kwargs)

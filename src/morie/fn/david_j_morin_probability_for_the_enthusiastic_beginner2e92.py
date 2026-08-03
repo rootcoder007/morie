@@ -1,35 +1,22 @@
-"""Inclusion-exclusion for three events.
+"""Deprecated alias for :func:`morie.fn.inclusion_exclusion_3`.
 
-Implements eq (2.92) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .inclusion_exclusion_3 import inclusion_exclusion_3 as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_92"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_92(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc):
-    """Inclusion-exclusion for three events.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.92).
-    """
-    value = _morin.inclusion_exclusion_3(p_a, p_b, p_c, p_ab, p_ac, p_bc, p_abc)
-    payload = {"p_or": value}
-    lines = [("P(A or B or C)", value)]
-    return RichResult(
-        title="Inclusion-exclusion for three events.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_92(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.inclusion_exclusion_3` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_92() is the book-coordinate name for inclusion_exclusion_3(); "
+        "it will be removed. Use morie.fn.inclusion_exclusion_3() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e92: Inclusion-exclusion for three events. Morin (2016) eq (2.92)."
+    return _impl(*args, **kwargs)

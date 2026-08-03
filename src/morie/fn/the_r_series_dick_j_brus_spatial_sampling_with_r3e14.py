@@ -1,44 +1,22 @@
-"""Variance estimator of a proportion under SI.
+"""Deprecated alias for :func:`morie.fn.si_proportion_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .si_proportion_variance import si_proportion_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14(p_hat, n, n_population):
-    """Variance estimator of a proportion under SI
-
-    Formula: V_hat(p_hat) = (1 - n/N) p_hat(1-p_hat)/(n-1)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (3.14).
-    """
-    value = _brus.si_proportion_variance(p_hat, n, n_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (3.14)"
-    return RichResult(
-        title='Variance estimator of a proportion under SI',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.si_proportion_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_14() is the book-coordinate name for si_proportion_variance(); "
+        "it will be removed. Use morie.fn.si_proportion_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r3e14: V_hat(p_hat) = (1 - n/N) p_hat(1-p_hat)/(n-1) [Brus 2022, eq. 3.14]'
+    return _impl(*args, **kwargs)

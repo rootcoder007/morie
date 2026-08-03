@@ -1,44 +1,22 @@
-"""g-weight of the simple regression estimator.
+"""Deprecated alias for :func:`morie.fn.g_weight_simple`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .g_weight_simple import g_weight_simple as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_17"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_17(x_k, xbar_true, xbar_sample, s2_x):
-    """g-weight of the simple regression estimator
-
-    Formula: g_k = 1 + (xbar - xbar_S)(x_k - xbar_S)/S2_hat(x)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (10.17).
-    """
-    value = _brus.g_weight_simple(x_k, xbar_true, xbar_sample, s2_x)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (10.17)"
-    return RichResult(
-        title='g-weight of the simple regression estimator',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_17(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.g_weight_simple` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_17() is the book-coordinate name for g_weight_simple(); "
+        "it will be removed. Use morie.fn.g_weight_simple() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r10e17: g_k = 1 + (xbar - xbar_S)(x_k - xbar_S)/S2_hat(x) [Brus 2022, eq. 10.17]'
+    return _impl(*args, **kwargs)

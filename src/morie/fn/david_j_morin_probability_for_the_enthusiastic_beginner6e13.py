@@ -1,37 +1,22 @@
-"""Model slope from data: m = Cov(x,y)/s_x^2.
+"""Deprecated alias for :func:`morie.fn.slope_from_cov`.
 
-Implements eq (6.13) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .slope_from_cov import slope_from_cov as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_13"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_13(x, y):
-    """Model slope from data: m = Cov(x,y)/s_x^2.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.13).
-    """
-    value = _morin.slope_from_cov(x, y)
-    payload = {"slope": value}
-    lines = [("m", value)]
-    return RichResult(
-        title="Model slope from data: m = Cov(x,y)/s_x^2.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.slope_from_cov` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_13() is the book-coordinate name for slope_from_cov(); "
+        "it will be removed. Use morie.fn.slope_from_cov() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e13: Model slope from data: m = Cov(x,y)/s_x^2. Morin (2016) eq (6.13)."
+    return _impl(*args, **kwargs)

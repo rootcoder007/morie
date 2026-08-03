@@ -1,37 +1,22 @@
-"""Hand uses at most two suits (inclusion-exclusion over suit pairs).
+"""Deprecated alias for :func:`morie.fn.at_most_two_suits_probability`.
 
-Implements eq (2.43) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .at_most_two_suits_probability import at_most_two_suits_probability as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_43"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_43(n_suits=4, n_ranks=13, hand=5):
-    """Hand uses at most two suits (inclusion-exclusion over suit pairs).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.43).
-    """
-    favorable, total, prob = _morin.at_most_two_suits_probability(
-        n_suits, n_ranks, hand)
-    payload = {"favorable": favorable, "total": total, "probability": prob}
-    lines = [("favorable hands", favorable), ("total hands", total),
-             ("probability", prob)]
-    return RichResult(
-        title="Hand uses at most two suits (inclusion-exclusion over suit pairs).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_43(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.at_most_two_suits_probability` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_43() is the book-coordinate name for at_most_two_suits_probability(); "
+        "it will be removed. Use morie.fn.at_most_two_suits_probability() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e43: Hand uses at most two suits (inclusion-exclusion over suit pairs). Morin (2016) eq (2.43)."
+    return _impl(*args, **kwargs)

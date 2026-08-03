@@ -1,44 +1,22 @@
-"""DerSimonian-Laird tau^2 estimator.
+"""Deprecated alias for :func:`morie.fn.tau2_dersimonian_laird`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .tau2_dersimonian_laird import tau2_dersimonian_laird as _impl
 
 __all__ = ["ca_chapter_11_equation_44"]
 
 
-def ca_chapter_11_equation_44(ys, ws_fixed):
-    """DerSimonian-Laird tau^2 estimator
-
-    Formula: tau^2 = (Q - df) / (sum w - sum w^2 / sum w)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.11 eq.11.44
-    """
-    value = _ca_crim.tau2_dersimonian_laird(ys, ws_fixed)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (11.44)"
-    return RichResult(
-        title='DerSimonian-Laird tau^2 estimator',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_11_equation_44(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.tau2_dersimonian_laird` instead."""
+    warnings.warn(
+        "ca_chapter_11_equation_44() is the book-coordinate name for tau2_dersimonian_laird(); "
+        "it will be removed. Use morie.fn.tau2_dersimonian_laird() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca11e44: tau^2 = (Q - df) / (sum w - sum w^2 / sum w) [Weisburd et al. 2022, eq. 11.44]'
+    return _impl(*args, **kwargs)

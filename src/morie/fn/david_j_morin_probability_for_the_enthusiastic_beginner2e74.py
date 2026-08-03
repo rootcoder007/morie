@@ -1,36 +1,22 @@
-"""Bayes' theorem, general form over a complete hypothesis set.
+"""Deprecated alias for :func:`morie.fn.bayes_general`.
 
-Implements eq (2.74) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .bayes_general import bayes_general as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74(priors, likelihoods):
-    """Bayes' theorem, general form over a complete hypothesis set.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.74).
-    """
-    post, p_z = _morin.bayes_general(priors, likelihoods)
-    payload = {"posteriors": [float(x) for x in post], "p_z": p_z}
-    lines = [("P(Z)", p_z)] + [(f"P(A{i}|Z)", float(p))
-                               for i, p in enumerate(post, 1)]
-    return RichResult(
-        title="Bayes' theorem, general form over a complete hypothesis set.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.bayes_general` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_74() is the book-coordinate name for bayes_general(); "
+        "it will be removed. Use morie.fn.bayes_general() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e74: Bayes' theorem, general form over a complete hypothesis set. Morin (2016) eq (2.74)."
+    return _impl(*args, **kwargs)

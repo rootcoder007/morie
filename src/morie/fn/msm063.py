@@ -1,34 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""RKHS predictor with genotype-by-environment effects.
+"""Deprecated alias for :func:`morie.fn.rkhs_covariances`.
 
-Implements eq. (6.7) p.186 of Montesinos López, Montesinos López & Crossa
-(2022), *Multivariate Statistical Machine Learning Methods for Genomic
-Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _gp_core as _gp
-from ._richresult import RichResult, with_describe_pointer
+from .rkhs_covariances import rkhs_covariances as _impl
 
 __all__ = ["mvsml_bayesian_regression_eq_6_7"]
 
 
-def mvsml_bayesian_regression_eq_6_7(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0,
-         sigma2_ge=1.0):
-    """Y = 1_n mu + X_E beta_E + Z_L g + Z_LE gE + eps (eq. 6.7).
-    As for eq. (6.5), the predictor terms enter through their
-    covariance matrices, K_L = Z_L G Z_L' and
-    K_LE = Z_LE (I (x) G) Z_LE' (p.186); those are computed here.
-    Keys: estimate."""
-    f = _gp.rkhs_covariances(Z_L, G, Z_LE=Z_LE, I_env=I_env,
-                             sigma2_g=sigma2_g, sigma2_ge=sigma2_ge)
-    K = f["K_L"]
-    res = RichResult(payload={"estimate": K[0][0], "K_L": K,
-                              "K_LE": f.get("K_LE"),
-                              "method": "RKHS G x E covariances (MVSML 2022 eq. 6.7)"})
-    return with_describe_pointer(res, "msm063")
-
-
-def cheatsheet():
-    return "msm063: RKHS predictor with genotype-by-environment effects"
+def mvsml_bayesian_regression_eq_6_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.rkhs_covariances` instead."""
+    warnings.warn(
+        "mvsml_bayesian_regression_eq_6_7() is the book-coordinate name for rkhs_covariances(); "
+        "it will be removed. Use morie.fn.rkhs_covariances() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

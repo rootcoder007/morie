@@ -1,44 +1,22 @@
-"""Variance of the kriging variance (VKV).
+"""Deprecated alias for :func:`morie.fn.variance_of_kriging_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .variance_of_kriging_variance import variance_of_kriging_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_3"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_3(cov_theta, dv_dtheta):
-    """Variance of the kriging variance (VKV)
-
-    Formula: VKV = sum_ij Cov(th_i, th_j) dV/dth_i dV/dth_j
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (24.3).
-    """
-    value = _brus.variance_of_kriging_variance(cov_theta, dv_dtheta)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (24.3)"
-    return RichResult(
-        title='Variance of the kriging variance (VKV)',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.variance_of_kriging_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_3() is the book-coordinate name for variance_of_kriging_variance(); "
+        "it will be removed. Use morie.fn.variance_of_kriging_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r24e3: VKV = sum_ij Cov(th_i, th_j) dV/dth_i dV/dth_j [Brus 2022, eq. 24.3]'
+    return _impl(*args, **kwargs)

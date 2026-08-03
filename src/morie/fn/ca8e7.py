@@ -1,44 +1,22 @@
-"""Proportion of variance R^2 = f^2 / (1 + f^2).
+"""Deprecated alias for :func:`morie.fn.r2_from_f2`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .r2_from_f2 import r2_from_f2 as _impl
 
 __all__ = ["ca_chapter_8_equation_7"]
 
 
-def ca_chapter_8_equation_7(f2):
-    """Proportion of variance R^2 = f^2 / (1 + f^2)
-
-    Formula: R^2 = f^2 / (1 + f^2)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.8 eq.8.7
-    """
-    value = _ca_crim.r2_from_f2(f2)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (8.7)"
-    return RichResult(
-        title='Proportion of variance R^2 = f^2 / (1 + f^2)',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_8_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.r2_from_f2` instead."""
+    warnings.warn(
+        "ca_chapter_8_equation_7() is the book-coordinate name for r2_from_f2(); "
+        "it will be removed. Use morie.fn.r2_from_f2() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca8e7: R^2 = f^2 / (1 + f^2) [Weisburd et al. 2022, eq. 8.7]'
+    return _impl(*args, **kwargs)

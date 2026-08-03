@@ -1,44 +1,22 @@
-"""Spline odds ratio from basis differences.
+"""Deprecated alias for :func:`morie.fn.spline_odds_ratio`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np  # noqa: F401
+import warnings
 
-from . import _acd
-from ._richresult import RichResult
+from .spline_odds_ratio import spline_odds_ratio as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_37"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_37(betas, basis_fns, a, b_pt):
-    """Spline odds ratio from basis differences
-
-    Formula: exp(f(a) - f(b)) = exp(sum b_j (h_j(a) - h_j(b)))
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
-    eq. (6.37).
-    """
-    value = _acd.spline_odds_ratio(betas, basis_fns, a, b_pt)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Bilder & Loughin (2025) eq. (6.37)"
-    return RichResult(
-        title='Spline odds ratio from basis differences',
-        summary_lines=summary,
-        payload=payload,
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_37(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.spline_odds_ratio` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_37() is the book-coordinate name for spline_odds_ratio(); "
+        "it will be removed. Use morie.fn.spline_odds_ratio() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return '6e37: exp(f(a) - f(b)) = exp(sum b_j (h_j(a) - h_j(b))) [Bilder & Loughin 2025, eq. 6.37]'
+    return _impl(*args, **kwargs)

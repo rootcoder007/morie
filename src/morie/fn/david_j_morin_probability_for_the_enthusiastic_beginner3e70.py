@@ -1,37 +1,22 @@
-"""E[X^2] = sigma^2 + mu^2.
+"""Deprecated alias for :func:`morie.fn.e_x_squared`.
 
-Implements eq (3.70) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .e_x_squared import e_x_squared as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_70"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_70(sigma, mu):
-    """E[X^2] = sigma^2 + mu^2.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.70).
-    """
-    value = _morin.e_x_squared(sigma, mu)
-    payload = {"e_x2": value}
-    lines = [("E[X^2]", value)]
-    return RichResult(
-        title="E[X^2] = sigma^2 + mu^2.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_70(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.e_x_squared` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_70() is the book-coordinate name for e_x_squared(); "
+        "it will be removed. Use morie.fn.e_x_squared() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e70: E[X^2] = sigma^2 + mu^2. Morin (2016) eq (3.70)."
+    return _impl(*args, **kwargs)

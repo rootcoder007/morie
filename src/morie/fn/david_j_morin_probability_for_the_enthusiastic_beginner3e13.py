@@ -1,37 +1,22 @@
-"""Linearity of expectation: E(aX + bY + c) = aE(X) + bE(Y) + c.
+"""Deprecated alias for :func:`morie.fn.expectation_linear`.
 
-Implements eq (3.13) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .expectation_linear import expectation_linear as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_13"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_13(a, e_x, b, e_y, c):
-    """Linearity of expectation: E(aX + bY + c) = aE(X) + bE(Y) + c.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.13).
-    """
-    value = _morin.expectation_linear(a, e_x, b, e_y, c)
-    payload = {"expectation": value}
-    lines = [("E(aX + bY + c)", value)]
-    return RichResult(
-        title="Linearity of expectation: E(aX + bY + c) = aE(X) + bE(Y) + c.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.expectation_linear` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_13() is the book-coordinate name for expectation_linear(); "
+        "it will be removed. Use morie.fn.expectation_linear() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e13: Linearity of expectation: E(aX + bY + c) = aE(X) + bE(Y) + c. Morin (2016) eq (3.13)."
+    return _impl(*args, **kwargs)

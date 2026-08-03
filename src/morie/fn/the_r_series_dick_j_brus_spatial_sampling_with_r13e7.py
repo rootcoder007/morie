@@ -1,44 +1,22 @@
-"""Equal-area geostrata simplification.
+"""Deprecated alias for :func:`morie.fn.mean_semivariance_equal_area`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .mean_semivariance_equal_area import mean_semivariance_equal_area as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_7"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_7(gamma_bar_h, n):
-    """Equal-area geostrata simplification
-
-    Formula: E_xi{V_STSI} = (1/n^2) sum gammabar_h
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (13.7).
-    """
-    value = _brus.mean_semivariance_equal_area(gamma_bar_h, n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (13.7)"
-    return RichResult(
-        title='Equal-area geostrata simplification',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.mean_semivariance_equal_area` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_7() is the book-coordinate name for mean_semivariance_equal_area(); "
+        "it will be removed. Use morie.fn.mean_semivariance_equal_area() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r13e7: E_xi{V_STSI} = (1/n^2) sum gammabar_h [Brus 2022, eq. 13.7]'
+    return _impl(*args, **kwargs)

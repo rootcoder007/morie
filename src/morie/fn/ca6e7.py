@@ -1,44 +1,22 @@
-"""Poisson regression with an offset (exposure) term.
+"""Deprecated alias for :func:`morie.fn.poisson_offset_predict`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .poisson_offset_predict import poisson_offset_predict as _impl
 
 __all__ = ["ca_chapter_6_equation_7"]
 
 
-def ca_chapter_6_equation_7(b0, b1, x1, exposure):
-    """Poisson regression with an offset (exposure) term
-
-    Formula: ln(y) = b0 + b1 x1 + offset(ln exposure)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.6 eq.6.7
-    """
-    value = _ca_crim.poisson_offset_predict(b0, b1, x1, exposure)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (6.7)"
-    return RichResult(
-        title='Poisson regression with an offset (exposure) term',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_6_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.poisson_offset_predict` instead."""
+    warnings.warn(
+        "ca_chapter_6_equation_7() is the book-coordinate name for poisson_offset_predict(); "
+        "it will be removed. Use morie.fn.poisson_offset_predict() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca6e7: ln(y) = b0 + b1 x1 + offset(ln exposure) [Weisburd et al. 2022, eq. 6.7]'
+    return _impl(*args, **kwargs)

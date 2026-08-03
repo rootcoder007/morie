@@ -1,37 +1,22 @@
-"""Gaussian approximation PG(x) = e^(-x^2/n)/sqrt(pi n), 2n flips.
+"""Deprecated alias for :func:`morie.fn.gaussian_approx_2n`.
 
-Implements eq (5.13) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .gaussian_approx_2n import gaussian_approx_2n as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_13"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_13(x, n):
-    """Gaussian approximation PG(x) = e^(-x^2/n)/sqrt(pi n), 2n flips.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.13).
-    """
-    value = _morin.gaussian_approx_2n(x, n)
-    payload = {"x": float(x), "n": int(n), "PG": value}
-    lines = [("PG(x)", value)]
-    return RichResult(
-        title="Gaussian approximation PG(x) = e^(-x^2/n)/sqrt(pi n), 2n flips.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.gaussian_approx_2n` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_13() is the book-coordinate name for gaussian_approx_2n(); "
+        "it will be removed. Use morie.fn.gaussian_approx_2n() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e13: Gaussian approximation PG(x) = e^(-x^2/n)/sqrt(pi n), 2n flips. Morin (2016) eq (5.13)."
+    return _impl(*args, **kwargs)

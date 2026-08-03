@@ -1,44 +1,22 @@
-"""Standard error of Hedges' g.
+"""Deprecated alias for :func:`morie.fn.se_g`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .se_g import se_g as _impl
 
 __all__ = ["ca_chapter_11_equation_7"]
 
 
-def ca_chapter_11_equation_7(g, n1, n2):
-    """Standard error of Hedges' g
-
-    Formula: se_g = sqrt((n1+n2)/(n1 n2) + g^2/(2(n1+n2)))
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.11 eq.11.7
-    """
-    value = _ca_crim.se_g(g, n1, n2)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (11.7)"
-    return RichResult(
-        title="Standard error of Hedges' g",
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_11_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.se_g` instead."""
+    warnings.warn(
+        "ca_chapter_11_equation_7() is the book-coordinate name for se_g(); "
+        "it will be removed. Use morie.fn.se_g() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca11e7: se_g = sqrt((n1+n2)/(n1 n2) + g^2/(2(n1+n2))) [Weisburd et al. 2022, eq. 11.7]'
+    return _impl(*args, **kwargs)

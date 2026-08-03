@@ -1,44 +1,22 @@
-"""Beta posterior density for a proportion.
+"""Deprecated alias for :func:`morie.fn.beta_posterior_pdf`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .beta_posterior_pdf import beta_posterior_pdf as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24(p, z, n, c, d):
-    """Beta posterior density for a proportion
-
-    Formula: f(p|z,n,c,d) = p^(z+c-1)(1-p)^(n-z+d-1)/B(z+c, n-z+d)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (12.24).
-    """
-    value = _brus.beta_posterior_pdf(p, z, n, c, d)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (12.24)"
-    return RichResult(
-        title='Beta posterior density for a proportion',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.beta_posterior_pdf` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_24() is the book-coordinate name for beta_posterior_pdf(); "
+        "it will be removed. Use morie.fn.beta_posterior_pdf() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r12e24: f(p|z,n,c,d) = p^(z+c-1)(1-p)^(n-z+d-1)/B(z+c, n-z+d) [Brus 2022, eq. 12.24]'
+    return _impl(*args, **kwargs)

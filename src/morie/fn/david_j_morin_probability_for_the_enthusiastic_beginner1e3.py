@@ -1,35 +1,22 @@
-"""P_N = N!: number of permutations of N distinct objects.
+"""Deprecated alias for :func:`morie.fn.permutations_count`.
 
-Implements eq (1.3) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .permutations_count import permutations_count as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3(n):
-    """P_N = N!: number of permutations of N distinct objects.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.3).
-    """
-    value = _morin.permutations_count(n)
-    payload = {"n": int(n), "permutations": value}
-    lines = [("N", int(n)), ("P_N = N!", value)]
-    return RichResult(
-        title="P_N = N!: number of permutations of N distinct objects.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.permutations_count` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_3() is the book-coordinate name for permutations_count(); "
+        "it will be removed. Use morie.fn.permutations_count() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e3: P_N = N!: number of permutations of N distinct objects. Morin (2016) eq (1.3)."
+    return _impl(*args, **kwargs)

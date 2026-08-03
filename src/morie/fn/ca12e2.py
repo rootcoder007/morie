@@ -1,44 +1,22 @@
-"""Expected Moran's I under no autocorrelation E(I) = -1/(n-1).
+"""Deprecated alias for :func:`morie.fn.morans_i_expected`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .morans_i_expected import morans_i_expected as _impl
 
 __all__ = ["ca_chapter_12_equation_2"]
 
 
-def ca_chapter_12_equation_2(n):
-    """Expected Moran's I under no autocorrelation E(I) = -1/(n-1)
-
-    Formula: E(I) = -1 / (n - 1)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.12 eq.12.2
-    """
-    value = _ca_crim.morans_i_expected(n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (12.2)"
-    return RichResult(
-        title="Expected Moran's I under no autocorrelation E(I) = -1/(n-1)",
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_12_equation_2(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.morans_i_expected` instead."""
+    warnings.warn(
+        "ca_chapter_12_equation_2() is the book-coordinate name for morans_i_expected(); "
+        "it will be removed. Use morie.fn.morans_i_expected() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca12e2: E(I) = -1 / (n - 1) [Weisburd et al. 2022, eq. 12.2]'
+    return _impl(*args, **kwargs)

@@ -1,44 +1,22 @@
-"""Cox and Snell pseudo-R^2.
+"""Deprecated alias for :func:`morie.fn.cox_snell_r2`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .cox_snell_r2 import cox_snell_r2 as _impl
 
 __all__ = ["ca_chapter_4_equation_13"]
 
 
-def ca_chapter_4_equation_13(neg2ll_null, neg2ll_full, n):
-    """Cox and Snell pseudo-R^2
-
-    Formula: 1 - e^-[(-2LLnull) - (-2LLfull)]/n
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.4 eq.4.13
-    """
-    value = _ca_crim.cox_snell_r2(neg2ll_null, neg2ll_full, n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (4.13)"
-    return RichResult(
-        title='Cox and Snell pseudo-R^2',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_4_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cox_snell_r2` instead."""
+    warnings.warn(
+        "ca_chapter_4_equation_13() is the book-coordinate name for cox_snell_r2(); "
+        "it will be removed. Use morie.fn.cox_snell_r2() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca4e13: 1 - e^-[(-2LLnull) - (-2LLfull)]/n [Weisburd et al. 2022, eq. 4.13]'
+    return _impl(*args, **kwargs)
