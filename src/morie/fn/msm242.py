@@ -1,47 +1,30 @@
-"""Numbered display equation (2.3) from MVSML chapter 2.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GBLUP mixed model equation.
 
-from . import _array_core as np
+Implements eq. (2.3) p.53 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_preprocessing_eq_2_3"]
 
 
-def mvsml_preprocessing_eq_2_3(b, XTR):
-    """
-    Numbered display equation (2.3) from MVSML chapter 2.
-
-    Formula: ! b\beta XTR1X XTR11 XTR1y =
-
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    XTR : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (2.3) [Multivariate Statistical Machine Learnin [Pages 35-70] [2026-04-16].pdf]
-    """
-    b = np.atleast_1d(np.asarray(b, dtype=float))
-    n = len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (2.3) from MVSML chapter 2.",
-        }
-    )
+def mvsml_preprocessing_eq_2_3(X, y, G, sigma2_g, sigma2_e=1.0):
+    """GBLUP: eq. (2.2) with Z = 1 (an incidence matrix of lines) and
+    Sigma = sigma2_g G, so the second block carries sigma2_g^-2 G^-1
+    (eq. 2.3). The u solution is the vector of GEBVs.
+    Keys: estimate."""
+    beta, u = _gp.gblup_gebv(X, y, G, sigma2_g, sigma2_e)
+    res = RichResult(payload={"estimate": u[0], "gebv": u,
+                              "beta": beta,
+                              "method": "GBLUP MME (MVSML 2022 eq. 2.3)"})
+    return with_describe_pointer(res, "msm242")
 
 
 def cheatsheet():
-    return "msm242: Numbered display equation (2.3) from MVSML chapter 2."
+    return "msm242: GBLUP mixed model equation"

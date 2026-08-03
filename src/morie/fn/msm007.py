@@ -1,55 +1,31 @@
-"""Numbered display equation (4.9) from MVSML chapter 4.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Generalized precision.
 
-from . import _array_core as np
+Implements eq. (4.9) p.132 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_overfitting_resampling_eq_4_9"]
 
 
-def mvsml_overfitting_resampling_eq_4_9(proportion, of, true, positives, that, are):
-    """
-    Numbered display equation (4.9) from MVSML chapter 4.
-
-    Formula: proportion of true positives that are correctly identiﬁed by the test. The precision is the proportion of correct classiﬁcation of our statistical machine learning model and represents the proportion of cases correctly classiﬁed, while the speciﬁcity is the ability of our statistical machine learning model to classify the true negative cases, that is, the speciﬁcity is the proportion of true negatives that are correctly identiﬁed by the test. Under the “one-versus-all basis,” where each category is compared with the composed information of the remaining categories, we provide the expressions for computing the generalized precision, sensitivity, and speciﬁcity for each class i: TTPall Pi =
-
-    Parameters
-    ----------
-    proportion : array-like
-        Input data.
-    of : array-like
-        Input data.
-    true : array-like
-        Input data.
-    positives : array-like
-        Input data.
-    that : array-like
-        Input data.
-    are : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (4.9) [Multivariate Statistical Machine Learnin [Pages 109-139] [2026-04-16].pdf]
-    """
-    proportion = np.atleast_1d(np.asarray(proportion, dtype=float))
-    n = len(proportion)
-    result = float(np.mean(proportion))
-    se = float(np.std(proportion, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (4.9) from MVSML chapter 4.",
-        }
-    )
+def mvsml_overfitting_resampling_eq_4_9(y_true, y_pred, class_index=0, n_classes=None):
+    """P_i = TTP_all / (TTP_all + TFP_i) on a one-versus-all basis
+    (eq. 4.9), with TFP_i = sum_{j != i} n_ji from eq. (4.6).
+    Keys: estimate."""
+    conf = _gp.confusion_counts(y_true, y_pred, n_classes)
+    m = _gp.class_metrics(conf, int(class_index))
+    res = RichResult(payload={"estimate": m["precision"],
+                              "TFP": m["TFP"], "TTP_all": m["TTP_all"],
+                              "pCCC": m["pCCC"],
+                              "method": "generalized precision (MVSML 2022 eq. 4.9)"})
+    return with_describe_pointer(res, "msm007")
 
 
 def cheatsheet():
-    return "msm007: Numbered display equation (4.9) from MVSML chapter 4."
+    return "msm007: Generalized precision"

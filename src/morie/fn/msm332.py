@@ -1,55 +1,32 @@
-"""Numbered display equation (3.1) from MVSML chapter 3.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Linear multiple regression fitted by OLS.
 
-from . import _array_core as np
+Implements eq. (3.1) p.71 with the OLS solution pp.72-73 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_elements_lin_reg_eq_3_1"]
 
 
-def mvsml_elements_lin_reg_eq_3_1(Fitting, a, Linear, Multiple, Regression, Model):
-    """
-    Numbered display equation (3.1) from MVSML chapter 3.
-
-    Formula: 3.2 Fitting a Linear Multiple Regression Model via the Ordinary Least Square (OLS) Method In a general context, we have a covariate vector X = (X1, . . ., Xp)T and we want to use this information to predict or explain how this variable affects a real-value response Y. The linear multiple regression model assumes a relationship given by X p Y = \beta0 + X j\beta j + E,
-
-    Parameters
-    ----------
-    Fitting : array-like
-        Input data.
-    a : array-like
-        Input data.
-    Linear : array-like
-        Input data.
-    Multiple : array-like
-        Input data.
-    Regression : array-like
-        Input data.
-    Model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (3.1) [Multivariate Statistical Machine Learnin [Pages 71-108] [2026-04-16].pdf]
-    """
-    Fitting = np.atleast_1d(np.asarray(Fitting, dtype=float))
-    n = len(Fitting)
-    result = float(np.mean(Fitting))
-    se = float(np.std(Fitting, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (3.1) from MVSML chapter 3.",
-        }
-    )
+def mvsml_elements_lin_reg_eq_3_1(X, y, add_intercept=True):
+    """Y = beta_0 + sum_j X_j beta_j + eps (eq. 3.1) fitted by least
+    squares: beta = (X'X)^-1X'y, Var(beta) = sigma2 (X'X)^-1 and
+    sigma2 = RSS/(n - p - 1) (pp.72-73). Keys: estimate."""
+    f = _gp.ols_fit(X, y, add_intercept=add_intercept)
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "beta": f["beta"], "se": f["se_beta"],
+                              "sigma2": f["sigma2"],
+                              "fitted": f["fitted"],
+                              "residuals": f["residuals"],
+                              "method": "OLS linear multiple regression (MVSML 2022 eq. 3.1)"})
+    return with_describe_pointer(res, "msm332")
 
 
 def cheatsheet():
-    return "msm332: Numbered display equation (3.1) from MVSML chapter 3."
+    return "msm332: Linear multiple regression fitted by OLS"
