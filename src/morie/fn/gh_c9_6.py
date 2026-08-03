@@ -1,46 +1,48 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Wishart prior on covariance in Gaussian DPM: full covariance contraction rate."""
+"""Location-scale (Wishart) DPM.
+
+Implements sec. 9.4.5 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_wishart_dpm"]
 
 
-def ghosal_wishart_dpm(x):
-    """
-    Wishart prior on covariance in Gaussian DPM: full covariance contraction rate
-
-    Formula: Sigma ~ Wishart(nu, Psi), location-scale DPM, same rate as diagonal
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 9 §9.4.5
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wishart prior on covariance in Gaussian DPM: full covariance contraction rate",
-        }
-    )
+def ghosal_wishart_dpm(x_query=(0.0, 1.0), n_atoms=150, alpha=1.0,
+                       nu=4.0, seed=42):
+    """Location-scale DPM with a Wishart-type scale prior attains
+    the same rate as fixed-scale mixtures (sec. 9.4.5). Draws a
+    stick-breaking mixture with inverse-gamma scales (1-d Wishart
+    margin) and evaluates the density -- positive, normalized.
+    Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    V = [float(rng.beta(1.0, alpha)) for _ in range(n_atoms)]
+    W = _bnp.stick_breaking(V)
+    mus = [float(rng.normal(0, 1)) for _ in range(n_atoms)]
+    sig2 = [nu / max(float(rng.gamma(nu / 2.0, 2.0)), 1e-9)
+            for _ in range(n_atoms)]
+    def dens(x):
+        tot = 0.0
+        for w, m, s2 in zip(W, mus, sig2):
+            tot += w * math.exp(-0.5 * (x - m) ** 2 / s2) \
+                / math.sqrt(2.0 * math.pi * s2)
+        return tot
+    vals = [dens(q) for q in x_query]
+    # normalization by quadrature
+    Z = sum(dens(-8.0 + 16.0 * (i + 0.5) / 400) for i in range(400)) \
+        * 16.0 / 400
+    res = RichResult(payload={"estimate": vals[0],
+                              "density": vals,
+                              "total_mass": Z,
+                              "method": "location-scale DPM (GvdV 2017 sec. 9.4.5)"})
+    return with_describe_pointer(res, "gh_c9_6")
 
 
 def cheatsheet():
-    return "gh_c9_6: Wishart prior on covariance in Gaussian DPM: full covariance contraction rate"
+    return "gh_c9_6: Location-scale (Wishart) DPM"
