@@ -1377,3 +1377,224 @@ def bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, mu=None,
             "scale_T": scale_T,
             "nu_E_post": nu_E + J * I,
             "scale_E": scale_E}
+
+
+# ------------- ordinal / categorical / count models (ch. 7)
+def _norm_cdf(z):
+    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+
+
+def _norm_ppf(u):
+    """Inverse standard normal CDF (Acklam's rational approximation,
+    refined by one Halley step against ``_norm_cdf``)."""
+    if u <= 0.0:
+        return -40.0
+    if u >= 1.0:
+        return 40.0
+    a = [-3.969683028665376e+01, 2.209460984245205e+02,
+         -2.759285104469687e+02, 1.383577518672690e+02,
+         -3.066479806614716e+01, 2.506628277459239e+00]
+    b = [-5.447609879822406e+01, 1.615858368580409e+02,
+         -1.556989798598866e+02, 6.680131188771972e+01,
+         -1.328068155288572e+01]
+    c = [-7.784894002430293e-03, -3.223964580411365e-01,
+         -2.400758277161838e+00, -2.549732539343734e+00,
+         4.374664141464968e+00, 2.938163982698783e+00]
+    d = [7.784695709041462e-03, 3.224671290700398e-01,
+         2.445134137142996e+00, 3.754408661907416e+00]
+    pl, ph = 0.02425, 1.0 - 0.02425
+    if u < pl:
+        q = math.sqrt(-2.0 * math.log(u))
+        x = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q
+              + c[4]) * q + c[5]) / \
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1.0)
+    elif u > ph:
+        q = math.sqrt(-2.0 * math.log(1.0 - u))
+        x = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q
+               + c[4]) * q + c[5]) / \
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1.0)
+    else:
+        q = u - 0.5
+        r = q * q
+        x = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r
+              + a[4]) * r + a[5]) * q / \
+            (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r
+              + b[4]) * r + 1.0)
+    e = _norm_cdf(x) - u
+    pdf = math.exp(-0.5 * x * x) / math.sqrt(2.0 * math.pi)
+    if pdf > 0:
+        x = x - e / pdf
+    return x
+
+
+def ordinal_probabilities(eta, thresholds, link="probit"):
+    """eq. (7.1) p.210: p_ic = F(gamma_c + x_i'beta)
+    - F(gamma_{c-1} + x_i'beta), c = 1..C, with gamma_0 = -inf and
+    gamma_C = +inf.  ``link`` selects the standard normal CDF (the
+    ordinal probit model) or the standard logistic CDF (the ordinal
+    logistic model), both given on p.210."""
+    g = _flat(thresholds)
+    F = _norm_cdf if link == "probit" else \
+        (lambda z: 1.0 / (1.0 + math.exp(-z)))
+    out = []
+    for e in _flat(eta):
+        cuts = [0.0] + [F(gc + e) for gc in g] + [1.0]
+        out.append([cuts[c + 1] - cuts[c]
+                    for c in range(len(g) + 1)])
+    return out
+
+
+def _rtruncnorm(rng, mean, sd, lo, hi):
+    """Draw from N(mean, sd^2) truncated to (lo, hi) by inverting the
+    CDF, which is the step the Albert and Chib (1993) sampler of
+    p.212 needs for the latent variables."""
+    a = _norm_cdf((lo - mean) / sd) if lo > -1e300 else 0.0
+    b = _norm_cdf((hi - mean) / sd) if hi < 1e300 else 1.0
+    if b <= a:
+        return mean
+    u = a + (b - a) * float(rng.uniform(0, 1))
+    u = min(max(u, 1e-12), 1.0 - 1e-12)
+    return mean + sd * _norm_ppf(u)
+
+
+def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400,
+                         nu_beta=5.0, S_beta=None, seed=42):
+    """The Gibbs sampler for the Bayesian ordinal probit model of
+    eq. (7.1), steps 1-6 on pp.212-213 (Albert and Chib 1993):
+
+      l_i     | . ~ N(-x_i'beta, 1) truncated to
+                    (gamma_{y_i - 1}, gamma_{y_i})
+      beta_j  | . ~ N(b-tilde_j, s-tilde_j^2),
+                    s-tilde_j^2 = (sigma_beta^-2 + x_j'x_j)^-1,
+                    b-tilde_j = -s-tilde_j^2 (x_j' e_j)
+      gamma_c | . ~ U(a_c, b_c),
+                    a_c = max{l_i : y_i = c},
+                    b_c = min{l_i : y_i = c + 1}
+      sigma2_beta | . ~ chi^-2(nu_beta + p, S_beta + beta'beta)
+
+    ``y`` holds category labels 1..C.
+    """
+    ys = [int(v) for v in _flat(y)]
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    C = max(ys)
+    rng = np.random.default_rng(seed)
+    if S_beta is None:
+        S_beta = 1.0
+    beta = [0.0] * p
+    s2b = 1.0
+    gamma = [float(c) - C / 2.0 for c in range(1, C)]
+    l = [0.0] * n
+    Xt = _t(Xm)
+    col_ss = [sum(v * v for v in col) for col in Xt]
+    acc_beta = [0.0] * p
+    acc_gamma = [0.0] * max(len(gamma), 1)
+    acc_s2b = 0.0
+    kept = 0
+    for it in range(int(n_iter)):
+        eta = _mv(Xm, beta)
+        for i in range(n):
+            c = ys[i]
+            lo = gamma[c - 2] if c >= 2 else -1e300
+            hi = gamma[c - 1] if c <= C - 1 else 1e300
+            l[i] = _rtruncnorm(rng, -eta[i], 1.0, lo, hi)
+        for j in range(p):
+            e_j = [l[i] + sum(Xm[i][k] * beta[k]
+                              for k in range(p) if k != j)
+                   for i in range(n)]
+            var = 1.0 / (1.0 / s2b + col_ss[j])
+            mean = -var * sum(Xm[i][j] * e_j[i] for i in range(n))
+            beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
+        for c in range(1, C):
+            a_c = max([l[i] for i in range(n) if ys[i] == c],
+                      default=-1e300)
+            b_c = min([l[i] for i in range(n) if ys[i] == c + 1],
+                      default=1e300)
+            lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
+            hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
+            if hi > lo:
+                gamma[c - 1] = lo + (hi - lo) \
+                    * float(rng.uniform(0, 1))
+        s2b = scaled_inv_chisq(rng, nu_beta + p,
+                               S_beta + sum(b * b for b in beta))
+        if it >= burn_in:
+            kept += 1
+            acc_s2b += s2b
+            for j in range(p):
+                acc_beta[j] += beta[j]
+            for c in range(len(gamma)):
+                acc_gamma[c] += gamma[c]
+    return {"beta": [v / kept for v in acc_beta],
+            "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
+            "sigma2_beta": acc_s2b / kept, "n_kept": kept,
+            "n_categories": C}
+
+
+def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
+                               nu_g=5.0, S_g=None, seed=42):
+    """The ordinal probit GBLUP of eq. (7.2) p.214:
+    p_ic = Phi(gamma_c + b_i) - Phi(gamma_{c-1} + b_i) with
+    b | sigma2_g ~ N(0, sigma2_g G).  Gibbs steps 1-6 on p.214:
+
+      b        | . ~ N(b-tilde, Sigma-tilde_b),
+                     Sigma-tilde_b = (sigma_g^-2 G^-1 + I_n)^-1,
+                     b-tilde = -Sigma-tilde_b l
+      sigma2_g | . ~ chi^-2(nu_g + n, S_g + b' G^-1 b)
+
+    with the same latent-variable and threshold steps as eq. (7.1).
+    """
+    ys = [int(v) for v in _flat(y)]
+    n = len(ys)
+    C = max(ys)
+    Gm = _mat(G)
+    Ginv = _inv(Gm)
+    rng = np.random.default_rng(seed)
+    if S_g is None:
+        S_g = 1.0
+    b = [0.0] * n
+    s2g = 1.0
+    gamma = [float(c) - C / 2.0 for c in range(1, C)]
+    l = [0.0] * n
+    acc_b = [0.0] * n
+    acc_gamma = [0.0] * max(len(gamma), 1)
+    acc_s2g = 0.0
+    kept = 0
+    for it in range(int(n_iter)):
+        for i in range(n):
+            c = ys[i]
+            lo = gamma[c - 2] if c >= 2 else -1e300
+            hi = gamma[c - 1] if c <= C - 1 else 1e300
+            l[i] = _rtruncnorm(rng, -b[i], 1.0, lo, hi)
+        A = [[Ginv[i][j] / s2g + (1.0 if i == j else 0.0)
+              for j in range(n)] for i in range(n)]
+        Sig = _inv(A)
+        mean = [-v for v in _mv(Sig, l)]
+        L = _chol(Sig)
+        z = [float(rng.normal(0, 1)) for _ in range(n)]
+        b = [mean[i] + sum(L[i][k] * z[k] for k in range(n))
+             for i in range(n)]
+        for c in range(1, C):
+            a_c = max([l[i] for i in range(n) if ys[i] == c],
+                      default=-1e300)
+            b_c = min([l[i] for i in range(n) if ys[i] == c + 1],
+                      default=1e300)
+            lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
+            hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
+            if hi > lo:
+                gamma[c - 1] = lo + (hi - lo) \
+                    * float(rng.uniform(0, 1))
+        quad = sum(b[i] * sum(Ginv[i][j] * b[j] for j in range(n))
+                   for i in range(n))
+        s2g = scaled_inv_chisq(rng, nu_g + n, S_g + quad)
+        if it >= burn_in:
+            kept += 1
+            acc_s2g += s2g
+            for i in range(n):
+                acc_b[i] += b[i]
+            for c in range(len(gamma)):
+                acc_gamma[c] += gamma[c]
+    return {"b": [v / kept for v in acc_b],
+            "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
+            "sigma2_g": acc_s2g / kept, "n_kept": kept,
+            "n_categories": C}

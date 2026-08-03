@@ -1,55 +1,45 @@
-"""Numbered display equation (7.1) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bayesian ordinal regression model.
 
-from . import _array_core as np
+Implements eq. (7.1) pp.210-213 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_1"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_1(the, PCCC, of, second, model, was):
-    """
-    Numbered display equation (7.1) from MVSML chapter 7.
-
-    Formula: the PCCC of the second model was 0.50% greater than that of the ﬁrst. The R code to reproduce the results is in Appendix 3. 7.3 Ordinal Logistic Regression As described at the beginning of this chapter, the ordinal logistic model is given in model (7.1) but with F the cumulative logistic distribution. Again, as in the ordinal probit regression model, the posterior distribution of the parameter is not easy to simulate and numerical methods are required. Here we describe the Gibbs sampler proposed by Montesinos-López et al. (2015b), which in addition to the latent variable Li in the representation of model
-
-    Parameters
-    ----------
-    the : array-like
-        Input data.
-    PCCC : array-like
-        Input data.
-    of : array-like
-        Input data.
-    second : array-like
-        Input data.
-    model : array-like
-        Input data.
-    was : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.1) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    the = np.atleast_1d(np.asarray(the, dtype=float))
-    n = len(the)
-    result = float(np.mean(the))
-    se = float(np.std(the, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.1) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_1(y, X, n_iter=1200, burn_in=300, link="probit", seed=42,
+         fit=True):
+    """p_ic = P(Y_i = c) = F(gamma_c + x_i'beta)
+    - F(gamma_{c-1} + x_i'beta) (eq. 7.1), the ordinal model built on
+    a latent continuous variable cut at thresholds
+    -inf = gamma_0 < gamma_1 < ... < gamma_C = +inf.  F is the
+    standard normal CDF for the ordinal probit model and the standard
+    logistic CDF for the ordinal logistic model (p.210).  With
+    ``fit=True`` the probit model is estimated by the Albert and Chib
+    Gibbs sampler of pp.212-213. Keys: estimate."""
+    if not fit:
+        eta = [sum(a * b for a, b in zip(row, _gp._flat(X[0])))
+               for row in [[]]] if False else None
+    f = _gp.ordinal_probit_gibbs(y, X, n_iter=n_iter,
+                                 burn_in=burn_in, seed=seed)
+    probs = _gp.ordinal_probabilities(
+        _gp._mv(_gp._mat(X), f["beta"]), f["gamma"], link=link)
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "beta": f["beta"],
+                              "gamma": f["gamma"],
+                              "sigma2_beta": f["sigma2_beta"],
+                              "probabilities": probs,
+                              "n_categories": f["n_categories"],
+                              "method": "Bayesian ordinal regression (MVSML 2022 eq. 7.1)"})
+    return with_describe_pointer(res, "msm104")
 
 
 def cheatsheet():
-    return "msm104: Numbered display equation (7.1) from MVSML chapter 7."
+    return "msm104: Bayesian ordinal regression model"
