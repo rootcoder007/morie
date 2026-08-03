@@ -1,55 +1,34 @@
-r"""Numbered display equation (5.4) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Genotype-by-environment BLUP model.
 
-from . import _array_core as np
+Implements eq. (5.4) p.150 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_4"]
 
 
-def mvsml_linear_mixed_models_eq_5_4(When, E, has, a, non, diagonal):
-    r"""
-    Numbered display equation (5.4) from MVSML chapter 5.
-
-    Formula: When \SigmaE has a non-diagonal structure, the information from the genomic rela- tionship matrix and the correlated environments can be helpful for improving the prediction performance of the model by borrowing information between lines inside an environment and between lines across and among environments (Burgueño et al. 2012). Example 2 To illustrate how model (5.4) can be implemented using the sommer package, the same data used in Example 1 are considered, where the same 30 geno- types are in the four environments. Besides the line indicator (GID), environment information (Env) was also available in the data set, which was needed for implementing model
-
-    Parameters
-    ----------
-    When : array-like
-        Input data.
-    E : array-like
-        Input data.
-    has : array-like
-        Input data.
-    a : array-like
-        Input data.
-    non : array-like
-        Input data.
-    diagonal : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.4) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    r"""
-    When = np.atleast_1d(np.asarray(When, dtype=float))
-    n = len(When)
-    result = float(np.mean(When))
-    se = float(np.std(When, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.4) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e=1.0):
+    """Y = 1_n mu + X_E beta_E + Z_L b_1 + Z_EL b_2 + eps (eq. 5.4):
+    the G x E BLUP model, with b_1 ~ N_J(0, sigma2_g G) the genotypic
+    effects and b_2 ~ N(0, Sigma_E (x) G) the genotype-by-environment
+    interaction, Sigma_E the genetic covariance between environments.
+    Keys: estimate."""
+    f = _gp.gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E,
+                           sigma2_e)
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "beta": f["beta"],
+                              "b_lines": f["b_lines"],
+                              "b_gxe": f["b_gxe"],
+                              "method": "G x E BLUP model (MVSML 2022 eq. 5.4)"})
+    return with_describe_pointer(res, "msm021")
 
 
 def cheatsheet():
-    return "msm021: Numbered display equation (5.4) from MVSML chapter 5."
+    return "msm021: Genotype-by-environment BLUP model"

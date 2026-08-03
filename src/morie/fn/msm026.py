@@ -1,55 +1,32 @@
-r"""Numbered display equation (5.5) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Multi-trait genomic linear mixed model.
 
-from . import _array_core as np
+Implements eq. (5.5) p.153 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_5"]
 
 
-def mvsml_linear_mixed_models_eq_5_5(j, J, Y, j2, g, E):
-    r"""
-    Numbered display equation (5.5) from MVSML chapter 5.
-
-    Formula: 6664 7775 + 6664 7775 + 6664 7775, j = 1, . . . , J, Y j2 \mu2 g j2 E j2
-
-    Parameters
-    ----------
-    j : array-like
-        Input data.
-    J : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    j2 : array-like
-        Input data.
-    g : array-like
-        Input data.
-    E : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.5) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    r"""
-    j = np.atleast_1d(np.asarray(j, dtype=float))
-    n = len(j)
-    result = float(np.mean(j))
-    se = float(np.std(j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.5) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_5(Y, Z, G, Sigma_T, R_T):
+    """Stacking the n_T traits of each line, Y = (1 (x) I_nT) mu
+    + Z b + eps with b ~ N(0, G (x) Sigma_T) and eps ~ N(0, I_J (x)
+    R_nT) (eq. 5.5).  Sigma_T is the genetic covariance between
+    traits.  When Sigma_T and R are diagonal the fit is equivalent to
+    fitting a univariate GBLUP per trait. Keys: estimate."""
+    f = _gp.multitrait_model(Y, Z, G, Sigma_T, R_T)
+    res = RichResult(payload={"estimate": f["mu"][0], "mu": f["mu"],
+                              "b": f["b"],
+                              "b_by_line": f["b_by_line"],
+                              "method": "multi-trait genomic LMM (MVSML 2022 eq. 5.5)"})
+    return with_describe_pointer(res, "msm026")
 
 
 def cheatsheet():
-    return "msm026: Numbered display equation (5.5) from MVSML chapter 5."
+    return "msm026: Multi-trait genomic linear mixed model"

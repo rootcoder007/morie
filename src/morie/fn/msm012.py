@@ -1,55 +1,35 @@
-r"""Numbered display equation (5.2) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Marginal likelihood of the linear mixed model.
 
-from . import _array_core as np
+Implements eq. (5.2) p.142 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_2"]
 
 
-def mvsml_linear_mixed_models_eq_5_2(n, where, V, ZTDZ, R, the):
-    r"""
-    Numbered display equation (5.2) from MVSML chapter 5.
-
-    Formula: ) (5.2) , n ( 2\pi ) where V = ZTDZ + R is the marginal variance of Y. The maximum likelihood estimators (MLE) of the parameters, \beta, D, and R, are the values that maximize the likelihood function
-
-    Parameters
-    ----------
-    n : array-like
-        Input data.
-    where : array-like
-        Input data.
-    V : array-like
-        Input data.
-    ZTDZ : array-like
-        Input data.
-    R : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.2) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    r"""
-    n = np.atleast_1d(np.asarray(n, dtype=float))
-    n = len(n)
-    result = float(np.mean(n))
-    se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.2) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_2(X, Z, y, D, R=None, beta=None, restricted=False):
+    """L(beta, D, R; y) = |V|^(-1/2)(2 pi)^(-n/2)
+    exp(-1/2 (y - X beta)' V^-1 (y - X beta)) with V = Z'DZ + R
+    (eq. 5.2); the log is returned.  With ``restricted=True`` the
+    REML objective of p.146 is returned instead, which adds the
+    -1/2 log|X'V^-1X| term that removes the ML bias.
+    Keys: estimate."""
+    if restricted:
+        val, bhat = _gp.reml_loglik(X, Z, y, D, R)
+    else:
+        val, bhat = _gp.lmm_loglik(X, Z, y, D, beta=beta, R=R)
+    res = RichResult(payload={"estimate": val, "loglik": val,
+                              "beta": bhat, "restricted": restricted,
+                              "method": "LMM marginal likelihood (MVSML 2022 eq. 5.2)"})
+    return with_describe_pointer(res, "msm012")
 
 
 def cheatsheet():
-    return "msm012: Numbered display equation (5.2) from MVSML chapter 5."
+    return "msm012: Marginal likelihood of the linear mixed model"
