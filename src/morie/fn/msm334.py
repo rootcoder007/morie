@@ -15,7 +15,8 @@ import math
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
-__all__ = ["mvsml_preprocessing_eq_2_22"]
+__all__ = ["mvsml_preprocessing_eq_2_22",
+           "mvsml_elements_lin_reg_expected_prediction_error"]
 
 
 def mvsml_preprocessing_eq_2_22(sigma2, x_star, eigenvalues):
@@ -29,6 +30,14 @@ def mvsml_preprocessing_eq_2_22(sigma2, x_star, eigenvalues):
                               "variance_inflation": v / float(sigma2),
                               "method": "expected prediction error (MVSML 2022 p.80)"})
     return with_describe_pointer(res, "msm334")
+
+
+# The stub name above is mislabelled: it claims chapter 2 while the
+# equation it carries is the expected prediction error of sec. 3.5
+# (p.80).  Both names resolve to the same function; the canonical one
+# is preferred in new code.
+mvsml_elements_lin_reg_expected_prediction_error = \
+    mvsml_preprocessing_eq_2_22
 
 
 def cheatsheet():

@@ -51,9 +51,26 @@ def _mv(A, v):
 
 
 def _solve(A, b):
-    """Solve A x = b through the native linear-algebra core."""
-    x = np.linalg.solve(np.marr(_mat(A)), np.marr(_flat(b)))
-    return [float(v) for v in x._flat()]
+    """Solve A x = b through the native linear-algebra core.
+
+    Rank-deficient systems are common here and are not an error: an
+    intercept-only design block, a covariate column of zeros, or a
+    genomic relationship matrix built from fewer markers than lines all
+    produce a singular left-hand side.  Rather than failing, fall back
+    on the rank-gated pseudo-inverse (``linalg.pinv``, the same
+    statsmodels pinv-of-design path used by the OLS/GLM solver in this
+    package), which returns the minimum-norm solution.
+    """
+    Am = _mat(A)
+    bv = _flat(b)
+    try:
+        x = np.linalg.solve(np.marr(Am), np.marr(bv))
+        return [float(v) for v in x._flat()]
+    except Exception:
+        P = np.linalg.pinv(np.marr(Am))
+        Pl = [[float(v) for v in row] for row in P._tolist()] \
+            if hasattr(P, "_tolist") else _mat(P)
+        return _mv(Pl, bv)
 
 
 def _inv(A):
