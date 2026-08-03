@@ -472,3 +472,253 @@ def mean_log_loss(probs, y_true, n_classes=None):
     for i, cls in enumerate(yt):
         tot += math.log(max(P[i][cls], 1e-300))
     return -tot / T
+
+
+# ------------------------------- linear mixed models (ch. 5)
+def kron(A, B):
+    """Kronecker product, the operator used throughout sec. 5.5."""
+    A = _mat(A)
+    B = _mat(B)
+    ra, ca = len(A), len(A[0])
+    rb, cb = len(B), len(B[0])
+    out = [[0.0] * (ca * cb) for _ in range(ra * rb)]
+    for i in range(ra):
+        for j in range(ca):
+            for k in range(rb):
+                for l in range(cb):
+                    out[i * rb + k][j * cb + l] = A[i][j] * B[k][l]
+    return out
+
+
+def _logdet(A):
+    """log|A| by Gaussian elimination with partial pivoting."""
+    M = [row[:] for row in _mat(A)]
+    n = len(M)
+    ld = 0.0
+    sign = 1.0
+    for i in range(n):
+        piv = max(range(i, n), key=lambda r: abs(M[r][i]))
+        if abs(M[piv][i]) < 1e-300:
+            return float("-inf")
+        if piv != i:
+            M[i], M[piv] = M[piv], M[i]
+            sign = -sign
+        ld += math.log(abs(M[i][i]))
+        for r in range(i + 1, n):
+            f = M[r][i] / M[i][i]
+            for c in range(i, n):
+                M[r][c] -= f * M[i][c]
+    return ld
+
+
+def lmm_marginal_v(Z, D, R=None):
+    """V = Z D Z' + R, the marginal variance of Y under eq. (5.1)."""
+    Z = _mat(Z)
+    n = len(Z)
+    V = _mm(_mm(Z, _mat(D)), _t(Z))
+    if R is None:
+        R = [[1.0 if i == j else 0.0 for j in range(n)]
+             for i in range(n)]
+    R = _mat(R)
+    return [[V[i][j] + R[i][j] for j in range(n)] for i in range(n)]
+
+
+def lmm_loglik(X, Z, y, D, beta=None, R=None):
+    """log of eq. (5.2) p.142: L(beta, D, R; y) =
+    |V|^{-1/2}(2 pi)^{-n/2} exp(-1/2 (y - X beta)' V^-1 (y - X beta))
+    with V = Z D Z' + R.  With ``beta=None`` the GLS estimate is
+    plugged in."""
+    Xm = _mat(X)
+    y = _flat(y)
+    n = len(y)
+    V = lmm_marginal_v(Z, D, R)
+    Vi = _inv(V)
+    if beta is None:
+        XtVi = _mm(_t(Xm), Vi)
+        beta = _solve(_mm(XtVi, Xm), _mv(XtVi, y))
+    r = [a - b for a, b in zip(y, _mv(Xm, beta))]
+    quad = sum(a * b for a, b in zip(r, _mv(Vi, r)))
+    return (-0.5 * n * math.log(2.0 * math.pi) - 0.5 * _logdet(V)
+            - 0.5 * quad), beta
+
+
+def reml_loglik(X, Z, y, D, R=None):
+    """The restricted log-likelihood of sec. 5.2.1.2 p.146:
+    l_R(theta; y) = -1/2 log|X'V^-1X| - 1/2 log|V|
+                    - 1/2 (y - X beta-tilde)' V^-1 (y - X beta-tilde),
+    beta-tilde the GLS estimator.  It differs from eq. (5.2) by the
+    first term, which is what removes the downward bias of ML."""
+    Xm = _mat(X)
+    y = _flat(y)
+    V = lmm_marginal_v(Z, D, R)
+    Vi = _inv(V)
+    XtVi = _mm(_t(Xm), Vi)
+    A = _mm(XtVi, Xm)
+    beta = _solve(A, _mv(XtVi, y))
+    r = [a - b for a, b in zip(y, _mv(Xm, beta))]
+    quad = sum(a * b for a, b in zip(r, _mv(Vi, r)))
+    return (-0.5 * _logdet(A) - 0.5 * _logdet(V) - 0.5 * quad), beta
+
+
+def em_lmm(X, Z, y, D0=None, sigma2_0=1.0, n_iter=200, tol=1e-10):
+    """The EM algorithm of sec. 5.2.1.1 pp.143-144 for R = sigma2 I.
+
+    E step: D-tilde = (D^-1 + sigma^-2 Z'Z)^-1,
+            b-tilde  = sigma^-2 D-tilde Z'(y - X beta).
+    M step: beta   = (X'X)^-1 X'(y - Z b-tilde),
+            sigma2 = n^-1 [tr(Z D-tilde Z')
+                           + (y - X beta - Z b-tilde)'(same)],
+            D      = D-tilde + b-tilde b-tilde'.
+    """
+    Xm = _mat(X)
+    Zm = _mat(Z)
+    y = _flat(y)
+    n = len(y)
+    q = len(Zm[0])
+    D = _mat(D0) if D0 is not None else \
+        [[1.0 if i == j else 0.0 for j in range(q)] for i in range(q)]
+    s2 = float(sigma2_0)
+    XtX = _mm(_t(Xm), Xm)
+    ZtZ = _mm(_t(Zm), Zm)
+    beta = _solve(XtX, _mv(_t(Xm), y))
+    for it in range(int(n_iter)):
+        Di = _inv(D)
+        A = [[Di[i][j] + ZtZ[i][j] / s2 for j in range(q)]
+             for i in range(q)]
+        Dt = _inv(A)
+        resid = [a - b for a, b in zip(y, _mv(Xm, beta))]
+        bt = [v / s2 for v in _mv(Dt, _mv(_t(Zm), resid))]
+        beta_new = _solve(XtX, _mv(_t(Xm),
+                                   [a - b for a, b in
+                                    zip(y, _mv(Zm, bt))]))
+        e = [a - b - c for a, b, c in zip(y, _mv(Xm, beta_new),
+                                          _mv(Zm, bt))]
+        ZDZ = _mm(_mm(Zm, Dt), _t(Zm))
+        tr = sum(ZDZ[i][i] for i in range(n))
+        s2_new = (tr + sum(v * v for v in e)) / n
+        D_new = [[Dt[i][j] + bt[i] * bt[j] for j in range(q)]
+                 for i in range(q)]
+        gap = max(abs(s2_new - s2),
+                  max(abs(a - b) for a, b in zip(beta_new, beta)))
+        beta, s2, D = beta_new, s2_new, D_new
+        if gap < tol:
+            break
+    return {"beta": beta, "sigma2": s2, "D": D, "b": bt,
+            "iterations": it + 1}
+
+
+def gblup_model(y, Z_L, G, sigma2_g, sigma2_e=1.0, mu_only=True,
+                X=None):
+    """eq. (5.3) p.148: Y = 1_n mu + Z_L b + eps with
+    b ~ N_J(0, sigma2_g G) and R = sigma2 I_n.  Returns the BLUE of
+    the intercept and the BLUP of the genotypic effects."""
+    y = _flat(y)
+    n = len(y)
+    Xm = [[1.0] for _ in range(n)] if (mu_only or X is None) \
+        else _mat(X)
+    q = len(G)
+    Sigma = [[sigma2_g * G[i][j] for j in range(q)] for i in range(q)]
+    R = [[sigma2_e if i == j else 0.0 for j in range(n)]
+         for i in range(n)]
+    beta, b = blue_blup_via_v(Xm, Z_L, y, Sigma, R)
+    return {"mu": beta[0], "beta": beta, "b": b}
+
+
+def gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E,
+                   sigma2_e=1.0):
+    """eq. (5.4) p.150: Y = 1_n mu + X_E beta_E + Z_L b_1 + Z_EL b_2
+    + eps with b_1 ~ N_J(0, sigma2_g G) and b_2 ~ N(0, Sigma_E (x) G),
+    Sigma_E the genetic covariance between environments.  The two
+    random terms are stacked into one Z = [Z_L Z_EL] and one block
+    diagonal Sigma, then solved as eq. (5.1)."""
+    y = _flat(y)
+    n = len(y)
+    Xm = [[1.0] + list(row) for row in _mat(X_E)]
+    ZL = _mat(Z_L)
+    ZEL = _mat(Z_EL)
+    q1 = len(ZL[0])
+    S2 = kron(Sigma_E, G)
+    q2 = len(S2)
+    Z = [ZL[i] + ZEL[i] for i in range(n)]
+    Sigma = [[0.0] * (q1 + q2) for _ in range(q1 + q2)]
+    for i in range(q1):
+        for j in range(q1):
+            Sigma[i][j] = sigma2_g * G[i][j]
+    for i in range(q2):
+        for j in range(q2):
+            Sigma[q1 + i][q1 + j] = S2[i][j]
+    R = [[sigma2_e if i == j else 0.0 for j in range(n)]
+         for i in range(n)]
+    beta, b = blue_blup_via_v(Xm, Z, y, Sigma, R)
+    return {"beta": beta, "b_lines": b[:q1], "b_gxe": b[q1:]}
+
+
+def multitrait_model(Y, Z, G, Sigma_T, R_T, X=None):
+    """eq. (5.5)/(5.5a) p.153: stacking the n_T traits of each line,
+    Y = (1 (x) I_nT) mu + X beta + Z b + eps with b ~ N(0, G (x)
+    Sigma_T) and eps ~ N(0, I_J (x) R_nT).  ``Y`` is J x n_T (lines by
+    traits); the model is solved in the stacked ordering
+    (line 1 traits, line 2 traits, ...).  When Sigma_T and R are
+    diagonal this is equivalent to fitting each trait separately
+    (book p.153)."""
+    Ym = _mat(Y)
+    J = len(Ym)
+    nT = len(Ym[0])
+    y = [v for row in Ym for v in row]
+    n = J * nT
+    I_nT = [[1.0 if i == j else 0.0 for j in range(nT)]
+            for i in range(nT)]
+    ones = [[1.0] for _ in range(J)]
+    Xm = kron(ones, I_nT)
+    if X is not None:
+        Xadd = _mat(X)
+        Xm = [Xm[i] + Xadd[i] for i in range(n)]
+    Zm = kron(Z, I_nT)
+    Sigma = kron(G, Sigma_T)
+    I_J = [[1.0 if i == j else 0.0 for j in range(J)]
+           for i in range(J)]
+    R = kron(I_J, R_T)
+    beta, b = blue_blup_via_v(Xm, Zm, y, Sigma, R)
+    return {"mu": beta[:nT], "beta": beta, "b": b,
+            "b_by_line": [b[i * nT:(i + 1) * nT]
+                          for i in range(len(b) // nT)]}
+
+
+def gxe_multitrait_model(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E,
+                         Sigma_2T, R_T, I_env, X=None):
+    """eq. (5.6) p.155: Y = (1 (x) I_nT) mu + X beta + Z_L b_1
+    + Z_EL b_2 + eps with b_1 ~ N(0, G (x) Sigma_T) and
+    b_2 ~ N(0, Sigma_E (x) G (x) Sigma_2T).  With Sigma_T, Sigma_2T,
+    Sigma_E and R all diagonal the model reduces to separate univariate
+    GBLUP fits per trait (book p.155)."""
+    Ym = _mat(Y)
+    rows = len(Ym)
+    nT = len(Ym[0])
+    y = [v for row in Ym for v in row]
+    n = rows * nT
+    I_nT = [[1.0 if i == j else 0.0 for j in range(nT)]
+            for i in range(nT)]
+    ones = [[1.0] for _ in range(rows)]
+    Xm = kron(ones, I_nT)
+    if X is not None:
+        Xadd = _mat(X)
+        Xm = [Xm[i] + Xadd[i] for i in range(n)]
+    Z1 = kron(Z_L, I_nT)
+    Z2 = kron(Z_EL, I_nT)
+    S1 = kron(G, Sigma_T)
+    S2 = kron(kron(Sigma_E, G), Sigma_2T)
+    q1, q2 = len(S1), len(S2)
+    Z = [Z1[i] + Z2[i] for i in range(n)]
+    Sigma = [[0.0] * (q1 + q2) for _ in range(q1 + q2)]
+    for i in range(q1):
+        for j in range(q1):
+            Sigma[i][j] = S1[i][j]
+    for i in range(q2):
+        for j in range(q2):
+            Sigma[q1 + i][q1 + j] = S2[i][j]
+    I_rows = [[1.0 if i == j else 0.0 for j in range(rows)]
+              for i in range(rows)]
+    R = kron(I_rows, R_T)
+    beta, b = blue_blup_via_v(Xm, Z, y, Sigma, R)
+    return {"mu": beta[:nT], "beta": beta,
+            "b_lines": b[:q1], "b_gxe": b[q1:]}

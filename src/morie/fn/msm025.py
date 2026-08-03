@@ -1,55 +1,30 @@
-"""Numbered display equation (5.3) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GBLUP model for genomic prediction.
 
-from . import _array_core as np
+Implements eq. (5.3) p.148 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_3"]
 
 
-def mvsml_linear_mixed_models_eq_5_3(ti, trait, Genomic, Linear, Mixed, Effects):
-    """
-    Numbered display equation (5.3) from MVSML chapter 5.
-
-    Formula: ti-trait Genomic Linear Mixed-Effects Models 153 work well, especially in traits with low heritability. When low heritability traits have at least moderate correlation with high heritability traits, the prediction performance ability for these low heritability traits could strongly increase by using a multi-trait model (Jia and Jannink 2012; Montesinos-López et al. 2016; Budhlakoti et al. 2019). If for each line ( j = 1, . . .J), nT traits are measured, Yjt, t = 1, . . .nT, the multi-trait genomic linear mixed-effects model adopts an unstructured covariance matrix for the residuals between traits and for the random genotypic effects between traits, and similar to the univariate trait models
-
-    Parameters
-    ----------
-    ti : array-like
-        Input data.
-    trait : array-like
-        Input data.
-    Genomic : array-like
-        Input data.
-    Linear : array-like
-        Input data.
-    Mixed : array-like
-        Input data.
-    Effects : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.3) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    """
-    ti = np.atleast_1d(np.asarray(ti, dtype=float))
-    n = len(ti)
-    result = float(np.mean(ti))
-    se = float(np.std(ti, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.3) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_3(y, Z_L, G, sigma2_g, sigma2_e=1.0):
+    """Y = 1_n mu + Z_L b + eps with b ~ N_J(0, sigma2_g G) and
+    R = sigma2 I_n (eq. 5.3): the GBLUP model.  Z_L is the incidence
+    matrix of lines and G the genomic relationship matrix; the BLUP of
+    b holds the genomic estimated breeding values. Keys: estimate."""
+    f = _gp.gblup_model(y, Z_L, G, sigma2_g, sigma2_e)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "gebv": f["b"],
+                              "method": "GBLUP model (MVSML 2022 eq. 5.3)"})
+    return with_describe_pointer(res, "msm025")
 
 
 def cheatsheet():
-    return "msm025: Numbered display equation (5.3) from MVSML chapter 5."
+    return "msm025: GBLUP model for genomic prediction"
