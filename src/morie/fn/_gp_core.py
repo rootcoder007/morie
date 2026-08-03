@@ -2768,13 +2768,23 @@ def fda_loocv(t, x_t, L2, kind="fourier"):
     ts = _flat(t)
     xs = _flat(x_t)
     m = len(ts)
+    # The basis functions are fixed on the domain of the curve; only
+    # the coefficients are re-estimated when a point is held out.  The
+    # period must therefore come from the full grid -- deriving it from
+    # the reduced grid would change phi_l itself whenever the dropped
+    # point is an endpoint, and the held-out value would then be
+    # predicted from a different basis than the one it was fitted on.
+    period = max(ts) - min(ts)
+    if period <= 0:
+        period = 1.0
     tot = 0.0
     for j in range(m):
         t_j = ts[:j] + ts[j + 1:]
         x_j = xs[:j] + xs[j + 1:]
-        Psi_j = fda_basis_matrix(t_j, L2, kind=kind)
+        Psi_j = fda_basis_matrix(t_j, L2, kind=kind, period=period)
         c = fda_basis_coefficients(Psi_j, x_j)
-        psi_at_j = fda_basis_matrix([ts[j]], L2, kind=kind)[0]
+        psi_at_j = fda_basis_matrix([ts[j]], L2, kind=kind,
+                                    period=period)[0]
         pred = sum(psi_at_j[o] * c[o] for o in range(L2))
         tot += (xs[j] - pred) ** 2
     return tot
@@ -2860,13 +2870,45 @@ def zap_best_split(y, x, candidates=None):
 def zap_predict(theta_hat, mu_hat):
     """eq. (15.3) p.652: under ZAP_RF the prediction is the mean of
     the zero-altered Poisson,
-    Y-hat = (1 - theta-hat) exp(-mu-hat) / (1 - exp(-mu-hat))."""
+    Y-hat = (1 - theta-hat) mu-hat / (1 - exp(-mu-hat)).
+
+    Book erratum.  Equation (15.3) as printed, and the E(Y) line on
+    p.651, both give the numerator as (1 - theta) exp(-mu), dropping
+    the mu factor.  Three things on those same two pages show the mu
+    belongs there:
+
+    * the ZAP probability mass function printed directly above E(Y) is
+      P(Y = y) = (1 - theta) exp(-mu) mu^y / ((1 - exp(-mu)) y!) for
+      y > 0, whose mean is (1 - theta) mu / (1 - exp(-mu));
+    * the Var(Y) expression printed on the very next line subtracts
+      ((1 - theta) mu / (1 - exp(-mu)))^2, i.e. the square of the mean
+      -- so the book's own variance formula uses the mu;
+    * the estimating equation for mu on p.652,
+      sum_i Y_i+ / N+ = mu / (1 - exp(-mu)), is the zero-truncated
+      Poisson mean, again with mu in the numerator.
+
+    The printed form is also not a count: it decreases towards zero as
+    mu grows.  We implement the internally consistent formula."""
     th = float(theta_hat)
     mu = float(mu_hat)
     denom = 1.0 - math.exp(-mu)
     if denom <= 0:
         return 0.0
-    return (1.0 - th) * math.exp(-mu) / denom
+    return (1.0 - th) * mu / denom
+
+
+def zap_mean_variance(theta, mu):
+    """Mean and variance of the zero-altered Poisson, p.651.  The
+    variance is transcribed exactly as printed; the mean is the
+    corrected form documented in :func:`zap_predict`."""
+    th = float(theta)
+    mu = float(mu)
+    denom = 1.0 - math.exp(-mu)
+    if denom <= 0:
+        return {"mean": 0.0, "variance": 0.0}
+    k = (1.0 - th) / denom
+    mean = k * mu
+    return {"mean": mean, "variance": k * (mu + mu * mu) - mean * mean}
 
 
 def zapc_predict(theta_hat, mu_hat, threshold=0.5):

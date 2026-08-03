@@ -18,9 +18,14 @@ __all__ = ["mvsml_functional_regression_eq_15_3", "mvsml_zap_predict"]
 
 
 def mvsml_functional_regression_eq_15_3(theta_hat, mu_hat):
-    """Y-hat = (1 - theta-hat) exp(-mu-hat)/(1 - exp(-mu-hat))
+    """Y-hat = (1 - theta-hat) mu-hat/(1 - exp(-mu-hat))
     (eq. 15.3): under ZAP_RF the prediction is the mean of the
-    zero-altered Poisson model. Keys: estimate."""
+    zero-altered Poisson model.
+
+    Equation (15.3) as printed drops the mu-hat from the numerator;
+    :func:`morie.fn._gp_core.zap_predict` documents the three places
+    on pp.651-652 where the book contradicts its own printed form.
+    Keys: estimate."""
     v = _gp.zap_predict(theta_hat, mu_hat)
     res = RichResult(payload={"estimate": v, "y_hat": v,
                               "method": "ZAP_RF prediction (MVSML 2022 eq. 15.3)"})
