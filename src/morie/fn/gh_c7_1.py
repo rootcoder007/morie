@@ -1,46 +1,36 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities."""
+"""Pólya tree KL property.
+
+Implements sec. 7.1.1 (canonical PT with summable 1/a_m) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_pt_kl_prop"]
 
 
-def ghosal_pt_kl_prop(x):
-    """
-    Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities
-
-    Formula: PT*(alpha, a_m) with a_m = alpha_m^2 satisfies KL condition
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 7 §7.1.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities",
-        }
-    )
+def ghosal_pt_kl_prop(a_exponent=2.0, m_max=200):
+    """PT*(lambda, a_m) with a_m = m^2 (more generally
+    sum a_m^{-1} < infty plus growth) has the KL property at smooth
+    densities (sec. 7.1.1; absolute continuity via Thm 3.16/3.22).
+    Checks the two canonical series: sum 1/a_m and the eq. (3.17)
+    variance series sum 1/(4(2 a_m + 1)). Keys: estimate."""
+    s_inv = sum(1.0 / float(m) ** a_exponent
+                for m in range(1, m_max + 1))
+    s_var = sum(1.0 / (4.0 * (2.0 * float(m) ** a_exponent + 1.0))
+                for m in range(1, m_max + 1))
+    summable = a_exponent > 1.0
+    res = RichResult(payload={"estimate": s_inv,
+                              "variance_series": s_var,
+                              "kl_property": summable,
+                              "method": "PT KL-property series (GvdV 2017 sec. 7.1.1)"})
+    return with_describe_pointer(res, "gh_c7_1")
 
 
 def cheatsheet():
-    return "gh_c7_1: Polya tree KL property: canonical PT*(alpha, a_m) has KL support at continuous densities"
+    return "gh_c7_1: Pólya tree KL property"

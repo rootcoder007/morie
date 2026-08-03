@@ -1,41 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Le Cam inequality approach to posterior consistency."""
+"""Le Cam's inequality.
+
+Implements Lemma 6.46 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_lecam_consist"]
 
 
-def ghosal_lecam_consist(x):
-    """
-    Le Cam inequality approach to posterior consistency
-
-    Formula: Pi_n(U^c|X^n) <= (1/alpha_n) sum p(X_i|theta)/p0(X_i) for test phi_n
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 6 §6.8.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Le Cam inequality approach to posterior consistency"}
-    )
+def ghosal_lecam_consist(tv_P0_PU, P0_phi, Pi_U, int_V_P_1mphi):
+    """P0 Pi(V | X) <= d_TV(P0, P_U) + P0 phi +
+    (1/Pi(U)) int_V P(1-phi) dPi (Lemma 6.46): evaluates the bound
+    from its three ingredients. Keys: estimate."""
+    bound = float(tv_P0_PU) + float(P0_phi) \
+        + float(int_V_P_1mphi) / float(Pi_U)
+    res = RichResult(payload={"estimate": bound,
+                              "terms": [float(tv_P0_PU),
+                                        float(P0_phi),
+                                        float(int_V_P_1mphi)
+                                        / float(Pi_U)],
+                              "method": "Le Cam inequality (GvdV 2017 Lemma 6.46)"})
+    return with_describe_pointer(res, "gh_c6_13")
 
 
 def cheatsheet():
-    return "gh_c6_13: Le Cam inequality approach to posterior consistency"
+    return "gh_c6_13: Le Cam's inequality"

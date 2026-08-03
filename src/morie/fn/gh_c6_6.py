@@ -1,46 +1,43 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Kullback-Leibler support condition: prior assigns positive mass to every KL ball around P0."""
+"""Kullback-Leibler support.
+
+Implements Definition 6.15 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_kl_support"]
 
 
-def ghosal_kl_support(x):
-    """
-    Kullback-Leibler support condition: prior assigns positive mass to every KL ball around P0
-
-    Formula: Pi({P: KL(P0,P)<eps}) > 0 for all eps > 0
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 6 §6.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Kullback-Leibler support condition: prior assigns positive mass to every KL ball around P0",
-        }
-    )
+def ghosal_kl_support(p0, alpha=None, eps=0.1, n_sim=3000, seed=42):
+    """p0 in KL(Pi) iff Pi(p: K(p0; p) < eps) > 0 for every eps
+    (Def 6.15): Monte Carlo estimate of the prior mass of the KL
+    neighborhood under a Dirichlet prior on the k-cell simplex.
+    Keys: estimate."""
+    p0 = _bnp.normalize_weights(p0)
+    k = len(p0)
+    if alpha is None:
+        alpha = [1.0] * k
+    rng = np.random.default_rng(seed)
+    hits = 0
+    for _ in range(n_sim):
+        g = [float(rng.gamma(a, 1.0)) for a in alpha]
+        p = _bnp.normalize_weights(g)
+        kl = sum(q * math.log(q / max(pi, 1e-300))
+                 for q, pi in zip(p0, p) if q > 0)
+        if kl < eps:
+            hits += 1
+    mass = hits / n_sim
+    res = RichResult(payload={"estimate": mass,
+                              "kl_property": mass > 0,
+                              "method": "KL support mass (GvdV 2017 Def 6.15)"})
+    return with_describe_pointer(res, "gh_c6_6")
 
 
 def cheatsheet():
-    return "gh_c6_6: Kullback-Leibler support condition: prior assigns positive mass to every KL ball around P0"
+    return "gh_c6_6: Kullback-Leibler support"
