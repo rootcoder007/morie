@@ -153,13 +153,45 @@ def test_percentile_bootstrap_with_the_mean_recovers_a_clear_difference():
     assert r["ci"] == (-10.0, -10.0)
 
 
-def test_mad_rescaled_is_the_r_constant_not_the_book_divisor():
+def test_the_two_mad_constants_are_distinct_and_named():
     # R's mad() uses 1.4826; the book writes MAD/0.6745 = 1.4825797...
-    # They agree to 5 significant figures but are not identical, and
-    # the ported estimators use the R one because WRS does.
-    v = [2, 4, 4, 4, 5, 5, 7, 9]
-    assert abs(rb.mad_rescaled(v) / rb.madn(v) - 1.4826 * 0.6745) < 1e-12
-    assert abs(rb.mad_rescaled(v) - rb.madn(v)) < 1e-3
+    # They agree to 5 significant figures but are NOT the same number,
+    # and leaving that implicit is how a silent bias gets in.
+    assert rb.R_MAD_CONSTANT == 1.4826
+    assert abs(rb.BOOK_MADN_CONSTANT - 1.0 / 0.6745) < 1e-15
+    assert rb.R_MAD_CONSTANT != rb.BOOK_MADN_CONSTANT
+    assert abs(rb.R_MAD_CONSTANT - rb.BOOK_MADN_CONSTANT) < 1e-4
+
+
+def test_madn_is_exactly_mad_rescaled_with_the_book_constant():
+    # one source of truth: madn must not drift from mad_rescaled
+    for v in ([2, 4, 4, 4, 5, 5, 7, 9], X, GX):
+        assert abs(rb.madn(v)
+                   - rb.mad_rescaled(v, rb.BOOK_MADN_CONSTANT)) < 1e-13
+
+
+def test_estimators_default_to_the_wrs_constant_and_accept_the_books():
+    # default reproduces WRS exactly (checked above against R)
+    assert abs(rb.one_step_m_estimator(X) - 50.9176160000) < 1e-7
+    # the book constant gives a different, also-correct answer; the
+    # point is that the caller chooses rather than being surprised
+    book = rb.one_step_m_estimator(X, constant=rb.BOOK_MADN_CONSTANT)
+    assert abs(book - 50.9176160000) > 1e-6
+    assert abs(book - 50.9175315) < 1e-5
+    # explicitly passing the R constant is the same as the default
+    assert abs(rb.one_step_m_estimator(X, constant=rb.R_MAD_CONSTANT)
+               - rb.one_step_m_estimator(X)) < 1e-15
+    assert abs(rb.mom_estimator(X, constant=rb.R_MAD_CONSTANT)
+               - rb.mom_estimator(X)) < 1e-15
+
+
+def test_mad_median_rule_keeps_the_books_constant():
+    # eq. (2.14) is the book's rule, so it must use the book's MADN --
+    # this is what the p.33 anchor (MADN = 0.7413) pins
+    mask = [2, 2, 3, 3, 3, 4, 4, 4, 100000, 100000]
+    r = rb.mad_median_rule(mask)
+    assert abs(r["madn"] - rb.madn(mask)) < 1e-15
+    assert abs(r["madn"] - 0.7413) < 5e-5
 
 
 def test_norm_quantile_against_known_values():
