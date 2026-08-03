@@ -26,6 +26,8 @@ __all__ = [
     "trimmed_mean_se", "trimmed_mean_ci", "yuen_paired",
     "trimmed_mean_anova", "boxplot_outliers",
     "akp_effect_size", "trimmed_mean_bootstrap",
+    "median_se", "median_test_2group",
+    "winsorized_regression",
 ]
 
 
@@ -1129,3 +1131,142 @@ def trimmed_mean_bootstrap(x, tr=0.2, alpha=0.05, nboot=2000,
     return one_sample_bootstrap(
         x, est=lambda v: trimmed_mean(v, tr), alpha=alpha, nboot=nboot,
         null_value=null_value, seed=seed)
+
+
+def median_se(x, warn_ties=True):
+    """Standard error of the median (McKean and Shrader, 1984).
+
+    Built from an order-statistic interval rather than a variance:
+
+        av  = round((n+1)/2 - z_.995 sqrt(n/4)),   av = 1 if that is 0
+        top = n - av + 1
+        SE  = (X_(top) - X_(av)) / (2 z_.995)
+
+    Ported from WRS ``msmedse``.  Wilcox warns that ties can make this
+    badly inaccurate even for large n, so ``warn_ties`` reports whether
+    any were present rather than silently returning a number.
+    """
+    v = sorted(_flat(x))
+    n = len(v)
+    if n < 2:
+        raise ValueError("need at least 2 observations")
+    z = _norm_quantile(0.995)
+    av = int(round((n + 1) / 2.0 - z * math.sqrt(n / 4.0)))
+    if av == 0:
+        av = 1
+    if av < 1:
+        raise ValueError("sample too small for the McKean-Shrader interval")
+    top = n - av + 1
+    se = (v[top - 1] - v[av - 1]) / (2.0 * z)
+    ties = len(v) != len(set(v))
+    if warn_ties and ties:
+        return {"se": se, "ties": True, "av": av, "top": top, "n": n,
+                "warning": "tied values detected; this standard error "
+                           "can be highly inaccurate even for large n",
+                "method": "McKean-Shrader standard error of the median"}
+    return {"se": se, "ties": ties, "av": av, "top": top, "n": n,
+            "method": "McKean-Shrader standard error of the median"}
+
+
+def median_test_2group(x, y, alpha=0.05):
+    """Compare two independent medians using McKean-Shrader errors.
+
+    The pairwise comparison WRS ``msmed`` performs: the difference in
+    medians over the root of the summed squared standard errors,
+    referred to the standard normal.  Wilcox's caution applies -- with
+    tied values prefer a percentile bootstrap on the medians.
+    """
+    xs, ys = _flat(x), _flat(y)
+    s1 = median_se(xs, warn_ties=False)["se"]
+    s2 = median_se(ys, warn_ties=False)["se"]
+    se = math.sqrt(s1 * s1 + s2 * s2)
+    if se == 0:
+        raise ValueError("both standard errors are zero")
+    m1, m2 = median(xs), median(ys)
+    stat = (m1 - m2) / se
+    crit = _norm_quantile(1.0 - alpha / 2.0)
+    p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(stat) / math.sqrt(2.0)))
+    dif = m1 - m2
+    return {"estimate": dif, "statistic": stat, "se": se, "p_value": p,
+            "ci": (dif - crit * se, dif + crit * se),
+            "median_x": m1, "median_y": m2,
+            "ties": (len(xs) != len(set(xs))) or (len(ys) != len(set(ys))),
+            "method": "median comparison, McKean-Shrader errors"}
+
+
+def winsorized_regression(X, y, tr=0.2, n_iter=20, tol=1e-4):
+    """Winsorized regression.
+
+    Solves the normal equations built from Winsorized covariances rather
+    than ordinary ones, then refines the fit by repeatedly regressing
+    the residuals the same way.  Ported from WRS ``winreg``.
+
+    Note on the loop, which we reproduce exactly: WRS tests the size of
+    the new increment and breaks BEFORE adding it, so the final
+    sub-tolerance correction is deliberately discarded.  Matching that
+    is what keeps our coefficients identical to R's.
+    """
+    Xm = _mat_local(X)
+    ys = _flat(y)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X and y must have the same number of rows")
+    p = len(Xm[0])
+    cols = [[Xm[i][j] for i in range(n)] for j in range(p)]
+    mvals = [winsorized_mean(c, tr) for c in cols]
+
+    M = [[winsorized_correlation(cols[i], cols[j], tr)["cov"]
+          for j in range(p)] for i in range(p)]
+    ma = [winsorized_correlation(cols[i], ys, tr)["cov"] for i in range(p)]
+    slope = _solve_local(M, ma)
+    b0 = winsorized_mean(ys, tr) - sum(slope[j] * mvals[j]
+                                       for j in range(p))
+    res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0
+           for i in range(n)]
+    converged = False
+    for _ in range(int(n_iter)):
+        ma = [winsorized_correlation(cols[i], res, tr)["cov"]
+              for i in range(p)]
+        slope_add = _solve_local(M, ma)
+        b0_add = winsorized_mean(res, tr) - sum(
+            slope_add[j] * mvals[j] for j in range(p))
+        if max(max(abs(v) for v in slope_add), abs(b0_add)) < tol:
+            converged = True
+            break
+        slope = [slope[j] + slope_add[j] for j in range(p)]
+        b0 += b0_add
+        res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0
+               for i in range(n)]
+    return {"coef": [b0] + list(slope), "intercept": b0,
+            "slope": list(slope), "residuals": res,
+            "converged": converged, "n": n,
+            "method": "Winsorized regression"}
+
+
+def _mat_local(X):
+    """Coerce to a list of rows; a flat sequence becomes one column."""
+    rows = list(X)
+    if rows and not isinstance(rows[0], (list, tuple)):
+        return [[float(v)] for v in rows]
+    return [[float(v) for v in r] for r in rows]
+
+
+def _solve_local(A, b):
+    """Solve A z = b by Gauss-Jordan with partial pivoting."""
+    n = len(A)
+    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])]
+         for i in range(n)]
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[piv][c]) < 1e-300:
+            raise ValueError("singular Winsorized covariance matrix")
+        M[c], M[piv] = M[piv], M[c]
+        d = M[c][c]
+        M[c] = [v / d for v in M[c]]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c]
+            if f:
+                M[r] = [M[r][k] - f * M[c][k] for k in range(n + 1)]
+    return [M[i][n] for i in range(n)]
