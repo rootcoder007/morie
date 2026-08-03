@@ -1,46 +1,36 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Renyi divergence of order alpha: D_alpha(P||Q) = log integral p^alpha q^{1-alpha} / (alpha-1)."""
+"""Rényi divergence.
+
+Implements Appendix B of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP (appendices).
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_renyi_div"]
 
 
-def ghosal_renyi_div(x):
-    """
-    Renyi divergence of order alpha: D_alpha(P||Q) = log integral p^alpha q^{1-alpha} / (alpha-1)
-
-    Formula: D_alpha(P||Q) = (1/(alpha-1)) log integral p^alpha q^{1-alpha}, alpha in (0,1)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal App B
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Renyi divergence of order alpha: D_alpha(P||Q) = log integral p^alpha q^{1-alpha} / (alpha-1)",
-        }
-    )
+def ghosal_renyi_div(p, q, alpha=0.5):
+    """D_alpha(P||Q) = (alpha - 1)^{-1} log int p^alpha q^{1-alpha}
+    for alpha in (0,1) (App B); D_{1/2} = -2 log(1 - d_H^2).
+    Keys: estimate."""
+    p = _bnp.normalize_weights(p)
+    q = _bnp.normalize_weights(q)
+    rho = sum(a ** alpha * b ** (1.0 - alpha) for a, b in zip(p, q))
+    D = math.log(rho) / (alpha - 1.0)
+    h2 = 1.0 - sum(math.sqrt(a * b) for a, b in zip(p, q))
+    res = RichResult(payload={"estimate": D,
+                              "hellinger_link_gap":
+                                  abs(D + 2.0 * math.log(1.0 - h2))
+                                  if abs(alpha - 0.5) < 1e-12
+                                  else None,
+                              "method": "Renyi divergence (GvdV 2017 App B)"})
+    return with_describe_pointer(res, "gh_ap_b3")
 
 
 def cheatsheet():
-    return "gh_ap_b3: Renyi divergence of order alpha: D_alpha(P||Q) = log integral p^alpha q^{1-alpha} / (alpha-1)"
+    return "gh_ap_b3: Rényi divergence"
