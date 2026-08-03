@@ -255,6 +255,21 @@ def _extract_from_content(data):
     return "".join(out)
 
 
+class _DocumentInformation(dict):
+    """The pypdf document-information surface: dictionary access plus
+    the lowercase convenience attributes."""
+
+    def _get(self, key):
+        v = self.get(key, "")
+        return v if isinstance(v, str) else ""
+
+    title = property(lambda self: self._get("/Title"))
+    author = property(lambda self: self._get("/Author"))
+    subject = property(lambda self: self._get("/Subject"))
+    creator = property(lambda self: self._get("/Creator"))
+    producer = property(lambda self: self._get("/Producer"))
+
+
 class PdfReader:
     """Native reader with the pypdf read surface morie uses."""
 
@@ -340,6 +355,42 @@ class PdfReader:
                     continue
 
     # -------------------------------------------------------- pages
+
+    # ----------------------------------------------------- metadata
+    @property
+    def metadata(self):
+        """The trailer /Info dictionary, exposed with the pypdf
+        ``DocumentInformation`` attribute surface.  Returns ``None``
+        when the document carries no /Info, which is what pypdf does
+        and what callers already handle."""
+        info = None
+        for num in list(self._objs):
+            obj = self._object(num)
+            d = obj[0] if isinstance(obj, tuple) else obj
+            if not isinstance(d, dict):
+                continue
+            # an /Info dictionary has no /Type and carries at least one
+            # of the standard document-information keys
+            if "/Type" in d:
+                continue
+            if any(k in d for k in ("/Title", "/Author", "/Subject",
+                                    "/Creator", "/Producer")):
+                info = d
+                break
+        if info is None:
+            return None
+        return _DocumentInformation(
+            {k: self._decode_string(self._resolve(v))
+             for k, v in info.items()})
+
+    @staticmethod
+    def _decode_string(v):
+        if isinstance(v, bytes):
+            if v[:2] in (b"\xfe\xff",):          # UTF-16BE with BOM
+                return v[2:].decode("utf-16-be", "replace")
+            return v.decode("latin-1", "replace")
+        return v if isinstance(v, str) else ""
+
     def _collect_pages(self):
         pages = []
         root = None
