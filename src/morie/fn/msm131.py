@@ -1,55 +1,45 @@
-"""Numbered display equation (8.4) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Arc-cosine kernel with one hidden layer.
 
-from . import _array_core as np
+Implements eq. (8.4) p.265 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries the previous chapter's topic label;
+chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
+canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_4"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_4", "mvsml_arccos_kernel"]
 
 
-def mvsml_categorical_count_eq_8_4(de, nite, related, to, an, ANN):
-    """
-    Numbered display equation (8.4) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_4(X, Z=None, normalize_median=False):
+    """AK^1(x_i, x_j) = (1/pi) ||x_i|| ||x_j|| J(theta_ij) with
+    theta_ij = arccos(x_i'x_j/(||x_i|| ||x_j||)) and
+    J(theta) = sin(theta) + (pi - theta) cos(theta) (eq. 8.4).
+    Positive semi-definite, norm preserving -- AK(x, x) = ||x||^2 and
+    AK(x, -x) = 0 -- and equivalent to a single-hidden-layer network
+    with a ramp activation.  Unlike the Gaussian kernel its diagonal
+    is heterogeneous, so it expresses per-individual genetic variance.
+    Keys: estimate."""
+    K = _gp.arccos_kernel(X, Z=Z, depth=1,
+                          normalize_median=normalize_median)
+    ok, lam = _gp.is_positive_semidefinite(K) if Z is None \
+        else (None, None)
+    res = RichResult(payload={"estimate": K[0][0], "kernel": K,
+                              "positive_semidefinite": ok,
+                              "eigenvalues": lam,
+                              "method": "arc-cosine kernel, one hidden layer (MVSML 2022 eq. 8.4)"})
+    return with_describe_pointer(res, "msm131")
 
-    Formula: deﬁnite and related to an ANN with a single hidden layer and the ramp activation function (Cho and Saul 2009).     J \thetai,j   AK1 xi, xj = 1 k k xj
 
-    Parameters
-    ----------
-    de : array-like
-        Input data.
-    nite : array-like
-        Input data.
-    related : array-like
-        Input data.
-    to : array-like
-        Input data.
-    an : array-like
-        Input data.
-    ANN : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.4) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    """
-    de = np.atleast_1d(np.asarray(de, dtype=float))
-    n = len(de)
-    result = float(np.mean(de))
-    se = float(np.std(de, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.4) from MVSML chapter 8.",
-        }
-    )
+mvsml_arccos_kernel = mvsml_categorical_count_eq_8_4
 
 
 def cheatsheet():
-    return "msm131: Numbered display equation (8.4) from MVSML chapter 8."
+    return "msm131: Arc-cosine kernel with one hidden layer"

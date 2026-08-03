@@ -496,6 +496,24 @@
   "stub_content": "prose"
  },
  {
+  "method": "eq. (8.4) p.265",
+  "chapter": "8",
+  "equation": "4",
+  "canonical_module": "msm131",
+  "entry_point": "mvsml_categorical_count_eq_8_4",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (8.5) p.266",
+  "chapter": "8",
+  "equation": "5",
+  "canonical_module": "msm132",
+  "entry_point": "mvsml_categorical_count_eq_8_5",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
   "method": "hyperplane_side",
   "chapter": "?",
   "equation": "?",
