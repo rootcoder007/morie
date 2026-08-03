@@ -31,6 +31,8 @@ __all__ = [
     "brunner_dette_munk",
     "weights_totals", "morans_i", "morans_i_test",
     "spatial_2sls", "gm_error_sar",
+    "spatial_lag_model", "spatial_error_model",
+    "ripley_k", "cokriging", "local_dp_randomised_response",
 ]
 
 
@@ -1779,3 +1781,355 @@ def gm_error_sar(y, X, W, add_intercept=True):
             "s2_residual": sum(t * t for t in ub) / n,
             "method": "GM estimator for the spatial error model "
                       "(Kelejian-Prucha 1999)"}
+
+
+def _logdet_I_minus(rho, Wm):
+    """log|I - rho W| by LU with partial pivoting.
+
+    The maximum-likelihood spatial models need this determinant at
+    every trial value of the spatial parameter; computing it directly
+    avoids needing the eigenvalues of W.
+    """
+    n = len(Wm)
+    A = [[(1.0 if i == j else 0.0) - rho * Wm[i][j] for j in range(n)]
+         for i in range(n)]
+    logdet = 0.0
+    sign = 1.0
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(A[r][c]))
+        if abs(A[piv][c]) < 1e-300:
+            return float("-inf")
+        if piv != c:
+            A[c], A[piv] = A[piv], A[c]
+            sign = -sign
+        d = A[c][c]
+        logdet += math.log(abs(d))
+        if d < 0:
+            sign = -sign
+        for r in range(c + 1, n):
+            f = A[r][c] / d
+            if f:
+                for k in range(c, n):
+                    A[r][k] -= f * A[c][k]
+    return logdet if sign > 0 else float("-inf")
+
+
+def _ols_resid(X, y):
+    n = len(y)
+    k = len(X[0])
+    A = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)]
+         for a in range(k)]
+    b = [sum(X[i][a] * y[i] for i in range(n)) for a in range(k)]
+    beta = _solve_local(A, b)
+    return beta, [y[i] - sum(X[i][j] * beta[j] for j in range(k))
+                  for i in range(n)]
+
+
+def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
+    """Spatial lag (SAR/SLM) model by maximum likelihood.
+
+        y = rho W y + X beta + eps
+
+    Uses Ord's (1975) concentrated log-likelihood.  Regressing y and Wy
+    separately on X gives residuals e0 and ed, and then
+
+        SSE(rho) = (e0 - rho ed)' (e0 - rho ed)
+        LL(rho)  = log|I - rho W| - (n/2) log(SSE(rho)/n)
+
+    so only rho has to be searched; beta and sigma^2 follow in closed
+    form.  This is what ``spatialreg::lagsarlm`` maximises.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    Wm = _mat_local(W)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    k = len(Xm[0])
+    Wy = _lag(W, ys)
+    _, e0 = _ols_resid(Xm, ys)
+    _, ed = _ols_resid(Xm, Wy)
+
+    def negll(rho):
+        sse = sum((e0[i] - rho * ed[i]) ** 2 for i in range(n))
+        ld = _logdet_I_minus(rho, Wm)
+        if ld == float("-inf") or sse <= 0:
+            return float("inf")
+        return -(ld - (n / 2.0) * math.log(sse / n))
+
+    lo, hi = interval
+    for _ in range(300):
+        m1 = lo + (hi - lo) / 3.0
+        m2 = hi - (hi - lo) / 3.0
+        if negll(m1) < negll(m2):
+            hi = m2
+        else:
+            lo = m1
+    rho = 0.5 * (lo + hi)
+
+    yf = [ys[i] - rho * Wy[i] for i in range(n)]
+    beta, resid = _ols_resid(Xm, yf)
+    s2 = sum(r * r for r in resid) / n
+    ll = (_logdet_I_minus(rho, Wm)
+          - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0)
+    return {"rho": rho, "beta": beta, "residuals": resid, "sigma2": s2,
+            "loglik": ll, "n": n,
+            "method": "spatial lag model, maximum likelihood"}
+
+
+def spatial_error_model(y, X, W, add_intercept=True,
+                        interval=(-0.999, 0.999)):
+    """Spatial error (SEM) model by maximum likelihood.
+
+        y = X beta + u,   u = lambda W u + eps
+
+    The concentrated likelihood filters both sides,
+    y* = y - lambda W y and X* = X - lambda W X, and then
+
+        LL(lambda) = log|I - lambda W| - (n/2) log(SSE*(lambda)/n)
+
+    with SSE* the residual sum of squares of y* on X*.  Matches
+    ``spatialreg::errorsarlm``.
+    """
+    ys = _flat(y)
+    Xm = _mat_local(X)
+    Wm = _mat_local(W)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if len(Wm) != n or len(Wm[0]) != n:
+        raise ValueError("W must be %d x %d to match y" % (n, n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    k = len(Xm[0])
+    Wy = _lag(W, ys)
+    WX = [_lag(W, [Xm[i][j] for i in range(n)]) for j in range(k)]
+
+    def sse_of(lam):
+        yf = [ys[i] - lam * Wy[i] for i in range(n)]
+        Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)]
+              for i in range(n)]
+        _, r = _ols_resid(Xf, yf)
+        return sum(t * t for t in r)
+
+    def negll(lam):
+        sse = sse_of(lam)
+        ld = _logdet_I_minus(lam, Wm)
+        if ld == float("-inf") or sse <= 0:
+            return float("inf")
+        return -(ld - (n / 2.0) * math.log(sse / n))
+
+    lo, hi = interval
+    for _ in range(300):
+        m1 = lo + (hi - lo) / 3.0
+        m2 = hi - (hi - lo) / 3.0
+        if negll(m1) < negll(m2):
+            hi = m2
+        else:
+            lo = m1
+    lam = 0.5 * (lo + hi)
+
+    yf = [ys[i] - lam * Wy[i] for i in range(n)]
+    Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)] for i in range(n)]
+    beta, rf = _ols_resid(Xf, yf)
+    s2 = sum(t * t for t in rf) / n
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(k))
+             for i in range(n)]
+    ll = (_logdet_I_minus(lam, Wm)
+          - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0)
+    return {"lambda": lam, "beta": beta, "residuals": resid,
+            "sigma2": s2, "loglik": ll, "n": n,
+            "method": "spatial error model, maximum likelihood"}
+
+
+def ripley_k(coords, r_grid, area=None, edge_correction=True):
+    """Ripley's K function for a planar point pattern.
+
+        K(r) = |A| n^-2 sum_i sum_{j != i} w_ij 1(d_ij <= r)
+
+    with |A| the study area and w_ij the Ripley isotropic edge
+    correction -- the reciprocal of the fraction of the circle centred
+    on i through j that lies inside the window.  Without it K is biased
+    downwards near the boundary, because neighbours outside the window
+    are never counted.
+
+    Under complete spatial randomness K(r) = pi r^2, which is the usual
+    benchmark; ``l_function`` linearises that to L(r) = r.
+    """
+    pts = _mat_local(coords)
+    n = len(pts)
+    if n < 2:
+        raise ValueError("need at least 2 points")
+    if any(len(p) != 2 for p in pts):
+        raise ValueError("coords must be an n x 2 array of x, y")
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    x0, x1 = min(xs), max(xs)
+    y0, y1 = min(ys), max(ys)
+    if area is None:
+        area = (x1 - x0) * (y1 - y0)
+    if area <= 0:
+        raise ValueError("degenerate window: zero area")
+    lam = n / area
+
+    def weight(i, j, d):
+        """Ripley isotropic correction for the circle of radius d."""
+        if not edge_correction or d <= 0:
+            return 1.0
+        # fraction of the circle centred on i, radius d, inside the box
+        out = 0.0
+        for dist in (xs[i] - x0, x1 - xs[i], ys[i] - y0, y1 - ys[i]):
+            if dist < d:
+                out += math.acos(max(-1.0, min(1.0, dist / d)))
+        frac = 1.0 - out / math.pi
+        return 1.0 / frac if frac > 1e-9 else 1.0
+
+    grid = _flat(r_grid)
+    kvals = []
+    for r in grid:
+        tot = 0.0
+        for i in range(n):
+            for j in range(n):
+                if i == j:
+                    continue
+                d = math.hypot(xs[i] - xs[j], ys[i] - ys[j])
+                if d <= r:
+                    tot += weight(i, j, d)
+        kvals.append(tot / (n * lam))
+    return {"r": list(grid), "K": kvals,
+            "L": [math.sqrt(k / math.pi) if k > 0 else 0.0
+                  for k in kvals],
+            "csr_K": [math.pi * r * r for r in grid],
+            "n": n, "area": area, "intensity": lam,
+            "method": "Ripley's K function"}
+
+
+def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
+    """Ordinary co-kriging of a primary variable with a covariate.
+
+        Z1*(s0) = sum_i lambda_i Z1(s_i) + sum_j mu_j Z2(s_j)
+
+    Solves the co-kriging system built from the direct variograms of
+    each variable and their cross-variogram, under the two unbiasedness
+    constraints sum lambda = 1 and sum mu = 0.  The covariate helps
+    exactly when the cross-variogram is strong -- with a zero
+    cross-variogram the mu weights vanish and this reduces to ordinary
+    kriging on Z1.
+
+    ``model`` is a callable gamma(h) for the direct variogram of both
+    variables; ``cross_vario`` is the cross gamma_12(h).  Defaults are
+    an exponential with unit sill and range equal to the mean pairwise
+    distance, which keeps the system well posed.
+    """
+    pts = _mat_local(coords)
+    n = len(pts)
+    a = _flat(z1)
+    b = _flat(z2)
+    if len(a) != n or len(b) != n:
+        raise ValueError("z1 and z2 must have one value per coordinate")
+    tgt = _flat(s0)
+
+    def dist(p, q):
+        return math.sqrt(sum((p[i] - q[i]) ** 2 for i in range(len(p))))
+
+    dsum, cnt = 0.0, 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            dsum += dist(pts[i], pts[j])
+            cnt += 1
+    rng = (dsum / cnt) if cnt else 1.0
+
+    if model is None:
+        def model(h):
+            return 1.0 - math.exp(-h / rng) if rng > 0 else 0.0
+    if cross_vario is None:
+        def cross_vario(h):
+            return 0.5 * (1.0 - math.exp(-h / rng)) if rng > 0 else 0.0
+
+    # unknowns: lambda(n), mu(n), and two Lagrange multipliers
+    m = 2 * n + 2
+    A = [[0.0] * m for _ in range(m)]
+    rhs = [0.0] * m
+    for i in range(n):
+        for j in range(n):
+            A[i][j] = model(dist(pts[i], pts[j]))
+            A[i][n + j] = cross_vario(dist(pts[i], pts[j]))
+            A[n + i][j] = cross_vario(dist(pts[i], pts[j]))
+            A[n + i][n + j] = model(dist(pts[i], pts[j]))
+        A[i][2 * n] = 1.0
+        A[2 * n][i] = 1.0
+        A[n + i][2 * n + 1] = 1.0
+        A[2 * n + 1][n + i] = 1.0
+        rhs[i] = model(dist(pts[i], tgt))
+        rhs[n + i] = cross_vario(dist(pts[i], tgt))
+    rhs[2 * n] = 1.0        # sum lambda = 1
+    rhs[2 * n + 1] = 0.0    # sum mu     = 0
+
+    sol = _solve_local(A, rhs)
+    lam = sol[:n]
+    mu = sol[n:2 * n]
+    pred = (sum(lam[i] * a[i] for i in range(n))
+            + sum(mu[i] * b[i] for i in range(n)))
+    var = (sum(lam[i] * rhs[i] for i in range(n))
+           + sum(mu[i] * rhs[n + i] for i in range(n))
+           + sol[2 * n])
+    return {"prediction": pred, "variance": var, "lambda": lam,
+            "mu": mu, "n": n, "range": rng,
+            "method": "ordinary co-kriging"}
+
+
+def local_dp_randomised_response(truth, k, epsilon, seed=2):
+    """k-ary randomised response, the local differential privacy
+    mechanism.
+
+        P(report = v | true = u) = e^eps / (k - 1 + e^eps)   if v = u
+                                   1     / (k - 1 + e^eps)   otherwise
+
+    Each respondent perturbs their own value before it ever leaves
+    their device, so the collector never sees the truth; the mechanism
+    is eps-locally-differentially-private because the ratio of any two
+    conditional probabilities is at most e^eps.
+
+    Reporting the raw counts would be biased towards uniform, so the
+    debiased estimate inverts the transition matrix:
+
+        pi_hat = (p_observed - 1/(k-1+e^eps)) * (k-1+e^eps)/(e^eps - 1)
+    """
+    from . import _rrng_core as _rr
+
+    vals = [int(v) for v in _flat(truth)]
+    k = int(k)
+    if k < 2:
+        raise ValueError("k must be at least 2")
+    if epsilon <= 0:
+        raise ValueError("epsilon must be positive")
+    if any(v < 0 or v >= k for v in vals):
+        raise ValueError("values must lie in 0..k-1")
+    e = math.exp(epsilon)
+    p_keep = e / (k - 1.0 + e)
+    p_flip = 1.0 / (k - 1.0 + e)
+
+    rng = _rr.RRandom(seed)
+    reports = []
+    for v in vals:
+        if rng.unif_rand() < p_keep:
+            reports.append(v)
+        else:
+            others = [u for u in range(k) if u != v]
+            reports.append(others[int(rng.unif_index(k - 1))])
+
+    n = len(vals)
+    counts = [0] * k
+    for r in reports:
+        counts[r] += 1
+    obs = [c / n for c in counts]
+    scale = (k - 1.0 + e) / (e - 1.0)
+    debiased = [(o - p_flip) * scale for o in obs]
+    return {"reports": reports, "observed": obs,
+            "estimate": debiased, "p_keep": p_keep, "p_flip": p_flip,
+            "epsilon": float(epsilon), "k": k, "n": n,
+            "method": "k-ary randomised response (local DP)"}

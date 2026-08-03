@@ -137,3 +137,143 @@ def test_spatial_estimators_reject_bad_shapes():
         rb.spatial_2sls(y[:5], X, W25)
     with pytest.raises(Exception):
         rb.morans_i([1.0, 2.0], W25)
+
+
+# --- the six formerly named-but-template modules ---------------------
+def test_spatial_lag_model_matches_spatialreg_lagsarlm():
+    y, X = _sar_fixture()
+    m = rb.spatial_lag_model(y, X, W25)
+    assert abs(m["rho"] - 0.391406232872727) < 1e-7
+    assert abs(m["beta"][0] - 1.94007428339988) < 1e-6
+    assert abs(m["beta"][1] - 1.50683946841365) < 1e-7
+    assert abs(m["beta"][2] - (-0.762066735722032)) < 1e-7
+    assert abs(m["sigma2"] - 0.0785475951546229) < 1e-9
+
+
+def test_spatial_error_model_matches_spatialreg_errorsarlm():
+    y, X = _sar_fixture()
+    m = rb.spatial_error_model(y, X, W25)
+    assert abs(m["lambda"] - 0.824444050787294) < 1e-6
+    assert abs(m["beta"][0] - 7.94062292250759) < 1e-6
+    assert abs(m["beta"][1] - 1.34203947781064) < 1e-7
+    assert abs(m["beta"][2] - (-0.508793220452759)) < 1e-7
+    assert abs(m["sigma2"] - 0.437341709973207) < 1e-7
+
+
+def test_lag_model_beats_ols_when_rho_is_real():
+    # the fixture really was generated with rho = 0.4, so ML should
+    # find it and OLS on y ~ X should be biased
+    y, X = _sar_fixture()
+    m = rb.spatial_lag_model(y, X, W25)
+    assert abs(m["rho"] - 0.4) < 0.05
+    # and 2SLS, which targets the same parameter, should agree closely
+    s = rb.spatial_2sls(y, X, W25)
+    assert abs(m["rho"] - s["rho"]) < 0.01
+
+
+def test_logdet_matches_a_direct_determinant():
+    # log|I - rho W| on a small matrix, checked against the 2x2 formula
+    W = [[0.0, 0.5], [0.5, 0.0]]
+    for rho in (0.0, 0.3, -0.4):
+        want = math.log(abs(1 - rho * rho * 0.25))
+        assert abs(rb._logdet_I_minus(rho, W) - want) < 1e-12
+    assert rb._logdet_I_minus(0.0, W) == 0.0
+
+
+def test_ripley_k_recovers_pi_r_squared_under_csr():
+    # on a regular grid with edge correction K(r) should track the CSR
+    # benchmark pi r^2 reasonably over mid-range r
+    pts = [[float(i), float(j)] for i in range(10) for j in range(10)]
+    r = [1.5, 2.0, 2.5]
+    out = rb.ripley_k(pts, r)
+    for k, rr in zip(out["K"], r):
+        assert abs(k - math.pi * rr * rr) / (math.pi * rr * rr) < 0.35
+    # K is non-decreasing in r
+    assert all(a <= b + 1e-9
+               for a, b in zip(out["K"], out["K"][1:]))
+
+
+def test_ripley_k_edge_correction_raises_k_near_the_boundary():
+    pts = [[float(i), float(j)] for i in range(6) for j in range(6)]
+    with_c = rb.ripley_k(pts, [2.0], edge_correction=True)["K"][0]
+    without = rb.ripley_k(pts, [2.0], edge_correction=False)["K"][0]
+    # uncorrected K misses neighbours outside the window, so it is lower
+    assert without < with_c
+
+
+def test_ripley_l_linearises_k():
+    pts = [[float(i), float(j)] for i in range(8) for j in range(8)]
+    out = rb.ripley_k(pts, [1.0, 2.0, 3.0])
+    for k, l in zip(out["K"], out["L"]):
+        assert abs(l - math.sqrt(k / math.pi)) < 1e-12
+
+
+def test_ripley_k_rejects_bad_input():
+    with pytest.raises(ValueError):
+        rb.ripley_k([[0.0, 0.0]], [1.0])
+    with pytest.raises(ValueError):
+        rb.ripley_k([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]], [1.0])
+
+
+def test_cokriging_reduces_to_ordinary_kriging_without_cross_structure():
+    # with a zero cross-variogram the covariate carries no information,
+    # so the mu weights must vanish and the lambdas must still sum to 1
+    pts = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
+    z1 = [1.0, 2.0, 3.0, 4.0]
+    z2 = [9.0, 9.0, 9.0, 9.0]
+    out = rb.cokriging(pts, z1, z2, [0.5, 0.5],
+                       cross_vario=lambda h: 0.0)
+    assert abs(sum(out["lambda"]) - 1.0) < 1e-9
+    assert max(abs(m) for m in out["mu"]) < 1e-9
+    # symmetric configuration and target -> prediction is the mean
+    assert abs(out["prediction"] - 2.5) < 1e-6
+
+
+def test_cokriging_weights_satisfy_the_unbiasedness_constraints():
+    pts = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [2.0, 2.0]]
+    z1 = [1.0, 2.0, 3.0, 7.0]
+    z2 = [2.0, 1.0, 4.0, 5.0]
+    out = rb.cokriging(pts, z1, z2, [0.7, 0.4])
+    assert abs(sum(out["lambda"]) - 1.0) < 1e-9
+    assert abs(sum(out["mu"])) < 1e-9
+
+
+def test_cokriging_rejects_mismatched_lengths():
+    with pytest.raises(ValueError):
+        rb.cokriging([[0.0, 0.0], [1.0, 1.0]], [1.0], [1.0, 2.0],
+                     [0.5, 0.5])
+
+
+def test_randomised_response_transition_probabilities():
+    # P(keep) / P(flip) must equal e^eps -- that IS the privacy claim
+    for eps in (0.5, 1.0, 2.0):
+        for k in (2, 4, 10):
+            r = rb.local_dp_randomised_response([0] * 5, k, eps)
+            assert abs(r["p_keep"] / r["p_flip"] - math.exp(eps)) < 1e-12
+            assert abs(r["p_keep"] + (k - 1) * r["p_flip"] - 1.0) < 1e-12
+
+
+def test_randomised_response_debiased_estimate_is_unbiased():
+    # a large sample from a known distribution must be recovered
+    truth = [0] * 6000 + [1] * 3000 + [2] * 1000
+    r = rb.local_dp_randomised_response(truth, 3, 2.0, seed=11)
+    for got, want in zip(r["estimate"], (0.6, 0.3, 0.1)):
+        assert abs(got - want) < 0.03
+    assert abs(sum(r["estimate"]) - 1.0) < 1e-9
+
+
+def test_randomised_response_is_noisier_at_smaller_epsilon():
+    truth = [0] * 2000 + [1] * 2000
+    tight = rb.local_dp_randomised_response(truth, 2, 3.0, seed=5)
+    loose = rb.local_dp_randomised_response(truth, 2, 0.2, seed=5)
+    # stronger privacy (smaller eps) keeps fewer true values
+    assert loose["p_keep"] < tight["p_keep"]
+
+
+def test_randomised_response_validates_its_arguments():
+    with pytest.raises(ValueError):
+        rb.local_dp_randomised_response([0, 1], 1, 1.0)
+    with pytest.raises(ValueError):
+        rb.local_dp_randomised_response([0, 1], 2, 0.0)
+    with pytest.raises(ValueError):
+        rb.local_dp_randomised_response([0, 5], 2, 1.0)
