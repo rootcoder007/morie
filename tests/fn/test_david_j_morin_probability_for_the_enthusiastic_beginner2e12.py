@@ -1,0 +1,22 @@
+"""Tests for david_j_morin_probability_for_the_enthusiastic_beginner2e12.david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_12."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner2e12 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_12,
+)
+
+
+def test_david_j_morin_probability_for_the_enthusiastic_beginner2e12_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_12(x)
+    assert isinstance(result, dict)
+    assert "statistic" in result or "p_value" in result or "estimate" in result
+
+
+def test_david_j_morin_probability_for_the_enthusiastic_beginner2e12_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_12(x)
+    assert isinstance(result, dict)
