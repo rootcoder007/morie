@@ -16,6 +16,7 @@ __all__ = [
     "ideal_fourths", "idealf_iqr", "boxplot_rule",
     "trimmed_mean", "winsorize", "winsorized_mean", "winsorized_variance",
     "mad", "madn", "mad_median_rule", "mad_rescaled",
+    "BOOK_MADN_CONSTANT", "R_MAD_CONSTANT",
     "yuen_test", "welch_test", "trim_counts",
     "harrell_davis", "theil_sen", "pbos",
     "percentage_bend_correlation", "winsorized_correlation",
@@ -184,13 +185,26 @@ def mad(x):
     return _median(sorted(abs(t - m) for t in v))
 
 
+#: The book's MADN divisor (Wilcox sec. 2.4.7): MADN = MAD / 0.6745.
+BOOK_MADN_DIVISOR = 0.6745
+#: Equivalent multiplier, 1 / 0.6745.
+BOOK_MADN_CONSTANT = 1.0 / 0.6745
+#: R's ``mad()`` default constant, which is what WRS actually uses.
+R_MAD_CONSTANT = 1.4826
+
+
 def madn(x):
     """MADN = MAD / 0.6745, sec. 2.4.7.
 
     The divisor rescales MAD so that it estimates sigma under normality,
     which is what makes the cut-off in eq. (2.14) interpretable.
+
+    This is the book's constant exactly.  R's ``mad()`` uses 1.4826
+    instead of 1/0.6745 = 1.4825797...; see :func:`mad_rescaled` and
+    :data:`R_MAD_CONSTANT` for why that matters and which estimators
+    use which.
     """
-    return mad(x) / 0.6745
+    return mad(x) / BOOK_MADN_DIVISOR
 
 
 def mad_median_rule(x, crit=2.24):
@@ -339,7 +353,7 @@ def _pbeta(q, a, b):
     return _betainc(a, b, q)
 
 
-def mad_rescaled(x, constant=1.4826):
+def mad_rescaled(x, constant=R_MAD_CONSTANT):
     """MAD rescaled the way R's ``mad()`` does it.
 
     Wilcox's WRS code calls R's ``mad()``, whose default constant is
@@ -535,16 +549,22 @@ def _winsorize_paired(v, tr):
     return [min(max(t, lo), hi) for t in v]
 
 
-def mom_estimator(x, bend=2.24):
+def mom_estimator(x, bend=2.24, constant=R_MAD_CONSTANT):
     """Modified one-step M-estimator (MOM) of location.
 
     Drops every value more than ``bend`` MADNs from the median and
     averages what is left; the 2.24 cut-off is the same one the
     MAD-median outlier rule uses.  Ported from WRS ``mom``.
+
+    ``constant`` scales the MAD.  It defaults to R's 1.4826, which is
+    what WRS uses, so this reproduces ``mom()`` exactly.  Pass
+    :data:`BOOK_MADN_CONSTANT` to follow the book's MAD/0.6745 instead;
+    the two differ in the fifth significant figure and can flip which
+    observations fall on the boundary.
     """
     v = _flat(x)
     m = median(v)
-    s = mad_rescaled(v)
+    s = mad_rescaled(v, constant)
     if s == 0:
         return m
     kept = [t for t in v if m - bend * s <= t <= m + bend * s]
@@ -557,17 +577,20 @@ def _huber_psi(u, bend=1.28):
     return u if abs(u) <= bend else bend * (1.0 if u > 0 else -1.0)
 
 
-def one_step_m_estimator(x, bend=1.28):
+def one_step_m_estimator(x, bend=1.28, constant=R_MAD_CONSTANT):
     """One-step M-estimator of location with Huber's Psi.
 
         theta = M + MADN * sum(psi(y_i)) / #{|y_i| <= bend},
         y_i = (X_i - M) / MADN
 
     Ported from WRS ``onestep``; the default bend 1.28 is Wilcox's.
+
+    ``constant`` scales the MAD, defaulting to R's 1.4826 as WRS does.
+    Pass :data:`BOOK_MADN_CONSTANT` for the book's MAD/0.6745.
     """
     v = _flat(x)
     m = median(v)
-    s = mad_rescaled(v)
+    s = mad_rescaled(v, constant)
     if s == 0:
         return m
     y = [(t - m) / s for t in v]
