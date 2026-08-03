@@ -247,3 +247,32 @@ def test_gradient_descent_matches_ols():
     for a, b in zip(gd["beta"], ols["beta"]):
         assert abs(a - b) < 1e-4
     assert gd["iterations"] > 1
+
+
+def test_rank_deficient_designs_solve_via_pinv():
+    """Regression: rank-deficient blocks used to raise a bare
+    "singular matrix" from the linear-algebra core.  Both cases below
+    are legitimate models, not user errors."""
+    # (a) an all-zero covariate column
+    r = gp.gxe_blup_model([5.0, 6.0, 5.4, 6.8], [[0.0]] * 4,
+                          [[1, 0], [0, 1], [1, 0], [0, 1]],
+                          [[1, 0, 0, 0], [0, 1, 0, 0],
+                           [0, 0, 1, 0], [0, 0, 0, 1]],
+                          [[1.0, 0.0], [0.0, 1.0]], 0.5,
+                          [[0.3, 0.0], [0.0, 0.3]])
+    assert len(r["b_lines"]) == 2
+    assert r["b_lines"][1] > r["b_lines"][0]
+    # (b) the literal eq (2.3) MME with a singular G (8 lines, 7 markers)
+    G = gp.grm_vanraden_method3(TAB29_M)
+    beta, u = gp.gblup_gebv(TAB29_X, TAB29_Y, G, 7 * 0.05,
+                            use_mme=True)
+    assert len(u) == 8
+    assert all(v == v for v in u)          # no NaNs
+
+
+def test_canonical_alias_for_the_mislabelled_stub():
+    from morie.fn.msm334 import (
+        mvsml_elements_lin_reg_expected_prediction_error as epe)
+    assert epe(1.0, [1.0, 1.0], [4.0, 4.0])["estimate"] == \
+        mvsml_preprocessing_eq_2_22(1.0, [1.0, 1.0],
+                                    [4.0, 4.0])["estimate"]
