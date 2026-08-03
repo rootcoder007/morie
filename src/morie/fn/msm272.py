@@ -1,55 +1,35 @@
-r"""Numbered display equation (14.9) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Design matrix of the functional regression.
 
-from . import _array_core as np
+Implements eq. (14.9) pp.581-582 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_convolutional_nn_eq_14_9"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_convolutional_nn_eq_14_9", "mvsml_fda_design"]
 
 
-def mvsml_convolutional_nn_eq_14_9(R, T, L1, t, m, dt):
-    r"""
-    Numbered display equation (14.9) from MVSML chapter 14.
+def mvsml_convolutional_nn_eq_14_9(t, X_curves, L1=3, L2=5, kind="fourier"):
+    """X* = [1_n  X] with X = X** Psi (Psi'Psi)^-1 Q' (eq. 14.9),
+    where Q collects the inner products int phi_l(t) psi_o(t) dt.
+    Each row is x_i = Q c-hat_i. Keys: estimate."""
+    d = _gp.fda_design_matrix(t, X_curves, L1, L2, kind=kind)
+    res = RichResult(payload={"estimate": d["X_star"][0][0],
+                              "X_star": d["X_star"], "Q": d["Q"],
+                              "method": "functional design matrix (MVSML 2022 eq. 14.9)"})
+    return with_describe_pointer(res, "msm272")
 
-    Formula: R T R T 0 ϕL1 t( )\psim t( )dt ⋯ 0 ϕL1 t( )\psiL2 t( )dt Now, matrix X can be computed as X = 1n = X ,
 
-    Parameters
-    ----------
-    R : array-like
-        Input data.
-    T : array-like
-        Input data.
-    L1 : array-like
-        Input data.
-    t : array-like
-        Input data.
-    m : array-like
-        Input data.
-    dt : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (14.9) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    R = np.atleast_1d(np.asarray(R, dtype=float))
-    n = len(R)
-    result = float(np.mean(R))
-    se = float(np.std(R, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.9) from MVSML chapter 14.",
-        }
-    )
+mvsml_fda_design = mvsml_convolutional_nn_eq_14_9
 
 
 def cheatsheet():
-    return "msm272: Numbered display equation (14.9) from MVSML chapter 14."
+    return "msm272: Design matrix of the functional regression"

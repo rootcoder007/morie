@@ -1,55 +1,36 @@
-r"""Numbered display equation (15.1) from MVSML chapter 15.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Nonparametric links of the zero-altered Poisson forest.
 
-from . import _array_core as np
+Implements eq. (15.1) p.651 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_functional_regression_eq_15_1"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_functional_regression_eq_15_1", "mvsml_zap_links"]
 
 
-def mvsml_functional_regression_eq_15_1(Mathlouthi, et, al, through, are, given):
-    r"""
-    Numbered display equation (15.1) from MVSML chapter 15.
+def mvsml_functional_regression_eq_15_1(mu_pred, theta_pred):
+    """log(mu) = f_mu(x) and log(theta/(1-theta)) = f_theta(x)
+    (eq. 15.1): under ZAP_RF and ZAPC_RF the links between covariates
+    and response are general nonparametric functions estimated by two
+    random forests rather than linear predictors. Keys: estimate."""
+    f = _gp.zap_link(mu_pred, theta_pred)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "theta": f["theta"],
+                              "method": "ZAP nonparametric links (MVSML 2022 eq. 15.1)"})
+    return with_describe_pointer(res, "msm323")
 
-    Formula: (Mathlouthi et al. 2019) through \mu and \theta are given by nonparametric link functions like   \theta log \mu ( ) = f \mu x ( ) and log = f \theta x ( ),
 
-    Parameters
-    ----------
-    Mathlouthi : array-like
-        Input data.
-    et : array-like
-        Input data.
-    al : array-like
-        Input data.
-    through : array-like
-        Input data.
-    are : array-like
-        Input data.
-    given : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (15.1) [Multivariate Statistical Machine Learnin [Pages 633-681] [2026-04-16].pdf]
-    r"""
-    Mathlouthi = np.atleast_1d(np.asarray(Mathlouthi, dtype=float))
-    n = len(Mathlouthi)
-    result = float(np.mean(Mathlouthi))
-    se = float(np.std(Mathlouthi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (15.1) from MVSML chapter 15.",
-        }
-    )
+mvsml_zap_links = mvsml_functional_regression_eq_15_1
 
 
 def cheatsheet():
-    return "msm323: Numbered display equation (15.1) from MVSML chapter 15."
+    return "msm323: Nonparametric links of the zero-altered Poisson forest"

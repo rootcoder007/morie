@@ -2592,3 +2592,439 @@ def ann_numeric_gradient(X, y, W, activations=None, eps=1e-6):
                 G[u][v] /= (2.0 * eps)
         out.append(G)
     return out
+
+
+# ------------------- convolutional networks (ch. 13 p.551)
+def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
+    """eq. (13.1)-(13.2) p.551: the filter slides over the image and
+    at each position computes the dot product of the local receptive
+    field with the filter, z = w'x + b, then (13.2) applies the
+    activation to give the feature (activation) map.
+
+    A 7 x 7 x 3 filter on a 256 x 256 x 3 image needs only
+    7*7*3 + 1 = 148 parameters instead of the 256*256*3 + 1 = 196,609
+    a fully connected layer would need, because the weights are shared
+    across positions.  That sharing is also what gives CNNs
+    translational invariance: the same filter detects the feature
+    wherever it appears.  Output size is (H - F)/stride + 1.
+    """
+    I = [[list(map(float, ch)) for ch in row] for row in image] \
+        if isinstance(image[0][0], (list, tuple)) else \
+        [[[float(v)] for v in row] for row in image]
+    K = [[list(map(float, ch)) for ch in row] for row in kernel] \
+        if isinstance(kernel[0][0], (list, tuple)) else \
+        [[[float(v)] for v in row] for row in kernel]
+    H, W, C = len(I), len(I[0]), len(I[0][0])
+    F, Fw = len(K), len(K[0])
+    out_h = (H - F) // stride + 1
+    out_w = (W - Fw) // stride + 1
+    if out_h <= 0 or out_w <= 0:
+        raise ValueError("filter is larger than the image")
+    out = []
+    for r in range(out_h):
+        row = []
+        for c in range(out_w):
+            z = float(bias)
+            for a in range(F):
+                for b in range(Fw):
+                    for ch in range(C):
+                        z += K[a][b][ch] * \
+                            I[r * stride + a][c * stride + b][ch]
+            row.append(_act(activation, z) if activation else z)
+        out.append(row)
+    return out
+
+
+def conv_output_size(input_size, filter_size, stride=1, padding=0):
+    """p.551: a 256 x 256 image with a 7 x 7 filter gives a 250 x 250
+    feature map, i.e. (H - F + 2P)/S + 1."""
+    return (int(input_size) - int(filter_size)
+            + 2 * int(padding)) // int(stride) + 1
+
+
+def conv_parameter_count(filter_size, channels, n_filters=1):
+    """p.551: F*F*C + 1 parameters per filter, against
+    H*W*C + 1 for a fully connected layer -- 148 versus 196,609 in the
+    book's example."""
+    return n_filters * (int(filter_size) ** 2 * int(channels) + 1)
+
+
+# --------------- functional regression (ch. 14 pp.580-583)
+def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
+    """The basis matrix Psi of eq. (14.8) p.581, with rows indexed by
+    the observation times t_1 < ... < t_m and columns by the basis
+    functions psi_1..psi_L2."""
+    ts = _flat(t)
+    m = len(ts)
+    L = int(n_basis)
+    lo, hi = min(ts), max(ts)
+    span = (hi - lo) or 1.0
+    P = float(period) if period else span
+    out = []
+    for tv in ts:
+        row = []
+        for l in range(L):
+            if kind == "fourier":
+                if l == 0:
+                    row.append(1.0)
+                elif l % 2 == 1:
+                    row.append(math.sin(2.0 * math.pi
+                                        * ((l + 1) // 2) * tv / P))
+                else:
+                    row.append(math.cos(2.0 * math.pi
+                                        * (l // 2) * tv / P))
+            elif kind == "polynomial":
+                row.append(((tv - lo) / span) ** l)
+            else:
+                raise ValueError("unknown basis: %s" % kind)
+        out.append(row)
+    return out
+
+
+def fda_basis_coefficients(Psi, x_t):
+    """eq. (14.7) p.581: c-hat_i = (Psi'Psi)^-1 Psi' x_i(t), the least
+    squares (equivalently maximum likelihood) coefficients of the
+    expansion x_i(t) = sum_o c_io psi_o(t) of eq. (14.6)."""
+    P = _mat(Psi)
+    Pt = _t(P)
+    return _solve(_mm(Pt, P), _mv(Pt, _flat(x_t)))
+
+
+def fda_inner_product_matrix(t, L1, L2, kind="fourier"):
+    """The matrix Q of p.581 whose (l, o) entry is
+    int_0^T phi_l(t) psi_o(t) dt, computed by the trapezoid rule on
+    the observation grid."""
+    ts = _flat(t)
+    Phi = fda_basis_matrix(ts, L1, kind=kind)
+    Psi = fda_basis_matrix(ts, L2, kind=kind)
+    m = len(ts)
+    Q = [[0.0] * L2 for _ in range(L1)]
+    for l in range(L1):
+        for o in range(L2):
+            s = 0.0
+            for j in range(m - 1):
+                dt = ts[j + 1] - ts[j]
+                s += 0.5 * dt * (Phi[j][l] * Psi[j][o]
+                                 + Phi[j + 1][l] * Psi[j + 1][o])
+            Q[l][o] = s
+    return Q
+
+
+def fda_design_matrix(t, X_curves, L1, L2, kind="fourier"):
+    """eq. (14.9) p.581-582: X* = [1_n  X] with
+    X = X** Psi (Psi'Psi)^-1 Q', so each row is x_i = Q c-hat_i, the
+    functional covariate reduced to L1 scalar scores."""
+    ts = _flat(t)
+    Psi = fda_basis_matrix(ts, L2, kind=kind)
+    Q = fda_inner_product_matrix(ts, L1, L2, kind=kind)
+    rows = []
+    for curve in _mat(X_curves):
+        c = fda_basis_coefficients(Psi, curve)
+        rows.append(_mv(Q, c))
+    return {"X": rows,
+            "X_star": [[1.0] + r for r in rows],
+            "Q": Q, "Psi": Psi}
+
+
+def fda_fit(t, X_curves, y, L1=3, L2=5, kind="fourier"):
+    """eq. (14.3)-(14.5) pp.580: with beta(t) expanded on L1 bases the
+    functional model becomes Y = x*'beta + eps, so
+    beta-hat = (X*'X*)^-1 X*'y (14.4) and
+    sigma2-hat = (1/n)(y - X*beta-hat)'(y - X*beta-hat) (14.5).
+    beta-hat(t) = sum_l beta-hat_l phi_l(t) recovers the coefficient
+    function (14.2)."""
+    d = fda_design_matrix(t, X_curves, L1, L2, kind=kind)
+    Xs = d["X_star"]
+    ys = _flat(y)
+    n = len(ys)
+    beta = _solve(_mm(_t(Xs), Xs), _mv(_t(Xs), ys))
+    fitted = _mv(Xs, beta)
+    resid = [a - b for a, b in zip(ys, fitted)]
+    s2 = sum(v * v for v in resid) / n
+    return {"beta": beta, "fitted": fitted, "residuals": resid,
+            "sigma2": s2, "X_star": Xs, "Q": d["Q"]}
+
+
+def fda_beta_function(t, beta_coefs, L1, kind="fourier"):
+    """eq. (14.2): beta-hat(t) = sum_l beta-hat_l phi_l(t), the
+    basis-based estimate of the coefficient function."""
+    Phi = fda_basis_matrix(t, L1, kind=kind)
+    b = _flat(beta_coefs)
+    return [sum(Phi[j][l] * b[l] for l in range(L1))
+            for j in range(len(Phi))]
+
+
+def fda_bic(loglik, n_params, n_obs):
+    """p.582: BIC = -2 l(beta-hat, sigma2-hat; y) + (L + 1) log(n);
+    the basis size with the lowest BIC is preferred."""
+    return -2.0 * float(loglik) + (int(n_params) + 1) \
+        * math.log(int(n_obs))
+
+
+def fda_loocv(t, x_t, L2, kind="fourier"):
+    """p.583: CV_1(L2) = sum_j (x(t_j) - x-hat_-j(t_j))^2, the
+    leave-one-out criterion for choosing the number of basis
+    functions representing the covariate curve."""
+    ts = _flat(t)
+    xs = _flat(x_t)
+    m = len(ts)
+    tot = 0.0
+    for j in range(m):
+        t_j = ts[:j] + ts[j + 1:]
+        x_j = xs[:j] + xs[j + 1:]
+        Psi_j = fda_basis_matrix(t_j, L2, kind=kind)
+        c = fda_basis_coefficients(Psi_j, x_j)
+        psi_at_j = fda_basis_matrix([ts[j]], L2, kind=kind)[0]
+        pred = sum(psi_at_j[o] * c[o] for o in range(L2))
+        tot += (xs[j] - pred) ** 2
+    return tot
+
+
+# ------- random forest for count responses (ch. 15 pp.651-653)
+def zap_link(mu_pred, theta_pred):
+    """eq. (15.1) p.651: log(mu) = f_mu(x) and
+    log(theta/(1-theta)) = f_theta(x), the nonparametric link
+    functions the ZAP random forest estimates in two steps."""
+    mu = math.exp(min(float(mu_pred), 700.0))
+    theta = 1.0 / (1.0 + math.exp(-float(theta_pred)))
+    return {"mu": mu, "theta": theta}
+
+
+def zero_truncated_poisson_loglik(y_positive, mu):
+    """eq. (15.2) p.651: LL+ = -N+ log(1 - exp(-mu))
+    + log(mu) sum_i Y_i+ - N+ mu - sum_i log(Y_i+!), the
+    zero-truncated Poisson log-likelihood used as the splitting
+    criterion in the truncated part of the forest."""
+    ys = _flat(y_positive)
+    n = len(ys)
+    mu = float(mu)
+    if mu <= 0 or n == 0:
+        return float("-inf")
+    return (-n * math.log(1.0 - math.exp(-mu))
+            + math.log(mu) * sum(ys) - n * mu
+            - sum(math.lgamma(v + 1.0) for v in ys))
+
+
+def zero_truncated_poisson_mle(y_positive, tol=1e-12,
+                               max_iter=200):
+    """p.652: the estimate of mu solves dLL+/dmu = 0, which reduces to
+    (sum_i Y_i+)/N+ = mu/(1 - exp(-mu)); solved here by bisection on
+    that identity."""
+    ys = _flat(y_positive)
+    n = len(ys)
+    if n == 0:
+        raise ValueError("need at least one positive observation")
+    target = sum(ys) / n
+    if target <= 1.0:
+        return 0.0
+    lo, hi = 1e-9, 1.0
+    while hi / (1.0 - math.exp(-hi)) < target:
+        hi *= 2.0
+        if hi > 1e6:
+            break
+    for _ in range(int(max_iter)):
+        mid = 0.5 * (lo + hi)
+        v = mid / (1.0 - math.exp(-mid))
+        if abs(v - target) < tol:
+            return mid
+        if v < target:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+def zap_best_split(y, x, candidates=None):
+    """p.652: for a candidate split the zero-truncated log-likelihood
+    (15.2) is computed separately in the two children and the best
+    split maximizes LL+(left) + LL+(right)."""
+    ys = _flat(y)
+    xs = _flat(x)
+    vals = sorted(set(xs)) if candidates is None else _flat(candidates)
+    best = None
+    for v in vals:
+        L = [ys[i] for i in range(len(ys)) if xs[i] <= v and ys[i] > 0]
+        R = [ys[i] for i in range(len(ys)) if xs[i] > v and ys[i] > 0]
+        if not L or not R:
+            continue
+        ll = (zero_truncated_poisson_loglik(
+                  L, zero_truncated_poisson_mle(L))
+              + zero_truncated_poisson_loglik(
+                  R, zero_truncated_poisson_mle(R)))
+        if best is None or ll > best[1]:
+            best = (v, ll)
+    return {"threshold": best[0] if best else None,
+            "loglik": best[1] if best else float("-inf")}
+
+
+def zap_predict(theta_hat, mu_hat):
+    """eq. (15.3) p.652: under ZAP_RF the prediction is the mean of
+    the zero-altered Poisson,
+    Y-hat = (1 - theta-hat) exp(-mu-hat) / (1 - exp(-mu-hat))."""
+    th = float(theta_hat)
+    mu = float(mu_hat)
+    denom = 1.0 - math.exp(-mu)
+    if denom <= 0:
+        return 0.0
+    return (1.0 - th) * math.exp(-mu) / denom
+
+
+def zapc_predict(theta_hat, mu_hat, threshold=0.5):
+    """eq. (15.4) p.652: under ZAPC_RF the prediction is 0 when
+    theta-hat > 0.5 and mu-hat otherwise -- the probability is
+    converted to a zero rather than to a binary label, and the 0.5
+    threshold assumes no prior information."""
+    return 0.0 if float(theta_hat) > float(threshold) \
+        else float(mu_hat)
+
+
+# --------- marginal structural models (Robins et al. 2000)
+def msm_weighted_glm(y, X, weights=None, family="gaussian",
+                     offset=None, n_iter=60, tol=1e-10):
+    """Weighted GLM by iteratively reweighted least squares, the
+    outcome stage of a marginal structural model.
+
+    With the stabilized IPT weights of Robins, Hernan and Brumback
+    (2000) as ``weights``, fitting E[Y | a-bar] in the pseudo-
+    population created by the weights estimates the causal parameter
+    of the MSM rather than an association adjusted for confounders.
+    ``family`` is one of gaussian (identity), binomial (logit) or
+    poisson (log).
+    """
+    Xm = _mat(X)
+    ys = _flat(y)
+    n = len(ys)
+    p = len(Xm[0])
+    w = [1.0] * n if weights is None else _flat(weights)
+    off = [0.0] * n if offset is None else _flat(offset)
+    beta = [0.0] * p
+    if family == "gaussian":
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
+              for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * (ys[i] - off[i])
+                   for i in range(n)) for a in range(p)]
+        beta = _solve(A, rhs)
+        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p))
+               for i in range(n)]
+        mu = eta
+    else:
+        if family == "poisson":
+            beta[0] = math.log(max(sum(w[i] * ys[i]
+                                       for i in range(n))
+                                   / max(sum(w), 1e-9), 1e-6))
+        for _ in range(int(n_iter)):
+            eta = [off[i] + sum(Xm[i][j] * beta[j]
+                                for j in range(p))
+                   for i in range(n)]
+            if family == "binomial":
+                mu = [1.0 / (1.0 + math.exp(-max(min(v, 700.0),
+                                                 -700.0)))
+                      for v in eta]
+                Wd = [max(mu[i] * (1.0 - mu[i]), 1e-9)
+                      for i in range(n)]
+            elif family == "poisson":
+                mu = [math.exp(min(v, 700.0)) for v in eta]
+                Wd = [max(mu[i], 1e-9) for i in range(n)]
+            else:
+                raise ValueError("unknown family: %s" % family)
+            z = [eta[i] - off[i] + (ys[i] - mu[i]) / Wd[i]
+                 for i in range(n)]
+            ww = [w[i] * Wd[i] for i in range(n)]
+            A = [[sum(ww[i] * Xm[i][a] * Xm[i][b]
+                      for i in range(n)) for b in range(p)]
+                 for a in range(p)]
+            rhs = [sum(ww[i] * Xm[i][a] * z[i] for i in range(n))
+                   for a in range(p)]
+            new = _solve(A, rhs)
+            gap = max(abs(new[j] - beta[j]) for j in range(p))
+            beta = new
+            if gap < tol:
+                break
+        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p))
+               for i in range(n)]
+        mu = [1.0 / (1.0 + math.exp(-max(min(v, 700.0), -700.0)))
+              if family == "binomial"
+              else math.exp(min(v, 700.0)) for v in eta]
+    return {"beta": beta, "fitted": mu, "eta": eta,
+            "weights": w, "family": family}
+
+
+def msm_design(treatment_history, extra=None):
+    """The MSM design [1, a-bar] where a-bar is the cumulative
+    treatment history, optionally with baseline covariates appended
+    (only baseline covariates may enter an MSM; time-varying ones are
+    handled through the weights)."""
+    A = _mat(treatment_history)
+    abar = [sum(row) for row in A]
+    rows = [[1.0, abar[i]] for i in range(len(A))]
+    if extra is not None:
+        E = _mat(extra)
+        rows = [rows[i] + list(E[i]) for i in range(len(rows))]
+    return {"X": rows, "a_bar": abar}
+
+
+def msm_cox_weighted(time, event, treatment_history, weights=None,
+                     n_iter=60, tol=1e-10):
+    """A weighted Cox marginal structural model: the partial
+    likelihood is weighted by the stabilized IPT weights, so the
+    hazard ratio it returns is marginal (causal) rather than
+    covariate-conditional."""
+    ts = _flat(time)
+    ev = _flat(event)
+    A = _mat(treatment_history)
+    a = [sum(row) for row in A]
+    n = len(ts)
+    w = [1.0] * n if weights is None else _flat(weights)
+    order = sorted(range(n), key=lambda i: ts[i])
+    beta = 0.0
+    for _ in range(int(n_iter)):
+        g = h = 0.0
+        for idx in order:
+            if ev[idx] <= 0:
+                continue
+            risk = [j for j in range(n) if ts[j] >= ts[idx]]
+            num = sum(w[j] * a[j] * math.exp(beta * a[j])
+                      for j in risk)
+            den = sum(w[j] * math.exp(beta * a[j]) for j in risk)
+            num2 = sum(w[j] * a[j] * a[j] * math.exp(beta * a[j])
+                       for j in risk)
+            if den <= 0:
+                continue
+            g += w[idx] * (a[idx] - num / den)
+            h += w[idx] * (num2 / den - (num / den) ** 2)
+        if h <= 1e-12:
+            break
+        step = g / h
+        beta += step
+        if abs(step) < tol:
+            break
+    return {"beta": beta, "hazard_ratio": math.exp(beta)}
+
+
+def msm_gmm(y, X, Z, weights=None, n_iter=60, tol=1e-10):
+    """The GMM/estimating-equation form of an MSM: solve
+    E[Z (Y - g(a-bar; beta))] = 0 with the IPT weights folded into the
+    moment condition (Hansen 1982; Robins 1999).  With a linear g and
+    as many instruments as parameters this is exactly identified and
+    reduces to weighted two-stage least squares."""
+    Xm = _mat(X)
+    Zm = _mat(Z)
+    ys = _flat(y)
+    n = len(ys)
+    w = [1.0] * n if weights is None else _flat(weights)
+    ZtWX = [[sum(w[i] * Zm[i][a] * Xm[i][b] for i in range(n))
+             for b in range(len(Xm[0]))] for a in range(len(Zm[0]))]
+    ZtWy = [sum(w[i] * Zm[i][a] * ys[i] for i in range(n))
+            for a in range(len(Zm[0]))]
+    if len(Zm[0]) == len(Xm[0]):
+        beta = _solve(ZtWX, ZtWy)
+    else:                       # over-identified: two-step GMM
+        A = _mm(_t(ZtWX), ZtWX)
+        b = _mv(_t(ZtWX), ZtWy)
+        beta = _solve(A, b)
+    resid = [ys[i] - sum(Xm[i][j] * beta[j]
+                         for j in range(len(beta)))
+             for i in range(n)]
+    moments = [sum(w[i] * Zm[i][a] * resid[i] for i in range(n)) / n
+               for a in range(len(Zm[0]))]
+    return {"beta": beta, "moments": moments, "residuals": resid}

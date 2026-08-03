@@ -1,55 +1,38 @@
-"""Numbered display equation (13.1) from MVSML chapter 13.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Convolution over a receptive field.
 
-from . import _array_core as np
+Implements eq. (13.1) p.551 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_deep_learning_eq_13_1"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_deep_learning_eq_13_1", "mvsml_cnn_convolve"]
 
 
-def mvsml_deep_learning_eq_13_1(image, of, size, Part, b, Fig):
-    """
-    Numbered display equation (13.1) from MVSML chapter 13.
+def mvsml_deep_learning_eq_13_1(image, kernel, bias=0.0, stride=1):
+    """z_i = w'x + b over the local receptive field (eq. 13.1): the
+    filter slides across the image and takes a dot product with each
+    local patch.  A 7x7x3 filter carries 148 parameters against the
+    196,609 a fully connected layer would need, because the weights
+    are shared across positions. Keys: estimate."""
+    fm = _gp.conv2d(image, kernel, bias=bias, stride=stride)
+    res = RichResult(payload={"estimate": fm[0][0],
+                              "feature_map": fm,
+                              "output_shape": (len(fm), len(fm[0])),
+                              "method": "convolution (MVSML 2022 eq. 13.1)"})
+    return with_describe_pointer(res, "msm259")
 
-    Formula: image of size 256  256  3. Part (b) of Fig. 13.16 exempliﬁes the ﬁlter matching operation using CNNs, and we can see clearly that the matching process is done locally, that is, in small patches or overlapping patches of an image. Filter matching is done by computing the pre-activation (zi) and activation (yi) values with the following equations. This is done at each position of the ﬁlter. X 147 zi = w jxij + b
 
-    Parameters
-    ----------
-    image : array-like
-        Input data.
-    of : array-like
-        Input data.
-    size : array-like
-        Input data.
-    Part : array-like
-        Input data.
-    b : array-like
-        Input data.
-    Fig : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (13.1) [Multivariate Statistical Machine Learnin [Pages 533-577] [2026-04-16].pdf]
-    """
-    image = np.atleast_1d(np.asarray(image, dtype=float))
-    n = len(image)
-    result = float(np.mean(image))
-    se = float(np.std(image, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (13.1) from MVSML chapter 13.",
-        }
-    )
+mvsml_cnn_convolve = mvsml_deep_learning_eq_13_1
 
 
 def cheatsheet():
-    return "msm259: Numbered display equation (13.1) from MVSML chapter 13."
+    return "msm259: Convolution over a receptive field"
