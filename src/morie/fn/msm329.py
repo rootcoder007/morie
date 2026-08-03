@@ -1,55 +1,36 @@
-"""Numbered display equation (15.4) from MVSML chapter 15.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""ZAPC random-forest prediction.
 
-from . import _array_core as np
+Implements eq. (15.4) p.652 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_functional_regression_eq_15_4"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_functional_regression_eq_15_4", "mvsml_zapc_predict"]
 
 
-def mvsml_functional_regression_eq_15_4(It, important, to, point, out, that):
-    """
-    Numbered display equation (15.4) from MVSML chapter 15.
+def mvsml_functional_regression_eq_15_4(theta_hat, mu_hat, threshold=0.5):
+    """Y-hat = 0 when theta-hat > 0.5 and mu-hat otherwise
+    (eq. 15.4): ZAPC_RF converts the probability to a zero rather than
+    to a binary label, and the 0.5 threshold is used because it
+    assumes no prior information. Keys: estimate."""
+    v = _gp.zapc_predict(theta_hat, mu_hat, threshold=threshold)
+    res = RichResult(payload={"estimate": v, "y_hat": v,
+                              "is_zero": v == 0.0,
+                              "method": "ZAPC_RF prediction (MVSML 2022 eq. 15.4)"})
+    return with_describe_pointer(res, "msm329")
 
-    Formula: ) ) It is important to point out that in the prediction formula given above (15.3), (bY) is equal to the mean of the ZAP model, while under the ZAPC_RF, the predictions are obtained as 8 < b\theta > 0:5 0, bY =
 
-    Parameters
-    ----------
-    It : array-like
-        Input data.
-    important : array-like
-        Input data.
-    to : array-like
-        Input data.
-    point : array-like
-        Input data.
-    out : array-like
-        Input data.
-    that : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (15.4) [Multivariate Statistical Machine Learnin [Pages 633-681] [2026-04-16].pdf]
-    """
-    It = np.atleast_1d(np.asarray(It, dtype=float))
-    n = len(It)
-    result = float(np.mean(It))
-    se = float(np.std(It, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (15.4) from MVSML chapter 15.",
-        }
-    )
+mvsml_zapc_predict = mvsml_functional_regression_eq_15_4
 
 
 def cheatsheet():
-    return "msm329: Numbered display equation (15.4) from MVSML chapter 15."
+    return "msm329: ZAPC random-forest prediction"

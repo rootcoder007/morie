@@ -1,55 +1,39 @@
-"""Numbered display equation (13.2) from MVSML chapter 13.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Activation map of a convolution layer.
 
-from . import _array_core as np
+Implements eq. (13.2) p.551 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_deep_learning_eq_13_2"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_deep_learning_eq_13_2", "mvsml_cnn_activation_map"]
 
 
-def mvsml_deep_learning_eq_13_2(pre, activation, zi, yi, values, the):
-    """
-    Numbered display equation (13.2) from MVSML chapter 13.
+def mvsml_deep_learning_eq_13_2(image, kernel, bias=0.0, stride=1,
+         activation="relu"):
+    """Applying the activation to each net input of eq. (13.1) gives
+    the feature (activation) map of eq. (13.2).  Every node of the map
+    detects the same feature at a different position, which is what
+    makes a CNN translationally invariant. Keys: estimate."""
+    fm = _gp.conv2d(image, kernel, bias=bias, stride=stride,
+                    activation=activation)
+    res = RichResult(payload={"estimate": fm[0][0],
+                              "activation_map": fm,
+                              "output_shape": (len(fm), len(fm[0])),
+                              "method": "activation map (MVSML 2022 eq. 13.2)"})
+    return with_describe_pointer(res, "msm260")
 
-    Formula: pre-activation (zi) and activation (yi) values with the following equations. This is done at each position of the ﬁlter. X 147 zi = w jxij + b (13.1) j=1 yi = g zi ( )
 
-    Parameters
-    ----------
-    pre : array-like
-        Input data.
-    activation : array-like
-        Input data.
-    zi : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    values : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (13.2) [Multivariate Statistical Machine Learnin [Pages 533-577] [2026-04-16].pdf]
-    """
-    values = np.atleast_1d(np.asarray(values, dtype=float))
-    n = len(values)
-    result = float(np.mean(values))
-    se = float(np.std(values, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (13.2) from MVSML chapter 13.",
-        }
-    )
+mvsml_cnn_activation_map = mvsml_deep_learning_eq_13_2
 
 
 def cheatsheet():
-    return "msm260: Numbered display equation (13.2) from MVSML chapter 13."
+    return "msm260: Activation map of a convolution layer"

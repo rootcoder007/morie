@@ -1,55 +1,36 @@
-r"""Numbered display equation (14.7) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Least squares basis coefficients.
 
-from . import _array_core as np
+Implements eq. (14.7)-(14.8) p.581 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_convolutional_nn_eq_14_7"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_convolutional_nn_eq_14_7", "mvsml_fda_coefficients"]
 
 
-def mvsml_convolutional_nn_eq_14_7(o, t, where, cio, L2, are):
-    r"""
-    Numbered display equation (14.7) from MVSML chapter 14.
+def mvsml_convolutional_nn_eq_14_7(t, x_t, L2=5, kind="fourier"):
+    """c-hat_i = (Psi'Psi)^-1 Psi' x_i(t) (eq. 14.7), with Psi the
+    m x L2 basis matrix of eq. (14.8) evaluated at the observation
+    times.  This least squares solution coincides with the maximum
+    likelihood estimate. Keys: estimate."""
+    Psi = _gp.fda_basis_matrix(t, L2, kind=kind)
+    c = _gp.fda_basis_coefficients(Psi, x_t)
+    res = RichResult(payload={"estimate": c[0], "c": c, "Psi": Psi,
+                              "method": "basis coefficients (MVSML 2022 eq. 14.7-14.8)"})
+    return with_describe_pointer(res, "msm270")
 
-    Formula: o=1cio\psio t( ), (14.6) where cio, o = 1, . . ., L2, are constants to be determined for each observation, i = 1, . . ., n. Usually, this is determined by least squares, in which case, by assuming that all curves were observed at the same time points, this can be computed as - 1\PsiTxi t( ), T = \PsiT\Psi bci = bci1, . . . ,bciL2 =
 
-    Parameters
-    ----------
-    o : array-like
-        Input data.
-    t : array-like
-        Input data.
-    where : array-like
-        Input data.
-    cio : array-like
-        Input data.
-    L2 : array-like
-        Input data.
-    are : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (14.7) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    o = np.atleast_1d(np.asarray(o, dtype=float))
-    n = len(o)
-    result = float(np.mean(o))
-    se = float(np.std(o, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.7) from MVSML chapter 14.",
-        }
-    )
+mvsml_fda_coefficients = mvsml_convolutional_nn_eq_14_7
 
 
 def cheatsheet():
-    return "msm270: Numbered display equation (14.7) from MVSML chapter 14."
+    return "msm270: Least squares basis coefficients"
