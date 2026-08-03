@@ -1,55 +1,39 @@
-r"""Numbered display equation (10.12) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Output-layer delta rule.
 
-from . import _array_core as np
+Implements eq. (10.12) p.411 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_12"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_12", "mvsml_ann_output_delta"]
 
 
-def mvsml_reproducing_kernel_eq_10_12(g, l, z, w, V, h):
-    r"""
-    Numbered display equation (10.12) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_12(X, y, W, activations=None, eta=0.1):
+    """Delta w_jk^(l) = eta (y_ij - y-hat_ij) g^(l)'(z_ij^(l))
+    V_ik^(h) = eta delta_ij V_ik^(h) (eq. 10.12), where
+    delta_ij = (y_ij - y-hat_ij) g^(l)'(z_ij^(l)).  Keys: estimate."""
+    g = _gp.ann_backprop_gradients(X, y, W, activations)
+    last = g["gradients"][-1]
+    upd = [[-eta * v for v in row] for row in last]
+    res = RichResult(payload={"estimate": upd[0][0],
+                              "delta_w": upd,
+                              "gradient": last,
+                              "method": "output delta rule (MVSML 2022 eq. 10.12)"})
+    return with_describe_pointer(res, "msm250")
 
-    Formula:  -  g l( )´ z l( ) \Deltaw l( ) V h ( ) ik = \eta\deltaijV h ( ) jk = \eta yij - byij
 
-    Parameters
-    ----------
-    g : array-like
-        Input data.
-    l : array-like
-        Input data.
-    z : array-like
-        Input data.
-    w : array-like
-        Input data.
-    V : array-like
-        Input data.
-    h : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.12) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.12) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_output_delta = mvsml_reproducing_kernel_eq_10_12
 
 
 def cheatsheet():
-    return "msm250: Numbered display equation (10.12) from MVSML chapter 10."
+    return "msm250: Output-layer delta rule"

@@ -1,55 +1,10 @@
-r"""Numbered display equation (10.13) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (10.13) p.411, re-exported from :mod:`morie.fn.msm251`."""
 
-from . import _array_core as np
+from .msm251 import mvsml_reproducing_kernel_eq_10_13, mvsml_ann_update_output
 
-from ._richresult import RichResult
-
-__all__ = ["mvsml_reproducing_kernel_eq_10_13"]
-
-
-def mvsml_reproducing_kernel_eq_10_13(w, l, jk, t, ijV, h):
-    r"""
-    Numbered display equation (10.13) from MVSML chapter 10.
-
-    Formula: + \Deltaw l( ) jk = w l( ) t( ) ( ) + \eta\deltaijV h (10.13) jk jk jk ik This equation reﬂects that the adjusted weights from
-
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    l : array-like
-        Input data.
-    jk : array-like
-        Input data.
-    t : array-like
-        Input data.
-    ijV : array-like
-        Input data.
-    h : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.13) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.13) from MVSML chapter 10.",
-        }
-    )
+__all__ = ["mvsml_reproducing_kernel_eq_10_13", "mvsml_ann_update_output"]
 
 
 def cheatsheet():
-    return "msm252: Numbered display equation (10.13) from MVSML chapter 10."
+    return "msm252: see msm251"
