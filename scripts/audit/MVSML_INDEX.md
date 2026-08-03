@@ -65,6 +65,8 @@ to the same implementation, so nothing is written twice.
 | 8 | 8 | eq. (8.8) pp.281-282 | msm138 | `mvsml_categorical_count_eq_8_8` | msm139, msm140, msm141, msm146, msm149, msm150 | prose |
 | 8 | 9 | eq. (8.9) p.282 | msm142 | `mvsml_categorical_count_eq_8_9` | msm143 | equation |
 | 8 | 10 | eq. (8.10) pp.283-285 | msm144 | `mvsml_categorical_count_eq_8_10` | msm157 | prose |
+| 8 | 11 | eq. (8.11) p.289 | msm145 | `mvsml_categorical_count_eq_8_11` | msm147, msm148, msm151, msm154 | prose |
+| 8 | 12 | eq. (8.12) p.291 | msm152 | `mvsml_categorical_count_eq_8_12` | msm153, msm155, msm156 | prose |
 | ? | ? | hyperplane_side | msm164 | `hyperplane_side` | - | empty artefact |
 | ? | ? | aalen_johansen | msmaln | `aalen_johansen` | - | empty artefact |
 | ? | ? | marginal_structural_model | msmest | `marginal_structural_model` | - | empty artefact |
@@ -90,4 +92,4 @@ LOWER bound (some tags do not survive extraction).
 | 5 | 1 2 3 4 5 6 | 1 2 3 4 5 5a 6 |
 | 6 | 1 2 3 4 5 6 8 9 11 | 1 2 3 4 5 6 7 8 9 10 11 |
 | 7 | 1 2 3 4 5 6 7 9 10 | 1 2 3 4 5 6 7 8 9 10 11 |
-| 8 | 1 2 3 4 6 8 9 10 11 12 | 1 2 3 4 5 8 9 10 |
+| 8 | 1 2 3 4 6 8 9 10 11 12 | 1 2 3 4 5 8 9 10 11 12 |

@@ -2182,3 +2182,83 @@ def kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1=1.0, sigma2_u2=1.0):
     return {"K1": [[sigma2_u1 * v for v in row] for row in K1],
             "K2": [[sigma2_u2 * v for v in row] for row in K2],
             "K_env": KE}
+
+
+def kernel_eigen_design(K, tol=1e-10):
+    """eq. (8.11) p.289: with the eigendecomposition
+    K = U S^(1/2) S^(1/2) U', model (8.8) is reparameterized as
+    y = mu 1_n + P f + eps with f ~ N(0, sigma2_f I_r) and
+    P = U S^(1/2), r = rank(K).  Because P P' = K the two models are
+    equivalent, but (8.11) is an ordinary ridge regression on r
+    columns, and r is usually far below min(n, p).
+    """
+    Km = _mat(K)
+    n = len(Km)
+    S = [[0.5 * (Km[i][j] + Km[j][i]) for j in range(n)]
+         for i in range(n)]
+    vals, vecs = np.linalg.eigh(np.marr(S))
+    lam = [float(v) for v in vals._flat()]
+    V = [[float(v) for v in row] for row in vecs._tolist()] \
+        if hasattr(vecs, "_tolist") else _mat(vecs)
+    order = sorted(range(n), key=lambda i: -lam[i])
+    keep = [i for i in order if lam[i] > tol]
+    P = [[V[r][i] * math.sqrt(lam[i]) for i in keep]
+         for r in range(n)]
+    return {"P": P, "rank": len(keep),
+            "eigenvalues": [lam[i] for i in keep]}
+
+
+def nystrom_kernel(X, m_index, kernel="linear", gamma=None):
+    """The Nystrom approximation of p.290 (Williams and Seeger 2001)
+    as used by Cuevas et al. (2020):
+
+        K ~= Q = K_{n,m} K_{m,m}^-1 K_{n,m}'
+
+    built from m of the n lines, so only K_{m,m} and K_{n,m} are ever
+    formed.  For the linear kernel K_{m,m} = X_m X_m'/p and
+    K_{n,m} = X_n X_m'/p.  Q has rank m and equals K exactly when the
+    m rows span the same space, in particular when m = n.
+    """
+    A = _mat(X)
+    idx = [int(i) for i in m_index]
+    Xm = [A[i] for i in idx]
+    p = len(A[0])
+    if kernel == "linear":
+        Kmm = [[sum(a * b for a, b in zip(u, v)) / p for v in Xm]
+               for u in Xm]
+        Knm = [[sum(a * b for a, b in zip(u, v)) / p for v in Xm]
+               for u in A]
+    else:
+        Kmm = kernel_matrix(Xm, kernel=kernel, gamma=gamma)
+        Knm = kernel_matrix(A, kernel=kernel, gamma=gamma, Z=Xm)
+    Kmm_inv = _inv(Kmm)
+    Q = _mm(_mm(Knm, Kmm_inv), _t(Knm))
+    return {"Q": Q, "K_mm": Kmm, "K_nm": Knm, "rank": len(idx)}
+
+
+def sparse_kernel_design(X, m_index, kernel="linear", gamma=None,
+                         tol=1e-10):
+    """eq. (8.12) p.291, steps 1-5: build K_{m,m} from m training
+    lines, K_{n,m} against all n, take the eigendecomposition
+    K_{m,m}^-1 = U S^(-1/2) S^(-1/2) U', and form the design
+    P = K_{n,m} U S^(-1/2).  Then y = mu 1_n + P f + eps with
+    f ~ N(0, sigma2_f I_m) is an ordinary ridge regression, and
+    P P' reproduces the Nystrom approximation Q.
+    """
+    ny = nystrom_kernel(X, m_index, kernel=kernel, gamma=gamma)
+    Kmm = ny["K_mm"]
+    m = len(Kmm)
+    S = [[0.5 * (Kmm[i][j] + Kmm[j][i]) for j in range(m)]
+         for i in range(m)]
+    vals, vecs = np.linalg.eigh(np.marr(S))
+    lam = [float(v) for v in vals._flat()]
+    V = [[float(v) for v in row] for row in vecs._tolist()] \
+        if hasattr(vecs, "_tolist") else _mat(vecs)
+    order = sorted(range(m), key=lambda i: -lam[i])
+    keep = [i for i in order if lam[i] > tol]
+    # U S^(-1/2) using the eigenvalues of K_mm
+    US = [[V[r][i] / math.sqrt(lam[i]) for i in keep]
+          for r in range(m)]
+    P = _mm(ny["K_nm"], US)
+    return {"P": P, "Q": ny["Q"], "rank": len(keep),
+            "K_mm": Kmm, "K_nm": ny["K_nm"]}
