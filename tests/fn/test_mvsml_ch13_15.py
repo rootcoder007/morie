@@ -191,10 +191,12 @@ def test_split_maximizes_the_summed_child_loglik():
 
 
 def test_eq_15_3_and_15_4_predictions():
-    # (15.3) is the ZAP mean
+    # (15.3) is the ZAP mean.  The book prints the numerator as
+    # (1-theta) exp(-mu), which drops a mu; see the erratum tests
+    # below, which pin the value to the book's own pmf.
     mu, th = 2.0, 0.3
     r3 = mvsml_functional_regression_eq_15_3(th, mu)
-    hand = (1 - th) * math.exp(-mu) / (1 - math.exp(-mu))
+    hand = (1 - th) * mu / (1 - math.exp(-mu))
     assert abs(r3["y_hat"] - hand) < 1e-12
     # (15.4) thresholds at 0.5 instead
     hi = mvsml_functional_regression_eq_15_4(0.7, mu)
@@ -207,3 +209,50 @@ def test_canonical_aliases():
     from morie.fn.msm327 import mvsml_zap_predict
     assert mvsml_cnn_convolve is mvsml_deep_learning_eq_13_1
     assert mvsml_zap_predict is mvsml_functional_regression_eq_15_3
+
+
+def test_eq_15_3_mean_matches_summation_over_the_books_own_pmf():
+    # p.651 prints P(Y=y) = (1-theta) exp(-mu) mu^y / ((1-exp(-mu)) y!)
+    # for y > 0 and theta at y = 0.  Summing y P(Y=y) over that pmf is
+    # the only thing eq. (15.3) can mean, and it is what we implement --
+    # the printed numerator (1-theta) exp(-mu) is a dropped mu factor.
+    for theta, mu in [(0.2, 1.5), (0.6, 3.0), (0.05, 0.4), (0.4, 8.0)]:
+        denom = 1.0 - math.exp(-mu)
+        direct, term = 0.0, math.exp(-mu)   # term = P_pois(y) at y=0
+        for y in range(1, 300):
+            term *= mu / y                  # avoids mu**y / y! overflow
+            direct += y * (1.0 - theta) * term / denom
+        assert abs(gp.zap_predict(theta, mu) - direct) < 1e-9
+        # the printed form disagrees, and by a lot
+        printed = (1.0 - theta) * math.exp(-mu) / denom
+        assert abs(printed - direct) > 1e-3
+
+
+def test_eq_15_3_agrees_with_the_books_own_variance_formula():
+    # Var(Y) on p.651 subtracts the square of the mean; solving that
+    # printed variance for the mean it must have used recovers ours
+    for theta, mu in [(0.2, 1.5), (0.6, 3.0), (0.05, 0.4)]:
+        mv = gp.zap_mean_variance(theta, mu)
+        k = (1.0 - theta) / (1.0 - math.exp(-mu))
+        assert abs(mv["variance"] - (k * (mu + mu * mu)
+                                     - (k * mu) ** 2)) < 1e-12
+        assert abs(mv["mean"] - gp.zap_predict(theta, mu)) < 1e-12
+
+
+def test_eq_15_3_prediction_grows_with_the_count_mean():
+    # a predicted count must increase in mu; the printed form decreases
+    prev = -1.0
+    for mu in [0.5, 1.0, 2.0, 4.0, 8.0]:
+        v = gp.zap_predict(0.3, mu)
+        assert v > prev
+        prev = v
+
+
+def test_eq_15_4_predicts_mu_hat_not_the_zap_mean():
+    # p.652: Y-hat = 0 if theta-hat > 0.5, and mu-hat if theta-hat <= 0.5
+    assert gp.zapc_predict(0.7, 4.0) == 0.0
+    assert gp.zapc_predict(0.5, 4.0) == 4.0        # boundary is <=
+    assert gp.zapc_predict(0.2, 4.0) == 4.0
+    # and that is deliberately not the ZAP mean of eq. (15.3)
+    assert abs(gp.zapc_predict(0.2, 4.0)
+               - gp.zap_predict(0.2, 4.0)) > 1e-6
