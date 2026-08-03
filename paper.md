@@ -836,6 +836,10 @@ precision.
 | Log-rank | `survival::survdiff` | $1\times10^{-11}$ |
 | Cox model, Efron ties | `survival::coxph` | $1\times10^{-7}$ |
 | Concordance index | `survival::concordance` | exact |
+| Logistic regression | `glm(binomial)` | $1\times10^{-12}$ |
+| Poisson regression | `glm(poisson)` | $1\times10^{-12}$ |
+| Gaussian GLM | `glm(gaussian)` | $1\times10^{-12}$ |
+| Gamma GLM, log link | `glm(Gamma("log"))` | $1\times10^{-12}$ |
 
 Where the agreement is not exact the reason is known and stated rather
 than absorbed into a tolerance. The maximum-likelihood spatial models
