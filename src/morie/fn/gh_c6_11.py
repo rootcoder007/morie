@@ -1,46 +1,54 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Posterior consistency for Markov processes via stationary-distribution argument."""
+"""Consistency for Markov chains.
+
+Implements Theorem 6.42 (transition-KL under the invariant law) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_markov_con"]
 
 
-def ghosal_markov_con(x):
-    """
-    Posterior consistency for Markov processes via stationary-distribution argument
-
-    Formula: KL(P0^Markov, P^Markov) controlled by stationary KL divergence
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 6 §6.7.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Posterior consistency for Markov processes via stationary-distribution argument",
-        }
-    )
+def ghosal_markov_con(a0=0.3, b0=0.6, n=3000, seed=42):
+    """Markov consistency uses K(p_theta0; p_theta) = int log ratio
+    of TRANSITION densities integrated over the invariant measure
+    (Thm 6.42). Demo: 2-state chain with flip probabilities (a, b);
+    Beta posteriors from transition counts concentrate at (a0, b0).
+    Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    x = 0
+    n01 = n00 = n10 = n11 = 0
+    for _ in range(n):
+        if x == 0:
+            if float(rng.uniform(0, 1)) < a0:
+                n01 += 1
+                x = 1
+            else:
+                n00 += 1
+        else:
+            if float(rng.uniform(0, 1)) < b0:
+                n10 += 1
+                x = 0
+            else:
+                n11 += 1
+    a_hat = (1.0 + n01) / (2.0 + n00 + n01)
+    b_hat = (1.0 + n10) / (2.0 + n10 + n11)
+    # stationary KL between truth and posterior-mean chain
+    pi0 = b0 / (a0 + b0)
+    def bkl(p, q):
+        return p * math.log(p / q) + (1 - p) * math.log(
+            (1 - p) / (1 - q))
+    kl = pi0 * bkl(a0, a_hat) + (1 - pi0) * bkl(b0, b_hat)
+    res = RichResult(payload={"estimate": kl,
+                              "a_hat": a_hat, "b_hat": b_hat,
+                              "method": "Markov transition-KL consistency (GvdV 2017 Thm 6.42)"})
+    return with_describe_pointer(res, "gh_c6_11")
 
 
 def cheatsheet():
-    return "gh_c6_11: Posterior consistency for Markov processes via stationary-distribution argument"
+    return "gh_c6_11: Consistency for Markov chains"
