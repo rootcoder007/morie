@@ -1,55 +1,42 @@
-"""Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Feller density approximation.
+
+Implements sec. 2.3.4 (Feller operator) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch2_feller_density_approximation"]
 
 
-def ghosal_ch2_feller_density_approximation(x, k, F, h_k, g_k, V):
-    """
-    Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F.
-
-    Formula: a(x; k, F) = integral h_k(x; z) dF(z),   h_k(x; z) = (k / V(x)) * integral_{[z, infty)} (t - x) g_k(t; x) d nu_k(t)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    k : array-like
-        Input data.
-    F : array-like
-        Input data.
-    h_k : array-like
-        Input data.
-    g_k : array-like
-        Input data.
-    V : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 2, Eq 2.5, p. 19
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F.",
-        }
-    )
+def ghosal_ch2_feller_density_approximation(x=0.4, k=40, F=None,
+                                            h_k=None, g_k=None,
+                                            V=None):
+    """a(x; k, F) = int h_k(x; z) dF(z) (sec. 2.3.4): with the
+    binomial Feller kernel this is the derivative-scale Bernstein
+    operator k * sum_j [F((j+1)/k) - F(j/k)] b_{j,k-1}(x), which
+    approximates the density F'. Default truth F(z) = z^2 (density
+    2z). Keys: value."""
+    if F is None:
+        F = lambda z: max(0.0, min(1.0, z)) ** 2
+    k = int(k)
+    dens = 0.0
+    for j in range(k):
+        inc = F((j + 1.0) / k) - F(j / k)
+        b = math.comb(k - 1, j) * x ** j * (1.0 - x) ** (k - 1 - j)
+        dens += k * inc * b
+    truth = 2.0 * x
+    res = RichResult(payload={"estimate": dens, "value": dens,
+                              "truth": truth,
+                              "gap": abs(dens - truth),
+                              "method": "Feller density approximation (GvdV 2017 sec. 2.3.4)"})
+    return with_describe_pointer(res, "ghs006")
 
 
 def cheatsheet():
-    return "ghs006: Feller-style approximation of a density by an integral mixture of kernels h_k weighted by the mixing distribution F."
+    return "ghs006: Feller density approximation"
