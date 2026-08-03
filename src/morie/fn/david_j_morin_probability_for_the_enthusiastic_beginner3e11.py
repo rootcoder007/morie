@@ -1,38 +1,22 @@
-"""pmf of the sum of two independent discrete variables (convolution).
+"""Deprecated alias for :func:`morie.fn.pmf_sum_convolution`.
 
-Implements eq (3.11) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .pmf_sum_convolution import pmf_sum_convolution as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_11"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_11(values_x, probs_x, values_y, probs_y):
-    """pmf of the sum of two independent discrete variables (convolution).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.11).
-    """
-    values, probs = _morin.pmf_sum_convolution(values_x, probs_x, values_y, probs_y)
-    payload = {"values": [float(v) for v in values],
-               "probs": [float(p) for p in probs]}
-    lines = [(f"P(S={v:g})", float(p)) for v, p in zip(values, probs)]
-    return RichResult(
-        title="pmf of the sum of two independent discrete variables (convolution).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_11(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.pmf_sum_convolution` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_11() is the book-coordinate name for pmf_sum_convolution(); "
+        "it will be removed. Use morie.fn.pmf_sum_convolution() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e11: pmf of the sum of two independent discrete variables (convolution). Morin (2016) eq (3.11)."
+    return _impl(*args, **kwargs)

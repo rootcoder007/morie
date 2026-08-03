@@ -1,44 +1,22 @@
-"""MLE variance Var(pi_hat) = pi_hat(1 - pi_hat)/n.
+"""Deprecated alias for :func:`morie.fn.mle_variance_pi`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np  # noqa: F401
+import warnings
 
-from . import _acd
-from ._richresult import RichResult
+from .mle_variance_pi import mle_variance_pi as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_3"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_3(pi_hat, n):
-    """MLE variance Var(pi_hat) = pi_hat(1 - pi_hat)/n
-
-    Formula: Var(pi_hat) = pi_hat(1-pi_hat)/n
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
-    eq. (1.3).
-    """
-    value = _acd.mle_variance_pi(pi_hat, n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Bilder & Loughin (2025) eq. (1.3)"
-    return RichResult(
-        title='MLE variance Var(pi_hat) = pi_hat(1 - pi_hat)/n',
-        summary_lines=summary,
-        payload=payload,
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.mle_variance_pi` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_3() is the book-coordinate name for mle_variance_pi(); "
+        "it will be removed. Use morie.fn.mle_variance_pi() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return '1e3: Var(pi_hat) = pi_hat(1-pi_hat)/n [Bilder & Loughin 2025, eq. 1.3]'
+    return _impl(*args, **kwargs)

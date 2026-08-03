@@ -1,37 +1,22 @@
-"""Regression to the mean: yavg = r^2 y1.
+"""Deprecated alias for :func:`morie.fn.regression_to_mean_factor`.
 
-Implements eq (6.40) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .regression_to_mean_factor import regression_to_mean_factor as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40(r, y1):
-    """Regression to the mean: yavg = r^2 y1.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.40).
-    """
-    value = _morin.regression_to_mean_factor(r) * float(y1)
-    payload = {"yavg": value, "factor": _morin.regression_to_mean_factor(r)}
-    lines = [("r^2 y1", value)]
-    return RichResult(
-        title="Regression to the mean: yavg = r^2 y1.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.regression_to_mean_factor` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_40() is the book-coordinate name for regression_to_mean_factor(); "
+        "it will be removed. Use morie.fn.regression_to_mean_factor() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e40: Regression to the mean: yavg = r^2 y1. Morin (2016) eq (6.40)."
+    return _impl(*args, **kwargs)

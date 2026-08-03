@@ -1,44 +1,22 @@
-"""Joint probability of logistic responses (sufficiency form).
+"""Deprecated alias for :func:`morie.fn.logistic_joint_probability`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np  # noqa: F401
+import warnings
 
-from . import _acd
-from ._richresult import RichResult
+from .logistic_joint_probability import logistic_joint_probability as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4(b, x, y):
-    """Joint probability of logistic responses (sufficiency form)
-
-    Formula: P(Y1..Yn) = exp(sum y Xb)/prod(1 + exp(Xb)) (log form)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
-    eq. (6.4).
-    """
-    value = _acd.logistic_joint_probability(b, x, y)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Bilder & Loughin (2025) eq. (6.4)"
-    return RichResult(
-        title='Joint probability of logistic responses (sufficiency form)',
-        summary_lines=summary,
-        payload=payload,
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.logistic_joint_probability` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_4() is the book-coordinate name for logistic_joint_probability(); "
+        "it will be removed. Use morie.fn.logistic_joint_probability() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return '6e4: P(Y1..Yn) = exp(sum y Xb)/prod(1 + exp(Xb)) (log form) [Bilder & Loughin 2025, eq. 6.4]'
+    return _impl(*args, **kwargs)

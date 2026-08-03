@@ -1,45 +1,22 @@
-"""OLS trend weights over survey times.
+"""Deprecated alias for :func:`morie.fn.trend_weights`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .trend_weights import trend_weights as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4(times):
-    """OLS trend weights over survey times
-
-    Formula: w_j = (t_j - tbar)/sum(t - tbar)^2
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (15.4).
-    """
-    arr = np.asarray(_brus.trend_weights(times), dtype=float)
-    value = float(arr.ravel()[0])
-    payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (15.4)"
-    return RichResult(
-        title='OLS trend weights over survey times',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.trend_weights` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_15_equation_4() is the book-coordinate name for trend_weights(); "
+        "it will be removed. Use morie.fn.trend_weights() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r15e4: w_j = (t_j - tbar)/sum(t - tbar)^2 [Brus 2022, eq. 15.4]'
+    return _impl(*args, **kwargs)

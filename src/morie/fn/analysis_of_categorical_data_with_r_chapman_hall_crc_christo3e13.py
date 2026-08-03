@@ -1,44 +1,22 @@
-"""polr() parameterization logit(P(Y <= j)) = bj0 - eta^T x.
+"""Deprecated alias for :func:`morie.fn.polr_parameterization`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np  # noqa: F401
+import warnings
 
-from . import _acd
-from ._richresult import RichResult
+from .polr_parameterization import polr_parameterization as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13(bj0, etas, xs):
-    """polr() parameterization logit(P(Y <= j)) = bj0 - eta^T x
-
-    Formula: logit(P(Y <= j)) = bj0 - eta1 x1 - ... - etap xp
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
-    eq. (3.13).
-    """
-    value = _acd.polr_parameterization(bj0, etas, xs)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Bilder & Loughin (2025) eq. (3.13)"
-    return RichResult(
-        title='polr() parameterization logit(P(Y <= j)) = bj0 - eta^T x',
-        summary_lines=summary,
-        payload=payload,
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.polr_parameterization` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_3_equation_13() is the book-coordinate name for polr_parameterization(); "
+        "it will be removed. Use morie.fn.polr_parameterization() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return '3e13: logit(P(Y <= j)) = bj0 - eta1 x1 - ... - etap xp [Bilder & Loughin 2025, eq. 3.13]'
+    return _impl(*args, **kwargs)

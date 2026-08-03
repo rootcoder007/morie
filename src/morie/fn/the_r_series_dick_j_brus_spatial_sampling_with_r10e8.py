@@ -1,44 +1,22 @@
-"""Generalized regression estimator of the mean.
+"""Deprecated alias for :func:`morie.fn.regression_estimator_general`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .regression_estimator_general import regression_estimator_general as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8(x_all, b_hat, z_sample, x_sample, pi_sample, n_population):
-    """Generalized regression estimator of the mean
-
-    Formula: zbar_regr = mean(x^T b_hat) + HT mean of residuals
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (10.8).
-    """
-    value = _brus.regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample, n_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (10.8)"
-    return RichResult(
-        title='Generalized regression estimator of the mean',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.regression_estimator_general` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_8() is the book-coordinate name for regression_estimator_general(); "
+        "it will be removed. Use morie.fn.regression_estimator_general() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r10e8: zbar_regr = mean(x^T b_hat) + HT mean of residuals [Brus 2022, eq. 10.8]'
+    return _impl(*args, **kwargs)

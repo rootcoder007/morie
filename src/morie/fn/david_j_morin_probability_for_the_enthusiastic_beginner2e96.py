@@ -1,35 +1,22 @@
-"""At least one of k i.i.d. independent events, inclusion-exclusion form.
+"""Deprecated alias for :func:`morie.fn.at_least_one_of_iid`.
 
-Implements eq (2.96) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .at_least_one_of_iid import at_least_one_of_iid as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_96"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_96(p, k=3):
-    """At least one of k i.i.d. independent events, inclusion-exclusion form.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.96).
-    """
-    value = _morin.at_least_one_of_iid(p, k)
-    payload = {"p": float(p), "k": int(k), "p_at_least_one": value}
-    lines = [("P(at least one)", value)]
-    return RichResult(
-        title="At least one of k i.i.d. independent events, inclusion-exclusion form.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_96(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.at_least_one_of_iid` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_96() is the book-coordinate name for at_least_one_of_iid(); "
+        "it will be removed. Use morie.fn.at_least_one_of_iid() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e96: At least one of k i.i.d. independent events, inclusion-exclusion form. Morin (2016) eq (2.96)."
+    return _impl(*args, **kwargs)

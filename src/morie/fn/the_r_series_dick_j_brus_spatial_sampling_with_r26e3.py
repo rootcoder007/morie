@@ -1,44 +1,22 @@
-"""Variance of the mean under autocorrelation.
+"""Deprecated alias for :func:`morie.fn.autocorrelated_mean_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .autocorrelated_mean_variance import autocorrelated_mean_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3(sigma2, n, rho_bar):
-    """Variance of the mean under autocorrelation
-
-    Formula: V(mu_hat) = (sigma2/n)(1 + (n-1) rhobar)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (26.3).
-    """
-    value = _brus.autocorrelated_mean_variance(sigma2, n, rho_bar)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (26.3)"
-    return RichResult(
-        title='Variance of the mean under autocorrelation',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.autocorrelated_mean_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_3() is the book-coordinate name for autocorrelated_mean_variance(); "
+        "it will be removed. Use morie.fn.autocorrelated_mean_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r26e3: V(mu_hat) = (sigma2/n)(1 + (n-1) rhobar) [Brus 2022, eq. 26.3]'
+    return _impl(*args, **kwargs)

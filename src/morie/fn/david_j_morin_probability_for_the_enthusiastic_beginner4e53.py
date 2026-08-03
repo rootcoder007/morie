@@ -1,38 +1,22 @@
-"""P(0) = e^(-a) as the alternating exponential series.
+"""Deprecated alias for :func:`morie.fn.poisson_zero_series`.
 
-Implements eq (4.53) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .poisson_zero_series import poisson_zero_series as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_53"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_53(a, terms=60):
-    """P(0) = e^(-a) as the alternating exponential series.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (4.53).
-    """
-    partials, closed = _morin.poisson_zero_series(a, terms)
-    payload = {"partial_sums": partials, "e_minus_a": closed,
-               "final_error": abs(partials[-1] - closed)}
-    lines = [("series", partials[-1]), ("e^-a", closed)]
-    return RichResult(
-        title="P(0) = e^(-a) as the alternating exponential series.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_53(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.poisson_zero_series` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_4_equation_53() is the book-coordinate name for poisson_zero_series(); "
+        "it will be removed. Use morie.fn.poisson_zero_series() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner4e53: P(0) = e^(-a) as the alternating exponential series. Morin (2016) eq (4.53)."
+    return _impl(*args, **kwargs)

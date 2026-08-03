@@ -1,44 +1,22 @@
-"""Nested ANOVA model for variogram sampling.
+"""Deprecated alias for :func:`morie.fn.nested_anova_prediction`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .nested_anova_prediction import nested_anova_prediction as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_1"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_1(mu, a_i, b_ij, c_ijk, eps):
-    """Nested ANOVA model for variogram sampling
-
-    Formula: Z_ijkl = mu + A_i + B_ij + C_ijk + eps_ijkl
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (24.1).
-    """
-    value = _brus.nested_anova_prediction(mu, a_i, b_ij, c_ijk, eps)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (24.1)"
-    return RichResult(
-        title='Nested ANOVA model for variogram sampling',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_1(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.nested_anova_prediction` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_1() is the book-coordinate name for nested_anova_prediction(); "
+        "it will be removed. Use morie.fn.nested_anova_prediction() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r24e1: Z_ijkl = mu + A_i + B_ij + C_ijk + eps_ijkl [Brus 2022, eq. 24.1]'
+    return _impl(*args, **kwargs)

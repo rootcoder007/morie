@@ -1,44 +1,22 @@
-"""Posterior interval with coverage 1 - alpha.
+"""Deprecated alias for :func:`morie.fn.beta_posterior_interval_prob`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .beta_posterior_interval_prob import beta_posterior_interval_prob as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18(v, l, z, n, c, d):
-    """Posterior interval with coverage 1 - alpha
-
-    Formula: integral over (v, v + l) of the posterior = 1 - alpha
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (12.18).
-    """
-    value = _brus.beta_posterior_interval_prob(v, l, z, n, c, d)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (12.18)"
-    return RichResult(
-        title='Posterior interval with coverage 1 - alpha',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.beta_posterior_interval_prob` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_18() is the book-coordinate name for beta_posterior_interval_prob(); "
+        "it will be removed. Use morie.fn.beta_posterior_interval_prob() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r12e18: integral over (v, v + l) of the posterior = 1 - alpha [Brus 2022, eq. 12.18]'
+    return _impl(*args, **kwargs)

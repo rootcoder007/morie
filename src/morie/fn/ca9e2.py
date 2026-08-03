@@ -1,44 +1,22 @@
-"""Treatment coefficient under randomization b_t = r_yt s_y/s_t.
+"""Deprecated alias for :func:`morie.fn.treatment_b_randomized`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .treatment_b_randomized import treatment_b_randomized as _impl
 
 __all__ = ["ca_chapter_9_equation_2"]
 
 
-def ca_chapter_9_equation_2(r_yt, s_y, s_t):
-    """Treatment coefficient under randomization b_t = r_yt s_y/s_t
-
-    Formula: b_t = r_yt (s_y / s_t)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.9 eq.9.2
-    """
-    value = _ca_crim.treatment_b_randomized(r_yt, s_y, s_t)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (9.2)"
-    return RichResult(
-        title='Treatment coefficient under randomization b_t = r_yt s_y/s_t',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_9_equation_2(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.treatment_b_randomized` instead."""
+    warnings.warn(
+        "ca_chapter_9_equation_2() is the book-coordinate name for treatment_b_randomized(); "
+        "it will be removed. Use morie.fn.treatment_b_randomized() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca9e2: b_t = r_yt (s_y / s_t) [Weisburd et al. 2022, eq. 9.2]'
+    return _impl(*args, **kwargs)

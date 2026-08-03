@@ -1,44 +1,22 @@
-"""Mixed-model calibration under SI.
+"""Deprecated alias for :func:`morie.fn.mixed_calibration_si`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .mixed_calibration_si import mixed_calibration_si as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_40"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_40(z_sample, b_si, m_all_mean, m_sample_mean):
-    """Mixed-model calibration under SI
-
-    Formula: zbar_MC = zbar_S + b_SI (mbar_pop - mbar_S)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (10.40).
-    """
-    value = _brus.mixed_calibration_si(z_sample, b_si, m_all_mean, m_sample_mean)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (10.40)"
-    return RichResult(
-        title='Mixed-model calibration under SI',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_40(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.mixed_calibration_si` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_40() is the book-coordinate name for mixed_calibration_si(); "
+        "it will be removed. Use morie.fn.mixed_calibration_si() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r10e40: zbar_MC = zbar_S + b_SI (mbar_pop - mbar_S) [Brus 2022, eq. 10.40]'
+    return _impl(*args, **kwargs)

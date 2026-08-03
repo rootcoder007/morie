@@ -1,44 +1,22 @@
-"""Augmented kriging variance AKV = V_OK + E[tau2].
+"""Deprecated alias for :func:`morie.fn.augmented_kriging_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .augmented_kriging_variance import augmented_kriging_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4(v_ok, e_tau2):
-    """Augmented kriging variance AKV = V_OK + E[tau2]
-
-    Formula: AKV = V_OK + E[tau^2]
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (24.4).
-    """
-    value = _brus.augmented_kriging_variance(v_ok, e_tau2)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (24.4)"
-    return RichResult(
-        title='Augmented kriging variance AKV = V_OK + E[tau2]',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.augmented_kriging_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_24_equation_4() is the book-coordinate name for augmented_kriging_variance(); "
+        "it will be removed. Use morie.fn.augmented_kriging_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r24e4: AKV = V_OK + E[tau^2] [Brus 2022, eq. 24.4]'
+    return _impl(*args, **kwargs)

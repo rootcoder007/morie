@@ -1,35 +1,22 @@
-"""Stars and bars: N_U_n = C(n+N-1, N-1) unordered samples with repetition.
+"""Deprecated alias for :func:`morie.fn.stars_and_bars`.
 
-Implements eq (1.57) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .stars_and_bars import stars_and_bars as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_57"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_57(n, N):
-    """Stars and bars: N_U_n = C(n+N-1, N-1) unordered samples with repetition.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.57).
-    """
-    value = _morin.stars_and_bars(n, N)
-    payload = {"n": int(n), "N": int(N), "count": value}
-    lines = [("n draws from N types", value)]
-    return RichResult(
-        title="Stars and bars: N_U_n = C(n+N-1, N-1) unordered samples with repetition.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_57(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.stars_and_bars` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_57() is the book-coordinate name for stars_and_bars(); "
+        "it will be removed. Use morie.fn.stars_and_bars() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e57: Stars and bars: N_U_n = C(n+N-1, N-1) unordered samples with repetition. Morin (2016) eq (1.57)."
+    return _impl(*args, **kwargs)

@@ -1,37 +1,22 @@
-"""Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).
+"""Deprecated alias for :func:`morie.fn.gaussian_approx_n`.
 
-Implements eq (5.14) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .gaussian_approx_n import gaussian_approx_n as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14(x, n):
-    """Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.14).
-    """
-    value = _morin.gaussian_approx_n(x, n)
-    payload = {"x": float(x), "n": int(n), "PG": value}
-    lines = [("PG(x)", value)]
-    return RichResult(
-        title="Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.gaussian_approx_n` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_14() is the book-coordinate name for gaussian_approx_n(); "
+        "it will be removed. Use morie.fn.gaussian_approx_n() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e14: Gaussian approximation for n fair flips: e^(-2x^2/n)/sqrt(pi n/2). Morin (2016) eq (5.14)."
+    return _impl(*args, **kwargs)

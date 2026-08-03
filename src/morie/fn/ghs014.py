@@ -1,26 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""Dirichlet posterior mean.
+"""Deprecated alias for :func:`morie.fn.cdp_posterior_mean`.
 
-Implements eq. (3.7), p.32 of Ghosal & van der Vaart (2017), *Fundamentals of
-Nonparametric Bayesian Inference*, CUP.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _bnp_core as _bnp
-from ._richresult import RichResult, with_describe_pointer
+from .cdp_posterior_mean import cdp_posterior_mean as _impl
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_mean"]
 
 
-def ghosal_ch3_dirichlet_posterior_mean(alpha, counts, j, alpha_total):
-    """E(p_j | X) = (alpha_j + N_j) / (sum alpha + n) (eq. 3.7).
-    Keys: value."""
-    v = _bnp.cdp_posterior_mean(alpha, counts, int(j), alpha_total)
-    res = RichResult(payload={"estimate": v, "value": v,
-                              "method": "Dirichlet posterior mean (GvdV 2017 eq. 3.7)"})
-    return with_describe_pointer(res, "ghs014")
-
-
-def cheatsheet():
-    return "ghs014: Dirichlet posterior mean"
+def ghosal_ch3_dirichlet_posterior_mean(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cdp_posterior_mean` instead."""
+    warnings.warn(
+        "ghosal_ch3_dirichlet_posterior_mean() is the book-coordinate name for cdp_posterior_mean(); "
+        "it will be removed. Use morie.fn.cdp_posterior_mean() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

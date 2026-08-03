@@ -1,44 +1,22 @@
-"""Standard error of Fisher's Zr: 1/sqrt(n-3).
+"""Deprecated alias for :func:`morie.fn.se_fisher_z`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .se_fisher_z import se_fisher_z as _impl
 
 __all__ = ["ca_chapter_11_equation_13"]
 
 
-def ca_chapter_11_equation_13(n):
-    """Standard error of Fisher's Zr: 1/sqrt(n-3)
-
-    Formula: se_Zr = 1 / sqrt(n - 3)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.11 eq.11.13
-    """
-    value = _ca_crim.se_fisher_z(n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (11.13)"
-    return RichResult(
-        title="Standard error of Fisher's Zr: 1/sqrt(n-3)",
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_11_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.se_fisher_z` instead."""
+    warnings.warn(
+        "ca_chapter_11_equation_13() is the book-coordinate name for se_fisher_z(); "
+        "it will be removed. Use morie.fn.se_fisher_z() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca11e13: se_Zr = 1 / sqrt(n - 3) [Weisburd et al. 2022, eq. 11.13]'
+    return _impl(*args, **kwargs)

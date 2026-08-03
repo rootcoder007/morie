@@ -1,35 +1,22 @@
-"""Or rule for exclusive events: P(A or B) = P(A) + P(B).
+"""Deprecated alias for :func:`morie.fn.prob_or_exclusive`.
 
-Implements eq (2.14) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .prob_or_exclusive import prob_or_exclusive as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_14"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_14(ps):
-    """Or rule for exclusive events: P(A or B) = P(A) + P(B).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.14).
-    """
-    value = _morin.prob_or_exclusive(ps)
-    payload = {"ps": [float(x) for x in np.atleast_1d(ps)], "p_or": value}
-    lines = [("P(any event)", value)]
-    return RichResult(
-        title="Or rule for exclusive events: P(A or B) = P(A) + P(B).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_14(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.prob_or_exclusive` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_14() is the book-coordinate name for prob_or_exclusive(); "
+        "it will be removed. Use morie.fn.prob_or_exclusive() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e14: Or rule for exclusive events: P(A or B) = P(A) + P(B). Morin (2016) eq (2.14)."
+    return _impl(*args, **kwargs)

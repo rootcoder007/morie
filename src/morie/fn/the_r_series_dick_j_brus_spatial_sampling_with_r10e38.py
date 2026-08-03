@@ -1,44 +1,22 @@
-"""Calibration intercept a_hat = (1 - b_hat) HT mean of z.
+"""Deprecated alias for :func:`morie.fn.mixed_calibration_intercept`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .mixed_calibration_intercept import mixed_calibration_intercept as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38(b_hat, z_sample, pi_sample, n_population):
-    """Calibration intercept a_hat = (1 - b_hat) HT mean of z
-
-    Formula: a_hat = (1 - b_hat)(1/N) sum z_k/pi_k
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (10.38).
-    """
-    value = _brus.mixed_calibration_intercept(b_hat, z_sample, pi_sample, n_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (10.38)"
-    return RichResult(
-        title='Calibration intercept a_hat = (1 - b_hat) HT mean of z',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.mixed_calibration_intercept` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_38() is the book-coordinate name for mixed_calibration_intercept(); "
+        "it will be removed. Use morie.fn.mixed_calibration_intercept() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r10e38: a_hat = (1 - b_hat)(1/N) sum z_k/pi_k [Brus 2022, eq. 10.38]'
+    return _impl(*args, **kwargs)

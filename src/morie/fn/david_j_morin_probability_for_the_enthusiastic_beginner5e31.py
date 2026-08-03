@@ -1,37 +1,22 @@
-"""Standard deviation of a discrete pmf (the OCR dropped the sqrt).
+"""Deprecated alias for :func:`morie.fn.pmf_sd`.
 
-Implements eq (5.31) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .pmf_sd import pmf_sd as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_31"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_31(values, probs):
-    """Standard deviation of a discrete pmf (the OCR dropped the sqrt).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (5.31).
-    """
-    sd, mu = _morin.pmf_sd(values, probs)
-    payload = {"sd": sd, "mean": mu, "variance": sd * sd}
-    lines = [("mean", mu), ("sd", sd)]
-    return RichResult(
-        title="Standard deviation of a discrete pmf (the OCR dropped the sqrt).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_31(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.pmf_sd` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_31() is the book-coordinate name for pmf_sd(); "
+        "it will be removed. Use morie.fn.pmf_sd() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner5e31: Standard deviation of a discrete pmf (the OCR dropped the sqrt). Morin (2016) eq (5.31)."
+    return _impl(*args, **kwargs)
