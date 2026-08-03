@@ -1,41 +1,32 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Levy measure characterization of NTR process."""
+"""NTR Lévy (Laplace) functional.
+
+Implements sec. 13.4 (Laplace functional form) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ntr_levy"]
 
 
-def ghosal_ntr_levy(x):
-    """
-    Levy measure characterization of NTR process
-
-    Formula: Laplace functional: E[exp(-integral f dM)] = exp(-integral (1-e^{-f}) dnu)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 13 §13.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Levy measure characterization of NTR process"}
-    )
+def ghosal_ntr_levy(f_vals, nu_masses):
+    """E exp(-int f dM) = exp(-int (1 - e^{-f u}) dnu) for a
+    discrete Levy measure nu = sum m_j delta_{u_j} paired with f
+    values (sec. 13.4): computed exactly. Keys: estimate."""
+    fs = _bnp._flat(f_vals)
+    ms = _bnp._flat(nu_masses)
+    exponent = sum(m * (1.0 - math.exp(-f)) for f, m in zip(fs, ms))
+    val = math.exp(-exponent)
+    res = RichResult(payload={"estimate": val,
+                              "exponent": exponent,
+                              "method": "NTR Laplace functional (GvdV 2017 sec. 13.4)"})
+    return with_describe_pointer(res, "gh_c13_9")
 
 
 def cheatsheet():
-    return "gh_c13_9: Levy measure characterization of NTR process"
+    return "gh_c13_9: NTR Lévy (Laplace) functional"

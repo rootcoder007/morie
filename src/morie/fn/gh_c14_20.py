@@ -1,46 +1,35 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP."""
+"""Probit stick-breaking process.
+
+Implements sec. 14.9.3 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_probit_sbp"]
 
 
-def ghosal_probit_sbp(x):
-    """
-    Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP
-
-    Formula: G(x,.) = sum_k w_k(x) delta_{theta_k}, w_k(x) via Phi(linear predictor)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 14 §14.9.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP",
-        }
-    )
+def ghosal_probit_sbp(x=0.4, n_terms=25, seed=42):
+    """w_k(x) via V_k(x) = Phi(mu_k + beta_k x): Gaussian-linked
+    covariate-dependent sticks (sec. 14.9.3). Phi computed with
+    erf. Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    def Phi(v):
+        return 0.5 * (1.0 + math.erf(v / math.sqrt(2.0)))
+    V = [Phi(float(rng.normal(0, 1))
+             + float(rng.normal(0, 1)) * x)
+         for _ in range(n_terms)]
+    W = _bnp.stick_breaking(V)
+    res = RichResult(payload={"estimate": W[0],
+                              "total_mass": sum(W),
+                              "method": "probit stick-breaking (GvdV 2017 sec. 14.9.3)"})
+    return with_describe_pointer(res, "gh_c14_20")
 
 
 def cheatsheet():
-    return "gh_c14_20: Probit stick-breaking process: V_k(x) = Phi(a_k + b_k'x) for covariate-dependent DP"
+    return "gh_c14_20: Probit stick-breaking process"

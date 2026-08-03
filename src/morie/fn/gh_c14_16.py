@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Levy process representation of NCRM: Laplace functional and moments."""
+"""NCRM Laplace functional.
+
+Implements sec. 14.7 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ncrm_levy"]
 
 
-def ghosal_ncrm_levy(x):
-    """
-    Levy process representation of NCRM: Laplace functional and moments
-
-    Formula: E[exp(-integral f dM)] = exp(-integral (1-e^{-f(x)*u}) nu(du,dx))
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 14 §14.7
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Levy process representation of NCRM: Laplace functional and moments",
-        }
-    )
+def ghosal_ncrm_levy(f_vals, nu_masses, u_atoms):
+    """E exp(-int f dM) = exp(-int (1 - e^{-f(x) u}) nu(du, dx))
+    (sec. 14.7): exact for a discrete Levy measure with atoms
+    (u_j, mass m_j) paired with f values. Keys: estimate."""
+    fs = _bnp._flat(f_vals)
+    ms = _bnp._flat(nu_masses)
+    us = _bnp._flat(u_atoms)
+    expo = sum(m * (1.0 - math.exp(-f * u))
+               for f, m, u in zip(fs, ms, us))
+    res = RichResult(payload={"estimate": math.exp(-expo),
+                              "exponent": expo,
+                              "method": "NCRM Laplace functional (GvdV 2017 sec. 14.7)"})
+    return with_describe_pointer(res, "gh_c14_16")
 
 
 def cheatsheet():
-    return "gh_c14_16: Levy process representation of NCRM: Laplace functional and moments"
+    return "gh_c14_16: NCRM Laplace functional"

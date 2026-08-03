@@ -1,46 +1,32 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Species sampling process: G = sum_k p_k delta_{theta_k} with random weights (p_k)."""
+"""Species sampling process.
+
+Implements sec. 14.2 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ssp_def"]
 
 
-def ghosal_ssp_def(x):
-    """
-    Species sampling process: G = sum_k p_k delta_{theta_k} with random weights (p_k)
-
-    Formula: G = sum_{k=1}^infty p_k delta_{theta_k}, theta_k iid G0, sum p_k=1 a.s.
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 14 §14.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Species sampling process: G = sum_k p_k delta_{theta_k} with random weights (p_k)",
-        }
-    )
+def ghosal_ssp_def(weights, atoms):
+    """G = sum_k p_k delta_{theta_k}, theta_k iid G0, sum p_k = 1
+    a.s. (sec. 14.2): validates the species-sampling structure.
+    Keys: estimate."""
+    p = _bnp.normalize_weights(weights)
+    th = _bnp._flat(atoms)
+    mean = sum(pi * t for pi, t in zip(p, th))
+    res = RichResult(payload={"estimate": mean,
+                              "total_mass": sum(p),
+                              "n_species": len(p),
+                              "method": "species sampling process (GvdV 2017 sec. 14.2)"})
+    return with_describe_pointer(res, "gh_c14_5")
 
 
 def cheatsheet():
-    return "gh_c14_5: Species sampling process: G = sum_k p_k delta_{theta_k} with random weights (p_k)"
+    return "gh_c14_5: Species sampling process"

@@ -1,46 +1,36 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Local Dirichlet process: DP with location-dependent weights for regression."""
+"""Local Dirichlet process.
+
+Implements sec. 14.9.2 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_local_dp"]
 
 
-def ghosal_local_dp(x):
-    """
-    Local Dirichlet process: DP with location-dependent weights for regression
-
-    Formula: G(x,.) = sum_k w_k(x) delta_{theta_k}, w_k(x) from kernel stick-breaking
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 14 §14.9.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Local Dirichlet process: DP with location-dependent weights for regression",
-        }
-    )
+def ghosal_local_dp(x=0.3, bandwidth=0.25, n_atoms=200, alpha=2.0,
+                    seed=42):
+    """G(x, .) = sum_k w_k(x) delta_{theta_k}: only atoms whose
+    locations fall within the window of x get stick weight
+    (sec. 14.9.2). Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    locs = [float(rng.uniform(0, 1)) for _ in range(n_atoms)]
+    Vs = [float(rng.beta(1.0, alpha)) for _ in range(n_atoms)]
+    active = [i for i in range(n_atoms)
+              if abs(locs[i] - x) <= bandwidth]
+    W = _bnp.stick_breaking([Vs[i] for i in active])
+    res = RichResult(payload={"estimate": sum(W),
+                              "n_active": len(active),
+                              "local": len(active) < n_atoms,
+                              "method": "local DP (GvdV 2017 sec. 14.9.2)"})
+    return with_describe_pointer(res, "gh_c14_19")
 
 
 def cheatsheet():
-    return "gh_c14_19: Local Dirichlet process: DP with location-dependent weights for regression"
+    return "gh_c14_19: Local Dirichlet process"
