@@ -1,46 +1,37 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Glivenko-Cantelli theorem: empirical CDF converges uniformly to true CDF."""
+"""Glivenko-Cantelli theorem.
+
+Implements Appendix F of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP (appendices).
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_glivenko"]
 
 
-def ghosal_glivenko(x):
-    """
-    Glivenko-Cantelli theorem: empirical CDF converges uniformly to true CDF
-
-    Formula: ||F_n - F||_infty -> 0 a.s. for any F
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal App F
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Glivenko-Cantelli theorem: empirical CDF converges uniformly to true CDF",
-        }
-    )
+def ghosal_glivenko(ns=(100, 1000, 10000), seed=42):
+    """||F_n - F||_infty -> 0 a.s. for any F (App F): empirical
+    KS distance for a uniform truth shrinks along n. Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    sups = []
+    for n in ns:
+        data = sorted(float(rng.uniform(0, 1)) for _ in range(n))
+        sup = 0.0
+        for i, v in enumerate(data):
+            sup = max(sup, abs((i + 1) / n - v), abs(i / n - v))
+        sups.append(sup)
+    res = RichResult(payload={"estimate": sups[-1],
+                              "sup_by_n": sups,
+                              "vanishing": sups[-1] < sups[0]
+                              and sups[-1] < 0.02,
+                              "method": "Glivenko-Cantelli (GvdV 2017 App F)"})
+    return with_describe_pointer(res, "gh_ap_f2")
 
 
 def cheatsheet():
-    return "gh_ap_f2: Glivenko-Cantelli theorem: empirical CDF converges uniformly to true CDF"
+    return "gh_ap_f2: Glivenko-Cantelli theorem"
