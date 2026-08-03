@@ -1,55 +1,29 @@
-"""Numbered display equation (7.8) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Multinomial log-likelihood.
 
-from . import _array_core as np
+Implements eq. (7.8) p.226 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_8"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_8(I, yi, c, i, log, l):
-    """
-    Numbered display equation (7.8) from MVSML chapter 7.
-
-    Formula: I yi=c i \betac  log i \betal f i=1 c=1 i=1 l=1
-
-    Parameters
-    ----------
-    I : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    c : array-like
-        Input data.
-    i : array-like
-        Input data.
-    log : array-like
-        Input data.
-    l : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.8) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    I = np.atleast_1d(np.asarray(I, dtype=float))
-    n = len(I)
-    result = float(np.mean(I))
-    se = float(np.std(I, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.8) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_8(X, y, beta0, beta, baseline_last=True):
+    """l(beta; y) = sum_i sum_c 1{y_i = c}(beta_0c + x_i'beta_c)
+    - sum_i log[sum_l exp(beta_0l + x_i'beta_l)] (eq. 7.8).
+    Keys: estimate."""
+    ll = _gp.multinomial_loglik(X, y, beta0, beta,
+                                baseline_last=baseline_last)
+    res = RichResult(payload={"estimate": ll, "loglik": ll,
+                              "method": "multinomial log-likelihood (MVSML 2022 eq. 7.8)"})
+    return with_describe_pointer(res, "msm110")
 
 
 def cheatsheet():
-    return "msm110: Numbered display equation (7.8) from MVSML chapter 7."
+    return "msm110: Multinomial log-likelihood"

@@ -1,55 +1,32 @@
-"""Numbered display equation (7.3) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ordinal latent predictor with environment, markers and interaction.
 
-from . import _array_core as np
+Implements eq. (7.3) p.219 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_3"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_3(C, where, L, L1, Ln, T):
-    """
-    Numbered display equation (7.3) from MVSML chapter 7.
-
-    Formula: . , C, where L = (L1, . . ., Ln)T = XE\betaE + X\beta + XEM\betaEM + e is the vector with latent random variables of all observations, e  Nn(0, In) is a random error vector, XE, X, and XEM are the design matrices of the environments, markers, and environment–marker interactions, respectively, while \betaE and \betaEM are the vectors of the environment effects and the interaction effects, respectively, with a prior distribution that can be speciﬁed as was done for \beta. In fact, with the BGLR function, it is also possible to implement all these extensions, since it allows using any of the several priors included here: FIXED, BRR, BayesA, BayesB, BayesC, and BL. For example, the basic BGLR code to implement model
-
-    Parameters
-    ----------
-    C : array-like
-        Input data.
-    where : array-like
-        Input data.
-    L : array-like
-        Input data.
-    L1 : array-like
-        Input data.
-    Ln : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.3) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    C = np.atleast_1d(np.asarray(C, dtype=float))
-    n = len(C)
-    result = float(np.mean(C))
-    se = float(np.std(C, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.3) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_3(n, X_E=None, X=None, X_EM=None):
+    """L = X_E beta_E + X beta + X_EM beta_EM + eps (eq. 7.3): the
+    ordinal latent variable with a flat prior on the environment
+    effects and a BRR/BayesA/BayesB/BayesC/BL prior on the marker and
+    marker-by-environment effects (p.219). Keys: estimate."""
+    f = _gp.ordinal_latent_predictor(int(n), X_E=X_E, X=X,
+                                     X_EM=X_EM)
+    res = RichResult(payload={"estimate": float(f["n_columns"]),
+                              "design": f["design"],
+                              "widths": f["widths"],
+                              "method": "ordinal latent predictor (MVSML 2022 eq. 7.3)"})
+    return with_describe_pointer(res, "msm093")
 
 
 def cheatsheet():
-    return "msm093: Numbered display equation (7.3) from MVSML chapter 7."
+    return "msm093: Ordinal latent predictor with environment, markers and interaction"

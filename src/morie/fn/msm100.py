@@ -1,55 +1,32 @@
-"""Numbered display equation (7.4) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ordinal GBLUP regression model.
 
-from . import _array_core as np
+Implements eq. (7.4) p.220 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_4"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_4(the, lines, So, only, models, M3):
-    """
-    Numbered display equation (7.4) from MVSML chapter 7.
-
-    Formula: for the 40 lines. So, only the models (M3 and M4) in (7.3) and (7.4) are ﬁtted, and the performance prediction for these models was evaluated using cross-validation. Also, in this comparison model, (M5) (7.5) is added but without the line+environment interaction effects, that is, only the environment effect and the genetic effects are taken into account in the linear predictor: 7.3 Ordinal Logistic Regression 221 Table 7.3 Brier score (BS) and proportion of cases correctly classiﬁed (PCCC) across 10 random partitions, with 80% of the total data set used for training and the rest for testing, under models (7.3),
-
-    Parameters
-    ----------
-    the : array-like
-        Input data.
-    lines : array-like
-        Input data.
-    So : array-like
-        Input data.
-    only : array-like
-        Input data.
-    models : array-like
-        Input data.
-    M3 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.4) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    the = np.atleast_1d(np.asarray(the, dtype=float))
-    n = len(the)
-    result = float(np.mean(the))
-    se = float(np.std(the, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.4) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_4(y, G, n_iter=800, burn_in=200, seed=42):
+    """L = Z_L g + eps with g ~ N(0, sigma2_g G) (eq. 7.4): the
+    ordinal GBLUP regression model, in which the genomic relationship
+    matrix enters as an RKHS kernel rather than through a marker
+    design matrix (p.220). Keys: estimate."""
+    f = _gp.ordinal_probit_gblup_gibbs(y, G, n_iter=n_iter,
+                                       burn_in=burn_in, seed=seed)
+    res = RichResult(payload={"estimate": f["b"][0], "b": f["b"],
+                              "gamma": f["gamma"],
+                              "sigma2_g": f["sigma2_g"],
+                              "method": "ordinal GBLUP (MVSML 2022 eq. 7.4)"})
+    return with_describe_pointer(res, "msm100")
 
 
 def cheatsheet():
-    return "msm100: Numbered display equation (7.4) from MVSML chapter 7."
+    return "msm100: Ordinal GBLUP regression model"

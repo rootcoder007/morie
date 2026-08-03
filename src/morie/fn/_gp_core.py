@@ -1598,3 +1598,270 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
             "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
             "sigma2_g": acc_s2g / kept, "n_kept": kept,
             "n_categories": C}
+
+
+# ------- ordinal logistic / multinomial / Poisson (ch. 7 pp.221-233)
+def _rpolya_gamma(rng, b, c, n_terms=120):
+    """PG(b, c) by the Devroye-style infinite convolution used in
+    Polson, Scott and Windle (2013), the augmentation the book adopts
+    on p.222: omega = (2 pi^2)^-1 sum_k g_k / ((k - 1/2)^2
+    + c^2/(4 pi^2)) with g_k ~ Ga(b, 1)."""
+    tot = 0.0
+    cc = (c * c) / (4.0 * math.pi * math.pi)
+    for k in range(1, int(n_terms) + 1):
+        g = float(rng.gamma(b, 1.0))
+        tot += g / ((k - 0.5) ** 2 + cc)
+    return tot / (2.0 * math.pi * math.pi)
+
+
+def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200,
+                           nu_beta=5.0, S_beta=1.0, seed=42):
+    """The ordinal logistic Gibbs sampler of sec. 7.3, steps 1-7 on
+    p.224, using the Polya-Gamma augmentation of p.222:
+
+      omega_i | . ~ PG(2, l_i + eta_i)
+      l_i     | . ~ N(-x_i'beta, omega_i^-1) truncated to
+                    (gamma_{y_i - 1}, gamma_{y_i})
+      beta_j  | . ~ N(b-tilde_j, s-tilde_j^2),
+                    s-tilde_j^2 = (sigma_beta^-2
+                                   + sum_i omega_i x_ij^2)^-1,
+                    b-tilde_j = -s-tilde_j^2 sum_i omega_i x_ij e_ij
+      gamma_c | . ~ U(a_c, b_c)
+      sigma2_beta | . ~ chi^-2(nu_beta + p, S_beta + beta'beta)
+    """
+    ys = [int(v) for v in _flat(y)]
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    C = max(ys)
+    rng = np.random.default_rng(seed)
+    beta = [0.0] * p
+    s2b = 1.0
+    gamma = [float(c) - C / 2.0 for c in range(1, C)]
+    l = [0.0] * n
+    omega = [1.0] * n
+    acc_beta = [0.0] * p
+    acc_gamma = [0.0] * max(len(gamma), 1)
+    kept = 0
+    for it in range(int(n_iter)):
+        eta = _mv(Xm, beta)
+        for i in range(n):
+            omega[i] = max(_rpolya_gamma(rng, 2.0, l[i] + eta[i]),
+                           1e-9)
+        for i in range(n):
+            c = ys[i]
+            lo = gamma[c - 2] if c >= 2 else -1e300
+            hi = gamma[c - 1] if c <= C - 1 else 1e300
+            l[i] = _rtruncnorm(rng, -eta[i],
+                               1.0 / math.sqrt(omega[i]), lo, hi)
+        for j in range(p):
+            e_j = [l[i] + sum(Xm[i][k] * beta[k]
+                              for k in range(p) if k != j)
+                   for i in range(n)]
+            prec = 1.0 / s2b + sum(omega[i] * Xm[i][j] ** 2
+                                   for i in range(n))
+            var = 1.0 / prec
+            mean = -var * sum(omega[i] * Xm[i][j] * e_j[i]
+                              for i in range(n))
+            beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
+        for c in range(1, C):
+            a_c = max([l[i] for i in range(n) if ys[i] == c],
+                      default=-1e300)
+            b_c = min([l[i] for i in range(n) if ys[i] == c + 1],
+                      default=1e300)
+            lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
+            hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
+            if hi > lo:
+                gamma[c - 1] = lo + (hi - lo) \
+                    * float(rng.uniform(0, 1))
+        s2b = scaled_inv_chisq(rng, nu_beta + p,
+                               S_beta + sum(b * b for b in beta))
+        if it >= burn_in:
+            kept += 1
+            for j in range(p):
+                acc_beta[j] += beta[j]
+            for c in range(len(gamma)):
+                acc_gamma[c] += gamma[c]
+    return {"beta": [v / kept for v in acc_beta],
+            "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
+            "omega_mean": sum(omega) / n, "n_kept": kept,
+            "n_categories": C}
+
+
+def ordinal_latent_predictor(n, X_E=None, X=None, X_EM=None,
+                             Z_L=None, L_g=None):
+    """The latent-scale predictors of eq. (7.3)-(7.5), pp.219-221:
+
+      (7.3)  L = X_E beta_E + X beta + X_EM beta_EM + eps
+             (environment fixed, markers, marker x environment)
+      (7.4)  L = Z_L g + eps, g ~ N(0, sigma2_g G)  -- ordinal GBLUP
+      (7.5)  L = X_E beta_E + Z_L g + eps           -- environment
+             and genetic effects, no interaction
+
+    Blocks are stacked in the order printed in Table 7.6 p.233, where
+    the genetic block enters as Z_L L_g with G = L_g L_g'.
+    """
+    blocks = []
+    if X_E is not None:
+        blocks.append(("environments", _mat(X_E)))
+    if X is not None:
+        blocks.append(("markers", _mat(X)))
+    if X_EM is not None:
+        blocks.append(("env_x_marker", _mat(X_EM)))
+    if Z_L is not None:
+        Zg = _mm(_mat(Z_L), _mat(L_g)) if L_g is not None \
+            else _mat(Z_L)
+        blocks.append(("genetic", Zg))
+    if not blocks:
+        raise ValueError("the predictor needs at least one block")
+    design = [sum((blk[i] for _, blk in blocks), [])
+              for i in range(n)]
+    return {"design": design,
+            "widths": {name: len(blk[0]) for name, blk in blocks},
+            "n_columns": len(design[0])}
+
+
+def multinomial_probabilities(X, beta0, beta, baseline_last=True):
+    """eq. (7.6) p.225: P(Y_i = c | x_i) = exp(beta_0c + x_i'beta_c)
+    / sum_l exp(beta_0l + x_i'beta_l).  The book fixes
+    (beta_0C, beta_C) = (0, 0) for identifiability (p.225), which
+    ``baseline_last`` applies to the last category."""
+    Xm = _mat(X)
+    b0 = list(_flat(beta0))
+    B = [list(map(float, row)) for row in beta]
+    if baseline_last:
+        b0 = b0 + [0.0]
+        B = B + [[0.0] * len(Xm[0])]
+    out = []
+    for row in Xm:
+        eta = [b0[c] + sum(a * b for a, b in zip(row, B[c]))
+               for c in range(len(b0))]
+        m = max(eta)
+        ex = [math.exp(v - m) for v in eta]
+        s = sum(ex)
+        out.append([v / s for v in ex])
+    return out
+
+
+def multinomial_loglik(X, y, beta0, beta, baseline_last=True):
+    """eq. (7.8) p.226: l(beta; y) = sum_i sum_c 1{y_i = c}
+    (beta_0c + x_i'beta_c) - sum_i log sum_l exp(beta_0l
+    + x_i'beta_l)."""
+    P = multinomial_probabilities(X, beta0, beta, baseline_last)
+    ys = [int(v) for v in _flat(y)]
+    return sum(math.log(max(P[i][ys[i]], 1e-300))
+               for i in range(len(ys)))
+
+
+def penalized_multinomial_loglik(X, y, beta0, beta, lam,
+                                 penalty="ridge",
+                                 baseline_last=True):
+    """eq. (7.7) p.226 (ridge): l_p = l(beta; y)
+    - lambda sum_c beta_c'beta_c, and eq. (7.10) p.227 (lasso):
+    l_p = l(beta; y) - lambda sum_c sum_j |beta_cj|.  Only the slopes
+    are penalized, never the intercepts (p.226)."""
+    ll = multinomial_loglik(X, y, beta0, beta, baseline_last)
+    if penalty == "lasso":
+        pen = sum(abs(v) for row in beta for v in row)
+    else:
+        pen = sum(v * v for row in beta for v in row)
+    return {"loglik": ll, "penalty": float(lam) * pen,
+            "penalized_loglik": ll - float(lam) * pen}
+
+
+def multinomial_block_update(X, y, beta0, beta, lam, cls,
+                             baseline_last=True):
+    """eq. (7.9) p.227, the block-coordinate update of class c:
+    beta*_c = (X*'W_c X* + lambda D)^-1 X*'W_c y*, where
+    X* = [1_n, X], W_c = Diag(w_1c..w_nc) with
+    w_ic = p-tilde_c(x_i)(1 - p-tilde_c(x_i)) and the working response
+    is y*_ic = beta-tilde_0c + x_i'beta-tilde_c
+    + w_ic^-1 (1{y_i = c} - p-tilde_c(x_i)).  D is the identity except
+    for a zero in the first entry, so the intercept is unpenalized."""
+    Xm = _mat(X)
+    n = len(Xm)
+    p = len(Xm[0])
+    ys = [int(v) for v in _flat(y)]
+    P = multinomial_probabilities(Xm, beta0, beta, baseline_last)
+    c = int(cls)
+    Xs = [[1.0] + row for row in Xm]
+    b_cur = [list(_flat(beta0))[c]] + list(map(float, beta[c]))
+    w = []
+    ystar = []
+    for i in range(n):
+        pc = min(max(P[i][c], 1e-6), 1.0 - 1e-6)
+        wi = pc * (1.0 - pc)
+        eta = b_cur[0] + sum(a * b for a, b in zip(Xm[i], b_cur[1:]))
+        w.append(wi)
+        ystar.append(eta + ((1.0 if ys[i] == c else 0.0) - pc) / wi)
+    A = [[sum(w[i] * Xs[i][a] * Xs[i][b] for i in range(n))
+          + (float(lam) if (a == b and a > 0) else 0.0)
+          for b in range(p + 1)] for a in range(p + 1)]
+    rhs = [sum(w[i] * Xs[i][a] * ystar[i] for i in range(n))
+           for a in range(p + 1)]
+    sol = _solve(A, rhs)
+    return {"beta0": sol[0], "beta": sol[1:],
+            "weights": w, "working_response": ystar}
+
+
+def poisson_pmf(y, lam):
+    """eq. (7.11) p.232: P(Y = y | x) = lambda^y exp(-lambda)/y! with
+    lambda = exp(beta_0 + x'beta)."""
+    y = int(y)
+    lam = float(lam)
+    if lam <= 0:
+        raise ValueError("the Poisson mean must be positive")
+    return math.exp(y * math.log(lam) - lam - math.lgamma(y + 1.0))
+
+
+def penalized_poisson_fit(X, y, lam=1.0, penalty="ridge",
+                          n_iter=100, tol=1e-10,
+                          add_intercept=True):
+    """The penalized Poisson log-linear model of sec. 7.5 p.232:
+    l_p = sum_i y_i(beta_0 + x_i'beta) - sum_i exp(beta_0 + x_i'beta)
+    - sum_i log(y_i!) - (lambda/2) sum_j beta_j^2, fitted by the
+    iteratively reweighted least squares the book describes (a
+    second-order approximation of the log-likelihood solved as a
+    weighted least-squares problem).  The intercept is unpenalized;
+    ``penalty='lasso'`` adds a soft-threshold step instead."""
+    Xm = _mat(X)
+    if add_intercept:
+        Xm = [[1.0] + row for row in Xm]
+    ys = _flat(y)
+    n = len(ys)
+    p = len(Xm[0])
+    beta = [0.0] * p
+    if add_intercept:
+        beta[0] = math.log(max(sum(ys) / n, 1e-6))
+    for it in range(int(n_iter)):
+        eta = _mv(Xm, beta)
+        mu = [math.exp(min(v, 700.0)) for v in eta]
+        w = [max(m, 1e-9) for m in mu]
+        z = [eta[i] + (ys[i] - mu[i]) / w[i] for i in range(n)]
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
+              + (float(lam) if (a == b
+                                and not (add_intercept and a == 0))
+                 else 0.0)
+              for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * z[i] for i in range(n))
+               for a in range(p)]
+        new = _solve(A, rhs)
+        if penalty == "lasso":
+            new = [new[0]] + [math.copysign(max(abs(v) - lam, 0.0),
+                                            v) for v in new[1:]] \
+                if add_intercept else \
+                [math.copysign(max(abs(v) - lam, 0.0), v)
+                 for v in new]
+        gap = max(abs(a - b) for a, b in zip(new, beta))
+        beta = new
+        if gap < tol:
+            break
+    eta = _mv(Xm, beta)
+    mu = [math.exp(min(v, 700.0)) for v in eta]
+    ll = sum(ys[i] * eta[i] - mu[i] - math.lgamma(ys[i] + 1.0)
+             for i in range(n))
+    pen = float(lam) * sum(
+        v * v for j, v in enumerate(beta)
+        if not (add_intercept and j == 0)) / 2.0
+    return {"beta": beta, "fitted": mu, "loglik": ll,
+            "penalized_loglik": ll - pen, "iterations": it + 1}
