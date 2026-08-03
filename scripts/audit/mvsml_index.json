@@ -1,0 +1,609 @@
+[
+ {
+  "method": "eq. (1.1) p.8",
+  "chapter": "1",
+  "equation": "1",
+  "canonical_module": "msm001",
+  "entry_point": "mvsml_general_eq_1_1",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (1.2) p.15",
+  "chapter": "1",
+  "equation": "2",
+  "canonical_module": "msm002",
+  "entry_point": "mvsml_general_eq_1_2",
+  "reexported_by": [
+   "msm083",
+   "msm084",
+   "msm159",
+   "msm160",
+   "msm315",
+   "msm316",
+   "msm317",
+   "msm318",
+   "msm319",
+   "msm320",
+   "msm321",
+   "msm322"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (1.3) p.16",
+  "chapter": "1",
+  "equation": "3",
+  "canonical_module": "msm003",
+  "entry_point": "mvsml_general_eq_1_3",
+  "reexported_by": [
+   "msm004",
+   "msm236",
+   "msm237",
+   "msm238",
+   "msm239"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (1.4) p.16",
+  "chapter": "1",
+  "equation": "4",
+  "canonical_module": "msm005",
+  "entry_point": "mvsml_general_eq_1_4",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (1.5) p.16",
+  "chapter": "1",
+  "equation": "5",
+  "canonical_module": "msm006",
+  "entry_point": "mvsml_general_eq_1_5",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (4.9) p.132",
+  "chapter": "4",
+  "equation": "9",
+  "canonical_module": "msm007",
+  "entry_point": "mvsml_overfitting_resampling_eq_4_9",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (4.10)-(4.11) p.132",
+  "chapter": "4",
+  "equation": "10",
+  "canonical_module": "msm008",
+  "entry_point": "mvsml_overfitting_resampling_eq_4_10",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (4.14) p.136",
+  "chapter": "4",
+  "equation": "14",
+  "canonical_module": "msm009",
+  "entry_point": "mvsml_overfitting_resampling_eq_4_14",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (5.1) p.142",
+  "chapter": "5",
+  "equation": "1",
+  "canonical_module": "msm010",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_1",
+  "reexported_by": [
+   "msm013",
+   "msm014",
+   "msm019",
+   "msm027"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (5.2) p.142",
+  "chapter": "5",
+  "equation": "2",
+  "canonical_module": "msm011",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_2",
+  "reexported_by": [
+   "msm012"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (5.3) p.148",
+  "chapter": "5",
+  "equation": "3",
+  "canonical_module": "msm015",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_3",
+  "reexported_by": [
+   "msm016",
+   "msm017",
+   "msm022",
+   "msm024",
+   "msm025"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (5.4) p.150",
+  "chapter": "5",
+  "equation": "4",
+  "canonical_module": "msm018",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_4",
+  "reexported_by": [
+   "msm020",
+   "msm021",
+   "msm023",
+   "msm037",
+   "msm038",
+   "msm039",
+   "msm040",
+   "msm041"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (5.5) p.153",
+  "chapter": "5",
+  "equation": "5",
+  "canonical_module": "msm026",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_5",
+  "reexported_by": [
+   "msm029",
+   "msm030",
+   "msm031"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (5.5a) p.153",
+  "chapter": "5",
+  "equation": "5a",
+  "canonical_module": "msm028",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_5a",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (5.6) p.155",
+  "chapter": "5",
+  "equation": "6",
+  "canonical_module": "msm032",
+  "entry_point": "mvsml_linear_mixed_models_eq_5_6",
+  "reexported_by": [
+   "msm033",
+   "msm034",
+   "msm035",
+   "msm036"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (6.1)-(6.2) pp.172",
+  "chapter": "6",
+  "equation": "1",
+  "canonical_module": "msm042",
+  "entry_point": "mvsml_bayesian_regression_eq_6_1",
+  "reexported_by": [
+   "msm044",
+   "msm045",
+   "msm057",
+   "msm058",
+   "msm059",
+   "msm060"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (6.2) p.172",
+  "chapter": "6",
+  "equation": "2",
+  "canonical_module": "msm043",
+  "entry_point": "mvsml_bayesian_regression_eq_6_2",
+  "reexported_by": [
+   "msm047",
+   "msm077"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (6.3) pp.173-175",
+  "chapter": "6",
+  "equation": "3",
+  "canonical_module": "msm046",
+  "entry_point": "mvsml_bayesian_regression_eq_6_3",
+  "reexported_by": [
+   "msm048",
+   "msm050",
+   "msm082"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (6.4) pp.176-177",
+  "chapter": "6",
+  "equation": "4",
+  "canonical_module": "msm049",
+  "entry_point": "mvsml_bayesian_regression_eq_6_4",
+  "reexported_by": [
+   "msm051",
+   "msm052",
+   "msm053",
+   "msm054"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (6.5) p.177",
+  "chapter": "6",
+  "equation": "5",
+  "canonical_module": "msm055",
+  "entry_point": "mvsml_bayesian_regression_eq_6_5",
+  "reexported_by": [
+   "msm056",
+   "msm064"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (6.6) p.186",
+  "chapter": "6",
+  "equation": "6",
+  "canonical_module": "msm061",
+  "entry_point": "mvsml_bayesian_regression_eq_6_6",
+  "reexported_by": [
+   "msm062"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (6.7) p.186",
+  "chapter": "6",
+  "equation": "7",
+  "canonical_module": "msm063",
+  "entry_point": "mvsml_bayesian_regression_eq_6_7",
+  "reexported_by": [
+   "msm096"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (6.8) p.191",
+  "chapter": "6",
+  "equation": "8",
+  "canonical_module": "msm065",
+  "entry_point": "mvsml_bayesian_regression_eq_6_8",
+  "reexported_by": [
+   "msm066",
+   "msm069",
+   "msm073"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (6.9) pp.191-193",
+  "chapter": "6",
+  "equation": "9",
+  "canonical_module": "msm067",
+  "entry_point": "mvsml_bayesian_regression_eq_6_9",
+  "reexported_by": [
+   "msm068",
+   "msm070",
+   "msm071",
+   "msm074",
+   "msm075",
+   "msm078",
+   "msm081"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (6.10) p.194",
+  "chapter": "6",
+  "equation": "10",
+  "canonical_module": "msm072",
+  "entry_point": "mvsml_bayesian_regression_eq_6_10",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (6.11) pp.195-196",
+  "chapter": "6",
+  "equation": "11",
+  "canonical_module": "msm076",
+  "entry_point": "mvsml_bayesian_regression_eq_6_11",
+  "reexported_by": [
+   "msm079",
+   "msm080"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (7.1) pp.210-213",
+  "chapter": "7",
+  "equation": "1",
+  "canonical_module": "msm085",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_1",
+  "reexported_by": [
+   "msm086",
+   "msm087",
+   "msm088",
+   "msm090",
+   "msm091",
+   "msm094",
+   "msm104"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (7.2) p.214",
+  "chapter": "7",
+  "equation": "2",
+  "canonical_module": "msm089",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_2",
+  "reexported_by": [
+   "msm105"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.3) p.219",
+  "chapter": "7",
+  "equation": "3",
+  "canonical_module": "msm092",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_3",
+  "reexported_by": [
+   "msm093",
+   "msm097",
+   "msm099",
+   "msm103"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (7.4) p.220",
+  "chapter": "7",
+  "equation": "4",
+  "canonical_module": "msm095",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_4",
+  "reexported_by": [
+   "msm100"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.5) p.221",
+  "chapter": "7",
+  "equation": "5",
+  "canonical_module": "msm098",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_5",
+  "reexported_by": [
+   "msm101",
+   "msm102"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (7.6) p.225",
+  "chapter": "7",
+  "equation": "6",
+  "canonical_module": "msm106",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_6",
+  "reexported_by": [
+   "msm107",
+   "msm108",
+   "msm120",
+   "msm121"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.7) p.226",
+  "chapter": "7",
+  "equation": "7",
+  "canonical_module": "msm109",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_7",
+  "reexported_by": [
+   "msm111",
+   "msm114",
+   "msm117",
+   "msm118"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.8) p.226",
+  "chapter": "7",
+  "equation": "8",
+  "canonical_module": "msm110",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_8",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.9) p.227",
+  "chapter": "7",
+  "equation": "9",
+  "canonical_module": "msm112",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_9",
+  "reexported_by": [
+   "msm113",
+   "msm116"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.10) p.227",
+  "chapter": "7",
+  "equation": "10",
+  "canonical_module": "msm115",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_10",
+  "reexported_by": [
+   "msm119"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (7.11) p.232",
+  "chapter": "7",
+  "equation": "11",
+  "canonical_module": "msm122",
+  "entry_point": "mvsml_bayesian_regression_pt2_eq_7_11",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "hyperplane_side",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msm164",
+  "entry_point": "hyperplane_side",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "eq. (2.1) p.36",
+  "chapter": "2",
+  "equation": "1",
+  "canonical_module": "msm240",
+  "entry_point": "mvsml_preprocessing_eq_2_1",
+  "reexported_by": [
+   "msm244"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (2.2) p.36",
+  "chapter": "2",
+  "equation": "2",
+  "canonical_module": "msm241",
+  "entry_point": "mvsml_preprocessing_eq_2_2",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (2.3) p.53",
+  "chapter": "2",
+  "equation": "3",
+  "canonical_module": "msm242",
+  "entry_point": "mvsml_preprocessing_eq_2_3",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (2.4) p.53",
+  "chapter": "2",
+  "equation": "4",
+  "canonical_module": "msm243",
+  "entry_point": "mvsml_preprocessing_eq_2_4",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (1.2)-(1.5) pp.15-16",
+  "chapter": "1",
+  "equation": "222",
+  "canonical_module": "msm257",
+  "entry_point": "mvsml_general_eq_1_222",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "sec. 3.6.1 p.81",
+  "chapter": "3",
+  "equation": "5",
+  "canonical_module": "msm258",
+  "entry_point": "mvsml_elements_lin_reg_eq_3_5",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (3.1) p.71 with the OLS solution pp.72-73",
+  "chapter": "3",
+  "equation": "1",
+  "canonical_module": "msm332",
+  "entry_point": "mvsml_elements_lin_reg_eq_3_1",
+  "reexported_by": [
+   "msm333"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "sec. 3.5 p.80",
+  "chapter": "2",
+  "equation": "22",
+  "canonical_module": "msm334",
+  "entry_point": "mvsml_preprocessing_eq_2_22",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "aalen_johansen",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmaln",
+  "entry_point": "aalen_johansen",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "marginal_structural_model",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmest",
+  "entry_point": "marginal_structural_model",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "msm_iv",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmiv2",
+  "entry_point": "msm_iv",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "msmod",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmod",
+  "entry_point": "msmod",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "msm_proportional_hazards",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmphr",
+  "entry_point": "msm_proportional_hazards",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmw",
+  "entry_point": "",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ },
+ {
+  "method": "msmwt",
+  "chapter": "?",
+  "equation": "?",
+  "canonical_module": "msmwt",
+  "entry_point": "msmwt",
+  "reexported_by": [],
+  "stub_content": "empty artefact"
+ }
+]
