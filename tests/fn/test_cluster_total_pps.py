@@ -1,22 +1,29 @@
-"""Tests for cluster_total_pps.cluster_total_pps."""
+"""Tests for morie.fn.cluster_total_pps.
 
-from morie.fn import _array_core as np
+Brus, D. J. (2022). Spatial Sampling with R, eq. (6.4).
+Inputs are chosen so the expected value is exact by hand:
+  t/M = 12/4 = 18/6 = 9/3 = 21/7 = 3, so sum = 12
+  t_hat = (M/n) * 12 = (100/4) * 12 = 300
+"""
 
-from morie.fn.cluster_total_pps import (
-    cluster_total_pps,
-)
+import pytest
 
-
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r6e4_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cluster_total_pps(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.cluster_total_pps import cluster_total_pps
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r6e4_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = cluster_total_pps(x)
-    assert isinstance(result, dict)
+def test_cluster_total_pps_matches_the_book_equation():
+    r = cluster_total_pps([12.0, 18.0, 9.0, 21.0], [4.0, 6.0, 3.0, 7.0], 100.0, 4)
+    assert r["value"] == pytest.approx(300.0, abs=1e-12)
+
+
+def test_cluster_total_pps_is_the_scaled_sum_of_cluster_means():
+    # every cluster mean is 3, so the estimator must be M * 3
+    r = cluster_total_pps([6.0, 9.0], [2.0, 3.0], 50.0, 2)
+    assert r["value"] == pytest.approx(50.0 / 2 * 6.0, abs=1e-12)
+
+
+def test_cluster_total_pps_rejects_bad_input():
+    with pytest.raises(ValueError):
+        cluster_total_pps([1.0, 2.0], [1.0, 0.0], 10.0, 2)   # zero size
+    with pytest.raises(ValueError):
+        cluster_total_pps([1.0, 2.0], [1.0, 2.0], 10.0, 3)   # n /= sample

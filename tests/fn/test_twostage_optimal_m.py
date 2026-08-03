@@ -1,22 +1,27 @@
-"""Tests for twostage_optimal_m.twostage_optimal_m."""
+"""Tests for morie.fn.twostage_optimal_m.
 
-from morie.fn import _array_core as np
+Brus, D. J. (2022). Spatial Sampling with R, eq. (7.10).
+Inputs are chosen so the expected value is exact by hand:
+  m = (S_w/S_b) sqrt(c1/c2) = (8/4) * sqrt(9/1) = 2 * 3 = 6
+"""
 
-from morie.fn.twostage_optimal_m import (
-    twostage_optimal_m,
-)
+import pytest
 
-
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r7e10_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = twostage_optimal_m(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.twostage_optimal_m import twostage_optimal_m
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r7e10_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = twostage_optimal_m(x)
-    assert isinstance(result, dict)
+def test_twostage_optimal_m_matches_the_book_equation():
+    r = twostage_optimal_m(8.0, 4.0, 9.0, 1.0)
+    assert r["value"] == pytest.approx(6.0, abs=1e-12)
+
+
+def test_twostage_optimal_m_grows_with_within_psu_variance():
+    # more variation inside a PSU means sample more units within it
+    small = twostage_optimal_m(4.0, 4.0, 9.0, 1.0)["value"]
+    large = twostage_optimal_m(8.0, 4.0, 9.0, 1.0)["value"]
+    assert large > small
+
+
+def test_twostage_optimal_m_rejects_nonpositive_input():
+    with pytest.raises(ValueError):
+        twostage_optimal_m(0.0, 4.0, 9.0, 1.0)
