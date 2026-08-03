@@ -1,55 +1,31 @@
-"""Numbered display equation (3.5) from MVSML chapter 3.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ridge regression, penalized least squares.
 
-from . import _array_core as np
+Implements sec. 3.6.1 p.81 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_elements_lin_reg_eq_3_5"]
 
 
-def mvsml_elements_lin_reg_eq_3_5(colnames, results_i, c, Observed, Predicted, Trait):
-    """
-    Numbered display equation (3.5) from MVSML chapter 3.
-
-    Formula: colnames(results_i)=c(Names_results_i [1:5],"Observed","Predicted","Trait") Pred_Summary=summary.BMTMECV(results=results_i, information = 'compact', digits = 4) Pred_Summary Pred_all_traits=rbind(Pred_all_traits,data.frame (Trait=Names_Traits[i],Pred_Summary)) } Pred_all_traits Res_Sum=Pred_all_traits[,-c
-
-    Parameters
-    ----------
-    colnames : array-like
-        Input data.
-    results_i : array-like
-        Input data.
-    c : array-like
-        Input data.
-    Observed : array-like
-        Input data.
-    Predicted : array-like
-        Input data.
-    Trait : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (3.5) [Multivariate Statistical Machine Learnin [Pages 477-532] [2026-04-16].pdf]
-    """
-    colnames = np.atleast_1d(np.asarray(colnames, dtype=float))
-    n = len(colnames)
-    result = float(np.mean(colnames))
-    se = float(np.std(colnames, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (3.5) from MVSML chapter 3.",
-        }
-    )
+def mvsml_elements_lin_reg_eq_3_5(X, y, lam=1.0, add_intercept=True):
+    """PRSS_lambda(beta) = RSS(beta) + lambda beta'D beta with
+    D = diag(0, 1, ..., 1), giving
+    beta^R(lambda) = (X'X + lambda D)^-1 X'y (p.81). The intercept is
+    never penalized; lambda = 0 recovers OLS. Keys: estimate."""
+    f = _gp.ridge_fit(X, y, lam, add_intercept=add_intercept)
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "beta": f["beta"], "prss": f["prss"],
+                              "rss": f["rss"], "penalty": f["penalty"],
+                              "method": "ridge regression (MVSML 2022 sec. 3.6.1)"})
+    return with_describe_pointer(res, "msm258")
 
 
 def cheatsheet():
-    return "msm258: Numbered display equation (3.5) from MVSML chapter 3."
+    return "msm258: Ridge regression, penalized least squares"

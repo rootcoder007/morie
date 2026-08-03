@@ -1,55 +1,30 @@
-"""Numbered display equation (1.3) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""One-way fixed-effects model.
 
-from . import _array_core as np
+Implements eq. (1.3) p.16 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_3"]
 
 
-def mvsml_general_eq_1_3(re, centered, around, zero, than, the):
-    """
-    Numbered display equation (1.3) from MVSML chapter 1.
-
-    Formula: re centered around zero than in the ﬁrst ﬁtted model (single-mean model), which can be observed in the residual standard error that is 7.47 times smaller. Therefore, we have evidence that the model given in Eq. (1.3) successfully accounted for the environ- mental effects. Two drawbacks of the model with ﬁxed effects given in Eq. (1.3) are that it is unable to provide an estimate of the between-environments variability and that the number of parameters in the model increases linearly with the number of environments. Fortunately, the random effects model circumvents these problems by treating the environmental effects as random variations around a population mean. Next we reparameterize model
-
-    Parameters
-    ----------
-    re : array-like
-        Input data.
-    centered : array-like
-        Input data.
-    around : array-like
-        Input data.
-    zero : array-like
-        Input data.
-    than : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.3) [Multivariate Statistical Machine Learnin [Pages 1-34] [2026-04-16].pdf]
-    """
-    re = np.atleast_1d(np.asarray(re, dtype=float))
-    n = len(re)
-    result = float(np.mean(re))
-    se = float(np.std(re, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.3) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_3(groups):
+    """GY_ij = beta_i + e_ij (eq. 1.3): a separate fixed effect per
+    level. With Table 1.1 the book reports 7.396, 6.999, 6.255, 5.543,
+    5.869 and a residual standard error of 0.095. Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    res = RichResult(payload={"estimate": s["group_means"][0],
+                              "beta": s["group_means"],
+                              "sd_residual": s["sd_residual"],
+                              "method": "one-way fixed effects (MVSML 2022 eq. 1.3)"})
+    return with_describe_pointer(res, "msm004")
 
 
 def cheatsheet():
-    return "msm004: Numbered display equation (1.3) from MVSML chapter 1."
+    return "msm004: One-way fixed-effects model"

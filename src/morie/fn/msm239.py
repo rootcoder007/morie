@@ -1,55 +1,30 @@
-"""Numbered display equation (1.3) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""One-way fixed-effects model.
 
-from . import _array_core as np
+Implements eq. (1.3) p.16 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_3"]
 
 
-def mvsml_general_eq_1_3(Data, Final, order, Env, GID, Creating):
-    """
-    Numbered display equation (1.3) from MVSML chapter 1.
-
-    Formula: Data.Final=Pheno_Toy_EYT Data.Final=Data.Final[order(Data.Final$Env,Data.Final$GID),] ########Creating the design matrix of lines ################## Z1G=model.matrix(~0+as.factor(Data.Final$GID)) L=t(chol(Gg)) Z1G=Z1G%*%L ZT=model.matrix(~0+as.factor(Data.Final$Env)) Z2TG=model.matrix(~0+Z1G:as.factor(Data.Final$Env)) nCV=5 Data.Final_1=Data.Final[,c
-
-    Parameters
-    ----------
-    Data : array-like
-        Input data.
-    Final : array-like
-        Input data.
-    order : array-like
-        Input data.
-    Env : array-like
-        Input data.
-    GID : array-like
-        Input data.
-    Creating : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.3) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    Data = np.atleast_1d(np.asarray(Data, dtype=float))
-    n = len(Data)
-    result = float(np.mean(Data))
-    se = float(np.std(Data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.3) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_3(groups):
+    """GY_ij = beta_i + e_ij (eq. 1.3): a separate fixed effect per
+    level. With Table 1.1 the book reports 7.396, 6.999, 6.255, 5.543,
+    5.869 and a residual standard error of 0.095. Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    res = RichResult(payload={"estimate": s["group_means"][0],
+                              "beta": s["group_means"],
+                              "sd_residual": s["sd_residual"],
+                              "method": "one-way fixed effects (MVSML 2022 eq. 1.3)"})
+    return with_describe_pointer(res, "msm239")
 
 
 def cheatsheet():
-    return "msm239: Numbered display equation (1.3) from MVSML chapter 1."
+    return "msm239: One-way fixed-effects model"

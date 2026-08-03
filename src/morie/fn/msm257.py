@@ -1,55 +1,35 @@
-"""Numbered display equation (1.222) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Model comparison across the chapter-1 fits.
 
-from . import _array_core as np
+Implements eq. (1.2)-(1.5) pp.15-16 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_222"]
 
 
-def mvsml_general_eq_1_222(We, can, see, that, the, best):
-    """
-    Numbered display equation (1.222) from MVSML chapter 1.
-
-    Formula: 247.6 We can see that the best combination of hyperparameters, in partition 2, of the inner cross-validation is combination 4 (with dropout = 0.05, units = 67, and epochs = 247.6) since it has the lowest MSE (0.971) in the testing set (validation set). Then with the optimal values of dropout, epochs, and neurons, the ANN was reﬁtted, but using the whole second outer training set, and then, with the ﬁnal trained ANN, the predictions for the outer testing set were obtained. Finally, the plot of the observed and predicted values of the outer testing set was done, as shown in Fig. 11.9. The MSE was calculated and was equal to (0.810), which is lower than the MSE obtained
-
-    Parameters
-    ----------
-    We : array-like
-        Input data.
-    can : array-like
-        Input data.
-    see : array-like
-        Input data.
-    that : array-like
-        Input data.
-    the : array-like
-        Input data.
-    best : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.222) [Multivariate Statistical Machine Learnin [Pages 427-476] [2026-04-16].pdf]
-    """
-    We = np.atleast_1d(np.asarray(We, dtype=float))
-    n = len(We)
-    result = float(np.mean(We))
-    se = float(np.std(We, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.222) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_222(groups):
+    """Compares the single-mean fit (1.2), the fixed-effects fit (1.3)
+    and the random-effects fit (1.5) on the same layout: the residual
+    standard error collapses from 0.7197 to 0.095 for the Table 1.1
+    data, which is what the book uses to argue that the environment
+    effect matters. Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    ratio = s["sd_single_mean"] / s["sd_residual"] \
+        if s["sd_residual"] > 0 else float("inf")
+    res = RichResult(payload={"estimate": ratio,
+                              "sd_single_mean": s["sd_single_mean"],
+                              "sd_residual": s["sd_residual"],
+                              "sigma2_b": s["sigma2_b"],
+                              "method": "chapter-1 model comparison (MVSML 2022 eq. 1.2-1.5)"})
+    return with_describe_pointer(res, "msm257")
 
 
 def cheatsheet():
-    return "msm257: Numbered display equation (1.222) from MVSML chapter 1."
+    return "msm257: Model comparison across the chapter-1 fits"

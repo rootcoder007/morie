@@ -1,55 +1,30 @@
-"""Numbered display equation (1.2) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Single-mean model for a one-way layout.
 
-from . import _array_core as np
+Implements eq. (1.2) p.15 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_2"]
 
 
-def mvsml_general_eq_1_2(Data, a, one, way, classi, cation):
-    """
-    Numbered display equation (1.2) from MVSML chapter 1.
-
-    Formula: Data from a one-way classiﬁcation like the one given in Table 1.1 can be analyzed under both approaches with ﬁxed effects or random effects. The decision on which approach to use depends basically on the goal of the study, since if the goal is to make inferences about the population for which these environments (levels) were drawn, then the random effect approach is the best option, but if the goal is to make inferences about the particular environments (levels) selected in this experiment, then the ﬁxed-effects approach should be preferred. Assuming a simple model that ignores the environment GYij = \beta + eij, i = 1, ::, 5, j = 1, 2, 3,
-
-    Parameters
-    ----------
-    Data : array-like
-        Input data.
-    a : array-like
-        Input data.
-    one : array-like
-        Input data.
-    way : array-like
-        Input data.
-    classi : array-like
-        Input data.
-    cation : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.2) [Multivariate Statistical Machine Learnin [Pages 1-34] [2026-04-16].pdf]
-    """
-    Data = np.atleast_1d(np.asarray(Data, dtype=float))
-    n = len(Data)
-    result = float(np.mean(Data))
-    se = float(np.std(Data, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.2) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_2(groups):
+    """GY_ij = beta + e_ij (eq. 1.2): one grand mean for all levels.
+    With Table 1.1 the book reports beta-hat = 6.4127 and a residual
+    standard error of 0.7197. Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    res = RichResult(payload={"estimate": s["grand_mean"],
+                              "beta": s["grand_mean"],
+                              "sd_residual": s["sd_single_mean"],
+                              "method": "single-mean model (MVSML 2022 eq. 1.2)"})
+    return with_describe_pointer(res, "msm002")
 
 
 def cheatsheet():
-    return "msm002: Numbered display equation (1.2) from MVSML chapter 1."
+    return "msm002: Single-mean model for a one-way layout"

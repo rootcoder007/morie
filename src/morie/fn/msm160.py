@@ -1,55 +1,30 @@
-"""Numbered display equation (1.2) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Single-mean model for a one-way layout.
 
-from . import _array_core as np
+Implements eq. (1.2) p.15 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_2"]
 
 
-def mvsml_general_eq_1_2(yp_ts, apply, Probs, which, max, Tab1_PCCC):
-    """
-    Numbered display equation (1.2) from MVSML chapter 1.
-
-    Formula: yp_ts = apply(Probs,1,which.max)-1 Tab1_PCCC$AK1[k] = 1-mean(y[Pos_tst]!=yp_ts) A = BGLR(y=y_NA,ETA=ETA_K.AK4,response_type="ordinal",nIter = 1e4, burnIn = 1e3,verbose = FALSE) Probs = A$probs[Pos_tst,] yp_ts = apply(Probs,1,which.max)-1 Tab1_PCCC$AK4[k] = 1-mean(y[Pos_tst]!=yp_ts) } Tab1_PCCC apply(Tab1_PCCC[,-c
-
-    Parameters
-    ----------
-    yp_ts : array-like
-        Input data.
-    apply : array-like
-        Input data.
-    Probs : array-like
-        Input data.
-    which : array-like
-        Input data.
-    max : array-like
-        Input data.
-    Tab1_PCCC : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.2) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    """
-    yp_ts = np.atleast_1d(np.asarray(yp_ts, dtype=float))
-    n = len(yp_ts)
-    result = float(np.mean(yp_ts))
-    se = float(np.std(yp_ts, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.2) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_2(groups):
+    """GY_ij = beta + e_ij (eq. 1.2): one grand mean for all levels.
+    With Table 1.1 the book reports beta-hat = 6.4127 and a residual
+    standard error of 0.7197. Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    res = RichResult(payload={"estimate": s["grand_mean"],
+                              "beta": s["grand_mean"],
+                              "sd_residual": s["sd_single_mean"],
+                              "method": "single-mean model (MVSML 2022 eq. 1.2)"})
+    return with_describe_pointer(res, "msm160")
 
 
 def cheatsheet():
-    return "msm160: Numbered display equation (1.2) from MVSML chapter 1."
+    return "msm160: Single-mean model for a one-way layout"

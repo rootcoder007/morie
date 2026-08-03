@@ -1,55 +1,30 @@
-"""Numbered display equation (1.2) from MVSML chapter 1.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Single-mean model for a one-way layout.
 
-from . import _array_core as np
+Implements eq. (1.2) p.15 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_general_eq_1_2"]
 
 
-def mvsml_general_eq_1_2(Bayesian, Genomic, Linear, Regression, R, Code):
-    """
-    Numbered display equation (1.2) from MVSML chapter 1.
-
-    Formula: 6 Bayesian Genomic Linear Regression R Code for Example 4 rm(list=ls(all=TRUE)) library(BMTME) library(dplyr) load('dat_ls.RData',verbose=TRUE) dat_F = dat_ls$dat_F head(dat_F) Y = as.matrix(dat_F[,-
-
-    Parameters
-    ----------
-    Bayesian : array-like
-        Input data.
-    Genomic : array-like
-        Input data.
-    Linear : array-like
-        Input data.
-    Regression : array-like
-        Input data.
-    R : array-like
-        Input data.
-    Code : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (1.2) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    """
-    Bayesian = np.atleast_1d(np.asarray(Bayesian, dtype=float))
-    n = len(Bayesian)
-    result = float(np.mean(Bayesian))
-    se = float(np.std(Bayesian, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (1.2) from MVSML chapter 1.",
-        }
-    )
+def mvsml_general_eq_1_2(groups):
+    """GY_ij = beta + e_ij (eq. 1.2): one grand mean for all levels.
+    With Table 1.1 the book reports beta-hat = 6.4127 and a residual
+    standard error of 0.7197. Keys: estimate."""
+    s = _gp.one_way_summary(groups)
+    res = RichResult(payload={"estimate": s["grand_mean"],
+                              "beta": s["grand_mean"],
+                              "sd_residual": s["sd_single_mean"],
+                              "method": "single-mean model (MVSML 2022 eq. 1.2)"})
+    return with_describe_pointer(res, "msm084")
 
 
 def cheatsheet():
-    return "msm084: Numbered display equation (1.2) from MVSML chapter 1."
+    return "msm084: Single-mean model for a one-way layout"

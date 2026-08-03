@@ -1,47 +1,30 @@
-"""Numbered display equation (2.4) from MVSML chapter 2.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""SNP-BLUP mixed model equation.
 
-from . import _array_core as np
+Implements eq. (2.4) p.53 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_preprocessing_eq_2_4"]
 
 
-def mvsml_preprocessing_eq_2_4(b, XTR):
-    """
-    Numbered display equation (2.4) from MVSML chapter 2.
-
-    Formula: ! b\beta XTR1X XTR1M XTR1y =
-
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    XTR : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (2.4) [Multivariate Statistical Machine Learnin [Pages 35-70] [2026-04-16].pdf]
-    """
-    b = np.atleast_1d(np.asarray(b, dtype=float))
-    n = len(b)
-    result = float(np.mean(b))
-    se = float(np.std(b, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (2.4) from MVSML chapter 2.",
-        }
-    )
+def mvsml_preprocessing_eq_2_4(X, y, M, sigma2_m, sigma2_e=1.0):
+    """SNP-BLUP: eq. (2.2) with Z = M (the scaled marker matrix) and
+    Sigma = sigma2_M I (eq. 2.4). Here u holds marker effects and the
+    GEBV is M u-hat; the book notes GBLUP and SNP-BLUP give the same
+    breeding values. Keys: estimate."""
+    beta, u, gebv = _gp.snp_blup_gebv(X, y, M, sigma2_m, sigma2_e)
+    res = RichResult(payload={"estimate": gebv[0], "gebv": gebv,
+                              "marker_effects": u, "beta": beta,
+                              "method": "SNP-BLUP MME (MVSML 2022 eq. 2.4)"})
+    return with_describe_pointer(res, "msm243")
 
 
 def cheatsheet():
-    return "msm243: Numbered display equation (2.4) from MVSML chapter 2."
+    return "msm243: SNP-BLUP mixed model equation"
