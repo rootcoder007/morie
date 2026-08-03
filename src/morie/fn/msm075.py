@@ -1,55 +1,33 @@
-"""Numbered display equation (6.9) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Matrix-variate form of the multi-trait model.
 
-from . import _array_core as np
+Implements eq. (6.9) pp.191-193 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_9"]
 
 
-def mvsml_bayesian_regression_eq_6_9(Bayesian, Genomic, Multi, trait, environment, Model):
-    """
-    Numbered display equation (6.9) from MVSML chapter 6.
-
-    Formula: 6.9 Bayesian Genomic Multi-trait and Multi-environment Model (BMTME) 195 MSE in the ﬁrst trait is mainly because the measurement scale is greater than in the second trait. The R codes to reproduce these results (Table 6.4) are shown in Appendix 5. 6.9 Bayesian Genomic Multi-trait and Multi-environment Model (BMTME) Model
-
-    Parameters
-    ----------
-    Bayesian : array-like
-        Input data.
-    Genomic : array-like
-        Input data.
-    Multi : array-like
-        Input data.
-    trait : array-like
-        Input data.
-    environment : array-like
-        Input data.
-    Model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.9) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    """
-    Bayesian = np.atleast_1d(np.asarray(Bayesian, dtype=float))
-    n = len(Bayesian)
-    result = float(np.mean(Bayesian))
-    se = float(np.std(Bayesian, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.9) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_9(Y, Z1, G, X=None, n_iter=1200, burn_in=300, seed=42):
+    """Y = 1_J mu' + X B + Z_1 b_1 + E (eq. 6.9) with
+    E ~ MN(0, I_J, R) and b_1 ~ MN(0, G, Sigma_T), fitted by the
+    Gibbs sampler of p.193.  The book notes that when Sigma_T and R
+    are diagonal this is equivalent to fitting a univariate GBLUP to
+    each trait separately (p.191). Keys: estimate."""
+    f = _gp.multitrait_bayes_gibbs(Y, Z1, G, X=X, n_iter=n_iter,
+                                   burn_in=burn_in, seed=seed)
+    res = RichResult(payload={"estimate": f["mu"][0], "mu": f["mu"],
+                              "b1": f["b1"], "Sigma_T": f["Sigma_T"],
+                              "R": f["R"], "n_kept": f["n_kept"],
+                              "method": "matrix-variate multi-trait model (MVSML 2022 eq. 6.9)"})
+    return with_describe_pointer(res, "msm075")
 
 
 def cheatsheet():
-    return "msm075: Numbered display equation (6.9) from MVSML chapter 6."
+    return "msm075: Matrix-variate form of the multi-trait model"

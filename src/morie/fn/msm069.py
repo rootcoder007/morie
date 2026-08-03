@@ -1,55 +1,33 @@
-r"""Numbered display equation (6.8) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Genomic multi-trait linear model.
 
-from . import _array_core as np
+Implements eq. (6.8) p.191 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_8"]
 
 
-def mvsml_bayesian_regression_eq_6_8(An, of, this, model, can, be):
-    r"""
-    Numbered display equation (6.8) from MVSML chapter 6.
-
-    Formula: An implementation of this model can be done using the github version of the BGLR R library, which can be accessed from https://github.com/gdlc/BGLR-R and can be installed directly in the R console by running the following commands: install.packages('devtools'); library(devtools); install_git('https://github.com/gdlc/ BGLR-R'). This implementation also uses a ﬂat prior for the ﬁxed effect regression coefﬁcients \beta, and in such a case, the corresponding full conditional of this parameter is the same as step 1 of the Gibbs sampler given before, but removing \Sigma-1 \beta and \Sigma-1 \beta \beta0 from e\Sigma\beta and e\beta0, respectively. Speciﬁcally, model
-
-    Parameters
-    ----------
-    An : array-like
-        Input data.
-    of : array-like
-        Input data.
-    this : array-like
-        Input data.
-    model : array-like
-        Input data.
-    can : array-like
-        Input data.
-    be : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.8) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    An = np.atleast_1d(np.asarray(An, dtype=float))
-    n = len(An)
-    result = float(np.mean(An))
-    se = float(np.std(An, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.8) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_8(Y, Z1, G, X=None, n_iter=1200, burn_in=300, seed=42):
+    """Y_j = mu + B' x_j + g_j + eps_j (eq. 6.8): a univariate genomic
+    structure per trait with correlated residuals and correlated
+    genotype effects, eps_j ~ N(0, R) and
+    g ~ N(0, G (x) Sigma_T).  Inverse-Wishart priors are placed on
+    Sigma_T and R, a flat prior on the intercepts. Keys: estimate."""
+    f = _gp.multitrait_bayes_gibbs(Y, Z1, G, X=X, n_iter=n_iter,
+                                   burn_in=burn_in, seed=seed)
+    res = RichResult(payload={"estimate": f["mu"][0], "mu": f["mu"],
+                              "b1": f["b1"], "Sigma_T": f["Sigma_T"],
+                              "R": f["R"],
+                              "method": "genomic multi-trait model (MVSML 2022 eq. 6.8)"})
+    return with_describe_pointer(res, "msm069")
 
 
 def cheatsheet():
-    return "msm069: Numbered display equation (6.8) from MVSML chapter 6."
+    return "msm069: Genomic multi-trait linear model"

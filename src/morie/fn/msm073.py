@@ -1,55 +1,33 @@
-r"""Numbered display equation (6.8) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Genomic multi-trait linear model.
 
-from . import _array_core as np
+Implements eq. (6.8) p.191 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_8"]
 
 
-def mvsml_bayesian_regression_eq_6_8(implemented, a, multivariate, Ridge, regression, model):
-    r"""
-    Numbered display equation (6.8) from MVSML chapter 6.
-
-    Formula: implemented as a multivariate Ridge regression model, as follows: Y = 1J\muT + XB + X1B1 + E, (6.10) where X1 = Z1LG, G = LGLT G is the Cholesky factorization of G, B1 = L-1 G b1  MNJnT 0, IJ, \SigmaT ( ) , and the speciﬁcations for the rest of parameters and prior distribution are the same as given in model
-
-    Parameters
-    ----------
-    implemented : array-like
-        Input data.
-    a : array-like
-        Input data.
-    multivariate : array-like
-        Input data.
-    Ridge : array-like
-        Input data.
-    regression : array-like
-        Input data.
-    model : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.8) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    implemented = np.atleast_1d(np.asarray(implemented, dtype=float))
-    n = len(implemented)
-    result = float(np.mean(implemented))
-    se = float(np.std(implemented, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.8) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_8(Y, Z1, G, X=None, n_iter=1200, burn_in=300, seed=42):
+    """Y_j = mu + B' x_j + g_j + eps_j (eq. 6.8): a univariate genomic
+    structure per trait with correlated residuals and correlated
+    genotype effects, eps_j ~ N(0, R) and
+    g ~ N(0, G (x) Sigma_T).  Inverse-Wishart priors are placed on
+    Sigma_T and R, a flat prior on the intercepts. Keys: estimate."""
+    f = _gp.multitrait_bayes_gibbs(Y, Z1, G, X=X, n_iter=n_iter,
+                                   burn_in=burn_in, seed=seed)
+    res = RichResult(payload={"estimate": f["mu"][0], "mu": f["mu"],
+                              "b1": f["b1"], "Sigma_T": f["Sigma_T"],
+                              "R": f["R"],
+                              "method": "genomic multi-trait model (MVSML 2022 eq. 6.8)"})
+    return with_describe_pointer(res, "msm073")
 
 
 def cheatsheet():
-    return "msm073: Numbered display equation (6.8) from MVSML chapter 6."
+    return "msm073: Genomic multi-trait linear model"
