@@ -608,6 +608,99 @@
   "stub_content": "empty artefact"
  },
  {
+  "method": "eq. (9.4) p.340",
+  "chapter": "9",
+  "equation": "4",
+  "canonical_module": "msm171",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_4",
+  "reexported_by": [
+   "msm176"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (9.5) p.341",
+  "chapter": "9",
+  "equation": "5",
+  "canonical_module": "msm173",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_5",
+  "reexported_by": [
+   "msm174",
+   "msm177"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (9.28) p.348",
+  "chapter": "9",
+  "equation": "28",
+  "canonical_module": "msm202",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_28",
+  "reexported_by": [
+   "msm206",
+   "msm208"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (9.29) p.348",
+  "chapter": "9",
+  "equation": "29",
+  "canonical_module": "msm203",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_29",
+  "reexported_by": [
+   "msm209"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (9.30) p.348",
+  "chapter": "9",
+  "equation": "30",
+  "canonical_module": "msm204",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_30",
+  "reexported_by": [
+   "msm205",
+   "msm207"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (9.31) p.349",
+  "chapter": "9",
+  "equation": "31",
+  "canonical_module": "msm210",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_31",
+  "reexported_by": [
+   "msm211"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (9.32) p.349",
+  "chapter": "9",
+  "equation": "32",
+  "canonical_module": "msm212",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_32",
+  "reexported_by": [
+   "msm214",
+   "msm216"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (9.33) p.349",
+  "chapter": "9",
+  "equation": "33",
+  "canonical_module": "msm213",
+  "entry_point": "mvsml_ridge_lasso_elastic_eq_9_33",
+  "reexported_by": [
+   "msm215",
+   "msm217"
+  ],
+  "stub_content": "equation"
+ },
+ {
   "method": "eq. (2.1) p.36",
   "chapter": "2",
   "equation": "1",

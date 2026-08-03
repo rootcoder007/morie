@@ -1,55 +1,39 @@
-r"""Numbered display equation (9.28) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Weights as a combination of training vectors.
 
-from . import _array_core as np
+Implements eq. (9.28) p.348 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_28"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_28", "mvsml_svm_beta_from_alpha"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_28(n, are, called, Lagrange, multipliers, Setting):
-    r"""
-    Numbered display equation (9.28) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_28(alpha, X, y):
+    """dL/dbeta = beta - sum_i alpha_i y_i x_i = 0, so
+    beta = sum_i alpha_i y_i x_i (eq. 9.28): every beta coefficient
+    except the intercept is a linear combination of the training
+    vectors, and a vector enters that expansion if and only if
+    alpha_i != 0 -- those are the support vectors. Keys: estimate."""
+    b = _gp.svm_beta_from_alpha(alpha, X, y)
+    sv = [i for i, v in enumerate(_gp._flat(alpha)) if abs(v) > 1e-9]
+    res = RichResult(payload={"estimate": b[0], "beta": b,
+                              "support_vectors": sv,
+                              "method": "weights from multipliers (MVSML 2022 eq. 9.28)"})
+    return with_describe_pointer(res, "msm202")
 
-    Formula: n are called Lagrange multipliers. Setting the derivatives of L(\beta, \beta0, \alpha) with regard to \beta and \beta0 equal to zero, we obtain the following conditions: Xn Xn \partial L \beta, \beta0, \alpha ( ) = \beta 2 i=1\alphaiyixi = 0 \Rightarrow \beta = i=1\alphaiyixi
 
-    Parameters
-    ----------
-    n : array-like
-        Input data.
-    are : array-like
-        Input data.
-    called : array-like
-        Input data.
-    Lagrange : array-like
-        Input data.
-    multipliers : array-like
-        Input data.
-    Setting : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.28) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    n = np.atleast_1d(np.asarray(n, dtype=float))
-    n = len(n)
-    result = float(np.mean(n))
-    se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.28) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_beta_from_alpha = mvsml_ridge_lasso_elastic_eq_9_28
 
 
 def cheatsheet():
-    return "msm202: Numbered display equation (9.28) from MVSML chapter 9."
+    return "msm202: Weights as a combination of training vectors"

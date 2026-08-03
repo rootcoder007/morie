@@ -1,55 +1,36 @@
-"""Numbered display equation (9.4) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Hyperplane decision rule.
 
-from . import _array_core as np
+Implements eq. (9.4) p.340 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_4"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_4", "mvsml_svm_hyperplane_side"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_4(There, are, points, that, satisfying, lie):
-    """
-    Numbered display equation (9.4) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_4(X, beta0, beta):
+    """beta_0 + beta_1 x_1 + ... + beta_p x_p > 0 puts a point on one
+    side of the hyperplane and < 0 on the other (eq. 9.4), so the
+    hyperplane divides p-dimensional space into two halves and the
+    sign of the left-hand side identifies the half. Keys: estimate."""
+    s = _gp.hyperplane_side(X, beta0, beta)
+    res = RichResult(payload={"estimate": float(s[0]), "side": s,
+                              "method": "hyperplane decision rule (MVSML 2022 eq. 9.4)"})
+    return with_describe_pointer(res, "msm171")
 
-    Formula: (9.3) There are points that satisfying (9.3) lie on one side of the hyperplane. Similarly, the X points that correspond to 340 9 Support Vector Machines and Support Vector Regression Fig. 9.2 The hyperplane 1 + 2X1 + 3X2 = 0 is shown. The blue region is the set of points for which 1 + 2X1 + 3X2 > 0, and the red region is the set of points for which 1 + 2X1 + 3X2 < 0 (James et al. 2013) \beta0 + \beta1X1 + \beta2X2 + . . . + \betapXp > 0
 
-    Parameters
-    ----------
-    There : array-like
-        Input data.
-    are : array-like
-        Input data.
-    points : array-like
-        Input data.
-    that : array-like
-        Input data.
-    satisfying : array-like
-        Input data.
-    lie : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.4) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    There = np.atleast_1d(np.asarray(There, dtype=float))
-    n = len(There)
-    result = float(np.mean(There))
-    se = float(np.std(There, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.4) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_hyperplane_side = mvsml_ridge_lasso_elastic_eq_9_4
 
 
 def cheatsheet():
-    return "msm171: Numbered display equation (9.4) from MVSML chapter 9."
+    return "msm171: Hyperplane decision rule"

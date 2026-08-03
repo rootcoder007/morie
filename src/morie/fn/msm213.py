@@ -1,55 +1,42 @@
-"""Numbered display equation (9.33) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Dual feasibility constraints.
 
-from . import _array_core as np
+Implements eq. (9.33) p.349 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_33"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_33", "mvsml_svm_dual_constraints"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_33(L, i, jyiy, j, xi, x):
-    """
-    Numbered display equation (9.33) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_33(alpha, y, C=None):
+    """alpha_i >= 0 and sum_i alpha_i y_i = 0 (eq. 9.33).  These
+    constraints are affine and convex, which together with the
+    positive semi-definite Hessian of (9.32) makes the maximization a
+    convex problem.  ``C`` adds the soft-margin upper bound.
+    Keys: estimate."""
+    f = _gp.svm_dual_constraints_ok(alpha, y, C=C)
+    res = RichResult(payload={"estimate": 1.0 if f["feasible"]
+                              else 0.0,
+                              "nonnegative": f["nonnegative"],
+                              "balanced": f["balanced"],
+                              "bounded": f["bounded"],
+                              "feasible": f["feasible"],
+                              "method": "dual constraints (MVSML 2022 eq. 9.33)"})
+    return with_describe_pointer(res, "msm213")
 
-    Formula: L \alpha ( ) = i=1\alphai\alpha jyiy j xi:x j (9.32) |ﬄﬄﬄﬄﬄﬄ{zﬄﬄﬄﬄﬄﬄ} 2 \alpha Xn subject to : \alphai  0 and i=1\alphaiyi = 0 for i = 1, . . . , n
 
-    Parameters
-    ----------
-    L : array-like
-        Input data.
-    i : array-like
-        Input data.
-    jyiy : array-like
-        Input data.
-    j : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.33) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.33) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_dual_constraints = mvsml_ridge_lasso_elastic_eq_9_33
 
 
 def cheatsheet():
-    return "msm213: Numbered display equation (9.33) from MVSML chapter 9."
+    return "msm213: Dual feasibility constraints"

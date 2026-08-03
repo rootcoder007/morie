@@ -1,51 +1,49 @@
-r"""Numbered display equation (9.30) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Karush-Kuhn-Tucker complementary slackness.
 
-from . import _array_core as np
+Implements eq. (9.30) p.348 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_30"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_30", "mvsml_svm_kkt_conditions"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_30(i, yi, xT, n):
-    r"""
-    Numbered display equation (9.30) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_30(alpha, X, y, beta0, beta, tol=1e-6):
+    """alpha_i [y_i(beta_0 + x_i'beta) - 1] = 0 for every i
+    (eq. 9.30), the KKT complementary-slackness condition.  It forces
+    the dichotomy of p.348: if alpha_i > 0 then
+    y_i(beta_0 + x_i'beta) = 1 and x_i sits on the margin; if
+    y_i(beta_0 + x_i'beta) > 1 then x_i is off the margin and
+    alpha_i = 0.  So support vectors lie exactly on
+    y_i(beta_0 + x_i'beta) = 1. Keys: estimate."""
+    a = _gp._flat(alpha)
+    ys = _gp._flat(y)
+    f = _gp.svm_decision_values(X, beta0, beta)
+    slack = [ys[i] * f[i] - 1.0 for i in range(len(a))]
+    prod = [a[i] * slack[i] for i in range(len(a))]
+    on_margin = [i for i in range(len(a)) if abs(slack[i]) < tol]
+    res = RichResult(payload={"estimate": max(abs(v) for v in prod),
+                              "complementary_products": prod,
+                              "margin_slack": slack,
+                              "on_margin": on_margin,
+                              "satisfied": max(abs(v) for v in prod)
+                              < tol,
+                              "method": "KKT conditions (MVSML 2022 eq. 9.30)"})
+    return with_describe_pointer(res, "msm204")
 
-    Formula: \alphai yi \beta0 + xT i \beta + 1 = 0 for i = 1, . . . , n \Rightarrow \alphai   = 0 and yi \beta0 + xT i \beta = 1
 
-    Parameters
-    ----------
-    i : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    xT : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.30) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    i = np.atleast_1d(np.asarray(i, dtype=float))
-    n = len(i)
-    result = float(np.mean(i))
-    se = float(np.std(i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.30) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_kkt_conditions = mvsml_ridge_lasso_elastic_eq_9_30
 
 
 def cheatsheet():
-    return "msm204: Numbered display equation (9.30) from MVSML chapter 9."
+    return "msm204: Karush-Kuhn-Tucker complementary slackness"

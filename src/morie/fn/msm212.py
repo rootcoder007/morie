@@ -1,55 +1,52 @@
-"""Numbered display equation (9.32) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Dual optimization problem.
 
-from . import _array_core as np
+Implements eq. (9.32) p.349 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_32"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_32", "mvsml_svm_dual_objective"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_32(margin, classi, er, Xn, i, maximize):
-    """
-    Numbered display equation (9.32) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_32(alpha, X, y, K=None, fit=False, C=None):
+    """maximize L(alpha) = sum_i alpha_i
+    - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j (x_i . x_j)
+    (eq. 9.32).  The problem is cast entirely in inner products of the
+    data, never the vectors themselves, which is what lets a kernel
+    stand in for a transformation into a higher-dimensional space.
+    L is quadratic in alpha with a positive semi-definite Hessian, so
+    this is a convex program with a unique solution.  With
+    ``fit=True`` the dual is maximized subject to (9.33).
+    Keys: estimate."""
+    if fit:
+        f = _gp.svm_fit_dual(X, y, C=C, K=K)
+        res = RichResult(payload={"estimate": f["objective"],
+                                  "L": f["objective"],
+                                  "alpha": f["alpha"],
+                                  "beta": f["beta"],
+                                  "beta0": f["beta0"],
+                                  "support_vectors":
+                                      f["support_vectors"],
+                                  "method": "dual problem, fitted (MVSML 2022 eq. 9.32)"})
+    else:
+        val = _gp.svm_dual_objective(alpha, X, y, K=K)
+        res = RichResult(payload={"estimate": val, "L": val,
+                                  "method": "dual objective (MVSML 2022 eq. 9.32)"})
+    return with_describe_pointer(res, "msm212")
 
-    Formula: margin classiﬁer Xn Xn   i=1\alphai 2 1 maximize L \alpha ( ) = i=1\alphai\alpha jyiy j xi:x j
 
-    Parameters
-    ----------
-    margin : array-like
-        Input data.
-    classi : array-like
-        Input data.
-    er : array-like
-        Input data.
-    Xn : array-like
-        Input data.
-    i : array-like
-        Input data.
-    maximize : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.32) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    margin = np.atleast_1d(np.asarray(margin, dtype=float))
-    n = len(margin)
-    result = float(np.mean(margin))
-    se = float(np.std(margin, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.32) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_dual_objective = mvsml_ridge_lasso_elastic_eq_9_32
 
 
 def cheatsheet():
-    return "msm212: Numbered display equation (9.32) from MVSML chapter 9."
+    return "msm212: Dual optimization problem"
