@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Random basis expansion prior: f = sum_k z_k phi_k with random coefficients z_k."""
+"""Random basis expansion prior.
+
+Implements sec. 2.1 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, Cambridge University Press.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_random_basis_expansion"]
 
 
-def ghosal_random_basis_expansion(x):
-    """
-    Random basis expansion prior: f = sum_k z_k phi_k with random coefficients z_k
-
-    Formula: f = sum_{k=1}^infty z_k phi_k, z_k ~ pi_k independently
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 2 §2.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Random basis expansion prior: f = sum_k z_k phi_k with random coefficients z_k",
-        }
-    )
+def ghosal_random_basis_expansion(x, n_terms=12, seed=42, decay=1.5):
+    """f = sum_k z_k phi_k with independent z_k (GvdV 2017 sec. 2.1);
+    cosine basis, z_k ~ N(0, k^-2*decay) so the series converges."""
+    import math
+    xs = _bnp._flat(x)
+    rng = np.random.default_rng(seed)
+    z = [float(v) * (k + 1.0) ** (-decay)
+         for k, v in enumerate(rng.normal(0, 1, n_terms)._flat())]
+    f = [sum(z[k] * math.cos(math.pi * (k + 1) * v)
+             for k in range(n_terms)) for v in xs]
+    est = sum(f) / len(f)
+    res = RichResult(payload={"estimate": est, "f": f,
+                              "coefficients": z,
+                              "method": "random cosine-basis expansion (GvdV 2017 sec. 2.1)"})
+    return with_describe_pointer(res, "gh_c2_1")
 
 
 def cheatsheet():
-    return "gh_c2_1: Random basis expansion prior: f = sum_k z_k phi_k with random coefficients z_k"
+    return "gh_c2_1: Random basis expansion prior"

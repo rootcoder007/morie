@@ -1,48 +1,31 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Bayesian nonparametric normal regression prior: Y|X ~ N(f(X), sigma^2), f ~ GP."""
+"""Nonparametric normal regression with a GP prior.
+
+Implements sec. 2.4 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, Cambridge University Press.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_np_normal_reg"]
 
 
-def ghosal_np_normal_reg(x, y):
-    """
-    Bayesian nonparametric normal regression prior: Y|X ~ N(f(X), sigma^2), f ~ GP
-
-    Formula: Y_i = f(x_i) + e_i, e_i ~ N(0,sigma^2), f ~ GP(0, k)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 2 §2.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bayesian nonparametric normal regression prior: Y|X ~ N(f(X), sigma^2), f ~ GP",
-        }
-    )
+def ghosal_np_normal_reg(x, y, length=0.5, var=1.0, sigma2=0.05):
+    """Y_i = f(x_i) + e_i, e ~ N(0, sigma^2), f ~ GP(0, k) (GvdV 2017
+    sec. 2.4): the posterior mean is the kernel-ridge smoother
+    k(x*, X)[K + sigma^2 I]^{-1} Y."""
+    xs = _bnp._flat(x)
+    ys = _bnp._flat(y)
+    k = _bnp.rbf_kernel(length, var)
+    fhat = _bnp.gp_regression_posterior_mean(xs, ys, xs, k, sigma2)
+    sse = sum((a - b) ** 2 for a, b in zip(fhat, ys))
+    res = RichResult(payload={"estimate": sum(fhat) / len(fhat),
+                              "fitted": fhat, "sse": sse,
+                              "method": "GP-prior normal regression (GvdV 2017 sec. 2.4)"})
+    return with_describe_pointer(res, "gh_c2_8")
 
 
 def cheatsheet():
-    return "gh_c2_8: Bayesian nonparametric normal regression prior: Y|X ~ N(f(X), sigma^2), f ~ GP"
+    return "gh_c2_8: Nonparametric normal regression with a GP prior"
