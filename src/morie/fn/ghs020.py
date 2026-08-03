@@ -1,45 +1,32 @@
-"""Necessary-and-sufficient mean-zero conditions for a tree-based finitely additive measure on R to extend to a countably additive random measure.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Countable additivity of tree measures.
 
-from . import _array_core as np
+Implements sec. 3.6 (atom products vanish, p.43) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_tree_countable_additivity"]
 
 
-def ghosal_ch3_tree_countable_additivity(V):
-    """
-    Necessary-and-sufficient mean-zero conditions for a tree-based finitely additive measure on R to extend to a countably additive random measure.
-
-    Formula: E[ V_epsilon * V_{epsilon 0} * V_{epsilon 0 0} * ... ] = 0   for all epsilon in E*,   and E[ V_1 * V_{1 1} * V_{1 1 1} * ... ] = 0
-
-    Parameters
-    ----------
-    V : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.13, p. 38
-    """
-    V = np.atleast_1d(np.asarray(V, dtype=float))
-    n = len(V)
-    result = float(np.mean(V))
-    se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Necessary-and-sufficient mean-zero conditions for a tree-based finitely additive measure on R to extend to a countably additive random measure.",
-        }
-    )
+def ghosal_ch3_tree_countable_additivity(EV, depth=60):
+    """E[V_e V_{e0} V_{e00} ...] = 0: with E(V) bounded away from 1
+    the expected infinite down-branch product vanishes -- atoms have
+    zero mass (GvdV 2017 p.43). Returns prod_{j<=depth} E(V), which
+    decays geometrically. Keys: value."""
+    ev = float(_bnp._flat(EV)[0])
+    if not 0.0 <= ev < 1.0:
+        raise ValueError("E(V) must lie in [0, 1)")
+    prod = ev ** int(depth)
+    res = RichResult(payload={"estimate": prod, "value": prod,
+                              "vanishes": prod < 1e-12,
+                              "method": "atom mass product (GvdV 2017 sec. 3.6)"})
+    return with_describe_pointer(res, "ghs020")
 
 
 def cheatsheet():
-    return "ghs020: Necessary-and-sufficient mean-zero conditions for a tree-based finitely additive measure on R to extend to a countably additive random measure."
+    return "ghs020: Countable additivity of tree measures"

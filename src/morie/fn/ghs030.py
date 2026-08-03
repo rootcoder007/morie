@@ -1,51 +1,37 @@
-"""Posterior expected density at x for a canonical Polya tree process with rate sequence a_m, given an i.i.d. sample with level-j cell counts N_{x_1 ... x_j}.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Pólya tree posterior mean density.
 
-from . import _array_core as np
+Implements eq. (3.23), p.50 (conjugacy Theorem 3.21) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_polya_tree_posterior_density"]
 
 
-def ghosal_ch3_polya_tree_posterior_density(a_j, N, x, n):
-    """
-    Posterior expected density at x for a canonical Polya tree process with rate sequence a_m, given an i.i.d. sample with level-j cell counts N_{x_1 ... x_j}.
-
-    Formula: E( p(x) | X_1, ..., X_n ) = prod_{j=1}^{infty} ( 2 * a_j + 2 * N_{x_1 ... x_j} ) / ( 2 * a_j + N_{x_1 ... x_{j-1}} )
-
-    Parameters
-    ----------
-    a_j : array-like
-        Input data.
-    N : array-like
-        Input data.
-    x : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: posterior
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.23, p. 50
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Posterior expected density at x for a canonical Polya tree process with rate sequence a_m, given an i.i.d. sample with level-j cell counts N_{x_1 ... x_j}.",
-        }
-    )
+def ghosal_ch3_polya_tree_posterior_density(x, data, a_of_level=None,
+                                            depth=8):
+    """E(p(x) | X) = prod_j (2 a_j + 2 N_{x_1..x_j}) /
+    (2 a_j + N_{x_1..x_{j-1}}) (eq. 3.23) -- the canonical-PT
+    posterior via alpha* = alpha + N (Theorem 3.21).
+    Keys: posterior."""
+    if a_of_level is None:
+        a_of_level = lambda m: float(m * m)
+    xs = _bnp._flat(x)
+    d = _bnp._flat(data)
+    n = len(d)
+    counts = _bnp.pt_path_counts(xs[0], d, int(depth))
+    dens = _bnp.pt_density_posterior(xs[0], a_of_level, counts, n,
+                                     int(depth))
+    res = RichResult(payload={"estimate": dens, "posterior": dens,
+                              "path_counts": counts, "n": n,
+                              "method": "PT posterior density (GvdV 2017 eq. 3.23)"})
+    return with_describe_pointer(res, "ghs030")
 
 
 def cheatsheet():
-    return "ghs030: Posterior expected density at x for a canonical Polya tree process with rate sequence a_m, given an i.i.d. sample with level-j cell counts N_{x_1 ... x_j}."
+    return "ghs030: Pólya tree posterior mean density"

@@ -1,49 +1,26 @@
-"""Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Discrete hazard rate of weights.
 
-from . import _array_core as np
+Implements eq. (3.3), p.31 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_discrete_hazard_rate"]
 
 
-def ghosal_ch3_discrete_hazard_rate(p_j, j, X):
-    """
-    Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.
-
-    Formula: V_j = p_j / (1 - sum_{l=1}^{j-1} p_l) = P(X = j | X >= j)
-
-    Parameters
-    ----------
-    p_j : array-like
-        Input data.
-    j : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.3, p. 31
-    """
-    p_j = np.atleast_1d(np.asarray(p_j, dtype=float))
-    n = len(p_j)
-    result = float(np.mean(p_j))
-    se = float(np.std(p_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j.",
-        }
-    )
+def ghosal_ch3_discrete_hazard_rate(p):
+    """V_j = p_j / (1 - sum_{l<j} p_l) = P(X=j | X>=j) (eq. 3.3).
+    Keys: value."""
+    V = _bnp.discrete_hazard(p)
+    res = RichResult(payload={"estimate": V[0], "value": V,
+                              "method": "discrete hazard (GvdV 2017 eq. 3.3)"})
+    return with_describe_pointer(res, "ghs010")
 
 
 def cheatsheet():
-    return "ghs010: Discrete hazard rate V_j of the stick-breaking construction interpreted as the conditional probability that X equals j given X >= j."
+    return "ghs010: Discrete hazard rate of weights"

@@ -1,46 +1,32 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Countable Dirichlet process on countable sample space."""
+"""Countable Dirichlet process.
+
+Implements sec. 3.3.3, eq. (3.4) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_countable_dp"]
 
 
-def ghosal_countable_dp(x):
-    """
-    Countable Dirichlet process on countable sample space
-
-    Formula: (G(x_1), G(x_2), ...) ~ Dir(alpha*G0(x_1), alpha*G0(x_2), ...)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 3 §3.3.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Countable Dirichlet process on countable sample space",
-        }
-    )
+def ghosal_countable_dp(x, alpha_total=5.0, k=6, seed=42):
+    """(p_1, ..., p_k, 1-sum) ~ Dir(k+1; alpha_1..alpha_k, tail)
+    (GvdV 2017 eq. 3.4), realized by gamma normalization with a tail
+    cell carrying the remaining concentration."""
+    rng = np.random.default_rng(seed)
+    a = [alpha_total / (2.0 ** (j + 1)) for j in range(k)]
+    tail = alpha_total - sum(a)
+    g = [float(rng.gamma(max(ai, 1e-8), 1.0)) for ai in a + [tail]]
+    p = _bnp.normalize_weights(g)
+    res = RichResult(payload={"estimate": p[0], "p_cells": p[:k],
+                              "p_tail": p[k], "alpha": a,
+                              "alpha_tail": tail,
+                              "method": "countable Dirichlet process (GvdV 2017 eq. 3.4)"})
+    return with_describe_pointer(res, "gh_c3_5")
 
 
 def cheatsheet():
-    return "gh_c3_5: Countable Dirichlet process on countable sample space"
+    return "gh_c3_5: Countable Dirichlet process"
