@@ -1,46 +1,31 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Covariance of DP: Cov[G(A),G(B)] = (G0(A cap B) - G0(A)G0(B))/(alpha+1)."""
+"""DP prior covariance.
+
+Implements Proposition 4.2, eq. (4.4) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_cov"]
 
 
-def ghosal_dp_cov(x):
-    """
-    Covariance of DP: Cov[G(A),G(B)] = (G0(A cap B) - G0(A)G0(B))/(alpha+1)
-
-    Formula: Cov[G(A),G(B)] = (G0(A cap B) - G0(A)G0(B)) / (alpha+1)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 4 §4.1.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Covariance of DP: Cov[G(A),G(B)] = (G0(A cap B) - G0(A)G0(B))/(alpha+1)",
-        }
-    )
+def ghosal_dp_cov(G0_AB, G0_A, G0_B, alpha):
+    """cov(P(A), P(B)) = (G0(A cap B) - G0(A) G0(B)) / (1 + |alpha|)
+    (eq. 4.4). Keys: estimate."""
+    gab = float(_bnp._flat(G0_AB)[0])
+    ga = float(_bnp._flat(G0_A)[0])
+    gb = float(_bnp._flat(G0_B)[0])
+    M = float(alpha)
+    v = (gab - ga * gb) / (1.0 + M)
+    res = RichResult(payload={"estimate": v,
+                              "method": "DP covariance (GvdV 2017 eq. 4.4)"})
+    return with_describe_pointer(res, "gh_c4_4")
 
 
 def cheatsheet():
-    return "gh_c4_4: Covariance of DP: Cov[G(A),G(B)] = (G0(A cap B) - G0(A)G0(B))/(alpha+1)"
+    return "gh_c4_4: DP prior covariance"

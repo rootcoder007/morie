@@ -1,41 +1,26 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean of DP: E[G(A)] = G0(A) for all measurable A."""
+"""DP prior mean.
+
+Implements Proposition 4.2, eq. (4.2) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_mean"]
 
 
-def ghosal_dp_mean(x):
-    """
-    Mean of DP: E[G(A)] = G0(A) for all measurable A
-
-    Formula: E[G(A)] = G0(A)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 4 §4.1.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Mean of DP: E[G(A)] = G0(A) for all measurable A"}
-    )
+def ghosal_dp_mean(G0_A):
+    """E P(A) = alpha-bar(A) = G0(A) (eq. 4.2). Keys: estimate."""
+    v = float(_bnp._flat(G0_A)[0])
+    res = RichResult(payload={"estimate": v,
+                              "method": "DP mean (GvdV 2017 eq. 4.2)"})
+    return with_describe_pointer(res, "gh_c4_2")
 
 
 def cheatsheet():
-    return "gh_c4_2: Mean of DP: E[G(A)] = G0(A) for all measurable A"
+    return "gh_c4_2: DP prior mean"
