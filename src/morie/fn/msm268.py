@@ -1,55 +1,36 @@
-r"""Numbered display equation (14.5) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Residual variance of the functional fit.
 
-from . import _array_core as np
+Implements eq. (14.5) p.580 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_convolutional_nn_eq_14_5"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_convolutional_nn_eq_14_5", "mvsml_fda_sigma2"]
 
 
-def mvsml_convolutional_nn_eq_14_5(b, X, TX, T, n, y):
-    r"""
-    Numbered display equation (14.5) from MVSML chapter 14.
+def mvsml_convolutional_nn_eq_14_5(t, X_curves, y, L1=3, L2=5, kind="fourier"):
+    """sigma2-hat = (1/n)(y - X* beta-hat)'(y - X* beta-hat)
+    (eq. 14.5), the maximum likelihood variance -- divided by n, not
+    by the residual degrees of freedom. Keys: estimate."""
+    f = _gp.fda_fit(t, X_curves, y, L1=L1, L2=L2, kind=kind)
+    res = RichResult(payload={"estimate": f["sigma2"],
+                              "sigma2": f["sigma2"],
+                              "residuals": f["residuals"],
+                              "method": "functional residual variance (MVSML 2022 eq. 14.5)"})
+    return with_describe_pointer(res, "msm268")
 
-    Formula: b\beta = XTX (14.4)  T   b\sigma2 = 1 n y  Xb\beta y  Xb\beta ,
 
-    Parameters
-    ----------
-    b : array-like
-        Input data.
-    X : array-like
-        Input data.
-    TX : array-like
-        Input data.
-    T : array-like
-        Input data.
-    n : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (14.5) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.5) from MVSML chapter 14.",
-        }
-    )
+mvsml_fda_sigma2 = mvsml_convolutional_nn_eq_14_5
 
 
 def cheatsheet():
-    return "msm268: Numbered display equation (14.5) from MVSML chapter 14."
+    return "msm268: Residual variance of the functional fit"

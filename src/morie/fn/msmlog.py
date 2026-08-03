@@ -1,42 +1,38 @@
-"""Logistic MSM for binary outcomes."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Logistic marginal structural model.
 
-from . import _array_core as np
+Source: Robins, J. M., Hernan, M. A., & Brumback, B. (2000). Marginal
+structural models and causal inference in epidemiology. *Epidemiology*
+11(5), 550-560; Hernan, M. A. & Robins, J. M. (2020). *Causal
+Inference: What If*. CRC.
 
-from ._richresult import RichResult
+The stabilized inverse-probability weights are computed by
+:func:`morie.fn.msmwt.msmwt`; this module is the weighted outcome
+model fitted in the pseudo-population those weights create.
+"""
+
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["msm_logistic"]
 
 
-def msm_logistic(y, treatment_history, covariate_history):
-    """
-    Logistic MSM for binary outcomes
-
-    Formula: logit P(Y(a_bar)=1) = beta_0 + beta_a a_bar
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    treatment_history : array-like
-        Input data.
-    covariate_history : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Robins-Hernán-Brumback (2000)
-    """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Logistic MSM for binary outcomes"})
+def msm_logistic(y, treatment_history, covariate_history=None, weights=None):
+    """logit P(Y(a-bar) = 1) = beta_0 + beta_a a-bar, fitted by
+    weighted IRLS.  exp(beta_a) is a causal odds ratio per unit of
+    cumulative treatment. Keys: estimate."""
+    d = _gp.msm_design(treatment_history)
+    f = _gp.msm_weighted_glm(y, d["X"], weights=weights,
+                             family="binomial")
+    res = RichResult(payload={"estimate": f["beta"][1],
+                              "beta": f["beta"],
+                              "odds_ratio": math.exp(f["beta"][1]),
+                              "fitted": f["fitted"],
+                              "method": "logistic MSM (Robins et al. 2000)"})
+    return with_describe_pointer(res, "msmlog")
 
 
 def cheatsheet():
-    return "msmlog: Logistic MSM for binary outcomes"
+    return "msmlog: Logistic marginal structural model"

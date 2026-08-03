@@ -1,49 +1,42 @@
-r"""Numbered display equation (15.2) from MVSML chapter 15.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Zero-truncated Poisson splitting criterion.
 
-from . import _array_core as np
+Implements eq. (15.2) p.651 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_functional_regression_eq_15_2"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_functional_regression_eq_15_2", "mvsml_zero_truncated_poisson_loglik"]
 
 
-def mvsml_functional_regression_eq_15_2(log, Y, i):
-    r"""
-    Numbered display equation (15.2) from MVSML chapter 15.
+def mvsml_functional_regression_eq_15_2(y_positive, mu=None, x=None):
+    """LL+ = -N+ log(1 - exp(-mu)) + log(mu) sum_i Y_i+ - N+ mu
+    - sum_i log(Y_i+!) (eq. 15.2), the zero-truncated Poisson
+    log-likelihood used as the splitting criterion in the truncated
+    part of the forest.  With ``x`` the best split is searched, taking
+    the one that maximizes LL+(left) + LL+(right) (p.652).
+    Keys: estimate."""
+    if mu is None:
+        mu = _gp.zero_truncated_poisson_mle(y_positive)
+    ll = _gp.zero_truncated_poisson_loglik(y_positive, mu)
+    split = _gp.zap_best_split(y_positive, x) if x is not None \
+        else None
+    res = RichResult(payload={"estimate": ll, "loglik": ll,
+                              "mu": mu, "split": split,
+                              "method": "zero-truncated Poisson criterion (MVSML 2022 eq. 15.2)"})
+    return with_describe_pointer(res, "msm325")
 
-    Formula: log Y+ ( ( ) ) + log \mu ( ) i ! , i i
 
-    Parameters
-    ----------
-    log : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    i : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (15.2) [Multivariate Statistical Machine Learnin [Pages 633-681] [2026-04-16].pdf]
-    r"""
-    log = np.atleast_1d(np.asarray(log, dtype=float))
-    n = len(log)
-    result = float(np.mean(log))
-    se = float(np.std(log, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (15.2) from MVSML chapter 15.",
-        }
-    )
+mvsml_zero_truncated_poisson_loglik = mvsml_functional_regression_eq_15_2
 
 
 def cheatsheet():
-    return "msm325: Numbered display equation (15.2) from MVSML chapter 15."
+    return "msm325: Zero-truncated Poisson splitting criterion"

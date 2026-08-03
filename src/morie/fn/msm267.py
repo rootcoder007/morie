@@ -1,55 +1,38 @@
-r"""Numbered display equation (14.4) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Maximum likelihood estimate of the basis coefficients.
 
-from . import _array_core as np
+Implements eq. (14.4)-(14.5) p.580 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter; the
+canonical name below reflects the chapter this equation is actually in.
+"""
 
-__all__ = ["mvsml_convolutional_nn_eq_14_4"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_convolutional_nn_eq_14_4", "mvsml_fda_fit"]
 
 
-def mvsml_convolutional_nn_eq_14_4(R, T, l, xil, xi, t):
-    r"""
-    Numbered display equation (14.4) from MVSML chapter 14.
+def mvsml_convolutional_nn_eq_14_4(t, X_curves, y, L1=3, L2=5, kind="fourier"):
+    """beta-hat = (X*'X*)^-1 X*'y (eq. 14.4) and
+    sigma2-hat = (1/n)(y - X*beta-hat)'(y - X*beta-hat) (eq. 14.5),
+    the maximum likelihood estimates once the functional covariate has
+    been reduced to scalar scores. Keys: estimate."""
+    f = _gp.fda_fit(t, X_curves, y, L1=L1, L2=L2, kind=kind)
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "beta": f["beta"],
+                              "sigma2": f["sigma2"],
+                              "fitted": f["fitted"],
+                              "method": "functional regression ML fit (MVSML 2022 eq. 14.4-14.5)"})
+    return with_describe_pointer(res, "msm267")
 
-    Formula:  R T l=1xil\betal, \sigma2 , xil = 0 xi t( )ϕl t( )dt, i = 1, . . ., n, l = 1, . . ., L1. So, the maximum likelihood estimation of parameters \beta and \sigma2 is given by - 1XTy b\beta = XTX
 
-    Parameters
-    ----------
-    R : array-like
-        Input data.
-    T : array-like
-        Input data.
-    l : array-like
-        Input data.
-    xil : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    t : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (14.4) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    R = np.atleast_1d(np.asarray(R, dtype=float))
-    n = len(R)
-    result = float(np.mean(R))
-    se = float(np.std(R, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.4) from MVSML chapter 14.",
-        }
-    )
+mvsml_fda_fit = mvsml_convolutional_nn_eq_14_4
 
 
 def cheatsheet():
-    return "msm267: Numbered display equation (14.4) from MVSML chapter 14."
+    return "msm267: Maximum likelihood estimate of the basis coefficients"
