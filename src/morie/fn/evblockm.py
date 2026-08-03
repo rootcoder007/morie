@@ -1,39 +1,33 @@
-"""Block-maxima GEV fit from a series."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Block-maxima GEV fit from a series.
+
+Implements sec. 3.1 & 3.3 of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["evt_block_maxima_fit"]
 
 
-def evt_block_maxima_fit(x, block):
-    """
-    Block-maxima GEV fit from a series
-
-    Formula: z_i = max over block i; fit GEV via MLE
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    block : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: mu, sigma, xi, blocks
-
-    References
-    ----------
-    Coles (2001) §3
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Block-maxima GEV fit from a series"})
+def evt_block_maxima_fit(x, block_size):
+    """Block-maxima GEV fit (Coles 2001 sec. 3.1 + 3.3.2) returning
+    the parameter triple and the block maxima."""
+    xs = _ev._flat(x)
+    b = int(block_size)
+    if b < 1 or len(xs) < 2 * b:
+        raise ValueError("need at least two full blocks")
+    maxima = [max(xs[i:i + b]) for i in range(0, len(xs) - b + 1, b)]
+    f = _ev.gev_mle(maxima)
+    res = RichResult(payload={"mu": f["mu"], "sigma": f["sigma"],
+                              "xi": f["xi"], "blocks": maxima,
+                              "ll": f["loglik"],
+                              "method": "block maxima + GEV MLE (Coles 2001 sec. 3.1, 3.3)"})
+    return with_describe_pointer(res, "evblockm")
 
 
 def cheatsheet():

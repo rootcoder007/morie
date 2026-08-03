@@ -1,26 +1,19 @@
 """Tests for evgevl.evt_gev_loglik."""
-
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.evgevl import evt_gev_loglik
 
 
-def test_evgevl_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_gev_loglik(x, mu, sigma, xi)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_gumbel_closed_form():
+    # xi = 0: ll = -n log s - sum t - sum exp(-t) (Coles eq. 3.9)
+    x = [0.5, 1.0, 2.0]
+    mu, s = 1.0, 2.0
+    want = sum(-math.log(s) - (v - mu) / s - math.exp(-(v - mu) / s)
+               for v in x)
+    assert abs(evt_gev_loglik(x, mu, s, 0.0)["ll"] - want) < 1e-12
 
 
-def test_evgevl_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_gev_loglik(x, mu, sigma, xi)
-    assert isinstance(result, dict)
+def test_outside_support_is_minus_inf():
+    # xi = 1: support x > mu - sigma
+    r = evt_gev_loglik([-5.0], 0.0, 1.0, 1.0)
+    assert r["ll"] == float("-inf")

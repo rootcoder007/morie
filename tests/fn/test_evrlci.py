@@ -1,28 +1,12 @@
 """Tests for evrlci.evt_return_level_ci."""
-
-from morie.fn import _array_core as np
-
+from morie.fn.evgevs import evt_gev_sample
 from morie.fn.evrlci import evt_return_level_ci
 
 
-def test_evrlci_basic():
-    """Test basic functionality."""
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    Sigma_hat = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = evt_return_level_ci(mu, sigma, xi, Sigma_hat, T)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_evrlci_edge():
-    """Test edge cases."""
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    Sigma_hat = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = evt_return_level_ci(mu, sigma, xi, Sigma_hat, T)
-    assert isinstance(result, dict)
+def test_ci_brackets_truth():
+    from morie.fn._evt_core import gev_return_level
+    x = evt_gev_sample(1500, 10.0, 2.0, 0.1, seed=3)["x"]
+    r = evt_return_level_ci(x, 50)
+    true_z = gev_return_level(50, 10.0, 2.0, 0.1)
+    assert r["ci_lo"] < r["z_T"] < r["ci_hi"]
+    assert r["ci_lo"] < true_z < r["ci_hi"]

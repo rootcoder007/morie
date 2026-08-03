@@ -1,47 +1,29 @@
-"""T-period return level under POT/GPD."""
+# morie.fn -- function file (rootcoder007/morie)
+"""T-period return level under POT/GPD.
+
+Implements eq. (4.12)-(4.13) of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["evt_return_level_pot"]
 
 
-def evt_return_level_pot(u, sigma, xi, zeta_u, n_y, T):
-    """
-    T-period return level under POT/GPD
-
-    Formula: z_T = u + (σ/ξ)((Tnζ_u)^{ξ}-1)
-
-    Parameters
-    ----------
-    u : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    zeta_u : array-like
-        Input data.
-    n_y : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: z_T
-
-    References
-    ----------
-    Coles (2001)
-    """
-    u = np.atleast_1d(np.asarray(u, dtype=float))
-    n = len(u)
-    result = float(np.mean(u))
-    se = float(np.std(u, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "T-period return level under POT/GPD"})
+def evt_return_level_pot(u, sigma, xi, zeta_u, m):
+    """m-observation POT return level
+    x_m = u + (sigma/xi)[(m zeta_u)^xi - 1] where zeta_u = P(X > u)
+    (Coles 2001 eq. 4.12-4.13; log form as xi -> 0)."""
+    z = _ev.pot_return_level(float(m), float(u), float(sigma),
+                             float(xi), float(zeta_u))
+    res = RichResult(payload={"z_T": float(z), "m": float(m),
+                              "u": float(u), "zeta_u": float(zeta_u),
+                              "method": "POT return level (Coles 2001 eq. 4.13)"})
+    return with_describe_pointer(res, "evrlpot")
 
 
 def cheatsheet():

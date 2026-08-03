@@ -1,43 +1,29 @@
-"""GEV quantile (return-level) function."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GEV quantile (return-level) function.
+
+Implements eq. (3.4) of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["evt_gev_quantile"]
 
 
 def evt_gev_quantile(p, mu, sigma, xi):
-    """
-    GEV quantile (return-level) function
-
-    Formula: x_p = μ - (σ/ξ)(1 - (-log p)^{-ξ})
-
-    Parameters
-    ----------
-    p : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: x_p
-
-    References
-    ----------
-    Coles (2001)
-    """
-    p = np.atleast_1d(np.asarray(p, dtype=float))
-    n = len(p)
-    result = float(np.mean(p))
-    se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GEV quantile (return-level) function"})
+    """GEV quantile x_p = mu - (sigma/xi)[1 - (-log p)^(-xi)]
+    (Coles 2001 eq. 3.4 with p the non-exceedance probability)."""
+    ps = _ev._flat(p)
+    q = [_ev.gev_quantile(v, float(mu), float(sigma), float(xi))
+         for v in ps]
+    out = q[0] if len(q) == 1 else q
+    res = RichResult(payload={"x_p": out,
+                              "method": "GEV quantile (Coles 2001 eq. 3.4)"})
+    return with_describe_pointer(res, "evgevq")
 
 
 def cheatsheet():

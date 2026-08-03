@@ -1,22 +1,10 @@
 """Tests for evgpdm.evt_gpd_mle."""
-
-from morie.fn import _array_core as np
-
 from morie.fn.evgpdm import evt_gpd_mle
+from morie.fn.evgpds import evt_gpd_sample
 
 
-def test_evgpdm_basic():
-    """Test basic functionality."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    init = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_gpd_mle(y, init)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_evgpdm_edge():
-    """Test edge cases."""
-    y = np.random.default_rng(43).normal(0, 1, 100)
-    init = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_gpd_mle(y, init)
-    assert isinstance(result, dict)
+def test_parameter_recovery():
+    y = evt_gpd_sample(1500, 1.5, 0.25, seed=7)["y"]
+    f = evt_gpd_mle(y)
+    assert abs(f["sigma"] - 1.5) < 0.25
+    assert abs(f["xi"] - 0.25) < 0.1
