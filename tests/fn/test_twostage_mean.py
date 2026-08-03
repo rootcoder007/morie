@@ -1,22 +1,20 @@
-"""Tests for twostage_mean.twostage_mean."""
+"""Tests for morie.fn.twostage_mean.
 
-from morie.fn import _array_core as np
+Brus, D. J. (2022). Spatial Sampling with R, eq. (7.2).
+Inputs are chosen so the expected value is exact by hand:
+  zbarbar = (2+4+6+8)/4 = 5
+"""
 
-from morie.fn.twostage_mean import (
-    twostage_mean,
-)
+import pytest
 
-
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r7e2_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = twostage_mean(x)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+from morie.fn.twostage_mean import twostage_mean
 
 
-def test_the_r_series_dick_j_brus_spatial_sampling_with_r7e2_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    result = twostage_mean(x)
-    assert isinstance(result, dict)
+def test_twostage_mean_matches_the_book_equation():
+    r = twostage_mean([2.0, 4.0, 6.0, 8.0])
+    assert r["value"] == pytest.approx(5.0, abs=1e-12)
+
+
+def test_twostage_mean_is_unweighted_across_primary_units():
+    # eq (7.2) averages the PSU means, ignoring how many units each holds
+    assert twostage_mean([0.0, 10.0])["value"] == pytest.approx(5.0, abs=1e-12)
