@@ -795,6 +795,80 @@ $p = 10^{-8}$, $1-p$ rounds to $0.99999999$ and the tail recovered
 inside AS 241 is $9.99999993923\times10^{-9}$, an eight-digit loss worth
 about $10^{-9}$ in $\Phi^{-1}$. R's `qnorm` has the same limit.
 
+*Agreement with the reference implementation, not merely with
+ourselves.* Parity between the two arms shows they are the same
+program; it says nothing about whether that program is right. Each
+method is therefore also pinned to the implementation practitioners
+already trust --- Wilcox's own WRS code for the robust estimators,
+`spdep` and `spatialreg` for the spatial ones, `sandwich`, `lmtest`,
+`car`, `urca` and `MASS` for the regression toolkit. The reference is
+run on the same fixture and the two are compared at full double
+precision.
+
+| Method | Reference | Agreement |
+|:--|:--|:--|
+| Harrell--Davis quantile | `WRS::hd` | $1\times10^{-12}$ |
+| MOM / one-step $M$ | `WRS::mom`, `onestep` | $1\times10^{-12}$ |
+| Percentage-bend correlation | `WRS::pbcor` | $1\times10^{-12}$ |
+| Winsorised correlation | `WRS::wincor` | $1\times10^{-12}$ |
+| Yuen, independent and paired | `WRS::yuen`, `yuend` | $1\times10^{-12}$ |
+| Theil--Sen | `WRS::tsp1reg` | exact |
+| Cliff's $\delta$, interval | `WRS::cid` | $1\times10^{-12}$ |
+| Brunner--Munzel | `WRS::bmp` | $1\times10^{-12}$ |
+| Heteroscedastic one-way ANOVA | `WRS::t1way` | $1\times10^{-12}$ |
+| Brunner--Dette--Munk | `WRS::bdm` | $1\times10^{-12}$ |
+| Moran's $I$, both nulls | `spdep::moran.test` | exact |
+| Weights constants $S_0,S_1,S_2$ | `spdep::Szero` | exact |
+| Spatial two-stage least squares | `spatialreg::stsls` | exact |
+| Spatial lag, maximum likelihood | `spatialreg::lagsarlm` | $1\times10^{-8}$ |
+| Spatial error, maximum likelihood | `spatialreg::errorsarlm` | $1\times10^{-8}$ |
+| Generalised moments, spatial error | `spatialreg::GMerrorsar` | $2\times10^{-9}$ |
+| Ordinary least squares, full inference | `stats::lm` | $1\times10^{-12}$ |
+| HC0--HC3 robust errors | `sandwich::vcovHC` | $1\times10^{-14}$ |
+| Newey--West | `sandwich::NeweyWest` | $1\times10^{-13}$ |
+| Breusch--Pagan | `lmtest::bptest` | $1\times10^{-11}$ |
+| Durbin--Watson | `lmtest::dwtest` | $1\times10^{-13}$ |
+| Variance inflation | `car::vif` | $1\times10^{-12}$ |
+| Augmented Dickey--Fuller | `urca::ur.df` | exact |
+| Huber $M$-estimation | `MASS::rlm` | $4\times10^{-5}$ |
+
+Where the agreement is not exact the reason is known and stated rather
+than absorbed into a tolerance. The maximum-likelihood spatial models
+and the generalised-moments estimator differ only in the stopping rule
+of the optimiser: our golden-section search and R's `optimize` and
+`nlminb` land on the same optimum, and for `GMerrorsar` both sit at
+moment criterion $2.686596\times10^{-3}$. `MASS::rlm` stops at its
+default `acc` of $10^{-4}$ while our iteration continues to $10^{-6}$,
+so the $4\times10^{-5}$ gap is our estimate being the more converged of
+the two. Newey--West agrees to the last bits once the bandwidth is
+pinned; R selects it automatically, whereas the default here is Newey
+and West's own $\lfloor 4(n/100)^{2/9}\rfloor$, which is also
+`statsmodels`'.
+
+Two defects surfaced only because the comparison was made, and neither
+would have been visible from a passing test suite. The $F$ statistic's
+$p$-value was computed as $1 - I_x(d_1/2, d_2/2)$; for a well-fitting
+model the lower tail rounds to unity and the $p$-value collapses to
+exactly zero. R reported $1.53\times10^{-48}$ and morie reported $0$.
+Evaluating the upper tail directly, as $I_{d_2/(d_2+d_1F)}(d_2/2,
+d_1/2)$, recovers it. Separately, the Newey--West errors were wrong by
+precisely $\sqrt{n/(n-k)}$ --- `sandwich`'s finite-sample `adjust`,
+which defaults to true. A ratio that is exactly a known correction
+factor is a stronger diagnostic than any tolerance: it names the
+missing term.
+
+The same discipline caught a mistake in a published source. Chapter 15
+of @montesinos2022 gives the mean of the zero-altered Poisson as
+$(1-\theta)e^{-\mu}/(1-e^{-\mu})$, both in the displayed $E(Y)$ and in
+equation (15.3). The book contradicts itself three times on those two
+pages: its own probability mass function implies
+$(1-\theta)\mu/(1-e^{-\mu})$, its own variance on the following line
+subtracts the square of that quantity, and the estimating equation for
+$\mu$ on the next page is $\bar{Y}^{+} = \mu/(1-e^{-\mu})$. The printed
+form is not a count at all --- it decreases as $\mu$ grows. morie
+implements the internally consistent mean and pins it to a direct
+summation over the book's own mass function.
+
 *A last-bit disagreement can move a whole answer.* Two arms of the
 directional-variogram screen differed by $4.3\times10^{-3}$, which is
 far too large for rounding and far too small for a transcription error.

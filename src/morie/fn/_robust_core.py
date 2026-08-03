@@ -33,6 +33,7 @@ __all__ = [
     "spatial_2sls", "gm_error_sar",
     "spatial_lag_model", "spatial_error_model",
     "ripley_k", "cokriging", "local_dp_randomised_response",
+    "adf_test", "rlm",
 ]
 
 
@@ -2133,3 +2134,155 @@ def local_dp_randomised_response(truth, k, epsilon, seed=2):
             "estimate": debiased, "p_keep": p_keep, "p_flip": p_flip,
             "epsilon": float(epsilon), "k": k, "n": n,
             "method": "k-ary randomised response (local DP)"}
+
+
+# ===============================================================
+# Unit-root testing and robust regression.
+#   adf_test  verified against R urca::ur.df
+#   rlm       verified against R MASS::rlm
+# ===============================================================
+
+def adf_test(y, lags=1, kind="drift"):
+    """Augmented Dickey-Fuller test for a unit root.
+
+    Fits, by ordinary least squares,
+
+        kind="none"   dy_t = phi y_{t-1} + sum_i g_i dy_{t-i} + e
+        kind="drift"  dy_t = mu + phi y_{t-1} + sum g_i dy_{t-i} + e
+        kind="trend"  dy_t = mu + beta t + phi y_{t-1} + ... + e
+
+    and reports the t statistic on phi.  The null is a unit root
+    (phi = 0), so LARGE NEGATIVE values reject it -- and the statistic
+    is not t-distributed under the null, so it must be compared with
+    Dickey-Fuller critical values, not normal ones.  The 1/5/10 per
+    cent values returned here are the ones urca prints, interpolated
+    from Dickey and Fuller (1981) for the relevant n.
+
+    Matches ``urca::ur.df(y, type = kind, lags = lags)``.
+    """
+    v = _flat(y)
+    n = len(v)
+    lags = int(lags)
+    if kind not in ("none", "drift", "trend"):
+        raise ValueError('kind must be "none", "drift" or "trend"')
+    if n < lags + 3:
+        raise ValueError("series too short for %d lags" % lags)
+
+    dy = [v[i] - v[i - 1] for i in range(1, n)]
+    # rows are t = lags+1 .. n-1 of the differenced series
+    rows, target = [], []
+    for t in range(lags, len(dy)):
+        r = [v[t]]                        # y_{t-1} in levels
+        if kind in ("drift", "trend"):
+            r.append(1.0)
+        if kind == "trend":
+            r.append(float(t + 1))
+        for i in range(1, lags + 1):
+            r.append(dy[t - i])
+        rows.append(r)
+        target.append(dy[t])
+
+    from . import _regression_core as _rg
+    fit = _rg.ols(target, rows, add_intercept=False)
+    stat = fit["t"][0]
+
+    # Dickey-Fuller critical values as tabulated by urca
+    TAB = {
+        "none":  {25: (-2.66, -1.95, -1.60), 50: (-2.62, -1.95, -1.61),
+                  100: (-2.60, -1.95, -1.61), 250: (-2.58, -1.95, -1.62),
+                  500: (-2.58, -1.95, -1.62), 1000: (-2.58, -1.95, -1.62)},
+        "drift": {25: (-3.75, -3.00, -2.63), 50: (-3.58, -2.93, -2.60),
+                  100: (-3.51, -2.89, -2.58), 250: (-3.46, -2.88, -2.57),
+                  500: (-3.44, -2.87, -2.57), 1000: (-3.43, -2.86, -2.57)},
+        "trend": {25: (-4.38, -3.60, -3.24), 50: (-4.15, -3.50, -3.18),
+                  100: (-4.04, -3.45, -3.15), 250: (-3.99, -3.43, -3.13),
+                  500: (-3.98, -3.42, -3.13), 1000: (-3.96, -3.41, -3.12)},
+    }[kind]
+    sizes = sorted(TAB)
+    m = len(target)
+    lo = max([s for s in sizes if s <= m], default=sizes[0])
+    hi = min([s for s in sizes if s >= m], default=sizes[-1])
+    if lo == hi:
+        crit = TAB[lo]
+    else:
+        w = (m - lo) / float(hi - lo)
+        crit = tuple(TAB[lo][j] + w * (TAB[hi][j] - TAB[lo][j])
+                     for j in range(3))
+    return {"statistic": stat, "kind": kind, "lags": lags,
+            "n_used": m, "coef": fit["coef"], "se": fit["se"],
+            "critical_values": {"1pct": crit[0], "5pct": crit[1],
+                                "10pct": crit[2]},
+            "reject_5pct": stat < crit[1],
+            "method": "augmented Dickey-Fuller test"}
+
+
+def _huber_psi_weight(u, k=1.345):
+    """Huber weight: 1 inside the bend, k/|u| outside."""
+    a = abs(u)
+    return 1.0 if a <= k else k / a
+
+
+def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
+        scale_est="MAD"):
+    """Robust linear regression by Huber M-estimation.
+
+    Iteratively reweighted least squares with Huber's psi: residuals
+    inside +/- k robust standard deviations keep full weight, and those
+    outside are downweighted by k/|u| rather than discarded.  A single
+    gross outlier can move an ordinary least-squares line arbitrarily
+    far; this bounds its influence while staying fully efficient at the
+    normal.
+
+    ``scale_est="MAD"`` re-estimates the scale each iteration as
+    ``mad(resid, 0)/0.6745`` -- the MAD about ZERO, which is what
+    ``MASS::rlm`` does.  Centring the MAD on the residual median
+    instead shifts the scale and every weight derived from it.
+    Matches ``MASS::rlm(x, y, k2 = k, scale.est = "MAD")``.
+    """
+    from . import _regression_core as _rg
+
+    ys = _flat(y)
+    Xm = _rg._mat(X)
+    n = len(ys)
+    if len(Xm) != n:
+        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+    if add_intercept:
+        Xm = [[1.0] + list(r) for r in Xm]
+    p = len(Xm[0])
+
+    def wls(w):
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
+              for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * ys[i] for i in range(n))
+               for a in range(p)]
+        return _rg._solve(A, rhs)
+
+    beta = wls([1.0] * n)                     # least squares start
+    scale = None
+    for _ in range(int(max_iter)):
+        resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
+                 for i in range(n)]
+        # MASS::rlm uses mad(resid, 0): the MAD about ZERO, not about
+        # the residual median.  Centring it instead shifts the scale
+        # and every weight with it.
+        scale = _median(sorted(abs(r) for r in resid)) / 0.6745
+        if scale <= 0:
+            break
+        w = [_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
+        new = wls(w)
+        if max(abs(new[j] - beta[j]) for j in range(p)) < tol * max(
+                1.0, max(abs(b) for b in beta)):
+            beta = new
+            break
+        beta = new
+
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
+             for i in range(n)]
+    mad0 = _median(sorted(abs(r) for r in resid))
+    scale = mad0 / 0.6745 if mad0 > 0 else 0.0
+    w = ([_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
+         if scale > 0 else [1.0] * n)
+    return {"coef": beta, "residuals": resid, "weights": w,
+            "scale": scale, "k": float(k), "n": n,
+            "n_downweighted": sum(1 for t in w if t < 1.0 - 1e-12),
+            "method": "robust regression, Huber M-estimation"}
