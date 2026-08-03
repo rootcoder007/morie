@@ -1,46 +1,36 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Kullback-Leibler divergence formula used in consistency theory."""
+"""Kullback-Leibler divergence.
+
+Implements Definition 6.15 context (K(p0; p) = int p0 log(p0/p)) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_kl_diverge"]
 
 
-def ghosal_kl_diverge(x):
-    """
-    Kullback-Leibler divergence formula used in consistency theory
-
-    Formula: KL(P0,P) = integral log(p0/p) dP0
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 6 §6.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Kullback-Leibler divergence formula used in consistency theory",
-        }
-    )
+def ghosal_kl_diverge(p0, p):
+    """K(p0; p) = int log(p0/p) dP0 for discrete densities.
+    Keys: estimate."""
+    p0 = _bnp.normalize_weights(p0)
+    p = _bnp.normalize_weights(p)
+    kl = 0.0
+    for q, pi in zip(p0, p):
+        if q > 0:
+            if pi <= 0:
+                kl = float("inf")
+                break
+            kl += q * math.log(q / pi)
+    res = RichResult(payload={"estimate": kl,
+                              "nonnegative": kl >= -1e-15,
+                              "method": "KL divergence (GvdV 2017 sec. 6.4)"})
+    return with_describe_pointer(res, "gh_c6_7")
 
 
 def cheatsheet():
-    return "gh_c6_7: Kullback-Leibler divergence formula used in consistency theory"
+    return "gh_c6_7: Kullback-Leibler divergence"
