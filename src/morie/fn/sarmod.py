@@ -1,44 +1,32 @@
-"""Spatial autoregressive model (SAR/SLM)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Spatial lag (SAR/SLM) model by maximum likelihood.
 
-from . import _array_core as np
+Matches ``spatialreg::lagsarlm``.  Note the spatial regression
+functions live in *spatialreg*, not *spdep*, since spdep was split.
+"""
 
-from ._richresult import RichResult
+from . import _robust_core as _rc
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["spatial_lag_model"]
 
 
-def spatial_lag_model(y, X, W):
-    """
-    Spatial autoregressive model (SAR/SLM)
+def spatial_lag_model(y, X, W, add_intercept=True):
+    """y = rho W y + X beta + eps, fitted by maximum likelihood.
 
-    Formula: y = rho W y + X beta + eps
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    W : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Anselin (1988)
-    """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Spatial autoregressive model (SAR/SLM)"}
-    )
+    Ord's concentrated log-likelihood is maximised over rho alone;
+    beta and sigma^2 then follow in closed form.  Because W y is
+    correlated with the error, ordinary least squares on this model is
+    inconsistent -- use this or
+    :func:`morie.fn._robust_core.spatial_2sls`. Keys: estimate."""
+    r = _rc.spatial_lag_model(y, X, W, add_intercept=add_intercept)
+    res = RichResult(payload={"estimate": r["rho"], "rho": r["rho"],
+                              "beta": r["beta"], "sigma2": r["sigma2"],
+                              "loglik": r["loglik"],
+                              "residuals": r["residuals"],
+                              "method": r["method"]})
+    return with_describe_pointer(res, "sarmod")
 
 
 def cheatsheet():
-    return "sarmod: Spatial autoregressive model (SAR/SLM)"
+    return "sarmod: Spatial lag (SAR/SLM) model by maximum likelihood"

@@ -1,42 +1,32 @@
-"""Ripley's K function for point patterns."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ripley's K function for a planar point pattern.
 
-from . import _array_core as np
+Includes the isotropic edge correction, without which K is biased
+downwards near the window boundary.
+"""
 
-from ._richresult import RichResult
+from . import _robust_core as _rc
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ripley_k"]
 
 
-def ripley_k(coords, r_grid):
-    """
-    Ripley's K function for point patterns
+def ripley_k(coords, r_grid, area=None, edge_correction=True):
+    """K(r) = |A| n^-2 sum_i sum_{j != i} w_ij 1(d_ij <= r).
 
-    Formula: K(r) = lambda^-1 E[#points within r]
-
-    Parameters
-    ----------
-    coords : array-like
-        Input data.
-    r_grid : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ripley (1976)
-    """
-    coords = np.atleast_1d(np.asarray(coords, dtype=float))
-    n = len(coords)
-    result = float(np.mean(coords))
-    se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Ripley's K function for point patterns"}
-    )
+    Under complete spatial randomness K(r) = pi r^2, so K above that
+    indicates clustering and below it regularity.  ``L`` in the result
+    is the variance-stabilising sqrt(K/pi), which is flat under CSR and
+    easier to read. Keys: estimate."""
+    r = _rc.ripley_k(coords, r_grid, area=area,
+                     edge_correction=edge_correction)
+    res = RichResult(payload={"estimate": r["K"], "r": r["r"],
+                              "K": r["K"], "L": r["L"],
+                              "csr_K": r["csr_K"],
+                              "intensity": r["intensity"],
+                              "method": r["method"]})
+    return with_describe_pointer(res, "rkfunc")
 
 
 def cheatsheet():
-    return "rkfunc: Ripley's K function for point patterns"
+    return "rkfunc: Ripley's K function for a planar point pattern"

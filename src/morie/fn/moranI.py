@@ -1,67 +1,37 @@
-"""Moran's I asymptotic z-test."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Moran's I asymptotic z-test.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Verified against ``spdep::moran.test``; see
+:func:`morie.fn._robust_core.morans_i_test` for the two null
+variances (randomisation and normality) and which to prefer.
+"""
 
-from ._richresult import RichResult
+from . import _robust_core as _rc
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["morans_i_asymptotic_test"]
 
 
-def morans_i_asymptotic_test(x, W, cdf=None):
-    """
-    Moran's I asymptotic z-test
+def morans_i_asymptotic_test(x, W, cdf=None, randomisation=True,
+                            alternative="greater"):
+    """z = (I - E[I]) / sqrt(Var[I]) for Moran's I.
 
-    Formula: z = (I - E[I]) / sqrt(Var[I])
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    W : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Cliff & Ord (1981)
-    """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Moran's I asymptotic z-test"}
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Moran's I asymptotic z-test",
-        }
-    )
+    Under the null of no spatial autocorrelation E[I] = -1/(n-1).
+    ``randomisation=True`` conditions on the observed values and treats
+    only their arrangement as random, which is the honest null for
+    non-normal data; ``False`` uses the normality variance.  ``cdf`` is
+    accepted for backward compatibility and ignored -- the normal CDF
+    is always used. Keys: estimate."""
+    r = _rc.morans_i_test(x, W, randomisation=randomisation,
+                          alternative=alternative)
+    res = RichResult(payload={"estimate": r["statistic"],
+                              "statistic": r["statistic"],
+                              "moran_i": r["estimate"],
+                              "expectation": r["expectation"],
+                              "variance": r["variance"],
+                              "p_value": r["p_value"],
+                              "method": r["method"]})
+    return with_describe_pointer(res, "moranI")
 
 
 def cheatsheet():

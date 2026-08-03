@@ -1,46 +1,31 @@
-"""Co-kriging with secondary variable."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ordinary co-kriging with a secondary variable.
 
-from . import _array_core as np
+Solves the co-kriging system under both unbiasedness constraints.
+"""
 
-from ._richresult import RichResult
+from . import _robust_core as _rc
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["cokriging"]
 
 
-def cokriging(coords, z1, z2, s0, cross_vario):
-    """
-    Co-kriging with secondary variable
+def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
+    """Z1*(s0) = sum lambda_i Z1(s_i) + sum mu_j Z2(s_j).
 
-    Formula: Z*(s0) = sum lambda_i Z1(s_i) + sum mu_j Z2(s_j)
-
-    Parameters
-    ----------
-    coords : array-like
-        Input data.
-    z1 : array-like
-        Input data.
-    z2 : array-like
-        Input data.
-    s0 : array-like
-        Input data.
-    cross_vario : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Wackernagel (2003) §22
-    """
-    coords = np.atleast_1d(np.asarray(coords, dtype=float))
-    n = len(coords)
-    result = float(np.mean(coords))
-    se = float(np.std(coords, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Co-kriging with secondary variable"})
+    The covariate earns its place only through the cross-variogram:
+    set it to zero and the mu weights vanish, leaving ordinary kriging
+    on Z1.  Constraints are sum lambda = 1 and sum mu = 0, which is
+    what keeps the predictor unbiased. Keys: estimate."""
+    r = _rc.cokriging(coords, z1, z2, s0, cross_vario=cross_vario,
+                      model=model)
+    res = RichResult(payload={"estimate": r["prediction"],
+                              "prediction": r["prediction"],
+                              "variance": r["variance"],
+                              "lambda": r["lambda"], "mu": r["mu"],
+                              "method": r["method"]})
+    return with_describe_pointer(res, "cokrig")
 
 
 def cheatsheet():
-    return "cokrig: Co-kriging with secondary variable"
+    return "cokrig: Ordinary co-kriging with a secondary variable"
