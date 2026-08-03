@@ -1,26 +1,11 @@
 """Tests for evrl.evt_return_level."""
-
-from morie.fn import _array_core as np
-
+from morie.fn.evgevc import evt_gev_cdf
 from morie.fn.evrl import evt_return_level
 
 
-def test_evrl_basic():
-    """Test basic functionality."""
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = evt_return_level(mu, sigma, xi, T)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
-
-
-def test_evrl_edge():
-    """Test edge cases."""
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    T = np.random.default_rng(43).integers(0, 2, 100)
-    result = evt_return_level(mu, sigma, xi, T)
-    assert isinstance(result, dict)
+def test_solves_return_period_equation():
+    # z_T is the level with exceedance probability exactly 1/T
+    for T in (10, 100, 1000):
+        z = evt_return_level(10.0, 2.0, 0.2, T)["z_T"]
+        F = evt_gev_cdf(z, 10.0, 2.0, 0.2)["F"]
+        assert abs((1.0 - F) - 1.0 / T) < 1e-10

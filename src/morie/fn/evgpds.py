@@ -1,41 +1,26 @@
-"""Sample from a GPD."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample from a GPD.
+
+Implements eq. (4.2) inverted (inverse-CDF sampling) of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["evt_gpd_sample"]
 
 
-def evt_gpd_sample(sigma, xi, n):
-    """
-    Sample from a GPD
-
-    Formula: y = (σ/ξ)(U^{-ξ} - 1), U~Unif
-
-    Parameters
-    ----------
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y
-
-    References
-    ----------
-    Coles (2001)
-    """
-    sigma = np.atleast_1d(np.asarray(sigma, dtype=float))
-    n = len(sigma)
-    result = float(np.mean(sigma))
-    se = float(np.std(sigma, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sample from a GPD"})
+def evt_gpd_sample(n, sigma, xi, seed=42):
+    """Inverse-CDF GPD sampling of threshold excesses."""
+    rng = np.random.default_rng(seed)
+    y = _ev.gpd_sample(int(n), float(sigma), float(xi), rng)
+    res = RichResult(payload={"y": y, "n": int(n),
+                              "method": "GPD inverse-CDF sampler (Coles 2001 eq. 4.2)"})
+    return with_describe_pointer(res, "evgpds")
 
 
 def cheatsheet():
