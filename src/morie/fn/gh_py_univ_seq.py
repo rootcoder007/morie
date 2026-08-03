@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""PY universal sequence via GEM distribution: residual allocation from PY."""
+"""PY universal stick sequence.
+
+Implements sec. 14.4 (V_k law) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_py_universal_sequence"]
 
 
-def ghosal_py_universal_sequence(x):
-    """
-    PY universal sequence via GEM distribution: residual allocation from PY
-
-    Formula: (V_k) iid Beta(1-d, theta+k*d) for PY(d,theta,G0), V_0=1
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 14 §14.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PY universal sequence via GEM distribution: residual allocation from PY",
-        }
-    )
+def ghosal_py_universal_sequence(d=0.4, theta=2.0, k_list=(1, 5, 20)):
+    """(V_k) independent Beta(1 - d, theta + k d): the mean
+    E V_k = (1-d)/(1 + theta + k d - d) decreases in k -- late sticks
+    take smaller fractions, producing the PY power law (sec. 14.4).
+    Keys: estimate."""
+    means = [(1.0 - d) / (1.0 - d + theta + k * d) for k in k_list]
+    res = RichResult(payload={"estimate": means[0],
+                              "mean_by_k": means,
+                              "decreasing": all(
+                                  means[i + 1] < means[i]
+                                  for i in range(len(means) - 1)),
+                              "method": "PY stick law (GvdV 2017 sec. 14.4)"})
+    return with_describe_pointer(res, "gh_py_univ_seq")
 
 
 def cheatsheet():
-    return "gh_py_univ_seq: PY universal sequence via GEM distribution: residual allocation from PY"
+    return "gh_py_univ_seq: PY universal stick sequence"

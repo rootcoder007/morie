@@ -1,46 +1,44 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function."""
+"""Beta-process definition.
+
+Implements sec. 13.3 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_beta_proc_def"]
 
 
-def ghosal_beta_proc_def(x):
-    """
-    Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function
-
-    Formula: BP(c, H0): increments dH(t) ~ Be(c(t)*dH0(t), c(t)*(1-dH0(t))) ind.
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 13 §13.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function",
-        }
-    )
+def ghosal_beta_proc_def(grid_t, c=2.0, Lambda0_rate=1.0, seed=42):
+    """BP(c, H0): increments dH(t) ~ Be(c dH0(t), c(1 - dH0(t)))
+    independently (sec. 13.3): simulates the cumulative hazard on a
+    grid with H0 the unit-exponential cumulative hazard.
+    Keys: estimate."""
+    ts = _bnp._flat(grid_t)
+    rng = np.random.default_rng(seed)
+    H = 0.0
+    path = []
+    prev = 0.0
+    for t in ts:
+        dH0 = Lambda0_rate * (t - prev)
+        a = max(c * dH0, 1e-8)
+        b = max(c * (1.0 - dH0), 1e-8)
+        H += float(rng.beta(a, b))
+        path.append(H)
+        prev = t
+    res = RichResult(payload={"estimate": path[-1],
+                              "cum_hazard": path,
+                              "nondecreasing": all(
+                                  path[i + 1] >= path[i] - 1e-12
+                                  for i in range(len(path) - 1)),
+                              "method": "beta process (GvdV 2017 sec. 13.3)"})
+    return with_describe_pointer(res, "gh_c13_3")
 
 
 def cheatsheet():
-    return "gh_c13_3: Beta process prior definition: H ~ BP(c, H0) for cumulative hazard function"
+    return "gh_c13_3: Beta-process definition"

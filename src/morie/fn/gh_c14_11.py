@@ -1,46 +1,49 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""PY power-law cluster growth: E[K_n] ~ C * n^d as n->infty for d in (0,1)."""
+"""Pitman-Yor power law.
+
+Implements sec. 14.4 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_py_powerlaw"]
 
 
-def ghosal_py_powerlaw(x):
-    """
-    PY power-law cluster growth: E[K_n] ~ C * n^d as n->infty for d in (0,1)
-
-    Formula: E[K_n] ~ Gamma(theta+1)/Gamma(theta+d) * n^d / Gamma(1-d)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 14 §14.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PY power-law cluster growth: E[K_n] ~ C * n^d as n->infty for d in (0,1)",
-        }
-    )
+def ghosal_py_powerlaw(n=5000, d=0.5, theta=1.0, seed=42):
+    """E K_n ~ (Gamma(theta+1)/(d Gamma(theta+d))) n^d: PY yields a
+    POWER LAW in the number of distinct species, unlike the DP's
+    log n (sec. 14.4). Simulated K_n against the constant * n^d law.
+    Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    K = 0
+    sizes = []
+    for i in range(int(n)):
+        u = float(rng.uniform(0, 1)) * (theta + i)
+        if u < theta + K * d:
+            K += 1
+            sizes.append(1.0 - d)
+        else:
+            acc = theta + K * d
+            for t in range(len(sizes)):
+                acc += sizes[t]
+                if u < acc:
+                    sizes[t] += 1.0
+                    break
+            else:
+                sizes[-1] += 1.0
+    theory = math.gamma(theta + 1.0) / (d * math.gamma(theta + d)) \
+        * float(n) ** d
+    res = RichResult(payload={"estimate": float(K),
+                              "theory": theory,
+                              "ratio": K / theory,
+                              "method": "PY power law (GvdV 2017 sec. 14.4)"})
+    return with_describe_pointer(res, "gh_c14_11")
 
 
 def cheatsheet():
-    return "gh_c14_11: PY power-law cluster growth: E[K_n] ~ C * n^d as n->infty for d in (0,1)"
+    return "gh_c14_11: Pitman-Yor power law"

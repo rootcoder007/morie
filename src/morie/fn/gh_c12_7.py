@@ -1,46 +1,40 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM."""
+"""Strict semiparametric BvM conditions.
+
+Implements sec. 12.3.2 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_strict_sbvm"]
 
 
-def ghosal_strict_sbvm(x):
-    """
-    Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM
-
-    Formula: Conditions on prior for exact semiparametric BvM to hold at true theta_0
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 12 §12.3.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM",
-        }
-    )
+def ghosal_strict_sbvm(prior_mass_ok=True, lan_remainder=0.01,
+                       change_of_measure_gap=0.02, tol=0.05):
+    """The exact semiparametric BvM needs (i) prior mass around the
+    least-favorable direction, (ii) LAN remainder -> 0, (iii) a
+    change-of-measure (prior invariance) condition (sec. 12.3.2).
+    Aggregates the three checks. Keys: estimate."""
+    ok = bool(prior_mass_ok) and float(lan_remainder) < tol \
+        and float(change_of_measure_gap) < tol
+    score = (0.0 if not prior_mass_ok else 1.0) \
+        - float(lan_remainder) - float(change_of_measure_gap)
+    res = RichResult(payload={"estimate": score,
+                              "bvm_holds": ok,
+                              "conditions": [bool(prior_mass_ok),
+                                             float(lan_remainder)
+                                             < tol,
+                                             float(
+                                                 change_of_measure_gap)
+                                             < tol],
+                              "method": "strict semiparametric BvM (GvdV 2017 sec. 12.3.2)"})
+    return with_describe_pointer(res, "gh_c12_7")
 
 
 def cheatsheet():
-    return "gh_c12_7: Strict semiparametric BvM: Castillo-Rousseau condition for exact BvM"
+    return "gh_c12_7: Strict semiparametric BvM conditions"
