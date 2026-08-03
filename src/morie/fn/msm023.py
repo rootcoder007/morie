@@ -1,34 +1,16 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Genotype-by-environment BLUP model.
+"""eq. (5.4) p.150, re-exported from :mod:`morie.fn.msm018`.
 
-Implements eq. (5.4) p.150 of Montesinos López, Montesinos López & Crossa
-(2022), *Multivariate Statistical Machine Learning Methods for Genomic
-Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+The stub generator stamped several extracted page
+fragments with this same function name, so the
+implementation lives once in msm018 and this module re-exports
+it.  Calling either path runs the same code.
 """
 
-import math
-
-from . import _gp_core as _gp
-from ._richresult import RichResult, with_describe_pointer
+from .msm018 import mvsml_linear_mixed_models_eq_5_4
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_4"]
 
 
-def mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e=1.0):
-    """Y = 1_n mu + X_E beta_E + Z_L b_1 + Z_EL b_2 + eps (eq. 5.4):
-    the G x E BLUP model, with b_1 ~ N_J(0, sigma2_g G) the genotypic
-    effects and b_2 ~ N(0, Sigma_E (x) G) the genotype-by-environment
-    interaction, Sigma_E the genetic covariance between environments.
-    Keys: estimate."""
-    f = _gp.gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E,
-                           sigma2_e)
-    res = RichResult(payload={"estimate": f["beta"][0],
-                              "beta": f["beta"],
-                              "b_lines": f["b_lines"],
-                              "b_gxe": f["b_gxe"],
-                              "method": "G x E BLUP model (MVSML 2022 eq. 5.4)"})
-    return with_describe_pointer(res, "msm023")
-
-
 def cheatsheet():
-    return "msm023: Genotype-by-environment BLUP model"
+    return "msm023: see msm018"
