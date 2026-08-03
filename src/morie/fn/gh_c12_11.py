@@ -1,46 +1,43 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Credible set frequentist coverage: BvM implies credible sets are confidence sets."""
+"""Credible-set frequentist coverage.
+
+Implements sec. 12.5 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_cred_set_cov"]
 
 
-def ghosal_cred_set_cov(x):
-    """
-    Credible set frequentist coverage: BvM implies credible sets are confidence sets
-
-    Formula: Pi_n(theta: ||theta-theta_0||<=r_n | X^n) -> 1-alpha => P0^n-prob -> 1-alpha
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 12 §12.5
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Credible set frequentist coverage: BvM implies credible sets are confidence sets",
-        }
-    )
+def ghosal_cred_set_cov(theta0=0.5, n=400, level=0.9, n_sim=400,
+                        seed=42):
+    """When BvM holds, (1-alpha)-credible sets have frequentist
+    coverage -> 1-alpha (sec. 12.5). Beta-Bernoulli central credible
+    intervals via normal approximation to the Beta; empirical
+    coverage near the level. Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    z = 1.6448536269514722 if abs(level - 0.9) < 1e-9 else 1.96
+    hits = 0
+    for _ in range(n_sim):
+        S = sum(1 for _ in range(n)
+                if float(rng.uniform(0, 1)) < theta0)
+        a, b = 1.0 + S, 1.0 + n - S
+        m = a / (a + b)
+        sd = math.sqrt(a * b / ((a + b) ** 2 * (a + b + 1)))
+        if m - z * sd <= theta0 <= m + z * sd:
+            hits += 1
+    cov = hits / n_sim
+    res = RichResult(payload={"estimate": cov,
+                              "nominal": level,
+                              "gap": abs(cov - level),
+                              "method": "credible-set coverage (GvdV 2017 sec. 12.5)"})
+    return with_describe_pointer(res, "gh_c12_11")
 
 
 def cheatsheet():
-    return "gh_c12_11: Credible set frequentist coverage: BvM implies credible sets are confidence sets"
+    return "gh_c12_11: Credible-set frequentist coverage"

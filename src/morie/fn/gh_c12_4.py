@@ -1,46 +1,40 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Semiparametric BvM for smooth functionals: efficient posterior centering."""
+"""Semiparametric BvM for functionals.
+
+Implements sec. 12.3 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_semipara_bvm"]
 
 
-def ghosal_semipara_bvm(x):
-    """
-    Semiparametric BvM for smooth functionals: efficient posterior centering
-
-    Formula: sqrt(n)(psi(G_n) - psi(F_0)) -> N(0, sigma_eff^2) with sigma_eff^2 = Cramer-Rao lb
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 12 §12.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Semiparametric BvM for smooth functionals: efficient posterior centering",
-        }
-    )
+def ghosal_semipara_bvm(n=2000, alpha=2.0, n_sim=400, seed=42):
+    """sqrt(n)(psi(G_post) - psi(F0)) -> N(0, sigma_eff^2) for a
+    smooth functional (sec. 12.3): psi = mean of a uniform truth;
+    the DP posterior-mean functional attains the efficient variance
+    var(X) = 1/12. Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    devs = []
+    for _ in range(n_sim):
+        s = 0.0
+        for _ in range(n):
+            s += float(rng.uniform(0, 1))
+        post_mean = (alpha * 0.5 + s) / (alpha + n)
+        devs.append(math.sqrt(n) * (post_mean - 0.5))
+    m = sum(devs) / n_sim
+    v = sum((d - m) ** 2 for d in devs) / (n_sim - 1)
+    res = RichResult(payload={"estimate": v,
+                              "efficient_variance": 1.0 / 12.0,
+                              "gap": abs(v - 1.0 / 12.0),
+                              "method": "semiparametric BvM (GvdV 2017 sec. 12.3)"})
+    return with_describe_pointer(res, "gh_c12_4")
 
 
 def cheatsheet():
-    return "gh_c12_4: Semiparametric BvM for smooth functionals: efficient posterior centering"
+    return "gh_c12_4: Semiparametric BvM for functionals"

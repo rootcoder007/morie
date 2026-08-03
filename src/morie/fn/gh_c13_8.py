@@ -1,46 +1,40 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Neutral-to-the-right process: F(t) = 1 - prod_{s<=t}(1-dM(s)) from NTR measure M."""
+"""Neutral-to-the-right processes.
+
+Implements sec. 13.4 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ntr_def"]
 
 
-def ghosal_ntr_def(x):
-    """
-    Neutral-to-the-right process: F(t) = 1 - prod_{s<=t}(1-dM(s)) from NTR measure M
-
-    Formula: F(t) = 1 - exp(-integral_0^t log(1-u) dN(u,s)), M ~ NTR Levy process
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 13 §13.4
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Neutral-to-the-right process: F(t) = 1 - prod_{s<=t}(1-dM(s)) from NTR measure M",
-        }
-    )
+def ghosal_ntr_def(increments, seed=42):
+    """F(t) = 1 - exp(-M(t)) for M an independent-increment process
+    (sec. 13.4): NTR means the relative survival fractions over
+    disjoint intervals are independent. Builds F from supplied
+    positive increments of M. Keys: estimate."""
+    inc = _bnp._flat(increments)
+    if any(v < 0 for v in inc):
+        raise ValueError("increments must be nonnegative")
+    M = 0.0
+    F = []
+    for v in inc:
+        M += v
+        F.append(1.0 - math.exp(-M))
+    res = RichResult(payload={"estimate": F[-1],
+                              "F_path": F,
+                              "nondecreasing": all(
+                                  F[i + 1] >= F[i] - 1e-15
+                                  for i in range(len(F) - 1)),
+                              "method": "NTR construction (GvdV 2017 sec. 13.4)"})
+    return with_describe_pointer(res, "gh_c13_8")
 
 
 def cheatsheet():
-    return "gh_c13_8: Neutral-to-the-right process: F(t) = 1 - prod_{s<=t}(1-dM(s)) from NTR measure M"
+    return "gh_c13_8: Neutral-to-the-right processes"

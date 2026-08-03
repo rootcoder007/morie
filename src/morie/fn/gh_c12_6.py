@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Semiparametric efficiency: BvM variance equals efficient Cramer-Rao lower bound."""
+"""Semiparametric efficiency bound.
+
+Implements sec. 12.3 (Cramer-Rao form) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_semipara_eff"]
 
 
-def ghosal_semipara_eff(x):
-    """
-    Semiparametric efficiency: BvM variance equals efficient Cramer-Rao lower bound
-
-    Formula: var >= (nabla psi)^T I_{theta,eta}^{-1} nabla psi (semiparametric Cramer-Rao)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 12 §12.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Semiparametric efficiency: BvM variance equals efficient Cramer-Rao lower bound",
-        }
-    )
+def ghosal_semipara_eff(grad_psi, info_matrix):
+    """var >= (nabla psi)' I^{-1} (nabla psi): the semiparametric
+    Cramer-Rao lower bound (sec. 12.3). Solves I x = grad and forms
+    the quadratic. Keys: estimate."""
+    g = _bnp._flat(grad_psi)
+    I = [[float(v) for v in row] for row in info_matrix]
+    x = np.linalg.solve(np.marr(I), np.marr(g))
+    xl = [float(v) for v in x._flat()]
+    bound = sum(a * b for a, b in zip(g, xl))
+    res = RichResult(payload={"estimate": bound,
+                              "positive": bound > 0,
+                              "method": "semiparametric efficiency bound (GvdV 2017 sec. 12.3)"})
+    return with_describe_pointer(res, "gh_c12_6")
 
 
 def cheatsheet():
-    return "gh_c12_6: Semiparametric efficiency: BvM variance equals efficient Cramer-Rao lower bound"
+    return "gh_c12_6: Semiparametric efficiency bound"
