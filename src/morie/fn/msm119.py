@@ -1,55 +1,32 @@
-r"""Numbered display equation (7.10) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Lasso-penalized multinomial log-likelihood.
 
-from . import _array_core as np
+Implements eq. (7.10) p.227 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_10"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_10(Like, the, penalized, logistic, regression, studied):
-    r"""
-    Numbered display equation (7.10) from MVSML chapter 7.
-
-    Formula: . Like the penalized logistic regression studied in Chap. 3, the more j=1 \betacj common approach for choosing the “optimal” regularization parameter \lambda in the penalized multinomial regression model in (7.7) is by using a k-fold cross-validation strategy with misclassiﬁcation error as metrics. This will be used here. For more details, see Friedman et al. (2010). It is important to point out that the tuning parameter \lambda used in glmnet is equal to the one used in the penalized log-likelihood (7.7) and
-
-    Parameters
-    ----------
-    Like : array-like
-        Input data.
-    the : array-like
-        Input data.
-    penalized : array-like
-        Input data.
-    logistic : array-like
-        Input data.
-    regression : array-like
-        Input data.
-    studied : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.10) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    r"""
-    Like = np.atleast_1d(np.asarray(Like, dtype=float))
-    n = len(Like)
-    result = float(np.mean(Like))
-    se = float(np.std(Like, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.10) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_10(X, y, beta0, beta, lam=1.0, baseline_last=True):
+    """l_p(beta; y) = l(beta; y) - lambda sum_c sum_j |beta_cj|
+    (eq. 7.10): the same block updating as eq. (7.9) but with the
+    quadratic penalty replaced by an L1 one. Keys: estimate."""
+    f = _gp.penalized_multinomial_loglik(X, y, beta0, beta, lam,
+                                         penalty="lasso",
+                                         baseline_last=baseline_last)
+    res = RichResult(payload={"estimate": f["penalized_loglik"],
+                              "loglik": f["loglik"],
+                              "penalty": f["penalty"],
+                              "method": "lasso-penalized multinomial log-likelihood (MVSML 2022 eq. 7.10)"})
+    return with_describe_pointer(res, "msm119")
 
 
 def cheatsheet():
-    return "msm119: Numbered display equation (7.10) from MVSML chapter 7."
+    return "msm119: Lasso-penalized multinomial log-likelihood"

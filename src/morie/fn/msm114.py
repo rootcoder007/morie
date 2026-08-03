@@ -1,55 +1,33 @@
-"""Numbered display equation (7.7) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Penalized multinomial log-likelihood (ridge).
 
-from . import _array_core as np
+Implements eq. (7.7) p.226 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_7"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_7(T, D, an, identity, where, X):
-    """
-    Numbered display equation (7.7) from MVSML chapter 7.
-
-    Formula: T, and D is an identity where X = [1n X], Wc = Diag(w1c, . . ., wnc), y = y 1, . . . , y n matrix of dimension ( p + 1) + ( p + 1) except that in the ﬁrst entry we have the value of 0 instead of 1. However, in the context of p  n, a non-prohibited optimization of (7.9) is achieved by using coordinate descent methods as done in the glmnet package and commented in Chap. 3.6.2. For other penalization terms, a very similar algorithm to the one described before can be used. For example, for Lasso penalty, the penalized likelihood
-
-    Parameters
-    ----------
-    T : array-like
-        Input data.
-    D : array-like
-        Input data.
-    an : array-like
-        Input data.
-    identity : array-like
-        Input data.
-    where : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.7) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    T = np.atleast_1d(np.asarray(T, dtype=float))
-    n = len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.7) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_7(X, y, beta0, beta, lam=1.0, baseline_last=True):
+    """l_p(beta; y) = l(beta; y) - lambda sum_c beta_c'beta_c
+    (eq. 7.7): the quadratic-regularized multinomial likelihood, which
+    removes the need for the identifiability constraint on the slopes
+    (p.226).  Intercepts are never penalized. Keys: estimate."""
+    f = _gp.penalized_multinomial_loglik(X, y, beta0, beta, lam,
+                                         penalty="ridge",
+                                         baseline_last=baseline_last)
+    res = RichResult(payload={"estimate": f["penalized_loglik"],
+                              "loglik": f["loglik"],
+                              "penalty": f["penalty"],
+                              "method": "ridge-penalized multinomial log-likelihood (MVSML 2022 eq. 7.7)"})
+    return with_describe_pointer(res, "msm114")
 
 
 def cheatsheet():
-    return "msm114: Numbered display equation (7.7) from MVSML chapter 7."
+    return "msm114: Penalized multinomial log-likelihood (ridge)"

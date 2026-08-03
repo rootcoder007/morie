@@ -1,55 +1,32 @@
-"""Numbered display equation (7.3) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ordinal latent predictor with environment, markers and interaction.
 
-from . import _array_core as np
+Implements eq. (7.3) p.219 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_3"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_3(L, XE, E, ZLg, e, The):
-    """
-    Numbered display equation (7.3) from MVSML chapter 7.
-
-    Formula: (0.03) (0.1) (0.03) (0.1) L = XE\betaE + ZLg + e (7.5) The results are presented in Table 7.3 with the BS and PCCC metrics obtained in each partition of the random CV strategy. From this we can appreciate that the best performance with both metrics was obtained with the model that considered only the genetic effects (M3;
-
-    Parameters
-    ----------
-    L : array-like
-        Input data.
-    XE : array-like
-        Input data.
-    E : array-like
-        Input data.
-    ZLg : array-like
-        Input data.
-    e : array-like
-        Input data.
-    The : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.3) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    L = np.atleast_1d(np.asarray(L, dtype=float))
-    n = len(L)
-    result = float(np.mean(L))
-    se = float(np.std(L, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.3) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_3(n, X_E=None, X=None, X_EM=None):
+    """L = X_E beta_E + X beta + X_EM beta_EM + eps (eq. 7.3): the
+    ordinal latent variable with a flat prior on the environment
+    effects and a BRR/BayesA/BayesB/BayesC/BL prior on the marker and
+    marker-by-environment effects (p.219). Keys: estimate."""
+    f = _gp.ordinal_latent_predictor(int(n), X_E=X_E, X=X,
+                                     X_EM=X_EM)
+    res = RichResult(payload={"estimate": float(f["n_columns"]),
+                              "design": f["design"],
+                              "widths": f["widths"],
+                              "method": "ordinal latent predictor (MVSML 2022 eq. 7.3)"})
+    return with_describe_pointer(res, "msm103")
 
 
 def cheatsheet():
-    return "msm103: Numbered display equation (7.3) from MVSML chapter 7."
+    return "msm103: Ordinal latent predictor with environment, markers and interaction"
