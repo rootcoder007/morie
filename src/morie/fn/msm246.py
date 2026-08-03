@@ -1,55 +1,41 @@
-r"""Numbered display equation (10.10) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Gradient-descent weight change.
 
-from . import _array_core as np
+Implements eq. (10.10)-(10.11) p.410 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_10"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_10", "mvsml_ann_gradient"]
 
 
-def mvsml_reproducing_kernel_eq_10_10(nding, the, optimal, weights, biases, This):
-    r"""
-    Numbered display equation (10.10) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_10(X, y, W, activations=None, eta=0.1):
+    """Delta w_jk^(l) = -eta dE/dw_jk^(l) (eq. 10.10), with the chain
+    rule pieces dE/dy-hat = -(y - y-hat) and dy-hat/dz = g^(l)'(z)
+    from (10.11).  Moving the weights down the slope of the loss is
+    the whole intuition behind backpropagation. Keys: estimate."""
+    g = _gp.ann_backprop_gradients(X, y, W, activations)
+    upd = [[[-eta * v for v in row] for row in G]
+           for G in g["gradients"]]
+    res = RichResult(payload={"estimate": g["loss"],
+                              "gradients": g["gradients"],
+                              "weight_changes": upd,
+                              "loss": g["loss"],
+                              "method": "gradient-descent weight change (MVSML 2022 eq. 10.10-10.11)"})
+    return with_describe_pointer(res, "msm246")
 
-    Formula: backpropagation for ﬁnding the optimal weights and biases. This method consists of evaluating the partial derivatives of the loss function with regard to the weights and then moving these values down the slope, until the score of the loss function no longer decreases. For example, if we make the variation of the weights proportional to the negative of the gradient, the change in the weights in the right direction is reached. The gradient of the loss function given in (10.5) with respect to the weights connecting the hidden units to the output units (w l( ) jk ) is given by jk = -\eta \partial E \Deltaw l( )
 
-    Parameters
-    ----------
-    nding : array-like
-        Input data.
-    the : array-like
-        Input data.
-    optimal : array-like
-        Input data.
-    weights : array-like
-        Input data.
-    biases : array-like
-        Input data.
-    This : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.10) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    nding = np.atleast_1d(np.asarray(nding, dtype=float))
-    n = len(nding)
-    result = float(np.mean(nding))
-    se = float(np.std(nding, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.10) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_gradient = mvsml_reproducing_kernel_eq_10_10
 
 
 def cheatsheet():
-    return "msm246: Numbered display equation (10.10) from MVSML chapter 10."
+    return "msm246: Gradient-descent weight change"

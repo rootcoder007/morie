@@ -1,55 +1,40 @@
-r"""Numbered display equation (10.16) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Hidden-layer delta rule.
 
-from . import _array_core as np
+Implements eq. (10.16) p.412 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_16"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_16", "mvsml_ann_hidden_delta"]
 
 
-def mvsml_reproducing_kernel_eq_10_16(XL, z, h, w, j, ijw):
-    r"""
-    Numbered display equation (10.16) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_16(X, y, W, activations=None, eta=0.1):
+    """Delta w_kp^(h) = eta sum_j delta_ij w_jk^(l) g^(h)'(z_ik^(h))
+    x_ip = eta psi_ik x_ip (eq. 10.16).  The sum runs over the output
+    units because every hidden neuron is connected to all of them, so
+    a change in one input-to-hidden weight moves every output.
+    Keys: estimate."""
+    g = _gp.ann_backprop_gradients(X, y, W, activations)
+    first = g["gradients"][0]
+    upd = [[-eta * v for v in row] for row in first]
+    res = RichResult(payload={"estimate": upd[0][0],
+                              "delta_w": upd,
+                              "method": "hidden delta rule (MVSML 2022 eq. 10.16)"})
+    return with_describe_pointer(res, "msm254")
 
-    Formula:  XL ( )´ z h \Deltaw h ( ) j=1\deltaijw l( ) jk g h ( ) kp = \eta xip = \eta\psiikxip,
 
-    Parameters
-    ----------
-    XL : array-like
-        Input data.
-    z : array-like
-        Input data.
-    h : array-like
-        Input data.
-    w : array-like
-        Input data.
-    j : array-like
-        Input data.
-    ijw : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.16) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.16) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_hidden_delta = mvsml_reproducing_kernel_eq_10_16
 
 
 def cheatsheet():
-    return "msm254: Numbered display equation (10.16) from MVSML chapter 10."
+    return "msm254: Hidden-layer delta rule"

@@ -1,53 +1,41 @@
-r"""Numbered display equation (10.17) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Hidden-layer weight update and training loop.
 
-from . import _array_core as np
+Implements eq. (10.17) p.412 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_17"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_17", "mvsml_ann_train"]
 
 
-def mvsml_reproducing_kernel_eq_10_17(t, w, h, kp, ikxip):
-    r"""
-    Numbered display equation (10.17) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_17(X, y, W, activations=None, eta=0.1, n_iter=500):
+    """w_kp^(h)(t+1) = w_kp^(h)(t) + eta psi_ik x_ip (eq. 10.17),
+    iterated with (10.13) over the feedforward/backward steps of the
+    algorithm on p.412 until the loss stops decreasing.
+    Keys: estimate."""
+    f = _gp.ann_train(X, y, W, eta=eta, n_iter=n_iter,
+                      activations=activations)
+    res = RichResult(payload={"estimate": f["loss"],
+                              "W": f["W"], "loss": f["loss"],
+                              "history": f["history"],
+                              "iterations": f["iterations"],
+                              "output": f["output"],
+                              "method": "backpropagation training (MVSML 2022 eq. 10.17)"})
+    return with_describe_pointer(res, "msm255")
 
-    Formula: ( ) t+1 ( ) = w h ( ) t( ) + \Deltaw h ( ) kp = w h ( ) t( ) + \eta\psiikxip
 
-    Parameters
-    ----------
-    t : array-like
-        Input data.
-    w : array-like
-        Input data.
-    h : array-like
-        Input data.
-    kp : array-like
-        Input data.
-    ikxip : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.17) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.17) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_train = mvsml_reproducing_kernel_eq_10_17
 
 
 def cheatsheet():
-    return "msm255: Numbered display equation (10.17) from MVSML chapter 10."
+    return "msm255: Hidden-layer weight update and training loop"
