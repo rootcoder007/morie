@@ -1,55 +1,34 @@
-"""Numbered display equation (6.7) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""RKHS predictor with genotype-by-environment effects.
 
-from . import _array_core as np
+Implements eq. (6.7) p.186 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_7"]
 
 
-def mvsml_bayesian_regression_eq_6_7(collected, GID, Lines, individuals, Env, Environment):
-    """
-    Numbered display equation (6.7) from MVSML chapter 6.
-
-    Formula: collected (GID: Lines or individuals; Env: Environment; y: response variable of the trait). Other desired prior models to beta coefﬁcients of each predictor component are obtained only by replacing the “model” argument of each of the three components of the predictor. For example, for a BayesA prior model for the marker effects, in the second sub-list we must use model='BayesA'. The latent random vector of model (7.1) under the GBLUP speciﬁcation, plus genotypic and environment+genotypic interaction effects, takes the form L = XE\betaE + ZLg + ZLEgE + e (7.4) which is like model
-
-    Parameters
-    ----------
-    collected : array-like
-        Input data.
-    GID : array-like
-        Input data.
-    Lines : array-like
-        Input data.
-    individuals : array-like
-        Input data.
-    Env : array-like
-        Input data.
-    Environment : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.7) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    collected = np.atleast_1d(np.asarray(collected, dtype=float))
-    n = len(collected)
-    result = float(np.mean(collected))
-    se = float(np.std(collected, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.7) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_7(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0,
+         sigma2_ge=1.0):
+    """Y = 1_n mu + X_E beta_E + Z_L g + Z_LE gE + eps (eq. 6.7).
+    As for eq. (6.5), the predictor terms enter through their
+    covariance matrices, K_L = Z_L G Z_L' and
+    K_LE = Z_LE (I (x) G) Z_LE' (p.186); those are computed here.
+    Keys: estimate."""
+    f = _gp.rkhs_covariances(Z_L, G, Z_LE=Z_LE, I_env=I_env,
+                             sigma2_g=sigma2_g, sigma2_ge=sigma2_ge)
+    K = f["K_L"]
+    res = RichResult(payload={"estimate": K[0][0], "K_L": K,
+                              "K_LE": f.get("K_LE"),
+                              "method": "RKHS G x E covariances (MVSML 2022 eq. 6.7)"})
+    return with_describe_pointer(res, "msm096")
 
 
 def cheatsheet():
-    return "msm096: Numbered display equation (6.7) from MVSML chapter 6."
+    return "msm096: RKHS predictor with genotype-by-environment effects"

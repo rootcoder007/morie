@@ -1,55 +1,38 @@
-r"""Numbered display equation (6.3) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bayesian ridge regression (BRR).
 
-from . import _array_core as np
+Implements eq. (6.3) pp.173-175 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_3"]
 
 
-def mvsml_bayesian_regression_eq_6_3(non, informative, prior, given, Christensen, et):
-    r"""
-    Numbered display equation (6.3) from MVSML chapter 6.
-
-    Formula: non-informative prior given in (6.1) (Christensen et al. 2011). A similar prior speciﬁcation is taken in genomic prediction where different models are obtained by adopting different prior distributions of the parameters. For example, the Bayes- ian Linear Ridge Regression (Pérez and de los Campos 2014) with standardized 0s) is given by covariates (Xj X p Y = \mu + X j\beta j + E
-
-    Parameters
-    ----------
-    non : array-like
-        Input data.
-    informative : array-like
-        Input data.
-    prior : array-like
-        Input data.
-    given : array-like
-        Input data.
-    Christensen : array-like
-        Input data.
-    et : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.3) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    non = np.atleast_1d(np.asarray(non, dtype=float))
-    n = len(non)
-    result = float(np.mean(non))
-    se = float(np.std(non, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.3) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_3(y, X, n_iter=2000, burn_in=500, nu=5.0, nu_beta=5.0,
+         R2=0.5, seed=42):
+    """Y = mu + sum_j X_j beta_j + eps (eq. 6.3) with a flat prior on
+    mu, beta | sigma2_beta ~ N_p(0, I sigma2_beta) and scaled inverse
+    chi-square priors on both variances.  Fitted with the six-step
+    Gibbs sampler of pp.174-175; the BGLR hyperparameter defaults
+    S = Var(Y)(1 - R2)(nu + 2), S_beta = Var(Y) R2 (nu_beta + 2) are
+    used. Keys: estimate."""
+    f = _gp.bayes_ridge_gibbs(y, X, n_iter=n_iter, burn_in=burn_in,
+                              nu=nu, nu_beta=nu_beta, R2=R2,
+                              seed=seed)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "beta": f["beta"],
+                              "sigma2": f["sigma2"],
+                              "sigma2_beta": f["sigma2_beta"],
+                              "n_kept": f["n_kept"],
+                              "method": "Bayesian ridge regression (MVSML 2022 eq. 6.3)"})
+    return with_describe_pointer(res, "msm046")
 
 
 def cheatsheet():
-    return "msm046: Numbered display equation (6.3) from MVSML chapter 6."
+    return "msm046: Bayesian ridge regression (BRR)"

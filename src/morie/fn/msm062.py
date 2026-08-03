@@ -1,55 +1,33 @@
-r"""Numbered display equation (6.6) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Extended predictor with environment and interaction terms.
 
-from . import _array_core as np
+Implements eq. (6.6) p.186 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_6"]
 
 
-def mvsml_bayesian_regression_eq_6_6(y, XE, E, X, XEM, EM):
-    r"""
-    Numbered display equation (6.6) from MVSML chapter 6.
-
-    Formula: y = 1n\mu + XE\betaE + X\beta + XEM\betaEM + e, (6.6) where XE and XEM are the design matrices of the environments and environment– marker interactions, respectively, while \betaE and \betaEM are the vectors of the environ- ment effects and the interaction effects, respectively, with a prior distribution that can be speciﬁed as was done for \beta. Indeed, with the BGLR function all these things are possible, and all the options described before can also be adopted for the rest of effects added in the model: FIXED, BRR, BayesA, BayesB, BayesC, and BL. Under the RKHS model with genotypic and environment–genotypic interaction effects, in the predictor, the modiﬁed model
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    XE : array-like
-        Input data.
-    E : array-like
-        Input data.
-    X : array-like
-        Input data.
-    XEM : array-like
-        Input data.
-    EM : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.6) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.6) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_6(n, X_E=None, X=None, X_EM=None):
+    """y = 1_n mu + X_E beta_E + X beta + X_EM beta_EM + eps
+    (eq. 6.6): environments and environment-by-marker interactions
+    added to the predictor of eq. (6.1).  Each block can carry its own
+    prior (FIXED, BRR, BayesA/B/C, BL) in BGLR, so the assembled
+    design is returned together with the block widths.
+    Keys: estimate."""
+    f = _gp.extended_predictor(int(n), X_E=X_E, X=X, X_EM=X_EM)
+    res = RichResult(payload={"estimate": float(f["n_columns"]),
+                              "design": f["design"],
+                              "widths": f["widths"],
+                              "method": "extended Bayesian predictor (MVSML 2022 eq. 6.6)"})
+    return with_describe_pointer(res, "msm062")
 
 
 def cheatsheet():
-    return "msm062: Numbered display equation (6.6) from MVSML chapter 6."
+    return "msm062: Extended predictor with environment and interaction terms"

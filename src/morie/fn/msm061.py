@@ -1,55 +1,33 @@
-r"""Numbered display equation (6.6) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Extended predictor with environment and interaction terms.
 
-from . import _array_core as np
+Implements eq. (6.6) p.186 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_6"]
 
 
-def mvsml_bayesian_regression_eq_6_6(j, inverse, of, the, parameter, any):
-    r"""
-    Numbered display equation (6.6) from MVSML chapter 6.
-
-    Formula: \beta j inverse of the regularization parameter in any type of Ridge regression model. 6.7 Extended Predictor in Bayesian Genomic Regression Models All the Bayesian formulations of the model (6.1) described before can be extended, in terms of the predictor, to easily take into account the effects of other factors. For example, effects of environments and environment–marker interaction can be added as y = 1n\mu + XE\betaE + X\beta + XEM\betaEM + e,
-
-    Parameters
-    ----------
-    j : array-like
-        Input data.
-    inverse : array-like
-        Input data.
-    of : array-like
-        Input data.
-    the : array-like
-        Input data.
-    parameter : array-like
-        Input data.
-    any : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.6) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    j = np.atleast_1d(np.asarray(j, dtype=float))
-    n = len(j)
-    result = float(np.mean(j))
-    se = float(np.std(j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.6) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_6(n, X_E=None, X=None, X_EM=None):
+    """y = 1_n mu + X_E beta_E + X beta + X_EM beta_EM + eps
+    (eq. 6.6): environments and environment-by-marker interactions
+    added to the predictor of eq. (6.1).  Each block can carry its own
+    prior (FIXED, BRR, BayesA/B/C, BL) in BGLR, so the assembled
+    design is returned together with the block widths.
+    Keys: estimate."""
+    f = _gp.extended_predictor(int(n), X_E=X_E, X=X, X_EM=X_EM)
+    res = RichResult(payload={"estimate": float(f["n_columns"]),
+                              "design": f["design"],
+                              "widths": f["widths"],
+                              "method": "extended Bayesian predictor (MVSML 2022 eq. 6.6)"})
+    return with_describe_pointer(res, "msm061")
 
 
 def cheatsheet():
-    return "msm061: Numbered display equation (6.6) from MVSML chapter 6."
+    return "msm061: Extended predictor with environment and interaction terms"
