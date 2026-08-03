@@ -1,46 +1,31 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob."""
+"""Concentration function of a GP.
+
+Implements eq. (11.11) + Proposition 11.19 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_concentration_function"]
 
 
-def ghosal_concentration_function(x):
-    """
-    Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob
-
-    Formula: phi_{f0}(eps) = inf_{||h-f0||<eps} ||h||_H^2 - log Pi(||f-0||<eps)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 11 §11.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob",
-        }
-    )
+def ghosal_concentration_function(decentering_norm2, small_ball_exp):
+    """phi_{w0}(eps) = inf_{||h - w0|| < eps} ||h||_H^2
+    - log Pi(||W|| < eps): combines the decentering and small-ball
+    parts; by Prop 11.19 it sandwiches -log P(||W - w0|| < eps).
+    Keys: estimate."""
+    phi = float(decentering_norm2) + float(small_ball_exp)
+    res = RichResult(payload={"estimate": phi,
+                              "decentering": float(decentering_norm2),
+                              "small_ball": float(small_ball_exp),
+                              "method": "concentration function (GvdV 2017 eq. 11.11, Prop 11.19)"})
+    return with_describe_pointer(res, "gh_conc_func")
 
 
 def cheatsheet():
-    return "gh_conc_func: Concentration function phi_{f0}(eps) combines RKHS approximation and small ball prob"
+    return "gh_conc_func: Concentration function of a GP"
