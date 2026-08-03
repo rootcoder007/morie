@@ -1,44 +1,22 @@
-"""Cluster-sampling total, SI-of-clusters form.
+"""Deprecated alias for :func:`morie.fn.cluster_total_si`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .cluster_total_si import cluster_total_si as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9(cluster_totals, n_clusters_population, n):
-    """Cluster-sampling total, SI-of-clusters form
-
-    Formula: t_hat(z) = (N/n) sum t_j
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (6.9).
-    """
-    value = _brus.cluster_total_si(cluster_totals, n_clusters_population, n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (6.9)"
-    return RichResult(
-        title='Cluster-sampling total, SI-of-clusters form',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cluster_total_si` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_6_equation_9() is the book-coordinate name for cluster_total_si(); "
+        "it will be removed. Use morie.fn.cluster_total_si() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r6e9: t_hat(z) = (N/n) sum t_j [Brus 2022, eq. 6.9]'
+    return _impl(*args, **kwargs)

@@ -1,26 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""Dirichlet posterior variance.
+"""Deprecated alias for :func:`morie.fn.cdp_posterior_var`.
 
-Implements the finite-Dirichlet form heading eq. (3.7), pp.32-33 of Ghosal & van der Vaart (2017), *Fundamentals of
-Nonparametric Bayesian Inference*, CUP.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _bnp_core as _bnp
-from ._richresult import RichResult, with_describe_pointer
+from .cdp_posterior_var import cdp_posterior_var as _impl
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_var"]
 
 
-def ghosal_ch3_dirichlet_posterior_var(alpha, counts, j, alpha_total):
-    """var(p_j | X) = (alpha_j+N_j)(A + n - alpha_j - N_j) /
-    ((A+n)^2 (A+n+1)) = m_j (1-m_j)/(A+n+1). Keys: value."""
-    v = _bnp.cdp_posterior_var(alpha, counts, int(j), alpha_total)
-    res = RichResult(payload={"estimate": v, "value": v,
-                              "method": "Dirichlet posterior variance (GvdV 2017 sec. 3.3.3)"})
-    return with_describe_pointer(res, "ghs015")
-
-
-def cheatsheet():
-    return "ghs015: Dirichlet posterior variance"
+def ghosal_ch3_dirichlet_posterior_var(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cdp_posterior_var` instead."""
+    warnings.warn(
+        "ghosal_ch3_dirichlet_posterior_var() is the book-coordinate name for cdp_posterior_var(); "
+        "it will be removed. Use morie.fn.cdp_posterior_var() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

@@ -1,44 +1,22 @@
-"""Odds ratio for a one-unit change: OR = e^b.
+"""Deprecated alias for :func:`morie.fn.odds_ratio_unit_change`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .odds_ratio_unit_change import odds_ratio_unit_change as _impl
 
 __all__ = ["ca_chapter_4_equation_8"]
 
 
-def ca_chapter_4_equation_8(b):
-    """Odds ratio for a one-unit change: OR = e^b
-
-    Formula: OR = odds(x+1) / odds(x) = e^b
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.4 eq.4.8
-    """
-    value = _ca_crim.odds_ratio_unit_change(b)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (4.8)"
-    return RichResult(
-        title='Odds ratio for a one-unit change: OR = e^b',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_4_equation_8(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.odds_ratio_unit_change` instead."""
+    warnings.warn(
+        "ca_chapter_4_equation_8() is the book-coordinate name for odds_ratio_unit_change(); "
+        "it will be removed. Use morie.fn.odds_ratio_unit_change() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca4e8: OR = odds(x+1) / odds(x) = e^b [Weisburd et al. 2022, eq. 4.8]'
+    return _impl(*args, **kwargs)

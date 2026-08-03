@@ -1,44 +1,22 @@
-"""Variance of the mean under iid sampling.
+"""Deprecated alias for :func:`morie.fn.iid_mean_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .iid_mean_variance import iid_mean_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_2"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_2(sigma2, n):
-    """Variance of the mean under iid sampling
-
-    Formula: V(mu_hat) = sigma2/n
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (26.2).
-    """
-    value = _brus.iid_mean_variance(sigma2, n)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (26.2)"
-    return RichResult(
-        title='Variance of the mean under iid sampling',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_2(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.iid_mean_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_2() is the book-coordinate name for iid_mean_variance(); "
+        "it will be removed. Use morie.fn.iid_mean_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r26e2: V(mu_hat) = sigma2/n [Brus 2022, eq. 26.2]'
+    return _impl(*args, **kwargs)

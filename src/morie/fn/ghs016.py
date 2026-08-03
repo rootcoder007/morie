@@ -1,27 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""Dirichlet posterior covariance.
+"""Deprecated alias for :func:`morie.fn.cdp_posterior_cov`.
 
-Implements the finite-Dirichlet form heading eq. (3.7), pp.32-33 of Ghosal & van der Vaart (2017), *Fundamentals of
-Nonparametric Bayesian Inference*, CUP.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _bnp_core as _bnp
-from ._richresult import RichResult, with_describe_pointer
+from .cdp_posterior_cov import cdp_posterior_cov as _impl
 
 __all__ = ["ghosal_ch3_dirichlet_posterior_cov"]
 
 
-def ghosal_ch3_dirichlet_posterior_cov(alpha, counts, j, jp,
-                                       alpha_total):
-    """cov(p_j, p_j' | X) = -m_j m_j' / (A + n + 1). Keys: value."""
-    v = _bnp.cdp_posterior_cov(alpha, counts, int(j), int(jp),
-                               alpha_total)
-    res = RichResult(payload={"estimate": v, "value": v,
-                              "method": "Dirichlet posterior covariance (GvdV 2017 sec. 3.3.3)"})
-    return with_describe_pointer(res, "ghs016")
-
-
-def cheatsheet():
-    return "ghs016: Dirichlet posterior covariance"
+def ghosal_ch3_dirichlet_posterior_cov(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cdp_posterior_cov` instead."""
+    warnings.warn(
+        "ghosal_ch3_dirichlet_posterior_cov() is the book-coordinate name for cdp_posterior_cov(); "
+        "it will be removed. Use morie.fn.cdp_posterior_cov() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

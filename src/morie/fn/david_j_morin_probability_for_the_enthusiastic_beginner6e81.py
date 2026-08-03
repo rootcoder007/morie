@@ -1,37 +1,22 @@
-"""Excess-score factor sqrt((1-r)/(1+r)).
+"""Deprecated alias for :func:`morie.fn.excess_score_factor`.
 
-Implements eq (6.81) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .excess_score_factor import excess_score_factor as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81(r):
-    """Excess-score factor sqrt((1-r)/(1+r)).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (6.81).
-    """
-    value = _morin.excess_score_factor(r)
-    payload = {"factor": value}
-    lines = [("sqrt((1-r)/(1+r))", value)]
-    return RichResult(
-        title="Excess-score factor sqrt((1-r)/(1+r)).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.excess_score_factor` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_81() is the book-coordinate name for excess_score_factor(); "
+        "it will be removed. Use morie.fn.excess_score_factor() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner6e81: Excess-score factor sqrt((1-r)/(1+r)). Morin (2016) eq (6.81)."
+    return _impl(*args, **kwargs)

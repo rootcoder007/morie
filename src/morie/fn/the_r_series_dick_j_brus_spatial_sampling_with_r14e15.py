@@ -1,44 +1,22 @@
-"""Model-based small-area mean.
+"""Deprecated alias for :func:`morie.fn.small_area_mb_mean`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .small_area_mb_mean import small_area_mb_mean as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_14_equation_15"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_14_equation_15(xbar_d, beta_hat, v_d):
-    """Model-based small-area mean
-
-    Formula: zbar_mb,d = xbar_d^T beta_hat + v_hat_d
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (14.15).
-    """
-    value = _brus.small_area_mb_mean(xbar_d, beta_hat, v_d)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (14.15)"
-    return RichResult(
-        title='Model-based small-area mean',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_14_equation_15(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.small_area_mb_mean` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_14_equation_15() is the book-coordinate name for small_area_mb_mean(); "
+        "it will be removed. Use morie.fn.small_area_mb_mean() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r14e15: zbar_mb,d = xbar_d^T beta_hat + v_hat_d [Brus 2022, eq. 14.15]'
+    return _impl(*args, **kwargs)

@@ -1,35 +1,22 @@
-"""Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.
+"""Deprecated alias for :func:`morie.fn.partial_permutations`.
 
-Implements eq (1.5) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .partial_permutations import partial_permutations as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5(N, n):
-    """Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.5).
-    """
-    value = _morin.partial_permutations(N, n)
-    payload = {"N": int(N), "n": int(n), "partial_permutations": value}
-    lines = [("N", int(N)), ("n", int(n)), ("N_P_n", value)]
-    return RichResult(
-        title="Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.partial_permutations` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_5() is the book-coordinate name for partial_permutations(); "
+        "it will be removed. Use morie.fn.partial_permutations() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e5: Partial permutations N_P_n = N(N-1)...(N-(n-1)) = N!/(N-n)!. Morin (2016) eq (1.5)."
+    return _impl(*args, **kwargs)

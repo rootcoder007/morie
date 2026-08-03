@@ -1,44 +1,22 @@
-"""Ospats objective E_xi[O] (print eq 13.17).
+"""Deprecated alias for :func:`morie.fn.ospats_objective`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .ospats_objective import ospats_objective as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17(per_stratum_sums, n_population):
-    """Ospats objective E_xi[O] (print eq 13.17)
-
-    Formula: E_xi[O] = (1/N) sum_h sqrt(sum_{i<j} E_xi[d2_ij])
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (13.17).
-    """
-    value = _brus.ospats_objective(per_stratum_sums, n_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (13.17)"
-    return RichResult(
-        title='Ospats objective E_xi[O] (print eq 13.17)',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.ospats_objective` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_13_equation_17() is the book-coordinate name for ospats_objective(); "
+        "it will be removed. Use morie.fn.ospats_objective() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r13e17: E_xi[O] = (1/N) sum_h sqrt(sum_{i<j} E_xi[d2_ij]) [Brus 2022, eq. 13.17]'
+    return _impl(*args, **kwargs)

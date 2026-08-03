@@ -1,37 +1,22 @@
-"""Standard deviation of the mean: sigma / sqrt(n).
+"""Deprecated alias for :func:`morie.fn.sd_of_mean`.
 
-Implements eq (3.53) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sd_of_mean import sd_of_mean as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_53"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_53(sigma, n):
-    """Standard deviation of the mean: sigma / sqrt(n).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.53).
-    """
-    value = _morin.sd_of_mean(sigma, n)
-    payload = {"sigma": float(sigma), "n": int(n), "sd_mean": value}
-    lines = [("sigma/sqrt(n)", value)]
-    return RichResult(
-        title="Standard deviation of the mean: sigma / sqrt(n).",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_53(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.sd_of_mean` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_53() is the book-coordinate name for sd_of_mean(); "
+        "it will be removed. Use morie.fn.sd_of_mean() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e53: Standard deviation of the mean: sigma / sqrt(n). Morin (2016) eq (3.53)."
+    return _impl(*args, **kwargs)

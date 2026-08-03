@@ -1,30 +1,22 @@
-# morie.fn -- function file (rootcoder007/morie)
-"""Henderson's mixed model equations.
+"""Deprecated alias for :func:`morie.fn.mme_solve`.
 
-Implements eq. (2.2) p.36 of Montesinos López, Montesinos López & Crossa
-(2022), *Multivariate Statistical Machine Learning Methods for Genomic
-Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _gp_core as _gp
-from ._richresult import RichResult, with_describe_pointer
+from .mme_solve import mme_solve as _impl
 
 __all__ = ["mvsml_preprocessing_eq_2_2"]
 
 
-def mvsml_preprocessing_eq_2_2(X, Z, y, Sigma_inv, R_inv=None):
-    """The MME of eq. (2.2):
-    [X'R^-1X  X'R^-1Z; Z'R^-1X  Z'R^-1Z + Sigma^-1][beta; u] =
-    [X'R^-1y; Z'R^-1y]. The beta solution is the BLUE and the u
-    solution is the BLUP. Keys: estimate."""
-    beta, u = _gp.mme_solve(X, Z, y, Sigma_inv, R_inv)
-    res = RichResult(payload={"estimate": beta[0], "blue": beta,
-                              "blup": u,
-                              "method": "Henderson MME (MVSML 2022 eq. 2.2)"})
-    return with_describe_pointer(res, "msm241")
-
-
-def cheatsheet():
-    return "msm241: Henderson's mixed model equations"
+def mvsml_preprocessing_eq_2_2(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.mme_solve` instead."""
+    warnings.warn(
+        "mvsml_preprocessing_eq_2_2() is the book-coordinate name for mme_solve(); "
+        "it will be removed. Use morie.fn.mme_solve() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return _impl(*args, **kwargs)

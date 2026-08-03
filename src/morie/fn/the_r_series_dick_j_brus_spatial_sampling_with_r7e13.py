@@ -1,44 +1,22 @@
-"""Two-stage total with SI of PSUs.
+"""Deprecated alias for :func:`morie.fn.twostage_total_si`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .twostage_total_si import twostage_total_si as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_13"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_13(psu_total_estimates, n_psu_population):
-    """Two-stage total with SI of PSUs
-
-    Formula: t_hat = (N/n) sum t_hat_j
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (7.13).
-    """
-    value = _brus.twostage_total_si(psu_total_estimates, n_psu_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (7.13)"
-    return RichResult(
-        title='Two-stage total with SI of PSUs',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_13(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.twostage_total_si` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_7_equation_13() is the book-coordinate name for twostage_total_si(); "
+        "it will be removed. Use morie.fn.twostage_total_si() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r7e13: t_hat = (N/n) sum t_hat_j [Brus 2022, eq. 7.13]'
+    return _impl(*args, **kwargs)

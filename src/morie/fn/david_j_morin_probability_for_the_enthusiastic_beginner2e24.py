@@ -1,36 +1,22 @@
-"""Classify an event pair: independent and/or exclusive.
+"""Deprecated alias for :func:`morie.fn.classify_events`.
 
-Implements eq (2.24) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .classify_events import classify_events as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_24"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_24(p_a, p_b, p_ab, tol=1e-12):
-    """Classify an event pair: independent and/or exclusive.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.24).
-    """
-    independent, exclusive = _morin.classify_events(p_a, p_b, p_ab, tol)
-    payload = {"independent": independent, "exclusive": exclusive,
-               "p_a": float(p_a), "p_b": float(p_b), "p_ab": float(p_ab)}
-    lines = [("independent", independent), ("exclusive", exclusive)]
-    return RichResult(
-        title="Classify an event pair: independent and/or exclusive.",
-        summary_lines=lines,
-        payload=payload,
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_24(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.classify_events` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_24() is the book-coordinate name for classify_events(); "
+        "it will be removed. Use morie.fn.classify_events() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e24: Classify an event pair: independent and/or exclusive. Morin (2016) eq (2.24)."
+    return _impl(*args, **kwargs)

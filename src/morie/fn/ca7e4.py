@@ -1,44 +1,22 @@
-"""Per-cluster level-1 models y_ij = beta0j + e_ij.
+"""Deprecated alias for :func:`morie.fn.cluster_means_model`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math as _math  # noqa: F401
+import warnings
 
-from . import _ca_crim
-from ._richresult import RichResult
+from .cluster_means_model import cluster_means_model as _impl
 
 __all__ = ["ca_chapter_7_equation_4"]
 
 
-def ca_chapter_7_equation_4(groups):
-    """Per-cluster level-1 models y_ij = beta0j + e_ij
-
-    Formula: y_i1 = beta0,1 + e_i1; ...; y_ik = beta0,k + e_ik
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'grand_mean' plus the full payload.
-
-    References
-    ----------
-    Weisburd, Wilson, Wooditch & Britt (2022). Advanced Statistics in Criminology and Criminal Justice, 5th ed. Springer. doi:10.1007/978-3-030-67738-1,
-    ch.7 eq.7.4
-    """
-    payload = dict(_ca_crim.cluster_means_model(groups))
-    value = payload['grand_mean']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Weisburd et al. (2022) eq. (7.4)"
-    return RichResult(
-        title='Per-cluster level-1 models y_ij = beta0j + e_ij',
-        summary_lines=summary,
-        payload=payload,
+def ca_chapter_7_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.cluster_means_model` instead."""
+    warnings.warn(
+        "ca_chapter_7_equation_4() is the book-coordinate name for cluster_means_model(); "
+        "it will be removed. Use morie.fn.cluster_means_model() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'ca7e4: y_i1 = beta0,1 + e_i1; ...; y_ik = beta0,k + e_ik [Weisburd et al. 2022, eq. 7.4]'
+    return _impl(*args, **kwargs)

@@ -1,45 +1,22 @@
-"""Population GLS regression coefficient.
+"""Deprecated alias for :func:`morie.fn.gls_population_slope`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .gls_population_slope import gls_population_slope as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4(x, z, sigma2):
-    """Population GLS regression coefficient
-
-    Formula: b = (sum x x^T/sig2)^-1 sum x z/sig2
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (10.4).
-    """
-    arr = np.asarray(_brus.gls_population_slope(x, z, sigma2), dtype=float)
-    value = float(arr.ravel()[0])
-    payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (10.4)"
-    return RichResult(
-        title='Population GLS regression coefficient',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.gls_population_slope` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_4() is the book-coordinate name for gls_population_slope(); "
+        "it will be removed. Use morie.fn.gls_population_slope() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r10e4: b = (sum x x^T/sig2)^-1 sum x z/sig2 [Brus 2022, eq. 10.4]'
+    return _impl(*args, **kwargs)

@@ -1,44 +1,22 @@
-"""Required n for a confidence interval length on a mean.
+"""Deprecated alias for :func:`morie.fn.n_for_mean_length`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .n_for_mean_length import n_for_mean_length as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7(u_crit, s_star, l_max):
-    """Required n for a confidence interval length on a mean
-
-    Formula: n = (u S*/(l_max/2))^2
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (12.7).
-    """
-    value = _brus.n_for_mean_length(u_crit, s_star, l_max)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (12.7)"
-    return RichResult(
-        title='Required n for a confidence interval length on a mean',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.n_for_mean_length` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_12_equation_7() is the book-coordinate name for n_for_mean_length(); "
+        "it will be removed. Use morie.fn.n_for_mean_length() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r12e7: n = (u S*/(l_max/2))^2 [Brus 2022, eq. 12.7]'
+    return _impl(*args, **kwargs)

@@ -1,44 +1,22 @@
-"""Confidence interval estimate +/- u sqrt(V).
+"""Deprecated alias for :func:`morie.fn.confidence_interval`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .confidence_interval import confidence_interval as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_15"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_15(estimate, variance, u_crit):
-    """Confidence interval estimate +/- u sqrt(V)
-
-    Formula: zbar_hat -/+ u_(alpha/2) sqrt(V(zbar_hat))
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'lower' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (3.15).
-    """
-    payload = dict(_brus.confidence_interval(estimate, variance, u_crit))
-    value = payload['lower']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (3.15)"
-    return RichResult(
-        title='Confidence interval estimate +/- u sqrt(V)',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_15(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.confidence_interval` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_3_equation_15() is the book-coordinate name for confidence_interval(); "
+        "it will be removed. Use morie.fn.confidence_interval() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r3e15: zbar_hat -/+ u_(alpha/2) sqrt(V(zbar_hat)) [Brus 2022, eq. 3.15]'
+    return _impl(*args, **kwargs)

@@ -1,44 +1,22 @@
-"""Two-phase sampling for regression: variance.
+"""Deprecated alias for :func:`morie.fn.twophase_regression_variance`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .twophase_regression_variance import twophase_regression_variance as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7(s2_z, n1, s2_e, n2, n_population):
-    """Two-phase sampling for regression: variance
-
-    Formula: V_hat = (1-n1/N) S2(z)/n1 + (1-n2/n1) S2(e)/n2
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (11.7).
-    """
-    value = _brus.twophase_regression_variance(s2_z, n1, s2_e, n2, n_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (11.7)"
-    return RichResult(
-        title='Two-phase sampling for regression: variance',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.twophase_regression_variance` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_11_equation_7() is the book-coordinate name for twophase_regression_variance(); "
+        "it will be removed. Use morie.fn.twophase_regression_variance() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r11e7: V_hat = (1-n1/N) S2(z)/n1 + (1-n2/n1) S2(e)/n2 [Brus 2022, eq. 11.7]'
+    return _impl(*args, **kwargs)

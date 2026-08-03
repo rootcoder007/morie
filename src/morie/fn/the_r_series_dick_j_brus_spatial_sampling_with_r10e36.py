@@ -1,44 +1,22 @@
-"""Mixed-model calibration estimator.
+"""Deprecated alias for :func:`morie.fn.mixed_calibration_mean`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _brus
-from ._richresult import RichResult
+from .mixed_calibration_mean import mixed_calibration_mean as _impl
 
 __all__ = ["the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_36"]
 
 
-def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_36(zbar_pi, a_hat, pi_sample, m_all_mean, m_ht_mean, b_hat, n_population):
-    """Mixed-model calibration estimator
-
-    Formula: zbar_MC = zbar_pi + a_hat(1 - (1/N) sum 1/pi) + b_hat(mbar - mbar_HT)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'value' plus the full payload.
-
-    References
-    ----------
-    Brus, D. J. (2022). Spatial Sampling with R. The R Series, CRC Press. Open-access edition: dickbrus.github.io/SpatialSamplingwithR,
-    eq. (10.36).
-    """
-    value = _brus.mixed_calibration_mean(zbar_pi, a_hat, pi_sample, m_all_mean, m_ht_mean, b_hat, n_population)
-    payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Brus (2022) eq. (10.36)"
-    return RichResult(
-        title='Mixed-model calibration estimator',
-        summary_lines=summary,
-        payload=payload,
+def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_36(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.mixed_calibration_mean` instead."""
+    warnings.warn(
+        "the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_36() is the book-coordinate name for mixed_calibration_mean(); "
+        "it will be removed. Use morie.fn.mixed_calibration_mean() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return 'r10e36: zbar_MC = zbar_pi + a_hat(1 - (1/N) sum 1/pi) + b_hat(mbar - mbar_HT) [Brus 2022, eq. 10.36]'
+    return _impl(*args, **kwargs)

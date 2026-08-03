@@ -1,44 +1,22 @@
-"""Wilson (score) confidence interval for pi.
+"""Deprecated alias for :func:`morie.fn.wilson_interval`.
 
-Book-as-spec implementation; see reference for context.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np  # noqa: F401
+import warnings
 
-from . import _acd
-from ._richresult import RichResult
+from .wilson_interval import wilson_interval as _impl
 
 __all__ = ["analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_4"]
 
 
-def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_4(w, n, z):
-    """Wilson (score) confidence interval for pi
-
-    Formula: pi_tilde +/- (z sqrt(n)/(n+z^2)) sqrt(pi_hat(1-pi_hat) + z^2/4n)
-
-    Returns
-    -------
-    result : RichResult
-        dict subclass; headline key 'estimate' plus the full payload.
-
-    References
-    ----------
-    Bilder, C. R. & Loughin, T. M. (2025). Analysis of Categorical Data with R, 2nd ed. Chapman & Hall/CRC,
-    eq. (1.4).
-    """
-    payload = dict(_acd.wilson_interval(w, n, z))
-    value = float(payload['estimate'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
-    payload = dict(payload)
-    payload.setdefault("value", value)
-    payload["method"] = "Bilder & Loughin (2025) eq. (1.4)"
-    return RichResult(
-        title='Wilson (score) confidence interval for pi',
-        summary_lines=summary,
-        payload=payload,
+def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_4(*args, **kwargs):
+    """Deprecated; use :func:`morie.fn.wilson_interval` instead."""
+    warnings.warn(
+        "analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equation_4() is the book-coordinate name for wilson_interval(); "
+        "it will be removed. Use morie.fn.wilson_interval() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return '1e4: pi_tilde +/- (z sqrt(n)/(n+z^2)) sqrt(pi_hat(1-pi_hat) + z^2/4n) [Bilder & Loughin 2025, eq. 1.4]'
+    return _impl(*args, **kwargs)
