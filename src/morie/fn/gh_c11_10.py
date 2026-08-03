@@ -1,46 +1,41 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Series GP prior (random Fourier features): f = sum_k beta_k phi_k, beta_k ~ N(0,lambda_k)."""
+"""Series (eigenexpansion) GP.
+
+Implements Example 11.4 + Example 11.16 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_series_gp"]
 
 
-def ghosal_series_gp(x):
-    """
-    Series GP prior (random Fourier features): f = sum_k beta_k phi_k, beta_k ~ N(0,lambda_k)
-
-    Formula: f ~ GP with k(x,y) = sum_k lambda_k phi_k(x) phi_k(y), eigenexpansion
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 11 §11.4.5
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Series GP prior (random Fourier features): f = sum_k beta_k phi_k, beta_k ~ N(0,lambda_k)",
-        }
-    )
+def ghosal_series_gp(x=0.3, y=0.7, n_terms=60):
+    """K(x, y) = sum_k lambda_k phi_k(x) phi_k(y): a random series
+    W = sum a_k(t) Z_k has exactly this covariance (Ex 11.4/11.16).
+    Cosine eigenbasis with lambda_k = k^{-2}; Mercer partial sums
+    converge. Keys: estimate."""
+    def phi(t, k):
+        return math.sqrt(2.0) * math.cos(k * math.pi * t)
+    partial = []
+    tot = 0.0
+    for k in range(1, n_terms + 1):
+        tot += k ** (-2.0) * phi(x, k) * phi(y, k)
+        if k in (5, 20, n_terms):
+            partial.append(tot)
+    res = RichResult(payload={"estimate": tot,
+                              "partial_sums": partial,
+                              "converging": abs(partial[-1]
+                                                - partial[-2])
+                              < abs(partial[-2] - partial[-3])
+                              + 1e-12,
+                              "method": "eigenexpansion GP kernel (GvdV 2017 Ex 11.16)"})
+    return with_describe_pointer(res, "gh_c11_10")
 
 
 def cheatsheet():
-    return "gh_c11_10: Series GP prior (random Fourier features): f = sum_k beta_k phi_k, beta_k ~ N(0,lambda_k)"
+    return "gh_c11_10: Series (eigenexpansion) GP"
