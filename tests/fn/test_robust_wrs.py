@@ -309,3 +309,103 @@ def test_one_sample_bootstrap_is_deterministic_and_covers_the_estimate():
 def test_one_sample_bootstrap_rejects_a_far_null():
     r = rb.one_sample_bootstrap(X, nboot=500, seed=5, null_value=1e6)
     assert r["p_value"] == 0.0
+
+
+# --- one-way ANOVA, outlier rules, effect size (WRS-anchored) -------
+G1 = [14.1, 11.2, 15.5, 9.8, 13.3, 12.2, 16.2, 10.7]
+G2 = [18.4, 14.9, 12.5, 17.7, 15.8, 19.1, 13.9, 16.6, 11.1]
+G3 = [21.2, 19.8, 24.1, 17.3, 22.5, 20.4, 18.9, 23.7]
+
+
+def test_trimmed_mean_anova_matches_wrs_t1way():
+    r = rb.trimmed_mean_anova([G1, G2, G3])
+    assert abs(r["statistic"] - 17.8615076274) < 1e-8
+    assert abs(r["df1"] - 2.0) < 1e-12
+    assert abs(r["df2"] - 10.6285218540) < 1e-8
+    assert abs(r["p_value"] - 0.0003990663) < 1e-9
+
+
+def test_trimmed_mean_anova_on_two_groups_agrees_with_yuen():
+    # with J = 2 the Welch-type F is the square of Yuen's t
+    f = rb.trimmed_mean_anova([G1, G2])
+    t = rb.yuen_test(G1, G2, tr=0.2)
+    assert abs(f["statistic"] - t["statistic"] ** 2) < 1e-8
+    assert abs(f["p_value"] - t["p_value"]) < 1e-9
+
+
+def test_trimmed_mean_anova_rejects_medians_and_tiny_groups():
+    with pytest.raises(ValueError):
+        rb.trimmed_mean_anova([G1, G2], tr=0.5)
+    with pytest.raises(ValueError):
+        rb.trimmed_mean_anova([G1])
+    with pytest.raises(ValueError):      # zero Winsorized variance
+        rb.trimmed_mean_anova([[1, 1, 1, 1, 1, 1], G1])
+
+
+def test_boxplot_rule_matches_wrs_outbox():
+    r = rb.boxplot_outliers(X)
+    assert abs(r["lower"] - (-70.8333333333)) < 1e-9
+    assert abs(r["upper"] - 175.8333333333) < 1e-9
+
+
+def test_carling_rule_matches_wrs_outbox_mbox():
+    r = rb.boxplot_outliers(X, carling=True)
+    assert abs(r["lower"] - (-81.2600454890)) < 1e-9
+    assert abs(r["upper"] - 171.2600454890) < 1e-9
+    # Carling's fence depends on n; the plain rule's does not
+    n = len(X)
+    assert abs(r["gval"] - (17.63 * n - 23.64) / (7.74 * n - 3.71)) < 1e-12
+    assert rb.boxplot_outliers(X)["gval"] == 1.5
+
+
+def test_carling_centres_on_the_median_not_the_quartiles():
+    r = rb.boxplot_outliers(X, carling=True)
+    m = rb.median(X)
+    assert abs((r["lower"] + r["upper"]) / 2 - m) < 1e-9
+    # the plain rule is centred on the midpoint of the fourths instead
+    b = rb.boxplot_outliers(X)
+    f = rb.ideal_fourths(X)
+    assert abs((b["lower"] + b["upper"]) / 2
+               - (f["q1"] + f["q2"]) / 2) < 1e-9
+
+
+def test_akp_effect_size_matches_wrs():
+    r = rb.akp_effect_size(G1, G2)
+    assert abs(r["effect_size"] - (-0.8363403026)) < 1e-7
+
+
+def test_akp_cterm_is_one_without_trimming_and_recovers_cohens_d():
+    # with tr = 0 the rescaling constant is 1 and the estimator reduces
+    # to the ordinary pooled-variance Cohen's d
+    r = rb.akp_effect_size(G1, G2, tr=0.0)
+    assert abs(r["cterm"] - 1.0) < 1e-12
+    n1, n2 = len(G1), len(G2)
+    m1 = sum(G1) / n1
+    m2 = sum(G2) / n2
+    sp = math.sqrt(((n1 - 1) * rb.variance(G1)
+                    + (n2 - 1) * rb.variance(G2)) / (n1 + n2 - 2))
+    assert abs(r["effect_size"] - (m1 - m2) / sp) < 1e-12
+
+
+def test_akp_unequal_variance_returns_one_value_per_group():
+    r = rb.akp_effect_size(G1, G2, equal_variance=False)
+    assert isinstance(r["effect_size"], tuple)
+    assert len(r["effect_size"]) == 2
+    assert all(v < 0 for v in r["effect_size"])   # G1 sits below G2
+
+
+def test_f_cdf_against_known_values():
+    # F(1; d, d) = 0.5 by symmetry of the numerator and denominator
+    for df in (2, 5, 30):
+        assert abs(rb._f_cdf(1.0, df, df) - 0.5) < 1e-9
+    assert rb._f_cdf(0.0, 3, 7) == 0.0
+    # an F with df1 = 1 is a squared t
+    assert abs(rb._f_cdf(4.0, 1, 12)
+               - (2 * rb._student_t_cdf(2.0, 12) - 1)) < 1e-9
+
+
+def test_trimmed_mean_bootstrap_covers_the_trimmed_mean():
+    r = rb.trimmed_mean_bootstrap(X, nboot=500, seed=4)
+    lo, hi = r["ci"]
+    assert lo <= rb.trimmed_mean(X, 0.2) <= hi
+    assert abs(r["estimate"] - rb.trimmed_mean(X, 0.2)) < 1e-12

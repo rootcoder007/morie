@@ -24,6 +24,8 @@ __all__ = [
     "cliff_delta", "brunner_munzel", "wilcoxon_mann_whitney",
     "percentile_bootstrap_2group", "one_sample_bootstrap",
     "trimmed_mean_se", "trimmed_mean_ci", "yuen_paired",
+    "trimmed_mean_anova", "boxplot_outliers",
+    "akp_effect_size", "trimmed_mean_bootstrap",
 ]
 
 
@@ -957,3 +959,173 @@ def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
     return {"estimate": est(v, **kwargs), "ci": (boot[low], boot[up]),
             "p_value": p, "n": n, "nboot": int(nboot),
             "method": "one-sample percentile bootstrap"}
+
+
+def _f_cdf(x, df1, df2):
+    """CDF of the F distribution, i.e. R's ``pf``.
+
+        F(x; d1, d2) = I_{d1 x / (d1 x + d2)}(d1/2, d2/2)
+    """
+    if x <= 0:
+        return 0.0
+    y = df1 * x / (df1 * x + df2)
+    return _betainc(df1 / 2.0, df2 / 2.0, y)
+
+
+def trimmed_mean_anova(groups, tr=0.2):
+    """Heteroscedastic one-way ANOVA on trimmed means.
+
+    Wilcox's generalisation of Welch's test.  With h_j the untrimmed
+    count and s_wj^2 the Winsorized variance of group j,
+
+        w_j  = h_j (h_j - 1) / ((n_j - 1) s_wj^2)
+        A    = sum w_j (Xt_j - Xt~)^2 / (J - 1),  Xt~ = sum w_j Xt_j / U
+        B    = 2 (J - 2) sum((1 - w_j/U)^2 / (h_j - 1)) / (J^2 - 1)
+        TEST = A / (B + 1)
+
+    with df1 = J - 1 and
+    df2 = 1 / (3 sum((1 - w_j/U)^2 / (h_j - 1)) / (J^2 - 1)).
+    Ported from WRS ``t1way``.  Note WRS warns that tr = 0.5 (medians)
+    should not be handled here -- use a median-specific method.
+    """
+    gs = [_flat(g) for g in groups]
+    J = len(gs)
+    if J < 2:
+        raise ValueError("need at least 2 groups")
+    if tr >= 0.5:
+        raise ValueError("tr = 0.5 compares medians; use a median method")
+    h, w, xbar, nv = [], [], [], []
+    for g in gs:
+        n = len(g)
+        hj = n - 2 * trim_counts(n, tr)
+        if hj < 2:
+            raise ValueError("a group has fewer than 2 untrimmed values")
+        wv = winsorized_variance(g, tr)
+        if wv == 0:
+            raise ValueError("the Winsorized variance is zero for a group")
+        h.append(hj)
+        w.append(hj * (hj - 1.0) / ((n - 1) * wv))
+        xbar.append(trimmed_mean(g, tr))
+        nv.append(n)
+    u = sum(w)
+    xtil = sum(w[j] * xbar[j] for j in range(J)) / u
+    A = sum(w[j] * (xbar[j] - xtil) ** 2 for j in range(J)) / (J - 1.0)
+    tail = sum((1.0 - w[j] / u) ** 2 / (h[j] - 1.0) for j in range(J))
+    B = 2.0 * (J - 2.0) * tail / (J * J - 1.0)
+    test = A / (B + 1.0)
+    nu1 = J - 1.0
+    nu2 = 1.0 / (3.0 * tail / (J * J - 1.0))
+    return {"statistic": test, "df1": nu1, "df2": nu2,
+            "p_value": 1.0 - _f_cdf(test, nu1, nu2),
+            "n": nv, "trimmed_means": xbar,
+            "method": "heteroscedastic one-way ANOVA on trimmed means"}
+
+
+def boxplot_outliers(x, carling=False, gval=None):
+    """Boxplot outlier rule on the ideal fourths.
+
+    Unlike R's ``boxplot``, the quartiles come from the ideal fourths of
+    eq. (2.6)-(2.7).  ``carling=True`` applies Carling's (2000)
+    modification, which centres the interval on the MEDIAN and scales
+    the fence with the sample size,
+
+        gval = (17.63 n - 23.64) / (7.74 n - 3.71)
+        [M - gval * IQR,  M + gval * IQR]
+
+    rather than the fixed 1.5 fence hung off the quartiles.  Ported from
+    WRS ``outbox``.
+    """
+    v = _flat(x)
+    n = len(v)
+    f = ideal_fourths(v)
+    iqr = f["q2"] - f["q1"]
+    if carling:
+        g = ((17.63 * n - 23.64) / (7.74 * n - 3.71)
+             if gval is None else float(gval))
+        m = median(v)
+        cl, cu = m - g * iqr, m + g * iqr
+    else:
+        g = 1.5 if gval is None else float(gval)
+        cl, cu = f["q1"] - g * iqr, f["q2"] + g * iqr
+    flags = [t < cl or t > cu for t in v]
+    return {"lower": cl, "upper": cu, "gval": g, "iqr": iqr,
+            "is_outlier": flags,
+            "outliers": [t for t, b in zip(v, flags) if b],
+            "keep": [t for t, b in zip(v, flags) if not b],
+            "n": n, "n_outliers": sum(1 for b in flags if b),
+            "method": "Carling's boxplot rule" if carling
+                      else "boxplot rule on the ideal fourths"}
+
+
+def _normal_winsorized_variance(tr):
+    """Winsorized variance of the standard normal at trimming ``tr``.
+
+        integral_{z_tr}^{z_{1-tr}} u^2 phi(u) du + 2 z_tr^2 tr
+
+    This is the ``cterm`` of WRS ``akp.effect``, which rescales the
+    robust effect size so that it equals Cohen's d under normality.
+    Evaluated by Simpson's rule, which is exact enough here because the
+    integrand is smooth and the interval finite.
+    """
+    if tr <= 0:
+        return 1.0
+    lo = _norm_quantile(tr)
+    hi = _norm_quantile(1.0 - tr)
+    m = 2000                      # even number of Simpson panels
+    step = (hi - lo) / m
+
+    def f(u):
+        return u * u * math.exp(-0.5 * u * u) / math.sqrt(2.0 * math.pi)
+
+    total = f(lo) + f(hi)
+    for i in range(1, m):
+        total += f(lo + i * step) * (4 if i % 2 else 2)
+    return total * step / 3.0 + 2.0 * lo * lo * tr
+
+
+def akp_effect_size(x, y, tr=0.2, equal_variance=True):
+    """Robust effect size of Algina, Keselman and Penfield (2005).
+
+    A trimmed-mean analogue of Cohen's d: the difference in trimmed
+    means over a Winsorized pooled standard deviation, multiplied by a
+    constant that makes it coincide with Cohen's d when the data are
+    normal.  Ported from WRS ``akp.effect``.
+
+    With ``equal_variance=False`` the difference is divided by each
+    group's own Winsorized standard deviation in turn, and both values
+    are returned.
+    """
+    xs, ys = _flat(x), _flat(y)
+    n1, n2 = len(xs), len(ys)
+    if n1 < 2 or n2 < 2:
+        raise ValueError("each group needs at least 2 observations")
+    s1 = winsorized_variance(xs, tr)
+    s2 = winsorized_variance(ys, tr)
+    cterm = math.sqrt(_normal_winsorized_variance(tr))
+    dif = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
+    if equal_variance:
+        sp = math.sqrt(((n1 - 1) * s1 + (n2 - 1) * s2) / (n1 + n2 - 2.0))
+        if sp == 0:
+            raise ValueError("pooled Winsorized variance is zero")
+        return {"effect_size": cterm * dif / sp, "cterm": cterm,
+                "pooled_sd": sp, "n1": n1, "n2": n2, "tr": float(tr),
+                "method": "AKP robust effect size (equal variances)"}
+    if s1 == 0 or s2 == 0:
+        raise ValueError("a Winsorized variance is zero")
+    return {"effect_size": (cterm * dif / math.sqrt(s1),
+                            cterm * dif / math.sqrt(s2)),
+            "cterm": cterm, "n1": n1, "n2": n2, "tr": float(tr),
+            "method": "AKP robust effect size (unequal variances)"}
+
+
+def trimmed_mean_bootstrap(x, tr=0.2, alpha=0.05, nboot=2000,
+                           null_value=0.0, seed=2):
+    """Percentile bootstrap interval for a single trimmed mean.
+
+    The trimmed-mean specialisation of :func:`one_sample_bootstrap`;
+    WRS calls it ``trimpb``.  Preferred over the Tukey-McLaughlin
+    interval when the sample is small and badly skewed.
+    """
+    return one_sample_bootstrap(
+        x, est=lambda v: trimmed_mean(v, tr), alpha=alpha, nboot=nboot,
+        null_value=null_value, seed=seed)
