@@ -4,7 +4,8 @@ test_that("no function is defined twice across R/", {
   # lost this way.  morie_ols was the dangerous one: its two definitions
   # took (y, X) and (X, y), so callers were transposing their own data
   # and getting a plausible, wrong answer.
-  candidates <- c("../../R", "../../../R", "R", "../R")
+  candidates <- c("r-package/morie/R", "../../R",
+                  "../../../R", "R", "../R")
   r_dir <- NULL
   for (cand in candidates) {
     if (dir.exists(cand) && length(list.files(cand, pattern = "[.]R$"))) {
