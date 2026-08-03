@@ -1,42 +1,31 @@
-"""Spatial error model (SEM)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Spatial error (SEM) model by maximum likelihood.
 
-from . import _array_core as np
+Matches ``spatialreg::errorsarlm``.
+"""
 
-from ._richresult import RichResult
+from . import _robust_core as _rc
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["spatial_error_model"]
 
 
-def spatial_error_model(y, X, W):
-    """
-    Spatial error model (SEM)
+def spatial_error_model(y, X, W, add_intercept=True):
+    """y = X beta + u with u = lambda W u + eps, by maximum likelihood.
 
-    Formula: y = X beta + lambda W u + eps
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    W : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Anselin (1988)
-    """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Spatial error model (SEM)"})
+    The likelihood is concentrated by spatially filtering both sides,
+    y* = y - lambda W y and X* = X - lambda W X.  Spatial dependence
+    here is a nuisance in the errors rather than a substantive lag, so
+    beta keeps its usual interpretation. Keys: estimate."""
+    r = _rc.spatial_error_model(y, X, W, add_intercept=add_intercept)
+    res = RichResult(payload={"estimate": r["lambda"],
+                              "lambda": r["lambda"], "beta": r["beta"],
+                              "sigma2": r["sigma2"],
+                              "loglik": r["loglik"],
+                              "residuals": r["residuals"],
+                              "method": r["method"]})
+    return with_describe_pointer(res, "semmod")
 
 
 def cheatsheet():
-    return "semmod: Spatial error model (SEM)"
+    return "semmod: Spatial error (SEM) model by maximum likelihood"
