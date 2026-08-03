@@ -1173,3 +1173,207 @@ def rkhs_covariances(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0,
         K_LE = _mm(_mm(ZLE, IG), _t(ZLE))
         out["K_LE"] = [[sigma2_ge * v for v in row] for row in K_LE]
     return out
+
+
+# ---------------- Bayesian multi-trait / BMTME (ch. 6 pp.190-196)
+def inv_wishart_draw(rng, nu, S):
+    """Inverse-Wishart IW(nu, S) via the Bartlett decomposition of a
+    Wishart draw: if W ~ Wishart(nu, S^-1) then W^-1 ~ IW(nu, S).
+    Used for Sigma_T, Sigma_E and R in eq. (6.8)-(6.11)."""
+    Sm = _mat(S)
+    p = len(Sm)
+    Sinv = _inv(Sm)
+    L = _chol(Sinv)
+    A = [[0.0] * p for _ in range(p)]
+    for i in range(p):
+        A[i][i] = math.sqrt(max(_rchisq(rng, nu - i), 1e-300))
+        for j in range(i):
+            A[i][j] = float(rng.normal(0, 1))
+    LA = _mm(L, A)
+    W = _mm(LA, _t(LA))
+    return _inv(W)
+
+
+def multitrait_bayes_gibbs(Y, Z1, G, X=None, n_iter=1500,
+                           burn_in=400, nu_T=None, S_T=None,
+                           nu_R=None, S_R=None, seed=42):
+    """The Gibbs sampler of eq. (6.9), steps 1-6 on p.193.
+
+    Y = 1_J mu' + X B + Z_1 b_1 + E with
+    E ~ MN(0, I_J, R) and b_1 ~ MN(0, G, Sigma_T):
+
+      mu      ~ N(mu-tilde, R/J),  mu-tilde = colmean(Y - XB - Z1 b1)
+      g       ~ N(g-tilde, G-tilde),
+                G-tilde = [(Sigma_T^-1 (x) G^-1)
+                           + (R^-1 (x) Z1'Z1)]^-1,
+                g-tilde = G-tilde (R^-1 (x) Z1') vec(Y - 1 mu' - XB)
+      Sigma_T ~ IW(nu_T + J, b1' G^-1 b1 + S_T)
+      R       ~ IW(nu_R + J, S_R + resid' resid)
+
+    ``vec`` stacks columns, matching the book's convention.  With
+    Sigma_T and R diagonal the fit reduces to a univariate GBLUP per
+    trait (p.191).
+    """
+    Ym = _mat(Y)
+    J = len(Ym)
+    nT = len(Ym[0])
+    Z = _mat(Z1)
+    q = len(Z[0])
+    Gm = _mat(G)
+    Ginv = _inv(Gm)
+    rng = np.random.default_rng(seed)
+    nu_T = float(nu_T if nu_T is not None else nT + 2)
+    nu_R = float(nu_R if nu_R is not None else nT + 2)
+    S_T = _mat(S_T) if S_T is not None else \
+        [[1.0 if i == j else 0.0 for j in range(nT)]
+         for i in range(nT)]
+    S_R = _mat(S_R) if S_R is not None else \
+        [[1.0 if i == j else 0.0 for j in range(nT)]
+         for i in range(nT)]
+    mu = [sum(row[t] for row in Ym) / J for t in range(nT)]
+    b1 = [[0.0] * nT for _ in range(q)]
+    Sig_T = [[1.0 if i == j else 0.0 for j in range(nT)]
+             for i in range(nT)]
+    R = [[1.0 if i == j else 0.0 for j in range(nT)]
+         for i in range(nT)]
+    ZtZ = _mm(_t(Z), Z)
+    acc_mu = [0.0] * nT
+    acc_b1 = [[0.0] * nT for _ in range(q)]
+    acc_ST = [[0.0] * nT for _ in range(nT)]
+    acc_R = [[0.0] * nT for _ in range(nT)]
+    kept = 0
+    for it in range(int(n_iter)):
+        Rinv = _inv(R)
+        STinv = _inv(Sig_T)
+        # 2. mu
+        resid = [[Ym[i][t] - sum(Z[i][k] * b1[k][t]
+                                 for k in range(q))
+                  for t in range(nT)] for i in range(J)]
+        cm = [sum(row[t] for row in resid) / J for t in range(nT)]
+        Lmu = _chol([[R[i][j] / J for j in range(nT)]
+                     for i in range(nT)])
+        z = [float(rng.normal(0, 1)) for _ in range(nT)]
+        mu = [cm[t] + sum(Lmu[t][k] * z[k] for k in range(nT))
+              for t in range(nT)]
+        # 3. g = vec(b1): (Sigma_T^-1 (x) G^-1) + (R^-1 (x) Z1'Z1)
+        A = [[0.0] * (q * nT) for _ in range(q * nT)]
+        for s in range(nT):
+            for t in range(nT):
+                for a in range(q):
+                    for b in range(q):
+                        A[s * q + a][t * q + b] = \
+                            STinv[s][t] * Ginv[a][b] \
+                            + Rinv[s][t] * ZtZ[a][b]
+        Ycen = [[Ym[i][t] - mu[t] for t in range(nT)]
+                for i in range(J)]
+        rhs = [0.0] * (q * nT)
+        ZtY = _mm(_t(Z), Ycen)
+        for s in range(nT):
+            for a in range(q):
+                rhs[s * q + a] = sum(Rinv[s][t] * ZtY[a][t]
+                                     for t in range(nT))
+        mean = _solve(A, rhs)
+        Ai = _inv(A)
+        L = _chol(Ai)
+        zz = [float(rng.normal(0, 1)) for _ in range(q * nT)]
+        g = [mean[i] + sum(L[i][k] * zz[k] for k in range(q * nT))
+             for i in range(q * nT)]
+        b1 = [[g[t * q + a] for t in range(nT)] for a in range(q)]
+        # 4. Sigma_T ~ IW(nu_T + J, b1' G^-1 b1 + S_T)
+        GB = _mm(Ginv, b1)
+        BtGB = _mm(_t(b1), GB)
+        Sig_T = inv_wishart_draw(
+            rng, nu_T + q,
+            [[BtGB[i][j] + S_T[i][j] for j in range(nT)]
+             for i in range(nT)])
+        # 5. R ~ IW(nu_R + J, S_R + E'E)
+        E = [[Ycen[i][t] - sum(Z[i][k] * b1[k][t]
+                               for k in range(q))
+              for t in range(nT)] for i in range(J)]
+        EtE = _mm(_t(E), E)
+        R = inv_wishart_draw(
+            rng, nu_R + J,
+            [[EtE[i][j] + S_R[i][j] for j in range(nT)]
+             for i in range(nT)])
+        if it >= burn_in:
+            kept += 1
+            for t in range(nT):
+                acc_mu[t] += mu[t]
+                for s in range(nT):
+                    acc_ST[t][s] += Sig_T[t][s]
+                    acc_R[t][s] += R[t][s]
+            for a in range(q):
+                for t in range(nT):
+                    acc_b1[a][t] += b1[a][t]
+    return {"mu": [v / kept for v in acc_mu],
+            "b1": [[v / kept for v in row] for row in acc_b1],
+            "Sigma_T": [[v / kept for v in row] for row in acc_ST],
+            "R": [[v / kept for v in row] for row in acc_R],
+            "n_kept": kept}
+
+
+def multitrait_ridge_form(Z1, G):
+    """eq. (6.10) p.194: the multivariate ridge form of eq. (6.9),
+    X_1 = Z_1 L_G with G = L_G L_G' the Cholesky factorization and
+    B_1 = L_G^-1 b_1 ~ MN(0, I_J, Sigma_T).  Returns X_1 and L_G, so
+    a BRR-style predictor can replace the RKHS one."""
+    L = _chol(_mat(G))
+    X1 = _mm(_mat(Z1), L)
+    return {"X1": X1, "L_G": L}
+
+
+def bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, mu=None,
+                       b1=None, b2=None, nu_T=None, S_T=None,
+                       nu_E=None, S_E=None):
+    """eq. (6.11) p.195 and its Gibbs steps p.196 (BMTME).
+
+    Y = 1_IJ mu' + X B + Z_1 b_1 + Z_2 b_2 + E with
+    b_1 ~ MN(0, G, Sigma_T) and b_2 ~ MN(0, Sigma_E (x) G, Sigma_T).
+    Returns the two inverse-Wishart scale matrices and degrees of
+    freedom of steps 5 and 6:
+
+      Sigma_T | . ~ IW(nu_T + J + IJ,
+                       b1'G^-1 b1 + b2'(Sigma_E^-1 (x) G^-1)b2 + S_T)
+      Sigma_E | . ~ IW(nu_E + J L,
+                       b2*'(G^-1 (x) Sigma_T^-1) b2* + S_E)
+    """
+    Ym = _mat(Y)
+    nT = len(Ym[0])
+    Gm = _mat(G)
+    Ginv = _inv(Gm)
+    J = len(Gm)
+    b1 = _mat(b1) if b1 is not None else \
+        [[0.0] * nT for _ in range(J)]
+    q2 = len(_mat(Z2)[0])
+    b2 = _mat(b2) if b2 is not None else \
+        [[0.0] * nT for _ in range(q2)]
+    SEinv = _inv(_mat(Sigma_E))
+    I = len(SEinv)
+    nu_T = float(nu_T if nu_T is not None else nT + 2)
+    nu_E = float(nu_E if nu_E is not None else I + 2)
+    S_T = _mat(S_T) if S_T is not None else \
+        [[1.0 if i == j else 0.0 for j in range(nT)]
+         for i in range(nT)]
+    S_E = _mat(S_E) if S_E is not None else \
+        [[1.0 if i == j else 0.0 for j in range(I)]
+         for i in range(I)]
+    # b1' G^-1 b1
+    term1 = _mm(_t(b1), _mm(Ginv, b1))
+    # b2' (Sigma_E^-1 (x) G^-1) b2
+    K = kron(SEinv, Ginv)
+    term2 = _mm(_t(b2), _mm(K, b2))
+    scale_T = [[term1[i][j] + term2[i][j] + S_T[i][j]
+                for j in range(nT)] for i in range(nT)]
+    # Sigma_E scale uses b2 reshaped so that vec(b2*') = vec(b2')
+    STinv = _inv(_mat(Sigma_T))
+    b2s = [[b2[e * J + a][t] if e * J + a < len(b2) else 0.0
+            for t in range(nT) for a in range(J)]
+           for e in range(I)]
+    KE = kron(Ginv, STinv)
+    inner = _mm(b2s, _mm(KE, _t(b2s)))
+    scale_E = [[inner[i][j] + S_E[i][j] for j in range(I)]
+               for i in range(I)]
+    return {"nu_T_post": nu_T + J + len(b2),
+            "scale_T": scale_T,
+            "nu_E_post": nu_E + J * I,
+            "scale_E": scale_E}
