@@ -1,47 +1,31 @@
-"""Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Tail-free density as branch product.
 
-from . import _array_core as np
+Implements Theorem 3.16, eq. (3.18), p.44 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_tailfree_density_product"]
 
 
-def ghosal_ch3_tailfree_density_product(V, x):
-    """
-    Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x.
-
-    Formula: p(x) = prod_{j=1}^{infty} ( 2 * V_{x_1 x_2 ... x_j} )
-
-    Parameters
-    ----------
-    V : array-like
-        Input data.
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: distribution
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.18, p. 44
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x.",
-        }
-    )
+def ghosal_ch3_tailfree_density_product(V_path):
+    """p(x) = prod_j (2 V_{x_1..x_j}) (eq. 3.18): the density of a
+    tail-free measure with respect to the canonical measure.
+    Keys: distribution."""
+    vs = _bnp._flat(V_path)
+    p = 1.0
+    for v in vs:
+        p *= 2.0 * v
+    res = RichResult(payload={"estimate": p, "distribution": p,
+                              "depth": len(vs),
+                              "method": "density product (GvdV 2017 eq. 3.18)"})
+    return with_describe_pointer(res, "ghs025")
 
 
 def cheatsheet():
-    return "ghs025: Density of a tail-free random measure as the infinite product of doubled splitting variables along the binary expansion of the point x."
+    return "ghs025: Tail-free density as branch product"

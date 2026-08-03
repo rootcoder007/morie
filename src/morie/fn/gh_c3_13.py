@@ -1,41 +1,29 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Polya urn characterization of Polya tree process."""
+"""Pólya urn view of the Pólya tree.
+
+Implements sec. 3.7.1 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_polya_urn_pt"]
 
 
-def ghosal_polya_urn_pt(x):
-    """
-    Polya urn characterization of Polya tree process
-
-    Formula: P(X_{n+1} in B | X_1..X_n) = (alpha_B + n_B) / (alpha + n)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 3 §3.7.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Polya urn characterization of Polya tree process"}
-    )
+def ghosal_polya_urn_pt(x, alpha_B=1.0, alpha_total=2.0):
+    """Predictive rule P(X_{n+1} in B | X_1..X_n) =
+    (alpha_B + n_B) / (alpha + n) (GvdV 2017 sec. 3.7.1): each
+    observation adds one unit of mass to its branch, the urn scheme."""
+    xs = _bnp._flat(x)
+    n = len(xs)
+    n_B = sum(1 for v in xs if v < 0.5)     # B = left half
+    pred = (alpha_B + n_B) / (alpha_total + n)
+    res = RichResult(payload={"estimate": pred, "n_B": n_B, "n": n,
+                              "method": "Polya urn predictive (GvdV 2017 sec. 3.7.1)"})
+    return with_describe_pointer(res, "gh_c3_13")
 
 
 def cheatsheet():
-    return "gh_c3_13: Polya urn characterization of Polya tree process"
+    return "gh_c3_13: Pólya urn view of the Pólya tree"

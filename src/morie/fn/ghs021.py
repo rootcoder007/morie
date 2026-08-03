@@ -1,49 +1,38 @@
-"""Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Tail-free maximum bound.
 
-from . import _array_core as np
+Implements eq. (3.14), p.41 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_tailfree_max_bound"]
 
 
-def ghosal_ch3_tailfree_max_bound(V, m, r):
-    """
-    Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m.
-
-    Formula: E[ max_{epsilon in E^m} P(A_epsilon) ]^2 <= sum_{epsilon in E^m} prod_{j=1}^{m} E(V_{epsilon_1 ... epsilon_j}^2) <= 2^m * (r/2)^m = r^m
-
-    Parameters
-    ----------
-    V : array-like
-        Input data.
-    m : array-like
-        Input data.
-    r : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.14, p. 40
-    """
-    V = np.atleast_1d(np.asarray(V, dtype=float))
-    n = len(V)
-    result = float(np.mean(V))
-    se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m.",
-        }
-    )
+def ghosal_ch3_tailfree_max_bound(EV2_by_level, m):
+    """E[max_{e in E^m} P(A_e)]^2 <= sum_{e in E^m} prod_j E(V^2)
+    <= 2^m (r/2)^m with r = max 2 E(V^2) (eq. 3.14). Under symmetric
+    splits every branch has the same product, so the middle term is
+    2^m prod_j E(V_j^2). Keys: value."""
+    ev2 = _bnp._flat(EV2_by_level)[:int(m)]
+    if len(ev2) < int(m):
+        raise ValueError("need E(V^2) for each of the m levels")
+    prod = 1.0
+    for v in ev2:
+        prod *= v
+    middle = (2.0 ** int(m)) * prod
+    r = max(2.0 * v for v in ev2)
+    upper = (2.0 ** int(m)) * (r / 2.0) ** int(m)
+    res = RichResult(payload={"estimate": middle, "value": middle,
+                              "upper_bound": upper,
+                              "bound_holds": middle <= upper + 1e-15,
+                              "method": "tail-free max bound (GvdV 2017 eq. 3.14)"})
+    return with_describe_pointer(res, "ghs021")
 
 
 def cheatsheet():
-    return "ghs021: Bound on the expected squared maximum of partition probabilities for a tail-free process when sup E[V_epsilon^2] < 1/2, decaying geometrically in level m."
+    return "ghs021: Tail-free maximum bound"

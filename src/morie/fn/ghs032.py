@@ -1,51 +1,37 @@
-"""Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Pólya tree tail density bounds.
 
-from . import _array_core as np
+Implements sec. 3.7.2 (tail-factor bounds around eq. 3.23) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_polya_tree_density_bounds"]
 
 
-def ghosal_ch3_polya_tree_density_bounds(a_j, n, N, m):
-    """
-    Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite.
-
-    Formula: prod_{j>m} ( 1 - n / (2 * a_j) )  <=  prod_{j>m} ( 2 * a_j + 2 * N_{G_theta(x)_1 ... G_theta(x)_j} ) / ( 2 * a_j + N_{G_theta(x)_1 ... G_theta(x)_{j-1}} )  <=  prod_{j>m} ( 1 + n / a_j )
-
-    Parameters
-    ----------
-    a_j : array-like
-        Input data.
-    n : array-like
-        Input data.
-    N : array-like
-        Input data.
-    m : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.25, p. 54
-    """
-    a_j = np.atleast_1d(np.asarray(a_j, dtype=float))
-    n = len(a_j)
-    result = float(np.mean(a_j))
-    se = float(np.std(a_j, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite.",
-        }
-    )
+def ghosal_ch3_polya_tree_density_bounds(n, a_of_level, m, depth):
+    """prod_{j>m} (1 - n/(2 a_j)) <= prod_{j>m} (2 a_j + 2 N_j) /
+    (2 a_j + N_{j-1}) <= prod_{j>m} (1 + n/a_j): with at most n
+    observations on any path, each posterior factor beyond level m is
+    sandwiched by these deterministic products (GvdV 2017
+    sec. 3.7.2). Keys: value."""
+    n = float(n)
+    lo = 1.0
+    hi = 1.0
+    for j in range(int(m) + 1, int(depth) + 1):
+        a = float(a_of_level(j))
+        lo *= max(1.0 - n / (2.0 * a), 0.0)
+        hi *= 1.0 + n / a
+    res = RichResult(payload={"estimate": lo, "value": [lo, hi],
+                              "lower": lo, "upper": hi,
+                              "bracket_valid": lo <= 1.0 <= hi,
+                              "method": "PT tail density bounds (GvdV 2017 sec. 3.7.2)"})
+    return with_describe_pointer(res, "ghs032")
 
 
 def cheatsheet():
-    return "ghs032: Two-sided product bounds on the Polya-tree posterior density factor used to control its tail when sum a_j^{-1} is finite."
+    return "ghs032: Pólya tree tail density bounds"

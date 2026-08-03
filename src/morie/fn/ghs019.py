@@ -1,47 +1,32 @@
-"""Probability assigned by a tree-based random measure to a partitioning set as a product of splitting variables along the path from the root.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Set probability as branch product.
 
-from . import _array_core as np
+Implements eq. (3.12), sec. 3.6, p.39 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_tree_set_probability"]
 
 
-def ghosal_ch3_tree_set_probability(V, epsilon):
-    """
-    Probability assigned by a tree-based random measure to a partitioning set as a product of splitting variables along the path from the root.
-
-    Formula: P(A_{epsilon_1 ... epsilon_m}) = V_{epsilon_1} * V_{epsilon_1 epsilon_2} * ... * V_{epsilon_1 ... epsilon_m}
-
-    Parameters
-    ----------
-    V : array-like
-        Input data.
-    epsilon : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 3, Eq 3.12, p. 37
-    """
-    V = np.atleast_1d(np.asarray(V, dtype=float))
-    n = len(V)
-    result = float(np.mean(V))
-    se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability assigned by a tree-based random measure to a partitioning set as a product of splitting variables along the path from the root.",
-        }
-    )
+def ghosal_ch3_tree_set_probability(V_path, epsilon=None):
+    """P(A_{e_1..e_m}) = V_{e_1} V_{e_1 e_2} ... V_{e_1..e_m}: the
+    product of splitting variables down the branch. Keys: value."""
+    vs = _bnp._flat(V_path)
+    p = 1.0
+    for v in vs:
+        if not 0.0 <= v <= 1.0:
+            raise ValueError("splitting variables must lie in [0,1]")
+        p *= v
+    res = RichResult(payload={"estimate": p, "value": p,
+                              "depth": len(vs),
+                              "method": "branch product (GvdV 2017 sec. 3.6)"})
+    return with_describe_pointer(res, "ghs019")
 
 
 def cheatsheet():
-    return "ghs019: Probability assigned by a tree-based random measure to a partitioning set as a product of splitting variables along the path from the root."
+    return "ghs019: Set probability as branch product"
