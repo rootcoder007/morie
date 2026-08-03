@@ -62,21 +62,6 @@ morie_llm_probe_ollama <- function(timeout = 2) {
   out
 }
 
-#' Detect the active LLM provider
-#' @return Character scalar provider key: ollama / gemini / api / openai / local.
-#' @examples
-#' options(morie.llm.ollama_cached = FALSE, morie.llm.freeapi_cached = FALSE)
-#' morie_llm_detect_provider()
-#' options(morie.llm.ollama_cached = NULL, morie.llm.freeapi_cached = NULL)
-#' @export
-morie_llm_detect_provider <- function() {
-  if (morie_llm_probe_ollama())                                 return("ollama")
-  if (!is.null(.morie_llm_gemini_key()))                        return("gemini")
-  if (!is.null(.morie_llm_api_base()) && !is.null(.morie_llm_api_key()))
-                                                                return("api")
-  if (!is.null(.morie_llm_openai_key()))                        return("openai")
-  "local"
-}
 
 .morie_llm_system_prompt <- function(context_block = "") {
   paste0(
