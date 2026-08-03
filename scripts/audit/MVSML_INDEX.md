@@ -57,6 +57,9 @@ to the same implementation, so nothing is written twice.
 | 7 | 9 | eq. (7.9) p.227 | msm112 | `mvsml_bayesian_regression_pt2_eq_7_9` | msm113, msm116 | equation |
 | 7 | 10 | eq. (7.10) p.227 | msm115 | `mvsml_bayesian_regression_pt2_eq_7_10` | msm119 | equation |
 | 7 | 11 | eq. (7.11) p.232 | msm122 | `mvsml_bayesian_regression_pt2_eq_7_11` | - | equation |
+| 8 | 1 | eq. (8.1) p.253 | msm123 | `mvsml_categorical_count_eq_8_1` | msm124, msm127 | prose |
+| 8 | 2 | eq. (8.2) p.254 | msm125 | `mvsml_categorical_count_eq_8_2` | msm126 | equation |
+| 8 | 3 | eq. (8.3) p.254 | msm128 | `mvsml_categorical_count_eq_8_3` | msm129, msm130, msm133, msm134 | prose |
 | ? | ? | hyperplane_side | msm164 | `hyperplane_side` | - | empty artefact |
 | ? | ? | aalen_johansen | msmaln | `aalen_johansen` | - | empty artefact |
 | ? | ? | marginal_structural_model | msmest | `marginal_structural_model` | - | empty artefact |
@@ -82,4 +85,4 @@ LOWER bound (some tags do not survive extraction).
 | 5 | 1 2 3 4 5 6 | 1 2 3 4 5 5a 6 |
 | 6 | 1 2 3 4 5 6 8 9 11 | 1 2 3 4 5 6 7 8 9 10 11 |
 | 7 | 1 2 3 4 5 6 7 9 10 | 1 2 3 4 5 6 7 8 9 10 11 |
-| 8 | 1 2 3 4 6 8 9 10 11 12 | - |
+| 8 | 1 2 3 4 6 8 9 10 11 12 | 1 2 3 |

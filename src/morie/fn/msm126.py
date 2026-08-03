@@ -1,55 +1,15 @@
-"""Numbered display equation (8.2) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (8.2) p.254, re-exported from :mod:`morie.fn.msm125`.
 
-from . import _array_core as np
+The stub generator stamped several extracted page fragments with this
+same function name, so the implementation lives once in msm125 and this
+module re-exports it.
+"""
 
-from ._richresult import RichResult
+from .msm125 import mvsml_categorical_count_eq_8_2, mvsml_rkhs_representer
 
-__all__ = ["mvsml_categorical_count_eq_8_2"]
-
-
-def mvsml_categorical_count_eq_8_2(n, k, k2, de, ned, before):
-    """
-    Numbered display equation (8.2) from MVSML chapter 8.
-
-    Formula:   n k k2 as deﬁned before, and \betaj are beta coefﬁcients. Notice that f \betal\beta jK xl, xj , l, j=1 and by substituting
-
-    Parameters
-    ----------
-    n : array-like
-        Input data.
-    k : array-like
-        Input data.
-    k2 : array-like
-        Input data.
-    de : array-like
-        Input data.
-    ned : array-like
-        Input data.
-    before : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.2) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    """
-    n = np.atleast_1d(np.asarray(n, dtype=float))
-    n = len(n)
-    result = float(np.mean(n))
-    se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.2) from MVSML chapter 8.",
-        }
-    )
+__all__ = ["mvsml_categorical_count_eq_8_2", "mvsml_rkhs_representer"]
 
 
 def cheatsheet():
-    return "msm126: Numbered display equation (8.2) from MVSML chapter 8."
+    return "msm126: see msm125"

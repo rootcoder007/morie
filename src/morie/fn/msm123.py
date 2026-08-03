@@ -1,55 +1,55 @@
-r"""Numbered display equation (8.1) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""RKHS optimization problem.
 
-from . import _array_core as np
+Implements eq. (8.1) p.253 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the auto-generated stub name carries the topic label of the
+previous chapter; chapter 8 is Reproducing Kernel Hilbert Spaces
+regression, and the canonical name below reflects that.  Both names
+resolve to the same function.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_1"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_1", "mvsml_rkhs_objective"]
 
 
-def mvsml_categorical_count_eq_8_1(n, k, k2, min, L, yi):
-    r"""
-    Numbered display equation (8.1) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_1(K, y, beta, eta0=0.0, lam=1.0, loss="squared"):
+    """min over f in H of {(1/n) sum_i L(y_i, f(x_i))
+    + lambda ||f||_H^2} (eq. 8.1): the penalized empirical risk in a
+    reproducing kernel Hilbert space, where L is minus the conditional
+    log-likelihood for the response type and ||f||_H^2 measures model
+    complexity.  Evaluates the objective at a given (eta_0, beta).
+    Keys: estimate."""
+    f = _gp.rkhs_predict(K, beta, eta0)
+    ys = _gp._flat(y)
+    n = len(ys)
+    if loss == "squared":
+        emp = sum((a - b) ** 2 for a, b in zip(ys, f)) / n
+    elif loss == "logistic":
+        emp = sum(math.log(1.0 + math.exp(-(2 * a - 1) * b))
+                  for a, b in zip(ys, f)) / n
+    elif loss == "hinge":
+        emp = sum(max(0.0, 1.0 - (2 * a - 1) * b)
+                  for a, b in zip(ys, f)) / n
+    else:
+        raise ValueError("unknown loss: %s" % loss)
+    norm = _gp.rkhs_norm(beta, K)
+    obj = emp + float(lam) * norm
+    res = RichResult(payload={"estimate": obj, "objective": obj,
+                              "empirical_risk": emp,
+                              "rkhs_norm2": norm,
+                              "method": "RKHS penalized risk (MVSML 2022 eq. 8.1)"})
+    return with_describe_pointer(res, "msm123")
 
-    Formula: n 1 k k2 min L yi, f xi ( ( ) ) + \lambda f ,
 
-    Parameters
-    ----------
-    n : array-like
-        Input data.
-    k : array-like
-        Input data.
-    k2 : array-like
-        Input data.
-    min : array-like
-        Input data.
-    L : array-like
-        Input data.
-    yi : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.1) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    n = np.atleast_1d(np.asarray(n, dtype=float))
-    n = len(n)
-    result = float(np.mean(n))
-    se = float(np.std(n, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.1) from MVSML chapter 8.",
-        }
-    )
+mvsml_rkhs_objective = mvsml_categorical_count_eq_8_1
 
 
 def cheatsheet():
-    return "msm123: Numbered display equation (8.1) from MVSML chapter 8."
+    return "msm123: RKHS optimization problem"
