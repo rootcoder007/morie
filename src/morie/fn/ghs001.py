@@ -1,51 +1,35 @@
-"""Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bayes's formula for the posterior mass of a set.
+
+Implements sec. 1.3, eq. (1.1) form of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, Cambridge University Press.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch1_bayes_formula"]
 
 
 def ghosal_ch1_bayes_formula(B, X, p_theta, Pi):
-    """
-    Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space.
-
-    Formula: Pi(B | X) = ( int_B p_theta(X) dPi(theta) ) / ( int p_theta(X) dPi(theta) )
-
-    Parameters
-    ----------
-    B : array-like
-        Input data.
-    X : array-like
-        Input data.
-    p_theta : array-like
-        Input data.
-    Pi : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: posterior
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 1, Eq 1.1, p. 7
-    """
-    B = np.atleast_1d(np.asarray(B, dtype=float))
-    n = len(B)
-    result = float(np.mean(B))
-    se = float(np.std(B, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space.",
-        }
-    )
+    """Pi(B | X) = int_B p_theta(X) dPi / int p_theta(X) dPi
+    (GvdV 2017 sec. 1.3). ``Pi`` is a discrete prior given as
+    (support, weights); ``B`` an indicator over the support."""
+    supp, wts = Pi
+    supp = _bnp._flat(supp)
+    wts = _bnp._flat(wts)
+    liks = [p_theta(t, X) for t in supp]
+    num = sum(l * w for l, w, t in zip(liks, wts, supp)
+              if B(t))
+    den = sum(l * w for l, w in zip(liks, wts))
+    if den <= 0:
+        raise ValueError("zero marginal likelihood on this prior")
+    res = RichResult(payload={"posterior": num / den,
+                              "marginal": den,
+                              "method": "Bayes formula for set mass (GvdV 2017 sec. 1.3)"})
+    return with_describe_pointer(res, "ghs001")
 
 
 def cheatsheet():
-    return "ghs001: Bayes's formula giving the posterior measure of a set B as the ratio of integrated likelihoods over B and over the whole parameter space."
+    return "ghs001: Bayes's formula for the posterior mass of a set"
