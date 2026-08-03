@@ -1,26 +1,22 @@
 """Tests for evgevc.evt_gev_cdf."""
-
-from morie.fn import _array_core as np
+import math
 
 from morie.fn.evgevc import evt_gev_cdf
 
 
-def test_evgevc_basic():
-    """Test basic functionality."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_gev_cdf(x, mu, sigma, xi)
-    assert isinstance(result, dict)
-    assert "estimate" in result or "statistic" in result
+def test_gumbel_at_location():
+    # G(mu) = exp(-1) exactly in the Gumbel case (Coles eq. 3.2 limit)
+    r = evt_gev_cdf(0.0, 0.0, 1.0, 0.0)
+    assert abs(r["F"] - math.exp(-1.0)) < 1e-12
 
 
-def test_evgevc_edge():
-    """Test edge cases."""
-    x = np.random.default_rng(42).normal(0, 1, 100)
-    mu = 0.0
-    sigma = 1.0
-    xi = np.random.default_rng(42).normal(0, 1, 100)
-    result = evt_gev_cdf(x, mu, sigma, xi)
-    assert isinstance(result, dict)
+def test_support_edges():
+    # xi > 0: mass 0 below mu - sigma/xi; xi < 0: mass 1 above bound
+    assert evt_gev_cdf(-10.0, 0.0, 1.0, 0.5)["F"] == 0.0
+    assert evt_gev_cdf(10.0, 0.0, 1.0, -0.5)["F"] == 1.0
+
+
+def test_monotone_vector():
+    r = evt_gev_cdf([0.0, 1.0, 2.0, 3.0], 1.0, 2.0, 0.2)
+    F = r["F"]
+    assert all(F[i] < F[i + 1] for i in range(3))

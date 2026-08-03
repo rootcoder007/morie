@@ -1,43 +1,27 @@
-"""Return level z_p."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Return level z_p.
+
+Implements eq. (3.4) of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["return_level"]
 
 
 def return_level(mu, sigma, xi, T):
-    """
-    Return level z_p
-
-    Formula: z_p = μ − σ/ξ (1 − (-log(1-1/T))^{-ξ})
-
-    Parameters
-    ----------
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Coles (2001)
-    """
-    mu = np.atleast_1d(np.asarray(mu, dtype=float))
-    n = len(mu)
-    result = float(np.mean(mu))
-    se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Return level z_p"})
+    """Return level (Coles 2001 eq. 3.4) -- front-end returning the
+    shelf's scalar contract."""
+    z = _ev.gev_return_level(float(T), float(mu), float(sigma),
+                             float(xi))
+    res = RichResult(payload={"estimate": float(z), "T": float(T),
+                              "method": "GEV return level (Coles 2001 eq. 3.4)"})
+    return with_describe_pointer(res, "retLvl")
 
 
 def cheatsheet():

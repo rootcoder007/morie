@@ -1,47 +1,40 @@
-"""Delta-method CI for a return level z_T."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Delta-method CI for a return level z_T.
+
+Implements sec. 3.3.3 of Coles (2001), *An Introduction to Statistical
+Modeling of Extreme Values*, Springer. The mathematics live in
+``morie.fn._evt_core``; this module is the named entry point with the
+shelf's result contract.
+"""
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _evt_core as _ev
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["evt_return_level_ci"]
 
 
-def evt_return_level_ci(mu, sigma, xi, Sigma_hat, T):
-    """
-    Delta-method CI for a return level z_T
-
-    Formula: Var(z_T) = ∇z_T^T Σ̂ ∇z_T
-
-    Parameters
-    ----------
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    Sigma_hat : array-like
-        Input data.
-    T : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: z_T, ci_lo, ci_hi
-
-    References
-    ----------
-    Coles (2001)
-    """
-    mu = np.atleast_1d(np.asarray(mu, dtype=float))
-    n = len(mu)
-    result = float(np.mean(mu))
-    se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Delta-method CI for a return level z_T"}
-    )
+def evt_return_level_ci(x, T, alpha=0.05):
+    """Return level with delta-method confidence interval:
+    Var(z_T) = grad^T V grad with V the MLE covariance (Coles 2001
+    sec. 3.3.3). Fits the GEV to ``x`` first."""
+    import math
+    from ._stats_core import norm as _norm
+    f = _ev.gev_mle(x)
+    z = _ev.gev_return_level(float(T), f["mu"], f["sigma"], f["xi"])
+    g = _ev.gev_return_level_grad(float(T), f["mu"], f["sigma"],
+                                  f["xi"])
+    V = f["cov"]
+    var = sum(g[i] * V[i][j] * g[j]
+              for i in range(3) for j in range(3))
+    se = math.sqrt(max(var, 0.0))
+    zc = float(_norm.ppf(1.0 - alpha / 2.0))
+    res = RichResult(payload={"z_T": float(z),
+                              "ci_lo": float(z - zc * se),
+                              "ci_hi": float(z + zc * se),
+                              "se": se, "T": float(T),
+                              "method": "delta-method return-level CI (Coles 2001 sec. 3.3.3)"})
+    return with_describe_pointer(res, "evrlci")
 
 
 def cheatsheet():
