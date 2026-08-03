@@ -483,3 +483,36 @@ def test_winsorized_regression_accepts_multiple_predictors():
 def test_winsorized_regression_rejects_mismatched_lengths():
     with pytest.raises(ValueError):
         rb.winsorized_regression([1, 2, 3], [1, 2])
+
+
+# --- bootstrap correlation interval ---------------------------------
+def test_correlation_bootstrap_wraps_the_anchored_estimator():
+    # the point estimate is the WRS-anchored pbcor, unchanged
+    r = rb.correlation_bootstrap_ci(XS, YS, nboot=299)
+    assert abs(r["estimate"] - 0.9947292172) < 1e-9
+    w = rb.correlation_bootstrap_ci(XS, YS,
+                                    corfun=rb.winsorized_correlation,
+                                    nboot=299)
+    assert abs(w["estimate"] - 0.9935833618) < 1e-9
+
+
+def test_correlation_bootstrap_is_deterministic_and_brackets_the_estimate():
+    a = rb.correlation_bootstrap_ci(XS, YS, nboot=299, seed=13)
+    b = rb.correlation_bootstrap_ci(XS, YS, nboot=299, seed=13)
+    assert a["ci"] == b["ci"] and a["p_value"] == b["p_value"]
+    lo, hi = a["ci"]
+    assert lo <= a["estimate"] <= hi
+    assert 0.0 <= a["p_value"] <= 1.0
+
+
+def test_correlation_bootstrap_resamples_pairs_not_columns():
+    # a strong relationship must survive resampling; if the two vectors
+    # were resampled independently the interval would straddle zero
+    r = rb.correlation_bootstrap_ci(XS, YS, nboot=299, seed=1)
+    assert r["ci"][0] > 0.5
+    assert r["p_value"] < 0.05
+
+
+def test_correlation_bootstrap_rejects_mismatched_lengths():
+    with pytest.raises(ValueError):
+        rb.correlation_bootstrap_ci([1, 2, 3], [1, 2])

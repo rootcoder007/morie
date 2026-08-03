@@ -27,7 +27,7 @@ __all__ = [
     "trimmed_mean_anova", "boxplot_outliers",
     "akp_effect_size", "trimmed_mean_bootstrap",
     "median_se", "median_test_2group",
-    "winsorized_regression",
+    "winsorized_regression", "correlation_bootstrap_ci",
 ]
 
 
@@ -1270,3 +1270,57 @@ def _solve_local(A, b):
             if f:
                 M[r] = [M[r][k] - f * M[c][k] for k in range(n + 1)]
     return [M[i][n] for i in range(n)]
+
+
+def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
+                             seed=2, **kwargs):
+    """Bootstrap confidence interval for a correlation.
+
+    Resamples PAIRS -- the same row index is taken from x and y -- so
+    the dependence between them is preserved; resampling the two
+    vectors independently would estimate the null distribution instead.
+    ``corfun`` defaults to the percentage bend correlation, as in WRS
+    ``corb``, and may be any function returning a dict with a "cor" key
+    (both :func:`percentage_bend_correlation` and
+    :func:`winsorized_correlation` do).
+
+    The interval endpoints use WRS's index convention,
+    floor(alpha/2 * nboot + 0.5) and floor((1 - alpha/2) * nboot + 0.5),
+    and the p-value is twice the smaller tail proportion about zero.
+
+    Unlike the other ported functions this one cannot be matched to R
+    digit for digit: it depends on the resampling stream, and R's
+    ``sample()`` uses the Mersenne Twister with R's own seeding.  The
+    ESTIMATOR it wraps is anchored exactly; only the resampling differs.
+    """
+    import random
+
+    xs, ys = _flat(x), _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    n = len(xs)
+    if corfun is None:
+        corfun = percentage_bend_correlation
+    est = corfun(xs, ys, **kwargs)["cor"]
+    rng = random.Random(seed)
+    boot = []
+    for _ in range(int(nboot)):
+        idx = [rng.randrange(n) for _ in range(n)]
+        try:
+            boot.append(corfun([xs[i] for i in idx],
+                               [ys[i] for i in idx], **kwargs)["cor"])
+        except ValueError:
+            continue          # a degenerate resample contributes nothing
+    if not boot:
+        raise ValueError("every bootstrap resample was degenerate")
+    boot.sort()
+    nb = len(boot)
+    ilow = int(math.floor((alpha / 2.0) * nb + 0.5))
+    ihi = int(math.floor((1.0 - alpha / 2.0) * nb + 0.5))
+    ilow = min(max(ilow - 1, 0), nb - 1)
+    ihi = min(max(ihi - 1, 0), nb - 1)
+    phat = sum(1 for b in boot if b < 0) / nb
+    return {"estimate": est, "ci": (boot[ilow], boot[ihi]),
+            "p_value": 2.0 * min(phat, 1.0 - phat), "n": n,
+            "nboot": nb,
+            "method": "bootstrap confidence interval for a correlation"}
