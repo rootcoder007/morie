@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2."""
+"""Entropy condition for a sieve.
+
+Implements eq. (8.5) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_entropy_cnd"]
 
 
-def ghosal_entropy_cnd(x):
-    """
-    Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2
-
-    Formula: log N(eps_n, Theta_n, d_H) <= n*eps_n^2 for sieve Theta_n
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 8 §8.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2",
-        }
-    )
+def ghosal_entropy_cnd(dim, radius, n, eps_n):
+    """log N(eps, ball_d(R), ||.||) <= d log(3R/eps) for a
+    d-dimensional ball; condition (8.5) requires it <= n eps_n^2.
+    Keys: estimate."""
+    d = float(dim)
+    log_N = d * math.log(max(3.0 * float(radius) / float(eps_n),
+                             1.0))
+    ok = log_N <= float(n) * float(eps_n) ** 2
+    res = RichResult(payload={"estimate": log_N,
+                              "bound": float(n) * float(eps_n) ** 2,
+                              "condition_holds": ok,
+                              "method": "entropy condition (GvdV 2017 eq. 8.5)"})
+    return with_describe_pointer(res, "gh_c8_5")
 
 
 def cheatsheet():
-    return "gh_c8_5: Metric entropy condition: log N(eps_n, sieve Theta_n, Hellinger) <= n*eps_n^2"
+    return "gh_c8_5: Entropy condition for a sieve"

@@ -1,46 +1,39 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Ghosal-Ghosh-van der Vaart 2000 general contraction theorem."""
+"""Basic contraction-rate theorem.
+
+Implements Theorem 8.9, conditions (8.4)-(8.6) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ggv_thm"]
 
 
-def ghosal_ggv_thm(x):
-    """
-    Ghosal-Ghosh-van der Vaart 2000 general contraction theorem
-
-    Formula: eps_n contraction if: test condition + Pi(KL ball)>=exp(-n*eps_n^2) + entropy<=exp(n*eps_n^2)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 8 §8.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Ghosal-Ghosh-van der Vaart 2000 general contraction theorem",
-        }
-    )
+def ghosal_ggv_thm(n, eps_n, log_prior_mass_B2, log_entropy,
+                   log_sieve_tail_mass, C=1.0):
+    """Thm 8.9: eps_n is a contraction rate if (i)
+    Pi(B_2(p0, eps_n)) >= e^{-C n eps_n^2}, (ii)
+    log N(xi eps_n, P_n1, d) <= n eps_n^2, (iii)
+    Pi(P_n2) <= e^{-(C+4) n eps_n^2}. Checks the three inequalities.
+    Keys: estimate."""
+    ne2 = float(n) * float(eps_n) ** 2
+    c_i = float(log_prior_mass_B2) >= -C * ne2
+    c_ii = float(log_entropy) <= ne2
+    c_iii = float(log_sieve_tail_mass) <= -(C + 4.0) * ne2
+    ok = c_i and c_ii and c_iii
+    res = RichResult(payload={"estimate": float(eps_n) if ok
+                              else float("nan"),
+                              "n_eps2": ne2,
+                              "conditions": [c_i, c_ii, c_iii],
+                              "rate_certified": ok,
+                              "method": "basic rate theorem (GvdV 2017 Thm 8.9)"})
+    return with_describe_pointer(res, "gh_c8_2")
 
 
 def cheatsheet():
-    return "gh_c8_2: Ghosal-Ghosh-van der Vaart 2000 general contraction theorem"
+    return "gh_c8_2: Basic contraction-rate theorem"

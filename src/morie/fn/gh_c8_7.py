@@ -1,46 +1,35 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Priors based on finite approximating sets: sieve priors for contraction."""
+"""Priors on finite approximating nets.
+
+Implements Theorem 8.15 + Example 8.16 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_fin_apx_pri"]
 
 
-def ghosal_fin_apx_pri(x):
-    """
-    Priors based on finite approximating sets: sieve priors for contraction
-
-    Formula: Pi_n = Pi on Theta_n, Theta_n = eps_n-net of size exp(n*eps_n^2)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 8 §8.2.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Priors based on finite approximating sets: sieve priors for contraction",
-        }
-    )
+def ghosal_fin_apx_pri(smoothness, n):
+    """Net priors: with bracketing entropy log N <= eps^{-1/alpha}
+    (Holder ball, Ex 8.16), the rate solves eps^{-1/alpha} = n eps^2:
+    eps_n = n^{-alpha/(2 alpha + 1)}, attained by the discrete-net
+    mixture prior of Thm 8.15. Keys: estimate."""
+    a = float(smoothness)
+    eps_n = float(n) ** (-a / (2.0 * a + 1.0))
+    balance_gap = abs(eps_n ** (-1.0 / a)
+                      - float(n) * eps_n ** 2) \
+        / (float(n) * eps_n ** 2)
+    res = RichResult(payload={"estimate": eps_n,
+                              "net_size_log": eps_n ** (-1.0 / a),
+                              "balance_gap": balance_gap,
+                              "method": "net-prior rate (GvdV 2017 Thm 8.15, Ex 8.16)"})
+    return with_describe_pointer(res, "gh_c8_7")
 
 
 def cheatsheet():
-    return "gh_c8_7: Priors based on finite approximating sets: sieve priors for contraction"
+    return "gh_c8_7: Priors on finite approximating nets"
