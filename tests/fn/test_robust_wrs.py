@@ -409,3 +409,77 @@ def test_trimmed_mean_bootstrap_covers_the_trimmed_mean():
     lo, hi = r["ci"]
     assert lo <= rb.trimmed_mean(X, 0.2) <= hi
     assert abs(r["estimate"] - rb.trimmed_mean(X, 0.2)) < 1e-12
+
+
+# --- median standard error and Winsorized regression (WRS-anchored) --
+def test_median_se_matches_wrs_msmedse():
+    assert abs(rb.median_se(X, warn_ties=False)["se"]
+               - 23.2934689878) < 1e-9
+    assert abs(rb.median_se(G1, warn_ties=False)["se"]
+               - 1.2423183460) < 1e-9
+
+
+def test_median_se_follows_the_mckean_shrader_order_statistics():
+    v = sorted(float(t) for t in X)
+    n = len(v)
+    z = rb._norm_quantile(0.995)
+    av = int(round((n + 1) / 2 - z * math.sqrt(n / 4)))
+    top = n - av + 1
+    r = rb.median_se(X, warn_ties=False)
+    assert r["av"] == av and r["top"] == top
+    assert abs(r["se"] - (v[top - 1] - v[av - 1]) / (2 * z)) < 1e-12
+
+
+def test_median_se_reports_ties_rather_than_hiding_them():
+    # Wilcox warns this estimator can be badly wrong with ties, so the
+    # tie must be surfaced, not silently folded into a number
+    tied = [1, 2, 2, 2, 3, 3, 4, 5, 5]
+    r = rb.median_se(tied)
+    assert r["ties"] is True
+    assert "warning" in r
+    assert rb.median_se(X, warn_ties=False)["ties"] is False
+
+
+def test_median_test_2group_is_symmetric_under_swapping():
+    a = rb.median_test_2group(G1, G2)
+    b = rb.median_test_2group(G2, G1)
+    assert abs(a["estimate"] + b["estimate"]) < 1e-12
+    assert abs(a["statistic"] + b["statistic"]) < 1e-12
+    assert abs(a["p_value"] - b["p_value"]) < 1e-12
+
+
+def test_winsorized_regression_matches_wrs_winreg():
+    w = rb.winsorized_regression(XS, YS)
+    assert abs(w["intercept"] - (-0.2720258730)) < 1e-9
+    assert abs(w["slope"][0] - 2.1066687702) < 1e-9
+    assert w["converged"] is True
+
+
+def test_winsorized_regression_resists_a_y_outlier():
+    bad = list(YS)
+    bad[-1] = 500.0
+    wr = rb.winsorized_regression(XS, bad)["slope"][0]
+    n = len(XS)
+    mx = sum(XS) / n
+    my = sum(bad) / n
+    ols = (sum((XS[i] - mx) * (bad[i] - my) for i in range(n))
+           / sum((t - mx) ** 2 for t in XS))
+    assert abs(wr - 2.0) < 1.0        # stays near the true slope
+    assert ols > 6.0                  # least squares is dragged away
+
+
+def test_winsorized_regression_accepts_multiple_predictors():
+    rows = [[float(i), float(i * i)] for i in range(1, 13)]
+    y = [3.0 + 2.0 * r[0] - 0.5 * r[1] for r in rows]
+    w = rb.winsorized_regression(rows, y)
+    assert len(w["slope"]) == 2
+    assert len(w["coef"]) == 3
+    fitted = [w["intercept"] + sum(w["slope"][j] * rows[i][j]
+                                   for j in range(2))
+              for i in range(len(rows))]
+    assert max(abs(fitted[i] - y[i]) for i in range(len(y))) < 1e-6
+
+
+def test_winsorized_regression_rejects_mismatched_lengths():
+    with pytest.raises(ValueError):
+        rb.winsorized_regression([1, 2, 3], [1, 2])
