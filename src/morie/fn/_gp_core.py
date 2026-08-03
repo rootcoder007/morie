@@ -2070,3 +2070,115 @@ def arccos_kernel(X, Z=None, depth=1, normalize_median=False):
         if med:
             K = [[v / med for v in row] for row in K]
     return K
+
+
+def hadamard(A, B):
+    """Element-wise (Hadamard) product, written "o" on p.285."""
+    Am, Bm = _mat(A), _mat(B)
+    return [[Am[i][j] * Bm[i][j] for j in range(len(Am[0]))]
+            for i in range(len(Am))]
+
+
+def bayesian_kernel_blup(y, K, sigma2_u=1.0, sigma2_e=1.0,
+                         X=None, n_iter=1200, burn_in=300,
+                         nu=5.0, nu_u=5.0, R2=0.5, seed=42,
+                         gibbs=True):
+    """The Bayesian kernel BLUP of eq. (8.8) p.281:
+    y = 1 mu + u + e with u ~ N(0, sigma2_u K) and
+    e ~ N(0, sigma2_e I), i.e. kernel ridge regression under a
+    Bayesian framework with lambda = sigma2_e/sigma2_u.
+
+    Full conditionals (p.282):
+      u       | . ~ N(u-tilde, K-tilde),
+                    K-tilde = (sigma_u^-2 K^-1 + sigma_e^-2 I)^-1,
+                    u-tilde = sigma_e^-2 K-tilde (y - 1 mu)
+      mu      | . ~ N((1/n) 1'(y - u), sigma2_e/n)
+      sigma2_e| . ~ chi^-2(nu + n, S + ||y - 1 mu - u||^2)
+      sigma2_u| . ~ chi^-2(nu_u + n, S_u + u' K^-1 u)
+
+    The mean of u is the BLUP from Henderson's mixed model equation,
+    which is why the book notes that with K the genomic relationship
+    matrix this model IS GBLUP (p.282).  ``gibbs=False`` returns the
+    single conditional-mode solution at the supplied variances.
+    """
+    ys = _flat(y)
+    n = len(ys)
+    Km = _mat(K)
+    Kinv = _inv(Km)
+    rng = np.random.default_rng(seed)
+    hp = brr_hyperparameters(ys, R2=R2, nu=nu, nu_beta=nu_u)
+
+    def posterior_u(mu, s2u, s2e):
+        A = [[Kinv[i][j] / s2u + ((1.0 / s2e) if i == j else 0.0)
+              for j in range(n)] for i in range(n)]
+        Kt = _inv(A)
+        ut = [v / s2e for v in _mv(Kt, [a - mu for a in ys])]
+        return ut, Kt
+
+    if not gibbs:
+        mu = sum(ys) / n
+        ut, Kt = posterior_u(mu, sigma2_u, sigma2_e)
+        return {"mu": mu, "u": ut, "K_tilde": Kt,
+                "sigma2_u": sigma2_u, "sigma2_e": sigma2_e}
+
+    mu = sum(ys) / n
+    s2u, s2e = sigma2_u, sigma2_e
+    u = [0.0] * n
+    acc_mu = acc_u = acc_s2u = acc_s2e = None
+    acc_u = [0.0] * n
+    acc_mu = acc_s2u = acc_s2e = 0.0
+    kept = 0
+    for it in range(int(n_iter)):
+        ut, Kt = posterior_u(mu, s2u, s2e)
+        L = _chol(Kt)
+        z = [float(rng.normal(0, 1)) for _ in range(n)]
+        u = [ut[i] + sum(L[i][k] * z[k] for k in range(n))
+             for i in range(n)]
+        resid = [a - b for a, b in zip(ys, u)]
+        mu = sum(resid) / n + math.sqrt(s2e / n) \
+            * float(rng.normal(0, 1))
+        e = [a - mu for a in resid]
+        s2e = scaled_inv_chisq(rng, nu + n,
+                               hp["S"] + sum(v * v for v in e))
+        quad = sum(u[i] * sum(Kinv[i][j] * u[j] for j in range(n))
+                   for i in range(n))
+        s2u = scaled_inv_chisq(rng, nu_u + n,
+                               hp["S_beta"] + quad)
+        if it >= burn_in:
+            kept += 1
+            acc_mu += mu
+            acc_s2u += s2u
+            acc_s2e += s2e
+            for i in range(n):
+                acc_u[i] += u[i]
+    return {"mu": acc_mu / kept, "u": [v / kept for v in acc_u],
+            "sigma2_u": acc_s2u / kept, "sigma2_e": acc_s2e / kept,
+            "n_kept": kept}
+
+
+def kernel_blup_replicated(Z, K, sigma2_u=1.0):
+    """eq. (8.9) p.282: Y = 1 mu + Z u + e when individuals are
+    replicated.  BGLR cannot take that predictor directly, so the
+    covariance of the predictor is precomputed,
+    K_* = Var(Z u) = Z K Z', and used as the kernel."""
+    Zm = _mat(Z)
+    Ks = _mm(_mm(Zm, _mat(K)), _t(Zm))
+    return [[sigma2_u * v for v in row] for row in Ks]
+
+
+def kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1=1.0, sigma2_u2=1.0):
+    """eq. (8.10) p.283-285, the extended predictor:
+    y = mu 1 + Z_E beta_E + u_1 + u_2 + eps with
+    u_1 ~ N(0, sigma2_u1 K_1), K_1 = Z_u1 K Z_u1', and
+    u_2 ~ N(0, sigma2_u2 K_2),
+    K_2 = (Z_u1 K Z_u1') o (Z_E Z_E'), "o" the Hadamard product.
+    K_1 carries the genomic main effects and K_2 the genotype x
+    environment interaction."""
+    Zu = _mat(Z_u1)
+    ZE = _mat(Z_E)
+    K1 = _mm(_mm(Zu, _mat(K)), _t(Zu))
+    KE = _mm(ZE, _t(ZE))
+    K2 = hadamard(K1, KE)
+    return {"K1": [[sigma2_u1 * v for v in row] for row in K1],
+            "K2": [[sigma2_u2 * v for v in row] for row in K2],
+            "K_env": KE}
