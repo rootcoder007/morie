@@ -2456,3 +2456,139 @@ def svm_predict(X_new, beta0, beta):
     """p.350: y-hat = sign[f-hat(x)] with f-hat from eq. (9.5)."""
     return [1 if v > 0 else -1
             for v in svm_decision_values(X_new, beta0, beta)]
+
+
+# ------------- artificial neural networks (ch. 10 pp.385, 409-412)
+def _act(name, z, deriv=False):
+    """Activation functions and their derivatives, used as g^(h) and
+    g^(l) in eq. (10.7) and (10.9)."""
+    if name == "identity":
+        return 1.0 if deriv else z
+    if name == "logistic":
+        s = 1.0 / (1.0 + math.exp(-max(min(z, 700.0), -700.0)))
+        return s * (1.0 - s) if deriv else s
+    if name == "tanh":
+        t = math.tanh(z)
+        return 1.0 - t * t if deriv else t
+    if name == "relu":
+        return (1.0 if z > 0 else 0.0) if deriv else max(0.0, z)
+    raise ValueError("unknown activation: %s" % name)
+
+
+def ann_forward(X, W, activations=None):
+    """eq. (10.1)-(10.3) p.385: a feedforward pass through a network
+    with d inputs, M_1 units in hidden layer 1, M_2 in hidden layer 2
+    and O outputs,
+
+        V_1j = g_1(sum_i w_ji^(1) x_i)
+        V_2k = g_2(sum_j w_kj^(2) V_1j)
+        y_l  = g_3(sum_k w_lk^(3) V_2k)
+
+    generalized to any number of layers.  ``W`` is a list of weight
+    matrices, one per layer, each shaped (units_out x units_in); the
+    bias is handled by adding an input fixed at 1 (p.409).
+    """
+    A = _mat(X)
+    acts = activations or ["logistic"] * (len(W) - 1) + ["identity"]
+    layers = [A]
+    nets = []
+    for li, Wl in enumerate(W):
+        Wm = _mat(Wl)
+        z = [[sum(Wm[u][v] * row[v] for v in range(len(Wm[0])))
+              for u in range(len(Wm))] for row in layers[-1]]
+        nets.append(z)
+        layers.append([[_act(acts[li], v) for v in row]
+                       for row in z])
+    return {"output": layers[-1], "layers": layers, "nets": nets,
+            "activations": acts}
+
+
+def ann_sse(y_hat, y):
+    """eq. (10.5) p.409: E = (1/2) sum_i sum_j (y-hat_ij - y_ij)^2,
+    the sum-of-squared-errors loss the backpropagation derivation
+    minimizes."""
+    P = _mat(y_hat)
+    Y = _mat(y)
+    return 0.5 * sum((P[i][j] - Y[i][j]) ** 2
+                     for i in range(len(P)) for j in range(len(P[0])))
+
+
+def ann_backprop_gradients(X, y, W, activations=None):
+    """The backpropagation gradients of eq. (10.10)-(10.17) p.410-412.
+
+    Output layer, eq. (10.12): delta_ij = (y_ij - y-hat_ij)
+    g^(l)'(z_ij^(l)) and Delta w_jk^(l) = eta delta_ij V_ik^(h).
+    Hidden layer, eq. (10.16): psi_ik = sum_j delta_ij w_jk^(l)
+    g^(h)'(z_ik^(h)) and Delta w_kp^(h) = eta psi_ik x_ip -- the sum
+    over outputs is there because every hidden neuron feeds all of
+    them.
+
+    Returns dE/dW per layer (note eq. 10.10 defines the UPDATE as
+    -eta times this, so the deltas above carry the opposite sign).
+    """
+    fwd = ann_forward(X, W, activations)
+    layers, nets, acts = fwd["layers"], fwd["nets"], fwd["activations"]
+    Y = _mat(y)
+    n = len(Y)
+    L = len(W)
+    # delta at the output: dE/dz = (y-hat - y) g'(z)
+    d = [[(layers[-1][i][j] - Y[i][j])
+          * _act(acts[-1], nets[-1][i][j], deriv=True)
+          for j in range(len(Y[0]))] for i in range(n)]
+    grads = [None] * L
+    for li in range(L - 1, -1, -1):
+        Wm = _mat(W[li])
+        prev = layers[li]
+        grads[li] = [[sum(d[i][u] * prev[i][v] for i in range(n))
+                      for v in range(len(Wm[0]))]
+                     for u in range(len(Wm))]
+        if li > 0:
+            d = [[sum(d[i][u] * Wm[u][v] for u in range(len(Wm)))
+                  * _act(acts[li - 1], nets[li - 1][i][v],
+                         deriv=True)
+                  for v in range(len(Wm[0]))] for i in range(n)]
+    return {"gradients": grads, "loss": ann_sse(layers[-1], Y),
+            "output": layers[-1]}
+
+
+def ann_train(X, y, W, eta=0.1, n_iter=500, activations=None,
+              tol=1e-12):
+    """The weight updates of eq. (10.13) and (10.17):
+    w^(t+1) = w^(t) + eta delta V and w^(t+1) = w^(t) + eta psi x,
+    iterated until the loss stops decreasing."""
+    Wc = [[list(map(float, row)) for row in _mat(Wl)] for Wl in W]
+    hist = []
+    for it in range(int(n_iter)):
+        g = ann_backprop_gradients(X, y, Wc, activations)
+        hist.append(g["loss"])
+        for li in range(len(Wc)):
+            for u in range(len(Wc[li])):
+                for v in range(len(Wc[li][u])):
+                    Wc[li][u][v] -= eta * g["gradients"][li][u][v]
+        if len(hist) > 1 and abs(hist[-2] - hist[-1]) < tol:
+            break
+    final = ann_backprop_gradients(X, y, Wc, activations)
+    return {"W": Wc, "loss": final["loss"], "history": hist,
+            "output": final["output"], "iterations": len(hist)}
+
+
+def ann_numeric_gradient(X, y, W, activations=None, eps=1e-6):
+    """Central-difference gradient of eq. (10.5), used to check the
+    analytic backpropagation gradients."""
+    out = []
+    for li in range(len(W)):
+        Wm = _mat(W[li])
+        G = [[0.0] * len(Wm[0]) for _ in range(len(Wm))]
+        for u in range(len(Wm)):
+            for v in range(len(Wm[0])):
+                for sign in (1, -1):
+                    Wp = [[list(map(float, r)) for r in _mat(A)]
+                          for A in W]
+                    Wp[li][u][v] += sign * eps
+                    e = ann_sse(ann_forward(X, Wp,
+                                            activations)["output"],
+                                y)
+                    G[u][v] += sign * e
+                G[u][v] /= (2.0 * eps)
+        out.append(G)
+    return out

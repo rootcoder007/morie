@@ -1,55 +1,39 @@
-r"""Numbered display equation (10.9) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Predicted output of the network.
 
-from . import _array_core as np
+Implements eq. (10.8)-(10.9) p.409 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_9"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_9", "mvsml_ann_output"]
 
 
-def mvsml_reproducing_kernel_eq_10_9(jk, E, w, l, where, the):
-    r"""
-    Numbered display equation (10.9) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_9(V_h, W_l, activation="identity"):
+    """z_ij^(l) = sum_k w_jk^(l) V_ik^(h) (eq. 10.8) and
+    y-hat_ij = g^(l)(z_ij^(l)) (eq. 10.9).  The output activation is
+    the inverse-link that fixes the response type -- identity for
+    continuous, logistic for binary, exponential for counts.
+    Keys: estimate."""
+    f = _gp.ann_forward(V_h, [W_l], [activation])
+    res = RichResult(payload={"estimate": f["output"][0][0],
+                              "z": f["nets"][0],
+                              "y_hat": f["output"],
+                              "method": "output-layer prediction (MVSML 2022 eq. 10.8-10.9)"})
+    return with_describe_pointer(res, "msm248")
 
-    Formula: jk = -\eta \partial E \Deltaw l( ) (10.10) , \partial w l( ) jk where \eta is the learning rate that scales the step size and is speciﬁed by the user. To be able to calculate the adjustments for the weights connecting the hidden neurons to the outputs, w l( ) jk , ﬁrst we substitute (10.6)–
 
-    Parameters
-    ----------
-    jk : array-like
-        Input data.
-    E : array-like
-        Input data.
-    w : array-like
-        Input data.
-    l : array-like
-        Input data.
-    where : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.9) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.9) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_output = mvsml_reproducing_kernel_eq_10_9
 
 
 def cheatsheet():
-    return "msm248: Numbered display equation (10.9) from MVSML chapter 10."
+    return "msm248: Predicted output of the network"

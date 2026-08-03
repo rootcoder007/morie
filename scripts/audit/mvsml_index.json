@@ -739,6 +739,100 @@
   "stub_content": "equation"
  },
  {
+  "method": "eq. (10.1)-(10.3) p.385",
+  "chapter": "10",
+  "equation": "4",
+  "canonical_module": "msm245",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_4",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.10)-(10.11) p.410",
+  "chapter": "10",
+  "equation": "10",
+  "canonical_module": "msm246",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_10",
+  "reexported_by": [],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (10.6)-(10.7) p.409",
+  "chapter": "10",
+  "equation": "6",
+  "canonical_module": "msm247",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_6",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.8)-(10.9) p.409",
+  "chapter": "10",
+  "equation": "9",
+  "canonical_module": "msm248",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_9",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.5) p.409",
+  "chapter": "10",
+  "equation": "5",
+  "canonical_module": "msm249",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_5",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.12) p.411",
+  "chapter": "10",
+  "equation": "12",
+  "canonical_module": "msm250",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_12",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.13) p.411",
+  "chapter": "10",
+  "equation": "13",
+  "canonical_module": "msm251",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_13",
+  "reexported_by": [
+   "msm252"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.14)-(10.15) p.411",
+  "chapter": "10",
+  "equation": "14",
+  "canonical_module": "msm253",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_14",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.16) p.412",
+  "chapter": "10",
+  "equation": "16",
+  "canonical_module": "msm254",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_16",
+  "reexported_by": [],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (10.17) p.412",
+  "chapter": "10",
+  "equation": "17",
+  "canonical_module": "msm255",
+  "entry_point": "mvsml_reproducing_kernel_eq_10_17",
+  "reexported_by": [
+   "msm256"
+  ],
+  "stub_content": "equation"
+ },
+ {
   "method": "eq. (1.2)-(1.5) pp.15-16",
   "chapter": "1",
   "equation": "222",

@@ -1,55 +1,40 @@
-"""Numbered display equation (10.4) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Feedforward network output.
 
-from . import _array_core as np
+Implements eq. (10.1)-(10.3) p.385 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_4"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_4", "mvsml_ann_forward"]
 
 
-def mvsml_reproducing_kernel_eq_10_4(X, m1, m0, F, x1, xm0):
-    """
-    Numbered display equation (10.4) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_4(X, W, activations=None):
+    """V_1j = g_1(sum_i w_ji^(1) x_i), V_2k = g_2(sum_j w_kj^(2) V_1j)
+    and y_l = g_3(sum_k w_lk^(3) V_2k) (eq. 10.1-10.3): the analytical
+    form of a network with d inputs, M_1 and M_2 hidden units and O
+    outputs.  A bias is represented by an extra unit fixed at 1.
+    Keys: estimate."""
+    f = _gp.ann_forward(X, W, activations)
+    res = RichResult(payload={"estimate": f["output"][0][0],
+                              "output": f["output"],
+                              "layers": f["layers"],
+                              "nets": f["nets"],
+                              "method": "feedforward pass (MVSML 2022 eq. 10.1-10.3)"})
+    return with_describe_pointer(res, "msm245")
 
-    Formula: ! X X m1 m0 F x1, . . . , xm0 ( ) = \alphaig wijx j + bi
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    m1 : array-like
-        Input data.
-    m0 : array-like
-        Input data.
-    F : array-like
-        Input data.
-    x1 : array-like
-        Input data.
-    xm0 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.4) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.4) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_forward = mvsml_reproducing_kernel_eq_10_4
 
 
 def cheatsheet():
-    return "msm245: Numbered display equation (10.4) from MVSML chapter 10."
+    return "msm245: Feedforward network output"

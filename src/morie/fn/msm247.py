@@ -1,55 +1,38 @@
-r"""Numbered display equation (10.6) from MVSML chapter 10.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Net input of a hidden neuron.
 
-from . import _array_core as np
+Implements eq. (10.6)-(10.7) p.409 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 10 is Fundamentals of Artificial Neural Networks and Deep
+Learning, and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_reproducing_kernel_eq_10_6"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_reproducing_kernel_eq_10_6", "mvsml_ann_hidden_net"]
 
 
-def mvsml_reproducing_kernel_eq_10_6(jk, E, w, l, where, the):
-    r"""
-    Numbered display equation (10.6) from MVSML chapter 10.
+def mvsml_reproducing_kernel_eq_10_6(X, W_h, activation="logistic"):
+    """z_ik^(h) = sum_p w_kp^(h) x_ip (eq. 10.6) and
+    V_ik^(h) = g^(h)(z_ik^(h)) (eq. 10.7).  The bias b_k^(h) is left
+    out of (10.6) because it is carried by an extra input neuron fixed
+    at 1. Keys: estimate."""
+    f = _gp.ann_forward(X, [W_h], [activation])
+    res = RichResult(payload={"estimate": f["nets"][0][0][0],
+                              "z": f["nets"][0],
+                              "V": f["output"],
+                              "method": "hidden-layer net input and output (MVSML 2022 eq. 10.6-10.7)"})
+    return with_describe_pointer(res, "msm247")
 
-    Formula: jk = -\eta \partial E \Deltaw l( ) (10.10) , \partial w l( ) jk where \eta is the learning rate that scales the step size and is speciﬁed by the user. To be able to calculate the adjustments for the weights connecting the hidden neurons to the outputs, w l( ) jk , ﬁrst we substitute
 
-    Parameters
-    ----------
-    jk : array-like
-        Input data.
-    E : array-like
-        Input data.
-    w : array-like
-        Input data.
-    l : array-like
-        Input data.
-    where : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (10.6) [Multivariate Statistical Machine Learnin [Pages 379-425] [2026-04-16].pdf]
-    r"""
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (10.6) from MVSML chapter 10.",
-        }
-    )
+mvsml_ann_hidden_net = mvsml_reproducing_kernel_eq_10_6
 
 
 def cheatsheet():
-    return "msm247: Numbered display equation (10.6) from MVSML chapter 10."
+    return "msm247: Net input of a hidden neuron"

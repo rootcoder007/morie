@@ -85,6 +85,16 @@ to the same implementation, so nothing is written twice.
 | ? | ? | msm_proportional_hazards | msmphr | `msm_proportional_hazards` | - | empty artefact |
 | ? | ? |  | msmw | `` | - | empty artefact |
 | ? | ? | msmwt | msmwt | `msmwt` | - | empty artefact |
+| 10 | 4 | eq. (10.1)-(10.3) p.385 | msm245 | `mvsml_reproducing_kernel_eq_10_4` | - | equation |
+| 10 | 5 | eq. (10.5) p.409 | msm249 | `mvsml_reproducing_kernel_eq_10_5` | - | equation |
+| 10 | 6 | eq. (10.6)-(10.7) p.409 | msm247 | `mvsml_reproducing_kernel_eq_10_6` | - | equation |
+| 10 | 9 | eq. (10.8)-(10.9) p.409 | msm248 | `mvsml_reproducing_kernel_eq_10_9` | - | equation |
+| 10 | 10 | eq. (10.10)-(10.11) p.410 | msm246 | `mvsml_reproducing_kernel_eq_10_10` | - | prose |
+| 10 | 12 | eq. (10.12) p.411 | msm250 | `mvsml_reproducing_kernel_eq_10_12` | - | equation |
+| 10 | 13 | eq. (10.13) p.411 | msm251 | `mvsml_reproducing_kernel_eq_10_13` | msm252 | equation |
+| 10 | 14 | eq. (10.14)-(10.15) p.411 | msm253 | `mvsml_reproducing_kernel_eq_10_14` | - | equation |
+| 10 | 16 | eq. (10.16) p.412 | msm254 | `mvsml_reproducing_kernel_eq_10_16` | - | equation |
+| 10 | 17 | eq. (10.17) p.412 | msm255 | `mvsml_reproducing_kernel_eq_10_17` | msm256 | equation |
 
 ## Equation census taken from the PDFs
 
