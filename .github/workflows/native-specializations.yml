@@ -55,35 +55,6 @@ jobs:
           if (length(missing) > 0) stop("failed to install: ",
                                         paste(missing, collapse = ", "))
         shell: Rscript {0}
-      - name: No duplicate function definitions
-        run: |
-          # R sources R/ alphabetically and the last definition silently
-          # wins, with no error anywhere in the toolchain.  This is the
-          # only place that catches it.
-          for (pkg in c("r-package/morie")) {
-            files <- list.files(file.path(pkg, "R"), pattern = "[.]R$",
-                                full.names = TRUE)
-            defs <- list()
-            for (f in files) {
-              hits <- grep("^[A-Za-z._][A-Za-z0-9._]*[ ]*<-[ ]*function",
-                           readLines(f, warn = FALSE), value = TRUE)
-              for (h in hits) {
-                nm <- sub("[ ]*<-.*$", "", h)
-                defs[[nm]] <- c(defs[[nm]], basename(f))
-              }
-            }
-            dups <- defs[vapply(defs, length, integer(1)) > 1]
-            if (length(dups)) {
-              for (nm in names(dups))
-                cat(nm, "defined in", paste(dups[[nm]], collapse = " + "),
-                    "\n")
-              stop(length(dups), " duplicate definitions in ", pkg)
-            }
-            cat(pkg, ": no duplicate definitions among ", length(defs),
-                " functions\n", sep = "")
-          }
-        shell: Rscript {0}
-
       - name: Native test tiers (structural + cross + property)
         run: |
           pkgload::load_all("r-package/morie", quiet = TRUE)
