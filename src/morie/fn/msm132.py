@@ -1,55 +1,44 @@
-r"""Numbered display equation (8.5) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Deep arc-cosine kernel.
 
-from . import _array_core as np
+Implements eq. (8.5) p.266 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries the previous chapter's topic label;
+chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
+canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_5"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_5", "mvsml_arccos_kernel_deep"]
 
 
-def mvsml_categorical_count_eq_8_5(J, l, xi, x, j, AK):
-    r"""
-    Numbered display equation (8.5) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_5(X, Z=None, depth=2, normalize_median=False):
+    """AK^(l+1)(x_i,x_j) = (1/pi)[AK^l(x_i,x_i) AK^l(x_j,x_j)]^(1/2)
+    J(theta^l_ij) with theta^l_ij = arccos{AK^l(x_i,x_j)
+    [AK^l(x_i,x_i) AK^l(x_j,x_j)]^(-1/2)} (eq. 8.5): repeating the
+    interior product l times emulates l hidden layers, which is what
+    makes this kernel behave like a deep network.  No bandwidth
+    parameter is required; only the number of layers.
+    Keys: estimate."""
+    K = _gp.arccos_kernel(X, Z=Z, depth=depth,
+                          normalize_median=normalize_median)
+    ok, lam = _gp.is_positive_semidefinite(K) if Z is None \
+        else (None, None)
+    res = RichResult(payload={"estimate": K[0][0], "kernel": K,
+                              "depth": int(depth),
+                              "positive_semidefinite": ok,
+                              "method": "deep arc-cosine kernel (MVSML 2022 eq. 8.5)"})
+    return with_describe_pointer(res, "msm132")
 
-    Formula:   2 J \theta l( ) = 1 ) xi, x j \pi AK l( ) xi, xi )AK l( ) x j, x j AK l+1 ( (
 
-    Parameters
-    ----------
-    J : array-like
-        Input data.
-    l : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    x : array-like
-        Input data.
-    j : array-like
-        Input data.
-    AK : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.5) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.5) from MVSML chapter 8.",
-        }
-    )
+mvsml_arccos_kernel_deep = mvsml_categorical_count_eq_8_5
 
 
 def cheatsheet():
-    return "msm132: Numbered display equation (8.5) from MVSML chapter 8."
+    return "msm132: Deep arc-cosine kernel"

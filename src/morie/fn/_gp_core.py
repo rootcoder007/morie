@@ -1996,3 +1996,77 @@ def generalized_kernel_model(K, beta, eta0=0.0, link="identity"):
     else:
         raise ValueError("unknown link: %s" % link)
     return {"eta": eta, "mu": mu, "link": link}
+
+
+def arccos_kernel(X, Z=None, depth=1, normalize_median=False):
+    """The arc-cosine kernel of eq. (8.4) p.265 and its deep
+    recursion (8.5) p.266 (Cho and Saul 2009).
+
+    With theta_ij = arccos(x_i'x_j / (||x_i|| ||x_j||)) and
+    J(theta) = sin(theta) + (pi - theta) cos(theta),
+
+        AK^1(x_i, x_j) = (1/pi) ||x_i|| ||x_j|| J(theta_ij)
+
+    which is positive semi-definite and corresponds to a
+    single-hidden-layer network with a ramp activation.  Repeating the
+    interior product emulates additional hidden layers:
+
+        AK^(l+1)(x_i, x_j) = (1/pi)
+            [AK^l(x_i,x_i) AK^l(x_j,x_j)]^(1/2) J(theta^l_ij),
+        theta^l_ij = arccos{AK^l(x_i,x_j)
+                            [AK^l(x_i,x_i) AK^l(x_j,x_j)]^(-1/2)}
+
+    so no bandwidth parameter is needed -- only the number of layers.
+    ``normalize_median`` divides by the median entry, as the book's R
+    code does.
+    """
+    A = _mat(X)
+    B = _mat(Z) if Z is not None else A
+    same = Z is None
+
+    def _norms(M):
+        return [math.sqrt(sum(v * v for v in row)) for row in M]
+
+    na, nb = _norms(A), _norms(B)
+
+    def J(th):
+        return math.sin(th) + (math.pi - th) * math.cos(th)
+
+    def ak1(u, v, nu, nv):
+        if nu <= 0 or nv <= 0:
+            return 0.0
+        c = sum(a * b for a, b in zip(u, v)) / (nu * nv)
+        c = min(max(c, -1.0), 1.0)
+        return nu * nv * J(math.acos(c)) / math.pi
+
+    K = [[ak1(a, b, na[i], nb[j]) for j, b in enumerate(B)]
+         for i, a in enumerate(A)]
+    if same:
+        dA = [K[i][i] for i in range(len(A))]
+        dB = dA
+    else:
+        dA = [ak1(a, a, na[i], na[i]) for i, a in enumerate(A)]
+        dB = [ak1(b, b, nb[j], nb[j]) for j, b in enumerate(B)]
+    for _ in range(int(depth) - 1):
+        newK = []
+        for i in range(len(A)):
+            row = []
+            for j in range(len(B)):
+                den = math.sqrt(max(dA[i] * dB[j], 0.0))
+                if den <= 0:
+                    row.append(0.0)
+                    continue
+                c = min(max(K[i][j] / den, -1.0), 1.0)
+                row.append(den * J(math.acos(c)) / math.pi)
+            newK.append(row)
+        dA = [dA[i] * J(0.0) / math.pi for i in range(len(dA))]
+        dB = [dB[j] * J(0.0) / math.pi for j in range(len(dB))]
+        K = newK
+    if normalize_median:
+        flat = sorted(v for row in K for v in row)
+        n = len(flat)
+        med = flat[n // 2] if n % 2 else 0.5 * (flat[n // 2 - 1]
+                                                + flat[n // 2])
+        if med:
+            K = [[v / med for v in row] for row in K]
+    return K
