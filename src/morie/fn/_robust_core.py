@@ -22,7 +22,8 @@ __all__ = [
     "percentage_bend_correlation", "winsorized_correlation",
     "mom_estimator", "one_step_m_estimator",
     "cliff_delta", "brunner_munzel", "wilcoxon_mann_whitney",
-    "percentile_bootstrap_2group",
+    "percentile_bootstrap_2group", "one_sample_bootstrap",
+    "trimmed_mean_se", "trimmed_mean_ci", "yuen_paired",
 ]
 
 
@@ -810,3 +811,149 @@ def percentile_bootstrap_2group(x, y, est=None, nboot=2000, alpha=0.05,
             "ci": (diffs[low], diffs[up]), "p_value": p,
             "n1": n1, "n2": n2, "nboot": int(nboot),
             "method": "percentile bootstrap for a difference"}
+
+
+def _student_t_quantile(p, df, tol=1e-12, max_iter=200):
+    """Inverse of :func:`_student_t_cdf`, i.e. R's ``qt``.
+
+    Bisection on the CDF: the CDF is smooth and strictly increasing, so
+    this converges reliably without needing a series expansion.
+    """
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly between 0 and 1")
+    if p == 0.5:
+        return 0.0
+    lo, hi = -1.0, 1.0
+    while _student_t_cdf(lo, df) > p:
+        lo *= 2.0
+        if lo < -1e12:
+            break
+    while _student_t_cdf(hi, df) < p:
+        hi *= 2.0
+        if hi > 1e12:
+            break
+    for _ in range(max_iter):
+        mid = 0.5 * (lo + hi)
+        if _student_t_cdf(mid, df) < p:
+            lo = mid
+        else:
+            hi = mid
+        if hi - lo < tol:
+            break
+    return 0.5 * (lo + hi)
+
+
+def trimmed_mean_se(x, tr=0.2):
+    """Standard error of the trimmed mean (Tukey-McLaughlin).
+
+        SE = sqrt(s_w^2) / ((1 - 2 tr) sqrt(n))
+
+    The Winsorized variance appears because the trimmed mean's sampling
+    variance depends on the Winsorized, not the ordinary, spread.
+    Ported from WRS ``trimse``.
+    """
+    v = _flat(x)
+    return math.sqrt(winsorized_variance(v, tr)) / (
+        (1.0 - 2.0 * tr) * math.sqrt(len(v)))
+
+
+def trimmed_mean_ci(x, tr=0.2, alpha=0.05, null_value=0.0):
+    """Confidence interval and test for a single trimmed mean.
+
+    Uses the Tukey-McLaughlin standard error with
+    df = n - 2 floor(tr n) - 1.  Ported from WRS ``trimci``.
+    """
+    v = _flat(x)
+    n = len(v)
+    se = trimmed_mean_se(v, tr)
+    df = n - 2 * trim_counts(n, tr) - 1
+    if df <= 0:
+        raise ValueError("too much trimming: no degrees of freedom left")
+    est = trimmed_mean(v, tr)
+    crit = _student_t_quantile(1.0 - alpha / 2.0, df)
+    stat = (est - float(null_value)) / se
+    p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
+    return {"estimate": est, "ci": (est - crit * se, est + crit * se),
+            "statistic": stat, "se": se, "df": df, "p_value": p, "n": n,
+            "method": "trimmed-mean confidence interval"}
+
+
+def yuen_paired(x, y, tr=0.2, alpha=0.05):
+    """Yuen's test for two DEPENDENT trimmed means.
+
+    Unlike the independent-groups version the standard error must
+    subtract the Winsorized covariance, since the pairs are related:
+
+        se = sqrt((q1 + q2 - 2 q3) / (h (h - 1)))
+
+    with q1, q2 the (n-1)-scaled Winsorized variances, q3 the
+    (n-1)-scaled Winsorized covariance and h the number of untrimmed
+    observations.  Ported from WRS ``yuend``.
+    """
+    xs, ys = _flat(x), _flat(y)
+    if len(xs) != len(ys):
+        raise ValueError("dependent groups must have equal length")
+    n = len(xs)
+    h1 = n - 2 * trim_counts(n, tr)
+    if h1 < 2:
+        raise ValueError("too much trimming: fewer than 2 values remain")
+    q1 = (n - 1) * winsorized_variance(xs, tr)
+    q2 = (n - 1) * winsorized_variance(ys, tr)
+    q3 = (n - 1) * winsorized_correlation(xs, ys, tr)["cov"]
+    df = h1 - 1
+    var = (q1 + q2 - 2.0 * q3) / (h1 * (h1 - 1.0))
+    if var <= 0:
+        # q1 + q2 - 2 q3 vanishes when the two Winsorized samples move
+        # in lockstep, e.g. y = x + c.  The paired differences then have
+        # no Winsorized variability at all, so the statistic is
+        # undefined rather than infinite -- report that instead of
+        # dividing by zero.
+        dif0 = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
+        return {"estimate": dif0, "ci": (dif0, dif0),
+                "statistic": float("nan"), "se": 0.0, "df": df,
+                "p_value": float("nan"), "n": n,
+                "est_1": trimmed_mean(xs, tr),
+                "est_2": trimmed_mean(ys, tr), "degenerate": True,
+                "method": "Yuen's test for dependent trimmed means "
+                          "(zero Winsorized variance of the differences)"}
+    se = math.sqrt(var)
+    dif = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
+    crit = _student_t_quantile(1.0 - alpha / 2.0, df)
+    stat = dif / se
+    p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
+    return {"estimate": dif, "ci": (dif - crit * se, dif + crit * se),
+            "statistic": stat, "se": se, "df": df, "p_value": p, "n": n,
+            "est_1": trimmed_mean(xs, tr), "est_2": trimmed_mean(ys, tr),
+            "degenerate": False,
+            "method": "Yuen's test for dependent trimmed means"}
+
+
+def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
+                         null_value=0.0, seed=2, **kwargs):
+    """Percentile bootstrap interval for a single measure of location.
+
+    ``est`` defaults to the one-step M-estimator, as in WRS
+    ``onesampb``.  The p-value is twice the smaller of the proportions
+    of bootstrap estimates above and below the null value.
+    """
+    import random
+
+    v = _flat(x)
+    if est is None:
+        est = one_step_m_estimator
+    rng = random.Random(seed)
+    n = len(v)
+    boot = sorted(est([v[rng.randrange(n)] for _ in range(n)], **kwargs)
+                  for _ in range(int(nboot)))
+    low = int(round((alpha / 2.0) * nboot))
+    up = int(nboot - low) - 1
+    low = min(max(low, 0), nboot - 1)
+    up = min(max(up, 0), nboot - 1)
+    nv = float(null_value)
+    above = sum(1 for b in boot if b > nv) / nboot
+    equal = sum(1 for b in boot if b == nv) / nboot
+    pv = above + 0.5 * equal
+    p = 2.0 * min(pv, 1.0 - pv)
+    return {"estimate": est(v, **kwargs), "ci": (boot[low], boot[up]),
+            "p_value": p, "n": n, "nboot": int(nboot),
+            "method": "one-sample percentile bootstrap"}
