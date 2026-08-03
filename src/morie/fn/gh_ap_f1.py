@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)."""
+"""Donsker classes.
+
+Implements Appendix F of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP (appendices).
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_donsker_class"]
 
 
-def ghosal_donsker_class(x):
-    """
-    Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)
-
-    Formula: F is Donsker iff J[](1, F, L2) < infty (Dudley bracketing integral)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal App F
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)",
-        }
-    )
+def ghosal_donsker_class(smoothness=1.0):
+    """F is Donsker if the bracketing integral J_[](1, F, L2) =
+    int_0^1 sqrt(log N_[](eps)) deps < infty (App F): with
+    log N ~ eps^{-1/s} this holds iff s > 1/2. Keys: estimate."""
+    s = float(smoothness)
+    # integral of eps^{-1/(2s)} on (0,1): finite iff 1/(2s) < 1
+    exponent = 1.0 / (2.0 * s)
+    finite = exponent < 1.0
+    J = 1.0 / (1.0 - exponent) if finite else float("inf")
+    res = RichResult(payload={"estimate": J,
+                              "donsker": finite,
+                              "method": "Donsker bracketing integral (GvdV 2017 App F)"})
+    return with_describe_pointer(res, "gh_ap_f1")
 
 
 def cheatsheet():
-    return "gh_ap_f1: Donsker class: family F with sqrt(n)(P_n-P)(f) weak convergence in l^infty(F)"
+    return "gh_ap_f1: Donsker classes"

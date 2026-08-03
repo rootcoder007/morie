@@ -1,46 +1,33 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""KL variation V_k(P,Q): higher-order moment of log likelihood ratio."""
+"""Kullback-Leibler variations.
+
+Implements Appendix B (V_k) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP (appendices).
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_kl_variation"]
 
 
-def ghosal_kl_variation(x):
-    """
-    KL variation V_k(P,Q): higher-order moment of log likelihood ratio
-
-    Formula: V_k(P,Q) = integral |log(p/q)|^k dP, V_1 = KL(P,Q)
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal App B
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "KL variation V_k(P,Q): higher-order moment of log likelihood ratio",
-        }
-    )
+def ghosal_kl_variation(p, q, k=2):
+    """V_k(P; Q) = int |log(p/q)|^k dP; V_1 relates to KL (App B).
+    Keys: estimate."""
+    p = _bnp.normalize_weights(p)
+    q = _bnp.normalize_weights(q)
+    Vk = sum(a * abs(math.log(a / max(b, 1e-300))) ** k
+             for a, b in zip(p, q) if a > 0)
+    kl = sum(a * math.log(a / max(b, 1e-300))
+             for a, b in zip(p, q) if a > 0)
+    res = RichResult(payload={"estimate": Vk, "kl": kl,
+                              "dominates_kl": Vk >= 0,
+                              "method": "KL variation (GvdV 2017 App B)"})
+    return with_describe_pointer(res, "gh_ap_b2")
 
 
 def cheatsheet():
-    return "gh_ap_b2: KL variation V_k(P,Q): higher-order moment of log likelihood ratio"
+    return "gh_ap_b2: Kullback-Leibler variations"

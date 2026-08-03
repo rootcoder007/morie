@@ -1,46 +1,29 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Bracketing number N[](eps,T,d): min number of eps-brackets [l,u] covering T."""
+"""Bracketing numbers.
+
+Implements Appendix C of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP (appendices).
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_bracket_num"]
 
 
-def ghosal_bracket_num(x):
-    """
-    Bracketing number N[](eps,T,d): min number of eps-brackets [l,u] covering T
-
-    Formula: N[](eps,T,d) = min{#brackets: each f in T in some [l_i,u_i], d(l_i,u_i)<=eps}
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal App C
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bracketing number N[](eps,T,d): min number of eps-brackets [l,u] covering T",
-        }
-    )
+def ghosal_bracket_num(smoothness=1.0, eps=0.1):
+    """N_[](eps, T, d): minimal eps-brackets covering T (App C); for
+    an s-Holder unit ball on [0,1], log N_[] ~ eps^{-1/s}.
+    Keys: estimate."""
+    log_N = eps ** (-1.0 / smoothness)
+    res = RichResult(payload={"estimate": log_N,
+                              "entropy_exponent": 1.0 / smoothness,
+                              "method": "bracketing entropy (GvdV 2017 App C)"})
+    return with_describe_pointer(res, "gh_ap_c3")
 
 
 def cheatsheet():
-    return "gh_ap_c3: Bracketing number N[](eps,T,d): min number of eps-brackets [l,u] covering T"
+    return "gh_ap_c3: Bracketing numbers"
