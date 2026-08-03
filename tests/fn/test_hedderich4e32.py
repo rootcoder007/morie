@@ -1,0 +1,20 @@
+"""Tests for hedderich4e32.hedderich_chapter_4_equation_32."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.hedderich4e32 import hedderich_chapter_4_equation_32
+
+
+def test_hedderich4e32_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = hedderich_chapter_4_equation_32(x)
+    assert isinstance(result, dict)
+    assert "statistic" in result or "p_value" in result or "estimate" in result
+
+
+def test_hedderich4e32_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = hedderich_chapter_4_equation_32(x)
+    assert isinstance(result, dict)

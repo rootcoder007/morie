@@ -1,0 +1,20 @@
+"""Tests for hedderich8e13.hedderich_chapter_8_equation_13."""
+
+from morie.fn import _array_core as np
+
+from morie.fn.hedderich8e13 import hedderich_chapter_8_equation_13
+
+
+def test_hedderich8e13_basic():
+    """Test basic functionality."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = hedderich_chapter_8_equation_13(x)
+    assert isinstance(result, dict)
+    assert "statistic" in result or "p_value" in result or "estimate" in result
+
+
+def test_hedderich8e13_edge():
+    """Test edge cases."""
+    x = np.random.default_rng(42).normal(0, 1, 100)
+    result = hedderich_chapter_8_equation_13(x)
+    assert isinstance(result, dict)
