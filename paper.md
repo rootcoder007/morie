@@ -831,6 +831,11 @@ precision.
 | Variance inflation | `car::vif` | $1\times10^{-12}$ |
 | Augmented Dickey--Fuller | `urca::ur.df` | exact |
 | Huber $M$-estimation | `MASS::rlm` | $4\times10^{-5}$ |
+| Kaplan--Meier, log-log interval | `survival::survfit` | exact |
+| Nelson--Aalen | `survival::survfit(type="fh")` | exact |
+| Log-rank | `survival::survdiff` | $1\times10^{-11}$ |
+| Cox model, Efron ties | `survival::coxph` | $1\times10^{-7}$ |
+| Concordance index | `survival::concordance` | exact |
 
 Where the agreement is not exact the reason is known and stated rather
 than absorbed into a tolerance. The maximum-likelihood spatial models
