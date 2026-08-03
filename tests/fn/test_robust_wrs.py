@@ -369,9 +369,30 @@ def test_carling_centres_on_the_median_not_the_quartiles():
                - (f["q1"] + f["q2"]) / 2) < 1e-9
 
 
-def test_akp_effect_size_matches_wrs():
+def test_akp_effect_size_matches_r_integrate_not_mass_area():
+    # WRS akp.effect scales by area(dnormvar, ...), i.e. MASS::area, an
+    # adaptive Simpson whose tolerance leaves it 9.9e-10 short of the
+    # true integral.  Our adaptive Gauss-Kronrod agrees with R's
+    # integrate() to 3.6e-16, so we match the ACCURATE value:
+    #   MASS::area  -> -0.836340302559   (what WRS prints)
+    #   integrate   -> -0.836340301553   (correct, and ours)
     r = rb.akp_effect_size(G1, G2)
-    assert abs(r["effect_size"] - (-0.8363403026)) < 1e-7
+    assert abs(r["effect_size"] - (-0.836340301553)) < 1e-11
+    assert abs(r["effect_size"] - (-0.836340302559)) > 1e-10
+
+
+def test_adaptive_quadrature_matches_r_integrate_to_machine_precision():
+    lo = rb._norm_quantile(0.2)
+    hi = rb._norm_quantile(0.8)
+
+    def f(u):
+        return u * u * math.exp(-0.5 * u * u) / math.sqrt(2 * math.pi)
+
+    # R: integrate(function(u) u^2*dnorm(u), qnorm(.2), qnorm(.8))
+    assert abs(rb._adaptive_quad(f, lo, hi)
+               - 0.12875620638587673) < 1e-15
+    # a polynomial the rule must integrate exactly
+    assert abs(rb._adaptive_quad(lambda u: u ** 3, 0.0, 2.0) - 4.0) < 1e-12
 
 
 def test_akp_cterm_is_one_without_trimming_and_recovers_cohens_d():
@@ -486,10 +507,18 @@ def test_winsorized_regression_rejects_mismatched_lengths():
 
 
 # --- bootstrap correlation interval ---------------------------------
+def test_correlation_bootstrap_matches_wrs_corb_exactly():
+    # R: source(wrs_subset6.R); corb(xs, ys, nboot = 599)
+    # Now that the resampling uses R's Mersenne-Twister stream and
+    # R_unif_index, the INTERVAL matches too, not just the estimate.
+    r = rb.correlation_bootstrap_ci(XS, YS, nboot=599)
+    assert abs(r["estimate"] - 0.994729217194) < 1e-11
+    assert abs(r["ci"][0] - 0.974631846197) < 1e-11
+    assert abs(r["ci"][1] - 0.998811880769) < 1e-11
+    assert r["p_value"] == 0.0
+
+
 def test_correlation_bootstrap_wraps_the_anchored_estimator():
-    # the point estimate is the WRS-anchored pbcor, unchanged
-    r = rb.correlation_bootstrap_ci(XS, YS, nboot=299)
-    assert abs(r["estimate"] - 0.9947292172) < 1e-9
     w = rb.correlation_bootstrap_ci(XS, YS,
                                     corfun=rb.winsorized_correlation,
                                     nboot=299)
@@ -516,3 +545,47 @@ def test_correlation_bootstrap_resamples_pairs_not_columns():
 def test_correlation_bootstrap_rejects_mismatched_lengths():
     with pytest.raises(ValueError):
         rb.correlation_bootstrap_ci([1, 2, 3], [1, 2])
+
+
+# --- R-compatible RNG ------------------------------------------------
+def test_rrng_reproduces_r_runif():
+    from morie.fn import _rrng_core as rr
+    # R: set.seed(2); runif(5)
+    got = rr.RRandom(2).runif(5)
+    want = [0.1848822599, 0.7023740360, 0.5733263348,
+            0.1680519204, 0.9438393388]
+    for a, b in zip(got, want):
+        assert abs(a - b) < 1e-10
+    # R: set.seed(42); runif(3)
+    got = rr.RRandom(42).runif(3)
+    want = [0.9148060435, 0.9370754133, 0.2861395348]
+    for a, b in zip(got, want):
+        assert abs(a - b) < 1e-10
+
+
+def test_rrng_reproduces_r_sample():
+    from morie.fn import _rrng_core as rr
+    # R: set.seed(2); sample.int(10, 10, replace = TRUE)
+    assert rr.RRandom(2).sample_int(10, 10, replace=True) == \
+        [5, 6, 6, 8, 1, 1, 9, 2, 1, 3]
+    # R: set.seed(1); sample.int(10, 5)
+    assert rr.RRandom(1).sample_int(10, 5) == [9, 4, 7, 1, 2]
+
+
+def test_rrng_sample_without_replacement_is_a_permutation():
+    from morie.fn import _rrng_core as rr
+    out = rr.RRandom(7).sample_int(20, 20)
+    assert sorted(out) == list(range(1, 21))
+    with pytest.raises(ValueError):
+        rr.RRandom(1).sample_int(5, 6)
+
+
+def test_rrng_stream_is_reproducible_and_advances():
+    from morie.fn import _rrng_core as rr
+    a = rr.RRandom(99).runif(4)
+    b = rr.RRandom(99).runif(4)
+    assert a == b
+    g = rr.RRandom(99)
+    first, second = g.runif(2), g.runif(2)
+    assert first != second          # the stream advances
+    assert all(0.0 < v < 1.0 for v in a + first + second)
