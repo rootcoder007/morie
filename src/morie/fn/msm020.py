@@ -1,55 +1,34 @@
-r"""Numbered display equation (5.4) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Genotype-by-environment BLUP model.
 
-from . import _array_core as np
+Implements eq. (5.4) p.150 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_4"]
 
 
-def mvsml_linear_mixed_models_eq_5_4(Ei, the, genetic, variance, environment, i):
-    r"""
-    Numbered display equation (5.4) from MVSML chapter 5.
-
-    Formula: Ei, is the genetic variance in environment i, i = 1, . . ., I, and \sigmaEikG is the genetic variance– covariance matrix for lines in environments i and k, where \sigmaEik is the element (i, k) of \SigmaE. When \SigmaE has a non-diagonal structure, the information from the genomic rela- tionship matrix and the correlated environments can be helpful for improving the prediction performance of the model by borrowing information between lines inside an environment and between lines across and among environments (Burgueño et al. 2012). Example 2 To illustrate how model
-
-    Parameters
-    ----------
-    Ei : array-like
-        Input data.
-    the : array-like
-        Input data.
-    genetic : array-like
-        Input data.
-    variance : array-like
-        Input data.
-    environment : array-like
-        Input data.
-    i : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.4) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    r"""
-    Ei = np.atleast_1d(np.asarray(Ei, dtype=float))
-    n = len(Ei)
-    result = float(np.mean(Ei))
-    se = float(np.std(Ei, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.4) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_4(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e=1.0):
+    """Y = 1_n mu + X_E beta_E + Z_L b_1 + Z_EL b_2 + eps (eq. 5.4):
+    the G x E BLUP model, with b_1 ~ N_J(0, sigma2_g G) the genotypic
+    effects and b_2 ~ N(0, Sigma_E (x) G) the genotype-by-environment
+    interaction, Sigma_E the genetic covariance between environments.
+    Keys: estimate."""
+    f = _gp.gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E,
+                           sigma2_e)
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "beta": f["beta"],
+                              "b_lines": f["b_lines"],
+                              "b_gxe": f["b_gxe"],
+                              "method": "G x E BLUP model (MVSML 2022 eq. 5.4)"})
+    return with_describe_pointer(res, "msm020")
 
 
 def cheatsheet():
-    return "msm020: Numbered display equation (5.4) from MVSML chapter 5."
+    return "msm020: Genotype-by-environment BLUP model"

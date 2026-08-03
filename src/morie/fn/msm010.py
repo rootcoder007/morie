@@ -1,55 +1,32 @@
-"""Numbered display equation (5.1) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""General univariate linear mixed model.
 
-from . import _array_core as np
+Implements eq. (5.1) p.142 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_1"]
 
 
-def mvsml_linear_mixed_models_eq_5_1(O, A, Montesinos, L, pez, et):
-    """
-    Numbered display equation (5.1) from MVSML chapter 5.
-
-    Formula: O. A. Montesinos López et al., Multivariate Statistical Machine Learning Methods for Genomic Prediction, https://doi.org/10.1007/978-3-030-89010-0_5 142 5 Linear Mixed Models Covarrubias-Pazaran et al. 2018; Wang et al. 2018; Cappa et al. 2019). However, the use of this model in animal science can be traced back to Henderson (1950). The general univariate linear mixed model (Harville 1977) is provided by the formula Y = X\beta + Zb + e,
-
-    Parameters
-    ----------
-    O : array-like
-        Input data.
-    A : array-like
-        Input data.
-    Montesinos : array-like
-        Input data.
-    L : array-like
-        Input data.
-    pez : array-like
-        Input data.
-    et : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.1) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    """
-    O = np.atleast_1d(np.asarray(O, dtype=float))
-    n = len(O)
-    result = float(np.mean(O))
-    se = float(np.std(O, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.1) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_1(X, Z, y, D, R=None):
+    """Y = X beta + Z b + eps (eq. 5.1) with b ~ N(0, D),
+    eps ~ N(0, R) and Cov(eps, b) = 0, so E(Y) = X beta and
+    Var(Y) = Z D Z' + R.  Returns the GLS/BLUE of beta, the BLUP of b
+    and the marginal variance. Keys: estimate."""
+    beta, b = _gp.blue_blup_via_v(X, Z, y, D, R)
+    V = _gp.lmm_marginal_v(Z, D, R)
+    ll, _ = _gp.lmm_loglik(X, Z, y, D, beta=beta, R=R)
+    res = RichResult(payload={"estimate": beta[0], "beta": beta,
+                              "blup": b, "V": V, "loglik": ll,
+                              "method": "general linear mixed model (MVSML 2022 eq. 5.1)"})
+    return with_describe_pointer(res, "msm010")
 
 
 def cheatsheet():
-    return "msm010: Numbered display equation (5.1) from MVSML chapter 5."
+    return "msm010: General univariate linear mixed model"

@@ -1,55 +1,30 @@
-r"""Numbered display equation (5.3) from MVSML chapter 5.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GBLUP model for genomic prediction.
 
-from . import _array_core as np
+Implements eq. (5.3) p.148 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_linear_mixed_models_eq_5_3"]
 
 
-def mvsml_linear_mixed_models_eq_5_3(genotypic, effects, of, J, lines, Z):
-    r"""
-    Numbered display equation (5.3) from MVSML chapter 5.
-
-    Formula: genotypic effects of J lines, and Z is the incidence matrix design for the random line effects (ZL): Y = 1n\mu + ZLb + e, (5.3)   where b  NJ 0, \sigma2 and R = \sigma2In. gG The basic code to implement the GBLUP model
-
-    Parameters
-    ----------
-    genotypic : array-like
-        Input data.
-    effects : array-like
-        Input data.
-    of : array-like
-        Input data.
-    J : array-like
-        Input data.
-    lines : array-like
-        Input data.
-    Z : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (5.3) [Multivariate Statistical Machine Learnin [Pages 141-170] [2026-04-16].pdf]
-    r"""
-    genotypic = np.atleast_1d(np.asarray(genotypic, dtype=float))
-    n = len(genotypic)
-    result = float(np.mean(genotypic))
-    se = float(np.std(genotypic, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (5.3) from MVSML chapter 5.",
-        }
-    )
+def mvsml_linear_mixed_models_eq_5_3(y, Z_L, G, sigma2_g, sigma2_e=1.0):
+    """Y = 1_n mu + Z_L b + eps with b ~ N_J(0, sigma2_g G) and
+    R = sigma2 I_n (eq. 5.3): the GBLUP model.  Z_L is the incidence
+    matrix of lines and G the genomic relationship matrix; the BLUP of
+    b holds the genomic estimated breeding values. Keys: estimate."""
+    f = _gp.gblup_model(y, Z_L, G, sigma2_g, sigma2_e)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "gebv": f["b"],
+                              "method": "GBLUP model (MVSML 2022 eq. 5.3)"})
+    return with_describe_pointer(res, "msm016")
 
 
 def cheatsheet():
-    return "msm016: Numbered display equation (5.3) from MVSML chapter 5."
+    return "msm016: GBLUP model for genomic prediction"
