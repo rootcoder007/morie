@@ -1,46 +1,32 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Dirichlet process DP(alpha, G0): finite-dimensional marginals are Dirichlet."""
+"""Dirichlet process definition.
+
+Implements Definition 4.1, eq. (4.1) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_def"]
 
 
-def ghosal_dp_def(x):
-    """
-    Dirichlet process DP(alpha, G0): finite-dimensional marginals are Dirichlet
-
-    Formula: (G(A_1)..G(A_k)) ~ Dir(alpha*G0(A_1)..alpha*G0(A_k)) for any partition
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 4 §4.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dirichlet process DP(alpha, G0): finite-dimensional marginals are Dirichlet",
-        }
-    )
+def ghosal_dp_def(partition_base_masses, seed=42):
+    """(P(A_1)..P(A_k)) ~ Dir(k; alpha(A_1)..alpha(A_k)) for every
+    finite partition (eq. 4.1): draws the vector by gamma
+    normalization. Keys: estimate."""
+    a = _bnp._flat(partition_base_masses)
+    rng = np.random.default_rng(seed)
+    g = [float(rng.gamma(max(ai, 1e-12), 1.0)) for ai in a]
+    p = _bnp.normalize_weights(g)
+    res = RichResult(payload={"estimate": p[0], "P": p,
+                              "dir_params": a,
+                              "method": "DP finite-partition law (GvdV 2017 eq. 4.1)"})
+    return with_describe_pointer(res, "gh_c4_1")
 
 
 def cheatsheet():
-    return "gh_c4_1: Dirichlet process DP(alpha, G0): finite-dimensional marginals are Dirichlet"
+    return "gh_c4_1: Dirichlet process definition"

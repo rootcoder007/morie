@@ -1,46 +1,35 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""DP conditional distribution: G given G(A) is mixture of DP on A and A^c."""
+"""DP conditional distribution on a complement.
+
+Implements Theorem 4.5 (localization) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_conditional_distribution"]
 
 
-def ghosal_dp_conditional_distribution(x):
-    """
-    DP conditional distribution: G given G(A) is mixture of DP on A and A^c
-
-    Formula: G(A^c . | G(A)=w) | G(A)=w ~ DP(alpha*G0(A^c/(1-G0(A))), *) on A^c
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 4 §4.1.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "DP conditional distribution: G given G(A) is mixture of DP on A and A^c",
-        }
-    )
+def ghosal_dp_conditional_distribution(base_masses_in_Ac, w=0.5,
+                                       seed=42):
+    """Given P(A) = w, the conditional measure on A^c is
+    P_{A^c} ~ DP(alpha|_{A^c}), independent of w (Theorem 4.5). The
+    returned Dirichlet parameters are just the restricted base
+    masses. Keys: estimate."""
+    a = _bnp._flat(base_masses_in_Ac)
+    rng = np.random.default_rng(seed)
+    p = _bnp.normalize_weights(
+        [float(rng.gamma(max(ai, 1e-12), 1.0)) for ai in a])
+    res = RichResult(payload={"estimate": p[0],
+                              "dir_params": a, "P_cond": p,
+                              "independent_of_w": True,
+                              "method": "DP localized conditional (GvdV 2017 Thm 4.5)"})
+    return with_describe_pointer(res, "gh_dp_cond_dist")
 
 
 def cheatsheet():
-    return "gh_dp_cond_dist: DP conditional distribution: G given G(A) is mixture of DP on A and A^c"
+    return "gh_dp_cond_dist: DP conditional distribution on a complement"

@@ -1,46 +1,42 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""DP mixture model: f(x) = integral phi(x|theta) dG(theta), G ~ DP(alpha, G0)."""
+"""Dirichlet process mixture model.
+
+Implements eq. (5.1)-(5.2) of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dpm_model"]
 
 
-def ghosal_dpm_model(x):
-    """
-    DP mixture model: f(x) = integral phi(x|theta) dG(theta), G ~ DP(alpha, G0)
+def _norm_pdf(x, mu, sd):
+    z = (x - mu) / sd
+    return math.exp(-0.5 * z * z) / (sd * math.sqrt(2.0 * math.pi))
 
-    Formula: f(x) = integral K(x;theta) dG(theta), G ~ DP(alpha,G0)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 5 §5.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "DP mixture model: f(x) = integral phi(x|theta) dG(theta), G ~ DP(alpha, G0)",
-        }
-    )
+def ghosal_dpm_model(x, alpha=1.0, n_terms=200, kernel_sd=0.25,
+                     seed=42):
+    """p_F(x) = int psi(x; theta) dF(theta), F ~ DP(alpha) (eq. 5.1):
+    realized by the stick-breaking series sum W_j psi(x; theta_j)
+    with a normal kernel. Keys: estimate."""
+    rng = np.random.default_rng(seed)
+    M = float(alpha)
+    V = [float(rng.beta(1.0, M)) for _ in range(n_terms)]
+    W = _bnp.stick_breaking(V)
+    th = [float(v) for v in rng.uniform(0, 1, n_terms)._flat()]
+    xs = _bnp._flat(x)
+    dens = [sum(w * _norm_pdf(xi, t, kernel_sd)
+                for w, t in zip(W, th)) for xi in xs]
+    res = RichResult(payload={"estimate": dens[0], "density": dens,
+                              "mixing_mass": sum(W),
+                              "method": "DP mixture density (GvdV 2017 eq. 5.1)"})
+    return with_describe_pointer(res, "gh_c5_1")
 
 
 def cheatsheet():
-    return "gh_c5_1: DP mixture model: f(x) = integral phi(x|theta) dG(theta), G ~ DP(alpha, G0)"
+    return "gh_c5_1: Dirichlet process mixture model"
