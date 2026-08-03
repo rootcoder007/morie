@@ -1,51 +1,36 @@
-"""Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Binary regression density.
+
+Implements sec. 2.5 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch2_binary_regression_density"]
 
 
-def ghosal_ch2_binary_regression_density(y, x, f, H):
-    """
-    Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f.
-
-    Formula: p_f(y | x) = H(f(x))^y * (1 - H(f(x)))^(1 - y),   y in {0, 1}
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    x : array-like
-        Input data.
-    f : array-like
-        Input data.
-    H : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: distribution
-
-    References
-    ----------
-    Ghosal & van der Vaart (2017), Ch 2, Eq 2.6, p. 21
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f.",
-        }
-    )
+def ghosal_ch2_binary_regression_density(y, x=None, f=0.7, H=None):
+    """p_f(y | x) = H(f(x))^y (1 - H(f(x)))^{1-y} (sec. 2.5): the
+    likelihood of a link-transformed regression function. Default
+    logistic H; ``f`` a scalar value f(x). Keys: distribution."""
+    if H is None:
+        H = lambda v: 1.0 / (1.0 + math.exp(-v))
+    p = H(float(f))
+    ys = _bnp._flat(y)
+    lik = 1.0
+    for yi in ys:
+        lik *= p if yi > 0 else (1.0 - p)
+    res = RichResult(payload={"estimate": lik,
+                              "distribution": lik,
+                              "success_prob": p,
+                              "method": "binary regression density (GvdV 2017 sec. 2.5)"})
+    return with_describe_pointer(res, "ghs007")
 
 
 def cheatsheet():
-    return "ghs007: Conditional Bernoulli density of a binary response Y given covariate x using a link H composed with a function f."
+    return "ghs007: Binary regression density"
