@@ -1,51 +1,38 @@
-r"""Numbered display equation (9.29) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Balance condition on the multipliers.
 
-from . import _array_core as np
+Implements eq. (9.29) p.348 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries a topic label from another chapter;
+chapter 9 is Support Vector Machines and Support Vector Regression,
+and the canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_29"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_ridge_lasso_elastic_eq_9_29", "mvsml_svm_balance_condition"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_29(Xn, L, i, iyi):
-    r"""
-    Numbered display equation (9.29) from MVSML chapter 9.
+def mvsml_ridge_lasso_elastic_eq_9_29(alpha, y):
+    """dL/dbeta_0 = -sum_i alpha_i y_i = 0, so sum_i alpha_i y_i = 0
+    (eq. 9.29): the stationarity condition in the intercept, which
+    becomes one of the two dual constraints. Keys: estimate."""
+    a = _gp._flat(alpha)
+    ys = _gp._flat(y)
+    s = sum(ai * yi for ai, yi in zip(a, ys))
+    res = RichResult(payload={"estimate": s, "balance": s,
+                              "satisfied": abs(s) < 1e-6,
+                              "method": "intercept stationarity (MVSML 2022 eq. 9.29)"})
+    return with_describe_pointer(res, "msm203")
 
-    Formula: (9.28) \partial \beta Xn Xn \partial L \beta, \beta0, \alpha ( ) = i=1\alphaiyi = 0 \Rightarrow i=1\alphaiyi = 0
 
-    Parameters
-    ----------
-    Xn : array-like
-        Input data.
-    L : array-like
-        Input data.
-    i : array-like
-        Input data.
-    iyi : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.29) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    Xn = np.atleast_1d(np.asarray(Xn, dtype=float))
-    n = len(Xn)
-    result = float(np.mean(Xn))
-    se = float(np.std(Xn, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.29) from MVSML chapter 9.",
-        }
-    )
+mvsml_svm_balance_condition = mvsml_ridge_lasso_elastic_eq_9_29
 
 
 def cheatsheet():
-    return "msm203: Numbered display equation (9.29) from MVSML chapter 9."
+    return "msm203: Balance condition on the multipliers"
