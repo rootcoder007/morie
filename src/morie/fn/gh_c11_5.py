@@ -1,48 +1,32 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""GP binary regression contraction: optimal rate for probit/logit link."""
+"""GP binary-regression contraction.
+
+Implements Theorem 11.22 of Ghosal & van der Vaart (2017), *Fundamentals of
+Nonparametric Bayesian Inference*, CUP.
+"""
+
+import math
 
 from . import _array_core as np
-
-from ._richresult import RichResult
+from . import _bnp_core as _bnp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_gp_binreg_crt"]
 
 
-def ghosal_gp_binreg_crt(x, y):
-    """
-    GP binary regression contraction: optimal rate for probit/logit link
-
-    Formula: f ~ GP(0,k), rate n^{-s/(2s+d/2)} for GP on R^d with Sobolev kernel
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Ghosal Ch 11 §11.3.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "GP binary regression contraction: optimal rate for probit/logit link",
-        }
-    )
+def ghosal_gp_binreg_crt(s=2.0, d=1.0, ns=(100, 10000)):
+    """p(x) = Psi(W_x): if phi_{w0}(eps) ~ eps^{-d/s} (an s-smooth
+    GP on [0,1]^d) the rate equation gives eps_n = n^{-s/(2s+d)}
+    (Thm 11.22 + Thm 11.20). Keys: estimate."""
+    s = float(s)
+    d = float(d)
+    rates = [float(n) ** (-s / (2.0 * s + d)) for n in ns]
+    res = RichResult(payload={"estimate": rates[-1],
+                              "rate_by_n": rates,
+                              "exponent": s / (2.0 * s + d),
+                              "method": "GP binary regression rate (GvdV 2017 Thm 11.22)"})
+    return with_describe_pointer(res, "gh_c11_5")
 
 
 def cheatsheet():
-    return "gh_c11_5: GP binary regression contraction: optimal rate for probit/logit link"
+    return "gh_c11_5: GP binary-regression contraction"
