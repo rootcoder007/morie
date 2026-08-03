@@ -1,55 +1,38 @@
-r"""Numbered display equation (6.5) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""GBLUP with an incidence matrix of genotypes.
 
-from . import _array_core as np
+Implements eq. (6.5) p.177 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_5"]
 
 
-def mvsml_bayesian_regression_eq_6_5(Cholesky, of, the, genomic, relationship, matrix):
-    r"""
-    Numbered display equation (6.5) from MVSML chapter 6.
-
-    Formula: Cholesky decomposition of the genomic relationship matrix, i.e., X = L, where G = LL0. So, with the BGLR package, the BRR implementation of a GBLUP model is. L = t(chol(G)) ETA = list( list( model = ‘BRR’, X = L, df0 = v\beta, S0 = S\beta, R2 = 1-R2) ) A = BGLR(y=y, ETA = ETA, nIter = 1e4, burnIn = 1e3, S0 = S, df0 = v, R2 = R2) When there is more than one repetition of an individual in the data at hand, or a more sophisticated design is used in the data collection, model (6.4) can be speciﬁed in a more general way to take into account this structure, as follows: Y = 1n\mu + Zg + e
-
-    Parameters
-    ----------
-    Cholesky : array-like
-        Input data.
-    of : array-like
-        Input data.
-    the : array-like
-        Input data.
-    genomic : array-like
-        Input data.
-    relationship : array-like
-        Input data.
-    matrix : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.5) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    Cholesky = np.atleast_1d(np.asarray(Cholesky, dtype=float))
-    n = len(Cholesky)
-    result = float(np.mean(Cholesky))
-    se = float(np.std(Cholesky, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.5) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_5(y, Z, G, n_iter=2000, burn_in=500, seed=42, **kw):
+    """Y = 1_n mu + Z g + eps (eq. 6.5), the form used when
+    individuals are replicated.  BGLR cannot take this predictor
+    directly, so the book precomputes the covariance of the predictor,
+    K_L = Var(Z g) = Z G Z' (p.177), and fits an RKHS model on it;
+    that is what happens here, via the Cholesky factor of K_L.
+    Keys: estimate."""
+    K = _gp.rkhs_covariances(Z, G)["K_L"]
+    n = len(K)
+    Kr = [[K[i][j] + (1e-8 if i == j else 0.0) for j in range(n)]
+          for i in range(n)]
+    f = _gp.bayes_gblup_gibbs(y, Kr, n_iter=n_iter, burn_in=burn_in,
+                              seed=seed, **kw)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "g": f["g"], "K_L": K,
+                              "sigma2": f["sigma2"],
+                              "method": "GBLUP with genotype incidence matrix (MVSML 2022 eq. 6.5)"})
+    return with_describe_pointer(res, "msm055")
 
 
 def cheatsheet():
-    return "msm055: Numbered display equation (6.5) from MVSML chapter 6."
+    return "msm055: GBLUP with an incidence matrix of genotypes"

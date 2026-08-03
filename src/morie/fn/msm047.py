@@ -1,55 +1,35 @@
-r"""Numbered display equation (6.2) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Non-informative prior for the linear model.
 
-from . import _array_core as np
+Implements eq. (6.2) p.172 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_2"]
 
 
-def mvsml_bayesian_regression_eq_6_2(T, j, Np, Ip, obtained, by):
-    r"""
-    Numbered display equation (6.2) from MVSML chapter 6.
-
-    Formula: - T j \sigma2 \beta  Np 0, Ip\sigma2 obtained by assuming that \beta1, . . . , \betap , ignoring the prior \beta distribution of \sigma2 \beta and setting this at a very high value (1010). Note that this model is very similar to the Bayesian model obtained by adopting the prior
-
-    Parameters
-    ----------
-    T : array-like
-        Input data.
-    j : array-like
-        Input data.
-    Np : array-like
-        Input data.
-    Ip : array-like
-        Input data.
-    obtained : array-like
-        Input data.
-    by : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.2) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    T = np.atleast_1d(np.asarray(T, dtype=float))
-    n = len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.2) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_2(sigma2, beta=None):
+    """f(beta, sigma2) proportional to sigma^-2 (eq. 6.2): flat in
+    beta and in log(sigma), improper because it does not integrate to
+    one, yet yielding a proper posterior whenever X has full column
+    rank (p.172).  Returns the prior density up to its (infinite)
+    normalizing constant. Keys: estimate."""
+    s2 = float(sigma2)
+    if s2 <= 0:
+        raise ValueError("sigma2 must be positive")
+    dens = s2 ** -2
+    res = RichResult(payload={"estimate": dens, "density": dens,
+                              "log_density": -2.0 * math.log(s2),
+                              "proper": False,
+                              "method": "non-informative prior (MVSML 2022 eq. 6.2)"})
+    return with_describe_pointer(res, "msm047")
 
 
 def cheatsheet():
-    return "msm047: Numbered display equation (6.2) from MVSML chapter 6."
+    return "msm047: Non-informative prior for the linear model"
