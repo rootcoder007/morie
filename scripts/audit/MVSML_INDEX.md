@@ -62,6 +62,8 @@ to the same implementation, so nothing is written twice.
 | 8 | 3 | eq. (8.3) p.254 | msm128 | `mvsml_categorical_count_eq_8_3` | msm129, msm130, msm133, msm134 | prose |
 | 8 | 4 | eq. (8.4) p.265 | msm131 | `mvsml_categorical_count_eq_8_4` | - | equation |
 | 8 | 5 | eq. (8.5) p.266 | msm132 | `mvsml_categorical_count_eq_8_5` | - | equation |
+| 8 | 6 | eq. (8.6) p.276 | msm135 | `mvsml_categorical_count_eq_8_6` | msm136 | equation |
+| 8 | 7 | eq. (8.7) p.276 | msm137 | `mvsml_categorical_count_eq_8_7` | - | equation |
 | 8 | 8 | eq. (8.8) pp.281-282 | msm138 | `mvsml_categorical_count_eq_8_8` | msm139, msm140, msm141, msm146, msm149, msm150 | prose |
 | 8 | 9 | eq. (8.9) p.282 | msm142 | `mvsml_categorical_count_eq_8_9` | msm143 | equation |
 | 8 | 10 | eq. (8.10) pp.283-285 | msm144 | `mvsml_categorical_count_eq_8_10` | msm157 | prose |
@@ -92,4 +94,4 @@ LOWER bound (some tags do not survive extraction).
 | 5 | 1 2 3 4 5 6 | 1 2 3 4 5 5a 6 |
 | 6 | 1 2 3 4 5 6 8 9 11 | 1 2 3 4 5 6 7 8 9 10 11 |
 | 7 | 1 2 3 4 5 6 7 9 10 | 1 2 3 4 5 6 7 8 9 10 11 |
-| 8 | 1 2 3 4 6 8 9 10 11 12 | 1 2 3 4 5 8 9 10 11 12 |
+| 8 | 1 2 3 4 6 8 9 10 11 12 | 1 2 3 4 5 6 7 8 9 10 11 12 |

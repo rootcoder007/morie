@@ -2262,3 +2262,65 @@ def sparse_kernel_design(X, m_index, kernel="linear", gamma=None,
     P = _mm(ny["K_nm"], US)
     return {"P": P, "Q": ny["Q"], "rank": len(keep),
             "K_mm": Kmm, "K_nm": ny["K_nm"]}
+
+
+def rkhs_mixed_equations(C, K, y, lam=1.0, sigma2_e=1.0,
+                         form="direct"):
+    """The RKHS regression estimating equations of sec. 8.6 p.276.
+
+    Minimizing J[theta, beta | lambda] = (1/(2 sigma2_e))
+    (y - C theta - K beta)'(y - C theta - K beta)
+    + (lambda/2) beta' K beta and setting both gradients to zero gives
+
+      (8.6)  [C'C   C'K          ] [theta]   [C'y]
+             [K'C   K'K + lambda K sigma2_e] [beta ] = [K'y]
+
+    Because K is symmetric, K'K = K^2; multiplying the second block by
+    K^-1 gives the equivalent but cheaper system
+
+      (8.7)  [C'C   C'K              ] [theta]   [C'y]
+             [I'C   K + lambda I sigma2_e] [beta ] = [ y ]
+
+    which avoids inverting K and forming K'K.  ``form='direct'`` uses
+    (8.6), ``form='reduced'`` uses (8.7); the book states the two give
+    the same solution.  sigma2_beta = 1/lambda is read as the variation
+    due to marked additive genomic variation.
+    """
+    Cm = _mat(C)
+    Km = _mat(K)
+    ys = _flat(y)
+    n = len(ys)
+    q = len(Cm[0])
+    Ct = _t(Cm)
+    CtC = _mm(Ct, Cm)
+    CtK = _mm(Ct, Km)
+    if form == "direct":
+        KtC = _mm(_t(Km), Cm)
+        KtK = _mm(_t(Km), Km)
+        A22 = [[KtK[i][j] + lam * Km[i][j] * sigma2_e
+                for j in range(n)] for i in range(n)]
+        rhs = _mv(Ct, ys) + _mv(_t(Km), ys)
+        top = [CtC[i] + CtK[i] for i in range(q)]
+        bot = [KtC[i] + A22[i] for i in range(n)]
+    elif form == "reduced":
+        A22 = [[Km[i][j] + (lam * sigma2_e if i == j else 0.0)
+                for j in range(n)] for i in range(n)]
+        rhs = _mv(Ct, ys) + ys
+        top = [CtC[i] + CtK[i] for i in range(q)]
+        bot = [list(Cm[i]) + A22[i] for i in range(n)]
+    else:
+        raise ValueError("form must be 'direct' or 'reduced'")
+    sol = _solve(top + bot, rhs)
+    theta, beta = sol[:q], sol[q:]
+    u = _mv(Km, beta)                 # reparameterization II: u = K beta
+    fitted = [a + b for a, b in zip(_mv(Cm, theta), u)]
+    return {"theta": theta, "beta": beta, "u": u, "fitted": fitted,
+            "sigma2_beta": 1.0 / lam if lam else float("inf")}
+
+
+def rkhs_predict_new(K_star, beta):
+    """p.276: breeding values for t new genotyped individuals without
+    phenotype follow from a matrix-vector product, u_new = K_s beta,
+    where K_s is the t x n matrix of genomic similarities between the
+    new individuals and the training set."""
+    return _mv(_mat(K_star), _flat(beta))
