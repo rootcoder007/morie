@@ -1865,3 +1865,134 @@ def penalized_poisson_fit(X, y, lam=1.0, penalty="ridge",
         if not (add_intercept and j == 0)) / 2.0
     return {"beta": beta, "fitted": mu, "loglik": ll,
             "penalized_loglik": ll - pen, "iterations": it + 1}
+
+
+# ------------------ RKHS regression and kernels (ch. 8 pp.252-255)
+def kernel_matrix(X, kernel="linear", gamma=None, degree=2,
+                  coef0=1.0, Z=None):
+    """The Gram matrix K with K_ij = K(x_i, x_j) (sec. 8.2.2 p.255).
+
+    A kernel is an inner product in an expanded feature space,
+    K(x_i, x_j) = phi(x_i)'phi(x_j), so K must be symmetric and
+    positive semi-definite; those two properties are what make it
+    usable as a covariance in the penalized regression of eq. (8.3).
+    ``gamma`` defaults to 1/p for the Gaussian kernel.
+    """
+    A = _mat(X)
+    B = _mat(Z) if Z is not None else A
+    p = len(A[0])
+    if gamma is None:
+        gamma = 1.0 / p
+    out = []
+    for a in A:
+        row = []
+        for b in B:
+            if kernel == "linear":
+                v = sum(u * w for u, w in zip(a, b))
+            elif kernel == "gaussian":
+                d2 = sum((u - w) ** 2 for u, w in zip(a, b))
+                v = math.exp(-gamma * d2)
+            elif kernel == "polynomial":
+                v = (gamma * sum(u * w for u, w in zip(a, b))
+                     + coef0) ** degree
+            elif kernel == "exponential":
+                d = math.sqrt(sum((u - w) ** 2
+                                  for u, w in zip(a, b)))
+                v = math.exp(-gamma * d)
+            elif kernel == "sigmoid":
+                v = math.tanh(gamma * sum(u * w
+                                          for u, w in zip(a, b))
+                              + coef0)
+            else:
+                raise ValueError("unknown kernel: %s" % kernel)
+            row.append(v)
+        out.append(row)
+    return out
+
+
+def is_positive_semidefinite(K, tol=1e-9):
+    """Property 2 of p.255: the Gram matrix must be positive
+    semi-definite for K to be a valid kernel.  Checked through the
+    eigenvalues of the symmetrized matrix."""
+    Km = _mat(K)
+    n = len(Km)
+    S = [[0.5 * (Km[i][j] + Km[j][i]) for j in range(n)]
+         for i in range(n)]
+    vals, _ = np.linalg.eigh(np.marr(S))
+    lam = [float(v) for v in vals._flat()]
+    return min(lam) >= -tol, lam
+
+
+def rkhs_norm(beta, K):
+    """The empirical RKHS norm of eq. (8.2) p.254:
+    ||f||_H^2 = sum_ij beta_i beta_j K(x_i, x_j) = beta' K beta."""
+    b = _flat(beta)
+    Km = _mat(K)
+    return sum(b[i] * Km[i][j] * b[j]
+               for i in range(len(b)) for j in range(len(b)))
+
+
+def rkhs_predict(K_new, beta, eta0=0.0):
+    """The representer-theorem prediction of eq. (8.2) p.254:
+    f(x_i) = eta_0 + sum_j beta_j K(x_i, x_j) = eta_0 + k_i'beta."""
+    return [float(eta0) + sum(k * b for k, b in zip(row, _flat(beta)))
+            for row in _mat(K_new)]
+
+
+def rkhs_fit_squared_loss(K, y, lam=1.0):
+    """eq. (8.3) p.254 with the squared-error loss:
+    min over (eta_0, beta) of (1/n) sum (y_i - eta_0 - k_i'beta)^2
+    + (lambda/2) beta'K beta.  Setting the gradient to zero gives the
+    linear system solved here; with L the squared loss this is the
+    kernel ridge / RKHS regression estimator."""
+    Km = _mat(K)
+    ys = _flat(y)
+    n = len(ys)
+    A = [[0.0] * (n + 1) for _ in range(n + 1)]
+    rhs = [0.0] * (n + 1)
+    # d/d eta0: (2/n) sum (eta0 + k_i'beta - y_i) = 0
+    A[0][0] = 1.0
+    for j in range(n):
+        A[0][1 + j] = sum(Km[i][j] for i in range(n)) / n
+    rhs[0] = sum(ys) / n
+    # d/d beta: (2/n) K'(eta0 1 + K beta - y) + lambda K beta = 0
+    KtK = _mm(_t(Km), Km)
+    Kty = _mv(_t(Km), ys)
+    colsum = [sum(Km[i][j] for i in range(n)) for j in range(n)]
+    for a in range(n):
+        A[1 + a][0] = colsum[a] * 2.0 / n
+        for b in range(n):
+            A[1 + a][1 + b] = 2.0 * KtK[a][b] / n \
+                + float(lam) * Km[a][b]
+        rhs[1 + a] = 2.0 * Kty[a] / n
+    sol = _solve(A, rhs)
+    eta0, beta = sol[0], sol[1:]
+    fitted = rkhs_predict(Km, beta, eta0)
+    resid = [a - b for a, b in zip(ys, fitted)]
+    return {"eta0": eta0, "beta": beta, "fitted": fitted,
+            "residuals": resid,
+            "loss": sum(v * v for v in resid) / n,
+            "penalty": 0.5 * float(lam) * rkhs_norm(beta, Km),
+            "objective": sum(v * v for v in resid) / n
+            + 0.5 * float(lam) * rkhs_norm(beta, Km)}
+
+
+def generalized_kernel_model(K, beta, eta0=0.0, link="identity"):
+    """The generalized kernel model of sec. 8.2 p.253:
+    y_i ~ p(y_i | mu_i), linear predictor eta_i = f(x_i)
+    = eta_0 + k_i'beta, and link eta_i = g(mu_i).  Applies the inverse
+    link h = g^-1 to return the mean.  One framework covers continuous
+    (identity), binary (logit/probit), count (log) and categorical
+    responses."""
+    eta = rkhs_predict(K, beta, eta0)
+    if link == "identity":
+        mu = eta
+    elif link == "logit":
+        mu = [1.0 / (1.0 + math.exp(-v)) for v in eta]
+    elif link == "probit":
+        mu = [_norm_cdf(v) for v in eta]
+    elif link == "log":
+        mu = [math.exp(min(v, 700.0)) for v in eta]
+    else:
+        raise ValueError("unknown link: %s" % link)
+    return {"eta": eta, "mu": mu, "link": link}

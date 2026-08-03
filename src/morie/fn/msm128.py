@@ -1,55 +1,44 @@
-r"""Numbered display equation (8.3) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""RKHS estimation in the frequentist framework.
 
-from . import _array_core as np
+Implements eq. (8.3) p.254 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the auto-generated stub name carries the topic label of the
+previous chapter; chapter 8 is Reproducing Kernel Hilbert Spaces
+regression, and the canonical name below reflects that.  Both names
+resolve to the same function.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_3"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_3", "mvsml_rkhs_fit"]
 
 
-def mvsml_categorical_count_eq_8_3(X, n, L, yi, kT, i):
-    r"""
-    Numbered display equation (8.3) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_3(K, y, lam=1.0):
+    """min over (eta_0, beta) of {(1/n) sum_i L(y_i, eta_0 + k_i'beta)
+    + (lambda/2) beta'K beta} (eq. 8.3), obtained by substituting the
+    representer form (8.2) into (8.1).  beta'K beta is the empirical
+    RKHS norm and lambda controls the trade-off between goodness of
+    fit and complexity; with the squared-error loss the stationarity
+    conditions are linear and are solved directly here.
+    Keys: estimate."""
+    f = _gp.rkhs_fit_squared_loss(K, y, lam=lam)
+    res = RichResult(payload={"estimate": f["eta0"],
+                              "eta0": f["eta0"], "beta": f["beta"],
+                              "fitted": f["fitted"],
+                              "objective": f["objective"],
+                              "penalty": f["penalty"],
+                              "method": "RKHS frequentist fit (MVSML 2022 eq. 8.3)"})
+    return with_describe_pointer(res, "msm128")
 
-    Formula: ) X n   + \lambda 1 L yi, \eta0 + kT i \beta 2 \betaTK\beta
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    n : array-like
-        Input data.
-    L : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    kT : array-like
-        Input data.
-    i : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.3) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.3) from MVSML chapter 8.",
-        }
-    )
+mvsml_rkhs_fit = mvsml_categorical_count_eq_8_3
 
 
 def cheatsheet():
-    return "msm128: Numbered display equation (8.3) from MVSML chapter 8."
+    return "msm128: RKHS estimation in the frequentist framework"
