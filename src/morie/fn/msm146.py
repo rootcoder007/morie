@@ -1,55 +1,14 @@
-r"""Numbered display equation (8.8) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""eq. (8.8) pp.281-282, re-exported from :mod:`morie.fn.msm138`.
 
-from . import _array_core as np
+The stub generator stamped several extracted page fragments with this
+same function name, so the implementation lives once in msm138.
+"""
 
-from ._richresult import RichResult
+from .msm138 import mvsml_categorical_count_eq_8_8, mvsml_bayesian_kernel_blup
 
-__all__ = ["mvsml_categorical_count_eq_8_8"]
-
-
-def mvsml_categorical_count_eq_8_8(it, important, to, point, out, that):
-    r"""
-    Numbered display equation (8.8) from MVSML chapter 8.
-
-    Formula: (2020), it is important to point out that model (8.8) can be reparametrized as Eq. (8.11) if the eigenvalue decomposition of the kernel matrix K is expressed as US1/2S1/2U0, y = \mu1n + Pf + \epsilon, (8.11)   where f  N 0, \sigma2 (where r is the rank of K) and P = US1/2. Note that models f Ir,r
-
-    Parameters
-    ----------
-    it : array-like
-        Input data.
-    important : array-like
-        Input data.
-    to : array-like
-        Input data.
-    point : array-like
-        Input data.
-    out : array-like
-        Input data.
-    that : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.8) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    it = np.atleast_1d(np.asarray(it, dtype=float))
-    n = len(it)
-    result = float(np.mean(it))
-    se = float(np.std(it, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.8) from MVSML chapter 8.",
-        }
-    )
+__all__ = ["mvsml_categorical_count_eq_8_8", "mvsml_bayesian_kernel_blup"]
 
 
 def cheatsheet():
-    return "msm146: Numbered display equation (8.8) from MVSML chapter 8."
+    return "msm146: see msm138"

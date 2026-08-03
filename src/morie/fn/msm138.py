@@ -1,55 +1,47 @@
-r"""Numbered display equation (8.8) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bayesian kernel BLUP.
 
-from . import _array_core as np
+Implements eq. (8.8) pp.281-282 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries the previous chapter's topic label;
+chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
+canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_8"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_8", "mvsml_bayesian_kernel_blup"]
 
 
-def mvsml_categorical_count_eq_8_8(folds, Fig, d, the, optimal, number):
-    r"""
-    Numbered display equation (8.8) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_8(y, K, sigma2_u=1.0, sigma2_e=1.0, gibbs=True,
+         n_iter=1200, burn_in=300, seed=42):
+    """y = 1 mu + u + e with u ~ N(0, sigma2_u K) and
+    e ~ N(0, sigma2_e I) (eq. 8.8): kernel ridge regression cast in a
+    Bayesian framework, lambda = sigma2_e/sigma2_u.  The conditional
+    mode of u is (sigma_u^-2 K^-1 + sigma_e^-2 I)^-1 sigma_e^-2
+    (y - 1 mu), which is exactly Henderson's BLUP -- so with K the
+    genomic relationship matrix this model IS GBLUP (p.282).  The
+    kernel trick turns a large-p problem into an n-dimensional one.
+    Keys: estimate."""
+    f = _gp.bayesian_kernel_blup(y, K, sigma2_u=sigma2_u,
+                                 sigma2_e=sigma2_e, gibbs=gibbs,
+                                 n_iter=n_iter, burn_in=burn_in,
+                                 seed=seed)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "u": f["u"],
+                              "sigma2_u": f["sigma2_u"],
+                              "sigma2_e": f["sigma2_e"],
+                              "method": "Bayesian kernel BLUP (MVSML 2022 eq. 8.8)"})
+    return with_describe_pointer(res, "msm138")
 
-    Formula: 3, in folds 3 and 4 (Fig. 8.2b, d), the optimal number of hidden layers was equal to 8. Finally, with these optimal values, the model was reﬁtted with the information of the inner training + tuning set, and then for each fold, the mean square error (MSE) was calculated for each outer testing set; the MSEs were 0.6878 (fold 1), 0.6963 (fold 2), 0.9725 (fold 3), and 0.7212 (fold 4), with an MSE across folds equal to 0.7694. The R code for reproducing these results is given in Appendix 5. 8.8 Bayesian Kernel Methods For a single environment, the model can be expressed as y = \mu1 + u + e,
 
-    Parameters
-    ----------
-    folds : array-like
-        Input data.
-    Fig : array-like
-        Input data.
-    d : array-like
-        Input data.
-    the : array-like
-        Input data.
-    optimal : array-like
-        Input data.
-    number : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.8) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    folds = np.atleast_1d(np.asarray(folds, dtype=float))
-    n = len(folds)
-    result = float(np.mean(folds))
-    se = float(np.std(folds, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.8) from MVSML chapter 8.",
-        }
-    )
+mvsml_bayesian_kernel_blup = mvsml_categorical_count_eq_8_8
 
 
 def cheatsheet():
-    return "msm138: Numbered display equation (8.8) from MVSML chapter 8."
+    return "msm138: Bayesian kernel BLUP"

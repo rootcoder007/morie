@@ -1,55 +1,44 @@
-r"""Numbered display equation (8.10) from MVSML chapter 8.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Extended kernel BLUP with genotype-by-environment interaction.
 
-from . import _array_core as np
+Implements eq. (8.10) pp.283-285 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
-from ._richresult import RichResult
+Note: the stub name carries the previous chapter's topic label;
+chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
+canonical name below reflects that.
+"""
 
-__all__ = ["mvsml_categorical_count_eq_8_10"]
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["mvsml_categorical_count_eq_8_10", "mvsml_kernel_blup_gxe"]
 
 
-def mvsml_categorical_count_eq_8_10(linear, GBLUP, kernels, the, best, second):
-    r"""
-    Numbered display equation (8.10) from MVSML chapter 8.
+def mvsml_categorical_count_eq_8_10(Z_u1, K, Z_E, sigma2_u1=1.0, sigma2_u2=1.0):
+    """y = mu 1 + Z_E beta_E + u_1 + u_2 + eps (eq. 8.10) with
+    u_1 ~ N(0, sigma2_u1 K_1), K_1 = Z_u1 K Z_u1' the genomic main
+    effects, and u_2 ~ N(0, sigma2_u2 K_2),
+    K_2 = (Z_u1 K Z_u1') o (Z_E Z_E') the genotype-by-environment
+    interaction, where "o" is the Hadamard product (p.285).
+    Keys: estimate."""
+    f = _gp.kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1=sigma2_u1,
+                            sigma2_u2=sigma2_u2)
+    ok1, _ = _gp.is_positive_semidefinite(f["K1"])
+    ok2, _ = _gp.is_positive_semidefinite(f["K2"])
+    res = RichResult(payload={"estimate": f["K1"][0][0],
+                              "K1": f["K1"], "K2": f["K2"],
+                              "K_env": f["K_env"],
+                              "K1_psd": ok1, "K2_psd": ok2,
+                              "method": "extended kernel BLUP with G x E (MVSML 2022 eq. 8.10)"})
+    return with_describe_pointer(res, "msm144")
 
-    Formula: and linear (GBLUP) kernels, while the best and second-best predictions were obtained with polynomial and Gaussian kernels. However, it is important to point out that the differences between the best and worst predictions were small. 8.8.1 Extended Predictor Under the Bayesian Kernel BLUP The Bayesian kernel BLUP method can be extended, in terms of the predictor, to easily take into account the effects of other factors. For example, in addition to the genotype effect, the effects of environments and genotype  environment interac- tion terms can also be incorporated as y = \mu1 + ZE\betaE + u1 + u2 + \epsilon,
 
-    Parameters
-    ----------
-    linear : array-like
-        Input data.
-    GBLUP : array-like
-        Input data.
-    kernels : array-like
-        Input data.
-    the : array-like
-        Input data.
-    best : array-like
-        Input data.
-    second : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (8.10) [Multivariate Statistical Machine Learnin [Pages 251-336] [2026-04-16].pdf]
-    r"""
-    linear = np.atleast_1d(np.asarray(linear, dtype=float))
-    n = len(linear)
-    result = float(np.mean(linear))
-    se = float(np.std(linear, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (8.10) from MVSML chapter 8.",
-        }
-    )
+mvsml_kernel_blup_gxe = mvsml_categorical_count_eq_8_10
 
 
 def cheatsheet():
-    return "msm144: Numbered display equation (8.10) from MVSML chapter 8."
+    return "msm144: Extended kernel BLUP with genotype-by-environment interaction"

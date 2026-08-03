@@ -514,6 +514,44 @@
   "stub_content": "equation"
  },
  {
+  "method": "eq. (8.8) pp.281-282",
+  "chapter": "8",
+  "equation": "8",
+  "canonical_module": "msm138",
+  "entry_point": "mvsml_categorical_count_eq_8_8",
+  "reexported_by": [
+   "msm139",
+   "msm140",
+   "msm141",
+   "msm146",
+   "msm149",
+   "msm150"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (8.9) p.282",
+  "chapter": "8",
+  "equation": "9",
+  "canonical_module": "msm142",
+  "entry_point": "mvsml_categorical_count_eq_8_9",
+  "reexported_by": [
+   "msm143"
+  ],
+  "stub_content": "equation"
+ },
+ {
+  "method": "eq. (8.10) pp.283-285",
+  "chapter": "8",
+  "equation": "10",
+  "canonical_module": "msm144",
+  "entry_point": "mvsml_categorical_count_eq_8_10",
+  "reexported_by": [
+   "msm157"
+  ],
+  "stub_content": "prose"
+ },
+ {
   "method": "hyperplane_side",
   "chapter": "?",
   "equation": "?",
