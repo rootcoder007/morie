@@ -552,6 +552,33 @@
   "stub_content": "prose"
  },
  {
+  "method": "eq. (8.11) p.289",
+  "chapter": "8",
+  "equation": "11",
+  "canonical_module": "msm145",
+  "entry_point": "mvsml_categorical_count_eq_8_11",
+  "reexported_by": [
+   "msm147",
+   "msm148",
+   "msm151",
+   "msm154"
+  ],
+  "stub_content": "prose"
+ },
+ {
+  "method": "eq. (8.12) p.291",
+  "chapter": "8",
+  "equation": "12",
+  "canonical_module": "msm152",
+  "entry_point": "mvsml_categorical_count_eq_8_12",
+  "reexported_by": [
+   "msm153",
+   "msm155",
+   "msm156"
+  ],
+  "stub_content": "prose"
+ },
+ {
   "method": "hyperplane_side",
   "chapter": "?",
   "equation": "?",
