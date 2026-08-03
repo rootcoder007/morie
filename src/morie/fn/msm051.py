@@ -1,55 +1,35 @@
-r"""Numbered display equation (6.4) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bayesian GBLUP genomic model.
 
-from . import _array_core as np
+Implements eq. (6.4) pp.176-177 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_4"]
 
 
-def mvsml_bayesian_regression_eq_6_4(X1, j, g, Nn, gG, vg):
-    r"""
-    Numbered display equation (6.4) from MVSML chapter 6.
-
-    Formula:   X1\beta0 j \sigma2 g  Nn 0, \sigma2 gG and \sigma2 g  \chi-2 vg, Sg (vg = v\beta, Sg = pS\beta). Similarly to what was done for model (6.3), the full conditional posterior distri- bution of g in model
-
-    Parameters
-    ----------
-    X1 : array-like
-        Input data.
-    j : array-like
-        Input data.
-    g : array-like
-        Input data.
-    Nn : array-like
-        Input data.
-    gG : array-like
-        Input data.
-    vg : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.4) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    X1 = np.atleast_1d(np.asarray(X1, dtype=float))
-    n = len(X1)
-    result = float(np.mean(X1))
-    se = float(np.std(X1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.4) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_4(y, G, n_iter=2000, burn_in=500, nu=5.0, nu_g=5.0, R2=0.5,
+         seed=42):
+    """Y = 1_n mu + g + eps with g | sigma2_g ~ N(0, sigma2_g G)
+    (eq. 6.4), the induced prior obtained from beta ~ N(0, I
+    sigma2_beta) through g = X_1 beta, G = X_1 X_1'/p and
+    sigma2_g = p sigma2_beta (p.176).  The book notes on p.177 that
+    this is exactly the BRR run on X = L with G = L L', which is how
+    it is fitted here; g = L beta. Keys: estimate."""
+    f = _gp.bayes_gblup_gibbs(y, G, n_iter=n_iter, burn_in=burn_in,
+                              nu=nu, nu_g=nu_g, R2=R2, seed=seed)
+    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
+                              "g": f["g"], "sigma2": f["sigma2"],
+                              "sigma2_g": f["sigma2_g"],
+                              "method": "Bayesian GBLUP (MVSML 2022 eq. 6.4)"})
+    return with_describe_pointer(res, "msm051")
 
 
 def cheatsheet():
-    return "msm051: Numbered display equation (6.4) from MVSML chapter 6."
+    return "msm051: Bayesian GBLUP genomic model"

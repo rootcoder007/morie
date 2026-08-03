@@ -1,55 +1,44 @@
-r"""Numbered display equation (6.1) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Normal linear regression under the Bayesian paradigm.
 
-from . import _array_core as np
+Implements eq. (6.1)-(6.2) pp.172 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_1"]
 
 
-def mvsml_bayesian_regression_eq_6_1(Bayesian, Genome, Based, Ridge, Regression, When):
-    r"""
-    Numbered display equation (6.1) from MVSML chapter 6.
-
-    Formula: 6.2 Bayesian Genome-Based Ridge Regression When p > n, X is not of full column rank and the posterior of model (6.1) may not be proper (Gelman et al. 2013), so a solution is instead to consider independently proper prior distributions, \beta  N(0, I\sigma2) and \sigma2  IG(\alpha0, \alpha0), which for large values of \sigma2 6.2 Bayesian Genome-Based Ridge Regression 173 (106) and small values of \alpha0 (10-3) is an approximation to the standard non-informative prior given in
-
-    Parameters
-    ----------
-    Bayesian : array-like
-        Input data.
-    Genome : array-like
-        Input data.
-    Based : array-like
-        Input data.
-    Ridge : array-like
-        Input data.
-    Regression : array-like
-        Input data.
-    When : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.1) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    Bayesian = np.atleast_1d(np.asarray(Bayesian, dtype=float))
-    n = len(Bayesian)
-    result = float(np.mean(Bayesian))
-    se = float(np.std(Bayesian, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.1) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_1(X, y, add_intercept=True):
+    """Y = beta_0 + sum_j X_j beta_j + eps (eq. 6.1) with the
+    improper reference prior f(beta, sigma2) proportional to
+    sigma^-2 (eq. 6.2).  When X has full column rank the posterior is
+    proper: sigma2 | y ~ IG((n-p-1)/2, (n-p-1) s2 / 2) and
+    beta | sigma2, y ~ N(beta-hat, sigma2 (X'X)^-1), with beta-hat the
+    OLS estimator and s2 = y'(I - H)y/(n - p - 1) (p.172).
+    Keys: estimate."""
+    f = _gp.ols_fit(X, y, add_intercept=add_intercept)
+    n = len(_gp._flat(y))
+    p1 = len(f["beta"])
+    df = n - p1
+    res = RichResult(payload={"estimate": f["beta"][0],
+                              "posterior_mean_beta": f["beta"],
+                              "posterior_sd_beta": f["se_beta"],
+                              "sigma2_hat": f["sigma2"],
+                              "ig_shape": df / 2.0,
+                              "ig_scale": df * f["sigma2"] / 2.0,
+                              "posterior_mean_sigma2":
+                                  (df * f["sigma2"] / 2.0)
+                                  / (df / 2.0 - 1.0)
+                                  if df > 2 else float("nan"),
+                              "method": "reference-prior Bayesian linear regression (MVSML 2022 eq. 6.1-6.2)"})
+    return with_describe_pointer(res, "msm045")
 
 
 def cheatsheet():
-    return "msm045: Numbered display equation (6.1) from MVSML chapter 6."
+    return "msm045: Normal linear regression under the Bayesian paradigm"

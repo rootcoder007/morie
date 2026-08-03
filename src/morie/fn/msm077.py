@@ -1,55 +1,35 @@
-r"""Numbered display equation (6.2) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Non-informative prior for the linear model.
 
-from . import _array_core as np
+Implements eq. (6.2) p.172 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_2"]
 
 
-def mvsml_bayesian_regression_eq_6_2(the, information, of, nT, traits, J):
-    r"""
-    Numbered display equation (6.2) from MVSML chapter 6.
-
-    Formula: the information of nT traits of J lines is collected in I environments, this model is given by Y = 1IJ\muT + XB + Z1b1 + Z2b2 + E, (6.11) where =[Y1, . . ., YIJ]T, X = [x1, . . ., xIJ]T, Z1 and Z2 are the incident lines and the incident environment–line interaction matrices, b1 = [g1, . . ., gJ]T, b2 = [g21, . . ., g2IJ]T, and E = [e1, . . ., eIJ]T. Here, b2 j \SigmaT, \SigmaE  MNIJnT 0, \SigmaE⨂G, \SigmaT ( ) , and similar to model
-
-    Parameters
-    ----------
-    the : array-like
-        Input data.
-    information : array-like
-        Input data.
-    of : array-like
-        Input data.
-    nT : array-like
-        Input data.
-    traits : array-like
-        Input data.
-    J : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.2) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    the = np.atleast_1d(np.asarray(the, dtype=float))
-    n = len(the)
-    result = float(np.mean(the))
-    se = float(np.std(the, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.2) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_2(sigma2, beta=None):
+    """f(beta, sigma2) proportional to sigma^-2 (eq. 6.2): flat in
+    beta and in log(sigma), improper because it does not integrate to
+    one, yet yielding a proper posterior whenever X has full column
+    rank (p.172).  Returns the prior density up to its (infinite)
+    normalizing constant. Keys: estimate."""
+    s2 = float(sigma2)
+    if s2 <= 0:
+        raise ValueError("sigma2 must be positive")
+    dens = s2 ** -2
+    res = RichResult(payload={"estimate": dens, "density": dens,
+                              "log_density": -2.0 * math.log(s2),
+                              "proper": False,
+                              "method": "non-informative prior (MVSML 2022 eq. 6.2)"})
+    return with_describe_pointer(res, "msm077")
 
 
 def cheatsheet():
-    return "msm077: Numbered display equation (6.2) from MVSML chapter 6."
+    return "msm077: Non-informative prior for the linear model"

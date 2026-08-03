@@ -1,55 +1,34 @@
-r"""Numbered display equation (6.7) from MVSML chapter 6.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""RKHS predictor with genotype-by-environment effects.
 
-from . import _array_core as np
+Implements eq. (6.7) p.186 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_7"]
 
 
-def mvsml_bayesian_regression_eq_6_7(where, XE, XEM, are, the, design):
-    r"""
-    Numbered display equation (6.7) from MVSML chapter 6.
-
-    Formula: (6.6) where XE and XEM are the design matrices of the environments and environment– marker interactions, respectively, while \betaE and \betaEM are the vectors of the environ- ment effects and the interaction effects, respectively, with a prior distribution that can be speciﬁed as was done for \beta. Indeed, with the BGLR function all these things are possible, and all the options described before can also be adopted for the rest of effects added in the model: FIXED, BRR, BayesA, BayesB, BayesC, and BL. Under the RKHS model with genotypic and environment–genotypic interaction effects, in the predictor, the modiﬁed model (6.6) is expressed as Y = 1n\mu + XE\betaE + ZLg + ZELgE + e,
-
-    Parameters
-    ----------
-    where : array-like
-        Input data.
-    XE : array-like
-        Input data.
-    XEM : array-like
-        Input data.
-    are : array-like
-        Input data.
-    the : array-like
-        Input data.
-    design : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (6.7) [Multivariate Statistical Machine Learnin [Pages 171-208] [2026-04-16].pdf]
-    r"""
-    where = np.atleast_1d(np.asarray(where, dtype=float))
-    n = len(where)
-    result = float(np.mean(where))
-    se = float(np.std(where, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (6.7) from MVSML chapter 6.",
-        }
-    )
+def mvsml_bayesian_regression_eq_6_7(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0,
+         sigma2_ge=1.0):
+    """Y = 1_n mu + X_E beta_E + Z_L g + Z_LE gE + eps (eq. 6.7).
+    As for eq. (6.5), the predictor terms enter through their
+    covariance matrices, K_L = Z_L G Z_L' and
+    K_LE = Z_LE (I (x) G) Z_LE' (p.186); those are computed here.
+    Keys: estimate."""
+    f = _gp.rkhs_covariances(Z_L, G, Z_LE=Z_LE, I_env=I_env,
+                             sigma2_g=sigma2_g, sigma2_ge=sigma2_ge)
+    K = f["K_L"]
+    res = RichResult(payload={"estimate": K[0][0], "K_L": K,
+                              "K_LE": f.get("K_LE"),
+                              "method": "RKHS G x E covariances (MVSML 2022 eq. 6.7)"})
+    return with_describe_pointer(res, "msm063")
 
 
 def cheatsheet():
-    return "msm063: Numbered display equation (6.7) from MVSML chapter 6."
+    return "msm063: RKHS predictor with genotype-by-environment effects"

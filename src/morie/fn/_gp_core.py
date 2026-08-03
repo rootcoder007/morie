@@ -739,3 +739,437 @@ def gxe_multitrait_model(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E,
     beta, b = blue_blup_via_v(Xm, Z, y, Sigma, R)
     return {"mu": beta[:nT], "beta": beta,
             "b_lines": b[:q1], "b_gxe": b[q1:]}
+
+
+# --------------------------- Bayesian genomic regression (ch. 6)
+def _rchisq(rng, df):
+    """Chi-square draw as a gamma: chi2_df = Ga(df/2, scale 2)."""
+    return float(rng.gamma(df / 2.0, 2.0))
+
+
+def scaled_inv_chisq(rng, nu, S):
+    """Scaled inverse chi-square chi^-2(nu, S), the prior used for
+    every variance component in ch. 6: a draw is S / chi2_nu."""
+    return float(S) / max(_rchisq(rng, float(nu)), 1e-300)
+
+
+def brr_hyperparameters(y, R2=0.5, nu=5.0, nu_beta=5.0, p=None,
+                        sum_var_x=None):
+    """The BGLR defaults quoted on pp.175 and 184:
+    S = Var(Y)(1 - R2)(nu + 2) and, for the BRR,
+    S_beta = Var(Y) R2 (nu_beta + 2); for BayesC the scale is divided
+    further by S_x^2 pi_0 with S_x the sum of the column variances of
+    X."""
+    ys = _flat(y)
+    n = len(ys)
+    m = sum(ys) / n
+    var_y = sum((v - m) ** 2 for v in ys) / (n - 1)
+    S = var_y * (1.0 - R2) * (nu + 2.0)
+    S_beta = var_y * R2 * (nu_beta + 2.0)
+    if sum_var_x:
+        S_beta = S_beta / float(sum_var_x)
+    return {"S": S, "S_beta": S_beta, "nu": nu, "nu_beta": nu_beta,
+            "var_y": var_y}
+
+
+def bayes_ridge_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
+                      nu_beta=5.0, R2=0.5, seed=42):
+    """The BRR Gibbs sampler of eq. (6.3), steps 1-6 on pp.174-175:
+
+    sigma2_beta | . ~ chi^-2(nu_beta + p, S_beta + b'b)
+    beta        | . ~ N_p(b-tilde, Sigma-tilde),
+                  Sigma-tilde = (sigma_beta^-2 I + sigma^-2 X'X)^-1,
+                  b-tilde = sigma^-2 Sigma-tilde X'(y - 1 mu)
+    mu          | . ~ N(mu-tilde, sigma^2/n),
+                  mu-tilde = (1/n) 1'(y - X beta)
+    sigma2      | . ~ chi^-2(nu + n, S + ||y - 1 mu - X beta||^2)
+
+    Posterior means over the post-burn-in draws are returned.
+    """
+    ys = _flat(y)
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    hp = brr_hyperparameters(ys, R2=R2, nu=nu, nu_beta=nu_beta)
+    rng = np.random.default_rng(seed)
+    mu = sum(ys) / n
+    beta = [0.0] * p
+    s2 = hp["S"] / (nu + 2.0)
+    s2b = hp["S_beta"] / (nu_beta + 2.0)
+    Xt = _t(Xm)
+    XtX = _mm(Xt, Xm)
+    acc_mu = 0.0
+    acc_beta = [0.0] * p
+    acc_s2 = 0.0
+    acc_s2b = 0.0
+    kept = 0
+    for it in range(int(n_iter)):
+        # sigma2_beta
+        s2b = scaled_inv_chisq(rng, nu_beta + p,
+                               hp["S_beta"]
+                               + sum(b * b for b in beta))
+        # beta (joint normal draw via the Cholesky of Sigma-tilde)
+        A = [[XtX[i][j] / s2 + ((1.0 / s2b) if i == j else 0.0)
+              for j in range(p)] for i in range(p)]
+        resid = [a - mu for a in ys]
+        rhs = [v / s2 for v in _mv(Xt, resid)]
+        mean = _solve(A, rhs)
+        Ai = _inv(A)
+        L = _chol(Ai)
+        z = [float(rng.normal(0, 1)) for _ in range(p)]
+        beta = [mean[i] + sum(L[i][k] * z[k] for k in range(p))
+                for i in range(p)]
+        # mu
+        r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
+        mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
+        # sigma2
+        e = [a - mu for a in r]
+        s2 = scaled_inv_chisq(rng, nu + n,
+                              hp["S"] + sum(v * v for v in e))
+        if it >= burn_in:
+            kept += 1
+            acc_mu += mu
+            acc_s2 += s2
+            acc_s2b += s2b
+            for i in range(p):
+                acc_beta[i] += beta[i]
+    return {"mu": acc_mu / kept,
+            "beta": [v / kept for v in acc_beta],
+            "sigma2": acc_s2 / kept, "sigma2_beta": acc_s2b / kept,
+            "n_kept": kept, "hyper": hp}
+
+
+def _chol(A):
+    """Lower Cholesky factor; the book uses it on p.177 to turn a
+    GBLUP into an equivalent BRR (G = L L')."""
+    Am = _mat(A)
+    n = len(Am)
+    L = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1):
+            s = Am[i][j] - sum(L[i][k] * L[j][k] for k in range(j))
+            if i == j:
+                L[i][j] = math.sqrt(max(s, 1e-300))
+            else:
+                L[i][j] = s / L[j][j]
+    return L
+
+
+def cholesky_lower(A):
+    """Public wrapper around the lower Cholesky factor."""
+    return _chol(A)
+
+
+def bayes_gblup_gibbs(y, G, n_iter=2000, burn_in=500, nu=5.0,
+                      nu_g=5.0, R2=0.5, seed=42):
+    """Bayesian GBLUP of eq. (6.4) p.176: Y = 1 mu + g + eps with
+    g | sigma2_g ~ N(0, sigma2_g G).  The book (p.177) notes this is
+    the BRR of eq. (6.3) run on the design X = L, where G = L L' is
+    the Cholesky factorization, so that is exactly how it is fitted
+    here; the genomic values are g = L beta."""
+    L = _chol(G)
+    fit = bayes_ridge_gibbs(y, L, n_iter=n_iter, burn_in=burn_in,
+                            nu=nu, nu_beta=nu_g, R2=R2, seed=seed)
+    fit["g"] = _mv(L, fit["beta"])
+    fit["sigma2_g"] = fit.pop("sigma2_beta")
+    return fit
+
+
+def bayes_a_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
+                  nu_beta=5.0, R2=0.5, seed=42):
+    """BayesA of sec. 6.4 p.178: a separate variance per marker,
+    beta_j | sigma2_bj ~ N(0, sigma2_bj) with
+    sigma2_bj ~ chi^-2(nu_beta, S_beta).  Step 2.1 of p.178 draws
+    sigma2_bj | . ~ chi^-2(nu_beta + 1, S_beta + beta_j^2), which is
+    what gives covariate-specific shrinkage."""
+    ys = _flat(y)
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    hp = brr_hyperparameters(ys, R2=R2, nu=nu, nu_beta=nu_beta)
+    rng = np.random.default_rng(seed)
+    mu = sum(ys) / n
+    beta = [0.0] * p
+    s2 = hp["S"] / (nu + 2.0)
+    s2j = [hp["S_beta"] / (nu_beta + 2.0)] * p
+    Xt = _t(Xm)
+    col_ss = [sum(v * v for v in col) for col in Xt]
+    acc_mu = acc_s2 = 0.0
+    acc_beta = [0.0] * p
+    acc_s2j = [0.0] * p
+    kept = 0
+    for it in range(int(n_iter)):
+        for j in range(p):
+            s2j[j] = scaled_inv_chisq(rng, nu_beta + 1.0,
+                                      hp["S_beta"] + beta[j] ** 2)
+        # single-site updates of beta (p.181 form)
+        for j in range(p):
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
+                                        for k in range(p) if k != j)
+                       for i in range(n)]
+            prec = 1.0 / s2j[j] + col_ss[j] / s2
+            var = 1.0 / prec
+            mean = var * sum(Xm[i][j] * partial[i]
+                             for i in range(n)) / s2
+            beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
+        r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
+        mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
+        e = [a - mu for a in r]
+        s2 = scaled_inv_chisq(rng, nu + n,
+                              hp["S"] + sum(v * v for v in e))
+        if it >= burn_in:
+            kept += 1
+            acc_mu += mu
+            acc_s2 += s2
+            for j in range(p):
+                acc_beta[j] += beta[j]
+                acc_s2j[j] += s2j[j]
+    return {"mu": acc_mu / kept,
+            "beta": [v / kept for v in acc_beta],
+            "sigma2": acc_s2 / kept,
+            "sigma2_beta_j": [v / kept for v in acc_s2j],
+            "n_kept": kept, "hyper": hp}
+
+
+def bayes_c_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
+                  nu_beta=5.0, R2=0.5, pi0=0.5, phi0=10.0, seed=42):
+    """BayesC of sec. 6.5 pp.180-183: beta_j is a spike-and-slab,
+    pi N(0, sigma2_beta) + (1 - pi) DG(0), with a latent Bernoulli
+    Z_j.  The joint (beta_j, Z_j) update of p.182 is used, drawing
+    Z_j ~ Ber(pi-tilde) with
+    pi-tilde = pi sqrt(sigma-tilde_j^2/sigma2_beta) /
+               (pi sqrt(...) + 1 - pi)
+    and then beta_j ~ N(b-tilde_j, sigma-tilde_j^2) when Z_j = 1,
+    beta_j = 0 otherwise.  pi | . ~ Beta(phi0 pi0 + p z-bar,
+    phi0(1 - pi0) + p(1 - z-bar)) (p.183).  With pi0 = 1 the model
+    reduces to the BRR (p.180)."""
+    ys = _flat(y)
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    hp = brr_hyperparameters(ys, R2=R2, nu=nu, nu_beta=nu_beta)
+    rng = np.random.default_rng(seed)
+    mu = sum(ys) / n
+    beta = [0.0] * p
+    z = [1] * p
+    pi = float(pi0)
+    s2 = hp["S"] / (nu + 2.0)
+    s2b = hp["S_beta"] / (nu_beta + 2.0)
+    Xt = _t(Xm)
+    col_ss = [sum(v * v for v in col) for col in Xt]
+    acc_mu = acc_s2 = acc_s2b = acc_pi = 0.0
+    acc_beta = [0.0] * p
+    acc_z = [0.0] * p
+    kept = 0
+    for it in range(int(n_iter)):
+        for j in range(p):
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
+                                        for k in range(p) if k != j)
+                       for i in range(n)]
+            prec = 1.0 / s2b + col_ss[j] / s2
+            var = 1.0 / prec
+            mean = var * sum(Xm[i][j] * partial[i]
+                             for i in range(n)) / s2
+            ratio = math.sqrt(var / s2b) \
+                * math.exp(min(mean * mean / (2.0 * var), 700.0))
+            pt = pi * ratio / (pi * ratio + (1.0 - pi)) \
+                if pi < 1.0 else 1.0
+            z[j] = 1 if float(rng.uniform(0, 1)) < pt else 0
+            beta[j] = (mean + math.sqrt(var)
+                       * float(rng.normal(0, 1))) if z[j] else 0.0
+        zbar = sum(z) / p
+        s2b = scaled_inv_chisq(
+            rng, nu_beta + p * zbar,
+            hp["S_beta"] + sum(zj * b * b for zj, b in zip(z, beta)))
+        if pi0 < 1.0:
+            a = phi0 * pi0 + p * zbar
+            b_ = phi0 * (1.0 - pi0) + p * (1.0 - zbar)
+            g1 = float(rng.gamma(max(a, 1e-6), 1.0))
+            g2 = float(rng.gamma(max(b_, 1e-6), 1.0))
+            pi = g1 / (g1 + g2)
+        r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
+        mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
+        e = [a - mu for a in r]
+        s2 = scaled_inv_chisq(rng, nu + n,
+                              hp["S"] + sum(v * v for v in e))
+        if it >= burn_in:
+            kept += 1
+            acc_mu += mu
+            acc_s2 += s2
+            acc_s2b += s2b
+            acc_pi += pi
+            for j in range(p):
+                acc_beta[j] += beta[j]
+                acc_z[j] += z[j]
+    return {"mu": acc_mu / kept,
+            "beta": [v / kept for v in acc_beta],
+            "sigma2": acc_s2 / kept, "sigma2_beta": acc_s2b / kept,
+            "pi": acc_pi / kept,
+            "inclusion_prob": [v / kept for v in acc_z],
+            "n_kept": kept, "hyper": hp}
+
+
+def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
+                  phi0=10.0, seed=42, **kw):
+    """BayesB of p.183: BayesA with a mixture prior, i.e. the
+    spike-and-slab of BayesC combined with a marker-specific slab
+    variance.  With pi0 = 1 it reduces to BayesA (p.183)."""
+    ys = _flat(y)
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    nu = kw.get("nu", 5.0)
+    nu_beta = kw.get("nu_beta", 5.0)
+    hp = brr_hyperparameters(ys, R2=kw.get("R2", 0.5), nu=nu,
+                             nu_beta=nu_beta)
+    rng = np.random.default_rng(seed)
+    mu = sum(ys) / n
+    beta = [0.0] * p
+    z = [1] * p
+    pi = float(pi0)
+    s2 = hp["S"] / (nu + 2.0)
+    s2j = [hp["S_beta"] / (nu_beta + 2.0)] * p
+    Xt = _t(Xm)
+    col_ss = [sum(v * v for v in col) for col in Xt]
+    acc_mu = acc_s2 = acc_pi = 0.0
+    acc_beta = [0.0] * p
+    acc_z = [0.0] * p
+    kept = 0
+    for it in range(int(n_iter)):
+        for j in range(p):
+            s2j[j] = scaled_inv_chisq(rng, nu_beta + 1.0,
+                                      hp["S_beta"] + beta[j] ** 2)
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
+                                        for k in range(p) if k != j)
+                       for i in range(n)]
+            prec = 1.0 / s2j[j] + col_ss[j] / s2
+            var = 1.0 / prec
+            mean = var * sum(Xm[i][j] * partial[i]
+                             for i in range(n)) / s2
+            ratio = math.sqrt(var / s2j[j]) \
+                * math.exp(min(mean * mean / (2.0 * var), 700.0))
+            pt = pi * ratio / (pi * ratio + (1.0 - pi)) \
+                if pi < 1.0 else 1.0
+            z[j] = 1 if float(rng.uniform(0, 1)) < pt else 0
+            beta[j] = (mean + math.sqrt(var)
+                       * float(rng.normal(0, 1))) if z[j] else 0.0
+        if pi0 < 1.0:
+            zbar = sum(z) / p
+            a = phi0 * pi0 + p * zbar
+            b_ = phi0 * (1.0 - pi0) + p * (1.0 - zbar)
+            g1 = float(rng.gamma(max(a, 1e-6), 1.0))
+            g2 = float(rng.gamma(max(b_, 1e-6), 1.0))
+            pi = g1 / (g1 + g2)
+        r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
+        mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
+        e = [a - mu for a in r]
+        s2 = scaled_inv_chisq(rng, nu + n,
+                              hp["S"] + sum(v * v for v in e))
+        if it >= burn_in:
+            kept += 1
+            acc_mu += mu
+            acc_s2 += s2
+            acc_pi += pi
+            for j in range(p):
+                acc_beta[j] += beta[j]
+                acc_z[j] += z[j]
+    return {"mu": acc_mu / kept,
+            "beta": [v / kept for v in acc_beta],
+            "sigma2": acc_s2 / kept, "pi": acc_pi / kept,
+            "inclusion_prob": [v / kept for v in acc_z],
+            "n_kept": kept, "hyper": hp}
+
+
+def bayes_lasso_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
+                      R2=0.5, lam2=1.0, seed=42):
+    """The Bayesian Lasso of sec. 6.6 p.184 in the Park and Casella
+    (2008) scale-mixture form quoted there:
+    beta_j | tau_j ~ N(0, tau_j sigma2) with tau_j ~ Exp(2/lambda^2),
+    which is the double exponential L(0, sqrt(sigma2)/lambda) after
+    marginalizing tau.  The heavier tails shrink small effects harder
+    and large effects less than the BRR."""
+    ys = _flat(y)
+    Xm = _mat(X)
+    n = len(ys)
+    p = len(Xm[0])
+    hp = brr_hyperparameters(ys, R2=R2, nu=nu)
+    rng = np.random.default_rng(seed)
+    mu = sum(ys) / n
+    beta = [0.0] * p
+    tau = [1.0] * p
+    s2 = hp["S"] / (nu + 2.0)
+    Xt = _t(Xm)
+    col_ss = [sum(v * v for v in col) for col in Xt]
+    acc_mu = acc_s2 = 0.0
+    acc_beta = [0.0] * p
+    acc_tau = [0.0] * p
+    kept = 0
+    for it in range(int(n_iter)):
+        for j in range(p):
+            # tau_j^-1 | . is inverse Gaussian; sample tau_j through
+            # its gamma-mixture representation, which keeps the chain
+            # in closed form without an extra sampler
+            b2 = max(beta[j] ** 2, 1e-12)
+            shape = 0.5
+            scale = 2.0 / (lam2 + b2 / max(s2, 1e-300))
+            tau[j] = max(float(rng.gamma(shape, scale)), 1e-12)
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
+                                        for k in range(p) if k != j)
+                       for i in range(n)]
+            prec = 1.0 / (tau[j] * s2) + col_ss[j] / s2
+            var = 1.0 / prec
+            mean = var * sum(Xm[i][j] * partial[i]
+                             for i in range(n)) / s2
+            beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
+        r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
+        mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
+        e = [a - mu for a in r]
+        s2 = scaled_inv_chisq(rng, nu + n,
+                              hp["S"] + sum(v * v for v in e))
+        if it >= burn_in:
+            kept += 1
+            acc_mu += mu
+            acc_s2 += s2
+            for j in range(p):
+                acc_beta[j] += beta[j]
+                acc_tau[j] += tau[j]
+    return {"mu": acc_mu / kept,
+            "beta": [v / kept for v in acc_beta],
+            "sigma2": acc_s2 / kept,
+            "tau": [v / kept for v in acc_tau],
+            "n_kept": kept, "hyper": hp}
+
+
+def extended_predictor(n, X_E=None, X=None, X_EM=None):
+    """eq. (6.6) p.186: y = 1_n mu + X_E beta_E + X beta
+    + X_EM beta_EM + eps.  Assembles the stacked design matrix in that
+    order and reports the block widths, so each block can be given its
+    own prior (FIXED, BRR, BayesA/B/C, BL) as the book describes."""
+    blocks = [("intercept", [[1.0] for _ in range(n)])]
+    for name, B in (("environments", X_E), ("markers", X),
+                    ("env_x_marker", X_EM)):
+        if B is not None:
+            blocks.append((name, _mat(B)))
+    design = [sum((blk[i] for _, blk in blocks), []) for i in range(n)]
+    widths = {name: len(blk[0]) for name, blk in blocks}
+    return {"design": design, "widths": widths,
+            "n_columns": len(design[0])}
+
+
+def rkhs_covariances(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0,
+                     sigma2_ge=1.0):
+    """eq. (6.7) p.186: under the RKHS parameterization the predictor
+    terms Z_L g and Z_LE gE enter through their covariance matrices
+    K_L = Z_L G Z_L' and K_LE = Z_LE (I (x) G) Z_LE', which is the
+    precalculation the book says BGLR needs (the same trick as
+    K_L = Z G Z' for eq. 6.5 on p.177)."""
+    ZL = _mat(Z_L)
+    K_L = _mm(_mm(ZL, _mat(G)), _t(ZL))
+    K_L = [[sigma2_g * v for v in row] for row in K_L]
+    out = {"K_L": K_L}
+    if Z_LE is not None and I_env is not None:
+        ZLE = _mat(Z_LE)
+        IG = kron(I_env, G)
+        K_LE = _mm(_mm(ZLE, IG), _t(ZLE))
+        out["K_LE"] = [[sigma2_ge * v for v in row] for row in K_LE]
+    return out
