@@ -1,49 +1,32 @@
-r"""Numbered display equation (7.10) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Lasso-penalized multinomial log-likelihood.
 
-from . import _array_core as np
+Implements eq. (7.10) p.227 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_10"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_10(p, y, cj):
-    r"""
-    Numbered display equation (7.10) from MVSML chapter 7.
-
-    Formula: ℓp \beta; y ( ) = ℓ\beta; y ( )  \lambda \betacj
-
-    Parameters
-    ----------
-    p : array-like
-        Input data.
-    y : array-like
-        Input data.
-    cj : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.10) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    r"""
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.10) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_10(X, y, beta0, beta, lam=1.0, baseline_last=True):
+    """l_p(beta; y) = l(beta; y) - lambda sum_c sum_j |beta_cj|
+    (eq. 7.10): the same block updating as eq. (7.9) but with the
+    quadratic penalty replaced by an L1 one. Keys: estimate."""
+    f = _gp.penalized_multinomial_loglik(X, y, beta0, beta, lam,
+                                         penalty="lasso",
+                                         baseline_last=baseline_last)
+    res = RichResult(payload={"estimate": f["penalized_loglik"],
+                              "loglik": f["loglik"],
+                              "penalty": f["penalty"],
+                              "method": "lasso-penalized multinomial log-likelihood (MVSML 2022 eq. 7.10)"})
+    return with_describe_pointer(res, "msm115")
 
 
 def cheatsheet():
-    return "msm115: Numbered display equation (7.10) from MVSML chapter 7."
+    return "msm115: Lasso-penalized multinomial log-likelihood"

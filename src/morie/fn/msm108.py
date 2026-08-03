@@ -1,55 +1,33 @@
-"""Numbered display equation (7.6) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Multinomial logistic probabilities.
 
-from . import _array_core as np
+Implements eq. (7.6) p.225 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_6"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_6(xT, log, i, c, C, P):
-    """
-    Numbered display equation (7.6) from MVSML chapter 7.
-
-    Formula: ( ) = \beta0c + xT log i \betac, c = 1, . . . , C  1, P Yi = Cjx ( ) where the effects of xi depend on the chosen response baseline category. Similar expressions can be obtained when using the unconstrained model in
-
-    Parameters
-    ----------
-    xT : array-like
-        Input data.
-    log : array-like
-        Input data.
-    i : array-like
-        Input data.
-    c : array-like
-        Input data.
-    C : array-like
-        Input data.
-    P : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.6) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    xT = np.atleast_1d(np.asarray(xT, dtype=float))
-    n = len(xT)
-    result = float(np.mean(xT))
-    se = float(np.std(xT, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.6) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_6(X, beta0, beta, baseline_last=True):
+    """P(Y_i = c | x_i) = exp(beta_0c + x_i'beta_c)
+    / sum_l exp(beta_0l + x_i'beta_l) (eq. 7.6).  The model is not
+    identifiable as written, so the book sets
+    (beta_0C, beta_C) = (0, 0) for the baseline category (p.225),
+    which is what ``baseline_last`` does. Keys: estimate."""
+    P = _gp.multinomial_probabilities(X, beta0, beta,
+                                      baseline_last=baseline_last)
+    res = RichResult(payload={"estimate": P[0][0],
+                              "probabilities": P,
+                              "n_categories": len(P[0]),
+                              "method": "multinomial logistic probabilities (MVSML 2022 eq. 7.6)"})
+    return with_describe_pointer(res, "msm108")
 
 
 def cheatsheet():
-    return "msm108: Numbered display equation (7.6) from MVSML chapter 7."
+    return "msm108: Multinomial logistic probabilities"

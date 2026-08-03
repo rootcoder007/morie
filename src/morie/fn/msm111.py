@@ -1,55 +1,33 @@
-"""Numbered display equation (7.7) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Penalized multinomial log-likelihood (ridge).
 
-from . import _array_core as np
+Implements eq. (7.7) p.226 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_7"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_7(l, When, p, large, n, direct):
-    """
-    Numbered display equation (7.7) from MVSML chapter 7.
-
-    Formula: l=1 (7.8) When p is large ( p  n), direct optimization of ℓp(\beta; y) is almost impossible. An alternative is to use the sequential minimization optimization algorithm proposed by Zhu and Hastie (2004), which is applied after a transformation trick is used to make the involved computations feasible, because the number of parameters in the opti- mization is reduced to only (n + 1)C instead of ( p + 1)C. Another alternative available in the glmnet package is the one proposed by Friedman et al. (2010) that is similar to that of the logistic Ridge regression in Chap. 3. This consists of maximizing
-
-    Parameters
-    ----------
-    l : array-like
-        Input data.
-    When : array-like
-        Input data.
-    p : array-like
-        Input data.
-    large : array-like
-        Input data.
-    n : array-like
-        Input data.
-    direct : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.7) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    l = np.atleast_1d(np.asarray(l, dtype=float))
-    n = len(l)
-    result = float(np.mean(l))
-    se = float(np.std(l, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.7) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_7(X, y, beta0, beta, lam=1.0, baseline_last=True):
+    """l_p(beta; y) = l(beta; y) - lambda sum_c beta_c'beta_c
+    (eq. 7.7): the quadratic-regularized multinomial likelihood, which
+    removes the need for the identifiability constraint on the slopes
+    (p.226).  Intercepts are never penalized. Keys: estimate."""
+    f = _gp.penalized_multinomial_loglik(X, y, beta0, beta, lam,
+                                         penalty="ridge",
+                                         baseline_last=baseline_last)
+    res = RichResult(payload={"estimate": f["penalized_loglik"],
+                              "loglik": f["loglik"],
+                              "penalty": f["penalty"],
+                              "method": "ridge-penalized multinomial log-likelihood (MVSML 2022 eq. 7.7)"})
+    return with_describe_pointer(res, "msm111")
 
 
 def cheatsheet():
-    return "msm111: Numbered display equation (7.7) from MVSML chapter 7."
+    return "msm111: Penalized multinomial log-likelihood (ridge)"

@@ -1,55 +1,32 @@
-"""Numbered display equation (7.4) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ordinal GBLUP regression model.
 
-from . import _array_core as np
+Implements eq. (7.4) p.220 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_4"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_4(Probs, A, probs, where, dat_F, the):
-    """
-    Numbered display equation (7.4) from MVSML chapter 7.
-
-    Formula: Probs = A$probs where dat_F is the data ﬁle that contains all the information of how the data was collected (GID: Lines or individuals; Env: Environment; y: response variable of the trait). Other desired prior models to beta coefﬁcients of each predictor component are obtained only by replacing the “model” argument of each of the three components of the predictor. For example, for a BayesA prior model for the marker effects, in the second sub-list we must use model='BayesA'. The latent random vector of model (7.1) under the GBLUP speciﬁcation, plus genotypic and environment+genotypic interaction effects, takes the form L = XE\betaE + ZLg + ZLEgE + e
-
-    Parameters
-    ----------
-    Probs : array-like
-        Input data.
-    A : array-like
-        Input data.
-    probs : array-like
-        Input data.
-    where : array-like
-        Input data.
-    dat_F : array-like
-        Input data.
-    the : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.4) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    Probs = np.atleast_1d(np.asarray(Probs, dtype=float))
-    n = len(Probs)
-    result = float(np.mean(Probs))
-    se = float(np.std(Probs, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.4) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_4(y, G, n_iter=800, burn_in=200, seed=42):
+    """L = Z_L g + eps with g ~ N(0, sigma2_g G) (eq. 7.4): the
+    ordinal GBLUP regression model, in which the genomic relationship
+    matrix enters as an RKHS kernel rather than through a marker
+    design matrix (p.220). Keys: estimate."""
+    f = _gp.ordinal_probit_gblup_gibbs(y, G, n_iter=n_iter,
+                                       burn_in=burn_in, seed=seed)
+    res = RichResult(payload={"estimate": f["b"][0], "b": f["b"],
+                              "gamma": f["gamma"],
+                              "sigma2_g": f["sigma2_g"],
+                              "method": "ordinal GBLUP (MVSML 2022 eq. 7.4)"})
+    return with_describe_pointer(res, "msm095")
 
 
 def cheatsheet():
-    return "msm095: Numbered display equation (7.4) from MVSML chapter 7."
+    return "msm095: Ordinal GBLUP regression model"

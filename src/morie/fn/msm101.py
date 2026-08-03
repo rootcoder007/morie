@@ -1,55 +1,33 @@
-"""Numbered display equation (7.5) from MVSML chapter 7.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ordinal predictor with environment and genetic effects.
 
-from . import _array_core as np
+Implements eq. (7.5) p.221 of Montesinos López, Montesinos López & Crossa
+(2022), *Multivariate Statistical Machine Learning Methods for Genomic
+Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
+"""
 
-from ._richresult import RichResult
+import math
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_pt2_eq_7_5"]
 
 
-def mvsml_bayesian_regression_pt2_eq_7_5(performance, prediction, these, models, was, evaluated):
-    """
-    Numbered display equation (7.5) from MVSML chapter 7.
-
-    Formula: performance prediction for these models was evaluated using cross-validation. Also, in this comparison model, (M5) (7.5) is added but without the line+environment interaction effects, that is, only the environment effect and the genetic effects are taken into account in the linear predictor: 7.3 Ordinal Logistic Regression 221 Table 7.3 Brier score (BS) and proportion of cases correctly classiﬁed (PCCC) across 10 random partitions, with 80% of the total data set used for training and the rest for testing, under models (7.3), (7.4), and
-
-    Parameters
-    ----------
-    performance : array-like
-        Input data.
-    prediction : array-like
-        Input data.
-    these : array-like
-        Input data.
-    models : array-like
-        Input data.
-    was : array-like
-        Input data.
-    evaluated : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (7.5) [Multivariate Statistical Machine Learnin [Pages 209-249] [2026-04-16].pdf]
-    """
-    performance = np.atleast_1d(np.asarray(performance, dtype=float))
-    n = len(performance)
-    result = float(np.mean(performance))
-    se = float(np.std(performance, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (7.5) from MVSML chapter 7.",
-        }
-    )
+def mvsml_bayesian_regression_pt2_eq_7_5(n, X_E, Z_L, L_g=None):
+    """L = X_E beta_E + Z_L g + eps (eq. 7.5): environment effects and
+    genetic effects, without the line-by-environment interaction
+    (p.220).  With ``L_g`` the Cholesky factor of G the genetic block
+    enters as Z_L L_g, the design used in Table 7.6 p.233.
+    Keys: estimate."""
+    f = _gp.ordinal_latent_predictor(int(n), X_E=X_E, Z_L=Z_L,
+                                     L_g=L_g)
+    res = RichResult(payload={"estimate": float(f["n_columns"]),
+                              "design": f["design"],
+                              "widths": f["widths"],
+                              "method": "ordinal environment + genetic predictor (MVSML 2022 eq. 7.5)"})
+    return with_describe_pointer(res, "msm101")
 
 
 def cheatsheet():
-    return "msm101: Numbered display equation (7.5) from MVSML chapter 7."
+    return "msm101: Ordinal predictor with environment and genetic effects"
