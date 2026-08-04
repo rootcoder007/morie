@@ -1228,7 +1228,7 @@ rangayyan_ch3_entropy_continuous = diffent  # pre-policy spelling
 
 
 # -- rng007: Sample mean of an observed signal (Rangayyan eq. 3.7).
-def smean(x):
+def smean(x, N=None):
     """Sample mean of N observed values.
 
     Rangayyan (2024) eq. (3.7):  mu = (1/N) sum_{n=0}^{N-1} eta(n).
@@ -1240,7 +1240,9 @@ def smean(x):
     n = len(xs)
     if n == 0:
         raise ValueError("need at least one sample")
-    return RichResult(payload={"mean": fsum(xs) / n, "n": n,
+    if N is not None and int(N) != n:
+        raise ValueError(f"N = {N} does not match len(x) = {n}.")
+    return RichResult(payload={"mean": fsum(xs) / n, "n": n, "N": n,
                                "method": "Rangayyan (2024) eq. (3.7)"})
 
 

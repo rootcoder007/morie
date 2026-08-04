@@ -1852,11 +1852,22 @@ def mafir(x, b_k=None, N=None, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
+    # \"The filter has linear phase if the series of tap weights is
+    # symmetric or antisymmetric\" -- Rangayyan (2024), the FIR/MA
+    # attribute list on p. 140.  Group delay is then (N)/2 samples at
+    # every frequency, whatever the weights; without the symmetry the
+    # delay varies with frequency and no single number describes it.
+    tol = 1e-12 * max(1.0, max(abs(v) for v in b))
+    sym = all(abs(b[k] - b[-1 - k]) <= tol for k in range(len(b)))
+    anti = all(abs(b[k] + b[-1 - k]) <= tol for k in range(len(b)))
+    lin = bool(sym or anti)
     return RichResult(payload={
         "y": out, "value": val, "index": n, "b": list(b),
         "N": len(b) - 1, "settled_from": len(b) - 1,
         "dc_gain": fsum(b), "equal_weights": b_k is None,
-        "delay_samples": (len(b) - 1) / 2.0 if b_k is None else None,
+        "symmetric": bool(sym), "antisymmetric": bool(anti),
+        "linear_phase": lin,
+        "delay_samples": (len(b) - 1) / 2.0 if lin else None,
         "method": "Rangayyan (2024) eqs. (3.97)-(3.99)"})
 
 

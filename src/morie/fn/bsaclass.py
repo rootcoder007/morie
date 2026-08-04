@@ -7,6 +7,7 @@ symbols are unchanged.
 """
 
 from fractions import Fraction
+from math import cos, isfinite, sin, tanh
 from math import erf, exp, fsum, lgamma as _lgamma, log, pi, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
@@ -15,98 +16,545 @@ from ._richresult import RichResult
 
 __all__ = [
     'accuracy',
-    'bayescls',
-    'bayesnorm',
-    'chernoff',
-    'divav',
-    'divergence',
-    'elbow',
-    'errbound',
-    'fishcrit',
-    'fishlda',
-    'gaussoverlap',
-    'hclust',
-    'hellinger',
-    'kfoldcv',
-    'kld',
-    'kmeans',
-    'knn',
-    'lindisc',
-    'lindsep',
-    'logreg',
-    'loocv',
-    'mahal',
-    'mcnemar',
-    'normdist',
-    'pdfoverlap',
-    'ppv',
-    'qda',
     'rangayyan_accuracy',
+    'mlpbp',
     'rangayyan_ann_mlp',
-    'rangayyan_basis_pursuit',
+    'bayescls',
     'rangayyan_bayes_classifier',
-    'rangayyan_bayes_error_bound',
+    'bayesnorm',
     'rangayyan_bayes_gaussian',
-    'rangayyan_bci_nmf',
-    'rangayyan_bhattacharyya',
+    'bbb',
     'rangayyan_bundle_branch_block',
-    'rangayyan_cad_pipeline',
-    'rangayyan_ch4_pan_tompkins_peak_classification',
-    'rangayyan_cnn_signal',
-    'rangayyan_dictionary_sparse',
+    'pvcbayes',
     'rangayyan_ecg_bbb_normal',
-    'rangayyan_ecg_normal_ectopic',
-    'rangayyan_eeg_rhythms',
-    'rangayyan_epilepsy_ksvd',
-    'rangayyan_fastica',
+    'bcichsel',
+    'rangayyan_bci_nmf',
+    'normdist',
+    'divergence',
+    'divav',
+    'kld',
+    'pdfoverlap',
+    'chernoff',
+    'hellinger',
+    'gaussoverlap',
+    'rangayyan_bhattacharyya',
+    'bpursuit',
+    'rangayyan_basis_pursuit',
+    'cadpipe',
+    'rangayyan_cad_pipeline',
+    'cnnsig',
+    'rangayyan_cnn_signal',
+    'fecgnmf',
     'rangayyan_fetal_ecg_single',
-    'rangayyan_fisher_criterion',
-    'rangayyan_fisher_lda',
-    'rangayyan_hierarchical_clust',
-    'rangayyan_ica_artifact',
-    'rangayyan_infomax_ica',
-    'rangayyan_kfold_cv',
-    'rangayyan_kmeans',
+    'pvclindf',
+    'rangayyan_ecg_normal_ectopic',
+    'eegbands',
+    'rangayyan_eeg_rhythms',
+    'elbow',
     'rangayyan_kmeans_elbow',
+    'seizdict',
+    'rangayyan_epilepsy_ksvd',
+    'errbound',
+    'rangayyan_bayes_error_bound',
+    'fishcrit',
+    'rangayyan_fisher_criterion',
+    'fishlda',
+    'rangayyan_fisher_lda',
+    'hclust',
+    'rangayyan_hierarchical_clust',
+    'icafix',
+    'rangayyan_fastica',
+    'icaclean',
+    'rangayyan_ica_artifact',
+    'infomax',
+    'rangayyan_infomax_ica',
+    'kfoldcv',
+    'rangayyan_kfold_cv',
+    'kmeans',
+    'rangayyan_kmeans',
+    'vagclass',
     'rangayyan_knee_classify',
+    'knn',
     'rangayyan_knn_classifier',
+    'ksvdfit',
     'rangayyan_ksvd',
-    'rangayyan_lin_discr_sep',
+    'dictcode',
+    'rangayyan_dictionary_sparse',
+    'lindisc',
     'rangayyan_linear_discrim',
-    'rangayyan_logistic_regression',
+    'lindsep',
+    'rangayyan_lin_discr_sep',
+    'loocv',
     'rangayyan_loo_cv',
+    'logreg',
+    'rangayyan_logistic_regression',
+    'lstm',
     'rangayyan_lstm_signal',
+    'mahal',
     'rangayyan_mahalanobis',
-    'rangayyan_matching_pursuit',
+    'mcnemar',
     'rangayyan_mcnemar_test',
+    'mpursuit',
+    'rangayyan_matching_pursuit',
+    'bmidec',
     'rangayyan_neural_decode',
+    'nmfmu',
     'rangayyan_nmf',
+    'nmfchsel',
     'rangayyan_nmf_channel_sel',
+    'ompfit',
     'rangayyan_omp',
+    'pcasig',
     'rangayyan_pca_signals',
+    'mixcmp',
     'rangayyan_pca_vs_ica',
+    'ppv',
     'rangayyan_ppv',
+    'qda',
     'rangayyan_qda',
+    'rbfn',
     'rangayyan_rbf_network',
-    'rangayyan_roc_curve',
-    'rangayyan_sensitivity',
-    'rangayyan_separability_index',
-    'rangayyan_sleep_apnea_nmf',
-    'rangayyan_sparse_rep',
-    'rangayyan_specificity',
-    'rangayyan_svm',
-    'rangayyan_svm_kernel',
-    'rangayyan_vag_adaptive_tfd',
-    'rangayyanksvd',
-    'rangayyannmf',
-    'rangayyanomp',
     'roc',
+    'rangayyan_roc_curve',
+    'ahi',
+    'rangayyan_sleep_apnea_nmf',
     'sens',
+    'rangayyan_sensitivity',
     'sepindex',
+    'rangayyan_separability_index',
     'spec',
+    'rangayyan_specificity',
+    'sparsecode',
+    'rangayyan_sparse_rep',
     'svm',
+    'rangayyan_svm',
     'svmkern',
+    'rangayyan_svm_kernel',
+    'vagtfd',
+    'rangayyan_vag_adaptive_tfd',
+    'rangayyan_ch4_pan_tompkins_peak_classification',
 ]
+
+# ---------------------------------------------------------------- shared arithmetic
+# Small dense-linear-algebra and spectral helpers used by the adaptive-decomposition
+# and classifier blocks below.  Pure standard library on purpose: morie.fn carries no
+# external numeric dependency.
+
+def _bxvec(v, name="x"):
+    """Coerce to a non-empty list of finite floats."""
+    out = aslist(v)
+    if not out:
+        raise ValueError(name + " must be a non-empty sequence")
+    for t in out:
+        if not isfinite(t):
+            raise ValueError(name + " must contain only finite values")
+    return out
+
+
+def _bxmat(M, name="X"):
+    """Coerce to a non-empty rectangular list-of-lists of finite floats."""
+    if M is None:
+        raise ValueError(name + " is required")
+    try:
+        rows = list(M)
+    except TypeError:
+        raise ValueError(name + " must be a sequence of rows")
+    if not rows:
+        raise ValueError(name + " must have at least one row")
+    out = []
+    for r in rows:
+        rr = aslist(r)
+        if not rr:
+            raise ValueError(name + " rows must be non-empty")
+        for t in rr:
+            if not isfinite(t):
+                raise ValueError(name + " must contain only finite values")
+        out.append(rr)
+    w = len(out[0])
+    if any(len(r) != w for r in out):
+        raise ValueError(name + " must be rectangular")
+    return out
+
+
+def _bxdot(a, b):
+    return fsum(a[i] * b[i] for i in range(len(a)))
+
+
+def _bxnrm(a):
+    return sqrt(fsum(t * t for t in a))
+
+
+def _bxtr(A):
+    return [[A[i][j] for i in range(len(A))] for j in range(len(A[0]))]
+
+
+def _bxmm(A, B):
+    if len(A[0]) != len(B):
+        raise ValueError("inner matrix dimensions do not agree")
+    Bt = _bxtr(B)
+    return [[_bxdot(r, c) for c in Bt] for r in A]
+
+
+def _bxmv(A, v):
+    if len(A[0]) != len(v):
+        raise ValueError("matrix and vector dimensions do not agree")
+    return [_bxdot(r, v) for r in A]
+
+
+def _bxmean(v):
+    return fsum(v) / len(v)
+
+
+def _bxsd(v, ddof=1):
+    n = len(v)
+    if n - ddof < 1:
+        return 0.0
+    m = _bxmean(v)
+    return sqrt(fsum((t - m) ** 2 for t in v) / (n - ddof))
+
+
+def _bxkurt(v):
+    """Kurtosis excess K' = K - 3, Rangayyan eq. (3.5) and the note below it.
+
+    Zero for a Gaussian; positive for a peaked, heavy-tailed PDF.
+    """
+    n = len(v)
+    if n < 4:
+        raise ValueError("kurtosis needs at least four samples")
+    m = _bxmean(v)
+    s2 = fsum((t - m) ** 2 for t in v) / n
+    if s2 <= 0.0:
+        return 0.0
+    m4 = fsum((t - m) ** 4 for t in v) / n
+    return m4 / (s2 * s2) - 3.0
+
+
+def _bxsolve(A, b):
+    """Solve A x = b by Gaussian elimination with partial pivoting."""
+    n = len(A)
+    if n != len(b) or any(len(r) != n for r in A):
+        raise ValueError("linear system is not square or is inconsistent")
+    M = [list(A[i]) + [float(b[i])] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("linear system is singular")
+        M[c], M[p] = M[p], M[c]
+        pv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / pv
+            if f == 0.0:
+                continue
+            for k in range(c, n + 1):
+                M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _bxlstsq(A, y, ridge=1e-10):
+    """Ridge-regularised least squares via the normal equations."""
+    At = _bxtr(A)
+    G = _bxmm(At, A)
+    for i in range(len(G)):
+        G[i][i] += ridge
+    return _bxsolve(G, _bxmv(At, y))
+
+
+def _bxjacobi(S, sweeps=60, tol=1e-12):
+    """Eigenpairs of a real symmetric matrix by the cyclic Jacobi rotation method.
+
+    Chosen over power iteration because it returns the whole spectrum,
+    including repeated eigenvalues, without deflation error.  Returns
+    (values, vectors) with vectors as columns, sorted by decreasing value.
+    """
+    n = len(S)
+    A = [list(r) for r in S]
+    V = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    for _ in range(sweeps):
+        off = fsum(A[i][j] ** 2 for i in range(n) for j in range(n) if i != j)
+        if off <= tol:
+            break
+        for p in range(n - 1):
+            for q in range(p + 1, n):
+                if abs(A[p][q]) < 1e-300:
+                    continue
+                theta = (A[q][q] - A[p][p]) / (2.0 * A[p][q])
+                t = (1.0 if theta >= 0 else -1.0) / (abs(theta) + sqrt(theta * theta + 1.0))
+                c = 1.0 / sqrt(t * t + 1.0)
+                s = t * c
+                for k in range(n):
+                    akp, akq = A[k][p], A[k][q]
+                    A[k][p] = c * akp - s * akq
+                    A[k][q] = s * akp + c * akq
+                for k in range(n):
+                    apk, aqk = A[p][k], A[q][k]
+                    A[p][k] = c * apk - s * aqk
+                    A[q][k] = s * apk + c * aqk
+                for k in range(n):
+                    vkp, vkq = V[k][p], V[k][q]
+                    V[k][p] = c * vkp - s * vkq
+                    V[k][q] = s * vkp + c * vkq
+    vals = [A[i][i] for i in range(n)]
+    order = sorted(range(n), key=lambda i: -vals[i])
+    vecs = [[V[i][j] for j in order] for i in range(n)]
+    return [vals[i] for i in order], vecs
+
+
+def _bxrng(seed):
+    """Deterministic LCG (Numerical Recipes ranqd1 constants) on (0, 1)."""
+    st = [int(seed) & 0xFFFFFFFF]
+
+    def nxt():
+        st[0] = (1664525 * st[0] + 1013904223) & 0xFFFFFFFF
+        return (st[0] + 0.5) / 4294967296.0
+
+    return nxt
+
+
+def _bxcov(X, unbiased=True):
+    """Sample covariance of the columns of X (rows are observations)."""
+    n, p = len(X), len(X[0])
+    if unbiased and n < 2:
+        raise ValueError("covariance needs at least two observations")
+    mu = [fsum(X[i][j] for i in range(n)) / n for j in range(p)]
+    d = n - 1 if unbiased else n
+    C = [[0.0] * p for _ in range(p)]
+    for a in range(p):
+        for b in range(a, p):
+            v = fsum((X[i][a] - mu[a]) * (X[i][b] - mu[b]) for i in range(n)) / d
+            C[a][b] = v
+            C[b][a] = v
+    return mu, C
+
+
+def _bxnmfmu(V, r, maxiter, tol, seed, cost):
+    """Lee-Seung multiplicative-update NMF core.
+
+    ``cost="ls"``  -> squared-error updates, Rangayyan eqs. (9.49) and (9.50).
+    ``cost="kld"`` -> divergence updates, Rangayyan eqs. (9.54) and (9.55).
+    """
+    m, n = len(V), len(V[0])
+    for row in V:
+        for t in row:
+            if t < 0.0:
+                raise ValueError("NMF requires a nonnegative matrix V")
+    r = int(r)
+    if r < 1 or r > min(m, n):
+        raise ValueError("rank r must satisfy 1 <= r <= min(rows, cols) of V")
+    u = _bxrng(seed)
+    scale = sqrt(max(fsum(fsum(row) for row in V) / (m * n), 1e-12) / r)
+    W = [[scale * (0.5 + u()) for _ in range(r)] for _ in range(m)]
+    H = [[scale * (0.5 + u()) for _ in range(n)] for _ in range(r)]
+    eps = 1e-12
+    prev = None
+    err = float("nan")
+    it = 0
+    for it in range(1, int(maxiter) + 1):
+        if cost == "ls":
+            Wt = _bxtr(W)
+            WtV = _bxmm(Wt, V)
+            WtWH = _bxmm(_bxmm(Wt, W), H)
+            for a in range(r):
+                for b in range(n):
+                    H[a][b] *= WtV[a][b] / (WtWH[a][b] + eps)
+            Ht = _bxtr(H)
+            VHt = _bxmm(V, Ht)
+            WHHt = _bxmm(W, _bxmm(H, Ht))
+            for a in range(m):
+                for b in range(r):
+                    W[a][b] *= VHt[a][b] / (WHHt[a][b] + eps)
+        else:
+            R = _bxmm(W, H)
+            Q = [[V[i][j] / (R[i][j] + eps) for j in range(n)] for i in range(m)]
+            Ht = _bxtr(H)
+            num = _bxmm(Q, Ht)
+            for a in range(m):
+                for b in range(r):
+                    den = fsum(H[b][j] for j in range(n))
+                    W[a][b] *= num[a][b] / (den + eps)
+            R = _bxmm(W, H)
+            Q = [[V[i][j] / (R[i][j] + eps) for j in range(n)] for i in range(m)]
+            Wt = _bxtr(W)
+            num = _bxmm(Wt, Q)
+            for a in range(r):
+                for b in range(n):
+                    den = fsum(W[i][a] for i in range(m))
+                    H[a][b] *= num[a][b] / (den + eps)
+        R = _bxmm(W, H)
+        err = sqrt(fsum((V[i][j] - R[i][j]) ** 2 for i in range(m) for j in range(n)))
+        if prev is not None and abs(prev - err) <= tol * max(1.0, prev):
+            break
+        prev = err
+    return W, H, err, it
+
+
+def _bxomp(x, D, sparsity, tol):
+    """Orthogonal matching pursuit: greedy atom picks, least squares on the support.
+
+    D is a list of atoms (each a list the same length as x).  Returns
+    (coefficients over the full dictionary, support in selection order,
+    residual vector).
+    """
+    n = len(x)
+    for a in D:
+        if len(a) != n:
+            raise ValueError("every dictionary atom must have the same length as x")
+    norms = [_bxnrm(a) for a in D]
+    if any(t <= 0.0 for t in norms):
+        raise ValueError("dictionary atoms must have nonzero norm")
+    r = list(x)
+    sup = []
+    coef = [0.0] * len(D)
+    k = len(D) if sparsity is None else int(sparsity)
+    if k < 1:
+        raise ValueError("sparsity must be a positive integer")
+    for _ in range(min(k, len(D), n)):
+        if _bxnrm(r) <= tol:
+            break
+        best, bv = -1, -1.0
+        for j in range(len(D)):
+            if j in sup:
+                continue
+            v = abs(_bxdot(D[j], r)) / norms[j]
+            if v > bv:
+                best, bv = j, v
+        if best < 0:
+            break
+        sup.append(best)
+        A = [[D[j][i] for j in sup] for i in range(n)]
+        w = _bxlstsq(A, list(x))
+        coef = [0.0] * len(D)
+        for idx, j in enumerate(sup):
+            coef[j] = w[idx]
+        approx = _bxmv(A, w)
+        r = [x[i] - approx[i] for i in range(n)]
+    return coef, sup, r
+
+
+def _bxgabor(n, natoms, seed=1):
+    """A real Gabor dictionary, Rangayyan eqs. (9.2) and (9.3).
+
+    Atoms g_gamma(t) = s^-1/2 g((t - tau)/s) cos(2 pi f t + phi) with the
+    Gaussian window g(t) = 2^(1/4) exp(-pi t^2).  Scales, translations and
+    modulations are laid out on a fixed dyadic grid so the dictionary is
+    reproducible without an RNG.
+    """
+    natoms = int(natoms)
+    if n < 4 or natoms < 1:
+        raise ValueError("need n >= 4 samples and at least one atom")
+    atoms, params = [], []
+    scales = [n / (2.0 ** j) for j in range(1, 6)]
+    j = 0
+    while len(atoms) < natoms:
+        s = scales[j % len(scales)]
+        step = max(1, int(s / 2.0))
+        for tau in range(0, n, step):
+            for f in (0.0, 0.5 / s, 1.0 / s, 2.0 / s, 4.0 / s):
+                a = []
+                for t in range(n):
+                    z = (t - tau) / s
+                    if abs(z) > 6.0:
+                        a.append(0.0)
+                    else:
+                        a.append(2.0 ** 0.25 / sqrt(s) * exp(-pi * z * z)
+                                 * cos(2.0 * pi * f * t))
+                nr = _bxnrm(a)
+                if nr <= 1e-12:
+                    continue
+                atoms.append([t / nr for t in a])
+                params.append({"scale": s, "translation": float(tau), "frequency": f})
+                if len(atoms) >= natoms:
+                    return atoms, params
+        j += 1
+        if j > 64:
+            break
+    return atoms, params
+
+
+def _bxdftmag(x):
+    """Magnitude spectrum for k = 0 .. N//2 by direct evaluation.
+
+    ponytail: O(N^2) DFT; swap in a radix-2 FFT if N ever exceeds a few thousand.
+    """
+    n = len(x)
+    out = []
+    for k in range(n // 2 + 1):
+        w = -2.0 * pi * k / n
+        re = fsum(x[t] * cos(w * t) for t in range(n))
+        im = fsum(x[t] * sin(w * t) for t in range(n))
+        out.append(sqrt(re * re + im * im))
+    return out
+
+
+def _bxstft(x, nwin, hop):
+    """Hann-windowed STFT returning (real, imag, magnitude) frame lists."""
+    n = len(x)
+    if nwin < 4 or nwin > n:
+        raise ValueError("window length must satisfy 4 <= nwin <= len(x)")
+    if hop < 1 or hop > nwin:
+        raise ValueError("hop must satisfy 1 <= hop <= nwin")
+    win = [0.5 - 0.5 * cos(2.0 * pi * i / nwin) for i in range(nwin)]
+    nb = nwin // 2 + 1
+    re_f, im_f, mag_f = [], [], []
+    st = 0
+    while st + nwin <= n:
+        seg = [x[st + i] * win[i] for i in range(nwin)]
+        re_r, im_r, mg_r = [], [], []
+        for k in range(nb):
+            w = -2.0 * pi * k / nwin
+            re = fsum(seg[t] * cos(w * t) for t in range(nwin))
+            im = fsum(seg[t] * sin(w * t) for t in range(nwin))
+            re_r.append(re)
+            im_r.append(im)
+            mg_r.append(sqrt(re * re + im * im))
+        re_f.append(re_r)
+        im_f.append(im_r)
+        mag_f.append(mg_r)
+        st += hop
+    if not mag_f:
+        raise ValueError("signal is too short for the requested window")
+    return re_f, im_f, mag_f, win
+
+
+def _bxistft(re_f, im_f, nwin, hop, win, n):
+    """Overlap-add inverse of _bxstft (Hermitian completion of the half spectrum)."""
+    out = [0.0] * n
+    wsum = [0.0] * n
+    nb = nwin // 2 + 1
+    for fi in range(len(re_f)):
+        st = fi * hop
+        seg = [0.0] * nwin
+        for t in range(nwin):
+            acc = re_f[fi][0]
+            for k in range(1, nb):
+                w = 2.0 * pi * k * t / nwin
+                c = 2.0 if (k < nwin - k) else 1.0
+                acc += c * (re_f[fi][k] * cos(w) - im_f[fi][k] * sin(w))
+            seg[t] = acc / nwin
+        for t in range(nwin):
+            if st + t < n:
+                out[st + t] += seg[t] * win[t]
+                wsum[st + t] += win[t] * win[t]
+    return [out[i] / wsum[i] if wsum[i] > 1e-12 else 0.0 for i in range(n)]
+
+
+def _bxconfusion(true, pred):
+    """2 x 2 counts (TP, TN, FP, FN) for a binary problem coded 1 / 0."""
+    tp = sum(1 for a, b in zip(true, pred) if a == 1 and b == 1)
+    tn = sum(1 for a, b in zip(true, pred) if a == 0 and b == 0)
+    fp = sum(1 for a, b in zip(true, pred) if a == 0 and b == 1)
+    fn = sum(1 for a, b in zip(true, pred) if a == 1 and b == 0)
+    return tp, tn, fp, fn
+
+
+def _bxscores(tp, tn, fp, fn):
+    """Sensitivity, specificity and accuracy, Rangayyan eqs. (10.100), (10.101), (10.103)."""
+    sen = tp / (tp + fn) if (tp + fn) else float("nan")
+    spe = tn / (tn + fp) if (tn + fp) else float("nan")
+    tot = tp + tn + fp + fn
+    acc = (tp + tn) / tot if tot else float("nan")
+    return sen, spe, acc
 
 def _solve_lin(A, b):
     """Solve A x = b by Gauss-Jordan with partial pivoting."""
@@ -376,41 +824,155 @@ rangayyan_accuracy = accuracy  # pre-policy spelling
 
 
 # -- rgann: Multilayer perceptron (ANN) with backpropagation.
-def rangayyan_ann_mlp(X, y, layers, lr, max_iter):
-    """
-    Multilayer perceptron (ANN) with backpropagation
+def mlpbp(X, y, hidden=4, eta=0.5, alpha=0.9, maxiter=500, tol=1e-4, seed=1):
+    """Train a two-layer perceptron by back-propagation.
 
-    Formula: y = sigma(W_2*sigma(W_1*y+b_1)+b_2); dW = -eta * dL/dW via chain rule
+    Why: when neither the prior probabilities nor any symbolic rule base is
+    available for a diagnostic problem, a network that infers the decision
+    surface directly from labelled instances is the practical alternative to
+    the parametric classifiers.  Rangayyan, *Biomedical Signal Analysis*, 3rd
+    ed., Section 10.8 (Figure 10.5).
+
+    Forward pass, eqs. (10.79), (10.80) and the logistic node function (10.81):
+
+        x#_j = f(sum_i w_ij x_i - theta_j),
+        y_k  = f(sum_j w#_jk x#_j - theta#_k),   f(b) = 1 / (1 + exp(-b)).
+
+    Weights and offsets are updated by eqs. (10.82) to (10.85), each carrying
+    the gain term ``eta`` and the momentum term ``alpha`` of the book.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    layers : array-like
-        Input data.
-    lr : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
+    X : sequence of sequences
+        One pattern vector per row.
+    y : sequence
+        Desired output per pattern; 0/1 for two classes, or an integer class
+        index, in which case one output node per class is used.
+    hidden : int
+        Number of hidden nodes J.
+    eta, alpha : float
+        Gain and momentum terms of eqs. (10.82) to (10.85).
+    maxiter : int
+        Maximum number of passes over the training set.
+    tol : float
+        Stop once the mean squared output error falls below this.
+    seed : int
+        Seed of the deterministic generator used for the initial weights.
 
     Returns
     -------
-    result : dict
-        Keys: weights, biases, predictions
-
-    References
-    ----------
-    Rangayyan Ch 10.8
+    RichResult
+        Keys ``weights``, ``offsets``, ``predictions``, ``classes``,
+        ``accuracy``, ``mse``, ``iterations``, ``method``.
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Multilayer perceptron (ANN) with backpropagation"}
-    )
+    X = _bxmat(X, "X")
+    y = _bxvec(y, "y")
+    if len(X) != len(y):
+        raise ValueError("X and y must have the same number of rows")
+    hidden = int(hidden)
+    if hidden < 1:
+        raise ValueError("hidden must be a positive integer")
+    if not (0.0 < eta <= 10.0) or not (0.0 <= alpha < 1.0):
+        raise ValueError("need 0 < eta <= 10 and 0 <= alpha < 1")
+    maxiter = int(maxiter)
+    if maxiter < 1:
+        raise ValueError("maxiter must be a positive integer")
+
+    labels = sorted(set(int(t) for t in y))
+    if len(labels) < 2:
+        raise ValueError("y must contain at least two distinct classes")
+    K = 1 if len(labels) == 2 else len(labels)
+    idx = {c: i for i, c in enumerate(labels)}
+    D = []
+    for t in y:
+        if K == 1:
+            D.append([float(idx[int(t)])])
+        else:
+            D.append([1.0 if i == idx[int(t)] else 0.0 for i in range(K)])
+
+    n, I = len(X), len(X[0])
+    u = _bxrng(seed)
+    W1 = [[u() - 0.5 for _ in range(hidden)] for _ in range(I)]
+    T1 = [u() - 0.5 for _ in range(hidden)]
+    W2 = [[u() - 0.5 for _ in range(K)] for _ in range(hidden)]
+    T2 = [u() - 0.5 for _ in range(K)]
+    dW1 = [[0.0] * hidden for _ in range(I)]
+    dT1 = [0.0] * hidden
+    dW2 = [[0.0] * K for _ in range(hidden)]
+    dT2 = [0.0] * K
+
+    def sig(b):
+        if b < -700.0:
+            return 0.0
+        if b > 700.0:
+            return 1.0
+        return 1.0 / (1.0 + exp(-b))
+
+    mse = float("nan")
+    it = 0
+    for it in range(1, maxiter + 1):
+        tot = 0.0
+        for s in range(n):
+            xs = X[s]
+            xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j])
+                  for j in range(hidden)]
+            yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k])
+                  for k in range(K)]
+            dk = [yo[k] * (1.0 - yo[k]) * (D[s][k] - yo[k]) for k in range(K)]
+            tot += fsum((D[s][k] - yo[k]) ** 2 for k in range(K))
+            for j in range(hidden):
+                for k in range(K):
+                    step = eta * dk[k] * xh[j] + alpha * dW2[j][k]
+                    W2[j][k] += step
+                    dW2[j][k] = step
+            for k in range(K):
+                step = -eta * dk[k] + alpha * dT2[k]
+                T2[k] += step
+                dT2[k] = step
+            bp = [xh[j] * (1.0 - xh[j]) * fsum(dk[k] * W2[j][k] for k in range(K))
+                  for j in range(hidden)]
+            for i in range(I):
+                for j in range(hidden):
+                    step = eta * bp[j] * xs[i] + alpha * dW1[i][j]
+                    W1[i][j] += step
+                    dW1[i][j] = step
+            for j in range(hidden):
+                step = -eta * bp[j] + alpha * dT1[j]
+                T1[j] += step
+                dT1[j] = step
+        mse = tot / (n * K)
+        if mse <= tol:
+            break
+
+    pred, raw = [], []
+    for s in range(n):
+        xs = X[s]
+        xh = [sig(fsum(W1[i][j] * xs[i] for i in range(I)) - T1[j])
+              for j in range(hidden)]
+        yo = [sig(fsum(W2[j][k] * xh[j] for j in range(hidden)) - T2[k])
+              for k in range(K)]
+        raw.append(yo)
+        if K == 1:
+            pred.append(labels[1] if yo[0] >= 0.5 else labels[0])
+        else:
+            pred.append(labels[max(range(K), key=lambda k: yo[k])])
+    acc = fsum(1.0 for a, b in zip(y, pred) if int(a) == b) / n
+    return RichResult(payload={
+        "weights": {"input_hidden": W1, "hidden_output": W2},
+        "offsets": {"hidden": T1, "output": T2},
+        "predictions": pred,
+        "outputs": raw,
+        "classes": labels,
+        "accuracy": acc,
+        "mse": mse,
+        "iterations": it,
+        "method": "two-layer perceptron trained by back-propagation, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.8, "
+                  "eqs. (10.79)-(10.85)",
+    })
+
+
+rangayyan_ann_mlp = mlpbp  # pre-policy spelling
 
 
 # -- rgbayes: Bayes minimum-error classifier.
@@ -537,117 +1099,318 @@ rangayyan_bayes_gaussian = bayesnorm  # pre-policy spelling
 
 
 # -- rgbbb: Bundle branch block (BBB) classification from ECG.
-def rangayyan_bundle_branch_block(ecg, fs, r_peaks):
-    """
-    Bundle branch block (BBB) classification from ECG
+def bbb(qrsdur, criteria=None):
+    """Apply the ECG decision rules for incomplete bundle-branch block.
 
-    Formula: QRS duration > 120ms; discriminant on QRS width and morphological features
+    Why: bundle-branch block desynchronises ventricular contraction, and the
+    ECG signature is a wider-than-normal QRS complex (100-120 ms or more) that
+    may also be jagged or slurred.  The published diagnostic logic is a
+    conjunction of duration and amplitude measurements on named leads, so a
+    program can apply it once those measurements exist.  Rangayyan,
+    *Biomedical Signal Analysis*, 3rd ed., Section 10.2.1.
+
+    Incomplete **left** bundle-branch block requires all of:
+    QRS duration >= 105 ms and <= 120 ms; QRS amplitude negative in V1 and V2;
+    Q or S duration >= 80 ms in V1 and V2; no Q wave in any two of I, V5, V6;
+    R duration > 60 ms in any two of I, aVL, V5, V6.
+
+    Incomplete **right** bundle-branch block requires all of:
+    QRS duration >= 91 ms and <= 120 ms; S duration >= 40 ms in any two of
+    I, aVL, V4, V5, V6; and, in V1 or V2, either (R duration > 30 ms and
+    R amplitude > 100 uV and no S wave) or the same three conditions on R'.
 
     Parameters
     ----------
-    ecg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    r_peaks : array-like
-        Input data.
+    qrsdur : float
+        Measured QRS duration in milliseconds.
+    criteria : dict, optional
+        The remaining measured conditions, as booleans.  Left-block keys:
+        ``qrsneg_v1v2``, ``qsdur80_v1v2``, ``noq_two_of_i_v5_v6``,
+        ``rdur60_two_of_i_avl_v5_v6``.  Right-block keys:
+        ``sdur40_two_of_i_avl_v4_v5_v6``, ``r_v1v2``, ``rprime_v1v2``.
+        Missing keys count as not satisfied.
 
     Returns
     -------
-    result : dict
-        Keys: block_type, qrs_duration
-
-    References
-    ----------
-    Rangayyan Ch 10.2.1
+    RichResult
+        Keys ``blocktype``, ``qrsdur``, ``wide``, ``left``, ``right``,
+        ``satisfied``, ``method``.
     """
-    ecg = np.asarray(ecg, dtype=float)
-    n = int(ecg) if ecg.ndim == 0 else len(ecg)
-    result = float(np.mean(ecg))
-    se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Bundle branch block (BBB) classification from ECG"}
-    )
+    try:
+        qrsdur = float(qrsdur)
+    except (TypeError, ValueError):
+        raise ValueError("qrsdur must be a number of milliseconds")
+    if not isfinite(qrsdur) or qrsdur <= 0.0:
+        raise ValueError("qrsdur must be a positive, finite duration in ms")
+    if criteria is None:
+        criteria = {}
+    if not isinstance(criteria, dict):
+        raise ValueError("criteria must be a dict of boolean measurements")
+
+    def g(k):
+        return bool(criteria.get(k, False))
+
+    left_parts = {
+        "qrs_105_to_120_ms": 105.0 <= qrsdur <= 120.0,
+        "qrs_negative_in_v1_and_v2": g("qrsneg_v1v2"),
+        "q_or_s_at_least_80_ms_in_v1_and_v2": g("qsdur80_v1v2"),
+        "no_q_in_two_of_i_v5_v6": g("noq_two_of_i_v5_v6"),
+        "r_over_60_ms_in_two_of_i_avl_v5_v6": g("rdur60_two_of_i_avl_v5_v6"),
+    }
+    right_parts = {
+        "qrs_91_to_120_ms": 91.0 <= qrsdur <= 120.0,
+        "s_at_least_40_ms_in_two_of_i_avl_v4_v5_v6":
+            g("sdur40_two_of_i_avl_v4_v5_v6"),
+        "r_or_rprime_pattern_in_v1_or_v2": g("r_v1v2") or g("rprime_v1v2"),
+    }
+    left = all(left_parts.values())
+    right = all(right_parts.values())
+    wide = qrsdur > 100.0
+
+    if left and right:
+        block = "criteria met for both left and right incomplete block"
+    elif left:
+        block = "incomplete left bundle-branch block"
+    elif right:
+        block = "incomplete right bundle-branch block"
+    elif qrsdur > 120.0:
+        block = "QRS wider than 120 ms, complete block not excluded"
+    elif wide:
+        block = "QRS wider than normal, block criteria not met"
+    else:
+        block = "no bundle-branch block by these criteria"
+
+    return RichResult(payload={
+        "blocktype": block,
+        "qrsdur": qrsdur,
+        "wide": wide,
+        "left": left,
+        "right": right,
+        "satisfied": {"left": left_parts, "right": right_parts},
+        "method": "incomplete bundle-branch block decision rules, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.2.1",
+    })
+
+
+rangayyan_bundle_branch_block = bbb  # pre-policy spelling
 
 
 # -- rgbbnorm: Normal versus ectopic beat classification with LDA and Bayes.
-def rangayyan_ecg_bbb_normal(ecg, fs, r_peaks, labels):
-    """
-    Normal versus ectopic beat classification with LDA and Bayes
+def pvcbayes(features, labels, priors=None, query=None):
+    """Bayes classification of ECG beats as normal or ectopic from [QRSTA, FF].
 
-    Formula: 4-feature LDA; Bayes classifier with Gaussian class models
+    Why: the linear rule of Section 10.11.1 commits to a hard boundary, while
+    a Bayes classifier states the posterior odds and lets the prevalence of
+    ectopy enter explicitly.  That matters here: in a real ECG the prior for a
+    PVC is far below one half, and the book contrasts the equal-prior result
+    with priors of 0.999 and 0.001.  Rangayyan, *Biomedical Signal Analysis*,
+    3rd ed., Section 10.11.2, using the normal-pattern Bayes classifier of
+    Section 10.6.2.
+
+    Each feature is normalised by dividing by its standard deviation, as in the
+    book, a 2-D Gaussian is fitted per class, and the beat is assigned to the
+    class of largest posterior.  ``QRSTA`` is the area under the segmented,
+    baseline-corrected and rectified QRS-T wave (Section 5.4.3) and ``FF`` is
+    the form factor of eq. (5.26).
 
     Parameters
     ----------
-    ecg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    r_peaks : array-like
-        Input data.
-    labels : array-like
-        Input data.
+    features : sequence of sequences
+        One row per beat; columns are the features, canonically [QRSTA, FF].
+    labels : sequence
+        Class code per beat, 0 for normal and 1 for PVC.
+    priors : sequence, optional
+        Prior probabilities in class order.  Equal priors by default.
+    query : sequence of sequences, optional
+        Further feature rows to classify with the fitted model.
 
     Returns
     -------
-    result : dict
-        Keys: classifier_accuracy, confusion
-
-    References
-    ----------
-    Rangayyan Ch 10.11
+    RichResult
+        Keys ``predictions``, ``queryclass``, ``posterior``, ``means``,
+        ``covariances``, ``scale``, ``confusion``, ``accuracy``,
+        ``sensitivity``, ``specificity``, ``priors``, ``method``.
     """
-    ecg = np.asarray(ecg, dtype=float)
-    n = int(ecg) if ecg.ndim == 0 else len(ecg)
-    result = float(np.mean(ecg))
-    se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Normal versus ectopic beat classification with LDA and Bayes",
-        }
-    )
+    F = _bxmat(features, "features")
+    y = [int(t) for t in _bxvec(labels, "labels")]
+    if len(F) != len(y):
+        raise ValueError("features and labels must have the same length")
+    classes = sorted(set(y))
+    if len(classes) != 2:
+        raise ValueError("pvcbayes expects exactly two classes, e.g. 0 and 1")
+    p = len(F[0])
+    if priors is None:
+        pri = [0.5, 0.5]
+    else:
+        pri = _bxvec(priors, "priors")
+        if len(pri) != 2 or any(t < 0 for t in pri) or fsum(pri) <= 0:
+            raise ValueError("priors must be two nonnegative numbers")
+        s = fsum(pri)
+        pri = [t / s for t in pri]
+
+    scale = []
+    for j in range(p):
+        sd = _bxsd([F[i][j] for i in range(len(F))])
+        scale.append(sd if sd > 0 else 1.0)
+    Z = [[F[i][j] / scale[j] for j in range(p)] for i in range(len(F))]
+
+    means, covs, invs, dets = [], [], [], []
+    for c in classes:
+        rows = [Z[i] for i in range(len(Z)) if y[i] == c]
+        if len(rows) < p + 1:
+            raise ValueError("each class needs more rows than features "
+                             "to estimate a covariance matrix")
+        mu, C = _bxcov(rows)
+        for i in range(p):
+            C[i][i] += 1e-9
+        vals, vecs = _bxjacobi(C)
+        if min(vals) <= 0.0:
+            raise ValueError("a class covariance matrix is not positive definite")
+        det = 1.0
+        for t in vals:
+            det *= t
+        inv = [[fsum(vecs[i][k] * vecs[j][k] / vals[k] for k in range(p))
+                for j in range(p)] for i in range(p)]
+        means.append(mu)
+        covs.append(C)
+        invs.append(inv)
+        dets.append(det)
+
+    def post(z):
+        dens = []
+        for c in range(2):
+            d = [z[j] - means[c][j] for j in range(p)]
+            q = fsum(d[a] * invs[c][a][b] * d[b] for a in range(p) for b in range(p))
+            dens.append(pri[c] * exp(-0.5 * q) / sqrt(((2.0 * pi) ** p) * dets[c]))
+        tot = fsum(dens)
+        if tot <= 0.0:
+            return [0.5, 0.5]
+        return [t / tot for t in dens]
+
+    P = [post(z) for z in Z]
+    pred = [classes[0] if t[0] >= t[1] else classes[1] for t in P]
+    tp, tn, fp, fn = _bxconfusion([1 if t == classes[1] else 0 for t in y],
+                                  [1 if t == classes[1] else 0 for t in pred])
+    sen, spe, acc = _bxscores(tp, tn, fp, fn)
+
+    qcls = None
+    if query is not None:
+        Q = _bxmat(query, "query")
+        if len(Q[0]) != p:
+            raise ValueError("query must have the same number of features")
+        qcls = []
+        for row in Q:
+            z = [row[j] / scale[j] for j in range(p)]
+            t = post(z)
+            qcls.append(classes[0] if t[0] >= t[1] else classes[1])
+
+    return RichResult(payload={
+        "predictions": pred,
+        "queryclass": qcls,
+        "posterior": P,
+        "means": means,
+        "covariances": covs,
+        "scale": scale,
+        "confusion": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
+        "accuracy": acc,
+        "sensitivity": sen,
+        "specificity": spe,
+        "priors": pri,
+        "classes": classes,
+        "method": "Gaussian Bayes classifier on [QRSTA, FF] beat features, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 10.11.2 "
+                  "with the normal-pattern classifier of Section 10.6.2",
+    })
+
+
+rangayyan_ecg_bbb_normal = pvcbayes  # pre-policy spelling
 
 
 # -- rgbci: BCI EEG channel selection via NMF spatial decomposition.
-def rangayyan_bci_nmf(eeg, n_components, fs):
-    """
-    BCI EEG channel selection via NMF spatial decomposition
+def bcichsel(trials, nselect, rank=4, maxiter=200, tol=1e-8, seed=1):
+    """Select and weight EEG channels for a motor-imagery BCI, via NMF.
 
-    Formula: NMF: V=WH; W=spatial patterns, H=temporal activations; select channels by W
+    Why: a practical brain-computer interface has to run under hardware
+    complexity constraints, and the optimal channel set is subject specific,
+    so a data-driven selector beats a fixed montage.  This is the whole
+    application of Rangayyan, *Biomedical Signal Analysis*, 3rd ed.,
+    Section 9.12 (channel-selection core in Section 9.12.1).
+
+    The per-trial channel covariance matrix of eq. (9.94) is factorised by
+    NMF, each row of the basis matrix W is min-max normalised by eq. (9.95),
+    and its RMS deviation from the reference vector of all 0.5 is taken by
+    eq. (9.96) as the channel score.  The final step of Section 9.12.1 is
+    applied here: the estimated channel weights multiply the corresponding
+    selected EEG channels, and the weighted channels are returned.
 
     Parameters
     ----------
-    eeg : array-like
-        Input data.
-    n_components : array-like
-        Input data.
-    fs : array-like
-        Input data.
+    trials : sequence of sequences
+        One trial, as an N x T matrix: N EEG channels by T samples.
+    nselect : int
+        How many channels to keep.
+    rank : int
+        NMF factorisation rank r; must be at least 3, since r = 2 makes the
+        score of eq. (9.96) identically 0.5 for every channel.
+    maxiter, tol : int, float
+        Multiplicative-update budget and convergence tolerance.
+    seed : int
+        Seed for the deterministic NMF initialisation.
 
     Returns
     -------
-    result : dict
-        Keys: selected_channels, W, H
-
-    References
-    ----------
-    Rangayyan Ch 9.12
+    RichResult
+        Keys ``selected``, ``weights``, ``rmsd``, ``weighted``, ``W``, ``H``,
+        ``covariance``, ``error``, ``method``.
     """
-    eeg = np.asarray(eeg, dtype=float)
-    n = int(eeg) if eeg.ndim == 0 else len(eeg)
-    result = float(np.mean(eeg))
-    se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "BCI EEG channel selection via NMF spatial decomposition",
-        }
-    )
+    X = _bxmat(trials, "trials")
+    nch = len(X)
+    if nch < 2:
+        raise ValueError("need at least two EEG channels")
+    nselect = int(nselect)
+    if not (1 <= nselect <= nch):
+        raise ValueError("nselect must satisfy 1 <= nselect <= number of channels")
+    rank = int(rank)
+    if rank < 3:
+        raise ValueError("rank must be at least 3: with r = 2 the min-max "
+                         "normalisation of eq. (9.95) maps every basis row to "
+                         "{0, 1}, so the RMS deviation of eq. (9.96) is exactly "
+                         "0.5 for every channel and ranks nothing")
+
+    mu, C = _bxcov(_bxtr(X))
+    shift = min(min(r) for r in C)
+    V = [[t - shift for t in r] for r in C] if shift < 0.0 else [list(r) for r in C]
+    W, H, err, _ = _bxnmfmu(V, rank, maxiter, tol, seed, "ls")
+
+    rmsd, Wn = [], []
+    for j in range(nch):
+        row = W[j]
+        lo, hi = min(row), max(row)
+        nr = [0.5] * len(row) if hi - lo <= 0 else [(t - lo) / (hi - lo) for t in row]
+        Wn.append(nr)
+        rmsd.append(sqrt(fsum((t - 0.5) ** 2 for t in nr) / len(nr)))
+
+    order = sorted(range(nch), key=lambda i: (-rmsd[i], i))
+    sel = sorted(order[:nselect])
+    weighted = [[rmsd[i] * t for t in X[i]] for i in sel]
+
+    return RichResult(payload={
+        "selected": sel,
+        "weights": [rmsd[i] for i in sel],
+        "rmsd": rmsd,
+        "normalized": Wn,
+        "weighted": weighted,
+        "W": W,
+        "H": H,
+        "covariance": C,
+        "error": err,
+        "method": "NMF-based EEG channel selection and weighting for BCI, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.12.1, "
+                  "eqs. (9.94)-(9.96)",
+    })
+
+
+rangayyan_bci_nmf = bcichsel  # pre-policy spelling
 
 
 # -- rgbhatt: Bhattacharyya distance for class separability.
@@ -1016,224 +1779,610 @@ rangayyan_bhattacharyya = divergence  # pre-policy spelling
 
 
 # -- rgbp: Basis pursuit: L1 minimization for sparse representation.
-def rangayyan_basis_pursuit(x, D, tol):
-    """
-    Basis pursuit: L1 minimization for sparse representation
+def bpursuit(x, D, lam=0.01, maxiter=2000, tol=1e-10):
+    """Basis-pursuit denoising: L1-penalised expansion in an overcomplete dictionary.
 
-    Formula: min ||alpha||_1 s.t. D*alpha = x; solved via LP or ADMM
+    Why: greedy pursuit fixes each atom the moment it is chosen, so an early
+    mistake is never revisited.  Basis pursuit instead solves a convex problem
+    whose L1 penalty produces a sparse expansion while every coefficient stays
+    free to the end, which is the right tool when dictionary atoms are strongly
+    correlated.
+
+    Minimises 0.5 * ||x - D' a||^2 + lam * ||a||_1 by iterative soft
+    thresholding: a <- soft(a + D (x - D' a) / L, lam / L) with L the squared
+    spectral norm bound, estimated here by power iteration on D D'.
+
+    Not from Rangayyan: *Biomedical Signal Analysis*, 3rd ed. covers matching
+    pursuit (Section 9.3) and EMD-based dictionary learning (Section 9.5) but
+    does not present basis pursuit.  Primary sources are Chen, Donoho and
+    Saunders, "Atomic decomposition by basis pursuit", SIAM Journal on
+    Scientific Computing 20(1):33-61, 1998, for the L1 formulation, and
+    Daubechies, Defrise and De Mol, Communications on Pure and Applied
+    Mathematics 57(11):1413-1457, 2004, for the thresholded-Landweber solver.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    D : array-like
-        Input data.
-    tol : array-like
-        Input data.
+    x : sequence
+        Signal to represent.
+    D : sequence of sequences
+        Dictionary, one atom per row, each the same length as x.
+    lam : float
+        L1 penalty weight; larger values give sparser expansions.
+    maxiter : int
+        Maximum thresholding iterations.
+    tol : float
+        Stop when the largest coefficient change falls below this.
 
     Returns
     -------
-    result : dict
-        Keys: alpha
-
-    References
-    ----------
-    Rangayyan Ch 9.5
+    RichResult
+        Keys ``alpha``, ``support``, ``reconstruction``, ``residual``,
+        ``l1norm``, ``objective``, ``iterations``, ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Basis pursuit: L1 minimization for sparse representation",
-        }
-    )
+    x = _bxvec(x, "x")
+    A = _bxmat(D, "D")
+    n = len(x)
+    if any(len(a) != n for a in A):
+        raise ValueError("every dictionary atom must have the same length as x")
+    lam = float(lam)
+    if lam < 0.0:
+        raise ValueError("lam must be nonnegative")
+    maxiter = int(maxiter)
+    if maxiter < 1:
+        raise ValueError("maxiter must be a positive integer")
+
+    m = len(A)
+    v = [1.0 / sqrt(m)] * m
+    L = 1.0
+    for _ in range(60):
+        w = _bxmv(A, _bxmv(_bxtr(A), v))
+        nw = _bxnrm(w)
+        if nw <= 1e-300:
+            break
+        v = [t / nw for t in w]
+        L = nw
+    L = max(L, 1e-12)
+
+    a = [0.0] * m
+    it = 0
+    for it in range(1, maxiter + 1):
+        approx = _bxmv(_bxtr(A), a)
+        r = [x[i] - approx[i] for i in range(n)]
+        g = _bxmv(A, r)
+        shift = 0.0
+        for j in range(m):
+            z = a[j] + g[j] / L
+            th = lam / L
+            new = 0.0 if abs(z) <= th else (z - th if z > 0 else z + th)
+            shift = max(shift, abs(new - a[j]))
+            a[j] = new
+        if shift <= tol:
+            break
+
+    approx = _bxmv(_bxtr(A), a)
+    r = [x[i] - approx[i] for i in range(n)]
+    l1 = fsum(abs(t) for t in a)
+    obj = 0.5 * fsum(t * t for t in r) + lam * l1
+    return RichResult(payload={
+        "alpha": a,
+        "support": [j for j in range(m) if a[j] != 0.0],
+        "reconstruction": approx,
+        "residual": r,
+        "l1norm": l1,
+        "objective": obj,
+        "iterations": it,
+        "method": "basis-pursuit denoising by iterative soft thresholding; "
+                  "Chen, Donoho and Saunders, SIAM J. Sci. Comput. 20(1):33-61, "
+                  "1998; solver of Daubechies, Defrise and De Mol, Comm. Pure "
+                  "Appl. Math. 57(11):1413-1457, 2004 (not covered by Rangayyan)",
+    })
+
+
+rangayyan_basis_pursuit = bpursuit  # pre-policy spelling
 
 
 # -- rgcad: Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate.
-def rangayyan_cad_pipeline(signals, labels, classifier, cv_k):
-    """
-    Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate
+def cadpipe(features, labels, k=5, standardize=True):
+    """Run and validate a screening CAD pipeline end to end.
 
-    Formula: CAD = preprocess(signals) -> F(signals) -> classifier(F) -> cross_validate
+    Why: a computer-aided diagnosis system is not a classifier but a chain,
+    and the accuracy quoted for that chain is only meaningful if the test
+    patterns were never seen during training.  This runs the whole chain --
+    feature standardisation, a linear discriminant designed on the training
+    partition only, and k-fold validation -- and reports the diagnostic
+    measures the clinical reader needs.  Rangayyan, *Biomedical Signal
+    Analysis*, 3rd ed., Chapter 10; training and test steps, Section 10.10.3;
+    diagnostic measures, Section 10.9.
+
+    The classifier is the prototype (mean) discriminant of Section 10.4.1: a
+    pattern is assigned to the class whose training-set mean vector is nearer,
+    which is the decision boundary given by the normal bisector of the segment
+    joining the two prototypes.  Sensitivity, specificity and accuracy follow
+    eqs. (10.100), (10.101) and (10.103); prevalence-weighted accuracy follows
+    eq. (10.102).
 
     Parameters
     ----------
-    signals : array-like
-        Input data.
-    labels : array-like
-        Input data.
-    classifier : array-like
-        Input data.
-    cv_k : array-like
-        Input data.
+    features : sequence of sequences
+        One pattern vector per subject or signal.
+    labels : sequence
+        Binary class code, 0 for without the disease and 1 for with it.
+    k : int
+        Number of cross-validation folds; ``k`` equal to the sample size gives
+        leave-one-out validation.
+    standardize : bool
+        Divide each feature by its training-partition standard deviation.
 
     Returns
     -------
-    result : dict
-        Keys: accuracy, sensitivity, specificity
-
-    References
-    ----------
-    Rangayyan Ch 10
+    RichResult
+        Keys ``accuracy``, ``sensitivity``, ``specificity``,
+        ``weightedaccuracy``, ``confusion``, ``predictions``, ``folds``,
+        ``prevalence``, ``method``.
     """
-    signals = np.asarray(signals, dtype=float)
-    n = int(signals) if signals.ndim == 0 else len(signals)
-    result = float(np.mean(signals))
-    se = float(np.std(signals, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate",
-        }
-    )
+    F = _bxmat(features, "features")
+    y = [int(t) for t in _bxvec(labels, "labels")]
+    if len(F) != len(y):
+        raise ValueError("features and labels must have the same length")
+    if set(y) != {0, 1}:
+        raise ValueError("labels must contain both 0 (without) and 1 (with) the disease")
+    n, p = len(F), len(F[0])
+    k = int(k)
+    if not (2 <= k <= n):
+        raise ValueError("k must satisfy 2 <= k <= number of patterns")
+
+    folds = [[] for _ in range(k)]
+    for c in (0, 1):
+        members = [i for i in range(n) if y[i] == c]
+        for j, i in enumerate(members):
+            folds[j % k].append(i)
+    if any(not f for f in folds):
+        raise ValueError("k is too large: some fold is empty")
+
+    pred = [None] * n
+    for f in range(k):
+        test = set(folds[f])
+        train = [i for i in range(n) if i not in test]
+        if len({y[i] for i in train}) < 2:
+            raise ValueError("a training partition lost a class; reduce k")
+        sc = [1.0] * p
+        if standardize:
+            for j in range(p):
+                sd = _bxsd([F[i][j] for i in train])
+                sc[j] = sd if sd > 0 else 1.0
+        proto = {}
+        for c in (0, 1):
+            rows = [i for i in train if y[i] == c]
+            proto[c] = [fsum(F[i][j] / sc[j] for i in rows) / len(rows)
+                        for j in range(p)]
+        for i in test:
+            z = [F[i][j] / sc[j] for j in range(p)]
+            d0 = fsum((z[j] - proto[0][j]) ** 2 for j in range(p))
+            d1 = fsum((z[j] - proto[1][j]) ** 2 for j in range(p))
+            pred[i] = 1 if d1 < d0 else 0
+
+    tp, tn, fp, fn = _bxconfusion(y, pred)
+    sen, spe, acc = _bxscores(tp, tn, fp, fn)
+    prev = fsum(1.0 for t in y if t == 1) / n
+    wacc = sen * prev + spe * (1.0 - prev)
+    return RichResult(payload={
+        "accuracy": acc,
+        "sensitivity": sen,
+        "specificity": spe,
+        "weightedaccuracy": wacc,
+        "confusion": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
+        "predictions": pred,
+        "folds": [sorted(f) for f in folds],
+        "prevalence": prev,
+        "method": "cross-validated prototype-discriminant CAD pipeline, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Sections 10.4.1 "
+                  "and 10.10.3, scored by eqs. (10.100)-(10.103)",
+    })
+
+
+rangayyan_cad_pipeline = cadpipe  # pre-policy spelling
 
 
 # -- rgcnn: 1D CNN for biomedical signal classification.
-def rangayyan_cnn_signal(x, filters, kernel_sizes, n_classes):
-    """
-    1D CNN for biomedical signal classification
+def cnnsig(x, kernels, bias=None, pool=2, dense=None):
+    """Forward pass of a 1-D convolutional feature extractor for a biomedical signal.
 
-    Formula: conv1d: y[n] = sum_k w[k]*x[n+k]; followed by ReLU, pooling, FC layers
+    Why: in a deep network each hidden node acts as a learnable kernel or
+    adaptive filter, and stacking them lets the network learn several levels
+    of feature representation from the signal itself instead of from a
+    hand-designed feature list.  Rangayyan, *Biomedical Signal Analysis*, 3rd
+    ed., Section 10.8.2 describes this in prose and names CNNs as the common
+    deep-learning model, but gives no equations for the convolution, the
+    rectifier or the pooling stage; the layer definitions used here are those
+    of LeCun, Bengio and Hinton, "Deep learning", Nature 521(7553):436-444,
+    2015, which is reference [35] of that section.
+
+    Each kernel is cross-correlated with the signal, rectified by
+    max(0, .), and max-pooled by a factor ``pool``.  The concatenated pooled
+    maps form the feature vector; if ``dense`` is given, that vector is passed
+    through a linear output layer and a softmax to give class scores.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    filters : array-like
-        Input data.
-    kernel_sizes : array-like
-        Input data.
-    n_classes : array-like
-        Input data.
+    x : sequence
+        Input signal.
+    kernels : sequence of sequences
+        One filter per row.
+    bias : sequence, optional
+        One bias per kernel; zeros by default.
+    pool : int
+        Max-pooling factor.
+    dense : sequence of sequences, optional
+        Output-layer weights, one row per class, each of length equal to the
+        pooled feature vector.
 
     Returns
     -------
-    result : dict
-        Keys: class_probs
-
-    References
-    ----------
-    Rangayyan Ch 10.8.2
+    RichResult
+        Keys ``maps``, ``pooled``, ``features``, ``scores``, ``predicted``,
+        ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "1D CNN for biomedical signal classification"}
-    )
+    x = _bxvec(x, "x")
+    K = _bxmat(kernels, "kernels")
+    pool = int(pool)
+    if pool < 1:
+        raise ValueError("pool must be a positive integer")
+    if any(len(a) > len(x) for a in K):
+        raise ValueError("every kernel must be no longer than the signal")
+    if bias is None:
+        b = [0.0] * len(K)
+    else:
+        b = _bxvec(bias, "bias")
+        if len(b) != len(K):
+            raise ValueError("bias must have one entry per kernel")
+
+    maps, pooled = [], []
+    for ki in range(len(K)):
+        w = K[ki]
+        m = len(w)
+        conv = [max(0.0, fsum(w[j] * x[i + j] for j in range(m)) + b[ki])
+                for i in range(len(x) - m + 1)]
+        maps.append(conv)
+        pl = [max(conv[i:i + pool]) for i in range(0, len(conv) - pool + 1, pool)]
+        if not pl:
+            pl = [max(conv)]
+        pooled.append(pl)
+
+    feat = [t for pl in pooled for t in pl]
+    scores, best = None, None
+    if dense is not None:
+        Wd = _bxmat(dense, "dense")
+        if len(Wd[0]) != len(feat):
+            raise ValueError("dense rows must match the pooled feature length "
+                             "of %d" % len(feat))
+        z = _bxmv(Wd, feat)
+        mx = max(z)
+        e = [exp(t - mx) for t in z]
+        s = fsum(e)
+        scores = [t / s for t in e]
+        best = max(range(len(scores)), key=lambda i: scores[i])
+
+    return RichResult(payload={
+        "maps": maps,
+        "pooled": pooled,
+        "features": feat,
+        "scores": scores,
+        "predicted": best,
+        "method": "1-D convolution, rectifier and max-pooling forward pass; "
+                  "architecture per LeCun, Bengio and Hinton, Nature "
+                  "521(7553):436-444, 2015, cited as ref. [35] of Rangayyan "
+                  "Biomedical Signal Analysis 3rd ed. Section 10.8.2, which "
+                  "gives no equations for these layers",
+    })
+
+
+rangayyan_cnn_signal = cnnsig  # pre-policy spelling
 
 
 # -- rgecgfe: Single-channel fetal ECG extraction using NMF/ICA.
-def rangayyan_fetal_ecg_single(abdominal_ecg, fs, method):
-    """
-    Single-channel fetal ECG extraction using NMF/ICA
+def fecgnmf(x, fs, nwin=64, hop=None, rank=4, lam=0.0, maxiter=150,
+            taum=0.6, tauf=0.45, seed=1):
+    """Separate the fetal ECG from a single-channel abdominal ECG by NMF.
 
-    Formula: Maternal component removed by NMF decomposition; fetal ECG in residual
+    Why: the fetal and maternal ECG overlap in the spectrum, so no linear
+    filter separates them, and the usual blind-source-separation route needs
+    several abdominal leads.  A single lead is what a mother can wear at home,
+    so the separation has to come from structure in a time-frequency matrix
+    rather than from spatial diversity.  Rangayyan, *Biomedical Signal
+    Analysis*, 3rd ed., Section 9.11.
+
+    The mixture model is eq. (9.88), x_a(t) = x_m(t) + x_f(t) + n(t).  The
+    signal is converted to an M x N time-frequency matrix V by STFT and
+    factorised.  Rows of the activation matrix H are normalised, thresholded
+    at T = tau * A_max by eq. (9.91), and the peaks above threshold are
+    counted; with the counts sorted in ascending order the smallest belongs to
+    the maternal activation and the next to the fetal activation, because the
+    fetal heart rate is the higher of the two.  The chosen components are
+    turned back into signals through a soft mask and the inverse STFT.
+
+    Sparse NMF updates follow eqs. (9.89) and (9.90) when ``lam`` is positive;
+    with ``lam`` zero the standard multiplicative updates (9.49) and (9.50)
+    are used.  Rangayyan reports r = 4 as empirically best for this task.
 
     Parameters
     ----------
-    abdominal_ecg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    method : array-like
-        Input data.
+    x : sequence
+        Single-channel abdominal ECG, already baseline- and mains-filtered.
+    fs : float
+        Sampling rate in Hz.
+    nwin, hop : int
+        STFT window length and hop; hop defaults to ``nwin // 2``.
+    rank : int
+        Factorisation rank r.
+    lam : float
+        Sparsity parameter of eq. (9.89); zero selects the standard updates.
+    maxiter : int
+        Update iterations.
+    taum, tauf : float
+        Threshold fractions of eq. (9.91); the book uses 0.6 for the maternal
+        and 0.45 for the fetal activation.
+    seed : int
+        Seed for the deterministic initialisation.
 
     Returns
     -------
-    result : dict
-        Keys: fetal_ecg
-
-    References
-    ----------
-    Rangayyan Ch 9.11
+    RichResult
+        Keys ``fetal``, ``maternal``, ``peaks``, ``fetalrow``,
+        ``maternalrow``, ``W``, ``H``, ``error``, ``method``.
     """
-    abdominal_ecg = np.asarray(abdominal_ecg, dtype=float)
-    n = int(abdominal_ecg) if abdominal_ecg.ndim == 0 else len(abdominal_ecg)
-    result = float(np.mean(abdominal_ecg))
-    se = float(np.std(abdominal_ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Single-channel fetal ECG extraction using NMF/ICA"}
-    )
+    x = _bxvec(x, "x")
+    fs = float(fs)
+    if fs <= 0.0:
+        raise ValueError("fs must be a positive sampling rate in Hz")
+    nwin = int(nwin)
+    hop = nwin // 2 if hop is None else int(hop)
+    if not (0.0 < taum <= 1.0) or not (0.0 < tauf <= 1.0):
+        raise ValueError("taum and tauf must lie in (0, 1]")
+    if float(lam) < 0.0:
+        raise ValueError("lam must be nonnegative")
+
+    re_f, im_f, mag_f, win = _bxstft(x, nwin, hop)
+    V = _bxtr(mag_f)
+    W, H, err, _ = _bxnmfmu(V, rank, maxiter, 1e-10, seed,
+                            "ls" if float(lam) == 0.0 else "kld")
+    if float(lam) > 0.0:
+        eps = 1e-12
+        for _ in range(20):
+            R = _bxmm(W, H)
+            for a in range(len(H)):
+                for b in range(len(H[0])):
+                    num = fsum(V[i][b] * W[i][a] for i in range(len(V)))
+                    den = fsum(R[i][b] * W[i][a] for i in range(len(V))) + float(lam)
+                    H[a][b] *= num / (den + eps)
+
+    def peakcount(row, tau):
+        m = max(abs(t) for t in row)
+        if m <= 0.0:
+            return 0
+        nr = [abs(t) / m for t in row]
+        thr = tau * 1.0
+        return sum(1 for i in range(1, len(nr) - 1)
+                   if nr[i] > thr and nr[i] >= nr[i - 1] and nr[i] > nr[i + 1])
+
+    counts = [(peakcount(H[a], tauf), a) for a in range(len(H))]
+    counts.sort()
+    mrow = counts[0][1]
+    frow = counts[1][1] if len(counts) > 1 else counts[0][1]
+    mcount = peakcount(H[mrow], taum)
+    peaks = {"per_row": {a: c for c, a in counts},
+             "maternal_row_count_at_taum": mcount}
+
+    def rebuild(row):
+        R = _bxmm(W, H)
+        C = [[W[i][row] * H[row][j] for j in range(len(H[0]))]
+             for i in range(len(W))]
+        ren, imn = [], []
+        for fi in range(len(mag_f)):
+            rr, ii = [], []
+            for k in range(len(mag_f[0])):
+                tot = R[k][fi]
+                msk = C[k][fi] / tot if tot > 1e-12 else 0.0
+                rr.append(re_f[fi][k] * msk)
+                ii.append(im_f[fi][k] * msk)
+            ren.append(rr)
+            imn.append(ii)
+        return _bxistft(ren, imn, nwin, hop, win, len(x))
+
+    return RichResult(payload={
+        "fetal": rebuild(frow),
+        "maternal": rebuild(mrow),
+        "fetalrow": frow,
+        "maternalrow": mrow,
+        "peaks": peaks,
+        "W": W,
+        "H": H,
+        "error": err,
+        "method": "single-channel fetal ECG extraction by NMF of the STFT "
+                  "magnitude with activation-peak selection, Rangayyan "
+                  "Biomedical Signal Analysis 3rd ed. Section 9.11, "
+                  "eqs. (9.88)-(9.91)",
+    })
+
+
+rangayyan_fetal_ecg_single = fecgnmf  # pre-policy spelling
 
 
 # -- rgecgnl: Normal vs. ectopic ECG beat classification.
-def rangayyan_ecg_normal_ectopic(ecg, fs, r_peaks):
-    """
-    Normal vs. ectopic ECG beat classification
+def pvclindf(rr, ff, train=None):
+    """Classify ECG beats as normal or PVC with a linear discriminant on [RR, FF].
 
-    Formula: LDA or k-means on QRS morphological features
+    Why: a premature ventricular contraction has both a shorter preceding RR
+    interval and a more complex waveshape than a normal beat of the same
+    subject, so those two numbers alone separate the classes.  The form factor
+    of eq. (5.26) makes the second, qualitative half of the clinical rule in
+    Section 10.2.2 into a measurable quantity.  Rangayyan, *Biomedical Signal
+    Analysis*, 3rd ed., Section 10.11.1.
+
+    With no training data the published decision function is used, eq.
+    (10.131):
+
+        RR - 5.56 FF + 11.44  > 0  -> normal beat,
+                              <= 0 -> PVC,
+
+    which the book derived as the normal bisector of the segment joining the
+    prototype vectors [RR, FF] = [0.66, 1.58] for normal beats and
+    [0.45, 2.74] for PVCs, and which classified the whole training set
+    correctly.  Given ``train``, the same construction is redone on the
+    supplied data: class prototypes, then their perpendicular bisector, the
+    linear decision function of Section 10.4.1.
 
     Parameters
     ----------
-    ecg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    r_peaks : array-like
-        Input data.
+    rr : sequence
+        RR interval of each beat, in seconds.
+    ff : sequence
+        Form factor of each beat, eq. (5.26).
+    train : tuple, optional
+        ``(rr, ff, labels)`` with labels 0 for normal and 1 for PVC, to derive
+        the decision function instead of using the published coefficients.
 
     Returns
     -------
-    result : dict
-        Keys: beat_labels, features
-
-    References
-    ----------
-    Rangayyan Ch 10.11
+    RichResult
+        Keys ``labels``, ``discriminant``, ``coefficients``, ``prototypes``,
+        ``method``.
     """
-    ecg = np.asarray(ecg, dtype=float)
-    n = int(ecg) if ecg.ndim == 0 else len(ecg)
-    result = float(np.mean(ecg))
-    se = float(np.std(ecg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Normal vs. ectopic ECG beat classification"}
-    )
+    rr = _bxvec(rr, "rr")
+    ff = _bxvec(ff, "ff")
+    if len(rr) != len(ff):
+        raise ValueError("rr and ff must have the same length")
+
+    proto = None
+    if train is None:
+        a, b, c = 1.0, -5.56, 11.44
+        proto = {"normal": [0.66, 1.58], "pvc": [0.45, 2.74]}
+        src = "published coefficients of eq. (10.131)"
+    else:
+        try:
+            trr, tff, tlab = train
+        except (TypeError, ValueError):
+            raise ValueError("train must be a (rr, ff, labels) triple")
+        trr = _bxvec(trr, "train rr")
+        tff = _bxvec(tff, "train ff")
+        tlab = [int(t) for t in _bxvec(tlab, "train labels")]
+        if not (len(trr) == len(tff) == len(tlab)):
+            raise ValueError("training rr, ff and labels must have equal length")
+        if set(tlab) != {0, 1}:
+            raise ValueError("training labels must contain both 0 (normal) and 1 (PVC)")
+        p0 = [_bxmean([trr[i] for i in range(len(tlab)) if tlab[i] == 0]),
+              _bxmean([tff[i] for i in range(len(tlab)) if tlab[i] == 0])]
+        p1 = [_bxmean([trr[i] for i in range(len(tlab)) if tlab[i] == 1]),
+              _bxmean([tff[i] for i in range(len(tlab)) if tlab[i] == 1])]
+        d = [p1[0] - p0[0], p1[1] - p0[1]]
+        if abs(d[0]) < 1e-12 and abs(d[1]) < 1e-12:
+            raise ValueError("the two class prototypes coincide")
+        mid = [0.5 * (p0[0] + p1[0]), 0.5 * (p0[1] + p1[1])]
+        a, b = -d[0], -d[1]
+        c = d[0] * mid[0] + d[1] * mid[1]
+        proto = {"normal": p0, "pvc": p1}
+        src = "coefficients derived from the supplied training set"
+
+    disc = [a * rr[i] + b * ff[i] + c for i in range(len(rr))]
+    labs = [0 if t > 0.0 else 1 for t in disc]
+    return RichResult(payload={
+        "labels": labs,
+        "discriminant": disc,
+        "coefficients": {"rr": a, "ff": b, "constant": c},
+        "prototypes": proto,
+        "source": src,
+        "method": "linear discriminant on [RR interval, form factor] for "
+                  "normal vs. ectopic beats, Rangayyan Biomedical Signal "
+                  "Analysis 3rd ed. Section 10.11.1, eq. (10.131)",
+    })
+
+
+rangayyan_ecg_normal_ectopic = pvclindf  # pre-policy spelling
 
 
 # -- rgeegb: EEG rhythm band classification (delta/theta/alpha/beta/gamma).
-def rangayyan_eeg_rhythms(eeg, fs):
-    """
-    EEG rhythm band classification (delta/theta/alpha/beta/gamma)
+def eegbands(x, fs, bands=None):
+    """Fractional power of an EEG segment in the named rhythm bands.
 
-    Formula: Band membership by frequency range: delta<4, theta 4-8, alpha 8-13, beta 13-30, gamma>30 Hz
+    Why: the EEG is described clinically by its rhythms, and the question a
+    reader actually asks -- is there an alpha rhythm? -- is answered by the
+    fraction of signal power falling in that band.  Rangayyan, *Biomedical
+    Signal Analysis*, 3rd ed., Section 1.2.6 defines the bands and Section
+    10.2.3 makes the fractional-power test explicit.
+
+    Band limits are exactly those of Section 1.2.6:
+    delta 0.5 <= f < 4 Hz; theta 4 <= f < 8 Hz; alpha 8 <= f <= 13 Hz;
+    beta f > 13 Hz; and, defined separately in that section, gamma 30 - 80 Hz.
+    The fraction of power in a band f1:f2 is eq. (6.44), the sum of |X(k)|^2
+    over the band divided by the total.
 
     Parameters
     ----------
-    eeg : array-like
-        Input data.
-    fs : array-like
-        Input data.
+    x : sequence
+        EEG segment.
+    fs : float
+        Sampling rate in Hz.
+    bands : dict, optional
+        Override the band limits, as ``{name: (f1, f2)}`` in Hz.
 
     Returns
     -------
-    result : dict
-        Keys: band_powers
-
-    References
-    ----------
-    Rangayyan Ch 1.2.6
+    RichResult
+        Keys ``power``, ``fraction``, ``dominant``, ``totalpower``,
+        ``frequencies``, ``method``.
     """
-    eeg = np.asarray(eeg, dtype=float)
-    n = int(eeg) if eeg.ndim == 0 else len(eeg)
-    result = float(np.mean(eeg))
-    se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "EEG rhythm band classification (delta/theta/alpha/beta/gamma)",
+    x = _bxvec(x, "x")
+    fs = float(fs)
+    if fs <= 0.0:
+        raise ValueError("fs must be a positive sampling rate in Hz")
+    if len(x) < 8:
+        raise ValueError("need at least eight samples to estimate a spectrum")
+    nyq = fs / 2.0
+    if bands is None:
+        bands = {
+            "delta": (0.5, 4.0),
+            "theta": (4.0, 8.0),
+            "alpha": (8.0, 13.0),
+            "beta": (13.0, nyq),
+            "gamma": (30.0, min(80.0, nyq)),
         }
-    )
+    if not isinstance(bands, dict) or not bands:
+        raise ValueError("bands must be a non-empty dict of (f1, f2) pairs")
+
+    m = _bxmean(x)
+    xc = [t - m for t in x]
+    mag = _bxdftmag(xc)
+    n = len(xc)
+    freqs = [k * fs / n for k in range(len(mag))]
+    psd = [t * t for t in mag]
+    total = fsum(psd)
+
+    power, frac = {}, {}
+    for name, lim in bands.items():
+        try:
+            f1, f2 = float(lim[0]), float(lim[1])
+        except (TypeError, ValueError, IndexError):
+            raise ValueError("band %r must be an (f1, f2) pair" % (name,))
+        if f1 < 0.0 or f2 <= f1:
+            raise ValueError("band %r must satisfy 0 <= f1 < f2" % (name,))
+        p = fsum(psd[k] for k in range(len(psd)) if f1 <= freqs[k] <= f2)
+        power[name] = p
+        frac[name] = p / total if total > 0.0 else 0.0
+
+    dom = max(frac, key=lambda t: frac[t]) if total > 0.0 else None
+    return RichResult(payload={
+        "power": power,
+        "fraction": frac,
+        "dominant": dom,
+        "totalpower": total,
+        "frequencies": freqs,
+        "bands": {k: (float(v[0]), float(v[1])) for k, v in bands.items()},
+        "method": "fractional power in the EEG rhythm bands, band limits from "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 1.2.6, "
+                  "fraction by eq. (6.44) as used in Section 10.2.3",
+    })
+
+
+rangayyan_eeg_rhythms = eegbands  # pre-policy spelling
 
 
 # -- rgelbow: Elbow method for k-means cluster count selection.
@@ -1290,44 +2439,144 @@ rangayyan_kmeans_elbow = elbow  # pre-policy spelling
 
 
 # -- rgepiksv: Epileptic seizure detection using K-SVD dictionary learning.
-def rangayyan_epilepsy_ksvd(eeg, fs, dict_size, sparsity):
-    """
-    Epileptic seizure detection using K-SVD dictionary learning
+def seizdict(signals, labels, iterations=7, atoms=None, test=None):
+    """Learn a signal-derived dictionary and use it to detect epileptic seizures.
 
-    Formula: Learned dictionary atoms; OMP for sparse coding; SVM on coefficients
+    Why: the EEG is nonstationary, so a fixed basis represents seizure and
+    nonseizure segments equally badly.  Learning the atoms from the recordings
+    themselves gives a small dictionary whose atoms carry properties unique to
+    each class, and the projection coefficients and the reconstruction error
+    against that dictionary are then the seizure-detection features.
+    Rangayyan, *Biomedical Signal Analysis*, 3rd ed., Section 9.8, following
+    the dictionary-learning framework of Section 9.5.
+
+    Implements Algorithm 9.2 verbatim: for each training signal, repeatedly
+    take the projection coefficient alpha_m = <x, psi_m> against every atom of
+    that signal's raw dictionary, add the atom of largest |alpha_m| to the
+    trained dictionary if it is not already there, remove it from the raw
+    dictionary, and replace x by its residue.  The book runs I = 1 to 7.
+
+    Classification uses the features named in Section 9.8 -- the projection
+    coefficient vector and the reconstruction error -- assigning each signal to
+    the class whose mean training feature vector is nearer.
 
     Parameters
     ----------
-    eeg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    dict_size : array-like
-        Input data.
-    sparsity : array-like
-        Input data.
+    signals : sequence of sequences
+        Training signals, one per row, all the same length.
+    labels : sequence
+        Class code per training signal, e.g. 0 nonseizure and 1 seizure.
+    iterations : int
+        Number of passes I; the book uses 7.
+    atoms : sequence of sequences, optional
+        A raw dictionary shared by all signals.  By default each training
+        signal contributes its own L2-normalised half-overlapping segments,
+        which stands in for the DWT or EMD components of the book.
+    test : sequence of sequences, optional
+        Further signals to classify with the learned dictionary.
 
     Returns
     -------
-    result : dict
-        Keys: is_seizure, onset
-
-    References
-    ----------
-    Rangayyan Ch 9.8
+    RichResult
+        Keys ``dictionary``, ``coefficients``, ``error``, ``predictions``,
+        ``testclass``, ``isseizure``, ``accuracy``, ``method``.
     """
-    eeg = np.asarray(eeg, dtype=float)
-    n = int(eeg) if eeg.ndim == 0 else len(eeg)
-    result = float(np.mean(eeg))
-    se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Epileptic seizure detection using K-SVD dictionary learning",
-        }
-    )
+    S = _bxmat(signals, "signals")
+    y = [int(t) for t in _bxvec(labels, "labels")]
+    if len(S) != len(y):
+        raise ValueError("signals and labels must have the same length")
+    if len(set(y)) < 2:
+        raise ValueError("labels must contain at least two classes")
+    iterations = int(iterations)
+    if iterations < 1:
+        raise ValueError("iterations must be a positive integer")
+    n = len(S[0])
+
+    def rawdict(sig):
+        if atoms is not None:
+            A = _bxmat(atoms, "atoms")
+            if any(len(a) != n for a in A):
+                raise ValueError("atoms must have the same length as the signals")
+            return [list(a) for a in A]
+        seg = max(4, n // 4)
+        out = []
+        for st in range(0, n - seg + 1, max(1, seg // 2)):
+            a = [0.0] * n
+            for i in range(seg):
+                a[st + i] = sig[st + i]
+            nr = _bxnrm(a)
+            if nr > 1e-12:
+                out.append([t / nr for t in a])
+        return out
+
+    trained = []
+    for s in range(len(S)):
+        raw = rawdict(S[s])
+        x = list(S[s])
+        for _ in range(iterations):
+            if not raw:
+                break
+            best, bv = -1, -1.0
+            for j in range(len(raw)):
+                v = abs(_bxdot(x, raw[j]))
+                if v > bv:
+                    best, bv = j, v
+            if best < 0:
+                break
+            psi = raw.pop(best)
+            if not any(all(abs(psi[i] - d[i]) < 1e-12 for i in range(n))
+                       for d in trained):
+                trained.append(psi)
+            a = _bxdot(x, psi)
+            x = [x[i] - a * psi[i] for i in range(n)]
+    if not trained:
+        raise ValueError("dictionary learning produced no atoms; "
+                         "check that the signals are not all zero")
+
+    def feats(sig):
+        co = [_bxdot(sig, d) for d in trained]
+        rec = [fsum(co[j] * trained[j][i] for j in range(len(trained)))
+               for i in range(n)]
+        err = _bxnrm([sig[i] - rec[i] for i in range(n)])
+        return co + [err], co, err
+
+    Ftr = [feats(row) for row in S]
+    classes = sorted(set(y))
+    cent = {}
+    for c in classes:
+        rows = [Ftr[i][0] for i in range(len(y)) if y[i] == c]
+        cent[c] = [fsum(r[j] for r in rows) / len(rows) for j in range(len(rows[0]))]
+
+    def assign(v):
+        return min(classes, key=lambda c: fsum((v[j] - cent[c][j]) ** 2
+                                               for j in range(len(v))))
+
+    pred = [assign(Ftr[i][0]) for i in range(len(y))]
+    acc = fsum(1.0 for a, b in zip(y, pred) if a == b) / len(y)
+
+    tcls = None
+    if test is not None:
+        T = _bxmat(test, "test")
+        if any(len(r) != n for r in T):
+            raise ValueError("test signals must have the same length as training signals")
+        tcls = [assign(feats(r)[0]) for r in T]
+
+    return RichResult(payload={
+        "dictionary": trained,
+        "coefficients": [Ftr[i][1] for i in range(len(y))],
+        "error": [Ftr[i][2] for i in range(len(y))],
+        "predictions": pred,
+        "isseizure": [t == max(classes) for t in pred],
+        "testclass": tcls,
+        "accuracy": acc,
+        "method": "signal-derived dictionary learning (Algorithm 9.2) with "
+                  "projection-coefficient and reconstruction-error features "
+                  "for seizure detection, Rangayyan Biomedical Signal Analysis "
+                  "3rd ed. Section 9.8",
+    })
+
+
+rangayyan_epilepsy_ksvd = seizdict  # pre-policy spelling
 
 
 # -- rgerrbd: Bhattacharyya bound on Bayes classification error.
@@ -1562,116 +2811,326 @@ rangayyan_hierarchical_clust = hclust  # pre-policy spelling
 
 
 # -- rgica: FastICA algorithm for independent component analysis.
-def rangayyan_fastica(X, n_components, nonlin, max_iter, tol):
-    """
-    FastICA algorithm for independent component analysis
+def icafix(X, ncomp=None, maxiter=200, tol=1e-8, seed=1):
+    """Independent component analysis by the fixed-point (FastICA) algorithm.
 
-    Formula: w_k = E{X*g(w_k^T*X)} - E{g'(w_k^T*X)}*w_k; g(y)=tanh(a*y)
+    Why: PCA can only make components uncorrelated, which equals independence
+    only when the sources are Gaussian.  Since a linear mixture tends towards
+    a Gaussian by the central limit theorem, driving the estimated sources
+    *away* from Gaussianity is what actually unmixes them.  Rangayyan,
+    *Biomedical Signal Analysis*, 3rd ed., Section 9.7.2 states the model
+    y(n) = M x(n), eq. (9.43), the unmixing xtilde(n) = W y(n), eq. (9.44),
+    and the kurtosis-based objective, and names FastICA as the efficient
+    implementation; it gives only the generic gradient rule (9.45).
+
+    The fixed-point update used here is that of Hyvarinen and Oja,
+    "Independent component analysis: Algorithms and applications", Neural
+    Networks 13, 2000, listed as reference [50] of Section 9.7.2:
+
+        w <- E{y g(w'y)} - E{g'(w'y)} w,   g(u) = tanh(u),
+
+    applied one component at a time with Gram-Schmidt deflation, on data first
+    centred and whitened by the PCA of Section 9.7.1.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    n_components : array-like
-        Input data.
-    nonlin : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
-    tol : array-like
-        Input data.
+    X : sequence of sequences
+        Observed mixtures, one channel per row, samples along the row.
+    ncomp : int, optional
+        Number of components; defaults to the number of channels.
+    maxiter : int
+        Fixed-point iterations per component.
+    tol : float
+        Convergence tolerance on the direction change.
+    seed : int
+        Seed for the deterministic starting directions.
 
     Returns
     -------
-    result : dict
-        Keys: S, A, W
-
-    References
-    ----------
-    Rangayyan Ch 9.7.2
+    RichResult
+        Keys ``sources``, ``unmixing``, ``mixing``, ``whitening``, ``mean``,
+        ``iterations``, ``method``.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "FastICA algorithm for independent component analysis"}
-    )
+    Y = _bxmat(X, "X")
+    K, T = len(Y), len(Y[0])
+    if T < 4:
+        raise ValueError("need at least four samples per channel")
+    L = K if ncomp is None else int(ncomp)
+    if not (1 <= L <= K):
+        raise ValueError("ncomp must satisfy 1 <= ncomp <= number of channels")
+    maxiter = int(maxiter)
+    if maxiter < 1:
+        raise ValueError("maxiter must be a positive integer")
+
+    mu = [_bxmean(r) for r in Y]
+    Yc = [[Y[i][t] - mu[i] for t in range(T)] for i in range(K)]
+    C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)]
+         for i in range(K)]
+    vals, vecs = _bxjacobi(C)
+    if vals[L - 1] <= 1e-14:
+        raise ValueError("the mixture covariance is rank deficient for %d components" % L)
+    Wh = [[vecs[j][k] / sqrt(vals[k]) for j in range(K)] for k in range(L)]
+    Z = _bxmm(Wh, Yc)
+
+    u = _bxrng(seed)
+    Wm, iters = [], []
+    for c in range(L):
+        w = [u() - 0.5 for _ in range(L)]
+        nr = _bxnrm(w)
+        w = [t / nr for t in w] if nr > 1e-12 else [1.0 if i == c else 0.0
+                                                    for i in range(L)]
+        it = 0
+        for it in range(1, maxiter + 1):
+            g, gp = [0.0] * L, 0.0
+            for t in range(T):
+                s = fsum(w[i] * Z[i][t] for i in range(L))
+                gv = tanh(s)
+                for i in range(L):
+                    g[i] += Z[i][t] * gv
+                gp += 1.0 - gv * gv
+            wn = [g[i] / T - (gp / T) * w[i] for i in range(L)]
+            for prev in Wm:
+                d = _bxdot(wn, prev)
+                wn = [wn[i] - d * prev[i] for i in range(L)]
+            nr = _bxnrm(wn)
+            if nr <= 1e-12:
+                wn = [1.0 if i == c else 0.0 for i in range(L)]
+                nr = 1.0
+            wn = [t / nr for t in wn]
+            if abs(abs(_bxdot(wn, w)) - 1.0) < tol:
+                w = wn
+                break
+            w = wn
+        Wm.append(w)
+        iters.append(it)
+
+    S = _bxmm(Wm, Z)
+    W = _bxmm(Wm, Wh)
+    Wt = _bxtr(W)
+    G = _bxmm(W, Wt)
+    for i in range(L):
+        G[i][i] += 1e-12
+    A = [[fsum(Wt[i][k] * _bxsolve(G, [1.0 if r == j else 0.0
+                                       for r in range(L)])[k] for k in range(L))
+          for j in range(L)] for i in range(K)]
+    return RichResult(payload={
+        "sources": S,
+        "unmixing": W,
+        "mixing": A,
+        "whitening": Wh,
+        "mean": mu,
+        "iterations": iters,
+        "method": "FastICA fixed-point ICA with the tanh nonlinearity; model "
+                  "and unmixing per Rangayyan Biomedical Signal Analysis 3rd "
+                  "ed. Section 9.7.2, eqs. (9.43)-(9.44); update rule from "
+                  "Hyvarinen and Oja, Neural Networks 13, 2000 (ref. [50] there)",
+    })
+
+
+rangayyan_fastica = icafix  # pre-policy spelling
 
 
 # -- rgicaart: EEG artifact removal via ICA (eye blink, muscle, ECG).
-def rangayyan_ica_artifact(eeg, n_components, artifact_labels):
-    """
-    EEG artifact removal via ICA (eye blink, muscle, ECG)
+def icaclean(X, ncomp=None, kurtosis=3.0, drop=None, maxiter=200, seed=1):
+    """Remove artifact components from multichannel EEG by ICA.
 
-    Formula: Artifact components identified by kurtosis/correlation; removed from mixing matrix
+    Why: eye blinks, muscle activity and the ECG contaminate the EEG through
+    separate physical sources, so they appear as separate independent
+    components of the mixture rather than as a separable frequency band.
+    Once the components are estimated, an artifact is suppressed by zeroing
+    its component and back-projecting the rest through the mixing matrix,
+    which leaves the neural channels intact.  Rangayyan, *Biomedical Signal
+    Analysis*, 3rd ed., Section 9.7.2 (the model and the kurtosis criterion),
+    with ICA-based EEG artifact reduction noted in Section 9.12.
+
+    Components are ranked by the kurtosis excess K' = K - 3 of eq. (3.5) and
+    the note following it: K' is zero for a Gaussian, strongly positive for
+    the peaked, heavy-tailed waveform of a blink or a QRS spike.  Components
+    whose |K'| exceeds ``kurtosis`` are treated as artifacts unless ``drop``
+    names the components explicitly.
 
     Parameters
     ----------
-    eeg : array-like
-        Input data.
-    n_components : array-like
-        Input data.
-    artifact_labels : array-like
-        Input data.
+    X : sequence of sequences
+        EEG channels, one per row.
+    ncomp : int, optional
+        Number of components to estimate.
+    kurtosis : float
+        Threshold on |K'| for automatic artifact flagging.
+    drop : sequence of int, optional
+        Component indices to remove, overriding the automatic rule.
+    maxiter : int
+        FastICA iteration budget.
+    seed : int
+        Seed for the deterministic starting directions.
 
     Returns
     -------
-    result : dict
-        Keys: eeg_clean, ica_components
-
-    References
-    ----------
-    Rangayyan Ch 9.7.2
+    RichResult
+        Keys ``clean``, ``components``, ``kurtosis``, ``artifacts``,
+        ``mixing``, ``removedpower``, ``method``.
     """
-    eeg = np.asarray(eeg, dtype=float)
-    n = int(eeg) if eeg.ndim == 0 else len(eeg)
-    result = float(np.mean(eeg))
-    se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "EEG artifact removal via ICA (eye blink, muscle, ECG)",
-        }
-    )
+    ica = icafix(X, ncomp=ncomp, maxiter=maxiter, seed=seed)
+    S = ica["sources"]
+    A = ica["mixing"]
+    mu = ica["mean"]
+    L, T = len(S), len(S[0])
+
+    kv = [_bxkurt(S[c]) for c in range(L)]
+    if drop is None:
+        thr = float(kurtosis)
+        if thr < 0.0:
+            raise ValueError("kurtosis threshold must be nonnegative")
+        art = [c for c in range(L) if abs(kv[c]) > thr]
+    else:
+        art = sorted({int(t) for t in drop})
+        if any(c < 0 or c >= L for c in art):
+            raise ValueError("drop indices must lie in [0, %d)" % L)
+
+    Sk = [[0.0] * T if c in art else list(S[c]) for c in range(L)]
+    rec = _bxmm(A, Sk)
+    clean = [[rec[i][t] + mu[i] for t in range(T)] for i in range(len(A))]
+    orig = fsum(fsum(t * t for t in S[c]) for c in range(L))
+    gone = fsum(fsum(t * t for t in S[c]) for c in art)
+    return RichResult(payload={
+        "clean": clean,
+        "components": S,
+        "kurtosis": kv,
+        "artifacts": art,
+        "mixing": A,
+        "removedpower": gone / orig if orig > 0.0 else 0.0,
+        "method": "ICA artifact removal by zeroing high-kurtosis components and "
+                  "back-projection, Rangayyan Biomedical Signal Analysis 3rd "
+                  "ed. Section 9.7.2 with the kurtosis excess of eq. (3.5)",
+    })
+
+
+rangayyan_ica_artifact = icaclean  # pre-policy spelling
 
 
 # -- rginf: Infomax ICA algorithm (Bell-Sejnowski).
-def rangayyan_infomax_ica(X, n_components, lr, max_iter):
-    """
-    Infomax ICA algorithm (Bell-Sejnowski)
+def infomax(X, ncomp=None, eta=0.05, maxiter=300, tol=1e-8, seed=1):
+    """Blind source separation by the Infomax rule with the natural gradient.
 
-    Formula: DeltaW = (I - f(y)*y^T)*W; f(y) = 1-2*sigmoid(y)
+    Why: FastICA maximises non-Gaussianity one direction at a time; Infomax
+    instead maximises the joint entropy of a nonlinearly squashed output, which
+    updates the whole unmixing matrix at once and degrades gracefully when the
+    sources are not exactly independent.  Both estimate the same unmixing
+    matrix W of Rangayyan, *Biomedical Signal Analysis*, 3rd ed., eq. (9.44),
+    xtilde(n) = W y(n), for the mixture model of eq. (9.43).
+
+    Not from Rangayyan: Section 9.7.2 presents only the generic gradient rule
+    (9.45), Wtilde_(n+1) = Wtilde_n - mu grad F, and does not give the Infomax
+    update.  Primary sources are Bell and Sejnowski, "An information-
+    maximization approach to blind separation and blind deconvolution", Neural
+    Computation 7(6):1129-1159, 1995, and Amari, Cichocki and Yang, Advances in
+    Neural Information Processing Systems 8:757-763, 1996, for the natural
+    gradient form used here:
+
+        u = W z,   phi(u) = 1 - 2 sigmoid(u),
+        Delta W = eta (I + phi(u) u') W.
+
+    Data are centred and whitened first, exactly as for ``icafix``.
+
+    The logistic nonlinearity above matches super-Gaussian (sparse, spiky)
+    sources, which is what most biomedical artifacts are.  On sub-Gaussian
+    sources -- a square wave, a uniform process -- this rule separates only
+    partially; the extended Infomax of Lee, Girolami and Sejnowski, Neural
+    Computation 11(2):417-441, 1999, switches the nonlinearity by the sign of
+    the kurtosis and is the remedy.  Use ``icafix`` when the source kurtosis
+    sign is unknown.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    n_components : array-like
-        Input data.
-    lr : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
+    X : sequence of sequences
+        Observed mixtures, one channel per row.
+    ncomp : int, optional
+        Number of components; defaults to the number of channels.
+    eta : float
+        Learning rate.
+    maxiter : int
+        Number of passes over the data.
+    tol : float
+        Stop when the largest weight change falls below this.
+    seed : int
+        Seed for the deterministic initialisation.
 
     Returns
     -------
-    result : dict
-        Keys: S, W
-
-    References
-    ----------
-    Rangayyan Ch 9.7.2
+    RichResult
+        Keys ``sources``, ``unmixing``, ``whitening``, ``mean``,
+        ``iterations``, ``change``, ``method``.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Infomax ICA algorithm (Bell-Sejnowski)"}
-    )
+    Y = _bxmat(X, "X")
+    K, T = len(Y), len(Y[0])
+    if T < 4:
+        raise ValueError("need at least four samples per channel")
+    L = K if ncomp is None else int(ncomp)
+    if not (1 <= L <= K):
+        raise ValueError("ncomp must satisfy 1 <= ncomp <= number of channels")
+    eta = float(eta)
+    if not (0.0 < eta <= 1.0):
+        raise ValueError("eta must lie in (0, 1]")
+    maxiter = int(maxiter)
+    if maxiter < 1:
+        raise ValueError("maxiter must be a positive integer")
+
+    mu = [_bxmean(r) for r in Y]
+    Yc = [[Y[i][t] - mu[i] for t in range(T)] for i in range(K)]
+    C = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / T for j in range(K)]
+         for i in range(K)]
+    vals, vecs = _bxjacobi(C)
+    if vals[L - 1] <= 1e-14:
+        raise ValueError("the mixture covariance is rank deficient for %d components" % L)
+    Wh = [[vecs[j][k] / sqrt(vals[k]) for j in range(K)] for k in range(L)]
+    Z = _bxmm(Wh, Yc)
+
+    u = _bxrng(seed)
+    W = [[(1.0 if i == j else 0.0) + 0.01 * (u() - 0.5) for j in range(L)]
+         for i in range(L)]
+
+    def sig(b):
+        if b < -700.0:
+            return 0.0
+        if b > 700.0:
+            return 1.0
+        return 1.0 / (1.0 + exp(-b))
+
+    it, chg = 0, float("nan")
+    for it in range(1, maxiter + 1):
+        U = _bxmm(W, Z)
+        P = [[1.0 - 2.0 * sig(U[i][t]) for t in range(T)] for i in range(L)]
+        M = [[(1.0 if i == j else 0.0)
+              + fsum(P[i][t] * U[j][t] for t in range(T)) / T
+              for j in range(L)] for i in range(L)]
+        D = _bxmm(M, W)
+        chg = max(abs(D[i][j]) for i in range(L) for j in range(L)) * eta
+        for i in range(L):
+            for j in range(L):
+                W[i][j] += eta * D[i][j]
+        nrm = max(abs(W[i][j]) for i in range(L) for j in range(L))
+        if not isfinite(nrm) or nrm > 1e8:
+            raise ValueError("Infomax diverged; reduce eta")
+        if chg <= tol:
+            break
+
+    S = _bxmm(W, Z)
+    return RichResult(payload={
+        "sources": S,
+        "unmixing": _bxmm(W, Wh),
+        "whitening": Wh,
+        "mean": mu,
+        "iterations": it,
+        "change": chg,
+        "method": "Infomax ICA with the natural gradient; unmixing model per "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. eq. (9.44), "
+                  "update from Bell and Sejnowski, Neural Computation "
+                  "7(6):1129-1159, 1995 and Amari, Cichocki and Yang, NIPS "
+                  "8:757-763, 1996 (not covered by Rangayyan)",
+    })
+
+
+rangayyan_infomax_ica = infomax  # pre-policy spelling
 
 
 # -- rgkfcv: K-fold cross-validation.
@@ -1823,42 +3282,107 @@ rangayyan_kmeans = kmeans  # pre-policy spelling
 
 
 # -- rgkneecl: Knee-joint cartilage pathology classification via VAG features.
-def rangayyan_knee_classify(vag, fs, labels):
-    """
-    Knee-joint cartilage pathology classification via VAG features
+def vagclass(segments, durations=None, segclass=None, arthro=None):
+    """Screen a knee-joint VAG signal for cartilage pathology.
 
-    Formula: Feature vector: FD, ZCR, form factor, entropy; SVM classifier
+    Why: vibroarthrographic signals are nonstationary, so they are first cut
+    into locally stationary segments and each segment is classified on its own.
+    The subject-level answer then has to be a rule over the segment verdicts,
+    weighted by how much of the recording each segment covers -- a single noisy
+    segment must not condemn a normal knee.  Rangayyan, *Biomedical Signal
+    Analysis*, 3rd ed., Section 10.12.
+
+    Two features and one decision rule, all from that section:
+
+    * a striking difference between normal and abnormal signals is that
+      abnormal ones vary far more in amplitude across a swing cycle; the
+      **variance of the segment means** captures it and was used as one of the
+      discriminant features;
+    * the **two-step rule** of Moussavi et al. as stated in the book: if
+      segments spanning more than 90% of the duration are classified normal,
+      the subject is normal; if more than 90% of the duration is classified
+      abnormal, the subject is abnormal; if more than 10% but less than 90% is
+      abnormal, the signal goes to the four-group classifier, and there, if
+      more than 10% of the duration is arthroscopically abnormal, the subject
+      is abnormal, otherwise normal.
 
     Parameters
     ----------
-    vag : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    labels : array-like
-        Input data.
+    segments : sequence of sequences
+        The locally stationary VAG segments, in order.
+    durations : sequence, optional
+        Duration of each segment; segment lengths are used by default.
+    segclass : sequence, optional
+        Verdict of the two-group classifier per segment, 0 normal and
+        1 abnormal.  Required for the two-step rule.
+    arthro : sequence, optional
+        Verdict of the four-group classifier per segment, 1 marking
+        arthroscopically abnormal, used only when the first step is undecided.
 
     Returns
     -------
-    result : dict
-        Keys: accuracy, confusion, features
-
-    References
-    ----------
-    Rangayyan Ch 10.12
+    RichResult
+        Keys ``varmeans``, ``segmentmeans``, ``abnormalfraction``,
+        ``normalfraction``, ``decision``, ``stage``, ``abnormal``, ``method``.
     """
-    vag = np.asarray(vag, dtype=float)
-    n = int(vag) if vag.ndim == 0 else len(vag)
-    result = float(np.mean(vag))
-    se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Knee-joint cartilage pathology classification via VAG features",
-        }
-    )
+    S = _bxmat(segments, "segments")
+    ns = len(S)
+    if durations is None:
+        d = [float(len(r)) for r in S]
+    else:
+        d = _bxvec(durations, "durations")
+        if len(d) != ns:
+            raise ValueError("durations must have one entry per segment")
+        if any(t <= 0.0 for t in d):
+            raise ValueError("durations must be positive")
+    total = fsum(d)
+
+    smeans = [_bxmean(r) for r in S]
+    vms = _bxsd(smeans) ** 2 if ns > 1 else 0.0
+
+    dec, stage, abn = None, None, None
+    fabn, fnor = float("nan"), float("nan")
+    if segclass is not None:
+        sc = [int(t) for t in _bxvec(segclass, "segclass")]
+        if len(sc) != ns:
+            raise ValueError("segclass must have one entry per segment")
+        if any(t not in (0, 1) for t in sc):
+            raise ValueError("segclass entries must be 0 (normal) or 1 (abnormal)")
+        fabn = fsum(d[i] for i in range(ns) if sc[i] == 1) / total
+        fnor = 1.0 - fabn
+        if fnor > 0.90:
+            dec, stage, abn = "normal", 1, False
+        elif fabn > 0.90:
+            dec, stage, abn = "abnormal", 1, True
+        else:
+            if arthro is None:
+                dec, stage, abn = "undecided, four-group classifier required", 1, None
+            else:
+                aa = [int(t) for t in _bxvec(arthro, "arthro")]
+                if len(aa) != ns:
+                    raise ValueError("arthro must have one entry per segment")
+                faa = fsum(d[i] for i in range(ns) if aa[i] == 1) / total
+                if faa > 0.10:
+                    dec, stage, abn = "abnormal", 2, True
+                else:
+                    dec, stage, abn = "normal", 2, False
+
+    return RichResult(payload={
+        "varmeans": vms,
+        "segmentmeans": smeans,
+        "abnormalfraction": fabn,
+        "normalfraction": fnor,
+        "decision": dec,
+        "stage": stage,
+        "abnormal": abn,
+        "durations": d,
+        "method": "VAG cartilage-pathology screening: variance of segment means "
+                  "plus the two-step 90%/10% duration rule, Rangayyan "
+                  "Biomedical Signal Analysis 3rd ed. Section 10.12",
+    })
+
+
+rangayyan_knee_classify = vagclass  # pre-policy spelling
 
 
 # -- rgknn: K-nearest neighbor (k-NN) classifier.
@@ -1944,75 +3468,192 @@ rangayyan_knn_classifier = knn  # pre-policy spelling
 
 
 # -- rgksv: K-SVD dictionary learning algorithm.
-def rangayyan_ksvd(Y, n_atoms, sparsity, max_iter):
-    """
-    K-SVD dictionary learning algorithm
+def ksvdfit(Y, natoms, sparsity, maxiter=15, tol=1e-10, seed=1):
+    """Learn an overcomplete dictionary by K-SVD.
 
-    Formula: D,X <- alternating SVD update; X=argmin ||Y-DX||_F s.t. ||x_i||_0<=T
+    Why: a dictionary assembled from analytic functions represents whatever
+    those functions happen to match.  K-SVD instead alternates sparse coding
+    with an atom-by-atom update that re-fits each atom to exactly the signals
+    that currently use it, so the learned atoms take the shape of the recurring
+    structures in the data.
+
+    Alternates: (i) sparse-code every training signal against the current
+    dictionary by orthogonal matching pursuit, subject to ||x_i||_0 <= T;
+    (ii) for each atom k, form the error matrix restricted to the signals that
+    use it and replace the atom and its coefficients by the leading singular
+    triplet of that matrix, computed here by power iteration.
+
+    Not from Rangayyan: *Biomedical Signal Analysis*, 3rd ed. Section 9.5
+    presents EMD-based dictionary learning (Algorithm 9.1) and cites only the
+    label-consistent K-SVD variant, as reference [93] of Chapter 9.  The
+    primary source for the algorithm implemented here is Aharon, Elad and
+    Bruckstein, "K-SVD: An algorithm for designing overcomplete dictionaries
+    for sparse representation", IEEE Transactions on Signal Processing
+    54(11):4311-4322, 2006.
 
     Parameters
     ----------
-    Y : array-like
-        Input data.
-    n_atoms : array-like
-        Input data.
-    sparsity : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
+    Y : sequence of sequences
+        Training signals, one signal per row.
+    natoms : int
+        Dictionary size.
+    sparsity : int
+        Maximum nonzero coefficients per signal, T.
+    maxiter : int
+        Alternation rounds.
+    tol : float
+        Stop when the Frobenius residual stops improving by this much.
+    seed : int
+        Seed for the deterministic initial dictionary.
 
     Returns
     -------
-    result : dict
-        Keys: D, X
-
-    References
-    ----------
-    Rangayyan Ch 9.5
+    RichResult
+        Keys ``dictionary``, ``coefficients``, ``error``, ``iterations``,
+        ``method``.
     """
-    Y = np.asarray(Y, dtype=float)
-    n = int(Y) if Y.ndim == 0 else len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "K-SVD dictionary learning algorithm"})
+    S = _bxmat(Y, "Y")
+    m, n = len(S), len(S[0])
+    natoms = int(natoms)
+    sparsity = int(sparsity)
+    if natoms < 1:
+        raise ValueError("natoms must be a positive integer")
+    if not (1 <= sparsity <= natoms):
+        raise ValueError("sparsity must satisfy 1 <= sparsity <= natoms")
+    maxiter = int(maxiter)
+    if maxiter < 1:
+        raise ValueError("maxiter must be a positive integer")
+
+    u = _bxrng(seed)
+    D = []
+    for k in range(natoms):
+        a = list(S[k % m]) if k < m else [u() - 0.5 for _ in range(n)]
+        a = [t + 1e-3 * (u() - 0.5) for t in a]
+        nr = _bxnrm(a)
+        D.append([t / nr for t in a] if nr > 1e-12
+                 else [1.0 if i == k % n else 0.0 for i in range(n)])
+
+    prev, err, it = None, float("nan"), 0
+    Xc = [[0.0] * natoms for _ in range(m)]
+    for it in range(1, maxiter + 1):
+        Xc = [_bxomp(S[i], D, sparsity, 1e-12)[0] for i in range(m)]
+        for k in range(natoms):
+            users = [i for i in range(m) if Xc[i][k] != 0.0]
+            if not users:
+                worst = max(range(m), key=lambda i: _bxnrm(
+                    [S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms))
+                     for t in range(n)]))
+                nr = _bxnrm(S[worst])
+                if nr > 1e-12:
+                    D[k] = [t / nr for t in S[worst]]
+                continue
+            E = []
+            for i in users:
+                E.append([S[i][t] - fsum(Xc[i][j] * D[j][t]
+                                         for j in range(natoms) if j != k)
+                          for t in range(n)])
+            v = list(D[k])
+            for _ in range(30):
+                w = [_bxdot(row, v) for row in E]
+                nv = [fsum(w[r] * E[r][t] for r in range(len(E))) for t in range(n)]
+                nrm = _bxnrm(nv)
+                if nrm <= 1e-14:
+                    break
+                v = [t / nrm for t in nv]
+            D[k] = v
+            for r, i in enumerate(users):
+                Xc[i][k] = _bxdot(E[r], v)
+        err = sqrt(fsum((S[i][t] - fsum(Xc[i][j] * D[j][t] for j in range(natoms))) ** 2
+                        for i in range(m) for t in range(n)))
+        if prev is not None and abs(prev - err) <= tol * max(1.0, prev):
+            break
+        prev = err
+
+    return RichResult(payload={
+        "dictionary": D,
+        "coefficients": Xc,
+        "error": err,
+        "iterations": it,
+        "method": "K-SVD dictionary learning with OMP sparse coding; Aharon, "
+                  "Elad and Bruckstein, IEEE Trans. Signal Processing "
+                  "54(11):4311-4322, 2006 (not the EMD-based scheme of "
+                  "Rangayyan Section 9.5)",
+    })
 
 
-# compact alias per ledger/NAMING.md
-rangayyanksvd = rangayyan_ksvd
+rangayyan_ksvd = ksvdfit  # pre-policy spelling
 
 
 # -- rgldsp: Sparse coding given fixed dictionary (OMP/LASSO).
-def rangayyan_dictionary_sparse(Y, D, sparsity_T):
-    """
-    Sparse coding given fixed dictionary (OMP/LASSO)
+def dictcode(Y, D, sparsity, tol=1e-12):
+    """Sparse-code a set of signals against a fixed dictionary.
 
-    Formula: For each y_i: alpha_i = argmin ||alpha||_0 s.t. ||y_i - D*alpha_i||^2 < epsilon
+    Why: dictionary learning and dictionary use are separate steps.  Once a
+    trained dictionary exists it can be used to discover the patterns of
+    interest in other signals, and the sparse coefficient vectors -- not the
+    signals -- become the feature vectors handed to a classifier.  Rangayyan,
+    *Biomedical Signal Analysis*, 3rd ed., Section 9.5 describes this second
+    stage and its greedy-approximation character; Section 9.8 uses the
+    resulting projection coefficients and reconstruction error as features.
+
+    Each signal is coded by orthogonal matching pursuit: at every step take the
+    atom of largest normalised correlation with the residue, then re-solve for
+    all selected coefficients by least squares so the residue stays orthogonal
+    to the whole active set.  The greedy selection is that of Section 9.5; the
+    least-squares reprojection is from Pati, Rezaiifar and Krishnaprasad,
+    "Orthogonal matching pursuit", Proceedings of the 27th Asilomar Conference
+    on Signals, Systems and Computers, pp. 40-44, 1993, which Rangayyan does
+    not cover.
 
     Parameters
     ----------
-    Y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    sparsity_T : array-like
-        Input data.
+    Y : sequence of sequences
+        Signals to code, one per row.
+    D : sequence of sequences
+        Dictionary atoms, one per row, each the length of a signal.
+    sparsity : int
+        Maximum nonzero coefficients per signal, T.
+    tol : float
+        Residual norm at which coding of a signal stops early.
 
     Returns
     -------
-    result : dict
-        Keys: X_sparse
-
-    References
-    ----------
-    Rangayyan Ch 9.5
+    RichResult
+        Keys ``coefficients``, ``support``, ``reconstruction``, ``residual``,
+        ``error``, ``method``.
     """
-    Y = np.asarray(Y, dtype=float)
-    n = int(Y) if Y.ndim == 0 else len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Sparse coding given fixed dictionary (OMP/LASSO)"}
-    )
+    S = _bxmat(Y, "Y")
+    A = _bxmat(D, "D")
+    n = len(S[0])
+    if any(len(a) != n for a in A):
+        raise ValueError("dictionary atoms must have the same length as the signals")
+    sparsity = int(sparsity)
+    if not (1 <= sparsity <= len(A)):
+        raise ValueError("sparsity must satisfy 1 <= sparsity <= number of atoms")
+
+    coefs, sups, recs, res = [], [], [], []
+    for row in S:
+        c, sup, r = _bxomp(row, A, sparsity, float(tol))
+        rec = [fsum(c[j] * A[j][i] for j in range(len(A))) for i in range(n)]
+        coefs.append(c)
+        sups.append(sup)
+        recs.append(rec)
+        res.append(r)
+    err = sqrt(fsum(t * t for r in res for t in r))
+    return RichResult(payload={
+        "coefficients": coefs,
+        "support": sups,
+        "reconstruction": recs,
+        "residual": res,
+        "error": err,
+        "method": "sparse coding of signals in a fixed dictionary by orthogonal "
+                  "matching pursuit; greedy framework of Rangayyan Biomedical "
+                  "Signal Analysis 3rd ed. Section 9.5, orthogonalised per "
+                  "Pati, Rezaiifar and Krishnaprasad, Asilomar 1993",
+    })
+
+
+rangayyan_dictionary_sparse = dictcode  # pre-policy spelling
 
 
 # -- rglindf: Linear discriminant function for pattern classification.
@@ -2239,48 +3880,153 @@ rangayyan_logistic_regression = logreg  # pre-policy spelling
 
 
 # -- rglstm: LSTM recurrent network for biomedical time-series classification.
-def rangayyan_lstm_signal(X_seq, y, hidden_size, n_layers, lr, epochs):
-    """
-    LSTM recurrent network for biomedical time-series classification
+def lstm(sequences, labels=None, hidden=8, ridge=1e-6, seed=1, weights=None):
+    """Long short-term memory recurrence over a biomedical time series.
 
-    Formula: i=sigmoid(Wi*[h,y]+bi); f,o,g similar; c=f*c+i*tanh(g); h=o*tanh(c)
+    Why: a plain recurrent unit forgets across long stretches, but the clinical
+    events that matter in a biomedical recording -- an apnoea, a seizure onset,
+    a run of ectopic beats -- are separated by long, uninformative intervals.
+    The gated cell keeps a state that survives those intervals.
+
+    Not from Rangayyan: *Biomedical Signal Analysis*, 3rd ed., Section 10.8.2
+    discusses deep learning in prose and names convolutional networks, but
+    gives no recurrent or gated-cell equations.  The primary source is
+    Hochreiter and Schmidhuber, "Long short-term memory", Neural Computation
+    9(8):1735-1780, 1997, with the forget gate of Gers, Schmidhuber and
+    Cummins, Neural Computation 12(10):2451-2471, 2000:
+
+        i = sigmoid(W_i [h, x] + b_i),   f = sigmoid(W_f [h, x] + b_f),
+        o = sigmoid(W_o [h, x] + b_o),   g = tanh(W_g [h, x] + b_g),
+        c = f * c + i * g,               h = o * tanh(c).
+
+    The recurrent weights are fixed (supplied, or drawn once from the seeded
+    generator) and only the linear readout on the final hidden state is fitted,
+    by ridge least squares.  That keeps the whole routine deterministic and
+    closed-form; it is a reservoir-style readout, not back-propagation through
+    time, and the docstring says so rather than implying a trained network.
 
     Parameters
     ----------
-    X_seq : array-like
-        Input data.
-    y : array-like
-        Input data.
-    hidden_size : array-like
-        Input data.
-    n_layers : array-like
-        Input data.
-    lr : array-like
-        Input data.
-    epochs : array-like
-        Input data.
+    sequences : sequence
+        One sequence per sample; each is a list of time steps, and each step is
+        a scalar or a list of input features.
+    labels : sequence, optional
+        Class code per sequence.  Without labels only the states are returned.
+    hidden : int
+        Cell width.
+    ridge : float
+        Ridge term of the readout least squares.
+    seed : int
+        Seed for the fixed recurrent weights.
+    weights : dict, optional
+        Supplied gate weights, keys ``i``, ``f``, ``o``, ``g``, each an
+        ``hidden`` x (hidden + inputs) matrix, plus ``bias`` with one row of
+        length ``hidden`` per gate in that order.
 
     Returns
     -------
-    result : dict
-        Keys: predictions, accuracy
-
-    References
-    ----------
-    Rangayyan Ch 10.8.2
+    RichResult
+        Keys ``hidden``, ``cell``, ``predictions``, ``accuracy``,
+        ``readout``, ``classes``, ``method``.
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "LSTM recurrent network for biomedical time-series classification",
-        }
-    )
+    try:
+        seqs = [list(s) for s in sequences]
+    except TypeError:
+        raise ValueError("sequences must be a sequence of sequences")
+    if not seqs:
+        raise ValueError("sequences must be non-empty")
+    steps = []
+    for s in seqs:
+        if not s:
+            raise ValueError("every sequence must have at least one time step")
+        steps.append([aslist(t) for t in s])
+    d = len(steps[0][0])
+    for s in steps:
+        if any(len(t) != d for t in s):
+            raise ValueError("all time steps must have the same number of inputs")
+    H = int(hidden)
+    if H < 1:
+        raise ValueError("hidden must be a positive integer")
+
+    if weights is None:
+        u = _bxrng(seed)
+        sc = 1.0 / sqrt(H + d)
+        W = {k: [[sc * (2.0 * u() - 1.0) for _ in range(H + d)] for _ in range(H)]
+             for k in ("i", "f", "o", "g")}
+        B = {"i": [0.0] * H, "f": [1.0] * H, "o": [0.0] * H, "g": [0.0] * H}
+    else:
+        if not isinstance(weights, dict):
+            raise ValueError("weights must be a dict of gate matrices")
+        W = {}
+        for k in ("i", "f", "o", "g"):
+            if k not in weights:
+                raise ValueError("weights is missing gate %r" % k)
+            M = _bxmat(weights[k], "weights[%r]" % k)
+            if len(M) != H or len(M[0]) != H + d:
+                raise ValueError("weights[%r] must be %d x %d" % (k, H, H + d))
+            W[k] = M
+        bb = _bxmat(weights.get("bias", [[0.0] * H] * 4), "weights['bias']")
+        if len(bb) != 4 or any(len(r) != H for r in bb):
+            raise ValueError("weights['bias'] must be 4 rows of length %d" % H)
+        B = {"i": bb[0], "f": bb[1], "o": bb[2], "g": bb[3]}
+
+    def sig(b):
+        if b < -700.0:
+            return 0.0
+        if b > 700.0:
+            return 1.0
+        return 1.0 / (1.0 + exp(-b))
+
+    hs, cs = [], []
+    for s in steps:
+        h = [0.0] * H
+        c = [0.0] * H
+        for x in s:
+            z = h + x
+            i = [sig(_bxdot(W["i"][k], z) + B["i"][k]) for k in range(H)]
+            f = [sig(_bxdot(W["f"][k], z) + B["f"][k]) for k in range(H)]
+            o = [sig(_bxdot(W["o"][k], z) + B["o"][k]) for k in range(H)]
+            g = [tanh(_bxdot(W["g"][k], z) + B["g"][k]) for k in range(H)]
+            c = [f[k] * c[k] + i[k] * g[k] for k in range(H)]
+            h = [o[k] * tanh(c[k]) for k in range(H)]
+        hs.append(h)
+        cs.append(c)
+
+    pred, acc, read, classes = None, float("nan"), None, None
+    if labels is not None:
+        y = [int(t) for t in _bxvec(labels, "labels")]
+        if len(y) != len(seqs):
+            raise ValueError("labels must have one entry per sequence")
+        classes = sorted(set(y))
+        if len(classes) < 2:
+            raise ValueError("labels must contain at least two classes")
+        A = [row + [1.0] for row in hs]
+        read = []
+        for c in classes:
+            t = [1.0 if y[i] == c else 0.0 for i in range(len(y))]
+            read.append(_bxlstsq(A, t, float(ridge)))
+        pred = []
+        for i in range(len(y)):
+            sc = [_bxdot(w, A[i]) for w in read]
+            pred.append(classes[max(range(len(classes)), key=lambda k: sc[k])])
+        acc = fsum(1.0 for a, b in zip(y, pred) if a == b) / len(y)
+
+    return RichResult(payload={
+        "hidden": hs,
+        "cell": cs,
+        "predictions": pred,
+        "accuracy": acc,
+        "readout": read,
+        "classes": classes,
+        "method": "LSTM recurrence with a ridge least-squares readout on the "
+                  "final hidden state; Hochreiter and Schmidhuber, Neural "
+                  "Computation 9(8):1735-1780, 1997, with the forget gate of "
+                  "Gers, Schmidhuber and Cummins, Neural Computation "
+                  "12(10):2451-2471, 2000 (not covered by Rangayyan)",
+    })
+
+
+rangayyan_lstm_signal = lstm  # pre-policy spelling
 
 
 # -- rgmahd: Mahalanobis distance from sample to class.
@@ -2390,279 +4136,615 @@ rangayyan_mcnemar_test = mcnemar  # pre-policy spelling
 
 
 # -- rgmp: Matching pursuit greedy decomposition into dictionary atoms.
-def rangayyan_matching_pursuit(x, dictionary, max_iter, tol):
-    """
-    Matching pursuit greedy decomposition into dictionary atoms
+def mpursuit(x, dictionary=None, natoms=20, tol=1e-10, decaystop=None):
+    """Decompose a signal by matching pursuit into time-frequency atoms.
 
-    Formula: R_0=x; R_n=R_{n-1}-<R_{n-1},phi_k>*phi_k; iterate until ||R||<epsilon
+    Why: a fixed transform imposes one tiling of the time-frequency plane on
+    every signal.  Matching pursuit instead picks, at each step, whichever
+    dictionary atom currently matches the signal best, so the representation
+    adapts to the signal.  What it selects are the coherent structures present
+    in the signal, and what is left over may be taken as random noise, which is
+    why the truncated expansion works as an adaptive filter.  Rangayyan,
+    *Biomedical Signal Analysis*, 3rd ed., Section 9.3.
+
+    First projection, eq. (9.4):
+        x(t) = <x, g_0> g_0(t) + R_1 x(t),
+    then after M iterations, eq. (9.5), with R_0 x(t) = x(t):
+        x(t) = sum_{n<M} <R_n x, g_n> g_n(t) + R_M x(t).
+    The reconstruction from the M selected structures is eq. (9.7), and the
+    decay parameter of eq. (9.6),
+        lambda(m) = sqrt(1 - ||R_m x||^2 / ||R_(m-1) x||^2),
+    is returned so the caller can stop once it no longer falls appreciably.
+
+    The default dictionary is the Gabor dictionary of eqs. (9.2) and (9.3),
+    the Gaussian window g(t) = 2^(1/4) exp(-pi t^2) scaled, translated and
+    modulated on a dyadic grid.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    dictionary : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
-    tol : array-like
-        Input data.
+    x : sequence
+        Signal to decompose.
+    dictionary : sequence of sequences, optional
+        Atoms, one per row, each the length of x.  Gabor atoms by default.
+    natoms : int
+        Maximum number M of atoms to select.
+    tol : float
+        Stop when the residue energy falls below this.
+    decaystop : float, optional
+        Stop once the decay parameter of eq. (9.6) falls below this.
 
     Returns
     -------
-    result : dict
-        Keys: coeffs, atoms, residual
-
-    References
-    ----------
-    Rangayyan Ch 9.3
+    RichResult
+        Keys ``coefficients``, ``atoms``, ``indices``, ``residual``,
+        ``reconstruction``, ``decay``, ``energyratio``, ``parameters``,
+        ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Matching pursuit greedy decomposition into dictionary atoms",
-        }
-    )
+    x = _bxvec(x, "x")
+    n = len(x)
+    natoms = int(natoms)
+    if natoms < 1:
+        raise ValueError("natoms must be a positive integer")
+    if dictionary is None:
+        D, params = _bxgabor(n, max(64, 8 * natoms))
+    else:
+        D = _bxmat(dictionary, "dictionary")
+        if any(len(a) != n for a in D):
+            raise ValueError("every atom must have the same length as x")
+        params = [None] * len(D)
+        nd = []
+        for a in D:
+            nr = _bxnrm(a)
+            if nr <= 1e-12:
+                raise ValueError("dictionary atoms must have nonzero norm")
+            nd.append([t / nr for t in a])
+        D = nd
+    if not D:
+        raise ValueError("the dictionary is empty")
+
+    r = list(x)
+    e_prev = fsum(t * t for t in r)
+    if e_prev <= 0.0:
+        raise ValueError("x has zero energy")
+    e0 = e_prev
+    coef, idx, decay = [], [], []
+    for _ in range(min(natoms, len(D))):
+        best, bv = -1, -1.0
+        for j in range(len(D)):
+            if j in idx:
+                continue
+            v = abs(_bxdot(D[j], r))
+            if v > bv:
+                best, bv = j, v
+        if best < 0:
+            break
+        a = _bxdot(D[best], r)
+        r = [r[i] - a * D[best][i] for i in range(n)]
+        coef.append(a)
+        idx.append(best)
+        e_now = fsum(t * t for t in r)
+        lam = sqrt(max(0.0, 1.0 - e_now / e_prev)) if e_prev > 0.0 else 0.0
+        decay.append(lam)
+        e_prev = e_now
+        if e_now <= tol:
+            break
+        if decaystop is not None and lam < float(decaystop):
+            break
+
+    rec = [fsum(coef[k] * D[idx[k]][i] for k in range(len(idx))) for i in range(n)]
+    return RichResult(payload={
+        "coefficients": coef,
+        "atoms": [D[j] for j in idx],
+        "indices": idx,
+        "residual": r,
+        "reconstruction": rec,
+        "decay": decay,
+        "energyratio": 1.0 - e_prev / e0,
+        "parameters": [params[j] for j in idx],
+        "method": "matching-pursuit decomposition into time-frequency atoms, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.3, "
+                  "eqs. (9.1)-(9.7) with the Gabor dictionary of eqs. (9.2)-(9.3)",
+    })
+
+
+rangayyan_matching_pursuit = mpursuit  # pre-policy spelling
 
 
 # -- rgneural: Neural decoding for prosthesis control from spike trains.
-def rangayyan_neural_decode(spike_trains, movement_labels, n_ch):
-    """
-    Neural decoding for prosthesis control from spike trains
+def bmidec(y, C, a=None, procnoise=1e-4, obsnoise=1e-2, p0=1e-2):
+    """Decode intended movement from neural observations with a Kalman filter.
 
-    Formula: LDA or SVM on firing rate features per neural channel
+    Why: a brain-machine interface has no ground truth about the user's
+    intended hand kinematics -- that is precisely what is missing in motor
+    impairment -- so the decoder must estimate a hidden state from noisy
+    multichannel observations, recursively and in real time.  The Kalman filter
+    does exactly that and is preferred to RLS for motion control because of its
+    dynamic tracking and real-time behaviour.  Rangayyan, *Biomedical Signal
+    Analysis*, 3rd ed., Section 8.18, using the filter of Section 8.7.
+
+    Process and observation models, eqs. (8.60) and (8.63):
+        x(n+1) = a(n+1, n) x(n) + eta_d(n),
+        y(n)   = C(n) x(n) + eta_o(n).
+    The recursion is the book's five steps, eqs. (8.95) to (8.99), with the
+    stated initial conditions xtilde(1|Y_0) = 0 and phi_ep(1, 0) = D_0, a
+    diagonal matrix with values of the order of 1e-2.
 
     Parameters
     ----------
-    spike_trains : array-like
-        Input data.
-    movement_labels : array-like
-        Input data.
-    n_ch : array-like
-        Input data.
+    y : sequence of sequences
+        Observations, one time step per row, each of length K (channels).
+    C : sequence of sequences
+        Observation matrix, K x L, mapping the state to the observation.
+    a : sequence of sequences, optional
+        State transition matrix, L x L; the identity by default.
+    procnoise : float or sequence of sequences
+        Driving-noise covariance phi_etad, scalar (times the identity) or full.
+    obsnoise : float or sequence of sequences
+        Observation-noise covariance phi_etao, scalar or full.
+    p0 : float
+        Diagonal value of D_0.
 
     Returns
     -------
-    result : dict
-        Keys: decoded_movement, accuracy
-
-    References
-    ----------
-    Rangayyan Ch 8.18
+    RichResult
+        Keys ``states``, ``innovations``, ``gain``, ``predicted``, ``method``.
     """
-    spike_trains = np.asarray(spike_trains, dtype=float)
-    n = int(spike_trains) if spike_trains.ndim == 0 else len(spike_trains)
-    result = float(np.mean(spike_trains))
-    se = float(np.std(spike_trains, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Neural decoding for prosthesis control from spike trains",
-        }
-    )
+    Y = _bxmat(y, "y")
+    Cm = _bxmat(C, "C")
+    K, L = len(Cm), len(Cm[0])
+    if len(Y[0]) != K:
+        raise ValueError("each observation row must have %d entries" % K)
+    if a is None:
+        A = [[1.0 if i == j else 0.0 for j in range(L)] for i in range(L)]
+    else:
+        A = _bxmat(a, "a")
+        if len(A) != L or len(A[0]) != L:
+            raise ValueError("a must be %d x %d" % (L, L))
+    if float(p0) <= 0.0:
+        raise ValueError("p0 must be positive")
+
+    def cov(arg, k, name):
+        if isinstance(arg, (int, float)):
+            if float(arg) <= 0.0:
+                raise ValueError(name + " must be positive")
+            return [[float(arg) if i == j else 0.0 for j in range(k)]
+                    for i in range(k)]
+        M = _bxmat(arg, name)
+        if len(M) != k or len(M[0]) != k:
+            raise ValueError(name + " must be %d x %d" % (k, k))
+        return M
+
+    Qd = cov(procnoise, L, "procnoise")
+    Qo = cov(obsnoise, K, "obsnoise")
+
+    xh = [0.0] * L
+    P = [[float(p0) if i == j else 0.0 for j in range(L)] for i in range(L)]
+    Ct = _bxtr(Cm)
+    states, innov, gains, preds = [], [], [], []
+    for t in range(len(Y)):
+        PCt = _bxmm(P, Ct)
+        Sm = _bxmm(Cm, PCt)
+        for i in range(K):
+            for j in range(K):
+                Sm[i][j] += Qo[i][j]
+        Kg = []
+        APCt = _bxmm(A, PCt)
+        for col in range(K):
+            e = [1.0 if r == col else 0.0 for r in range(K)]
+            Sinv_col = _bxsolve(Sm, e)
+            Kg.append(Sinv_col)
+        Kmat = [[fsum(APCt[i][k] * Kg[j][k] for k in range(K)) for j in range(K)]
+                for i in range(L)]
+        pred = _bxmv(Cm, xh)
+        z = [Y[t][i] - pred[i] for i in range(K)]
+        preds.append(pred)
+        innov.append(z)
+        states.append(list(xh))
+        gains.append([list(r) for r in Kmat])
+        xh = [fsum(A[i][j] * xh[j] for j in range(L))
+              + fsum(Kmat[i][j] * z[j] for j in range(K)) for i in range(L)]
+        KC = _bxmm(Kmat, Cm)
+        Pf = [[P[i][j] - fsum(KC[i][k] * P[k][j] for k in range(L))
+               for j in range(L)] for i in range(L)]
+        P = _bxmm(_bxmm(A, Pf), _bxtr(A))
+        for i in range(L):
+            for j in range(L):
+                P[i][j] += Qd[i][j]
+
+    return RichResult(payload={
+        "states": states,
+        "innovations": innov,
+        "gain": gains,
+        "predicted": preds,
+        "method": "Kalman-filter neural decoder for prosthesis control, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 8.18 "
+                  "with the recursion of Section 8.7, eqs. (8.60), (8.63) and "
+                  "(8.95)-(8.99)",
+    })
+
+
+rangayyan_neural_decode = bmidec  # pre-policy spelling
 
 
 # -- rgnmf: Nonnegative matrix factorization (NMF) with multiplicative update rules.
-def rangayyan_nmf(V, r, max_iter, tol):
-    """
-    Nonnegative matrix factorization (NMF) with multiplicative update rules
+def nmfmu(V, r, maxiter=200, tol=1e-10, cost="ls", seed=1):
+    """Nonnegative matrix factorisation by multiplicative updates.
 
-    Formula: H <- H*(W^T*V)/(W^T*W*H); W <- W*(V*H^T)/(W*H*H^T)
+    Why: PCA and ICA are free to use negative coefficients, so their components
+    cancel one another and lose any parts-based reading.  Constraining both
+    factors to be nonnegative makes the columns of W act as basis vectors and
+    the rows of H as the weights or activations that switch them on, which is
+    the interpretation the signal analyst wants from a time-frequency matrix.
+    Rangayyan, *Biomedical Signal Analysis*, 3rd ed., Section 9.7.3.
+
+    Finds V approximately equal to W H, eq. (9.46), with W of size M x r and
+    H of size r x N, r < min(M, N).  Squared-error cost gives the updates of
+    eqs. (9.49) and (9.50):
+
+        H <- H .* (W' V) ./ (W' W H),   W <- W .* (V H') ./ (W H H'),
+
+    with the elementwise product and quotient of eqs. (9.51) and (9.52).
+    The divergence cost of eq. (9.53) gives eqs. (9.54) and (9.55) instead;
+    the book warns that the divergence form is undefined where an element of
+    V or W H is zero, so it should be used with caution.
 
     Parameters
     ----------
-    V : array-like
-        Input data.
-    r : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
-    tol : array-like
-        Input data.
+    V : sequence of sequences
+        Nonnegative M x N matrix.
+    r : int
+        Factorisation rank.
+    maxiter : int
+        Maximum update iterations.
+    tol : float
+        Relative change in the residual at which iteration stops.
+    cost : {"ls", "kld"}
+        Squared error, eqs. (9.49)-(9.50), or divergence, eqs. (9.54)-(9.55).
+    seed : int
+        Seed for the deterministic initialisation.
 
     Returns
     -------
-    result : dict
-        Keys: W, H
-
-    References
-    ----------
-    Rangayyan Ch 9.7.3
+    RichResult
+        Keys ``W``, ``H``, ``submatrices``, ``error``, ``iterations``,
+        ``cost``, ``method``.
     """
-    V = np.asarray(V, dtype=float)
-    n = int(V) if V.ndim == 0 else len(V)
-    result = float(np.mean(V))
-    se = float(np.std(V, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Nonnegative matrix factorization (NMF) with multiplicative update rules",
-        }
-    )
+    M = _bxmat(V, "V")
+    if cost not in ("ls", "kld"):
+        raise ValueError("cost must be 'ls' or 'kld'")
+    if int(maxiter) < 1:
+        raise ValueError("maxiter must be a positive integer")
+    if cost == "kld" and any(t <= 0.0 for row in M for t in row):
+        raise ValueError("the divergence cost is undefined where V has a zero "
+                         "element; use cost='ls'")
+    W, H, err, it = _bxnmfmu(M, r, int(maxiter), float(tol), seed, cost)
+    subs = [[[W[i][k] * H[k][j] for j in range(len(H[0]))]
+             for i in range(len(W))] for k in range(len(H))]
+    return RichResult(payload={
+        "W": W,
+        "H": H,
+        "submatrices": subs,
+        "error": err,
+        "iterations": it,
+        "cost": cost,
+        "method": "nonnegative matrix factorisation by multiplicative updates, "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.7.3, "
+                  "eqs. (9.46), (9.49)-(9.50) and (9.53)-(9.55)",
+    })
 
 
-# compact alias per ledger/NAMING.md
-rangayyannmf = rangayyan_nmf
+rangayyan_nmf = nmfmu  # pre-policy spelling
 
 
 # -- rgnmfch: NMF-based EEG channel selection for BCI.
-def rangayyan_nmf_channel_sel(eeg, n_comp, n_select):
-    """
-    NMF-based EEG channel selection for BCI
+def nmfchsel(trials, nselect, rank=4, maxiter=200, tol=1e-8, seed=1):
+    """Rank EEG channels by the NMF basis-row deviation score.
 
-    Formula: W matrix columns: spatial activation patterns; select channels by max W_ij
+    Why: multichannel EEG carries redundant and noisy channels; feeding them
+    all to a classifier adds complexity and invites overfitting, and because
+    channel relevance varies strongly between subjects a fixed montage is the
+    wrong answer.  Factorising the channel covariance matrix scores each
+    channel by how distinctive its loading pattern is.  Rangayyan, *Biomedical
+    Signal Analysis*, 3rd ed., Section 9.12.1.
+
+    Steps: build the N x N channel covariance matrix of eq. (9.94) from the
+    N x T trial matrix; factorise it by NMF; min-max normalise each row of the
+    basis matrix by eq. (9.95),
+
+        W_j <- (W_j - min W_j) / (max W_j - min W_j);
+
+    then score the row by its RMS deviation from W_ref, the vector with all
+    elements 0.5, eq. (9.96).  A row that stays near 0.5 loads uniformly on
+    every factor and carries little that is specific; a large deviation marks a
+    channel with a distinctive spatial pattern.
+
+    Rank note: with r = 2 the min-max normalisation of eq. (9.95) sends every
+    two-element row to {0, 1}, so eq. (9.96) returns exactly 0.5 for every
+    channel and the score ranks nothing.  A rank below 3 is therefore rejected.
+
+    Note on eq. (9.96): as printed, the index j appears both as the row index
+    of W_j and as the summation index, which cannot be read literally.  This
+    implementation takes the per-row RMS deviation, that is the root mean over
+    the r factors of (W_jk - 0.5)^2, which is the reading consistent with the
+    surrounding text.
+
+    ``bcichsel`` wraps this for the full BCI application and additionally
+    applies the channel weights to the selected signals.
 
     Parameters
     ----------
-    eeg : array-like
-        Input data.
-    n_comp : array-like
-        Input data.
-    n_select : array-like
-        Input data.
+    trials : sequence of sequences
+        One trial as an N x T matrix, N channels by T samples.
+    nselect : int
+        How many channels to return.
+    rank : int
+        Factorisation rank r.
+    maxiter, tol : int, float
+        Update budget and tolerance.
+    seed : int
+        Seed for the deterministic initialisation.
 
     Returns
     -------
-    result : dict
-        Keys: selected_ch_idx, W, H
-
-    References
-    ----------
-    Rangayyan Ch 9.12.1
+    RichResult
+        Keys ``selected``, ``rmsd``, ``ranking``, ``normalized``, ``W``,
+        ``H``, ``covariance``, ``method``.
     """
-    eeg = np.asarray(eeg, dtype=float)
-    n = int(eeg) if eeg.ndim == 0 else len(eeg)
-    result = float(np.mean(eeg))
-    se = float(np.std(eeg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "NMF-based EEG channel selection for BCI"}
-    )
+    X = _bxmat(trials, "trials")
+    nch = len(X)
+    if nch < 2:
+        raise ValueError("need at least two EEG channels")
+    nselect = int(nselect)
+    if not (1 <= nselect <= nch):
+        raise ValueError("nselect must satisfy 1 <= nselect <= number of channels")
+    rank = int(rank)
+    if rank < 3:
+        raise ValueError("rank must be at least 3: with r = 2 the min-max "
+                         "normalisation of eq. (9.95) maps every basis row to "
+                         "{0, 1}, so the RMS deviation of eq. (9.96) is exactly "
+                         "0.5 for every channel and ranks nothing")
+
+    mu, C = _bxcov(_bxtr(X))
+    shift = min(min(r) for r in C)
+    V = [[t - shift for t in r] for r in C] if shift < 0.0 else [list(r) for r in C]
+    W, H, err, _ = _bxnmfmu(V, rank, maxiter, tol, seed, "ls")
+
+    rmsd, Wn = [], []
+    for j in range(nch):
+        row = W[j]
+        lo, hi = min(row), max(row)
+        nr = [0.5] * len(row) if hi - lo <= 0 else [(t - lo) / (hi - lo) for t in row]
+        Wn.append(nr)
+        rmsd.append(sqrt(fsum((t - 0.5) ** 2 for t in nr) / len(nr)))
+
+    ranking = sorted(range(nch), key=lambda i: (-rmsd[i], i))
+    return RichResult(payload={
+        "selected": sorted(ranking[:nselect]),
+        "rmsd": rmsd,
+        "ranking": ranking,
+        "normalized": Wn,
+        "W": W,
+        "H": H,
+        "covariance": C,
+        "error": err,
+        "method": "NMF-based EEG channel ranking by normalised basis-row RMS "
+                  "deviation, Rangayyan Biomedical Signal Analysis 3rd ed. "
+                  "Section 9.12.1, eqs. (9.94)-(9.96)",
+    })
+
+
+rangayyan_nmf_channel_sel = nmfchsel  # pre-policy spelling
 
 
 # -- rgomp: Orthogonal matching pursuit (OMP) for sparse representation.
-def rangayyan_omp(x, D, sparsity):
-    """
-    Orthogonal matching pursuit (OMP) for sparse representation
+def ompfit(x, D, sparsity=None, tol=1e-10):
+    """Orthogonal matching pursuit of one signal in a dictionary.
 
-    Formula: r=x; while ||r||>eps: k*=argmax|D^T*r|; x_hat updated by LS on active set; r update
+    Why: plain matching pursuit subtracts only the component along the newly
+    chosen atom, so with correlated atoms it revisits nearly the same direction
+    again and again and converges slowly.  Re-solving all selected coefficients
+    by least squares after every pick keeps the residue orthogonal to the whole
+    active set, so each atom is chosen at most once and k atoms give the best
+    k-term fit on that support.
+
+    Not from Rangayyan: *Biomedical Signal Analysis*, 3rd ed. presents matching
+    pursuit in Section 9.3 (eqs. 9.1-9.7) but not its orthogonalised variant.
+    The primary source is Pati, Rezaiifar and Krishnaprasad, "Orthogonal
+    matching pursuit: recursive function approximation with applications to
+    wavelet decomposition", Proceedings of the 27th Asilomar Conference on
+    Signals, Systems and Computers, pp. 40-44, 1993.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    D : array-like
-        Input data.
-    sparsity : array-like
-        Input data.
+    x : sequence
+        Signal to represent.
+    D : sequence of sequences
+        Dictionary atoms, one per row, each the length of x.
+    sparsity : int, optional
+        Maximum number of atoms; unbounded by default, in which case ``tol``
+        alone stops the loop.
+    tol : float
+        Residual norm at which the loop stops.
 
     Returns
     -------
-    result : dict
-        Keys: coefficients, support
-
-    References
-    ----------
-    Rangayyan Ch 9.5
+    RichResult
+        Keys ``coefficients``, ``support``, ``reconstruction``, ``residual``,
+        ``error``, ``energyratio``, ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Orthogonal matching pursuit (OMP) for sparse representation",
-        }
-    )
+    x = _bxvec(x, "x")
+    A = _bxmat(D, "D")
+    n = len(x)
+    if any(len(a) != n for a in A):
+        raise ValueError("every dictionary atom must have the same length as x")
+    e0 = fsum(t * t for t in x)
+    if e0 <= 0.0:
+        raise ValueError("x has zero energy")
+    c, sup, r = _bxomp(x, A, sparsity, float(tol))
+    rec = [fsum(c[j] * A[j][i] for j in range(len(A))) for i in range(n)]
+    err = _bxnrm(r)
+    return RichResult(payload={
+        "coefficients": c,
+        "support": sup,
+        "reconstruction": rec,
+        "residual": r,
+        "error": err,
+        "energyratio": 1.0 - (err * err) / e0,
+        "method": "orthogonal matching pursuit; Pati, Rezaiifar and "
+                  "Krishnaprasad, Proc. 27th Asilomar Conf., pp. 40-44, 1993 "
+                  "(Rangayyan Section 9.3 covers plain matching pursuit)",
+    })
 
 
-# compact alias per ledger/NAMING.md
-rangayyanomp = rangayyan_omp
+rangayyan_omp = ompfit  # pre-policy spelling
 
 
 # -- rgpca: PCA for signal mixture separation (eigendecomposition of covariance).
-def rangayyan_pca_signals(X):
-    """
-    PCA for signal mixture separation (eigendecomposition of covariance)
+def pcasig(X, ncomp=None):
+    """Principal component analysis of a set of correlated signals.
 
-    Formula: Sigma = (1/N)*X*X^T; X_pca = V^T*X where V=eigenvectors
+    Why: multichannel biomedical recordings pick up the same sources through
+    different paths, so the channels carry redundant, correlated information.
+    Rotating onto the eigenvectors of the covariance matrix produces
+    uncorrelated components ordered by variance, so most of the power lands in
+    a few components and the rest can be dropped with the smallest possible
+    mean squared error.  Rangayyan, *Biomedical Signal Analysis*, 3rd ed.,
+    Section 9.7.1.
+
+    Truncating to L of K components leaves the error of eq. (9.37); choosing
+    the basis vectors as the eigenvectors of the covariance, eq. (9.38), with
+    eigenvalues eq. (9.39), makes that error the sum of the discarded
+    eigenvalues, eq. (9.40).  Ordering the eigenvalues in decreasing order
+    therefore minimises the mean squared error for any chosen L, and the
+    transformed components are mutually uncorrelated with the eigenvalues as
+    their variances, eq. (9.41).
 
     Parameters
     ----------
-    X : array-like
-        Input data.
+    X : sequence of sequences
+        Signals, one channel per row, samples along the row.
+    ncomp : int, optional
+        Number of components to keep; all of them by default.
 
     Returns
     -------
-    result : dict
-        Keys: components, eigenvalues, eigenvectors
-
-    References
-    ----------
-    Rangayyan Ch 9.7.1
+    RichResult
+        Keys ``components``, ``eigenvalues``, ``eigenvectors``, ``mean``,
+        ``varexplained``, ``mse``, ``method``.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PCA for signal mixture separation (eigendecomposition of covariance)",
-        }
-    )
+    Y = _bxmat(X, "X")
+    K, T = len(Y), len(Y[0])
+    if T < 2:
+        raise ValueError("need at least two samples per channel")
+    L = K if ncomp is None else int(ncomp)
+    if not (1 <= L <= K):
+        raise ValueError("ncomp must satisfy 1 <= ncomp <= number of channels")
+
+    mu = [_bxmean(r) for r in Y]
+    Yc = [[Y[i][t] - mu[i] for t in range(T)] for i in range(K)]
+    S = [[fsum(Yc[i][t] * Yc[j][t] for t in range(T)) / (T - 1) for j in range(K)]
+         for i in range(K)]
+    vals, vecs = _bxjacobi(S)
+    W = [[vecs[j][k] for j in range(K)] for k in range(L)]
+    P = _bxmm(W, Yc)
+    tot = fsum(max(0.0, t) for t in vals)
+    return RichResult(payload={
+        "components": P,
+        "eigenvalues": vals,
+        "eigenvectors": vecs,
+        "mean": mu,
+        "covariance": S,
+        "varexplained": [max(0.0, vals[k]) / tot if tot > 0 else 0.0
+                         for k in range(L)],
+        "mse": fsum(max(0.0, vals[k]) for k in range(L, K)),
+        "method": "principal component analysis of signal mixtures by "
+                  "eigendecomposition of the covariance matrix, Rangayyan "
+                  "Biomedical Signal Analysis 3rd ed. Section 9.7.1, "
+                  "eqs. (9.37)-(9.41)",
+    })
+
+
+rangayyan_pca_signals = pcasig  # pre-policy spelling
 
 
 # -- rgpcaica: Comparative analysis of PCA, ICA, and NMF for signal separation.
-def rangayyan_pca_vs_ica(X, n_components, method):
-    """
-    Comparative analysis of PCA, ICA, and NMF for signal separation
+def mixcmp(X, ncomp=None, maxiter=200, seed=1):
+    """Compare PCA, ICA and NMF as decompositions of the same signal mixture.
 
-    Formula: PCA: orthogonal Gaussian; ICA: statistically independent non-Gaussian; NMF: non-negative
+    Why: the three matrix decompositions answer different questions of the same
+    data -- PCA returns uncorrelated components from second-order statistics,
+    ICA returns statistically independent components by exploiting
+    non-Gaussianity, and NMF returns nonnegative parts.  Which one to use for
+    a given source-separation or signal-analysis job is an empirical question,
+    and the way to settle it is to reconstruct with each and measure.
+    Rangayyan, *Biomedical Signal Analysis*, 3rd ed., Section 9.7.4, which
+    compares exactly these three on decomposition accuracy.
+
+    Each method is run at the requested rank, the mixture is reconstructed from
+    its components, and the relative Frobenius reconstruction error is
+    reported.  NMF is applied to the nonnegatively shifted mixture, since it
+    requires a nonnegative matrix by eq. (9.46).
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    n_components : array-like
-        Input data.
-    method : array-like
-        Input data.
+    X : sequence of sequences
+        Mixtures, one channel per row.
+    ncomp : int, optional
+        Common rank; the number of channels by default.
+    maxiter : int
+        Iteration budget for ICA and NMF.
+    seed : int
+        Seed for the deterministic initialisations.
 
     Returns
     -------
-    result : dict
-        Keys: components, reconstruction_error
-
-    References
-    ----------
-    Rangayyan Ch 9.7.4
+    RichResult
+        Keys ``error``, ``best``, ``components``, ``rank``, ``method``.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Comparative analysis of PCA, ICA, and NMF for signal separation",
-        }
-    )
+    Y = _bxmat(X, "X")
+    K, T = len(Y), len(Y[0])
+    L = K if ncomp is None else int(ncomp)
+    if not (1 <= L <= K):
+        raise ValueError("ncomp must satisfy 1 <= ncomp <= number of channels")
+    denom = sqrt(fsum(t * t for r in Y for t in r))
+    if denom <= 0.0:
+        raise ValueError("X has zero energy")
+
+    def relerr(R):
+        return sqrt(fsum((Y[i][t] - R[i][t]) ** 2
+                         for i in range(K) for t in range(T))) / denom
+
+    p = pcasig(Y, ncomp=L)
+    vecs, mu = p["eigenvectors"], p["mean"]
+    B = [[vecs[i][k] for k in range(L)] for i in range(K)]
+    Rp = _bxmm(B, p["components"])
+    Rp = [[Rp[i][t] + mu[i] for t in range(T)] for i in range(K)]
+
+    ic = icafix(Y, ncomp=L, maxiter=maxiter, seed=seed)
+    Ri = _bxmm(ic["mixing"], ic["sources"])
+    Ri = [[Ri[i][t] + ic["mean"][i] for t in range(T)] for i in range(K)]
+
+    lo = min(min(r) for r in Y)
+    V = [[t - lo for t in r] for r in Y] if lo < 0.0 else [list(r) for r in Y]
+    nm = nmfmu(V, L, maxiter=maxiter, seed=seed)
+    Rn = _bxmm(nm["W"], nm["H"])
+    if lo < 0.0:
+        Rn = [[Rn[i][t] + lo for t in range(T)] for i in range(K)]
+
+    err = {"pca": relerr(Rp), "ica": relerr(Ri), "nmf": relerr(Rn)}
+    return RichResult(payload={
+        "error": err,
+        "best": min(err, key=lambda k: err[k]),
+        "components": {"pca": p["components"], "ica": ic["sources"],
+                       "nmf": {"W": nm["W"], "H": nm["H"]}},
+        "rank": L,
+        "method": "comparison of PCA, ICA and NMF by relative reconstruction "
+                  "error, Rangayyan Biomedical Signal Analysis 3rd ed. "
+                  "Section 9.7.4",
+    })
+
+
+rangayyan_pca_vs_ica = mixcmp  # pre-policy spelling
 
 
 # -- rgppv: Positive predictive value (precision).
@@ -2782,37 +4864,129 @@ rangayyan_qda = qda  # pre-policy spelling
 
 
 # -- rgrbf: Radial basis function (RBF) network.
-def rangayyan_rbf_network(X, y, n_centers, sigma):
-    """
-    Radial basis function (RBF) network
+def rbfn(X, y, ncenters=None, spread=1.0, centers=None, ridge=1e-8, query=None):
+    """Fit a radial basis function network.
 
-    Formula: phi_k(y) = exp(-||y-c_k||^2 / (2*sigma_k^2)); y = sum w_k*phi_k(y)
+    Why: Cover's theorem says a set of samples that is not linearly separable
+    becomes separable once it is projected nonlinearly into a
+    higher-dimensional space.  An RBF network does that projection with a layer
+    of localised Gaussian responses and then needs only a linear output layer,
+    which is why it trains in closed form where a back-propagation network
+    needs an iterative search.  This is also the motivation the book gives for
+    kernel methods generally.  Rangayyan, *Biomedical Signal Analysis*, 3rd
+    ed., Section 10.8.1.
+
+    Network output, eq. (10.86):
+        yhat_n = sum_j w_j phi(x_n, c_j) + w_0,
+    with the radial basis function of eq. (10.87):
+        phi(x_n, c_j) = exp(-log_e(2) ||x_n - c_j||^2 / sigma^2).
+    Note the factor log_e(2) in the book's form: phi is exactly one half at
+    ||x - c|| = sigma, so ``spread`` reads directly as the half-response
+    radius.
+
+    The book notes that picking centres at random gives a needlessly large
+    network and that Rangayyan and Wu used orthogonal least squares to choose
+    them.  In that spirit the default here is greedy forward selection: centres
+    are added one at a time, each time taking the training sample whose
+    addition most reduces the residual sum of squares.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    n_centers : array-like
-        Input data.
-    sigma : array-like
-        Input data.
+    X : sequence of sequences
+        Feature vectors, one per row.
+    y : sequence
+        Desired response per row.
+    ncenters : int, optional
+        Number of hidden neurons J; defaults to min(8, number of samples).
+    spread : float
+        The spread parameter sigma of eq. (10.87).
+    centers : sequence of sequences, optional
+        Explicit centres, bypassing the selection step.
+    ridge : float
+        Ridge term for the output-weight least squares.
+    query : sequence of sequences, optional
+        Further feature vectors to evaluate.
 
     Returns
     -------
-    result : dict
-        Keys: centers, weights, predictions
-
-    References
-    ----------
-    Rangayyan Ch 10.8.1
+    RichResult
+        Keys ``centers``, ``weights``, ``bias``, ``predictions``,
+        ``queryvalues``, ``mse``, ``spread``, ``method``.
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Radial basis function (RBF) network"})
+    F = _bxmat(X, "X")
+    t = _bxvec(y, "y")
+    if len(F) != len(t):
+        raise ValueError("X and y must have the same number of rows")
+    n, p = len(F), len(F[0])
+    spread = float(spread)
+    if spread <= 0.0:
+        raise ValueError("spread must be positive")
+    lg2 = log(2.0)
+
+    def phi(a, c):
+        d = fsum((a[j] - c[j]) ** 2 for j in range(p))
+        return exp(-lg2 * d / (spread * spread))
+
+    if centers is not None:
+        Cs = _bxmat(centers, "centers")
+        if len(Cs[0]) != p:
+            raise ValueError("centers must have the same dimension as X")
+    else:
+        J = min(8, n) if ncenters is None else int(ncenters)
+        if not (1 <= J <= n):
+            raise ValueError("ncenters must satisfy 1 <= ncenters <= number of rows")
+        chosen, resid = [], list(t)
+        for _ in range(J):
+            best, bv = -1, -1.0
+            for i in range(n):
+                if i in chosen:
+                    continue
+                col = [phi(F[k], F[i]) for k in range(n)]
+                den = fsum(c * c for c in col)
+                if den <= 1e-14:
+                    continue
+                v = fsum(col[k] * resid[k] for k in range(n)) ** 2 / den
+                if v > bv:
+                    best, bv = i, v
+            if best < 0:
+                break
+            chosen.append(best)
+            A = [[phi(F[k], F[i]) for i in chosen] + [1.0] for k in range(n)]
+            w = _bxlstsq(A, t, float(ridge))
+            fit = _bxmv(A, w)
+            resid = [t[k] - fit[k] for k in range(n)]
+        if not chosen:
+            raise ValueError("no usable centre found; check spread and X")
+        Cs = [F[i] for i in chosen]
+
+    A = [[phi(F[k], c) for c in Cs] + [1.0] for k in range(n)]
+    w = _bxlstsq(A, t, float(ridge))
+    fit = _bxmv(A, w)
+    mse = fsum((t[k] - fit[k]) ** 2 for k in range(n)) / n
+
+    qv = None
+    if query is not None:
+        Q = _bxmat(query, "query")
+        if len(Q[0]) != p:
+            raise ValueError("query must have the same dimension as X")
+        qv = [fsum(w[j] * phi(row, Cs[j]) for j in range(len(Cs))) + w[-1]
+              for row in Q]
+
+    return RichResult(payload={
+        "centers": Cs,
+        "weights": w[:-1],
+        "bias": w[-1],
+        "predictions": fit,
+        "queryvalues": qv,
+        "mse": mse,
+        "spread": spread,
+        "method": "radial basis function network with greedy forward centre "
+                  "selection, Rangayyan Biomedical Signal Analysis 3rd ed. "
+                  "Section 10.8.1, eqs. (10.86)-(10.87)",
+    })
+
+
+rangayyan_rbf_network = rbfn  # pre-policy spelling
 
 
 # -- rgroc: Receiver operating characteristic (ROC) curve and AUC.
@@ -2875,42 +5049,146 @@ rangayyan_roc_curve = roc  # pre-policy spelling
 
 
 # -- rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals.
-def rangayyan_sleep_apnea_nmf(signals, fs, n_comp):
-    """
-    Sleep apnea diagnosis via NMF of polysomnographic signals
+def ahi(airflow, fs, spo2=None, hours=None, apneafrac=0.10, hypofrac=0.50,
+        minsec=10.0, desat=0.0, envsec=1.0):
+    """Score sleep apnea from airflow and oximetry: event detection and the AHI.
 
-    Formula: NMF on stacked ECG/resp/SpO2 spectrogram matrix; apnea component identified
+    Why: the severity of obstructive sleep apnea is reported as one number, the
+    apnea-hypopnea index, and that number drives the clinical decision.  It is
+    the count of apnea and hypopnea episodes per hour of sleep, so the whole
+    scoring problem reduces to detecting episodes and dividing.  Rangayyan,
+    *Biomedical Signal Analysis*, 3rd ed., Section 10.13.
+
+    Definitions taken from that section: apnea is the total absence of airflow
+    through the mouth and nose; hypopnea is a partial airway collapse that
+    makes breathing difficult; an episode must be **at least 10 s** long and be
+    linked to a drop in blood oxygenation to be counted; and the severity bands
+    are mild 5 to 15 events/h, moderate 15 to 30 events/h, and severe above 30
+    events/h.
+
+    The book gives no numeric amplitude threshold separating apnea from
+    hypopnea, nor a numeric desaturation threshold, so ``apneafrac``,
+    ``hypofrac`` and ``desat`` are explicit parameters rather than hidden
+    constants; the defaults (10% and 50% of the running baseline amplitude, any
+    drop in SpO2) are stated here and are not attributed to Rangayyan.
+
+    The amplitude envelope is a running maximum over +/- ``envsec`` seconds,
+    which must span a breath cycle to be stable but which also shortens every
+    detected episode by about 2 * ``envsec``.  Since the 10 s minimum is a hard
+    clinical criterion, ``envsec`` is exposed rather than fixed: raise it for
+    slow breathing, lower it if short episodes are being missed.
 
     Parameters
     ----------
-    signals : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    n_comp : array-like
-        Input data.
+    airflow : sequence
+        Airflow signal.
+    fs : float
+        Sampling rate in Hz.
+    spo2 : sequence, optional
+        Blood oxygen saturation on the same time base.  Without it the
+        oxygenation condition cannot be checked and every amplitude event is
+        counted; the payload records that.
+    hours : float, optional
+        Hours of sleep; the recording duration by default.
+    apneafrac, hypofrac : float
+        Envelope thresholds, as fractions of the baseline amplitude.
+    minsec : float
+        Minimum episode duration; the book requires at least 10 s.
+    desat : float
+        Required drop in SpO2, in the units of ``spo2``.
 
     Returns
     -------
-    result : dict
-        Keys: apnea_component, apnea_index
-
-    References
-    ----------
-    Rangayyan Ch 10.13
+    RichResult
+        Keys ``ahi``, ``severity``, ``apnea``, ``hypopnea``, ``events``,
+        ``hours``, ``oxygenchecked``, ``method``.
     """
-    signals = np.asarray(signals, dtype=float)
-    n = int(signals) if signals.ndim == 0 else len(signals)
-    result = float(np.mean(signals))
-    se = float(np.std(signals, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Sleep apnea diagnosis via NMF of polysomnographic signals",
-        }
-    )
+    x = _bxvec(airflow, "airflow")
+    fs = float(fs)
+    if fs <= 0.0:
+        raise ValueError("fs must be a positive sampling rate in Hz")
+    minsec = float(minsec)
+    if minsec <= 0.0:
+        raise ValueError("minsec must be positive")
+    if not (0.0 < apneafrac < hypofrac <= 1.0):
+        raise ValueError("need 0 < apneafrac < hypofrac <= 1")
+    dur = len(x) / fs
+    hrs = dur / 3600.0 if hours is None else float(hours)
+    if hrs <= 0.0:
+        raise ValueError("hours must be positive")
+    envsec = float(envsec)
+    if envsec <= 0.0:
+        raise ValueError("envsec must be positive")
+    ox = None
+    if spo2 is not None:
+        ox = _bxvec(spo2, "spo2")
+        if len(ox) != len(x):
+            raise ValueError("spo2 must have the same length as airflow")
+
+    w = max(1, int(round(envsec * fs)))
+    env = []
+    for i in range(len(x)):
+        lo, hi = max(0, i - w), min(len(x), i + w + 1)
+        env.append(max(abs(t) for t in x[lo:hi]))
+    base = sorted(env)[int(0.75 * (len(env) - 1))]
+    if base <= 0.0:
+        raise ValueError("airflow has no measurable amplitude")
+
+    need = int(round(minsec * fs))
+    events = []
+    i = 0
+    while i < len(env):
+        if env[i] < hypofrac * base:
+            j = i
+            while j < len(env) and env[j] < hypofrac * base:
+                j += 1
+            if j - i >= need:
+                seg = env[i:j]
+                kind = "apnea" if min(seg) < apneafrac * base else "hypopnea"
+                ok = True
+                dv = None
+                if ox is not None:
+                    pre = ox[max(0, i - int(fs * 30)):i + 1] or ox[i:i + 1]
+                    dv = max(pre) - min(ox[i:j])
+                    ok = dv > float(desat)
+                if ok:
+                    events.append({"kind": kind, "start": i / fs, "end": j / fs,
+                                   "duration": (j - i) / fs, "desaturation": dv})
+            i = j
+        else:
+            i += 1
+
+    na = sum(1 for e in events if e["kind"] == "apnea")
+    nh = len(events) - na
+    index = (na + nh) / hrs
+    if index < 5.0:
+        sev = "normal"
+    elif index < 15.0:
+        sev = "mild"
+    elif index < 30.0:
+        sev = "moderate"
+    else:
+        sev = "severe"
+
+    return RichResult(payload={
+        "ahi": index,
+        "severity": sev,
+        "apnea": na,
+        "hypopnea": nh,
+        "events": events,
+        "hours": hrs,
+        "baseline": base,
+        "envsec": envsec,
+        "oxygenchecked": ox is not None,
+        "method": "apnea-hypopnea index from airflow and oximetry with the "
+                  "10 s minimum episode duration and the mild/moderate/severe "
+                  "bands of Rangayyan Biomedical Signal Analysis 3rd ed. "
+                  "Section 10.13; amplitude and desaturation thresholds are "
+                  "parameters, not values given by that section",
+    })
+
+
+rangayyan_sleep_apnea_nmf = ahi  # pre-policy spelling
 
 
 # -- rgsen: Sensitivity (recall, true positive rate).
@@ -3047,44 +5325,90 @@ rangayyan_specificity = spec  # pre-policy spelling
 
 
 # -- rgsprep: Sparse representation of biomedical signals in learned dictionary.
-def rangayyan_sparse_rep(x, D, lambda_or_sparsity, method):
-    """
-    Sparse representation of biomedical signals in learned dictionary
+def sparsecode(x, D, sparsity=None, lam=None, maxiter=2000, tol=1e-10):
+    """Represent one signal sparsely in a dictionary, by count or by penalty.
 
-    Formula: min||x-D*alpha||_2 + lambda*||alpha||_1 (LASSO) or ||alpha||_0 (OMP)
+    Why: the point of an overcomplete dictionary is that only a handful of its
+    atoms are needed for any one signal, and those few coefficients are a far
+    more compact and more discriminative description than the raw samples.
+    There are two ways to ask for "few": bound the number of atoms outright, or
+    penalise the sum of the coefficient magnitudes and let the solution decide.
+    Rangayyan, *Biomedical Signal Analysis*, 3rd ed., Section 9.5 discusses the
+    greedy route and calls it a greedy approximation, choosing the best option
+    available at each step without regard to the final outcome.
+
+    ``sparsity=T``  solves min ||x - D' a||^2 subject to ||a||_0 <= T by
+    orthogonal matching pursuit (Pati, Rezaiifar and Krishnaprasad, Asilomar
+    1993).  ``lam``  solves min 0.5 ||x - D' a||^2 + lam ||a||_1, the lasso of
+    Tibshirani, Journal of the Royal Statistical Society Series B
+    58(1):267-288, 1996, by iterative soft thresholding.  Neither the lasso nor
+    the orthogonalised pursuit is presented by Rangayyan; only the plain
+    matching pursuit of Section 9.3 is.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    D : array-like
-        Input data.
-    lambda_or_sparsity : array-like
-        Input data.
-    method : array-like
-        Input data.
+    x : sequence
+        Signal to represent.
+    D : sequence of sequences
+        Dictionary atoms, one per row.
+    sparsity : int, optional
+        Atom budget T.  Exactly one of ``sparsity`` and ``lam`` is required.
+    lam : float, optional
+        L1 penalty weight.
+    maxiter : int
+        Iteration budget for the penalised route.
+    tol : float
+        Convergence tolerance.
 
     Returns
     -------
-    result : dict
-        Keys: alpha, reconstruction
-
-    References
-    ----------
-    Rangayyan Ch 9.5
+    RichResult
+        Keys ``alpha``, ``support``, ``reconstruction``, ``residual``,
+        ``error``, ``energyratio``, ``mode``, ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Sparse representation of biomedical signals in learned dictionary",
-        }
-    )
+    if (sparsity is None) == (lam is None):
+        raise ValueError("give exactly one of sparsity (atom budget) or "
+                         "lam (L1 penalty)")
+    x = _bxvec(x, "x")
+    A = _bxmat(D, "D")
+    n = len(x)
+    if any(len(a) != n for a in A):
+        raise ValueError("every dictionary atom must have the same length as x")
+    e0 = fsum(t * t for t in x)
+    if e0 <= 0.0:
+        raise ValueError("x has zero energy")
+
+    if sparsity is not None:
+        r = ompfit(x, A, sparsity=int(sparsity), tol=float(tol))
+        mode = "omp"
+        src = ("orthogonal matching pursuit; Pati, Rezaiifar and "
+               "Krishnaprasad, Asilomar 1993")
+    else:
+        r = bpursuit(x, A, lam=float(lam), maxiter=int(maxiter), tol=float(tol))
+        mode = "lasso"
+        src = ("lasso by iterative soft thresholding; Tibshirani, JRSS B "
+               "58(1):267-288, 1996")
+
+    a = r["alpha"] if mode == "lasso" else r["coefficients"]
+    rec = r["reconstruction"]
+    res = r["residual"]
+    err = _bxnrm(res)
+    return RichResult(payload={
+        "alpha": a,
+        "support": [j for j in range(len(A)) if a[j] != 0.0],
+        "reconstruction": rec,
+        "residual": res,
+        "error": err,
+        "energyratio": 1.0 - (err * err) / e0,
+        "mode": mode,
+        "method": "sparse representation of a biomedical signal in a learned "
+                  "dictionary, in the greedy-approximation framing of "
+                  "Rangayyan Biomedical Signal Analysis 3rd ed. Section 9.5; "
+                  "solver: " + src,
+    })
+
+
+rangayyan_sparse_rep = sparsecode  # pre-policy spelling
 
 
 # -- rgsvm: Support vector machine (SVM) via margin maximization.
@@ -3304,37 +5628,124 @@ rangayyan_svm_kernel = svmkern  # pre-policy spelling
 
 
 # -- rgvagadp: Adaptive TFD of VAG signals via matching pursuit.
-def rangayyan_vag_adaptive_tfd(vag, fs, n_atoms):
-    """
-    Adaptive TFD of VAG signals via matching pursuit
+def vagtfd(x, fs, natoms=12, nfreq=32, ntime=None, lag=12):
+    """Adaptive time-frequency distribution of a VAG signal and its four features.
 
-    Formula: MP atoms represent time-frequency structures; TFD = sum of atom WVDs
+    Why: bilinear time-frequency distributions buy resolution at the cost of
+    cross-terms between signal components.  If the signal is first decomposed
+    into known components, the interaction between them is known too, and the
+    cross-terms can simply be left out of the sum -- which is what makes a
+    decomposition-based TFD adaptive rather than merely smoothed.  Rangayyan,
+    *Biomedical Signal Analysis*, 3rd ed., Section 9.6, applied to knee-joint
+    vibroarthrography in Section 9.9.
+
+    The signal is decomposed by matching pursuit (Section 9.3), and the TFD is
+    the energy-weighted sum of the Wigner distributions of the selected atoms,
+    the first term of eq. (9.15); the cross-term double sum of that equation is
+    omitted, which is exactly the cross-term removal the adaptive TFD is for.
+    Four time-varying features are then taken from the distribution M(t, w),
+    Section 9.9:
+
+    * EP, eq. (9.79), the mean of M along each time slice: energy against time;
+    * ESP, eq. (9.80), the standard deviation along the slice: spread of energy
+      over frequency, higher for the multicomponent signals that rough,
+      nonuniform cartilage produces;
+    * FP, eq. (9.81), the first moment along the slice: instantaneous mean
+      frequency;
+    * FSP, eq. (9.82), the second central moment: spread about that mean
+      frequency, sensitive to amplitude modulation.
 
     Parameters
     ----------
-    vag : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    n_atoms : array-like
-        Input data.
+    x : sequence
+        VAG signal.
+    fs : float
+        Sampling rate in Hz.
+    natoms : int
+        Number of matching-pursuit atoms M.
+    nfreq : int
+        Number of frequency bins of the distribution.
+    ntime : int, optional
+        Number of time slices; every sample by default.
+    lag : int
+        Half-width of the lag window of the discrete Wigner distribution.
 
     Returns
     -------
-    result : dict
-        Keys: tfd, t, freqs
-
-    References
-    ----------
-    Rangayyan Ch 9.9
+    RichResult
+        Keys ``tfd``, ``times``, ``frequencies``, ``ep``, ``esp``, ``fp``,
+        ``fsp``, ``coefficients``, ``method``.
     """
-    vag = np.asarray(vag, dtype=float)
-    n = int(vag) if vag.ndim == 0 else len(vag)
-    result = float(np.mean(vag))
-    se = float(np.std(vag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive TFD of VAG signals via matching pursuit"}
-    )
+    x = _bxvec(x, "x")
+    fs = float(fs)
+    if fs <= 0.0:
+        raise ValueError("fs must be a positive sampling rate in Hz")
+    n = len(x)
+    nfreq = int(nfreq)
+    lag = int(lag)
+    if nfreq < 2 or lag < 1:
+        raise ValueError("need nfreq >= 2 and lag >= 1")
+    nt = n if ntime is None else int(ntime)
+    if not (1 <= nt <= n):
+        raise ValueError("ntime must satisfy 1 <= ntime <= len(x)")
+
+    mp = mpursuit(x, natoms=natoms)
+    coef, atoms = mp["coefficients"], mp["atoms"]
+    if not atoms:
+        raise ValueError("matching pursuit selected no atoms")
+
+    tidx = [int(round(k * (n - 1) / (nt - 1))) if nt > 1 else 0 for k in range(nt)]
+    tfd = [[0.0] * nfreq for _ in range(nt)]
+    for a_i in range(len(atoms)):
+        g = atoms[a_i]
+        w2 = coef[a_i] ** 2
+        for ti in range(nt):
+            c = tidx[ti]
+            prod = []
+            for m in range(-lag, lag + 1):
+                p, q = c + m, c - m
+                prod.append(g[p] * g[q] if 0 <= p < n and 0 <= q < n else 0.0)
+            for fi in range(nfreq):
+                th = -2.0 * pi * fi / (2.0 * nfreq)
+                acc = fsum(prod[m + lag] * cos(th * 2 * m) for m in range(-lag, lag + 1))
+                tfd[ti][fi] += w2 * 2.0 * acc
+
+    freqs = [fi * fs / (2.0 * nfreq) for fi in range(nfreq)]
+    times = [t / fs for t in tidx]
+    ep, esp, fp, fsp = [], [], [], []
+    for ti in range(nt):
+        row = tfd[ti]
+        e = fsum(row) / nfreq
+        ep.append(e)
+        esp.append(sqrt(max(0.0, fsum((t - e) ** 2 for t in row) / nfreq)))
+        pos = [max(0.0, t) for t in row]
+        s = fsum(pos)
+        if s > 0.0:
+            f1 = fsum(freqs[k] * pos[k] for k in range(nfreq)) / s
+            fp.append(f1)
+            fsp.append(sqrt(max(0.0, fsum((freqs[k] - f1) ** 2 * pos[k]
+                                          for k in range(nfreq)) / s)))
+        else:
+            fp.append(0.0)
+            fsp.append(0.0)
+
+    return RichResult(payload={
+        "tfd": tfd,
+        "times": times,
+        "frequencies": freqs,
+        "ep": ep,
+        "esp": esp,
+        "fp": fp,
+        "fsp": fsp,
+        "coefficients": coef,
+        "method": "matching-pursuit adaptive TFD of a VAG signal with the "
+                  "EP/ESP/FP/FSP features, Rangayyan Biomedical Signal "
+                  "Analysis 3rd ed. Section 9.6, eq. (9.15) diagonal term, "
+                  "and Section 9.9, eqs. (9.79)-(9.82)",
+    })
+
+
+rangayyan_vag_adaptive_tfd = vagtfd  # pre-policy spelling
 
 
 # -- rng190: Pan-Tompkins peak classification.
@@ -3404,60 +5815,60 @@ def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI=None, NPKI=None,
 
 _CHEATSHEET = [
     'rgacc: Classification accuracy.',
-    'rgann: Multilayer perceptron (ANN) with backpropagation.',
-    'Bayes decision functions, eq. (10.70)',
-    'Bayes classifier for normal patterns, eq. (10.72)',
-    'rgbbb: Bundle branch block (BBB) classification from ECG.',
-    'rgbbnorm: Normal versus ectopic beat classification with LDA and Bayes.',
-    'rgbci: BCI EEG channel selection via NMF spatial decomposition.',
+    'Two-layer perceptron trained by back-propagation (Rangayyan eqs. 10.79-10.85).',
+    'rgbayes: Bayes minimum-error classifier.',
+    'rgbayng: Bayes classifier for normal (Gaussian) patterns.',
+    'Incomplete left/right bundle-branch block decision rules (Rangayyan Section 10.2.1).',
+    'Bayes classifier for normal vs. ectopic beats on [QRSTA, FF] (Rangayyan Section 10.11.2).',
+    'NMF channel selection and weighting for a motor-imagery BCI (Rangayyan eqs. 9.94-9.96).',
     'rgbhatt: Bhattacharyya distance for class separability.',
-    'rgbp: Basis pursuit: L1 minimization for sparse representation.',
-    'rgcad: Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate.',
-    'rgcnn: 1D CNN for biomedical signal classification.',
-    'rgecgfe: Single-channel fetal ECG extraction using NMF/ICA.',
-    'rgecgnl: Normal vs. ectopic ECG beat classification.',
-    'rgeegb: EEG rhythm band classification (delta/theta/alpha/beta/gamma).',
-    'elbow criterion for the cluster count',
-    'rgepiksv: Epileptic seizure detection using K-SVD dictionary learning.',
+    'Basis-pursuit denoising by iterative soft thresholding (Chen, Donoho and Saunders 1998).',
+    'Cross-validated CAD pipeline scored by sensitivity/specificity/accuracy (Rangayyan Ch. 10).',
+    '1-D CNN forward pass: convolution, rectifier, max-pooling, softmax readout.',
+    'Single-channel fetal ECG extraction by NMF of the STFT magnitude (Rangayyan Section 9.11).',
+    'Linear discriminant on [RR, form factor] for normal vs. PVC beats (Rangayyan eq. 10.131).',
+    'Fractional EEG power in the delta/theta/alpha/beta/gamma bands (Rangayyan Section 1.2.6).',
+    'rgelbow: Elbow method for k-means cluster count selection.',
+    'Seizure detection by signal-derived dictionary learning, Algorithm 9.2 (Rangayyan Section 9.8).',
     'rgerrbd: Bhattacharyya bound on Bayes classification error.',
     "rgfish: Fisher's criterion for feature separability.",
     'rgfld: Fisher linear discriminant analysis (LDA).',
-    'hierarchical agglomerative clustering, Section 10.5.1',
-    'rgica: FastICA algorithm for independent component analysis.',
-    'rgicaart: EEG artifact removal via ICA (eye blink, muscle, ECG).',
-    'rginf: Infomax ICA algorithm (Bell-Sejnowski).',
-    'k-fold cross-validation, Section 10.10.3',
-    'k-means clustering, Section 10.5.1',
-    'rgkneecl: Knee-joint cartilage pathology classification via VAG features.',
-    'nearest-neighbour and k-NN rules, eq. (10.29)',
-    'rgksv: K-SVD dictionary learning algorithm.',
-    'rgldsp: Sparse coding given fixed dictionary (OMP/LASSO).',
-    'linear discriminant functions, Section 10.4.1',
-    'linear discriminant with a fitted threshold, Section 10.4.2',
-    'leave-one-out cross-validation, Section 10.10.3',
-    'logistic regression by Newton-Raphson, Section 10.7',
-    'rglstm: LSTM recurrent network for biomedical time-series classification.',
+    'rghier: Hierarchical agglomerative clustering.',
+    'FastICA fixed-point independent component analysis with tanh nonlinearity.',
+    'EEG artifact removal by zeroing high-kurtosis ICA components and back-projecting.',
+    'Infomax ICA with the natural-gradient update (Bell and Sejnowski 1995).',
+    'rgkfcv: K-fold cross-validation.',
+    'rgkmns: K-means clustering algorithm.',
+    'Knee VAG cartilage screening: variance of segment means and the two-step duration rule.',
+    'rgknn: K-nearest neighbor (k-NN) classifier.',
+    'K-SVD dictionary learning with OMP sparse coding (Aharon, Elad and Bruckstein 2006).',
+    'Sparse-code a signal set against a fixed dictionary by orthogonal matching pursuit.',
+    'rglindf: Linear discriminant function for pattern classification.',
+    'rglindsep: Linear discriminant function with optimal separability.',
+    'rgloo: Leave-one-out cross-validation (LOO-CV).',
+    'rglr: Logistic regression for binary classification.',
+    'LSTM recurrence with a ridge least-squares readout on the final hidden state.',
     'rgmahd: Mahalanobis distance from sample to class.',
     "rgmcn: McNemar's test for comparing two classifiers.",
-    'rgmp: Matching pursuit greedy decomposition into dictionary atoms.',
-    'rgneural: Neural decoding for prosthesis control from spike trains.',
-    'rgnmf: Nonnegative matrix factorization (NMF) with multiplicative update rules.',
-    'rgnmfch: NMF-based EEG channel selection for BCI.',
-    'rgomp: Orthogonal matching pursuit (OMP) for sparse representation.',
-    'rgpca: PCA for signal mixture separation (eigendecomposition of covariance).',
-    'rgpcaica: Comparative analysis of PCA, ICA, and NMF for signal separation.',
+    'Matching-pursuit decomposition into Gabor time-frequency atoms (Rangayyan eqs. 9.1-9.7).',
+    'Kalman-filter neural decoder for prosthesis control (Rangayyan Section 8.18, eqs. 8.95-8.99).',
+    'Nonnegative matrix factorisation by multiplicative updates (Rangayyan eqs. 9.49, 9.50).',
+    'Rank EEG channels by the normalised NMF basis-row RMS deviation (Rangayyan eqs. 9.94-9.96).',
+    'Orthogonal matching pursuit with least-squares reprojection (Pati et al. 1993).',
+    'PCA of correlated signals by eigendecomposition of the covariance (Rangayyan eqs. 9.37-9.41).',
+    'Compare PCA, ICA and NMF on one mixture by reconstruction error (Rangayyan Section 9.7.4).',
     'rgppv: Positive predictive value (precision).',
-    'quadratic discriminant analysis fitted from data',
-    'rgrbf: Radial basis function (RBF) network.',
+    'rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.',
+    'RBF network with greedy centre selection and closed-form weights (Rangayyan eqs. 10.86-10.87).',
     'rgroc: Receiver operating characteristic (ROC) curve and AUC.',
-    'rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals.',
+    'Apnea-hypopnea index and severity from airflow and oximetry (Rangayyan Section 10.13).',
     'rgsen: Sensitivity (recall, true positive rate).',
     'rgsepix: Separability index: ratio of between-class to within-class scatter.',
     'rgspe: Specificity (true negative rate).',
-    'rgsprep: Sparse representation of biomedical signals in learned dictionary.',
-    'linear SVM by SMO, Section 10.4.5',
-    'kernel SVM, Section 10.4.5',
-    'rgvagadp: Adaptive TFD of VAG signals via matching pursuit.',
+    'Sparse representation of one signal by OMP (atom budget) or lasso (L1 penalty).',
+    'rgsvm: Support vector machine (SVM) via margin maximization.',
+    'rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).',
+    'MP-based adaptive TFD of a VAG signal with the EP/ESP/FP/FSP features (Rangayyan 9.6, 9.9).',
     'rng190: Pan-Tompkins peak classification.',
 ]
 

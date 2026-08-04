@@ -2278,11 +2278,24 @@ def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
 
     resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
              for i in range(n)]
+
+    # MASS returns the scale computed at the START of the final
+    # iteration -- it does NOT recompute from the final residuals, so
+    # MASS's own $s does not equal median(abs(resid))/0.6745 (measured
+    # relative gap ~7e-5 on a 60-point fixture with three outliers).
+    # This function's contract is MASS parity, so `scale` follows MASS.
+    # The value consistent with the residuals actually returned is given
+    # separately rather than silently substituted.
+    if scale is None or scale <= 0:
+        scale = 0.0
     mad0 = _median(sorted(abs(r) for r in resid))
-    scale = mad0 / 0.6745 if mad0 > 0 else 0.0
+    scale_final = mad0 / 0.6745 if mad0 > 0 else 0.0
     w = ([_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
          if scale > 0 else [1.0] * n)
     return {"coef": beta, "residuals": resid, "weights": w,
-            "scale": scale, "k": float(k), "n": n,
+            "scale": scale, "scale_final": scale_final,
+            "scale_follows_mass_not_the_final_residuals": True,
+            "k": float(k), "n": n,
             "n_downweighted": sum(1 for t in w if t < 1.0 - 1e-12),
-            "method": "robust regression, Huber M-estimation"}
+            "method": "robust regression, Huber M-estimation "
+                      "(MASS::rlm scale convention)"}
