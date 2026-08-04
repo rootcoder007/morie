@@ -1,39 +1,22 @@
-"""Variance of the sum of two fair coin flips is 1/2.
+"""Deprecated alias for :func:`morie.fn.twocoinvar`.
 
-Implements eq (3.28) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .twocoinvar import twocoinvar as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_28"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_28():
-    """Variance of the sum of two fair coin flips is 1/2.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.28).
-    """
-    values, probs = _morin.pmf_sum_convolution([0.0, 1.0], [0.5, 0.5],
-                                               [0.0, 1.0], [0.5, 0.5])
-    variance, mu = _morin.pmf_variance(values, probs)
-    payload = {"variance": variance, "mean": mu}
-    lines = [("Var(X+Y)", variance)]
-    return RichResult(
-        title="Variance of the sum of two fair coin flips is 1/2.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.twocoinvar` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_28() is the book-coordinate name for twocoinvar(); "
+        "it will be removed. Use morie.fn.twocoinvar() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e28: Variance of the sum of two fair coin flips is 1/2. Morin (2016) eq (3.28)."
+    return _impl()

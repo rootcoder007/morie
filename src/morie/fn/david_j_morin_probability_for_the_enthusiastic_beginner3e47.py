@@ -1,37 +1,22 @@
-"""sigma of the number of Heads in n biased flips: sqrt(npq).
+"""Deprecated alias for :func:`morie.fn.sdbinom`.
 
-Implements eq (3.47) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sdbinom import sdbinom as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_47"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_47(n, p):
-    """sigma of the number of Heads in n biased flips: sqrt(npq).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.47).
-    """
-    value = _morin.sd_binomial(n, p)
-    payload = {"n": int(n), "p": float(p), "sd": value}
-    lines = [("sqrt(npq)", value)]
-    return RichResult(
-        title="sigma of the number of Heads in n biased flips: sqrt(npq).",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.sdbinom` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_47() is the book-coordinate name for sdbinom(); "
+        "it will be removed. Use morie.fn.sdbinom() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e47: sigma of the number of Heads in n biased flips: sqrt(npq). Morin (2016) eq (3.47)."
+    return _impl(n, p)
