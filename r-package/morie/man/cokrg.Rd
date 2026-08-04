@@ -19,19 +19,7 @@ cokrg(
   nugget = 0
 )
 
-morie_cokriging(
-  x,
-  y,
-  coords,
-  target,
-  sill_p = 1,
-  range_p = 1,
-  sill_s = 1,
-  range_s = 1,
-  cross_sill = 0.5,
-  cross_range = 1,
-  nugget = 0
-)
+morie_cokriging(coords, z1, z2, s0, cross_vario = NULL, model = NULL)
 }
 \arguments{
 \item{x}{Primary variable (n,).}
