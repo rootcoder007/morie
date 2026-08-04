@@ -18,7 +18,8 @@ the whole line and back (Ch. 4).
 from . import _array_core as np
 
 __all__ = ["kernel_K", "kernel_W", "kernel_V", "mu2", "gamma_kernel_density",
-           "boundary_free_transform", "muller_order_m"]
+           "boundary_free_transform", "muller_order_m",
+           "rratio", "agamma_kernel"]
 
 
 def kernel_K(u):
@@ -217,3 +218,53 @@ def kdfe_bandwidth(x, sigma=None, n=None):
     if sigma is None or sigma <= 0:
         sigma = 1.0
     return float(4.0 ** (1.0 / 3.0) * sigma * n ** (-1.0 / 3.0))
+
+
+def rratio(z):
+    r"""The book's :math:`R(z) = \sqrt{2\pi}\,z^{z+1/2}/(e^{z}\Gamma(z+1))`,
+    Eq. (1.12).
+
+    It is the Stirling defect of the gamma function: ``R(z)`` increases
+    monotonically to 1 from below (Remark 1.2), which is exactly the fact
+    the book uses to read off the O(n^-1 h^-1/4) interior and
+    O(n^-1 h^-3/4) boundary rates of Var[A_h(x)] in (1.11).
+
+    Computed through log-gamma so that the ``z^(z+1/2)`` factor does not
+    overflow for the small bandwidths this suite uses (``z ~ h^{-1/2}``).
+    """
+    import math as _math
+    z = np.asarray(z, dtype=float)
+    if np.any(z <= 0):
+        raise ValueError("R(z) is defined for z > 0.")
+    log_r = 0.5 * np.log(2.0 * np.pi) + (z + 0.5) * np.log(z) - z - np.asarray([_math.lgamma(float(v) + 1.0) for v in np.atleast_1d(z)]).reshape(np.shape(z)) if np.ndim(z) else _math.lgamma(float(z) + 1.0)
+    return np.exp(log_r)
+
+
+def agamma_kernel(x, v, h):
+    r"""``A_h(v)`` of Eq. (1.9): the mean over the sample of the
+    Gamma(:math:`h^{-1/2}`, :math:`v\sqrt h + h`) density.
+
+    This is NOT Chen's gamma kernel of ``gamma_kernel_density`` -- Chen
+    takes shape ``v/h + 1`` and scale ``h``, whose shape moves with the
+    evaluation point; the book instead fixes the shape at
+    :math:`h^{-1/2}` and moves the SCALE. That single change is what buys
+    the smaller variance orders of Remark 1.2, and it is also what costs
+    the bias its rate, taking it from O(h) up to O(sqrt h) in (1.10) --
+    which is then bought back by the geometric extrapolation (1.14).
+    """
+    from . import _stats_core as stats
+    xv = np.asarray(x, dtype=float).ravel()
+    hh = float(h)
+    if hh <= 0:
+        raise ValueError(f"bandwidth must be positive, got {hh}.")
+    if np.any(xv < 0):
+        raise ValueError("gamma kernels need data on [0, infinity).")
+    shape = 1.0 / np.sqrt(hh)
+    g = np.atleast_1d(np.asarray(v, dtype=float))
+    if np.any(g < 0):
+        raise ValueError("the evaluation points must lie in [0, infinity).")
+    out = np.empty(g.size)
+    for i, pt in enumerate(g):
+        scale = float(pt) * np.sqrt(hh) + hh
+        out[i] = float(np.mean(stats.gamma.pdf(xv, a=shape, scale=scale)))
+    return out

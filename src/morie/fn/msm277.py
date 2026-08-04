@@ -1,55 +1,42 @@
-r"""Numbered display equation (14.10) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Penalized sum of squared errors.
 
-from ._richresult import RichResult
+Implements eq. (14.10) p.599 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_convolutional_nn_eq_14_10"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["pensse", "mvsml_convolutional_nn_eq_14_10"]
 
 
-def mvsml_convolutional_nn_eq_14_10(functions, the, covariate, function, B, spline):
-    r"""
-    Numbered display equation (14.10) from MVSML chapter 14.
+def pensse(y, X, beta, lam, P, mu=0.0):
 
-    Formula: functions for the covariate function and 21 B-spline basis functions for \beta(t)  2 Xn XL1 SSE\lambda \beta ( ) = i=1 yi  \mu  l=1xil\betal + \lambdaJ\beta,
+    """SSE_lambda(beta) = sum_i ( y_i - mu - sum_l x_il beta_l )^2
+    + lambda J_beta (eq. 14.10), where J_beta is the roughness
+    penalty of (14.11) and lambda sets the compromise between fit to
+    the data (first term) and smoothness of beta() (second term).  At
+    lambda = 0 the problem reduces to least squares, and as lambda
+    grows the roughness is penalized so heavily that beta(t) is
+    driven towards a constant.  Keys: sse, penalty, lambda,
+    objective, fitted, residuals.
+    """
 
-    Parameters
-    ----------
-    functions : array-like
-        Input data.
-    the : array-like
-        Input data.
-    covariate : array-like
-        Input data.
-    function : array-like
-        Input data.
-    B : array-like
-        Input data.
-    spline : array-like
-        Input data.
+    res = RichResult(payload=_gp.fda_penalized_sse(y, X, beta, lam, P, mu=mu))
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
+    return with_describe_pointer(res, "msm277")
 
-    References
-    ----------
-    MVSML, Eq. (14.10) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    functions = np.atleast_1d(np.asarray(functions, dtype=float))
-    n = len(functions)
-    result = float(np.mean(functions))
-    se = float(np.std(functions, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.10) from MVSML chapter 14.",
-        }
-    )
+
+mvsml_convolutional_nn_eq_14_10 = pensse
 
 
 def cheatsheet():
-    return "msm277: Numbered display equation (14.10) from MVSML chapter 14."
+    return "msm277: Penalized sum of squared errors"

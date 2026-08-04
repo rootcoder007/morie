@@ -1,54 +1,32 @@
-"""Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Limit-superior event (infinitely often)."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_6_equation_1"]
+__all__ = ["limsupio", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_6_equation_1"]
 
 
-def shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_6_equation_1(x):
-    """
-    Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.
+def limsupio(dev, k):
+    """Limit-superior event (infinitely often).
 
-    Formula: [EQ] {ω||Xm(ω) − X(ω)| ≥ 1/k}
+    D_k = int_{n>=1} un_{m>=n} {|X_m - X| >= 1/k}   (Deshmukh eq. 6.1).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    The limit-superior event: |X_n - X| >= 1/k infinitely often.  On a
+    realised path of finite length the event is decided by the tail, so
+    a path is in D_k exactly when its last observation still exceeds the
+    threshold.  ``dev[r][m]`` is |X_m - X| on path r.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a6e1')`` for the full guide.
-
-    References
-    ----------
-    Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R, ch.6 eq.6.1
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        },
-    )
+    return RichResult(title="Limit-superior event (infinitely often)", payload=_c.limsupio(dev=dev, k=k))
+
+
+shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_6_equation_1 = limsupio
 
 
 def cheatsheet():
-    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a6e1: Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R."
+    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a6e1: Limit-superior event (infinitely often)"

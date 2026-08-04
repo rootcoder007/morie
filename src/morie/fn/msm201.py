@@ -1,55 +1,44 @@
-"""Numbered display equation (9.27) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Wolfe primal of the maximum margin problem.
 
-from ._richresult import RichResult
+Implements eq. (9.27) p.348 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_27"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["svmlagr", "mvsml_ridge_lasso_elastic_eq_9_27"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_27(k, k2, i, yi, xT, L):
+def svmlagr(X, y, beta0, beta, alpha):
+
+    """L(beta, beta_0, alpha) = (1/2)||beta||^2
+    - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 ] (eq. 9.27), where
+    the alpha_i are nonnegative Lagrange multipliers.  Setting the
+    derivatives with respect to beta and beta_0 to zero gives
+    beta = sum_i alpha_i y_i x_i (eq. 9.28) and sum_i alpha_i y_i = 0
+    (eq. 9.29), returned here as grad_beta and grad_beta0, both zero
+    at the optimum.  Complementary slackness (eq. 9.30) makes alpha_i
+    zero for every observation strictly off the margin, which is why
+    the solution depends only on the support vectors.
+    Keys: L, quadratic_term, slack, grad_beta, grad_beta0.
     """
-    Numbered display equation (9.27) from MVSML chapter 9.
 
-    Formula: ) = 1 k k2 2 i=1\alphai yi \beta0 + xT L \beta, \beta0, \alpha ( 2 \beta i \beta + 1 ,
+    res = RichResult(payload=_gp.svm_lagrangian(X, y, beta0, beta, alpha))
 
-    Parameters
-    ----------
-    k : array-like
-        Input data.
-    k2 : array-like
-        Input data.
-    i : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    xT : array-like
-        Input data.
-    L : array-like
-        Input data.
+    return with_describe_pointer(res, "msm201")
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
 
-    References
-    ----------
-    MVSML, Eq. (9.27) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    k = np.atleast_1d(np.asarray(k, dtype=float))
-    n = len(k)
-    result = float(np.mean(k))
-    se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.27) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_27 = svmlagr
 
 
 def cheatsheet():
-    return "msm201: Numbered display equation (9.27) from MVSML chapter 9."
+    return "msm201: Wolfe primal of the maximum margin problem"

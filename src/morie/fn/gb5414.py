@@ -1,80 +1,92 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Power function of sign test for location shift alternative."""
+"""Power function of the sign test -- exact and normal approximation."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sign_power"]
+__all__ = ['signpow', 'gibbons_sign_power']
 
 
-def gibbons_sign_power(theta, n, alpha, F, cdf=None):
-    """
-    Power function of sign test for location shift alternative
+def signpow(n, theta, alpha=0.05, exact=True):
+    """Power of the upper-tailed sign test against H1: M > M0.
 
-    Formula: beta(theta) = P(K >= k_alpha | p = 1-F(-theta)); p = P(X > M_0)
+    Book p. 173-174.  The exact power is the binomial tail
+
+    .. math:: Pw(\\theta) = \\sum_{i=k_\\alpha}^{N}
+        \\binom{N}{i}\\theta^i (1-\\theta)^{N-i},
+
+    with k_alpha the smallest integer whose null upper tail is at most
+    alpha.  The normal approximation is eq. (5.4.8),
+
+    .. math:: Pw = 1 - \\Phi\\!\\left[
+        \\frac{N(0.5-\\theta) + 0.5\\sqrt{N} z_\\alpha}
+             {\\sqrt{N\\theta(1-\\theta)}}\\right].
 
     Parameters
     ----------
-    theta : array-like
-        Input data.
-    n : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    F : array-like
-        Input data.
+    n : int
+        Sample size.
+    theta : float
+        P(X > M0) under the alternative, 0 < theta < 1.
+    alpha : float, optional
+        Nominal size (default 0.05).
+    exact : bool, optional
+        Also compute the exact binomial power (default True).
 
     Returns
     -------
-    result : dict
-        Keys: power
+    RichResult
+        keys ``power`` (normal approximation, eq. 5.4.8),
+        ``power_exact``, ``k_alpha``, ``alpha_exact``, ``n``,
+        ``theta``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.4.4
+    Gibbons & Chakraborti (2011), eq. (5.4.8), Table 5.4.1, p. 174.
     """
-    theta = np.asarray(theta, dtype=float)
-    n = int(theta) if theta.ndim == 0 else len(theta)
-    if theta.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    n = int(n)
+    theta = float(theta)
+    alpha = float(alpha)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if not 0.0 < theta < 1.0:
+        raise ValueError("theta must lie strictly inside (0, 1).")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    za = stats.norm.ppf(1.0 - alpha)
+    approx = 1.0 - stats.norm.cdf(
+        (n * (0.5 - theta) + 0.5 * math.sqrt(n) * za)
+        / math.sqrt(n * theta * (1.0 - theta))
+    )
+    ka = n
+    aex = float("nan")
+    pex = float("nan")
+    if exact:
+        half = 0.5**n
+        for c in range(n + 1):
+            tail = sum(math.comb(n, i) for i in range(c, n + 1)) * half
+            if tail <= alpha:
+                ka = c
+                aex = tail
+                break
+        pex = sum(
+            math.comb(n, i) * theta**i * (1.0 - theta) ** (n - i)
+            for i in range(ka, n + 1)
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Power function of sign test for location shift alternative",
-            }
-        )
-    x_sorted = np.sort(theta)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(theta), scale=np.std(theta, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "power": float(approx),
+            "power_exact": float(pex),
+            "k_alpha": int(ka),
+            "alpha_exact": float(aex),
             "n": n,
-            "method": "Power function of sign test for location shift alternative",
+            "theta": theta,
+            "method": "sign test power, eq. (5.4.8) with exact binomial tail",
         }
     )
 
 
-def cheatsheet():
-    return "gb5414: Power function of sign test for location shift alternative"
+gibbons_sign_power = signpow

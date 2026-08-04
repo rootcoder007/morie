@@ -1,42 +1,33 @@
-"""Graph Isomorphism Network."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Graph isomorphism network aggregation."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["gin"]
+__all__ = ["ginagg", "gin"]
 
 
-def gin(A, X, epsilon):
-    """
-    Graph Isomorphism Network
+def ginagg(A, H, eps=0.0):
+    """Graph isomorphism network aggregation.
 
-    Formula: h^{l+1}_v = MLP((1+ε) h^l_v + sum_u h^l_u)
+    GIN aggregation: h_v <- (1 + eps) h_v + sum_{u in N(v)} h_u.
 
-    Parameters
-    ----------
-    A : array-like
-        Input data.
-    X : array-like
-        Input data.
-    epsilon : array-like
-        Input data.
+    Xu et al. (2019), Graph Isomorphism Network.  The (1 + eps) factor
+    on the centre node is what keeps the self-representation
+    distinguishable from the neighbour sum, so the aggregator is
+    injective on multisets.  The learned MLP that follows is left to the
+    caller; this is the aggregation step itself.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Xu et al (2019) GIN
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Graph Isomorphism Network"})
+    return RichResult(title="Graph isomorphism network aggregation", payload=_c.ginagg(A=A, H=H, eps=eps))
+
+
+gin = ginagg
 
 
 def cheatsheet():
-    return "gin: Graph Isomorphism Network"
+    return "gin: Graph isomorphism network aggregation"

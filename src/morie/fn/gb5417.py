@@ -1,76 +1,80 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Confidence interval for median using sign test inversion."""
+"""Confidence interval for the median by inverting the sign test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_sign_median_ci"]
+__all__ = ['signmedci', 'gibbons_sign_median_ci']
 
 
-def gibbons_sign_median_ci(x, alpha, cdf=None):
-    """
-    Confidence interval for median using sign test inversion
+def signmedci(x, alpha=0.05):
+    """Order-statistic confidence interval for the median.
 
-    Formula: CI = (X_(r), X_(s)) where 2*sum_{i=r}^{s-1} C(n,i)(1/2)^n >= 1-alpha
+    Book p. 179, eq. (5.4.11): the endpoints are X_(r) and X_(s) with
+    s = N - r + 1, where r is the largest integer satisfying
+
+    .. math:: \\sum_{i=0}^{r-1} \\binom{N}{i} (0.5)^N \\le \\alpha/2.
+
+    The realised confidence coefficient is 1 - 2 times that tail, and
+    is reported as ``coverage`` because the discreteness of the
+    binomial makes it exceed 1 - alpha in general.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 2.
+    alpha : float, optional
+        Nominal two-sided level (default 0.05).
 
     Returns
     -------
-    result : dict
-        Keys: lower, upper
+    RichResult
+        keys ``lower``, ``upper``, ``r``, ``s``, ``coverage``,
+        ``tail``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.4.7
+    Gibbons & Chakraborti (2011), eq. (5.4.11), p. 179.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    alpha = float(alpha)
     if n < 2:
+        raise ValueError("need at least 2 observations.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    half = 0.5**n
+    r = 0
+    tail = 0.0
+    for cand in range(1, n + 1):
+        t = sum(math.comb(n, i) for i in range(cand)) * half
+        if t <= alpha / 2.0:
+            r = cand
+            tail = t
+        else:
+            break
+    if r == 0:
         return RichResult(
             payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Confidence interval for median using sign test inversion",
+                "lower": float("nan"), "upper": float("nan"), "r": 0, "s": 0,
+                "coverage": float("nan"), "tail": 0.0, "n": n,
+                "method": "sign-test median CI: n too small for alpha",
             }
         )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    s = n - r + 1
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "lower": xs[r - 1],
+            "upper": xs[s - 1],
+            "r": int(r),
+            "s": int(s),
+            "coverage": float(1.0 - 2.0 * tail),
+            "tail": float(tail),
             "n": n,
-            "method": "Confidence interval for median using sign test inversion",
+            "method": "median CI from sign-test inversion, eq. (5.4.11)",
         }
     )
 
 
-def cheatsheet():
-    return "gb5417: Confidence interval for median using sign test inversion"
+gibbons_sign_median_ci = signmedci

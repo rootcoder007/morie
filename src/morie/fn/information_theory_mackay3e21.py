@@ -1,54 +1,56 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Posterior odds from a likelihood ratio and prior odds.
 
-from . import _array_core as np
+MacKay (2003) eq. (3.21), p. 53
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_3_equation_21"]
+__all__ = ["postodds", "information_theory_mackay_chapter_3_equation_21"]
+
+_METHOD = "Posterior odds from a likelihood ratio and prior odds"
 
 
-def information_theory_mackay_chapter_3_equation_21(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def postodds(lik1, lik0, prior1=0.5, prior0=0.5):
+    """Posterior odds from a likelihood ratio and prior odds.
 
-    Formula: (Fa +Fb + 1)!
+    (3.21) p.53 -- posterior odds = likelihood ratio x prior odds.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    lik1 : as documented for the shelf core
+        See ``morie.fn._itila.postodds``.
+    lik0 : as documented for the shelf core
+        See ``morie.fn._itila.postodds``.
+    prior1 : as documented for the shelf core
+        See ``morie.fn._itila.postodds``.
+    prior0 : as documented for the shelf core
+        See ``morie.fn._itila.postodds``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay3e21')`` for the full guide.
+        Payload keys: odds, logodds, p1.
 
     References
     ----------
-    Information theory MacKay, ch.3 eq.3.21
+    MacKay (2003) eq. (3.21), p. 53
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.postodds(lik1=lik1, lik0=lik0, prior1=prior1, prior0=prior0)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("odds", res["odds"]), ("logodds", res["logodds"]), ("p1", res["p1"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_3_equation_21 = postodds
+
+
 def cheatsheet():
-    return "information_theory_mackay3e21: Probability equation extracted from Information theory MacKay."
+    return "postodds: Posterior odds from a likelihood ratio and prior odds -- MacKay (2003) eq. (3.21), p. 53"

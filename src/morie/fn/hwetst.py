@@ -1,70 +1,102 @@
-"""Hardy-Weinberg equilibrium test."""
+# morie.fn -- tail3 batch (rootcoder007/morie)
+"""Hardy-Weinberg equilibrium goodness-of-fit test.
+
+Sources consulted: Hardy, G.H. (1908). Mendelian proportions in a mixed
+population.  *Science* 28, 49-50; Weinberg, W. (1908). Ueber den Nachweis der
+Vererbung beim Menschen.  *Jahreshefte des Vereins fuer vaterlaendische
+Naturkunde in Wuerttemberg* 64, 369-382.  Both give the equilibrium genotype
+proportions for a biallelic locus in a large randomly mating population,
+
+    P(AA) = p^2,   P(Aa) = 2 p q,   P(aa) = q^2,   q = 1 - p
+
+with the allele frequency estimated from the sample by gene counting,
+p = (2 n_AA + n_Aa) / (2 N).  The departure from those proportions is
+assessed with the standard Pearson goodness-of-fit statistic
+
+    X^2 = sum (O - E)^2 / E
+
+on one degree of freedom (three cells, one estimated parameter).  Hardy and
+Weinberg state the proportions; the chi-square goodness-of-fit test around
+them is the standard textbook application, not something either paper
+derives.
+"""
+
+from __future__ import annotations
 
 from . import _array_core as np
-from . import _stats_core as stats
 
+from . import t3util as _t3
 from ._richresult import RichResult
 
 __all__ = ["hardy_weinberg"]
 
 
-def hardy_weinberg(genotypes, cdf=None):
-    """
-    Hardy-Weinberg equilibrium test
-
-    Formula: chi-sq comparing observed vs expected geno freqs
+def hardy_weinberg(genotypes):
+    """Chi-square test of Hardy-Weinberg equilibrium.
 
     Parameters
     ----------
     genotypes : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Three observed genotype counts, ``(n_AA, n_Aa, n_aa)``.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        statistic, p_value, df, p (allele frequency), expected, n, method.
 
     References
     ----------
-    Hardy (1908); Weinberg (1908)
+    Hardy (1908), Science 28, 49-50; Weinberg (1908).
     """
-    genotypes = np.asarray(genotypes, dtype=float)
-    n = len(genotypes)
-    if n < 2:
+    g = np.atleast_1d(np.asarray(genotypes, dtype=float)).ravel()
+    n_aa = float(g[0])
+    n_ab = float(g[1])
+    n_bb = float(g[2])
+    ntot = n_aa + n_ab + n_bb
+    if ntot <= 0.0:
         return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Hardy-Weinberg equilibrium test"}
+            payload={
+                "statistic": float("nan"),
+                "p_value": float("nan"),
+                "df": 1,
+                "p": float("nan"),
+                "n": 0,
+                "method": "Hardy-Weinberg equilibrium test (Hardy 1908; Weinberg 1908)",
+            }
         )
-    x_sorted = np.sort(genotypes)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(genotypes), scale=np.std(genotypes, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    p = (2.0 * n_aa + n_ab) / (2.0 * ntot)
+    q = 1.0 - p
+    exp = [ntot * p * p, 2.0 * ntot * p * q, ntot * q * q]
+    obs = [n_aa, n_ab, n_bb]
+    stat = 0.0
+    for i in range(3):
+        if exp[i] > 0.0:
+            stat += (obs[i] - exp[i]) ** 2 / exp[i]
+    pval = _t3.chi2sf(stat, 1)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Hardy-Weinberg equilibrium test",
+            "statistic": float(stat),
+            "p_value": float(pval),
+            "df": 1,
+            "p": float(p),
+            "q": float(q),
+            "expected": np.asarray(exp, dtype=float),
+            "n": int(ntot),
+            "method": "Hardy-Weinberg equilibrium test (Hardy 1908; Weinberg 1908)",
         }
     )
 
 
+# CANONICAL TEST
+# >>> # counts exactly at equilibrium for p = 0.5: 25, 50, 25 -> X^2 = 0
+# >>> r = hardy_weinberg([25.0, 50.0, 25.0])
+# >>> assert abs(r["statistic"]) < 1e-12
+# >>> assert abs(r["p"] - 0.5) < 1e-12
+
+
 def cheatsheet():
-    return "hwetst: Hardy-Weinberg equilibrium test"
+    return "hwetst(counts): Hardy-Weinberg chi-square goodness-of-fit test."
 
 
-# compact alias per ledger/NAMING.md
+# compact alias per ledger/NAMING.md (registered in _lazy_map.json)
 hardyweinberg = hardy_weinberg

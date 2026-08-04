@@ -1,82 +1,57 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Random train/test split with fixed seed."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Stable train/test split by identifier hash.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 2 p. 58
+"""
+
+from . import _geron as _core
 
 from ._richresult import RichResult
 
-__all__ = ["geron_train_test_split"]
+__all__ = ["ttsplit", "geron_train_test_split"]
+
+_METHOD = "Stable train/test split by identifier hash"
 
 
-def geron_train_test_split(X, y, test_size, seed, cdf=None):
-    """
-    Random train/test split with fixed seed
+def ttsplit(ids, testratio=0.2):
+    """Stable train/test split by identifier hash.
 
-    Formula: indices = permute(range(n)); test = indices[:floor(n*test_size)]
+    Stable train/test split by identifier hash, p. 58.
+
+    The book's own stable alternative to a seeded shuffle: an instance
+    goes to the test set when ``crc32(int64(id)) < testratio * 2**32``.
+    It is a pure function of the identifiers, which is exactly why the
+    book prefers it -- and why it survives translation to R unchanged.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    test_size : array-like
-        Input data.
-    seed : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    ids : as documented for the shelf core
+        See ``morie.fn._geron.ttsplit``.
+    testratio : as documented for the shelf core
+        See ``morie.fn._geron.ttsplit``.
 
     Returns
     -------
-    result : dict
-        Keys: X_train, X_test, y_train, y_test
+    result : RichResult
+        Payload keys: ntest, ntrain, ratio.
 
     References
     ----------
-    Géron Ch 2, train_test_split section
+    Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 2 p. 58
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    if y.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Random train/test split with fixed seed",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    res = _core.ttsplit(ids=ids, testratio=testratio)
     return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Random train/test split with fixed seed",
-        }
+        title=_METHOD,
+        summary_lines=[("ntest", res["ntest"]), ("ntrain", res["ntrain"]), ("ratio", res["ratio"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+geron_train_test_split = ttsplit
+
+
 def cheatsheet():
-    return "grtts: Random train/test split with fixed seed"
+    return "ttsplit: Stable train/test split by identifier hash"

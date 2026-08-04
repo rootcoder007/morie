@@ -1,51 +1,85 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""R-learner (Nie-Wager) for CATE via residualization."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Residualized CATE estimator.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition) -- NOT LOCATED in the corpus copy
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["r_learner"]
+__all__ = ["rlearn", "r_learner"]
+
+_METHOD = "Residualized CATE estimator"
 
 
-def r_learner(Y, T, X, m_model, e_model, tau_model):
-    """
-    R-learner (Nie-Wager) for CATE via residualization
+def rlearn(y, t, m, e, x=None):
+    """Residualized CATE estimator.
 
-    Formula: min_{tau} sum_i [(Y_i - m(X_i)) - tau(X_i)*(T_i - e(X_i))]^2 + lambda*||tau||
+    Residualized (Robinson-style) CATE estimator.
+
+    NOT LOCATED IN THE EXTRACTED TEXT of the corpus copy of Molak,
+    which covers the S-, T-, X- and DR-learners but has no R-learner
+    section.  The estimator is therefore taken from the primary source
+    and quoted from it:
+
+    Robinson decomposition, eq. (1):
+    "Y_i - m*(X_i) = {W_i - e*(X_i)} tau*(X_i) + eps_i"
+
+    R-learner objective, eq. (4):
+    "tau_hat(.) = argmin_tau [ L_hat_n{tau(.)} + Lambda_n{tau(.)} ]"
+    with
+    "L_hat_n{tau(.)} = (1/n) sum_i [ {Y_i - m_hat^(-q(i))(X_i)}
+    - {W_i - e_hat^(-q(i))(X_i)} tau(X_i) ]^2"
+
+    -- Nie, X. and Wager, S. (2021), "Quasi-Oracle Estimation of
+    Heterogeneous Treatment Effects", Biometrika 108(2):299-319
+    (arXiv:1712.04912), where "e*(x) = pr(W = 1 | X = x)" and
+    "m*(x) = E(Y | X = x)".
+
+    This routine computes eq. (4) with the regularizer Lambda_n set to
+    zero and the CROSS-FITTED nuisance predictions m_hat^(-q(i)) and
+    e_hat^(-q(i)) supplied BY THE CALLER, so the fold assignment q(.)
+    -- the only random ingredient in the paper's construction -- lives
+    outside this function and both language arms see identical numbers.
+    ``x`` gives basis columns for a linear tau(X); omit it for a
+    constant treatment effect.
 
     Parameters
     ----------
-    Y : array-like
-        Input data.
-    T : array-like
-        Input data.
-    X : array-like
-        Input data.
-    m_model : array-like
-        Input data.
-    e_model : array-like
-        Input data.
-    tau_model : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._molak.rlearn``.
+    t : as documented for the shelf core
+        See ``morie.fn._molak.rlearn``.
+    m : as documented for the shelf core
+        See ``morie.fn._molak.rlearn``.
+    e : as documented for the shelf core
+        See ``morie.fn._molak.rlearn``.
+    x : as documented for the shelf core
+        See ``morie.fn._molak.rlearn``.
 
     Returns
     -------
-    result : dict
-        Keys: {'cate': 'array'}
+    result : RichResult
+        Payload keys: ate, loss, n.
 
     References
     ----------
-    Molak Ch 10
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition) -- NOT LOCATED in the corpus copy
     """
-    Y = np.asarray(Y, dtype=float)
-    n = int(Y) if Y.ndim == 0 else len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.rlearn(y=y, t=t, m=m, e=e, x=x)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "R-learner (Nie-Wager) for CATE via residualization"}
+        title=_METHOD,
+        summary_lines=[("ate", res["ate"]), ("loss", res["loss"]), ("n", res["n"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+r_learner = rlearn
+
+
 def cheatsheet():
-    return "rlear: R-learner (Nie-Wager) for CATE via residualization"
+    return "rlearn: Residualized CATE estimator"

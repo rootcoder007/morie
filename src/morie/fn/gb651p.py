@@ -1,72 +1,82 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Power function of control median test."""
+"""Power of the control median test under a specified alternative."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ctrl_median_power"]
+__all__ = ['ctrlmedpow', 'gibbons_ctrl_median_power']
 
 
-def gibbons_ctrl_median_power(n, p, alpha, cdf=None):
-    """
-    Power function of control median test
+def ctrlmedpow(m, n, d, h, nodes=2001):
+    """P(V <= d) under an alternative, Sec. 6.5.2.
 
-    Formula: beta(p) = P(V >= c | p = P(Y > M_X))
+    Book p. 258-259.  The alternative law of V is the mixture obtained
+    by conditioning on the control median: with h = F_X o F_Y^{-1},
+
+    .. math:: P[V = j] = \\binom{m}{j}\\frac{n!}{r!\\,r!}
+        \\int_0^1 h(v)^j [1-h(v)]^{m-j} v^r (1-v)^r\\,dv,
+
+    and the power of the lower-tailed test is the sum for j <= d.
+    Setting h(v) = v reproduces eq. (6.5.1) exactly, which is the
+    built-in check on this routine.  The integral uses composite
+    Simpson on a fixed grid, so both language arms agree bit for bit.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
-    p : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    m : int
+        Size of the X sample.
+    n : int
+        Size of the Y (control) sample, odd.
+    d : int
+        Rejection region is V <= d.
+    h : callable
+        v -> F_X(F_Y^{-1}(v)) on [0, 1]; ``lambda v: v`` gives H0.
+    nodes : int, optional
+        Simpson nodes (default 2001, forced odd).
 
     Returns
     -------
-    result : dict
-        Keys: power
+    RichResult
+        keys ``power``, ``pmf``, ``q`` (the implied F_X(M_Y) = h(0.5)),
+        ``r``, ``m``, ``n``, ``d``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.5 power
+    Gibbons & Chakraborti (2011), Sec. 6.5.2, p. 258.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Power function of control median test"}
-        )
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(n)
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    from .gb641p import _simpson
+
+    m = int(m)
+    n = int(n)
+    d = int(d)
+    if m < 1 or n < 1:
+        raise ValueError("m and n must be at least 1.")
+    if n % 2 == 0:
+        raise ValueError("the control sample size n must be odd (n = 2r+1).")
+    r = (n - 1) // 2
+    coef = math.factorial(n) / (math.factorial(r) * math.factorial(r))
+    pmf = []
+    for j in range(m + 1):
+        def integrand(v, j=j):
+            hv = float(h(v))
+            hv = min(1.0, max(0.0, hv))
+            return hv**j * (1.0 - hv) ** (m - j) * v**r * (1.0 - v) ** r
+
+        pmf.append(math.comb(m, j) * coef * _simpson(integrand, nodes))
+    power = sum(pmf[: min(d + 1, m + 1)]) if d >= 0 else 0.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "power": float(power),
+            "pmf": pmf,
+            "q": float(h(0.5)),
+            "r": int(r),
+            "m": m,
             "n": n,
-            "method": "Power function of control median test",
+            "d": d,
+            "method": "control median test power, Sec. 6.5.2",
         }
     )
 
 
-def cheatsheet():
-    return "gb651p: Power function of control median test"
+gibbons_ctrl_median_power = ctrlmedpow

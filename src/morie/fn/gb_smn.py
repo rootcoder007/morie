@@ -1,76 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})."""
+"""Exact null distribution of the two-sided Smirnov statistic."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_smirnov_2sided"]
+__all__ = ['smirnov2', 'gibbons_smirnov_2sided']
 
 
-def gibbons_smirnov_2sided(x, y, cdf=None):
-    """
-    Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})
+def smirnov2(d, m, n):
+    """P(D_{m,n} >= d) exactly, by lattice-path counting.
 
-    Formula: D_{m,n} = sup|S_m(x) - S_n(x)|
+    Section 6.3 (book p. 239).  Under H0 every one of the C(m+n, m)
+    arrangements of the pooled sample is equally likely, and each
+    corresponds to a monotone lattice path from (0,0) to (m,n).  The
+    two-sided statistic exceeds d exactly on the paths that touch the
+    boundary |i/m - j/n| >= d, so the exact tail is one minus the
+    fraction of paths that stay inside the band.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    d : float
+        Threshold, 0 < d <= 1.
+    m, n : int
+        The two sample sizes.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``sf`` (P(D >= d)), ``cdf``, ``npaths``, ``inside``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.3
+    Gibbons & Chakraborti (2011), Sec. 6.3, p. 239; tabulated as
+    Table I, p. 571.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    from .gb631 import _ks2count
+
+    d = float(d)
+    m = int(m)
+    n = int(n)
+    if m < 1 or n < 1:
+        raise ValueError("m and n must be at least 1.")
+    if not 0.0 < d <= 1.0:
+        raise ValueError("d must lie in (0, 1].")
+    sf = _ks2count(m, n, d, False)
+    total = math.comb(m + n, m)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "sf": float(sf),
+            "cdf": float(1.0 - sf),
+            "npaths": float(total),
+            "inside": float((1.0 - sf) * total),
+            "m": m,
             "n": n,
-            "method": "Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})",
+            "method": "exact two-sided Smirnov distribution",
         }
     )
 
 
-def cheatsheet():
-    return "gb_smn: Two-sided Smirnov statistic D_{m,n} = max(D+_{m,n}, D-_{m,n})"
+gibbons_smirnov_2sided = smirnov2

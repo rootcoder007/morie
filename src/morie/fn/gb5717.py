@@ -1,76 +1,75 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Use Wilcoxon signed-rank test to test symmetry of distribution."""
+"""Signed-rank test used as a test of symmetry about a known centre."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_symmetry"]
+__all__ = ['wsrsym', 'gibbons_wsrt_symmetry']
 
 
-def gibbons_wsrt_symmetry(x, mu0, cdf=None):
-    """
-    Use Wilcoxon signed-rank test to test symmetry of distribution
+def wsrsym(x, centre=0.0):
+    """Test H0: the population is symmetric about ``centre``.
 
-    Formula: T+ under H0 of symmetry about known center mu_0
+    Section 5.7.7 (book p. 211).  The signed-rank statistic assumes
+    symmetry as well as a median location, so with the centre held
+    fixed and known, rejection is evidence against symmetry itself.
+    The statistic and its standardisation are those of Sec. 5.7; the
+    skewness of the differences is returned as a direction indicator.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    mu0 : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 2.
+    centre : float, optional
+        Hypothesised centre of symmetry (default 0).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (T+), ``z``, ``p_value``, ``mean``,
+        ``var``, ``skewdir`` (+1 if T+ exceeds its null mean),
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7.7
+    Gibbons & Chakraborti (2011), Sec. 5.7.7, p. 211.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    ds = [float(v) - float(centre) for v in x]
+    ds = [v for v in ds if v != 0.0]
+    n = len(ds)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Use Wilcoxon signed-rank test to test symmetry of distribution",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 non-zero differences.")
+    a = [abs(v) for v in ds]
+    order = sorted(range(n), key=lambda i: a[i])
+    ranks = [0.0] * n
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and a[order[j + 1]] == a[order[i]]:
+            j += 1
+        mid = (i + j) / 2.0 + 1.0
+        for k in range(i, j + 1):
+            ranks[order[k]] = mid
+        i = j + 1
+    tplus = sum(ranks[i] for i in range(n) if ds[i] > 0.0)
+    mean = n * (n + 1.0) / 4.0
+    var = n * (n + 1.0) * (2.0 * n + 1.0) / 24.0
+    z = (tplus - mean) / math.sqrt(var)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Use Wilcoxon signed-rank test to test symmetry of distribution",
+            "statistic": float(tplus),
+            "z": float(z),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "mean": float(mean),
+            "var": float(var),
+            "skewdir": 1 if tplus > mean else (-1 if tplus < mean else 0),
+            "n": int(n),
+            "method": "signed-rank test of symmetry about a known centre",
         }
     )
 
 
-def cheatsheet():
-    return "gb5717: Use Wilcoxon signed-rank test to test symmetry of distribution"
+gibbons_wsrt_symmetry = wsrsym
