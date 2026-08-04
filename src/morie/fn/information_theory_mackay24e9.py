@@ -1,54 +1,54 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Posterior over the mean at known noise level.
 
-from . import _array_core as np
+MacKay (2003) eq. (24.9)-(24.11), p. 320
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_24_equation_9"]
+__all__ = ["mupostsg", "information_theory_mackay_chapter_24_equation_9"]
+
+_METHOD = "Posterior over the mean at known noise level"
 
 
-def information_theory_mackay_chapter_24_equation_9(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def mupostsg(xbar, n, sigma):
+    """Posterior over the mean at known noise level.
 
-    Formula: [EQ] n=1) = P(fxngN
+    (24.9)-(24.11) p.320 -- P(mu | data, sigma) = Normal(xbar, sigma^2/n).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    xbar : as documented for the shelf core
+        See ``morie.fn._itila.mupostsg``.
+    n : as documented for the shelf core
+        See ``morie.fn._itila.mupostsg``.
+    sigma : as documented for the shelf core
+        See ``morie.fn._itila.mupostsg``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay24e9')`` for the full guide.
+        Payload keys: mean, var, se.
 
     References
     ----------
-    Information theory MacKay, ch.24 eq.24.9
+    MacKay (2003) eq. (24.9)-(24.11), p. 320
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.mupostsg(xbar=xbar, n=n, sigma=sigma)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("mean", res["mean"]), ("var", res["var"]), ("se", res["se"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_24_equation_9 = mupostsg
+
+
 def cheatsheet():
-    return "information_theory_mackay24e9: Probability equation extracted from Information theory MacKay."
+    return "mupostsg: Posterior over the mean at known noise level -- MacKay (2003) eq. (24.9)-(24.11), p. 320"

@@ -1,74 +1,79 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Asymptotic normality of k-sample control median test vector W_N."""
+"""Asymptotic covariance of the k-sample control vector -- Theorem 10.7.1."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ctrl_normal_asymp"]
+__all__ = ['kctrlasymp', 'gibbons_ctrl_normal_asymp']
 
 
-def gibbons_ctrl_normal_asymp(groups, cdf=None):
-    """
-    Asymptotic normality of k-sample control median test vector W_N
+def kctrlasymp(lam, dens, pval):
+    """Covariance matrix Sigma of the limiting normal for W_N.
 
-    Formula: W_N ->_d MVN(0, Sigma) where sigma_ij given in theorem
+    Theorem 10.7.1 (book p. 375).  With lambda_i the limiting sample
+    fractions, f_i(theta_1) the densities at the control quantile and
+    p = F_1(theta_1), the (k-1)-vector
+    N^{1/2}[W_{i+1}/n_{i+1} - F_{i+1}(theta_1)] is asymptotically
+    normal with mean 0 and
+
+    .. math:: \\sigma_{ij} = \\frac{Q_i Q_j p(1-p)}{\\lambda_1}
+        + \\frac{\\delta_{ij} F_{i+1}(\\theta_1)
+                  [1 - F_{i+1}(\\theta_1)]}{\\lambda_{i+1}},
+
+    where Q_i = f_{i+1}(theta_1) / f_1(theta_1).
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
+    lam : sequence of float
+        lambda_1, ..., lambda_k, each in (0, 1).
+    dens : sequence of float
+        f_1(theta_1), ..., f_k(theta_1), all strictly positive.
+    pval : sequence of float
+        p = F_1(theta_1) first, then F_2(theta_1), ..., F_k(theta_1).
 
     Returns
     -------
-    result : dict
-        Keys: distribution
+    RichResult
+        keys ``sigma`` (the (k-1) x (k-1) matrix as nested lists),
+        ``q`` (the Q_i), ``p``, ``k``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 10.7.1
+    Gibbons & Chakraborti (2011), Theorem 10.7.1, p. 375.
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Asymptotic normality of k-sample control median test vector W_N",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    lam = [float(v) for v in lam]
+    dens = [float(v) for v in dens]
+    fv = [float(v) for v in pval]
+    k = len(lam)
+    if k < 2:
+        raise ValueError("need at least 2 populations.")
+    if len(dens) != k or len(fv) != k:
+        raise ValueError("lam, dens and pval must have equal length k.")
+    if any(not 0.0 < v < 1.0 for v in lam):
+        raise ValueError("every lambda must lie strictly inside (0, 1).")
+    if any(v <= 0.0 for v in dens):
+        raise ValueError("densities must be strictly positive.")
+    p = fv[0]
+    qs = [dens[i] / dens[0] for i in range(1, k)]
+    sig = []
+    for i in range(k - 1):
+        row = []
+        for j in range(k - 1):
+            v = qs[i] * qs[j] * p * (1.0 - p) / lam[0]
+            if i == j:
+                v += fv[i + 1] * (1.0 - fv[i + 1]) / lam[i + 1]
+            row.append(float(v))
+        sig.append(row)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Asymptotic normality of k-sample control median test vector W_N",
+            "sigma": sig,
+            "q": qs,
+            "p": float(p),
+            "k": int(k),
+            "method": "control-vector covariance, Theorem 10.7.1",
         }
     )
 
 
-def cheatsheet():
-    return "gb10711: Asymptotic normality of k-sample control median test vector W_N"
+gibbons_ctrl_normal_asymp = kctrlasymp

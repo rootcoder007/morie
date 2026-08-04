@@ -1,58 +1,60 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""d-separation criterion for conditional independence in DAGs."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""d-separation of two nodes given a conditioning set.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 6
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["d_separation"]
+__all__ = ["dseptest", "d_separation"]
+
+_METHOD = "d-separation of two nodes given a conditioning set"
 
 
-def d_separation(dag, X, Y, Z):
-    """
-    d-separation criterion for conditional independence in DAGs
+def dseptest(dag, x, y, z=()):
+    """d-separation of two nodes given a conditioning set.
 
-    Formula: X _|_G Y | Z if all paths between X and Y are blocked by Z; path blocked if: (1) Z on chain/fork, (2) collider not in Z and has no descendant in Z
+    d-separation of x and y given z, ch. 6.
+
+    Reuses ``morie.fn._dsep.d_separated``; the extra counts come from
+    the same path enumeration so callers can see WHY the answer came
+    out the way it did.
 
     Parameters
     ----------
-    dag : array-like
-        Input data.
-    X : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    Z : array-like
-        Input data.
+    dag : as documented for the shelf core
+        See ``morie.fn._molak.dseptest``.
+    x : as documented for the shelf core
+        See ``morie.fn._molak.dseptest``.
+    y : as documented for the shelf core
+        See ``morie.fn._molak.dseptest``.
+    z : as documented for the shelf core
+        See ``morie.fn._molak.dseptest``.
 
     Returns
     -------
-    result : dict
-        Keys: {'d_separated': 'bool'}
+    result : RichResult
+        Payload keys: dseparated, npaths, nnodes.
 
     References
     ----------
-    Molak Ch 5,6
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 6
     """
-    if isinstance(dag, dict):
-        dag = [len(v) if hasattr(v, "__len__") else float(v) for v in dag.values()] or [0.0]
-    dag = np.asarray(dag, dtype=float)
-    n = int(dag) if dag.ndim == 0 else len(dag)
-    result = float(np.mean(dag))
-    se = float(np.std(dag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.dseptest(dag=dag, x=x, y=y, z=z)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "d-separation criterion for conditional independence in DAGs",
-        }
+        title=_METHOD,
+        summary_lines=[("dseparated", res["dseparated"]), ("npaths", res["npaths"]), ("nnodes", res["nnodes"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+d_separation = dseptest
+
+
 def cheatsheet():
-    return "dsep: d-separation criterion for conditional independence in DAGs"
-
-
-# compact alias per ledger/NAMING.md
-dseparation = d_separation
+    return "dseptest: d-separation of two nodes given a conditioning set"

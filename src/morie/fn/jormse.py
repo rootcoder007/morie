@@ -1,45 +1,52 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Root mean squared error for forecasts."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Root mean squared error.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 566
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_rmse"]
+__all__ = ["rmse", "joseph_rmse"]
+
+_METHOD = "Root mean squared error"
 
 
-def joseph_rmse(y_true, y_pred):
-    """
-    Root mean squared error for forecasts
+def rmse(y, yhat):
+    """Root mean squared error.
 
-    Formula: RMSE = sqrt( (1/H) sum_{h=1..H} (y_{T+h} - y_hat_{T+h})^2 )
+    Root mean squared error, ch. 19 p. 566.
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.rmse``.
+    yhat : as documented for the shelf core
+        See ``morie.fn._joseph.rmse``.
 
     Returns
     -------
-    result : dict
-        Keys: rmse
+    result : RichResult
+        Payload keys: rmse, mse, mae, bias.
 
     References
     ----------
-    Joseph Ch 19, RMSE section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 566
     """
-    y_true = np.atleast_1d(np.asarray(y_true, dtype=float))
-    n = len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Root mean squared error for forecasts"})
+    res = _core.rmse(y=y, yhat=yhat)
+    return RichResult(
+        title=_METHOD,
+        summary_lines=[("rmse", res["rmse"]), ("mse", res["mse"]), ("mae", res["mae"]), ("bias", res["bias"])],
+        payload=dict(res, method=_METHOD),
+    )
+
+
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_rmse = rmse
 
 
 def cheatsheet():
-    return "jormse: Root mean squared error for forecasts"
-
-
-# compact alias per ledger/NAMING.md
-josephrmse = joseph_rmse
+    return "rmse: Root mean squared error"

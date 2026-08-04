@@ -1,40 +1,32 @@
-"""Weight truncation for IPTW."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Inverse-probability weight truncation."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["truncate_weights"]
+__all__ = ["wtrunc", "truncate_weights"]
 
 
-def truncate_weights(weights, quantile):
-    """
-    Weight truncation for IPTW
+def wtrunc(w, q=0.99):
+    """Inverse-probability weight truncation.
 
-    Formula: w_trunc = min(w, q_99)
+    w_trunc = min(w, quantile_q(w)).
 
-    Parameters
-    ----------
-    weights : array-like
-        Input data.
-    quantile : array-like
-        Input data.
+    Truncating inverse-probability weights trades a little bias for a
+    large drop in variance: a single near-zero propensity produces a
+    weight that dominates the estimate.  The quantile is the type-7
+    (R default) sample quantile.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Cole & Hernán (2008)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    weights = np.atleast_1d(np.asarray(weights, dtype=float))
-    n = len(weights)
-    result = float(np.mean(weights))
-    se = float(np.std(weights, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Weight truncation for IPTW"})
+    return RichResult(title="Inverse-probability weight truncation", payload=_c.wtrunc(w=w, q=q))
+
+
+truncate_weights = wtrunc
 
 
 def cheatsheet():
-    return "gtruncwt: Weight truncation for IPTW"
+    return "gtruncwt: Inverse-probability weight truncation"

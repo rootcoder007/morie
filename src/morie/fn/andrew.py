@@ -1,44 +1,63 @@
-"""Andrews sine wave weight."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Andrews sine IRLS weight function."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["andrews_sine"]
+__all__ = ['andrewswt', 'andrews_sine', 'andrewssine']
 
 
-def andrews_sine(y, A):
-    """
-    Andrews sine wave weight
+def andrewswt(r, A=1.339):
+    """Andrews sine IRLS weight function.
 
-    Formula: w(r) = sin(r/A)/(r/A) if |r|<=pi*A else 0
+    The IRLS weight is psi(r)/r, which at r = 0 is a removable singularity with limit one; evaluating it naively gives a division by zero at exactly the observation that fits best, so the limit is taken explicitly.
+
+
+    Formula: w(r) = sin(r/A)/(r/A) for |r| <= A pi, and 0 otherwise; w(0) = 1
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    A : array-like
-        Input data.
+    r : array-like
+        Scaled residuals.
+    A : float
+        Tuning constant; 1.339 gives 95% Gaussian efficiency.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``weight``, ``rejected``, ``A``, ``n``.
 
     References
     ----------
-    Andrews (1974)
+    Andrews (1974), A robust method for multiple linear regression,
+    Technometrics 16:523-531.  Not held locally; w(z) = sin(z/A)/(z/A)
+    for |z| <= A pi with A = 1.339 is as documented by statsmodels'
+    AndrewWave norm, the reference implementation.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Andrews sine wave weight"})
+    r = C.vec(r)
+    A = float(A)
+    if A <= 0:
+        raise ValueError("A must be positive")
+    lim = A * math.pi
+    w = []
+    for v in r:
+        if abs(v) > lim:
+            w.append(0.0)
+        elif v == 0.0:
+            w.append(1.0)
+        else:
+            w.append(math.sin(v / A) / (v / A))
+    return RichResult(payload={
+        "weight": w, "rejected": sum(1 for v in r if abs(v) > lim),
+        "A": A, "n": len(r), "method": "Andrews sine IRLS weight"})
+
+
+andrews_sine = andrewswt
+andrewssine = andrewswt
 
 
 def cheatsheet():
-    return "andrew: Andrews sine wave weight"
-
-
-# compact alias per ledger/NAMING.md
-andrewssine = andrews_sine
+    return "andrew: Andrews sine IRLS weight function."

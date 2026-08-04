@@ -1,76 +1,60 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer-von Mises goodness-of-fit statistic W^2."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_cramer_von_mises"]
+__all__ = ['cvmw2', 'gibbons_cramer_von_mises']
 
 
-def gibbons_cramer_von_mises(x, F0, cdf=None):
-    """
-    Cramer-von Mises goodness-of-fit statistic W^2
+def cvmw2(x, cdf):
+    """Cramer-von Mises W^2 for a fully specified continuous F_0.
 
-    Formula: W^2 = integral (S_n(x) - F0(x))^2 dF0(x) = sum(F0(X_(i)) - (2i-1)/(2n))^2 + 1/(12n)
+    Problem 4.14 (book p. 150).  Weighting the squared EDF deviation by
+    the null density and integrating gives the computing form
+
+    .. math:: W^2 = \\frac{1}{12n} + \\sum_{j=1}^{n}
+        \\left[Z_j - \\frac{2j-1}{2n}\\right]^2,
+        \\qquad Z_j = F_0(X_{(j)}),
+
+    which uses every deviation rather than only the supremum, and is
+    distribution-free by the same PIT argument as the KS statistic.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    F0 : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 1.
+    cdf : callable
+        The hypothesised continuous cdf F_0.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (W^2), ``nw2`` (n W^2), ``z``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Problem 4.14
+    Gibbons & Chakraborti (2011), Problem 4.14, p. 150.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Cramer-von Mises goodness-of-fit statistic W^2",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    z = [float(cdf(v)) for v in xs]
+    w2 = 1.0 / (12.0 * n) + sum(
+        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
+    )
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(w2),
+            "nw2": float(n * w2),
+            "z": z,
             "n": n,
-            "method": "Cramer-von Mises goodness-of-fit statistic W^2",
+            "method": "Cramer-von Mises W^2 (Gibbons Problem 4.14)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_cvmc: Cramer-von Mises goodness-of-fit statistic W^2"
+gibbons_cramer_von_mises = cvmw2

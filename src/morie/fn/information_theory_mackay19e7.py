@@ -1,54 +1,50 @@
-"""Dispersion equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Dynamic-equilibrium fitness-variance factor.
 
-from . import _array_core as np
+MacKay (2003) eq. (19.7), p. 271
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_19_equation_7"]
+__all__ = ["sexbeta", "information_theory_mackay_chapter_19_equation_7"]
+
+_METHOD = "Dynamic-equilibrium fitness-variance factor"
 
 
-def information_theory_mackay_chapter_19_equation_7(x):
-    """
-    Dispersion equation extracted from Information theory MacKay.
+def sexbeta(gamma):
+    """Dynamic-equilibrium fitness-variance factor.
 
-    Formula: = (1 2=)' 0.36. If we assume that
+    (19.7) p.271 -- dynamic-equilibrium variance factor 1/(1 - gamma).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    gamma : as documented for the shelf core
+        See ``morie.fn._itila.sexbeta``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay19e7')`` for the full guide.
+        Payload keys: onepbeta, beta.
 
     References
     ----------
-    Information theory MacKay, ch.19 eq.19.7
+    MacKay (2003) eq. (19.7), p. 271
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.sexbeta(gamma=gamma)
     return RichResult(
-        title="Dispersion equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Dispersion equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("onepbeta", res["onepbeta"]), ("beta", res["beta"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_19_equation_7 = sexbeta
+
+
 def cheatsheet():
-    return "information_theory_mackay19e7: Dispersion equation extracted from Information theory MacKay."
+    return "sexbeta: Dynamic-equilibrium fitness-variance factor -- MacKay (2003) eq. (19.7), p. 271"

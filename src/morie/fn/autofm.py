@@ -1,59 +1,33 @@
-"""Autoformer -- series decomp + auto-correlation."""
-
-from . import _array_core as np
-from . import _stats_core as stats
+# morie.fn -- function file (rootcoder007/morie)
+"""Series decomposition and autocorrelation."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["autoformer"]
+__all__ = ["serdecomp", "autoformer"]
 
 
-def autoformer(X, y, seq_len):
-    """
-    Autoformer -- series decomp + auto-correlation
+def serdecomp(x, kernel):
+    """Series decomposition and autocorrelation.
 
-    Formula: seasonal/trend decomp + auto-corr attention
+    Series decomposition and autocorrelation.
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    seq_len : array-like
-        Input data.
+    Wu et al. (2021), Autoformer.  A moving average of odd width
+    ``kernel``, replicate-padded at both ends, is the trend; the
+    remainder is the seasonal part.  The autocorrelation of the
+    seasonal part is what the architecture's auto-correlation block
+    scores periods with, so it is returned alongside.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Wu et al (2021) Autoformer
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(y), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Autoformer -- series decomp + auto-correlation",
-            }
-        )
-    result = stats.spearmanr(y[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Autoformer -- series decomp + auto-correlation",
-        }
-    )
+    return RichResult(title="Series decomposition and autocorrelation", payload=_c.serdecomp(x=x, kernel=kernel))
+
+
+autoformer = serdecomp
 
 
 def cheatsheet():
-    return "autofm: Autoformer -- series decomp + auto-correlation"
+    return "autofm: Series decomposition and autocorrelation"

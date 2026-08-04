@@ -1,82 +1,65 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Confidence interval for location shift from Wilcoxon rank-sum test."""
+"""Confidence interval for the shift from the rank-sum test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wrs_ci"]
+__all__ = ['wrsci', 'gibbons_wrs_ci']
 
 
-def gibbons_wrs_ci(x, y, alpha, cdf=None):
-    """
-    Confidence interval for location shift from Wilcoxon rank-sum test
+def wrsci(x, y, wcrit):
+    """Shift interval from the rank-sum critical value.
 
-    Formula: CI from Hodges-Lehmann estimates of Y_j - X_i
+    Section 8.2 (book p. 292).  The rank-sum and Mann-Whitney
+    statistics differ only by the constant m(m+1)/2, so the acceptance
+    region of W_N inverts to the same interval of ordered differences
+    X_i - Y_j.  With w the lower critical value of W_N, the index into
+    the ordered differences is k = w - m(m+1)/2, and the interval is
+    (D_(k+1), D_(mn-k)).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
+    wcrit : float
+        Lower critical value of W_N from Table J.
 
     Returns
     -------
-    result : dict
-        Keys: lower, upper
+    RichResult
+        keys ``lower``, ``upper``, ``k``, ``estimate``, ``ndiff``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 8.2 CI
+    Gibbons & Chakraborti (2011), Sec. 8.2, p. 292.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Confidence interval for location shift from Wilcoxon rank-sum test",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    k = int(round(float(wcrit) - m * (m + 1) / 2.0))
+    d = sorted(xi - yj for xi in xs for yj in ys)
+    nd = len(d)
+    if not 0 <= k < nd:
+        raise ValueError("wcrit implies an index outside 0..mn-1.")
+    mid = nd // 2
+    est = d[mid] if nd % 2 else (d[mid - 1] + d[mid]) / 2.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "lower": float(d[k]),
+            "upper": float(d[nd - 1 - k]),
+            "k": int(k),
+            "estimate": float(est),
+            "ndiff": int(nd),
+            "m": m,
             "n": n,
-            "method": "Confidence interval for location shift from Wilcoxon rank-sum test",
+            "method": "rank-sum shift CI from ordered differences",
         }
     )
 
 
-def cheatsheet():
-    return "gb821c: Confidence interval for location shift from Wilcoxon rank-sum test"
-
-
-# compact alias per ledger/NAMING.md
-gibbonswrsci = gibbons_wrs_ci
+gibbons_wrs_ci = wrsci

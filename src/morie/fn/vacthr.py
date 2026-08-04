@@ -1,40 +1,60 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Critical vaccination threshold for herd immunity."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["vaccination_threshold"]
+__all__ = ['vaccthresh', 'vaccination_threshold']
 
 
-def vaccination_threshold(R0):
-    """
-    Critical vaccination threshold for herd immunity
+def vaccthresh(R0, efficacy=1.0):
+    """Critical vaccination threshold for herd immunity.
 
-    Formula: p_c = 1 - 1/R0
+    The threshold is the fraction that must be immune, not the fraction that must be vaccinated: an imperfect vaccine needs coverage p_c/e, which exceeds one -- meaning herd immunity is unreachable by vaccination alone -- as soon as e < 1 - 1/R0. That case is reported rather than clipped away.
+
+
+    Formula: p_c = 1 - 1/R0; with vaccine efficacy e the coverage needed is p_c/e
 
     Parameters
     ----------
-    R0 : array-like
-        Input data.
+    R0 : float or array-like
+        Basic reproduction number, greater than 1.
+    efficacy : float
+        Vaccine efficacy in (0, 1].
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``threshold``, ``coverage``, ``feasible``, ``R0``, ``efficacy``.
 
     References
     ----------
-    Anderson-May (1991)
+    Anderson and May (1991), Infectious Diseases of Humans: Dynamics and
+    Control, Oxford University Press.  Not held locally; p_c = 1 - 1/R0 is
+    the standard published result and is stated in the same form in every
+    open source consulted.
     """
-    R0 = np.atleast_1d(np.asarray(R0, dtype=float))
-    n = len(R0)
-    result = float(np.mean(R0))
-    se = float(np.std(R0, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Critical vaccination threshold for herd immunity"}
-    )
+    r0 = C.vec(R0)
+    e = float(efficacy)
+    if e <= 0 or e > 1:
+        raise ValueError("efficacy must be in (0, 1]")
+    if any(v <= 0 for v in r0):
+        raise ValueError("R0 must be positive")
+    pc = [1.0 - 1.0 / v for v in r0]
+    cov = [p / e for p in pc]
+    return RichResult(payload={
+        "threshold": pc if len(pc) > 1 else pc[0],
+        "coverage": cov if len(cov) > 1 else cov[0],
+        "feasible": [c <= 1.0 for c in cov] if len(cov) > 1 else cov[0] <= 1.0,
+        "R0": r0 if len(r0) > 1 else r0[0], "efficacy": e,
+        "method": "Critical vaccination threshold"})
+
+
+vaccination_threshold = vaccthresh
 
 
 def cheatsheet():
-    return "vacthr: Critical vaccination threshold for herd immunity"
+    return "vacthr: Critical vaccination threshold for herd immunity."

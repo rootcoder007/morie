@@ -1,40 +1,17 @@
-"""Hellinger distance."""
+# morie.fn -- tail3 batch (rootcoder007/morie)
+"""Hellinger distance -- re-export of :mod:`morie.fn.hellie`.
 
-from . import _array_core as np
+The canonical implementation, with the source discussion, lives in
+``morie.fn.hellie``; this module exists because the extraction pipeline
+created two entries for the same method (Hellinger 1909).
+"""
 
-from ._richresult import RichResult
+from __future__ import annotations
+
+from .hellie import hellinger_distance
 
 __all__ = ["hellinger_distance"]
 
 
-def hellinger_distance(p, q):
-    """
-    Hellinger distance
-
-    Formula: H(p,q) = (1/sqrt 2) sqrt(sum(sqrt p - sqrt q)^2)
-
-    Parameters
-    ----------
-    p : array-like
-        Input data.
-    q : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Hellinger (1909)
-    """
-    p = np.atleast_1d(np.asarray(p, dtype=float))
-    n = len(p)
-    result = float(np.mean(p))
-    se = float(np.std(p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Hellinger distance"})
-
-
 def cheatsheet():
-    return "hellngd: Hellinger distance"
+    return "hellngd(p, q): Hellinger distance (re-export of hellie)."

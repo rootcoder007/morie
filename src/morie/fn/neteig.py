@@ -1,42 +1,48 @@
-"""Eigenvector centrality (largest eigenvector of A)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Eigenvector centrality of a network (re-export)."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["eigenvector_centrality"]
+__all__ = ['neteigcent', 'eigenvector_centrality']
 
 
-def eigenvector_centrality(y, A):
-    """
-    Eigenvector centrality (largest eigenvector of A)
+def neteigcent(A):
+    """Eigenvector centrality of a network (re-export).
 
-    Formula: x = (1/lambda) A x; lambda = leading eigenvalue
+    The shelf lists eigenvector centrality three times. One implementation, delegating names.
+
+
+    Formula: see eigcent
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    A : array-like
-        Input data.
+    A : array-like, shape (n, n)
+        Symmetric non-negative adjacency matrix.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        the payload of :func:`morie.fn.eigcen.eigcent`.
 
     References
     ----------
-    Bonacich (1972)
+    Bonacich (1972), Factoring and weighting approaches to status scores
+    and clique identification, Journal of Mathematical Sociology
+    2:113-120.  Paywalled; the measure is the principal eigenvector of
+    the adjacency matrix, as it is universally described in the
+    centrality literature (e.g. Bonacich 2000, Social Networks
+    22:357-365, which restates his own definition).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Eigenvector centrality (largest eigenvector of A)"}
-    )
+    from .eigcen import eigcent as _e
+    return _e(A)
+
+
+eigenvector_centrality = neteigcent
 
 
 def cheatsheet():
-    return "neteig: Eigenvector centrality (largest eigenvector of A)"
+    return "neteig: Eigenvector centrality of a network (re-export)."

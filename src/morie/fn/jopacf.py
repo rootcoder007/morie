@@ -1,58 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Partial autocorrelation function at lag k (controls for intermediate lags)."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Partial autocorrelation by Durbin-Levinson.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 3
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_partial_autocorrelation"]
+__all__ = ["pacfts", "joseph_partial_autocorrelation"]
+
+_METHOD = "Partial autocorrelation by Durbin-Levinson"
 
 
-def joseph_partial_autocorrelation(y, max_lag):
-    """
-    Partial autocorrelation function at lag k (controls for intermediate lags)
+def pacfts(x, maxlag=20):
+    """Partial autocorrelation by Durbin-Levinson.
 
-    Formula: PACF(k) = last coefficient in AR(k) fit via Yule-Walker
+    Partial autocorrelation by the Durbin-Levinson recursion, ch. 3.
+
+    Fixed recursion depth, no tolerance test, so both arms take
+    identical steps.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    max_lag : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.pacfts``.
+    maxlag : as documented for the shelf core
+        See ``morie.fn._joseph.pacfts``.
 
     Returns
     -------
-    result : dict
-        Keys: pacf
+    result : RichResult
+        Payload keys: p1, ci, nsignif, n.
 
     References
     ----------
-    Joseph Ch 3, PACF section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 3
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(y), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Partial autocorrelation function at lag k (controls for intermediate lags)",
-            }
-        )
-    result = stats.spearmanr(y[:n], y[:n])
+    res = _core.pacfts(x=x, maxlag=maxlag)
     return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Partial autocorrelation function at lag k (controls for intermediate lags)",
-        }
+        title=_METHOD,
+        summary_lines=[("p1", res["p1"]), ("ci", res["ci"]), ("nsignif", res["nsignif"]), ("n", res["n"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_partial_autocorrelation = pacfts
+
+
 def cheatsheet():
-    return "jopacf: Partial autocorrelation function at lag k (controls for intermediate lags)"
+    return "pacfts: Partial autocorrelation by Durbin-Levinson"

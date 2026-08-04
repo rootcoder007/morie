@@ -1,80 +1,61 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Stratified train/test split preserving class proportions."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Stratified test split by proportional allocation.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 2 pp. 60-61
+"""
+
+from . import _geron as _core
 
 from ._richresult import RichResult
 
-__all__ = ["geron_stratified_split"]
+__all__ = ["stratsplt", "geron_stratified_split"]
+
+_METHOD = "Stratified test split by proportional allocation"
 
 
-def geron_stratified_split(X, y, test_size, cdf=None):
-    """
-    Stratified train/test split preserving class proportions
+def stratsplt(strata, testratio=0.2):
+    """Stratified test split by proportional allocation.
 
-    Formula: for each stratum s: sample floor(|s| * test_size) into test, rest into train
+    Stratified test split by proportional allocation, pp. 60-61.
+
+    The book's point is the GUARANTEE, not the shuffle: "the right
+    number of instances are sampled from each stratum to guarantee that
+    the test set is representative".  Allocation here is exactly that
+    -- ``round(n_s * testratio)`` from each stratum -- with the members
+    taken in their original order so the result is reproducible without
+    a seed.  ``maxdev`` reports the largest gap between a stratum's
+    share of the test set and its share of the population, which is the
+    quantity the book checks on p. 61.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    test_size : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    strata : as documented for the shelf core
+        See ``morie.fn._geron.stratsplt``.
+    testratio : as documented for the shelf core
+        See ``morie.fn._geron.stratsplt``.
 
     Returns
     -------
-    result : dict
-        Keys: X_train, X_test, y_train, y_test
+    result : RichResult
+        Payload keys: ntest, ntrain, maxdev, nstrata.
 
     References
     ----------
-    Géron Ch 2, Stratified Sampling section
+    Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 2 pp. 60-61
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    if y.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Stratified train/test split preserving class proportions",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    res = _core.stratsplt(strata=strata, testratio=testratio)
     return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Stratified train/test split preserving class proportions",
-        }
+        title=_METHOD,
+        summary_lines=[("ntest", res["ntest"]), ("ntrain", res["ntrain"]), ("maxdev", res["maxdev"]), ("nstrata", res["nstrata"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+geron_stratified_split = stratsplt
+
+
 def cheatsheet():
-    return "grstra: Stratified train/test split preserving class proportions"
+    return "stratsplt: Stratified test split by proportional allocation"

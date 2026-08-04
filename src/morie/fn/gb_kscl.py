@@ -1,75 +1,89 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40."""
+"""Critical values of the one-sample KS statistic (Table F)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks_critical_values"]
+__all__ = ['kscrit', 'gibbons_ks_critical_values']
 
 
-def gibbons_ks_critical_values(n, alpha, cdf=None):
-    """
-    KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40
+def kscrit(n, alpha=0.05, exact=True):
+    """Two-sided critical value D_{n,alpha} of the KS statistic.
 
-    Formula: D_{n,alpha} approx d_alpha / sqrt(n) for large n where d_0.05 = 1.36
+    Table F (book p. 565) tabulates the values solving
+    P(D_n >= D_{n,alpha}) = alpha.  Rather than transcribing the table,
+    the exact value is obtained by bisecting the exact cdf of Theorem
+    4.3.2 (``morie.fn.gb432.ksexact``) over 200 fixed steps -- a fixed
+    iteration count, so the answer is bit-identical across languages.
+    The asymptotic value is the Kolmogorov limit, k_alpha/sqrt(n) with
+    Q(k) = 2 sum_j (-1)^{j-1} exp(-2 j^2 k^2) = alpha.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    n : int
+        Sample size.
+    alpha : float, optional
+        Upper-tail probability (default 0.05).
+    exact : bool, optional
+        Bisect the exact cdf (default True); otherwise only the
+        asymptotic value is returned.
 
     Returns
     -------
-    result : dict
-        Keys: critical_value
+    RichResult
+        keys ``dcrit``, ``dcrit_asymp``, ``k_alpha``, ``n``,
+        ``alpha``, ``method``.
 
     References
     ----------
-    Gibbons Table F
+    Gibbons & Chakraborti (2011), Table F, p. 565; Theorem 4.3.3
+    (Kolmogorov limit), p. 108.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40",
-            }
-        )
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(n)
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    from .gb432 import ksexact
+
+    n = int(n)
+    alpha = float(alpha)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+
+    def q(k):
+        s = 0.0
+        for j in range(1, 101):
+            s += (-1.0) ** (j - 1) * math.exp(-2.0 * j * j * k * k)
+        return 2.0 * s
+
+    lo, hi = 1e-6, 10.0
+    for _ in range(200):
+        mid = (lo + hi) / 2.0
+        if q(mid) > alpha:
+            lo = mid
+        else:
+            hi = mid
+    ka = (lo + hi) / 2.0
+    dasy = ka / math.sqrt(n)
+    dex = float("nan")
+    if exact:
+        lo, hi = 1e-9, 1.0
+        for _ in range(200):
+            mid = (lo + hi) / 2.0
+            if 1.0 - ksexact(mid, n)["cdf"] > alpha:
+                lo = mid
+            else:
+                hi = mid
+        dex = (lo + hi) / 2.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "dcrit": float(dex),
+            "dcrit_asymp": float(dasy),
+            "k_alpha": float(ka),
             "n": n,
-            "method": "KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40",
+            "alpha": alpha,
+            "method": "KS critical value (Table F) by exact bisection",
         }
     )
 
 
-def cheatsheet():
-    return "gb_kscl: KS test critical values D_{n,alpha}: exact for n <= 40, asymptotic for n > 40"
+gibbons_ks_critical_values = kscrit

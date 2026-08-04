@@ -1,54 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Separation set (Sepset) for PC algorithm edge removal."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Smallest separating set for two nodes.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 6
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["separation_set"]
+__all__ = ["sepset", "separation_set"]
+
+_METHOD = "Smallest separating set for two nodes"
 
 
-def separation_set(X, Y, ci_tests):
-    """
-    Separation set (Sepset) for PC algorithm edge removal
+def sepset(dag, x, y, maxsize=3):
+    """Smallest separating set for two nodes.
 
-    Formula: Sepset(X,Y) = Z such that X _|_ Y | Z; stored during skeleton learning
+    Smallest set that d-separates x from y, searched in a fixed order.
+
+    The corpus copy discusses conditioning sets that block paths (ch. 6)
+    but prints no named "separating set" definition, so the search rule
+    is stated here: candidate sets are drawn from the union of the
+    adjacencies of x and y, taken in sorted order and in increasing
+    size, and the FIRST separating set found is returned.  That order
+    is deterministic, so both language arms return the same set.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    ci_tests : array-like
-        Input data.
+    dag : as documented for the shelf core
+        See ``morie.fn._molak.sepset``.
+    x : as documented for the shelf core
+        See ``morie.fn._molak.sepset``.
+    y : as documented for the shelf core
+        See ``morie.fn._molak.sepset``.
+    maxsize : as documented for the shelf core
+        See ``morie.fn._molak.sepset``.
 
     Returns
     -------
-    result : dict
-        Keys: {'sepset': 'set'}
+    result : RichResult
+        Payload keys: found, size, ntested.
 
     References
     ----------
-    Molak Ch 13
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 6
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.sepset(dag=dag, x=x, y=y, maxsize=maxsize)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Separation set (Sepset) for PC algorithm edge removal",
-        }
+        title=_METHOD,
+        summary_lines=[("found", res["found"]), ("size", res["size"]), ("ntested", res["ntested"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+separation_set = sepset
+
+
 def cheatsheet():
-    return "sepst: Separation set (Sepset) for PC algorithm edge removal"
-
-
-# compact alias per ledger/NAMING.md
-separationset = separation_set
+    return "sepset: Smallest separating set for two nodes"

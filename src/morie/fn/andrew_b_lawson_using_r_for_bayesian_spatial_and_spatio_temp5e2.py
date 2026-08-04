@@ -1,54 +1,32 @@
-"""CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Posterior-averaged Poisson residual."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2"]
+__all__ = ["postres", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2(x):
-    """
-    CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def postres(y, e, theta_draws):
+    """Posterior-averaged Poisson residual.
 
-    Formula: ri = yi − 1
+    r_i = y_i - (1/G) sum_g e_i theta_i^(g)   (Lawson eq. 5.2).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Posterior-averaged Poisson residual for tract counts with expected
+    count e_i.  ``theta_draws[g][i]`` is draw g of the relative risk for
+    tract i; the average is taken over the posterior sample, which is
+    what distinguishes (5.2) from a plug-in residual.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.5 eq.5.2
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Posterior-averaged Poisson residual", payload=_c.postres(y=y, e=e, theta_draws=theta_draws))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2 = postres
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2: CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp5e2: Posterior-averaged Poisson residual"

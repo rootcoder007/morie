@@ -1,40 +1,34 @@
-"""TimesNet -- 2D periodic blocks."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Dominant periods from the amplitude spectrum."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["timesnet"]
+__all__ = ["fftperiod", "timesnet"]
 
 
-def timesnet(X, top_k):
-    """
-    TimesNet -- 2D periodic blocks
+def fftperiod(x, k=1):
+    """Dominant periods from the amplitude spectrum.
 
-    Formula: FFT to find periods; reshape to 2D; Inception
+    Dominant periods from the amplitude spectrum.
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    top_k : array-like
-        Input data.
+    Wu et al. (2023), TimesNet.  The periods that carry the most
+    amplitude are read off the discrete Fourier transform and used to
+    fold the 1-D series into a 2-D tensor, which is how intraperiod and
+    interperiod variation get separated.  Frequency 0 is excluded and
+    only the first half of the spectrum is used, since the rest is its
+    mirror image.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Wu et al (2023) TimesNet
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TimesNet -- 2D periodic blocks"})
+    return RichResult(title="Dominant periods from the amplitude spectrum", payload=_c.fftperiod(x=x, k=k))
+
+
+timesnet = fftperiod
 
 
 def cheatsheet():
-    return "timesnet: TimesNet -- 2D periodic blocks"
+    return "timesnet: Dominant periods from the amplitude spectrum"

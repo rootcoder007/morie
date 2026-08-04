@@ -1,54 +1,54 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Posterior over the input of a Gaussian channel.
 
-from . import _array_core as np
+MacKay (2003) eq. (11.27)-(11.29), p. 182
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_11_equation_28"]
+__all__ = ["gchpost", "information_theory_mackay_chapter_11_equation_28"]
+
+_METHOD = "Posterior over the input of a Gaussian channel"
 
 
-def information_theory_mackay_chapter_11_equation_28(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def gchpost(y, v, s2):
+    """Posterior over the input of a Gaussian channel.
 
-    Formula: [EQ] 1=v + 1=2 y + 1=v
+    (11.27)-(11.29) p.182 -- posterior over a Gaussian channel input.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._itila.gchpost``.
+    v : as documented for the shelf core
+        See ``morie.fn._itila.gchpost``.
+    s2 : as documented for the shelf core
+        See ``morie.fn._itila.gchpost``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay11e28')`` for the full guide.
+        Payload keys: mean, var, sd.
 
     References
     ----------
-    Information theory MacKay, ch.11 eq.11.28
+    MacKay (2003) eq. (11.27)-(11.29), p. 182
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.gchpost(y=y, v=v, s2=s2)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("mean", res["mean"]), ("var", res["var"]), ("sd", res["sd"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_11_equation_28 = gchpost
+
+
 def cheatsheet():
-    return "information_theory_mackay11e28: Probability equation extracted from Information theory MacKay."
+    return "gchpost: Posterior over the input of a Gaussian channel -- MacKay (2003) eq. (11.27)-(11.29), p. 182"

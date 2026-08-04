@@ -1,74 +1,70 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean and variance of Jonckheere-Terpstra statistic under H0."""
+"""Null moments of the Jonckheere-Terpstra statistic."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_jt_moments"]
+__all__ = ['jtmom', 'gibbons_jt_moments']
 
 
-def gibbons_jt_moments(n_i, cdf=None):
-    """
-    Mean and variance of Jonckheere-Terpstra statistic under H0
+def jtmom(ns):
+    """E_0[B] and Var_0[B] -- eqs. (10.6.2) and (10.6.3).
 
-    Formula: E(J) = N^2 - sum n_i^2)/4; complex variance formula
+    Book pp. 365-366.  Since E[U_ij] = n_i n_j / 2 under H0,
+
+    .. math:: E_0[B] = \\sum_{i<j}\\frac{n_i n_j}{2}
+        = \\frac{N^2 - \\sum_i n_i^2}{4},
+
+    and the variance the book leaves as an exercise is
+
+    .. math:: Var_0[B] = \\frac{N^2(2N+3)
+        - \\sum_i n_i^2 (2n_i+3)}{72}.
+
+    The pairwise sum is computed as well as the closed form, so the
+    first identity is verified rather than assumed.
 
     Parameters
     ----------
-    n_i : array-like
-        Input data.
+    ns : sequence of int
+        The k sample sizes.
 
     Returns
     -------
-    result : dict
-        Keys: mean, variance
+    RichResult
+        keys ``mean``, ``mean_pairwise``, ``var``, ``sd``, ``k``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.6
+    Gibbons & Chakraborti (2011), eqs. (10.6.2)-(10.6.3), pp. 365-366.
     """
-    n_i = np.asarray(n_i, dtype=float)
-    n = int(n_i) if n_i.ndim == 0 else len(n_i)
-    if n_i.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Mean and variance of Jonckheere-Terpstra statistic under H0",
-            }
-        )
-    x_sorted = np.sort(n_i)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(n_i), scale=np.std(n_i, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    nv = [int(v) for v in ns]
+    k = len(nv)
+    if k < 2:
+        raise ValueError("need at least 2 samples.")
+    if any(v < 1 for v in nv):
+        raise ValueError("sample sizes must be at least 1.")
+    nn = sum(nv)
+    mean = (float(nn) ** 2 - sum(float(v) ** 2 for v in nv)) / 4.0
+    pair = sum(
+        nv[i] * nv[j] / 2.0 for i in range(k) for j in range(i + 1, k)
+    )
+    var = (
+        float(nn) ** 2 * (2.0 * nn + 3.0)
+        - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in nv)
+    ) / 72.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Mean and variance of Jonckheere-Terpstra statistic under H0",
+            "mean": float(mean),
+            "mean_pairwise": float(pair),
+            "var": float(var),
+            "sd": float(math.sqrt(var)),
+            "k": int(k),
+            "n": int(nn),
+            "method": "JT null moments, eqs. (10.6.2)-(10.6.3)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1061m: Mean and variance of Jonckheere-Terpstra statistic under H0"
+gibbons_jt_moments = jtmom

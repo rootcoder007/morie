@@ -1,54 +1,50 @@
-"""CountModels equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Gaussian approximation to the central binomial coefficient.
 
-from . import _array_core as np
+MacKay (2003) eq. (1.40), p. 17
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_1_equation_40"]
+__all__ = ["cbcapx", "information_theory_mackay_chapter_1_equation_40"]
+
+_METHOD = "Gaussian approximation to the central binomial coefficient"
 
 
-def information_theory_mackay_chapter_1_equation_40(x):
-    """
-    CountModels equation extracted from Information theory MacKay.
+def cbcapx(n):
+    """Gaussian approximation to the central binomial coefficient.
 
-    Formula: dN=2e and N=2 is not important in this t
+    (1.40) p.17 -- Gaussian approximation to the central binomial.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    n : as documented for the shelf core
+        See ``morie.fn._itila.cbcapx``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay1e40')`` for the full guide.
+        Payload keys: approx, exact, relerr.
 
     References
     ----------
-    Information theory MacKay, ch.1 eq.1.40
+    MacKay (2003) eq. (1.40), p. 17
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.cbcapx(n=n)
     return RichResult(
-        title="CountModels equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("approx", res["approx"]), ("exact", res["exact"]), ("relerr", res["relerr"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_1_equation_40 = cbcapx
+
+
 def cheatsheet():
-    return "information_theory_mackay1e40: CountModels equation extracted from Information theory MacKay."
+    return "cbcapx: Gaussian approximation to the central binomial coefficient -- MacKay (2003) eq. (1.40), p. 17"

@@ -1,38 +1,31 @@
-"""Kirchhoff index = total resistance."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Kirchhoff index."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["sgt_kirchhoff_index"]
+__all__ = ["kirchidx", "sgt_kirchhoff_index"]
 
 
-def sgt_kirchhoff_index(A):
-    """
-    Kirchhoff index = total resistance
+def kirchidx(A, tol=1e-09):
+    """Kirchhoff index.
 
-    Formula: Kf = (1/2) Σ_{i,j} R_{ij} = n Σ 1/λ_k
+    Kf = (1/2) sum_ij R_ij = n sum_{k>0} 1/lambda_k   (Klein & Randic 1993).
 
-    Parameters
-    ----------
-    A : array-like
-        Input data.
+    The Kirchhoff index.  Both forms are returned because their
+    agreement is the paper's identity and a useful check on the
+    spectral computation.
 
     Returns
     -------
-    result : dict
-        Keys: Kf
-
-    References
-    ----------
-    Klein & Randić (1993)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Kirchhoff index = total resistance"})
+    return RichResult(title="Kirchhoff index", payload=_c.kirchidx(A=A, tol=tol))
+
+
+sgt_kirchhoff_index = kirchidx
 
 
 def cheatsheet():
-    return "sgtkir: Kirchhoff index = total resistance"
+    return "sgtkir: Kirchhoff index"

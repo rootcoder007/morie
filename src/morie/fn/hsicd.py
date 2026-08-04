@@ -1,81 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Hilbert-Schmidt Independence Criterion (HSIC) for nonparametric independence testing."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Hilbert-Schmidt independence criterion.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 13 p. 354 (formula not printed there)
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["hsic_independence"]
+__all__ = ["hsicstat", "hsic_independence"]
+
+_METHOD = "Hilbert-Schmidt independence criterion"
 
 
-def hsic_independence(X, Y, kernel, alpha, cdf=None):
-    """
-    Hilbert-Schmidt Independence Criterion (HSIC) for nonparametric independence testing
+def hsicstat(a, b, sigma_a=None, sigma_b=None, threshold=0.01):
+    """Hilbert-Schmidt independence criterion.
 
-    Formula: HSIC(X,Y) = (1/n^2)*tr(K_X*H*K_Y*H); H=I-11'/n; zero iff X _|_ Y for characteristic kernels
+    Hilbert-Schmidt independence criterion for an ANM residual test.
+
+    The corpus copy only CALLS gCastle's ``hsic_test`` (ch. 13, p. 354)
+    and prints no formula; the book's own citation for the criterion is
+    Gretton et al. (2007).  The estimator here is the existing biased
+    V-statistic in ``morie.fn.anmod.hsic``, ``tr(K H L H)/n^2`` with
+    RBF Gram matrices and the median-heuristic bandwidth, reused rather
+    than reimplemented.  ``threshold`` is a caller-supplied cutoff --
+    no null distribution is simulated, so nothing here is random.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    Y : array-like
-        Input data.
-    kernel : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    a : as documented for the shelf core
+        See ``morie.fn._molak.hsicstat``.
+    b : as documented for the shelf core
+        See ``morie.fn._molak.hsicstat``.
+    sigma_a : as documented for the shelf core
+        See ``morie.fn._molak.hsicstat``.
+    sigma_b : as documented for the shelf core
+        See ``morie.fn._molak.hsicstat``.
+    threshold : as documented for the shelf core
+        See ``morie.fn._molak.hsicstat``.
 
     Returns
     -------
-    result : dict
-        Keys: {'hsic': 'float', 'p_value': 'float'}
+    result : RichResult
+        Payload keys: hsic, nhsic, independent.
 
     References
     ----------
-    Molak Ch 13
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 13 p. 354 (formula not printed there)
     """
-    X = np.asarray(X, dtype=float)
-    if X.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    X = X.ravel()
-    n = len(X)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Hilbert-Schmidt Independence Criterion (HSIC) for nonparametric independence testing",
-            }
-        )
-    x_sorted = np.sort(X)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(X), scale=np.std(X, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    res = _core.hsicstat(a=a, b=b, sigma_a=sigma_a, sigma_b=sigma_b, threshold=threshold)
     return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Hilbert-Schmidt Independence Criterion (HSIC) for nonparametric independence testing",
-        }
+        title=_METHOD,
+        summary_lines=[("hsic", res["hsic"]), ("nhsic", res["nhsic"]), ("independent", res["independent"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+hsic_independence = hsicstat
+
+
 def cheatsheet():
-    return "hsicd: Hilbert-Schmidt Independence Criterion (HSIC) for nonparametric independence testing"
+    return "hsicstat: Hilbert-Schmidt independence criterion"

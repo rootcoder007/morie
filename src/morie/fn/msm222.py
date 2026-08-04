@@ -1,55 +1,21 @@
-r"""Numbered display equation (9.37) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Support vector classifier (soft margin) -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.34), (9.35), (9.36), (9.37) p.354 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm218 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_37"]
+from .msm218 import softsvm
 
+__all__ = ["softsvm", "mvsml_ridge_lasso_elastic_eq_9_37"]
 
-def mvsml_ridge_lasso_elastic_eq_9_37(s, T, like, a, the, total):
-    r"""
-    Numbered display equation (9.37) from MVSML chapter 9.
-
-    Formula: ’s. T is like a as the total amount of errors allowed since it is the bound of the sum of \zetai budget for the amount that the margin can be violated by the n observations. For T close to zero, the soft-margin SVM allows very little error and is similar to the hard-margin classiﬁer (James et al. 2013). The larger T is, the more error is allowed, which in turn allows for wider margins. These parameters play a key role in controlling the bias-variance trade-off of this statistical learning method. In practice, T is a hyperparameter that needs to be tuned, for example, by using cross-validation. M is the width of the margin and we seek to make this quantity as large as possible. In
-
-    Parameters
-    ----------
-    s : array-like
-        Input data.
-    T : array-like
-        Input data.
-    like : array-like
-        Input data.
-    a : array-like
-        Input data.
-    the : array-like
-        Input data.
-    total : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.37) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    s = np.atleast_1d(np.asarray(s, dtype=float))
-    n = len(s)
-    result = float(np.mean(s))
-    se = float(np.std(s, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.37) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_37 = softsvm
 
 
 def cheatsheet():
-    return "msm222: Numbered display equation (9.37) from MVSML chapter 9."
+    return "msm222: Support vector classifier (soft margin) (see msm218)"

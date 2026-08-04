@@ -1,82 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Covariance of two linear rank statistics B_N and T_N."""
+"""Covariance of two linear rank statistics -- Theorem 7.3.3."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_linrank_covariance"]
+__all__ = ['lrankcov', 'gibbons_linrank_covariance']
 
 
-def gibbons_linrank_covariance(a, b, m, n, N, cdf=None):
-    """
-    Covariance of two linear rank statistics B_N and T_N
+def lrankcov(a, b, m, n):
+    """Cov(B_N, T_N) for two linear rank statistics on the same ranking.
 
-    Formula: cov(B,T) = mn/(N^2(N-1)) * (N*sum(a_i b_i) - sum(a_i)*sum(b_i))
+    Theorem 7.3.3 (book p. 279):
+
+    .. math:: Cov(B_N, T_N) = \\frac{mn}{N^2(N-1)}
+        \\left[N\\sum_i a_i b_i
+              - \\sum_i a_i \\sum_i b_i\\right],
+
+    under H0: F_X = F_Y.  Taking b = a recovers the variance of
+    Theorem 7.3.2, which is returned as ``var_a`` and ``var_b`` so the
+    correlation can be read off directly.
 
     Parameters
     ----------
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    m : array-like
-        Input data.
-    n : array-like
-        Input data.
-    N : array-like
-        Input data.
+    a, b : sequence of float
+        The two score vectors, both of length N = m + n.
+    m, n : int
+        The two sample sizes.
 
     Returns
     -------
-    result : dict
-        Keys: covariance
+    RichResult
+        keys ``cov``, ``corr``, ``var_a``, ``var_b``, ``N``, ``m``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 7.3.3
+    Gibbons & Chakraborti (2011), Theorem 7.3.3, p. 279.
     """
-    a = np.asarray(a, dtype=float)
-    n = int(a) if a.ndim == 0 else len(a)
-    if a.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Covariance of two linear rank statistics B_N and T_N",
-            }
-        )
-    x_sorted = np.sort(a)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(a), scale=np.std(a, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    av = [float(v) for v in a]
+    bv = [float(v) for v in b]
+    m = int(m)
+    n = int(n)
+    nn = m + n
+    if len(av) != nn or len(bv) != nn:
+        raise ValueError("score vectors must have length m + n.")
+    if nn < 2:
+        raise ValueError("N must be at least 2.")
+    k = m * n / (float(nn) ** 2 * (nn - 1.0))
+    cov = k * (nn * sum(av[i] * bv[i] for i in range(nn)) - sum(av) * sum(bv))
+    va = k * (nn * sum(v * v for v in av) - sum(av) ** 2)
+    vb = k * (nn * sum(v * v for v in bv) - sum(bv) ** 2)
+    corr = cov / math.sqrt(va * vb) if va > 0 and vb > 0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "cov": float(cov),
+            "corr": float(corr),
+            "var_a": float(va),
+            "var_b": float(vb),
+            "N": int(nn),
+            "m": m,
             "n": n,
-            "method": "Covariance of two linear rank statistics B_N and T_N",
+            "method": "Cov(B_N, T_N), Gibbons Theorem 7.3.3",
         }
     )
 
 
-def cheatsheet():
-    return "gb733: Covariance of two linear rank statistics B_N and T_N"
+gibbons_linrank_covariance = lrankcov

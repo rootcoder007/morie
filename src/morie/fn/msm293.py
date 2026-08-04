@@ -1,55 +1,43 @@
-r"""Numbered display equation (14.13) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Functional regression with environment effects.
 
-from ._richresult import RichResult
+Implements eq. (14.13) p.607 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_convolutional_nn_eq_14_13"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["fregenv", "mvsml_convolutional_nn_eq_14_13"]
 
 
-def mvsml_convolutional_nn_eq_14_13(random, partitions, they, were, better, than):
-    r"""
-    Numbered display equation (14.13) from MVSML chapter 14.
+def fregenv(y, X, X_E, lam=0.0, P=None):
 
-    Formula: 100 random partitions, they were better than the PBFR and BFR, respectively. Also, taking into account the penalty term in the Bayesian prediction was not so important because in only 8 out of the 100 random partitions, the MSE of the PBFR was less than the MSE corresponding to the BFR (see Appendix 3 for the R code used). When using the penalty matrix based on second derivatives, in each case (Fourier and B-spline), the results were similar. The Bayesian formulation can be extended easily to take into account the effects of other factors. For example, in Example 14.5, the effects of the environment can be added as y = 1n\mu + XE\betaE + X\beta + e,
+    """y = 1_n mu + X_E beta_E + X beta + e (eq. 14.13), the functional
+    regression of the chapter extended with the effects of the
+    environments.  X carries the L1 functional scores of (14.4) and
+    (14.5), X_E is the design matrix of the environments and beta_E
+    the environment effects.  In the Bayesian treatment the block
+    beta_E is simply given its own prior -- FIXED, BRR, BayesA,
+    BayesB, BayesC or BL -- which is why the fit is organized by
+    block here.  Keys: coef, mu, beta_E, beta, beta_EF, widths,
+    design, fitted, residuals, sse, n_columns, has_interaction.
+    """
 
-    Parameters
-    ----------
-    random : array-like
-        Input data.
-    partitions : array-like
-        Input data.
-    they : array-like
-        Input data.
-    were : array-like
-        Input data.
-    better : array-like
-        Input data.
-    than : array-like
-        Input data.
+    res = RichResult(payload=_gp.fda_env_model(y, X, X_E, X_EF=None, lam=lam, P=P))
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
+    return with_describe_pointer(res, "msm293")
 
-    References
-    ----------
-    MVSML, Eq. (14.13) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    random = np.atleast_1d(np.asarray(random, dtype=float))
-    n = len(random)
-    result = float(np.mean(random))
-    se = float(np.std(random, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.13) from MVSML chapter 14.",
-        }
-    )
+
+mvsml_convolutional_nn_eq_14_13 = fregenv
 
 
 def cheatsheet():
-    return "msm293: Numbered display equation (14.13) from MVSML chapter 14."
+    return "msm293: Functional regression with environment effects"

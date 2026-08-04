@@ -1,74 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Jonckheere-Terpstra compact formula as sum of pairwise Mann-Whitney statistics."""
+"""Jonckheere-Terpstra statistic as the matrix of pairwise counts."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_jt_cd_form"]
+__all__ = ['jtsum', 'gibbons_jt_cd_form']
 
 
-def gibbons_jt_cd_form(groups, cdf=None):
-    """
-    Jonckheere-Terpstra compact formula as sum of pairwise Mann-Whitney statistics
+def jtsum(samples):
+    """The full U_ij matrix whose upper triangle sums to B.
 
-    Formula: J = sum_{i<j} (concordant - discordant) between groups i and j
+    Section 10.6 (book p. 365) writes the alternative as the
+    k(k-1)/2 pairwise statements of eq. (10.6.1), one per ordered pair,
+    and B as the plain sum of the corresponding Mann-Whitney counts.
+    Returning the whole matrix makes the decomposition visible: each
+    U_ij can be inspected on its own, and their sum is B.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
+    samples : sequence of sequence of float
+        The k samples in the hypothesised order.
 
     Returns
     -------
-    result : dict
-        Keys: J
+    RichResult
+        keys ``u`` (k x k matrix, upper triangle filled), ``statistic``
+        (their sum), ``npairs``, ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.6
+    Gibbons & Chakraborti (2011), Sec. 10.6, eq. (10.6.1), p. 365.
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Jonckheere-Terpstra compact formula as sum of pairwise Mann-Whitney statistics",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ss = [[float(v) for v in s] for s in samples]
+    k = len(ss)
+    if k < 2:
+        raise ValueError("need at least 2 samples.")
+    u = [[0.0] * k for _ in range(k)]
+    for i in range(k):
+        for j in range(i + 1, k):
+            c = 0.0
+            for a in ss[i]:
+                for b in ss[j]:
+                    if a < b:
+                        c += 1.0
+                    elif a == b:
+                        c += 0.5
+            u[i][j] = c
+    total = sum(u[i][j] for i in range(k) for j in range(i + 1, k))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Jonckheere-Terpstra compact formula as sum of pairwise Mann-Whitney statistics",
+            "u": u,
+            "statistic": float(total),
+            "npairs": int(k * (k - 1) // 2),
+            "k": int(k),
+            "n": int(sum(len(s) for s in ss)),
+            "method": "JT as the sum of pairwise Mann-Whitney counts",
         }
     )
 
 
-def cheatsheet():
-    return "gb_jcd: Jonckheere-Terpstra compact formula as sum of pairwise Mann-Whitney statistics"
+gibbons_jt_cd_form = jtsum

@@ -1,44 +1,33 @@
-"""TMLE for natural direct effect."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Natural direct effect."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["tmle_natural_direct"]
+__all__ = ["ndeff", "tmle_natural_direct"]
 
 
-def tmle_natural_direct(y, D, M, X):
-    """
-    TMLE for natural direct effect
+def ndeff(y10, y00):
+    """Natural direct effect.
 
-    Formula: E[Y(1,M(0)) - Y(0,M(0))]
+    Natural direct effect: E[Y(1, M(0))] - E[Y(0, M(0))].
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    M : array-like
-        Input data.
-    X : array-like
-        Input data.
+    The effect of treatment holding the mediator at the distribution it
+    would have taken under control -- the path that does not run through
+    the mediator.  Both cross-world quantities are supplied by the
+    caller because neither is identified from data without an
+    assumption; this routine contrasts them and does not assert one.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Zheng & vdL (2012)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "TMLE for natural direct effect"})
+    return RichResult(title="Natural direct effect", payload=_c.ndeff(y10=y10, y00=y00))
+
+
+tmle_natural_direct = ndeff
 
 
 def cheatsheet():
-    return "tmlnde: TMLE for natural direct effect"
+    return "tmlnde: Natural direct effect"

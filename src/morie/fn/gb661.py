@@ -1,76 +1,94 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mann-Whitney U statistic counting preferences between two samples."""
+"""Mann-Whitney U counting the preferences between two samples."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_mannwhitney"]
+__all__ = ['mwu', 'gibbons_mannwhitney']
 
 
-def gibbons_mannwhitney(x, y, cdf=None):
-    """
-    Mann-Whitney U statistic counting preferences between two samples
+def mwu(x, y):
+    """U = #{(i, j) : Y_j < X_i}, with exact and normal-approximation tails.
 
-    Formula: U = sum_{i=1}^{m} sum_{j=1}^{n} I(X_i < Y_j); E(U) = mn/2 under H0
+    Section 6.6 (book p. 261), eq. (6.6.1): D_ij = 1 when Y_j < X_i,
+    so U counts the times a Y precedes an X -- the book's orientation,
+    which is the complement mn - U of the opposite convention.  Under H0 the null moments
+    are E[U] = mn/2 and Var[U] = mn(m+n+1)/12, and the exact null
+    distribution follows the recursion (6.6.14),
+
+    .. math:: r_{m,n}(u) = r_{m-1,n}(u-n) + r_{m,n-1}(u),
+
+    which is evaluated here by dynamic programming (a
+    generating-function convolution), so the exact p-value is available
+    for any m, n that fit in memory.  Ties contribute 1/2 each.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (U), ``p_value`` (exact, two-sided),
+        ``z``, ``p_normal``, ``mean``, ``var``, ``m``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 6.6
+    Gibbons & Chakraborti (2011), Sec. 6.6, eqs. (6.6.1), (6.6.14),
+    pp. 260-266.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Mann-Whitney U statistic counting preferences between two samples",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    u = 0.0
+    for xi in xs:
+        for yj in ys:
+            if yj < xi:
+                u += 1.0
+            elif yj == xi:
+                u += 0.5
+    # exact null counts of U over 0..mn by DP on the rank-sum recursion
+    total = m * n
+    counts = [0.0] * (total + 1)
+    counts[0] = 1.0
+    for i in range(1, m + 1):
+        new = [0.0] * (total + 1)
+        run = 0.0
+        for k in range(total + 1):
+            run += counts[k]
+            if k - n - 1 >= 0:
+                run -= counts[k - n - 1]
+            new[k] = run
+        counts = new
+    denom = math.comb(m + n, m)
+    pmf = [c / denom for c in counts]
+    ui = int(round(u))
+    lower = sum(pmf[: min(ui, total) + 1])
+    upper = sum(pmf[min(ui, total):])
+    mean = m * n / 2.0
+    var = m * n * (m + n + 1.0) / 12.0
+    z = (u - mean) / math.sqrt(var)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(u),
+            "p_value": float(min(1.0, 2.0 * min(lower, upper))),
+            "z": float(z),
+            "p_normal": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "mean": float(mean),
+            "var": float(var),
+            "m": m,
             "n": n,
-            "method": "Mann-Whitney U statistic counting preferences between two samples",
+            "method": "Mann-Whitney U, exact recursion (6.6.14)",
         }
     )
 
 
-def cheatsheet():
-    return "gb661: Mann-Whitney U statistic counting preferences between two samples"
+gibbons_mannwhitney = mwu

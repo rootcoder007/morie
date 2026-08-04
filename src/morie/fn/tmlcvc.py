@@ -1,46 +1,36 @@
-"""Cross-validated TMLE -- k-fold sample-splitting."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Cross-validated TMLE of the ATE."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["tmle_cv_targeting"]
+__all__ = ["cvtmle", "tmle_cv_targeting"]
 
 
-def tmle_cv_targeting(y, D, X, K):
-    """
-    Cross-validated TMLE -- k-fold sample-splitting
+def cvtmle(y, a, q0, q1, g, fold, n_newton=50):
+    """Cross-validated TMLE of the ATE.
 
-    Formula: split into K folds; fit Q,g on K-1; target on held-out
+    Cross-validated TMLE of the ATE.
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    X : array-like
-        Input data.
-    K : array-like
-        Input data.
+    Within each fold the initial fit is the one trained on the other
+    folds, so the targeting step never sees the data it is evaluated
+    on: that is what removes the empirical-process condition and lets
+    data-adaptive nuisance fits be used honestly.  The fluctuation
+    parameter solves the score equation for the clever covariate
+    H = A/g - (1-A)/(1-g) by a fixed number of Newton steps.
+
+    ``y`` must lie in [0, 1] (bounded outcomes, or already rescaled).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Zheng & vdL (2011)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Cross-validated TMLE -- k-fold sample-splitting"}
-    )
+    return RichResult(title="Cross-validated TMLE of the ATE", payload=_c.cvtmle(y=y, a=a, q0=q0, q1=q1, g=g, fold=fold, n_newton=n_newton))
+
+
+tmle_cv_targeting = cvtmle
 
 
 def cheatsheet():
-    return "tmlcvc: Cross-validated TMLE -- k-fold sample-splitting"
+    return "tmlcvc: Cross-validated TMLE of the ATE"

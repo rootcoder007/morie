@@ -1,55 +1,21 @@
-"""Numbered display equation (9.8) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Maximum margin classifier -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.6), (9.7), (9.8) p.344 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm175 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_8"]
+from .msm175 import hardsvm
 
+__all__ = ["hardsvm", "mvsml_ridge_lasso_elastic_eq_9_8"]
 
-def mvsml_ridge_lasso_elastic_eq_9_8(subject, to, With, this, last, version):
-    """
-    Numbered display equation (9.8) from MVSML chapter 9.
-
-    Formula: subject to \alpha  0 (9.26) With this last version of the Wolfe dual, we obtained the solution to the original optimization problem with the solution for x = y = 1 and \alpha = 1. 348 9 Support Vector Machines and Support Vector Regression Now that we understand the Wolfe dual result and how to use it to obtain optimal values from optimization problems, we will solve the optimization problem given in (9.7) and
-
-    Parameters
-    ----------
-    subject : array-like
-        Input data.
-    to : array-like
-        Input data.
-    With : array-like
-        Input data.
-    this : array-like
-        Input data.
-    last : array-like
-        Input data.
-    version : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.8) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    subject = np.atleast_1d(np.asarray(subject, dtype=float))
-    n = len(subject)
-    result = float(np.mean(subject))
-    se = float(np.std(subject, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.8) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_8 = hardsvm
 
 
 def cheatsheet():
-    return "msm200: Numbered display equation (9.8) from MVSML chapter 9."
+    return "msm200: Maximum margin classifier (see msm175)"

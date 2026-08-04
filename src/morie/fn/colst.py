@@ -1,52 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Collider (v-structure/immorality) A->B<-C: conditioning on B opens path."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Collider structures in a DAG.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 5 p. 82
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["collider_structure"]
+__all__ = ["collider", "collider_structure"]
+
+_METHOD = "Collider structures in a DAG"
 
 
-def collider_structure(A, B, C, conditioned):
-    """
-    Collider (v-structure/immorality) A->B<-C: conditioning on B opens path
+def collider(dag, triple=None):
+    """Collider structures in a DAG.
 
-    Formula: A->B<-C: A _|_ C marginally; A NOT _|_ C | B (collider bias / Berkson's paradox)
+    Collider structures (immoralities, v-structures), ch. 5 p. 82.
+
+    With ``triple=(a, c, b)`` the return also says whether that one
+    triple is a collider at ``c``.
 
     Parameters
     ----------
-    A : array-like
-        Input data.
-    B : array-like
-        Input data.
-    C : array-like
-        Input data.
-    conditioned : array-like
-        Input data.
+    dag : as documented for the shelf core
+        See ``morie.fn._molak.collider``.
+    triple : as documented for the shelf core
+        See ``morie.fn._molak.collider``.
 
     Returns
     -------
-    result : dict
-        Keys: {'d_sep': 'bool'}
+    result : RichResult
+        Payload keys: ncolliders, iscollider, nedges.
 
     References
     ----------
-    Molak Ch 5
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 5 p. 82
     """
-    A = np.asarray(A, dtype=float)
-    n = int(A) if A.ndim == 0 else len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.collider(dag=dag, triple=triple)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Collider (v-structure/immorality) A->B<-C: conditioning on B opens path",
-        }
+        title=_METHOD,
+        summary_lines=[("ncolliders", res["ncolliders"]), ("iscollider", res["iscollider"]), ("nedges", res["nedges"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+collider_structure = collider
+
+
 def cheatsheet():
-    return "colst: Collider (v-structure/immorality) A->B<-C: conditioning on B opens path"
+    return "collider: Collider structures in a DAG"

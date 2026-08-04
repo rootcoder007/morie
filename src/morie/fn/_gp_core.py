@@ -3070,3 +3070,569 @@ def msm_gmm(y, X, Z, weights=None, n_iter=60, tol=1e-10):
     moments = [sum(w[i] * Zm[i][a] * resid[i] for i in range(n)) / n
                for a in range(len(Zm[0]))]
     return {"beta": beta, "moments": moments, "residuals": resid}
+
+
+# ---------------------------------------------------------------
+# MVSML ch8 eq (8.13), ch9 eqs (9.1)-(9.47), ch14 eqs (14.1)-(14.14)
+# ---------------------------------------------------------------
+
+
+def khatri_rao_rows(A, B):
+    """Row-wise Kronecker product, the ":" of eq. (8.13) p.296.
+
+    Row i of the result is the outer product of row i of A with row i
+    of B, flattened.  With A of order n x a and B of order n x b the
+    result is n x (a*b).  The book writes P_u2 = P_u1 : Z_E and calls
+    it the interaction between the two design matrices.
+    """
+    Am, Bm = _mat(A), _mat(B)
+    return [[u * v for u in ra for v in rb] for ra, rb in zip(Am, Bm)]
+
+
+def approx_kernel_extended(X, m_index, Z_u1, Z_E, kernel="linear",
+                           gamma=None, tol=1e-10):
+    """eq. (8.13) p.296: y = mu 1 + Z_E beta_E + P_u1 f + P_u2 l + eps.
+
+    Steps 1-7 of the summary on p.296.  P = K_{L,m} U S^(-1/2) is the
+    compressed design of (8.12) built from m of the L lines
+    (sparse_kernel_design); Z_u1 expands it from lines to the n
+    phenotypic records, P_u1 = Z_u1 P of order n x m; and
+    P_u2 = P_u1 : Z_E of order n x mI is the row-wise Kronecker
+    interaction with the environment design.  Step 8 then fits the
+    stacked design under ridge, which is what the returned blocks are
+    for.
+    """
+    sk = sparse_kernel_design(X, m_index, kernel=kernel, gamma=gamma,
+                              tol=tol)
+    P = sk["P"]
+    Zu1 = _mat(Z_u1)
+    ZE = _mat(Z_E)
+    Pu1 = _mm(Zu1, P)
+    Pu2 = khatri_rao_rows(Pu1, ZE)
+    n = len(Pu1)
+    design = [[1.0] + list(ZE[i]) + list(Pu1[i]) + list(Pu2[i])
+              for i in range(n)]
+    return {"P": P, "P_u1": Pu1, "P_u2": Pu2, "design": design,
+            "widths": {"intercept": 1, "environments": len(ZE[0]),
+                       "lines": len(Pu1[0]),
+                       "line_x_env": len(Pu2[0])},
+            "rank": sk["rank"]}
+
+
+def hyperplane_value(X, beta0, beta):
+    """eqs. (9.1) p.339 and (9.2) p.339: a hyperplane of a
+    p-dimensional space is the (p-1)-dimensional flat subspace on
+    which beta_0 + beta_1 x_1 + ... + beta_p x_p = 0.  (9.1) is the
+    p = 3 case the book writes first.  Points whose left-hand side is
+    < 0 satisfy (9.3) p.339 and lie on one side; those with it > 0
+    satisfy (9.4) p.340 and lie on the other.  |f(x)| / ||beta|| is
+    the Euclidean distance to the plane (p.345).
+    """
+    B = _flat(beta)
+    nb = math.sqrt(sum(b * b for b in B))
+    vals = [float(beta0) + sum(a * b for a, b in zip(row, B))
+            for row in _mat(X)]
+    return {"value": vals,
+            "side": [1 if v > 0 else (-1 if v < 0 else 0)
+                     for v in vals],
+            "below": [v < 0 for v in vals],
+            "above": [v > 0 for v in vals],
+            "on_plane": [abs(v) <= 1e-12 for v in vals],
+            "distance": [abs(v) / nb if nb > 0 else float("inf")
+                         for v in vals],
+            "norm_beta": nb}
+
+
+def max_margin_classifier(X, y, **kw):
+    """eq. (9.6) p.344 solved through its equivalent (9.7)-(9.8) p.346.
+
+    (9.6) maximizes the margin M over beta subject to
+    sum_j beta_j^2 = 1 and y_i(beta_0 + x_i beta) >= M.  p.345 shows
+    M = 1 / ||beta|| once the scale is fixed by
+    y_i(beta_0 + x_i beta) >= 1, so (9.6) is equivalent to minimizing
+    (1/2)||beta||^2 subject to (9.8), which is (9.7).  The whole
+    street is 2M = 2 / ||beta||.
+    """
+    fit = svm_fit_dual(X, y, C=None, **kw)
+    beta, b0 = fit["beta"], fit["beta0"]
+    nb = math.sqrt(sum(b * b for b in beta))
+    ys = _flat(y)
+    f = [b0 + sum(a * b for a, b in zip(row, beta))
+         for row in _mat(X)]
+    fm = [ys[i] * f[i] for i in range(len(ys))]
+    return {"beta": beta, "beta0": b0, "norm_beta": nb,
+            "margin": 1.0 / nb if nb > 0 else float("inf"),
+            "street_width": 2.0 / nb if nb > 0 else float("inf"),
+            "objective": 0.5 * nb * nb,
+            "functional_margin": fm,
+            "min_functional_margin": min(fm),
+            "constraint_ok": min(fm) >= 1.0 - 1e-6,
+            "alpha": fit["alpha"],
+            "support_vectors": fit["support_vectors"]}
+
+
+def wolfe_dual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None,
+               lam=None, alpha=None):
+    """eqs. (9.9)-(9.14) pp.346-347, the general Wolfe dual.
+
+    (9.9) minimizes f(x) over x in R^n subject to the m equalities
+    h_i(x) = 0 of (9.10) and the p inequalities g_i(x) <= 0 of (9.11).
+    (9.12) maximizes L = f(x) - sum_i lambda_i h_i(x)
+    - sum_i alpha_i g_i(x) over (x, lambda, alpha), subject to the
+    stationarity condition (9.13),
+    grad f - sum_i lambda_i grad h_i - sum_i alpha_i grad g_i = 0, and
+    to alpha_i >= 0 of (9.14).  All arguments are the numeric values
+    of those functions and gradients at the point being checked, so
+    this evaluates the dual objective and the two feasibility
+    residuals without committing to any particular f.
+
+    Sign convention: the book notes under (9.14) that the sign of the
+    inequality term is crucial, and its own Illustrative Example 9.1
+    writes the dual of "minimize x^2 subject to x >= 1" as
+    x^2 - 2 alpha (x - 1).  The inequality is therefore supplied in
+    the >= form, g_i(x) >= 0, and subtracted, exactly as (9.12) and
+    (9.13) print it.  Note also that the two illustrative examples
+    carry a factor 2 on the multiplier that the general (9.12) does
+    not, so the alpha = 1 they report corresponds to alpha = 2 here.
+    """
+    hv = _flat(h) if h is not None else []
+    gv = _flat(g) if g is not None else []
+    lm = _flat(lam) if lam is not None else [0.0] * len(hv)
+    al = _flat(alpha) if alpha is not None else [0.0] * len(gv)
+    gf = _flat(grad_f)
+    Gh = _mat(grad_h) if grad_h is not None else []
+    Gg = _mat(grad_g) if grad_g is not None else []
+    L = float(f) - sum(l * v for l, v in zip(lm, hv)) \
+        - sum(a * v for a, v in zip(al, gv))
+    stat = []
+    for j in range(len(gf)):
+        s = gf[j]
+        for i in range(len(Gh)):
+            s -= lm[i] * Gh[i][j]
+        for i in range(len(Gg)):
+            s -= al[i] * Gg[i][j]
+        stat.append(s)
+    return {"L": L, "stationarity": stat,
+            "max_stationarity": max((abs(v) for v in stat),
+                                    default=0.0),
+            "alpha_nonnegative": all(a >= -1e-12 for a in al),
+            "n_equality": len(hv), "n_inequality": len(gv)}
+
+
+def qp_one_linear_constraint(a, c):
+    """eqs. (9.15)-(9.26) pp.346-347, worked through the Wolfe dual.
+
+    minimize z'z subject to a'z >= c.  The Wolfe dual of (9.17) p.347
+    is L = z'z - 2 alpha (a'z - c); stationarity (9.18) gives
+    z = alpha a, and substituting it back (9.19) leaves
+    L(alpha) = -(a'a) alpha^2 + 2 c alpha, maximized at
+    alpha = c / (a'a) >= 0 of (9.20).
+
+    Illustrative Example 9.1 (9.15)-(9.20) is a = [1], c = 1, for
+    which L(alpha) = -alpha^2 + 2 alpha and z = alpha = 1, exactly as
+    printed.  Illustrative Example 9.2 (9.21)-(9.26) is a = [1, 1],
+    c = 2, for which L(alpha) = -2 alpha^2 + 4 alpha and
+    x = y = alpha = 1, also exactly as printed.  The two examples are
+    the same problem, so one routine answers both.
+    """
+    av = _flat(a)
+    aa = sum(v * v for v in av)
+    if aa <= 0:
+        raise ValueError("constraint vector a must be nonzero")
+    alpha = float(c) / aa
+    z = [alpha * v for v in av]
+    return {"x": z, "alpha": alpha,
+            "dual_quadratic": -aa, "dual_linear": 2.0 * float(c),
+            "dual_value": -aa * alpha * alpha
+                          + 2.0 * float(c) * alpha,
+            "primal_value": sum(v * v for v in z),
+            "constraint": sum(u * v for u, v in zip(av, z)),
+            "active": True}
+
+
+def svm_lagrangian(X, y, beta0, beta, alpha):
+    """eq. (9.27) p.348: the Wolfe primal of the hard-margin problem,
+    L(beta, beta_0, alpha) = (1/2)||beta||^2
+    - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 ],
+    whose stationarity conditions are (9.28) and (9.29) and whose
+    complementary slackness is (9.30).
+    """
+    B = _flat(beta)
+    ys = _flat(y)
+    Xm = _mat(X)
+    f = [float(beta0) + sum(u * v for u, v in zip(row, B))
+         for row in Xm]
+    al = _flat(alpha)
+    slack = [ys[i] * f[i] - 1.0 for i in range(len(ys))]
+    return {"L": 0.5 * sum(b * b for b in B)
+                 - sum(al[i] * slack[i] for i in range(len(al))),
+            "quadratic_term": 0.5 * sum(b * b for b in B),
+            "slack": slack,
+            "grad_beta": [B[j] - sum(al[i] * ys[i] * Xm[i][j]
+                                     for i in range(len(al)))
+                          for j in range(len(B))],
+            "grad_beta0": -sum(al[i] * ys[i]
+                               for i in range(len(al)))}
+
+
+def soft_margin_classifier(X, y, T, **kw):
+    """eqs. (9.34)-(9.37) pp.354-355, the support vector classifier.
+
+    (9.34) maximizes M over beta and the slacks; (9.35) fixes the
+    scale with sum_j beta_j^2 = 1; (9.36) relaxes the margin
+    constraint to y_i(beta_0 + sum_j beta_j x_ij) >= M(1 - zeta_i);
+    and (9.37) is zeta_i >= 0 with sum_i zeta_i <= T.
+
+    The book writes T both for that slack budget in (9.37) and for
+    the box bound on the multipliers in (9.45); they are different
+    parameters in the standard formulation and only (9.45) is
+    directly solvable, so T here is the box bound of (9.45) and the
+    realized sum of slacks is returned as slack_sum for comparison
+    against a budget.  zeta_i is read off (9.36) as the hinge
+    max(0, 1 - y_i(beta_0 + x_i beta)).
+    """
+    fit = svm_fit_dual(X, y, C=float(T), **kw)
+    beta, b0 = fit["beta"], fit["beta0"]
+    nb = math.sqrt(sum(b * b for b in beta))
+    ys = _flat(y)
+    f = [b0 + sum(u * v for u, v in zip(row, beta))
+         for row in _mat(X)]
+    zeta = [max(0.0, 1.0 - ys[i] * f[i]) for i in range(len(ys))]
+    return {"beta": beta, "beta0": b0, "norm_beta": nb,
+            "margin": 1.0 / nb if nb > 0 else float("inf"),
+            "zeta": zeta, "slack_sum": sum(zeta),
+            "n_violating": sum(1 for z in zeta if z > 1e-9),
+            "n_misclassified": sum(1 for z in zeta if z > 1.0),
+            "alpha": fit["alpha"],
+            "support_vectors": fit["support_vectors"],
+            "objective": fit["objective"]}
+
+
+def soft_margin_kkt(X, y, beta0, beta, alpha, delta, zeta, T):
+    """eqs. (9.38)-(9.43) pp.356-357, the Wolfe primal of the soft
+    margin problem and its Karush-Kuhn-Tucker conditions.
+
+    (9.38) L = (1/2)||beta||^2 + T sum_i zeta_i
+    - sum_i alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ]
+    - sum_i delta_i zeta_i.
+
+    The printed sign of the delta term on p.356 is inconsistent with
+    the book's own (9.41), which states dL/dzeta_i = T - alpha_i
+    - delta_i = 0; that requires the term to enter with a minus, and
+    it is written with a minus here so that (9.41) holds.  The
+    residuals returned are (9.39) beta - sum_i alpha_i y_i x_i,
+    (9.40) sum_i alpha_i y_i, (9.41) alpha_i + delta_i - T,
+    (9.42) alpha_i [ y_i(beta_0 + x_i beta) - 1 + zeta_i ], and
+    (9.43) delta_i zeta_i.
+    """
+    B = _flat(beta)
+    ys = _flat(y)
+    Xm = _mat(X)
+    al, dl, zt = _flat(alpha), _flat(delta), _flat(zeta)
+    n = len(ys)
+    f = [float(beta0) + sum(u * v for u, v in zip(row, B))
+         for row in Xm]
+    inner = [ys[i] * f[i] - 1.0 + zt[i] for i in range(n)]
+    L = 0.5 * sum(b * b for b in B) + float(T) * sum(zt) \
+        - sum(al[i] * inner[i] for i in range(n)) \
+        - sum(dl[i] * zt[i] for i in range(n))
+    r39 = [B[j] - sum(al[i] * ys[i] * Xm[i][j] for i in range(n))
+           for j in range(len(B))]
+    r40 = sum(al[i] * ys[i] for i in range(n))
+    r41 = [al[i] + dl[i] - float(T) for i in range(n)]
+    r42 = [al[i] * inner[i] for i in range(n)]
+    r43 = [dl[i] * zt[i] for i in range(n)]
+    worst = max([abs(v) for v in r39] + [abs(r40)]
+                + [abs(v) for v in r41] + [abs(v) for v in r42]
+                + [abs(v) for v in r43])
+    return {"L": L, "stationarity_beta": r39, "balance": r40,
+            "multiplier_sum": r41, "complementary_alpha": r42,
+            "complementary_delta": r43, "max_residual": worst,
+            "kkt_satisfied": worst < 1e-6}
+
+
+def svm_soft_dual(X, y, T, K=None, **kw):
+    """eqs. (9.44)-(9.45) p.357: the Wolfe dual of the support vector
+    classifier, maximize L(alpha) = sum_i alpha_i
+    - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j (x_i . x_j) subject to
+    0 <= alpha_i <= T and sum_i alpha_i y_i = 0.  It differs from the
+    hard-margin dual (9.32)-(9.33) only in the upper bound T on the
+    multipliers, which is what the slack variables buy.
+    """
+    fit = svm_fit_dual(X, y, C=float(T), K=K, **kw)
+    a = fit["alpha"]
+    ys = _flat(y)
+    return {"alpha": a, "beta": fit["beta"], "beta0": fit["beta0"],
+            "objective": fit["objective"],
+            "support_vectors": fit["support_vectors"],
+            "balance": sum(a[i] * ys[i] for i in range(len(a))),
+            "bounded": all(-1e-9 <= v <= float(T) + 1e-9 for v in a),
+            "at_bound": [i for i in range(len(a))
+                         if a[i] > float(T) - 1e-6]}
+
+
+def ksvm_dual(X, y, T, kernel="linear", gamma=None, K=None, **kw):
+    """eqs. (9.46)-(9.47) p.360: the support vector machine proper.
+    Because the dual (9.44) touches the data only through the inner
+    products x_i . x_j, every instance of one can be replaced by a
+    positive definite symmetric kernel K(x_i, x_j), which is the
+    kernel trick; the constraints (9.47) are unchanged from (9.45).
+    The decision rule of p.360 is
+    f(x) = sum_{i in S} alpha_i y_i K(x_i, x) + beta_0.
+    """
+    Km = _mat(K) if K is not None else \
+        kernel_matrix(X, kernel=kernel, gamma=gamma)
+    fit = svm_soft_dual(X, y, T, K=Km, **kw)
+    fit["K"] = Km
+    fit["kernel"] = kernel if K is None else "precomputed"
+    return fit
+
+
+def fda_integral(t, x_values, beta_values, mu=0.0):
+    """eq. (14.1) p.579: the functional linear model with scalar
+    response and one functional covariate,
+    Y = mu + int_0^T x(t) beta(t) dt + E.  The integral of the
+    product of the centered covariate curve and the coefficient
+    function is evaluated by the trapezoid rule on the observation
+    grid t, which is the same quadrature the chapter uses for the
+    inner products of p.581.
+    """
+    ts = _flat(t)
+    xs = _flat(x_values)
+    bs = _flat(beta_values)
+    s = 0.0
+    for j in range(len(ts) - 1):
+        dt = ts[j + 1] - ts[j]
+        s += 0.5 * dt * (xs[j] * bs[j] + xs[j + 1] * bs[j + 1])
+    return {"integral": s, "fitted": float(mu) + s,
+            "mu": float(mu), "n_points": len(ts)}
+
+
+def fda_basis_derivative(t, n_basis, p=1, kind="fourier",
+                         period=None):
+    """The p-th derivative of the basis functions of eq. (14.2) p.579,
+    needed by the roughness penalty (14.11) p.601.  For the Fourier
+    basis used by fda_basis_matrix, phi_0 = 1,
+    phi_{2k-1}(t) = sin(2 pi k t / P) and
+    phi_{2k}(t) = cos(2 pi k t / P), so the p-th derivative is
+    (2 pi k / P)^p times a quarter-period phase shift; for the
+    polynomial basis phi_l(t) = u^l with u = (t - lo)/span the p-th
+    derivative is l!/(l-p)! u^(l-p) / span^p.
+    """
+    ts = _flat(t)
+    L = int(n_basis)
+    p = int(p)
+    lo, hi = min(ts), max(ts)
+    span = (hi - lo) or 1.0
+    P = float(period) if period else span
+    out = []
+    for tv in ts:
+        row = []
+        for l in range(L):
+            if kind == "fourier":
+                if l == 0:
+                    row.append(1.0 if p == 0 else 0.0)
+                    continue
+                k = (l + 1) // 2 if l % 2 == 1 else l // 2
+                w = 2.0 * math.pi * k / P
+                phase = w * tv + 0.5 * math.pi * p
+                if l % 2 == 1:
+                    row.append((w ** p) * math.sin(phase))
+                else:
+                    row.append((w ** p) * math.cos(phase))
+            elif kind == "polynomial":
+                if p > l:
+                    row.append(0.0)
+                else:
+                    c = 1.0
+                    for j in range(p):
+                        c *= (l - j)
+                    row.append(c * (((tv - lo) / span) ** (l - p))
+                               / (span ** p))
+            else:
+                raise ValueError("unknown basis: %s" % kind)
+        out.append(row)
+    return out
+
+
+def fda_penalty_matrix(t, L1, p=2, kind="fourier", period=None,
+                       beta=None):
+    """eq. (14.11) p.601: the roughness penalty
+    J_beta = int_0^T [ d^p beta(t) / dt^p ]^2 dt.  With the basis
+    expansion (14.2) the book writes J_beta = beta' P beta, where P is
+    the L1 x L1 matrix with entries
+    P_ij = int_0^T phi_i^(p)(t) phi_j^(p)(t) dt.  The integrals are
+    taken by the trapezoid rule on the grid t.  Typical p is 1 or 2.
+    """
+    ts = _flat(t)
+    D = fda_basis_derivative(ts, L1, p=p, kind=kind, period=period)
+    m = len(ts)
+    L = int(L1)
+    P = [[0.0] * L for _ in range(L)]
+    for i in range(L):
+        for j in range(i, L):
+            s = 0.0
+            for q in range(m - 1):
+                dt = ts[q + 1] - ts[q]
+                s += 0.5 * dt * (D[q][i] * D[q][j]
+                                 + D[q + 1][i] * D[q + 1][j])
+            P[i][j] = s
+            P[j][i] = s
+    out = {"P": P, "order": p, "L1": L}
+    if beta is not None:
+        b = _flat(beta)
+        out["J"] = sum(b[i] * P[i][j] * b[j]
+                       for i in range(L) for j in range(L))
+    return out
+
+
+def fda_penalized_sse(y, X, beta, lam, P, mu=0.0):
+    """eq. (14.10) p.599: the penalized sum of squared errors
+    SSE_lambda(beta) = sum_i ( y_i - mu - sum_l x_il beta_l )^2
+    + lambda J_beta, with J_beta = beta' P beta from (14.11).  lambda
+    trades the fit of the first term against the smoothness of
+    beta(); at lambda = 0 it is ordinary least squares and as lambda
+    grows beta(t) is driven towards a constant.
+    """
+    ys = _flat(y)
+    Xm = _mat(X)
+    b = _flat(beta)
+    Pm = _mat(P)
+    fitted = [float(mu) + sum(u * v for u, v in zip(row, b))
+              for row in Xm]
+    resid = [ys[i] - fitted[i] for i in range(len(ys))]
+    J = sum(b[i] * Pm[i][j] * b[j]
+            for i in range(len(b)) for j in range(len(b)))
+    sse = sum(r * r for r in resid)
+    return {"sse": sse, "penalty": J, "lambda": float(lam),
+            "objective": sse + float(lam) * J,
+            "fitted": fitted, "residuals": resid}
+
+
+def fda_penalized_fit(y, X, P, lam, mu=None, tol=1e-10):
+    """eq. (14.12) p.601: with the spectral decomposition
+    P = Gamma D Gamma' of the penalty matrix, X* = X Gamma and
+    beta* = Gamma' beta, the penalized criterion becomes
+    SSE_lambda(beta*) = ||y - 1_n mu - X* beta*||^2
+    + lambda beta*' D beta*, whose minimizer is
+    beta* = (X*'X* + lambda D)^-1 X*'(y - 1_n mu) and whose original
+    coefficients are beta = Gamma beta*.  When P is rank deficient the
+    zero eigenvalues contribute nothing to the penalty, which is the
+    reduction to lambda beta_1*' D_1 beta_1* the book notes.  mu
+    defaults to the mean of y, as the model centers the response.
+    """
+    ys = _flat(y)
+    Xm = _mat(X)
+    n = len(ys)
+    Pm = _mat(P)
+    L = len(Pm)
+    S = [[0.5 * (Pm[i][j] + Pm[j][i]) for j in range(L)]
+         for i in range(L)]
+    vals, vecs = np.linalg.eigh(np.marr(S))
+    d = [float(v) for v in vals._flat()]
+    G = [[float(v) for v in row] for row in vecs._tolist()] \
+        if hasattr(vecs, "_tolist") else _mat(vecs)
+    m = float(sum(ys) / n) if mu is None else float(mu)
+    Xs = _mm(Xm, G)
+    A = _mm(_t(Xs), Xs)
+    for i in range(L):
+        A[i][i] += float(lam) * d[i]
+    rhs = _mv(_t(Xs), [v - m for v in ys])
+    bstar = _solve(A, rhs)
+    beta = _mv(G, bstar)
+    fitted = [m + sum(u * v for u, v in zip(row, beta))
+              for row in Xm]
+    resid = [ys[i] - fitted[i] for i in range(n)]
+    sse = sum(r * r for r in resid)
+    pen = sum(float(lam) * d[i] * bstar[i] * bstar[i]
+              for i in range(L))
+    return {"beta": beta, "beta_star": bstar, "Gamma": G,
+            "eigenvalues": d, "X_star": Xs, "mu": m,
+            "fitted": fitted, "residuals": resid, "sse": sse,
+            "penalty": pen, "objective": sse + pen,
+            "rank": sum(1 for v in d if v > tol)}
+
+
+def fda_env_interaction_design(X, env, reference=True):
+    """The X_EF matrix printed on p.610 under eq. (14.14): the rows of
+    X are laid out block-diagonally by environment, so record i in
+    environment e contributes its functional scores in the columns
+    belonging to e and zeros elsewhere, carrying the
+    environment-by-reflectance interaction effects beta_EF.
+
+    Written out for all I environments the blocks sum column by column
+    to X exactly, so the joint design carrying both X and X_EF is rank
+    deficient and beta and beta_EF are not separately identified by
+    least squares.  The book fits (14.14) in BGLR, where the prior on
+    each block resolves that.  The default reference=True drops the
+    first environment block, leaving (I-1) L1 columns; that is the
+    same reference coding the book applies to the environment design
+    itself on p.607, where its code reads
+    X_E = model.matrix(~0+Env, data = dat_F)[, -1], and it makes
+    (14.14) identified.  Pass reference=False for the redundant
+    parameterization exactly as printed.
+    """
+    Xm = _mat(X)
+    e = list(env)
+    levels = sorted(set(e), key=lambda v: (str(type(v)), v))
+    keep = levels[1:] if reference else levels
+    L = len(Xm[0])
+    out = []
+    for i, row in enumerate(Xm):
+        block = [0.0] * (len(keep) * L)
+        if e[i] in keep:
+            k = keep.index(e[i])
+            for j in range(L):
+                block[k * L + j] = row[j]
+        out.append(block)
+    return {"X_EF": out, "levels": levels, "kept_levels": keep,
+            "reference": reference, "n_columns": len(out[0])}
+
+
+def fda_env_model(y, X, X_E, X_EF=None, lam=0.0, P=None):
+    """eqs. (14.13) p.607 and (14.14) p.610: the functional regression
+    with environment effects, y = 1_n mu + X_E beta_E + X beta + e,
+    and its extension with the environment-by-reflectance interaction,
+    y = 1_n mu + X_E beta_E + X beta + X_EF beta_EF + e.  X carries
+    the L1 functional scores of (14.4)-(14.5), X_E is the design
+    matrix of the environments and X_EF the block-diagonal design of
+    p.610.  Passing X_EF = None gives (14.13), passing it gives
+    (14.14); the two differ only by that block, which is why one
+    routine covers both.  A penalty matrix P and lambda apply the
+    roughness penalty of (14.11) to the functional block alone, as in
+    (14.12); with lam = 0 the fit is ordinary least squares.
+    """
+    ys = _flat(y)
+    Xm = _mat(X)
+    XE = _mat(X_E)
+    n = len(ys)
+    blocks = [[1.0] for _ in range(n)]
+    widths = {"intercept": 1, "environments": len(XE[0]),
+              "functional": len(Xm[0])}
+    D = [blocks[i] + list(XE[i]) + list(Xm[i]) for i in range(n)]
+    if X_EF is not None:
+        XF = _mat(X_EF)
+        widths["env_x_functional"] = len(XF[0])
+        D = [D[i] + list(XF[i]) for i in range(n)]
+    k = len(D[0])
+    A = _mm(_t(D), D)
+    if P is not None and float(lam) != 0.0:
+        Pm = _mat(P)
+        off = 1 + len(XE[0])
+        for i in range(len(Pm)):
+            for j in range(len(Pm)):
+                A[off + i][off + j] += float(lam) * Pm[i][j]
+    coef = _solve(A, _mv(_t(D), ys))
+    fitted = _mv(D, coef)
+    resid = [ys[i] - fitted[i] for i in range(n)]
+    off = 1
+    beta_E = coef[off:off + widths["environments"]]
+    off += widths["environments"]
+    beta = coef[off:off + widths["functional"]]
+    off += widths["functional"]
+    beta_EF = coef[off:] if X_EF is not None else []
+    return {"coef": coef, "mu": coef[0], "beta_E": beta_E,
+            "beta": beta, "beta_EF": beta_EF, "widths": widths,
+            "design": D, "fitted": fitted, "residuals": resid,
+            "sse": sum(r * r for r in resid), "n_columns": k,
+            "has_interaction": X_EF is not None}

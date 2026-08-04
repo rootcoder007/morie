@@ -1,74 +1,96 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Jonckheere-Terpstra test for ordered alternatives H1: theta_1 <= ... <= theta_k."""
+"""Jonckheere-Terpstra test against ordered alternatives."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_jonckheere"]
+__all__ = ['jtstat', 'gibbons_jonckheere']
 
 
-def gibbons_jonckheere(groups, cdf=None):
-    """
-    Jonckheere-Terpstra test for ordered alternatives H1: theta_1 <= ... <= theta_k
+def jtstat(samples, alternative="greater"):
+    """B = sum of the pairwise Mann-Whitney counts, Sec. 10.6.
 
-    Formula: J = sum_{i<j} U_{ij} where U_{ij} = Mann-Whitney U between group i and j
+    Book p. 365.  For the simple-order alternative
+    theta_1 <= ... <= theta_k, the JT statistic adds the Mann-Whitney
+    statistics of every ordered pair,
+
+    .. math:: B = \\sum_{1 \\le i < j \\le k} U_{ij}, \\qquad
+        U_{ij} = \\#\\{(a,b): X_{ia} < X_{jb}\\},
+
+    with null moments eqs. (10.6.2)-(10.6.3),
+
+    .. math:: E_0[B] = \\frac{N^2 - \\sum n_i^2}{4}, \\qquad
+        Var_0[B] = \\frac{N^2(2N+3)
+            - \\sum n_i^2(2n_i+3)}{72},
+
+    and H0 rejected for large B.  Ties contribute 1/2 each, the
+    modification the book describes for U*_ij.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
+    samples : sequence of sequence of float
+        The k samples, in the hypothesised increasing order.
+    alternative : str, optional
+        ``"greater"`` (the simple order, default), ``"less"`` or
+        ``"two-sided"``.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (B), ``mean``, ``var``, ``z``,
+        ``p_value``, ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.6
+    Gibbons & Chakraborti (2011), Sec. 10.6, eqs. (10.6.2)-(10.6.3),
+    pp. 365-366 (Terpstra, 1952; Jonckheere, 1954).
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Jonckheere-Terpstra test for ordered alternatives H1: theta_1 <= ... <= theta_k",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
+    ss = [[float(v) for v in s] for s in samples]
+    k = len(ss)
+    if k < 2:
+        raise ValueError("need at least 2 samples.")
+    if any(len(s) < 1 for s in ss):
+        raise ValueError("every sample must be non-empty.")
+    b = 0.0
+    for i in range(k):
+        for j in range(i + 1, k):
+            for a in ss[i]:
+                for c in ss[j]:
+                    if a < c:
+                        b += 1.0
+                    elif a == c:
+                        b += 0.5
+    ns = [len(s) for s in ss]
+    nn = sum(ns)
+    mean = (float(nn) ** 2 - sum(float(v) ** 2 for v in ns)) / 4.0
+    var = (
+        float(nn) ** 2 * (2.0 * nn + 3.0)
+        - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in ns)
+    ) / 72.0
+    z = (b - mean) / math.sqrt(var)
+    if alternative == "greater":
+        pv = 1.0 - stats.norm.cdf(z)
+    elif alternative == "less":
+        pv = stats.norm.cdf(z)
+    elif alternative == "two-sided":
+        pv = 2.0 * (1.0 - stats.norm.cdf(abs(z)))
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("alternative must be greater, less or two-sided.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Jonckheere-Terpstra test for ordered alternatives H1: theta_1 <= ... <= theta_k",
+            "statistic": float(b),
+            "mean": float(mean),
+            "var": float(var),
+            "z": float(z),
+            "p_value": float(min(1.0, pv)),
+            "k": int(k),
+            "n": int(nn),
+            "method": "Jonckheere-Terpstra B (Sec. 10.6)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1061: Jonckheere-Terpstra test for ordered alternatives H1: theta_1 <= ... <= theta_k"
+gibbons_jonckheere = jtstat

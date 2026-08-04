@@ -1,43 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Lag feature: shift the series by k steps."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Lag features.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 170
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_lag_feature"]
+__all__ = ["lagfeat", "joseph_lag_feature"]
+
+_METHOD = "Lag features"
 
 
-def joseph_lag_feature(y, k):
-    """
-    Lag feature: shift the series by k steps
+def lagfeat(x, lags):
+    """Lag features.
 
-    Formula: x_t^{(lag k)} = y_{t-k}
+    Lag features, ch. 6 p. 170.
+
+    Returns the design rows for which every requested lag exists, so
+    the matrix has no missing cells.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    k : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.lagfeat``.
+    lags : as documented for the shelf core
+        See ``morie.fn._joseph.lagfeat``.
 
     Returns
     -------
-    result : dict
-        Keys: lag_feature
+    result : RichResult
+        Payload keys: nrows, ncols, mean.
 
     References
     ----------
-    Joseph Ch 6, Lag Features section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 6 p. 170
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.lagfeat(x=x, lags=lags)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Lag feature: shift the series by k steps"}
+        title=_METHOD,
+        summary_lines=[("nrows", res["nrows"]), ("ncols", res["ncols"]), ("mean", res["mean"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_lag_feature = lagfeat
+
+
 def cheatsheet():
-    return "jolagf: Lag feature: shift the series by k steps"
+    return "lagfeat: Lag features"

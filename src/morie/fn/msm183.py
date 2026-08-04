@@ -1,55 +1,21 @@
-"""Numbered display equation (9.8) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Maximum margin classifier -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.6), (9.7), (9.8) p.344 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm175 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_8"]
+from .msm175 import hardsvm
 
+__all__ = ["hardsvm", "mvsml_ridge_lasso_elastic_eq_9_8"]
 
-def mvsml_ridge_lasso_elastic_eq_9_8(minimize, z, p, yi, xT, i):
-    """
-    Numbered display equation (9.8) from MVSML chapter 9.
-
-    Formula: minimize 2 \beta (9.7) |ﬄﬄﬄﬄﬄ{zﬄﬄﬄﬄﬄ} \beta0, \beta1, \beta2, ..., \betap   yi \beta0 + xT i \beta  1, i = 1, . . . , n
-
-    Parameters
-    ----------
-    minimize : array-like
-        Input data.
-    z : array-like
-        Input data.
-    p : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    xT : array-like
-        Input data.
-    i : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.8) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.8) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_8 = hardsvm
 
 
 def cheatsheet():
-    return "msm183: Numbered display equation (9.8) from MVSML chapter 9."
+    return "msm183: Maximum margin classifier (see msm175)"

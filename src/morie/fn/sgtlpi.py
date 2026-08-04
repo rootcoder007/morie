@@ -1,38 +1,32 @@
-"""Moore-Penrose pseudoinverse of L."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Graph Laplacian pseudoinverse."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["sgt_laplacian_pseudoinverse"]
+__all__ = ["lappinv", "sgt_laplacian_pseudoinverse"]
 
 
-def sgt_laplacian_pseudoinverse(A):
-    """
-    Moore-Penrose pseudoinverse of L
+def lappinv(A, tol=1e-09):
+    """Graph Laplacian pseudoinverse.
 
-    Formula: L^+ via eigendecomp drop zero modes
+    Moore-Penrose pseudoinverse of the graph Laplacian.
 
-    Parameters
-    ----------
-    A : array-like
-        Input data.
+    L = D - A; L is singular because the all-ones vector spans its
+    kernel on a connected graph, so L^+ is formed from the spectral
+    decomposition with the zero modes dropped.  L^+ is basis
+    independent, so it does not depend on the eigenvector convention.
 
     Returns
     -------
-    result : dict
-        Keys: L_plus
-
-    References
-    ----------
-    Klein & Randić (1993)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Moore-Penrose pseudoinverse of L"})
+    return RichResult(title="Graph Laplacian pseudoinverse", payload=_c.lappinv(A=A, tol=tol))
+
+
+sgt_laplacian_pseudoinverse = lappinv
 
 
 def cheatsheet():
-    return "sgtlpi: Moore-Penrose pseudoinverse of L"
+    return "sgtlpi: Graph Laplacian pseudoinverse"

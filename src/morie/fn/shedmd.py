@@ -1,40 +1,34 @@
-"""Viral shedding curve fit."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Piecewise log-linear shedding curve."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["viral_shedding_model"]
+__all__ = ["shedcurve", "viral_shedding_model"]
 
 
-def viral_shedding_model(days, viral_load):
-    """
-    Viral shedding curve fit
+def shedcurve(days, load, t_peak, t_plateau):
+    """Piecewise log-linear shedding curve.
 
-    Formula: piecewise log-linear: rise + plateau + decay
+    Piecewise log-linear shedding curve: rise, plateau, decay.
 
-    Parameters
-    ----------
-    days : array-like
-        Input data.
-    viral_load : array-like
-        Input data.
+    Viral load is fitted on the log10 scale in three segments split at
+    ``t_peak`` and ``t_plateau``: a rising slope before the peak, a flat
+    level between, and a decay slope after.  Each segment is an ordinary
+    least squares fit, so the result is closed form.  The shape matters
+    clinically because peak shedding precedes symptom onset, which is
+    the paper's finding.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    He et al (2020)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    days = np.atleast_1d(np.asarray(days, dtype=float))
-    n = len(days)
-    result = float(np.mean(days))
-    se = float(np.std(days, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Viral shedding curve fit"})
+    return RichResult(title="Piecewise log-linear shedding curve", payload=_c.shedcurve(days=days, load=load, t_peak=t_peak, t_plateau=t_plateau))
+
+
+viral_shedding_model = shedcurve
 
 
 def cheatsheet():
-    return "shedmd: Viral shedding curve fit"
+    return "shedmd: Piecewise log-linear shedding curve"

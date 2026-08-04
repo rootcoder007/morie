@@ -1,54 +1,54 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Bayes factor: free-bias coin against a fixed-bias coin.
 
-from . import _array_core as np
+MacKay (2003) eq. (3.12), (3.20), (3.22), pp. 52-53
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_3_equation_22"]
+__all__ = ["bcoinbf", "information_theory_mackay_chapter_3_equation_22"]
+
+_METHOD = "Bayes factor: free-bias coin against a fixed-bias coin"
 
 
-def information_theory_mackay_chapter_3_equation_22(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def bcoinbf(fa, fb, p0=0.16666666666666666):
+    """Bayes factor: free-bias coin against a fixed-bias coin.
 
-    Formula: (Fa +Fb + 1)!
+    (3.12), (3.20), (3.22) pp.52-53 -- H1 (free p_a) vs H0 (p_a = p0).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    fa : as documented for the shelf core
+        See ``morie.fn._itila.bcoinbf``.
+    fb : as documented for the shelf core
+        See ``morie.fn._itila.bcoinbf``.
+    p0 : as documented for the shelf core
+        See ``morie.fn._itila.bcoinbf``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay3e22')`` for the full guide.
+        Payload keys: ratio, evidence1, evidence0.
 
     References
     ----------
-    Information theory MacKay, ch.3 eq.3.22
+    MacKay (2003) eq. (3.12), (3.20), (3.22), pp. 52-53
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.bcoinbf(fa=fa, fb=fb, p0=p0)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("ratio", res["ratio"]), ("evidence1", res["evidence1"]), ("evidence0", res["evidence0"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_3_equation_22 = bcoinbf
+
+
 def cheatsheet():
-    return "information_theory_mackay3e22: Probability equation extracted from Information theory MacKay."
+    return "bcoinbf: Bayes factor: free-bias coin against a fixed-bias coin -- MacKay (2003) eq. (3.12), (3.20), (3.22), pp. 52-53"

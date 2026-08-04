@@ -1,82 +1,84 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Randomized test procedure when exact size is unavailable at a discrete level."""
+"""Randomized decision rule attaining an exact significance level."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_rz_test"]
+__all__ = ['randtest', 'gibbons_rz_test']
 
 
-def gibbons_rz_test(statistic, null_dist, alpha, cdf=None):
-    """
-    Randomized test procedure when exact size is unavailable at a discrete level
+def randtest(pmf, alpha=0.05, pmf_alt=None):
+    """Randomized test: reject above t2, reject with probability p at t1.
 
-    Formula: Randomize with probability gamma = (alpha - P1)/(P2 - P1) at boundary
+    Section 1.2.9 (book p. 26-27).  The rule rejects always when
+    T >= t2, rejects with probability p when t1 <= T < t2, and never
+    otherwise, with p chosen so the size is exactly alpha:
+
+    .. math:: p = \\frac{\\alpha - P(T \\ge t_2)}{P(T = t_1)}.
+
+    Its power against an alternative is
+    P(T >= t2 | H1) + p P(t1 <= T < t2 | H1), evaluated when
+    ``pmf_alt`` is supplied.
 
     Parameters
     ----------
-    statistic : array-like
-        Input data.
-    null_dist : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    pmf : sequence of float
+        Null probabilities over the support, increasing in T.
+    alpha : float, optional
+        Target exact size (default 0.05).
+    pmf_alt : sequence of float, optional
+        Alternative probabilities on the same support.
 
     Returns
     -------
-    result : dict
-        Keys: decision
+    RichResult
+        keys ``gamma`` (the randomization probability p), ``t2``,
+        ``t1`` (indices into the support), ``size_hard`` (P(T >= t2)),
+        ``size``, ``power``, ``method``.
 
     References
     ----------
-    Gibbons Ch 1.2.12
+    Gibbons & Chakraborti (2011), Sec. 1.2.9, pp. 26-27.
     """
-    statistic = np.asarray(statistic, dtype=float)
-    n = int(statistic) if statistic.ndim == 0 else len(statistic)
-    if statistic.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Randomized test procedure when exact size is unavailable at a discrete level",
-            }
-        )
-    x_sorted = np.sort(statistic)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(statistic), scale=np.std(statistic, ddof=1))
+    p = [float(v) for v in pmf]
+    k = len(p)
+    if k < 2:
+        raise ValueError("pmf needs at least 2 support points.")
+    alpha = float(alpha)
+    t2 = k
+    hard = 0.0
+    for i in range(k - 1, -1, -1):
+        tail = sum(p[i:])
+        if tail <= alpha:
+            t2 = i
+            hard = tail
+        else:
+            break
+    t1 = t2 - 1
+    if t1 < 0:
+        gamma = 0.0
+        t1 = 0
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        gamma = (alpha - hard) / p[t1] if p[t1] > 0.0 else 0.0
+        gamma = min(1.0, max(0.0, gamma))
+    power = float("nan")
+    if pmf_alt is not None:
+        q = [float(v) for v in pmf_alt]
+        if len(q) != k:
+            raise ValueError("pmf_alt must match pmf in length.")
+        power = sum(q[t2:]) + gamma * (q[t1] if t2 > 0 else 0.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Randomized test procedure when exact size is unavailable at a discrete level",
+            "gamma": float(gamma),
+            "t2": int(t2),
+            "t1": int(t1),
+            "size_hard": float(hard),
+            "size": float(hard + gamma * (p[t1] if t2 > 0 else 0.0)),
+            "power": float(power),
+            "method": "randomized decision rule of exact size (Sec. 1.2.9)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_rz: Randomized test procedure when exact size is unavailable at a discrete level"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsrztest = gibbons_rz_test
+gibbons_rz_test = randtest

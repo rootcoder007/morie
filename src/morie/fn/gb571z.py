@@ -1,74 +1,68 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Handling zeros and tied differences in Wilcoxon signed-rank test."""
+"""Tie correction for the signed-rank variance -- eq. (5.7.11)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_ties_zeros"]
+__all__ = ['wsrties', 'gibbons_wsrt_ties_zeros']
 
 
-def gibbons_wsrt_ties_zeros(differences, cdf=None):
-    """
-    Handling zeros and tied differences in Wilcoxon signed-rank test
+def wsrties(d, m0=0.0):
+    """Variance of T+ corrected for tied |d| and dropped zeros.
 
-    Formula: Discard zeros; midranks for ties; Var adj = -sum t_j(t_j^2-1)/48
+    Book p. 203, eqs. (5.7.10) and (5.7.11).  A group of t tied
+    absolute differences reduces the sum of squares of the ranks by
+    t(t^2 - 1)/12, so
+
+    .. math:: Var[T^+ | H_0] = \\frac{N(N+1)(2N+1)}{24}
+        - \\frac{\\sum t(t^2-1)}{48}.
 
     Parameters
     ----------
-    differences : array-like
-        Input data.
+    d : sequence of float
+        Differences (or observations, with ``m0`` subtracted).
+    m0 : float, optional
+        Hypothesised median (default 0).
 
     Returns
     -------
-    result : dict
-        Keys: adjusted_statistic
+    RichResult
+        keys ``var``, ``var_uncorrected``, ``correction``, ``n``,
+        ``nzero``, ``ties``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7.1
+    Gibbons & Chakraborti (2011), eqs. (5.7.10)-(5.7.11), p. 203.
     """
-    differences = np.asarray(differences, dtype=float)
-    n = int(differences) if differences.ndim == 0 else len(differences)
-    if differences.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Handling zeros and tied differences in Wilcoxon signed-rank test",
-            }
-        )
-    x_sorted = np.sort(differences)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(differences), scale=np.std(differences, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ds = [float(v) - float(m0) for v in d]
+    nzero = sum(1 for v in ds if v == 0.0)
+    a = sorted(abs(v) for v in ds if v != 0.0)
+    n = len(a)
+    if n < 1:
+        raise ValueError("no non-zero differences.")
+    ties = []
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and a[j + 1] == a[i]:
+            j += 1
+        if j > i:
+            ties.append(j - i + 1)
+        i = j + 1
+    corr = sum(t * (t * t - 1.0) for t in ties) / 48.0
+    v0 = n * (n + 1.0) * (2.0 * n + 1.0) / 24.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Handling zeros and tied differences in Wilcoxon signed-rank test",
+            "var": float(v0 - corr),
+            "var_uncorrected": float(v0),
+            "correction": float(corr),
+            "n": int(n),
+            "nzero": int(nzero),
+            "ties": ties,
+            "method": "tie-corrected Var[T+], eq. (5.7.11)",
         }
     )
 
 
-def cheatsheet():
-    return "gb571z: Handling zeros and tied differences in Wilcoxon signed-rank test"
+gibbons_wsrt_ties_zeros = wsrties

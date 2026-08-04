@@ -1,40 +1,58 @@
-"""Bayesian online changepoint detection."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bayesian online changepoint detection (re-export)."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["bayesian_online_changepoint"]
+__all__ = ['bayesocp', 'bayesian_online_changepoint']
 
 
-def bayesian_online_changepoint(y, hazard):
-    """
-    Bayesian online changepoint detection
+def bayesocp(y, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
+    """Bayesian online changepoint detection (re-export).
 
-    Formula: posterior over run length
+    The same run-length recursion as morie.fn.bocpd. This module exists because the shelf lists the method twice under different names; keeping one implementation and one delegating name is preferable to two copies that drift.
+
+
+    Formula: see bocpd
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    hazard : array-like
-        Input data.
+        Observed univariate series.
+    hazard : float
+        Constant hazard of the geometric run-length prior.
+    mu0 : float
+        Prior mean.
+    kappa0 : float
+        Prior mean precision.
+    alpha0 : float
+        Prior shape.
+    beta0 : float
+        Prior scale.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        the payload of :func:`morie.fn.bocpd.bocpd`.
 
     References
     ----------
-    Adams-MacKay (2007)
+    Adams and MacKay (2007), Bayesian Online Changepoint Detection,
+    arXiv:0710.3742.  Equations (2)-(5) for the recursion and the
+    changepoint prior, Section 2.3 and Algorithm 1 for the
+    conjugate-exponential update of the run-specific sufficient
+    statistics.  Verified against the paper.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian online changepoint detection"})
+    from .bocpd import bocpd as _bocpd
+    return _bocpd(y, hazard=hazard, mu0=mu0, kappa0=kappa0,
+                  alpha0=alpha0, beta0=beta0)
+
+
+bayesian_online_changepoint = bayesocp
 
 
 def cheatsheet():
-    return "chgbcp: Bayesian online changepoint detection"
+    return "chgbcp: Bayesian online changepoint detection (re-export)."

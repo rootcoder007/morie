@@ -1,78 +1,113 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Percentile modified rank test for location."""
+"""Percentile modified rank test for location -- eq. (8.3.5)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_pct_mod_rank_loc"]
+__all__ = ['pctrankloc', 'gibbons_pct_mod_rank_loc']
 
 
-def gibbons_pct_mod_rank_loc(x, y, c, cdf=None):
-    """
-    Percentile modified rank test for location
+def pctrankloc(x, y, s=0.5, r=None):
+    """Gastwirth's T_s - B_r location statistic.
 
-    Formula: a(i) = c*i/N if i <= c*(N+1) else 1; modified score function
+    Section 8.3.3 (book p. 304), eq. (8.3.5).  With S = [Ns] + 1 and
+    R = [Nr] + 1, only the upper S and lower R of the combined array
+    are scored; everything in between gets a score of zero:
+
+        N odd:   B_r = sum_{i<=R} (R - i + 1) Z_i,
+                 T_s = sum_{i>N-S} (i - (N-S)) Z_i
+        N even:  B_r = sum_{i<=R} (R - i + 1/2) Z_i,
+                 T_s = sum_{i>N-S} (i - (N-S) - 1/2) Z_i
+
+    T_s - B_r tests location (T_s + B_r tests scale, Ch. 9).  For N
+    even with S = R the book gives E = 0 and
+
+    .. math:: Var[T_s - B_r] = \\frac{mnS(4S^2-1)}{6N(N-1)}
+        \\qquad (8.3.6),
+
+    which is returned as ``var_book`` whenever it applies; ``var`` is
+    always the general Theorem 7.3.2 value for the realised scores, so
+    the two can be compared directly.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    c : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples; Z_i = 1 when the i-th smallest is an X.
+    s : float, optional
+        Upper percentile fraction (default 0.5).
+    r : float, optional
+        Lower percentile fraction (defaults to ``s``).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (T_s - B_r), ``tupper``, ``blower``,
+        ``var``, ``var_book``, ``z``, ``p_value``, ``S``, ``R``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 8.3.3
+    Gibbons & Chakraborti (2011), Sec. 8.3.3, eqs. (8.3.5)-(8.3.6),
+    pp. 304-305 (Gastwirth, 1965).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Percentile modified rank test for location",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    s = float(s)
+    r = s if r is None else float(r)
+    if not 0.0 < s <= 1.0 or not 0.0 < r <= 1.0:
+        raise ValueError("s and r must lie in (0, 1].")
+    nn = m + n
+    tagged = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    tagged.sort(key=lambda p: (p[0], p[1]))
+    z = [1 if t == 0 else 0 for _, t in tagged]
+    S = int(math.floor(nn * s)) + 1
+    R = int(math.floor(nn * r)) + 1
+    S = min(S, nn)
+    R = min(R, nn)
+    half = 0.0 if nn % 2 else 0.5
+    a = [0.0] * nn
+    for i in range(1, R + 1):
+        a[i - 1] -= R - i + 1.0 - half
+    for i in range(nn - S + 1, nn + 1):
+        a[i - 1] += i - (nn - S) - half
+    blower = sum(
+        (R - i + 1.0 - half) * z[i - 1] for i in range(1, R + 1)
+    )
+    tupper = sum(
+        (i - (nn - S) - half) * z[i - 1] for i in range(nn - S + 1, nn + 1)
+    )
+    abar = sum(a) / nn
+    ss = sum((v - abar) ** 2 for v in a)
+    mean = m * abar
+    var = m * n * ss / (nn * (nn - 1.0))
+    vb = float("nan")
+    if nn % 2 == 0 and S == R:
+        vb = m * n * S * (4.0 * S * S - 1.0) / (6.0 * nn * (nn - 1.0))
+    stat = tupper - blower
+    zz = (stat - mean) / math.sqrt(var) if var > 0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(stat),
+            "tupper": float(tupper),
+            "blower": float(blower),
+            "var": float(var),
+            "var_book": float(vb),
+            "z": float(zz),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(zz)))),
+            "S": int(S),
+            "R": int(R),
+            "m": m,
             "n": n,
-            "method": "Percentile modified rank test for location",
+            "method": "percentile modified rank test for location (8.3.5)",
         }
     )
 
 
-def cheatsheet():
-    return "gb833: Percentile modified rank test for location"
+gibbons_pct_mod_rank_loc = pctrankloc

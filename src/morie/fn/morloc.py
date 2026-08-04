@@ -1,40 +1,51 @@
-"""Local Moran's I (LISA) per location."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Local Moran's I per location (re-export)."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["local_morans_i"]
+__all__ = ['lisamoran', 'local_morans_i']
 
 
-def local_morans_i(x, W):
-    """
-    Local Moran's I (LISA) per location
+def lisamoran(x, W, mlvar=True):
+    """Local Moran's I per location (re-export).
 
-    Formula: I_i = z_i sum_j w_ij z_j / m_2
+    The shelf lists local Moran twice under different module names. One implementation, one delegating name.
+
+
+    Formula: see localmoran
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    W : array-like
-        Input data.
+        Values at the n locations.
+    W : array-like, shape (n, n)
+        Spatial weights.
+    mlvar : bool
+        Divide m2 by n rather than n-1.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        the payload of :func:`morie.fn.lismor.localmoran`.
 
     References
     ----------
-    Anselin (1995)
+    Anselin (1995), Local Indicators of Spatial Association -- LISA,
+    Geographical Analysis 27(2):93-115, formula (12) p.99.  The
+    article is paywalled; the formula and the divide-by-n variance
+    convention were taken from spdep::localmoran, the reference
+    implementation, which cites that equation explicitly.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Local Moran's I (LISA) per location"})
+    from .lismor import localmoran as _lm
+    return _lm(x, W, mlvar=mlvar)
+
+
+local_morans_i = lisamoran
 
 
 def cheatsheet():
-    return "morloc: Local Moran's I (LISA) per location"
+    return "morloc: Local Moran's I per location (re-export)."

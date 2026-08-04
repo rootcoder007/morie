@@ -1,48 +1,37 @@
-"""Delete-d jackknife generalising leave-one-out."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Delete-d jackknife variance."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["boot_jackknife_d"]
+__all__ = ["jackd", "bootjackknifed", "boot_jackknife_d"]
 
 
-def boot_jackknife_d(x, d, stat):
-    """
-    Delete-d jackknife generalising leave-one-out
+def jackd(theta, n, d):
+    """Delete-d jackknife variance.
 
-    Formula: Leave d points out; weight by C(n,d)
+    Delete-d jackknife variance.
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    d : array-like
-        Input data.
-    stat : array-like
-        Input data.
+    v = (n-d) / (d * C(n,d)) * sum_s (theta_s - theta_bar)^2, the sum
+    over the C(n,d) subsets of size n-d.  The delete-1 jackknife is
+    inconsistent for non-smooth statistics such as the median; Shao &
+    Wu show that deleting d > 1 restores consistency, and the leading
+    factor is what keeps the estimator unbiased for the linear case.
 
     Returns
     -------
-    result : dict
-        Keys: theta_jkd, var_jkd
-
-    References
-    ----------
-    Shao & Wu (1989)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Delete-d jackknife generalising leave-one-out"}
-    )
+    return RichResult(title="Delete-d jackknife variance", payload=_c.jackd(theta=theta, n=n, d=d))
+
+
+boot_jackknife_d = jackd
 
 
 def cheatsheet():
-    return "btjknd: Delete-d jackknife generalising leave-one-out"
+    return "btjknd: Delete-d jackknife variance"
 
 
-# compact alias per ledger/NAMING.md
-bootjackknifed = boot_jackknife_d
+# compact alias per ledger/NAMING.md (pre-existing spelling, kept working)
+bootjackknifed = jackd

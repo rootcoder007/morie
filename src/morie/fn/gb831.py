@@ -1,76 +1,93 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Terry-Hoeffding (normal scores) test for location using expected normal order statistics."""
+"""Terry-Hoeffding normal-scores test using expected normal order stats."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_terry_hoeffding"]
+__all__ = ['normscores', 'gibbons_terry_hoeffding']
 
 
-def gibbons_terry_hoeffding(x, y, cdf=None):
-    """
-    Terry-Hoeffding (normal scores) test for location using expected normal order statistics
+def _enos(i, n, lo=-8.0, hi=8.0, nodes=4001):
+    """E[Z_(i:n)] for the standard normal, fixed-grid Simpson."""
+    if nodes % 2 == 0:
+        nodes += 1
+    h = (hi - lo) / (nodes - 1)
+    coef = math.exp(
+        math.lgamma(n + 1.0) - math.lgamma(i) - math.lgamma(n - i + 1.0)
+    )
+    total = 0.0
+    for k in range(nodes):
+        z = lo + k * h
+        w = 1.0 if k in (0, nodes - 1) else (4.0 if k % 2 else 2.0)
+        p = stats.norm.cdf(z)
+        total += w * z * p ** (i - 1) * (1.0 - p) ** (n - i) * stats.norm.pdf(z)
+    return coef * total * h / 3.0
 
-    Formula: T = sum a(R_i) where a(i) = E[Z_(i:N)]; asymptotically optimal for normal alternatives
+
+def normscores(x, y, nodes=4001):
+    """Terry-Hoeffding c_1 test: expected normal order statistics as scores.
+
+    Section 8.3.1 (book p. 299).  The scores are the expected values of
+    the standard-normal order statistics,
+
+    .. math:: a_i = E[\\xi_{(i:N)}]
+        = \\frac{N!}{(i-1)!(N-i)!}\\int z\\,\\Phi(z)^{i-1}
+          [1-\\Phi(z)]^{N-i}\\varphi(z)\\,dz,
+
+    and the statistic is their sum over the X ranks.  Under H0 the mean
+    is 0 (the scores sum to zero) and, by Theorem 7.3.2,
+    Var = mn sum a_i^2 / [N(N-1)].  The expectations are computed by
+    composite Simpson on a fixed grid rather than read from a table, so
+    they are available for any N.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
+    nodes : int, optional
+        Simpson nodes over [-8, 8] (default 4001, forced odd).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``z``, ``p_value``, ``mean``, ``var``,
+        ``scores``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 8.3.1
+    Gibbons & Chakraborti (2011), Sec. 8.3.1, p. 299
+    (Terry, 1952; Hoeffding, 1951); moments Theorem 7.3.2, p. 279.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Terry-Hoeffding (normal scores) test for location using expected normal order statistics",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    nn = m + n
+    tagged = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    tagged.sort(key=lambda p: (p[0], p[1]))
+    scores = [_enos(i, nn, nodes=nodes) for i in range(1, nn + 1)]
+    stat = sum(scores[i] for i in range(nn) if tagged[i][1] == 0)
+    ssq = sum(s * s for s in scores)
+    var = m * n * ssq / (nn * (nn - 1.0))
+    z = stat / math.sqrt(var)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(stat),
+            "z": float(z),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "mean": 0.0,
+            "var": float(var),
+            "scores": scores,
+            "m": m,
             "n": n,
-            "method": "Terry-Hoeffding (normal scores) test for location using expected normal order statistics",
+            "method": "Terry-Hoeffding normal-scores test (Sec. 8.3.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb831: Terry-Hoeffding (normal scores) test for location using expected normal order statistics"
+gibbons_terry_hoeffding = normscores

@@ -1,46 +1,39 @@
-"""Linear-mixed-model GWAS."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Unified mixed-model per-SNP association test."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["gwas_linear"]
+__all__ = ["gwasmlm", "gwaslinear", "gwas_linear"]
 
 
-def gwas_linear(y, M, K):
-    """
-    Linear-mixed-model GWAS
+def gwasmlm(y, X, snp, Vinv):
+    """Unified mixed-model per-SNP association test.
 
-    Formula: per-SNP: y = mu + b SNP + Zu + e; test b=0
+    Per-SNP test of b = 0 in y = X mu + b snp + Z u + e.
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    M : array-like
-        Input data.
-    K : array-like
-        Input data.
+    The unified mixed model absorbs population structure and kinship
+    into the covariance of u; conditioning on it, the SNP effect is a
+    generalised least squares coefficient.  ``Vinv`` is the inverse of
+    the fitted total covariance, supplied by the caller so the variance
+    components are estimated once rather than per SNP -- which is the
+    computational point of the method.  The reported statistic is the
+    Wald t on b.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Yu et al (2006)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Linear-mixed-model GWAS"})
+    return RichResult(title="Unified mixed-model per-SNP association test", payload=_c.gwasmlm(y=y, X=X, snp=snp, Vinv=Vinv))
+
+
+gwas_linear = gwasmlm
 
 
 def cheatsheet():
-    return "gwasl1: Linear-mixed-model GWAS"
+    return "gwasl1: Unified mixed-model per-SNP association test"
 
 
-# compact alias per ledger/NAMING.md
-gwaslinear = gwas_linear
+# compact alias per ledger/NAMING.md (pre-existing spelling, kept working)
+gwaslinear = gwasmlm

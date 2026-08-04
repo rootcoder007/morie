@@ -1,80 +1,62 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""CDF of r-th order statistic X_(r) in terms of binomial tail probability."""
+"""CDF of the r-th order statistic as a binomial tail -- Theorem 2.4.1."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_order_cdf"]
+__all__ = ['ostatcdf', 'gibbons_order_cdf']
 
 
-def gibbons_order_cdf(t, r, n, F, cdf=None):
-    """
-    CDF of r-th order statistic X_(r) in terms of binomial tail probability
+def ostatcdf(t, r, n, cdf):
+    """P[X_(r) <= t] as an upper binomial tail in F_X(t).
 
-    Formula: P(X_(r) <= t) = sum_{i=r}^{n} C(n,i) [F(t)]^i [1-F(t)]^(n-i)
+    Theorem 2.4.1 (book p. 37), eq. (2.4.1):
+
+    .. math::
+        P[X_{(r)} \\le t] = \\sum_{i=r}^{n} \\binom{n}{i}
+            [F_X(t)]^i [1 - F_X(t)]^{n-i}.
 
     Parameters
     ----------
-    t : array-like
-        Input data.
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
-    F : array-like
-        Input data.
+    t : float
+        Argument of the cdf.
+    r : int
+        Order-statistic index, 1 <= r <= n.
+    n : int
+        Sample size.
+    cdf : callable or float
+        Either F_X (a callable) or the number F_X(t) itself.
 
     Returns
     -------
-    result : dict
-        Keys: cdf_value
+    RichResult
+        keys ``cdf`` (the probability), ``fx`` (F_X(t)), ``r``, ``n``,
+        ``sf``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 2.4.1
+    Gibbons & Chakraborti (2011), Theorem 2.4.1, eq. (2.4.1), p. 37.
     """
-    t = np.asarray(t, dtype=float)
-    n = int(t) if t.ndim == 0 else len(t)
-    if t.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "CDF of r-th order statistic X_(r) in terms of binomial tail probability",
-            }
-        )
-    x_sorted = np.sort(t)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(t), scale=np.std(t, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    r = int(r)
+    n = int(n)
+    if not 1 <= r <= n:
+        raise ValueError("need 1 <= r <= n.")
+    p = float(cdf(t)) if callable(cdf) else float(cdf)
+    if not 0.0 <= p <= 1.0:
+        raise ValueError("F_X(t) must lie in [0, 1].")
+    val = sum(math.comb(n, i) * p**i * (1.0 - p) ** (n - i) for i in range(r, n + 1))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "cdf": float(val),
+            "sf": float(1.0 - val),
+            "fx": p,
+            "r": r,
             "n": n,
-            "method": "CDF of r-th order statistic X_(r) in terms of binomial tail probability",
+            "t": float(t),
+            "method": "P[X_(r) <= t] = sum_{i>=r} C(n,i) F^i (1-F)^(n-i)",
         }
     )
 
 
-def cheatsheet():
-    return "gb241: CDF of r-th order statistic X_(r) in terms of binomial tail probability"
+gibbons_order_cdf = ostatcdf

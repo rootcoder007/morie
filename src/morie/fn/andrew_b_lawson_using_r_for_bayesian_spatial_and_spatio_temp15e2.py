@@ -1,54 +1,31 @@
-"""Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Multilevel Poisson log-rate."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_15_equation_2"]
+__all__ = ["mlpois", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_15_equation_2"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_15_equation_2(x):
-    """
-    Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def mlpois(beta0, beta1, age, race_effect, v, W):
+    """Multilevel Poisson log-rate.
 
-    Formula: [EQ] log(λi) = β0 + β1agei + β(racei) + vi∈j + Wi∈j. (15.2)
+    log(lambda_i) = b0 + b1 age_i + beta(race_i) + v_i + W_i   (Lawson eq. 15.2).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Multilevel Poisson log-rate: a fixed age slope, a categorical race
+    effect already resolved to a per-observation value, an unstructured
+    effect v and a spatially structured effect W.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp15e2')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.15 eq.15.2
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Multilevel Poisson log-rate", payload=_c.mlpois(beta0=beta0, beta1=beta1, age=age, race_effect=race_effect, v=v, W=W))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_15_equation_2 = mlpois
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp15e2: Multilevel equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp15e2: Multilevel Poisson log-rate"

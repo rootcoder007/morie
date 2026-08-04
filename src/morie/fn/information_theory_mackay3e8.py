@@ -1,54 +1,54 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Bent-coin likelihood.
 
-from . import _array_core as np
+MacKay (2003) eq. (3.8), p. 51
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_3_equation_8"]
+__all__ = ["bcoinlik", "information_theory_mackay_chapter_3_equation_8"]
+
+_METHOD = "Bent-coin likelihood"
 
 
-def information_theory_mackay_chapter_3_equation_8(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def bcoinlik(pa, fa, fb):
+    """Bent-coin likelihood.
 
-    Formula: [For example, P(s= aabajpa;F =4;H1) = papa(1pa)pa:] Our
+    (3.8) p.51 -- bent-coin likelihood P(s | p_a, F, H1).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    pa : as documented for the shelf core
+        See ``morie.fn._itila.bcoinlik``.
+    fa : as documented for the shelf core
+        See ``morie.fn._itila.bcoinlik``.
+    fb : as documented for the shelf core
+        See ``morie.fn._itila.bcoinlik``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay3e8')`` for the full guide.
+        Payload keys: likelihood, loglik.
 
     References
     ----------
-    Information theory MacKay, ch.3 eq.3.8
+    MacKay (2003) eq. (3.8), p. 51
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.bcoinlik(pa=pa, fa=fa, fb=fb)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("likelihood", res["likelihood"]), ("loglik", res["loglik"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_3_equation_8 = bcoinlik
+
+
 def cheatsheet():
-    return "information_theory_mackay3e8: Probability equation extracted from Information theory MacKay."
+    return "bcoinlik: Bent-coin likelihood -- MacKay (2003) eq. (3.8), p. 51"

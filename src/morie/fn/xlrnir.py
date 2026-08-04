@@ -1,48 +1,37 @@
-"""X-learner for CATE (Künzel-Sekhon-Bickel-Yu)."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""X-learner heterogeneous treatment effect."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["x_learner"]
+__all__ = ["xlearn", "xlearner", "x_learner"]
 
 
-def x_learner(y, D, X):
-    """
-    X-learner for CATE (Künzel-Sekhon-Bickel-Yu)
+def xlearn(tau1, tau0, g):
+    """X-learner heterogeneous treatment effect.
 
-    Formula: two-stage: per-arm response + cross-imputation
+    X-learner combination: tau = g tau0 + (1 - g) tau1.
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    X : array-like
-        Input data.
+    The X-learner imputes each unit's missing arm from the other arm's
+    fitted response, then blends the two resulting effect estimates by
+    the propensity.  The weighting is the point: when one arm is much
+    smaller, its own imputed effect is noisy, and weighting by g pushes
+    the estimate toward the estimate built from the larger arm.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Künzel, Sekhon, Bickel, Yu (2019)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "X-learner for CATE (Künzel-Sekhon-Bickel-Yu)"}
-    )
+    return RichResult(title="X-learner heterogeneous treatment effect", payload=_c.xlearn(tau1=tau1, tau0=tau0, g=g))
+
+
+x_learner = xlearn
 
 
 def cheatsheet():
-    return "xlrnir: X-learner for CATE (Künzel-Sekhon-Bickel-Yu)"
+    return "xlrnir: X-learner heterogeneous treatment effect"
 
 
-# compact alias per ledger/NAMING.md
-xlearner = x_learner
+# compact alias per ledger/NAMING.md (pre-existing spelling, kept working)
+xlearner = xlearn

@@ -1,54 +1,56 @@
-"""CentralTendency equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Log evidence for the noise level, mean marginalized out.
 
-from . import _array_core as np
+MacKay (2003) eq. (24.13), p. 320
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_24_equation_13"]
+__all__ = ["sigevid", "information_theory_mackay_chapter_24_equation_13"]
+
+_METHOD = "Log evidence for the noise level, mean marginalized out"
 
 
-def information_theory_mackay_chapter_24_equation_13(x):
-    """
-    CentralTendency equation extracted from Information theory MacKay.
+def sigevid(s, n, sigma, sigmamu=1.0):
+    """Log evidence for the noise level, mean marginalized out.
 
-    Formula: 2 and 1=b0 =S=2 (see equation 24.13). This true posterior
+    (24.13) p.320 -- log evidence for sigma, mu marginalized out.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    s : as documented for the shelf core
+        See ``morie.fn._itila.sigevid``.
+    n : as documented for the shelf core
+        See ``morie.fn._itila.sigevid``.
+    sigma : as documented for the shelf core
+        See ``morie.fn._itila.sigevid``.
+    sigmamu : as documented for the shelf core
+        See ``morie.fn._itila.sigevid``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay24e13')`` for the full guide.
+        Payload keys: logevidence, bestfit, logoccam.
 
     References
     ----------
-    Information theory MacKay, ch.24 eq.24.13
+    MacKay (2003) eq. (24.13), p. 320
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.sigevid(s=s, n=n, sigma=sigma, sigmamu=sigmamu)
     return RichResult(
-        title="CentralTendency equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("logevidence", res["logevidence"]), ("bestfit", res["bestfit"]), ("logoccam", res["logoccam"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_24_equation_13 = sigevid
+
+
 def cheatsheet():
-    return "information_theory_mackay24e13: CentralTendency equation extracted from Information theory MacKay."
+    return "sigevid: Log evidence for the noise level, mean marginalized out -- MacKay (2003) eq. (24.13), p. 320"

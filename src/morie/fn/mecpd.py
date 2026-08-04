@@ -1,46 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Markov equivalence class (MEC): DAGs with same skeleton and v-structures."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Markov equivalence of two DAGs.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 5 p. 85
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["markov_equivalence_class"]
+__all__ = ["mectest", "markov_equivalence_class"]
+
+_METHOD = "Markov equivalence of two DAGs"
 
 
-def markov_equivalence_class(dag):
-    """
-    Markov equivalence class (MEC): DAGs with same skeleton and v-structures
+def mectest(dag1, dag2):
+    """Markov equivalence of two DAGs.
 
-    Formula: DAGs G1, G2 are Markov equivalent iff same skeleton and same unshielded colliders; CPDAG represents MEC
+    Markov equivalence, ch. 5 p. 85 (Verma and Pearl, 1991).
+
+    Two DAGs are Markov equivalent iff they share a skeleton and a set
+    of colliders.
 
     Parameters
     ----------
-    dag : array-like
-        Input data.
+    dag1 : as documented for the shelf core
+        See ``morie.fn._molak.mectest``.
+    dag2 : as documented for the shelf core
+        See ``morie.fn._molak.mectest``.
 
     Returns
     -------
-    result : dict
-        Keys: {'cpdag': 'graph'}
+    result : RichResult
+        Payload keys: equivalent, sameskeleton, nskeleton.
 
     References
     ----------
-    Molak Ch 5
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 5 p. 85
     """
-    dag = np.asarray(dag, dtype=float)
-    n = int(dag) if dag.ndim == 0 else len(dag)
-    result = float(np.mean(dag))
-    se = float(np.std(dag, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.mectest(dag1=dag1, dag2=dag2)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Markov equivalence class (MEC): DAGs with same skeleton and v-structures",
-        }
+        title=_METHOD,
+        summary_lines=[("equivalent", res["equivalent"]), ("sameskeleton", res["sameskeleton"]), ("nskeleton", res["nskeleton"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+markov_equivalence_class = mectest
+
+
 def cheatsheet():
-    return "mecpd: Markov equivalence class (MEC): DAGs with same skeleton and v-structures"
+    return "mectest: Markov equivalence of two DAGs"

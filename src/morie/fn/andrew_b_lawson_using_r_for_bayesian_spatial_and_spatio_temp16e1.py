@@ -1,54 +1,31 @@
-"""CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Measurement-error normal outcome model."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_16_equation_1"]
+__all__ = ["menorm", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_16_equation_1"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_16_equation_1(x):
-    """
-    CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def menorm(beta0, beta1, x_true, tau):
+    """Measurement-error normal outcome model.
 
-    Formula: that yi ∼ N(µi, τ−1) with µi = β0+β1xT
+    y_i ~ N(mu_i, tau^-1),  mu_i = b0 + b1 x^T_i   (Lawson eq. 16.1).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    The outcome half of the classical measurement-error model: the
+    regression is on the unobserved true covariate x^T, not on the
+    error-prone x.  Returns the mean and the precision-implied scale.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp16e1')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.16 eq.16.1
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Measurement-error normal outcome model", payload=_c.menorm(beta0=beta0, beta1=beta1, x_true=x_true, tau=tau))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_16_equation_1 = menorm
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp16e1: CentralTendency equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp16e1: Measurement-error normal outcome model"

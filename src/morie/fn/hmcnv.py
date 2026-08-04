@@ -1,65 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Convolutional layer: cross-correlation with learnable kernels."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Convolutional layer forward pass.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 12 Equation 12-1, p. 423
+"""
+
+from . import _geron as _core
 
 from ._richresult import RichResult
 
-__all__ = ["geron_convolutional_layer"]
+__all__ = ["convlayer", "geron_convolutional_layer"]
+
+_METHOD = "Convolutional layer forward pass"
 
 
-def geron_convolutional_layer(x, kernel, stride, padding):
-    """
-    Convolutional layer: cross-correlation with learnable kernels
+def convlayer(x, kernel, bias=None, stride=(1, 1), padding=(0, 0)):
+    """Convolutional layer forward pass.
 
-    Formula: y[i,j,k] = sum_{u,v,c} K_k[u,v,c] * x[i+u, j+v, c] + b_k
+    Equation 12-1, p. 423 -- output of a convolutional layer.
+
+    z[i, j, k] = b[k] + sum_u sum_v sum_k' x[i', j', k'] w[u, v, k', k]
+    with i' = i * sh + u and j' = j * sw + v
+
+    ``x`` is height by width by in-channels, ``kernel`` is fh by fw by
+    in-channels by out-channels, both as nested lists.  ``padding`` is
+    the zero padding named on p. 421.  This is a cross-correlation, as
+    the book's own footnote 6 on p. 419 points out.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    kernel : array-like
-        Input data.
-    stride : array-like
-        Input data.
-    padding : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._geron.convlayer``.
+    kernel : as documented for the shelf core
+        See ``morie.fn._geron.convlayer``.
+    bias : as documented for the shelf core
+        See ``morie.fn._geron.convlayer``.
+    stride : as documented for the shelf core
+        See ``morie.fn._geron.convlayer``.
+    padding : as documented for the shelf core
+        See ``morie.fn._geron.convlayer``.
 
     Returns
     -------
-    result : dict
-        Keys: y
+    result : RichResult
+        Payload keys: height, width, channels, total, nparams.
 
     References
     ----------
-    Géron Ch 12
+    Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 12 Equation 12-1, p. 423
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    if callable(kernel):
-        y = x
-    else:
-        y = np.atleast_1d(np.asarray(kernel, dtype=float))
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Convolutional layer: cross-correlation with learnable kernels",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
+    res = _core.convlayer(x=x, kernel=kernel, bias=bias, stride=stride, padding=padding)
     return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Convolutional layer: cross-correlation with learnable kernels",
-        }
+        title=_METHOD,
+        summary_lines=[("height", res["height"]), ("width", res["width"]), ("channels", res["channels"]), ("total", res["total"]), ("nparams", res["nparams"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+geron_convolutional_layer = convlayer
+
+
 def cheatsheet():
-    return "hmcnv: Convolutional layer: cross-correlation with learnable kernels"
+    return "convlayer: Convolutional layer forward pass"

@@ -1,82 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Covariance between r-th and s-th order statistics (r < s)."""
+"""Covariance of two uniform order statistics U_(r), U_(s), r <= s."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_order_covariance"]
+__all__ = ['ostatcov', 'gibbons_order_covariance']
 
 
-def gibbons_order_covariance(r, s, n, f, F, cdf=None):
-    """
-    Covariance between r-th and s-th order statistics (r < s)
+def ostatcov(r, s, n):
+    """Cov(U_(r), U_(s)) and the induced correlation.
 
-    Formula: Cov(X_(r), X_(s)) via double integral of joint distribution
+    Section 2.4 (book p. 38): for r <= s,
+
+    .. math::
+        Cov[U_{(r)}, U_{(s)}] = \\frac{r(n-s+1)}{(n+1)^2 (n+2)}.
 
     Parameters
     ----------
-    r : array-like
-        Input data.
-    s : array-like
-        Input data.
-    n : array-like
-        Input data.
-    f : array-like
-        Input data.
-    F : array-like
-        Input data.
+    r, s : int
+        Indices with 1 <= r <= s <= n.
+    n : int
+        Sample size.
 
     Returns
     -------
-    result : dict
-        Keys: covariance
+    RichResult
+        keys ``cov``, ``corr``, ``var_r``, ``var_s``, ``r``, ``s``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 2.8.2
+    Gibbons & Chakraborti (2011), Sec. 2.4, p. 38.
     """
-    r = np.asarray(r, dtype=float)
-    n = int(r) if r.ndim == 0 else len(r)
-    if r.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Covariance between r-th and s-th order statistics (r < s)",
-            }
-        )
-    x_sorted = np.sort(r)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(r), scale=np.std(r, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    r = int(r)
+    s = int(s)
+    n = int(n)
+    if not 1 <= r <= s <= n:
+        raise ValueError("need 1 <= r <= s <= n.")
+    den = (n + 1.0) ** 2 * (n + 2.0)
+    cov = r * (n - s + 1.0) / den
+    vr = r * (n - r + 1.0) / den
+    vs = s * (n - s + 1.0) / den
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "cov": float(cov),
+            "corr": float(cov / math.sqrt(vr * vs)),
+            "var_r": float(vr),
+            "var_s": float(vs),
+            "r": r,
+            "s": s,
             "n": n,
-            "method": "Covariance between r-th and s-th order statistics (r < s)",
+            "method": "Cov(U_(r),U_(s)) = r(n-s+1)/((n+1)^2 (n+2))",
         }
     )
 
 
-def cheatsheet():
-    return "gb_cvo: Covariance between r-th and s-th order statistics (r < s)"
+gibbons_order_covariance = ostatcov

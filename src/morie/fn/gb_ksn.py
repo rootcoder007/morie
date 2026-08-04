@@ -1,76 +1,83 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample size determination for KS test with specified precision."""
+"""Sample size so that the EDF estimates F to within a fixed error."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks_sample_size"]
+__all__ = ['ksn', 'gibbons_ks_sample_size']
 
 
-def gibbons_ks_sample_size(epsilon, alpha, cdf=None):
-    """
-    Sample size determination for KS test with specified precision
+def ksn(c, alpha=0.05):
+    """Smallest n with P(D_n < c) >= 1 - alpha.
 
-    Formula: n from P(D_n < epsilon) >= 1-alpha using Kolmogorov approximation
+    Section 4.4.3 (book p. 122): D_n bounds the error of S_n as a point
+    estimate of F_X uniformly in x, so the minimum sample size that
+    guarantees an error below c with probability 1 - alpha is the
+    smallest n whose critical value D_{n,alpha} does not exceed c.  The
+    asymptotic form is n = (k_alpha / c)^2 with k_alpha the Kolmogorov
+    quantile; the exact answer is found by stepping n upward from that
+    starting point using the exact cdf of Theorem 4.3.2.
 
     Parameters
     ----------
-    epsilon : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    c : float
+        Tolerable uniform error, 0 < c < 1.
+    alpha : float, optional
+        Failure probability (default 0.05).
 
     Returns
     -------
-    result : dict
-        Keys: sample_size
+    RichResult
+        keys ``n``, ``n_asymp``, ``k_alpha``, ``coverage`` (attained
+        P(D_n < c)), ``c``, ``alpha``, ``method``.
 
     References
     ----------
-    Gibbons Ch 4.4.3
+    Gibbons & Chakraborti (2011), Sec. 4.4.3, p. 122.
     """
-    epsilon = np.asarray(epsilon, dtype=float)
-    n = int(epsilon) if epsilon.ndim == 0 else len(epsilon)
-    if epsilon.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sample size determination for KS test with specified precision",
-            }
-        )
-    x_sorted = np.sort(epsilon)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(epsilon), scale=np.std(epsilon, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    from .gb432 import ksexact
+
+    c = float(c)
+    alpha = float(alpha)
+    if not 0.0 < c < 1.0:
+        raise ValueError("c must lie strictly inside (0, 1).")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+
+    def q(k):
+        s = 0.0
+        for j in range(1, 101):
+            s += (-1.0) ** (j - 1) * math.exp(-2.0 * j * j * k * k)
+        return 2.0 * s
+
+    lo, hi = 1e-6, 10.0
+    for _ in range(200):
+        mid = (lo + hi) / 2.0
+        if q(mid) > alpha:
+            lo = mid
+        else:
+            hi = mid
+    ka = (lo + hi) / 2.0
+    nasy = int(math.ceil((ka / c) ** 2))
+    n = max(1, nasy - 20)
+    cov = 0.0
+    for _ in range(400):
+        cov = ksexact(c, n)["cdf"]
+        if cov >= 1.0 - alpha:
+            break
+        n += 1
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Sample size determination for KS test with specified precision",
+            "n": int(n),
+            "n_asymp": int(nasy),
+            "k_alpha": float(ka),
+            "coverage": float(cov),
+            "c": c,
+            "alpha": alpha,
+            "method": "KS sample size for uniform error c, Sec. 4.4.3",
         }
     )
 
 
-def cheatsheet():
-    return "gb_ksn: Sample size determination for KS test with specified precision"
+gibbons_ks_sample_size = ksn

@@ -1,80 +1,64 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Asymptotic normality of r-th order statistic X_(r) when r/n -> p."""
+"""Asymptotic normality of X_(r) when r/n -> p -- Theorem 2.10.1."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_asymp_order_normal"]
+__all__ = ['ostatasymp', 'gibbons_asymp_order_normal']
 
 
-def gibbons_asymp_order_normal(r, n, p, F, cdf=None):
-    """
-    Asymptotic normality of r-th order statistic X_(r) when r/n -> p
+def ostatasymp(p, n, xp, fxp):
+    """Large-sample normal law for the sample p-th quantile.
 
-    Formula: sqrt(n/(p(1-p))) * f(u) * (X_(r) - u) ->_d N(0,1), u = F^{-1}(p)
+    Theorem 2.10.1 (book p. 60): if r/n -> p with 0 < p < 1 and the
+    parent density f is continuous and positive at the population
+    quantile x_p = F^{-1}(p), then
+
+    .. math::
+        X_{(r)} \\sim AN\\left(x_p,\\;
+            \\frac{p(1-p)}{n\\,[f(x_p)]^{2}}\\right).
 
     Parameters
     ----------
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
-    p : array-like
-        Input data.
-    F : array-like
-        Input data.
+    p : float
+        Quantile level, 0 < p < 1.
+    n : int
+        Sample size.
+    xp : float
+        Population quantile x_p.
+    fxp : float
+        Parent density at x_p, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: normal_limit
+    RichResult
+        keys ``mean``, ``var``, ``se``, ``p``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 2.10.1
+    Gibbons & Chakraborti (2011), Theorem 2.10.1, p. 60.
     """
-    r = np.asarray(r, dtype=float)
-    n = int(r) if r.ndim == 0 else len(r)
-    if r.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Asymptotic normality of r-th order statistic X_(r) when r/n -> p",
-            }
-        )
-    x_sorted = np.sort(r)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(r), scale=np.std(r, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    p = float(p)
+    n = int(n)
+    fxp = float(fxp)
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly inside (0, 1).")
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    if fxp <= 0.0:
+        raise ValueError("fxp must be strictly positive.")
+    var = p * (1.0 - p) / (n * fxp * fxp)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "mean": float(xp),
+            "var": float(var),
+            "se": float(math.sqrt(var)),
+            "p": p,
             "n": n,
-            "method": "Asymptotic normality of r-th order statistic X_(r) when r/n -> p",
+            "method": "X_(r) ~ AN(x_p, p(1-p)/(n f(x_p)^2)) (Thm 2.10.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb2101: Asymptotic normality of r-th order statistic X_(r) when r/n -> p"
+gibbons_asymp_order_normal = ostatasymp

@@ -1,58 +1,72 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Object tracking across frames using detection + association."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Minimum-cost detection-to-track assignment.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 12 p. 476 (objective stated in words; no formula printed)
+"""
+
+from . import _geron as _core
 
 from ._richresult import RichResult
 
-__all__ = ["geron_object_tracking"]
+__all__ = ["trkassign", "geron_object_tracking"]
+
+_METHOD = "Minimum-cost detection-to-track assignment"
 
 
-def geron_object_tracking(frames, detector):
-    """
-    Object tracking across frames using detection + association
+def trkassign(posdist, appdist=None, weight=0.5, maxn=8):
+    """Minimum-cost detection-to-track assignment.
 
-    Formula: frame_t boxes associated via IoU + Kalman prediction
+    Minimum-cost detection-to-track assignment, p. 476.
+
+    p. 476 describes DeepSORT in words and prints no formula, but it
+    does state the objective the assignment step solves: it "finds the
+    combination of mappings that minimizes the distance between the
+    detections and the predicted positions of tracked objects, while
+    also minimizing the appearance discrepancy".  That objective is
+    what is implemented -- the combined cost
+    ``(1 - weight) * position + weight * appearance`` minimized over
+    all one-to-one mappings.  The Kalman prediction step and the
+    appearance network are the CALLER's; this routine takes their
+    output as the two cost matrices.
+
+    ponytail: exact optimum by exhaustive search over permutations,
+    capped at ``maxn`` tracks.  The Hungarian algorithm the book names
+    gives the same answer in O(n^3) -- swap it in if n ever exceeds a
+    handful.
 
     Parameters
     ----------
-    frames : array-like
-        Input data.
-    detector : array-like
-        Input data.
+    posdist : as documented for the shelf core
+        See ``morie.fn._geron.trkassign``.
+    appdist : as documented for the shelf core
+        See ``morie.fn._geron.trkassign``.
+    weight : as documented for the shelf core
+        See ``morie.fn._geron.trkassign``.
+    maxn : as documented for the shelf core
+        See ``morie.fn._geron.trkassign``.
 
     Returns
     -------
-    result : dict
-        Keys: trajectories
+    result : RichResult
+        Payload keys: cost, nmatched, meancost.
 
     References
     ----------
-    Géron Ch 12
+    Geron, A. (2026). Hands-On Machine Learning with Scikit-Learn and PyTorch. O'Reilly, ch. 12 p. 476 (objective stated in words; no formula printed)
     """
-    frames = np.atleast_1d(np.asarray(frames, dtype=float))
-    y = frames
-    n = len(frames)
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Object tracking across frames using detection + association",
-            }
-        )
-    result = stats.spearmanr(frames[:n], y[:n])
+    res = _core.trkassign(posdist=posdist, appdist=appdist, weight=weight, maxn=maxn)
     return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Object tracking across frames using detection + association",
-        }
+        title=_METHOD,
+        summary_lines=[("cost", res["cost"]), ("nmatched", res["nmatched"]), ("meancost", res["meancost"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+geron_object_tracking = trkassign
+
+
 def cheatsheet():
-    return "hmotrk: Object tracking across frames using detection + association"
+    return "trkassign: Minimum-cost detection-to-track assignment"

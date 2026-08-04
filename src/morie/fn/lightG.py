@@ -1,42 +1,32 @@
-"""LightGCN -- simplified graph CF."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""LightGCN layer combination."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["lightgcn"]
+__all__ = ["lgcnprop", "lightgcn"]
 
 
-def lightgcn(R, K, layers):
-    """
-    LightGCN -- simplified graph CF
+def lgcnprop(A, E, K, alpha=None):
+    """LightGCN layer combination.
 
-    Formula: L=normalized adj; emb = sum α_k L^k E
+    LightGCN: e = sum_k alpha_k S^k e, S = D^-1/2 A D^-1/2.
 
-    Parameters
-    ----------
-    R : array-like
-        Input data.
-    K : array-like
-        Input data.
-    layers : array-like
-        Input data.
+    He et al. (2020).  Feature transformation and nonlinearity are
+    dropped entirely -- only neighbourhood averaging remains -- and the
+    layer outputs are combined by fixed weights, uniform 1/(K+1) by
+    default as in the paper.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    He et al (2020) LightGCN
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    R = np.atleast_1d(np.asarray(R, dtype=float))
-    n = len(R)
-    result = float(np.mean(R))
-    se = float(np.std(R, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "LightGCN -- simplified graph CF"})
+    return RichResult(title="LightGCN layer combination", payload=_c.lgcnprop(A=A, E=E, K=K, alpha=alpha))
+
+
+lightgcn = lgcnprop
 
 
 def cheatsheet():
-    return "lightG: LightGCN -- simplified graph CF"
+    return "lightG: LightGCN layer combination"

@@ -1,76 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Joint density of all n order statistics."""
+"""Joint density of the complete set of n order statistics."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_joint_all_order"]
+__all__ = ['ostatjall', 'gibbons_joint_all_order']
 
 
-def gibbons_joint_all_order(x, f, cdf=None):
-    """
-    Joint density of all n order statistics
+def ostatjall(x, pdf):
+    """Joint pdf of X_(1) < ... < X_(n): n! times the product of f.
 
-    Formula: f(x_1,...,x_n) = n! prod f(x_i) for x_1 < x_2 < ... < x_n
+    Section 2.2 (book p. 31): on the ordered region the density of the
+    full vector of order statistics is
+
+    .. math:: f_{(1),\\dots,(n)}(x_1,\\dots,x_n) = n! \\prod_i f(x_i),
+
+    and 0 off that region.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    f : array-like
-        Input data.
+    x : sequence of float
+        Candidate argument vector, length n.
+    pdf : callable
+        Parent density f_X.
 
     Returns
     -------
-    result : dict
-        Keys: joint_density
+    RichResult
+        keys ``pdf``, ``coef`` (n!), ``prod`` (product of densities),
+        ``ordered`` (bool as int), ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 2.6
+    Gibbons & Chakraborti (2011), Sec. 2.2, p. 31.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Joint density of all n order statistics",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    n = len(xs)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    ordered = all(xs[i] < xs[i + 1] for i in range(n - 1))
+    prod = 1.0
+    for v in xs:
+        prod *= float(pdf(v))
+    coef = float(math.factorial(n))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "pdf": float(coef * prod) if ordered else 0.0,
+            "coef": coef,
+            "prod": float(prod),
+            "ordered": int(ordered),
             "n": n,
-            "method": "Joint density of all n order statistics",
+            "method": "n! prod f(x_i) on x_1 < ... < x_n (Gibbons Sec. 2.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_jall: Joint density of all n order statistics"
+gibbons_joint_all_order = ostatjall

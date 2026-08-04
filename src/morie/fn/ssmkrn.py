@@ -1,52 +1,36 @@
-"""S4 structured state-space kernel."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Structured state-space convolution kernel."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["s4_ssm_kernel"]
+__all__ = ["ssmk", "s4ssmkernel", "s4_ssm_kernel"]
 
 
-def s4_ssm_kernel(y, x, A, B, C, L):
-    """
-    S4 structured state-space kernel
+def ssmk(A, B, C, L):
+    """Structured state-space convolution kernel.
 
-    Formula: K = (CB, CAB, CA^2 B, ..., CA^{L-1} B); y = K * x
+    State-space kernel: K_l = C A^l B, y = K * x.
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    x : array-like
-        Input data.
-    A : array-like
-        Input data.
-    B : array-like
-        Input data.
-    C : array-like
-        Input data.
-    L : array-like
-        Input data.
+    Gu, Goel & Re (2022), S4.  A linear state-space model unrolled in
+    time is a convolution with the kernel (CB, CAB, CA^2 B, ...), so a
+    recurrence of length L becomes one convolution -- that equivalence
+    is what makes the model trainable at long sequence lengths.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Gu, Goel, Re (2022) S4
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "S4 structured state-space kernel"})
+    return RichResult(title="Structured state-space convolution kernel", payload=_c.ssmk(A=A, B=B, C=C, L=L))
+
+
+s4_ssm_kernel = ssmk
 
 
 def cheatsheet():
-    return "ssmkrn: S4 structured state-space kernel"
+    return "ssmkrn: Structured state-space convolution kernel"
 
 
-# compact alias per ledger/NAMING.md
-s4ssmkernel = s4_ssm_kernel
+# compact alias per ledger/NAMING.md (pre-existing spelling, kept working)
+s4ssmkernel = ssmk

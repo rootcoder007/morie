@@ -1,45 +1,57 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Relative MAE: MAE of target model / MAE of baseline."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Relative mean absolute error.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 571
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_relative_mae"]
+__all__ = ["relmae", "joseph_relative_mae"]
+
+_METHOD = "Relative mean absolute error"
 
 
-def joseph_relative_mae(y_true, y_pred, y_baseline):
-    """
-    Relative MAE: MAE of target model / MAE of baseline
+def relmae(y, yhat, benchmark):
+    """Relative mean absolute error.
 
-    Formula: RelMAE = MAE(y, y_hat) / MAE(y, y_hat_baseline)
+    Relative MAE against a benchmark forecast, ch. 19 p. 571.
+
+    RelMAE = MAE(model) / MAE(benchmark); below 1 the model beats the
+    benchmark.
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
-    y_baseline : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.relmae``.
+    yhat : as documented for the shelf core
+        See ``morie.fn._joseph.relmae``.
+    benchmark : as documented for the shelf core
+        See ``morie.fn._joseph.relmae``.
 
     Returns
     -------
-    result : dict
-        Keys: rel_mae
+    result : RichResult
+        Payload keys: relmae, mae, benchmae.
 
     References
     ----------
-    Joseph Ch 19, RelMAE section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 571
     """
-    y_true = np.atleast_1d(np.asarray(y_true, dtype=float))
-    n = len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.relmae(y=y, yhat=yhat, benchmark=benchmark)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Relative MAE: MAE of target model / MAE of baseline"}
+        title=_METHOD,
+        summary_lines=[("relmae", res["relmae"]), ("mae", res["mae"]), ("benchmae", res["benchmae"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_relative_mae = relmae
+
+
 def cheatsheet():
-    return "jorelm: Relative MAE: MAE of target model / MAE of baseline"
+    return "relmae: Relative mean absolute error"

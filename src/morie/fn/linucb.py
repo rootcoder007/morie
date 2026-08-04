@@ -1,42 +1,33 @@
-"""LinUCB contextual bandit."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""LinUCB arm scores."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["linucb"]
+__all__ = ["linucb", "linucb"]
 
 
-def linucb(context, arms, alpha):
-    """
-    LinUCB contextual bandit
+def linucb(x, theta, Ainv, alpha=1.0):
+    """LinUCB arm scores.
 
-    Formula: arm = argmax_a θ̂_a^T x + α √(x^T A^{-1}_a x)
+    LinUCB arm scores: p_a = theta_a' x + alpha sqrt(x' A_a^-1 x).
 
-    Parameters
-    ----------
-    context : array-like
-        Input data.
-    arms : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    Li et al. (2010).  The bonus term is a confidence radius, not noise:
+    it is large exactly for arms whose design matrix has seen little
+    variation along x, so exploration is directed rather than random.
+    ``theta[a]`` and ``Ainv[a]`` are the per-arm parameter and inverse
+    design matrix.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Li et al (2010)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    context = np.atleast_1d(np.asarray(context, dtype=float))
-    n = len(context)
-    result = float(np.mean(context))
-    se = float(np.std(context, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "LinUCB contextual bandit"})
+    return RichResult(title="LinUCB arm scores", payload=_c.linucb(x=x, theta=theta, Ainv=Ainv, alpha=alpha))
+
+
+linucb = linucb
 
 
 def cheatsheet():
-    return "linucb: LinUCB contextual bandit"
+    return "linucb: LinUCB arm scores"

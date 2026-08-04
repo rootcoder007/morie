@@ -1,76 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Comparison of KS and Cramer-von Mises tests: CvM uses all deviations."""
+"""Kolmogorov-Smirnov versus Cramer-von Mises on the same sample."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks_cvm_comparison"]
+__all__ = ['kscvmcmp', 'gibbons_ks_cvm_comparison']
 
 
-def gibbons_ks_cvm_comparison(x, F0, cdf=None):
-    """
-    Comparison of KS and Cramer-von Mises tests: CvM uses all deviations
+def kscvmcmp(x, cdf):
+    """Both statistics side by side, with the deviation profile.
 
-    Formula: KS: max deviation; CvM: integral squared; Anderson-Darling: weighted integral
+    Section 4.9 (book p. 146) contrasts the two: the KS statistic reads
+    only the single largest vertical gap between S_n and F_0, while the
+    Cramer-von Mises statistic integrates the squared gap over the
+    whole line, so it responds to many small deviations that the
+    supremum ignores.  This returns both statistics, the location of
+    the KS supremum, and the share of W^2 contributed by the point
+    where D_n is attained -- the quantitative form of that contrast.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    F0 : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 2.
+    cdf : callable
+        The hypothesised continuous cdf F_0.
 
     Returns
     -------
-    result : dict
-        Keys: comparison
+    RichResult
+        keys ``d`` (KS), ``w2`` (CvM), ``argmax`` (index of the KS
+        supremum), ``share`` (that point's share of the W^2 sum),
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 4.9
+    Gibbons & Chakraborti (2011), Sec. 4.9, p. 146.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Comparison of KS and Cramer-von Mises tests: CvM uses all deviations",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 observations.")
+    z = [float(cdf(v)) for v in xs]
+    devs = []
+    for i in range(n):
+        devs.append(max((i + 1) / n - z[i], z[i] - i / n))
+    d = max(devs)
+    arg = devs.index(d)
+    terms = [
+        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
+    ]
+    w2 = 1.0 / (12.0 * n) + sum(terms)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "d": float(d),
+            "w2": float(w2),
+            "argmax": int(arg),
+            "share": float(terms[arg] / w2),
             "n": n,
-            "method": "Comparison of KS and Cramer-von Mises tests: CvM uses all deviations",
+            "method": "KS (supremum) vs Cramer-von Mises (integrated)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_ksc: Comparison of KS and Cramer-von Mises tests: CvM uses all deviations"
+gibbons_ks_cvm_comparison = kscvmcmp

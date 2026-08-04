@@ -1,80 +1,74 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Van der Waerden test using inverse-normal scores."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_vdw_test"]
+__all__ = ['vdw', 'gibbons_vdw_test']
 
 
-def gibbons_vdw_test(x, y, cdf=None):
-    """
-    Van der Waerden test using inverse-normal scores
+def vdw(x, y):
+    """Van der Waerden X_1 test with scores Phi^{-1}(i/(N+1)).
 
-    Formula: T = sum Phi^{-1}(R_i/(N+1)) for X observations
+    Section 8.3.2 (book p. 301).  The van der Waerden statistic
+    replaces the exact expected normal order statistics of the
+    Terry-Hoeffding test by the far cheaper approximation
+
+    .. math:: a_i = \\Phi^{-1}\\!\\left(\\frac{i}{N+1}\\right),
+
+    and sums them over the ranks of the X sample.  The two tests have
+    the same asymptotic behaviour; the scores here need no quadrature
+    at all.  Moments from Theorem 7.3.2: mean m * abar, variance
+    mn * sum (a_i - abar)^2 / [N(N-1)].
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``z``, ``p_value``, ``mean``, ``var``,
+        ``scores``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 8.3.2
+    Gibbons & Chakraborti (2011), Sec. 8.3.2, p. 301
+    (van der Waerden, 1952).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Van der Waerden test using inverse-normal scores",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    nn = m + n
+    tagged = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    tagged.sort(key=lambda p: (p[0], p[1]))
+    scores = [stats.norm.ppf(i / (nn + 1.0)) for i in range(1, nn + 1)]
+    stat = sum(scores[i] for i in range(nn) if tagged[i][1] == 0)
+    abar = sum(scores) / nn
+    ss = sum((s - abar) ** 2 for s in scores)
+    mean = m * abar
+    var = m * n * ss / (nn * (nn - 1.0))
+    z = (stat - mean) / math.sqrt(var)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(stat),
+            "z": float(z),
+            "p_value": float(2.0 * (1.0 - stats.norm.cdf(abs(z)))),
+            "mean": float(mean),
+            "var": float(var),
+            "scores": scores,
+            "m": m,
             "n": n,
-            "method": "Van der Waerden test using inverse-normal scores",
+            "method": "van der Waerden inverse-normal scores test",
         }
     )
 
 
-def cheatsheet():
-    return "gb832: Van der Waerden test using inverse-normal scores"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsvdwtest = gibbons_vdw_test
+gibbons_vdw_test = vdw

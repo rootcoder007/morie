@@ -1,54 +1,56 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Typical-set membership test.
 
-from . import _array_core as np
+MacKay (2003) eq. (4.29), p. 80
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_4_equation_29"]
+__all__ = ["typset", "information_theory_mackay_chapter_4_equation_29"]
+
+_METHOD = "Typical-set membership test"
 
 
-def information_theory_mackay_chapter_4_equation_29(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def typset(p, n, h, beta):
+    """Typical-set membership test.
 
-    Formula: andPX =f1=2;1=4; 1=8;1=8g. There are 48 = 65536 eight-letter words
+    (4.29) p.80 -- membership test for the typical set T_{N beta}.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    p : as documented for the shelf core
+        See ``morie.fn._itila.typset``.
+    n : as documented for the shelf core
+        See ``morie.fn._itila.typset``.
+    h : as documented for the shelf core
+        See ``morie.fn._itila.typset``.
+    beta : as documented for the shelf core
+        See ``morie.fn._itila.typset``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay4e29')`` for the full guide.
+        Payload keys: info, rate, deviation.
 
     References
     ----------
-    Information theory MacKay, ch.4 eq.4.29
+    MacKay (2003) eq. (4.29), p. 80
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.typset(p=p, n=n, h=h, beta=beta)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("info", res["info"]), ("rate", res["rate"]), ("deviation", res["deviation"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_4_equation_29 = typset
+
+
 def cheatsheet():
-    return "information_theory_mackay4e29: Probability equation extracted from Information theory MacKay."
+    return "typset: Typical-set membership test -- MacKay (2003) eq. (4.29), p. 80"

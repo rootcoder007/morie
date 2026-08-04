@@ -1,38 +1,31 @@
-"""Resistance distance matrix from L^+."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Resistance distance matrix."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["sgt_resistance_distance_matrix"]
+__all__ = ["resdist", "sgt_resistance_distance_matrix"]
 
 
-def sgt_resistance_distance_matrix(A):
-    """
-    Resistance distance matrix from L^+
+def resdist(A, tol=1e-09):
+    """Resistance distance matrix.
 
-    Formula: R_{ij} = L^+_{ii} + L^+_{jj} - 2 L^+_{ij}
+    R_ij = L^+_ii + L^+_jj - 2 L^+_ij   (Klein & Randic 1993).
 
-    Parameters
-    ----------
-    A : array-like
-        Input data.
+    Effective resistance between every pair of nodes when each edge is a
+    unit conductance.  Unlike the shortest-path distance it falls when a
+    parallel route is added, which is the property the paper is about.
 
     Returns
     -------
-    result : dict
-        Keys: R
-
-    References
-    ----------
-    Klein & Randić (1993)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Resistance distance matrix from L^+"})
+    return RichResult(title="Resistance distance matrix", payload=_c.resdist(A=A, tol=tol))
+
+
+sgt_resistance_distance_matrix = resdist
 
 
 def cheatsheet():
-    return "sgtreg: Resistance distance matrix from L^+"
+    return "sgtreg: Resistance distance matrix"
