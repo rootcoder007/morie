@@ -1,45 +1,51 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean squared error prediction metric."""
+"""Mean squared error of a set of predictions."""
 
-from . import _array_core as np
+import math
+
 
 from ._richresult import RichResult
 
-__all__ = ["mse_metric"]
+__all__ = ['msetst', 'mse_metric', 'msemetric']
 
 
-def mse_metric(y_true, y_pred):
-    """
-    Mean squared error prediction metric
+def msetst(y, yhat):
+    """Mean squared error of a set of predictions.
 
-    Formula: MSE = (1/n) * sum_i (y_i - y_hat_i)^2
+    Formula: MSE = (1/T) sum_i (y_i - yhat_i)^2
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
+    y : array-like
+        Numeric vector.
+    yhat : array-like
+        Predicted values, same length as y.
 
     Returns
     -------
-    result : dict
-        Keys: {'mse': 'float'}
+    RichResult
+        ``mse``, ``rmse``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 4
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 4, Sect. 4.5.1, Eq. (4.1) p. 129 (MSE), Eq. (4.2) p. 129 (Pearson accuracy) and Eq. (4.3) p. 131 (MAE).  Read from the chapter PDF, not recalled.
     """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean squared error prediction metric"})
+    y = [float(v) for v in y]
+    yhat = [float(v) for v in yhat]
+    if len(y) != len(yhat):
+        raise ValueError("y and yhat must have the same length")
+    n = len(y)
+    if n == 0:
+        raise ValueError("y must be non-empty")
+    mse = sum((a - b) ** 2 for a, b in zip(y, yhat)) / n
+    return RichResult(payload={
+        "mse": mse, "rmse": math.sqrt(mse), "n": n,
+        "method": "Test-set mean squared error, MVSML Eq. (4.1)"})
+
+
+mse_metric = msetst
+msemetric = msetst
 
 
 def cheatsheet():
-    return "msdef: Mean squared error prediction metric"
-
-
-# compact alias per ledger/NAMING.md
-msemetric = mse_metric
+    return 'msdef: Mean squared error of a set of predictions.'
