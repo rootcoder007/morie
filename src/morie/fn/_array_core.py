@@ -1458,14 +1458,46 @@ def unique(x, return_inverse=False, return_counts=False,
 
 
 
-def allclose(a, b, atol=1e-8, rtol=1e-5):
-    aa, bb = asarray(a)._flat(), asarray(b)._flat()
-    if len(aa) != len(bb):
-        return False
-    return _pyall(_math.isclose(x, y, rel_tol=rtol, abs_tol=atol)
+def _close_scalar(x, y, rtol, atol, equal_nan):
+    """numpy's predicate: |x - y| <= atol + rtol * |y|.
+
+    Asymmetric in y, unlike math.isclose, which this shim used to call.
+    Infinities are close only when identical; NaN only under equal_nan.
+    """
+    if x != x or y != y:
+        return bool(equal_nan and x != x and y != y)
+    if x in (_INF, _NINF) or y in (_INF, _NINF):
+        return x == y
+    return _bi.abs(x - y) <= atol + rtol * _bi.abs(y)
+
+
+def _broadcast_flat(a, b, who):
+    """Flatten two operands to a common length, broadcasting a scalar.
+
+    Previously the length check returned False on any mismatch, which
+    made every array-vs-scalar comparison silently false.
+    """
+    aa = list(asarray(a)._flat())
+    bb = list(asarray(b)._flat())
+    if len(aa) == len(bb):
+        return aa, bb
+    if len(bb) == 1:
+        return aa, bb * len(aa)
+    if len(aa) == 1:
+        return aa * len(bb), bb
+    raise ValueError(
+        "%s: operands could not be broadcast together with %d and %d "
+        "values" % (who, len(aa), len(bb)))
+
+
+def allclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
+    aa, bb = _broadcast_flat(a, b, "allclose")
+    return _pyall(_close_scalar(x, y, rtol, atol, equal_nan)
                   for x, y in zip(aa, bb))
 
 
+_INF = float("inf")
+_NINF = float("-inf")
 _pyall = _bi.all
 _pyany = _bi.any
 _pysum = _bi.sum
@@ -1976,10 +2008,11 @@ def isin(x, values):
     return asarray(x)._map(lambda v: 1.0 if v in vs else 0.0)
 
 
-def isclose(a, b, rtol=1e-5, atol=1e-8):
+def isclose(a, b, rtol=1e-5, atol=1e-8, equal_nan=False):
+    # same predicate as allclose, so allclose(x, y) == all(isclose(x, y))
     return asarray(a)._zip(
-        b, lambda x, y: 1.0 if _math.isclose(x, y, rel_tol=rtol,
-                                             abs_tol=atol) else 0.0)
+        b, lambda x, y: 1.0 if _close_scalar(x, y, rtol, atol, equal_nan)
+        else 0.0)
 
 
 def diff(x, n=1, axis=-1):
