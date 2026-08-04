@@ -4,7 +4,7 @@ from . import _array_core as np
 from . import _stats_core as stats
 from ._richresult import hypothesis_test_result
 
-__all__ = ["lord_chi_square"]
+__all__ = ["lord_chi_square", "lordchisquare"]
 
 
 def lord_chi_square(b_R, b_F, V_R, V_F=None):
@@ -88,6 +88,10 @@ def lord_chi_square(b_R, b_F, V_R, V_F=None):
         },
     )
 
+
+# compact alias -- _lazy_map.json resolves 'lordchisquare' to this module, so the
+# name has to exist here or the lookup dies.
+lordchisquare = lord_chi_square
 
 def cheatsheet():
     return "lordzs: Lord's chi-square DIF test on item parameter differences"

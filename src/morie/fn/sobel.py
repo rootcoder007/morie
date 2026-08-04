@@ -5,7 +5,7 @@ from math import sqrt
 from . import _stats_core as stats
 from ._richresult import hypothesis_test_result
 
-__all__ = ["sobel_test"]
+__all__ = ["sobel_test", "sobeltest"]
 
 _VARIANTS = ("sobel", "aroian", "goodman")
 
@@ -109,6 +109,10 @@ def sobel_test(a, b, se_a, se_b, variant="sobel"):
         },
     )
 
+
+# compact alias -- _lazy_map.json resolves 'sobeltest' to this module, so the
+# name has to exist here or the lookup dies.
+sobeltest = sobel_test
 
 def cheatsheet():
     return "sobel: Sobel/Aroian/Goodman test of the indirect effect a*b"

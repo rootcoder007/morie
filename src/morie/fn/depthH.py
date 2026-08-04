@@ -18,13 +18,18 @@ def halfspace_depth(X, theta):
     definition is affine invariant, which is why it survives a change of
     units that would wreck a coordinatewise median.
 
-    In the plane the minimum over all directions is attained at a
-    direction normal to one of the vectors from ``theta`` to a data
-    point, so enumerating those gives the exact depth.  Above two
-    dimensions no such finite exact set is cheap, and the minimum is
-    taken over the directions to the data points themselves -- this is
-    the Rousseeuw-Struyf direction scheme and it returns an UPPER bound
-    on the true depth, reported as ``exact = False``.
+    In the plane the count changes only when the direction crosses a
+    normal to one of the vectors from ``theta`` to a data point, so it
+    is constant on each arc between consecutive normals and the minimum
+    is attained in the INTERIOR of an arc.  Testing the normals
+    themselves is the natural-looking mistake: a data point then lies
+    exactly on the boundary of the closed halfplane and is counted, so a
+    point outside the convex hull comes back with positive depth instead
+    of zero.  The arc midpoints are used instead, which needs no epsilon
+    and is exact.  Above two dimensions no cheap exact set exists and the
+    minimum is taken over the directions to the data points, which is the
+    Rousseeuw-Struyf scheme and returns an UPPER bound, flagged by
+    ``exact = 0``.
 
     Formula: ``depth(theta) = min_u #{i : u' (x_i - theta) >= 0} / n``.
 
@@ -59,11 +64,20 @@ def halfspace_depth(X, theta):
     d = [[Xm[i][j] - t[j] for j in range(p)] for i in range(n)]
     dirs = []
     if p == 2:
+        crit = []
         for row in d:
             if row[0] == 0.0 and row[1] == 0.0:
                 continue
-            dirs.append([-row[1], row[0]])
-            dirs.append([row[1], -row[0]])
+            a = math.atan2(row[1], row[0])
+            for t in (a + math.pi / 2.0, a - math.pi / 2.0):
+                t = t % (2.0 * math.pi)
+                crit.append(t)
+        crit.sort()
+        m = len(crit)
+        for i in range(m):
+            hi = crit[(i + 1) % m] + (2.0 * math.pi if i == m - 1 else 0.0)
+            mid = 0.5 * (crit[i] + hi)
+            dirs.append([math.cos(mid), math.sin(mid)])
         exact = 1
     else:
         for row in d:
