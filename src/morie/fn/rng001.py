@@ -1,47 +1,47 @@
-"""Mean of a random process as the first-order moment of its PDF.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Mean of a random process from its PDF (Rangayyan eq. 3.1)."""
 
-from . import _array_core as np
 
+from math import inf
+
+from ._rgcore import checkpdf, pdfint
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_mean_continuous"]
+__all__ = ["pdfmean", "rangayyan_ch3_mean_continuous"]
 
 
-def rangayyan_ch3_mean_continuous(eta, p_eta):
-    """
-    Mean of a random process as the first-order moment of its PDF.
+def pdfmean(pdf=None, x=None, lower=-inf, upper=inf):
+    """First-order moment of a PDF.
 
-    Formula: mu_eta = E[eta] = integral_{-inf}^{inf} eta * p_eta(eta) d(eta)
+    Rangayyan (2024) eq. (3.1):  mu_eta = E[eta] = integral eta p(eta) d eta.
 
     Parameters
     ----------
-    eta : array-like
-        Input data.
-    p_eta : array-like
-        Input data.
+    pdf : callable or array-like
+        The density.  Callable is integrated adaptively between ``lower``
+        and ``upper``; array-like is read as densities tabulated at ``x``.
+    x : array-like, optional
+        Abscissae for a tabulated density.
+    lower, upper : float
+        Limits for the callable form.  Infinite limits are truncated at
+        +/- 40, which holds any density whose scale is order unity; pass
+        finite limits when the density lives elsewhere.
 
     Returns
     -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.1, p. 94
+    RichResult
+        ``mean`` plus the integrated mass of the density, which is the
+        only cheap check that the input really is a PDF.
     """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    result = float(np.mean(eta))
-    se = float(np.std(eta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Mean of a random process as the first-order moment of its PDF.",
-        }
-    )
+    mass = pdfint(lambda v: 1.0, pdf, x, lower, upper)
+    mu = pdfint(lambda v: v, pdf, x, lower, upper)
+    out = {"mean": float(mu), "method": "Rangayyan (2024) eq. (3.1)"}
+    out.update(checkpdf(mass))
+    return RichResult(payload=out)
+
+
+rangayyan_ch3_mean_continuous = pdfmean  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng001: Mean of a random process as the first-order moment of its PDF."
+    return "rng001: mean of a PDF, Rangayyan eq. (3.1)"

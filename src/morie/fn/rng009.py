@@ -1,45 +1,42 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample RMS."""
+"""Sample RMS, MS, and SD of an observed signal (Rangayyan eqs. 3.8-3.10)."""
 
-from . import _array_core as np
 
+from math import fsum, sqrt
+
+from ._rgcore import aslist
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_sample_rms"]
+__all__ = ["srms", "rangayyan_ch3_sample_rms"]
 
 
-def rangayyan_ch3_sample_rms(eta, N=None):
-    r"""Root-mean-square value (Rangayyan Ch. 3):
+def srms(x):
+    """Sample RMS value, with the MS and SD it is bracketed by.
 
-    .. math:: RMS_\eta = \sqrt{\frac1N \sum_{n=0}^{N-1}
-              [\eta(n)]^2}.
+    Rangayyan (2024) eqs. (3.8)-(3.10):
+        MS  = (1/N) sum x(n)^2
+        RMS = sqrt(MS)
+        SD  = sqrt( (1/N) sum [x(n) - mu]^2 )
 
-    Parameters
-    ----------
-    eta : array-like
-        Samples.
-    N : int, optional
-        Length.
-
-    Returns
-    -------
-    RichResult
-        keys: ``rms``, ``mean_square``, ``N``, ``method``.
-    References
-    ----------
-    Rangayyan, R. M. (2015). *Biomedical Signal Analysis* (2nd ed.).
-    Wiley-IEEE Press. Ch. 3.
+    Note the divisor is N in all three -- eq. (3.10) is the population
+    form, not the N-1 unbiased one; a caller wanting the unbiased
+    variance should rescale by N/(N-1).  The book reads MS as average
+    power and RMS as average signal level.
     """
-    eta = np.asarray(eta, dtype=float).ravel()
-    if eta.size < 1:
-        raise ValueError("eta must be non-empty.")
-    if N is not None and int(N) != eta.size:
-        raise ValueError(f"N = {N} does not match len(eta) = {eta.size}.")
-    ms = float(np.mean(eta**2))
-    return RichResult(payload={"rms": float(np.sqrt(ms)), "mean_square": ms,
-                               "N": int(eta.size),
-                               "method": "RMS = sqrt((1/N) sum eta^2)"})
+    xs = aslist(x)
+    n = len(xs)
+    if n == 0:
+        raise ValueError("need at least one sample")
+    mu = fsum(xs) / n
+    ms = fsum(v * v for v in xs) / n
+    var = fsum((v - mu) ** 2 for v in xs) / n
+    return RichResult(payload={
+        "rms": sqrt(ms), "ms": ms, "sd": sqrt(var), "mean": mu, "n": n,
+        "ddof": 0, "method": "Rangayyan (2024) eqs. (3.8)-(3.10)"})
+
+
+rangayyan_ch3_sample_rms = srms  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng009: RMS = sqrt(mean square)"
+    return "rng009: sample RMS/MS/SD, Rangayyan eqs. (3.8)-(3.10)"

@@ -1,45 +1,46 @@
-"""Definition of the continuous-time Dirac delta function.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Continuous-time Dirac delta function (Rangayyan eq. 3.24)."""
 
-from . import _array_core as np
 
+from ._rgcore import aslist
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_dirac_delta_definition"]
+__all__ = ["diracdelta", "rangayyan_ch3_dirac_delta_definition"]
 
 
-def rangayyan_ch3_dirac_delta_definition(t):
+def diracdelta(t, width=None):
+    """Dirac delta evaluated on a time grid.
+
+    Rangayyan (2024) eq. (3.24):
+        delta(t) = undefined at t = 0, 0 otherwise.
+
+    A generalized function has no pointwise value at the origin, so the
+    honest return is the definition itself: 0 everywhere and None at
+    t = 0.  Passing ``width`` instead returns the unit-area rectangular
+    pulse of that duration -- the approximating family of Figure 3.10,
+    whose limit is the delta -- which is what a numerical caller actually
+    needs.  The two are kept in one function so that no caller silently
+    treats the rectangle as if it were the delta.
     """
-    Definition of the continuous-time Dirac delta function.
+    ts = aslist(t)
+    if width is None:
+        vals = [None if v == 0.0 else 0.0 for v in ts]
+        return RichResult(payload={
+            "delta": vals, "t": ts, "undefined_at_zero": True,
+            "method": "Rangayyan (2024) eq. (3.24)"})
+    w = float(width)
+    if w <= 0:
+        raise ValueError("width must be positive")
+    h = 1.0 / w
+    vals = [h if abs(v) <= w / 2.0 else 0.0 for v in ts]
+    return RichResult(payload={
+        "delta": vals, "t": ts, "width": w, "height": h,
+        "undefined_at_zero": False,
+        "method": "Rangayyan (2024) eq. (3.24), rectangular approximation"})
 
-    Formula: delta(t) = undefined at t=0, 0 otherwise
 
-    Parameters
-    ----------
-    t : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.24, p. 107
-    """
-    t = np.atleast_1d(np.asarray(t, dtype=float))
-    n = len(t)
-    result = float(np.mean(t))
-    se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Definition of the continuous-time Dirac delta function.",
-        }
-    )
+rangayyan_ch3_dirac_delta_definition = diracdelta  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng024: Definition of the continuous-time Dirac delta function."
+    return "rng024: Dirac delta definition, Rangayyan eq. (3.24)"

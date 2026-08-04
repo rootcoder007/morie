@@ -1,45 +1,35 @@
-"""Definition of the continuous-time unit step function.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Continuous-time unit step function (Rangayyan eq. 3.27)."""
 
-from . import _array_core as np
 
+from ._rgcore import aslist
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_unit_step_continuous"]
+__all__ = ["ustep", "rangayyan_ch3_unit_step_continuous"]
 
 
-def rangayyan_ch3_unit_step_continuous(t):
+def ustep(t, shift=0.0):
+    """Continuous-time unit step u(t).
+
+    Rangayyan (2024) eq. (3.27):
+        u(t) = 1 for t > 0, 0 otherwise.
+
+    Note the strict inequality: u(0) = 0 in this book, not 0.5 and not 1.
+    The discrete step of eq. (3.35) uses n >= 0 instead, so the two
+    disagree at the origin -- they are separate definitions, not one
+    sampled from the other.  The book also notes the delta is the
+    derivative of u.
     """
-    Definition of the continuous-time unit step function.
+    ts = aslist(t)
+    s = float(shift)
+    return RichResult(payload={
+        "u": [1.0 if v - s > 0.0 else 0.0 for v in ts], "t": ts,
+        "shift": s, "value_at_origin": 0.0,
+        "method": "Rangayyan (2024) eq. (3.27)"})
 
-    Formula: u(t) = 1 for t > 0, 0 otherwise
 
-    Parameters
-    ----------
-    t : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.27, p. 108
-    """
-    t = np.atleast_1d(np.asarray(t, dtype=float))
-    n = len(t)
-    result = float(np.mean(t))
-    se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Definition of the continuous-time unit step function.",
-        }
-    )
+rangayyan_ch3_unit_step_continuous = ustep  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng027: Definition of the continuous-time unit step function."
+    return "rng027: continuous unit step, Rangayyan eq. (3.27)"

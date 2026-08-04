@@ -1,53 +1,47 @@
-"""Sifting property of the Dirac delta function over an interval.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sifting property of the Dirac delta (Rangayyan eq. 3.28)."""
 
-from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_sifting_property"]
+__all__ = ["sifting", "rangayyan_ch3_sifting_property"]
 
 
-def rangayyan_ch3_sifting_property(x, t, t_o, T1, T2):
-    """
-    Sifting property of the Dirac delta function over an interval.
+def sifting(x, t0, lower, upper):
+    """Sift the value of x at t0 out of an interval.
 
-    Formula: integral_{T1}^{T2} x(t) delta(t - t_o) dt = x(t_o) if T1 < t_o < T2, 0 otherwise
+    Rangayyan (2024) eq. (3.28):
+        integral_{T1}^{T2} x(t) delta(t - to) dt
+            = x(to)  if T1 < to < T2,
+            = 0      otherwise.
+
+    The inequalities are strict at both ends: an impulse sitting exactly
+    on a limit of integration contributes nothing under this definition,
+    which is why ``inside`` is reported alongside the value.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    t : array-like
-        Input data.
-    t_o : array-like
-        Input data.
-    T1 : array-like
-        Input data.
-    T2 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.28, p. 108
+    x : callable
+        The function being sifted; must be continuous at t0.
+    t0 : float
+        Location of the impulse.
+    lower, upper : float
+        Interval of integration.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Sifting property of the Dirac delta function over an interval.",
-        }
-    )
+    if not callable(x):
+        raise TypeError("x must be a callable continuous at t0")
+    lo, hi, t = float(lower), float(upper), float(t0)
+    if hi <= lo:
+        raise ValueError("upper must exceed lower")
+    inside = lo < t < hi
+    return RichResult(payload={
+        "value": float(x(t)) if inside else 0.0, "inside": inside,
+        "t0": t, "lower": lo, "upper": hi,
+        "method": "Rangayyan (2024) eq. (3.28)"})
+
+
+rangayyan_ch3_sifting_property = sifting  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng028: Sifting property of the Dirac delta function over an interval."
+    return "rng028: sifting property, Rangayyan eq. (3.28)"
