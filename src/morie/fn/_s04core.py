@@ -153,3 +153,154 @@ def colstd(X):
 
 def euclid(a, b):
     return math.sqrt(sum((u - v) ** 2 for u, v in zip(a, b)))
+
+
+def sgn(v):
+    """Sign mapped onto {-1, +1}; zero goes to +1 so the range is binary."""
+    return 1.0 if v >= 0.0 else -1.0
+
+
+def rnd(v):
+    """Half-away-from-zero rounding.
+
+    Deliberately not the language round().  Python and R both round half
+    to even, but they disagree about which values are exactly half once
+    binary representation is involved, and a quantiser that flips a
+    level on that disagreement is a parity failure waiting to happen.
+    """
+    return sgn(v) * float(int(abs(v) + 0.5))
+
+
+def qr_mgs(A):
+    """Thin QR by modified Gram-Schmidt; returns ``(Q, R)``.
+
+    Modified rather than classical Gram-Schmidt, and certainly not the
+    normal equations: squaring the matrix squares its condition number
+    and loses the small singular values outright.  Diagonal entries of
+    ``R`` come out non-negative by construction, so ``Q`` is unique and
+    there is no sign convention left to disagree about across arms --
+    which is exactly the freedom that LAPACK and LINPACK QR use
+    differently.
+    """
+    n, p = C.shape(A)
+    Q = [list(row) for row in A]
+    R = [[0.0] * p for _ in range(p)]
+    for j in range(p):
+        for i in range(j):
+            R[i][j] = sum(Q[r][i] * Q[r][j] for r in range(n))
+            for r in range(n):
+                Q[r][j] -= R[i][j] * Q[r][i]
+        R[j][j] = math.sqrt(sum(Q[r][j] ** 2 for r in range(n)))
+        d = R[j][j] if R[j][j] > 1e-300 else 1e-300
+        for r in range(n):
+            Q[r][j] /= d
+    return Q, R
+
+
+def rank_first(x):
+    """Ranks 1..n with ties broken by original position."""
+    x = C.vec(x)
+    o = order(x)
+    r = [0] * len(x)
+    for pos, i in enumerate(o):
+        r[i] = pos + 1
+    return r
+
+
+def medmodels(Y, A, M, Cc=None):
+    """Fit the VanderWeele mediation pair and return ``(theta, beta, cbar)``.
+
+    Outcome model ``Y = th0 + th1 a + th2 m + th3 a m + th4' c`` and
+    mediator model ``M = b0 + b1 a + b2' c``.  ``cbar`` is the covariate
+    mean vector, which is where the decomposition is evaluated.
+    """
+    Y = C.vec(Y)
+    A = C.vec(A)
+    M = C.vec(M)
+    n = len(Y)
+    Cm = C.mat(Cc) if Cc is not None else [[] for _ in range(n)]
+    XO = [[1.0, A[i], M[i], A[i] * M[i]] + list(Cm[i]) for i in range(n)]
+    XM = [[1.0, A[i]] + list(Cm[i]) for i in range(n)]
+    theta, _, _, _ = ols(XO, Y)
+    beta, _, _, _ = ols(XM, M)
+    q = len(Cm[0]) if Cm and Cm[0] else 0
+    cbar = [sum(Cm[i][j] for i in range(n)) / n for j in range(q)]
+    return theta, beta, cbar
+
+
+def fourway(theta, beta, cbar, a=1.0, astar=0.0, m=0.0):
+    """The VanderWeele four-way decomposition from fitted coefficients.
+
+    Returns ``(cde, intref, intmed, pie, te)``.  At ``m = 0`` these are
+    the expressions printed in VanderWeele (2014); the ``- m`` inside
+    ``intref`` is the general controlled level.
+    """
+    d = a - astar
+    bc = beta[0] + beta[1] * astar + sum(beta[2 + j] * cbar[j] for j in range(len(cbar)))
+    cde = (theta[1] + theta[3] * m) * d
+    intref = theta[3] * (bc - m) * d
+    intmed = theta[3] * beta[1] * d * d
+    pie = (theta[2] * beta[1] + theta[3] * beta[1] * astar) * d
+    return cde, intref, intmed, pie, cde + intref + intmed + pie
+
+
+def tmle(y, D, W, gbound=0.025):
+    """One targeted-maximum-likelihood pass for a binary point treatment.
+
+    ``W`` must already carry its intercept column.  Propensity by
+    fixed-iteration IRLS, initial outcome model by least squares, and a
+    closed-form linear fluctuation -- no line search, no tolerance.
+    Returns a dict with ``psi``, ``se``, ``eps``, ``g``, ``H``, ``Q1``,
+    ``Q0`` (targeted), and ``ic``.
+    """
+    y = C.vec(y)
+    D = C.vec(D)
+    n = len(y)
+    gb = glmbin(W, D)
+    g = [clip(expit(C.dot(W[i], gb)), gbound, 1.0 - gbound) for i in range(n)]
+    des = [[D[i]] + list(W[i]) for i in range(n)]
+    qb, _, _, _ = ols(des, y)
+    Q1 = [C.dot([1.0] + list(W[i]), qb) for i in range(n)]
+    Q0 = [C.dot([0.0] + list(W[i]), qb) for i in range(n)]
+    Q = [Q1[i] if D[i] > 0.5 else Q0[i] for i in range(n)]
+    H = [D[i] / g[i] - (1.0 - D[i]) / (1.0 - g[i]) for i in range(n)]
+    den = sum(h * h for h in H)
+    eps = sum(H[i] * (y[i] - Q[i]) for i in range(n)) / den if den != 0.0 else 0.0
+    Q1s = [Q1[i] + eps / g[i] for i in range(n)]
+    Q0s = [Q0[i] - eps / (1.0 - g[i]) for i in range(n)]
+    Qs = [Q[i] + eps * H[i] for i in range(n)]
+    psi = sum(Q1s[i] - Q0s[i] for i in range(n)) / n
+    ic = [H[i] * (y[i] - Qs[i]) + Q1s[i] - Q0s[i] - psi for i in range(n)]
+    m = sum(ic) / n
+    se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
+    return {"psi": psi, "se": se, "eps": eps, "g": g, "H": H,
+            "Q1": Q1s, "Q0": Q0s, "ic": ic, "n": n}
+
+
+def ols(X, y):
+    """Least squares by the SAME modified Gram-Schmidt in both arms.
+
+    The shared tail1 core solves this with each language own QR --
+    modified Gram-Schmidt on the Python side, LINPACK/LAPACK Householder
+    on the R side.  On a well-conditioned design they agree to the last
+    bit; on an ill-conditioned one they part company around 1e-8, which
+    is above the parity threshold and below anything a user would
+    notice, so it hides until a cross-language check finds it.  Routing
+    the s04 modules through one algorithm removes the whole class.
+
+    Returns ``(beta, fitted, resid, xtxinv)``.
+    """
+    X = C.mat(X) if not (X and isinstance(X[0], list)) else X
+    n, p = C.shape(X)
+    y = C.vec(y)
+    Q, R = qr_mgs(X)
+    qty = [sum(Q[r][j] * y[r] for r in range(n)) for j in range(p)]
+    beta = [0.0] * p
+    for j in range(p - 1, -1, -1):
+        d = R[j][j] if abs(R[j][j]) > 1e-300 else 1e-300
+        beta[j] = (qty[j] - sum(R[j][k] * beta[k] for k in range(j + 1, p))) / d
+    fitted = [sum(X[r][j] * beta[j] for j in range(p)) for r in range(n)]
+    resid = [y[r] - fitted[r] for r in range(n)]
+    rinv = C.inv([[R[i][j] if i <= j else 0.0 for j in range(p)] for i in range(p)])
+    xtxinv = C.matmul(rinv, C.transpose(rinv))
+    return beta, fitted, resid, xtxinv

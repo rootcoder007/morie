@@ -1,64 +1,105 @@
-"""Page-Hinkley statistic."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Page-Hinkley change detector."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from __future__ import annotations
+
+from . import _t4core as T
 
 from ._richresult import RichResult
 
 __all__ = ["page_hinkley"]
 
 
-def page_hinkley(x, threshold, cdf=None):
-    """
-    Page-Hinkley statistic
+def page_hinkley(x, threshold, delta=0.005, direction="increase"):
+    """Page-Hinkley sequential test for a shift in the mean.
 
-    Formula: track running mean shift; threshold
+    Formula: with ``xbar_T`` the running mean of the first ``T``
+    observations,
+
+        ``m_T = sum_{t<=T} (x_t - xbar_t - delta)``,
+        ``M_T = min_{t<=T} m_t``,
+        ``PH_T = m_T - M_T``
+
+    and a change is flagged at the first ``T`` with ``PH_T > lambda``.
+    The mirrored form, ``max_{t<=T} m_t - m_T`` on ``x_t - xbar_t +
+    delta``, detects a decrease.
+
+    ``delta`` is the magnitude below which a deviation is treated as
+    noise: anything smaller drives ``m_T`` downwards, so the detector
+    stays quiet.  ``threshold`` trades detection delay against false
+    alarms.  The running mean is updated online, not recomputed, so the
+    statistic depends only on the data seen so far -- which is the whole
+    point of a sequential scheme and also what makes the two language
+    arms agree term by term.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    threshold : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Stream in arrival order.
+    threshold : float
+        Alarm level ``lambda``.
+    delta : float
+        Tolerated magnitude of drift.
+    direction : {"increase", "decrease"}
+        Which shift to detect.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``statistic`` (final PH), ``detected`` (bool), ``changepoint``
+        (1-based index of the alarm, or 0), ``ph`` (the whole path),
+        ``n``, ``method``.
 
     References
     ----------
-    Page (1954); Hinkley (1971)
+    Page (1954), Continuous inspection schemes, Biometrika 41:100-115;
+    Hinkley (1971), Inference about the change-point from cumulative sum
+    tests, Biometrika 58:509-523.  Both paywalled at JSTOR (HTTP 403);
+    the running-mean form used here is the one standardised in the
+    concept-drift literature, Gama, Zliobaite, Bifet, Pechenizkiy and
+    Bouchachia (2014), A survey on concept drift adaptation, ACM
+    Computing Surveys 46(4):44, sec. 4.2 -- ``m_T = sum (x_t - xbar_t -
+    delta)``, ``PH_T = m_T - min m_t``, alarm at ``PH_T > lambda``.
     """
-    x = np.asarray(x, dtype=float)
+    x = T.vec(x)
     n = len(x)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Page-Hinkley statistic"})
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    if n == 0:
+        raise ValueError("empty stream")
+    if direction not in ("increase", "decrease"):
+        raise ValueError("direction must be 'increase' or 'decrease'")
+    sign = 1.0 if direction == "increase" else -1.0
+    delta = float(delta)
+    run = 0.0
+    m = 0.0
+    ext = 0.0
+    path = []
+    detected = False
+    cp = 0
+    for t in range(n):
+        run += x[t]
+        xbar = run / (t + 1.0)
+        m += sign * (x[t] - xbar) - delta
+        if t == 0 or m < ext:
+            ext = m
+        ph = m - ext
+        path.append(ph)
+        if not detected and ph > threshold:
+            detected = True
+            cp = t + 1
     return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Page-Hinkley statistic"}
+        payload={
+            "statistic": float(path[-1]),
+            "detected": bool(detected),
+            "changepoint": int(cp),
+            "ph": path,
+            "n": int(n),
+            "method": "Page-Hinkley change detector",
+        }
     )
 
 
 def cheatsheet():
-    return "pageH: Page-Hinkley statistic"
+    return "page_hinkley(x, threshold, delta): PH_T = m_T - min m_t."
 
 
 # compact alias per ledger/NAMING.md

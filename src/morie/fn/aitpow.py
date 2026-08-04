@@ -1,42 +1,59 @@
-"""Powering (scalar action) on the simplex."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Powering: scalar multiplication on the simplex."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_powering"]
+__all__ = ["powering", "aitchison_powering"]
 
 
-def aitchison_powering(alpha, x):
-    """
-    Powering (scalar action) on the simplex
+def powering(a, x, total=1.0):
+    """Power a composition by a real scalar.
 
-    Formula: (α ⊙ x)_i = C(x_i^α)
+    Powering is scalar multiplication in the Aitchison vector space:
+    together with perturbation it makes the simplex a real vector
+    space, so "twice the effect" has an unambiguous meaning.  a > 1
+    pushes a composition towards its dominant part, 0 < a < 1 pulls it
+    towards the barycentre, and a < 0 reverses it.
+
+    Formula: a (.) x = C( x_1^a, ..., x_D^a )
 
     Parameters
     ----------
-    alpha : array-like
-        Input data.
+    a : float
+        Scalar.
     x : array-like
-        Input data.
+        Strictly positive vector of parts.
+    total : float
+        Constant the result sums to.
 
     Returns
     -------
-    result : dict
-        Keys: z
+    RichResult
+        ``composition``, ``a``, ``total``, ``D``.
 
     References
     ----------
-    Aitchison (1986)
+    Aitchison (1986), The Statistical Analysis of Compositional Data,
+    Chapter 2.  Verified against the reference implementation in the
+    CRAN package ``compositions`` 2.0-9, whose power operator on an
+    ``acomp`` closes the elementwise power.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Powering (scalar action) on the simplex"}
-    )
+    x = C.vec(x)
+    if any(v <= 0 for v in x):
+        raise ValueError("compositions must be strictly positive")
+    a = float(a)
+    p = [v ** a for v in x]
+    s = sum(p)
+    k = float(total)
+    return RichResult(payload={
+        "composition": [k * v / s for v in p], "a": a, "total": k,
+        "D": len(x), "method": "Powering on the simplex"})
+
+
+aitchison_powering = powering
 
 
 def cheatsheet():
-    return "aitpow: Powering (scalar action) on the simplex"
+    return "aitpow: a (.) x = C(x^a)"
