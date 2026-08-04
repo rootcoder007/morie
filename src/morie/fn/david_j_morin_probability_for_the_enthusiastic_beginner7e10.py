@@ -1,38 +1,22 @@
-"""Series product check used for the Poisson normalization.
+"""Deprecated alias for :func:`morie.fn.poisnorm`.
 
-Implements eq (7.10) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .poisnorm import poisnorm as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_10"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_10(a, terms=40):
-    """Series product check used for the Poisson normalization.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.10).
-    """
-    partials, closed = _morin.exp_taylor(a, terms)
-    total = partials[-1] * math.exp(-float(a))
-    payload = {"normalization": total, "error": abs(total - 1.0)}
-    lines = [("sum P(k)", total)]
-    return RichResult(
-        title="Series product check used for the Poisson normalization.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.poisnorm` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_10() is the book-coordinate name for poisnorm(); "
+        "it will be removed. Use morie.fn.poisnorm() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e10: Series product check used for the Poisson normalization. Morin (2016) eq (7.10)."
+    return _impl(a, terms)

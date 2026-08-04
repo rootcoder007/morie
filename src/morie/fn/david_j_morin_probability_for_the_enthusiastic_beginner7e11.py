@@ -1,40 +1,22 @@
-"""Poisson pmf sums to 1 via the exponential series.
+"""Deprecated alias for :func:`morie.fn.poissum1`.
 
-Implements eq (7.11) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .poissum1 import poissum1 as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_11"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_11(a, kmax=200):
-    """Poisson pmf sums to 1 via the exponential series.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.11).
-    """
-    a_f = float(a)
-    if a_f < 0:
-        raise ValueError("a must be >= 0")
-    total = sum(_morin.poisson_pmf(k, a_f) for k in range(int(kmax)))
-    payload = {"total": total, "error": abs(total - 1.0)}
-    lines = [("sum P(k)", total)]
-    return RichResult(
-        title="Poisson pmf sums to 1 via the exponential series.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.poissum1` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_11() is the book-coordinate name for poissum1(); "
+        "it will be removed. Use morie.fn.poissum1() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e11: Poisson pmf sums to 1 via the exponential series. Morin (2016) eq (7.11)."
+    return _impl(a, kmax)

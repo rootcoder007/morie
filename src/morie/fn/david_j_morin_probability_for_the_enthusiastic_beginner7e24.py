@@ -1,38 +1,22 @@
-"""Second-order: (1+a)^n ~ e^(na) e^(-na^2/2), requires na^3 << 1.
+"""Deprecated alias for :func:`morie.fn.powexpap2`.
 
-Implements eq (7.24) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .powexpap2 import powexpap2 as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_24"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_24(a, n):
-    """Second-order: (1+a)^n ~ e^(na) e^(-na^2/2), requires na^3 << 1.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (7.24).
-    """
-    exact, approx, validity = _morin.one_plus_a_to_n(a, n, order=2)
-    payload = {"exact": exact, "approx": approx, "na3": validity,
-               "valid": validity < 0.1}
-    lines = [("approx", approx), ("na^3", validity)]
-    return RichResult(
-        title="Second-order: (1+a)^n ~ e^(na) e^(-na^2/2), requires na^3 << 1.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.powexpap2` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_24() is the book-coordinate name for powexpap2(); "
+        "it will be removed. Use morie.fn.powexpap2() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner7e24: Second-order: (1+a)^n ~ e^(na) e^(-na^2/2), requires na^3 << 1. Morin (2016) eq (7.24)."
+    return _impl(a, n)
