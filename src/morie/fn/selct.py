@@ -1,47 +1,57 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Genomic selection response to selection prediction."""
+"""Genomic selection accuracy: Pearson correlation of observed and predicted."""
 
-from . import _array_core as np
+import math
+
 
 from ._richresult import RichResult
 
-__all__ = ["genomic_selection_accuracy"]
+__all__ = ['predacc', 'genomic_selection_accuracy']
 
 
-def genomic_selection_accuracy(i, predictive_ability, sigma_g, h2):
-    """
-    Genomic selection response to selection prediction
+def predacc(y, yhat):
+    """Genomic selection accuracy: Pearson correlation of observed and predicted.
 
-    Formula: R_GS = i * r_{IH} * sigma_g; r_{IH} = r(I, H) = r(GEBV, TBV) predictive ability i reliability
+    Formula: r = sum (yhat - mean yhat)(y - mean y) / sqrt(sum (yhat - mean yhat)^2 * sum (y - mean y)^2)
 
     Parameters
     ----------
-    i : array-like
-        Input data.
-    predictive_ability : array-like
-        Input data.
-    sigma_g : array-like
-        Input data.
-    h2 : array-like
-        Input data.
+    y : array-like
+        Numeric vector.
+    yhat : array-like
+        Predicted values, same length as y.
 
     Returns
     -------
-    result : dict
-        Keys: {'response': 'float'}
+    RichResult
+        ``accuracy``, ``r2``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 1,5
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 4, Sect. 4.5.1, Eq. (4.1) p. 129 (MSE), Eq. (4.2) p. 129 (Pearson accuracy) and Eq. (4.3) p. 131 (MAE).  Read from the chapter PDF, not recalled.  Eq. (4.2) is Pearson's correlation between the T test-set predictions and the T observed values; the book calls it the prediction accuracy in plant breeding.
     """
-    i = np.asarray(i, dtype=float)
-    n = int(i) if i.ndim == 0 else len(i)
-    result = float(np.mean(i))
-    se = float(np.std(i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Genomic selection response to selection prediction"}
-    )
+    y = [float(v) for v in y]
+    yhat = [float(v) for v in yhat]
+    if len(y) != len(yhat):
+        raise ValueError("y and yhat must have the same length")
+    n = len(y)
+    if n < 2:
+        raise ValueError("need at least two observations")
+    my = sum(y) / n
+    mh = sum(yhat) / n
+    num = sum((b - mh) * (a - my) for a, b in zip(y, yhat))
+    dy = sum((a - my) ** 2 for a in y)
+    dh = sum((b - mh) ** 2 for b in yhat)
+    if dy <= 0.0 or dh <= 0.0:
+        raise ValueError("observed and predicted must both vary")
+    r = num / math.sqrt(dh * dy)
+    return RichResult(payload={
+        "accuracy": r, "r2": r * r, "n": n,
+        "method": "Pearson prediction accuracy, MVSML Eq. (4.2)"})
+
+
+genomic_selection_accuracy = predacc
 
 
 def cheatsheet():
-    return "selct: Genomic selection response to selection prediction"
+    return 'selct: Genomic selection accuracy: Pearson correlation of observed and predicted.'
