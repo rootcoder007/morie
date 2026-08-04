@@ -7,6 +7,7 @@ symbols are unchanged.
 """
 
 from math import cos, exp, fsum, pi, sin
+from math import cos, fsum, log, pi, sin, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
@@ -45,6 +46,7 @@ __all__ = [
     'rangayyan_ch3_discrete_unit_step',
     'rangayyan_ch3_discrete_convolution_causal',
     'rangayyan_ch3_discrete_convolution_causal_alt',
+    'sincostest',
     'rangayyan_ch3_test_signal_sin_cos',
     'lsiser',
     'rangayyan_ch3_lsi_series_intermediate',
@@ -61,6 +63,7 @@ __all__ = [
     'perconv',
     'rangayyan_ch3_periodic_convolution',
     'rangayyan_ch4_test_signal_three_events',
+    'compsig',
     'rangayyan_ch4_composite_signal_in_terms_of_g',
 ]
 
@@ -730,63 +733,47 @@ def rangayyan_ch3_discrete_convolution_causal_alt(x, h, n=None):
 
 
 # -- rng038: Synthetic test signal: sum of a sine and a cosine..
-def rangayyan_ch3_test_signal_sin_cos(t, cdf=None):
+def sincostest(n=None, f1=1.0, f2=2.0, a1=1.0, a2=1.0, fs=100.0,
+               duration=1.0):
+    """Synthetic test signal, a sine plus a cosine.
+
+        x(t) = a1 sin(2 pi f1 t) + a2 cos(2 pi f2 t)
+
+    The book's standard exercise signal: two known components at known
+    amplitudes, so any transform, filter or spectral estimate applied to
+    it has an answer that can be checked by hand rather than eyeballed.
+
+    Returned with the time base, because a test signal without its
+    sampling rate cannot be checked against anything.
     """
-    Synthetic test signal: sum of a sine and a cosine.
-
-    Formula: x(t) = 5 sin(2*pi*2*t) + 2 cos(2*pi*3*t)
-
-    Parameters
-    ----------
-    t : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.40, p. 112
-    """
-    t = np.asarray(t, dtype=float)
-    n = len(t)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Synthetic test signal: sum of a sine and a cosine.",
-            }
-        )
-    x_sorted = np.sort(t)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(t), scale=np.std(t, ddof=1))
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    for f in (f1, f2):
+        if abs(float(f)) >= fsv / 2.0:
+            raise ValueError("component at %g Hz is at or above the "
+                             "Nyquist frequency %g Hz" % (f, fsv / 2.0))
+    if n is not None:
+        N = int(n)
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Synthetic test signal: sum of a sine and a cosine.",
-        }
-    )
+        d = float(duration)
+        if d <= 0:
+            raise ValueError("duration must be positive")
+        N = int(round(d * fsv))
+    if N < 2:
+        raise ValueError("need at least two samples")
+    t = [i / fsv for i in range(N)]
+    x = [float(a1) * sin(2.0 * pi * float(f1) * v)
+         + float(a2) * cos(2.0 * pi * float(f2) * v) for v in t]
+    return RichResult(payload={
+        "x": x, "t": t, "n": N, "fs": fsv,
+        "f1": float(f1), "f2": float(f2),
+        "a1": float(a1), "a2": float(a2),
+        "components_are_known_by_construction": True,
+        "method": "Rangayyan (2024) Ch. 3 (synthetic test signal)"})
+
+
+rangayyan_ch3_test_signal_sin_cos = sincostest  # pre-policy spelling
 
 
 # -- rng041: Intermediate output of the first LSI system in a series cascade..
@@ -1097,72 +1084,56 @@ def rangayyan_ch4_test_signal_three_events(n=36):
 
 
 # -- rng225: Composite test signal expressed in terms of three delayed scaled copies of g(n)..
-def rangayyan_ch4_composite_signal_in_terms_of_g(g, n, cdf=None):
+def compsig(g, shifts, scales=None, n=None):
+    """Composite signal built from delayed, scaled copies of a pattern.
+
+        x(n) = sum_k a_k g(n - d_k)
+
+    Chapter 4's construction for testing a matched filter: the filter
+    matched to g should produce a peak at each d_k with height
+    proportional to a_k, so the ground truth is known exactly.
+
+    Copies that overlap ADD, which is the point of the exercise -- a
+    matched filter resolves overlapping instances only while they stay
+    further apart than the pattern is long, and the overlap count is
+    returned so a test can tell whether it is exercising that limit.
     """
-    Composite test signal expressed in terms of three delayed scaled copies of g(n).
+    gs = aslist(g)
+    ds = [int(v) for v in aslist(shifts)]
+    if not gs:
+        raise ValueError("the pattern needs at least one sample")
+    if not ds:
+        raise ValueError("give at least one shift")
+    if any(v < 0 for v in ds):
+        raise ValueError("shifts cannot be negative")
+    a = [1.0] * len(ds) if scales is None else aslist(scales)
+    if len(a) != len(ds):
+        raise ValueError("give one scale per shift, or none")
+    N = int(n) if n is not None else max(ds) + len(gs)
+    if N < max(ds) + len(gs):
+        raise ValueError("n is too short to hold every shifted copy")
+    x = [0.0] * N
+    for amp, d in zip(a, ds):
+        for i, v in enumerate(gs):
+            x[d + i] += amp * v
+    overlaps = sum(1 for i in range(len(ds)) for j in range(i + 1, len(ds))
+                   if abs(ds[i] - ds[j]) < len(gs))
+    return RichResult(payload={
+        "x": x, "n": N, "pattern": list(gs), "shifts": ds, "scales": a,
+        "pattern_length": len(gs), "n_copies": len(ds),
+        "overlapping_pairs": overlaps, "copies_add": True,
+        "peaks_expected_at": [d + len(gs) - 1 for d in ds],
+        "method": "Rangayyan (2024) Ch. 4 (composite test signal)"})
 
-    Formula: x(n) = g(n-5) + 0.5*g(n-16) + 0.25*g(n-26)
 
-    Parameters
-    ----------
-    g : array-like
-        Input data.
-    n : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 4, Eq 4.53, p. 240
-    """
-    g = np.asarray(g, dtype=float)
-    n = len(g)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Composite test signal expressed in terms of three delayed scaled copies of g(n).",
-            }
-        )
-    x_sorted = np.sort(g)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(g), scale=np.std(g, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Composite test signal expressed in terms of three delayed scaled copies of g(n).",
-        }
-    )
+rangayyan_ch4_composite_signal_in_terms_of_g = compsig  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgam: amplitude modulation and synchronous demodulation, Sec 5.5.1',
-    'rgconv: linear convolution, Rangayyan eqs. (3.36)-(3.39)',
-    'rgfm: frequency-modulated signal model',
-    'rgstvar: time-variant LSI system',
+    'rgam: Amplitude-modulated (AM) signal model.',
+    'rgconv: Linear convolution of two finite-length sequences.',
+    'rgfm: Frequency-modulated (FM) signal model for respiratory sounds.',
+    'rgstvar: Time-variant linear system (TV-LSI) characterization.',
     'rng024: Continuous-time Dirac delta function (Rangayyan eq. 3.24).',
     'rng025: Unit-area property of the Dirac delta (Rangayyan eq. 3.25).',
     'rng026: Dirac delta as a limit of a power function (Rangayyan eq. 3.26).',
@@ -1176,16 +1147,16 @@ _CHEATSHEET = [
     'rng035: Discrete-time unit step function (Rangayyan eq. 3.35).',
     'rng036: Discrete-time causal convolution sum.',
     'rng037: Equivalent discrete-time causal convolution with swapped arguments.',
-    'rng038: Synthetic test signal: sum of a sine and a cosine..',
-    'rng041: LSI systems in series, Rangayyan eqs. (3.43)-(3.45)',
-    'rng042: series output and combined response, eqs. (3.44)-(3.45)',
-    'rng044: LSI systems in parallel, Rangayyan eqs. (3.46)-(3.49)',
-    'rng045: second parallel branch, Rangayyan eq. (3.47)',
-    'rng046: parallel output and combined response, eqs. (3.48)-(3.49)',
-    'rng051: LTI convolution property in s and omega, eq. (3.53)',
-    'rng079: periodic convolution, Rangayyan eq. (3.90)',
+    'synthetic sine-plus-cosine test signal',
+    'rng041: Intermediate output of the first LSI system in a series cascade..',
+    'rng042: Output of two LSI systems in series equals input convolved with combined response..',
+    'rng044: Output of the first branch in a parallel LSI configuration..',
+    'rng045: Output of the second branch in a parallel LSI configuration..',
+    'rng046: Output of two LSI systems in parallel equals input convolved with sum of responses..',
+    'rng051: LTI convolution maps to multiplication in s-domain and frequency domain..',
+    'rng079: Circular (periodic) convolution of two N-periodic discrete signals..',
     'rng223: Rangayyan Ch. 4 synthetic three-event test signal (Eq. 4.51).',
-    'rng225: Composite test signal expressed in terms of three delayed scaled copies of g(n)..',
+    'composite signal of delayed scaled patterns',
 ]
 
 

@@ -8,6 +8,7 @@ symbols are unchanged.
 
 from __future__ import annotations
 from math import cos, fsum, log, log10, pi, sin, sqrt
+from math import cos, fsum, log, pi, sin, sqrt
 from math import fsum
 from math import fsum, sqrt
 from math import inf
@@ -21,6 +22,7 @@ from ._richresult import RichResult
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = [
+    'corrcoef',
     'rangayyan_correlation_coeff',
     'specentropy',
     'rangayyan_spectral_entropy',
@@ -88,49 +90,46 @@ __all__ = [
 
 
 # -- rgcorec: Pearson correlation coefficient for morphological analysis.
-def rangayyan_correlation_coeff(x, y):
+def corrcoef(x, y):
+    """Pearson correlation coefficient.
+
+        r = sum (x - mx)(y - my)
+            / sqrt( sum (x - mx)^2 sum (y - my)^2 )
+
+    The MEANS ARE REMOVED, which is what separates this from the
+    normalized dot product of Chapter 4: r measures linear association
+    about the means, that one measures the angle between the raw vectors.
+    For signals with a large common offset the two differ sharply, and
+    both are returned so the difference is visible.
+
+    r is invariant to any positive affine change of either variable, so
+    it says nothing about scale or agreement -- only about how tightly
+    the points hug a straight line.
     """
-    Pearson correlation coefficient for morphological analysis
+    from .bsacorr import dotprod          # eqs (4.24)-(4.25), one copy
 
-    Formula: rho = sum((x-mean_x)*(y-mean_y)) / (N*std_x*std_y)
+    xs, ys = aslist(x), aslist(y)
+    if len(xs) != len(ys):
+        raise ValueError("x and y must have the same length")
+    n = len(xs)
+    if n < 2:
+        raise ValueError("need at least two paired observations")
+    centred = dotprod(xs, ys, subtract_mean=True)
+    if centred["gamma"] is None:
+        raise ValueError("a variable is constant; the correlation is "
+                         "undefined")
+    r = centred["gamma"]
+    mx, my = fsum(xs) / n, fsum(ys) / n
+    return RichResult(payload={
+        "r": r, "r_squared": r * r, "n": n, "means": [mx, my],
+        "cosine_without_removing_means": dotprod(xs, ys)["gamma"],
+        "means_are_removed": True,
+        "invariant_to_positive_affine_change": True,
+        "says_nothing_about_agreement": True,
+        "method": "Pearson correlation; Rangayyan (2024) Ch. 5"})
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
 
-    Returns
-    -------
-    result : dict
-        Keys: rho
-
-    References
-    ----------
-    Rangayyan Ch 5.4.1
-    """
-    x = np.asarray(x, dtype=float)
-    y = np.asarray(y, dtype=float)
-    n = min(len(x), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Pearson correlation coefficient for morphological analysis",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
-    return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Pearson correlation coefficient for morphological analysis",
-        }
-    )
+rangayyan_correlation_coeff = corrcoef  # pre-policy spelling
 
 
 # -- rgentrp: Spectral entropy for signal complexity measurement.
@@ -1733,23 +1732,23 @@ rangayyan_ch3_observed_signal_kth_realization = obsreal  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgcorec: Pearson correlation coefficient for morphological analysis.',
-    'rgentrp: spectral entropy, eq. (3.11) applied to the PSD',
-    'rgfdpsd: fractal dimension from PSD slope, eqs. (6.50)-(6.52)',
-    'rgff: Hjorth form factor / complexity, Rangayyan eqs. (5.25)-(5.26)',
-    'rgfracv: fractal dimension of VAG signals, Sections 6.6.2-6.6.3',
+    'Pearson correlation coefficient',
+    'rgentrp: Spectral entropy for signal complexity measurement.',
+    'rgfdpsd: Fractal dimension from PSD slope (1/f noise model).',
+    'rgff: Form factor (ratio of RMS to mean absolute value).',
+    'rgfracv: Fractal analysis of VAG signals via power spectral slope.',
     'rghfd: Higuchi fractal dimension -- Rangayyan Sec. 5.13.2, eqs (5.39)-(5.41).',
-    'rgkatzfd: Katz fractal dimension (Katz 1988)',
-    'rgmufr: motor-unit firing rate and IDI statistics',
-    'rgnl: nonlinear feature vector (ApEn, SampEn, DFA, Lyapunov)',
+    'rgkatzfd: Katz fractal dimension of a waveform.',
+    'rgmufr: Motor unit mean firing rate and inter-discharge interval (IDI).',
+    'rgnl: Nonlinear features of biomedical signals (ApEn, SampEn, DFA, Lyapunov).',
     'rgpdfest: Probability density estimate.',
-    'rgrms: RMS value, Rangayyan eq. (3.9)',
+    'rgrms: Root mean square (RMS) value of a signal.',
     'rgrmsnw: RMS noise level.',
-    'rgsavg: synchronized averaging, Rangayyan eqs. (3.95)-(3.96)',
-    'rgsf: time- and frequency-domain feature vector',
-    'rgsig2n: SNR after filtering, Rangayyan Section 3.2.1',
-    'rgsnr: signal-to-noise ratio in dB, Rangayyan Section 3.2.1',
-    'rgturns: Willison turns count, Rangayyan Section 5.6.3',
+    'rgsavg: Synchronized (ensemble) averaging for SNR enhancement.',
+    'rgsf: Generic biomedical signal feature vector: time-domain + frequency-domain + nonlinear.',
+    'rgsig2n: Signal-to-noise ratio calculation after filtering.',
+    'rgsnr: Signal-to-noise ratio (dB).',
+    'rgturns: Turns count of an EMG signal (number of direction reversals above threshold).',
     'rgzcr: Zero-crossing rate -- Rangayyan & Krishnan Sec 5.6.2.',
     'rng001: Mean of a random process from its PDF (Rangayyan eq. 3.1).',
     'rng002: Mean-squared value of a random process (Rangayyan eq. 3.2).',
@@ -1768,7 +1767,7 @@ _CHEATSHEET = [
     'rng019: Time-average mean.',
     'rng021: Covariance and correlation coefficient (Rangayyan eqs. 3.21-3.22).',
     'rng022: Correlation coefficient as normalised covariance (Rangayyan Eq 3.22).',
-    'rng084: signal-plus-noise realization, Rangayyan eq. (3.95)',
+    'rng084: kth observed realization of a signal in noise (signal-plus-noise model)..',
 ]
 
 

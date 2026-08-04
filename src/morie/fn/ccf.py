@@ -56,10 +56,13 @@ def ccf(
     if denom == 0:
         raise ValueError("One or both series have zero variance.")
 
-    lags_arr = np.arange(-nlags, nlags + 1)
-    ccf_vals = np.zeros(len(lags_arr))
+    # np.arange yields floats here, and a float cannot slice -- every
+    # negative lag raised TypeError, so this function could not run at all.
+    lag_ints = list(range(-nlags, nlags + 1))
+    lags_arr = np.array([float(h) for h in lag_ints])
+    ccf_vals = np.zeros(len(lag_ints))
 
-    for i, h in enumerate(lags_arr):
+    for i, h in enumerate(lag_ints):
         if h >= 0:
             ccf_vals[i] = np.sum(xm[: n - h] * ym[h:]) / denom
         else:
@@ -77,3 +80,33 @@ def ccf(
 
 def cheatsheet() -> str:
     return "ccf({}) -> Cross-correlation function between two time series."
+
+
+def cross_correlation(x, y, max_lag: int | None = None):
+    """Normalized cross-correlation with the lag axis running from +max_lag
+    down to -max_lag.
+
+    This was fn/xcorr.py, a second implementation of :func:`ccf` above
+    producing the same numbers with the lag axis REVERSED -- the opposite
+    sign convention for the delay, which is exactly how a delay estimate
+    comes out with the wrong sign.  It now delegates, so there is one
+    implementation and the reversal is explicit.
+
+    The bare name ``xcorr`` no longer points here: in signal processing
+    xcorr means the RAW cross-correlation, which is
+    :func:`morie.fn.bsacorr.xcorr` (Rangayyan's R_xy(m)).
+    """
+    from ._containers import DescriptiveResult
+
+    xa = np.asarray(x, dtype=float)
+    ya = np.asarray(y, dtype=float)
+    n = len(xa)
+    nlags = (n - 1) if max_lag is None else int(max_lag)
+    nlags = max(1, min(nlags, n - 1))
+    corr = np.array(list(ccf(xa, ya, nlags=nlags)["ccf_values"])[::-1])
+    return DescriptiveResult(
+        name="cross_correlation",
+        value=float(np.max(np.abs(corr))),
+        extra={"correlation": corr, "max_lag": max_lag,
+               "lag_axis_runs_positive_to_negative": True},
+    )

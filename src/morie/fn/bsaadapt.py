@@ -8,6 +8,7 @@ symbols are unchanged.
 
 from __future__ import annotations
 from math import cos, fsum, log, log10, pi, sin, sqrt
+from math import cos, fsum, log, pi, sin, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._containers import SignalResult
@@ -22,9 +23,11 @@ __all__ = [
     'rangayyan_adaptive_filter',
     'anc',
     'rangayyan_anc',
+    'eegadapt',
     'rangayyan_eeg_adaptive_seg',
     'fetalecg',
     'rangayyan_fetal_ecg',
+    'glr',
     'rangayyan_gen_likelihood_ratio',
     'kalman',
     'rangayyan_kalman_filter',
@@ -374,71 +377,89 @@ rangayyan_anc = anc  # pre-policy spelling
 
 
 # -- rgeegadp: Adaptive segmentation of EEG using GLR test.
-def rangayyan_eeg_adaptive_seg(eeg, fs, min_seg, threshold, cdf=None):
+def eegadapt(x, fs, window=None, step=None, order=4, threshold=None):
+    """Adaptive segmentation of the EEG by the GLR test, Section 8.5.3.
+
+    Slides a test window over the record, growing the reference window
+    from the last boundary, and marks a boundary where the GLR distance
+    of eq. (8.31) exceeds a threshold.  On a boundary the reference
+    window RESTARTS -- that is the whole point of an adaptive method, and
+    without the restart every window after the first change looks like a
+    boundary.
+
+    With no threshold given a robust one is used, median + 3 x 1.4826
+    MAD of the observed distances, because a mean-and-SD threshold is
+    inflated by the very jumps it is meant to detect.
+
+    The EEG is the book's motivating case: it is quasi-stationary in
+    bursts, so a fixed-window analysis smears the transitions that carry
+    the clinical information.
     """
-    Adaptive segmentation of EEG using GLR test
+    xs = aslist(x)
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    N = len(xs)
+    p = int(order)
+    w = int(window) if window is not None else max(4 * (p + 1),
+                                                   int(0.5 * fsv))
+    hop = int(step) if step is not None else max(1, w // 4)
+    if w > N:
+        raise ValueError("the window is longer than the record")
+    if w <= p:
+        raise ValueError("the window must hold more samples than the order")
+    if hop < 1:
+        raise ValueError("step must be at least one sample")
 
-    Formula: GLR change-point statistic; segment boundary when GLR > threshold
+    start = 0
+    dists, times, bounds = [], [], []
+    pos = start + w
+    while pos + w <= N:
+        seg = xs[start:pos + w]
+        mrel = pos - start + 1
+        if mrel - 1 > p and w > p:
+            d = glr(seg, mrel, len(seg), order=p)["d"]
+        else:
+            d = 0.0
+        dists.append(d)
+        times.append(pos / fsv)
+        pos += hop
+    if not dists:
+        raise ValueError("the record is too short for even one test "
+                         "window")
+    srt = sorted(dists)
+    med = srt[len(srt) // 2]
+    mad = sorted(abs(v - med) for v in dists)[len(dists) // 2]
+    thr = float(threshold) if threshold is not None \
+        else med + 3.0 * 1.4826 * mad
 
-    Parameters
-    ----------
-    eeg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    min_seg : array-like
-        Input data.
-    threshold : array-like
-        Input data.
+    start = 0
+    pos = w
+    adaptive = []
+    while pos + w <= N:
+        seg = xs[start:pos + w]
+        mrel = pos - start + 1
+        d = glr(seg, mrel, len(seg), order=p)["d"] \
+            if (mrel - 1 > p and w > p) else 0.0
+        adaptive.append(d)
+        if d > thr:
+            bounds.append(pos)
+            start = pos          # the reference window restarts here
+            pos = start + w
+        else:
+            pos += hop
+    return RichResult(payload={
+        "d": adaptive, "d_fixed_reference": dists, "times": times,
+        "boundaries": bounds, "n_boundaries": len(bounds),
+        "threshold": thr, "median": med, "mad": mad,
+        "window": w, "step": hop, "order": p, "fs": fsv,
+        "reference_restarts_at_boundaries": True,
+        "robust_threshold": threshold is None,
+        "method": "Rangayyan (2024) Section 8.5.3 (GLR adaptive "
+                  "segmentation)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: segment_bounds, glr_stat
 
-    References
-    ----------
-    Rangayyan Ch 8.10
-    """
-    eeg = np.asarray(eeg, dtype=float)
-    n = int(eeg) if eeg.ndim == 0 else len(eeg)
-    if eeg.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Adaptive segmentation of EEG using GLR test",
-            }
-        )
-    x_sorted = np.sort(eeg)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(eeg), scale=np.std(eeg, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Adaptive segmentation of EEG using GLR test",
-        }
-    )
+rangayyan_eeg_adaptive_seg = eegadapt  # pre-policy spelling
 
 
 # -- rgfecg: Maternal-fetal ECG separation via adaptive noise cancellation.
@@ -485,69 +506,88 @@ rangayyan_fetal_ecg = fetalecg  # pre-policy spelling
 
 
 # -- rgglr: Generalized likelihood ratio (GLR) test for change detection.
-def rangayyan_gen_likelihood_ratio(x, seg_len, order, cdf=None):
+def glr(x, m, n=None, order=4):
+    """Generalized likelihood ratio for adaptive segmentation,
+    eqs. (8.30)-(8.31), after Appel and v. Brandt.
+
+        H(m:n) = (n - m + 1) ln[ eps(m:n) / (n - m + 1) ]        (8.30)
+        d(n)   = H(1:n) - [ H(1:m-1) + H(m:n) ]                  (8.31)
+
+    with eps the AR prediction-error energy (the TSE of eq. 7.19) over a
+    window.  Three windows are involved: a GROWING reference window from
+    the start of the current segment, a sliding test window, and the
+    pooled window formed by concatenating them.
+
+    The growing reference is what distinguishes GLR from the SEM and ACF
+    methods -- it "contains the maximum amount of information available
+    from the beginning of the new segment to the current instant", so its
+    model gets steadily better while the segment lasts, and the moment
+    the signal changes the pooled model becomes worse than the two
+    separate ones and d(n) climbs.
+
+    d(n) is a log-likelihood difference: it is near zero when one model
+    explains both windows and grows when two models are needed.
     """
-    Generalized likelihood ratio (GLR) test for change detection
+    xs = aslist(x)
+    N = len(xs)
+    mv = int(m)
+    nv = N if n is None else int(n)
+    p = int(order)
+    if p < 1:
+        raise ValueError("order must be at least 1")
+    if not 2 <= mv <= nv <= N:
+        raise ValueError("need 2 <= m <= n <= len(x); got m=%d n=%d N=%d"
+                         % (mv, nv, N))
+    if mv - 1 <= p or nv - mv + 1 <= p:
+        raise ValueError("each window must hold more samples than the AR "
+                         "order")
 
-    Formula: GLR(t) = log(L(theta_hat_1,theta_hat_2)/L(theta_hat)) > threshold
+    def tse(seg):
+        """AR prediction-error energy, eq. (7.19), by Levinson-Durbin."""
+        k = len(seg)
+        r = [fsum(seg[i] * seg[i + t] for i in range(k - t)) / k
+             for t in range(p + 1)]
+        if r[0] <= 0:
+            return 0.0
+        a = [0.0] * (p + 1)
+        a[0] = 1.0
+        e = r[0]
+        for i in range(1, p + 1):
+            acc = fsum(a[j] * r[i - j] for j in range(i))
+            kk = -acc / e if e > 0 else 0.0
+            new = list(a)
+            for j in range(1, i):
+                new[j] = a[j] + kk * a[i - j]
+            new[i] = kk
+            a = new
+            e *= (1.0 - kk * kk)
+            if e <= 0:
+                return 0.0
+        return e * k
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    seg_len : array-like
-        Input data.
-    order : array-like
-        Input data.
+    def H(seg):
+        L = len(seg)
+        t = tse(seg)
+        if L <= 0 or t <= 0:
+            return 0.0
+        return L * log(t / L)
 
-    Returns
-    -------
-    result : dict
-        Keys: glr_stat, change_points
+    ref = xs[:mv - 1]
+    test = xs[mv - 1:nv]
+    pooled = xs[:nv]
+    h_ref, h_test, h_pool = H(ref), H(test), H(pooled)
+    d = h_pool - (h_ref + h_test)
+    return RichResult(payload={
+        "d": d, "h_pooled": h_pool, "h_reference": h_ref,
+        "h_test": h_test, "m": mv, "n": nv, "order": p,
+        "n_reference": len(ref), "n_test": len(test),
+        "reference_window_grows": True,
+        "near_zero_when_one_model_explains_both": abs(d) < 1e-6,
+        "method": "Rangayyan (2024) eqs. (8.30)-(8.31), after Appel and "
+                  "v. Brandt"})
 
-    References
-    ----------
-    Rangayyan Ch 8.5.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Generalized likelihood ratio (GLR) test for change detection",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Generalized likelihood ratio (GLR) test for change detection",
-        }
-    )
+
+rangayyan_gen_likelihood_ratio = glr  # pre-policy spelling
 
 
 # -- rgkalmn: Kalman filter: state prediction/update with Riccati equation.
@@ -3320,62 +3360,62 @@ wnflt = wiener_filter
 
 
 _CHEATSHEET = [
-    'rgacfd: ACF distance for segmentation, Section 8.5',
+    'rgacfd: ACF distance measure for nonstationary segmentation.',
     'rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2.',
-    'rganc: adaptive noise canceller, Section 3.10',
-    'rgeegadp: Adaptive segmentation of EEG using GLR test.',
-    'rgfecg: fetal ECG by adaptive cancellation, Section 3.14',
-    'rgglr: Generalized likelihood ratio (GLR) test for change detection.',
-    'rgkalmn: Kalman filter',
-    'rglms: LMS adaptive noise canceller, Section 3.10.2',
-    'rgpcgadp: adaptive PCG segmentation, Section 8.5',
-    'rgricca: steady-state Riccati solution',
-    'rgrls: RLS adaptive filter, Section 3.10.3',
-    'rgrls_mon: RLS error monitoring for segmentation, Section 8.5',
-    'rgrlsl: RLS lattice predictor',
-    'rgsemm: spectral error measure, Section 8.5',
-    'rgwhop: Wiener-Hopf system from data, eqs. (3.168), (3.171)',
-    'rgwnr: Wiener filter, time or frequency route, Section 3.9',
+    'rganc: Adaptive noise canceler (ANC) structure.',
+    'EEG adaptive segmentation by the GLR test, Section 8.5.3',
+    'rgfecg: Maternal-fetal ECG separation via adaptive noise cancellation.',
+    'generalized likelihood ratio, eqs. (8.30)-(8.31)',
+    'rgkalmn: Kalman filter: state prediction/update with Riccati equation.',
+    'rglms: Least-mean-squares (LMS) adaptive filter.',
+    'rgpcgadp: Adaptive segmentation of PCG signals via SEM.',
+    'rgricca: Steady-state Riccati equation solution for Kalman gain.',
+    'rgrls: Recursive least-squares (RLS) adaptive filter.',
+    'rgrls_mon: Monitoring RLS filter output for nonstationary detection.',
+    'rgrlsl: RLS lattice (ladder) adaptive filter.',
+    'rgsemm: Spectral error measure (SEM) for adaptive segmentation.',
+    'rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter.',
+    'rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter).',
     'rng137: Estimation error.',
-    'rng138: Wiener filter output as a convolution, eq. (3.154)',
-    'rng139: Wiener output as an inner product, eq. (3.155)',
+    'rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights..',
+    'rng139: Wiener filter output expressed as inner product of tap-weight and input vectors..',
     'rng140: Estimation error in vector form.',
     'rng141: MSE cost function of the Wiener filter (Rangayyan Eq 3.166).',
     'rng142: Wiener cross-correlation vector Theta (Rangayyan Eq 3.160/3.161).',
     'rng143: Wiener autocorrelation matrix Phi (Rangayyan Eq 3.163/3.164/3.165).',
-    'rng144: MSE gradient, Rangayyan eq. (3.167)',
-    'rng145: Wiener-Hopf normal equation, eq. (3.168)',
-    'rng146: optimal Wiener tap weights, eq. (3.169)',
-    'rng147: minimum MSE of the Wiener filter, eq. (3.172)',
-    'rng148: Wiener-Hopf as a convolution, eqs. (3.173)-(3.174)',
-    'rng149: frequency-domain Wiener relation, eq. (3.175)',
-    'rng150: Wiener frequency response, eq. (3.176)',
+    'rng144: Gradient of MSE cost function with respect to tap-weight vector..',
+    'rng145: Wiener-Hopf normal equation for the optimal tap weights..',
+    'rng146: Closed-form optimal Wiener filter tap weights..',
+    'rng147: Minimum mean-squared error achievable by the Wiener filter..',
+    'rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity..',
+    'rng149: Frequency-domain Wiener relation between PSD and CSD..',
+    'rng150: Wiener filter frequency response as ratio of CSD to PSD of input..',
     'rng151: Optimal Wiener filter for noise removal (Rangayyan Eq 3.183).',
-    'rng152: Wiener response from signal and noise PSDs, eq. (3.186)',
-    'rng153: ANC primary input model, Section 3.10.1',
-    'rng154: ANC output, Rangayyan eq. (3.196)',
-    'rng155: LMS filter output on the reference, eq. (3.195)',
+    'rng152: Wiener filter frequency response in terms of signal and noise PSDs..',
+    'rng153: Primary input of an adaptive noise canceller (ANC): signal plus primary noise..',
+    'rng154: Output of the ANC as the difference between primary input and adaptive filter output..',
+    'rng155: Adaptive FIR filter output in LMS framework using reference input r(n)..',
     'rng156: LMS estimation error.',
-    'rng157: expanded LMS squared error, eq. (3.200)',
-    'rng158: LMS steepest-descent step, eqs. (3.201)-(3.202)',
+    'rng157: Quadratic squared-error form used in LMS gradient derivations..',
+    'rng158: Steepest-descent update rule for the tap-weight vector..',
     'rng159: LMS gradient estimate.',
-    'rng160: Widrow-Hoff LMS update, eq. (3.203)',
-    'rng161: variable-step LMS update, eq. (3.204)',
-    'rng162: Zhang time-varying LMS step size, eq. (3.205)',
-    'rng163: RLS weighted objective, eq. (3.206)',
-    'rng164: RLS normal equation, eq. (3.207)',
+    'rng160: Widrow-Hoff LMS tap-weight update rule..',
+    'rng161: Variable step-size LMS update rule..',
+    'rng162: Time-varying step size mu(n) per Zhang et al. for VAG signals..',
+    'rng163: Weighted least-squares objective for the RLS algorithm with forgetting factor lambda..',
+    'rng164: Normal equation for the RLS algorithm..',
     'rng165: RLS correlation matrix.',
     'rng166: RLS cross-correlation vector.',
     'rng167: RLS recursion for the autocorrelation matrix (Rangayyan Eq 3.211).',
     'rng168: RLS recursion for the cross-correlation vector (Rangayyan Eq 3.212).',
-    'rng169: ABCD matrix-inversion lemma, eq. (3.213)',
+    'rng169: Matrix inversion (ABCD) lemma used in RLS..',
     'rng170: Riccati recursion for the inverse autocorrelation matrix (Rangayyan Eq 3.215).',
     'rng171: Kalman-like gain vector in RLS (Rangayyan Eq 3.217).',
     'rng172: RLS recursion for P(n) via the gain vector (Rangayyan Eq 3.218).',
     'rng173: RLS gain identity k(n) = P(n) r(n) (Rangayyan Eq 3.221).',
-    'rng174: compact RLS weight update, eq. (3.224)',
-    'rng175: RLS a priori error, eq. (3.225)',
-    'rng204: PSD from the ACF, Rangayyan eq. (4.30)',
+    'rng174: Compact RLS tap-weight update using a priori error alpha(n)..',
+    'rng175: A priori error in the RLS update step..',
+    'rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin)..',
     'wnflt: Wiener filter for optimal noise reduction.',
 ]
 
