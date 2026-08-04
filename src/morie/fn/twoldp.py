@@ -27,9 +27,15 @@ def two_locus_dprime(geno1, geno2):
 
     Normalising by the attainable extreme is the whole content of
     Lewontin's proposal: raw ``D`` is bounded by the allele frequencies,
-    so it cannot be compared across loci, whereas ``D'`` always lies in
-    ``[-1, 1]`` and reaches ``|D'| = 1`` exactly when one of the four
-    haplotypes is absent.
+    so it cannot be compared across loci, whereas ``D'`` reaches 1
+    exactly when one of the four haplotypes is absent.
+
+    Note the sign convention, which is the one ``genetics::LD`` uses and
+    is easy to misread: ``Dmin`` is negative, so dividing a negative
+    ``D`` by it gives a *positive* ``D'``.  ``estimate`` is therefore the
+    normalised magnitude in ``[0, 1]``, and the direction of the
+    disequilibrium is carried by the sign of ``D``, reported separately.
+    Sources that define ``D'`` on ``[-1, 1]`` mean ``sign(D) * estimate``.
 
     Genotypes are unphased, so ``pAB`` is not observed: only the double
     heterozygote is ambiguous, and it is resolved by expectation

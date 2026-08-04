@@ -4,7 +4,7 @@ from . import _array_core as np
 from . import _stats_core as stats
 from ._richresult import hypothesis_test_result
 
-__all__ = ["ma_cochran_q"]
+__all__ = ["ma_cochran_q", "macochranq"]
 
 
 def ma_cochran_q(yi, vi):
@@ -90,6 +90,10 @@ def ma_cochran_q(yi, vi):
         },
     )
 
+
+# compact alias -- _lazy_map.json resolves 'macochranq' to this module, so the
+# name has to exist here or the lookup dies.
+macochranq = ma_cochran_q
 
 def cheatsheet():
     return "macn: Cochran's Q heterogeneity test, with tau^2, I^2 and H^2"

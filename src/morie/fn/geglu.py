@@ -1,43 +1,55 @@
-"""GEGLU gated activation."""
+# morie.fn -- slice s03 (rootcoder007/morie)
+"""GEGLU gated activation.
 
-from . import _array_core as np
+Source consulted (FETCHED): Shazeer, N. (2020).  GLU variants improve
+transformer.  arXiv:2002.05202:
+
+    GEGLU(x, W, V, b, c) = GELU(xW + b) (x) (xV + c)
+
+with GELU(z) = z Phi(z), the *exact* Gaussian error linear unit of
+Hendrycks and Gimpel (2016), arXiv:1606.08415 -- the tanh expression
+that circulates as "GELU" is an approximation to it, and is not used
+here, because at 1e-9 the two differ.
+"""
+
+from __future__ import annotations
+
+from . import _array_core as np  # noqa: F401
+from . import _s03core as k
 
 from ._richresult import RichResult
 
 __all__ = ["geglu_activation"]
 
 
-def geglu_activation(y, x, W, V):
-    """
-    GEGLU gated activation
-
-    Formula: GEGLU(x, W, V) = GELU(xW) * (xV)
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    x : array-like
-        Input data.
-    W : array-like
-        Input data.
-    V : array-like
-        Input data.
+def geglu_activation(y, x=None, W=None, V=None, b=None, c=None, W2=None):
+    """GEGLU(x, W, V, b, c), and optionally the full FFN.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Shazeer (2020)
+    RichResult with payload:
+        estimate : the first output unit
+        out, gate, ffn
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "GEGLU gated activation"})
+    v = k.vec(x if x is not None else y)
+    g = k.matvec(k.tr(k.mat(W)), v)
+    u = k.matvec(k.tr(k.mat(V)), v)
+    bb = k.vec(b) if b is not None else [0.0] * len(g)
+    cc = k.vec(c) if c is not None else [0.0] * len(u)
+    gate = [k.gelu(g[i] + bb[i]) for i in range(len(g))]
+    out = [gate[i] * (u[i] + cc[i]) for i in range(len(g))]
+    ffn = k.matvec(k.tr(k.mat(W2)), out) if W2 is not None else []
+    return RichResult(
+        title="GEGLU",
+        summary_lines=[("units", len(out))],
+        payload={
+            "estimate": out[0] if out else float("nan"),
+            "out": out,
+            "gate": gate,
+            "ffn": ffn,
+            "method": "GEGLU gated activation with the exact GELU (Shazeer 2020)",
+        },
+    )
 
 
 def cheatsheet():
