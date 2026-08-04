@@ -429,9 +429,92 @@ BhattCoef <- function(p1, p2) {
        in_unit_interval = bc >= -1e-12 && bc <= 1 + 1e-12,
        the_overlap_is_where_errors_must_happen = TRUE,
        not_from_this_book = TRUE,
+       reference = paste("Bhattacharyya A. On a measure of divergence",
+                         "between two statistical populations defined by",
+                         "their probability distributions. Bulletin of",
+                         "the Calcutta Mathematical Society 35:99-109,",
+                         "1943 (Zbl 0063.00364)."),
        method = paste("Bhattacharyya coefficient; Rangayyan (2024) uses",
                       "the KLD of eq. (5.33) and the divergence of",
                       "eq. (10.115)"))
+}
+
+Chernoff <- function(p1, p2, alpha = NULL, n_grid = 201) {
+  # rho_a = sum_l p1^a p2^(1-a);  C = -ln min_a rho_a.  The Bhattacharyya
+  # coefficient is exactly this at a = 1/2, which is the relationship the
+  # whole family turns on.  Leaving alpha unset searches for the
+  # minimizing a, which is what makes the Chernoff bound TIGHTER than the
+  # Bhattacharyya bound -- the latter is the same bound fixed at a = 1/2
+  # rather than the best a.  Every a gives a valid bound
+  # P_e <= P1^a P2^(1-a) rho_a; the minimum gives the best of them.
+  # NOT FROM RANGAYYAN (2024).
+  a <- as.numeric(p1); b <- as.numeric(p2)
+  if (length(a) != length(b))
+    stop("the two PDFs must be sampled on the same grid")
+  if (!length(a)) stop("need at least one bin")
+  if (any(a < 0) || any(b < 0)) stop("a PDF cannot be negative")
+  k <- a > 0 & b > 0
+  rho <- function(t) .morie_fsum(a[k]^t * b[k]^(1 - t))
+  if (!is.null(alpha)) {
+    av <- as.numeric(alpha)
+    if (av < 0 || av > 1) stop("alpha must lie in [0, 1]")
+    best_a <- av; best_rho <- rho(av); searched <- FALSE
+  } else {
+    m <- as.integer(n_grid)
+    if (m < 3L) stop("need at least three grid points")
+    grid <- (seq_len(m) - 1) / (m - 1)
+    vals <- vapply(grid, rho, numeric(1))
+    i <- which.min(vals)
+    best_a <- grid[i]; best_rho <- vals[i]; searched <- TRUE
+  }
+  bc <- rho(0.5)
+  list(coefficient = best_rho, alpha = best_a,
+       information = if (best_rho > 0) -log(best_rho) else Inf,
+       bhattacharyya_coefficient = bc,
+       bhattacharyya_is_alpha_one_half = TRUE,
+       alpha_searched = searched,
+       at_least_as_tight_as_bhattacharyya = best_rho <= bc + 1e-12,
+       reference = paste("Chernoff H. A measure of asymptotic efficiency",
+                         "for tests of a hypothesis based on the sum of",
+                         "observations. Annals of Mathematical Statistics",
+                         "23(4):493-507, 1952,",
+                         "doi:10.1214/aoms/1177729330. The alpha = 1/2",
+                         "identity is Nielsen and Nock, Pattern",
+                         "Recognition Letters, 2014."),
+       not_from_this_book = TRUE,
+       method = "Chernoff alpha-coefficient and information")
+}
+
+Hellinger <- function(p1, p2) {
+  # H = sqrt(1 - BC), so H^2 = 1 - BC.  Unlike the Bhattacharyya distance
+  # -ln BC, this is a TRUE METRIC: bounded in [0, 1], symmetric, and it
+  # satisfies the triangle inequality, which -ln BC does not.  That is
+  # the reason to reach for it -- anything needing a metric over
+  # distributions needs this and not D_B.  The 1/2 normalization is the
+  # usual one; unnormalized gives H^2 = 2(1 - BC), so the convention is
+  # reported rather than assumed.  NOT FROM RANGAYYAN (2024).
+  a <- as.numeric(p1); b <- as.numeric(p2)
+  if (length(a) != length(b))
+    stop("the two PDFs must be sampled on the same grid")
+  if (!length(a)) stop("need at least one bin")
+  if (any(a < 0) || any(b < 0)) stop("a PDF cannot be negative")
+  bc <- .morie_fsum(sqrt(a * b))
+  h2 <- max(0, 1 - bc)
+  list(hellinger = sqrt(h2), squared = h2,
+       bhattacharyya_coefficient = bc,
+       identity_h2_equals_one_minus_bc = TRUE,
+       is_a_true_metric = TRUE,
+       satisfies_the_triangle_inequality = TRUE,
+       bhattacharyya_distance_does_not = TRUE,
+       normalization = "one half; unnormalized gives 2(1 - BC)",
+       in_unit_interval = sqrt(h2) >= -1e-12 && sqrt(h2) <= 1 + 1e-12,
+       reference = paste("Hellinger E. Neue Begruendung der Theorie",
+                         "quadratischer Formen von unendlichvielen",
+                         "Veraenderlichen. Journal fuer die reine und",
+                         "angewandte Mathematik 136:210-271, 1909,",
+                         "doi:10.1515/crll.1909.136.210."),
+       not_from_this_book = TRUE,
+       method = "Hellinger distance, H^2 = 1 - BC")
 }
 
 Bhatt <- function(m1, m2, C1, C2) {
@@ -464,6 +547,12 @@ Bhatt <- function(m1, m2, C1, C2) {
        covariance_term = 0.5 * log(dM / sqrt(dA * dB)),
        not_from_this_book = TRUE,
        book_uses_divergence_eq_10_115 = TRUE,
+       reference = paste("Bhattacharyya A. Bulletin of the Calcutta",
+                         "Mathematical Society 35:99-109, 1943; the",
+                         "Gaussian closed form and the error bound are",
+                         "Kailath T, IEEE Transactions on Communication",
+                         "Technology 15(1):52-60, 1967,",
+                         "doi:10.1109/TCOM.1967.1089532."),
        method = paste("standard Bhattacharyya distance for Gaussians;",
                       "Rangayyan (2024) uses eqs. (10.112) and (10.115)",
                       "instead"))
@@ -485,6 +574,11 @@ ErrBound <- function(p1, p2, db) {
        bounds_the_optimal_classifier_not_yours = TRUE,
        not_from_this_book = TRUE,
        pairs_with_bhatt_not_with_divergence = TRUE,
+       reference = paste("Kailath T. The divergence and Bhattacharyya",
+                         "distance measures in signal selection. IEEE",
+                         "Transactions on Communication Technology",
+                         "15(1):52-60, February 1967,",
+                         "doi:10.1109/TCOM.1967.1089532."),
        method = "Kailath's Bhattacharyya bound; not given in Rangayyan (2024)")
 }
 

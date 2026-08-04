@@ -13,7 +13,8 @@ import pytest
 from fractions import Fraction
 
 from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, bhatt,
-                               bhattcoef, kld,
+                               bhattcoef, chernoff,
+                               hellinger, kld,
                                divav, divergence, elbow, errbound,
                                fishcrit, fishlda, hclust, kfoldcv,
                                kmeans, knn, lindisc, lindsep, logreg,
@@ -598,3 +599,69 @@ def test_the_error_bound_tightens_as_the_overlap_falls():
     far = bhattcoef([0.9, 0.1], [0.1, 0.9])["distance"]
     assert errbound(0.5, 0.5, far)["bound"] < \
         errbound(0.5, 0.5, close)["bound"]
+
+
+# ------------------------------- the rest of the divergence family
+
+def test_chernoff_at_one_half_is_the_bhattacharyya_coefficient():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    bc = bhattcoef(p1, p2)["coefficient"]
+    at_half = chernoff(p1, p2, alpha=0.5)
+    assert at_half["coefficient"] == pytest.approx(bc, abs=1e-12)
+    assert at_half["bhattacharyya_is_alpha_one_half"] is True
+    assert at_half["alpha_searched"] is False
+
+
+def test_the_searched_chernoff_is_at_least_as_tight():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    best = chernoff(p1, p2)
+    assert best["coefficient"] <= bhattcoef(p1, p2)["coefficient"] + 1e-12
+    assert best["at_least_as_tight_as_bhattacharyya"] is True
+    assert best["alpha_searched"] is True
+    assert 0.0 <= best["alpha"] <= 1.0
+    with pytest.raises(ValueError):
+        chernoff(p1, p2, alpha=1.5)
+
+
+def test_hellinger_squared_is_one_minus_the_coefficient():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    h = hellinger(p1, p2)
+    assert h["squared"] == pytest.approx(
+        1.0 - bhattcoef(p1, p2)["coefficient"], abs=1e-12)
+    assert h["identity_h2_equals_one_minus_bc"] is True
+    assert 0.0 <= h["hellinger"] <= 1.0
+    assert hellinger(p1, p1)["hellinger"] == pytest.approx(0.0, abs=1e-12)
+    assert hellinger([1.0, 0.0], [0.0, 1.0])["hellinger"] == \
+        pytest.approx(1.0)
+
+
+def test_hellinger_is_a_metric_where_the_bhattacharyya_distance_is_not():
+    a = [0.2, 0.3, 0.5]
+    b = [0.1, 0.4, 0.5]
+    c = [0.5, 0.25, 0.25]
+    hab = hellinger(a, b)["hellinger"]
+    hbc = hellinger(b, c)["hellinger"]
+    hac = hellinger(a, c)["hellinger"]
+    assert hac <= hab + hbc + 1e-12          # the triangle inequality
+    assert hellinger(a, b)["hellinger"] == pytest.approx(
+        hellinger(b, a)["hellinger"])        # symmetric
+    assert hellinger(a, b)["is_a_true_metric"] is True
+    assert hellinger(a, b)["bhattacharyya_distance_does_not"] is True
+
+
+def test_every_borrowed_measure_carries_its_primary_citation():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    for r in (bhattcoef(p1, p2), chernoff(p1, p2), hellinger(p1, p2),
+              errbound(0.5, 0.5, 1.0),
+              bhatt([0, 1], [2, -1], C1, C2)):
+        assert r["not_from_this_book"] is True
+        assert "reference" in r
+        assert len(r["reference"]) > 40
+    assert "1943" in bhattcoef(p1, p2)["reference"]
+    assert "493-507" in chernoff(p1, p2)["reference"]
+    assert "1909" in hellinger(p1, p2)["reference"]
+    assert "1967" in errbound(0.5, 0.5, 1.0)["reference"]
