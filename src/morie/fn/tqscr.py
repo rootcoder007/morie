@@ -1,60 +1,85 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""QJL attention-score distortion bound."""
+"""Inner-product (score) distortion of a quantized cache."""
 
 import math
 
+from . import _tail1core as C
+
 from ._richresult import RichResult
 
-__all__ = ["turboquant_score_distortion"]
+__all__ = ["scoredist", "turboquant_score_distortion"]
 
 
-def turboquant_score_distortion(eps, r, n):
-    """Sketch width that keeps every attention score within 1 +/- 3 eps.
+def scoredist(b, d, query_norm=1.0, n_keys=1):
+    """Distortion of an inner-product score under TurboQuant_prod.
 
-    The per-pair bound is not enough on its own -- there are ``n`` keys
-    and one bad estimate is enough to move the softmax -- so the score
-    bound is the pairwise bound plus a union bound, and the price of
-    that union is the ``log n``.  Growing only logarithmically in the
-    context length is what makes a fixed bit budget per token viable.
+    The 1/d in the bound is what makes this useful: the inner-product
+    distortion falls with DIMENSION as well as with bits, so a long
+    key vector is cheap to quantize even though the vector-space error
+    is not small.  Reconstructing the key and then taking the inner
+    product would not have that property.
 
-    Formula: if ``max_i ||k_i|| <= r``, ``||q|| <= r`` and
-    ``m >= 2 r^2 eps^-2 log n``, then
-    ``|Score_hat(i) - Score(i)| <= 3 eps Score(i)`` simultaneously for
-    all ``i``, with probability ``1 - 1 / poly(n)``.
+    ``expected_max`` is a Gaussian-tail estimate of the largest of
+    ``n_keys`` independent score errors -- it is an ESTIMATE, not a
+    bound from the paper, and is labelled as such.
+
+    Formula: D_prod <= sqrt(3) pi^2 ||q||^2 / d . 4^-b  (Theorem 2);
+             rms error = sqrt(D_prod);
+             expected max of n errors ~= rms sqrt(2 log n)
 
     Parameters
     ----------
-    eps : float
-        Relative score distortion.
-    r : float
-        Norm bound on the key and query embeddings.
-    n : float
-        Context length, the number of cached keys.
+    b : float
+        Bits per coordinate.
+    d : int
+        Key dimension.
+    query_norm : float
+        ||q||_2 of the query.
+    n_keys : int
+        Number of keys the query is scored against.
 
     Returns
     -------
     RichResult
-        ``m_min``, ``m_real``, ``estimate``, ``eps``, ``r``, ``n``.
+        ``variance`` (D_prod), ``rms``, ``lower_bound``, ``ratio``,
+        ``expected_max``, ``b``, ``d``, ``n_keys``.
 
     References
     ----------
-    Zandieh, A., Daliri, M. & Han, I. (2024).  QJL: 1-bit quantized
-    JL transform for KV cache quantization with zero overhead.
-    arXiv:2406.03482.  Fetched and read; the definitions and bounds used
-    here are that paper own (definition 3.1, fact 3.4, lemma 3.5,
-    theorem 3.6).  The KV-cache system built on it is Zandieh, A. et al.
-    (2025), TurboQuant: online vector quantization with near-optimal
-    distortion rate, arXiv:2504.19874.
+    Zandieh et al., TurboQuant: Online Vector Quantization with
+    Near-optimal Distortion Rate, arXiv:2504.19874, Theorem 2:
+    E[<y, xtilde>] = <y, x> and D_prod <= (sqrt(3) pi^2 ||y||_2^2 / d)
+    . 1/4^b; and Theorem 3 for the matching lower bound
+    D_prod(Q) >= (1/d) . 1/4^b.  Fetched from arXiv.  The
+    ``expected_max`` figure is the standard Gaussian maximum
+    approximation and is NOT from the paper.
     """
-    eps = float(eps)
-    r = float(r)
-    n = float(n)
-    m = 2.0 * r * r / (eps * eps) * math.log(n)
-    m_min = float(math.ceil(m))
+    b = float(b)
+    d = int(d)
+    qn = float(query_norm)
+    nk = int(n_keys)
+    if b < 0:
+        raise ValueError("the bit-width must be non-negative")
+    if d < 1:
+        raise ValueError("the dimension must be at least 1")
+    if qn < 0:
+        raise ValueError("the query norm must be non-negative")
+    if nk < 1:
+        raise ValueError("there must be at least one key")
+    q = 4.0 ** (-b)
+    var = math.sqrt(3.0) * math.pi * math.pi * qn * qn / d * q
+    lo = q / d
+    rms = math.sqrt(var)
+    em = rms * math.sqrt(2.0 * math.log(nk)) if nk > 1 else rms
     return RichResult(payload={
-        "m_min": m_min, "m_real": m, "estimate": m_min, "eps": eps, "r": r,
-        "n": n, "method": "QJL attention-score distortion bound"})
+        "variance": var, "rms": rms, "lower_bound": lo,
+        "ratio": var / lo if lo > 0 else float("nan"),
+        "expected_max": em, "b": b, "d": float(d), "n_keys": float(nk),
+        "method": "Score distortion, arXiv:2504.19874 Theorems 2 and 3"})
+
+
+turboquant_score_distortion = scoredist
 
 
 def cheatsheet():
-    return "tqscr: QJL attention-score distortion bound."
+    return "tqscr: D_prod <= sqrt(3)pi^2 ||q||^2/(d 4^b); falls with d as well as b"

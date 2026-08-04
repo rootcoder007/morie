@@ -1,66 +1,94 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Outlier channel split for KV quantization."""
+"""Outlier channel split with per-set bit allocation."""
 
-from . import _s04core as S
+import math
+
 from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["turboquant_outlier_channel_split"]
+__all__ = ["outsplit", "turboquant_outlier_channel_split"]
 
 
-def turboquant_outlier_channel_split(channels, outlier_threshold=0.99):
-    """Separate the few large key channels from the rest.
+def outsplit(x, b_out=8, b_in=2, frac=0.01):
+    """Split coordinates into outlier and non-outlier sets, bits allocated apart.
 
-    The distortion bound is proportional to the embedding norm, and in
-    the deeper layers a handful of fixed coordinates carry most of that
-    norm.  Splitting them off and quantizing them separately, at a lower
-    compression rate, shrinks the norm that the main quantizer has to
-    cope with -- which is a much larger win than spending the same bits
-    uniformly.  The channels are fixed across tokens, so the split is
-    identified once during the prompt phase and then reused.
+    A handful of large-magnitude channels dominate the quantization
+    error of a transformer activation, and a single codebook has to
+    stretch to cover them at the cost of resolution everywhere else.
+    Separating them buys back that resolution for the bulk at a small
+    average cost -- and the average bit-width is what comes out
+    NON-INTEGER, which is the whole point of the construction.
 
-    Formula: flag channel ``j`` when ``|a_j|`` exceeds the
-    ``outlier_threshold`` quantile of the channel magnitudes.
+    The split is by MAGNITUDE RANK, not by an absolute threshold, so
+    the outlier count is exactly ceil(frac . d) regardless of scale and
+    the two language arms select the same channels.  Ties break on the
+    lower index.
+
+    Formula: O = the ceil(frac d) coordinates of largest |x_j|;
+             effective bits = (|O| b_out + (d - |O|) b_in) / d
 
     Parameters
     ----------
-    channels : array-like
-        Per-channel activation magnitudes (or a matrix, in which case
-        the column maxima are used).
-    outlier_threshold : float, default 0.99
-        Quantile above which a channel is called an outlier.
+    x : array-like
+        The vector whose channels are split.
+    b_out : int
+        Bits per outlier coordinate.
+    b_in : int
+        Bits per non-outlier coordinate.
+    frac : float
+        Fraction of coordinates treated as outliers, in (0, 1).
 
     Returns
     -------
     RichResult
-        ``outlier_idx`` and ``inlier_idx`` (zero-based), ``cut``,
-        ``estimate`` (the fraction split off), ``d``.
+        ``outlier_index`` (one-based), ``n_outlier``,
+        ``effective_bits``, ``outlier_energy`` (share of ||x||^2 in
+        the outlier set), ``threshold``, ``d``.
 
     References
     ----------
-    Zandieh, A., Daliri, M. & Han, I. (2024).  QJL: 1-bit quantized
-    JL transform for KV cache quantization with zero overhead.
-    arXiv:2406.03482.  Fetched and read; the definitions and bounds used
-    here are that paper own (definition 3.1, fact 3.4, lemma 3.5,
-    theorem 3.6).  The KV-cache system built on it is Zandieh, A. et al.
-    (2025), TurboQuant: online vector quantization with near-optimal
-    distortion rate, arXiv:2504.19874.
+    Zandieh et al., TurboQuant: Online Vector Quantization with
+    Near-optimal Distortion Rate, arXiv:2504.19874: "non-integer bit
+    precisions result from our strategy of splitting channels into
+    outlier and non-outlier sets, and applying two independent
+    instances of TurboQuant to each, allocating higher bit precision to
+    outliers".  Fetched from arXiv.  The paper does not fix the split
+    RULE; magnitude-rank selection is used here and documented as such
+    rather than presented as the paper's.
     """
-    Cm = C.mat(channels)
-    n, p = C.shape(Cm)
-    if p == 1:
-        mag = [abs(row[0]) for row in Cm]
-    else:
-        mag = [max(abs(Cm[i][j]) for i in range(n)) for j in range(p)]
-    cut = S.quantile7(mag, float(outlier_threshold))
-    out_idx = [j for j in range(len(mag)) if mag[j] > cut]
-    in_idx = [j for j in range(len(mag)) if mag[j] <= cut]
+    x = C.vec(x)
+    d = len(x)
+    if d < 1:
+        raise ValueError("the vector must be non-empty")
+    bo = int(b_out)
+    bi = int(b_in)
+    if bo < 1 or bi < 1:
+        raise ValueError("both bit widths must be at least 1")
+    if bo < bi:
+        raise ValueError("outliers must not get fewer bits than the bulk")
+    f = float(frac)
+    if not 0.0 < f < 1.0:
+        raise ValueError("frac must lie strictly between 0 and 1")
+    k = int(math.ceil(f * d))
+    if k < 1:
+        k = 1
+    if k >= d:
+        raise ValueError("frac selects every coordinate as an outlier")
+    order = sorted(range(d), key=lambda i: (-abs(x[i]), i))
+    sel = sorted(order[:k])
+    tot = sum(v * v for v in x)
+    eo = sum(x[i] ** 2 for i in sel)
     return RichResult(payload={
-        "outlier_idx": out_idx, "inlier_idx": in_idx, "cut": cut,
-        "estimate": len(out_idx) / len(mag), "d": len(mag),
-        "method": "Outlier channel split for KV quantization"})
+        "outlier_index": [i + 1 for i in sel], "n_outlier": float(k),
+        "effective_bits": (k * bo + (d - k) * bi) / d,
+        "outlier_energy": eo / tot if tot > 0 else float("nan"),
+        "threshold": abs(x[order[k - 1]]), "d": float(d),
+        "method": "Outlier channel split with per-set bit allocation"})
+
+
+turboquant_outlier_channel_split = outsplit
 
 
 def cheatsheet():
-    return "tqoutl: Outlier channel split for KV quantization."
+    return "tqoutl: top-ceil(frac d) channels by |x| get b_out bits, rest b_in"

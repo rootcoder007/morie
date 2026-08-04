@@ -51,30 +51,36 @@ _PHILOX_ROUNDS = 10
 def philox4x32(counter, key, rounds=_PHILOX_ROUNDS):
     """The Philox4x32 bijection: four 32-bit words in, four out.
 
-    `counter` is (n, 4) and `key` is (2,), both of uint32. Returns (n, 4).
+    `counter` is either ONE block of four 32-bit words -- shape (4,) -- or a
+    sequence of such blocks, shape (n, 4); `key` is a pair of 32-bit words.
+    The result matches the argument: a 4-tuple for one block, a list of
+    4-tuples for a sequence of them.
+
+    Plain Python integers throughout. They are arbitrary precision, so the
+    32x32 -> 64 bit products are exact under explicit masking and no unsigned
+    array dtype is needed -- which is what lets this reproduce the R arm bit
+    for bit. (An array backend would be actively wrong here: `&` on the
+    array type is boolean, not bitwise, so masking a counter word would
+    silently collapse it to 0 or 1 and Philox would emit plausible garbage.)
     """
-    ctr = np.asarray(counter, dtype=np.uint64) & _MASK32
-    ctr = np.atleast_2d(ctr).copy()
-    k0 = np.uint64(int(key[0]) & _MASK32)
-    k1 = np.uint64(int(key[1]) & _MASK32)
-    m0 = np.uint64(_PHILOX_M0)
-    m1 = np.uint64(_PHILOX_M1)
-    mask = np.uint64(_MASK32)
-    for r in range(rounds):
-        prod0 = m0 * ctr[:, 0]
-        prod1 = m1 * ctr[:, 2]
-        hi0, lo0 = prod0 >> np.uint64(32), prod0 & mask
-        hi1, lo1 = prod1 >> np.uint64(32), prod1 & mask
-        out = np.empty_like(ctr)
-        out[:, 0] = (hi1 ^ ctr[:, 1] ^ k0) & mask
-        out[:, 1] = lo1
-        out[:, 2] = (hi0 ^ ctr[:, 3] ^ k1) & mask
-        out[:, 3] = lo0
-        ctr = out
-        if r + 1 < rounds:                    # bump the key between rounds
-            k0 = (k0 + np.uint64(_PHILOX_W0)) & mask
-            k1 = (k1 + np.uint64(_PHILOX_W1)) & mask
-    return ctr.astype(np.uint32)
+    one = len(counter) == 4 and not hasattr(counter[0], "__len__")
+    rows = (counter,) if one else counter
+    key0 = int(key[0]) & _MASK32
+    key1 = int(key[1]) & _MASK32
+    out = []
+    for row in rows:
+        c0, c1, c2, c3 = (int(v) & _MASK32 for v in row)
+        k0, k1 = key0, key1
+        for r in range(rounds):
+            p0 = _PHILOX_M0 * c0
+            p1 = _PHILOX_M1 * c2
+            c0, c1, c2, c3 = (((p1 >> 32) ^ c1 ^ k0) & _MASK32, p1 & _MASK32,
+                              ((p0 >> 32) ^ c3 ^ k1) & _MASK32, p0 & _MASK32)
+            if r + 1 < rounds:                # bump the key between rounds
+                k0 = (k0 + _PHILOX_W0) & _MASK32
+                k1 = (k1 + _PHILOX_W1) & _MASK32
+        out.append((c0, c1, c2, c3))
+    return out[0] if one else out
 
 
 def random_uniform(n, seed=0, stream=0):
@@ -89,15 +95,12 @@ def random_uniform(n, seed=0, stream=0):
         raise ValueError("`n` must be non-negative")
     if n == 0:
         return np.empty(0)
-    blocks = (n + 3) // 4
-    idx = np.arange(blocks, dtype=np.uint64)
-    ctr = np.zeros((blocks, 4), dtype=np.uint64)
-    ctr[:, 0] = idx & _MASK32
-    ctr[:, 1] = (idx >> np.uint64(32)) & _MASK32
-    ctr[:, 2] = np.uint64(int(stream) & _MASK32)
-    words = philox4x32(ctr, (int(seed) & _MASK32,
-                             (int(seed) >> 32) & _MASK32)).reshape(-1)[:n]
-    return (words.astype(np.float64) + 0.5) / 4294967296.0
+    key = (int(seed) & _MASK32, (int(seed) >> 32) & _MASK32)
+    stream = int(stream) & _MASK32
+    words = []
+    for j in range((n + 3) // 4):
+        words.extend(philox4x32((j & _MASK32, (j >> 32) & _MASK32, stream, 0), key))
+    return np.array([(w + 0.5) / 4294967296.0 for w in words[:n]], dtype=float)
 
 
 # --- Wichura (1988) AS 241, the PPND16 coefficients -----------------------

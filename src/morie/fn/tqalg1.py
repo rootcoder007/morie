@@ -1,69 +1,87 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""QJL online key-cache quantizer (algorithm 1)."""
+"""Online key quantizer: TurboQuant_mse on a single vector."""
 
 import math
 
-from . import _s04core as S
 from . import _tail1core as C
+from . import _b1turbo as B
 
 from ._richresult import RichResult
 
-__all__ = ["turboquant_online_key_quantizer"]
+__all__ = ["kvquant", "turboquant_online_key_quantizer"]
 
 
-def turboquant_online_key_quantizer(k, S_mat, q=None):
-    """Store one key as a sign vector plus its norm.
+def kvquant(x, b=2, seed=1):
+    """Quantize one vector: rotate, scalar-quantize, dequantize, rotate back.
 
-    Only the norm survives the sign quantization, so it is kept
-    alongside -- that pair is the whole cache entry.  Because the
-    estimator is asymmetric (the query is projected but not quantized)
-    the inner product estimate stays unbiased; quantizing both sides
-    would give an unbiased *angle* and then a biased inner product once
-    the cosine is applied, which is the mistake the asymmetry avoids.
+    ONLINE is the property that matters: the rotation and the codebook
+    are fixed in advance, so a vector is quantized the moment it
+    arrives with no knowledge of the ones that follow.  That is what
+    makes this usable on a growing cache, and it is why the codebook
+    is built for the ASYMPTOTIC coordinate distribution rather than
+    fitted to the data.
 
-    Formula: store ``k_tilde = sign(S k)`` and ``nu = ||k||_2``; the
-    estimator is
-    ``Prod(q, k) = (sqrt(pi / 2) / m) nu <S q, k_tilde>``.
+    The codebook is Lloyd-Max for a standard normal, rescaled by
+    ||x||/sqrt(d): after a rotation the coordinates of a vector of
+    length ||x|| are close to i.i.d. N(0, ||x||^2/d).
+
+    Formula: y <- Pi . x;  idx_j <- argmin_k |y_j - c_k|;
+             ytilde_j <- c_{idx_j};  xtilde <- Pi' . ytilde
 
     Parameters
     ----------
-    k : array-like, shape (d,)
-        Key embedding to cache.
-    S_mat : array-like, shape (m, d)
-        JL sketch matrix.
-    q : array-like, optional
-        Query embedding; when given, the unbiased inner-product estimate
-        is returned as ``estimate``.
+    x : array-like
+        The vector to quantize.
+    b : int
+        Bits per coordinate, b >= 1.
+    seed : int
+        Seed for the pinned rotation.
 
     Returns
     -------
     RichResult
-        ``k_tilde``, ``nu``, ``m``, ``d``, and ``estimate`` (the
-        estimated inner product, or ``nu`` when no query is supplied).
+        ``idx`` (zero-based codebook indices), ``reconstruction``,
+        ``codebook``, ``mse``, ``relative_mse``, ``bound`` (Theorem 1),
+        ``within_bound``, ``d``, ``b``.
 
     References
     ----------
-    Zandieh, A., Daliri, M. & Han, I. (2024).  QJL: 1-bit quantized
-    JL transform for KV cache quantization with zero overhead.
-    arXiv:2406.03482.  Fetched and read; the definitions and bounds used
-    here are that paper own (definition 3.1, fact 3.4, lemma 3.5,
-    theorem 3.6).  The KV-cache system built on it is Zandieh, A. et al.
-    (2025), TurboQuant: online vector quantization with near-optimal
-    distortion rate, arXiv:2504.19874.
+    Zandieh et al., TurboQuant: Online Vector Quantization with
+    Near-optimal Distortion Rate, arXiv:2504.19874, Algorithm 1
+    (TurboQuant_mse) lines 2-11 verbatim, with the Theorem 1 bound
+    D_mse <= (sqrt(3) pi / 2) 4^-b.  Fetched from arXiv.  The paper
+    specifies the codebook only as the MSE-minimising centroids; the
+    Lloyd-Max construction used here is documented in the batch helper
+    ``_b1turbo.codebook``.
     """
-    kv = C.vec(k)
-    Sm = C.mat(S_mat)
-    m = len(Sm)
-    ktil = [S.sgn(v) for v in C.matvec(Sm, kv)]
-    nu = math.sqrt(sum(v * v for v in kv))
-    est = nu
-    if q is not None:
-        sq = C.matvec(Sm, C.vec(q))
-        est = math.sqrt(math.pi / 2.0) / m * nu * sum(sq[i] * ktil[i] for i in range(m))
+    x = C.vec(x)
+    d = len(x)
+    b = int(b)
+    if d < 1:
+        raise ValueError("the vector must be non-empty")
+    if b < 1:
+        raise ValueError("the bit width must be at least 1")
+    Pi = B.rotation(d, seed)
+    y = C.matvec(Pi, x)
+    nrm = math.sqrt(sum(v * v for v in x))
+    sc = nrm / math.sqrt(d) if nrm > 0 else 1.0
+    cb = [sc * v for v in B.codebook(b)]
+    idx = B.quantize(y, cb)
+    yt = [cb[k] for k in idx]
+    xt = C.matvec(C.transpose(Pi), yt)
+    mse = sum((x[j] - xt[j]) ** 2 for j in range(d))
+    bnd = math.sqrt(3.0) * math.pi / 2.0 * 4.0 ** (-b)
+    rel = mse / (nrm * nrm) if nrm > 0 else float("nan")
     return RichResult(payload={
-        "k_tilde": ktil, "nu": nu, "m": m, "d": len(kv), "estimate": est,
-        "method": "QJL online key quantizer with unbiased inner product"})
+        "idx": [float(v) for v in idx], "reconstruction": xt,
+        "codebook": cb, "mse": mse, "relative_mse": rel, "bound": bnd,
+        "within_bound": 1.0 if rel <= bnd else 0.0, "d": float(d),
+        "b": float(b),
+        "method": "TurboQuant_mse, arXiv:2504.19874 Algorithm 1"})
+
+
+turboquant_online_key_quantizer = kvquant
 
 
 def cheatsheet():
-    return "tqalg1: QJL online key-cache quantizer (algorithm 1)."
+    return "tqalg1: y = Pi x; idx = nearest centroid; xtilde = Pi^T c[idx]"
