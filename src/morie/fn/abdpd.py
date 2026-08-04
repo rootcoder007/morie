@@ -94,60 +94,41 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
         vals = solve(u_vec, equations)
         return [vals[k] - observed[k] for k in observed]
 
-    u0 = np.zeros(len(unames))
-    # The native fsolve drops **kw (including full_output) and returns the
-    # solution vector alone, so unpacking scipy's 4-tuple raised
-    # IndexError on every exactly-determined problem -- which is the case
-    # Pearl actually describes.  The residual is recomputed here instead of
-    # being read out of a solver info dict, which also makes the two
-    # branches report the same quantity.
-    if u_support is not None:
-        # The caller has declared the exogenous support, i.e. the model is
-        # discrete.  A gradient solve on a step function burns minutes of
-        # finite-difference Jacobians and can only return its starting
-        # point, so the discrete path -- and its size guard -- runs first.
-        support = tuple(float(v) for v in u_support)
-        if len(support) ** len(unames) > 200_000:
-            raise ValueError(
-                "discrete abduction over %d^%d candidates is too large; "
-                "pass a smaller u_support" % (len(support), len(unames)))
-        u_hat = list(u0._flat()) if hasattr(u0, "_flat") else list(u0)
-    elif len(unames) == len(observed):
-        u_hat = optimize.fsolve(residuals, u0)
-    else:  # over- or under-determined: least squares
-        u_hat = optimize.least_squares(residuals, u0).x
-    if hasattr(u_hat, "_flat"):
-        u_hat = list(u_hat._flat())
-    else:
-        u_hat = list(u_hat)
-    resid = max(abs(r) for r in residuals(u_hat))
+    # Support enumeration runs FIRST.  With non-smooth equations the
+    # evidence does not pin u uniquely in the continuum -- a step
+    # function is satisfied by a whole interval -- so a solver can land
+    # on an off-support u that reproduces the evidence yet yields the
+    # wrong counterfactual.  Pearl's "compatible with only one
+    # realization" is a statement WITHIN the support; grid solutions take
+    # precedence, and the gradient path serves genuinely continuous
+    # models where no grid point fits.
+    support = tuple(float(v) for v in (u_support or (0.0, 1.0)))
+    if u_support is not None and len(support) ** len(unames) > 200_000:
+        raise ValueError(
+            "discrete abduction over %d^%d candidates is too large; "
+            "pass a smaller u_support" % (len(support), len(unames)))
 
-    solutions = [u_hat]
-    method = "gradient abduction"
-    if resid > 1e-8:
-        # Discrete model: the gradient solve returned its starting point.
-        # Enumerate the support and keep every u that reproduces the
-        # evidence -- Pearl's "compatible with only one realization" is a
-        # statement about exactly this enumeration.
-        support = tuple(float(v) for v in (u_support or (0.0, 1.0)))
-        if len(support) ** len(unames) > 200_000:
-            raise ValueError(
-                "discrete abduction over %d^%d candidates is too large; "
-                "pass a smaller u_support" % (len(support), len(unames)))
+    solutions = []
+    if len(support) ** len(unames) <= 200_000:
         import itertools
-
-        exact = []
         for cand in itertools.product(support, repeat=len(unames)):
-            r = max(abs(x) for x in residuals(list(cand)))
-            if r < 1e-9:
-                exact.append(list(cand))
-        if exact:
-            solutions = exact
-            u_hat = exact[0]
-            resid = 0.0
-            method = "discrete abduction over support %s" % (support,)
-        # if nothing in the support reproduces the evidence, the gradient
-        # result and its honest residual are returned as they are.
+            if max(abs(x) for x in residuals(list(cand))) < 1e-9:
+                solutions.append(list(cand))
+    if solutions:
+        u_hat = solutions[0]
+        resid = 0.0
+        method = "discrete abduction over support %s" % (support,)
+    else:
+        u0 = np.zeros(len(unames))
+        if len(unames) == len(observed):
+            u_hat = optimize.fsolve(residuals, u0)
+        else:
+            u_hat = optimize.least_squares(residuals, u0).x
+        u_hat = (list(u_hat._flat()) if hasattr(u_hat, "_flat")
+                 else list(u_hat))
+        resid = max(abs(r) for r in residuals(u_hat))
+        solutions = [u_hat]
+        method = "gradient abduction"
 
     mutilated = dict(equations)
     for v, val in do.items():
