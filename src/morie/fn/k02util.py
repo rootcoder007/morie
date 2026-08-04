@@ -154,3 +154,41 @@ def k02gh(n):
         w[i - 1] = 2.0 / (pp * pp)
         w[n - i] = w[i - 1]
     return x, w
+
+
+def k02mod(A, comm):
+    """Newman-Girvan modularity of a partition of a weighted undirected graph."""
+    a = np.atleast_2d(np.asarray(A, dtype=float))
+    n = a.shape[0]
+    k = [float(t) for t in np.sum(a, axis=1)]
+    m2 = float(np.sum(a))
+    if m2 <= 0.0:
+        return 0.0
+    q = 0.0
+    for i in range(n):
+        for j in range(n):
+            if comm[i] == comm[j]:
+                q += float(a[i, j]) - k[i] * k[j] / m2
+    return q / m2
+
+
+def k02bfs(A):
+    """All-pairs shortest-path lengths by breadth-first search (hop counts)."""
+    a = np.atleast_2d(np.asarray(A, dtype=float))
+    n = a.shape[0]
+    nbr = [[j for j in range(n) if a[i, j] != 0.0 and j != i] for i in range(n)]
+    out = []
+    for s in range(n):
+        dist = [-1] * n
+        dist[s] = 0
+        queue = [s]
+        head = 0
+        while head < len(queue):
+            u = queue[head]
+            head += 1
+            for v in nbr[u]:
+                if dist[v] < 0:
+                    dist[v] = dist[u] + 1
+                    queue.append(v)
+        out.append(dist)
+    return out
