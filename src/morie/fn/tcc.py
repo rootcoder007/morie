@@ -1,77 +1,74 @@
-"""Test characteristic curve (expected total score)."""
-
-from . import _array_core as np
-from . import _stats_core as stats
+"""Test characteristic curve: expected total score as a function of theta."""
 
 from ._richresult import RichResult
+from ._k05irt import item_params, prob
 
 __all__ = ["test_characteristic_curve"]
 
 
-def test_characteristic_curve(y, theta, a, b, cdf=None):
-    """
-    Test characteristic curve (expected total score)
+def test_characteristic_curve(theta, a, b, c=None, upper=None, D=1.0):
+    r"""Expected number-correct score at each ability value.
 
-    Formula: T(theta) = sum_i P_i(theta)
+    .. math:: T(\theta)=\sum_{i=1}^{n} P_i(\theta)
+
+    the sum of the item response functions. ``T`` is the IRT
+    true-score, and it is what links the latent metric back to the
+    observed one: it is strictly increasing in theta, so it can be
+    inverted to map a raw score onto an ability estimate, which is the
+    basis of true-score equating.
+
+    Its floor is :math:`\sum_i c_i`, not zero -- with guessing, an
+    examinee at :math:`\theta=-\infty` still expects to get
+    :math:`\sum c_i` items right.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    theta : array-like
-        Input data.
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    theta : float or array-like
+        Ability value(s).
+    a, b : array-like
+        Item discriminations and difficulties, one per item. A scalar
+        ``a`` is broadcast (the 1PL/Rasch case).
+    c : array-like, optional
+        Lower asymptotes (guessing). Default 0 -> 2PL.
+    upper : array-like, optional
+        Upper asymptotes. Default 1.
+    D : float
+        Scaling constant; 1.0 logistic, 1.702 for the normal-ogive
+        approximation.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Keys ``tcc`` (list, one per theta), ``theta``, ``n_items``,
+        ``floor`` (= sum of c), ``ceiling`` (= sum of upper).
 
     References
     ----------
-    Lord (1980)
+    Lord, F. M. (1980). *Applications of Item Response Theory to
+    Practical Testing Problems*. Erlbaum, ch. 4.
+    Birnbaum, A. (1968). In Lord & Novick, *Statistical Theories of
+    Mental Test Scores*, chs. 17-20.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Test characteristic curve (expected total score)",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    aa, bb, cc, uu, n = item_params(a, b, c, upper)
+    try:
+        th = [float(t) for t in theta]
+        scalar = False
+    except TypeError:
+        th = [float(theta)]
+        scalar = True
+    vals = [sum(prob(t, aa[i], bb[i], cc[i], uu[i], D) for i in range(n)) for t in th]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Test characteristic curve (expected total score)",
+            "tcc": vals[0] if scalar else vals,
+            "theta": th[0] if scalar else th,
+            "n_items": n,
+            "floor": sum(cc),
+            "ceiling": sum(uu),
+            "D": float(D),
+            "method": "Test characteristic curve, sum of item response functions",
         }
     )
 
 
 def cheatsheet():
-    return "tcc: Test characteristic curve (expected total score)"
+    return "tcc: test characteristic curve T(theta) = sum_i P_i(theta)"

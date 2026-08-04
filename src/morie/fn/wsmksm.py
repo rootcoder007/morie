@@ -1,61 +1,82 @@
-"""Kolmogorov-Smirnov test."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Two-sample Kolmogorov-Smirnov test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_ks_test"]
+__all__ = ["kstest1", "wasserman_ks_test"]
 
 
-def wasserman_ks_test(data, f0, cdf=None):
-    """
-    Kolmogorov-Smirnov test
+def kstest1(x, y, terms=200):
+    """Two-sample Kolmogorov-Smirnov test of H0: F1 = F2.
 
-    Formula: D = sup_x |F_n(x) - F_0(x)|
+    The supremum is attained at one of the observed points, so it is a
+    maximum over the pooled sample rather than a search -- both
+    one-sided gaps are examined because the two empirical cdfs step at
+    different places and taking only one of them silently halves the
+    statistic.
+
+    The p-value is the asymptotic one; it is unreliable for very small
+    samples and for heavily tied data, and ``ties`` is returned so a
+    caller can see whether that applies.
+
+    Formula: D = sup_x |F1(x) - F2(x)|;
+             t = sqrt(n1 n2/(n1 + n2)) D;
+             p = 1 - H(t) = 2 sum_{j>=1} (-1)^{j-1} exp(-2 j^2 t^2)
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    f0 : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x, y : array-like
+        The two samples, each of length at least 1.
+    terms : int
+        Terms of the alternating series used for H(t).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        ``statistic`` (D), ``scaled`` (t), ``p_value``, ``n1``, ``n2``,
+        ``ties``.
 
     References
     ----------
-    Wasserman (2004), Ch 10
+    Wasserman (2004), All of Statistics, Section 15.4 and Theorem
+    15.12: D = sup_x |F1hat(x) - F2hat(x)| with
+    lim P( sqrt(n1 n2/(n1+n2)) D <= t ) = H(t) and
+    H(t) = 1 - 2 sum_{j=1}^{inf} (-1)^{j-1} exp(-2 j^2 t^2),
+    equation (15.14).  Fetched as the full text of the book.
     """
-    data = np.asarray(data, dtype=float)
-    n = len(data)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Kolmogorov-Smirnov test"})
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
+    x = sorted(C.vec(x))
+    y = sorted(C.vec(y))
+    n1 = len(x)
+    n2 = len(y)
+    if n1 < 1 or n2 < 1:
+        raise ValueError("both samples must be non-empty")
+    pool = sorted(set(x + y))
+    D = 0.0
+    for v in pool:
+        f1 = sum(1 for a in x if a <= v) / n1
+        f2 = sum(1 for b in y if b <= v) / n2
+        D = max(D, abs(f1 - f2))
+    t = math.sqrt(n1 * n2 / (n1 + n2)) * D
+    p = 0.0
+    if t > 0:
+        for j in range(1, int(terms) + 1):
+            p += (1.0 if j % 2 == 1 else -1.0) * math.exp(-2.0 * j * j * t * t)
+        p *= 2.0
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Kolmogorov-Smirnov test"}
-    )
+        p = 1.0
+    p = min(1.0, max(0.0, p))
+    return RichResult(payload={
+        "statistic": D, "scaled": t, "p_value": p, "n1": n1, "n2": n2,
+        "ties": float(n1 + n2 - len(pool)),
+        "method": "Two-sample KS test, Wasserman Theorem 15.12"})
+
+
+wasserman_ks_test = kstest1
 
 
 def cheatsheet():
-    return "wsmksm: Kolmogorov-Smirnov test"
+    return "wsmksm: D = sup|F1-F2|; p = 2 sum (-1)^(j-1) exp(-2 j^2 t^2)"
