@@ -62,7 +62,9 @@ def compkm(X, k=2, max_iter=50):
     L = [[math.log(v) for v in row] for row in X]
     Z = [[L[i][j] - sum(L[i]) / D for j in range(D)] for i in range(n)]
     cen = [list(Z[i]) for i in range(k)]
-    lab = [0] * n
+    # -1, not 0: with 0-based labels a first-sweep assignment to cluster 0
+    # would not register as a move and the loop would stop a sweep early.
+    lab = [-1] * n
     it = 0
     for it in range(1, int(max_iter) + 1):
         moved = False
