@@ -184,3 +184,507 @@ def sample_int(n, size=None, replace=False):
 def sample(x, size=None, replace=False):
     """``sample`` on the module-level stream."""
     return _GLOBAL.sample(x, size, replace)
+
+
+# ---------------------------------------------------------------- d/p/q/r
+# R-named distribution functions.  Kept here so callers stop hand-rolling
+# Box-Muller, and pointed at AS 241 rather than the coarser Acklam
+# approximation that also lives in this package.
+
+import math as _math
+
+
+def dnorm(x, mean=0.0, sd=1.0, log=False):
+    """Normal density.  Scalar or sequence, following the input."""
+    if sd <= 0:
+        raise ValueError("sd must be positive")
+
+    def one(v):
+        z = (float(v) - mean) / sd
+        lg = -0.5 * z * z - _math.log(sd) - 0.5 * _math.log(2.0 * _math.pi)
+        return lg if log else _math.exp(lg)
+
+    if isinstance(x, (list, tuple)):
+        return [one(v) for v in x]
+    return one(x)
+
+
+def pnorm(q, mean=0.0, sd=1.0, lower_tail=True, log=False):
+    """Normal cdf via erfc, which keeps the far tail accurate.
+
+    Computing the upper tail as 1 - Phi(q) loses every significant digit
+    once Phi(q) rounds to 1, so the upper tail is taken from erfc directly.
+    """
+    if sd <= 0:
+        raise ValueError("sd must be positive")
+
+    def one(v):
+        z = (float(v) - mean) / sd
+        p = (0.5 * _math.erfc(-z / _math.sqrt(2.0)) if lower_tail
+             else 0.5 * _math.erfc(z / _math.sqrt(2.0)))
+        if log:
+            return -745.0 if p <= 0.0 else _math.log(p)
+        return p
+
+    if isinstance(q, (list, tuple)):
+        return [one(v) for v in q]
+    return one(q)
+
+
+def qnorm(p, mean=0.0, sd=1.0, lower_tail=True):
+    """Normal quantile: Wichura's AS 241 (PPND16), about 1e-16."""
+    from ._rng import normal_quantile as _ppnd16
+    if sd <= 0:
+        raise ValueError("sd must be positive")
+
+    def one(v):
+        u = float(v) if lower_tail else 1.0 - float(v)
+        if not (0.0 < u < 1.0):
+            raise ValueError("p must lie strictly inside (0, 1)")
+        z = _ppnd16(u)
+        z = float(z if not hasattr(z, "_flat") else list(z._flat())[0])
+        return mean + sd * z
+
+    if isinstance(p, (list, tuple)):
+        return [one(v) for v in p]
+    return one(p)
+
+
+def rnorm(n, mean=0.0, sd=1.0):
+    """Normal draws by inversion of the uniform stream.
+
+    Inversion rather than Box-Muller so that draw k depends only on
+    uniform k: the stream is stable under a change of n, and one draw is
+    not paired with the next.
+    """
+    us = runif(int(n))
+    us = list(us._flat()) if hasattr(us, "_flat") else list(us)
+    return [qnorm(min(max(u, 1e-300), 1.0 - 1e-16), mean, sd) for u in us]
+
+
+def rexp(n, rate=1.0):
+    """Exponential draws by inversion: -log(1 - u)/rate."""
+    if rate <= 0:
+        raise ValueError("rate must be positive")
+    us = runif(int(n))
+    us = list(us._flat()) if hasattr(us, "_flat") else list(us)
+    return [-_math.log1p(-min(u, 1.0 - 1e-16)) / rate for u in us]
+
+
+def dexp(x, rate=1.0, log=False):
+    """Exponential density."""
+    if rate <= 0:
+        raise ValueError("rate must be positive")
+
+    def one(v):
+        v = float(v)
+        if v < 0:
+            return -_math.inf if log else 0.0
+        lg = _math.log(rate) - rate * v
+        return lg if log else _math.exp(lg)
+
+    if isinstance(x, (list, tuple)):
+        return [one(v) for v in x]
+    return one(x)
+
+
+def pexp(q, rate=1.0, lower_tail=True):
+    """Exponential cdf; the upper tail is exp(-rate q), not 1 - cdf."""
+    if rate <= 0:
+        raise ValueError("rate must be positive")
+
+    def one(v):
+        v = float(v)
+        if v < 0:
+            return 0.0 if lower_tail else 1.0
+        return (-_math.expm1(-rate * v) if lower_tail
+                else _math.exp(-rate * v))
+
+    if isinstance(q, (list, tuple)):
+        return [one(v) for v in q]
+    return one(q)
+
+
+def qexp(p, rate=1.0):
+    """Exponential quantile."""
+    if rate <= 0:
+        raise ValueError("rate must be positive")
+
+    def one(v):
+        v = float(v)
+        if not (0.0 <= v < 1.0):
+            raise ValueError("p must lie in [0, 1)")
+        return -_math.log1p(-v) / rate
+
+    if isinstance(p, (list, tuple)):
+        return [one(v) for v in p]
+    return one(p)
+
+
+# ------------------------------------------------- the rest of d/p/q/r
+# Built on _stats_core's incomplete gamma and incomplete beta so that the
+# special functions have exactly one implementation in the package.
+
+
+def _sc():
+    from . import _stats_core as s
+    return s
+
+
+def _bisect_q(cdf, p, lo, hi, tol=1e-12):
+    """Smallest x with cdf(x) >= p, by bisection on a monotone cdf."""
+    if not (0.0 < p < 1.0):
+        if p == 0.0:
+            return lo
+        if p == 1.0:
+            return hi
+        raise ValueError("p must lie in [0, 1]")
+    while cdf(hi) < p:
+        hi = hi * 2.0 + 1.0
+        if hi > 1e300:
+            raise ValueError("cdf never reaches p")
+    while cdf(lo) > p:
+        lo = lo * 2.0 - 1.0
+        if lo < -1e300:
+            raise ValueError("cdf never falls below p")
+    for _ in range(400):
+        mid = 0.5 * (lo + hi)
+        if cdf(mid) < p:
+            lo = mid
+        else:
+            hi = mid
+        if abs(hi - lo) <= tol * max(1.0, abs(hi)):
+            break
+    x = 0.5 * (lo + hi)
+    # Bisection converges on the interval, not on the value.  Where the cdf
+    # is flat -- around the median of a symmetric law -- the bracket can
+    # close while x is still ~1e-8 from the root, so qt(0.5, df) came back
+    # as -2.1e-08 instead of 0.  A couple of Newton steps on the residual
+    # land it, and snapping a near-zero result to exact zero keeps the
+    # symmetry qt(0.5) == 0 that callers reasonably assume.
+    for _ in range(3):
+        fx = cdf(x) - p
+        h = 1e-6 * max(1.0, abs(x))
+        d = (cdf(x + h) - cdf(x - h)) / (2.0 * h)
+        if d <= 0.0 or not _math.isfinite(d):
+            break
+        step = fx / d
+        if not _math.isfinite(step) or abs(step) > abs(hi - lo) + 1.0:
+            break
+        x -= step
+    if abs(x) < 1e-11:
+        x = 0.0
+    return x
+
+
+def _elem(f, x):
+    return [f(v) for v in x] if isinstance(x, (list, tuple)) else f(x)
+
+
+# ---- gamma ----------------------------------------------------------
+
+def dgamma(x, shape, rate=1.0, log=False):
+    if shape <= 0 or rate <= 0:
+        raise ValueError("shape and rate must be positive")
+
+    def one(v):
+        v = float(v)
+        if v < 0:
+            return -_math.inf if log else 0.0
+        if v == 0:
+            return (0.0 if shape > 1 else _math.inf) if not log else -_math.inf
+        lg = (shape * _math.log(rate) + (shape - 1) * _math.log(v)
+              - rate * v - _math.lgamma(shape))
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def pgamma(q, shape, rate=1.0, lower_tail=True):
+    s = _sc()
+
+    def one(v):
+        v = float(v)
+        if v <= 0:
+            return 0.0 if lower_tail else 1.0
+        p = s._gammainc_p(shape, rate * v)
+        return p if lower_tail else 1.0 - p
+    return _elem(one, q)
+
+
+def qgamma(p, shape, rate=1.0):
+    def cdf(v):
+        return pgamma(v, shape, rate)
+    return _elem(lambda pp: _bisect_q(cdf, float(pp), 0.0, 1.0), p)
+
+
+# ---- chi-square (gamma with shape k/2, rate 1/2) ---------------------
+
+def dchisq(x, df, log=False):
+    return dgamma(x, df / 2.0, 0.5, log=log)
+
+
+def pchisq(q, df, lower_tail=True):
+    return pgamma(q, df / 2.0, 0.5, lower_tail=lower_tail)
+
+
+def qchisq(p, df):
+    return qgamma(p, df / 2.0, 0.5)
+
+
+# ---- Poisson --------------------------------------------------------
+
+def dpois(x, lam, log=False):
+    if lam < 0:
+        raise ValueError("lambda must be non-negative")
+
+    def one(v):
+        k = int(round(float(v)))
+        if k < 0:
+            return -_math.inf if log else 0.0
+        lg = k * _math.log(lam) - lam - _math.lgamma(k + 1) if lam > 0 else (
+            0.0 if k == 0 else -_math.inf)
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def ppois(q, lam, lower_tail=True):
+    """P(X <= k) = Q(k+1, lambda), the UPPER regularised incomplete gamma."""
+    s = _sc()
+
+    def one(v):
+        k = _math.floor(float(v))
+        if k < 0:
+            return 0.0 if lower_tail else 1.0
+        p = 1.0 - s._gammainc_p(k + 1.0, lam)
+        return p if lower_tail else 1.0 - p
+    return _elem(one, q)
+
+
+def qpois(p, lam):
+    """Smallest k with P(X <= k) >= p, as R defines it."""
+    def one(pp):
+        pp = float(pp)
+        if not (0.0 <= pp <= 1.0):
+            raise ValueError("p must lie in [0, 1]")
+        k = 0
+        while ppois(k, lam) < pp - 1e-15:
+            k += 1
+            if k > 10_000_000:
+                raise ValueError("qpois failed to converge")
+        return k
+    return _elem(one, p)
+
+
+# ---- binomial -------------------------------------------------------
+
+def dbinom(x, size, prob, log=False):
+    if not (0.0 <= prob <= 1.0):
+        raise ValueError("prob must lie in [0, 1]")
+
+    def one(v):
+        k = int(round(float(v)))
+        if k < 0 or k > size:
+            return -_math.inf if log else 0.0
+        lg = (_math.lgamma(size + 1) - _math.lgamma(k + 1)
+              - _math.lgamma(size - k + 1))
+        if prob == 0.0:
+            lg = 0.0 if k == 0 else -_math.inf
+        elif prob == 1.0:
+            lg = 0.0 if k == size else -_math.inf
+        else:
+            lg += k * _math.log(prob) + (size - k) * _math.log1p(-prob)
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def pbinom(q, size, prob, lower_tail=True):
+    """P(X <= k) = I_{1-p}(n-k, k+1) -- the regularised incomplete beta."""
+    s = _sc()
+
+    def one(v):
+        k = _math.floor(float(v))
+        if k < 0:
+            return 0.0 if lower_tail else 1.0
+        if k >= size:
+            return 1.0 if lower_tail else 0.0
+        p = s._betainc(size - k, k + 1.0, 1.0 - prob)
+        return p if lower_tail else 1.0 - p
+    return _elem(one, q)
+
+
+def qbinom(p, size, prob):
+    def one(pp):
+        pp = float(pp)
+        if not (0.0 <= pp <= 1.0):
+            raise ValueError("p must lie in [0, 1]")
+        k = 0
+        while k < size and pbinom(k, size, prob) < pp - 1e-15:
+            k += 1
+        return k
+    return _elem(one, p)
+
+
+# ---- beta -----------------------------------------------------------
+
+def dbeta(x, shape1, shape2, log=False):
+    if shape1 <= 0 or shape2 <= 0:
+        raise ValueError("shape parameters must be positive")
+
+    def one(v):
+        v = float(v)
+        if v < 0 or v > 1:
+            return -_math.inf if log else 0.0
+        if v in (0.0, 1.0):
+            return 0.0 if not log else -_math.inf
+        lg = ((shape1 - 1) * _math.log(v) + (shape2 - 1) * _math.log1p(-v)
+              + _math.lgamma(shape1 + shape2) - _math.lgamma(shape1)
+              - _math.lgamma(shape2))
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def pbeta(q, shape1, shape2, lower_tail=True):
+    s = _sc()
+
+    def one(v):
+        v = float(v)
+        if v <= 0:
+            return 0.0 if lower_tail else 1.0
+        if v >= 1:
+            return 1.0 if lower_tail else 0.0
+        p = s._betainc(shape1, shape2, v)
+        return p if lower_tail else 1.0 - p
+    return _elem(one, q)
+
+
+def qbeta(p, shape1, shape2):
+    def cdf(v):
+        return pbeta(min(max(v, 0.0), 1.0), shape1, shape2)
+    return _elem(lambda pp: _bisect_q(cdf, float(pp), 0.0, 1.0), p)
+
+
+# ---- Student t ------------------------------------------------------
+
+def dt(x, df, log=False):
+    if df <= 0:
+        raise ValueError("df must be positive")
+
+    def one(v):
+        v = float(v)
+        lg = (_math.lgamma((df + 1) / 2.0) - _math.lgamma(df / 2.0)
+              - 0.5 * _math.log(df * _math.pi)
+              - (df + 1) / 2.0 * _math.log1p(v * v / df))
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def pt(q, df, lower_tail=True):
+    s = _sc()
+
+    def one(v):
+        v = float(v)
+        xb = df / (df + v * v)
+        half = 0.5 * s._betainc(df / 2.0, 0.5, xb)
+        p = half if v <= 0 else 1.0 - half
+        return p if lower_tail else 1.0 - p
+    return _elem(one, q)
+
+
+def qt(p, df):
+    def cdf(v):
+        return pt(v, df)
+    return _elem(lambda pp: _bisect_q(cdf, float(pp), -1.0, 1.0), p)
+
+
+# ---- F --------------------------------------------------------------
+
+def df_(x, df1, df2, log=False):
+    """F density.  Named df_ because df is universally a parameter name."""
+    def one(v):
+        v = float(v)
+        if v <= 0:
+            return -_math.inf if log else 0.0
+        lg = (0.5 * df1 * _math.log(df1 * v) + 0.5 * df2 * _math.log(df2)
+              - 0.5 * (df1 + df2) * _math.log(df1 * v + df2)
+              - _math.log(v) - _math.lgamma(df1 / 2.0)
+              - _math.lgamma(df2 / 2.0) + _math.lgamma((df1 + df2) / 2.0))
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def pf(q, df1, df2, lower_tail=True):
+    s = _sc()
+
+    def one(v):
+        v = float(v)
+        if v <= 0:
+            return 0.0 if lower_tail else 1.0
+        xb = df1 * v / (df1 * v + df2)
+        p = s._betainc(df1 / 2.0, df2 / 2.0, xb)
+        return p if lower_tail else 1.0 - p
+    return _elem(one, q)
+
+
+def qf(p, df1, df2):
+    def cdf(v):
+        return pf(v, df1, df2)
+    return _elem(lambda pp: _bisect_q(cdf, float(pp), 0.0, 1.0), p)
+
+
+# ---- log-normal -----------------------------------------------------
+
+def dlnorm(x, meanlog=0.0, sdlog=1.0, log=False):
+    def one(v):
+        v = float(v)
+        if v <= 0:
+            return -_math.inf if log else 0.0
+        lg = (dnorm(_math.log(v), meanlog, sdlog, log=True) - _math.log(v))
+        return lg if log else _math.exp(lg)
+    return _elem(one, x)
+
+
+def plnorm(q, meanlog=0.0, sdlog=1.0, lower_tail=True):
+    def one(v):
+        v = float(v)
+        if v <= 0:
+            return 0.0 if lower_tail else 1.0
+        return pnorm(_math.log(v), meanlog, sdlog, lower_tail=lower_tail)
+    return _elem(one, q)
+
+
+def qlnorm(p, meanlog=0.0, sdlog=1.0):
+    return _elem(lambda pp: _math.exp(qnorm(float(pp), meanlog, sdlog)), p)
+
+
+# ---- draws by inversion ---------------------------------------------
+
+def rbinom(n, size, prob):
+    us = runif(int(n))
+    us = list(us._flat()) if hasattr(us, "_flat") else list(us)
+    return [qbinom(u, size, prob) for u in us]
+
+
+def rpois(n, lam):
+    us = runif(int(n))
+    us = list(us._flat()) if hasattr(us, "_flat") else list(us)
+    return [qpois(u, lam) for u in us]
+
+
+def rgamma(n, shape, rate=1.0):
+    us = runif(int(n))
+    us = list(us._flat()) if hasattr(us, "_flat") else list(us)
+    return [qgamma(min(max(u, 1e-12), 1 - 1e-12), shape, rate) for u in us]
+
+
+def rbeta(n, shape1, shape2):
+    us = runif(int(n))
+    us = list(us._flat()) if hasattr(us, "_flat") else list(us)
+    return [qbeta(min(max(u, 1e-12), 1 - 1e-12), shape1, shape2) for u in us]
+
+
+def rchisq(n, df):
+    return rgamma(n, df / 2.0, 0.5)
+
+
+def rlnorm(n, meanlog=0.0, sdlog=1.0):
+    return [_math.exp(v) for v in rnorm(n, meanlog, sdlog)]

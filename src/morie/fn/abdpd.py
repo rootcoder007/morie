@@ -49,10 +49,18 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
         recovered u), ``residual`` (how well the abduction reproduced
         the evidence), ``do``, ``query``, ``method``.
 
+    This is the DETERMINISTIC form of the procedure: it recovers a point
+    u and returns a single counterfactual value.  Pearl's Theorem 7.1.7
+    states the probabilistic version, whose step 1 updates P(u) to
+    P(u | e); that reduces to this one exactly when the evidence
+    determines u uniquely, which is the case worked in Section 1.4.
+
     References
     ----------
-    Pearl, J. (2009). *Causality* (2nd ed.). Cambridge University
-    Press. Theorem 7.1.7 (abduction-action-prediction).
+    Pearl, J. (2000). *Causality: Models, Reasoning, and Inference*
+    (1st ed.). Cambridge University Press, Section 1.4 pp. 36-37 for the
+    three-step procedure, Theorem 7.1.7 for the probabilistic statement.
+    Verified against the copy held in the corpus.
     """
     if not isinstance(evidence, dict) or not isinstance(equations, dict):
         raise ValueError("evidence and equations must be dicts.")
@@ -79,14 +87,17 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
         return [vals[k] - observed[k] for k in observed]
 
     u0 = np.zeros(len(unames))
+    # The native fsolve drops **kw (including full_output) and returns the
+    # solution vector alone, so unpacking scipy's 4-tuple raised
+    # IndexError on every exactly-determined problem -- which is the case
+    # Pearl actually describes.  The residual is recomputed here instead of
+    # being read out of a solver info dict, which also makes the two
+    # branches report the same quantity.
     if len(unames) == len(observed):
-        sol = optimize.fsolve(residuals, u0, full_output=True)
-        u_hat, info, flag = sol[0], sol[1], sol[2]
-        resid = float(np.max(np.abs(info["fvec"])))
+        u_hat = optimize.fsolve(residuals, u0)
     else:  # over- or under-determined: least squares
-        ls = optimize.least_squares(residuals, u0)
-        u_hat = ls.x
-        resid = float(np.max(np.abs(ls.fun)))
+        u_hat = optimize.least_squares(residuals, u0).x
+    resid = max(abs(r) for r in residuals(u_hat))
 
     factual = solve(u_hat, equations)[query]
     mutilated = dict(equations)
@@ -102,7 +113,7 @@ def abduction_modification_prediction(evidence, equations, exogenous_names, do, 
             "residual": resid,
             "do": dict(do),
             "query": query,
-            "method": "Abduction-action-prediction (Pearl Thm 7.1.7)",
+            "method": "Abduction-action-prediction (Pearl 2000, Sec. 1.4)",
         }
     )
 
