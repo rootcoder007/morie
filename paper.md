@@ -548,6 +548,87 @@ the implementation, far enough to matter. The expectation is over
 **both** the field and the simulation; redrawing the truth at every
 replicate gives $0.9977$ over 8,000 pairs. Nothing in the code changed.
 
+*A container that silently accepts a type it cannot represent will lie
+about it.* The native array core stores whatever it is handed, and it
+handles complex numbers well enough that `abs()` on them is correct. Its
+accessors did not. `imag` returned `zeros_like(x)`; `conjugate` and
+`real` returned their argument unchanged; `angle` tested `v >= 0`, which
+raises on a complex value and, for real input, can only ever return $0$
+or $\pi$. So `imag(1+2j)` was $0.0$, `conjugate(1+2j)` was $1+2j$, and
+every conjugate-multiply or phase computation on a spectrum returned a
+plausible number that was wrong. Nothing raised, because nothing had to:
+the container had already accepted the value, and each accessor was
+individually consistent with an assumption -- real input -- that the
+container itself did not enforce. The three that could not run at
+all -- two cross-correlations and `angle` itself -- were found first,
+and led to the three that ran and lied.
+
+*A dtype is part of an interface, not an implementation detail.* The
+same core's `arange` returned floating-point values unconditionally,
+where the reference returns an integer array when its arguments are
+integers. The difference is not cosmetic: a float cannot index a slice.
+Every caller that wrote `x[: n - m] for m in arange(...)` raised
+`TypeError`, which took two shipped functions -- a sample
+cross-correlation and its normalised variant -- out of service entirely,
+in a state where they could not be called at all rather than merely
+being inaccurate. The failure was reported as five unrelated test
+failures in five modules, and the per-call-site fixes applied first were
+symptomatic; the defect was one line in the container. A further wrinkle
+is that the default step was `1.0`, so restoring the dtype rule was not
+sufficient until the default was also made integral -- the integer path
+existed but could never be reached.
+
+*Agreement with a reference implementation has to be measured, not
+assumed.* A regression test asserted that the robust-regression scale
+equals $\mathrm{median}(|r|)/0.6745$ computed from the residuals the
+function returns, at a tolerance of $10^{-12}$. It failed by a relative
+$2 \times 10^{-5}$, which reads exactly like a small numerical defect.
+Running the two reference implementations settles it differently. Both
+compute the scale from the residuals at the *start* of each iteratively
+reweighted least-squares step and return whatever that was when the loop
+ended, so neither satisfies the identity the test demanded:
+
+| Implementation | returned scale | $\mathrm{median}(\lvert r\rvert)/0.6745$ | relative gap |
+|---|---|---|---|
+| `MASS::rlm` | 0.283271235515 | 0.283251509917 | $7.0\times10^{-5}$ |
+| `statsmodels` RLM | 0.269674149383 | 0.269670051374 | $1.5\times10^{-5}$ |
+
+The gap is not error; it is one iteration of convergence, and it is
+bounded by the convergence tolerance ($10^{-4}$) rather than by machine
+precision. The test was asserting a property no reference-compatible
+implementation can have. The arm actually out of step was the one that
+looked tidiest -- a Python implementation that recomputed the scale
+after the loop, and so matched neither reference. Both quantities are
+now returned: the reference-comparable one and the one consistent with
+the residuals reported alongside it. A related fix went the opposite
+way in the same session: two estimators citing @huber1973robust rather than a
+specific software reference had the same lagging scale, with no
+convention to preserve, and there it was simply a defect -- in one of
+them the stale scale also entered the standard errors, so those were
+wrong by the same factor. Whether a discrepancy is a bug depends on
+what the function claims to be compatible with, which is a question
+about documentation as much as about numerics.
+
+*A citation that cannot be located is a fabrication until shown
+otherwise.* Implementations written against a textbook were checked by
+extracting every equation and section reference from the source and
+searching the book's text for each. One reference did not resolve: a
+filter cited "Section 3.5.4", which does not occur, although the
+equation it also cited does. An earlier pass had reported the same
+reference as present, because the search treated `.` as a regular
+expression wildcard and matched unrelated digit strings; the same query
+with literal matching returned nothing. The check is only as good as
+its escaping, and a verification tool that silently over-matches is
+worse than none, because it converts an unverified claim into a
+verified-looking one. The converse case is worth recording too, since
+it is the common one: the same filter's coefficients, $1 - 1.85955
+z^{-1} + z^{-2}$ scaled to unit gain at DC, initially looked wrong
+against the printed values until the surrounding text was read, which
+instructs the reader to divide by the DC gain of $0.14045$ -- the
+implementation was following an instruction that the equation alone did
+not carry.
+
+
 # Exactness
 
 Two languages, two different failure modes, and neither announces
