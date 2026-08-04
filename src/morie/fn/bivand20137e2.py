@@ -1,81 +1,49 @@
-"""GeneralStatistics equation extracted from bivand2013.."""
+"""Extractor artefact -- NOT IMPLEMENTED"""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import hypothesis_test_result
+from ._richresult import RichResult  # noqa: F401  (kept for API stability)
 
 __all__ = ["bivand2013_chapter_7_equation_2"]
+
+_WHY = (
+    'bivand2013_chapter_7_equation_2 is not implemented.\n'
+    '\n'
+    'What was here before was a one-sample Kolmogorov-Smirnov test against\n'
+    'a fitted normal, pasted in by a generator. It ran and returned a\n'
+    'plausible statistic and p-value, so a caller could not tell it was\n'
+    'wrong. It has been deleted rather than left in place.\n'
+    '\n'
+    'It was not replaced because there is no method to implement. This\n'
+    'module was produced by an equation extractor, and the text it captured\n'
+    'as the specification is\n'
+    '\n'
+    "    'The values of the coefficients alpha, beta_1, ..., beta_5 are\n"
+    "     5.56, 5.66, -0.963, -5.14'\n"
+    '\n'
+    'which is a sentence reporting fitted numbers in a worked example, not\n'
+    'a formula and not a method. The module name is a book coordinate\n'
+    '(chapter 7, equation 2) rather than a method name, which also violates\n'
+    "ledger/NAMING.md: 'method names, never book coordinates'.\n"
+    '\n'
+    'This module should be deleted rather than implemented. It is one of\n'
+    '281 rows in slice k03 with the same defect; see the slice report.\n'
+)
 
 
 def bivand2013_chapter_7_equation_2(x, cdf=None):
     """
-    GeneralStatistics equation extracted from bivand2013.
+    Extractor artefact -- NOT IMPLEMENTED
 
-    Formula: The values of the coefficientsα,β1,...,β 5 are 5.56, 5.66,−0.963, −5.14
-
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('bivand20137e2')`` for the full guide.
+    Raises ``NotImplementedError``.  See the module note: the generator
+    boilerplate that was here (a Kolmogorov-Smirnov test) was wrong and
+    has been removed, and there is no method in the docstring to implement -- the extractor captured a sentence of prose, not a formula.
 
     References
     ----------
-    bivand2013, ch.7 eq.7.2
+    None.  The docstring of this module names no method; see the note
+    above.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return hypothesis_test_result(
-            test_name="GeneralStatistics equation extracted from bivand2013.",
-            statistic=float("nan"),
-            pvalue=float("nan"),
-            warnings=["n<2: insufficient data."],
-            extra_summary=[("n", n)],
-            extra_payload={
-                "n": n,
-                "method": "GeneralStatistics equation extracted from bivand2013.",
-                "p_value": float("nan"),
-            },
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return hypothesis_test_result(
-        test_name="GeneralStatistics equation extracted from bivand2013.",
-        statistic=float(statistic),
-        pvalue=float(p_value),
-        extra_summary=[("n", n)],
-        extra_payload={
-            "n": n,
-            "method": "GeneralStatistics equation extracted from bivand2013.",
-            "p_value": float(p_value),
-        },
-    )
+    raise NotImplementedError(_WHY)
 
 
 def cheatsheet():
-    return "bivand20137e2: GeneralStatistics equation extracted from bivand2013."
+    return "bivand20137e2: NOT IMPLEMENTED (no method in the docstring)"

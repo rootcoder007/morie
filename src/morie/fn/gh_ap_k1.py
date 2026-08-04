@@ -1,78 +1,69 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Fano inequality: lower bound on probability of error in hypothesis testing."""
+"""Fano's inequality: a lower bound on the error probability."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ghosal_fano_ineq"]
+__all__ = ["fano", "ghosal_fano_ineq"]
 
 
-def ghosal_fano_ineq(x, cdf=None):
-    """
-    Fano inequality: lower bound on probability of error in hypothesis testing
+def fano(M, mutual_info, base_e=True):
+    """Fano lower bound on the error probability of an M-ary test.
 
-    Formula: P_e >= 1 - (I(X;Y) + log 2) / log M for M hypotheses
+    This is the direction the testing lemmas do not give: an
+    IMPOSSIBILITY.  No procedure whatsoever can do better, so it is
+    what turns a packing-set construction into a minimax lower bound.
+    The bound is only informative once log M exceeds I + log 2, which
+    is why lower-bound proofs work so hard to make the packing set
+    large relative to the mutual information.
+
+    Formula: P_err >= 1 - (I(theta; X) + log 2) / log M
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    M : int
+        Number of hypotheses, M >= 2.
+    mutual_info : float
+        I(theta; X), non-negative, in the same units as the logarithm.
+    base_e : bool
+        True for nats (natural log), False for bits (log base 2).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``bound`` (clipped to [0, 1]), ``raw_bound``, ``log_M``,
+        ``informative`` (1 when the raw bound exceeds 0), ``M``.
 
     References
     ----------
-    Ghosal App K
+    Fano (1961), Transmission of Information: A Statistical Theory of
+    Communications, MIT Press, and Cover & Thomas (2006), Elements of
+    Information Theory, 2nd edition, Theorem 2.10.1, for the form used
+    here.  The worklist filed this under "Ghosal Appendix K"; the copy
+    of Ghosal & van der Vaart (2017) held in the corpus was searched in
+    full and the word "Fano" does NOT occur in it, so the attribution
+    could not be confirmed and the primary sources are cited instead.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Fano inequality: lower bound on probability of error in hypothesis testing",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Fano inequality: lower bound on probability of error in hypothesis testing",
-        }
-    )
+    M = int(M)
+    I = float(mutual_info)
+    if M < 2:
+        raise ValueError("M must be at least 2")
+    if I < 0:
+        raise ValueError("the mutual information must be non-negative")
+    lg = math.log(M) if base_e else math.log(M, 2.0)
+    l2 = math.log(2.0) if base_e else 1.0
+    raw = 1.0 - (I + l2) / lg
+    return RichResult(payload={
+        "bound": min(1.0, max(0.0, raw)), "raw_bound": raw, "log_M": lg,
+        "informative": 1.0 if raw > 0.0 else 0.0, "M": float(M),
+        "method": "Fano inequality lower bound"})
+
+
+ghosal_fano_ineq = fano
 
 
 def cheatsheet():
-    return "gh_ap_k1: Fano inequality: lower bound on probability of error in hypothesis testing"
-
-
-# compact alias per ledger/NAMING.md
-ghosalfanoineq = ghosal_fano_ineq
+    return "gh_ap_k1: P_err >= 1 - (I + log 2)/log M"

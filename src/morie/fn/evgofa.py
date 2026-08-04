@@ -1,72 +1,105 @@
-"""Anderson-Darling test for GEV fit."""
+# morie.fn -- slice k04 (rootcoder007/morie)
+"""Anderson-Darling goodness-of-fit test for a fitted GEV.
+
+The A^2 statistic itself is Anderson and Darling (1952), read from the
+corpus PDF as Hedderich, Sachs and Reynarowych, *Applied Statistics:
+Methods Using R*, eq (7.33); see :mod:`morie.fn.hedderich7e33`, which
+holds the single implementation and records the two extraction defects
+in the book's text layer.  It is imported rather than copied.
+
+    A^2 = -n - (1/n) sum_i (2i-1) [ log u_i + log(1 - u_{n+1-i}) ]
+
+Applied here to the probability-integral transform under the
+generalized extreme value distribution, Coles (2001), *An Introduction
+to Statistical Modeling of Extreme Values*, eq (3.2):
+
+    G(z) = exp( -[1 + xi (z - mu)/sigma]^(-1/xi) )   on 1 + xi(z-mu)/sigma > 0
+    G(z) = exp( -exp( -(z - mu)/sigma ) )            when xi = 0
+
+The parameters are supplied by the caller and are NOT fitted here.  That
+is deliberate: the package's GEV/GPD fitters use Nelder-Mead, whose
+optima agree across language arms only to about 1e-4, and folding one
+into this function would make the statistic irreproducible.  Feed it
+closed-form probability-weighted-moment or L-moment estimates if you
+need fitted parameters.
+
+Stephens (1986) tabulates critical values for A^2, but they depend on
+which parameters were estimated and by what method; no p-value is
+returned rather than attach a table that may not apply.  The 1986
+chapter (in D'Agostino and Stephens, *Goodness-of-Fit Techniques*) was
+not obtainable here.
+
+The previous body of this module was a one-sample Kolmogorov-Smirnov
+test against a fitted normal, pasted by the stub generator.  Deleted.
+"""
+
+from __future__ import annotations
+
+import math
 
 from . import _array_core as np
-from . import _stats_core as stats
 
 from ._richresult import RichResult
+from .hedderich7e33 import ad_statistic
 
 __all__ = ["evt_gev_anderson_darling"]
 
 
-def evt_gev_anderson_darling(x, mu, sigma, xi, cdf=None):
-    """
-    Anderson-Darling test for GEV fit
+def gev_cdf(x, mu=0.0, sigma=1.0, xi=0.0):
+    """GEV distribution function, Coles (2001) eq (3.2).
 
-    Formula: A² = -n - (1/n) Σ (2i-1)(log u_i + log(1-u_{n+1-i}))
+    Returns 0 below and 1 above the support endpoint implied by ``xi``.
+    """
+    x = np.asarray(x, dtype=float).ravel()
+    sigma = float(sigma)
+    if sigma <= 0.0:
+        raise ValueError("sigma must be positive")
+    xi = float(xi)
+    z = (x - float(mu)) / sigma
+    out = np.empty(z.size, dtype=float)
+    for i in range(z.size):
+        zi = float(z[i])
+        if xi == 0.0:
+            out[i] = math.exp(-math.exp(-zi))
+        else:
+            t = 1.0 + xi * zi
+            if t <= 0.0:
+                out[i] = 0.0 if xi > 0.0 else 1.0
+            else:
+                out[i] = math.exp(-(t ** (-1.0 / xi)))
+    return out
+
+
+def evt_gev_anderson_darling(x, mu=0.0, sigma=1.0, xi=0.0):
+    """Anderson-Darling A^2 for a GEV with the given parameters.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-    xi : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Block maxima.
+    mu, sigma, xi : float
+        Location, scale and shape.  Supplied, not fitted.
 
     Returns
     -------
-    result : dict
-        Keys: AD, p
-
-    References
-    ----------
-    Stephens (1986)
+    RichResult
+        keys: ``statistic`` (A^2), ``u`` (sorted PIT values), ``mu``,
+        ``sigma``, ``xi``, ``n``, ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Anderson-Darling test for GEV fit"}
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    x = np.asarray(x, dtype=float).ravel()
+    u = gev_cdf(x, mu, sigma, xi)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Anderson-Darling test for GEV fit",
+            "statistic": ad_statistic(u),
+            "u": np.sort(u),
+            "mu": float(mu),
+            "sigma": float(sigma),
+            "xi": float(xi),
+            "n": int(x.size),
+            "method": "Anderson-Darling A^2 for a fitted GEV (Anderson and Darling 1952; Coles 2001 eq. 3.2)",
         }
     )
 
 
 def cheatsheet():
-    return "evgofa: Anderson-Darling test for GEV fit"
+    return "evgofa: Anderson-Darling A^2 for a GEV fit"

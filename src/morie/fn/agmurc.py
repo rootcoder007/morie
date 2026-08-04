@@ -1,44 +1,63 @@
-"""MuZero recurrent inference (g function)."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""MuZero recurrent inference step."""
 
 from ._richresult import RichResult
 
-__all__ = ["muzero_recurrent_inf"]
+__all__ = ["mzrecur", "muzero_recurrent_inf"]
 
 
-def muzero_recurrent_inf(state, action, g):
-    """
-    MuZero recurrent inference (g function)
+def mzrecur(state, action, dynamics, prediction=None):
+    """One recurrent-inference step of the learned model.
 
-    Formula: (s', r) = g(s, a)
+    MuZero's model has three learned components: a representation h, a
+    dynamics g and a prediction f.  Recurrent inference applies the last
+    two, taking the hidden state produced at the previous hypothetical
+    step and the action chosen there,
+
+        r^k, s^k = g(s^{k-1}, a^k)
+        p^k, v^k = f(s^k)
+
+    Neither g nor f is fixed by the algorithm, so both are arguments; the
+    routine owns the wiring, which is the part that is the method.
 
     Parameters
     ----------
-    state : array-like
-        Input data.
-    action : array-like
-        Input data.
-    g : array-like
-        Input data.
+    state : object
+        Hidden state s^{k-1}.
+    action : object
+        Action a^k.
+    dynamics : callable
+        g, mapping (state, action) to the pair (reward, next state).
+    prediction : callable or None
+        f, mapping a state to the pair (policy, value).  ``None`` skips
+        the prediction head.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``state``, ``reward``, ``policy``, ``value``.
 
     References
     ----------
-    Schrittwieser et al (2020)
+    Schrittwieser, J., Antonoglou, I., Hubert, T., Simonyan, K.,
+    Sifre, L., Schmitt, S., Guez, A., Lockhart, E., Hassabis, D.,
+    Graepel, T., Lillicrap, T. and Silver, D. (2020), "Mastering Atari,
+    Go, chess and shogi by planning with a learned model", Nature 588,
+    604-609; arXiv:1911.08265.  Read from the ar5iv rendering of the
+    arXiv source.  The Search paragraph of the Methods gives the expansion step
+    r^l, s^l = g_theta(s^{l-1}, a^l) followed by p^l, v^l =
+    f_theta(s^l); Equation (1) is the same model unrolled for K steps.
     """
-    state = np.atleast_1d(np.asarray(state, dtype=float))
-    n = len(state)
-    result = float(np.mean(state))
-    se = float(np.std(state, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "MuZero recurrent inference (g function)"}
-    )
+    r, s = dynamics(state, action)
+    p, v = (None, None) if prediction is None else prediction(s)
+    return RichResult(payload={
+        "state": s, "reward": float(r), "policy": p,
+        "value": None if v is None else float(v),
+        "method": "MuZero recurrent inference (Schrittwieser et al. 2020)"})
+
+
+muzero_recurrent_inf = mzrecur
 
 
 def cheatsheet():
-    return "agmurc: MuZero recurrent inference (g function)"
+    return "agmurc: MuZero recurrent inference step."
