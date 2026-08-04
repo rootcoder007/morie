@@ -62,7 +62,11 @@ def johansen_cointegration(x, k_ar_diff=1):
     if T < 20 or k < 2:
         raise ValueError(f"Need T>=20 and k>=2; got T={T}, k={k}.")
 
-    # Prefer statsmodels if available -- robust treatment of trends/lags.
+    # Native path via _ts_core. This comment previously read
+    # "prefer statsmodels if available", left behind by the
+    # de-externalization -- the import below is _ts_core. The stale
+    # note mattered because the `method` string it justified was
+    # also wrong, and that one is user-visible.
     try:
         from ._ts_core import coint_johansen
 
@@ -79,7 +83,7 @@ def johansen_cointegration(x, k_ar_diff=1):
                 "rank": rank,
                 "n": int(T),
                 "k": int(k),
-                "method": "Johansen trace test via statsmodels (det_order=0)",
+                "method": "Johansen trace test, native _ts_core (det_order=0)",
             }
         )
     except Exception:
