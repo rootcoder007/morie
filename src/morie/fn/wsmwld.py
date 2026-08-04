@@ -1,79 +1,71 @@
-"""Wald test (theta_hat - theta_0)/se ~ N(0,1)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Wald test for a scalar parameter."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_wald"]
+__all__ = ["waldstat", "wasserman_wald"]
 
 
-def wasserman_wald(data, f, theta0, cdf=None):
-    """
-    Wald test (theta_hat - theta_0)/se ~ N(0,1)
+def waldstat(theta_hat, se, theta0=0.0, level=0.95):
+    """Wald test of H0: theta = theta0 against a two-sided alternative.
 
-    Formula: W = (theta_hat - theta_0) / se(theta_hat)
+    The test is asymptotic in one specific way worth naming: it assumes
+    (theta_hat - theta0)/se is standard Normal UNDER THE NULL, with se
+    evaluated at the estimate.  That is why the Wald test and the
+    likelihood ratio test can disagree in finite samples even though
+    they agree asymptotically, and why the Wald test is the one that
+    misbehaves near a boundary of the parameter space.
+
+    Formula: W = (theta_hat - theta0)/se; reject when |W| > z_{alpha/2};
+             p = 2(1 - Phi(|W|))
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    f : array-like
-        Input data.
-    theta0 : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    theta_hat : float
+        The estimate.
+    se : float
+        Its estimated standard error, se > 0.
+    theta0 : float
+        The null value.
+    level : float
+        Confidence level for the returned interval.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        ``statistic``, ``p_value``, ``estimate``, ``se``,
+        ``ci_lower``, ``ci_upper``, ``z_critical``, ``reject``.
 
     References
     ----------
-    Wasserman (2004), Ch 10
+    Wasserman (2004), All of Statistics, Definition 10.3 and equation
+    (10.5): "the size alpha Wald test is: reject H0 when |W| > z_alpha/2
+    where W = (theta_hat - theta_0)/se_hat", with Theorem 10.4 giving
+    the asymptotic size.  Fetched as the full text of the book.
     """
-    data = np.asarray(data, dtype=float)
-    n = len(data)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Wald test (theta_hat - theta_0)/se ~ N(0,1)",
-            }
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Wald test (theta_hat - theta_0)/se ~ N(0,1)",
-        }
-    )
+    se = float(se)
+    if se <= 0:
+        raise ValueError("the standard error must be positive")
+    if not 0.0 < float(level) < 1.0:
+        raise ValueError("level must lie strictly between 0 and 1")
+    theta_hat = float(theta_hat)
+    theta0 = float(theta0)
+    W = (theta_hat - theta0) / se
+    p = 2.0 * (1.0 - C.pnorm(abs(W)))
+    z = C.qnorm((1.0 + float(level)) / 2.0)
+    return RichResult(payload={
+        "statistic": W, "p_value": p, "estimate": theta_hat, "se": se,
+        "ci_lower": theta_hat - z * se, "ci_upper": theta_hat + z * se,
+        "z_critical": z, "reject": 1.0 if abs(W) > z else 0.0,
+        "method": "Wald test, Wasserman Definition 10.3"})
+
+
+wasserman_wald = waldstat
 
 
 def cheatsheet():
-    return "wsmwld: Wald test (theta_hat - theta_0)/se ~ N(0,1)"
-
-
-# compact alias per ledger/NAMING.md
-wassermanwald = wasserman_wald
+    return "wsmwld: W = (theta_hat - theta0)/se; p = 2(1 - Phi(|W|))"

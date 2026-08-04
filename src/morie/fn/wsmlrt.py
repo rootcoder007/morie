@@ -1,79 +1,67 @@
-"""Likelihood ratio test 2 log(L1/L0) ~ chi2."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Likelihood ratio test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_lrt"]
+__all__ = ["lrtest", "wasserman_lrt"]
 
 
-def wasserman_lrt(data, f, theta0, cdf=None):
-    """
-    Likelihood ratio test 2 log(L1/L0) ~ chi2
+def lrtest(loglik_full, loglik_null, df):
+    """Likelihood ratio test from two maximised log-likelihoods.
 
-    Formula: lambda = 2 log(L(theta_hat)/L(theta_0)) ~ chi^2_k
+    The degrees of freedom are the DIFFERENCE IN DIMENSION, not the
+    number of parameters in either model -- the single most common way
+    to get this test wrong.  A negative statistic means the "null"
+    model fitted better than the unrestricted one, which is impossible
+    if the models are genuinely nested, so it is raised rather than
+    clamped to zero.
+
+    Formula: lambda = 2 (l_full - l_null);  p = P(chi^2_df > lambda)
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    f : array-like
-        Input data.
-    theta0 : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    loglik_full : float
+        Maximised log-likelihood over the whole parameter space.
+    loglik_null : float
+        Maximised log-likelihood over the null subspace.
+    df : int
+        dim(Theta) - dim(Theta_0), at least 1.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        ``statistic``, ``p_value``, ``df``, ``loglik_full``,
+        ``loglik_null``.
 
     References
     ----------
-    Wasserman (2004), Ch 10
+    Wasserman (2004), All of Statistics, Definition 10.21 -- the
+    statistic is lambda = 2 log(L(theta_hat)/L(theta_hat_0)) -- and
+    Theorem 10.22, under which lambda converges to chi^2 with
+    r - q degrees of freedom, "the dimension of Theta minus the
+    dimension of Theta_0", with p-value P(chi^2_{r-q} > lambda).
+    Fetched as the full text of the book.
     """
-    data = np.asarray(data, dtype=float)
-    n = len(data)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Likelihood ratio test 2 log(L1/L0) ~ chi2",
-            }
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Likelihood ratio test 2 log(L1/L0) ~ chi2",
-        }
-    )
+    lf = float(loglik_full)
+    ln = float(loglik_null)
+    df = int(df)
+    if df < 1:
+        raise ValueError("df must be at least 1")
+    lam = 2.0 * (lf - ln)
+    if lam < 0:
+        raise ValueError(
+            "the unrestricted log-likelihood is below the restricted one; "
+            "the models are not nested or one did not converge")
+    return RichResult(payload={
+        "statistic": lam, "p_value": 1.0 - C.pchisq(lam, df),
+        "df": float(df), "loglik_full": lf, "loglik_null": ln,
+        "method": "Likelihood ratio test, Wasserman Theorem 10.22"})
+
+
+wasserman_lrt = lrtest
 
 
 def cheatsheet():
-    return "wsmlrt: Likelihood ratio test 2 log(L1/L0) ~ chi2"
-
-
-# compact alias per ledger/NAMING.md
-wassermanlrt = wasserman_lrt
+    return "wsmlrt: lambda = 2(l_full - l_null) ~ chi^2_df"

@@ -1,53 +1,85 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Glivenko-Cantelli theorem verification (Kosorok 2008, Ch 2).
+"""Glivenko-Cantelli supremum with the DKW bound."""
 
-Computes sup_t |F_n(t) - F(t)| against a hypothesised CDF F (default
-standard normal), i.e. the one-sample Kolmogorov-Smirnov statistic,
-plus its exact KS asymptotic p-value (Marsaglia-Tsang-Wang series).
-By Glivenko-Cantelli the statistic -> 0 a.s. when F is correct.
-"""
+import math
 
-from . import _array_core as np
-from . import _stats_core as stats
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_glivenko_cantelli"]
+__all__ = ["glivenko", "kosorok_glivenko_cantelli"]
 
 
-def kosorok_glivenko_cantelli(x, cdf="norm"):
-    """One-sample KS-style sup|F_n - F| statistic.
+def glivenko(x, F):
+    """Uniform distance sup_t |F_n(t) - F(t)|, with the DKW tail bound.
+
+    The supremum is over ALL real t but is attained only at the sample
+    points, and at each one it must be evaluated on BOTH sides: F_n
+    jumps there, so the largest gap may sit just below the jump rather
+    than at it.  Checking only one side is the standard way to get a
+    Kolmogorov-Smirnov statistic that is too small.
+
+    Formula: D_n = sup_t |F_n(t) - F(t)|
+                 = max_i max( i/n - F(x_(i)), F(x_(i)) - (i-1)/n );
+             P(D_n > eps) <= 2 exp(-2 n eps^2)
 
     Parameters
     ----------
     x : array-like
-        IID sample.
-    cdf : str or callable
-        Name of a `scipy.stats` distribution (default 'norm', standard
-        normal) or any callable F : R -> [0,1].
+        The sample.
+    F : array-like
+        The true cdf evaluated at the SORTED sample, same length as x.
 
     Returns
     -------
-    RichResult with keys: statistic, p_value, n, method.
+    RichResult
+        ``statistic`` (D_n), ``d_plus``, ``d_minus``, ``argmax``
+        (one-based index into the sorted sample), ``dkw_bound``,
+        ``n``.
+
+    References
+    ----------
+    Kosorok (2008), Introduction to Empirical Processes and
+    Semiparametric Inference, Section 2.1, equation (2.3):
+    sup_t |F_n(t) - F(t)| -> 0 almost surely (Glivenko 1933, Cantelli
+    1933), with the general form (2.4) for a P-Glivenko-Cantelli class.
+    Fetched as the full text of the book.  The constant 2 in the tail
+    bound is Massart (1990), The tight constant in the
+    Dvoretzky-Kiefer-Wolfowitz inequality, Annals of Probability 18(3),
+    1269-1283; that sharp constant is NOT in Kosorok and is cited to its
+    own source.
     """
-    x = np.asarray(x, dtype=float)
+    x = C.vec(x)
+    F = C.vec(F)
     n = len(x)
-    res = stats.kstest(x, cdf)
-    return RichResult(
-        payload={
-            "statistic": float(res.statistic),
-            "p_value": float(res.pvalue),
-            "n": n,
-            "method": "Glivenko-Cantelli / KS sup|F_n - F|",
-        }
-    )
+    if n < 1:
+        raise ValueError("the sample must be non-empty")
+    if len(F) != n:
+        raise ValueError("x and F must have the same length")
+    idx = sorted(range(n), key=lambda i: x[i])
+    Fs = [F[i] for i in idx]
+    dp = 0.0
+    dm = 0.0
+    arg = 1
+    best = -1.0
+    for i in range(n):
+        a = (i + 1) / n - Fs[i]
+        b = Fs[i] - i / n
+        dp = max(dp, a)
+        dm = max(dm, b)
+        if max(a, b) > best:
+            best = max(a, b)
+            arg = i + 1
+    D = max(dp, dm)
+    return RichResult(payload={
+        "statistic": D, "d_plus": dp, "d_minus": dm, "argmax": float(arg),
+        "dkw_bound": min(1.0, 2.0 * math.exp(-2.0 * n * D * D)),
+        "n": float(n),
+        "method": "Glivenko-Cantelli supremum with the DKW-Massart bound"})
+
+
+kosorok_glivenko_cantelli = glivenko
 
 
 def cheatsheet():
-    return "ksr03: Glivenko-Cantelli sup|F_n - F| (one-sample KS)"
-
-
-# CANONICAL TEST
-if __name__ == "__main__":
-    rng = np.random.default_rng(0)
-    print(kosorok_glivenko_cantelli(rng.normal(size=200)))
+    return "ksr03: D_n = sup|F_n - F|, both sides of each jump; DKW 2exp(-2n eps^2)"

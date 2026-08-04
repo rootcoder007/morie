@@ -1,41 +1,48 @@
-"""Recall@k."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Recall at k.
 
-from . import _array_core as np
+Standard information-retrieval ranking metric.  Triage confirmed this
+names no owning source: it is the textbook definition used by every
+evaluation toolkit, and no citation is manufactured for it here.
+"""
 
-from ._richresult import RichResult
+
+from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["recall_at_k"]
 
 
 def recall_at_k(pred_rank, relevant, k):
-    """
-    Recall@k
+    """Fraction of the relevant items that appear in the top k,
 
-    Formula: |rel ∩ top-k|/|rel|
+        R@k = |rel intersect top-k| / |rel|.
+
+    The denominator is the number of relevant items, so unlike
+    precision this cannot be raised by asking for a longer list than
+    there are relevant items -- it saturates at 1.
 
     Parameters
     ----------
-    pred_rank : array-like
-        Input data.
-    relevant : array-like
-        Input data.
-    k : array-like
-        Input data.
+    pred_rank : sequence of item ids, best first.
+    relevant : collection of relevant item ids.
+    k : int, cutoff rank.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    standard IR
+    RichResult with keys estimate, hits, k, n_relevant, method.
     """
-    pred_rank = np.atleast_1d(np.asarray(pred_rank, dtype=float))
-    n = len(pred_rank)
-    result = float(np.mean(pred_rank))
-    se = float(np.std(pred_rank, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Recall@k"})
+    kk = int(k)
+    if kk <= 0:
+        raise ValueError("k must be positive")
+    rel = set(relevant)
+    if not rel:
+        raise ValueError("recall is undefined with no relevant items")
+    top = list(pred_rank)[:kk]
+    hits = sum(1 for t in top if t in rel)
+    return with_describe_pointer(RichResult(payload={
+        "estimate": float(hits) / len(rel), "hits": hits, "k": kk,
+        "n_relevant": len(rel), "method": "recall at k",
+    }), "colMet")
 
 
 def cheatsheet():
@@ -43,4 +50,4 @@ def cheatsheet():
 
 
 # compact alias per ledger/NAMING.md
-recallatk = recall_at_k
+recallk = recall_at_k

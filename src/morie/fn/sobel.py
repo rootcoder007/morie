@@ -1,76 +1,114 @@
-"""Sobel test for indirect effect."""
+"""Sobel test for an indirect (mediated) effect."""
 
-from . import _array_core as np
+from math import sqrt
+
 from . import _stats_core as stats
-
-from ._richresult import RichResult
+from ._richresult import hypothesis_test_result
 
 __all__ = ["sobel_test"]
 
+_VARIANTS = ("sobel", "aroian", "goodman")
 
-def sobel_test(a, b, sa, sb, cdf=None):
-    """
-    Sobel test for indirect effect
 
-    Formula: z = ab / √(b² σ_a² + a² σ_b²)
+def sobel_test(a, b, se_a, se_b, variant="sobel"):
+    r"""Test the indirect effect ``a*b`` in a mediation model.
+
+    With ``a`` the X -> M path and ``b`` the M -> Y path, the indirect
+    effect is their product. The delta method gives its variance from
+    the first-order Taylor expansion of ``f(a,b) = ab``, whose gradient
+    is ``(b, a)``:
+
+    .. math::
+
+       \operatorname{Var}(ab)\approx b^{2}\sigma_a^{2}+a^{2}\sigma_b^{2},
+       \qquad
+       z=\frac{ab}{\sqrt{b^{2}\sigma_a^{2}+a^{2}\sigma_b^{2}}} .
+
+    That is Sobel's form. The exact variance of a product of two
+    independent normals carries a third term, and the two classical
+    variants differ only in its sign:
+
+    ================  ==========================================
+    ``variant``       variance
+    ================  ==========================================
+    ``"sobel"``       :math:`b^2\sigma_a^2+a^2\sigma_b^2`
+    ``"aroian"``      :math:`b^2\sigma_a^2+a^2\sigma_b^2+\sigma_a^2\sigma_b^2`
+    ``"goodman"``     :math:`b^2\sigma_a^2+a^2\sigma_b^2-\sigma_a^2\sigma_b^2`
+    ================  ==========================================
+
+    Aroian's is the exact variance under independence; Goodman's is the
+    unbiased estimator and can go negative, in which case no z exists
+    and this raises rather than returning a fabricated number.
+
+    The p-value assumes ``ab`` is normal. It is not -- a product of
+    normals is heavy-tailed and skewed -- so this test is
+    under-powered and its confidence interval is symmetric when the
+    true one is not. That is a property of the method, not of this
+    implementation; the distribution-of-products or bootstrap
+    approaches exist precisely because of it.
 
     Parameters
     ----------
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    sa : array-like
-        Input data.
-    sb : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    a, b : float
+        Path coefficients.
+    se_a, se_b : float
+        Their standard errors.
+    variant : {"sobel", "aroian", "goodman"}
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Keys ``statistic`` (z), ``pvalue`` (two-sided), ``indirect_effect``,
+        ``se``, ``variant``, ``ci_lower``, ``ci_upper`` (95%, normal).
 
     References
     ----------
-    Sobel (1982)
+    Sobel, M. E. (1982). Asymptotic confidence intervals for indirect
+    effects in structural equation models. *Sociological Methodology*,
+    13, 290-312.
+    Aroian, L. A. (1947). The probability function of the product of
+    two normally distributed variables. *Annals of Mathematical
+    Statistics*, 18(2), 265-271.
+    Goodman, L. A. (1960). On the exact variance of products.
+    *Journal of the American Statistical Association*, 55, 708-713.
     """
-    a = np.asarray(a, dtype=float)
-    n = len(a)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Sobel test for indirect effect"}
+    if variant not in _VARIANTS:
+        raise ValueError("variant must be one of %s" % (_VARIANTS,))
+    a = float(a)
+    b = float(b)
+    va = float(se_a) ** 2
+    vb = float(se_b) ** 2
+    if se_a < 0 or se_b < 0:
+        raise ValueError("standard errors must be non-negative.")
+    var = b * b * va + a * a * vb
+    if variant == "aroian":
+        var += va * vb
+    elif variant == "goodman":
+        var -= va * vb
+    if var <= 0:
+        raise ValueError(
+            "non-positive variance for the indirect effect (variant=%r); "
+            "no z statistic exists." % variant
         )
-    x_sorted = np.sort(a)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(a), scale=np.std(a, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Sobel test for indirect effect",
-        }
+    se = sqrt(var)
+    est = a * b
+    z = est / se
+    return hypothesis_test_result(
+        test_name="Sobel test for an indirect effect",
+        statistic=float(z),
+        pvalue=float(2.0 * stats.norm.sf(abs(z))),
+        extra_summary=[("indirect_effect", est), ("se", se)],
+        extra_payload={
+            "indirect_effect": float(est),
+            "se": float(se),
+            "variant": variant,
+            "a": a, "b": b, "se_a": float(se_a), "se_b": float(se_b),
+            "ci_lower": float(est - 1.959963984540054 * se),
+            "ci_upper": float(est + 1.959963984540054 * se),
+            "method": "Sobel (1982) delta-method test of a*b (%s variance)" % variant,
+        },
     )
 
 
 def cheatsheet():
-    return "sobel: Sobel test for indirect effect"
-
-
-# compact alias per ledger/NAMING.md
-sobeltest = sobel_test
+    return "sobel: Sobel/Aroian/Goodman test of the indirect effect a*b"

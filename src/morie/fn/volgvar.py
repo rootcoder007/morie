@@ -1,73 +1,55 @@
-"""VaR backtest via Christoffersen + Kupiec joint."""
+"""Joint VaR backtest: Kupiec coverage plus Christoffersen independence."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import RichResult
+from ._richresult import hypothesis_test_result
+from .volcc import vol_christoffersen_cc
 
 __all__ = ["vol_garch_var_backtest"]
 
 
-def vol_garch_var_backtest(hits, alpha, cdf=None):
-    """
-    VaR backtest via Christoffersen + Kupiec joint
+def vol_garch_var_backtest(hits, alpha=0.05):
+    r"""Report the full Christoffersen (2003) VaR backtest triple.
 
-    Formula: Combined LR_cc; report unconditional + conditional p
+    Runs the decomposition once and returns all three statistics --
+    unconditional coverage, independence, conditional coverage -- so a
+    caller can see *which* half of the null a model fails. Reporting
+    only :math:`LR_{cc}` hides that distinction, and the two failure
+    modes call for different fixes: a wrong tail probability is a
+    calibration problem, clustered breaches are a dynamics problem.
 
     Parameters
     ----------
-    hits : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    hits : array-like of {0, 1}
+        Exceedance indicator in time order.
+    alpha : float
+        The VaR tail probability the model claims.
 
     Returns
     -------
-    result : dict
-        Keys: uc_p, cc_p
+    RichResult
+        ``statistic``/``pvalue`` carry LR_cc; ``lr_uc``, ``pvalue_uc``,
+        ``lr_ind``, ``pvalue_ind`` carry the two components.
 
     References
     ----------
-    Christoffersen (2003)
+    Christoffersen, P. F. (2003). *Elements of Financial Risk
+    Management*. Academic Press, ch. 8.
+    Kupiec, P. H. (1995). *Journal of Derivatives*, 3(2), 73-84.
+    Christoffersen, P. F. (1998). *International Economic Review*,
+    39(4), 841-862.
     """
-    hits = np.asarray(hits, dtype=float)
-    n = len(hits)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "VaR backtest via Christoffersen + Kupiec joint",
-            }
-        )
-    x_sorted = np.sort(hits)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(hits), scale=np.std(hits, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "VaR backtest via Christoffersen + Kupiec joint",
-        }
+    r = vol_christoffersen_cc(hits, alpha=alpha)
+    payload = {k: v for k, v in r.items() if k not in ("statistic", "pvalue")}
+    payload["lr_cc"] = float(r["statistic"])
+    payload["pvalue_cc"] = float(r["pvalue"])
+    payload["method"] = "Joint VaR backtest (Kupiec UC + Christoffersen IND/CC)"
+    return hypothesis_test_result(
+        test_name="VaR backtest (unconditional + conditional coverage)",
+        statistic=float(r["statistic"]),
+        pvalue=float(r["pvalue"]),
+        extra_summary=[("n_obs", r["n_obs"]), ("n_exceedances", r["n_exceedances"])],
+        extra_payload=payload,
     )
 
 
 def cheatsheet():
-    return "volgvar: VaR backtest via Christoffersen + Kupiec joint"
+    return "volgvar: joint VaR backtest -- Kupiec UC, Christoffersen IND and CC"

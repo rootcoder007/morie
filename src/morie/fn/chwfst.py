@@ -1,4 +1,25 @@
-"""Chow forecast test for parameter constancy."""
+# morie.fn -- slice k04 (rootcoder007/morie)
+"""Chow (1960) forecast (predictive-failure) test for parameter constancy.
+
+Source: Chow, G. C. (1960).  Tests of equality between sets of
+coefficients in two linear regressions.  *Econometrica* 28, 591-605.
+The 1960 Econometrica paper is paywalled here and could not be
+retrieved; the second of the two tests in that paper -- the forecast
+test, which is the one that works when the second sub-sample is shorter
+than the number of regressors -- is quoted in its standard published
+form::
+
+    F = [ (RSS_c - RSS_1) / n2 ] / [ RSS_1 / (n1 - k) ]  ~  F(n2, n1 - k)
+
+where RSS_1 is the residual sum of squares from fitting the first n1
+observations alone, RSS_c that from fitting all n = n1 + n2 together,
+and k the number of estimated coefficients (intercept included).
+
+The previous body of this module was a one-sample Kolmogorov-Smirnov
+test against a fitted normal, pasted by the stub generator.  Deleted.
+"""
+
+from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as stats
@@ -8,65 +29,59 @@ from ._richresult import RichResult
 __all__ = ["chow_forecast_test"]
 
 
-def chow_forecast_test(y, X, split, cdf=None):
-    """
-    Chow forecast test for parameter constancy
+def _rss(D, y):
+    beta, *_ = np.linalg.lstsq(D, y, rcond=None)
+    r = y - D @ beta
+    return float(r @ r)
 
-    Formula: F = (RSS_R - RSS_U)/q / (RSS_U/(n-k))
+
+def chow_forecast_test(y, X, split, add_intercept=True):
+    """Chow forecast test at the break point ``split``.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    split : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    y : array-like, shape (n,)
+    X : array-like, shape (n, p)
+        Regressor matrix.
+    split : int
+        Number ``n1`` of leading observations used for estimation; the
+        remaining ``n2 = n - n1`` are the forecast period.
+    add_intercept : bool, default True
+        Prepend a column of ones to ``X``.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Chow (1960) §IV
+    RichResult
+        keys: ``statistic``, ``p_value``, ``df1``, ``df2``, ``rss1``,
+        ``rss_pooled``, ``n1``, ``n2``, ``k``, ``method``.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Chow forecast test for parameter constancy",
-            }
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    y = np.asarray(y, dtype=float).ravel()
+    X = np.atleast_2d(np.asarray(X, dtype=float))
+    if X.shape[0] != y.size:
+        X = X.T
+    n = int(y.size)
+    n1 = int(split)
+    n2 = n - n1
+    D = np.column_stack([np.ones(n), X]) if add_intercept else X
+    k = int(D.shape[1])
+    if n2 < 1 or n1 - k < 1:
+        raise ValueError("need 1 <= n2 and n1 > k")
+    rss1 = _rss(D[:n1], y[:n1])
+    rssc = _rss(D, y)
+    df1, df2 = n2, n1 - k
+    stat = ((rssc - rss1) / df1) / (rss1 / df2)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Chow forecast test for parameter constancy",
+            "statistic": float(stat),
+            "p_value": float(stats.f.sf(stat, df1, df2)),
+            "df1": int(df1),
+            "df2": int(df2),
+            "rss1": rss1,
+            "rss_pooled": rssc,
+            "n1": n1,
+            "n2": n2,
+            "k": k,
+            "method": "Chow (1960) forecast test",
         }
     )
 

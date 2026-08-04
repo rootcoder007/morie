@@ -1,63 +1,64 @@
-"""Test of bound = 0."""
+"""Inference on an interval-identified parameter -- not implemented."""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import RichResult
+from ._richresult import RichResult  # noqa: F401  (kept for API stability)
 
 __all__ = ["bound_test_inference"]
+
+_WHY = (
+    "bound_test_inference is not implemented.\n"
+    "\n"
+    "What was here before was a one-sample Kolmogorov-Smirnov test against\n"
+    "a fitted normal, pasted in by a generator. It had nothing to do with\n"
+    "inference on a partially identified parameter, but it ran and returned\n"
+    "a plausible statistic and p-value, so a caller could not tell it was\n"
+    "wrong. It has been deleted rather than left in place.\n"
+    "\n"
+    "It was not replaced because the construction could not be verified\n"
+    "against a source. The test of H0: lower <= 0 <= upper for an\n"
+    "interval-identified parameter turns on the critical value of\n"
+    "Imbens & Manski (2004, Econometrica 72(6), 1845-1857) as corrected by\n"
+    "Stoye (2009, Econometrica 77(4), 1299-1315), whose pre-test on the\n"
+    "width of the estimated bounds decides between a one-sided and a\n"
+    "two-sided critical value. Getting that pre-test threshold or the\n"
+    "critical-value equation even slightly wrong yields a number that looks\n"
+    "right and has the wrong coverage.\n"
+    "\n"
+    "Searched, without obtaining the defining equation: both articles on\n"
+    "the publisher and JSTOR (paywalled, HTML error pages returned);\n"
+    "the author's own page for the Stoye reprint (404); arXiv/ar5iv for\n"
+    "restatements (1104.4630, 1601.03572, 2107.04785, 1911.01547);\n"
+    "and Molinari's Handbook of Econometrics chapter on partial\n"
+    "identification (arXiv:2004.11751), which describes Stoye's pre-test\n"
+    "in words -- 'if the bounds are sufficiently close, expand by a\n"
+    "two-sided critical value, otherwise by a one-sided' -- but never\n"
+    "prints the threshold or the critical-value equation.\n"
+    "\n"
+    "To implement it, read Stoye (2009) equation for C_n and the\n"
+    "accompanying pre-test, or take the construction from an author's\n"
+    "own code release."
+)
 
 
 def bound_test_inference(lower, upper, se, cdf=None):
     """
-    Test of bound = 0
+    Test of an interval-identified parameter against zero -- NOT IMPLEMENTED
 
-    Formula: H0: lower_bound ≤ 0 ≤ upper_bound
-
-    Parameters
-    ----------
-    lower : array-like
-        Input data.
-    upper : array-like
-        Input data.
-    se : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+    Raises ``NotImplementedError``.  See the module note: the generator
+    boilerplate that was here (a Kolmogorov-Smirnov test) was wrong and
+    has been removed, and the Imbens-Manski / Stoye critical value that
+    should replace it could not be verified from any accessible source.
 
     References
     ----------
-    Stoye (2009)
+    Imbens G W & Manski C F (2004).  Confidence intervals for partially
+    identified parameters.  Econometrica 72(6), 1845-1857.
+
+    Stoye J (2009).  More on confidence intervals for partially
+    identified parameters.  Econometrica 77(4), 1299-1315.
     """
-    lower = np.asarray(lower, dtype=float)
-    n = len(lower)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Test of bound = 0"})
-    x_sorted = np.sort(lower)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(lower), scale=np.std(lower, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Test of bound = 0"}
-    )
+    raise NotImplementedError(_WHY)
 
 
 def cheatsheet():
-    return "bnstst: Test of bound = 0"
+    return "bnstst: NOT IMPLEMENTED (Imbens-Manski/Stoye CI unverified)"
+

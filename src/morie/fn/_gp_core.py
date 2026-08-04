@@ -274,6 +274,17 @@ def pca_compress(X, k=None, use_correlation=True):
     order = sorted(range(p), key=lambda i: -lam[i])
     lam = [lam[i] for i in order]
     W = _t([[W[r][i] for r in range(p)] for i in order])
+    # An eigenvector is defined only up to sign, and eigh and R's eigen
+    # need not pick the same one. Pin it: each column's
+    # largest-magnitude entry is made positive, the convention
+    # _tail1core.eigsym already uses. Without this the eigenvalues agree
+    # and the loadings silently differ by -1.
+    for j in range(len(W[0])):
+        col = [W[r][j] for r in range(len(W))]
+        piv = max(range(len(col)), key=lambda r: abs(col[r]))
+        if col[piv] < 0.0:
+            for r in range(len(W)):
+                W[r][j] = -W[r][j]
     PC = _mm(Xs, W)
     tot = sum(lam)
     k = p if k is None else int(k)

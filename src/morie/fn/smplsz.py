@@ -1,48 +1,69 @@
-"""Sample-size calculation for proportion."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sample size for a target margin of error."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["sample_size_calc"]
+__all__ = ["nsamp", "sample_size_calc"]
 
 
-def sample_size_calc(p, e, z):
-    """
-    Sample-size calculation for proportion
+def nsamp(e, S, N=float("inf"), level=0.95):
+    """Sample size for a stated half-width, with the finite-population step.
 
-    Formula: n = z^2 p(1-p) / e^2
+    Cochran's two-step form is used deliberately: compute the
+    first approximation n_0 ignoring the population size, then correct
+    it.  The one-step algebra gives the same answer but hides the fact
+    that n_0 is what the precision actually costs and N only ever
+    reduces it.  Both are returned.
+
+    Formula: n_0 = z^2 S^2 / e^2;  n = n_0 / (1 + n_0/N), rounded up
 
     Parameters
     ----------
-    p : array-like
-        Input data.
-    e : array-like
-        Input data.
-    z : array-like
-        Input data.
+    e : float
+        Desired half-width of the confidence interval, e > 0.
+    S : float
+        Population standard deviation (an advance estimate).
+    N : float
+        Population size; math.inf for the infinite-population case.
+    level : float
+        Confidence level, 0 < level < 1.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``n``, ``n0``, ``z``, ``e``, ``S``, ``N``.
 
     References
     ----------
-    Cochran (1977)
+    Cochran (1977), Sampling Techniques, 3rd edition, Chapter 4:
+    n_0 = z^2 S^2 / e^2 with the correction n = n_0/(1 + n_0/N).
+    Cross-checked against the reference implementation in the CRAN
+    package ``samplingbook`` 1.2.4, whose ``sample.size.mean`` computes
+    ``S^2 / (e^2/q^2 + S^2/N)`` -- the same quantity rearranged.
     """
-    z = np.atleast_1d(np.asarray(z, dtype=float))
-    n = len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Sample-size calculation for proportion"}
-    )
+    e = float(e)
+    S = float(S)
+    if e <= 0:
+        raise ValueError("the half-width e must be positive")
+    if S < 0:
+        raise ValueError("S must be non-negative")
+    if not 0.0 < float(level) < 1.0:
+        raise ValueError("level must lie strictly between 0 and 1")
+    z = C.qnorm((1.0 + float(level)) / 2.0)
+    n0 = z * z * S * S / (e * e)
+    N = float(N)
+    n = n0 if math.isinf(N) else n0 / (1.0 + n0 / N)
+    return RichResult(payload={
+        "n": float(math.ceil(n - 1e-12)), "n0": n0, "z": z, "e": e, "S": S,
+        "N": N, "method": "Cochran sample size n0/(1 + n0/N)"})
+
+
+sample_size_calc = nsamp
 
 
 def cheatsheet():
-    return "smplsz: Sample-size calculation for proportion"
-
-
-# compact alias per ledger/NAMING.md
-samplesizecalc = sample_size_calc
+    return "smplsz: n0 = z^2 S^2/e^2; n = n0/(1 + n0/N)"

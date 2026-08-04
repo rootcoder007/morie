@@ -1,42 +1,76 @@
-"""AlphaZero virtual loss for parallel MCTS."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Virtual loss for parallel Monte-Carlo tree search."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["alphazero_virtual_loss"]
+__all__ = ["virtloss", "alphazero_virtual_loss"]
 
 
-def alphazero_virtual_loss(node, virtual_loss):
-    """
-    AlphaZero virtual loss for parallel MCTS
+def virtloss(W, N, pending, nvl=1):
+    """Node values with virtual losses charged to in-flight simulations.
 
-    Formula: deduct virtual loss when thread enters node
+    In tree parallelisation several threads descend from the root at the
+    same time and would otherwise take the same path.  A thread entering a
+    node is charged a virtual loss straight away, so the node's value
+    drops and the next thread only follows it if it is still better than
+    its siblings; the charge is cancelled when that thread backs its real
+    result up.  Counting a virtual loss as n_vl extra visits each scoring
+    the worst outcome gives
+
+        N'(s,a) = N(s,a) + n_vl * pending(s,a)
+        W'(s,a) = W(s,a) - n_vl * pending(s,a)
+        Q'(s,a) = W'(s,a) / N'(s,a),   0 when N' = 0.
 
     Parameters
     ----------
-    node : array-like
-        Input data.
-    virtual_loss : array-like
-        Input data.
+    W : array-like
+        Accumulated action values (total, not mean).
+    N : array-like
+        Visit counts.
+    pending : array-like
+        Number of threads currently inside each child.
+    nvl : int
+        Virtual losses charged per in-flight thread.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``Q``, ``N``, ``W``, ``Qclean``, ``k``, ``nvl``.
 
     References
     ----------
-    Chaslot et al (2008)
+    Chaslot, G. M. J-B., Winands, M. H. M. and van den Herik, H. J.
+    (2008), "Parallel Monte-Carlo tree search", Computers and Games 2008,
+    Lecture Notes in Computer Science 5131, 60-71, Sect. 3.3, read from
+    the authors' own PDF at dke.maastrichtuniversity.nl.  They describe
+    virtual loss qualitatively -- one loss assigned when a thread visits
+    a node in the selection phase and removed when that thread
+    back-propagates -- and attribute it to Coulom.  The arithmetic above
+    is the counter form of exactly that rule; the paper states no
+    equation, so nothing beyond the described bookkeeping is claimed.
     """
-    node = np.atleast_1d(np.asarray(node, dtype=float))
-    n = len(node)
-    result = float(np.mean(node))
-    se = float(np.std(node, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "AlphaZero virtual loss for parallel MCTS"}
-    )
+    W = C.vec(W)
+    N = C.vec(N)
+    P = C.vec(pending)
+    k = len(W)
+    if len(N) != k or len(P) != k:
+        raise ValueError("W, N and pending must have the same length")
+    if any(v < 0.0 for v in N) or any(v < 0.0 for v in P):
+        raise ValueError("counts must be non-negative")
+    nvl = float(nvl)
+    Nv = [N[i] + nvl * P[i] for i in range(k)]
+    Wv = [W[i] - nvl * P[i] for i in range(k)]
+    Q = [0.0 if Nv[i] == 0.0 else Wv[i] / Nv[i] for i in range(k)]
+    Qc = [0.0 if N[i] == 0.0 else W[i] / N[i] for i in range(k)]
+    return RichResult(payload={
+        "Q": Q, "N": Nv, "W": Wv, "Qclean": Qc, "k": k, "nvl": nvl,
+        "method": "Virtual loss in parallel MCTS (Chaslot et al. 2008 Sect. 3.3)"})
+
+
+alphazero_virtual_loss = virtloss
 
 
 def cheatsheet():
-    return "agvirt: AlphaZero virtual loss for parallel MCTS"
+    return "agvirt: Virtual loss for parallel Monte-Carlo tree search."

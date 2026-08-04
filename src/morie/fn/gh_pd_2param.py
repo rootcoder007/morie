@@ -1,74 +1,105 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Two-parameter Poisson-Dirichlet PD(alpha, theta): order statistics of PY weights."""
+"""Two-parameter Pitman-Yor weights and partition function."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ghosal_poisson_dirichlet"]
+__all__ = ["poisdir", "ghosal_poisson_dirichlet"]
 
 
-def ghosal_poisson_dirichlet(x, cdf=None):
-    """
-    Two-parameter Poisson-Dirichlet PD(alpha, theta): order statistics of PY weights
+def poisdir(sigma, M, k, n=None):
+    """Pitman-Yor stick-breaking weights and the Gibbs factor V_{n,k}.
 
-    Formula: Ranked weights (p_(1), p_(2), ...) ~ PD(alpha, theta) for PY(alpha,theta,G0)
+    The second parameter is what separates the Pitman-Yor process from
+    the Dirichlet process it generalises: sigma = 0 recovers
+    DP(M, G) exactly, while sigma > 0 makes the weights decay
+    POLYNOMIALLY rather than geometrically, which is why Pitman-Yor is
+    the one used when a power-law number of clusters is wanted.
+
+    The weights returned are EXPECTED weights E[W_j], not a draw: the
+    stick-breaking factors are independent, so the expectation of the
+    product is the product of the expectations, and the result is
+    deterministic and identical in both language arms.
+
+    Formula: V_j ~ Beta(1 - sigma, M + j sigma), j = 1, 2, ...;
+             W_j = V_j prod_{l<j} (1 - V_l);
+             E[V_j] = (1 - sigma)/(M + 1 + (j - 1) sigma);
+             V_{n,k} = prod_{i=1}^{k-1} (M + i sigma) / (M + 1)^{[n-1]}
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    sigma : float
+        Discount parameter; here restricted to [0, 1).
+    M : float
+        Concentration parameter, M > -sigma.
+    k : int
+        Number of weights returned, k >= 1.
+    n : int, optional
+        Sample size for the Gibbs factor V_{n,k}; omitted, that factor
+        is not computed.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``weights`` (E[W_1..W_k]), ``expected_stick`` (E[V_j]),
+        ``remaining`` (expected unallocated mass), ``log_Vnk``,
+        ``Vnk``, ``sigma``, ``M``, ``k``.
 
     References
     ----------
-    Ghosal Ch 14 §14.4
+    Ghosal & van der Vaart (2017), Fundamentals of Nonparametric
+    Bayesian Inference, Section 14.4 (Pitman-Yor Process), Definition
+    14.31: the two-parameter family is the Gibbs process of type sigma
+    with V_{n,k} = prod_{i=1}^{k-1}(M + i sigma) / (M + 1)^{[n-1]},
+    equation (14.20), the parameters restricted to sigma < 0 with
+    M in {-2 sigma, -3 sigma, ...} or sigma in [0, 1) with
+    M > -sigma; the weight sequence in size-biased order is the
+    Pitman-Yor distribution.  Read from the copy of the book held in
+    the corpus.  Only the sigma in [0, 1) branch is implemented; the
+    negative-sigma branch is a finite-support family and is refused
+    rather than silently mishandled.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Two-parameter Poisson-Dirichlet PD(alpha, theta): order statistics of PY weights",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Two-parameter Poisson-Dirichlet PD(alpha, theta): order statistics of PY weights",
-        }
-    )
+    sigma = float(sigma)
+    M = float(M)
+    k = int(k)
+    if not 0.0 <= sigma < 1.0:
+        raise ValueError(
+            "only the sigma in [0, 1) branch is implemented; the "
+            "negative-sigma branch has finite support and is refused")
+    if M <= -sigma:
+        raise ValueError("M must exceed -sigma")
+    if k < 1:
+        raise ValueError("k must be at least 1")
+    ev = [(1.0 - sigma) / (M + 1.0 + (j - 1) * sigma) for j in range(1, k + 1)]
+    w = []
+    rest = 1.0
+    for j in range(k):
+        w.append(rest * ev[j])
+        rest *= (1.0 - ev[j])
+    lv = float("nan")
+    vv = float("nan")
+    if n is not None:
+        n = int(n)
+        if n < 1:
+            raise ValueError("n must be at least 1")
+        if k > n:
+            raise ValueError("k cannot exceed n")
+        num = sum(math.log(M + i * sigma) for i in range(1, k))
+        # (M + 1)^{[n-1]} is the rising factorial with n - 1 factors.
+        den = sum(math.log(M + 1.0 + i) for i in range(n - 1))
+        lv = num - den
+        vv = math.exp(lv)
+    return RichResult(payload={
+        "weights": w, "expected_stick": ev, "remaining": rest,
+        "log_Vnk": lv, "Vnk": vv, "sigma": sigma, "M": M, "k": float(k),
+        "method": "Pitman-Yor weights and V_{n,k}, Ghosal Definition 14.31"})
+
+
+ghosal_poisson_dirichlet = poisdir
 
 
 def cheatsheet():
-    return "gh_pd_2param: Two-parameter Poisson-Dirichlet PD(alpha, theta): order statistics of PY weights"
+    return "gh_pd_2param: E[V_j] = (1-sig)/(M+1+(j-1)sig); V_nk eq (14.20)"

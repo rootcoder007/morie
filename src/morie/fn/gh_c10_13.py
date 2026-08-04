@@ -1,74 +1,86 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Bayesian nonparametric testing of point null H0: theta = theta_0."""
+"""Bayes factor and posterior probability for a point null."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ghosal_pt_null_tst"]
+__all__ = ["ptnulltst", "ghosal_pt_null_tst"]
 
 
-def ghosal_pt_null_tst(x, cdf=None):
-    """
-    Bayesian nonparametric testing of point null H0: theta = theta_0
+def ptnulltst(loglik_null, log_marginal_alt, lam=0.5):
+    """Bayes factor for H0: p = p* against a nonparametric alternative.
 
-    Formula: BF_n(H0,H1) = pi(X^n|H0) / pi(X^n|H1) -> 0 under H1 at parametric rate
+    Everything is done in LOGS, which is the only way this computation
+    survives realistic sample sizes: the two likelihoods differ by
+    hundreds of nats and forming their ratio directly overflows long
+    before n is interesting.
+
+    Note the weighting convention, which is the book's and is easy to
+    invert by accident: lambda is the prior weight of the ALTERNATIVE,
+    so the null carries 1 - lambda in Pi = (1 - lambda) delta_{p*} +
+    lambda Pi_1.
+
+    Formula: B_n = prod_i p*(X_i) / int prod_i p(X_i) dPi_1(p);
+             Pi_n(p = p* | X) = (1-lam) prod p*(X_i)
+                / [ (1-lam) prod p*(X_i) + lam int prod p(X_i) dPi_1(p) ]
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    loglik_null : float
+        log prod_i p*(X_i).
+    log_marginal_alt : float
+        log int prod_i p(X_i) dPi_1(p).
+    lam : float
+        Prior weight of the ALTERNATIVE, in (0, 1).
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``log_bayes_factor``, ``bayes_factor`` (inf when it overflows),
+        ``posterior_null``, ``posterior_alt``, ``prior_null``,
+        ``lam``.
 
     References
     ----------
-    Ghosal Ch 10 §10.5.1
+    Ghosal & van der Vaart (2017), Fundamentals of Nonparametric
+    Bayesian Inference, Section 10.5.1 (Testing a Point Null): "If
+    lambda in (0, 1) is the prior weight of the null model and Pi_1 is
+    the prior distribution on p under the alternative model, then the
+    overall prior is the mixture Pi = (1 - lambda) delta_{p*} + lambda
+    Pi_1", with the displayed posterior probability and Bayes factor
+    B_n, and Theorem 10.24 for their consistency.  The book's prose
+    calls lambda the weight of the null while its own formula gives the
+    null the weight 1 - lambda; the FORMULA is followed here, and the
+    argument is documented as the weight of the alternative to remove
+    the ambiguity.  Read from the copy of the book held in the corpus.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Bayesian nonparametric testing of point null H0: theta = theta_0",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Bayesian nonparametric testing of point null H0: theta = theta_0",
-        }
-    )
+    ln = float(loglik_null)
+    la = float(log_marginal_alt)
+    lam = float(lam)
+    if not 0.0 < lam < 1.0:
+        raise ValueError("lam must lie strictly between 0 and 1")
+    lbf = ln - la
+    a = math.log(1.0 - lam) + ln
+    b = math.log(lam) + la
+    mx = max(a, b)
+    denom = mx + math.log(math.exp(a - mx) + math.exp(b - mx))
+    post0 = math.exp(a - denom)
+    try:
+        bf = math.exp(lbf)
+    except OverflowError:
+        bf = math.inf
+    return RichResult(payload={
+        "log_bayes_factor": lbf, "bayes_factor": bf,
+        "posterior_null": post0, "posterior_alt": 1.0 - post0,
+        "prior_null": 1.0 - lam, "lam": lam,
+        "method": "Point-null Bayes factor, Ghosal Section 10.5.1"})
+
+
+ghosal_pt_null_tst = ptnulltst
 
 
 def cheatsheet():
-    return "gh_c10_13: Bayesian nonparametric testing of point null H0: theta = theta_0"
+    return "gh_c10_13: B_n = L(p*)/int L dPi_1; null carries prior 1 - lam"

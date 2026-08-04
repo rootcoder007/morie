@@ -1,40 +1,58 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Winsorized mean."""
 
-from . import _array_core as np
+import math
+
+from . import _s04core as S
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
 __all__ = ["winsorized_mean"]
 
 
-def winsorized_mean(x, alpha):
-    """
-    Winsorized mean
+def winsorized_mean(x, alpha=0.1):
+    """Mean after pulling the tails in to the quantiles.
 
-    Formula: replace tails with α-quantiles, then mean
+    Trimming discards extreme observations; winsorizing keeps them but
+    caps their value.  The difference matters for the variance, because
+    the winsorized sample still has ``n`` observations, so the estimator
+    has a defined and smaller standard error than the trimmed mean at
+    the same alpha -- which is why Winsor rule survives in robust
+    scale estimation.
+
+    Formula: replace values below the alpha quantile with it, values
+    above the ``1 - alpha`` quantile with that, then take the mean.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+        Sample.
+    alpha : float, default 0.1
+        Fraction winsorized at each tail.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate``, ``lower``, ``upper``, ``n_changed``, ``n``.
 
     References
     ----------
-    Winsor (1941); Hastings et al (1947)
+    Dixon, W. J. (1960).  Simplified estimation from censored normal
+    samples.  Annals of Mathematical Statistics 31:385-391, which is
+    where Charles Winsor rule -- he did not publish it himself -- is
+    set out and attributed to him.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Winsorized mean"})
+    v = C.vec(x)
+    n = len(v)
+    lo = S.quantile7(v, alpha)
+    hi = S.quantile7(v, 1.0 - alpha)
+    w = [lo if t < lo else (hi if t > hi else t) for t in v]
+    changed = sum(1 for i in range(n) if w[i] != v[i])
+    return RichResult(payload={
+        "estimate": sum(w) / n, "lower": lo, "upper": hi,
+        "n_changed": changed, "n": n, "method": "Winsorized mean"})
 
 
 def cheatsheet():
-    return "winz: Winsorized mean"
+    return "winz: Winsorized mean."

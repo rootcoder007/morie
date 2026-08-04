@@ -1,62 +1,97 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Mann-Kendall trend test."""
 
-from . import _array_core as np
+from __future__ import annotations
+
+import math
+
 from . import _stats_core as stats
+from . import _t4core as T
 
 from ._richresult import RichResult
 
 __all__ = ["mann_kendall"]
 
 
-def mann_kendall(x, cdf=None):
-    """
-    Mann-Kendall trend test
+def mann_kendall(x, continuity=True):
+    """Mann-Kendall rank test for monotone trend.
 
-    Formula: S = sum sign(x_j - x_i)
+    Formula: ``S = sum_{i<j} sign(x_j - x_i)``, with null variance
+
+        ``var(S) = [n(n-1)(2n+5) - sum_t t(t-1)(2t+5)] / 18``
+
+    where ``t`` runs over the multiplicities of the tied values, and
+
+        ``z = sign(S) (|S| - 1) / sqrt(var S)``
+
+    under the continuity correction.  Kendall's tau uses the tie-adjusted
+    denominator ``D = sqrt(n(n-1)/2 - sum t(t-1)/2) sqrt(n(n-1)/2)``,
+    which is tau-b against an untied time index.
+
+    The continuity correction is what keeps the test conservative for
+    short series; it is applied to ``|S|`` rather than to ``z``, so a
+    zero ``S`` gives ``z = 0`` and not a sign flip.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Series in time order.
+    continuity : bool
+        Apply the ``|S| - 1`` continuity correction.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``statistic`` (z), ``p_value``, ``S``, ``varS``, ``tau``, ``n``,
+        ``method``.
 
     References
     ----------
-    Mann (1945); Kendall (1975)
+    Mann (1945), Nonparametric tests against trend, Econometrica
+    13:245-259; Kendall (1975), Rank Correlation Methods.  Both
+    paywalled; the coded form was read from Pohlert's CRAN package
+    ``trend`` (R/mk.test.R and R/utilfn.R, source tarball trend_1.1.7
+    fetched from CRAN), whose ``.varmk`` and ``.Dfn`` give the tie
+    corrections verbatim.
     """
-    x = np.asarray(x, dtype=float)
+    x = T.vec(x)
     n = len(x)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Mann-Kendall trend test"})
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    if n < 3:
+        raise ValueError("need at least 3 observations")
+    s = 0.0
+    for j in range(n):
+        for i in range(j + 1):
+            d = x[j] - x[i]
+            s += 1.0 if d > 0 else (-1.0 if d < 0 else 0.0)
+    tt = T.tiecounts(x)
+    tadjs = sum(t * (t - 1.0) * (2.0 * t + 5.0) for t in tt)
+    vars_ = (n * (n - 1.0) * (2.0 * n + 5.0) - tadjs) / 18.0
+    tadjd = sum(t * (t - 1.0) for t in tt)
+    den = math.sqrt(0.5 * n * (n - 1.0) - 0.5 * tadjd) * math.sqrt(0.5 * n * (n - 1.0))
+    tau = s / den if den > 0 else float("nan")
+    if vars_ <= 0:
+        z = float("nan")
+    elif continuity:
+        sg = 1.0 if s > 0 else (-1.0 if s < 0 else 0.0)
+        z = sg * (abs(s) - 1.0) / math.sqrt(vars_)
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        z = s / math.sqrt(vars_)
+    p = 2.0 * min(0.5, 1.0 - stats.norm.cdf(abs(z)))
     return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Mann-Kendall trend test"}
+        payload={
+            "statistic": float(z),
+            "p_value": float(p),
+            "S": float(s),
+            "varS": float(vars_),
+            "tau": float(tau),
+            "n": int(n),
+            "method": "Mann-Kendall trend test",
+        }
     )
 
 
 def cheatsheet():
-    return "mannK: Mann-Kendall trend test"
+    return "mann_kendall(x): S = sum sign(x_j - x_i), z from tie-adjusted var(S)."
 
 
 # compact alias per ledger/NAMING.md

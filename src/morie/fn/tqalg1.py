@@ -1,47 +1,69 @@
-"""Algorithm 1: online per-token key-cache quantizer (QJL)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""QJL online key-cache quantizer (algorithm 1)."""
 
-from . import _array_core as np
+import math
+
+from . import _s04core as S
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
 __all__ = ["turboquant_online_key_quantizer"]
 
 
-def turboquant_online_key_quantizer(k, S):
-    """
-    Algorithm 1: online per-token key-cache quantizer (QJL)
+def turboquant_online_key_quantizer(k, S_mat, q=None):
+    """Store one key as a sign vector plus its norm.
 
-    Formula: k_tilde = sign(S k);  nu = ||k||_2;  store (k_tilde, nu) per token
+    Only the norm survives the sign quantization, so it is kept
+    alongside -- that pair is the whole cache entry.  Because the
+    estimator is asymmetric (the query is projected but not quantized)
+    the inner product estimate stays unbiased; quantizing both sides
+    would give an unbiased *angle* and then a biased inner product once
+    the cosine is applied, which is the mistake the asymmetry avoids.
+
+    Formula: store ``k_tilde = sign(S k)`` and ``nu = ||k||_2``; the
+    estimator is
+    ``Prod(q, k) = (sqrt(pi / 2) / m) nu <S q, k_tilde>``.
 
     Parameters
     ----------
-    k : array-like
-        Input data.
-    S : array-like
-        Input data.
+    k : array-like, shape (d,)
+        Key embedding to cache.
+    S_mat : array-like, shape (m, d)
+        JL sketch matrix.
+    q : array-like, optional
+        Query embedding; when given, the unbiased inner-product estimate
+        is returned as ``estimate``.
 
     Returns
     -------
-    result : dict
-        Keys: k_tilde, nu
+    RichResult
+        ``k_tilde``, ``nu``, ``m``, ``d``, and ``estimate`` (the
+        estimated inner product, or ``nu`` when no query is supplied).
 
     References
     ----------
-    Zandieh et al. 2024 Algorithm 1 (key quantizer)
+    Zandieh, A., Daliri, M. & Han, I. (2024).  QJL: 1-bit quantized
+    JL transform for KV cache quantization with zero overhead.
+    arXiv:2406.03482.  Fetched and read; the definitions and bounds used
+    here are that paper own (definition 3.1, fact 3.4, lemma 3.5,
+    theorem 3.6).  The KV-cache system built on it is Zandieh, A. et al.
+    (2025), TurboQuant: online vector quantization with near-optimal
+    distortion rate, arXiv:2504.19874.
     """
-    k = np.atleast_1d(np.asarray(k, dtype=float))
-    n = len(k)
-    result = float(np.mean(k))
-    se = float(np.std(k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Algorithm 1: online per-token key-cache quantizer (QJL)",
-        }
-    )
+    kv = C.vec(k)
+    Sm = C.mat(S_mat)
+    m = len(Sm)
+    ktil = [S.sgn(v) for v in C.matvec(Sm, kv)]
+    nu = math.sqrt(sum(v * v for v in kv))
+    est = nu
+    if q is not None:
+        sq = C.matvec(Sm, C.vec(q))
+        est = math.sqrt(math.pi / 2.0) / m * nu * sum(sq[i] * ktil[i] for i in range(m))
+    return RichResult(payload={
+        "k_tilde": ktil, "nu": nu, "m": m, "d": len(kv), "estimate": est,
+        "method": "QJL online key quantizer with unbiased inner product"})
 
 
 def cheatsheet():
-    return "tqalg1: Algorithm 1: online per-token key-cache quantizer (QJL)"
+    return "tqalg1: QJL online key-cache quantizer (algorithm 1)."

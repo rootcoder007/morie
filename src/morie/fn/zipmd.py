@@ -1,47 +1,26 @@
-"""Zero-inflated Poisson model for excess-zero count data."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Zero-inflated Poisson model for excess-zero count data.
 
-from . import _array_core as np
+This module is a re-export.  ``zero_inflated_poisson`` already has a
+full EM implementation in :mod:`morie.fn.zinfl` -- Lambert, D. (1992),
+Zero-inflated Poisson regression, with an application to defects in
+manufacturing, Technometrics 34(1):1-14 -- and ``_lazy_map.json``
+already resolves the public name to ``zinfl``.  The stub this module
+replaced was a duplicate of that name, so it re-exports the canonical
+function rather than fitting a second, weaker model.
 
-from ._richresult import RichResult
+MVSML (2022) ch.7 discusses count responses with an excess of zeros;
+the mixture itself is Lambert's.
+"""
+
+from .zinfl import zero_inflated_poisson
 
 __all__ = ["zero_inflated_poisson"]
 
 
-def zero_inflated_poisson(y, X):
-    """
-    Zero-inflated Poisson model for excess-zero count data
-
-    Formula: P(Y=0) = pi + (1-pi)*exp(-lambda); P(Y=k) = (1-pi)*exp(-lambda)*lambda^k/k! for k>0
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    X : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: {'pi_hat': 'float', 'lambda_hat': 'array'}
-
-    References
-    ----------
-    Montesinos Lopez Ch 7
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Zero-inflated Poisson model for excess-zero count data",
-        }
-    )
-
-
 def cheatsheet():
-    return "zipmd: Zero-inflated Poisson model for excess-zero count data"
+    return "zipmd: Zero-inflated Poisson (re-export of zinfl)"
+
+
+# compact alias per ledger/NAMING.md
+zipmodel = zero_inflated_poisson

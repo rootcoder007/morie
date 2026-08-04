@@ -1,6 +1,9 @@
-"""1-Wasserstein distance between empirical 1-D measures."""
+# morie.fn -- function file (rootcoder007/morie)
+"""One-dimensional Wasserstein-1 distance."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
@@ -8,40 +11,40 @@ __all__ = ["ot_wasserstein_1d"]
 
 
 def ot_wasserstein_1d(x, y):
-    """
-    1-Wasserstein distance between empirical 1-D measures
+    """Optimal transport cost on the line, which needs no solver.
 
-    Formula: W_1 = ∫|F(t)-G(t)| dt = mean|x_(i)-y_(i)|
+    In one dimension the optimal coupling is always the monotone one:
+    sort both samples and match them in order.  No linear program is
+    needed, which is why the one-dimensional case is used as a building
+    block (sliced Wasserstein) for problems that would otherwise be
+    intractable.
+
+    Formula: ``W_1 = integral |F(t) - G(t)| dt``, which for equal sample
+    sizes equals ``mean_i |x_(i) - y_(i)|``.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : array-like
+        Samples; equal length.
 
     Returns
     -------
-    result : dict
-        Keys: W1
+    RichResult
+        ``W1``, ``estimate`` (same value), ``n``.
 
     References
     ----------
-    Vallender (1973)
+    Vallender, S. S. (1973).  Calculation of the Wasserstein distance
+    between probability distributions on the line.  Theory of
+    Probability and its Applications 18:784-786.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "1-Wasserstein distance between empirical 1-D measures",
-        }
-    )
+    xs = sorted(C.vec(x))
+    ys = sorted(C.vec(y))
+    n = len(xs)
+    w = sum(abs(xs[i] - ys[i]) for i in range(n)) / n
+    return RichResult(payload={"W1": w, "estimate": w, "n": n,
+                               "method": "One-dimensional Wasserstein-1 distance"})
 
 
 def cheatsheet():
-    return "otws: 1-Wasserstein distance between empirical 1-D measures"
+    return "otws: One-dimensional Wasserstein-1 distance."

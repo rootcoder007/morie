@@ -1,4 +1,27 @@
-"""Generalized ESD test."""
+# morie.fn -- slice k04 (rootcoder007/morie)
+"""Rosner (1983) generalized extreme Studentized deviate (ESD) test.
+
+Source FETCHED: NIST/SEMATECH e-Handbook of Statistical Methods,
+section 1.3.5.17.3 "Generalized ESD Test for Outliers", which states
+Rosner (1983, *Technometrics* 25, 165-172) in full:
+
+    R_i = max_i |x_i - xbar| / s      (recomputed after each removal)
+
+    lambda_i = (n - i) t_{p, n-i-1}
+               / sqrt( (n - i - 1 + t_{p,n-i-1}^2) (n - i + 1) )
+
+    p = 1 - alpha / (2 (n - i + 1)),    i = 1, ..., r
+
+The number of outliers is the largest ``i`` with ``R_i > lambda_i``.
+The handbook worked example (Rosner own 54-point data set, r = 10,
+alpha = 0.05) gives R_1 = 3.118, lambda_1 = 3.158 and three outliers;
+that example is the regression test for this function.
+
+The previous body of this module was a one-sample Kolmogorov-Smirnov
+test against a fitted normal, pasted by the stub generator.  Deleted.
+"""
+
+from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as stats
@@ -8,59 +31,75 @@ from ._richresult import RichResult
 __all__ = ["generalized_esd"]
 
 
-def generalized_esd(x, alpha, r, cdf=None):
-    """
-    Generalized ESD test
-
-    Formula: sequentially test extremes vs t-critical
+def generalized_esd(x, alpha=0.05, r=None):
+    """Generalized ESD test for up to ``r`` outliers.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    r : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Univariate sample, approximately normal under H0.
+    alpha : float, default 0.05
+        Significance level.
+    r : int, optional
+        Upper bound on the number of outliers.  Defaults to
+        ``max(1, n // 10)``.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Rosner (1983)
+    RichResult
+        keys: ``n_outliers``, ``outlier_index`` (indices into ``x``),
+        ``R`` (the r test statistics), ``lam`` (the r critical values),
+        ``alpha``, ``r``, ``n``, ``method``.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Generalized ESD test"})
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    x = np.asarray(x, dtype=float).ravel()
+    n = int(x.size)
+    if r is None:
+        r = max(1, n // 10)
+    r = int(r)
+    if n < 3 or r < 1 or r > n - 2:
+        raise ValueError("need n>=3 and 1<=r<=n-2")
+    alpha = float(alpha)
+
+    keep = list(range(n))
+    R = []
+    removed = []
+    for _ in range(r):
+        vals = x[np.array(keep)]
+        m = float(np.mean(vals))
+        s = float(np.std(vals, ddof=1))
+        dev = np.abs(vals - m)
+        j = int(np.argmax(dev))
+        R.append(float(dev[j] / s) if s > 0.0 else float("inf"))
+        removed.append(keep[j])
+        keep.pop(j)
+
+    lam = []
+    for i in range(1, r + 1):
+        p = 1.0 - alpha / (2.0 * (n - i + 1))
+        nu = n - i - 1
+        t = float(stats.t.ppf(p, nu))
+        lam.append((n - i) * t / np.sqrt((nu + t * t) * (n - i + 1)))
+
+    n_out = 0
+    for i in range(r):
+        if R[i] > lam[i]:
+            n_out = i + 1
     return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Generalized ESD test"}
+        payload={
+            "n_outliers": n_out,
+            "outlier_index": np.array(removed[:n_out], dtype=int),
+            "R": np.array(R, dtype=float),
+            "lam": np.array(lam, dtype=float),
+            "alpha": alpha,
+            "r": r,
+            "n": n,
+            "method": "Generalized ESD test (Rosner 1983)",
+        }
     )
 
 
 def cheatsheet():
-    return "esd: Generalized ESD test"
+    return "esd: generalized ESD outlier test (Rosner 1983)"
 
 
 # compact alias per ledger/NAMING.md

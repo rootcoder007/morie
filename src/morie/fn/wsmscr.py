@@ -1,70 +1,74 @@
-"""Score (Rao) test U^2/I ~ chi2."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Rao score test for a binomial proportion."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_score_test"]
+__all__ = ["scoretest", "wasserman_score_test"]
 
 
-def wasserman_score_test(data, f, theta0, cdf=None):
-    """
-    Score (Rao) test U^2/I ~ chi2
+def scoretest(successes, n, p0=0.5):
+    """Score (Rao) test of H0: p = p0 for a binomial proportion.
 
-    Formula: U(theta_0)^2 / I(theta_0) ~ chi^2_1
+    The score test differs from the Wald test in exactly one place, and
+    it is the place that matters: the variance is evaluated at the NULL
+    p0, not at the estimate.  That is why the score test still works
+    when phat is 0 or 1 -- where the Wald standard error collapses to
+    zero and the Wald test cannot be computed at all.
+
+    Formula: U = (S - n p0) / sqrt(n p0 (1 - p0));
+             U^2 ~ chi^2_1;  p = 2(1 - Phi(|U|))
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    f : array-like
-        Input data.
-    theta0 : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    successes : int
+        Number of successes S.
+    n : int
+        Number of trials.
+    p0 : float
+        Null proportion, strictly between 0 and 1.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        ``statistic`` (U), ``chisq`` (U^2), ``p_value``, ``estimate``
+        (phat), ``se_null``, ``n``.
 
     References
     ----------
-    Wasserman (2004), Ch 10
+    Rao (1948), Large sample tests of statistical hypotheses concerning
+    several parameters with applications to problems of estimation,
+    Mathematical Proceedings of the Cambridge Philosophical Society
+    44(1), 50-57 -- the primary source for the score test.  Wasserman
+    (2004), All of Statistics, treats the Wald test (Definition 10.3),
+    the chi-square test and the likelihood ratio test (Definition
+    10.21) but does NOT give the score test, so it is not cited for
+    this formula; the full text of the book was fetched and searched to
+    establish that.
     """
-    data = np.asarray(data, dtype=float)
-    n = len(data)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Score (Rao) test U^2/I ~ chi2"}
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Score (Rao) test U^2/I ~ chi2",
-        }
-    )
+    n = int(n)
+    S = float(successes)
+    p0 = float(p0)
+    if n < 1:
+        raise ValueError("n must be at least 1")
+    if not 0.0 < S <= n and S != 0.0:
+        raise ValueError("successes must lie in 0..n")
+    if not 0.0 < p0 < 1.0:
+        raise ValueError("p0 must lie strictly between 0 and 1")
+    se = math.sqrt(n * p0 * (1.0 - p0))
+    U = (S - n * p0) / se
+    return RichResult(payload={
+        "statistic": U, "chisq": U * U,
+        "p_value": 2.0 * (1.0 - C.pnorm(abs(U))), "estimate": S / n,
+        "se_null": se, "n": float(n),
+        "method": "Rao score test for a binomial proportion"})
+
+
+wasserman_score_test = scoretest
 
 
 def cheatsheet():
-    return "wsmscr: Score (Rao) test U^2/I ~ chi2"
+    return "wsmscr: U = (S - n p0)/sqrt(n p0 (1-p0)); variance at the NULL"

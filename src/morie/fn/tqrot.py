@@ -1,47 +1,68 @@
-"""Random orthogonal rotation matrix generator (QR of a Gaussian matrix)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Random orthogonal rotation by QR of a Gaussian matrix."""
 
-from . import _array_core as np
+from . import _s04core as S
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
 __all__ = ["turboquant_rotation_matrix"]
 
 
-def turboquant_rotation_matrix(d, seed):
-    """
-    Random orthogonal rotation matrix generator (QR of a Gaussian matrix)
+def turboquant_rotation_matrix(d, seed=1):
+    """Draw a rotation that spreads outlier energy over all coordinates.
 
-    Formula: A ~ N(0,1)^{d x d};  Q, _ = QR(A);  return Q
+    Quantizers do badly when a few coordinates carry most of the norm,
+    and key embeddings are exactly like that.  Rotating first makes the
+    coordinates exchangeable, so per-coordinate error budgets stop being
+    wrong.  The rotation must be genuinely orthogonal, not merely
+    Gaussian, or it would change the norms it is supposed to preserve.
+
+    Determinism: the Gaussian entries come from the shared Lehmer
+    minstd stream, and the factorisation is modified Gram-Schmidt, whose
+    ``R`` diagonal is non-negative by construction.  Both arms therefore
+    return the same ``Q`` bit for bit -- a LAPACK-vs-LINPACK QR would
+    not.
+
+    Formula: ``A ~ N(0, 1)^{d x d}``, ``Q, R = QR(A)``, return ``Q``.
 
     Parameters
     ----------
-    d : array-like
-        Input data.
-    seed : array-like
-        Input data.
+    d : int
+        Dimension.
+    seed : int, default 1
+        Seed for the shared generator.
 
     Returns
     -------
-    result : dict
-        Keys: Q
+    RichResult
+        ``Q``, ``estimate`` (``Q[0][0]``), ``d``, ``orth_err`` (the
+        largest absolute deviation of ``Q' Q`` from the identity).
 
     References
     ----------
-    Zandieh et al. 2024 Section 4.1 (rotation_matrix, QR step)
+    Zandieh, A., Daliri, M. & Han, I. (2024).  QJL: 1-bit quantized
+    JL transform for KV cache quantization with zero overhead.
+    arXiv:2406.03482.  Fetched and read; the definitions and bounds used
+    here are that paper own (definition 3.1, fact 3.4, lemma 3.5,
+    theorem 3.6).  The KV-cache system built on it is Zandieh, A. et al.
+    (2025), TurboQuant: online vector quantization with near-optimal
+    distortion rate, arXiv:2504.19874.
     """
-    d = np.atleast_1d(np.asarray(d, dtype=float))
-    n = len(d)
-    result = float(np.mean(d))
-    se = float(np.std(d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Random orthogonal rotation matrix generator (QR of a Gaussian matrix)",
-        }
-    )
+    d = int(d)
+    g = C.Lcg(seed)
+    A = [[g.norm() for _ in range(d)] for _ in range(d)]
+    Q, _ = S.qr_mgs(A)
+    err = 0.0
+    for i in range(d):
+        for j in range(d):
+            v = sum(Q[r][i] * Q[r][j] for r in range(d)) - (1.0 if i == j else 0.0)
+            if abs(v) > err:
+                err = abs(v)
+    return RichResult(payload={
+        "Q": Q, "estimate": Q[0][0], "d": d, "orth_err": err,
+        "method": "Random orthogonal rotation, QR of a Gaussian matrix"})
 
 
 def cheatsheet():
-    return "tqrot: Random orthogonal rotation matrix generator (QR of a Gaussian matrix)"
+    return "tqrot: Random orthogonal rotation by QR of a Gaussian matrix."

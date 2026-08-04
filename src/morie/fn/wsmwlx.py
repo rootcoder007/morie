@@ -1,61 +1,103 @@
-"""Wilcoxon rank-sum test."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Wilcoxon rank-sum (Mann-Whitney) test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_wilcoxon"]
+__all__ = ["ranksum", "wasserman_wilcoxon"]
 
 
-def wasserman_wilcoxon(x, y, cdf=None):
-    """
-    Wilcoxon rank-sum test
+def ranksum(x, y, correct=True):
+    """Wilcoxon rank-sum test, normal approximation with a tie correction.
 
-    Formula: W = sum_i R(X_i)
+    The tie correction is not cosmetic: with heavy ties the uncorrected
+    variance is too large, the statistic too small, and the test
+    conservative in a way that quietly costs power.  Ties are given
+    average ranks, which is what makes the correction the right one.
+
+    This tests a shift in DISTRIBUTION, not in mean -- with unequal
+    spreads it can reject when the means are identical.
+
+    Formula: W = sum of the ranks of x in the pooled sample;
+             E[W] = n1(n1 + n2 + 1)/2;
+             Var[W] = n1 n2 (N + 1)/12
+                      - n1 n2 sum(t^3 - t) / (12 N (N - 1));
+             z = (W - E[W] -+ 1/2) / sd, continuity-corrected
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    x, y : array-like
+        The two samples.
+    correct : bool
+        Apply the 1/2 continuity correction.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        ``statistic`` (W), ``U``, ``z``, ``p_value``, ``expected``,
+        ``variance``, ``n1``, ``n2``, ``n_tied_groups``.
 
     References
     ----------
-    Wasserman (2004), Ch 10
+    Wilcoxon (1945), Individual comparisons by ranking methods,
+    Biometrics Bulletin 1(6), 80-83, and Mann & Whitney (1947), On a
+    test of whether one of two random variables is stochastically
+    larger than the other, Annals of Mathematical Statistics 18(1),
+    50-60 -- the primary sources.  Wasserman (2004), All of Statistics,
+    does NOT contain the rank-sum test; the full text of the book was
+    fetched and searched to establish that, so it is not cited here.
     """
-    x = np.asarray(x, dtype=float)
-    n = len(x)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Wilcoxon rank-sum test"})
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    x = C.vec(x)
+    y = C.vec(y)
+    n1 = len(x)
+    n2 = len(y)
+    if n1 < 1 or n2 < 1:
+        raise ValueError("both samples must be non-empty")
+    pool = x + y
+    N = n1 + n2
+    order = sorted(range(N), key=lambda i: pool[i])
+    rank = [0.0] * N
+    i = 0
+    tiesum = 0.0
+    groups = 0
+    while i < N:
+        j = i
+        while j < N and pool[order[j]] == pool[order[i]]:
+            j += 1
+        r = (i + j + 1) / 2.0
+        for t in range(i, j):
+            rank[order[t]] = r
+        tcount = j - i
+        if tcount > 1:
+            groups += 1
+            tiesum += tcount ** 3 - tcount
+        i = j
+    W = sum(rank[:n1])
+    E = n1 * (N + 1) / 2.0
+    V = n1 * n2 * (N + 1) / 12.0 - n1 * n2 * tiesum / (12.0 * N * (N - 1))
+    if V <= 0:
+        raise ValueError("the rank variance is zero; every value is tied")
+    d = W - E
+    cc = 0.5 if correct else 0.0
+    if d > 0:
+        z = (d - cc) / math.sqrt(V)
+    elif d < 0:
+        z = (d + cc) / math.sqrt(V)
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Wilcoxon rank-sum test"}
-    )
+        z = 0.0
+    return RichResult(payload={
+        "statistic": W, "U": W - n1 * (n1 + 1) / 2.0, "z": z,
+        "p_value": 2.0 * (1.0 - C.pnorm(abs(z))), "expected": E,
+        "variance": V, "n1": float(n1), "n2": float(n2),
+        "n_tied_groups": float(groups),
+        "method": "Wilcoxon rank-sum, normal approximation with tie correction"})
+
+
+wasserman_wilcoxon = ranksum
 
 
 def cheatsheet():
-    return "wsmwlx: Wilcoxon rank-sum test"
+    return "wsmwlx: W = rank sum of x; V corrected by sum(t^3-t)/(12N(N-1))"

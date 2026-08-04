@@ -1,64 +1,76 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Empirical process indexed by function class (Kosorok 2008, Ch 2).
+"""Empirical process and its limiting covariance."""
 
-G_n(f) = sqrt(n) * (P_n - P)(f).  If P is unknown (the usual case),
-P(f) is estimated by an extra anchor argument or by f.mean(); the
-empirical process value returned is then a centred and rescaled
-sum, equal to (1/sqrt(n)) * sum_i (f(X_i) - P_n(f)) which is 0 by
-construction.  The useful object is the *standardised* empirical
-process Z_n(f) = sqrt(n)*(P_n(f) - mu0) under a hypothesised mu0,
-which is what we compute alongside the asymptotic SE sigma/sqrt(n).
-"""
+import math
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["kosorok_empirical_process"]
+__all__ = ["empproc", "kosorok_empirical_process"]
 
 
-def kosorok_empirical_process(x, f=None, mu0=0.0):
-    """Empirical process G_n(f) = sqrt(n)*(P_n - P)(f).
+def empproc(x, t, F):
+    """Empirical process G_n(t) = sqrt(n)(F_n(t) - F(t)) at given points.
+
+    The scaling by sqrt(n) is the whole point: F_n - F goes to zero, so
+    the interesting object is the one that does not.  The returned
+    covariance is that of the LIMIT (a Brownian bridge composed with
+    F), not of G_n, and it is singular at the ends because
+    F(t)(1 - F(t)) vanishes there -- which is exactly why goodness-of-
+    fit tests are insensitive in the tails.
+
+    Formula: F_n(t) = n^-1 sum_i 1{x_i <= t};
+             G_n(t) = sqrt(n) [F_n(t) - F(t)];
+             cov[G(s), G(t)] = F(s ^ t) - F(s) F(t)
 
     Parameters
     ----------
     x : array-like
-        IID sample X_1, ..., X_n.
-    f : callable or None
-        Function f.  If None, f is the identity.
-    mu0 : float
-        Hypothesised population mean P(f) under H_0.
+        The sample.
+    t : array-like
+        Points at which the process is evaluated.
+    F : array-like
+        The true cdf at those points, non-decreasing and in [0, 1].
 
     Returns
     -------
-    RichResult with keys: estimate, se, n, method.
-        estimate : sqrt(n)*(P_n(f) - mu0), Donsker-CLT statistic.
-        se       : empirical sqrt of Var_P_n(f), the
-                   asymptotic standard deviation of G_n(f).
+    RichResult
+        ``Fn``, ``Gn``, ``cov`` (k x k), ``sup_abs``, ``n``, ``k``.
+
+    References
+    ----------
+    Kosorok (2008), Introduction to Empirical Processes and
+    Semiparametric Inference, Section 2.1: G_n(t) = sqrt(n)[F_n(t) -
+    F(t)] converges to a mean zero Gaussian process with
+    cov[G(s), G(t)] = F(s ^ t) - F(s)F(t), equation (2.5).  Fetched as
+    the full text of the book.
     """
-    x = np.asarray(x, dtype=float)
+    x = C.vec(x)
+    t = C.vec(t)
+    F = C.vec(F)
     n = len(x)
-    fx = x if f is None else np.asarray([f(xi) for xi in x], dtype=float)
-    pn = float(np.mean(fx))
-    estimate = float(np.sqrt(n) * (pn - mu0))
-    se = float(np.std(fx, ddof=1)) if n > 1 else float("nan")
-    return RichResult(
-        payload={
-            "estimate": estimate,
-            "se": se,
-            "n": n,
-            "method": "Empirical process G_n(f) = sqrt(n)(P_n - P)(f)",
-        }
-    )
+    k = len(t)
+    if n < 1:
+        raise ValueError("the sample must be non-empty")
+    if len(F) != k:
+        raise ValueError("t and F must have the same length")
+    if any(v < 0.0 or v > 1.0 for v in F):
+        raise ValueError("F must lie in [0, 1]")
+    if any(t[i] > t[i + 1] for i in range(k - 1)):
+        raise ValueError("t must be non-decreasing")
+    Fn = [sum(1 for v in x if v <= t[j]) / n for j in range(k)]
+    Gn = [math.sqrt(n) * (Fn[j] - F[j]) for j in range(k)]
+    cov = [[min(F[i], F[j]) - F[i] * F[j] for j in range(k)]
+           for i in range(k)]
+    return RichResult(payload={
+        "Fn": Fn, "Gn": Gn, "cov": cov,
+        "sup_abs": max(abs(v) for v in Gn), "n": n, "k": k,
+        "method": "Empirical process, Kosorok Section 2.1"})
+
+
+kosorok_empirical_process = empproc
 
 
 def cheatsheet():
-    return "ksr01: Empirical process G_n(f) = sqrt(n)(P_n - P)(f)"
-
-
-# CANONICAL TEST
-if __name__ == "__main__":
-    rng = np.random.default_rng(0)
-    xs = rng.normal(size=200)
-    r = kosorok_empirical_process(xs, mu0=0.0)
-    print(r.estimate, r.se, r.n)
+    return "ksr01: G_n(t) = sqrt(n)(F_n - F); cov = F(s^t) - F(s)F(t)"

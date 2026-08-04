@@ -1,38 +1,53 @@
-"""Geometric mean of a composition."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Geometric mean of the parts of a composition."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_geomean"]
+__all__ = ["compgeo", "aitchison_geomean"]
 
 
-def aitchison_geomean(x):
-    """
-    Geometric mean of a composition
+def compgeo(x):
+    """Geometric mean of the parts of a single composition.
 
-    Formula: g(x) = (prod_j x_j)^(1/D)
+    This is the divisor that makes the centred log-ratio transform
+    centred; every other quantity in the log-ratio toolkit is built on
+    it.  It is computed in logs, not as a product, because the product
+    of a few hundred parts underflows long before the mean does.
+
+    Formula: g(x) = (x_1 x_2 ... x_D)^(1/D) = exp( (1/D) sum_j log x_j )
 
     Parameters
     ----------
     x : array-like
-        Input data.
+        Strictly positive vector of parts.
 
     Returns
     -------
-    result : dict
-        Keys: g
+    RichResult
+        ``geomean``, ``log_geomean``, ``D``.
 
     References
     ----------
-    Aitchison (1986)
+    Aitchison (1986), The Statistical Analysis of Compositional Data,
+    Chapter 4, where g(x) is the normalising constant of the centred
+    log-ratio transform.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Geometric mean of a composition"})
+    x = C.vec(x)
+    if any(v <= 0 for v in x):
+        raise ValueError("compositions must be strictly positive")
+    D = len(x)
+    lg = sum(math.log(v) for v in x) / D
+    return RichResult(payload={
+        "geomean": math.exp(lg), "log_geomean": lg, "D": D,
+        "method": "Geometric mean of a composition"})
+
+
+aitchison_geomean = compgeo
 
 
 def cheatsheet():
-    return "aitgmu: Geometric mean of a composition"
+    return "aitgmu: g(x) = exp(mean(log x))"
