@@ -1,37 +1,22 @@
-"""Sample mean X-bar = (X1 + ... + Xn)/n.
+"""Deprecated alias for :func:`morie.fn.sampmean`.
 
-Implements eq (3.54) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-import math
+import warnings
 
-from . import _array_core as np
-
-from . import _morin
-from ._richresult import RichResult
+from .sampmean import sampmean as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_54"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_54(x):
-    """Sample mean X-bar = (X1 + ... + Xn)/n.
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (3.54).
-    """
-    value = _morin.sample_mean(x)
-    payload = {"mean": value, "n": int(np.atleast_1d(x).size)}
-    lines = [("X-bar", value)]
-    return RichResult(
-        title="Sample mean X-bar = (X1 + ... + Xn)/n.",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.sampmean` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_3_equation_54() is the book-coordinate name for sampmean(); "
+        "it will be removed. Use morie.fn.sampmean() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner3e54: Sample mean X-bar = (X1 + ... + Xn)/n. Morin (2016) eq (3.54)."
+    return _impl(x)
