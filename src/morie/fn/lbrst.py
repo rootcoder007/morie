@@ -11,8 +11,12 @@
 
 from .lilf import lilliefors_test
 
-__all__ = ["lilliefors_test"]
+__all__ = ["lilliefors_test", "lillieforstest"]
 
+
+# compact alias -- _lazy_map.json resolves 'lillieforstest' to this module, so the
+# name has to exist here or the lookup dies.
+lillieforstest = lilliefors_test
 
 def cheatsheet():
     return "lbrst: alias of morie.fn.lilf.lilliefors_test -- Lilliefors normality test"
