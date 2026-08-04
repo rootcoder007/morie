@@ -1,55 +1,44 @@
-r"""Numbered display equation (14.1) from MVSML chapter 14.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Functional linear model with scalar response.
 
-from ._richresult import RichResult
+Implements eq. (14.1) p.579 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_convolutional_nn_eq_14_1"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["flmint", "mvsml_convolutional_nn_eq_14_1"]
 
 
-def mvsml_convolutional_nn_eq_14_1(T, l, charg, de, Scholars, Portal):
-    r"""
-    Numbered display equation (14.1) from MVSML chapter 14.
+def flmint(t, x_values, beta_values, mu=0.0):
 
-    Formula: Téléchargé de Scholars Portal Books sur 2026-04-16 Chapter 14 Functional Regression 14.1 Principles of Functional Linear Regression Analyses The general functional linear regression model with scalar response (Y) and one functional covariate (x(+)) is deﬁned by Z T Y = \mu + x t( )\beta t( )dt + E,
+    """Y = mu + int_0^T x(t) beta(t) dt + E (eq. 14.1).  Functional
+    regression replaces the linear predictor of an ordinary
+    regression by the integral of the product of a centered covariate
+    curve x(t) and a coefficient function beta(t).  The integral is
+    taken by the trapezoid rule on the observation grid, the same
+    quadrature the chapter uses for its inner products.  Recovering
+    beta(t) itself from finitely many observations is ill posed --
+    infinitely many functions give the same predictions -- which is
+    why the chapter turns to basis expansion (eq. 14.2).
+    Keys: integral, fitted, mu, n_points.
+    """
 
-    Parameters
-    ----------
-    T : array-like
-        Input data.
-    l : array-like
-        Input data.
-    charg : array-like
-        Input data.
-    de : array-like
-        Input data.
-    Scholars : array-like
-        Input data.
-    Portal : array-like
-        Input data.
+    res = RichResult(payload=_gp.fda_integral(t, x_values, beta_values, mu=mu))
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
+    return with_describe_pointer(res, "msm261")
 
-    References
-    ----------
-    MVSML, Eq. (14.1) [Multivariate Statistical Machine Learnin [Pages 579-631] [2026-04-16].pdf]
-    r"""
-    T = np.atleast_1d(np.asarray(T, dtype=float))
-    n = len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (14.1) from MVSML chapter 14.",
-        }
-    )
+
+mvsml_convolutional_nn_eq_14_1 = flmint
 
 
 def cheatsheet():
-    return "msm261: Numbered display equation (14.1) from MVSML chapter 14."
+    return "msm261: Functional linear model with scalar response"

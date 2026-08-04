@@ -1,76 +1,64 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample quantile as order statistic point estimator of population quantile."""
+"""Sample p-th quantile as an order statistic point estimator."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_marginal_quant"]
+__all__ = ['sampquant', 'gibbons_marginal_quant']
 
 
-def gibbons_marginal_quant(x, p, cdf=None):
-    """
-    Sample quantile as order statistic point estimator of population quantile
+def sampquant(x, p):
+    """Point estimate of the population p-th quantile.
 
-    Formula: X_(r) is estimator of x_p where p = r/(n+1) or similar formula
+    Section 2.6 (book p. 42): the sample quantile of order p is the
+    order statistic X_(r) with
+
+    .. math:: r = \\lfloor np \\rfloor + 1,
+
+    i.e. the smallest order statistic whose empirical cdf value
+    reaches p.  Its exact mean and variance are the Beta moments of
+    Theorem 2.4.3 pushed through F^{-1}; the uniform-scale moments are
+    returned here as ``u_mean`` and ``u_var``.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    p : array-like
-        Input data.
+    x : sequence of float
+        The sample, n >= 1.
+    p : float
+        Quantile level, 0 < p < 1.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        keys ``estimate``, ``r``, ``n``, ``p``, ``u_mean``, ``u_var``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 2.3.1
+    Gibbons & Chakraborti (2011), Sec. 2.6, p. 42.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sample quantile as order statistic point estimator of population quantile",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    p = float(p)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    if not 0.0 < p < 1.0:
+        raise ValueError("p must lie strictly inside (0, 1).")
+    r = int(math.floor(n * p)) + 1
+    if r > n:
+        r = n
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "estimate": xs[r - 1],
+            "r": r,
             "n": n,
-            "method": "Sample quantile as order statistic point estimator of population quantile",
+            "p": p,
+            "u_mean": r / (n + 1.0),
+            "u_var": r * (n - r + 1.0) / ((n + 1.0) ** 2 * (n + 2.0)),
+            "method": "sample quantile X_(floor(np)+1) (Gibbons Sec. 2.6)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_mnq: Sample quantile as order statistic point estimator of population quantile"
+gibbons_marginal_quant = sampquant

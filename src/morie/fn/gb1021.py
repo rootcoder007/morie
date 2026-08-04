@@ -1,74 +1,90 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""k-sample median test extension using count above combined median."""
+"""k-sample extension of the median test."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_k_median_test"]
+__all__ = ['kmedtest', 'gibbons_k_median_test']
 
 
-def gibbons_k_median_test(groups, cdf=None):
-    """
-    k-sample median test extension using count above combined median
+def kmedtest(samples):
+    """Q for the 2 x k table of counts below the combined median.
 
-    Formula: Q = chi2-type statistic based on counts above combined sample median
+    Section 10.2 (book pp. 344-346).  Let d be the combined-sample
+    median, u_i the number of observations in sample i below d, and
+    t = sum u_i.  Given t, the null law of (U_1, ..., U_k) is the
+    multivariate hypergeometric
+
+    .. math:: P = \\frac{\\prod_i \\binom{n_i}{u_i}}{\\binom{N}{t}},
+
+    and the goodness-of-fit criterion of eq. (4.2.1) applied to the
+    2k cells collapses to
+
+    .. math:: Q = \\frac{N^2}{t(N-t)}
+        \\sum_{i=1}^{k}\\frac{(u_i - n_i t/N)^2}{n_i},
+
+    asymptotically chi-square with k - 1 degrees of freedom.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
+    samples : sequence of sequence of float
+        The k samples, k >= 2, each non-empty.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (Q), ``df``, ``p_value``, ``u`` (counts
+        below d), ``t``, ``median``, ``prob`` (exact multivariate
+        hypergeometric probability of the observed table), ``k``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.2
+    Gibbons & Chakraborti (2011), Sec. 10.2, pp. 344-346, with
+    eq. (4.2.1), p. 104.
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "k-sample median test extension using count above combined median",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ss = [[float(v) for v in s] for s in samples]
+    k = len(ss)
+    if k < 2:
+        raise ValueError("need at least 2 samples.")
+    if any(len(s) < 1 for s in ss):
+        raise ValueError("every sample must be non-empty.")
+    pooled = sorted(v for s in ss for v in s)
+    nn = len(pooled)
+    d = (
+        pooled[nn // 2]
+        if nn % 2
+        else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
+    )
+    u = [sum(1 for v in s if v < d) for s in ss]
+    t = sum(u)
+    ns = [len(s) for s in ss]
+    if t == 0 or t == nn:
+        raise ValueError("no split at the combined median.")
+    q = (float(nn) ** 2 / (t * (nn - t))) * sum(
+        (u[i] - ns[i] * t / float(nn)) ** 2 / ns[i] for i in range(k)
+    )
+    prob = 1.0
+    for i in range(k):
+        prob *= math.comb(ns[i], u[i])
+    prob /= math.comb(nn, t)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "k-sample median test extension using count above combined median",
+            "statistic": float(q),
+            "df": int(k - 1),
+            "p_value": float(stats.chi2.sf(q, k - 1)),
+            "u": u,
+            "t": int(t),
+            "median": float(d),
+            "prob": float(prob),
+            "k": int(k),
+            "n": int(nn),
+            "method": "k-sample median test (Sec. 10.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1021: k-sample median test extension using count above combined median"
+gibbons_k_median_test = kmedtest

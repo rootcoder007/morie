@@ -1,76 +1,91 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Moment inequality for degenerate U-statistics."""
+"""Moment bound for the H-decomposition projections."""
 
 from . import _array_core as np
-from . import _stats_core as stats
-
 from ._richresult import RichResult
 
-__all__ = ["fauzi_moment_ineq_ustat"]
+__all__ = ["hdecmom", "fauzi_moment_ineq_ustat"]
 
 
-def fauzi_moment_ineq_ustat(u_stat_func, q, cdf=None):
-    """
-    Moment inequality for degenerate U-statistics
+def hdecmom(n, k, q, rhomom=1.0, c=1.0):
+    r"""Moment bound for the H-decomposition projections.
 
-    Formula: E|A_k|^q <= C n^{qk/2} E|rho_k(X_{i1},...,X_{ik})|^q for q>=2
+    Eq. (3.12): for :math:`q \ge 2`, if
+    :math:`E|\nu(X_1,\dots,X_r)|^q < \infty` there is a constant ``C``
+    depending on :math:`\nu` and ``F`` but NOT on ``n`` with
+
+    .. math:: E|A_k|^q \le C n^{qk/2}\,
+              E|\rho_k(X_{i_1},\dots,X_{i_k})|^q,
+
+    where :math:`A_k = \sum_{C_{n,k}}\rho_k` is the ``k``-th projection of
+    the H-decomposition (3.10)-(3.11).
+
+    The exponent is the useful part. A naive count would put
+    :math:`\binom nk \sim n^k` terms in :math:`A_k`, giving :math:`n^{qk}`;
+    the martingale property (3.9),
+    :math:`E[\rho_k|X_1,\dots,X_{k-1}] = 0`, halves the exponent to
+    :math:`n^{qk/2}`. That square root is what makes the higher
+    projections negligible and lets Lemma 3.1 stop at :math:`k = 3` with
+    an :math:`o_L(n^{-1/2})` remainder.
+
+    ``C`` is genuinely unspecified in the text -- it is a generic constant
+    the book explicitly says "may change its meaning at different places".
+    It defaults to 1 and the returned bound is labelled ``bound_over_c``
+    for that reason; treating it as an absolute number would be a
+    fabrication.
 
     Parameters
     ----------
-    u_stat_func : array-like
-        Input data.
-    q : array-like
-        Input data.
+    n : int
+        Sample size.
+    k : int
+        Projection order, ``k >= 1``.
+    q : float
+        Moment order, ``q >= 2``.
+    rhomom : float, default 1.0
+        ``E|rho_k|^q``.
+    c : float, default 1.0
+        The unspecified constant of (3.12).
 
     Returns
     -------
-    result : dict
-        Keys: bound
+    RichResult
+        Keys ``bound_over_c``, ``bound``, ``exponent``, ``naive``, ``method``.
 
     References
     ----------
-    Fauzi Ch 3, Eq 3.12
+    Fauzi and Maesono (2023), Eqs. (3.9)-(3.13).
     """
-    u_stat_func = np.asarray(u_stat_func, dtype=float)
-    n = int(u_stat_func) if u_stat_func.ndim == 0 else len(u_stat_func)
-    if u_stat_func.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Moment inequality for degenerate U-statistics",
-            }
-        )
-    x_sorted = np.sort(u_stat_func)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(u_stat_func), scale=np.std(u_stat_func, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n = int(n)
+    k = int(k)
+    q = float(q)
+    if n < 1:
+        raise ValueError(f"sample size must be at least 1, got {n}.")
+    if k < 1:
+        raise ValueError(f"projection order must be at least 1, got {k}.")
+    if q < 2:
+        raise ValueError(f"(3.12) is stated for q >= 2, got {q}.")
+    expo = q * k / 2.0
+    scaled = float(n) ** expo * float(rhomom)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Moment inequality for degenerate U-statistics",
+            "bound_over_c": float(scaled),
+            "bound": float(c) * scaled,
+            "exponent": float(expo),
+            "naive": float(q * k),
+            "method": "H-decomposition moment bound (Eq. 3.12)",
         }
     )
 
 
+fauzi_moment_ineq_ustat = hdecmom
+
+
 def cheatsheet():
-    return "fzmiq: Moment inequality for degenerate U-statistics"
+    return "fzmiq: E|A_k|^q <= C n^(qk/2): the martingale property halves the naive exponent (3.12)"
+
+
+# CANONICAL TEST
+# >>> r = hdecmom(n=100, k=2, q=2)
+# >>> r['exponent'] == 2.0 and r['naive'] == 4.0
+# True

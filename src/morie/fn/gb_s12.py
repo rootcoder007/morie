@@ -1,76 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""One-sided Smirnov statistic for stochastic ordering alternative."""
+"""Exact null distribution of the one-sided Smirnov statistic."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_smirnov_one_sided"]
+__all__ = ['smirnov1', 'gibbons_smirnov_one_sided']
 
 
-def gibbons_smirnov_one_sided(x, y, cdf=None):
-    """
-    One-sided Smirnov statistic for stochastic ordering alternative
+def smirnov1(d, m, n):
+    """P(D+_{m,n} >= d) exactly, plus the one-sided asymptotic form.
 
-    Formula: D+_{m,n} = sup(S_n(x) - S_m(x)); reject for large D+
+    Section 6.3 (book p. 241).  The one-sided statistic
+    D+_{m,n} = sup_x [S_m(x) - S_n(x)] tests the stochastic-ordering
+    alternative.  Exact tail by lattice-path counting under the
+    one-sided boundary i/m - j/n >= d; the limiting form is
+
+    .. math:: P\\left[\\sqrt{\\tfrac{mn}{m+n}}\\,D^+_{m,n} > k\\right]
+        \\to e^{-2k^2}.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    d : float
+        Threshold, 0 < d <= 1.
+    m, n : int
+        The two sample sizes.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``sf``, ``cdf``, ``sf_asymp``, ``k``, ``m``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 6.3
+    Gibbons & Chakraborti (2011), Sec. 6.3, p. 241.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "One-sided Smirnov statistic for stochastic ordering alternative",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    from .gb631 import _ks2count
+
+    d = float(d)
+    m = int(m)
+    n = int(n)
+    if m < 1 or n < 1:
+        raise ValueError("m and n must be at least 1.")
+    if not 0.0 < d <= 1.0:
+        raise ValueError("d must lie in (0, 1].")
+    sf = _ks2count(m, n, d, True)
+    k = math.sqrt(m * n / float(m + n)) * d
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "sf": float(sf),
+            "cdf": float(1.0 - sf),
+            "sf_asymp": float(math.exp(-2.0 * k * k)),
+            "k": float(k),
+            "m": m,
             "n": n,
-            "method": "One-sided Smirnov statistic for stochastic ordering alternative",
+            "method": "exact one-sided Smirnov distribution",
         }
     )
 
 
-def cheatsheet():
-    return "gb_s12: One-sided Smirnov statistic for stochastic ordering alternative"
+gibbons_smirnov_one_sided = smirnov1

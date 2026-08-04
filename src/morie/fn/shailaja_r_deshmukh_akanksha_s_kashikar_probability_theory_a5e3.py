@@ -1,54 +1,33 @@
-"""Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Independence of two random variables."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_3"]
+__all__ = ["indrv2", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_3"]
 
 
-def shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_3(x):
-    """
-    Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.
+def indrv2(joint):
+    """Independence of two random variables.
 
-    Formula: [EQ] ⇐ ⇒ P {ω|X1(ω) ∈ S1, X2(ω) ∈ S2} = P {ω|X1(ω) ∈ S1}P {ω|X2(ω) ∈ S2}
+    P[X1 in S1, X2 in S2] = P[X1 in S1] P[X2 in S2]   (Deshmukh eq. 5.3).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Independence of two random variables as factorisation of the joint
+    distribution into its marginals.  ``joint`` is a probability table
+    over a finite partition of the two ranges; the marginals are its row
+    and column sums, and the deviation reported is the largest absolute
+    departure from the product.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e3')`` for the full guide.
-
-    References
-    ----------
-    Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R, ch.5 eq.5.3
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        },
-    )
+    return RichResult(title="Independence of two random variables", payload=_c.indrv2(joint=joint))
+
+
+shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_3 = indrv2
 
 
 def cheatsheet():
-    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e3: Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R."
+    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e3: Independence of two random variables"

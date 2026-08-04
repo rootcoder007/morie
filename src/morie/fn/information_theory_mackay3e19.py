@@ -1,54 +1,52 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Total evidence over a set of models by the sum rule.
 
-from . import _array_core as np
+MacKay (2003) eq. (3.19), p. 53
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_3_equation_19"]
+__all__ = ["evidmix", "information_theory_mackay_chapter_3_equation_19"]
+
+_METHOD = "Total evidence over a set of models by the sum rule"
 
 
-def information_theory_mackay_chapter_3_equation_19(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def evidmix(evidences, priors):
+    """Total evidence over a set of models by the sum rule.
 
-    Formula: [EQ] P(sjF) =P(sjF;H1)P(H1) +P(sjF;H0)P(H0): (3.19)
+    (3.19) p.53 -- total evidence P(s | F) by the sum rule.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    evidences : as documented for the shelf core
+        See ``morie.fn._itila.evidmix``.
+    priors : as documented for the shelf core
+        See ``morie.fn._itila.evidmix``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay3e19')`` for the full guide.
+        Payload keys: evidence.
 
     References
     ----------
-    Information theory MacKay, ch.3 eq.3.19
+    MacKay (2003) eq. (3.19), p. 53
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.evidmix(evidences=evidences, priors=priors)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("evidence", res["evidence"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_3_equation_19 = evidmix
+
+
 def cheatsheet():
-    return "information_theory_mackay3e19: Probability equation extracted from Information theory MacKay."
+    return "evidmix: Total evidence over a set of models by the sum rule -- MacKay (2003) eq. (3.19), p. 53"

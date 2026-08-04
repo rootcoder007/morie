@@ -1,78 +1,61 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""KS statistics D_n, D+_n, D-_n are distribution-free under H0."""
+"""Distribution-freeness of the Kolmogorov-Smirnov statistics."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ks_dist_free"]
+__all__ = ['ksdistfree', 'gibbons_ks_dist_free']
 
 
-def gibbons_ks_dist_free(x, F0, n, cdf=None):
-    """
-    KS statistics D_n, D+_n, D-_n are distribution-free under H0
+def ksdistfree(x, cdf):
+    """D_n, D+_n, D-_n together with the PIT values that make them free.
 
-    Formula: D_n = sup|S_n(x) - F0(x)|; D+_n = sup[S_n(x)-F0(x)]; D-_n = sup[F0(x)-S_n(x)]
+    Theorem 4.3.1 (book p. 111): under H0 the sample X is mapped by the
+    probability integral transform to Z_j = F_0(X_(j)), which is a
+    Uniform(0, 1) order statistic whatever F_0 is.  Since
+
+    .. math:: D_n^+ = \\max_j (j/n - Z_j), \\quad
+              D_n^- = \\max_j (Z_j - (j-1)/n), \\quad
+              D_n = \\max(D_n^+, D_n^-),
+
+    depend on the sample only through the Z_j, their null distributions
+    are the same for every continuous F_0 -- that is the theorem.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    F0 : array-like
-        Input data.
-    n : array-like
-        Input data.
+    x : sequence of float
+        Sample, n >= 1.
+    cdf : callable
+        The hypothesised continuous cdf F_0.
 
     Returns
     -------
-    result : dict
-        Keys: statistic
+    RichResult
+        keys ``statistic`` (D_n), ``dplus``, ``dminus``, ``z``
+        (the PIT values, sorted), ``n``, ``method``.
 
     References
     ----------
-    Gibbons Theorem 4.3.1
+    Gibbons & Chakraborti (2011), Theorem 4.3.1, p. 111.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "KS statistics D_n, D+_n, D-_n are distribution-free under H0",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    z = [float(cdf(v)) for v in xs]
+    dp = max((i + 1) / n - z[i] for i in range(n))
+    dm = max(z[i] - i / n for i in range(n))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": float(max(dp, dm)),
+            "dplus": float(dp),
+            "dminus": float(dm),
+            "z": z,
             "n": n,
-            "method": "KS statistics D_n, D+_n, D-_n are distribution-free under H0",
+            "method": "KS statistics via the PIT (Gibbons Thm 4.3.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb431: KS statistics D_n, D+_n, D-_n are distribution-free under H0"
+gibbons_ks_dist_free = ksdistfree

@@ -1,74 +1,71 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Alternative formula for H statistic in terms of rank sums R_i."""
+"""The defining form of the Kruskal-Wallis statistic -- eq. (10.4.2)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_kw_alt_form"]
+__all__ = ['kwalt', 'gibbons_kw_alt_form']
 
 
-def gibbons_kw_alt_form(groups, cdf=None):
-    """
-    Alternative formula for H statistic in terms of rank sums R_i
+def kwalt(rank_sums, ns):
+    """H from the weighted sum of squared rank-sum deviations.
 
-    Formula: H = 12/N(N+1) * sum R_i^2/n_i - 3(N+1)
+    Book p. 354, eq. (10.4.2):
+
+    .. math:: H = \\frac{12}{N(N+1)}\\sum_{i=1}^{k}\\frac{1}{n_i}
+        \\left[R_i - \\frac{n_i(N+1)}{2}\\right]^2,
+
+    the form the statistic is defined by, with the reciprocal sample
+    sizes as weights.  Eq. (10.4.7),
+    H = 12/[N(N+1)] sum R_i^2/n_i - 3(N+1), is algebraically the same
+    thing and is returned as ``h_computing`` so the identity can be
+    checked rather than assumed.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
+    rank_sums : sequence of float
+        The k rank sums R_i.
+    ns : sequence of int
+        The k sample sizes.
 
     Returns
     -------
-    result : dict
-        Keys: H_statistic
+    RichResult
+        keys ``statistic`` (eq. 10.4.2), ``h_computing`` (eq. 10.4.7),
+        ``resid`` (their difference), ``df``, ``k``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons eq 10.4.2
+    Gibbons & Chakraborti (2011), eqs. (10.4.2) and (10.4.7),
+    pp. 354, 357.
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Alternative formula for H statistic in terms of rank sums R_i",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    rs = [float(v) for v in rank_sums]
+    nv = [int(v) for v in ns]
+    k = len(rs)
+    if k < 2 or len(nv) != k:
+        raise ValueError("need at least 2 samples and matching sizes.")
+    if any(v < 1 for v in nv):
+        raise ValueError("sample sizes must be at least 1.")
+    nn = sum(nv)
+    h1 = 12.0 / (nn * (nn + 1.0)) * sum(
+        (rs[i] - nv[i] * (nn + 1.0) / 2.0) ** 2 / nv[i] for i in range(k)
+    )
+    h2 = 12.0 / (nn * (nn + 1.0)) * sum(
+        rs[i] ** 2 / nv[i] for i in range(k)
+    ) - 3.0 * (nn + 1.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Alternative formula for H statistic in terms of rank sums R_i",
+            "statistic": float(h1),
+            "h_computing": float(h2),
+            "resid": float(h1 - h2),
+            "df": int(k - 1),
+            "k": int(k),
+            "n": int(nn),
+            "method": "Kruskal-Wallis H, defining form eq. (10.4.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_kw2: Alternative formula for H statistic in terms of rank sums R_i"
+gibbons_kw_alt_form = kwalt

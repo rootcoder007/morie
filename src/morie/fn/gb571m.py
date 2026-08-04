@@ -1,73 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean and variance of Wilcoxon signed-rank statistic T+ under H0."""
+"""Null mean and variance of the signed-rank statistic T+."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wsrt_mean"]
+__all__ = ['wsrmom', 'gibbons_wsrt_mean']
 
 
-def gibbons_wsrt_mean(n, cdf=None):
-    """
-    Mean and variance of Wilcoxon signed-rank statistic T+ under H0
+def wsrmom(n):
+    """Moments of T+ under H0 -- Gibbons eq. (5.7.2).
 
-    Formula: E(T+) = n(n+1)/4; Var(T+) = n(n+1)(2n+1)/24
+    Book p. 197:
+
+    .. math:: E[T^+] = \\frac{N(N+1)}{4}, \\qquad
+        Var[T^+] = \\frac{N(N+1)(2N+1)}{24}.
+
+    The third central moment is 0: the null distribution of T+ is
+    symmetric about N(N+1)/4 (book p. 200), which is why one tail of
+    Table H suffices.
 
     Parameters
     ----------
-    n : array-like
-        Input data.
+    n : int
+        Number of non-zero differences, n >= 1.
 
     Returns
     -------
-    result : dict
-        Keys: mean, variance
+    RichResult
+        keys ``mean``, ``var``, ``sd``, ``total`` (N(N+1)/2),
+        ``skew``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.7
+    Gibbons & Chakraborti (2011), eq. (5.7.2), p. 197.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Mean and variance of Wilcoxon signed-rank statistic T+ under H0",
-            }
-        )
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(n)
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    n = int(n)
+    if n < 1:
+        raise ValueError("n must be at least 1.")
+    mean = n * (n + 1.0) / 4.0
+    var = n * (n + 1.0) * (2.0 * n + 1.0) / 24.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "mean": float(mean),
+            "var": float(var),
+            "sd": float(math.sqrt(var)),
+            "total": float(n * (n + 1.0) / 2.0),
+            "skew": 0.0,
             "n": n,
-            "method": "Mean and variance of Wilcoxon signed-rank statistic T+ under H0",
+            "method": "E[T+] = N(N+1)/4, Var[T+] = N(N+1)(2N+1)/24",
         }
     )
 
 
-def cheatsheet():
-    return "gb571m: Mean and variance of Wilcoxon signed-rank statistic T+ under H0"
+gibbons_wsrt_mean = wsrmom

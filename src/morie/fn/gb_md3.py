@@ -1,76 +1,70 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Handling ties at combined median in two-sample median test."""
+"""Observations tied at the combined median in the median test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_median_ties"]
+__all__ = ['medties', 'gibbons_median_ties']
 
 
-def gibbons_median_ties(x, y, cdf=None):
-    """
-    Handling ties at combined median in two-sample median test
+def medties(x, y):
+    """Median test when observations equal the combined median.
 
-    Formula: Randomly assign tied obs to above/below; adjust U count accordingly
+    Section 6.4 (book p. 247) defines U by a strict inequality, so any
+    pooled value exactly equal to the combined median is excluded from
+    the count and the effective t shrinks.  Three treatments are
+    returned: ``strict`` (the book's own, exclude the ties),
+    ``inclusive`` (count them as above) and ``split`` (give each
+    sample its share).  When the pooled size is even and no value
+    equals the median all three coincide.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: adjusted_statistic
+    RichResult
+        keys ``u_strict``, ``u_inclusive``, ``u_split``, ``t_strict``,
+        ``t_inclusive``, ``nties``, ``median``, ``m``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 6.4
+    Gibbons & Chakraborti (2011), Sec. 6.4, p. 247.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Handling ties at combined median in two-sample median test",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    pooled = sorted(xs + ys)
+    nn = m + n
+    med = (
+        pooled[nn // 2]
+        if nn % 2
+        else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
+    )
+    nties = sum(1 for v in pooled if v == med)
+    xt = sum(1 for v in xs if v == med)
+    us = sum(1 for v in xs if v > med)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "u_strict": float(us),
+            "u_inclusive": float(us + xt),
+            "u_split": float(us + xt / 2.0),
+            "t_strict": int(sum(1 for v in pooled if v > med)),
+            "t_inclusive": int(sum(1 for v in pooled if v >= med)),
+            "nties": int(nties),
+            "median": float(med),
+            "m": m,
             "n": n,
-            "method": "Handling ties at combined median in two-sample median test",
+            "method": "median test with ties at the combined median",
         }
     )
 
 
-def cheatsheet():
-    return "gb_md3: Handling ties at combined median in two-sample median test"
+gibbons_median_ties = medties

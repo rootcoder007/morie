@@ -1,39 +1,66 @@
 """Surprisal -log p(x)."""
 
 from . import _array_core as np
+from . import _big2 as _big2
 
 from ._richresult import RichResult
 
 __all__ = ["surprisal"]
 
 
-def surprisal(p, x):
+def surprisal(p, x, base=2.0):
     """
-    Surprisal -log p(x)
+    Surprisal (self-information) of one or more outcomes.
 
     Formula: I(x) = -log p(x)
+
+    Verified against Shannon (1948) Section 6 and Cover & Thomas (2006)
+    p. 14, where entropy is defined as the expectation of -log p(X) --
+    sources consulted. The mean surprisal returned here is exactly that
+    entropy when the outcomes are drawn from p.
 
     Parameters
     ----------
     p : array-like
-        Input data.
-    x : array-like
-        Input data.
+        Non-negative pmf; closed to unit sum internally.
+    x : array-like or int
+        Outcome index or indices into that pmf.
+    base : float, optional
+        Log base; 2 gives bits.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        Keys: estimate (mean surprisal), values (per outcome), entropy,
+        n, method.
 
     References
     ----------
-    Shannon (1948)
+    Shannon, C.E. (1948). A Mathematical Theory of Communication.
+    Bell System Technical Journal 27:379-423, 623-656. Section 6.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Surprisal -log p(x)"})
+    v = _big2.pnorm(np.atleast_1d(np.asarray(p, dtype=float)))
+    k = len(v)
+    idx = [int(t) for t in np.atleast_1d(np.asarray(x, dtype=float))]
+    if not idx:
+        raise ValueError("x must be non-empty")
+    inf = float("inf")
+    vals = []
+    for i in idx:
+        if i < 0 or i >= k:
+            raise ValueError("outcome index outside the alphabet")
+        pi = float(v[i])
+        vals.append(inf if pi <= 0.0 else -float(_big2.logb(pi, base)))
+    mean = inf if inf in vals else float(sum(vals) / len(vals))
+    return RichResult(
+        payload={
+            "estimate": mean,
+            "values": vals,
+            "entropy": _big2.entropy(v, base),
+            "n": len(idx),
+            "method": "Surprisal -log p(x) -- Shannon (1948) Sec. 6",
+        }
+    )
 
 
 def cheatsheet():

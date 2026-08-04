@@ -1,54 +1,54 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Posterior over a discrete urn hypothesis.
 
-from . import _array_core as np
+MacKay (2003) eq. (2.25)-(2.26), p. 28
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_2_equation_25"]
+__all__ = ["urnpost", "information_theory_mackay_chapter_2_equation_25"]
+
+_METHOD = "Posterior over a discrete urn hypothesis"
 
 
-def information_theory_mackay_chapter_2_equation_25(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def urnpost(nb, ntot, nurns=10):
+    """Posterior over a discrete urn hypothesis.
 
-    Formula: hypotheses u=1; u=2, ::: u=9 all have non-zero posterior probability. 2
+    (2.25)-(2.26) p.28 -- posterior over the urn index u.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    nb : as documented for the shelf core
+        See ``morie.fn._itila.urnpost``.
+    ntot : as documented for the shelf core
+        See ``morie.fn._itila.urnpost``.
+    nurns : as documented for the shelf core
+        See ``morie.fn._itila.urnpost``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay2e25')`` for the full guide.
+        Payload keys: evidence, map, prior.
 
     References
     ----------
-    Information theory MacKay, ch.2 eq.2.25
+    MacKay (2003) eq. (2.25)-(2.26), p. 28
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.urnpost(nb=nb, ntot=ntot, nurns=nurns)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("evidence", res["evidence"]), ("map", res["map"]), ("prior", res["prior"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_2_equation_25 = urnpost
+
+
 def cheatsheet():
-    return "information_theory_mackay2e25: Probability equation extracted from Information theory MacKay."
+    return "urnpost: Posterior over a discrete urn hypothesis -- MacKay (2003) eq. (2.25)-(2.26), p. 28"

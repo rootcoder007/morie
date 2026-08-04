@@ -1,74 +1,66 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Rank-order statistics: rank of |D_i| among |D_1|,...,|D_n|."""
+"""Rank-order statistics: midranks of the absolute differences."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_rank_order_stat"]
+__all__ = ['absrank', 'gibbons_rank_order_stat']
 
 
-def gibbons_rank_order_stat(differences, cdf=None):
-    """
-    Rank-order statistics: rank of |D_i| among |D_1|,...,|D_n|
+def absrank(d):
+    """Ranks of |d_i| among the absolute values, with their signs.
 
-    Formula: R_i = rank(|D_i|); R_i in {1,...,n} for paired differences
+    Section 5.5 (book p. 189).  Ties get midranks (Sec. 5.6.2), which
+    is the convention the signed-rank test uses.  The sign attached to
+    each rank is the sign of the original difference.
 
     Parameters
     ----------
-    differences : array-like
-        Input data.
+    d : sequence of float
+        Differences, n >= 1.
 
     Returns
     -------
-    result : dict
-        Keys: ranks
+    RichResult
+        keys ``ranks`` (midranks of |d|), ``signs``, ``signed``
+        (sign * rank), ``ties`` (multiplicities of tied |d| groups),
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 5.5
+    Gibbons & Chakraborti (2011), Sec. 5.5, p. 189; midranks Sec. 5.6.2.
     """
-    differences = np.asarray(differences, dtype=float)
-    n = int(differences) if differences.ndim == 0 else len(differences)
-    if differences.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Rank-order statistics: rank of |D_i| among |D_1|,...,|D_n|",
-            }
-        )
-    x_sorted = np.sort(differences)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(differences), scale=np.std(differences, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ds = [float(v) for v in d]
+    n = len(ds)
+    if n < 1:
+        raise ValueError("d must be non-empty.")
+    a = [abs(v) for v in ds]
+    order = sorted(range(n), key=lambda i: a[i])
+    ranks = [0.0] * n
+    ties = []
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and a[order[j + 1]] == a[order[i]]:
+            j += 1
+        mid = (i + j) / 2.0 + 1.0
+        for k in range(i, j + 1):
+            ranks[order[k]] = mid
+        if j > i:
+            ties.append(j - i + 1)
+        i = j + 1
+    signs = [(1 if v > 0 else (-1 if v < 0 else 0)) for v in ds]
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "ranks": ranks,
+            "signs": signs,
+            "signed": [signs[i] * ranks[i] for i in range(n)],
+            "ties": ties,
             "n": n,
-            "method": "Rank-order statistics: rank of |D_i| among |D_1|,...,|D_n|",
+            "method": "midranks of |d_i| with original signs (Sec. 5.5)",
         }
     )
 
 
-def cheatsheet():
-    return "gb551: Rank-order statistics: rank of |D_i| among |D_1|,...,|D_n|"
+gibbons_rank_order_stat = absrank

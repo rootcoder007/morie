@@ -1,74 +1,93 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Fligner-Wolfe test against simple tree alternative using sum of U statistics."""
+"""Treatments-versus-control precedence test for the tree alternative."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_fligner_wolfe_test"]
+__all__ = ['ctrltree', 'gibbons_fligner_wolfe_test']
 
 
-def gibbons_fligner_wolfe_test(groups, cdf=None):
-    """
-    Fligner-Wolfe test against simple tree alternative using sum of U statistics
+def ctrltree(samples, r=None):
+    """Chakraborti-Desu W: treatment observations preceding T.
 
-    Formula: W* = sum_{i=2}^{k} U_{1i}; distribution same as two-sample Mann-Whitney
+    Section 10.7.2 (book p. 373), eq. (10.7.3).  Sample 1 is the
+    control and T is one of its order statistics (the median by
+    default).  W counts the observations in treatment groups
+    2, ..., k that precede T, and H0 is rejected in favour of the tree
+    alternative for small W.  The book shows that, because W is the
+    total precedence count, its null distribution is that of the
+    two-sample precedence statistic with sample sizes n_1 and N - n_1,
+    i.e. the placement law of Problem 2.28(c):
+
+    .. math:: P[W = w] = \\frac{\\binom{n_1 + M - r - w}{M - w}
+        \\binom{r + w - 1}{w}}{\\binom{n_1 + M}{M}},
+        \\qquad M = N - n_1.
+
+    NOTE ON THE MODULE LABEL: the generated stub called this a
+    "Fligner-Wolfe test".  Fligner & Killeen and the Fligner-Wolfe
+    treatments-versus-control test are not in Gibbons & Chakraborti
+    (2011); the only Fligner reference the book carries is Fligner and
+    Wolfe (1976) on placements (pp. 65, 70).  What the cited source
+    gives for this problem is the Chakraborti-Desu test, implemented
+    here.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
+    samples : sequence of sequence of float
+        The k samples; ``samples[0]`` is the control.
+    r : int, optional
+        Index of the control order statistic T (defaults to the
+        control median index [n_1 / 2] + 1).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (W), ``p_value`` (lower tail), ``pmf``,
+        ``t`` (the control order statistic used), ``r``, ``mtreat``
+        (N - n_1), ``mean``, ``k``, ``method``.
 
     References
     ----------
-    Gibbons Ch 10.7
+    Gibbons & Chakraborti (2011), Sec. 10.7.2, eq. (10.7.3), p. 373
+    (Chakraborti and Desu, 1988b); null law Problem 2.28(c), p. 70.
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Fligner-Wolfe test against simple tree alternative using sum of U statistics",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ss = [[float(v) for v in s] for s in samples]
+    k = len(ss)
+    if k < 2:
+        raise ValueError("need at least 2 samples.")
+    ctrl = sorted(ss[0])
+    n1 = len(ctrl)
+    if n1 < 1:
+        raise ValueError("the control sample must be non-empty.")
+    rr = (n1 // 2) + 1 if r is None else int(r)
+    if not 1 <= rr <= n1:
+        raise ValueError("r must lie in 1..n1.")
+    t = ctrl[rr - 1]
+    treat = [v for s in ss[1:] for v in s]
+    mt = len(treat)
+    if mt < 1:
+        raise ValueError("need at least one treatment observation.")
+    w = sum(1 for v in treat if v < t)
+    den = math.comb(n1 + mt, mt)
+    pmf = [
+        math.comb(n1 + mt - rr - j, mt - j) * math.comb(rr + j - 1, j) / den
+        for j in range(mt + 1)
+    ]
+    mean = sum(j * p for j, p in enumerate(pmf))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Fligner-Wolfe test against simple tree alternative using sum of U statistics",
+            "statistic": int(w),
+            "p_value": float(min(1.0, sum(pmf[: w + 1]))),
+            "pmf": pmf,
+            "t": float(t),
+            "r": int(rr),
+            "mtreat": int(mt),
+            "mean": float(mean),
+            "k": int(k),
+            "method": "treatments-vs-control precedence test, eq. (10.7.3)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_fwt: Fligner-Wolfe test against simple tree alternative using sum of U statistics"
+gibbons_fligner_wolfe_test = ctrltree

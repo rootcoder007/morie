@@ -1,55 +1,43 @@
-"""Numbered display equation (9.1) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Hyperplane definition and side.
 
-from ._richresult import RichResult
+Implements eq. (9.1), (9.2), (9.3) p.339 of Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_1"]
+Note: the generated stub name this module replaces carried a
+topic label taken from the wrong chapter, and its body ignored the
+cited equation entirely; the name and the implementation below follow
+the equation actually printed on that page.
+"""
+
+from . import _gp_core as _gp
+from ._richresult import RichResult, with_describe_pointer
+
+__all__ = ["hyperpl", "mvsml_ridge_lasso_elastic_eq_9_1"]
 
 
-def mvsml_ridge_lasso_elastic_eq_9_1(Fig, Hyperplanes, two, left, three, right):
+def hyperpl(X, beta0, beta):
+
+    """beta_0 + beta_1 x_1 + beta_2 x_2 + beta_3 x_3 = 0 defines a
+    hyperplane (eq. 9.1, the p = 3 case), and its p-dimensional
+    extension beta_0 + beta_1 x_1 + ... + beta_p x_p = 0 (eq. 9.2)
+    defines a (p-1)-dimensional flat subspace.  Points whose left-hand
+    side is < 0 satisfy (9.3) and lie on one side of it; those with it
+    > 0 satisfy (9.4) and lie on the other, so the sign of the
+    left-hand side alone says which half of the space a point is in.
+    |f(x)| / ||beta|| is the Euclidean distance to the plane.
+    Keys: value, side, below, above, on_plane, distance, norm_beta.
     """
-    Numbered display equation (9.1) from MVSML chapter 9.
 
-    Formula: Fig. 9.1 Hyperplanes in two (left) and three (right) dimensions two-dimensional subspace. Although it is hard to visualize a hyperplane when the original space has a dimension of four or more, it still applies for the ( p + 1)- dimensional ﬂat subspace (James et al. 2013). In higher dimensions, it is useful to think of a hyperplane as a member of an afﬁne family of ( p + 1)-dimensional subspaces (afﬁne spaces look and behave very similarly to linear spaces without the requirement to contain the origin), such that the whole space is partitioned into these family subspaces. From a mathematical point of view, a hyperplane is deﬁned as (James et al. 2013) \beta0 + \beta1X1 + \beta2X2 + \beta3X3 = 0
+    res = RichResult(payload=_gp.hyperplane_value(X, beta0, beta))
 
-    Parameters
-    ----------
-    Fig : array-like
-        Input data.
-    Hyperplanes : array-like
-        Input data.
-    two : array-like
-        Input data.
-    left : array-like
-        Input data.
-    three : array-like
-        Input data.
-    right : array-like
-        Input data.
+    return with_describe_pointer(res, "msm161")
 
-    Returns
-    -------
-    result : dict
-        Keys: expression
 
-    References
-    ----------
-    MVSML, Eq. (9.1) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    """
-    Fig = np.atleast_1d(np.asarray(Fig, dtype=float))
-    n = len(Fig)
-    result = float(np.mean(Fig))
-    se = float(np.std(Fig, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.1) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_1 = hyperpl
 
 
 def cheatsheet():
-    return "msm161: Numbered display equation (9.1) from MVSML chapter 9."
+    return "msm161: Hyperplane definition and side"

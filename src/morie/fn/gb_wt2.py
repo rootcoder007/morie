@@ -1,76 +1,90 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Two-sample Wald-Wolfowitz runs test with exact null distribution."""
+"""Exact two-sample runs test with the full null distribution."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_ww_two_samp_runs"]
+__all__ = ['wwexact', 'gibbons_ww_two_samp_runs']
 
 
-def gibbons_ww_two_samp_runs(x, y, cdf=None):
-    """
-    Two-sample Wald-Wolfowitz runs test with exact null distribution
+def wwexact(x, y, tail="left"):
+    """Wald-Wolfowitz runs test with an exact p-value from Theorem 3.2.2.
 
-    Formula: R = runs in pooled sequence; P(R = r) from runs distribution
+    Section 6.2 (book p. 231) with the null distribution of Section 3.2.
+    Unlike the normal approximation this is exact for every m and n:
+    the whole pmf of R is built from eq. (3.2.3) and summed over the
+    rejection region.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
+    tail : str, optional
+        ``"left"`` (clustering, the usual two-sample alternative),
+        ``"right"`` or ``"two-sided"``.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (R), ``p_value``, ``p_left``, ``p_right``,
+        ``support``, ``pmf``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 6.2
+    Gibbons & Chakraborti (2011), Sec. 6.2, p. 231; eq. (3.2.3), p. 79.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Two-sample Wald-Wolfowitz runs test with exact null distribution",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 1:
+        raise ValueError("both samples must be non-empty.")
+    if tail not in ("left", "right", "two-sided"):
+        raise ValueError("tail must be left, right or two-sided.")
+    tagged = [(v, 0) for v in xs] + [(v, 1) for v in ys]
+    tagged.sort(key=lambda p: (p[0], p[1]))
+    labels = [t for _, t in tagged]
+    r = 1
+    for i in range(1, len(labels)):
+        if labels[i] != labels[i - 1]:
+            r += 1
+    nn = m + n
+    den = math.comb(nn, m)
+    support = list(range(2, nn + 1))
+    pmf = []
+    for rr in support:
+        if rr % 2 == 0:
+            k = rr // 2
+            p = 2.0 * math.comb(m - 1, k - 1) * math.comb(n - 1, k - 1)
+        else:
+            k = (rr - 1) // 2
+            p = (
+                math.comb(m - 1, k - 1) * math.comb(n - 1, k)
+                + math.comb(m - 1, k) * math.comb(n - 1, k - 1)
+            )
+        pmf.append(p / den)
+    left = sum(pmf[i] for i, s in enumerate(support) if s <= r)
+    right = sum(pmf[i] for i, s in enumerate(support) if s >= r)
+    if tail == "left":
+        pv = left
+    elif tail == "right":
+        pv = right
     else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        pv = min(1.0, 2.0 * min(left, right))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(r),
+            "p_value": float(min(1.0, pv)),
+            "p_left": float(left),
+            "p_right": float(right),
+            "support": support,
+            "pmf": pmf,
+            "m": m,
             "n": n,
-            "method": "Two-sample Wald-Wolfowitz runs test with exact null distribution",
+            "method": "exact Wald-Wolfowitz runs test (Sec. 6.2, eq. 3.2.3)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_wt2: Two-sample Wald-Wolfowitz runs test with exact null distribution"
+gibbons_ww_two_samp_runs = wwexact

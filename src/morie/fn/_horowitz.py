@@ -16,7 +16,7 @@ from . import _array_core as np
 __all__ = [
     "kernel", "kernel_deriv", "silverman_bw", "kde", "kde_deriv",
     "nw_regression", "local_linear", "local_linear_quantile",
-    "sieve_basis", "check_rate",
+    "sieve_basis", "check_rate", "coord_min", "qirls",
 ]
 
 
@@ -289,3 +289,66 @@ def optimize_scale_normalized(objective, d, n_restarts=8, seed=0, x0=None):
 
 def cheatsheet():
     return "_horowitz: kernels, KDE, NW, local linear/quantile, sieves, rate checks"
+
+
+def coord_min(fun, x0, niter=12, delta=1.0, shrink=0.5, steps=3):
+    """Deterministic coordinate search for a smooth low-dimensional
+    objective.
+
+    A FIXED schedule: `niter` sweeps, each trying offsets
+    (-steps ... +steps) * delta on every coordinate and keeping the
+    best, with delta multiplied by `shrink` after each sweep.  There
+    is NO tolerance-based early exit and no random restart, so the
+    same inputs give the same answer in every language this is
+    mirrored into -- which is the whole point.
+    """
+    x = [float(v) for v in x0]
+    best = float(fun(x))
+    d = float(delta)
+    for _ in range(int(niter)):
+        for j in range(len(x)):
+            base = x[j]
+            for k in range(-int(steps), int(steps) + 1):
+                if k == 0:
+                    continue
+                x[j] = base + k * d
+                val = float(fun(x))
+                if val < best:
+                    best = val
+                    base = x[j]
+            x[j] = base
+        d = d * float(shrink)
+    return x, best
+
+
+def qirls(X, y, w, tau, niter=40, eps=1e-3):
+    """Fixed-iteration IRLS for the check loss rho_tau.
+
+    Fixed iteration count and NO tolerance-based early exit, so the
+    Python and R arms take exactly the same path.
+    """
+    X = np.atleast_2d(np.asarray(X, dtype=float))
+    y = np.asarray(y, dtype=float).ravel()
+    w = np.asarray(w, dtype=float).ravel()
+    p = X.shape[1]
+    beta = np.zeros(p)
+    for _ in range(int(niter)):
+        r = y - X @ beta
+        # The check-loss weight is DISCONTINUOUS at r = 0.  Where the
+        # residual is already inside the eps floor the sign test is
+        # decided by machine noise, and 40 iterations amplify that into
+        # a visible cross-language difference, so a residual within eps
+        # of zero is treated as a tie and given the average weight.
+        num = np.where(np.abs(r) < eps, 0.5,
+                       np.where(r > 0, tau, 1.0 - tau))
+        wk = w * num / np.maximum(np.abs(r), eps)
+        A = X.T @ (X * wk[:, None]) + 1e-10 * np.eye(p)
+        b = X.T @ (wk * y)
+        # Jacobi equilibration.  A series design of powers is badly
+        # conditioned, and solving it raw lets two LAPACK paths differ
+        # in the last bits -- which 40 IRLS steps then amplify into a
+        # visible cross-language gap.  Scaling by the square roots of
+        # the diagonal is exact arithmetic and fixes it.
+        dg = np.sqrt(np.maximum(np.diag(A), 1e-300))
+        beta = np.linalg.solve(A / dg[:, None] / dg[None, :], b / dg) / dg
+    return beta

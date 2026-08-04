@@ -1,54 +1,52 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Rule of succession.
 
-from . import _array_core as np
+MacKay (2003) eq. (3.16), p. 52
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_3_equation_16"]
+__all__ = ["sucrule", "information_theory_mackay_chapter_3_equation_16"]
+
+_METHOD = "Rule of succession"
 
 
-def information_theory_mackay_chapter_3_equation_16(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def sucrule(fa, fb):
+    """Rule of succession.
 
-    Formula: Fa +Fb + 2; (3.16)
+    (3.16) p.52 -- the rule of succession, (Fa + 1)/(Fa + Fb + 2).
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    fa : as documented for the shelf core
+        See ``morie.fn._itila.sucrule``.
+    fb : as documented for the shelf core
+        See ``morie.fn._itila.sucrule``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay3e16')`` for the full guide.
+        Payload keys: p, pnot, mle.
 
     References
     ----------
-    Information theory MacKay, ch.3 eq.3.16
+    MacKay (2003) eq. (3.16), p. 52
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.sucrule(fa=fa, fb=fb)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("p", res["p"]), ("pnot", res["pnot"]), ("mle", res["mle"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_3_equation_16 = sucrule
+
+
 def cheatsheet():
-    return "information_theory_mackay3e16: Probability equation extracted from Information theory MacKay."
+    return "sucrule: Rule of succession -- MacKay (2003) eq. (3.16), p. 52"

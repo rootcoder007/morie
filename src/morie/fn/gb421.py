@@ -1,78 +1,70 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Chi-square goodness-of-fit test statistic Q with grouped data."""
+"""Chi-square goodness-of-fit statistic for grouped data."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_chisq_gof"]
+__all__ = ['chigof', 'gibbons_chisq_gof']
 
 
-def gibbons_chisq_gof(observed, expected, k, cdf=None):
-    """
-    Chi-square goodness-of-fit test statistic Q with grouped data
+def chigof(observed, expected, ddof=0):
+    """Pearson goodness-of-fit statistic Q for k categories.
 
-    Formula: Q = sum_i (O_i - E_i)^2 / E_i ~ chi2(k-1) under H0
+    Section 4.2 (book p. 104), eq. (4.2.1):
+
+    .. math:: Q = \\sum_{i=1}^{k}\\frac{(f_i - e_i)^2}{e_i},
+
+    asymptotically chi-square with k - 1 degrees of freedom, reduced by
+    one further degree for each parameter estimated from the data
+    (``ddof``).
 
     Parameters
     ----------
-    observed : array-like
-        Input data.
-    expected : array-like
-        Input data.
-    k : array-like
-        Input data.
+    observed : sequence of float
+        Observed cell frequencies, k >= 2.
+    expected : sequence of float
+        Expected cell frequencies under H0, all strictly positive.
+    ddof : int, optional
+        Number of parameters estimated from the sample (default 0).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``df``, ``p_value``, ``k``, ``n``,
+        ``contrib`` (per-cell terms), ``method``.
 
     References
     ----------
-    Gibbons Ch 4.2
+    Gibbons & Chakraborti (2011), Sec. 4.2, eq. (4.2.1), p. 104.
     """
-    observed = np.asarray(observed, dtype=float)
-    n = int(observed) if observed.ndim == 0 else len(observed)
-    if observed.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Chi-square goodness-of-fit test statistic Q with grouped data",
-            }
-        )
-    x_sorted = np.sort(observed)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(observed), scale=np.std(observed, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    o = [float(v) for v in observed]
+    e = [float(v) for v in expected]
+    k = len(o)
+    if k < 2:
+        raise ValueError("need at least 2 categories.")
+    if len(e) != k:
+        raise ValueError("observed and expected must have equal length.")
+    if any(v <= 0.0 for v in e):
+        raise ValueError("expected frequencies must be strictly positive.")
+    contrib = [(o[i] - e[i]) ** 2 / e[i] for i in range(k)]
+    q = sum(contrib)
+    df = k - 1 - int(ddof)
+    if df < 1:
+        raise ValueError("degrees of freedom must be at least 1.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Chi-square goodness-of-fit test statistic Q with grouped data",
+            "statistic": float(q),
+            "df": int(df),
+            "p_value": float(stats.chi2.sf(q, df)),
+            "k": int(k),
+            "n": float(sum(o)),
+            "contrib": contrib,
+            "method": "chi-square goodness of fit, eq. (4.2.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb421: Chi-square goodness-of-fit test statistic Q with grouped data"
+gibbons_chisq_gof = chigof

@@ -1,51 +1,21 @@
-r"""Numbered display equation (9.42) from MVSML chapter 9.."""
+# morie.fn -- function file (rootcoder007/morie)
 
-from . import _array_core as np
+"""Karush-Kuhn-Tucker conditions of the support vector classifier -- re-export.
 
-from ._richresult import RichResult
+The generator emitted several modules for eq. (9.38), (9.39), (9.40), (9.41), (9.42), (9.43) p.356 of
+Montesinos Lopez, Montesinos Lopez & Crossa (2022), *Multivariate Statistical
+Machine Learning Methods for Genomic Prediction*, Springer
+(DOI 10.1007/978-3-030-89010-0).
+All of them are the same method, so the implementation lives once in
+morie.fn.msm223 and this module re-exports it.
+"""
 
-__all__ = ["mvsml_ridge_lasso_elastic_eq_9_42"]
+from .msm223 import svmkkt
 
+__all__ = ["svmkkt", "mvsml_ridge_lasso_elastic_eq_9_42"]
 
-def mvsml_ridge_lasso_elastic_eq_9_42(i, yi, xT, n):
-    r"""
-    Numbered display equation (9.42) from MVSML chapter 9.
-
-    Formula: \alphai yi \beta0 + xT i \beta + 1 + \zetai = 0 for i = 1, . . . , n \Rightarrow \alphai   = 0 and yi \beta0 + xT i \beta = 1 + \zetai
-
-    Parameters
-    ----------
-    i : array-like
-        Input data.
-    yi : array-like
-        Input data.
-    xT : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: expression
-
-    References
-    ----------
-    MVSML, Eq. (9.42) [Multivariate Statistical Machine Learnin [Pages 337-378] [2026-04-16].pdf]
-    r"""
-    i = np.atleast_1d(np.asarray(i, dtype=float))
-    n = len(i)
-    result = float(np.mean(i))
-    se = float(np.std(i, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Numbered display equation (9.42) from MVSML chapter 9.",
-        }
-    )
+mvsml_ridge_lasso_elastic_eq_9_42 = svmkkt
 
 
 def cheatsheet():
-    return "msm227: Numbered display equation (9.42) from MVSML chapter 9."
+    return "msm227: Karush-Kuhn-Tucker conditions of the support vector classifier (see msm223)"

@@ -1,54 +1,31 @@
-"""CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Epidemic log-autoregression."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3"]
+__all__ = ["epiar", "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3"]
 
 
-def andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3(x):
-    """
-    CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.
+def epiar(beta0, beta1, i_lag, b1):
+    """Epidemic log-autoregression.
 
-    Formula: [EQ] log(f(..)) = β0 + β1 log(I c
+    log(f) = b0 + b1 log(I_{i,j-1}) + b1i   (Lawson eq. 18.3).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Epidemic transmission term: log-linear in the previous period's own
+    infective count, with a spatially referenced random effect b1i
+    (ICAR prior in the book).
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3')`` for the full guide.
-
-    References
-    ----------
-    Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling, ch.18 eq.18.3
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling.",
-        },
-    )
+    return RichResult(title="Epidemic log-autoregression", payload=_c.epiar(beta0=beta0, beta1=beta1, i_lag=i_lag, b1=b1))
+
+
+andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3 = epiar
 
 
 def cheatsheet():
-    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3: CountModels equation extracted from Andrew B Lawson - Using R for Bayesian Spatial and Spatio-Temporal Health Modeling."
+    return "andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3: Epidemic log-autoregression"

@@ -1,68 +1,34 @@
-"""MI Wald test for combined estimates."""
-
-from . import _array_core as np
-from . import _stats_core as stats
+# morie.fn -- function file (rootcoder007/morie)
+"""Multiply-imputed Wald test."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["mi_compare_models"]
+__all__ = ["mitest", "mi_compare_models"]
 
 
-def mi_compare_models(theta_list, var_list, cdf=None):
-    """
-    MI Wald test for combined estimates
+def mitest(theta, U):
+    """Multiply-imputed Wald test.
 
-    Formula: chi-sq with adjusted df
+    Multiply-imputed Wald test with the Li et al. (1991) reference df.
 
-    Parameters
-    ----------
-    theta_list : array-like
-        Input data.
-    var_list : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    Between-imputation variance B, within-imputation variance Ubar, and
+    total T = Ubar + (1 + 1/m) B.  The statistic is referred to an F on
+    (k, v) with the small-m denominator degrees of freedom of Li et al.,
+    which is what stops a handful of imputations from producing a
+    wildly optimistic p-value.  ``theta[i]`` is the k-vector estimate
+    from imputation i and ``U[i]`` its k x k covariance.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Li et al (1991)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    theta_list = np.asarray(theta_list, dtype=float)
-    n = len(theta_list)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "MI Wald test for combined estimates"}
-        )
-    x_sorted = np.sort(theta_list)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(theta_list), scale=np.std(theta_list, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "MI Wald test for combined estimates",
-        }
-    )
+    return RichResult(title="Multiply-imputed Wald test", payload=_c.mitest(theta=theta, U=U))
+
+
+mi_compare_models = mitest
 
 
 def cheatsheet():
-    return "micomp: MI Wald test for combined estimates"
+    return "micomp: Multiply-imputed Wald test"

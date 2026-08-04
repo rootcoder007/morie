@@ -1,58 +1,60 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Sample autocorrelation function at lag k."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Sample autocorrelation function.
 
-from . import _array_core as np
-from . import _stats_core as stats
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 3
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_autocorrelation_function"]
+__all__ = ["autocorf", "joseph_autocorrelation_function"]
+
+_METHOD = "Sample autocorrelation function"
 
 
-def joseph_autocorrelation_function(y, max_lag):
-    """
-    Sample autocorrelation function at lag k
+def autocorf(x, maxlag=20):
+    """Sample autocorrelation function.
 
-    Formula: rho_k = sum_{t=k+1}^T (y_t - mean) * (y_{t-k} - mean) / sum_t (y_t - mean)^2
+    Autocorrelation function, ch. 3.
+
+    The standard biased (divide-by-n) estimator, which is what the
+    book's ACF plots use:
+
+        r_k = sum_{t=k+1..n} (x_t - xbar)(x_{t-k} - xbar)
+              / sum_{t=1..n} (x_t - xbar)^2
+
+    ``ci`` is the +/- 1.96/sqrt(n) band drawn on those plots.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    max_lag : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.autocorf``.
+    maxlag : as documented for the shelf core
+        See ``morie.fn._joseph.autocorf``.
 
     Returns
     -------
-    result : dict
-        Keys: acf
+    result : RichResult
+        Payload keys: r1, ci, nsignif, n.
 
     References
     ----------
-    Joseph Ch 3, ACF/PACF section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 3
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = min(len(y), len(y))
-    if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Sample autocorrelation function at lag k",
-            }
-        )
-    result = stats.spearmanr(y[:n], y[:n])
+    res = _core.autocorf(x=x, maxlag=maxlag)
     return RichResult(
-        payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
-            "n": n,
-            "method": "Sample autocorrelation function at lag k",
-        }
+        title=_METHOD,
+        summary_lines=[("r1", res["r1"]), ("ci", res["ci"]), ("nsignif", res["nsignif"]), ("n", res["n"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_autocorrelation_function = autocorf
+
+
 def cheatsheet():
-    return "joacf: Sample autocorrelation function at lag k"
+    return "autocorf: Sample autocorrelation function"
