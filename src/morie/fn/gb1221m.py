@@ -1,78 +1,80 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Multiple comparisons after Friedman test."""
+"""Multiple comparisons after the Friedman test -- eq. (12.2.13)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_friedman_mult"]
+__all__ = ['friedmc', 'gibbons_friedman_mult']
 
 
-def gibbons_friedman_mult(data, k, alpha, cdf=None):
-    """
-    Multiple comparisons after Friedman test
+def friedmc(rank_sums, k, alpha=0.20):
+    """Pairwise treatment comparisons from the Friedman rank sums.
 
-    Formula: |Rbar_j - Rbar_l| > z_{alpha/2} * sqrt(bk(k+1)/6) for pairwise
+    Book p. 445, eq. (12.2.13): treatments i and j differ significantly
+    when
+
+    .. math:: |R_i - R_j| \\ge z^*\\sqrt{\\frac{kn(n+1)}{6}},
+
+    with z* the upper alpha/[n(n-1)] normal quantile -- the same
+    Bonferroni split over the n(n-1)/2 pairs used in Sec. 10.4 for the
+    one-way case, and the book notes alpha is generally taken larger
+    than in ordinary testing.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
-    k : array-like
-        Input data.
-    alpha : array-like
-        Input data.
+    rank_sums : sequence of float
+        The n treatment rank sums R_j.
+    k : int
+        Number of blocks.
+    alpha : float, optional
+        Experimentwise level (default 0.20).
 
     Returns
     -------
-    result : dict
-        Keys: pairwise_comparisons
+    RichResult
+        keys ``bound``, ``zstar``, ``diffs`` (matrix), ``significant``
+        (pairs as [i, j]), ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 12.2 multiple comparisons
+    Gibbons & Chakraborti (2011), eq. (12.2.13), p. 445.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    rs = [float(v) for v in rank_sums]
+    n = len(rs)
+    k = int(k)
+    alpha = float(alpha)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Multiple comparisons after Friedman test",
-            }
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 treatments.")
+    if k < 2:
+        raise ValueError("need at least 2 blocks.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    zstar = stats.norm.ppf(1.0 - alpha / (n * (n - 1.0)))
+    bound = zstar * math.sqrt(k * n * (n + 1.0) / 6.0)
+    diffs = []
+    sig = []
+    for i in range(n):
+        row = []
+        for j in range(n):
+            d = abs(rs[i] - rs[j])
+            row.append(float(d))
+            if i < j and d >= bound:
+                sig.append([i, j])
+        diffs.append(row)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Multiple comparisons after Friedman test",
+            "bound": float(bound),
+            "zstar": float(zstar),
+            "diffs": diffs,
+            "significant": sig,
+            "k": k,
+            "n": int(n),
+            "method": "Friedman multiple comparisons, eq. (12.2.13)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1221m: Multiple comparisons after Friedman test"
+gibbons_friedman_mult = friedmc

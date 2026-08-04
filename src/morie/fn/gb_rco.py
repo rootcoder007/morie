@@ -1,60 +1,94 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Partial correlation via Kendall's tau controlling for third variable."""
+"""Kendall's tau coefficient for partial correlation -- eq. (12.6.1)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_rank_corr_partial"]
+__all__ = ['taupartial', 'gibbons_rank_corr_partial']
 
 
-def gibbons_rank_corr_partial(x, y, z):
-    """
-    Partial correlation via Kendall's tau controlling for third variable
+def taupartial(x, y, z):
+    """T_{XY.Z} from the 2 x 2 table of concordance agreements.
 
-    Formula: rho_xy.z = (rho_xy - rho_xz*rho_yz) / sqrt((1-rho_xz^2)*(1-rho_yz^2))
+    Section 12.6 (book p. 467), eq. (12.6.1).  Over the m(m-1)/2 pairs,
+    classify each by whether X agrees with Z and whether Y agrees with
+    Z, giving X11, X12, X21, X22 as in Table 12.6.1; then
+
+    .. math:: T_{XY.Z} = \\frac{X_{11}X_{22} - X_{12}X_{21}}
+        {(X_{.1}X_{.2}X_{1.}X_{2.})^{1/2}},
+
+    which lies in [-1, 1].  Pairs tied in any of the three variables
+    contribute to neither concordance nor discordance and are counted
+    separately as ``dropped``.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    z : array-like
-        Input data.
+    x, y, z : sequence of float
+        Three rankings or measurements of the same m subjects, m >= 3.
 
     Returns
     -------
-    result : dict
-        Keys: partial_corr, p_value
+    RichResult
+        keys ``statistic``, ``x11``, ``x12``, ``x21``, ``x22``,
+        ``dropped``, ``npairs``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 12.6
+    Gibbons & Chakraborti (2011), Sec. 12.6, eq. (12.6.1), Table
+    12.6.1, p. 467.
     """
-    x = np.asarray(x, dtype=float)
-    y = np.asarray(y, dtype=float)
-    n = min(len(x), len(y))
+    xs = [float(v) for v in x]
+    ys = [float(v) for v in y]
+    zs = [float(v) for v in z]
+    n = len(xs)
+    if len(ys) != n or len(zs) != n:
+        raise ValueError("x, y and z must have the same length.")
     if n < 3:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Partial correlation via Kendall's tau controlling for third variable",
-            }
-        )
-    result = stats.spearmanr(x[:n], y[:n])
+        raise ValueError("need at least 3 subjects.")
+    x11 = x12 = x21 = x22 = 0
+    dropped = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            sx = (xs[j] > xs[i]) - (xs[j] < xs[i])
+            sy = (ys[j] > ys[i]) - (ys[j] < ys[i])
+            sz = (zs[j] > zs[i]) - (zs[j] < zs[i])
+            if sx == 0 or sy == 0 or sz == 0:
+                dropped += 1
+                continue
+            xc = sx * sz > 0
+            yc = sy * sz > 0
+            if yc and xc:
+                x11 += 1
+            elif yc and not xc:
+                x12 += 1
+            elif (not yc) and xc:
+                x21 += 1
+            else:
+                x22 += 1
+    c1 = x11 + x21
+    c2 = x12 + x22
+    r1 = x11 + x12
+    r2 = x21 + x22
+    den = c1 * c2 * r1 * r2
+    stat = (
+        (x11 * x22 - x12 * x21) / math.sqrt(den)
+        if den > 0
+        else float("nan")
+    )
     return RichResult(
         payload={
-            "statistic": float(result.statistic),
-            "p_value": float(result.pvalue),
+            "statistic": float(stat),
+            "x11": int(x11),
+            "x12": int(x12),
+            "x21": int(x21),
+            "x22": int(x22),
+            "dropped": int(dropped),
+            "npairs": int(n * (n - 1) // 2),
             "n": n,
-            "method": "Partial correlation via Kendall's tau controlling for third variable",
+            "method": "Kendall partial tau T_XY.Z, eq. (12.6.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_rco: Partial correlation via Kendall's tau controlling for third variable"
+gibbons_rank_corr_partial = taupartial

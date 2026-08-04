@@ -1,78 +1,82 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Goodness-of-fit test for multinomial data."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_multinomial_gof"]
+__all__ = ['multgof', 'gibbons_multinomial_gof']
 
 
-def gibbons_multinomial_gof(observed, expected_probs, n, cdf=None):
-    """
-    Goodness-of-fit test for multinomial data
+def multgof(observed, probs, ddof=0):
+    """Pearson Q for a multinomial null, Sec. 14.6.
 
-    Formula: Q = sum (O_j - np_j0)^2 / (np_j0) ~ chi2(k-1) under H0
+    Book p. 528.  With k categories, hypothesised probabilities
+    p_1, ..., p_k summing to 1 and N observations,
+
+    .. math:: Q = \\sum_{i=1}^{k}
+        \\frac{(f_i - N p_i)^2}{N p_i},
+
+    asymptotically chi-square on k - 1 degrees of freedom, one fewer
+    for each parameter estimated from the sample.  The exact
+    multinomial probability of the observed vector is returned too,
+    since for small N the chi-square reference is the weaker of the
+    two.
 
     Parameters
     ----------
-    observed : array-like
-        Input data.
-    expected_probs : array-like
-        Input data.
-    n : array-like
-        Input data.
+    observed : sequence of float
+        Cell counts, k >= 2.
+    probs : sequence of float
+        Null probabilities, summing to 1.
+    ddof : int, optional
+        Parameters estimated from the data (default 0).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``df``, ``p_value``, ``expected``,
+        ``prob`` (exact multinomial probability), ``n``, ``k``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 14.6
+    Gibbons & Chakraborti (2011), Sec. 14.6, p. 528.
     """
-    observed = np.asarray(observed, dtype=float)
-    n = int(observed) if observed.ndim == 0 else len(observed)
-    if observed.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Goodness-of-fit test for multinomial data",
-            }
-        )
-    x_sorted = np.sort(observed)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(observed), scale=np.std(observed, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    o = [float(v) for v in observed]
+    p = [float(v) for v in probs]
+    k = len(o)
+    if k < 2 or len(p) != k:
+        raise ValueError("need at least 2 matching categories.")
+    if abs(sum(p) - 1.0) > 1e-9:
+        raise ValueError("probs must sum to 1.")
+    if any(v <= 0.0 for v in p):
+        raise ValueError("probs must be strictly positive.")
+    nn = sum(o)
+    exp = [nn * v for v in p]
+    q = sum((o[i] - exp[i]) ** 2 / exp[i] for i in range(k))
+    df = k - 1 - int(ddof)
+    if df < 1:
+        raise ValueError("degrees of freedom must be at least 1.")
+    ni = int(round(nn))
+    lp = math.lgamma(ni + 1.0)
+    for i in range(k):
+        ci = int(round(o[i]))
+        lp += ci * math.log(p[i]) - math.lgamma(ci + 1.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Goodness-of-fit test for multinomial data",
+            "statistic": float(q),
+            "df": int(df),
+            "p_value": float(stats.chi2.sf(q, df)),
+            "expected": exp,
+            "prob": float(math.exp(lp)),
+            "n": float(nn),
+            "k": int(k),
+            "method": "multinomial goodness of fit (Sec. 14.6)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1461: Goodness-of-fit test for multinomial data"
+gibbons_multinomial_gof = multgof

@@ -1,45 +1,46 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""ReLU activation function for neural networks."""
+"""Rectifier linear unit activation and its gradient."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["relu_activation"]
+__all__ = ['reluact', 'relu_activation', 'reluactivation']
 
 
-def relu_activation(x):
-    """
-    ReLU activation function for neural networks
+def reluact(z, slope=0.0):
+    """Rectifier linear unit activation and its gradient.
 
-    Formula: f(x) = max(0, x)
+    Formula: g(z) = max(0, z);  g'(z) = 1 if z > 0, else 0
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    z : array-like
+        Pre-activation values.
+    slope : float
+        Slope applied below the threshold; 0 gives the plain ReLU, a small positive value gives the leaky ReLU of Sect. 10.3.3.
 
     Returns
     -------
-    result : dict
-        Keys: {'activated': 'array'}
+    RichResult
+        ``activation``, ``gradient``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 10
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 10, Sect. 10.3.2 p. 388: g(z) = max(0, z), flat below the threshold and linear above it; Sect. 10.3.3 p. 389 gives the leaky variant with slope alpha below zero (the figure uses alpha = 0.1).  Read from the chapter PDF, not recalled.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "ReLU activation function for neural networks"}
-    )
+    z = C.vec(z)
+    slope = float(slope)
+    act = [v if v > 0.0 else slope * v for v in z]
+    grd = [1.0 if v > 0.0 else slope for v in z]
+    return RichResult(payload={
+        "activation": act, "gradient": grd, "n": len(z),
+        "method": "ReLU activation, MVSML Sect. 10.3.2"})
+
+
+relu_activation = reluact
+reluactivation = reluact
 
 
 def cheatsheet():
-    return "relua: ReLU activation function for neural networks"
-
-
-# compact alias per ledger/NAMING.md
-reluactivation = relu_activation
+    return 'relua: Rectifier linear unit activation and its gradient.'

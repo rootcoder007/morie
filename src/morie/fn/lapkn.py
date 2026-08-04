@@ -1,41 +1,46 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Laplacian kernel function."""
+"""Exponential (Laplace) kernel matrix."""
 
-from . import _array_core as np
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["laplacian_kernel"]
+__all__ = ['expkern', 'laplacian_kernel']
 
 
-def laplacian_kernel(X, h):
-    """
-    Laplacian kernel function
+def expkern(X, gamma=None, Z=None):
+    """Exponential (Laplace) kernel matrix.
 
-    Formula: K(x_i, x_j) = exp(-||x_i - x_j||_1 / h)
+    Formula: K(x_i, x_j) = exp(-gamma * ||x_i - x_j||)
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    h : array-like
-        Input data.
+    X : array-like, shape (n, p)
+        One record per row.
+    gamma : float or None
+        Bandwidth; None uses 1/p.
+    Z : array-like or None
+        Second set of records; None gives the square Gram matrix of X.
 
     Returns
     -------
-    result : dict
-        Keys: {'K': 'matrix'}
+    RichResult
+        ``K``, ``gamma``, ``n``, ``m``.
 
     References
     ----------
-    Montesinos Lopez Ch 8
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 8, Sect. 8.2.2 p. 264: the book calls this the Exponential Kernel, K(x_i, x_j) = exp(-gamma ||x_i - x_j||), and notes it is close to the Gaussian kernel.  NOTE: the placeholder this replaced was named for the Laplacian kernel; the book's display uses the Euclidean norm, not the L1 norm that the name Laplacian kernel usually implies, and the book's form is what is implemented.  Read from the chapter PDF, not recalled.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Laplacian kernel function"})
+    K = G.kernel_matrix(X, kernel="exponential", gamma=gamma, Z=Z)
+    p = len(G._mat(X)[0])
+    g = (1.0 / p) if gamma is None else float(gamma)
+    return RichResult(payload={
+        "K": K, "gamma": g, "n": len(K), "m": len(K[0]),
+        "method": "Exponential (Laplace) kernel, MVSML Sect. 8.2.2"})
+
+
+laplacian_kernel = expkern
 
 
 def cheatsheet():
-    return "lapkn: Laplacian kernel function"
+    return 'lapkn: Exponential (Laplace) kernel matrix.'

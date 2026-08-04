@@ -1,78 +1,73 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Chi-square approximation for Friedman chi_r^2 statistic."""
+"""Chi-square approximation for Friedman's statistic."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_friedman_chi2_approp"]
+__all__ = ['friedchi', 'gibbons_friedman_chi2_approp']
 
 
-def gibbons_friedman_chi2_approp(chi_r2, k, b, cdf=None):
-    """
-    Chi-square approximation for Friedman chi_r^2 statistic
+def friedchi(q, k, n):
+    """Reference chi-square tail for Q, with its exact first two moments.
 
-    Formula: chi_r^2 ~ chi2(k-1) for large b (number of blocks)
+    Book p. 442, following eq. (12.2.8): Q has
+
+    .. math:: E[Q] = n - 1, \\qquad
+        Var[Q] = \\frac{2(n-1)(k-1)}{k},
+
+    "which are the first two moments of a chi-square distribution with
+    n - 1 degrees of freedom" only in the limit -- the exact variance
+    is smaller by the factor (k-1)/k, and the book notes the higher
+    moments are likewise only closely approximated.  Both the
+    chi-square variance and the exact one are returned so the gap at
+    small k is visible.
 
     Parameters
     ----------
-    chi_r2 : array-like
-        Input data.
-    k : array-like
-        Input data.
-    b : array-like
-        Input data.
+    q : float
+        Observed Q.
+    k : int
+        Number of blocks.
+    n : int
+        Number of treatments, n >= 2.
 
     Returns
     -------
-    result : dict
-        Keys: p_value
+    RichResult
+        keys ``statistic``, ``df``, ``p_value``, ``mean``,
+        ``var_exact``, ``var_chi2``, ``ratio``, ``k``, ``n``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 12.2
+    Gibbons & Chakraborti (2011), Sec. 12.2, p. 442, following
+    eq. (12.2.8).
     """
-    chi_r2 = np.asarray(chi_r2, dtype=float)
-    n = int(chi_r2) if chi_r2.ndim == 0 else len(chi_r2)
-    if chi_r2.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Chi-square approximation for Friedman chi_r^2 statistic",
-            }
-        )
-    x_sorted = np.sort(chi_r2)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(chi_r2), scale=np.std(chi_r2, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    q = float(q)
+    k = int(k)
+    n = int(n)
+    if k < 2 or n < 2:
+        raise ValueError("need k >= 2 blocks and n >= 2 treatments.")
+    df = n - 1
+    ve = 2.0 * (n - 1.0) * (k - 1.0) / k
+    vc = 2.0 * (n - 1.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": q,
+            "df": int(df),
+            "p_value": float(stats.chi2.sf(q, df)),
+            "mean": float(n - 1.0),
+            "var_exact": float(ve),
+            "var_chi2": float(vc),
+            "ratio": float(ve / vc),
+            "k": k,
             "n": n,
-            "method": "Chi-square approximation for Friedman chi_r^2 statistic",
+            "method": "chi-square approximation to Friedman Q (Sec. 12.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_frs: Chi-square approximation for Friedman chi_r^2 statistic"
+gibbons_friedman_chi2_approp = friedchi

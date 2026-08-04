@@ -1,74 +1,91 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Odds ratio estimate and test for 2x2 contingency tables."""
+"""Odds ratio for a 2 x 2 table by Woolf's logit method."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_odds_ratio"]
+__all__ = ['oddsrat', 'gibbons_odds_ratio']
 
 
-def gibbons_odds_ratio(table, cdf=None):
-    """
-    Odds ratio estimate and test for 2x2 contingency tables
+def oddsrat(table, alpha=0.05, cc=0.0):
+    """Odds ratio, its Woolf logit interval and the associated test.
 
-    Formula: OR = (ad)/(bc) where a,b,c,d = 2x2 cell frequencies
+    For the 2 x 2 table [[a, b], [c, d]],
+
+    .. math:: \\widehat{OR} = \\frac{ad}{bc}, \\qquad
+        \\widehat{Var}[\\ln \\widehat{OR}]
+        = \\frac1a + \\frac1b + \\frac1c + \\frac1d,
+
+    giving the interval exp[ln OR +- z_{alpha/2} SE] and the test
+    statistic chi^2 = (ln OR)^2 / Var on 1 degree of freedom.  Pass
+    ``cc`` (conventionally 0.5) to add a constant to every cell when a
+    zero would otherwise make the logit undefined.
+
+    SOURCE NOTE: the odds ratio is NOT in Gibbons & Chakraborti
+    (2011) -- the phrase does not occur anywhere in the book, whose
+    2 x 2 association measures are the contingency coefficient
+    (Sec. 14.2.1) and phi / Cramer's V.  The generated stub carried
+    the Gibbons citation in error.  The method implemented here is
+    therefore attributed to its actual primary source, Woolf (1955),
+    which introduced the logit estimator and the reciprocal-cell
+    variance used above.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    table : sequence of sequence of float
+        The 2 x 2 table [[a, b], [c, d]].
+    alpha : float, optional
+        Two-sided level (default 0.05).
+    cc : float, optional
+        Constant added to every cell (default 0.0).
 
     Returns
     -------
-    result : dict
-        Keys: odds_ratio, ci
+    RichResult
+        keys ``estimate`` (OR), ``log_or``, ``se``, ``lower``,
+        ``upper``, ``statistic`` (chi-square), ``df``, ``p_value``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 14.3
+    Woolf, B. (1955). On estimating the relation between blood group
+    and disease. *Annals of Human Genetics*, 19(4), 251-253.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    if table.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    tb = [[float(v) + float(cc) for v in row] for row in table]
+    if len(tb) != 2 or any(len(row) != 2 for row in tb):
+        raise ValueError("table must be 2 x 2.")
+    a, b = tb[0]
+    c, d = tb[1]
+    if min(a, b, c, d) <= 0.0:
+        raise ValueError(
+            "every cell must be positive for the logit method; "
+            "pass cc=0.5 to add a continuity constant."
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Odds ratio estimate and test for 2x2 contingency tables",
-            }
-        )
-    x_sorted = np.sort(table)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(table), scale=np.std(table, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    alpha = float(alpha)
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must lie strictly inside (0, 1).")
+    orr = a * d / (b * c)
+    lor = math.log(orr)
+    var = 1.0 / a + 1.0 / b + 1.0 / c + 1.0 / d
+    se = math.sqrt(var)
+    z = stats.norm.ppf(1.0 - alpha / 2.0)
+    chi = lor * lor / var
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Odds ratio estimate and test for 2x2 contingency tables",
+            "estimate": float(orr),
+            "log_or": float(lor),
+            "se": float(se),
+            "lower": float(math.exp(lor - z * se)),
+            "upper": float(math.exp(lor + z * se)),
+            "statistic": float(chi),
+            "df": 1,
+            "p_value": float(stats.chi2.sf(chi, 1)),
+            "method": "odds ratio, Woolf (1955) logit method",
         }
     )
 
 
-def cheatsheet():
-    return "gb_odi: Odds ratio estimate and test for 2x2 contingency tables"
+gibbons_odds_ratio = oddsrat

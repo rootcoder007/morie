@@ -1,78 +1,74 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Asymptotic distribution of Page's L statistic."""
+"""Asymptotic distribution of Page's L -- eq. (12.3.2)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_page_asymp"]
+__all__ = ['pageasymp', 'gibbons_page_asymp']
 
 
-def gibbons_page_asymp(L, n, k, cdf=None):
-    """
-    Asymptotic distribution of Page's L statistic
+def pageasymp(ell, k, n, correct=True):
+    """Normal approximation to Page's L with continuity correction.
 
-    Formula: Z = (L - E(L)) / sqrt(Var(L)) -> N(0,1); E,Var from uniform null
+    Book p. 449, eq. (12.3.2):
+
+    .. math:: Z = \\frac{12(L - 0.5) - 3kn(n+1)^2}
+        {n(n+1)\\sqrt{k(n-1)}},
+
+    approximately standard normal for large k and n, with the
+    rejection region in the right tail.  Equivalently
+    E[L] = kn(n+1)^2/4 and Var[L] = kn^2(n+1)^2(n-1)/144, both
+    returned so the standardisation can be checked directly.
 
     Parameters
     ----------
-    L : array-like
-        Input data.
-    n : array-like
-        Input data.
-    k : array-like
-        Input data.
+    ell : float
+        Observed L.
+    k : int
+        Number of blocks.
+    n : int
+        Number of treatments, n >= 2.
+    correct : bool, optional
+        Apply the 0.5 continuity correction (default True).
 
     Returns
     -------
-    result : dict
-        Keys: z_statistic
+    RichResult
+        keys ``z``, ``p_value``, ``mean``, ``var``, ``statistic``,
+        ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 12.3
+    Gibbons & Chakraborti (2011), eq. (12.3.2), p. 449 (Page, 1963).
     """
-    L = np.asarray(L, dtype=float)
-    n = int(L) if L.ndim == 0 else len(L)
-    if L.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    ell = float(ell)
+    k = int(k)
+    n = int(n)
+    if k < 1:
+        raise ValueError("k must be at least 1.")
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Asymptotic distribution of Page's L statistic",
-            }
-        )
-    x_sorted = np.sort(L)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(L), scale=np.std(L, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("n must be at least 2.")
+    e = ell - 0.5 if correct else ell
+    z = (12.0 * e - 3.0 * k * n * (n + 1.0) ** 2) / (
+        n * (n + 1.0) * math.sqrt(k * (n - 1.0))
+    )
+    mean = k * n * (n + 1.0) ** 2 / 4.0
+    var = k * float(n) ** 2 * (n + 1.0) ** 2 * (n - 1.0) / 144.0
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "z": float(z),
+            "p_value": float(1.0 - stats.norm.cdf(z)),
+            "mean": float(mean),
+            "var": float(var),
+            "statistic": ell,
+            "k": k,
             "n": n,
-            "method": "Asymptotic distribution of Page's L statistic",
+            "method": "Page's L normal approximation, eq. (12.3.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_pg2: Asymptotic distribution of Page's L statistic"
+gibbons_page_asymp = pageasymp

@@ -1,74 +1,87 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Friedman statistic with correction for tied observations."""
+"""Friedman statistic corrected for ties -- eq. (12.2.12)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_friedman_ties"]
+__all__ = ['friedties', 'gibbons_friedman_ties']
 
 
-def gibbons_friedman_ties(data, cdf=None):
-    """
-    Friedman statistic with correction for tied observations
+def friedties(data):
+    """Tie correction for Friedman's Q, with the correction factor shown.
 
-    Formula: chi_r^2_adj = chi_r^2 / (1 - sum T_i / (bk(k^2-1)))
+    Book p. 445, eq. (12.2.12).  Midranks within blocks reduce the
+    denominator by the tie sum, so
+
+    .. math:: Q = \\frac{12(n-1)S}{kn(n^2-1)
+        - \\sum\\sum t(t^2-1)},
+
+    the double sum over every tied set in every block.  Returning the
+    uncorrected Q and the tie sum separately makes the size of the
+    correction visible.
 
     Parameters
     ----------
-    data : array-like
-        Input data.
+    data : sequence of sequence of float
+        k blocks of n treatment observations.
 
     Returns
     -------
-    result : dict
-        Keys: adjusted_statistic
+    RichResult
+        keys ``statistic`` (corrected Q), ``q_raw``, ``tiesum``,
+        ``factor`` (corrected / raw), ``s``, ``rank_sums``, ``k``,
+        ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 12.2 ties
+    Gibbons & Chakraborti (2011), eq. (12.2.12), p. 445.
     """
-    data = np.asarray(data, dtype=float)
-    n = int(data) if data.ndim == 0 else len(data)
-    if data.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
+    rows = [[float(v) for v in r] for r in data]
+    k = len(rows)
+    if k < 2:
+        raise ValueError("need at least 2 blocks.")
+    n = len(rows[0])
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Friedman statistic with correction for tied observations",
-            }
-        )
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 treatments.")
+    rsum = [0.0] * n
+    tiesum = 0.0
+    for r in rows:
+        if len(r) != n:
+            raise ValueError("every block must have n observations.")
+        order = sorted(range(n), key=lambda i: r[i])
+        rk = [0.0] * n
+        i = 0
+        while i < n:
+            j = i
+            while j + 1 < n and r[order[j + 1]] == r[order[i]]:
+                j += 1
+            mid = (i + j) / 2.0 + 1.0
+            for t in range(i, j + 1):
+                rk[order[t]] = mid
+            tt = j - i + 1
+            if tt > 1:
+                tiesum += tt * (tt * tt - 1.0)
+            i = j + 1
+        for j in range(n):
+            rsum[j] += rk[j]
+    s = sum((v - k * (n + 1.0) / 2.0) ** 2 for v in rsum)
+    q0 = 12.0 * s / (k * n * (n + 1.0))
+    den = k * n * (float(n) ** 2 - 1.0) - tiesum
+    qc = 12.0 * (n - 1.0) * s / den if den > 0 else float("nan")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Friedman statistic with correction for tied observations",
+            "statistic": float(qc),
+            "q_raw": float(q0),
+            "tiesum": float(tiesum),
+            "factor": float(qc / q0) if q0 != 0 else float("nan"),
+            "s": float(s),
+            "rank_sums": rsum,
+            "k": int(k),
+            "n": int(n),
+            "method": "tie-corrected Friedman Q, eq. (12.2.12)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_frd2: Friedman statistic with correction for tied observations"
+gibbons_friedman_ties = friedties

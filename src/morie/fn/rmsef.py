@@ -1,45 +1,51 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Root mean squared error."""
+"""Root mean squared error of a set of predictions."""
 
-from . import _array_core as np
+import math
+
 
 from ._richresult import RichResult
 
-__all__ = ["rmse_metric"]
+__all__ = ['rmsetst', 'rmse_metric', 'rmsemetric']
 
 
-def rmse_metric(y_true, y_pred):
-    """
-    Root mean squared error
+def rmsetst(y, yhat):
+    """Root mean squared error of a set of predictions.
 
-    Formula: RMSE = sqrt(MSE)
+    Formula: RMSE = sqrt((1/T) sum_i (y_i - yhat_i)^2)
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
+    y : array-like
+        Numeric vector.
+    yhat : array-like
+        Predicted values, same length as y.
 
     Returns
     -------
-    result : dict
-        Keys: {'rmse': 'float'}
+    RichResult
+        ``rmse``, ``mse``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 4
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 4, Sect. 4.5.1, Eq. (4.1) p. 129 (MSE), Eq. (4.2) p. 129 (Pearson accuracy) and Eq. (4.3) p. 131 (MAE).  Read from the chapter PDF, not recalled.  The RMSE is named in the paragraph under Eq. (4.1) as the square root of MSE_TST.
     """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Root mean squared error"})
+    y = [float(v) for v in y]
+    yhat = [float(v) for v in yhat]
+    if len(y) != len(yhat):
+        raise ValueError("y and yhat must have the same length")
+    n = len(y)
+    if n == 0:
+        raise ValueError("y must be non-empty")
+    mse = sum((a - b) ** 2 for a, b in zip(y, yhat)) / n
+    return RichResult(payload={
+        "rmse": math.sqrt(mse), "mse": mse, "n": n,
+        "method": "Test-set root mean squared error, MVSML Sect. 4.5.1"})
+
+
+rmse_metric = rmsetst
+rmsemetric = rmsetst
 
 
 def cheatsheet():
-    return "rmsef: Root mean squared error"
-
-
-# compact alias per ledger/NAMING.md
-rmsemetric = rmse_metric
+    return 'rmsef: Root mean squared error of a set of predictions.'

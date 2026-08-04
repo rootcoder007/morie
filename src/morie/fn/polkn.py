@@ -1,43 +1,52 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Polynomial kernel function."""
+"""Polynomial kernel matrix."""
 
-from . import _array_core as np
+from . import _gp_core as G
 
 from ._richresult import RichResult
 
-__all__ = ["polynomial_kernel"]
+__all__ = ['polykern', 'polynomial_kernel']
 
 
-def polynomial_kernel(X, c, d):
-    """
-    Polynomial kernel function
+def polykern(X, degree=2, gamma=None, coef0=1.0, Z=None):
+    """Polynomial kernel matrix.
 
-    Formula: K(x_i, x_j) = (x_i'*x_j + c)^d
+    Formula: K(x_i, x_j) = (gamma * x_i'x_j + a)^d
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    c : array-like
-        Input data.
-    d : array-like
-        Input data.
+    X : array-like, shape (n, p)
+        One record per row.
+    degree : int
+        Polynomial degree d.
+    gamma : float or None
+        Scale on the inner product; None uses 1/p.
+    coef0 : float
+        Constant a added before raising to the power d.
+    Z : array-like or None
+        Second set of records; None gives the square Gram matrix of X.
 
     Returns
     -------
-    result : dict
-        Keys: {'K': 'matrix'}
+    RichResult
+        ``K``, ``degree``, ``gamma``, ``coef0``, ``n``, ``m``.
 
     References
     ----------
-    Montesinos Lopez Ch 8
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 8, Sect. 8.2.2 pp. 255-256 and the worked degree-2 example on p. 256, where the polynomial kernel of degree d with constant a is (gamma x_i'x_j + a)^d and the feature-space dimension is discussed on p. 261.  Read from the chapter PDF, not recalled.
     """
-    X = np.asarray(X, dtype=float)
-    n = int(X) if X.ndim == 0 else len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Polynomial kernel function"})
+    K = G.kernel_matrix(X, kernel="polynomial", gamma=gamma,
+                        degree=int(degree), coef0=float(coef0), Z=Z)
+    p = len(G._mat(X)[0])
+    g = (1.0 / p) if gamma is None else float(gamma)
+    return RichResult(payload={
+        "K": K, "degree": int(degree), "gamma": g, "coef0": float(coef0),
+        "n": len(K), "m": len(K[0]),
+        "method": "Polynomial kernel, MVSML Sect. 8.2.2"})
+
+
+polynomial_kernel = polykern
 
 
 def cheatsheet():
-    return "polkn: Polynomial kernel function"
+    return 'polkn: Polynomial kernel matrix.'

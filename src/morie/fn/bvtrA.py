@@ -1,50 +1,64 @@
-# morie.fn -- function file from book-equation translation pipeline (rootcoder007/morie)
-"""Bias-variance decomposition of expected prediction error."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Bias-variance decomposition of the expected prediction error."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["bias_variance_tradeoff"]
+__all__ = ['biasvardec', 'bias_variance_tradeoff']
 
 
-def bias_variance_tradeoff(y_true, y_pred, noise_var):
-    """
-    Bias-variance decomposition of expected prediction error
+def biasvardec(F, f, sigma2):
+    """Bias-variance decomposition of the expected prediction error.
 
-    Formula: E[(y - f_hat(y_true))^2] = Bias^2(f_hat) + Var(f_hat) + sigma^2
+    Formula: E(y - fhat)^2 = Var(e) + Bias[fhat]^2 + Var(fhat)
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
-    noise_var : array-like
-        Input data.
+    F : array-like, shape (R, n)
+        One row per replicate fit, one column per evaluation point: the predictions fhat(x_j) from replicate r.
+    f : array-like
+        The true f(x_j) at the same n evaluation points.
+    sigma2 : float
+        Irreducible error Var(e); must be non-negative.
 
     Returns
     -------
-    result : dict
-        Keys: {'bias2': 'float', 'variance': 'float', 'noise': 'float'}
+    RichResult
+        ``bias2``, ``variance``, ``irreducible``, ``total``, ``bias2_point``, ``variance_point``, ``R``, ``n``.
 
     References
     ----------
-    Montesinos Lopez Ch 4
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 4, Sect. 4.2 p. 113, which reproduces the decomposition of Hastie, Tibshirani and Friedman (2008) p. 223: the expected prediction error under quadratic loss splits into Var(e), the squared bias of fhat and the variance of fhat.  Averaged over the evaluation points here.  Read from the chapter PDF, not recalled.
     """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Bias-variance decomposition of expected prediction error",
-        }
-    )
+    F = C.mat(F)
+    f = C.vec(f)
+    s2 = float(sigma2)
+    R = len(F)
+    if R == 0:
+        raise ValueError("F must have at least one replicate row")
+    n = len(F[0])
+    if n != len(f):
+        raise ValueError("F must have one column per entry of f")
+    if s2 < 0.0:
+        raise ValueError("sigma2 must be non-negative")
+    b2, vv = [], []
+    for j in range(n):
+        col = [F[r][j] for r in range(R)]
+        m = sum(col) / R
+        b2.append((m - f[j]) ** 2)
+        vv.append(sum((v - m) ** 2 for v in col) / R)
+    bias2 = sum(b2) / n
+    var = sum(vv) / n
+    return RichResult(payload={
+        "bias2": bias2, "variance": var, "irreducible": s2,
+        "total": s2 + bias2 + var, "bias2_point": b2, "variance_point": vv,
+        "R": R, "n": n,
+        "method": "Bias-variance decomposition, MVSML Sect. 4.2"})
+
+
+bias_variance_tradeoff = biasvardec
 
 
 def cheatsheet():
-    return "bvtrA: Bias-variance decomposition of expected prediction error"
+    return 'bvtrA: Bias-variance decomposition of the expected prediction error.'

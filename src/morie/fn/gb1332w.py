@@ -1,76 +1,59 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Efficacy of Wilcoxon rank-sum test for two-sample location."""
+"""Efficacy of the Mann-Whitney / Wilcoxon rank-sum test -- eq. (13.3.10)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_wrs_efficacy"]
+__all__ = ['effwrs', 'gibbons_wrs_efficacy']
 
 
-def gibbons_wrs_efficacy(f, lam, cdf=None):
-    """
-    Efficacy of Wilcoxon rank-sum test for two-sample location
+def effwrs(m, n, integral):
+    """e(U_{m,n}) for the two-sample location problem.
 
-    Formula: e = 12 * [integral f^2(f) dx]^2 * (asymptotic lam)
+    Book p. 494, eq. (13.3.10):
+
+    .. math:: e(U_{m,n}) = \\frac{12mn
+        \\left[\\int_{-\\infty}^{\\infty} f_X^2(x)dx\\right]^2}
+        {m+n+1}.
+
+    Because the Mann-Whitney and rank-sum statistics differ only by a
+    constant, this is the rank-sum efficacy too.  Unlike the
+    one-sample case the book notes that F_X need not be symmetric
+    here, so the expression may be evaluated for skewed parents such
+    as the exponential.
 
     Parameters
     ----------
-    f : array-like
-        Input data.
-    lam : array-like
-        Input data.
+    m, n : int
+        The two sample sizes.
+    integral : float
+        The integral of the squared parent density.
 
     Returns
     -------
-    result : dict
-        Keys: efficacy
+    RichResult
+        keys ``efficacy``, ``integral``, ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 13.3.2
+    Gibbons & Chakraborti (2011), eq. (13.3.10), p. 494.
     """
-    f = np.asarray(f, dtype=float)
-    n = int(f) if f.ndim == 0 else len(f)
-    if f.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Efficacy of Wilcoxon rank-sum test for two-sample location",
-            }
-        )
-    x_sorted = np.sort(f)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(f), scale=np.std(f, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    m = int(m)
+    n = int(n)
+    ii = float(integral)
+    if m < 1 or n < 1:
+        raise ValueError("m and n must be at least 1.")
+    e = 12.0 * m * n * ii * ii / (m + n + 1.0)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "efficacy": float(e),
+            "integral": ii,
+            "m": m,
             "n": n,
-            "method": "Efficacy of Wilcoxon rank-sum test for two-sample location",
+            "method": "Mann-Whitney / rank-sum efficacy, eq. (13.3.10)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1332w: Efficacy of Wilcoxon rank-sum test for two-sample location"
+gibbons_wrs_efficacy = effwrs

@@ -1,73 +1,86 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Null distribution of Kendall T statistic (exact and asymptotic)."""
+"""Exact and asymptotic null distribution of Kendall's T."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_kendall_null"]
+__all__ = ['taunull', 'gibbons_kendall_null']
 
 
-def gibbons_kendall_null(n, cdf=None):
-    """
-    Null distribution of Kendall T statistic (exact and asymptotic)
+def taunull(n, s=None):
+    """Null law of the concordance excess S = P - Q for Kendall's tau.
 
-    Formula: E(T) = 0; Var(T) = 2(2n+5)/(9n(n-1)); normal approx for large n
+    Section 11.2.1 (book p. 395).  Under independence every one of the
+    n! rankings is equally likely; the number of inversions follows the
+    classical Mahonian recursion, so the distribution of
+    S = P - Q = n(n-1)/2 - 2 (inversions) is obtained exactly by
+    dynamic programming over the inversion generating function
+
+    .. math:: \\prod_{i=1}^{n}(1 + z + \\dots + z^{i-1}).
+
+    S is symmetric about 0 and its asymptotic variance is that of tau
+    scaled: Var[T] = 2(2n+5)/[9n(n-1)].
 
     Parameters
     ----------
-    n : array-like
-        Input data.
+    n : int
+        Number of pairs, n >= 2.
+    s : int, optional
+        Value of S at which to report the pmf and both tails.
 
     Returns
     -------
-    result : dict
-        Keys: distribution
+    RichResult
+        keys ``support`` (values of S), ``pmf``, ``pmf_s``, ``cdf_s``,
+        ``sf_s``, ``var_tau``, ``var_s``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 11.2
+    Gibbons & Chakraborti (2011), Sec. 11.2.1, p. 395; Table L, p. 583.
     """
-    data = np.asarray(n, dtype=float) if np.ndim(n) > 0 else None
-    n = int(n) if np.ndim(n) == 0 else len(n)
+    n = int(n)
     if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Null distribution of Kendall T statistic (exact and asymptotic)",
-            }
-        )
-    if data is None:
-        rng = np.random.default_rng(0)
-        data = rng.standard_normal(n)
-    x_sorted = np.sort(data)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(data), scale=np.std(data, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Null distribution of Kendall T statistic (exact and asymptotic)",
-        }
-    )
+        raise ValueError("n must be at least 2.")
+    maxinv = n * (n - 1) // 2
+    counts = [0.0] * (maxinv + 1)
+    counts[0] = 1.0
+    for i in range(2, n + 1):
+        new = [0.0] * (maxinv + 1)
+        run = 0.0
+        for k in range(maxinv + 1):
+            run += counts[k]
+            if k - i >= 0:
+                run -= counts[k - i]
+            new[k] = run
+        counts = new
+    tot = sum(counts)
+    pmf = [c / tot for c in counts]
+    support = [maxinv - 2 * k for k in range(maxinv + 1)]
+    npairs = maxinv
+    var_tau = 2.0 * (2.0 * n + 5.0) / (9.0 * n * (n - 1.0))
+    out = {
+        "support": support,
+        "pmf": pmf,
+        "pmf_s": float("nan"),
+        "cdf_s": float("nan"),
+        "sf_s": float("nan"),
+        "var_tau": float(var_tau),
+        "var_s": float(var_tau * npairs * npairs),
+        "n": n,
+        "method": "null distribution of S = P - Q (Sec. 11.2.1)",
+    }
+    if s is not None:
+        sv = int(s)
+        if (maxinv - sv) % 2 != 0 or not -maxinv <= sv <= maxinv:
+            raise ValueError("s is outside the support of S.")
+        idx = (maxinv - sv) // 2
+        out["pmf_s"] = pmf[idx]
+        out["cdf_s"] = float(sum(pmf[idx:]))
+        out["sf_s"] = float(sum(pmf[: idx + 1]))
+    return RichResult(payload=out)
 
 
-def cheatsheet():
-    return "gb1122: Null distribution of Kendall T statistic (exact and asymptotic)"
+gibbons_kendall_null = taunull

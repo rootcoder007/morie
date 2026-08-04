@@ -1,74 +1,74 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Special results for kx2 contingency tables: equivalence to other tests."""
+"""Special results for k x 2 contingency tables -- eq. (14.3.2)."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_k2_contingency"]
+__all__ = ['chik2', 'gibbons_k2_contingency']
 
 
-def gibbons_k2_contingency(table, cdf=None):
-    """
-    Special results for kx2 contingency tables: equivalence to other tests
+def chik2(successes, ns):
+    """Test of equal proportions across k groups, Sec. 14.3.
 
-    Formula: Q for kx2 table equivalent to H (Kruskal-Wallis) or related tests
+    Book p. 513.  With Y_i successes out of n_i in group i and
+    p-hat the pooled proportion, eq. (14.3.2) gives the simplified
+    computing form of the goodness-of-fit criterion (14.3.1),
+
+    .. math:: Q = \\frac{1}{\\hat p(1-\\hat p)}
+        \\sum_{i=1}^{k}\\frac{Y_i^2}{n_i}
+        - \\frac{N\\hat p}{1-\\hat p},
+
+    asymptotically chi-square with k - 1 degrees of freedom.  The
+    book's Example 14.3.1 (responses 125, 81, 40 out of 200, 200, 200)
+    gives Q = 74.70 on 2 degrees of freedom.
 
     Parameters
     ----------
-    table : array-like
-        Input data.
+    successes : sequence of float
+        Y_1, ..., Y_k.
+    ns : sequence of int
+        The k group sizes.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic``, ``df``, ``p_value``, ``phat``,
+        ``props``, ``k``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 14.3
+    Gibbons & Chakraborti (2011), Sec. 14.3, eq. (14.3.2), p. 514.
     """
-    table = np.asarray(table, dtype=float)
-    n = int(table) if table.ndim == 0 else len(table)
-    if table.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Special results for kx2 contingency tables: equivalence to other tests",
-            }
-        )
-    x_sorted = np.sort(table)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(table), scale=np.std(table, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    y = [float(v) for v in successes]
+    nv = [float(v) for v in ns]
+    k = len(y)
+    if k < 2 or len(nv) != k:
+        raise ValueError("need at least 2 groups and matching sizes.")
+    if any(v <= 0 for v in nv):
+        raise ValueError("group sizes must be positive.")
+    nn = sum(nv)
+    ph = sum(y) / nn
+    if not 0.0 < ph < 1.0:
+        raise ValueError("the pooled proportion must lie inside (0, 1).")
+    q = sum(y[i] ** 2 / nv[i] for i in range(k)) / (ph * (1.0 - ph)) - (
+        nn * ph / (1.0 - ph)
+    )
+    df = k - 1
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Special results for kx2 contingency tables: equivalence to other tests",
+            "statistic": float(q),
+            "df": int(df),
+            "p_value": float(stats.chi2.sf(q, df)),
+            "phat": float(ph),
+            "props": [y[i] / nv[i] for i in range(k)],
+            "k": int(k),
+            "n": float(nn),
+            "method": "k x 2 equal-proportions test, eq. (14.3.2)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1431: Special results for kx2 contingency tables: equivalence to other tests"
+gibbons_k2_contingency = chik2
