@@ -1,6 +1,25 @@
-"""Grand-mean centering for level-1 or level-2 covariate."""
+# morie.fn -- slice s03 (rootcoder007/morie)
+"""Grand-mean centering of a covariate.
 
-from . import _array_core as np
+Source consulted: Enders, C. K. and Tofighi, D. (2007).  Centering
+predictor variables in cross-sectional multilevel models: a new look at
+an old issue.  *Psychological Methods* 12(2), 121-138.  Their equation
+for centering at the grand mean (CGM) is
+
+    x_ij(CGM) = x_ij - xbar..
+
+where xbar.. is the mean over all observations in all clusters.  The
+paper is paywalled; the transformation is arithmetic and is quoted in
+its standard published form.  CGM leaves the within-cluster covariance
+structure of the predictor intact and, unlike centering within cluster,
+does *not* purge the between-cluster component -- which is exactly the
+distinction Enders and Tofighi draw.
+"""
+
+from __future__ import annotations
+
+from . import _array_core as np  # noqa: F401
+from . import _s03core as k
 
 from ._richresult import RichResult
 
@@ -8,36 +27,34 @@ __all__ = ["grand_mean_centering"]
 
 
 def grand_mean_centering(y):
-    """
-    Grand-mean centering for level-1 or level-2 covariate
-
-    Formula: x_ij_CGM = x_ij - xbar..
+    """Centre a covariate at its grand mean.
 
     Parameters
     ----------
     y : array-like
-        Input data.
+        The covariate, pooled over all clusters.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Enders & Tofighi (2007)
+    RichResult with payload:
+        estimate : the centred vector x - xbar..
+        centered : same as estimate
+        grand_mean, sd, n
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    v = k.vec(y)
+    gm = k.mean(v)
+    c = [x - gm for x in v]
     return RichResult(
+        title="Grand-mean centering (CGM)",
+        summary_lines=[("grand mean", gm)],
         payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Grand-mean centering for level-1 or level-2 covariate",
-        }
+            "estimate": c,
+            "centered": c,
+            "grand_mean": gm,
+            "sd": k.sd(v, 1) if len(v) > 1 else float("nan"),
+            "n": len(v),
+            "method": "Grand-mean centering of a level-1 or level-2 covariate",
+        },
     )
 
 
