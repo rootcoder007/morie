@@ -65,6 +65,7 @@ __all__ = [
     'rangayyan_ch4_test_signal_three_events',
     'compsig',
     'rangayyan_ch4_composite_signal_in_terms_of_g',
+    'rangayyantvlsi',
 ]
 
 
@@ -1162,3 +1163,9 @@ _CHEATSHEET = [
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
+# Pre-policy run-together spellings.  These were in the lazy
+# map but not in the module, so morie.fn.<name> raised
+# AttributeError.  Restored rather than dropped, because the
+# map is the public flat namespace.
+rangayyantvlsi = rangayyan_tvlsi  # pre-policy spelling, kept live

@@ -114,6 +114,7 @@ __all__ = [
     'psdacf',
     'rangayyan_ch4_psd_from_acf',
     'wiener_filter',
+    'rangayyananc',
 ]
 
 
@@ -3422,3 +3423,9 @@ _CHEATSHEET = [
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
+# Pre-policy run-together spellings.  These were in the lazy
+# map but not in the module, so morie.fn.<name> raised
+# AttributeError.  Restored rather than dropped, because the
+# map is the public flat namespace.
+rangayyananc = rangayyan_anc  # pre-policy spelling, kept live

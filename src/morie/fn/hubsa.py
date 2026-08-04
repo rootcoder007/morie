@@ -4,7 +4,6 @@ from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["Confine yourself to the present. -- Marcus Aurelius"]
 
 
 def hits_hubs_authorities(y, A, tol):

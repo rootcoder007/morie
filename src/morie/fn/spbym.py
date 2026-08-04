@@ -125,3 +125,7 @@ def schabenberger_bym(counts, expected, adjacency, kappa, lam,
 def cheatsheet():
     return ("spbym: Besag-York-Mollie convolution for disease mapping "
             "(BYM 1991 Sec. 4) -- ICAR u plus exchangeable v, MAP by Newton")
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+schabenberger_bym_model = schabenberger_bym  # pre-rename spelling, kept live

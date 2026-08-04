@@ -57,6 +57,7 @@ __all__ = [
     'rangayyan_ch4_power_cepstrum_sum',
     'pceprel',
     'rangayyan_ch4_power_cepstrum_relation',
+    'rangayyanmfcc',
 ]
 
 
@@ -1289,3 +1290,15 @@ _CHEATSHEET = [
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
+# Pre-policy run-together spellings.  These were in the lazy
+# map but not in the module, so morie.fn.<name> raised
+# AttributeError.  Restored rather than dropped, because the
+# map is the public flat namespace.
+rangayyanmfcc = rangayyan_mfcc  # pre-policy spelling, kept live
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+rangayyan_ch4_homomorphic_multiplicative_signal = rangayyan_ch4_homomorphic_multiplicative  # pre-rename spelling, kept live
+rangayyan_ch4_log_echo_power_series_expansion = rangayyan_ch4_log_echo_power_series  # pre-rename spelling, kept live
+rangayyan_ch4_power_cepstrum_relation_to_complex = rangayyan_ch4_power_cepstrum_relation  # pre-rename spelling, kept live

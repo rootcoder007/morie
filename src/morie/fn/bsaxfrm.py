@@ -78,6 +78,7 @@ __all__ = [
     'rangayyan_ch4_log_minimum_phase_expansion',
     'logmaxph',
     'rangayyan_ch4_log_maximum_phase_expansion',
+    'rangayyandft',
 ]
 
 def _angle(z):
@@ -1443,3 +1444,9 @@ _CHEATSHEET = [
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
+# Pre-policy run-together spellings.  These were in the lazy
+# map but not in the module, so morie.fn.<name> raised
+# AttributeError.  Restored rather than dropped, because the
+# map is the public flat namespace.
+rangayyandft = rangayyan_dft  # pre-policy spelling, kept live

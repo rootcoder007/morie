@@ -166,3 +166,7 @@ def schabenberger_bayes_hierarchical(counts, expected, adjacency,
 def cheatsheet():
     return ("spbayr: Bayesian hierarchical disease-mapping models (Sec. 6.4) "
             "-- exchangeable/ICAR/LCAR priors, RW temporal, Knorr-Held types")
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+schabenberger_bayesian_hierarchical = schabenberger_bayes_hierarchical  # pre-rename spelling, kept live
