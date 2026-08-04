@@ -11,7 +11,7 @@ from math import atan2, cos, exp, fsum, hypot, log, pi, sin, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._containers import DescriptiveResult
-from ._rgcore import aslist
+from ._rgcore import aslist, aslistc
 from ._rgcore import aslist, gridint
 from ._richresult import RichResult
 from ._sci_core import CubicSpline
@@ -4514,14 +4514,14 @@ def clogprod(X, H, omega=None):
     principal-value phase of a product jumps by 2 pi and would otherwise
     make an exactly correct identity look violated.
     """
-    xs = [complex(v) for v in aslist(X)]
-    hs = [complex(v) for v in aslist(H)]
+    xs = [complex(v) for v in aslistc(X)]
+    hs = [complex(v) for v in aslistc(H)]
     if len(xs) != len(hs):
         raise ValueError("X and H must have the same length")
     if not xs:
         raise ValueError("X and H must be non-empty")
     if omega is not None:
-        om = [float(v) for v in aslist(omega)]
+        om = [float(v) for v in aslistc(omega)]
         if len(om) != len(xs):
             raise ValueError("omega must have the same length as X and H")
     else:
@@ -4633,17 +4633,17 @@ def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(),
         ``terms`` -- the four partial sums (gain+delay, zeros in, zeros
         out, poles in, poles out) at the first evaluation point.
     """
-    zs = [complex(v) for v in aslist(z)]
+    zs = [complex(v) for v in aslistc(z)]
     if not zs:
         raise ValueError("z must contain at least one point")
     A = complex(A)
     if A == 0:
         raise ValueError("A must be non-zero (eq. 4.67 gain)")
     r = int(r)
-    sets = {"a_k": [complex(v) for v in aslist(a_k)],
-            "b_k": [complex(v) for v in aslist(b_k)],
-            "c_k": [complex(v) for v in aslist(c_k)],
-            "d_k": [complex(v) for v in aslist(d_k)]}
+    sets = {"a_k": [complex(v) for v in aslistc(a_k)],
+            "b_k": [complex(v) for v in aslistc(b_k)],
+            "c_k": [complex(v) for v in aslistc(c_k)],
+            "d_k": [complex(v) for v in aslistc(d_k)]}
     for nm, vals in sets.items():
         for v in vals:
             if abs(v) >= 1.0:
