@@ -1,69 +1,46 @@
-"""Phillips-Perron unit-root test."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Phillips-Perron unit-root test (canonical entry point)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from __future__ import annotations
 
-from ._richresult import RichResult
+from .pptest import phillips_perron_unit_root
 
 __all__ = ["phillips_perron"]
 
 
-def phillips_perron(y, cdf=None):
-    """
-    Phillips-Perron unit-root test
+def phillips_perron(y, lags=None, kind="Z(t_alpha)"):
+    """Phillips-Perron unit-root test.
 
-    Formula: non-parametric correction to DF stat
+    Thin re-export of :func:`morie.fn.pptest.phillips_perron_unit_root`,
+    which carries the implementation, the Bartlett long-run variance and
+    the Dickey-Fuller tables.  Three modules in this package spelled the
+    same test three different ways; the arithmetic lives in one place so
+    they cannot drift apart.
 
     Parameters
     ----------
     y : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Series in time order.
+    lags : int, optional
+        Bartlett truncation lag; the short-lag rule if omitted.
+    kind : {"Z(t_alpha)", "Z(alpha)"}
+        Which statistic to report.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        As :func:`phillips_perron_unit_root`.
 
     References
     ----------
-    Phillips-Perron (1988)
+    Phillips and Perron (1988), Biometrika 75:335-346; coded form from
+    ``tseries::pp.test``.  See ``morie.fn.pptest`` for the full note.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Phillips-Perron unit-root test"}
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Phillips-Perron unit-root test",
-        }
-    )
+    return phillips_perron_unit_root(y, lags=lags, kind=kind)
 
 
 def cheatsheet():
-    return "phlpr: Phillips-Perron unit-root test"
+    return "phillips_perron(y, lags, kind): alias of pptest.phillips_perron_unit_root."
 
 
 # compact alias per ledger/NAMING.md

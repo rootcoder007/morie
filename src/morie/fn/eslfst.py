@@ -1,4 +1,24 @@
-"""F-test of nested models."""
+# morie.fn -- slice k04 (rootcoder007/morie)
+"""F-test for a nested pair of linear models -- ESL eq (3.13).
+
+Source READ FROM THE CORPUS PDF: Hastie, Tibshirani and Friedman,
+*The Elements of Statistical Learning* (2nd ed., 2009), section 3.2,
+equation (3.13), quoted verbatim from the corpus copy
+``BookAdvanced_elementsofstatisticallearning.pdf``::
+
+    F = (RSS0 - RSS1) / (p1 - p0)
+        -------------------------
+             RSS1 / (N - p1 - 1)
+
+where RSS1 is the residual sum-of-squares of the bigger model with
+p1 + 1 parameters and RSS0 that of the nested smaller model with
+p0 + 1 parameters.  Under the Gaussian null F ~ F(p1 - p0, N - p1 - 1).
+
+The previous body of this module was a one-sample Kolmogorov-Smirnov
+test against a fitted normal, pasted by the stub generator.  Deleted.
+"""
+
+from __future__ import annotations
 
 from . import _array_core as np
 from . import _stats_core as stats
@@ -8,61 +28,69 @@ from ._richresult import RichResult
 __all__ = ["esl_f_test"]
 
 
-def esl_f_test(model0, model1, X, y, cdf=None):
-    """
-    F-test of nested models
+def _rss(X, y, cols):
+    n = y.shape[0]
+    cols = list(cols)
+    if cols:
+        D = np.column_stack([np.ones(n)] + [X[:, int(j)] for j in cols])
+    else:
+        D = np.ones((n, 1))
+    beta, *_ = np.linalg.lstsq(D, y, rcond=None)
+    r = y - D @ beta
+    return float(r @ r), len(cols)
 
-    Formula: F = (RSS0-RSS1)/(p1-p0) / (RSS1/(n-p1-1))
+
+def esl_f_test(model0, model1, X, y):
+    """F-test of the nested model ``model0`` inside ``model1``.
 
     Parameters
     ----------
-    model0 : array-like
-        Input data.
-    model1 : array-like
-        Input data.
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+    model0, model1 : sequence of int
+        Column indices of ``X`` in each model; ``model0`` must be a
+        subset of ``model1``.  An intercept is always added.
+    X : array-like, shape (N, p)
+        Predictor matrix without an intercept column.
+    y : array-like, shape (N,)
+        Response.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
-
-    References
-    ----------
-    Hastie ESL Ch 3
+    RichResult
+        keys: ``statistic``, ``p_value``, ``df1``, ``df2``, ``rss0``,
+        ``rss1``, ``p0``, ``p1``, ``n``, ``method``.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "F-test of nested models"})
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    X = np.atleast_2d(np.asarray(X, dtype=float))
+    y = np.asarray(y, dtype=float).ravel()
+    n = int(y.size)
+    s0 = set(int(j) for j in model0)
+    s1 = set(int(j) for j in model1)
+    if not s0 <= s1:
+        raise ValueError("model0 must be nested inside model1")
+    rss0, p0 = _rss(X, y, sorted(s0))
+    rss1, p1 = _rss(X, y, sorted(s1))
+    df1 = p1 - p0
+    df2 = n - p1 - 1
+    if df1 <= 0 or df2 <= 0:
+        raise ValueError("need p1 > p0 and N > p1 + 1")
+    stat = ((rss0 - rss1) / df1) / (rss1 / df2)
     return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "F-test of nested models"}
+        payload={
+            "statistic": float(stat),
+            "p_value": float(stats.f.sf(stat, df1, df2)),
+            "df1": int(df1),
+            "df2": int(df2),
+            "rss0": rss0,
+            "rss1": rss1,
+            "p0": int(p0),
+            "p1": int(p1),
+            "n": n,
+            "method": "F-test for nested linear models (ESL eq. 3.13)",
+        }
     )
 
 
 def cheatsheet():
-    return "eslfst: F-test of nested models"
+    return "eslfst: nested-model F test (ESL eq. 3.13)"
 
 
 # compact alias per ledger/NAMING.md

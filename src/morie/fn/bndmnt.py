@@ -1,70 +1,60 @@
-"""Test for monotonicity assumption."""
+"""Test of the monotonicity assumption -- NOT IMPLEMENTED"""
 
-from . import _array_core as np
-from . import _stats_core as stats
-
-from ._richresult import RichResult
+from ._richresult import RichResult  # noqa: F401  (kept for API stability)
 
 __all__ = ["bound_monotone_test"]
+
+_WHY = (
+    'bound_monotone_test is not implemented.\n'
+    '\n'
+    'What was here before was a one-sample Kolmogorov-Smirnov test against\n'
+    'a fitted normal, pasted in by a generator. It had nothing to do with\n'
+    'testing monotonicity of a potential outcome in the treatment, but it\n'
+    'ran and returned a plausible statistic and p-value, so a caller could\n'
+    'not tell it was wrong. It has been deleted rather than left in place.\n'
+    '\n'
+    'It was not replaced because the construction could not be verified\n'
+    'against a source. The testable implication of instrument validity and\n'
+    'monotonicity is the pair of density inequalities of Kitagawa (2015,\n'
+    'Econometrica 83(5), 2043-2063): for every measurable set B,\n'
+    'P(Y in B, D = 1 | Z = 1) >= P(Y in B, D = 1 | Z = 0) and\n'
+    'P(Y in B, D = 0 | Z = 0) >= P(Y in B, D = 0 | Z = 1). Turning that\n'
+    'into a test requires the variance-weighted supremum statistic over a\n'
+    'class of intervals, the bootstrap recentring and the tuning constant,\n'
+    'which could not be read off an accessible copy. A test built on a\n'
+    'guess at any of those would report a size that is not the nominal one.\n'
+    '\n'
+    'Searched, without obtaining the statistic: the article on the\n'
+    'publisher site and JSTOR (paywalled); ar5iv/arXiv for a restatement;\n'
+    "and Molinari's Handbook of Econometrics chapter on partial\n"
+    'identification (arXiv:2004.11751), which cites Kitagawa but does not\n'
+    'print the statistic or the bootstrap.\n'
+    '\n'
+    "Note also that this function's signature (y, D, X) has no instrument\n"
+    'argument, so it could not express the test even if the statistic were\n'
+    'in hand; the instrument would have to be added.\n'
+    '\n'
+    'To implement it, read Kitagawa (2015) Sections 3-4, or take the\n'
+    "construction from the author's own code release.\n"
+)
 
 
 def bound_monotone_test(y, D, X, cdf=None):
     """
-    Test for monotonicity assumption
+    Test of the monotonicity assumption -- NOT IMPLEMENTED
 
-    Formula: H0: Y(d) monotone in d
-
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    D : array-like
-        Input data.
-    X : array-like
-        Input data.
-    cdf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
+    Raises ``NotImplementedError``.  See the module note: the generator
+    boilerplate that was here (a Kolmogorov-Smirnov test) was wrong and
+    has been removed, and the Kitagawa instrument-validity statistic that should replace it could not be verified from any accessible source.
 
     References
     ----------
-    Kitagawa (2015)
+    Kitagawa T (2015).  A test for instrument validity.  Econometrica
+    83(5), 2043-2063.
     """
-    y = np.asarray(y, dtype=float)
-    n = len(y)
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Test for monotonicity assumption"}
-        )
-    x_sorted = np.sort(y)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y), scale=np.std(y, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Test for monotonicity assumption",
-        }
-    )
+    raise NotImplementedError(_WHY)
 
 
 def cheatsheet():
-    return "bndmnt: Test for monotonicity assumption"
+    return "bndmnt: NOT IMPLEMENTED (Kitagawa validity test unverified)"
+

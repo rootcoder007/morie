@@ -1,42 +1,58 @@
-"""Perturbation (group operation on the simplex)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Perturbation: the group operation on the simplex."""
 
-from . import _array_core as np
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["aitchison_perturbation"]
+__all__ = ["perturb", "aitchison_perturbation"]
 
 
-def aitchison_perturbation(x, y):
-    """
-    Perturbation (group operation on the simplex)
+def perturb(x, y, total=1.0):
+    """Perturbation of one composition by another.
 
-    Formula: (x ⊕ y)_i = C(x_i * y_i)
+    Perturbation is to the simplex what addition is to R^D: it is the
+    group operation the whole Aitchison geometry is built on, and it is
+    what a change of units, a dilution, or a compositional "effect"
+    actually does to the data.
+
+    Formula: x (+) y = C( x_1 y_1, ..., x_D y_D )
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : array-like
+        Strictly positive vectors of parts, the same length.
+    total : float
+        Constant the result sums to.
 
     Returns
     -------
-    result : dict
-        Keys: z
+    RichResult
+        ``composition``, ``total``, ``D``.
 
     References
     ----------
-    Aitchison (1986)
+    Aitchison (1986), The Statistical Analysis of Compositional Data,
+    Chapter 2.  Verified against the reference implementation in the
+    CRAN package ``compositions`` 2.0-9, whose ``perturbe`` is
+    ``acomp(x * y)`` -- the elementwise product, then closed.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Perturbation (group operation on the simplex)"}
-    )
+    x = C.vec(x)
+    y = C.vec(y)
+    if len(x) != len(y):
+        raise ValueError("x and y must have the same number of parts")
+    if any(v <= 0 for v in x) or any(v <= 0 for v in y):
+        raise ValueError("compositions must be strictly positive")
+    p = [a * b for a, b in zip(x, y)]
+    s = sum(p)
+    k = float(total)
+    return RichResult(payload={
+        "composition": [k * v / s for v in p], "total": k, "D": len(x),
+        "method": "Perturbation on the simplex"})
+
+
+aitchison_perturbation = perturb
 
 
 def cheatsheet():
-    return "aitprt: Perturbation (group operation on the simplex)"
+    return "aitprt: x (+) y = C(x*y)"

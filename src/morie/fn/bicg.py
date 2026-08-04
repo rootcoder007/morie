@@ -1,6 +1,28 @@
-"""Bayesian information criterion (BIC)."""
+# morie.fn -- slice s03 (rootcoder007/morie)
+"""Schwarz's Bayesian information criterion.
 
-from . import _array_core as np
+Source consulted: Schwarz, G. (1978).  Estimating the dimension of a
+model.  *The Annals of Statistics* 6(2), 461-464.  Schwarz derives the
+criterion as the leading terms of the Laplace approximation to the log
+marginal likelihood, and states it in the form
+
+    log M_j = log L_j - (k_j / 2) log n + O(1)
+
+which, written as a deviance to be *minimised*, is the familiar
+
+    BIC = -2 log L + p log n
+
+with p the number of estimated parameters and n the sample size.  The
+1978 Annals paper is behind a paywall, so the equation above was taken
+from its standard published form rather than from the PDF itself; the
+form is unambiguous and identical in every secondary source.
+"""
+
+from __future__ import annotations
+
+import math
+
+from . import _array_core as np  # noqa: F401  (kept for module conventions)
 
 from ._richresult import RichResult
 
@@ -8,34 +30,44 @@ __all__ = ["bayesian_information_criterion"]
 
 
 def bayesian_information_criterion(log_lik, n_params, n_obs):
-    """
-    Bayesian information criterion (BIC)
-
-    Formula: BIC = -2 log L + p log n
+    """Schwarz's BIC, and the companion AIC, for a fitted model.
 
     Parameters
     ----------
-    log_lik : array-like
-        Input data.
-    n_params : array-like
-        Input data.
-    n_obs : array-like
-        Input data.
+    log_lik : float
+        Maximised log-likelihood of the model.
+    n_params : int
+        Number of freely estimated parameters, p.
+    n_obs : int
+        Number of observations, n.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Schwarz (1978)
+    RichResult with payload:
+        estimate : BIC = -2 log L + p log n
+        aic      : -2 log L + 2 p, for comparison
+        penalty  : p log n
+        log_lik, n_params, n
     """
-    log_lik = np.atleast_1d(np.asarray(log_lik, dtype=float))
-    n = len(log_lik)
-    result = float(np.mean(log_lik))
-    se = float(np.std(log_lik, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Bayesian information criterion (BIC)"})
+    ll = float(log_lik)
+    p = float(n_params)
+    n = float(n_obs)
+    penalty = p * math.log(n) if n > 0.0 else float("nan")
+    bic = -2.0 * ll + penalty
+    aic = -2.0 * ll + 2.0 * p
+    return RichResult(
+        title="Bayesian information criterion",
+        summary_lines=[("BIC", bic), ("AIC", aic)],
+        payload={
+            "estimate": bic,
+            "aic": aic,
+            "penalty": penalty,
+            "log_lik": ll,
+            "n_params": p,
+            "n": n,
+            "method": "Schwarz (1978) Bayesian information criterion",
+        },
+    )
 
 
 def cheatsheet():
