@@ -6,6 +6,7 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
+from math import cos, exp, fsum, pi, sin
 from . import _array_core as np
 from . import _stats_core as stats
 from ._rgcore import aslist
@@ -14,9 +15,13 @@ from ._rgcore import gridint
 from ._richresult import RichResult
 
 __all__ = [
+    'amsig',
     'rangayyan_am_signal',
+    'linconv',
     'rangayyan_linear_convolution',
+    'fmsig',
     'rangayyan_fm_signal',
+    'tvlsi',
     'rangayyan_tvlsi',
     'diracdelta',
     'rangayyan_ch3_dirac_delta_definition',
@@ -41,163 +46,231 @@ __all__ = [
     'rangayyan_ch3_discrete_convolution_causal',
     'rangayyan_ch3_discrete_convolution_causal_alt',
     'rangayyan_ch3_test_signal_sin_cos',
+    'lsiser',
     'rangayyan_ch3_lsi_series_intermediate',
+    'lsisery',
     'rangayyan_ch3_lsi_series_total',
+    'lsipar',
     'rangayyan_ch3_lsi_parallel_branch_1',
+    'lsipar2',
     'rangayyan_ch3_lsi_parallel_branch_2',
+    'lsipary',
     'rangayyan_ch3_lsi_parallel_total',
+    'ltiprod',
     'rangayyan_ch3_lti_convolution_property',
+    'perconv',
     'rangayyan_ch3_periodic_convolution',
     'rangayyan_ch4_test_signal_three_events',
     'rangayyan_ch4_composite_signal_in_terms_of_g',
 ]
 
 
-# -- rgam: Amplitude-modulated (AM) signal model.
-def rangayyan_am_signal(t, fc, m_t, Ac):
-    """
-    Amplitude-modulated (AM) signal model
 
-    Formula: t(t) = A_c*(1 + m(t))*cos(2*pi*f_c*t)
+# -- rgam: Amplitude-modulated (AM) signal model.
+def amsig(x, fc, fs, conventional=False, depth=1.0):
+    """Amplitude modulation and synchronous demodulation.
+
+    Rangayyan (2024) Section 5.5.1 gives the AM signal as
+        y(t) = x(t) cos(wc t),
+    that is, double-sideband SUPPRESSED-carrier modulation, and the
+    synchronous demodulator as
+        x_d(t) = y(t) cos(wc t) = 0.5 x(t) + 0.5 x(t) cos(2 wc t),
+    so that lowpass filtering x_d recovers x/2.
+
+    The placeholder this replaces stated y = A(1 + m(t)) cos(wc t), the
+    conventional large-carrier form used in broadcast radio.  That is a
+    different model -- it is what allows envelope detection without the
+    carrier -- and the book does not use it here.  It is available under
+    ``conventional=True`` so the distinction is a choice rather than a
+    silent substitution.
 
     Parameters
     ----------
-    t : array-like
-        Input data.
-    fc : array-like
-        Input data.
-    m_t : array-like
-        Input data.
-    Ac : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: am_signal
-
-    References
-    ----------
-    Rangayyan Ch 5.5.1
+    x : array-like
+        Modulating signal, sampled at ``fs``.
+    fc : float
+        Carrier frequency in Hz.  Must be below the Nyquist rate.
+    fs : float
+        Sampling rate in Hz.
+    conventional : bool
+        Use y = (1 + depth * x) cos(wc t) instead of the book's form.
+    depth : float
+        Modulation index for the conventional form.
     """
-    t = np.asarray(t, dtype=float)
-    n = int(t) if t.ndim == 0 else len(t)
-    result = float(np.mean(t))
-    se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Amplitude-modulated (AM) signal model"})
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    fsv, fcv = float(fs), float(fc)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    if not 0 < fcv < fsv / 2.0:
+        raise ValueError("the carrier must satisfy 0 < fc < fs/2, got "
+                         "fc=%g with fs=%g" % (fcv, fsv))
+    w = 2.0 * pi * fcv / fsv
+    carrier = [cos(w * n) for n in range(len(xs))]
+    if conventional:
+        y = [(1.0 + depth * v) * c for v, c in zip(xs, carrier)]
+    else:
+        y = [v * c for v, c in zip(xs, carrier)]
+    demod = [v * c for v, c in zip(y, carrier)]
+    return RichResult(payload={
+        "y": y, "carrier": carrier, "demodulated": demod,
+        "fc": fcv, "fs": fsv, "suppressed_carrier": not conventional,
+        "baseband_gain": 0.5,
+        "image_frequency": 2.0 * fcv,
+        "method": "Rangayyan (2024) Section 5.5.1"})
+
+
+rangayyan_am_signal = amsig  # pre-policy spelling
 
 
 # -- rgconv: Linear convolution of two finite-length sequences.
-def rangayyan_linear_convolution(x, h):
+def linconv(x, h, causal=True):
+    """Linear convolution of two finite-length sequences.
+
+    Rangayyan (2024) eqs. (3.36)-(3.37):
+        y(n) = sum_{k=0}^{n} x(k) h(n - k) = sum_{k=0}^{n} h(k) x(n - k),
+
+    with causality assumed, as the book states directly under eq. (3.37).
+    Eq. (3.39) reads the same sum the other way -- as a sum of delayed and
+    weighted copies of the impulse response, the weights being the input
+    samples -- and those copies are returned as ``contributions`` so the
+    overlap the book describes in Figure 3.19 is visible.
+
+    The result has Nx + Nh - 1 samples.  Note this is LINEAR convolution:
+    the DFT product of eq. (3.87) gives the circular one unless both
+    sequences are zero-padded to that length first.
     """
-    Linear convolution of two finite-length sequences
+    xs, hs = aslist(x), aslist(h)
+    if not xs or not hs:
+        raise ValueError("both sequences need at least one sample")
+    n, m = len(xs), len(hs)
+    y = []
+    for k in range(n + m - 1):
+        lo, hi = max(0, k - m + 1), min(k, n - 1)
+        y.append(fsum(xs[i] * hs[k - i] for i in range(lo, hi + 1)))
+    contributions = [[0.0] * (n + m - 1) for _ in range(n)]
+    for i, xv in enumerate(xs):
+        for j, hv in enumerate(hs):
+            contributions[i][i + j] = xv * hv
+    swapped = []
+    for k in range(n + m - 1):
+        lo, hi = max(0, k - n + 1), min(k, m - 1)
+        swapped.append(fsum(hs[i] * xs[k - i] for i in range(lo, hi + 1)))
+    return RichResult(payload={
+        "y": y, "n": n + m - 1, "n_x": n, "n_h": m,
+        "contributions": contributions,
+        "commutes": max(abs(a - b) for a, b in zip(y, swapped)) <= 1e-12
+        * (1 + max(abs(v) for v in y)),
+        "causal": bool(causal),
+        "method": "Rangayyan (2024) eqs. (3.36)-(3.39)"})
 
-    Formula: y[n] = sum_{k=-inf}^{inf} x[k] * h[n-k]
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y
-
-    References
-    ----------
-    Rangayyan Ch 3.4.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Linear convolution of two finite-length sequences"}
-    )
+rangayyan_linear_convolution = linconv  # pre-policy spelling
 
 
 # -- rgfm: Frequency-modulated (FM) signal model for respiratory sounds.
-def rangayyan_fm_signal(t, f0, m_t, kf):
+def fmsig(m, fc, fs, kf=1.0, amplitude=1.0):
+    """Frequency-modulated signal, and the instantaneous frequency in it.
+
+    Rangayyan (2024) names frequency modulation as a signal model but,
+    unlike amplitude modulation in Section 5.5.1, does not print an
+    equation for it; the standard definition is used and said so:
+        y(t) = A cos(2 pi fc t + 2 pi kf integral_0^t m(tau) d tau),
+        f_inst(t) = fc + kf m(t).
+
+    The phase is accumulated by the trapezoidal rule, which is the
+    discrete form of the integral above; accumulating m(n) by a plain
+    running sum instead biases the phase by half a sample of m at each
+    end, which shows up as a slow drift over a long record.
+
+    ``max_instantaneous_frequency`` is reported so a caller can see
+    whether the deviation pushes the signal past the Nyquist rate --
+    where the model is still well defined but its sampling is not.
     """
-    Frequency-modulated (FM) signal model for respiratory sounds
+    ms = aslist(m)
+    if not ms:
+        raise ValueError("need at least one sample")
+    fsv, fcv = float(fs), float(fc)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    if not 0 < fcv < fsv / 2.0:
+        raise ValueError("the carrier must satisfy 0 < fc < fs/2")
+    dt = 1.0 / fsv
+    phase, acc = [], 0.0
+    for i, v in enumerate(ms):
+        if i:
+            acc += 0.5 * (ms[i] + ms[i - 1]) * dt
+        phase.append(2.0 * pi * fcv * i * dt + 2.0 * pi * kf * acc)
+    y = [amplitude * cos(p) for p in phase]
+    finst = [fcv + kf * v for v in ms]
+    return RichResult(payload={
+        "y": y, "phase": phase, "instantaneous_frequency": finst,
+        "fc": fcv, "fs": fsv, "kf": float(kf),
+        "max_instantaneous_frequency": max(finst),
+        "min_instantaneous_frequency": min(finst),
+        "aliases": max(abs(v) for v in finst) >= fsv / 2.0,
+        "method": "standard FM model; Rangayyan (2024) names FM as a "
+                  "signal model without printing this equation"})
 
-    Formula: t(t) = A*cos(2*pi*f0*t + k_f*integral m(tau)d(tau))
 
-    Parameters
-    ----------
-    t : array-like
-        Input data.
-    f0 : array-like
-        Input data.
-    m_t : array-like
-        Input data.
-    kf : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: fm_signal
-
-    References
-    ----------
-    Rangayyan Ch 7.7.1
-    """
-    t = np.asarray(t, dtype=float)
-    n = int(t) if t.ndim == 0 else len(t)
-    result = float(np.mean(t))
-    se = float(np.std(t, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Frequency-modulated (FM) signal model for respiratory sounds",
-        }
-    )
+rangayyan_fm_signal = fmsig  # pre-policy spelling
 
 
 # -- rgstvar: Time-variant linear system (TV-LSI) characterization.
-def rangayyan_tvlsi(x, y, fs, window):
-    """
-    Time-variant linear system (TV-LSI) characterization
+def tvlsi(x, h):
+    """Time-variant linear system: a different impulse response per instant.
 
-    Formula: TV impulse response h(t,tau); spectrogram = |H_tv(t,f)|^2
+    An LSI system is characterized by one impulse response h(n); a
+    time-variant one needs h(n, m), the response at output instant n to
+    an impulse applied m samples earlier:
+        y(n) = sum_m h(n, m) x(n - m).
+
+    Rangayyan (2024) uses time-variant modelling for nonstationary
+    signals -- Chapter 8 tracks a system whose parameters change with
+    time -- and the point of this function is the contrast with eq.
+    (3.36): the convolution sum still holds instant by instant, but the
+    kernel is no longer shift-invariant, so no single transfer function
+    describes it.  ``shift_invariant`` records whether the supplied
+    kernel is in fact constant in n, in which case the system reduces to
+    an ordinary LSI filter.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    window : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: tv_spectrum, t, freqs
-
-    References
-    ----------
-    Rangayyan Ch 8.3
+        Input, N samples.
+    h : sequence of sequences, or array-like
+        Either N rows h(n, .), one per output instant, or a single
+        impulse response, which is then used at every instant.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Time-variant linear system (TV-LSI) characterization"}
-    )
+    xs = aslist(x)
+    n = len(xs)
+    if not n:
+        raise ValueError("need at least one sample")
+    rows = [aslist(r) for r in h] if h and hasattr(h[0], "__len__") \
+        else [aslist(h)] * n
+    if len(rows) == 1:
+        rows = rows * n
+    if len(rows) != n:
+        raise ValueError("give one impulse response per sample (%d), or "
+                         "one response for all; got %d" % (n, len(rows)))
+    y = []
+    for i in range(n):
+        row = rows[i]
+        y.append(fsum(row[mm] * xs[i - mm] for mm in range(len(row))
+                      if 0 <= i - mm < n))
+    first = rows[0]
+    invariant = all(len(r) == len(first)
+                    and all(abs(a - b) < 1e-12 for a, b in zip(r, first))
+                    for r in rows)
+    return RichResult(payload={
+        "y": y, "n": n, "kernel_lengths": [len(r) for r in rows],
+        "shift_invariant": invariant,
+        "method": "time-variant convolution; contrast Rangayyan (2024) "
+                  "eq. (3.36)"})
 
 
-# compact alias per ledger/NAMING.md
-rangayyantvlsi = rangayyan_tvlsi
+rangayyan_tvlsi = tvlsi  # pre-policy spelling
 
 
 # -- rng024: Continuous-time Dirac delta function (Rangayyan eq. 3.24).
@@ -717,280 +790,255 @@ def rangayyan_ch3_test_signal_sin_cos(t, cdf=None):
 
 
 # -- rng041: Intermediate output of the first LSI system in a series cascade..
-def rangayyan_ch3_lsi_series_intermediate(x, h_1, n):
+def lsiser(x, h1, h2):
+    """Two LSI systems in series, and the single system equivalent to them.
+
+    Rangayyan (2024) eqs. (3.43)-(3.45):
+        s(n) = x(n) * h1(n)                                      (3.43)
+        y(n) = s(n) * h2(n) = x(n) * h1(n) * h2(n) = x(n) * h(n)  (3.44)
+        h(n) = h1(n) * h2(n)                                      (3.45)
+
+    The three equations are one method, so they are one function: the
+    intermediate s(n) of eq. (3.43), the output y(n), and the combined
+    impulse response h(n) all come back together.  The equivalence in eq.
+    (3.44) is checked rather than asserted -- ``max_difference`` compares
+    filtering twice against filtering once with h(n).
     """
-    Intermediate output of the first LSI system in a series cascade.
+    xs = aslist(x)
+    a, b = aslist(h1), aslist(h2)
+    if not xs or not a or not b:
+        raise ValueError("input and both impulse responses need samples")
 
-    Formula: s(n) = x(n) * h_1(n)
+    def conv(p, q):
+        out = []
+        for k in range(len(p) + len(q) - 1):
+            lo, hi = max(0, k - len(q) + 1), min(k, len(p) - 1)
+            out.append(fsum(p[i] * q[k - i] for i in range(lo, hi + 1)))
+        return out
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h_1 : array-like
-        Input data.
-    n : array-like
-        Input data.
+    s = conv(xs, a)
+    y = conv(s, b)
+    h = conv(a, b)
+    direct = conv(xs, h)
+    gap = max(abs(u - v) for u, v in zip(y, direct))
+    return RichResult(payload={
+        "s": s, "y": y, "h": h, "y_via_combined": direct,
+        "max_difference": gap,
+        "equivalent": gap <= 1e-9 * (1 + max(abs(v) for v in y)),
+        "method": "Rangayyan (2024) eqs. (3.43)-(3.45)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: array
 
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.43, p. 115
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Intermediate output of the first LSI system in a series cascade.",
-        }
-    )
+rangayyan_ch3_lsi_series_intermediate = lsiser  # pre-policy spelling
 
 
 # -- rng042: Output of two LSI systems in series equals input convolved with combined response..
-def rangayyan_ch3_lsi_series_total(x, h_1, h_2, n):
+def lsisery(x, h1, h2):
+    """Output of two LSI systems in series.
+
+    Rangayyan (2024) eq. (3.44):
+        y(n) = s(n) * h2(n) = x(n) * h1(n) * h2(n) = x(n) * h(n),
+
+    with h(n) = h1(n) * h2(n) from eq. (3.45).  The three spellings are
+    one computation, so this reads the output off :func:`lsiser` rather
+    than convolving a second time -- and returns the combined h as well,
+    since the content of eq. (3.44) is precisely that the cascade IS a
+    single filter.
     """
-    Output of two LSI systems in series equals input convolved with combined response.
+    r = lsiser(x, h1, h2)
+    return RichResult(payload={
+        "y": r["y"], "h": r["h"], "s": r["s"],
+        "equivalent": r["equivalent"], "max_difference": r["max_difference"],
+        "method": "Rangayyan (2024) eqs. (3.44)-(3.45)"})
 
-    Formula: y(n) = s(n) * h_2(n) = x(n) * h_1(n) * h_2(n) = x(n) * h(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h_1 : array-like
-        Input data.
-    h_2 : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.44, p. 115
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output of two LSI systems in series equals input convolved with combined response.",
-        }
-    )
+rangayyan_ch3_lsi_series_total = lsisery  # pre-policy spelling
 
 
 # -- rng044: Output of the first branch in a parallel LSI configuration..
-def rangayyan_ch3_lsi_parallel_branch_1(x, h_1, n):
+def lsipar(x, h1, h2):
+    """Two LSI systems in parallel, and the single system equivalent.
+
+    Rangayyan (2024) eqs. (3.46)-(3.49):
+        s1(n) = x(n) * h1(n)                                     (3.46)
+        s2(n) = x(n) * h2(n)                                     (3.47)
+        y(n)  = s1(n) + s2(n) = x(n) * [h1(n) + h2(n)]           (3.48)
+        h(n)  = h1(n) + h2(n)                                    (3.49)
+
+    Four equations describing one structure, so one function returns all
+    of them.  The branch responses are zero-padded to a common length
+    before being added: adding sequences of different lengths by
+    truncation would silently drop the tail of the longer filter.
     """
-    Output of the first branch in a parallel LSI configuration.
+    xs = aslist(x)
+    a, b = aslist(h1), aslist(h2)
+    if not xs or not a or not b:
+        raise ValueError("input and both impulse responses need samples")
 
-    Formula: s_1(n) = x(n) * h_1(n)
+    def conv(p, q):
+        out = []
+        for k in range(len(p) + len(q) - 1):
+            lo, hi = max(0, k - len(q) + 1), min(k, len(p) - 1)
+            out.append(fsum(p[i] * q[k - i] for i in range(lo, hi + 1)))
+        return out
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h_1 : array-like
-        Input data.
-    n : array-like
-        Input data.
+    m = max(len(a), len(b))
+    h = [(a[i] if i < len(a) else 0.0) + (b[i] if i < len(b) else 0.0)
+         for i in range(m)]
+    s1, s2 = conv(xs, a), conv(xs, b)
+    ny = max(len(s1), len(s2))
+    y = [(s1[i] if i < len(s1) else 0.0) + (s2[i] if i < len(s2) else 0.0)
+         for i in range(ny)]
+    direct = conv(xs, h)
+    gap = max(abs(u - v) for u, v in zip(y, direct))
+    return RichResult(payload={
+        "s1": s1, "s2": s2, "y": y, "h": h, "y_via_combined": direct,
+        "max_difference": gap,
+        "equivalent": gap <= 1e-9 * (1 + max(abs(v) for v in y)),
+        "method": "Rangayyan (2024) eqs. (3.46)-(3.49)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: array
 
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.46, p. 116
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output of the first branch in a parallel LSI configuration.",
-        }
-    )
+rangayyan_ch3_lsi_parallel_branch_1 = lsipar  # pre-policy spelling
 
 
 # -- rng045: Output of the second branch in a parallel LSI configuration..
-def rangayyan_ch3_lsi_parallel_branch_2(x, h_2, n):
+def lsipar2(x, h2):
+    """Output of the second branch of a parallel LSI pair.
+
+    Rangayyan (2024) eq. (3.47):  s2(n) = x(n) * h2(n).
+
+    Identical in form to eq. (3.46) for the first branch -- that is the
+    point of a parallel structure, both branches see the same input --
+    so this is the same convolution applied to the other filter.
     """
-    Output of the second branch in a parallel LSI configuration.
+    xs, b = aslist(x), aslist(h2)
+    if not xs or not b:
+        raise ValueError("input and impulse response need samples")
+    out = []
+    for k in range(len(xs) + len(b) - 1):
+        lo, hi = max(0, k - len(b) + 1), min(k, len(xs) - 1)
+        out.append(fsum(xs[i] * b[k - i] for i in range(lo, hi + 1)))
+    return RichResult(payload={
+        "s2": out, "n": len(out),
+        "method": "Rangayyan (2024) eq. (3.47)"})
 
-    Formula: s_2(n) = x(n) * h_2(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h_2 : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.47, p. 116
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output of the second branch in a parallel LSI configuration.",
-        }
-    )
+rangayyan_ch3_lsi_parallel_branch_2 = lsipar2  # pre-policy spelling
 
 
 # -- rng046: Output of two LSI systems in parallel equals input convolved with sum of responses..
-def rangayyan_ch3_lsi_parallel_total(x, h_1, h_2, n):
+def lsipary(x, h1, h2):
+    """Output of two LSI systems in parallel.
+
+    Rangayyan (2024) eqs. (3.48)-(3.49):
+        y(n) = s1(n) + s2(n) = x(n) * [h1(n) + h2(n)] = x(n) * h(n),
+        h(n) = h1(n) + h2(n).
+
+    The parallel counterpart of eq. (3.44): here the impulse responses
+    ADD where a cascade convolves them.  Both routes to y are computed
+    inside :func:`lsipar` and compared, so the equivalence is measured.
     """
-    Output of two LSI systems in parallel equals input convolved with sum of responses.
+    r = lsipar(x, h1, h2)
+    return RichResult(payload={
+        "y": r["y"], "h": r["h"], "s1": r["s1"], "s2": r["s2"],
+        "equivalent": r["equivalent"], "max_difference": r["max_difference"],
+        "method": "Rangayyan (2024) eqs. (3.48)-(3.49)"})
 
-    Formula: y(n) = s_1(n) + s_2(n) = x(n) * [h_1(n) + h_2(n)] = x(n) * h(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    h_1 : array-like
-        Input data.
-    h_2 : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.48, p. 116
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output of two LSI systems in parallel equals input convolved with sum of responses.",
-        }
-    )
+rangayyan_ch3_lsi_parallel_total = lsipary  # pre-policy spelling
 
 
 # -- rng051: LTI convolution maps to multiplication in s-domain and frequency domain..
-def rangayyan_ch3_lti_convolution_property(x, h):
-    """
-    LTI convolution maps to multiplication in s-domain and frequency domain.
+def ltiprod(x, h, s=None, omega=None, dt=1.0):
+    """Convolution in time is multiplication in the s and omega domains.
 
-    Formula: if y(t) = x(t) * h(t), then Y(s) = X(s) H(s) and Y(omega) = X(omega) H(omega)
+    Rangayyan (2024) eq. (3.53):
+        if y(t) = x(t) * h(t),
+        then Y(s) = X(s) H(s)  and  Y(omega) = X(omega) H(omega),
+
+    with the Laplace transform of eq. (3.50) evaluated on a
+    finite-duration causal signal.  Setting s = j omega recovers the
+    frequency-domain statement, which is why one function covers both:
+    the omega form is the s form on the imaginary axis.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    h : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.53, p. 119
+    x, h : array-like
+        Sampled signals, uniform spacing ``dt``.
+    s : complex or sequence, optional
+        Laplace variable.
+    omega : float or sequence, optional
+        Frequency in rad/s; equivalent to s = j omega.
+    dt : float
+        Sampling interval; the transforms are integrals, so each carries
+        a factor dt.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "LTI convolution maps to multiplication in s-domain and frequency domain.",
-        }
-    )
+    xs, hs = aslist(x), aslist(h)
+    if not xs or not hs:
+        raise ValueError("both signals need at least one sample")
+    if (s is None) == (omega is None):
+        raise ValueError("give exactly one of s, omega")
+    step = float(dt)
+    if step <= 0:
+        raise ValueError("dt must be positive")
+    if s is not None:
+        scalar = isinstance(s, (int, float, complex))
+        pts = [complex(s)] if scalar else [complex(v) for v in s]
+    else:
+        scalar = isinstance(omega, (int, float))
+        ws = [float(omega)] if scalar else [float(v) for v in omega]
+        pts = [complex(0.0, w) for w in ws]
+    y = []
+    for k in range(len(xs) + len(hs) - 1):
+        lo, hi = max(0, k - len(hs) + 1), min(k, len(xs) - 1)
+        y.append(fsum(xs[i] * hs[k - i] for i in range(lo, hi + 1)) * step)
+
+    def lap(sig, sv):
+        acc = 0j
+        for i, v in enumerate(sig):
+            t = i * step
+            e = complex(cos(-sv.imag * t), sin(-sv.imag * t))
+            acc += v * exp(-sv.real * t) * e
+        return acc * step
+
+    Y = [lap(y, p) for p in pts]
+    X = [lap(xs, p) for p in pts]
+    H = [lap(hs, p) for p in pts]
+    prod = [a * b for a, b in zip(X, H)]
+    gap = max(abs(a - b) for a, b in zip(Y, prod))
+    return RichResult(payload={
+        "y": y, "Y": Y[0] if scalar else Y, "X": X[0] if scalar else X,
+        "H": H[0] if scalar else H, "XH": prod[0] if scalar else prod,
+        "s": (pts[0] if scalar else pts),
+        "max_difference": gap,
+        "holds": gap <= 1e-8 * (1 + max(abs(v) for v in prod)),
+        "method": "Rangayyan (2024) eqs. (3.50), (3.53)"})
+
+
+rangayyan_ch3_lti_convolution_property = ltiprod  # pre-policy spelling
 
 
 # -- rng079: Circular (periodic) convolution of two N-periodic discrete signals..
-def rangayyan_ch3_periodic_convolution(x_p, h_p, n, N):
+def perconv(x, h, npoints=None):
+    """Periodic (circular) convolution of two N-periodic signals.
+
+    Rangayyan (2024) eq. (3.90):
+        y_p(n) = sum_{k=0}^{N-1} x_p(k) h_p[(n - k) mod N].
+
+    This is the same equation :func:`circconv` implements, so it
+    delegates rather than carrying a second copy -- two implementations
+    of one equation is how the two drift apart.  The book defines it only
+    for signals of equal period, and Figures 3.40-3.42 show what goes
+    wrong when it is used where linear convolution was meant.
     """
-    Circular (periodic) convolution of two N-periodic discrete signals.
+    from .bsaxfrm import circconv
 
-    Formula: y_p(n) = sum_{k=0}^{N-1} x_p(k) * h_p[(n-k) mod N]
+    r = circconv(x, h, npoints=npoints)
+    out = dict(r)
+    out["method"] = "Rangayyan (2024) eq. (3.90)"
+    return RichResult(payload=out)
 
-    Parameters
-    ----------
-    x_p : array-like
-        Input data.
-    h_p : array-like
-        Input data.
-    n : array-like
-        Input data.
-    N : array-like
-        Input data.
 
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.90, p. 131
-    """
-    x_p = np.atleast_1d(np.asarray(x_p, dtype=float))
-    n = len(x_p)
-    result = float(np.mean(x_p))
-    se = float(np.std(x_p, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Circular (periodic) convolution of two N-periodic discrete signals.",
-        }
-    )
+rangayyan_ch3_periodic_convolution = perconv  # pre-policy spelling
 
 
 # -- rng223: Rangayyan Ch. 4 synthetic three-event test signal (Eq. 4.51).
@@ -1111,33 +1159,33 @@ def rangayyan_ch4_composite_signal_in_terms_of_g(g, n, cdf=None):
 
 
 _CHEATSHEET = [
-    'rgam: Amplitude-modulated (AM) signal model',
-    'rgconv: Linear convolution of two finite-length sequences',
-    'rgfm: Frequency-modulated (FM) signal model for respiratory sounds',
-    'rgstvar: Time-variant linear system (TV-LSI) characterization',
-    'rng024: Dirac delta definition, Rangayyan eq. (3.24)',
-    'rng025: unit area of the delta, Rangayyan eq. (3.25)',
-    'rng026: delta as a power-function limit, Rangayyan eq. (3.26)',
-    'rng027: continuous unit step, Rangayyan eq. (3.27)',
-    'rng028: sifting property, Rangayyan eq. (3.28)',
-    'rng030: continuous-time convolution, Rangayyan eq. (3.30)',
-    'rng031: commuted continuous convolution, Rangayyan eq. (3.31)',
-    'rng032: y(t) = int_0^t x(tau) h(t-tau) dtau, trapezoid on the sample grid',
-    'rng033: y(t) = int_0^t h(tau) x(t-tau) dtau -- rng032 commuted',
-    'rng034: discrete unit impulse, Rangayyan eq. (3.34)',
-    'rng035: discrete unit step, Rangayyan eq. (3.35)',
-    'rng036: y(n) = sum_{k=0}^{n} x(k) h(n-k)',
-    'rng037: y(n) = sum_{k=0}^{n} h(k) x(n-k) -- same as rng036 by commutativity',
-    'rng038: Synthetic test signal: sum of a sine and a cosine.',
-    'rng041: Intermediate output of the first LSI system in a series cascade.',
-    'rng042: Output of two LSI systems in series equals input convolved with combined response.',
-    'rng044: Output of the first branch in a parallel LSI configuration.',
-    'rng045: Output of the second branch in a parallel LSI configuration.',
-    'rng046: Output of two LSI systems in parallel equals input convolved with sum of responses.',
-    'rng051: LTI convolution maps to multiplication in s-domain and frequency domain.',
-    'rng079: Circular (periodic) convolution of two N-periodic discrete signals.',
-    'rng223: Rangayyan Ch.4 three-event matched-filter test signal (Eq. 4.51)',
-    'rng225: Composite test signal expressed in terms of three delayed scaled copies of g(n).',
+    'rgam: amplitude modulation and synchronous demodulation, Sec 5.5.1',
+    'rgconv: linear convolution, Rangayyan eqs. (3.36)-(3.39)',
+    'rgfm: frequency-modulated signal model',
+    'rgstvar: time-variant LSI system',
+    'rng024: Continuous-time Dirac delta function (Rangayyan eq. 3.24).',
+    'rng025: Unit-area property of the Dirac delta (Rangayyan eq. 3.25).',
+    'rng026: Dirac delta as a limit of a power function (Rangayyan eq. 3.26).',
+    'rng027: Continuous-time unit step function (Rangayyan eq. 3.27).',
+    'rng028: Sifting property of the Dirac delta (Rangayyan eq. 3.28).',
+    'rng030: Continuous-time convolution (Rangayyan eq. 3.30).',
+    'rng031: Commuted form of continuous-time convolution (Rangayyan eq. 3.31).',
+    'rng032: Causal continuous-time convolution form (lower limit 0, upper limit t).',
+    'rng033: Equivalent causal continuous-time convolution with swapped arguments.',
+    'rng034: Discrete-time unit impulse function (Rangayyan eq. 3.34).',
+    'rng035: Discrete-time unit step function (Rangayyan eq. 3.35).',
+    'rng036: Discrete-time causal convolution sum.',
+    'rng037: Equivalent discrete-time causal convolution with swapped arguments.',
+    'rng038: Synthetic test signal: sum of a sine and a cosine..',
+    'rng041: LSI systems in series, Rangayyan eqs. (3.43)-(3.45)',
+    'rng042: series output and combined response, eqs. (3.44)-(3.45)',
+    'rng044: LSI systems in parallel, Rangayyan eqs. (3.46)-(3.49)',
+    'rng045: second parallel branch, Rangayyan eq. (3.47)',
+    'rng046: parallel output and combined response, eqs. (3.48)-(3.49)',
+    'rng051: LTI convolution property in s and omega, eq. (3.53)',
+    'rng079: periodic convolution, Rangayyan eq. (3.90)',
+    'rng223: Rangayyan Ch. 4 synthetic three-event test signal (Eq. 4.51).',
+    'rng225: Composite test signal expressed in terms of three delayed scaled copies of g(n)..',
 ]
 
 
