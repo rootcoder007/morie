@@ -10,7 +10,10 @@ import math
 
 import pytest
 
+from fractions import Fraction
+
 from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, bhatt,
+                               bhattcoef, kld,
                                divav, divergence, elbow, errbound,
                                fishcrit, fishlda, hclust, kfoldcv,
                                kmeans, knn, lindisc, lindsep, logreg,
@@ -477,3 +480,121 @@ def test_pre_policy_spellings_still_resolve():
     # the pre-policy Bhattacharyya name now reaches the book's divergence
     assert "divergence" in rangayyan_bhattacharyya(
         [0, 1], [2, -1], C1, C2)
+
+
+# ------------------------------- the accuracy forms and exact arithmetic
+
+def test_accuracy_offers_every_definition_at_once():
+    r = accuracy(tp=45, tn=40, fp=10, fn=5, prevalence=0.01)
+    assert r["raw_accuracy"] == pytest.approx(0.85)
+    assert r["balanced_accuracy"] == pytest.approx(0.85)
+    assert r["weighted_accuracy"] == pytest.approx(0.801)
+    # all three are always present, whichever is the headline
+    assert r["kind"] == "weighted"
+    assert r["accuracy"] == r["weighted_accuracy"]
+
+
+def test_the_headline_form_is_selectable():
+    for kind in ("raw", "balanced"):
+        r = accuracy(tp=45, tn=40, fp=10, fn=5, kind=kind)
+        assert r["kind"] == kind
+        assert r["accuracy"] == r[kind + "_accuracy"]
+    # weighted without a prevalence is refused rather than guessed
+    with pytest.raises(ValueError):
+        accuracy(tp=45, tn=40, fp=10, fn=5, kind="weighted")
+    with pytest.raises(ValueError):
+        accuracy(tp=45, tn=40, fp=10, fn=5, kind="f1")
+
+
+def test_balanced_accuracy_is_eq10102_at_one_half():
+    a = accuracy(tp=45, tn=40, fp=10, fn=5, exact=True)
+    b = accuracy(tp=45, tn=40, fp=10, fn=5, prevalence="0.5", exact=True)
+    assert a["balanced_accuracy"] == b["weighted_accuracy"]
+    assert a["balanced_is_eq_10_102_at_one_half"] is True
+
+
+def test_exact_accuracy_is_a_rational_not_a_float():
+    r = accuracy(tp=45, tn=40, fp=10, fn=5, exact=True)
+    assert isinstance(r["raw_accuracy"], Fraction)
+    assert r["raw_accuracy"] == Fraction(17, 20)
+    assert float(r["raw_accuracy"]) == pytest.approx(0.85)
+    w = accuracy(tp=45, tn=40, fp=10, fn=5, prevalence="0.01", exact=True)
+    assert w["accuracy"] == Fraction(801, 1000)
+
+
+def test_exact_arithmetic_avoids_a_representation_error():
+    # 1/3 has no exact float; the rational form does
+    r = accuracy(tp=1, tn=1, fp=1, fn=2, exact=True)
+    # one third has no finite binary representation, so the float is a
+    # nearby value and the rational is the number itself
+    assert r["sensitivity"] == Fraction(1, 3)
+    approx = accuracy(tp=1, tn=1, fp=1, fn=2)["sensitivity"]
+    assert Fraction(approx) != Fraction(1, 3)
+    assert abs(Fraction(approx) - Fraction(1, 3)) < Fraction(1, 10 ** 15)
+
+
+def test_accuracy_refuses_fractional_counts():
+    with pytest.raises(ValueError):
+        accuracy(tp=45.5, tn=40, fp=10, fn=5)
+
+
+# ------------------------------------ the book's KLD and the coefficient
+
+def test_kld_eq533_is_weighted_by_the_second_pdf():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    r = kld(p1, p2)
+    manual = sum(p2[i] * math.log(p2[i] / p1[i]) for i in range(3))
+    assert r["kld"] == pytest.approx(manual)
+    assert r["weighted_by_the_second_pdf"] is True
+
+
+def test_kld_is_asymmetric_and_its_sum_is_the_divergence():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    r = kld(p1, p2)
+    assert r["asymmetric"] is True
+    assert r["kld"] != pytest.approx(r["reversed"])
+    assert r["symmetric_sum"] == pytest.approx(r["kld"] + r["reversed"])
+    assert r["symmetric_sum_is_the_divergence_of_eq_10_115"] is True
+
+
+def test_kld_vanishes_for_identical_pdfs_and_is_nonnegative():
+    p = [0.25, 0.25, 0.5]
+    assert kld(p, p)["kld"] == pytest.approx(0.0, abs=1e-15)
+    assert kld([0.2, 0.3, 0.5], [0.1, 0.4, 0.5])["kld"] > 0
+
+
+def test_kld_refuses_a_zero_where_the_weighting_pdf_is_positive():
+    with pytest.raises(ValueError):
+        kld([0.0, 0.5, 0.5], [0.3, 0.3, 0.4])
+    with pytest.raises(ValueError):
+        kld([0.5, 0.5], [0.3, 0.3, 0.4])
+
+
+def test_the_bhattacharyya_coefficient_is_an_overlap_in_the_unit_interval():
+    p1 = [0.2, 0.3, 0.5]
+    p2 = [0.1, 0.4, 0.5]
+    r = bhattcoef(p1, p2)
+    assert 0.0 <= r["coefficient"] <= 1.0
+    assert r["in_unit_interval"] is True
+    assert bhattcoef(p1, p1)["coefficient"] == pytest.approx(1.0)
+    assert bhattcoef(p1, p1)["identical"] is True
+    disjoint = bhattcoef([1.0, 0.0], [0.0, 1.0])
+    assert disjoint["coefficient"] == pytest.approx(0.0)
+    assert disjoint["disjoint"] is True
+
+
+def test_the_distance_is_minus_the_log_of_the_coefficient():
+    r = bhattcoef([0.2, 0.3, 0.5], [0.1, 0.4, 0.5])
+    assert r["distance"] == pytest.approx(-math.log(r["coefficient"]))
+    assert r["the_overlap_is_where_errors_must_happen"] is True
+    assert r["not_from_this_book"] is True
+    assert bhattcoef([1.0, 0.0], [0.0, 1.0])["distance"] == float("inf")
+
+
+def test_the_error_bound_tightens_as_the_overlap_falls():
+    close = bhattcoef([0.5, 0.5], [0.45, 0.55])["distance"]
+    far = bhattcoef([0.9, 0.1], [0.1, 0.9])["distance"]
+    assert errbound(0.5, 0.5, far)["bound"] < \
+        errbound(0.5, 0.5, close)["bound"]
