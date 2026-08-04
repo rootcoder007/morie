@@ -4,7 +4,6 @@ from . import _array_core as np
 
 from ._richresult import RichResult
 
-__all__ = ["When I let go of what I am, I become what I might be. -- Lao Tzu"]
 
 
 def flash_attention_block(y, Q, K, V, block_size):

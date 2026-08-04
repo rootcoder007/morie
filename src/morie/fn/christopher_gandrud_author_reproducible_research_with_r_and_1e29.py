@@ -5,7 +5,6 @@ from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 
-__all__ = ["We suffer more often in imagination than in reality. -- Seneca"]
 
 
 def christopher_gandrud_author_reproducible_research_with_r_and__chapter_1_equation_29(x, cdf=None):

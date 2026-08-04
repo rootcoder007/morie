@@ -114,6 +114,14 @@ __all__ = [
     'echologpsd',
     'rangayyan_ch4_log_power_spectrum_signal_echo',
     'wigner_ville',
+    'rangayyancwt',
+    'rangayyandwt',
+    'rangayyaneemd',
+    'rangayyanemd',
+    'rangayyanistft',
+    'rangayyanmra',
+    'rangayyanswt',
+    'rangayyanvmd',
 ]
 
 # ---------------------------------------------------------------------------
@@ -5595,3 +5603,16 @@ _CHEATSHEET = [
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
+# Pre-policy run-together spellings.  These were in the lazy
+# map but not in the module, so morie.fn.<name> raised
+# AttributeError.  Restored rather than dropped, because the
+# map is the public flat namespace.
+rangayyancwt = rangayyan_cwt  # pre-policy spelling, kept live
+rangayyandwt = rangayyan_dwt  # pre-policy spelling, kept live
+rangayyaneemd = rangayyan_eemd  # pre-policy spelling, kept live
+rangayyanemd = rangayyan_emd  # pre-policy spelling, kept live
+rangayyanistft = rangayyan_istft  # pre-policy spelling, kept live
+rangayyanmra = rangayyan_mra  # pre-policy spelling, kept live
+rangayyanswt = rangayyan_swt  # pre-policy spelling, kept live
+rangayyanvmd = rangayyan_vmd  # pre-policy spelling, kept live

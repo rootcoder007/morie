@@ -108,3 +108,7 @@ def schabenberger_mean_square_diff(cov_func, m=1, h=None, tol=1e6):
 
 def cheatsheet():
     return "spmsd: m-times MS differentiable iff d^2m C/dh^2m at 0 is finite."
+
+# Names the lazy map still points at from before a rename.
+# Without these, morie.fn.<name> raises AttributeError.
+schabenberger_ms_differentiability = schabenberger_mean_square_diff  # pre-rename spelling, kept live

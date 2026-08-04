@@ -5,7 +5,6 @@ from . import _stats_core as stats
 
 from ._richresult import hypothesis_test_result
 
-__all__ = ["Waste no more time arguing what a good person should be. Be one. -- Marcus Aurelius"]
 
 
 def christopher_gandrud_author_reproducible_research_with_r_and__chapter_2_equation_64(x, cdf=None):
