@@ -1,52 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Poisson log-likelihood loss for DNN count genomic outcomes."""
+"""Poisson loss for count outcomes."""
 
-from . import _array_core as np
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["poisson_loss_dnn"]
+__all__ = ['poislo', 'poisson_loss_dnn', 'poissonlossdnn']
 
 
-def poisson_loss_dnn(y, y_hat):
-    """
-    Poisson log-likelihood loss for DNN count genomic outcomes
+def poislo(Y, Yhat):
+    """Poisson loss for count outcomes.
 
-    Formula: L = (1/n) * sum_i (exp(y_hat_i) - y_i * y_hat_i)
+    Formula: L(w) = sum_i sum_j [ yhat_ij - y_ij log(yhat_ij) ]
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    y_hat : array-like
-        Input data.
+    Y : array-like, shape (n, L)
+        Observed counts; a flat vector is read as one column.
+    Yhat : array-like, shape (n, L)
+        Predicted Poisson means, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: {'loss': 'float'}
+    RichResult
+        ``loss``, ``mean_loss``, ``n``, ``L``.
 
     References
     ----------
-    Montesinos Lopez Ch 12
+    Montesinos Lopez, Montesinos Lopez and Crossa (2022), Multivariate Statistical Machine Learning Methods for Genomic Prediction, Springer, doi:10.1007/978-3-030-89010-0.  Chapter 10, Sect. 10.7, pp. 400-403.  Read from the chapter PDF, not recalled.  The Poisson display carries its sign correctly and is implemented exactly as printed.
     """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Poisson log-likelihood loss for DNN count genomic outcomes",
-        }
-    )
+    Y = C.mat(Y); H = C.mat(Yhat)
+    n = len(Y)
+    if n == 0 or n != len(H) or len(Y[0]) != len(H[0]):
+        raise ValueError("Y and Yhat must be non-empty and the same shape")
+    L = len(Y[0])
+    loss = 0.0
+    for i in range(n):
+        for j in range(L):
+            if H[i][j] <= 0.0:
+                raise ValueError("predicted Poisson means must be strictly positive")
+            loss += H[i][j] - Y[i][j] * math.log(H[i][j])
+    return RichResult(payload={
+        "loss": loss, "mean_loss": loss / (n * L), "n": n, "L": L,
+        "method": "Poisson loss, MVSML Sect. 10.7.2"})
+
+
+poisson_loss_dnn = poislo
+poissonlossdnn = poislo
 
 
 def cheatsheet():
-    return "poilO: Poisson log-likelihood loss for DNN count genomic outcomes"
-
-
-# compact alias per ledger/NAMING.md
-poissonlossdnn = poisson_loss_dnn
+    return 'poilO: Poisson loss for count outcomes.'

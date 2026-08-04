@@ -2410,3 +2410,319 @@ Wsignif <- function(w, k, n) {
        s = q * k * n * (n + 1) / 12,
        table_n = as.integer(k <= 5L || n <= 5L), k = k, n = n)
 }
+
+#' Null distribution of S = P - Q -- Sec. 11.2.1, p. 395
+#' @noRd
+Taunull <- function(n, s = NULL) {
+  n <- as.integer(n)
+  if (n < 2L) stop("n must be at least 2.", call. = FALSE)
+  maxinv <- n * (n - 1L) %/% 2L
+  counts <- numeric(maxinv + 1L); counts[1] <- 1
+  for (i in 2:n) {
+    new <- numeric(maxinv + 1L); run <- 0
+    for (k in 0:maxinv) {
+      run <- run + counts[k + 1L]
+      if (k - i >= 0) run <- run - counts[k - i + 1L]
+      new[k + 1L] <- run
+    }
+    counts <- new
+  }
+  pmf <- counts / sum(counts)
+  support <- maxinv - 2 * (0:maxinv)
+  var_tau <- 2 * (2 * n + 5) / (9 * n * (n - 1))
+  pmf_s <- NaN; cdf_s <- NaN; sf_s <- NaN
+  if (!is.null(s)) {
+    sv <- as.integer(s)
+    if ((maxinv - sv) %% 2 != 0 || sv < -maxinv || sv > maxinv)
+      stop("s is outside the support of S.", call. = FALSE)
+    idx <- (maxinv - sv) %/% 2L
+    pmf_s <- pmf[idx + 1L]
+    cdf_s <- sum(pmf[(idx + 1L):length(pmf)])
+    sf_s <- sum(pmf[1:(idx + 1L)])
+  }
+  list(support = support, pmf = pmf, pmf_s = pmf_s, cdf_s = cdf_s, sf_s = sf_s,
+       var_tau = var_tau, var_s = var_tau * maxinv^2, n = n)
+}
+
+#' Kendall tau trend test -- Sec. 11.2.5, p. 406
+#' @noRd
+Tautrend <- function(y, alternative = "two-sided") {
+  ys <- as.numeric(y); n <- length(ys)
+  if (n < 3L) stop("need at least 3 observations.", call. = FALSE)
+  d <- outer(ys, ys, "-")
+  p <- sum(d[upper.tri(d)] < 0); q <- sum(d[upper.tri(d)] > 0)
+  npairs <- n * (n - 1) / 2
+  s <- p - q; tau <- s / npairs
+  var <- 2 * (2 * n + 5) / (9 * n * (n - 1))
+  z <- tau / sqrt(var)
+  pv <- switch(alternative,
+    "greater" = 1 - stats::pnorm(z), "less" = stats::pnorm(z),
+    "two-sided" = 2 * (1 - stats::pnorm(abs(z))),
+    stop("alternative must be two-sided, greater or less.", call. = FALSE))
+  list(tau = tau, statistic = s, P = p, Q = q, z = z,
+       p_value = min(1, pv), var = var, n = n)
+}
+
+#' Spearman rank correlation -- Sec. 11.3, eq. (11.3.2), p. 407
+#' @noRd
+Spearrho <- function(x, y) {
+  xs <- as.numeric(x); ys <- as.numeric(y); n <- length(xs)
+  if (length(ys) != n) stop("x and y must have the same length.", call. = FALSE)
+  if (n < 3L) stop("need at least 3 pairs.", call. = FALSE)
+  rx <- rank(xs, ties.method = "average"); ry <- rank(ys, ties.method = "average")
+  tied <- as.integer(length(unique(xs)) < n || length(unique(ys)) < n)
+  d2 <- sum((rx - ry)^2)
+  short <- 1 - 6 * d2 / (n * (n^2 - 1))
+  full <- stats::cor(rx, ry)
+  list(statistic = full, r_shortcut = short, sumd2 = d2, tied = tied,
+       var = 1 / (n - 1), n = n)
+}
+
+#' Test of zero Spearman correlation -- Secs. 11.3.2-11.3.3, pp. 412-413
+#' @noRd
+Rhotest <- function(r, n, alternative = "two-sided") {
+  r <- as.numeric(r); n <- as.integer(n)
+  if (n < 3L) stop("n must be at least 3.", call. = FALSE)
+  if (r < -1 || r > 1) stop("r must lie in [-1, 1].", call. = FALSE)
+  z <- r * sqrt(n - 1)
+  t <- if (abs(r) >= 1) sign(r) * Inf else r * sqrt((n - 2) / (1 - r^2))
+  if (alternative == "greater") {
+    pn <- 1 - stats::pnorm(z); pt <- stats::pt(t, n - 2, lower.tail = FALSE)
+  } else if (alternative == "less") {
+    pn <- stats::pnorm(z); pt <- stats::pt(t, n - 2)
+  } else if (alternative == "two-sided") {
+    pn <- 2 * (1 - stats::pnorm(abs(z)))
+    pt <- 2 * stats::pt(abs(t), n - 2, lower.tail = FALSE)
+  } else {
+    stop("alternative must be two-sided, greater or less.", call. = FALSE)
+  }
+  list(z = z, p_normal = min(1, pn), t = t, df = n - 2L,
+       p_value = min(1, pt), var = 1 / (n - 1), n = n)
+}
+
+#' Fieller-Hartley-Pearson normal-scores correlation -- Sec. 11.5, p. 422
+#' @noRd
+Normcorr <- function(x, y, rho = 0, nodes = 4001) {
+  xs <- as.numeric(x); ys <- as.numeric(y); n <- length(xs)
+  if (length(ys) != n) stop("x and y must have the same length.", call. = FALSE)
+  if (n < 4L) stop("need at least 4 pairs.", call. = FALSE)
+  xi <- vapply(seq_len(n), function(i) .gbEnos(i, n, nodes = nodes), 0)
+  ox <- order(xs); ry <- rank(ys, ties.method = "first")
+  num <- sum(xi * xi[ry[ox]])
+  den <- sum(xi^2)
+  rf <- num / den
+  rf <- min(1 - 1e-15, max(-1 + 1e-15, rf))
+  zf <- atanh(rf)
+  mz <- atanh(as.numeric(rho)) * (1 - 0.6 / (n + 8))
+  vz <- 1 / (n - 3)
+  z <- (zf - mz) / sqrt(vz)
+  list(statistic = rf, zf = zf, mean_zf = mz, var_zf = vz, z = z,
+       p_value = 2 * (1 - stats::pnorm(abs(z))), scores = xi, n = n)
+}
+
+#' Kendall partial tau -- Sec. 12.6, eq. (12.6.1), p. 467
+#' @noRd
+Taupartial <- function(x, y, z) {
+  xs <- as.numeric(x); ys <- as.numeric(y); zs <- as.numeric(z); n <- length(xs)
+  if (length(ys) != n || length(zs) != n)
+    stop("x, y and z must have the same length.", call. = FALSE)
+  if (n < 3L) stop("need at least 3 subjects.", call. = FALSE)
+  x11 <- 0L; x12 <- 0L; x21 <- 0L; x22 <- 0L; dropped <- 0L
+  for (i in seq_len(n - 1L)) for (j in (i + 1L):n) {
+    sx <- sign(xs[j] - xs[i]); sy <- sign(ys[j] - ys[i]); sz <- sign(zs[j] - zs[i])
+    if (sx == 0 || sy == 0 || sz == 0) { dropped <- dropped + 1L; next }
+    xc <- sx * sz > 0; yc <- sy * sz > 0
+    if (yc && xc) x11 <- x11 + 1L
+    else if (yc && !xc) x12 <- x12 + 1L
+    else if (!yc && xc) x21 <- x21 + 1L
+    else x22 <- x22 + 1L
+  }
+  c1 <- x11 + x21; c2 <- x12 + x22; r1 <- x11 + x12; r2 <- x21 + x22
+  den <- c1 * c2 * r1 * r2
+  stat <- if (den > 0) (x11 * x22 - x12 * x21) / sqrt(den) else NaN
+  list(statistic = stat, x11 = x11, x12 = x12, x21 = x21, x22 = x22,
+       dropped = dropped, npairs = as.integer(n * (n - 1) / 2), n = n)
+}
+
+#' Within-block midranks and tie sum for the Friedman family
+#' @noRd
+.gbFriedRanks <- function(rows) {
+  k <- length(rows); n <- length(rows[[1]])
+  rsum <- numeric(n); tiesum <- 0
+  for (r in rows) {
+    if (length(r) != n) stop("every block must have n observations.", call. = FALSE)
+    rk <- rank(r, ties.method = "average")
+    tb <- as.numeric(table(r)); tb <- tb[tb > 1]
+    if (length(tb)) tiesum <- tiesum + sum(tb * (tb^2 - 1))
+    rsum <- rsum + rk
+  }
+  list(rsum = rsum, tiesum = tiesum, k = k, n = n)
+}
+
+#' Friedman two-way ANOVA by ranks -- eqs. (12.2.8)/(12.2.12), pp. 441-445
+#' @noRd
+Friedq <- function(data, correct = TRUE) {
+  rows <- lapply(data, as.numeric); k <- length(rows)
+  if (k < 2L) stop("need at least 2 blocks.", call. = FALSE)
+  n <- length(rows[[1]])
+  if (n < 2L) stop("need at least 2 treatments.", call. = FALSE)
+  fr <- .gbFriedRanks(rows); rsum <- fr$rsum; tiesum <- fr$tiesum
+  q <- 12 / (k * n * (n + 1)) * sum(rsum^2) - 3 * k * (n + 1)
+  s <- sum((rsum - k * (n + 1) / 2)^2)
+  qc <- q
+  if (correct && tiesum > 0) qc <- 12 * (n - 1) * s / (k * n * (n^2 - 1) - tiesum)
+  list(statistic = qc, q_raw = q, s = s, df = n - 1L,
+       p_value = stats::pchisq(qc, n - 1L, lower.tail = FALSE),
+       rank_sums = rsum, k = k, n = n)
+}
+
+#' Tie-corrected Friedman Q -- eq. (12.2.12), p. 445
+#' @noRd
+Friedties <- function(data) {
+  rows <- lapply(data, as.numeric); k <- length(rows)
+  if (k < 2L) stop("need at least 2 blocks.", call. = FALSE)
+  n <- length(rows[[1]])
+  if (n < 2L) stop("need at least 2 treatments.", call. = FALSE)
+  fr <- .gbFriedRanks(rows); rsum <- fr$rsum; tiesum <- fr$tiesum
+  s <- sum((rsum - k * (n + 1) / 2)^2)
+  q0 <- 12 * s / (k * n * (n + 1))
+  den <- k * n * (n^2 - 1) - tiesum
+  qc <- if (den > 0) 12 * (n - 1) * s / den else NaN
+  list(statistic = qc, q_raw = q0, tiesum = tiesum,
+       factor = if (q0 != 0) qc / q0 else NaN, s = s, rank_sums = rsum,
+       k = k, n = n)
+}
+
+#' Chi-square approximation to Friedman Q -- Sec. 12.2, p. 442
+#' @noRd
+Friedchi <- function(q, k, n) {
+  q <- as.numeric(q); k <- as.integer(k); n <- as.integer(n)
+  if (k < 2L || n < 2L)
+    stop("need k >= 2 blocks and n >= 2 treatments.", call. = FALSE)
+  df <- n - 1L
+  ve <- 2 * (n - 1) * (k - 1) / k; vc <- 2 * (n - 1)
+  list(statistic = q, df = df,
+       p_value = stats::pchisq(q, df, lower.tail = FALSE),
+       mean = n - 1, var_exact = ve, var_chi2 = vc, ratio = ve / vc,
+       k = k, n = n)
+}
+
+#' Friedman S and Q moments -- eq. (12.2.7), p. 442
+#' @noRd
+Friedvar <- function(k, n) {
+  k <- as.integer(k); n <- as.integer(n)
+  if (k < 2L || n < 2L)
+    stop("need k >= 2 blocks and n >= 2 treatments.", call. = FALSE)
+  ms <- k * n * (n^2 - 1) / 12
+  vs <- n^2 * k * (k - 1) * (n + 1)^2 / 72
+  vq <- 2 * (n - 1) * (k - 1) / k; vc <- 2 * (n - 1)
+  list(mean_s = ms, var_s = vs, mean_q = n - 1, var_q = vq, var_chi2 = vc,
+       deficit = vc - vq, k = k, n = n)
+}
+
+#' Friedman multiple comparisons -- eq. (12.2.13), p. 445
+#' @noRd
+Friedmc <- function(rank_sums, k, alpha = 0.20) {
+  rs <- as.numeric(rank_sums); n <- length(rs)
+  k <- as.integer(k); alpha <- as.numeric(alpha)
+  if (n < 2L) stop("need at least 2 treatments.", call. = FALSE)
+  if (k < 2L) stop("need at least 2 blocks.", call. = FALSE)
+  if (alpha <= 0 || alpha >= 1)
+    stop("alpha must lie strictly inside (0, 1).", call. = FALSE)
+  zstar <- stats::qnorm(1 - alpha / (n * (n - 1)))
+  bound <- zstar * sqrt(k * n * (n + 1) / 6)
+  diffs <- matrix(0, n, n); sig <- list()
+  for (i in seq_len(n)) for (j in seq_len(n)) {
+    d <- abs(rs[i] - rs[j]); diffs[i, j] <- d
+    if (i < j && d >= bound) sig[[length(sig) + 1L]] <- c(i - 1L, j - 1L)
+  }
+  list(bound = bound, zstar = zstar, diffs = diffs, significant = sig,
+       k = k, n = n)
+}
+
+#' Page's L test -- eqs. (12.3.1)-(12.3.2), pp. 448-449
+#' @noRd
+Pagel <- function(data, weights = NULL) {
+  rows <- lapply(data, as.numeric); k <- length(rows)
+  if (k < 2L) stop("need at least 2 blocks.", call. = FALSE)
+  n <- length(rows[[1]])
+  if (n < 2L) stop("need at least 2 treatments.", call. = FALSE)
+  w <- if (is.null(weights)) as.numeric(seq_len(n)) else as.numeric(weights)
+  if (length(w) != n) stop("weights must have length n.", call. = FALSE)
+  rsum <- .gbFriedRanks(rows)$rsum
+  ell <- sum(w * rsum)
+  z <- (12 * (ell - 0.5) - 3 * k * n * (n + 1)^2) /
+    (n * (n + 1) * sqrt(k * (n - 1)))
+  rav <- 12 * ell / (k * (n^3 - n)) - 3 * (n + 1) / (n - 1)
+  list(statistic = ell, z = z, p_value = 1 - stats::pnorm(z), rav = rav,
+       rank_sums = rsum, k = k, n = n)
+}
+
+#' Exact null distribution of Page's L -- Sec. 12.3, p. 448
+#' @noRd
+Pageexact <- function(k, n, ell = NULL) {
+  k <- as.integer(k); n <- as.integer(n)
+  if (k < 1L) stop("k must be at least 1.", call. = FALSE)
+  if (n < 2L || n > 8L)
+    stop("n must lie in 2..8 for exact enumeration.", call. = FALSE)
+  lo <- sum(seq_len(n) * rev(seq_len(n)))
+  hi <- sum(seq_len(n)^2)
+  span <- hi - lo
+  block <- numeric(span + 1L)
+  rec <- function(rem, acc, pos) {
+    if (pos == n) { block[acc - lo + 1L] <<- block[acc - lo + 1L] + 1; return(invisible()) }
+    for (v in rem) rec(rem[rem != v], acc + (pos + 1L) * v, pos + 1L)
+  }
+  rec(seq_len(n), 0L, 0L)
+  block <- block / sum(block)
+  cur <- 1
+  for (i in seq_len(k)) {
+    new <- numeric(length(cur) + span)
+    for (a in seq_along(cur)) {
+      if (cur[a] == 0) next
+      for (b in seq_along(block)) new[a + b - 1L] <- new[a + b - 1L] + cur[a] * block[b]
+    }
+    cur <- new
+  }
+  support <- lo * k + (0:(length(cur) - 1L))
+  mu <- sum(support * cur); e2 <- sum(support^2 * cur)
+  pmf_l <- NaN; sf_l <- NaN
+  if (!is.null(ell)) {
+    li <- as.integer(round(as.numeric(ell))) - lo * k
+    if (li >= 0L && li < length(cur)) {
+      pmf_l <- cur[li + 1L]; sf_l <- sum(cur[(li + 1L):length(cur)])
+    } else {
+      pmf_l <- 0; sf_l <- if (li >= length(cur)) 0 else 1
+    }
+  }
+  list(support = support, pmf = cur, pmf_l = pmf_l, sf_l = sf_l,
+       mean = mu, var = e2 - mu^2, k = k, n = n)
+}
+
+#' Page's L normal approximation -- eq. (12.3.2), p. 449
+#' @noRd
+Pageasymp <- function(ell, k, n, correct = TRUE) {
+  ell <- as.numeric(ell); k <- as.integer(k); n <- as.integer(n)
+  if (k < 1L) stop("k must be at least 1.", call. = FALSE)
+  if (n < 2L) stop("n must be at least 2.", call. = FALSE)
+  e <- if (correct) ell - 0.5 else ell
+  z <- (12 * e - 3 * k * n * (n + 1)^2) / (n * (n + 1) * sqrt(k * (n - 1)))
+  list(z = z, p_value = 1 - stats::pnorm(z),
+       mean = k * n * (n + 1)^2 / 4,
+       var = k * n^2 * (n + 1)^2 * (n - 1) / 144,
+       statistic = ell, k = k, n = n)
+}
+
+#' Concordance W significance test -- Sec. 12.4.2, p. 455
+#' @noRd
+Wsignif <- function(w, k, n) {
+  w <- as.numeric(w); k <- as.integer(k); n <- as.integer(n)
+  if (w < 0 || w > 1) stop("w must lie in [0, 1].", call. = FALSE)
+  if (k < 2L || n < 2L)
+    stop("need k >= 2 rankings of n >= 2 objects.", call. = FALSE)
+  q <- k * (n - 1) * w
+  list(statistic = q, w = w, df = n - 1L,
+       p_value = stats::pchisq(q, n - 1L, lower.tail = FALSE),
+       s = q * k * n * (n + 1) / 12,
+       table_n = as.integer(k <= 5L || n <= 5L), k = k, n = n)
+}
