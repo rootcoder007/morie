@@ -12,8 +12,8 @@ import pytest
 
 from fractions import Fraction
 
-from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, bhattgauss,
-                               bhattcoef, chernoff,
+from morie.fn.bsaclass import (accuracy, bayescls, bayesnorm, gaussoverlap,
+                               pdfoverlap, chernoff,
                                hellinger, kld,
                                divav, divergence, elbow, errbound,
                                fishcrit, fishlda, hclust, kfoldcv,
@@ -215,12 +215,12 @@ def test_divav_reports_the_worst_pair_not_only_the_average():
 
 
 def test_bhattacharyya_is_documented_as_not_from_this_book():
-    r = bhattgauss([0, 1], [2, -1], C1, C2)
+    r = gaussoverlap([0, 1], [2, -1], C1, C2)
     assert r["not_from_this_book"] is True
     assert r["book_uses_divergence_eq_10_115"] is True
     assert r["bhattacharyya"] > 0
     # identical distributions give zero
-    assert bhattgauss([1, 2], [1, 2], C1, C1)["bhattacharyya"] == \
+    assert gaussoverlap([1, 2], [1, 2], C1, C1)["bhattacharyya"] == \
         pytest.approx(0.0, abs=1e-12)
 
 
@@ -228,7 +228,7 @@ def test_the_error_bound_pairs_with_bhattacharyya():
     r = errbound(0.5, 0.5, 1.4)
     assert r["bound"] == pytest.approx(0.5 * math.exp(-1.4))
     assert r["not_from_this_book"] is True
-    assert r["pairs_with_bhatt_not_with_divergence"] is True
+    assert r["pairs_with_the_overlap_not_with_divergence"] is True
     assert r["tightest_at_equal_priors"] is True
     with pytest.raises(ValueError):
         errbound(0.3, 0.3, 1.0)          # priors do not sum to 1
@@ -576,27 +576,27 @@ def test_kld_refuses_a_zero_where_the_weighting_pdf_is_positive():
 def test_the_bhattacharyya_coefficient_is_an_overlap_in_the_unit_interval():
     p1 = [0.2, 0.3, 0.5]
     p2 = [0.1, 0.4, 0.5]
-    r = bhattcoef(p1, p2)
+    r = pdfoverlap(p1, p2)
     assert 0.0 <= r["coefficient"] <= 1.0
     assert r["in_unit_interval"] is True
-    assert bhattcoef(p1, p1)["coefficient"] == pytest.approx(1.0)
-    assert bhattcoef(p1, p1)["identical"] is True
-    disjoint = bhattcoef([1.0, 0.0], [0.0, 1.0])
+    assert pdfoverlap(p1, p1)["coefficient"] == pytest.approx(1.0)
+    assert pdfoverlap(p1, p1)["identical"] is True
+    disjoint = pdfoverlap([1.0, 0.0], [0.0, 1.0])
     assert disjoint["coefficient"] == pytest.approx(0.0)
     assert disjoint["disjoint"] is True
 
 
 def test_the_distance_is_minus_the_log_of_the_coefficient():
-    r = bhattcoef([0.2, 0.3, 0.5], [0.1, 0.4, 0.5])
+    r = pdfoverlap([0.2, 0.3, 0.5], [0.1, 0.4, 0.5])
     assert r["distance"] == pytest.approx(-math.log(r["coefficient"]))
     assert r["the_overlap_is_where_errors_must_happen"] is True
     assert r["not_from_this_book"] is True
-    assert bhattcoef([1.0, 0.0], [0.0, 1.0])["distance"] == float("inf")
+    assert pdfoverlap([1.0, 0.0], [0.0, 1.0])["distance"] == float("inf")
 
 
 def test_the_error_bound_tightens_as_the_overlap_falls():
-    close = bhattcoef([0.5, 0.5], [0.45, 0.55])["distance"]
-    far = bhattcoef([0.9, 0.1], [0.1, 0.9])["distance"]
+    close = pdfoverlap([0.5, 0.5], [0.45, 0.55])["distance"]
+    far = pdfoverlap([0.9, 0.1], [0.1, 0.9])["distance"]
     assert errbound(0.5, 0.5, far)["bound"] < \
         errbound(0.5, 0.5, close)["bound"]
 
@@ -606,7 +606,7 @@ def test_the_error_bound_tightens_as_the_overlap_falls():
 def test_chernoff_at_one_half_is_the_bhattacharyya_coefficient():
     p1 = [0.2, 0.3, 0.5]
     p2 = [0.1, 0.4, 0.5]
-    bc = bhattcoef(p1, p2)["coefficient"]
+    bc = pdfoverlap(p1, p2)["coefficient"]
     at_half = chernoff(p1, p2, alpha=0.5)
     assert at_half["coefficient"] == pytest.approx(bc, abs=1e-12)
     assert at_half["bhattacharyya_is_alpha_one_half"] is True
@@ -617,7 +617,7 @@ def test_the_searched_chernoff_is_at_least_as_tight():
     p1 = [0.2, 0.3, 0.5]
     p2 = [0.1, 0.4, 0.5]
     best = chernoff(p1, p2)
-    assert best["coefficient"] <= bhattcoef(p1, p2)["coefficient"] + 1e-12
+    assert best["coefficient"] <= pdfoverlap(p1, p2)["coefficient"] + 1e-12
     assert best["at_least_as_tight_as_bhattacharyya"] is True
     assert best["alpha_searched"] is True
     assert 0.0 <= best["alpha"] <= 1.0
@@ -630,7 +630,7 @@ def test_hellinger_squared_is_one_minus_the_coefficient():
     p2 = [0.1, 0.4, 0.5]
     h = hellinger(p1, p2)
     assert h["squared"] == pytest.approx(
-        1.0 - bhattcoef(p1, p2)["coefficient"], abs=1e-12)
+        1.0 - pdfoverlap(p1, p2)["coefficient"], abs=1e-12)
     assert h["identity_h2_equals_one_minus_bc"] is True
     assert 0.0 <= h["hellinger"] <= 1.0
     assert hellinger(p1, p1)["hellinger"] == pytest.approx(0.0, abs=1e-12)
@@ -655,13 +655,13 @@ def test_hellinger_is_a_metric_where_the_bhattacharyya_distance_is_not():
 def test_every_borrowed_measure_carries_its_primary_citation():
     p1 = [0.2, 0.3, 0.5]
     p2 = [0.1, 0.4, 0.5]
-    for r in (bhattcoef(p1, p2), chernoff(p1, p2), hellinger(p1, p2),
+    for r in (pdfoverlap(p1, p2), chernoff(p1, p2), hellinger(p1, p2),
               errbound(0.5, 0.5, 1.0),
-              bhattgauss([0, 1], [2, -1], C1, C2)):
+              gaussoverlap([0, 1], [2, -1], C1, C2)):
         assert r["not_from_this_book"] is True
         assert "reference" in r
         assert len(r["reference"]) > 40
-    assert "1943" in bhattcoef(p1, p2)["reference"]
+    assert "1943" in pdfoverlap(p1, p2)["reference"]
     assert "493-507" in chernoff(p1, p2)["reference"]
     assert "1909" in hellinger(p1, p2)["reference"]
     assert "1967" in errbound(0.5, 0.5, 1.0)["reference"]

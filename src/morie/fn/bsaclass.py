@@ -15,90 +15,97 @@ from ._richresult import RichResult
 
 __all__ = [
     'accuracy',
+    'bayescls',
+    'bayesnorm',
+    'chernoff',
+    'divav',
+    'divergence',
+    'elbow',
+    'errbound',
+    'fishcrit',
+    'fishlda',
+    'gaussoverlap',
+    'hclust',
+    'hellinger',
+    'kfoldcv',
+    'kld',
+    'kmeans',
+    'knn',
+    'lindisc',
+    'lindsep',
+    'logreg',
+    'loocv',
+    'mahal',
+    'mcnemar',
+    'normdist',
+    'pdfoverlap',
+    'ppv',
+    'qda',
     'rangayyan_accuracy',
     'rangayyan_ann_mlp',
-    'bayescls',
-    'rangayyan_bayes_classifier',
-    'bayesnorm',
-    'rangayyan_bayes_gaussian',
-    'rangayyan_bundle_branch_block',
-    'rangayyan_ecg_bbb_normal',
-    'rangayyan_bci_nmf',
-    'normdist',
-    'divergence',
-    'divav',
-    'bhatt',
-    'rangayyan_bhattacharyya',
     'rangayyan_basis_pursuit',
+    'rangayyan_bayes_classifier',
+    'rangayyan_bayes_error_bound',
+    'rangayyan_bayes_gaussian',
+    'rangayyan_bci_nmf',
+    'rangayyan_bhattacharyya',
+    'rangayyan_bundle_branch_block',
     'rangayyan_cad_pipeline',
+    'rangayyan_ch4_pan_tompkins_peak_classification',
     'rangayyan_cnn_signal',
-    'rangayyan_fetal_ecg_single',
+    'rangayyan_dictionary_sparse',
+    'rangayyan_ecg_bbb_normal',
     'rangayyan_ecg_normal_ectopic',
     'rangayyan_eeg_rhythms',
-    'elbow',
-    'rangayyan_kmeans_elbow',
     'rangayyan_epilepsy_ksvd',
-    'errbound',
-    'rangayyan_bayes_error_bound',
-    'fishcrit',
-    'rangayyan_fisher_criterion',
-    'fishlda',
-    'rangayyan_fisher_lda',
-    'hclust',
-    'rangayyan_hierarchical_clust',
     'rangayyan_fastica',
+    'rangayyan_fetal_ecg_single',
+    'rangayyan_fisher_criterion',
+    'rangayyan_fisher_lda',
+    'rangayyan_hierarchical_clust',
     'rangayyan_ica_artifact',
     'rangayyan_infomax_ica',
-    'kfoldcv',
     'rangayyan_kfold_cv',
-    'kmeans',
     'rangayyan_kmeans',
+    'rangayyan_kmeans_elbow',
     'rangayyan_knee_classify',
-    'knn',
     'rangayyan_knn_classifier',
     'rangayyan_ksvd',
-    'rangayyan_dictionary_sparse',
-    'lindisc',
-    'rangayyan_linear_discrim',
-    'lindsep',
     'rangayyan_lin_discr_sep',
-    'loocv',
-    'rangayyan_loo_cv',
-    'logreg',
+    'rangayyan_linear_discrim',
     'rangayyan_logistic_regression',
+    'rangayyan_loo_cv',
     'rangayyan_lstm_signal',
-    'mahal',
     'rangayyan_mahalanobis',
-    'mcnemar',
-    'rangayyan_mcnemar_test',
     'rangayyan_matching_pursuit',
+    'rangayyan_mcnemar_test',
     'rangayyan_neural_decode',
     'rangayyan_nmf',
     'rangayyan_nmf_channel_sel',
     'rangayyan_omp',
     'rangayyan_pca_signals',
     'rangayyan_pca_vs_ica',
-    'ppv',
     'rangayyan_ppv',
-    'qda',
     'rangayyan_qda',
     'rangayyan_rbf_network',
-    'roc',
     'rangayyan_roc_curve',
-    'rangayyan_sleep_apnea_nmf',
-    'sens',
     'rangayyan_sensitivity',
-    'sepindex',
     'rangayyan_separability_index',
-    'spec',
-    'rangayyan_specificity',
+    'rangayyan_sleep_apnea_nmf',
     'rangayyan_sparse_rep',
-    'svm',
+    'rangayyan_specificity',
     'rangayyan_svm',
-    'svmkern',
     'rangayyan_svm_kernel',
     'rangayyan_vag_adaptive_tfd',
-    'rangayyan_ch4_pan_tompkins_peak_classification',
+    'rangayyanksvd',
+    'rangayyannmf',
+    'rangayyanomp',
+    'roc',
+    'sens',
+    'sepindex',
+    'spec',
+    'svm',
+    'svmkern',
 ]
 
 def _solve_lin(A, b):
@@ -794,7 +801,7 @@ def kld(p1, p2):
         "method": "Rangayyan (2024) eq. (5.33)"})
 
 
-def bhattcoef(p1, p2):
+def pdfoverlap(p1, p2):
     """Bhattacharyya coefficient, the OVERLAP between two PDFs.
 
         BC(p1, p2) = sum_l sqrt( p1(x_l) p2(x_l) )
@@ -805,7 +812,7 @@ def bhattcoef(p1, p2):
     bound work -- the overlap of the two class-conditional densities IS
     the region where the optimal classifier must make mistakes.
 
-    NOT FROM THIS BOOK; see ``bhatt``.
+    NOT FROM THIS BOOK; see ``gaussoverlap``.
     """
     a, b = aslist(p1), aslist(p2)
     if len(a) != len(b):
@@ -946,7 +953,7 @@ def hellinger(p1, p2):
         "method": "Hellinger distance, H^2 = 1 - BC"})
 
 
-def bhattgauss(m1, m2, C1, C2):
+def gaussoverlap(m1, m2, C1, C2):
     """Bhattacharyya distance between two multivariate Gaussians.
 
         D_B = (1/8) (m1-m2)^T [(C1+C2)/2]^-1 (m1-m2)
@@ -1331,7 +1338,7 @@ def errbound(p1, p2, db):
 
     NOT FROM THIS BOOK.  Rangayyan (2024) does not give a Bhattacharyya
     error bound; this is the standard Kailath bound and is kept because
-    the name was already exposed.  It pairs with ``bhatt``, not with the
+    the name was already exposed.  It pairs with ``gaussoverlap``, not with the
     book's ``divergence`` -- the divergence does NOT bound the error this
     way, and substituting it here would give a number that looks like a
     bound and is not one.
@@ -1353,7 +1360,7 @@ def errbound(p1, p2, db):
         "tightest_at_equal_priors": abs(a - b) < 1e-12,
         "bounds_the_optimal_classifier_not_yours": True,
         "not_from_this_book": True,
-        "pairs_with_bhatt_not_with_divergence": True,
+        "pairs_with_the_overlap_not_with_divergence": True,
         "reference": "Kailath T. The divergence and Bhattacharyya "
                      "distance measures in signal selection. IEEE "
                      "Transactions on Communication Technology "
