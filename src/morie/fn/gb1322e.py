@@ -1,71 +1,50 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Efficacy e(T_n) of test statistic T_n."""
+"""Efficacy of a test statistic -- Gibbons eq. (13.2.4)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_efficacy"]
+__all__ = ['efficacy', 'gibbons_efficacy']
 
 
-def gibbons_efficacy(T, u0, cdf=None):
-    """
-    Efficacy e(T_n) of test statistic T_n
+def efficacy(deriv, var):
+    """e(T_n) = [dE(T_n)/dtheta]^2 / sigma^2(T_n).
 
-    Formula: e(T_n) = [dE(T_n)/du|_{u=u0}]^2 / Var(T_n)|_{u=u0}
+    Book p. 486, eq. (13.2.4).  The efficacy measures how fast the mean
+    of the statistic moves away from its null value per unit of null
+    standard deviation squared; the ARE of Theorem 13.2.2 is the ratio
+    of two efficacies, so all the ARE results of Ch. 13 are assembled
+    from this one quantity.
 
     Parameters
     ----------
-    T : array-like
-        Input data.
-    u0 : array-like
-        Input data.
+    deriv : float
+        dE(T_n)/dtheta at theta = theta_0.
+    var : float
+        sigma^2(T_n) at theta = theta_0, strictly positive.
 
     Returns
     -------
-    result : dict
-        Keys: efficacy
+    RichResult
+        keys ``efficacy``, ``deriv``, ``var``, ``method``.
 
     References
     ----------
-    Gibbons eq 13.2.4
+    Gibbons & Chakraborti (2011), eq. (13.2.4), p. 486.
     """
-    T = np.asarray(T, dtype=float)
-    n = int(T) if T.ndim == 0 else len(T)
-    if T.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Efficacy e(T_n) of test statistic T_n"}
-        )
-    x_sorted = np.sort(T)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(T), scale=np.std(T, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    d = float(deriv)
+    v = float(var)
+    if v <= 0.0:
+        raise ValueError("var must be strictly positive.")
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Efficacy e(T_n) of test statistic T_n",
+            "efficacy": float(d * d / v),
+            "deriv": d,
+            "var": v,
+            "method": "efficacy e(T) = [dE/dtheta]^2 / var, eq. (13.2.4)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1322e: Efficacy e(T_n) of test statistic T_n"
+gibbons_efficacy = efficacy
