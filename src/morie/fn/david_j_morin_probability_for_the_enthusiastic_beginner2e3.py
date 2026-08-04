@@ -1,35 +1,22 @@
-"""Product rule for k independent events (two-dice worked example).
+"""Deprecated alias for :func:`morie.fn.pandind`.
 
-Implements eq (2.3) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .pandind import pandind as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_3"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_3(ps):
-    """Product rule for k independent events (two-dice worked example).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (2.3).
-    """
-    value = _morin.prob_and_independent(ps)
-    payload = {"ps": [float(x) for x in np.atleast_1d(ps)], "p_and": value}
-    lines = [("P(all events)", value)]
-    return RichResult(
-        title="Product rule for k independent events (two-dice worked example).",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.pandind` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_3() is the book-coordinate name for pandind(); "
+        "it will be removed. Use morie.fn.pandind() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner2e3: Product rule for k independent events (two-dice worked example). Morin (2016) eq (2.3)."
+    return _impl(ps)

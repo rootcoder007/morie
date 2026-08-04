@@ -1,35 +1,22 @@
-"""Multinomial coefficient (N; n1, n2, ..., nk) = N!/(n1!...nk!).
+"""Deprecated alias for :func:`morie.fn.multinom`.
 
-Implements eq (1.37) of Morin (2016), Probability: For the
-Enthusiastic Beginner. The auto-extracted placeholder returned the
-sample mean of an arbitrary vector; this module now computes the
-book's actual result.
+The book-coordinate name is kept so existing code keeps working.  It warns
+once and forwards to the method-named function.
 """
 
-from . import _array_core as np
+import warnings
 
-from . import _morin
-from ._richresult import RichResult
+from .multinom import multinom as _impl
 
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_37"]
 
 
 def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_37(ns):
-    """Multinomial coefficient (N; n1, n2, ..., nk) = N!/(n1!...nk!).
-
-    Reference
-    ---------
-    Morin, D. J. (2016). Probability: For the Enthusiastic Beginner. Createspace Independent Publishing. Eq. (1.37).
-    """
-    value = _morin.multinomial_coefficient(ns)
-    payload = {"ns": [int(x) for x in np.atleast_1d(ns)], "coefficient": value}
-    lines = [("multinomial coefficient", value)]
-    return RichResult(
-        title="Multinomial coefficient (N; n1, n2, ..., nk) = N!/(n1!...nk!).",
-        summary_lines=lines,
-        payload=payload,
+    """Deprecated; use :func:`morie.fn.multinom` instead."""
+    warnings.warn(
+        "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_1_equation_37() is the book-coordinate name for multinom(); "
+        "it will be removed. Use morie.fn.multinom() instead.",
+        DeprecationWarning,
+        stacklevel=2,
     )
-
-
-def cheatsheet():
-    return "david_j_morin_probability_for_the_enthusiastic_beginner1e37: Multinomial coefficient (N; n1, n2, ..., nk) = N!/(n1!...nk!). Morin (2016) eq (1.37)."
+    return _impl(ns)
