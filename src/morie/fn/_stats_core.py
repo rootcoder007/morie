@@ -6,9 +6,9 @@ beta, binom, poisson, uniform, expon) expose pdf/pmf, cdf, sf, ppf, isf,
 plus the small set of module-level helpers in use (sem, zscore).
 
 Numerics (classical, dependency-free):
-- normal cdf via math.erf; normal ppf via the AS241-style Acklam
-  rational approximation (|err| < 1.2e-9), consistent with morie's
-  native RNG reference.
+- normal cdf via math.erf; normal ppf via Wichura's AS 241 (PPND16, ~1e-16),
+  the same algorithm as morie's native RNG -- one quantile function,
+  not two of different accuracy.
 - regularized incomplete gamma P(a, x) by series (x < a+1) and
   continued fraction (x >= a+1)  -> gamma/chi2/poisson cdfs.
 - regularized incomplete beta I_x(a, b) by Lentz continued fraction
@@ -38,42 +38,18 @@ def _norm_pdf(z):
 
 
 def _norm_ppf(p):
-    if not 0.0 < p < 1.0:
-        if p == 0.0:
-            return -_math.inf
-        if p == 1.0:
-            return _math.inf
-        raise ValueError("p must be in [0, 1]")
-    a = (-3.969683028665376e+01, 2.209460984245205e+02,
-         -2.759285104469687e+02, 1.383577518672690e+02,
-         -3.066479806614716e+01, 2.506628277459239e+00)
-    b = (-5.447609879822406e+01, 1.615858368580409e+02,
-         -1.556989798598866e+02, 6.680131188771972e+01,
-         -1.328068155288572e+01)
-    c = (-7.784894002430293e-03, -3.223964580411365e-01,
-         -2.400758277161838e+00, -2.549732539343734e+00,
-         4.374664141464968e+00, 2.938163982698783e+00)
-    d = (7.784695709041462e-03, 3.224671290700398e-01,
-         2.445134137142996e+00, 3.754408661907416e+00)
-    p_low, p_high = 0.02425, 1 - 0.02425
-    if p < p_low:
-        q = _math.sqrt(-2 * _math.log(p))
-        x = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q
-             + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
-    elif p <= p_high:
-        q = p - 0.5
-        r = q * q
-        x = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r
-             + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r
-                             + b[4]) * r + 1)
-    else:
-        q = _math.sqrt(-2 * _math.log(1 - p))
-        x = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q
-              + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
-    # one Halley refinement step to push error to ~1e-15
-    e = _norm_cdf(x) - p
-    u = e * _math.sqrt(2 * _math.pi) * _math.exp(x * x / 2.0)
-    return x - u / (1.0 + x * u / 2.0)
+    """Standard normal quantile via Wichura's AS 241 (PPND16), ~1e-16.
+
+    This used to be Acklam's rational approximation (|err| < 1.2e-9)
+    while _rng.py carried the genuine AS 241 -- two quantile functions of
+    different accuracy answering the same question.  Now there is one.
+    The import is local so this module still loads without _rng.
+    """
+    from ._rng import normal_quantile as _ppnd16
+    if not (0.0 < p < 1.0):
+        raise ValueError("p must lie strictly inside (0, 1)")
+    z = _ppnd16(p)
+    return float(z if not hasattr(z, "_flat") else list(z._flat())[0])
 
 
 def _gammainc_p(a, x):
