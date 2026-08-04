@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgosflt import rangayyan_order_stat_flt
+from morie.fn.bsafilt import rangayyan_order_stat_flt
 
 
 def test_rgosflt_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgicaart import rangayyan_ica_artifact
+from morie.fn.bsaclass import rangayyan_ica_artifact
 
 
 def test_rgicaart_basic():

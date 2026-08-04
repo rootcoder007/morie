@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng167 import rangayyan_ch3_rls_phi_recursion as phi_rec
+from morie.fn.bsaadapt import rangayyan_ch3_rls_phi_recursion as phi_rec
 
 
 def test_rng167_recursion_reproduces_the_closed_form_sum():

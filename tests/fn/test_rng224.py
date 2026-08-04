@@ -1,6 +1,6 @@
 """Tests for rng224.rangayyan_ch4_basic_signal_g."""
 
-from morie.fn.rng224 import rangayyan_ch4_basic_signal_g
+from morie.fn.bsacorr import rangayyan_ch4_basic_signal_g
 
 
 def test_rng224_basic():

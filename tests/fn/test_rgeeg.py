@@ -8,7 +8,7 @@ definitions the section describes.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgeeg import rangayyan_eeg_bands
+from morie.fn.bsacorr import rangayyan_eeg_bands
 
 FS = 256.0
 

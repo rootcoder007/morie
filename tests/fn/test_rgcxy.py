@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcxy import rangayyan_coherence_cxy
+from morie.fn.bsacorr import rangayyan_coherence_cxy
 
 
 def test_rgcxy_basic():

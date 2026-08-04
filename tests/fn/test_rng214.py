@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng214 import rangayyan_ch4_signal_total_energy
+from morie.fn.bsacorr import rangayyan_ch4_signal_total_energy
 
 
 def test_rng214_basic():

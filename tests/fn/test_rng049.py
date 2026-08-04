@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng049 import rangayyan_ch3_laplace_transform_causal_finite
+from morie.fn.bsaxfrm import rangayyan_ch3_laplace_transform_causal_finite
 
 
 def test_rng049_basic():

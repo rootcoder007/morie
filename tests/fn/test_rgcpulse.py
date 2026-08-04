@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcpulse import rangayyan_carotid_pulse
+from morie.fn.bsaqrs import rangayyan_carotid_pulse
 
 
 def test_rgcpulse_basic():

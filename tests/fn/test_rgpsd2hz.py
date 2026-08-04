@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpsd2hz import rangayyan_psd_to_hz
+from morie.fn.bsacorr import rangayyan_psd_to_hz
 
 
 def test_rgpsd2hz_basic():

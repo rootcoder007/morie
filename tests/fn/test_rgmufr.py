@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmufr import rangayyan_muap_firing_rate
+from morie.fn.bsastat import rangayyan_muap_firing_rate
 
 
 def test_rgmufr_basic():

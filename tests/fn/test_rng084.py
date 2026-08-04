@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng084 import rangayyan_ch3_observed_signal_kth_realization
+from morie.fn.bsastat import rangayyan_ch3_observed_signal_kth_realization
 
 
 def test_rng084_basic():

@@ -8,7 +8,7 @@ low-frequency noise: Butterworth highpass filters" p.161.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgiir import rangayyan_iir_filter
+from morie.fn.bsafilt import rangayyan_iir_filter
 
 FS = 200.0
 

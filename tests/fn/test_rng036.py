@@ -2,7 +2,7 @@
 
 import pytest
 
-from morie.fn.rng036 import rangayyan_ch3_discrete_convolution_causal
+from morie.fn.bsasig import rangayyan_ch3_discrete_convolution_causal
 
 
 def test_rng036_basic():

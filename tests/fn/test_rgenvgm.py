@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgenvgm import rangayyan_envelogram
+from morie.fn.bsatf import rangayyan_envelogram
 
 
 def test_rgenvgm_basic():

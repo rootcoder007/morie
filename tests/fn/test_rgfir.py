@@ -21,7 +21,7 @@ weight instead.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgfir import rangayyan_fir_filter
+from morie.fn.bsafilt import rangayyan_fir_filter
 
 
 def test_returns_documented_keys():

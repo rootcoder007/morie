@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng018 import rangayyan_ch3_ensemble_average_function
+from morie.fn.bsacorr import rangayyan_ch3_ensemble_average_function
 
 
 def test_rng018_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rghsnd import rangayyan_heart_sound_id
+from morie.fn.bsaqrs import rangayyan_heart_sound_id
 
 
 def test_rghsnd_basic():

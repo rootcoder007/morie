@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgrespsnd import rangayyan_respiratory_sound
+from morie.fn.bsaphys import rangayyan_respiratory_sound
 
 
 def test_rgrespsnd_basic():

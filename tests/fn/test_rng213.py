@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng213 import rangayyan_ch4_peak_power_snr
+from morie.fn.bsacorr import rangayyan_ch4_peak_power_snr
 
 
 def test_rng213_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmuap import rangayyan_muap
+from morie.fn.bsaphys import rangayyan_muap
 
 
 def test_rgmuap_basic():

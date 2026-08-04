@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpwave import rangayyan_p_wave_detect
+from morie.fn.bsaqrs import rangayyan_p_wave_detect
 
 
 def test_rgpwave_basic():

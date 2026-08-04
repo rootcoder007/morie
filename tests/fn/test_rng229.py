@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng229 import rangayyan_ch4_matched_filter_output_psd
+from morie.fn.bsacorr import rangayyan_ch4_matched_filter_output_psd
 
 
 def test_rng229_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng080 import rangayyan_ch3_parseval_theorem
+from morie.fn.bsacorr import rangayyan_ch3_parseval_theorem
 
 
 def test_rng080_basic():

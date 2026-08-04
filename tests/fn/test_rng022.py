@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rng022 import rangayyan_ch3_correlation_coefficient as rho
+from morie.fn.bsastat import rangayyan_ch3_correlation_coefficient as rho
 
 
 def test_rng022_known_value():

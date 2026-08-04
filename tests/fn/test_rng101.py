@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng101 import rangayyan_ch3_running_integral_window
+from morie.fn.bsafilt import rangayyan_ch3_running_integral_window
 
 
 def test_rng101_basic():

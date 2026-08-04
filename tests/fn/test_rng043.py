@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng043 import rangayyan_ch3_lsi_series_combined_h
+from morie.fn.bsafilt import rangayyan_ch3_lsi_series_combined_h
 
 
 def test_rng043_basic():

@@ -11,7 +11,7 @@ which is CAUSAL and therefore undefined for n < M-1.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgemg import rangayyan_emg_rms
+from morie.fn.bsatf import rangayyan_emg_rms
 
 
 def test_rgemg_constant_signal_gives_its_own_magnitude():

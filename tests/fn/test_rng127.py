@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng127 import rangayyan_ch3_bilinear_transformation
+from morie.fn.bsafilt import rangayyan_ch3_bilinear_transformation
 
 
 def test_rng127_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng057 import rangayyan_ch3_iir_difference_equation
+from morie.fn.bsafilt import rangayyan_ch3_iir_difference_equation
 
 
 def test_rng057_basic():

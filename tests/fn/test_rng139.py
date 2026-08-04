@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng139 import rangayyan_ch3_wiener_output_dot_product
+from morie.fn.bsaadapt import rangayyan_ch3_wiener_output_dot_product
 
 
 def test_rng139_basic():

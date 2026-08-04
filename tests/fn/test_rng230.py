@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng230 import rangayyan_ch4_homomorphic_multiplicative_signal
+from morie.fn.bsacep import rangayyan_ch4_homomorphic_multiplicative_signal
 
 
 def test_rng230_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwhamp import rangayyan_hamming_window
+from morie.fn.bsafilt import rangayyan_hamming_window
 
 
 def test_rgwhamp_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmflt import rangayyan_matched_filter
+from morie.fn.bsacorr import rangayyan_matched_filter
 
 
 def test_rgmflt_basic():

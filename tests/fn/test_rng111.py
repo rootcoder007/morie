@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng111 import rangayyan_ch3_first_difference_operator
+from morie.fn.bsafilt import rangayyan_ch3_first_difference_operator
 
 
 def test_rng111_basic():

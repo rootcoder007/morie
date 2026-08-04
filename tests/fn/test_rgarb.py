@@ -9,7 +9,7 @@ model and reflection coefficients of magnitude < 1 -- both pinned here.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgarb import rangayyan_ar_burg
+from morie.fn.bsaar import rangayyan_ar_burg
 
 
 def _ar2(n=4000, a1=0.75, a2=-0.5, seed=31):

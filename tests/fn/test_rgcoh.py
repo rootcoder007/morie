@@ -9,7 +9,7 @@ other -- both properties are pinned here.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgcoh import rangayyan_coherence
+from morie.fn.bsacorr import rangayyan_coherence
 
 
 def test_rgcoh_self_coherence_is_unity():

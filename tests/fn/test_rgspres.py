@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgspres import rangayyan_spectral_resolution
+from morie.fn.bsacorr import rangayyan_spectral_resolution
 
 
 def test_rgspres_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpsdacf import rangayyan_psd_to_acf
+from morie.fn.bsacorr import rangayyan_psd_to_acf
 
 
 def test_rgpsdacf_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng205 import rangayyan_ch4_csd_from_ccf
+from morie.fn.bsacorr import rangayyan_ch4_csd_from_ccf
 
 
 def test_rng205_basic():

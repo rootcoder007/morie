@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgswt import rangayyan_swt
+from morie.fn.bsatf import rangayyan_swt
 
 
 def test_rgswt_basic():

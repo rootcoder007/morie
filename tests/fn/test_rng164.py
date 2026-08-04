@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng164 import rangayyan_ch3_rls_normal_equation
+from morie.fn.bsaadapt import rangayyan_ch3_rls_normal_equation
 
 
 def test_rng164_basic():

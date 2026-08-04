@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng083 import rangayyan_ch3_even_odd_decomposition
+from morie.fn.bsaxfrm import rangayyan_ch3_even_odd_decomposition
 
 
 def test_rng083_basic():

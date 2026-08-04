@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng008 import rangayyan_ch3_sample_mean_squared
+from morie.fn.bsastat import rangayyan_ch3_sample_mean_squared
 
 
 def test_rng008_basic():

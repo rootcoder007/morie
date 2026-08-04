@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgeqn3b import rangayyan_ch3_correlation_sum
+from morie.fn.bsacorr import rangayyan_ch3_correlation_sum
 
 
 def test_rgeqn3b_basic():

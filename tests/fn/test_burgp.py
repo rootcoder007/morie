@@ -3,7 +3,7 @@
 from morie.fn import _array_core as np
 
 from morie.fn._containers import DescriptiveResult
-from morie.fn.burgp import burg_psd
+from morie.fn.bsaar import burg_psd
 
 
 def test_burg_basic(signal_1khz):

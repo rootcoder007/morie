@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng063 import rangayyan_ch3_complex_exponential
+from morie.fn.bsaxfrm import rangayyan_ch3_complex_exponential
 
 
 def test_rng063_basic():

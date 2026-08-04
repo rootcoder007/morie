@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcepst import rangayyan_cepstrum
+from morie.fn.bsacep import rangayyan_cepstrum
 
 
 def test_rgcepst_basic():

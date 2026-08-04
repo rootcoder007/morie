@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgcomb import rangayyan_comb_filter
+from morie.fn.bsafilt import rangayyan_comb_filter
 
 
 def test_rgcomb_basic():

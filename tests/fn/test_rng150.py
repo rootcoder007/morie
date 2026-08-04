@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng150 import rangayyan_ch3_wiener_frequency_response
+from morie.fn.bsaadapt import rangayyan_ch3_wiener_frequency_response
 
 
 def test_rng150_basic():

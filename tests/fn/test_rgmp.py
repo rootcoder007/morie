@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmp import rangayyan_matching_pursuit
+from morie.fn.bsaclass import rangayyan_matching_pursuit
 
 
 def test_rgmp_basic():

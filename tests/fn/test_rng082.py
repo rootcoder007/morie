@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng082 import rangayyan_ch3_odd_part
+from morie.fn.bsaxfrm import rangayyan_ch3_odd_part
 
 
 def test_rng082_basic():

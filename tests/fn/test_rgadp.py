@@ -9,7 +9,7 @@ less noise than the primary input did -- that is what is pinned here.
 from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.rgadp import rangayyan_adaptive_filter
+from morie.fn.bsaadapt import rangayyan_adaptive_filter
 
 
 def test_rgadp_cancels_noise_correlated_with_the_reference():

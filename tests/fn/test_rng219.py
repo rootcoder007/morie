@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng219 import rangayyan_ch4_triangle_inequality_vectors
+from morie.fn.bsacorr import rangayyan_ch4_triangle_inequality_vectors
 
 
 def test_rng219_basic():

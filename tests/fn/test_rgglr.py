@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgglr import rangayyan_gen_likelihood_ratio
+from morie.fn.bsaadapt import rangayyan_gen_likelihood_ratio
 
 
 def test_rgglr_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpzmod import rangayyan_pole_zero_model
+from morie.fn.bsaar import rangayyan_pole_zero_model
 
 
 def test_rgpzmod_basic():

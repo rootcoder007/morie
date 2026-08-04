@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgwndw import rangayyan_window_functions
+from morie.fn.bsafilt import rangayyan_window_functions
 
 
 def test_rgwndw_basic():

@@ -1,6 +1,6 @@
 """Tests for rng077.rangayyan_ch3_twiddle_conjugate_symmetry."""
 
-from morie.fn.rng077 import rangayyan_ch3_twiddle_conjugate_symmetry
+from morie.fn.bsaxfrm import rangayyan_ch3_twiddle_conjugate_symmetry
 
 
 def test_rng077_basic():

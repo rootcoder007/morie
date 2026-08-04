@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpsync import rangayyan_pcg_sync_avg
+from morie.fn.bsacorr import rangayyan_pcg_sync_avg
 
 
 def test_rgpsync_basic():

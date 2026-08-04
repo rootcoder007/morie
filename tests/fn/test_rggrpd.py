@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rggrpd import rangayyan_group_delay
+from morie.fn.bsafilt import rangayyan_group_delay
 
 
 def test_rggrpd_basic():

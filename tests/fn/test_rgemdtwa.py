@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgemdtwa import rangayyan_emd_twa
+from morie.fn.bsatf import rangayyan_emd_twa
 
 
 def test_rgemdtwa_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng206 import rangayyan_ch4_coherence_spectrum
+from morie.fn.bsacorr import rangayyan_ch4_coherence_spectrum
 
 
 def test_rng206_basic():

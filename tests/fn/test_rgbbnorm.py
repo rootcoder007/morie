@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgbbnorm import rangayyan_ecg_bbb_normal
+from morie.fn.bsaclass import rangayyan_ecg_bbb_normal
 
 
 def test_rgbbnorm_basic():

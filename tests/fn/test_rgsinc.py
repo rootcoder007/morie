@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgsinc import rangayyan_sinc_kernel
+from morie.fn.bsafilt import rangayyan_sinc_kernel
 
 
 def test_rgsinc_basic():

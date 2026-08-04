@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng216 import rangayyan_ch4_schwarz_inequality_complex
+from morie.fn.bsacorr import rangayyan_ch4_schwarz_inequality_complex
 
 
 def test_rng216_basic():

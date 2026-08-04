@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng123 import rangayyan_ch3_butterworth_lowpass_squared_magnitude
+from morie.fn.bsafilt import rangayyan_ch3_butterworth_lowpass_squared_magnitude
 
 
 def test_rng123_basic():

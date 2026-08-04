@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng178 import rangayyan_ch4_qrs_combined_balda
+from morie.fn.bsaqrs import rangayyan_ch4_qrs_combined_balda
 
 
 def test_rng178_basic():

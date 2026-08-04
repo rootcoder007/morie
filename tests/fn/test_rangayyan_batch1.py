@@ -10,9 +10,9 @@ import math
 
 import pytest
 
-from morie.fn.rgaic import aicorder
-from morie.fn.rgar2cep import ar2cep
-from morie.fn.rgbartl import bartlettpsd
+from morie.fn.bsaar import aicorder
+from morie.fn.bsacep import ar2cep
+from morie.fn.bsacorr import bartlettpsd
 
 
 # ---- eq (7.60): I(P) = log(eps_P) + 2P/Ne ---------------------------

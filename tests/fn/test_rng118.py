@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng118 import rangayyan_ch3_three_point_central_diff_magnitude
+from morie.fn.bsafilt import rangayyan_ch3_three_point_central_diff_magnitude
 
 
 def test_rng118_basic():

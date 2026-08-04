@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgkmns import rangayyan_kmeans
+from morie.fn.bsaclass import rangayyan_kmeans
 
 
 def test_rgkmns_basic():

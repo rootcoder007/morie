@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng242 import rangayyan_ch4_log_minimum_phase_expansion
+from morie.fn.bsaxfrm import rangayyan_ch4_log_minimum_phase_expansion
 
 
 def test_rng242_basic():

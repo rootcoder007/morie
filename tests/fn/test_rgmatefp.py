@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgmatefp import rangayyan_maternal_ecg_filter
+from morie.fn.bsaqrs import rangayyan_maternal_ecg_filter
 
 
 def test_rgmatefp_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpdfest import rangayyan_pdf_estimate
+from morie.fn.bsastat import rangayyan_pdf_estimate
 
 
 def test_rgpdfest_basic():

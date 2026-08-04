@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng046 import rangayyan_ch3_lsi_parallel_total
+from morie.fn.bsasig import rangayyan_ch3_lsi_parallel_total
 
 
 def test_rng046_basic():

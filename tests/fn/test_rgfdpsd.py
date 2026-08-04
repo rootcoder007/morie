@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfdpsd import rangayyan_fd_psd_slope
+from morie.fn.bsastat import rangayyan_fd_psd_slope
 
 
 def test_rgfdpsd_basic():

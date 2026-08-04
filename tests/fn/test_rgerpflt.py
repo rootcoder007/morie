@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgerpflt import rangayyan_erp_artifact_remove
+from morie.fn.bsacorr import rangayyan_erp_artifact_remove
 
 
 def test_rgerpflt_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgpca import rangayyan_pca_signals
+from morie.fn.bsaclass import rangayyan_pca_signals
 
 
 def test_rgpca_basic():

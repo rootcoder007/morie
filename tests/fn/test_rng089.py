@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng089 import rangayyan_ch3_hann_filter
+from morie.fn.bsafilt import rangayyan_ch3_hann_filter
 
 
 def test_rng089_basic():

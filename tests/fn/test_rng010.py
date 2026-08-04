@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng010 import rangayyan_ch3_sample_std
+from morie.fn.bsastat import rangayyan_ch3_sample_std
 
 
 def test_rng010_basic():

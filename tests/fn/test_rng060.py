@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng060 import rangayyan_ch3_frequency_response_from_pole_zero
+from morie.fn.bsaar import rangayyan_ch3_frequency_response_from_pole_zero
 
 
 def test_rng060_basic():

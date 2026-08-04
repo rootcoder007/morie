@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng004 import rangayyan_ch3_skewness
+from morie.fn.bsastat import rangayyan_ch3_skewness
 
 
 def test_rng004_basic():

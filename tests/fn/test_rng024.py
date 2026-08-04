@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng024 import rangayyan_ch3_dirac_delta_definition
+from morie.fn.bsasig import rangayyan_ch3_dirac_delta_definition
 
 
 def test_rng024_basic():

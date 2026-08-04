@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgminph import rangayyan_min_phase
+from morie.fn.bsacep import rangayyan_min_phase
 
 
 def test_rgminph_basic():

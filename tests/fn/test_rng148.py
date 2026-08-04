@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng148 import rangayyan_ch3_wiener_convolution_relationship
+from morie.fn.bsaadapt import rangayyan_ch3_wiener_convolution_relationship
 
 
 def test_rng148_basic():

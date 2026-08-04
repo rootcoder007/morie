@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng117 import rangayyan_ch3_three_point_central_diff_transfer_function
+from morie.fn.bsafilt import rangayyan_ch3_three_point_central_diff_transfer_function
 
 
 def test_rng117_basic():

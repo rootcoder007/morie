@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgnrnst import rangayyan_nernst_potential
+from morie.fn.bsaphys import rangayyan_nernst_potential
 
 
 def test_rgnrnst_basic():

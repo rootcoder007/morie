@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng133 import rangayyan_ch3_butterworth_lowpass_direct_specification
+from morie.fn.bsafilt import rangayyan_ch3_butterworth_lowpass_direct_specification
 
 
 def test_rng133_basic():

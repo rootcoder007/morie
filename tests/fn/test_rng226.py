@@ -1,6 +1,6 @@
 """Tests for rng226.rangayyan_ch4_matched_filter_h_example."""
 
-from morie.fn.rng226 import rangayyan_ch4_matched_filter_h_example
+from morie.fn.bsafilt import rangayyan_ch4_matched_filter_h_example
 
 
 def test_rng226_basic():

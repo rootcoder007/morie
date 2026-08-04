@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgkfcv import rangayyan_kfold_cv
+from morie.fn.bsaclass import rangayyan_kfold_cv
 
 
 def test_rgkfcv_basic():

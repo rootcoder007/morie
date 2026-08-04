@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng228 import rangayyan_ch4_matched_filter_impulse_response_eeg
+from morie.fn.bsacorr import rangayyan_ch4_matched_filter_impulse_response_eeg
 
 
 def test_rng228_basic():

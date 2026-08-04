@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgblwand import rangayyan_baseline_wander
+from morie.fn.bsaqrs import rangayyan_baseline_wander
 
 
 def test_rgblwand_basic():

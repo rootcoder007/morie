@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgrms import rangayyan_rms
+from morie.fn.bsastat import rangayyan_rms
 
 
 def test_rgrms_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng169 import rangayyan_ch3_abcd_matrix_inversion_lemma
+from morie.fn.bsaadapt import rangayyan_ch3_abcd_matrix_inversion_lemma
 
 
 def test_rng169_basic():

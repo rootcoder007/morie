@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng003 import rangayyan_ch3_variance_continuous
+from morie.fn.bsastat import rangayyan_ch3_variance_continuous
 
 
 def test_rng003_basic():

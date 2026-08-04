@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng157 import rangayyan_ch3_lms_squared_error
+from morie.fn.bsaadapt import rangayyan_ch3_lms_squared_error
 
 
 def test_rng157_basic():

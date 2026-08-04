@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgyw import rangayyan_yule_walker
+from morie.fn.bsaar import rangayyan_yule_walker
 
 
 def test_rgyw_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng105 import rangayyan_ch3_integrator_frequency_response
+from morie.fn.bsafilt import rangayyan_ch3_integrator_frequency_response
 
 
 def test_rng105_basic():

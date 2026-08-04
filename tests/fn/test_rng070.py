@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng070 import rangayyan_ch3_idft_definition
+from morie.fn.bsacorr import rangayyan_ch3_idft_definition
 
 
 def test_rng070_basic():

@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rng108 import rangayyan_ch3_ma_8point_recursive
+from morie.fn.bsafilt import rangayyan_ch3_ma_8point_recursive
 
 
 def test_rng108_basic():

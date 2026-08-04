@@ -2,7 +2,7 @@
 
 from morie.fn import _array_core as np
 
-from morie.fn.rgfecg import rangayyan_fetal_ecg
+from morie.fn.bsaadapt import rangayyan_fetal_ecg
 
 
 def test_rgfecg_basic():
