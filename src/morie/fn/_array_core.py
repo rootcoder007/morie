@@ -203,6 +203,14 @@ class marr:
                         return self[rest[0]]
                     return self[(slice(None), rest[0])]
                 idx = rest
+            if len(idx) == 3:
+                r3 = _newaxis_rank3(self, idx)
+                if r3 is not None:
+                    return r3
+                raise ValueError(
+                    "unsupported 3-element index %r; the rank-2 core "
+                    "supports a single new axis among full slices, as in "
+                    "x[:, None, :]" % (idx,))
             i, j = idx
             if j is None:                       # x[:, None] -> column
                 base = self._flat() if i == slice(None) else None
@@ -487,6 +495,28 @@ class marr:
             return
         if isinstance(idx, tuple) and len(self.shape) == 2:
             i, j = idx
+            if isinstance(i, (marr, list)) and isinstance(j, (marr, list)) \
+                    and not isinstance(i, slice):
+                # paired integer index arrays, as returned by
+                # diag_indices_from: x[(rows, cols)] = v
+                iv = list(i._flat()) if isinstance(i, marr) else list(i)
+                jv = list(j._flat()) if isinstance(j, marr) else list(j)
+                if len(iv) != len(jv):
+                    raise ValueError(
+                        "index arrays must be the same length, got %d "
+                        "and %d" % (len(iv), len(jv)))
+                v = asarray(value)
+                vals = list(v._flat()) if isinstance(v, marr) \
+                    else [float(value)]
+                if len(vals) == 1:
+                    vals = vals * len(iv)
+                if len(vals) != len(iv):
+                    raise ValueError(
+                        "cannot assign %d values to %d positions"
+                        % (len(vals), len(iv)))
+                for r2, c2, val in zip(iv, jv, vals):
+                    self.data[int(r2)][int(c2)] = float(val)
+                return
             if isinstance(i, slice) and isinstance(j, (marr, list)):
                 # x[:, mask_or_idx] = v
                 jv = j._flat() if isinstance(j, marr) else list(j)
@@ -1541,6 +1571,16 @@ class _Linalg:
 
     @staticmethod
     def norm(x, ord=None, axis=None):  # noqa: A002
+        if isinstance(x, ndlist) and axis is not None:
+            # rank-3: reduce the last axis, giving the (n, n) pairwise
+            # matrix. Previously fell through to _flat() and raised
+            # "can't multiply sequence by non-int".
+            shape = x.shape
+            if axis in (-1, len(shape) - 1) and len(shape) == 3:
+                return marr([[_Linalg.norm(marr(cell), ord=ord)
+                              for cell in row] for row in x.tolist()])
+            raise ValueError(
+                "norm: rank-%d input supports only axis=-1" % len(shape))
         a = asarray(x)
         if axis is not None and len(a.shape) == 2:
             rows = a.data if axis in (1, -1) else \
@@ -2738,6 +2778,27 @@ def cov(x, y=None, ddof=1):
 
 
 
+def _newaxis_rank3(a, idx):
+    """x[:, None, :] and friends on a 2-D marr -> rank-3 ndlist.
+
+    Returns None if the index is not one new axis among full slices, so
+    the caller can raise rather than guess. This is the pairwise idiom
+    `x[:, None, :] - x[None, :, :]`; without it the core raised "too
+    many values to unpack" for the 183 modules that write it.
+    """
+    if len(a.shape) != 2:
+        return None
+    full = slice(None)
+    rows = a.data
+    if idx == (full, None, full):
+        return ndlist([[r[:]] for r in rows])            # (n, 1, k)
+    if idx == (None, full, full):
+        return ndlist([[r[:] for r in rows]])            # (1, n, k)
+    if idx == (full, full, None):
+        return ndlist([[[v] for v in r] for r in rows])  # (n, k, 1)
+    return None
+
+
 class ndlist(list):
     """Thin rank>=3 container: nested lists with .shape/.tolist and
     elementwise scalar arithmetic. The rank-2 core stays marr; this
@@ -2760,12 +2821,83 @@ class ndlist(list):
             return v
         return [conv(v) for v in self]
 
+    def _flat(self):
+        def walk(v):
+            if isinstance(v, marr):
+                for x in v._flat():
+                    yield x
+            elif isinstance(v, list):
+                for x in v:
+                    for y in walk(x):
+                        yield y
+            else:
+                yield float(v)
+        return walk(self)
+
+    def reshape(self, *shape):
+        """Row-major reshape, with a single -1 inferred, as numpy does.
+
+        Returns marr for rank 1 or 2 (the rank-2 core) and ndlist above
+        that. ndlist had no reshape at all, so the common
+        stack(...).reshape(-1, n) idiom could not complete.
+        """
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = tuple(shape[0])
+        flat = list(self._flat())
+        dims = [int(d) for d in shape]
+        if dims.count(-1) > 1:
+            raise ValueError("can only specify one unknown dimension")
+        if -1 in dims:
+            known = 1
+            for d in dims:
+                if d != -1:
+                    known *= d
+            if known <= 0 or len(flat) % known:
+                raise ValueError(
+                    "cannot reshape %d values into %s"
+                    % (len(flat), tuple(shape)))
+            dims[dims.index(-1)] = len(flat) // known
+        total = 1
+        for d in dims:
+            total *= d
+        if total != len(flat):
+            raise ValueError("cannot reshape %d values into %s"
+                             % (len(flat), tuple(dims)))
+        if len(dims) == 1:
+            return marr(flat)
+        if len(dims) == 2:
+            nc = dims[1]
+            return marr([flat[i * nc:(i + 1) * nc] for i in range(dims[0])])
+
+        def build(vals, ds):
+            if len(ds) == 1:
+                return list(vals)
+            step = 1
+            for d in ds[1:]:
+                step *= d
+            return [build(vals[i * step:(i + 1) * step], ds[1:])
+                    for i in range(ds[0])]
+        return ndlist(build(flat, dims))
+
     def _ew(self, other, fn):
         if isinstance(other, ndlist):
-            # blockwise: zip leading axis, marr broadcasting handles
-            # the rest ((q,1) vs (q,k) etc.)
-            return ndlist(marr(a)._zip(marr(b), fn)
-                          for a, b in zip(self, other))
+            # blockwise: marr broadcasting handles the trailing axes
+            # ((q,1) vs (q,k) etc.). The leading axis is broadcast here.
+            # This used to be a bare zip(self, other), which TRUNCATES to
+            # the shorter operand, so (n,1,k) - (1,n,k) silently returned
+            # one block instead of n -- the wrong shape, no error raised.
+            a, b = list(self), list(other)
+            if len(a) != len(b):
+                if len(a) == 1:
+                    a = a * len(b)
+                elif len(b) == 1:
+                    b = b * len(a)
+                else:
+                    raise ValueError(
+                        "ndlist: leading axes %d and %d cannot be "
+                        "broadcast" % (len(a), len(b)))
+            return ndlist(marr(x)._zip(marr(y), fn)
+                          for x, y in zip(a, b))
         if isinstance(other, (marr, list)) and not isinstance(
                 other, ndlist) and isinstance(other, marr):
             return ndlist(marr(v)._zip(other, fn) for v in self)
@@ -2780,6 +2912,11 @@ class ndlist(list):
 
     def __truediv__(self, o):
         return self._ew(o, lambda a, b: a / b)
+
+    def __pow__(self, o):
+        # absent entirely, so the `(x[:, None, :] - y[None, :, :]) ** 2`
+        # spelling of the pairwise idiom raised TypeError
+        return self._ew(o, lambda a, b: a ** b)
 
     def __mul__(self, o):
         return self._ew(o, lambda a, b: a * b)
@@ -2933,7 +3070,22 @@ def stack(parts, axis=0):
             # rank-3 result surfaces as a nested list (rank-2 core)
             return ndlist([[row[:] for row in a2.data]
                            for a2 in arrs])
-        raise ValueError("stack: 2-D parts support axis=0 only")
+        if axis in (2, -1):
+            # new trailing axis: out[i][j][p] = parts[p][i][j]. This is
+            # the meshgrid -> coordinate-pairs idiom,
+            # stack(meshgrid(g, g), -1).reshape(-1, 2), which previously
+            # raised before any caller reached its own code.
+            nr, nc = arrs[0].shape
+            for a2 in arrs:
+                if tuple(a2.shape) != (nr, nc):
+                    raise ValueError(
+                        "stack: all parts must have the same shape, got "
+                        "%s and %s" % (tuple(arrs[0].shape),
+                                       tuple(a2.shape)))
+            return ndlist([[[a2.data[i][j] for a2 in arrs]
+                            for j in range(nc)] for i in range(nr)])
+        raise ValueError(
+            "stack: 2-D parts support axis 0, 2 or -1; got %r" % (axis,))
     rows = [a2._flat() for a2 in arrs]
     if axis in (0, None):
         return marr(rows)
@@ -2989,6 +3141,16 @@ def tril_indices(n, k=0):
 def diag_indices(n):
     idx = marr([float(i) for i in range(n)])
     return idx, marr(idx.data[:])
+
+
+def diag_indices_from(a):
+    """numpy's diag_indices_from; only diag_indices(n) existed, so
+    `sigma[np.diag_indices_from(sigma)] = v` raised AttributeError."""
+    arr = asarray(a)
+    if len(arr.shape) != 2 or arr.shape[0] != arr.shape[1]:
+        raise ValueError("diag_indices_from: input must be a square "
+                         "2-D array, got shape %s" % (tuple(arr.shape),))
+    return diag_indices(arr.shape[0])
 
 
 def triu(a, k=0):
