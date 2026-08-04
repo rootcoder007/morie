@@ -369,9 +369,17 @@ morie_gh_renyi <- function(p, q, alpha = 0.5) {
 #' @export
 morie_gh_dirichlet_moments <- function(alpha, j, jp) {
   A <- sum(alpha)
-  list(mean = alpha[j] / A,
-       var = alpha[j] * (A - alpha[j]) / (A^2 * (A + 1)),
-       cov = -alpha[j] * alpha[jp] / (A^2 * (A + 1)))
+  vr <- alpha[j] * (A - alpha[j]) / (A^2 * (A + 1))
+  # The off-diagonal formula was applied unconditionally, so asking for
+  # j == jp returned -alpha_j^2 / (A^2 (A+1)) -- a NEGATIVE number that
+  # disagreed with the `var` field returned beside it. The covariance of
+  # a coordinate with itself is its variance.
+  cv <- if (identical(as.integer(j), as.integer(jp))) {
+    vr
+  } else {
+    -alpha[j] * alpha[jp] / (A^2 * (A + 1))
+  }
+  list(mean = alpha[j] / A, var = vr, cov = cv)
 }
 
 #' Laplace exponent of a gamma completely random measure
