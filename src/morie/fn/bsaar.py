@@ -377,9 +377,20 @@ def rangayyan_ar_spectrum(x, order=8, fs=1.0, n_freqs=512):
     yw = rangayyan_yule_walker(x, order=order)
     a = yw["a"]
     freqs = np.linspace(0.0, fs / 2.0, n_freqs)
-    k = np.arange(1, a.size + 1)
-    expo = np.exp(-2j * np.pi * np.outer(freqs / fs, k))
-    denom = np.abs(1.0 + expo @ a) ** 2
+    # |1 + sum_k a_k exp(-j 2 pi f k / fs)|^2, accumulated in real and
+    # imaginary parts.  ponytail: the outer-product form needs a 2-D
+    # complex array, which the native array layer does not carry; the
+    # loop is O(n_freqs * order) on a 512-point grid and needs nothing.
+    av = [float(v) for v in aslist(a)]
+    denom = []
+    for fr in freqs:
+        w = -2.0 * pi * float(fr) / fs
+        re, im = 1.0, 0.0
+        for kk, ak in enumerate(av, start=1):
+            re += ak * cos(w * kk)
+            im += ak * sin(w * kk)
+        denom.append(re * re + im * im)
+    denom = np.array(denom)
     psd = yw["sigma2"] / np.maximum(denom, 1e-300)
     return RichResult(payload={"freqs": freqs, "psd": psd, "a": a,
                                "sigma2": yw["sigma2"], "order": yw["order"],
