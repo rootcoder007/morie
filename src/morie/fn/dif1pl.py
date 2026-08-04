@@ -50,7 +50,7 @@ from ._richresult import RichResult
 __all__ = ["dif_mantel_haenszel"]
 
 
-def dif_mantel_haenszel(y, group, item=None, correct=True):
+def dif_mantel_haenszel(y, group, item=None, correct=True, reference=None):
     """Mantel-Haenszel DIF chi-square for one item.
 
     Parameters
@@ -68,6 +68,11 @@ def dif_mantel_haenszel(y, group, item=None, correct=True):
         statistic to an ordinary 2 x 2 chi-square.
     correct : bool, default True
         Apply the 0.5 continuity correction, as Holland and Thayer do.
+    reference : optional
+        Which value of ``group`` is the reference group.  Defaults to
+        the first value encountered.  ``statistic`` is unaffected, but
+        ``alpha_MH`` inverts and ``delta_MH`` changes sign, so pass this
+        explicitly whenever the direction of the DIF matters.
 
     Returns
     -------
@@ -89,7 +94,12 @@ def dif_mantel_haenszel(y, group, item=None, correct=True):
             levels.append(a)
     if len(levels) != 2:
         raise ValueError(f"group must have exactly 2 distinct values; saw {len(levels)}")
-    ref = levels[0]
+    if reference is None:
+        ref = levels[0]
+    elif reference in levels:
+        ref = reference
+    else:
+        raise ValueError(f"reference {reference!r} is not one of the two group values {levels}")
     is_ref = [a == ref for a in g]
 
     if item is None:
