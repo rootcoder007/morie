@@ -29,3 +29,7 @@ pola = polarization_1d
 
 def cheatsheet() -> str:
     return "polarization_1d({}) -> 1D ideological polarization index"
+
+
+# compact alias per ledger/NAMING.md
+polarization1d = polarization_1d

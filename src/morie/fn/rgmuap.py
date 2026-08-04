@@ -43,3 +43,7 @@ def rangayyan_muap(t, n_fibers, conduction_vel):
 
 def cheatsheet():
     return "rgmuap: Motor unit action potential (MUAP) model"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanmuap = rangayyan_muap

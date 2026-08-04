@@ -44,3 +44,7 @@ def tmle_periodic(y, D, X, period):
 
 def cheatsheet():
     return "tmlper: TMLE for periodic / seasonal exposures"
+
+
+# compact alias per ledger/NAMING.md
+tmleperiodic = tmle_periodic

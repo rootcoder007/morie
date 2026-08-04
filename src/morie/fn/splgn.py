@@ -75,3 +75,7 @@ splgn = nasa_tlx
 
 def cheatsheet() -> str:
     return "nasa_tlx({}) -> NASA-TLX cognitive load metric."
+
+
+# compact alias per ledger/NAMING.md
+nasatlx = nasa_tlx

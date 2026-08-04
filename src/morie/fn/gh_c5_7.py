@@ -84,3 +84,7 @@ def ghosal_pred_rec(x, theta_grid=None, sigma=1.0, weights=None, f0=None):
 
 def cheatsheet():
     return "gh_c5_7: one pass, no MCMC -- and the answer depends on the ORDER of the data"
+
+
+# compact alias per ledger/NAMING.md
+ghosalpredrec = ghosal_pred_rec

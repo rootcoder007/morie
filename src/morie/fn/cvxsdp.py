@@ -139,3 +139,7 @@ def boyd_sdp(c, F, x0=None, tol=1e-09):
 
 def cheatsheet():
     return "cvxsdp: LOEWNER order, not entrywise -- an all-positive matrix is routinely indefinite. LP = diagonal case"
+
+
+# compact alias per ledger/NAMING.md
+boydsdp = boyd_sdp

@@ -82,3 +82,7 @@ trlrn = transfer_learn
 
 def cheatsheet() -> str:
     return "transfer_learn({}) -> Transfer learning via subspace alignment."
+
+
+# compact alias per ledger/NAMING.md
+transferlearn = transfer_learn

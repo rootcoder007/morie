@@ -35,3 +35,7 @@ stre = stress_norm
 
 def cheatsheet() -> str:
     return "stress_norm({}) -> Normalized stress"
+
+
+# compact alias per ledger/NAMING.md
+stressnorm = stress_norm

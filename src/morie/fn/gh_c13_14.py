@@ -45,3 +45,7 @@ def ghosal_cox_post(beta0=0.6, n=400, prior_sd=2.0, seed=42):
 
 def cheatsheet():
     return "gh_c13_14: Cox posterior via partial likelihood"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcoxpost = ghosal_cox_post

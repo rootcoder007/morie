@@ -72,3 +72,7 @@ tarlg = tar_fit
 
 def cheatsheet() -> str:
     return "tar_fit({}) -> Threshold autoregression (TAR) model."
+
+
+# compact alias per ledger/NAMING.md
+tarfit = tar_fit

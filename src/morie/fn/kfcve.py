@@ -41,3 +41,7 @@ def k_fold_cv_error(y, y_hat_folds):
 
 def cheatsheet():
     return "kfcve: K-fold cross-validation prediction error"
+
+
+# compact alias per ledger/NAMING.md
+kfoldcverror = k_fold_cv_error

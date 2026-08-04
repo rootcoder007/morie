@@ -40,3 +40,7 @@ rpl_t = rplace_trend
 
 def cheatsheet() -> str:
     return "rplace_trend({}) -> Placement trend over time (year-level counts)."
+
+
+# compact alias per ledger/NAMING.md
+rplacetrend = rplace_trend

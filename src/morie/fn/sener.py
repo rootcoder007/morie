@@ -40,3 +40,7 @@ sener = signal_energy
 
 def cheatsheet() -> str:
     return "signal_energy({}) -> Signal energy."
+
+
+# compact alias per ledger/NAMING.md
+signalenergy = signal_energy

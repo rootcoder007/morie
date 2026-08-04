@@ -59,3 +59,7 @@ zcrdt = zcr_detect
 
 def cheatsheet() -> str:
     return "zcr_detect({}) -> Zero-crossing rate based onset detection."
+
+
+# compact alias per ledger/NAMING.md
+zcrdetect = zcr_detect

@@ -42,3 +42,7 @@ mvsml_rkhs_fit = mvsml_categorical_count_eq_8_3
 
 def cheatsheet():
     return "msm128: RKHS estimation in the frequentist framework"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlrkhsfit = mvsml_rkhs_fit

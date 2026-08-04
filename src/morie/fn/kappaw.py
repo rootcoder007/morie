@@ -40,3 +40,7 @@ def weighted_kappa(rater1, rater2, weights):
 
 def cheatsheet():
     return "kappaw: Weighted kappa (linear or quadratic)"
+
+
+# compact alias per ledger/NAMING.md
+weightedkappa = weighted_kappa

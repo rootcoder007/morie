@@ -44,3 +44,7 @@ def ipw_sensitivity(Y, X, C, lam_grid):
 
 def cheatsheet():
     return "ipwSn: IPW sensitivity (Robins-Rotnitzky-Scharfstein)"
+
+
+# compact alias per ledger/NAMING.md
+ipwsensitivity = ipw_sensitivity

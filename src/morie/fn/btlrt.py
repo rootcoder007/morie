@@ -75,3 +75,7 @@ def boot_lr_test(x, fit0, fit1, B, cdf=None):
 
 def cheatsheet():
     return "btlrt: Bootstrap likelihood-ratio test for nested models"
+
+
+# compact alias per ledger/NAMING.md
+bootlrtest = boot_lr_test

@@ -60,3 +60,7 @@ def cure_rate_model(time, event):
 
 def cheatsheet() -> str:
     return "cure_rate_model({}) -> Cure rate mixture model -- long-term survivors."
+
+
+# compact alias per ledger/NAMING.md
+cureratemodel = cure_rate_model

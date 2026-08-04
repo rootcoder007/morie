@@ -38,3 +38,7 @@ def ma_higgins_i2(Q, k):
 
 def cheatsheet():
     return "mai2: Higgins' I² heterogeneity index"
+
+
+# compact alias per ledger/NAMING.md
+mahigginsi2 = ma_higgins_i2

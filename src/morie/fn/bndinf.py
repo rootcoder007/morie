@@ -42,3 +42,7 @@ def bound_inference(theta, moments, alpha):
 
 def cheatsheet():
     return "bndinf: Inference for partially identified parameters"
+
+
+# compact alias per ledger/NAMING.md
+boundinference = bound_inference

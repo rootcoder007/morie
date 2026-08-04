@@ -32,3 +32,7 @@ loocv_fn_alias = loocv_fn
 
 def cheatsheet() -> str:
     return "loocv_fn({}) -> Leave-One-Out Cross-Validation."
+
+
+# compact alias per ledger/NAMING.md
+loocvfn = loocv_fn

@@ -30,3 +30,7 @@ roll = roll_call_agree
 
 def cheatsheet() -> str:
     return "roll_call_agree({}) -> Roll call agreement score"
+
+
+# compact alias per ledger/NAMING.md
+rollcallagree = roll_call_agree

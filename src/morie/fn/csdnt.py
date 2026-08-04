@@ -85,3 +85,7 @@ csdnt = denoise_cs
 
 def cheatsheet() -> str:
     return "denoise_cs({}) -> Compressed sensing denoising via L1 regularization."
+
+
+# compact alias per ledger/NAMING.md
+denoisecs = denoise_cs

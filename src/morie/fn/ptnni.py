@@ -30,3 +30,7 @@ nn_i = nn_index
 
 def cheatsheet() -> str:
     return "nn_index({}) -> Nearest neighbor index (Clark-Evans)"
+
+
+# compact alias per ledger/NAMING.md
+nnindex = nn_index

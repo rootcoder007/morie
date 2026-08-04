@@ -38,3 +38,7 @@ def polynomial_gcd(p, q):
 
 def cheatsheet():
     return "euclP: Polynomial GCD via Euclid"
+
+
+# compact alias per ledger/NAMING.md
+polynomialgcd = polynomial_gcd

@@ -39,3 +39,7 @@ ammat = am_matrix_setup
 
 def cheatsheet() -> str:
     return "am_matrix_setup({}) -> A-M matrix setup: center and prepare for eigensolve."
+
+
+# compact alias per ledger/NAMING.md
+ammatrixsetup = am_matrix_setup

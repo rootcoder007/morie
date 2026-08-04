@@ -89,3 +89,7 @@ def fork_structure(A, B, C, alpha=0.01):
 
 def cheatsheet():
     return "frkst: fork A<-B->C -- dependent marginally, independent given B (Fisher-z)"
+
+
+# compact alias per ledger/NAMING.md
+forkstructure = fork_structure

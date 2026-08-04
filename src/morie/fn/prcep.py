@@ -43,3 +43,7 @@ prcep = power_cepstrum
 
 def cheatsheet() -> str:
     return "power_cepstrum({}) -> Power cepstrum."
+
+
+# compact alias per ledger/NAMING.md
+powercepstrum = power_cepstrum

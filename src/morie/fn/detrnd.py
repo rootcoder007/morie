@@ -38,3 +38,7 @@ def detrend_climate(x, t):
 
 def cheatsheet():
     return "detrnd: Linear detrending"
+
+
+# compact alias per ledger/NAMING.md
+detrendclimate = detrend_climate

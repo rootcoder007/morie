@@ -50,3 +50,7 @@ def plackett_copula(u, v, theta):
 
 def cheatsheet():
     return "plkt: plackett copula CDF + Kendall tau (theta > 0)"
+
+
+# compact alias per ledger/NAMING.md
+plackettcopula = plackett_copula

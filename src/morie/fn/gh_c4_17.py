@@ -44,3 +44,7 @@ def ghosal_dp_median(G_x, alpha, n_grid=4000):
 
 def cheatsheet():
     return "gh_c4_17: Distribution of the DP median"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpmedian = ghosal_dp_median

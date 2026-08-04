@@ -102,3 +102,7 @@ pwr_p = power_prop_test
 
 def cheatsheet() -> str:
     return "power_prop_test({}) -> Power for two-proportion z-test."
+
+
+# compact alias per ledger/NAMING.md
+powerproptest = power_prop_test

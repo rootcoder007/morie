@@ -55,3 +55,7 @@ short = schur_decompose
 
 def cheatsheet() -> str:
     return "schur_decompose({}) -> Schur decomposition."
+
+
+# compact alias per ledger/NAMING.md
+schurdecompose = schur_decompose

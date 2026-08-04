@@ -99,3 +99,7 @@ def otis_dml_gender(
 
 def cheatsheet() -> str:
     return "otis_dml_gender({}) -> DML ATE by gender for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdmlgender = otis_dml_gender

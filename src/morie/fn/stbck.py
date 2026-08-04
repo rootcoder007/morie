@@ -40,3 +40,7 @@ stbck = stability_check
 
 def cheatsheet() -> str:
     return "stability_check({}) -> Stability check for a discrete-time system."
+
+
+# compact alias per ledger/NAMING.md
+stabilitycheck = stability_check

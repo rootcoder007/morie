@@ -46,3 +46,7 @@ def cinelli_hazlett(model, treat, cov, R2_yu, R2_du):
 
 def cheatsheet():
     return "chzlt: Cinelli-Hazlett sensitivity (R²-based)"
+
+
+# compact alias per ledger/NAMING.md
+cinellihazlett = cinelli_hazlett

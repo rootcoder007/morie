@@ -42,3 +42,7 @@ def tmle_high_dim(y, D, X, lam):
 
 def cheatsheet():
     return "tmlphd: High-dimensional TMLE with sparsity"
+
+
+# compact alias per ledger/NAMING.md
+tmlehighdim = tmle_high_dim

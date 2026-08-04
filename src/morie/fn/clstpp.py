@@ -36,3 +36,7 @@ def clark_evans(coords):
 
 def cheatsheet():
     return "clstpp: Clark-Evans aggregation index"
+
+
+# compact alias per ledger/NAMING.md
+clarkevans = clark_evans

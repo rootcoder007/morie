@@ -40,3 +40,7 @@ def clip_similarity(I_emb, T_emb, tau):
 
 def cheatsheet():
     return "clipsi: CLIP image-text similarity score"
+
+
+# compact alias per ledger/NAMING.md
+clipsimilarity = clip_similarity

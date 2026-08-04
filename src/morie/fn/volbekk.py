@@ -45,3 +45,7 @@ def vol_bekk_garch(R_panel):
 
 def cheatsheet():
     return "volbekk: scalar BEKK(1,1), H_t PD by construction, variance targeting"
+
+
+# compact alias per ledger/NAMING.md
+volbekkgarch = vol_bekk_garch

@@ -43,3 +43,7 @@ levene = levene_test
 
 def cheatsheet() -> str:
     return "levene_test({}) -> Levene's test for equality of variances."
+
+
+# compact alias per ledger/NAMING.md
+levenetest = levene_test

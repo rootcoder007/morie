@@ -128,3 +128,7 @@ def esl_lle(X, k=2, neighbors=5, reg=1e-3):
 
 def cheatsheet():
     return "esllle: weights sum to 1 (invariance); DROP the constant bottom eigenvector or you lose a dimension"
+
+
+# compact alias per ledger/NAMING.md
+esllle = esl_lle

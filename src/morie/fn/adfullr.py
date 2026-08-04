@@ -68,3 +68,7 @@ def adf_unit_root(y, trend, p, cdf=None):
 
 def cheatsheet():
     return "adfullr: Augmented Dickey-Fuller unit-root test"
+
+
+# compact alias per ledger/NAMING.md
+adfunitroot = adf_unit_root

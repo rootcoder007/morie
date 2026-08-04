@@ -38,3 +38,7 @@ def robust_lda(X, y):
 
 def cheatsheet():
     return "lsdca: Robust LDA via MCD class covariances"
+
+
+# compact alias per ledger/NAMING.md
+robustlda = robust_lda

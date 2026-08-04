@@ -69,3 +69,7 @@ def vol_yang_zhang(o, h, l, c):
 
 def cheatsheet():
     return "volyz: s2_ov + k s2_oc + (1-k) s2_RS, k = 0.34/(1.34 + (n+1)/(n-1)) (YZ 2000)"
+
+
+# compact alias per ledger/NAMING.md
+volyangzhang = vol_yang_zhang

@@ -40,3 +40,7 @@ def ot_plan_to_map(T, Y):
 
 def cheatsheet():
     return "otplan: Convert a soft transport plan to a barycentric map"
+
+
+# compact alias per ledger/NAMING.md
+otplantomap = ot_plan_to_map

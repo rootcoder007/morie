@@ -139,3 +139,7 @@ def dp_sgd(grads, C=1.0, sigma=1.0, lr=0.1, theta=None, seed=None):
 
 def cheatsheet():
     return "dpsgd: clip PER EXAMPLE before averaging -- clipping the mean gradient gives no privacy at all"
+
+
+# compact alias per ledger/NAMING.md
+dpsgd = dp_sgd

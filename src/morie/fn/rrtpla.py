@@ -140,3 +140,7 @@ rrtpla = rrt_plan
 
 def cheatsheet() -> str:
     return "rrtpla() -> Rapidly-exploring Random Tree (RRT) path planner in 2-D"
+
+
+# compact alias per ledger/NAMING.md
+rrtplan = rrt_plan

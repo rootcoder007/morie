@@ -38,3 +38,7 @@ def middle_out(middle, S):
 
 def cheatsheet():
     return "middle: Middle-out hierarchy approach"
+
+
+# compact alias per ledger/NAMING.md
+middleout = middle_out

@@ -91,3 +91,7 @@ csbp = basis_pursuit_l1
 
 def cheatsheet() -> str:
     return "basis_pursuit_l1({}) -> L1 minimization via Iterative Shrinkage-Thresholding (ISTA)."
+
+
+# compact alias per ledger/NAMING.md
+basispursuitl1 = basis_pursuit_l1

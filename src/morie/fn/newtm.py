@@ -77,3 +77,7 @@ def newton_method(
 
 
 newtm = newton_method
+
+
+# compact alias per ledger/NAMING.md
+newtonmethod = newton_method

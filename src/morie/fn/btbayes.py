@@ -42,3 +42,7 @@ def boot_bayesian(x, stat, B):
 
 def cheatsheet():
     return "btbayes: Bayesian bootstrap via Dirichlet weights"
+
+
+# compact alias per ledger/NAMING.md
+bootbayesian = boot_bayesian

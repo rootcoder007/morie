@@ -91,3 +91,7 @@ def sqp_optimize(
 
 
 sqprg = sqp_optimize
+
+
+# compact alias per ledger/NAMING.md
+sqpoptimize = sqp_optimize

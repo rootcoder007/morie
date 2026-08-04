@@ -35,3 +35,7 @@ sntpl = sentence_plea
 
 def cheatsheet() -> str:
     return "sentence_plea({}) -> Sentence length by plea type."
+
+
+# compact alias per ledger/NAMING.md
+sentenceplea = sentence_plea

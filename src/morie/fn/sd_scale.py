@@ -35,3 +35,7 @@ def sd_scale(a, sigma):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e41: sigma_aX = |a| sigma_X. Morin (2016) eq (3.41)."
+
+
+# compact alias per ledger/NAMING.md
+sdscale = sd_scale

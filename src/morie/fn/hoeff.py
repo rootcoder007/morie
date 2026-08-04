@@ -73,3 +73,7 @@ hoeff = hoeffding_bound
 
 def cheatsheet() -> str:
     return "hoeffding_bound(n, t) -> Hoeffding concentration inequality bound."
+
+
+# compact alias per ledger/NAMING.md
+hoeffdingbound = hoeffding_bound

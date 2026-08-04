@@ -40,3 +40,7 @@ def itr_forest(y, D, W):
 
 def cheatsheet():
     return "itrgrf: Individualized treatment rule forest"
+
+
+# compact alias per ledger/NAMING.md
+itrforest = itr_forest

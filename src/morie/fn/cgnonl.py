@@ -42,3 +42,7 @@ def nonlinear_cg(f, grad_f, x0, method):
 
 def cheatsheet():
     return "cgnonl: Nonlinear conjugate gradient"
+
+
+# compact alias per ledger/NAMING.md
+nonlinearcg = nonlinear_cg

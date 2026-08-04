@@ -125,3 +125,7 @@ def lstm_cell(
 
 def cheatsheet():
     return "lstmc: LSTM cell f,i,o=sigmoid(...), c=f*c+i*g, h=o*tanh(c)"
+
+
+# compact alias per ledger/NAMING.md
+lstmcell = lstm_cell

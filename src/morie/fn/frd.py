@@ -130,3 +130,7 @@ frd = fuzzy_rd
 
 def cheatsheet() -> str:
     return "fuzzy_rd({}) -> Fuzzy regression discontinuity design."
+
+
+# compact alias per ledger/NAMING.md
+fuzzyrd = fuzzy_rd

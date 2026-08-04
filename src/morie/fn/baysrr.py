@@ -38,3 +38,7 @@ def bayes_ridge(y, M):
 
 def cheatsheet():
     return "baysrr: Bayesian ridge"
+
+
+# compact alias per ledger/NAMING.md
+bayesridge = bayes_ridge

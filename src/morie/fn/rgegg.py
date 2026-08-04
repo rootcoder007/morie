@@ -46,3 +46,7 @@ def rangayyan_egg(egg, fs):
 
 def cheatsheet():
     return "rgegg: Electrogastrogram (EGG) feature extraction (dominant frequency, power)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanegg = rangayyan_egg

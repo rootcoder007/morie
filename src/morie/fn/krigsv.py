@@ -42,3 +42,7 @@ def variogram_fit(coords, values, model):
 
 def cheatsheet():
     return "krigsv: Variogram model fit (spherical/exponential/Gaussian)"
+
+
+# compact alias per ledger/NAMING.md
+variogramfit = variogram_fit

@@ -38,3 +38,7 @@ def gpt_decoder(tokens, model):
 
 def cheatsheet():
     return "gpt2: GPT-style decoder forward pass"
+
+
+# compact alias per ledger/NAMING.md
+gptdecoder = gpt_decoder

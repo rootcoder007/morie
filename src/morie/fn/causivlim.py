@@ -161,3 +161,7 @@ def causal_iv_liml(y, X, Z, exog=None, fuller=None, endog=None):
 
 def cheatsheet():
     return "causivlim: kappa >= 1, and kappa == 1 exactly when just identified -- then LIML IS 2SLS"
+
+
+# compact alias per ledger/NAMING.md
+causalivliml = causal_iv_liml

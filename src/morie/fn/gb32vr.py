@@ -49,3 +49,7 @@ def gibbons_runs_var(n1, n2):
 
 def cheatsheet():
     return "gb32vr: eq. 3.2.8; vanishes when one type is a single element"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsrunsvar = gibbons_runs_var

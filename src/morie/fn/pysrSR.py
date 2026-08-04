@@ -38,3 +38,7 @@ def pysr_regression(X, y):
 
 def cheatsheet():
     return "pysrSR: PySR symbolic regression"
+
+
+# compact alias per ledger/NAMING.md
+pysrregression = pysr_regression

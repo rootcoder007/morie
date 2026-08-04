@@ -215,3 +215,7 @@ def geron_ddpg(
 
 def cheatsheet():
     return "hmddpg: Deep deterministic policy gradient (DDPG)"
+
+
+# compact alias per ledger/NAMING.md
+geronddpg = geron_ddpg

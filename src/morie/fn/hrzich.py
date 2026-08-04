@@ -56,3 +56,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_ichimura`.
 horowitz_ichimura_estimator = hrz_ichimura
+
+
+# compact alias per ledger/NAMING.md
+hrzichimura = hrz_ichimura

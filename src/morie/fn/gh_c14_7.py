@@ -35,3 +35,7 @@ def ghosal_ssp_mix(x, weights, atoms, kernel_sd=0.3):
 
 def cheatsheet():
     return "gh_c14_7: Species-sampling mixture"
+
+
+# compact alias per ledger/NAMING.md
+ghosalsspmix = ghosal_ssp_mix

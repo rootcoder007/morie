@@ -88,3 +88,7 @@ glsrg = gls_regression
 
 def cheatsheet() -> str:
     return "gls_regression({}) -> Generalized least squares regression."
+
+
+# compact alias per ledger/NAMING.md
+glsregression = gls_regression

@@ -42,3 +42,7 @@ def two_stage_hazard(time, event, X, Z):
 
 def cheatsheet():
     return "twostg: Two-stage hazard regression"
+
+
+# compact alias per ledger/NAMING.md
+twostagehazard = two_stage_hazard

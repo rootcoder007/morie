@@ -30,3 +30,7 @@ pois = poisson_process
 
 def cheatsheet() -> str:
     return "poisson_process({}) -> Homogeneous Poisson point process"
+
+
+# compact alias per ledger/NAMING.md
+poissonprocess = poisson_process

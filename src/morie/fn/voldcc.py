@@ -66,3 +66,7 @@ def vol_dcc_garch(R_panel, init=None):
 
 def cheatsheet():
     return "voldcc: Dynamic Conditional Correlation MGARCH"
+
+
+# compact alias per ledger/NAMING.md
+voldccgarch = vol_dcc_garch

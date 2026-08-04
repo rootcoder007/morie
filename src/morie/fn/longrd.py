@@ -40,3 +40,7 @@ def long_read_polish(assembly, reads):
 
 def cheatsheet():
     return "longrd: Long-read consensus polishing (medaka)"
+
+
+# compact alias per ledger/NAMING.md
+longreadpolish = long_read_polish

@@ -42,3 +42,7 @@ def beta_binomial(successes, trials, alpha, beta):
 
 def cheatsheet():
     return "betbnm: Beta-Binomial conjugate"
+
+
+# compact alias per ledger/NAMING.md
+betabinomial = beta_binomial

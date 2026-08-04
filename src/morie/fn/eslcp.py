@@ -75,3 +75,7 @@ def esl_mallows_cp(RSS, d, n, sigma2):
 
 def cheatsheet():
     return "eslcp: C_p = (RSS + 2 d sigma^2)/n; classical form alongside"
+
+
+# compact alias per ledger/NAMING.md
+eslmallowscp = esl_mallows_cp

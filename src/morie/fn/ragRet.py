@@ -40,3 +40,7 @@ def rag_retrieval(query, docs):
 
 def cheatsheet():
     return "ragRet: RAG retrieval -- top-k embedding search"
+
+
+# compact alias per ledger/NAMING.md
+ragretrieval = rag_retrieval

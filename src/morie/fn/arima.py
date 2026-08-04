@@ -81,3 +81,7 @@ arima = arima_fit
 
 def cheatsheet() -> str:
     return "arima_fit({}) -> ARIMA(p,d,q) fitting via conditional MLE."
+
+
+# compact alias per ledger/NAMING.md
+arimafit = arima_fit

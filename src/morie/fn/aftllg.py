@@ -113,3 +113,7 @@ def aft_log_logistic(time, event, X, **kwargs):
 
 def cheatsheet():
     return "aftllg: AFT -- exp(beta) is a TIME RATIO; positive beta means LONGER survival, unlike Cox"
+
+
+# compact alias per ledger/NAMING.md
+aftloglogistic = aft_log_logistic

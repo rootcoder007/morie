@@ -40,3 +40,7 @@ strs2 = stress2_measure
 
 def cheatsheet() -> str:
     return "stress2_measure({}) -> Stress-2 measure."
+
+
+# compact alias per ledger/NAMING.md
+stress2measure = stress2_measure

@@ -132,3 +132,7 @@ cfold = cross_fit
 
 def cheatsheet() -> str:
     return "cross_fit({}) -> Cross-fitting (K-fold for DML)."
+
+
+# compact alias per ledger/NAMING.md
+crossfit = cross_fit

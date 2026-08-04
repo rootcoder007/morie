@@ -67,3 +67,7 @@ mrtsq = mauchly_test
 
 def cheatsheet() -> str:
     return "mauchly_test({}) -> Mauchly's test of sphericity."
+
+
+# compact alias per ledger/NAMING.md
+mauchlytest = mauchly_test

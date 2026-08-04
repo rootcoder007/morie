@@ -103,3 +103,7 @@ def geron_reinforce(episodes, policy, gamma=0.99, eta=0.01, theta=None, baseline
 
 def cheatsheet():
     return "hmrnfc: REINFORCE ascent step from sampled episodes"
+
+
+# compact alias per ledger/NAMING.md
+geronreinforce = geron_reinforce

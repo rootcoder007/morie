@@ -40,3 +40,7 @@ def slice_break_dp(y, alpha, n_iter):
 
 def cheatsheet():
     return "slbpdg: Slice sampler for DP mixtures"
+
+
+# compact alias per ledger/NAMING.md
+slicebreakdp = slice_break_dp

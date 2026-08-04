@@ -34,3 +34,7 @@ lstmb = lstmb_fn
 
 def cheatsheet() -> str:
     return "lstmb_fn({}) -> LSTM network for biosignal classification."
+
+
+# compact alias per ledger/NAMING.md
+lstmbfn = lstmb_fn

@@ -38,3 +38,7 @@ def diffusion_rec(R, T):
 
 def cheatsheet():
     return "diffRC: Diffusion recommendation"
+
+
+# compact alias per ledger/NAMING.md
+diffusionrec = diffusion_rec

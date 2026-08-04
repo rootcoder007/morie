@@ -42,3 +42,7 @@ def tmle_recurrent(time, event, D, X):
 
 def cheatsheet():
     return "tmlrec: TMLE for recurrent-event outcomes"
+
+
+# compact alias per ledger/NAMING.md
+tmlerecurrent = tmle_recurrent

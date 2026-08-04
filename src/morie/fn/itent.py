@@ -56,3 +56,7 @@ def item_entropy(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "item_entropy({}) -> Item response entropy."
+
+
+# compact alias per ledger/NAMING.md
+itementropy = item_entropy

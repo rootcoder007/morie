@@ -93,3 +93,7 @@ def geron_leaky_relu(z, alpha=0.01):
 
 def cheatsheet():
     return "hmlrel: Leaky ReLU max(alpha*z, z) with a never-zero derivative"
+
+
+# compact alias per ledger/NAMING.md
+geronleakyrelu = geron_leaky_relu

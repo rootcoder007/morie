@@ -40,3 +40,7 @@ def ghosal_wn_crt(s_true=1.0, alpha_prior=1.0, ns=(100, 10000)):
 
 def cheatsheet():
     return "gh_c8_10: White-noise model contraction"
+
+
+# compact alias per ledger/NAMING.md
+ghosalwncrt = ghosal_wn_crt

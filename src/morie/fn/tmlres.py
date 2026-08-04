@@ -42,3 +42,7 @@ def tmle_residual(y, D, X):
 
 def cheatsheet():
     return "tmlres: Residual TMLE -- second-order influence"
+
+
+# compact alias per ledger/NAMING.md
+tmleresidual = tmle_residual

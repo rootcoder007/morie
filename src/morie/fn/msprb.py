@@ -35,3 +35,7 @@ proc = procrustes_obl
 
 def cheatsheet() -> str:
     return "procrustes_obl({}) -> Oblique Procrustes rotation"
+
+
+# compact alias per ledger/NAMING.md
+procrustesobl = procrustes_obl

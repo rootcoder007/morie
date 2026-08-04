@@ -42,3 +42,7 @@ def dp_variance(x, a, b, epsilon):
 
 def cheatsheet():
     return "dpvar: DP variance (bounded)"
+
+
+# compact alias per ledger/NAMING.md
+dpvariance = dp_variance

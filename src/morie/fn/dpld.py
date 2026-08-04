@@ -42,3 +42,7 @@ def l_diversity(X, quasi_ids, sensitive, l):
 
 def cheatsheet():
     return "dpld: l-diversity baseline"
+
+
+# compact alias per ledger/NAMING.md
+ldiversity = l_diversity

@@ -57,3 +57,7 @@ def otis_ate_region(
 
 def cheatsheet() -> str:
     return "otis_ate_region({}) -> Simple ATE by region (difference in means) for OTIS data."
+
+
+# compact alias per ledger/NAMING.md
+otisateregion = otis_ate_region

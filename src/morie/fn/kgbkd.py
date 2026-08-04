@@ -30,3 +30,7 @@ bk_d = bk_discretize
 
 def cheatsheet() -> str:
     return "bk_discretize({}) -> Block kriging discretization"
+
+
+# compact alias per ledger/NAMING.md
+bkdiscretize = bk_discretize

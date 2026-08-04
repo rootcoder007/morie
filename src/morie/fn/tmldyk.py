@@ -49,3 +49,7 @@ def tmle_diff_kernel(y, D, X, epsilon):
 
 def cheatsheet():
     return "tmldyk: Differential-privacy-compatible TMLE via Laplace noise"
+
+
+# compact alias per ledger/NAMING.md
+tmlediffkernel = tmle_diff_kernel

@@ -65,3 +65,7 @@ myodt = myogram_onset
 
 def cheatsheet() -> str:
     return "myogram_onset({}) -> EMG onset detection via double threshold."
+
+
+# compact alias per ledger/NAMING.md
+myogramonset = myogram_onset

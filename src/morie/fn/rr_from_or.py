@@ -42,3 +42,7 @@ def rr_from_or(or_value, p2):
 
 def cheatsheet():
     return 'ca11e29: RR = OR / (1 - p2 + p2 OR) [Weisburd et al. 2022, eq. 11.29]'
+
+
+# compact alias per ledger/NAMING.md
+rrfromor = rr_from_or

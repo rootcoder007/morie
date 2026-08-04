@@ -47,3 +47,7 @@ def burkov_tf_idf(term, document, corpus):
 
 def cheatsheet():
     return "bktfid: TF-IDF tf * log(|D|/df) (Burkov Ch 2)"
+
+
+# compact alias per ledger/NAMING.md
+burkovtfidf = burkov_tf_idf

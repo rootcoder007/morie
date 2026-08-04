@@ -157,3 +157,7 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
 
 def cheatsheet() -> str:
     return "rey_zp({}) -> Zero-inflated Poisson regression via EM algorithm."
+
+
+# compact alias per ledger/NAMING.md
+reyzp = rey_zp

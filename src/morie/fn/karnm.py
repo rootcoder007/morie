@@ -76,3 +76,7 @@ short = karnaugh_map
 
 def cheatsheet() -> str:
     return "karnm() -> Generate Karnaugh map layout and identify minterms"
+
+
+# compact alias per ledger/NAMING.md
+karnaughmap = karnaugh_map

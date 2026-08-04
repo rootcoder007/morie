@@ -35,3 +35,7 @@ krig = kriging_mae
 
 def cheatsheet() -> str:
     return "kriging_mae({}) -> Kriging MAE"
+
+
+# compact alias per ledger/NAMING.md
+krigingmae = kriging_mae

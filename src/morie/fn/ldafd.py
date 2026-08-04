@@ -68,3 +68,7 @@ ldafd = lda_features
 
 def cheatsheet() -> str:
     return "lda_features({}) -> LDA feature extraction."
+
+
+# compact alias per ledger/NAMING.md
+ldafeatures = lda_features

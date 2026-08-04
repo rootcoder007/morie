@@ -30,3 +30,7 @@ smac = smacof_2d
 
 def cheatsheet() -> str:
     return "smacof_2d({}) -> SMACOF 2D MDS"
+
+
+# compact alias per ledger/NAMING.md
+smacof2d = smacof_2d

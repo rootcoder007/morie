@@ -86,3 +86,7 @@ harc = harrells_c
 
 def cheatsheet() -> str:
     return "harc() -> Harrell's C concordance index for survival predictions"
+
+
+# compact alias per ledger/NAMING.md
+harrellsc = harrells_c

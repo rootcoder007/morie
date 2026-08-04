@@ -55,3 +55,7 @@ bpflt = bandpass_filter
 
 def cheatsheet() -> str:
     return "bandpass_filter({}) -> Bandpass Butterworth filter."
+
+
+# compact alias per ledger/NAMING.md
+bandpassfilter = bandpass_filter

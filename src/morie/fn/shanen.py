@@ -40,3 +40,7 @@ def shannon_entropy(y, base):
 
 def cheatsheet():
     return "shanen: Shannon entropy of a discrete distribution"
+
+
+# compact alias per ledger/NAMING.md
+shannonentropy = shannon_entropy

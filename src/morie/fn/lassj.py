@@ -45,3 +45,7 @@ def lasso_objective(y, X, beta, lam):
 
 def cheatsheet():
     return "lassj: LASSO (L1 penalized) regression objective"
+
+
+# compact alias per ledger/NAMING.md
+lassoobjective = lasso_objective

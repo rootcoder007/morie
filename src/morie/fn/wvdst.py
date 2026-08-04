@@ -91,3 +91,7 @@ wvdst = wigner_ville
 
 def cheatsheet() -> str:
     return "wigner_ville({}) -> Wigner-Ville distribution for time-frequency analysis."
+
+
+# compact alias per ledger/NAMING.md
+wignerville = wigner_ville

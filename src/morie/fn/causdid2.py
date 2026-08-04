@@ -86,3 +86,7 @@ def causal_did_2x2(y, treated, post):
 
 def cheatsheet():
     return "causdid2: ATT = (T1-T0) - (C1-C0); OLS interaction gives the SE"
+
+
+# compact alias per ledger/NAMING.md
+causaldid2x2 = causal_did_2x2

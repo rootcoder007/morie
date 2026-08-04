@@ -43,3 +43,7 @@ def rangayyan_dwt(x, wavelet, levels):
 
 def cheatsheet():
     return "rgdwt: Discrete wavelet transform (DWT) via filterbank"
+
+
+# compact alias per ledger/NAMING.md
+rangayyandwt = rangayyan_dwt

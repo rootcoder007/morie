@@ -44,3 +44,7 @@ frdmn = friedman_test
 
 def cheatsheet() -> str:
     return "friedman_test({}) -> Friedman test for repeated measures."
+
+
+# compact alias per ledger/NAMING.md
+friedmantest = friedman_test

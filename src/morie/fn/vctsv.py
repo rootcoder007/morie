@@ -42,3 +42,7 @@ vctsv = victim_severity
 
 def cheatsheet() -> str:
     return "victim_severity({}) -> Victimization severity scale."
+
+
+# compact alias per ledger/NAMING.md
+victimseverity = victim_severity

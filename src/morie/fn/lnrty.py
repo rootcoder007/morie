@@ -51,3 +51,7 @@ lnrty = linearity_test
 
 def cheatsheet() -> str:
     return "linearity_test({}) -> System linearity test."
+
+
+# compact alias per ledger/NAMING.md
+linearitytest = linearity_test

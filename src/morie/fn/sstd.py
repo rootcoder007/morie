@@ -41,3 +41,7 @@ sstd = sample_std
 
 def cheatsheet() -> str:
     return "sample_std({}) -> Sample standard deviation."
+
+
+# compact alias per ledger/NAMING.md
+samplestd = sample_std

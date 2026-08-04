@@ -77,3 +77,7 @@ def cheatsheet() -> str:
 
 
 rpemb = rotary_embed
+
+
+# compact alias per ledger/NAMING.md
+rotaryembed = rotary_embed

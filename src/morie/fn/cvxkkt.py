@@ -138,3 +138,7 @@ def boyd_kkt(grad_L, f=None, h=None, lambda_=None, nu=None, tol=1e-08):
 
 def cheatsheet():
     return "cvxkkt: sufficient only under convexity + a CQ; complementary slackness names the binding set"
+
+
+# compact alias per ledger/NAMING.md
+boydkkt = boyd_kkt

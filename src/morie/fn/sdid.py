@@ -174,3 +174,7 @@ sdid = synthetic_did
 
 def cheatsheet() -> str:
     return "synthetic_did({}) -> Synthetic difference-in-differences."
+
+
+# compact alias per ledger/NAMING.md
+syntheticdid = synthetic_did

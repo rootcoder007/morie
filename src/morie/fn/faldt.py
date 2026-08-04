@@ -75,3 +75,7 @@ faldt = fall_time_detect
 
 def cheatsheet() -> str:
     return "fall_time_detect({}) -> Measure fall time of detected events."
+
+
+# compact alias per ledger/NAMING.md
+falltimedetect = fall_time_detect

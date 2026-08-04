@@ -163,3 +163,7 @@ def geron_ddpm(X, T=10, beta_schedule="linear", epochs=200, lr=0.05, seed=0):
 
 def cheatsheet():
     return "hmddpm: Denoising diffusion probabilistic model (DDPM)"
+
+
+# compact alias per ledger/NAMING.md
+geronddpm = geron_ddpm

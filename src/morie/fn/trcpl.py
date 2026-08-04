@@ -34,3 +34,7 @@ trcpl = trace_plot_data
 
 def cheatsheet() -> str:
     return "trace_plot_data({}) -> Trace plot data for MCMC."
+
+
+# compact alias per ledger/NAMING.md
+traceplotdata = trace_plot_data

@@ -71,3 +71,7 @@ def vol_riskmetrics(r, lam=0.94):
 
 def cheatsheet():
     return "volrm: s2_t = lam s2_{t-1} + (1-lam) r_{t-1}^2; lam=0.94 daily (RM 1996 p.51)"
+
+
+# compact alias per ledger/NAMING.md
+volriskmetrics = vol_riskmetrics

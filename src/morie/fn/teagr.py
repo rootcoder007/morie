@@ -24,3 +24,7 @@ alias = teager_energy_fn
 
 def cheatsheet() -> str:
     return "teager_energy_fn({}) -> Teager energy operator envelope."
+
+
+# compact alias per ledger/NAMING.md
+teagerenergyfn = teager_energy_fn

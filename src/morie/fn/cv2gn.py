@@ -78,3 +78,7 @@ def cv2_genomic(y, markers, env, n_folds, cdf=None):
 
 def cheatsheet():
     return "cv2gn: CV2 genomic cross-validation: both train and test lines evaluated in at least one environment"
+
+
+# compact alias per ledger/NAMING.md
+cv2genomic = cv2_genomic

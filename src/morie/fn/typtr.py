@@ -48,3 +48,7 @@ typtr = type_token_ratio
 
 def cheatsheet() -> str:
     return "type_token_ratio({}) -> Type-token ratio (lexical diversity)."
+
+
+# compact alias per ledger/NAMING.md
+typetokenratio = type_token_ratio

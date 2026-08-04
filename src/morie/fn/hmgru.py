@@ -143,3 +143,7 @@ def geron_gru(x_t, h_prev, weights):
 
 def cheatsheet():
     return "hmgru: GRU step h_t = (1-z)*h_{t-1} + z*tanh(W_h x + U_h (r*h) + b_h)"
+
+
+# compact alias per ledger/NAMING.md
+gerongru = geron_gru

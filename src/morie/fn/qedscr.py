@@ -166,3 +166,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`qed_score`.
 qed_drug_likeness = qed_score
+
+
+# compact alias per ledger/NAMING.md
+qedscore = qed_score

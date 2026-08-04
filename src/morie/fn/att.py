@@ -127,3 +127,7 @@ att = estimate_att
 
 def cheatsheet() -> str:
     return "estimate_att({}) -> Average Treatment Effect on the Treated (ATT) via Hajek-weig"
+
+
+# compact alias per ledger/NAMING.md
+estimateatt = estimate_att

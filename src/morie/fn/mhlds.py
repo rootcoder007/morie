@@ -34,3 +34,7 @@ mhlds = mhlds_fn
 
 def cheatsheet() -> str:
     return "mhlds_fn({}) -> Mahalanobis distance computation."
+
+
+# compact alias per ledger/NAMING.md
+mhldsfn = mhlds_fn

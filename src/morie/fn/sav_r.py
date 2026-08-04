@@ -52,3 +52,7 @@ ave_er = subscale_er_ave
 
 def cheatsheet() -> str:
     return "subscale_er_ave({}) -> ER subscale average variance extracted."
+
+
+# compact alias per ledger/NAMING.md
+subscaleerave = subscale_er_ave

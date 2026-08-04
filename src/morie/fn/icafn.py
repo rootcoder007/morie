@@ -31,3 +31,7 @@ icafn = ica_fn
 
 def cheatsheet() -> str:
     return "ica_fn({}) -> Independent Component Analysis decomposition."
+
+
+# compact alias per ledger/NAMING.md
+icafn = ica_fn

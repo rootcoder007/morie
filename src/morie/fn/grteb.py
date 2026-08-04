@@ -196,3 +196,11 @@ def geron_transformer_encoder_block(x, mha_weights, ffn_weights, mask=None, eps=
 
 def cheatsheet():
     return "grteb: h=LN(x+MHA(x)); y=LN(h+FFN(h)); LayerNorm is per token, FFN is per position"
+
+
+# compact alias per ledger/NAMING.md
+feedforward = feed_forward
+
+
+# compact alias per ledger/NAMING.md
+layernorm = layer_norm

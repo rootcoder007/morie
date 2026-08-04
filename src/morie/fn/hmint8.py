@@ -163,3 +163,7 @@ def geron_int8_quant(x, n_bits=8, symmetric=True):
 
 def cheatsheet():
     return "hmint8: affine integer quantization q = round((x - z)/s), symmetric or asymmetric, with round-trip error"
+
+
+# compact alias per ledger/NAMING.md
+geronint8quant = geron_int8_quant

@@ -42,3 +42,7 @@ mtotrn = mto_trend
 
 def cheatsheet() -> str:
     return "mto_trend({}) -> Long-term road safety trend."
+
+
+# compact alias per ledger/NAMING.md
+mtotrend = mto_trend

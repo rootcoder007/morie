@@ -44,3 +44,7 @@ def sex_specific_mr(y, exposure, instrument, sex):
 
 def cheatsheet():
     return "mtr2sx: Sex-stratified Mendelian randomization"
+
+
+# compact alias per ledger/NAMING.md
+sexspecificmr = sex_specific_mr

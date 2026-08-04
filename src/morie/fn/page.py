@@ -80,3 +80,7 @@ page = page_trend_test
 
 def cheatsheet() -> str:
     return "page_trend_test({}) -> Page's L trend test for ordered alternatives."
+
+
+# compact alias per ledger/NAMING.md
+pagetrendtest = page_trend_test

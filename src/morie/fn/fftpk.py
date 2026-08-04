@@ -79,3 +79,7 @@ def fft_peaks(
 
 def cheatsheet() -> str:
     return "fftpk() -> Identify dominant frequency peaks in a signal using the FFT"
+
+
+# compact alias per ledger/NAMING.md
+fftpeaks = fft_peaks

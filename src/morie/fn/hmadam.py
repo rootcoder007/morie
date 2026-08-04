@@ -112,3 +112,7 @@ def geron_adam(grads, m=None, v=None, b1=0.9, b2=0.999, eta=0.001, eps=1e-8, t=1
 
 def cheatsheet():
     return "hmadam: Adam optimizer: momentum + RMSProp with bias correction"
+
+
+# compact alias per ledger/NAMING.md
+geronadam = geron_adam

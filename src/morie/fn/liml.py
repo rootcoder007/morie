@@ -155,3 +155,7 @@ liml = liml_estimator
 
 def cheatsheet() -> str:
     return "liml_estimator({}) -> Limited information maximum likelihood (LIML)."
+
+
+# compact alias per ledger/NAMING.md
+limlestimator = liml_estimator

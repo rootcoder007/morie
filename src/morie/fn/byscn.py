@@ -202,3 +202,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`bayes_c_pi`.
 bayes_cpi_prior = bayes_c_pi
+
+
+# compact alias per ledger/NAMING.md
+bayescpiprior = bayes_cpi_prior

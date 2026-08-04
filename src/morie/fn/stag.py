@@ -112,3 +112,7 @@ stag = staggered_did
 
 def cheatsheet() -> str:
     return "staggered_did({}) -> Staggered Difference-in-Differences (Callaway-Sant'Anna styl"
+
+
+# compact alias per ledger/NAMING.md
+staggereddid = staggered_did

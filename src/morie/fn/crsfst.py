@@ -44,3 +44,7 @@ def crs_forest(time, event, D, X, K):
 
 def cheatsheet():
     return "crsfst: Cross-fitted random survival forest"
+
+
+# compact alias per ledger/NAMING.md
+crsforest = crs_forest

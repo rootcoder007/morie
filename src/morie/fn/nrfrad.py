@@ -40,3 +40,7 @@ def nerf_radiance(rays, mlp):
 
 def cheatsheet():
     return "nrfrad: Neural Radiance Field volume rendering"
+
+
+# compact alias per ledger/NAMING.md
+nerfradiance = nerf_radiance

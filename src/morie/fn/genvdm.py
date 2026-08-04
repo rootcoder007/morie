@@ -38,3 +38,7 @@ def d_study_decision(G_components, n_proposed):
 
 def cheatsheet():
     return "genvdm: D-study decision-making"
+
+
+# compact alias per ledger/NAMING.md
+dstudydecision = d_study_decision

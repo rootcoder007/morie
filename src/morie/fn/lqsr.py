@@ -38,3 +38,7 @@ def l1_regression(X, y):
 
 def cheatsheet():
     return "lqsr: L1 (LAD) regression"
+
+
+# compact alias per ledger/NAMING.md
+l1regression = l1_regression

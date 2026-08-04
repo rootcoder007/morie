@@ -43,3 +43,7 @@ sgfrm = frame_signal
 
 def cheatsheet() -> str:
     return "frame_signal({}) -> Frame signal into overlapping windows."
+
+
+# compact alias per ledger/NAMING.md
+framesignal = frame_signal

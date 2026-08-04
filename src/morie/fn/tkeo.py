@@ -45,3 +45,7 @@ tkeo = teager_energy
 
 def cheatsheet() -> str:
     return "teager_energy({}) -> Teager-Kaiser energy operator."
+
+
+# compact alias per ledger/NAMING.md
+teagerenergy = teager_energy

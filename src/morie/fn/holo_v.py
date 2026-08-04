@@ -63,3 +63,7 @@ def holo_violin(
 
 def cheatsheet() -> str:
     return "holo_violin({}) -> Violin plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoviolin = holo_violin

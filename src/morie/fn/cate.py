@@ -125,3 +125,7 @@ cate = estimate_cate
 
 def cheatsheet() -> str:
     return "estimate_cate({}) -> Conditional Average Treatment Effect (CATE) via T-learner or"
+
+
+# compact alias per ledger/NAMING.md
+estimatecate = estimate_cate

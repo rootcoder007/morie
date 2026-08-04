@@ -29,3 +29,7 @@ lero = leroux_model
 
 def cheatsheet() -> str:
     return "leroux_model({}) -> Leroux CAR model"
+
+
+# compact alias per ledger/NAMING.md
+lerouxmodel = leroux_model

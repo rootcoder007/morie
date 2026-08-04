@@ -45,3 +45,7 @@ def kernel_blup(K, K_new, y, lam):
 
 def cheatsheet():
     return "kblup: Kernel BLUP (K-BLUP) predictor using kernel matrix"
+
+
+# compact alias per ledger/NAMING.md
+kernelblup = kernel_blup

@@ -57,3 +57,7 @@ def theta_map(X, items, prior=(0.0, 1.0)):
 
 def cheatsheet():
     return "theteap2: MAP over a matrix -- the MODE, where theteap is the MEAN"
+
+
+# compact alias per ledger/NAMING.md
+thetamap = theta_map

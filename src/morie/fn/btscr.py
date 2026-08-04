@@ -75,3 +75,7 @@ def boot_score_test(x, fit0, score_fn, B, cdf=None):
 
 def cheatsheet():
     return "btscr: Bootstrap score test under restricted model"
+
+
+# compact alias per ledger/NAMING.md
+bootscoretest = boot_score_test

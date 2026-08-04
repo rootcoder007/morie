@@ -49,3 +49,7 @@ def garch_model(y, p=1, q=1):
 
 def cheatsheet():
     return "garchm: GARCH(1,1) volatility model, spec 'garch'"
+
+
+# compact alias per ledger/NAMING.md
+garchmodel = garch_model

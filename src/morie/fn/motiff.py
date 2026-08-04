@@ -38,3 +38,7 @@ def motif_count(G, motif_size):
 
 def cheatsheet():
     return "motiff: Network motif counting"
+
+
+# compact alias per ledger/NAMING.md
+motifcount = motif_count

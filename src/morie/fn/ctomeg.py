@@ -38,3 +38,7 @@ def omega_total(X, factor_loadings):
 
 def cheatsheet():
     return "ctomeg: McDonald's omega total"
+
+
+# compact alias per ledger/NAMING.md
+omegatotal = omega_total

@@ -41,3 +41,7 @@ def max_pooling(x, kernel, stride):
 
 def cheatsheet():
     return "maxpl: Max pooling operation for CNNs"
+
+
+# compact alias per ledger/NAMING.md
+maxpooling = max_pooling

@@ -82,3 +82,7 @@ adptv = adaptive_design
 
 def cheatsheet() -> str:
     return "adaptive_design({}) -> Adaptive sample size re-estimation."
+
+
+# compact alias per ledger/NAMING.md
+adaptivedesign = adaptive_design

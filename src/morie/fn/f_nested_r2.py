@@ -42,3 +42,7 @@ def f_nested_r2(r2_full, r2_restricted, k_full, k_restricted, n):
 
 def cheatsheet():
     return 'ca2e19: F = ((R2_F - R2_R)/(k_F - k_R)) / ((1 - R2_F)/(n - k_F - 1)) [Weisburd et al. 2022, eq. 2.19]'
+
+
+# compact alias per ledger/NAMING.md
+fnestedr2 = f_nested_r2

@@ -86,3 +86,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`vol_parkinson`.
 vol_parkinson_range = vol_parkinson
+
+
+# compact alias per ledger/NAMING.md
+volparkinson = vol_parkinson

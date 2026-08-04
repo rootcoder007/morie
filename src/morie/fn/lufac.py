@@ -70,3 +70,7 @@ short = lu_factorize
 
 def cheatsheet() -> str:
     return "lu_factorize({}) -> LU factorization with partial pivoting."
+
+
+# compact alias per ledger/NAMING.md
+lufactorize = lu_factorize

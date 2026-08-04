@@ -38,3 +38,7 @@ def tsallis_entropy(y, q):
 
 def cheatsheet():
     return "tsallen: Tsallis q-entropy"
+
+
+# compact alias per ledger/NAMING.md
+tsallisentropy = tsallis_entropy

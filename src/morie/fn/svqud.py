@@ -29,3 +29,7 @@ quad = quad_utility
 
 def cheatsheet() -> str:
     return "quad_utility({}) -> Quadratic spatial utility function"
+
+
+# compact alias per ledger/NAMING.md
+quadutility = quad_utility

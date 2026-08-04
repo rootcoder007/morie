@@ -53,3 +53,7 @@ def thomas_solve(
 
 
 tridg = thomas_solve
+
+
+# compact alias per ledger/NAMING.md
+thomassolve = thomas_solve

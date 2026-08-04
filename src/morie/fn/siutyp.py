@@ -40,3 +40,7 @@ siutyp = siu_by_type
 
 def cheatsheet() -> str:
     return "siu_by_type({}) -> SIU cases by incident type."
+
+
+# compact alias per ledger/NAMING.md
+siubytype = siu_by_type

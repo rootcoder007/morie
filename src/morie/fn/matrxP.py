@@ -38,3 +38,7 @@ def matrix_profile(x, m):
 
 def cheatsheet():
     return "matrxP: Matrix profile (discord detection)"
+
+
+# compact alias per ledger/NAMING.md
+matrixprofile = matrix_profile

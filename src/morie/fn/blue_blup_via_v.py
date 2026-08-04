@@ -28,3 +28,7 @@ def blue_blup_via_v(X, Z, y, Sigma, R=None):
 
 def cheatsheet():
     return "msm240: Linear mixed model"
+
+
+# compact alias per ledger/NAMING.md
+blueblupviav = blue_blup_via_v

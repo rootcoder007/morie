@@ -29,3 +29,7 @@ indi = indirect_std
 
 def cheatsheet() -> str:
     return "indirect_std({}) -> Indirect standardization"
+
+
+# compact alias per ledger/NAMING.md
+indirectstd = indirect_std

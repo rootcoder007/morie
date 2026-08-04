@@ -32,3 +32,7 @@ mptfd = mptfd_fn
 
 def cheatsheet() -> str:
     return "mptfd_fn({}) -> Matching Pursuit Time-Frequency Distribution."
+
+
+# compact alias per ledger/NAMING.md
+mptfdfn = mptfd_fn

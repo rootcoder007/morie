@@ -93,3 +93,7 @@ anmls = multiview_cca
 
 def cheatsheet() -> str:
     return "multiview_cca({}) -> Multi-view learning (CCA fusion)."
+
+
+# compact alias per ledger/NAMING.md
+multiviewcca = multiview_cca

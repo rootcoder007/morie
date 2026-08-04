@@ -36,3 +36,7 @@ def gelu_tanh_approx(y):
 
 def cheatsheet():
     return "gelutn: GELU approximation via tanh"
+
+
+# compact alias per ledger/NAMING.md
+gelutanhapprox = gelu_tanh_approx

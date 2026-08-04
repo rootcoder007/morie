@@ -147,3 +147,7 @@ def chopit_vignette(self_ratings, vignette_ratings, group=None, n_categories=Non
 
 def cheatsheet():
     return "chopit: shared vignettes identify group threshold shifts; correct self-ratings"
+
+
+# compact alias per ledger/NAMING.md
+chopitvignette = chopit_vignette

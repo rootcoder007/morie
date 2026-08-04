@@ -31,3 +31,7 @@ omprs = omp_fn
 
 def cheatsheet() -> str:
     return "omp_fn({}) -> Orthogonal Matching Pursuit sparse signal decomposition."
+
+
+# compact alias per ledger/NAMING.md
+ompfn = omp_fn

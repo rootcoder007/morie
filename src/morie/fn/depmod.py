@@ -84,3 +84,7 @@ depmod = depletion_model
 
 def cheatsheet() -> str:
     return "depletion_model({}) -> Resource depletion model."
+
+
+# compact alias per ledger/NAMING.md
+depletionmodel = depletion_model

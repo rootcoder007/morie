@@ -41,3 +41,7 @@ def bic_score_dag(dag, data):
 
 def cheatsheet():
     return "bicsm: BIC score for DAG structure scoring in GES"
+
+
+# compact alias per ledger/NAMING.md
+bicscoredag = bic_score_dag

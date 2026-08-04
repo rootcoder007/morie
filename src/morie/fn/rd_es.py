@@ -49,3 +49,7 @@ rd_2x2 = risk_difference
 
 def cheatsheet() -> str:
     return "risk_difference({}) -> Risk difference (attributable risk) effect size for a 2x2 ta"
+
+
+# compact alias per ledger/NAMING.md
+riskdifference = risk_difference

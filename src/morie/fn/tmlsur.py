@@ -181,3 +181,7 @@ def cheatsheet():
         "targeting along the Cai-van der Laan clever covariate, with the "
         "influence-curve convergence check reported"
     )
+
+
+# compact alias per ledger/NAMING.md
+tmlesurvival = tmle_survival

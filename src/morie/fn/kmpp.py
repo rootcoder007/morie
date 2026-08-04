@@ -54,3 +54,7 @@ kmpp = kmeans_pp
 
 def cheatsheet() -> str:
     return "kmeans_pp({}) -> K-means++ initialisation + Lloyd's algorithm."
+
+
+# compact alias per ledger/NAMING.md
+kmeanspp = kmeans_pp

@@ -140,3 +140,7 @@ spflw = spatial_flow
 
 def cheatsheet() -> str:
     return "spatial_flow({}) -> Spatial flow/interaction model (gravity model)."
+
+
+# compact alias per ledger/NAMING.md
+spatialflow = spatial_flow

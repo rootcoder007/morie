@@ -74,3 +74,7 @@ mirmf = mrmr_score
 
 def cheatsheet() -> str:
     return "mrmr_score({}) -> Minimum Redundancy Maximum Relevance (mRMR) scoring."
+
+
+# compact alias per ledger/NAMING.md
+mrmrscore = mrmr_score

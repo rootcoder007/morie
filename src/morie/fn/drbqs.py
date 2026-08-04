@@ -96,3 +96,7 @@ def dr_did_quantile(y_pre, y_post, D, X, quantile=0.5):
 
 def cheatsheet():
     return "drbqs: QTT(tau) on Delta-Y with e/(1-e)-reweighted controls"
+
+
+# compact alias per ledger/NAMING.md
+drdidquantile = dr_did_quantile

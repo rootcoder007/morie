@@ -164,3 +164,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`kernel_density`.
 kernel_density_fda = kernel_density
+
+
+# compact alias per ledger/NAMING.md
+kerneldensity = kernel_density

@@ -36,3 +36,7 @@ def pt_set_mass_mean(alpha_epsilon, epsilon=None,
 
 def cheatsheet():
     return "ghs028: Pólya tree first two moments"
+
+
+# compact alias per ledger/NAMING.md
+ptsetmassmean = pt_set_mass_mean

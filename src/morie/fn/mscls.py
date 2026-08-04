@@ -35,3 +35,7 @@ clas = classical_mds
 
 def cheatsheet() -> str:
     return "classical_mds({}) -> Classical MDS (Torgerson)"
+
+
+# compact alias per ledger/NAMING.md
+classicalmds = classical_mds

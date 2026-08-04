@@ -42,3 +42,7 @@ def dpo_loss(pi_theta, pi_ref, beta, pairs):
 
 def cheatsheet():
     return "dpoF: DPO direct preference optimization"
+
+
+# compact alias per ledger/NAMING.md
+dpoloss = dpo_loss

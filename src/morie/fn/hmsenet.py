@@ -138,3 +138,7 @@ def geron_senet(x, r=16, W1=None, W2=None, seed=0):
 
 def cheatsheet():
     return "hmsenet: Squeeze-and-Excitation (SENet) block for channel recalibration"
+
+
+# compact alias per ledger/NAMING.md
+geronsenet = geron_senet

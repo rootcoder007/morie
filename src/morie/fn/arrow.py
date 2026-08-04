@@ -91,3 +91,7 @@ arrow = directed_layout
 
 def cheatsheet() -> str:
     return "directed_layout({}) -> Arrow plot / directed graph layout."
+
+
+# compact alias per ledger/NAMING.md
+directedlayout = directed_layout

@@ -43,3 +43,7 @@ def vol_egarch_fit(r):
 
 def cheatsheet():
     return "volegar: EGARCH fit, spec 'egarch'"
+
+
+# compact alias per ledger/NAMING.md
+volegarchfit = vol_egarch_fit

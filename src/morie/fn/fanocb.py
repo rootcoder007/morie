@@ -40,3 +40,7 @@ def fano_inequality(pe, X_card):
 
 def cheatsheet():
     return "fanocb: Fano's inequality on error probability"
+
+
+# compact alias per ledger/NAMING.md
+fanoinequality = fano_inequality

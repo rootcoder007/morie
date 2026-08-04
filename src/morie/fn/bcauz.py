@@ -84,3 +84,7 @@ bcauz = bayesian_ate
 
 def cheatsheet() -> str:
     return "bayesian_ate({}) -> Bayesian causal effect (posterior ATE)."
+
+
+# compact alias per ledger/NAMING.md
+bayesianate = bayesian_ate

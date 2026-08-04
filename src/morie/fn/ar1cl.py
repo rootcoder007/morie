@@ -38,3 +38,7 @@ def ar1_climate(x, phi):
 
 def cheatsheet():
     return "ar1cl: AR(1) red noise climate model"
+
+
+# compact alias per ledger/NAMING.md
+ar1climate = ar1_climate

@@ -136,3 +136,7 @@ def bayesian_irt_2pl(
 
 def cheatsheet() -> str:
     return "bayesian_irt_2pl({}) -> Bayesian 2PL IRT model via Gibbs sampler."
+
+
+# compact alias per ledger/NAMING.md
+bayesianirt2pl = bayesian_irt_2pl

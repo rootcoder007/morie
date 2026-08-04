@@ -70,3 +70,7 @@ maxdd = max_drawdown
 
 def cheatsheet() -> str:
     return "max_drawdown({}) -> Maximum drawdown."
+
+
+# compact alias per ledger/NAMING.md
+maxdrawdown = max_drawdown

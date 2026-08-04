@@ -47,3 +47,7 @@ durbin = durbin_watson
 
 def cheatsheet() -> str:
     return "durbin_watson({}) -> Durbin-Watson autocorrelation test."
+
+
+# compact alias per ledger/NAMING.md
+durbinwatson = durbin_watson

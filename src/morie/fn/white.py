@@ -87,3 +87,7 @@ white = white_test
 
 def cheatsheet() -> str:
     return "white_test({}) -> White's test for heteroscedasticity."
+
+
+# compact alias per ledger/NAMING.md
+whitetest = white_test

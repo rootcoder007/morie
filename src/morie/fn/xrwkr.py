@@ -29,3 +29,7 @@ w_ke = w_kernel
 
 def cheatsheet() -> str:
     return "w_kernel({}) -> Kernel weights"
+
+
+# compact alias per ledger/NAMING.md
+wkernel = w_kernel

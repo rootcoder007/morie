@@ -77,3 +77,7 @@ loggro = logistic_growth
 
 def cheatsheet() -> str:
     return "logistic_growth({}) -> Logistic growth model."
+
+
+# compact alias per ledger/NAMING.md
+logisticgrowth = logistic_growth

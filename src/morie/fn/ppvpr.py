@@ -62,3 +62,7 @@ ppvpr = ppv_prevalence
 
 def cheatsheet() -> str:
     return "ppvpr() -> Compute positive and negative predictive values from prevalence"
+
+
+# compact alias per ledger/NAMING.md
+ppvprevalence = ppv_prevalence

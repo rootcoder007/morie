@@ -38,3 +38,7 @@ def ihs_test(haplotypes, ancestral):
 
 def cheatsheet():
     return "ihstst: Integrated Haplotype Score (iHS)"
+
+
+# compact alias per ledger/NAMING.md
+ihstest = ihs_test

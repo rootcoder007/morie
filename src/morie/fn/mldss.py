@@ -29,3 +29,7 @@ mldss = mldsa_sign
 
 def cheatsheet() -> str:
     return "mldsa_sign({}) -> ML-DSA (Dilithium) post-quantum signature -- sign."
+
+
+# compact alias per ledger/NAMING.md
+mldsasign = mldsa_sign

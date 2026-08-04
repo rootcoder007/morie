@@ -89,3 +89,7 @@ svmln = svm_linear
 
 def cheatsheet() -> str:
     return "svm_linear({}) -> Linear SVM classifier via hinge loss gradient descent."
+
+
+# compact alias per ledger/NAMING.md
+svmlinear = svm_linear

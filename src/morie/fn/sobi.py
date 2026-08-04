@@ -99,3 +99,7 @@ sobi = sobi_bss
 
 def cheatsheet() -> str:
     return "sobi_bss({}) -> SOBI blind source separation."
+
+
+# compact alias per ledger/NAMING.md
+sobibss = sobi_bss

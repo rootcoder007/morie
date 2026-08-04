@@ -87,3 +87,7 @@ def item_select(
 
 def cheatsheet() -> str:
     return "item_select({}) -> Item selection -- flag items for removal."
+
+
+# compact alias per ledger/NAMING.md
+itemselect = item_select

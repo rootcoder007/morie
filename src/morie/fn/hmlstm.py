@@ -165,3 +165,7 @@ def geron_lstm(x_t, h_prev, c_prev, weights):
 
 def cheatsheet():
     return "hmlstm: LSTM step c_t = f*c_{t-1} + i*g, h_t = o*tanh(c_t) with all four gates returned"
+
+
+# compact alias per ledger/NAMING.md
+geronlstm = geron_lstm

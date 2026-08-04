@@ -60,3 +60,7 @@ def cheatsheet() -> str:
 
 
 flops = estimate_flops
+
+
+# compact alias per ledger/NAMING.md
+estimateflops = estimate_flops

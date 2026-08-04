@@ -46,3 +46,7 @@ def gibbons_pit_rng(U, F_inv):
 
 def cheatsheet():
     return "gb_pit2: X = F^{-1}(U); converse of the PIT"
+
+
+# compact alias per ledger/NAMING.md
+gibbonspitrng = gibbons_pit_rng

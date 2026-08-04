@@ -42,3 +42,7 @@ def safe_rl(env, policy, cost_fn, threshold):
 
 def cheatsheet():
     return "safrl: Constrained / safe RL (CMDP)"
+
+
+# compact alias per ledger/NAMING.md
+saferl = safe_rl

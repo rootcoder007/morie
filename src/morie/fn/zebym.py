@@ -29,3 +29,7 @@ bym_ = bym_model
 
 def cheatsheet() -> str:
     return "bym_model({}) -> BYM (Besag-York-Mollie) model"
+
+
+# compact alias per ledger/NAMING.md
+bymmodel = bym_model

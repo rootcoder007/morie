@@ -32,3 +32,7 @@ cfmat = cfmat_fn
 
 def cheatsheet() -> str:
     return "cfmat_fn({}) -> Confusion matrix and classification metrics."
+
+
+# compact alias per ledger/NAMING.md
+cfmatfn = cfmat_fn

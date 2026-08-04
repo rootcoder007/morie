@@ -54,3 +54,7 @@ ccfn = ccf_normalized
 
 def cheatsheet() -> str:
     return "ccf_normalized({}) -> Normalized cross-correlation function."
+
+
+# compact alias per ledger/NAMING.md
+ccfnormalized = ccf_normalized

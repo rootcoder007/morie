@@ -38,3 +38,7 @@ def survey_p_value(test_stat, DEFF):
 
 def cheatsheet():
     return "survip: Survey-corrected p-value"
+
+
+# compact alias per ledger/NAMING.md
+surveypvalue = survey_p_value

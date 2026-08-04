@@ -39,3 +39,7 @@ def ghosal_series_gp(x=0.3, y=0.7, n_terms=60):
 
 def cheatsheet():
     return "gh_c11_10: Series (eigenexpansion) GP"
+
+
+# compact alias per ledger/NAMING.md
+ghosalseriesgp = ghosal_series_gp

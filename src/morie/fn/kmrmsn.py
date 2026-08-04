@@ -66,3 +66,7 @@ def kamath_rms_norm(x, g=None, eps=1e-6):
 
 def cheatsheet():
     return "kmrmsn: x/sqrt(mean(x^2)+eps)*g via rmsnr; no mean, no bias"
+
+
+# compact alias per ledger/NAMING.md
+kamathrmsnorm = kamath_rms_norm

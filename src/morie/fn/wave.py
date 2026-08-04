@@ -38,3 +38,7 @@ def wavelet_basis(y, wavelet):
 
 def cheatsheet():
     return "wave: Wavelet basis (Daubechies)"
+
+
+# compact alias per ledger/NAMING.md
+waveletbasis = wavelet_basis

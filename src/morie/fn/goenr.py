@@ -40,3 +40,7 @@ def go_enrichment(foreground, background, go_terms):
 
 def cheatsheet():
     return "goenr: GO enrichment (Fisher exact)"
+
+
+# compact alias per ledger/NAMING.md
+goenrichment = go_enrichment

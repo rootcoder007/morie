@@ -76,3 +76,7 @@ ebmix = eb_mixture
 
 def cheatsheet() -> str:
     return "eb_mixture({}) -> Empirical Bayes mixture (two-groups model)."
+
+
+# compact alias per ledger/NAMING.md
+ebmixture = eb_mixture

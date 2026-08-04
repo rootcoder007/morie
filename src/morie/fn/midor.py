@@ -389,3 +389,7 @@ def cheatsheet():
         "d-separation, regression estimation, then placebo, random-common-"
         "cause and subset refutations"
     )
+
+
+# compact alias per ledger/NAMING.md
+backdoorsets = backdoor_sets

@@ -29,3 +29,7 @@ comm = committee_2d
 
 def cheatsheet() -> str:
     return "committee_2d({}) -> 2D committee decision"
+
+
+# compact alias per ledger/NAMING.md
+committee2d = committee_2d

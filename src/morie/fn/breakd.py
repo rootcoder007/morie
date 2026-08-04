@@ -38,3 +38,7 @@ def breakdown_point(estimator, n):
 
 def cheatsheet():
     return "breakd: Finite-sample breakdown point"
+
+
+# compact alias per ledger/NAMING.md
+breakdownpoint = breakdown_point

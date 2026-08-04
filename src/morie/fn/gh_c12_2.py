@@ -39,3 +39,7 @@ def ghosal_dp_bvm(n=2000, alpha=2.0, n_sim=400, seed=42):
 
 def cheatsheet():
     return "gh_c12_2: Dirichlet-process BvM (Brownian bridge)"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpbvm = ghosal_dp_bvm

@@ -41,3 +41,7 @@ prsn = pearson_corr
 
 def cheatsheet() -> str:
     return "pearson_corr({}) -> Pearson correlation coefficient."
+
+
+# compact alias per ledger/NAMING.md
+pearsoncorr = pearson_corr

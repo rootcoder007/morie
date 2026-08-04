@@ -36,3 +36,7 @@ def pollards_rho(n):
 
 def cheatsheet():
     return "pollR: Pollard's rho factoring"
+
+
+# compact alias per ledger/NAMING.md
+pollardsrho = pollards_rho

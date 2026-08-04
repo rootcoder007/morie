@@ -42,3 +42,7 @@ def se_d_probit(p1, p2, n1, n2):
 
 def cheatsheet():
     return 'ca11e21: se_d = sqrt(2 pi p1(1-p1) e^{z1^2}/n1 + 2 pi p2(1-p2) e^{z2^2}/n2) [Weisburd et al. 2022, eq. 11.21]'
+
+
+# compact alias per ledger/NAMING.md
+sedprobit = se_d_probit

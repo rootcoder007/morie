@@ -46,3 +46,7 @@ coshd = cosh_distance
 
 def cheatsheet() -> str:
     return "cosh_distance({}) -> Cosh spectral distance."
+
+
+# compact alias per ledger/NAMING.md
+coshdistance = cosh_distance

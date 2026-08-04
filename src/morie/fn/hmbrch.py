@@ -188,3 +188,7 @@ def geron_birch(X, n_clusters=3, threshold=0.5, branching_factor=50):
 
 def cheatsheet():
     return "hmbrch: BIRCH: balanced iterative reducing and clustering using hierarchies"
+
+
+# compact alias per ledger/NAMING.md
+geronbirch = geron_birch

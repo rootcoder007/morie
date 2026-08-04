@@ -35,3 +35,7 @@ def ghosal_glivenko(ns=(100, 1000, 10000), seed=42):
 
 def cheatsheet():
     return "gh_ap_f2: Glivenko-Cantelli theorem"
+
+
+# compact alias per ledger/NAMING.md
+ghosalglivenko = ghosal_glivenko

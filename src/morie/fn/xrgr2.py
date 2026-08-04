@@ -29,3 +29,7 @@ grav = gravity_poisson
 
 def cheatsheet() -> str:
     return "gravity_poisson({}) -> Poisson gravity model"
+
+
+# compact alias per ledger/NAMING.md
+gravitypoisson = gravity_poisson

@@ -82,3 +82,7 @@ bloos = psis_loo
 
 def cheatsheet() -> str:
     return "psis_loo({}) -> Bayesian LOO-CV with Pareto-smoothed importance sampling."
+
+
+# compact alias per ledger/NAMING.md
+psisloo = psis_loo

@@ -47,3 +47,7 @@ def rank_transform(x, method="average"):
 
 def cheatsheet() -> str:
     return "rank_transform({}) -> Rank transformation for nonparametric analysis."
+
+
+# compact alias per ledger/NAMING.md
+ranktransform = rank_transform

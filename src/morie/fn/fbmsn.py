@@ -28,3 +28,7 @@ fbmsn = fbm_synthesis
 
 def cheatsheet() -> str:
     return "fbm_synthesis({}) -> Fractional Brownian motion synthesis."
+
+
+# compact alias per ledger/NAMING.md
+fbmsynthesis = fbm_synthesis

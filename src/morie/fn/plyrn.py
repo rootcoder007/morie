@@ -47,3 +47,7 @@ plyrn = poly_ring_op
 
 def cheatsheet() -> str:
     return "poly_ring_op({}) -> Polynomial ring operations mod (x^n+1) over Z_q."
+
+
+# compact alias per ledger/NAMING.md
+polyringop = poly_ring_op

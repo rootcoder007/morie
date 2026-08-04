@@ -28,3 +28,7 @@ brtlt = bartlett_psd_fn
 
 def cheatsheet() -> str:
     return "bartlett_psd_fn({}) -> Bartlett power spectral density estimate."
+
+
+# compact alias per ledger/NAMING.md
+bartlettpsdfn = bartlett_psd_fn

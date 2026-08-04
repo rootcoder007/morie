@@ -75,3 +75,7 @@ emimq = em_imputation
 
 def cheatsheet() -> str:
     return "em_imputation({}) -> EM algorithm imputation for missing data."
+
+
+# compact alias per ledger/NAMING.md
+emimputation = em_imputation

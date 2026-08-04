@@ -46,3 +46,7 @@ def cheatsheet() -> str:
 
 
 oospr = oos_predict
+
+
+# compact alias per ledger/NAMING.md
+oospredict = oos_predict

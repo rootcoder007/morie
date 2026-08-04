@@ -29,3 +29,7 @@ shap = shapley_spatial
 
 def cheatsheet() -> str:
     return "shapley_spatial({}) -> Shapley value in spatial game"
+
+
+# compact alias per ledger/NAMING.md
+shapleyspatial = shapley_spatial

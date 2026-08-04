@@ -42,3 +42,7 @@ def infinite_total(zbar_hat, area, sample_area):
 
 def cheatsheet():
     return 'r3e18: t_hat(z) = (A/a) zbar_hat [Brus 2022, eq. 3.18]'
+
+
+# compact alias per ledger/NAMING.md
+infinitetotal = infinite_total

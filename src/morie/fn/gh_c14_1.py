@@ -36,3 +36,7 @@ def ghosal_eppf_def(block_sizes, alpha=1.0):
 
 def cheatsheet():
     return "gh_c14_1: Exchangeable partition probability function"
+
+
+# compact alias per ledger/NAMING.md
+ghosaleppfdef = ghosal_eppf_def

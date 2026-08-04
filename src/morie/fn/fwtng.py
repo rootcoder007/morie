@@ -64,3 +64,7 @@ fwtng = feature_whiten
 
 def cheatsheet() -> str:
     return "feature_whiten({}) -> Feature whitening (ZCA)."
+
+
+# compact alias per ledger/NAMING.md
+featurewhiten = feature_whiten

@@ -40,3 +40,7 @@ def graphlet_kernel(G1, G2, k):
 
 def cheatsheet():
     return "grafl: Graphlet kernel"
+
+
+# compact alias per ledger/NAMING.md
+graphletkernel = graphlet_kernel

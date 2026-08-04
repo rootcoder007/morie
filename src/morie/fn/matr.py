@@ -47,3 +47,7 @@ def ma_two_step_dl_he(yi, vi, max_iter):
 
 def cheatsheet():
     return "matr: Two-step DerSimonian-Laird with Hedges-Eddy improvement"
+
+
+# compact alias per ledger/NAMING.md
+matwostepdlhe = ma_two_step_dl_he

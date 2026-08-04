@@ -30,3 +30,7 @@ log_ = log_gaussian_cox
 
 def cheatsheet() -> str:
     return "log_gaussian_cox({}) -> Log-Gaussian Cox process"
+
+
+# compact alias per ledger/NAMING.md
+loggaussiancox = log_gaussian_cox

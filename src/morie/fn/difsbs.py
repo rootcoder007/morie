@@ -213,3 +213,7 @@ def dif_sibtest(X, group, matching=None, cdf=None, min_per_cell=2, correct=True)
 
 def cheatsheet():
     return "difsbs: SIBTEST differential item functioning"
+
+
+# compact alias per ledger/NAMING.md
+difsibtest = dif_sibtest

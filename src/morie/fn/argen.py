@@ -49,3 +49,7 @@ argen = ar_generate_fn
 
 def cheatsheet() -> str:
     return "ar_generate_fn({}) -> Generate synthetic AR process."
+
+
+# compact alias per ledger/NAMING.md
+argeneratefn = ar_generate_fn

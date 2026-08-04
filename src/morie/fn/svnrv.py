@@ -29,3 +29,7 @@ norm = normal_vector
 
 def cheatsheet() -> str:
     return "normal_vector({}) -> Normal vector to cutting line"
+
+
+# compact alias per ledger/NAMING.md
+normalvector = normal_vector

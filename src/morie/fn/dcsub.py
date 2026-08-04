@@ -43,3 +43,7 @@ dcsub = dc_removal
 
 def cheatsheet() -> str:
     return "dc_removal({}) -> DC component removal."
+
+
+# compact alias per ledger/NAMING.md
+dcremoval = dc_removal

@@ -38,3 +38,7 @@ def ibd_matrix(genotypes, map):
 
 def cheatsheet():
     return "ibdmtx: Identity-by-descent matrix"
+
+
+# compact alias per ledger/NAMING.md
+ibdmatrix = ibd_matrix

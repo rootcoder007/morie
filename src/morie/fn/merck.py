@@ -44,3 +44,7 @@ def mercer_theorem(K_matrix):
 
 def cheatsheet():
     return "merck: Mercer's theorem: kernel expansion via eigenfunctions"
+
+
+# compact alias per ledger/NAMING.md
+mercertheorem = mercer_theorem

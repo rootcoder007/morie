@@ -43,3 +43,7 @@ def gls_estimator(x, c, zhat):
 
 def cheatsheet():
     return 'r15e10: zhat_GLS = (X^T C^-1 X)^-1 X^T C^-1 zhat [Brus 2022, eq. 15.10]'
+
+
+# compact alias per ledger/NAMING.md
+glsestimator = gls_estimator

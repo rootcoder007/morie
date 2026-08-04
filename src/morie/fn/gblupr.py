@@ -42,3 +42,7 @@ def gblup_estimator(y, X, Z, G):
 
 def cheatsheet():
     return "gblupr: Genomic BLUP"
+
+
+# compact alias per ledger/NAMING.md
+gblupestimator = gblup_estimator

@@ -134,3 +134,7 @@ def geron_dpo(pi, pi_ref, preferences=None, beta=0.1):
 
 def cheatsheet():
     return "hmdpo: Direct preference optimization (DPO)"
+
+
+# compact alias per ledger/NAMING.md
+gerondpo = geron_dpo

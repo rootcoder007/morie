@@ -107,3 +107,7 @@ def bayes_mediation(x, m, y, prior_sd=10.0, n_draws=4000, seed=0, c=None):
 
 def cheatsheet():
     return "baymed: conjugate posteriors for a and b; posterior of ab is skewed"
+
+
+# compact alias per ledger/NAMING.md
+bayesmediation = bayes_mediation

@@ -231,3 +231,7 @@ late = estimate_late
 
 def cheatsheet() -> str:
     return "estimate_late({}) -> Local Average Treatment Effect (LATE) via instrumental varia"
+
+
+# compact alias per ledger/NAMING.md
+estimatelate = estimate_late

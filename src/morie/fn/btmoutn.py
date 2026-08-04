@@ -44,3 +44,7 @@ def boot_m_out_of_n(x, m, stat, B):
 
 def cheatsheet():
     return "btmoutn: m-out-of-n bootstrap for boundary problems"
+
+
+# compact alias per ledger/NAMING.md
+bootmoutofn = boot_m_out_of_n

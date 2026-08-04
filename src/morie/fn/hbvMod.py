@@ -40,3 +40,7 @@ def hbv_hydrology(P, T, params):
 
 def cheatsheet():
     return "hbvMod: HBV conceptual hydrology model"
+
+
+# compact alias per ledger/NAMING.md
+hbvhydrology = hbv_hydrology

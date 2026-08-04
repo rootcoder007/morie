@@ -68,3 +68,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`sens_slope`.
 sen_slope = sens_slope
+
+
+# compact alias per ledger/NAMING.md
+senslope = sen_slope
+
+
+# compact alias per ledger/NAMING.md
+sensslope = sens_slope

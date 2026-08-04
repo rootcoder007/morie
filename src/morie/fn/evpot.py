@@ -45,3 +45,7 @@ def evt_pot_fit(x, u):
 
 def cheatsheet():
     return "evpot: Peaks-over-threshold GPD fit + scale-invariance check"
+
+
+# compact alias per ledger/NAMING.md
+evtpotfit = evt_pot_fit

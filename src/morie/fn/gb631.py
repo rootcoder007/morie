@@ -74,3 +74,7 @@ def gibbons_ks2(x, y, cdf=None):
 
 def cheatsheet():
     return "gb631: Two-sample Kolmogorov-Smirnov test D_{m,n} = sup|S_m(x) - S_n(x)|"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsks2 = gibbons_ks2

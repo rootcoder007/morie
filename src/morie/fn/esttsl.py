@@ -129,3 +129,7 @@ def theta_method(y, horizon=1, theta=2.0):
 
 def cheatsheet():
     return "esttsl: M3 winner that is EXACTLY SES with drift = slope/2 (Hyndman-Billah)"
+
+
+# compact alias per ledger/NAMING.md
+thetamethod = theta_method

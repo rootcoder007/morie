@@ -40,3 +40,7 @@ rsq = r_squared
 
 def cheatsheet() -> str:
     return "r_squared({}) -> R-squared (coefficient of determination) as effect size."
+
+
+# compact alias per ledger/NAMING.md
+rsquared = r_squared

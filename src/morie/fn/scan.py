@@ -96,3 +96,7 @@ scan = spatial_scan
 
 def cheatsheet() -> str:
     return "spatial_scan({}) -> Kulldorff's spatial scan statistic."
+
+
+# compact alias per ledger/NAMING.md
+spatialscan = spatial_scan

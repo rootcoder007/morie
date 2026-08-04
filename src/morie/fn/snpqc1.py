@@ -38,3 +38,7 @@ def snp_qc(genotypes, filters):
 
 def cheatsheet():
     return "snpqc1: SNP quality control"
+
+
+# compact alias per ledger/NAMING.md
+snpqc = snp_qc

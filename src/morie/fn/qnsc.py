@@ -81,3 +81,7 @@ def qn_scale(x):
 
 def cheatsheet():
     return "qnsc: pairwise differences, no location -- 50% breakdown at 82% efficiency"
+
+
+# compact alias per ledger/NAMING.md
+qnscale = qn_scale

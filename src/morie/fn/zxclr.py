@@ -29,3 +29,7 @@ clr_ = clr_spatial
 
 def cheatsheet() -> str:
     return "clr_spatial({}) -> Centered log-ratio spatial"
+
+
+# compact alias per ledger/NAMING.md
+clrspatial = clr_spatial

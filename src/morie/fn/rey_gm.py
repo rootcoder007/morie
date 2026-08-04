@@ -140,3 +140,7 @@ def rey_gm(
 
 def cheatsheet() -> str:
     return "rey_gm({}) -> Gamma GLM regression via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+reygm = rey_gm

@@ -31,3 +31,7 @@ ldpce = ldpc_encode
 
 def cheatsheet() -> str:
     return "ldpc_encode({}) -> LDPC encoding."
+
+
+# compact alias per ledger/NAMING.md
+ldpcencode = ldpc_encode

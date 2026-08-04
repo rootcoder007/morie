@@ -38,3 +38,7 @@ def cauchy_weight(y, c):
 
 def cheatsheet():
     return "cauchw: Cauchy weight function"
+
+
+# compact alias per ledger/NAMING.md
+cauchyweight = cauchy_weight

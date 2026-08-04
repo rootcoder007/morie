@@ -86,3 +86,7 @@ squid = threat_score
 
 def cheatsheet() -> str:
     return "threat_score({}) -> Threat scoring model."
+
+
+# compact alias per ledger/NAMING.md
+threatscore = threat_score

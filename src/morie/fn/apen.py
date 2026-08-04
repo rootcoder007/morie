@@ -53,3 +53,7 @@ apen = approx_entropy
 
 def cheatsheet() -> str:
     return "approx_entropy({}) -> Approximate entropy."
+
+
+# compact alias per ledger/NAMING.md
+approxentropy = approx_entropy

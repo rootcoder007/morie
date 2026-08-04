@@ -32,3 +32,7 @@ gf2ad = gf2_matrix_add
 
 def cheatsheet() -> str:
     return "gf2_matrix_add({}) -> GF(2) matrix addition."
+
+
+# compact alias per ledger/NAMING.md
+gf2matrixadd = gf2_matrix_add

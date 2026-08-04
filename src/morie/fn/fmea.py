@@ -85,3 +85,7 @@ fmea = fmea_rpn
 
 def cheatsheet() -> str:
     return "fmea_rpn({}) -> FMEA Risk Priority Number scoring."
+
+
+# compact alias per ledger/NAMING.md
+fmearpn = fmea_rpn

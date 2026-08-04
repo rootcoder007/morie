@@ -60,3 +60,7 @@ floyd = floyd_warshall
 
 def cheatsheet() -> str:
     return "floyd_warshall({}) -> Floyd-Warshall all-pairs shortest paths."
+
+
+# compact alias per ledger/NAMING.md
+floydwarshall = floyd_warshall

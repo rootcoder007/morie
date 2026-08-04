@@ -42,3 +42,7 @@ pcgflt = pcg_filter
 
 def cheatsheet() -> str:
     return "pcg_filter({}) -> PCG bandpass preprocessing filter."
+
+
+# compact alias per ledger/NAMING.md
+pcgfilter = pcg_filter

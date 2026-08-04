@@ -87,3 +87,7 @@ brdge = bayesian_ridge
 
 def cheatsheet() -> str:
     return "bayesian_ridge({}) -> Bayesian ridge regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianridge = bayesian_ridge

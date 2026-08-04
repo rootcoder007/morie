@@ -42,3 +42,7 @@ def mip_branch_bound(c, A, b, integer_indices):
 
 def cheatsheet():
     return "miprgr: Mixed-integer LP branch + bound"
+
+
+# compact alias per ledger/NAMING.md
+mipbranchbound = mip_branch_bound

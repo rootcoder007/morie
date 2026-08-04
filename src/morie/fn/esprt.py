@@ -55,3 +55,7 @@ esprt = esprit_freq_fn
 
 def cheatsheet() -> str:
     return "esprit_freq_fn({}) -> ESPRIT frequency estimation."
+
+
+# compact alias per ledger/NAMING.md
+espritfreqfn = esprit_freq_fn

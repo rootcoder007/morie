@@ -29,3 +29,7 @@ idw_ = idw_power
 
 def cheatsheet() -> str:
     return "idw_power({}) -> IDW power parameter optimization"
+
+
+# compact alias per ledger/NAMING.md
+idwpower = idw_power

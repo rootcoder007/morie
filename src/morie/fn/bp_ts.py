@@ -182,3 +182,7 @@ def bp_ts(
 
 def cheatsheet() -> str:
     return "bp_ts({}) -> Bai-Perron structural break test (simplified OLS-based)."
+
+
+# compact alias per ledger/NAMING.md
+bpts = bp_ts

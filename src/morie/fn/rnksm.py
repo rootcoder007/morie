@@ -49,3 +49,7 @@ rnksm = rank_sum_test
 
 def cheatsheet() -> str:
     return "rank_sum_test(x, y) -> Wilcoxon rank-sum test."
+
+
+# compact alias per ledger/NAMING.md
+ranksumtest = rank_sum_test

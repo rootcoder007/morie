@@ -44,3 +44,7 @@ def ma_labbe_plot(a, b, c, d):
 
 def cheatsheet():
     return "malab: L'Abbé plot data: control vs experimental risks"
+
+
+# compact alias per ledger/NAMING.md
+malabbeplot = ma_labbe_plot

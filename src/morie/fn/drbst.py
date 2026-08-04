@@ -42,3 +42,7 @@ def dr_did_bootstrap(y, D, X, B):
 
 def cheatsheet():
     return "drbst: Bootstrap inference for DR-DiD"
+
+
+# compact alias per ledger/NAMING.md
+drdidbootstrap = dr_did_bootstrap

@@ -46,3 +46,7 @@ def boot_parametric(theta_hat, rvs_fn, stat, B, n):
 
 def cheatsheet():
     return "btparm: Parametric bootstrap from a fitted distribution"
+
+
+# compact alias per ledger/NAMING.md
+bootparametric = boot_parametric

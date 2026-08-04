@@ -50,3 +50,7 @@ ar2rc = ar_to_reflection
 
 def cheatsheet() -> str:
     return "ar_to_reflection({}) -> AR coefficients to reflection coefficients."
+
+
+# compact alias per ledger/NAMING.md
+artoreflection = ar_to_reflection

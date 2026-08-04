@@ -40,3 +40,7 @@ def watts_strogatz(n, k, p):
 
 def cheatsheet():
     return "watstro: Watts-Strogatz small-world"
+
+
+# compact alias per ledger/NAMING.md
+wattsstrogatz = watts_strogatz

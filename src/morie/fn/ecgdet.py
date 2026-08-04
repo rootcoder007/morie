@@ -79,3 +79,7 @@ ecgdet = pan_tompkins
 
 def cheatsheet() -> str:
     return "pan_tompkins({}) -> Pan-Tompkins QRS detector."
+
+
+# compact alias per ledger/NAMING.md
+pantompkins = pan_tompkins

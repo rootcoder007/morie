@@ -78,3 +78,7 @@ johcg = johansen_test
 
 def cheatsheet() -> str:
     return "johansen_test({}) -> Johansen cointegration trace test."
+
+
+# compact alias per ledger/NAMING.md
+johansentest = johansen_test

@@ -97,3 +97,7 @@ newyw = newey_west
 
 def cheatsheet() -> str:
     return "newey_west({}) -> OLS with Newey-West HAC standard errors."
+
+
+# compact alias per ledger/NAMING.md
+neweywest = newey_west

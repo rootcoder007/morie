@@ -27,3 +27,7 @@ spat = spatial_elastic
 
 def cheatsheet() -> str:
     return "spatial_elastic({}) -> Spatial elastic net"
+
+
+# compact alias per ledger/NAMING.md
+spatialelastic = spatial_elastic

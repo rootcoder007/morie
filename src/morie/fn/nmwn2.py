@@ -30,3 +30,7 @@ wnom = wnominate_2d
 
 def cheatsheet() -> str:
     return "wnominate_2d({}) -> W-NOMINATE 2D"
+
+
+# compact alias per ledger/NAMING.md
+wnominate2d = wnominate_2d

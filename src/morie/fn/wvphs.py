@@ -37,3 +37,7 @@ wvphs = wavelet_phase
 
 def cheatsheet() -> str:
     return "wavelet_phase({}) -> Phase from complex wavelet coefficients."
+
+
+# compact alias per ledger/NAMING.md
+waveletphase = wavelet_phase

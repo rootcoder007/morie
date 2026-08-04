@@ -29,3 +29,7 @@ bolt = boltzmann_vote
 
 def cheatsheet() -> str:
     return "boltzmann_vote({}) -> Boltzmann (softmax) spatial voting"
+
+
+# compact alias per ledger/NAMING.md
+boltzmannvote = boltzmann_vote

@@ -73,3 +73,7 @@ rci = reliable_change
 
 def cheatsheet() -> str:
     return "reliable_change({}) -> Jacobson-Truax Reliable Change Index."
+
+
+# compact alias per ledger/NAMING.md
+reliablechange = reliable_change

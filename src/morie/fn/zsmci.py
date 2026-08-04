@@ -29,3 +29,7 @@ mc_s = mc_spatial_int
 
 def cheatsheet() -> str:
     return "mc_spatial_int({}) -> Monte Carlo spatial integration"
+
+
+# compact alias per ledger/NAMING.md
+mcspatialint = mc_spatial_int

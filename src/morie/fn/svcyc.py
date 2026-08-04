@@ -29,3 +29,7 @@ cond = condorcet_cycle
 
 def cheatsheet() -> str:
     return "condorcet_cycle({}) -> Condorcet cycle detection"
+
+
+# compact alias per ledger/NAMING.md
+condorcetcycle = condorcet_cycle

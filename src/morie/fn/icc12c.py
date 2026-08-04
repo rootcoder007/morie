@@ -38,3 +38,7 @@ def icc_two_way(X, model):
 
 def cheatsheet():
     return "icc12c: ICC(2,k) two-way random effects"
+
+
+# compact alias per ledger/NAMING.md
+icctwoway = icc_two_way

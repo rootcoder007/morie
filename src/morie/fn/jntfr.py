@@ -44,3 +44,7 @@ def joint_frailty(time, event, terminal, cluster):
 
 def cheatsheet():
     return "jntfr: Joint frailty for recurrent + terminal events"
+
+
+# compact alias per ledger/NAMING.md
+jointfrailty = joint_frailty

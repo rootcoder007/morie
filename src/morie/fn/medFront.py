@@ -17,3 +17,7 @@ def front_door(Y, X, M):
 
 def cheatsheet():
     return "medFront: front-door adjustment (front-end to fdadj)"
+
+
+# compact alias per ledger/NAMING.md
+frontdoor = front_door

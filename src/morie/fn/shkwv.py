@@ -75,3 +75,7 @@ shkwv = wave_equation_1d
 
 def cheatsheet() -> str:
     return "wave_equation_1d({}) -> 1-D wave equation solver."
+
+
+# compact alias per ledger/NAMING.md
+waveequation1d = wave_equation_1d

@@ -42,3 +42,7 @@ def mfo_vsm(y, feature, A, H):
 
 def cheatsheet():
     return "mfovsm: Marginal feature-outcome MSM"
+
+
+# compact alias per ledger/NAMING.md
+mfovsm = mfo_vsm

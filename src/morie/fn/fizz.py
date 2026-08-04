@@ -48,3 +48,7 @@ fizz = fizzbuzz_stats
 
 def cheatsheet() -> str:
     return "fizzbuzz_stats({}) -> FizzBuzz proportions."
+
+
+# compact alias per ledger/NAMING.md
+fizzbuzzstats = fizzbuzz_stats

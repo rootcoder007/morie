@@ -95,3 +95,7 @@ def otis_risk_table(
 
 def cheatsheet() -> str:
     return "otis_risk_table({}) -> Univariate risk factor table for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisrisktable = otis_risk_table

@@ -43,3 +43,7 @@ def ghosal_wn_lin_bvm(L_coefs=(0.6, 0.8), n=500, prior_var=50.0,
 
 def cheatsheet():
     return "gh_c12_10: White-noise linear-functional BvM"
+
+
+# compact alias per ledger/NAMING.md
+ghosalwnlinbvm = ghosal_wn_lin_bvm

@@ -71,3 +71,7 @@ def gibbons_kw_ties(groups):
 
 def cheatsheet():
     return "gb1041t: tie correction divides by < 1, so H only goes UP"
+
+
+# compact alias per ledger/NAMING.md
+gibbonskwties = gibbons_kw_ties

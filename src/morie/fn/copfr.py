@@ -89,3 +89,7 @@ def copula_frailty(time1, event1, time2, event2, family="clayton", theta=None):
 
 def cheatsheet():
     return "copfr: S(t1,t2) = C(S1, S2), family choice sets WHERE the association acts"
+
+
+# compact alias per ledger/NAMING.md
+copulafrailty = copula_frailty

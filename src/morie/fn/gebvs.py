@@ -190,3 +190,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`genomic_ebv`.
 gebv_selection = genomic_ebv
+
+
+# compact alias per ledger/NAMING.md
+gebvselection = gebv_selection
+
+
+# compact alias per ledger/NAMING.md
+genomicebv = genomic_ebv

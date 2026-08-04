@@ -40,3 +40,7 @@ def atom_pair_fp(smiles, n_bits, max_dist):
 
 def cheatsheet():
     return "atmpair: Atom-pair fingerprint"
+
+
+# compact alias per ledger/NAMING.md
+atompairfp = atom_pair_fp

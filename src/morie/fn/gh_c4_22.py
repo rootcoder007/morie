@@ -37,3 +37,7 @@ def ghosal_constr_dp(control_weights, base_masses_by_set, seed=42):
 
 def cheatsheet():
     return "gh_c4_22: Constrained Dirichlet process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalconstrdp = ghosal_constr_dp

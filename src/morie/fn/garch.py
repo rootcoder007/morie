@@ -73,3 +73,7 @@ garch = garch_fit
 
 def cheatsheet() -> str:
     return "garch_fit({}) -> GARCH(1,1) volatility model."
+
+
+# compact alias per ledger/NAMING.md
+garchfit = garch_fit

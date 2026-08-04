@@ -46,3 +46,7 @@ npowr = noise_power
 
 def cheatsheet() -> str:
     return "noise_power({}) -> Noise power estimation."
+
+
+# compact alias per ledger/NAMING.md
+noisepower = noise_power

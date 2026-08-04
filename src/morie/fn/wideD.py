@@ -40,3 +40,7 @@ def wide_and_deep(X_wide, X_deep, y):
 
 def cheatsheet():
     return "wideD: Wide & Deep"
+
+
+# compact alias per ledger/NAMING.md
+wideanddeep = wide_and_deep

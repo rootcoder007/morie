@@ -108,3 +108,7 @@ def mi_strict(
 
 def cheatsheet() -> str:
     return "mi_strict({}) -> Strict invariance: constrain loadings + intercepts + residua"
+
+
+# compact alias per ledger/NAMING.md
+mistrict = mi_strict

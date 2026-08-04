@@ -74,3 +74,7 @@ def gibbons_wsrt_ci(x, alpha, cdf=None):
 
 def cheatsheet():
     return "gb5715: Walsh-average confidence interval for median from Wilcoxon signed-rank test"
+
+
+# compact alias per ledger/NAMING.md
+gibbonswsrtci = gibbons_wsrt_ci

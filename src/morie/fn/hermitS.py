@@ -38,3 +38,7 @@ def hermite_basis(x, K):
 
 def cheatsheet():
     return "hermitS: Hermite polynomial basis"
+
+
+# compact alias per ledger/NAMING.md
+hermitebasis = hermite_basis

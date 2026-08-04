@@ -72,3 +72,7 @@ sgedg = edge_correction
 
 def cheatsheet() -> str:
     return "edge_correction({}) -> Edge correction weights for point patterns."
+
+
+# compact alias per ledger/NAMING.md
+edgecorrection = edge_correction

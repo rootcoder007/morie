@@ -50,3 +50,7 @@ mtobac = mto_bac_analysis
 
 def cheatsheet() -> str:
     return "mto_bac_analysis({}) -> BAC distribution in impaired driving."
+
+
+# compact alias per ledger/NAMING.md
+mtobacanalysis = mto_bac_analysis

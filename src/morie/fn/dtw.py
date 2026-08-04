@@ -42,3 +42,7 @@ dtw = dtw_distance
 
 def cheatsheet() -> str:
     return "dtw_distance({}) -> Dynamic time warping distance."
+
+
+# compact alias per ledger/NAMING.md
+dtwdistance = dtw_distance

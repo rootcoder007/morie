@@ -29,3 +29,7 @@ kull = kulldorff_scan
 
 def cheatsheet() -> str:
     return "kulldorff_scan({}) -> Kulldorff spatial scan statistic"
+
+
+# compact alias per ledger/NAMING.md
+kulldorffscan = kulldorff_scan

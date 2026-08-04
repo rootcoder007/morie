@@ -128,3 +128,7 @@ def geron_he_init(fan_in, fan_out=None, seed=0):
 
 def cheatsheet():
     return "grhei: W ~ N(0, 2/fan_in); the 2 compensates for ReLU killing half the signal"
+
+
+# compact alias per ledger/NAMING.md
+geronheinit = geron_he_init

@@ -63,3 +63,7 @@ def ghosal_crf_def(n_per_rest=(60, 60), alpha=2.0, gamma=2.0,
 
 def cheatsheet():
     return "gh_c14_4: Chinese restaurant franchise"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcrfdef = ghosal_crf_def

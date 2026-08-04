@@ -166,3 +166,7 @@ def geron_transformer(X, n_heads=2, d_model=None, n_layers=2, d_ff=None, seed=0,
 
 def cheatsheet():
     return "hmtfm: Transformer architecture (Vaswani et al. 2017)"
+
+
+# compact alias per ledger/NAMING.md
+encoderparams = encoder_params

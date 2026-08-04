@@ -45,3 +45,7 @@ envdt = envelope_detect
 
 def cheatsheet() -> str:
     return "envelope_detect({}) -> Signal envelope via rectification and lowpass."
+
+
+# compact alias per ledger/NAMING.md
+envelopedetect = envelope_detect

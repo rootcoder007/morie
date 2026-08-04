@@ -81,3 +81,7 @@ kpca = kernel_pca
 
 def cheatsheet() -> str:
     return "kernel_pca({}) -> Kernel PCA (RBF/poly/linear)."
+
+
+# compact alias per ledger/NAMING.md
+kernelpca = kernel_pca

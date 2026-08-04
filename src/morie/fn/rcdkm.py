@@ -81,3 +81,7 @@ rcdkm = recidivism_km
 
 def cheatsheet() -> str:
     return "recidivism_km({}) -> Kaplan-Meier survival curve for recidivism."
+
+
+# compact alias per ledger/NAMING.md
+recidivismkm = recidivism_km

@@ -27,3 +27,7 @@ def evt_gev_loglik(x, mu, sigma, xi):
 
 def cheatsheet():
     return "evgevl: Log-likelihood of a GEV sample"
+
+
+# compact alias per ledger/NAMING.md
+evtgevloglik = evt_gev_loglik

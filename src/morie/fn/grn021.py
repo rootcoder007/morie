@@ -94,3 +94,7 @@ def geron_ch4_softmax_function(s, k, K=None):
 
 def cheatsheet():
     return "grn021: softmax p_k = exp(s_k)/sum_j exp(s_j); max-shifted for stability, shift-invariant"
+
+
+# compact alias per ledger/NAMING.md
+softmaxvector = softmax_vector

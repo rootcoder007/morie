@@ -69,3 +69,7 @@ bfmi = bayesian_fmi
 
 def cheatsheet() -> str:
     return "bayesian_fmi(energy) -> Bayesian Fraction of Missing Information."
+
+
+# compact alias per ledger/NAMING.md
+bayesianfmi = bayesian_fmi

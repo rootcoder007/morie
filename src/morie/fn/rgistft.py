@@ -43,3 +43,7 @@ def rangayyan_istft(stft, window, hop):
 
 def cheatsheet():
     return "rgistft: Inverse STFT signal reconstruction from spectrogram"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanistft = rangayyan_istft

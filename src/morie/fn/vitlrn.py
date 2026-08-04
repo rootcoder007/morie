@@ -40,3 +40,7 @@ def vit_layer_norm(x, gamma, beta):
 
 def cheatsheet():
     return "vitlrn: ViT pre-LayerNorm"
+
+
+# compact alias per ledger/NAMING.md
+vitlayernorm = vit_layer_norm

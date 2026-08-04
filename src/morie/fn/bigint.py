@@ -185,3 +185,27 @@ def cheatsheet():
         "bigint: exact integer arithmetic and a precision-loss flag, paired "
         "with a from-scratch base-10^6 implementation on the R side"
     )
+
+
+# compact alias per ledger/NAMING.md
+bigbinomial = big_binomial
+
+
+# compact alias per ledger/NAMING.md
+bigdigits = big_digits
+
+
+# compact alias per ledger/NAMING.md
+bigfactorial = big_factorial
+
+
+# compact alias per ledger/NAMING.md
+bigpow = big_pow
+
+
+# compact alias per ledger/NAMING.md
+exactorflag = exact_or_flag
+
+
+# compact alias per ledger/NAMING.md
+fitsdouble = fits_double

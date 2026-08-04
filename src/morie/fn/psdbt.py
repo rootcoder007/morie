@@ -57,3 +57,7 @@ psdbt = bartlett_psd
 
 def cheatsheet() -> str:
     return "bartlett_psd({}) -> Bartlett method PSD estimation."
+
+
+# compact alias per ledger/NAMING.md
+bartlettpsd = bartlett_psd

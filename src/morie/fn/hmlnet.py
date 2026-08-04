@@ -181,3 +181,7 @@ def geron_lenet5(n_classes=10, input_size=32, in_channels=1):
 
 def cheatsheet():
     return "hmlnet: LeNet-5 resolved against a 32x32 input -- per-layer shapes and 61,706 parameters"
+
+
+# compact alias per ledger/NAMING.md
+geronlenet5 = geron_lenet5

@@ -100,3 +100,7 @@ def bnp_density_pl(y, grid=None, tree_depth=6, alpha=1.0, lo=None, hi=None):
 
 def cheatsheet():
     return "bndpl: alpha_m = alpha m^2 is what buys absolute continuity -- constant alpha_m is a discrete tree"
+
+
+# compact alias per ledger/NAMING.md
+bnpdensitypl = bnp_density_pl

@@ -83,3 +83,7 @@ claim = claim_frequency
 
 def cheatsheet() -> str:
     return "claim_frequency({}) -> Poisson claim frequency model."
+
+
+# compact alias per ledger/NAMING.md
+claimfrequency = claim_frequency

@@ -42,3 +42,7 @@ def sequential_mc(f, x0, temperatures):
 
 def cheatsheet():
     return "smcopt: Sequential Monte Carlo for optimization"
+
+
+# compact alias per ledger/NAMING.md
+sequentialmc = sequential_mc

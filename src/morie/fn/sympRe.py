@@ -36,3 +36,7 @@ def sympy_simplify(expr):
 
 def cheatsheet():
     return "sympRe: SymPy simplify expression"
+
+
+# compact alias per ledger/NAMING.md
+sympysimplify = sympy_simplify

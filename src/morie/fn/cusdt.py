@@ -57,3 +57,7 @@ cusdt = cusum_detect
 
 def cheatsheet() -> str:
     return "cusum_detect({}) -> CUSUM change-point detection."
+
+
+# compact alias per ledger/NAMING.md
+cusumdetect = cusum_detect

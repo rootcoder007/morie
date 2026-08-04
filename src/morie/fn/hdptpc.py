@@ -40,3 +40,7 @@ def hdp_topic_model(docs, gamma, alpha):
 
 def cheatsheet():
     return "hdptpc: HDP topic model (nonparametric LDA)"
+
+
+# compact alias per ledger/NAMING.md
+hdptopicmodel = hdp_topic_model

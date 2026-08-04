@@ -123,3 +123,7 @@ bnut = nuts_sampler
 
 def cheatsheet() -> str:
     return "nuts_sampler({}) -> No-U-Turn sampler (simplified NUTS)."
+
+
+# compact alias per ledger/NAMING.md
+nutssampler = nuts_sampler

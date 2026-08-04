@@ -346,3 +346,15 @@ def cheatsheet():
         "cbnrt: treatment effects adjusting for text, via a native TF-IDF "
         "and truncated SVD representation feeding an AIPW estimator"
     )
+
+
+# compact alias per ledger/NAMING.md
+causalberttext = causalbert_text
+
+
+# compact alias per ledger/NAMING.md
+textembedding = text_embedding
+
+
+# compact alias per ledger/NAMING.md
+tfidfmatrix = tfidf_matrix

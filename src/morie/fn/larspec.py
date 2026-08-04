@@ -94,3 +94,7 @@ def lars_optimizer(g, w, lr=0.1, mu=0.9, wd=0.0, eta=0.001, eps=1e-8, state=None
 
 def cheatsheet():
     return "larspec: LARS -- per-layer trust ratio eta*||w||/||g||; step scales with the weight norm"
+
+
+# compact alias per ledger/NAMING.md
+larsoptimizer = lars_optimizer

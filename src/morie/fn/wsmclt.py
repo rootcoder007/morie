@@ -66,3 +66,7 @@ def wasserman_clt(data):
 
 def cheatsheet():
     return "wsmclt: z = sqrt(n)(X_bar - mu0)/s with mu0 = 0; ingredients in payload"
+
+
+# compact alias per ledger/NAMING.md
+wassermanclt = wasserman_clt

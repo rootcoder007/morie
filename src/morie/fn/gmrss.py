@@ -71,3 +71,7 @@ def gmres_solve(
 
 
 gmrss = gmres_solve
+
+
+# compact alias per ledger/NAMING.md
+gmressolve = gmres_solve

@@ -42,3 +42,7 @@ def tmle_subgroup(y, D, X, subgroup):
 
 def cheatsheet():
     return "tmlsbg: TMLE for subgroup CATE"
+
+
+# compact alias per ledger/NAMING.md
+tmlesubgroup = tmle_subgroup

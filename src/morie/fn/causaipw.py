@@ -116,3 +116,7 @@ def causal_aipw(y, T, ps, m1, m0, trim=0.01):
 
 def cheatsheet():
     return "causaipw: right propensity OR right outcome model suffices -- both wrong and it fails"
+
+
+# compact alias per ledger/NAMING.md
+causalaipw = causal_aipw

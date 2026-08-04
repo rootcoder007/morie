@@ -30,3 +30,7 @@ ok_m = ok_matrix
 
 def cheatsheet() -> str:
     return "ok_matrix({}) -> Ordinary kriging matrix system"
+
+
+# compact alias per ledger/NAMING.md
+okmatrix = ok_matrix

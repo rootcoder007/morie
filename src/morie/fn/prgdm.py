@@ -73,3 +73,7 @@ prgdm = program_dml
 
 def cheatsheet() -> str:
     return "program_dml({}) -> DML for program causal effect."
+
+
+# compact alias per ledger/NAMING.md
+programdml = program_dml

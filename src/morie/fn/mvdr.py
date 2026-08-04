@@ -59,3 +59,7 @@ mvdr = mvdr_spectrum_fn
 
 def cheatsheet() -> str:
     return "mvdr_spectrum_fn({}) -> Minimum Variance Distortionless Response (Capon) spectral es"
+
+
+# compact alias per ledger/NAMING.md
+mvdrspectrumfn = mvdr_spectrum_fn

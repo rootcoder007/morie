@@ -98,3 +98,7 @@ def esl_perceptron(X, y, eta=1.0, max_epoch=1000):
 
 def cheatsheet():
     return "eslprc: update on misclassification; cycles forever if not separable"
+
+
+# compact alias per ledger/NAMING.md
+eslperceptron = esl_perceptron

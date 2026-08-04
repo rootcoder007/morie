@@ -163,3 +163,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`knn_entropy`.
 entropy_knn = knn_entropy
+
+
+# compact alias per ledger/NAMING.md
+entropyknn = entropy_knn
+
+
+# compact alias per ledger/NAMING.md
+knnentropy = knn_entropy

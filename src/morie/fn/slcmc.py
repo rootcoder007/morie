@@ -40,3 +40,7 @@ def slice_sampler(log_p, x0, width):
 
 def cheatsheet():
     return "slcmc: Slice sampling"
+
+
+# compact alias per ledger/NAMING.md
+slicesampler = slice_sampler

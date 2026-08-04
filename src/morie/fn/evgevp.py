@@ -30,3 +30,7 @@ def evt_gev_pdf(x, mu, sigma, xi):
 
 def cheatsheet():
     return "evgevp: GEV distribution density"
+
+
+# compact alias per ledger/NAMING.md
+evtgevpdf = evt_gev_pdf

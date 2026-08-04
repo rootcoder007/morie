@@ -109,3 +109,7 @@ def spline_weights(A, H, knots=None, trunc=0.01):
 
 def cheatsheet():
     return "spwgts: IP weights from natural-cubic-spline logistic propensity"
+
+
+# compact alias per ledger/NAMING.md
+splineweights = spline_weights

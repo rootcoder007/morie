@@ -38,3 +38,7 @@ def torus_link(p: int = 2, q: int = 3) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_link(p, q) -> linking number of (p,q)-torus link"
+
+
+# compact alias per ledger/NAMING.md
+toruslink = torus_link

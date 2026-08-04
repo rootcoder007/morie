@@ -50,3 +50,7 @@ def joseph_nhits(x, blocks, expressivity, horizon):
 
 def cheatsheet():
     return "jonhts: N-HiTS: Neural Hierarchical Interpolation for Time Series forecasting"
+
+
+# compact alias per ledger/NAMING.md
+josephnhits = joseph_nhits

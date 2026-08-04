@@ -61,3 +61,7 @@ def gibbons_are_def(efficacy_T, efficacy_T_star, n=None):
 
 def cheatsheet():
     return "gb1321: ARE = squared efficacy ratio = limiting sample-size ratio"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsaredef = gibbons_are_def

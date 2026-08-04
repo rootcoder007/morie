@@ -102,3 +102,7 @@ def boyd_slater(f, affine=None, h=None, tol=1e-12):
 
 def cheatsheet():
     return "cvxslt: convexity alone does NOT give strong duality; affine constraints need only hold"
+
+
+# compact alias per ledger/NAMING.md
+boydslater = boyd_slater

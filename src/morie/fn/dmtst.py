@@ -71,3 +71,7 @@ dmtst = dm_test
 
 def cheatsheet() -> str:
     return "dm_test({}) -> Diebold-Mariano forecast comparison test."
+
+
+# compact alias per ledger/NAMING.md
+dmtest = dm_test

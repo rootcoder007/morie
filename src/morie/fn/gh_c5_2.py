@@ -44,3 +44,7 @@ def ghosal_dpm_marg(data, alpha=1.0, tau=1.0, sigma=0.5):
 
 def cheatsheet():
     return "gh_c5_2: DPM marginal likelihood via the urn"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpmmarg = ghosal_dpm_marg

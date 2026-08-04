@@ -155,3 +155,7 @@ def cheatsheet():
         "nwest: Bartlett-kernel HAC covariance with the automatic lag rule "
         "and the PSD guarantee the weights exist for"
     )
+
+
+# compact alias per ledger/NAMING.md
+neweywesthac = newey_west_hac

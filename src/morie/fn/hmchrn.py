@@ -221,3 +221,7 @@ def geron_char_rnn(text, hidden=8, epochs=50, lr=0.1, seed=0, generate=0):
 
 def cheatsheet():
     return "hmchrn: Character-level RNN language model"
+
+
+# compact alias per ledger/NAMING.md
+geroncharrnn = geron_char_rnn

@@ -29,3 +29,7 @@ grid = grid_resample
 
 def cheatsheet() -> str:
     return "grid_resample({}) -> Grid resampling"
+
+
+# compact alias per ledger/NAMING.md
+gridresample = grid_resample

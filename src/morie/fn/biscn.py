@@ -81,3 +81,7 @@ biscn = bisection_root
 
 def cheatsheet() -> str:
     return "bisection_root({}) -> Bisection method for root finding."
+
+
+# compact alias per ledger/NAMING.md
+bisectionroot = bisection_root

@@ -99,3 +99,7 @@ rsrve = chain_ladder
 
 def cheatsheet() -> str:
     return "chain_ladder({}) -> Chain-ladder loss reserving."
+
+
+# compact alias per ledger/NAMING.md
+chainladder = chain_ladder

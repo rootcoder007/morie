@@ -41,3 +41,7 @@ def pc_gxe_reduction(GxE_matrix, k):
 
 def cheatsheet():
     return "pcgxe: Principal component based GxE dimension reduction"
+
+
+# compact alias per ledger/NAMING.md
+pcgxereduction = pc_gxe_reduction

@@ -29,3 +29,7 @@ tren = trend_temporal
 
 def cheatsheet() -> str:
     return "trend_temporal({}) -> Temporal trend estimation"
+
+
+# compact alias per ledger/NAMING.md
+trendtemporal = trend_temporal

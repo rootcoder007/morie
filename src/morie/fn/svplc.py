@@ -29,3 +29,7 @@ plot = plott_condition
 
 def cheatsheet() -> str:
     return "plott_condition({}) -> Plott radial symmetry condition check"
+
+
+# compact alias per ledger/NAMING.md
+plottcondition = plott_condition

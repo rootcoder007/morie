@@ -44,3 +44,7 @@ def hiatus_model(S, I1, I2, R, cross_immunity):
 
 def cheatsheet():
     return "hiatus: Two-strain hiatus epidemic"
+
+
+# compact alias per ledger/NAMING.md
+hiatusmodel = hiatus_model

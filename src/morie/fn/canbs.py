@@ -51,3 +51,7 @@ canbs = canberra_dist
 
 def cheatsheet() -> str:
     return "canberra_dist({}) -> Canberra distance."
+
+
+# compact alias per ledger/NAMING.md
+canberradist = canberra_dist

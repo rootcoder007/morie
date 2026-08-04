@@ -34,3 +34,7 @@ rbfnn = rbfnn_fn
 
 def cheatsheet() -> str:
     return "rbfnn_fn({}) -> Radial Basis Function network."
+
+
+# compact alias per ledger/NAMING.md
+rbfnnfn = rbfnn_fn

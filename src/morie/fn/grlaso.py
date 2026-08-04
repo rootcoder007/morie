@@ -104,3 +104,7 @@ def geron_lasso_cost(X, y, theta, alpha, penalize_intercept=False):
 
 def cheatsheet():
     return "grlaso: J = MSE + alpha*sum_{i>=1}|theta_i| -- Geron Eq 4-10"
+
+
+# compact alias per ledger/NAMING.md
+geronlassocost = geron_lasso_cost

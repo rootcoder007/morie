@@ -63,3 +63,7 @@ short = vol_age
 
 def cheatsheet() -> str:
     return "vol_age({}) -> Volatility by age group."
+
+
+# compact alias per ledger/NAMING.md
+volage = vol_age

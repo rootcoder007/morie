@@ -40,3 +40,7 @@ def dependent_dp(x_grid, alpha, kernel):
 
 def cheatsheet():
     return "ddpest: Dependent Dirichlet process"
+
+
+# compact alias per ledger/NAMING.md
+dependentdp = dependent_dp

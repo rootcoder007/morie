@@ -30,3 +30,7 @@ lweke = lwe_key_exchange
 
 def cheatsheet() -> str:
     return "lwe_key_exchange({}) -> LWE-based Diffie-Hellman key exchange."
+
+
+# compact alias per ledger/NAMING.md
+lwekeyexchange = lwe_key_exchange

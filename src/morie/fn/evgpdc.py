@@ -28,3 +28,7 @@ def evt_gpd_cdf(y, sigma, xi):
 
 def cheatsheet():
     return "evgpdc: GPD CDF"
+
+
+# compact alias per ledger/NAMING.md
+evtgpdcdf = evt_gpd_cdf

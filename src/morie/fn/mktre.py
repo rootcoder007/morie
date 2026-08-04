@@ -35,3 +35,7 @@ mktre = merkle_tree
 
 def cheatsheet() -> str:
     return "merkle_tree({}) -> Merkle tree construction and verification."
+
+
+# compact alias per ledger/NAMING.md
+merkletree = merkle_tree

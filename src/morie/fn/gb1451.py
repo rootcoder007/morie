@@ -72,3 +72,7 @@ def gibbons_mcnemar(table, cdf=None):
 
 def cheatsheet():
     return "gb1451: McNemar test for symmetry of paired binary data"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsmcnemar = gibbons_mcnemar

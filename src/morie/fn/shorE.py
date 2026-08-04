@@ -38,3 +38,7 @@ def shor_factoring(N):
 
 def cheatsheet():
     return "shorE: Shor's quantum factoring (period-finding)"
+
+
+# compact alias per ledger/NAMING.md
+shorfactoring = shor_factoring

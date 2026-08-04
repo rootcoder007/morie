@@ -37,3 +37,7 @@ def ghosal_ksbp_def(x=(0.2, 0.8), n_terms=30, seed=42):
 
 def cheatsheet():
     return "gh_c14_18: Kernel stick-breaking process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalksbpdef = ghosal_ksbp_def

@@ -66,3 +66,7 @@ thd = thd_compute
 
 def cheatsheet() -> str:
     return "thd_compute({}) -> Total harmonic distortion."
+
+
+# compact alias per ledger/NAMING.md
+thdcompute = thd_compute

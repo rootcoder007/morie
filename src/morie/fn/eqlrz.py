@@ -49,3 +49,7 @@ eqlrz = lorenz_curve
 
 def cheatsheet() -> str:
     return "lorenz_curve({}) -> Lorenz curve data."
+
+
+# compact alias per ledger/NAMING.md
+lorenzcurve = lorenz_curve

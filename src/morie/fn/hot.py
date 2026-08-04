@@ -40,3 +40,7 @@ def hot_sax(x, window, alphabet):
 
 def cheatsheet():
     return "hot: HOT SAX discord"
+
+
+# compact alias per ledger/NAMING.md
+hotsax = hot_sax

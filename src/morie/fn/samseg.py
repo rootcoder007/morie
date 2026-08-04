@@ -40,3 +40,7 @@ def sam_segment(image, prompts):
 
 def cheatsheet():
     return "samseg: Segment Anything Model -- promptable segmentation"
+
+
+# compact alias per ledger/NAMING.md
+samsegment = sam_segment

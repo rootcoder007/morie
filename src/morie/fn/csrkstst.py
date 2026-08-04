@@ -181,3 +181,7 @@ def kstest_csr(coords, window=None, cdf=None, nsim=199, seed=None):
 
 def cheatsheet():
     return "csrkstst: KS test of nearest-neighbour distance vs complete spatial randomness"
+
+
+# compact alias per ledger/NAMING.md
+kstestcsr = kstest_csr

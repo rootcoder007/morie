@@ -26,3 +26,7 @@ or2d = or_to_d
 
 def cheatsheet() -> str:
     return "or_to_d({}) -> Convert odds ratio to Cohen's d (Hasselblad and Hedges, 1995"
+
+
+# compact alias per ledger/NAMING.md
+ortod = or_to_d

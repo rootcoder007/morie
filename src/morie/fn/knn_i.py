@@ -124,3 +124,7 @@ knn_i = knn_impute
 
 def cheatsheet() -> str:
     return "knn_impute({}) -> KNN imputation for missing data."
+
+
+# compact alias per ledger/NAMING.md
+knnimpute = knn_impute

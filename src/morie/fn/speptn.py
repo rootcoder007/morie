@@ -38,3 +38,7 @@ def spatial_pca(X, W):
 
 def cheatsheet():
     return "speptn: Spatial PCA / MULTISPATI"
+
+
+# compact alias per ledger/NAMING.md
+spatialpca = spatial_pca

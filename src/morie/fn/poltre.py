@@ -178,3 +178,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`polya_tree_density`.
 polya_tree_prior = polya_tree_density
+
+
+# compact alias per ledger/NAMING.md
+polyatreeprior = polya_tree_prior

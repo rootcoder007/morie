@@ -112,3 +112,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> sign_test_power([1]*20, mu0=0, p_alt=0.7, alpha=0.05)
 # n=20, p_alt=0.7: power ≈ 0.42 (exact via Binomial PMF)
+
+
+# compact alias per ledger/NAMING.md
+signtestpower = sign_test_power

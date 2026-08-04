@@ -30,3 +30,7 @@ oc_c = oc_cutline
 
 def cheatsheet() -> str:
     return "oc_cutline({}) -> Optimal Classification cutting line"
+
+
+# compact alias per ledger/NAMING.md
+occutline = oc_cutline

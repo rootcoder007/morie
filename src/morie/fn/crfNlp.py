@@ -40,3 +40,7 @@ def crf_sequence(X, y):
 
 def cheatsheet():
     return "crfNlp: Linear-chain CRF for sequence labeling"
+
+
+# compact alias per ledger/NAMING.md
+crfsequence = crf_sequence

@@ -34,3 +34,7 @@ wnbrt = bartlett_window
 
 def cheatsheet() -> str:
     return "bartlett_window({}) -> Bartlett (triangular) window."
+
+
+# compact alias per ledger/NAMING.md
+bartlettwindow = bartlett_window

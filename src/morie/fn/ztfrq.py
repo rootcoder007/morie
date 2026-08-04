@@ -48,3 +48,7 @@ ztfrq = freq_response_at
 
 def cheatsheet() -> str:
     return "freq_response_at({}) -> Frequency response at specific frequencies."
+
+
+# compact alias per ledger/NAMING.md
+freqresponseat = freq_response_at

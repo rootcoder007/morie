@@ -152,3 +152,11 @@ def geron_one_vs_rest(X, y, base_fit=None, eta=0.5, n_iter=400):
 
 def cheatsheet():
     return "grovr: K classifiers, each class vs the rest, argmax of scores; K models, each on all m rows"
+
+
+# compact alias per ledger/NAMING.md
+gerononevsrest = geron_one_vs_rest
+
+
+# compact alias per ledger/NAMING.md
+trainlogreg = train_logreg

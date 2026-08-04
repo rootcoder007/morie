@@ -40,3 +40,7 @@ def sam_mask_decoder(img_emb, prompt_emb):
 
 def cheatsheet():
     return "samdec: SAM mask decoder (transformer + upsample)"
+
+
+# compact alias per ledger/NAMING.md
+sammaskdecoder = sam_mask_decoder

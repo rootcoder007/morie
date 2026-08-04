@@ -44,3 +44,7 @@ def tmle_federated(y, D, X, site):
 
 def cheatsheet():
     return "tmlfed: Federated TMLE over decentralized data"
+
+
+# compact alias per ledger/NAMING.md
+tmlefederated = tmle_federated

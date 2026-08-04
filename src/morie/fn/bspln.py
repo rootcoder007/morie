@@ -84,3 +84,7 @@ bspln = bayesian_spline
 
 def cheatsheet() -> str:
     return "bayesian_spline({}) -> Bayesian spline regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianspline = bayesian_spline

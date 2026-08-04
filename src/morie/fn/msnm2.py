@@ -30,3 +30,7 @@ nonm = nonmetric_2d
 
 def cheatsheet() -> str:
     return "nonmetric_2d({}) -> Nonmetric MDS 2D"
+
+
+# compact alias per ledger/NAMING.md
+nonmetric2d = nonmetric_2d

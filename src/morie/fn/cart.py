@@ -114,3 +114,7 @@ cart = decision_tree
 
 def cheatsheet() -> str:
     return "_best_split({}) -> CART decision tree (pure numpy, recursive splitting)."
+
+
+# compact alias per ledger/NAMING.md
+decisiontree = decision_tree

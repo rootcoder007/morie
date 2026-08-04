@@ -40,3 +40,7 @@ def finite_mixture(y, K):
 
 def cheatsheet():
     return "bayfin: Finite mixture model (Bayesian K-means)"
+
+
+# compact alias per ledger/NAMING.md
+finitemixture = finite_mixture

@@ -185,3 +185,7 @@ def boyd_socp(f, A, b, c, d, x0=None):
 
 def cheatsheet():
     return "cvxsoc: LP/QP inside, SDP outside; ellipsoidal-uncertainty robust LPs land here EXACTLY, not by relaxation"
+
+
+# compact alias per ledger/NAMING.md
+boydsocp = boyd_socp

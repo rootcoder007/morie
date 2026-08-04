@@ -29,3 +29,7 @@ lamb = lambert_proj
 
 def cheatsheet() -> str:
     return "lambert_proj({}) -> Lambert conformal conic projection"
+
+
+# compact alias per ledger/NAMING.md
+lambertproj = lambert_proj

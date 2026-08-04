@@ -54,3 +54,7 @@ polyc = polychoric_corr
 
 def cheatsheet() -> str:
     return "polychoric_corr({}) -> Polychoric correlation (two-step approximation)."
+
+
+# compact alias per ledger/NAMING.md
+polychoriccorr = polychoric_corr

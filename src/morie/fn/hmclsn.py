@@ -195,3 +195,7 @@ def geron_classification_mlp(X, y, hidden_sizes=(4,), epochs=100, lr=0.1, seed=0
 
 def cheatsheet():
     return "hmclsn: Classification MLP: softmax output and cross-entropy loss"
+
+
+# compact alias per ledger/NAMING.md
+mlpinit = mlp_init

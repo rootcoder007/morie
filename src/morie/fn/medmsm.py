@@ -42,3 +42,7 @@ def msm_mediation(y, A, M, H):
 
 def cheatsheet():
     return "medmsm: MSM with mediator"
+
+
+# compact alias per ledger/NAMING.md
+msmmediation = msm_mediation

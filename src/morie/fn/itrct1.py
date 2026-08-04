@@ -44,3 +44,7 @@ def interaction_did(y, D, V, X):
 
 def cheatsheet():
     return "itrct1: DR-DiD with treatment × covariate interaction"
+
+
+# compact alias per ledger/NAMING.md
+interactiondid = interaction_did

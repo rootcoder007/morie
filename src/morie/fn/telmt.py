@@ -36,3 +36,7 @@ def telemetry_drift(error_stream):
 
 def cheatsheet():
     return "telmt: Concept-drift detection (DDM)"
+
+
+# compact alias per ledger/NAMING.md
+telemetrydrift = telemetry_drift

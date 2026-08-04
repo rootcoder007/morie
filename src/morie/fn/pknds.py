@@ -68,3 +68,7 @@ pknds = partial_kendall
 
 def cheatsheet() -> str:
     return "partial_kendall(x, y, z) -> Partial Kendall's tau."
+
+
+# compact alias per ledger/NAMING.md
+partialkendall = partial_kendall

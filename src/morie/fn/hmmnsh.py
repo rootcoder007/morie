@@ -163,3 +163,7 @@ def geron_mean_shift(X, bandwidth, kernel="gaussian", max_iter=300, tol=1e-6, me
 
 def cheatsheet():
     return "hmmnsh: mean shift -- kernel-weighted mean updates to a density mode; bandwidth sets k"
+
+
+# compact alias per ledger/NAMING.md
+geronmeanshift = geron_mean_shift

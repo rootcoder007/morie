@@ -40,3 +40,7 @@ def bayes_lasso(y, M, lam):
 
 def cheatsheet():
     return "bayslo: Bayesian LASSO for genomic prediction"
+
+
+# compact alias per ledger/NAMING.md
+bayeslasso = bayes_lasso

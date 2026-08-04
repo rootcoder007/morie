@@ -36,3 +36,7 @@ def ibs_matrix(genotypes):
 
 def cheatsheet():
     return "ibsmtx: Identity-by-state matrix"
+
+
+# compact alias per ledger/NAMING.md
+ibsmatrix = ibs_matrix

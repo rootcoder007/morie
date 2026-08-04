@@ -56,3 +56,7 @@ def score_factor(
 
 def cheatsheet() -> str:
     return "score_factor({}) -> Factor scores (regression method)."
+
+
+# compact alias per ledger/NAMING.md
+scorefactor = score_factor

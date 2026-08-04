@@ -79,3 +79,7 @@ def wasserman_dkw_cb(data, alpha):
 
 def cheatsheet():
     return "wsmcb: eps = sqrt(log(2/alpha)/(2n)); band clipped to [0,1]"
+
+
+# compact alias per ledger/NAMING.md
+wassermandkwcb = wasserman_dkw_cb

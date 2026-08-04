@@ -79,3 +79,7 @@ def geron_sigmoid(t):
 
 def cheatsheet():
     return "grsig: sigma(t) = 1/(1+exp(-t)), stable two-branch form; derivative sigma(1-sigma)"
+
+
+# compact alias per ledger/NAMING.md
+geronsigmoid = geron_sigmoid

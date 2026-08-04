@@ -31,3 +31,7 @@ def ghosal_ncrm_levy(f_vals, nu_masses, u_atoms):
 
 def cheatsheet():
     return "gh_c14_16: NCRM Laplace functional"
+
+
+# compact alias per ledger/NAMING.md
+ghosalncrmlevy = ghosal_ncrm_levy

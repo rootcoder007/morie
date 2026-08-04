@@ -25,3 +25,7 @@ def evt_gpd_sample(n, sigma, xi, seed=42):
 
 def cheatsheet():
     return "evgpds: Sample from a GPD"
+
+
+# compact alias per ledger/NAMING.md
+evtgpdsample = evt_gpd_sample

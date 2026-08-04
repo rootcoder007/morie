@@ -173,3 +173,7 @@ def geron_dalle(text, model, n_image_tokens=4, temperature=1.0, top_k=None, imag
 
 def cheatsheet():
     return "hmdale: DALL-E: text-to-image generation via discrete VAE + autoregressive transformer"
+
+
+# compact alias per ledger/NAMING.md
+gerondalle = geron_dalle

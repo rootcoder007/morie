@@ -44,3 +44,7 @@ def ma_peto_or(a, b, c, d):
 
 def cheatsheet():
     return "mapeto: Peto one-step odds ratio for sparse 2x2"
+
+
+# compact alias per ledger/NAMING.md
+mapetoor = ma_peto_or

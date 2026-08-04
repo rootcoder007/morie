@@ -70,3 +70,7 @@ casct = case_control_or
 
 def cheatsheet() -> str:
     return "case_control_or({}) -> Case-control odds ratio with Woolf CI."
+
+
+# compact alias per ledger/NAMING.md
+casecontrolor = case_control_or

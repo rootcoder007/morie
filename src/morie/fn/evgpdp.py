@@ -29,3 +29,7 @@ def evt_gpd_pdf(y, sigma, xi):
 
 def cheatsheet():
     return "evgpdp: GPD density above threshold"
+
+
+# compact alias per ledger/NAMING.md
+evtgpdpdf = evt_gpd_pdf

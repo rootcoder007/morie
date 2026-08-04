@@ -79,3 +79,7 @@ if __name__ == "__main__":
     r = svm_hinge_primal(X, y, C=1.0)
     print("intercept:", r.intercept, "weights:", r.weights)
     print("train accuracy:", r.train_accuracy)
+
+
+# compact alias per ledger/NAMING.md
+svmhingeprimal = svm_hinge_primal

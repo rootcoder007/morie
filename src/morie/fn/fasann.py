@@ -81,3 +81,7 @@ fasann = fast_ann
 
 def cheatsheet() -> str:
     return "fast_ann({}) -> Fast approximate nearest neighbor search."
+
+
+# compact alias per ledger/NAMING.md
+fastann = fast_ann

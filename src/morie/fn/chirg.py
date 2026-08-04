@@ -57,3 +57,7 @@ chirg = chirp_generate
 
 def cheatsheet() -> str:
     return "chirp_generate({}) -> Generate linear/quadratic chirp signal."
+
+
+# compact alias per ledger/NAMING.md
+chirpgenerate = chirp_generate

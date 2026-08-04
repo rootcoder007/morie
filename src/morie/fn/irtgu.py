@@ -67,3 +67,7 @@ guessing = irt_guessing
 
 def cheatsheet() -> str:
     return "irt_guessing({}) -> Pseudo-guessing parameter analysis for 3PL IRT."
+
+
+# compact alias per ledger/NAMING.md
+irtguessing = irt_guessing

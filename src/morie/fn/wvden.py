@@ -120,3 +120,7 @@ wvden = wavelet_denoise
 
 def cheatsheet() -> str:
     return "_daubechies_filter({}) -> Wavelet denoising with soft/hard thresholding."
+
+
+# compact alias per ledger/NAMING.md
+waveletdenoise = wavelet_denoise

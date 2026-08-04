@@ -37,3 +37,7 @@ def fauzi_ecdf(x):
 
 def cheatsheet():
     return "fzecdf: Empirical distribution function (EDF)"
+
+
+# compact alias per ledger/NAMING.md
+fauziecdf = fauzi_ecdf

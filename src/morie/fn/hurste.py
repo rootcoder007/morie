@@ -36,3 +36,7 @@ def hurst_exponent(y):
 
 def cheatsheet():
     return "hurste: Hurst exponent via R/S analysis"
+
+
+# compact alias per ledger/NAMING.md
+hurstexponent = hurst_exponent

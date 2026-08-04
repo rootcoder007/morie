@@ -42,3 +42,7 @@ def ols_matrix(x, y):
 
 def cheatsheet():
     return 'ca12e3: y = x beta + e [Weisburd et al. 2022, eq. 12.3]'
+
+
+# compact alias per ledger/NAMING.md
+olsmatrix = ols_matrix

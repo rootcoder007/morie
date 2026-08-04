@@ -107,3 +107,7 @@ def brr_variance(estimates, full_estimate=None, fay_k=0.0):
 
 def cheatsheet():
     return "brrvar: replicates the WHOLE procedure incl. weighting; the (1-k)^2 divisor is mandatory under Fay"
+
+
+# compact alias per ledger/NAMING.md
+brrvariance = brr_variance

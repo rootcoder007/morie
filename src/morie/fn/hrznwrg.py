@@ -76,3 +76,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_index_nw`.
 horowitz_nw_estimator_g = hrz_index_nw
+
+
+# compact alias per ledger/NAMING.md
+hrzindexnw = hrz_index_nw

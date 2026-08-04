@@ -44,3 +44,7 @@ def dino_v2_repr(x, student, teacher, tau):
 
 def cheatsheet():
     return "dinov2: DINOv2 self-supervised image representation"
+
+
+# compact alias per ledger/NAMING.md
+dinov2repr = dino_v2_repr

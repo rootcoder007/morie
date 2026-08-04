@@ -38,3 +38,7 @@ def huber_weight(y, k):
 
 def cheatsheet():
     return "huberw: Huber psi-weight function"
+
+
+# compact alias per ledger/NAMING.md
+huberweight = huber_weight

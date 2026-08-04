@@ -42,3 +42,7 @@ vari = vario_wave
 
 def cheatsheet() -> str:
     return "vario_wave({}) -> Wave (hole-effect) variogram"
+
+
+# compact alias per ledger/NAMING.md
+variowave = vario_wave

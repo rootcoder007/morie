@@ -156,3 +156,7 @@ gpopt = gp_optimize
 
 def cheatsheet() -> str:
     return "gp_optimize(objective, bounds) -> Gaussian process Bayesian optimization."
+
+
+# compact alias per ledger/NAMING.md
+gpoptimize = gp_optimize

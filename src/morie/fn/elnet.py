@@ -94,3 +94,7 @@ elnet = elastic_net
 
 def cheatsheet() -> str:
     return "_soft_threshold({}) -> Elastic net regression."
+
+
+# compact alias per ledger/NAMING.md
+elasticnet = elastic_net

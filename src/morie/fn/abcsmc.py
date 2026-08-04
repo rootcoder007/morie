@@ -42,3 +42,7 @@ def abc_smc_epi(model, summary_stats, priors, n_particles):
 
 def cheatsheet():
     return "abcsmc: ABC-SMC posterior for compartmental"
+
+
+# compact alias per ledger/NAMING.md
+abcsmcepi = abc_smc_epi

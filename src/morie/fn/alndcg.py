@@ -47,3 +47,7 @@ def alammar_ndcg_at_k(relevances, k):
 
 def cheatsheet():
     return "alndcg: DCG over ideal DCG, all-zero relevances refused"
+
+
+# compact alias per ledger/NAMING.md
+alammarndcgatk = alammar_ndcg_at_k

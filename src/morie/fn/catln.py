@@ -54,3 +54,7 @@ catln = catalan_number
 
 def cheatsheet() -> str:
     return "catalan_number({}) -> Catalan number computation."
+
+
+# compact alias per ledger/NAMING.md
+catalannumber = catalan_number

@@ -42,3 +42,7 @@ def gp_regression(X, y, X_star, kernel):
 
 def cheatsheet():
     return "gpregF: Gaussian process regression"
+
+
+# compact alias per ledger/NAMING.md
+gpregression = gp_regression

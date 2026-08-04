@@ -55,3 +55,7 @@ kfunc = ripley_k
 
 def cheatsheet() -> str:
     return "ripley_k({}) -> Ripley's K function for spatial point patterns."
+
+
+# compact alias per ledger/NAMING.md
+ripleyk = ripley_k

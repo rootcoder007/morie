@@ -206,3 +206,7 @@ def geron_a2c(env, actor, critic, epochs=100, lr=0.1, gamma=0.99, critic_lr=None
 
 def cheatsheet():
     return "hma2c: Advantage actor-critic (A2C)"
+
+
+# compact alias per ledger/NAMING.md
+gerona2c = geron_a2c

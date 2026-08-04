@@ -44,3 +44,7 @@ siucmp = siu_comparison
 
 def cheatsheet() -> str:
     return "siu_comparison({}) -> Cross-jurisdiction SIU comparison."
+
+
+# compact alias per ledger/NAMING.md
+siucomparison = siu_comparison

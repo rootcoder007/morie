@@ -68,3 +68,7 @@ def gibbons_clt(xbar=None, n=None, mu=0.0, sigma=1.0, x=None):
 
 def cheatsheet():
     return "gb_clt: the standardised mean; CLT is about the mean, not the data"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsclt = gibbons_clt

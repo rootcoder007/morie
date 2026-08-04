@@ -59,3 +59,7 @@ chisq = chi_square_test
 
 def cheatsheet() -> str:
     return "chi_square_test({}) -> Chi-square goodness-of-fit or independence test."
+
+
+# compact alias per ledger/NAMING.md
+chisquaretest = chi_square_test

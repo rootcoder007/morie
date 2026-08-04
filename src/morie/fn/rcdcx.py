@@ -108,3 +108,7 @@ rcdcx = recidivism_cox
 
 def cheatsheet() -> str:
     return "recidivism_cox({}) -> Cox proportional hazards for recidivism predictors."
+
+
+# compact alias per ledger/NAMING.md
+recidivismcox = recidivism_cox

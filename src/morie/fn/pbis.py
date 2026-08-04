@@ -46,3 +46,7 @@ pbis = point_biserial
 
 def cheatsheet() -> str:
     return "point_biserial({}) -> Point-biserial correlation."
+
+
+# compact alias per ledger/NAMING.md
+pointbiserial = point_biserial

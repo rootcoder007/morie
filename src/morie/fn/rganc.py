@@ -45,3 +45,7 @@ def rangayyan_anc(primary, reference, mu, order):
 
 def cheatsheet():
     return "rganc: Adaptive noise canceler (ANC) structure"
+
+
+# compact alias per ledger/NAMING.md
+rangayyananc = rangayyan_anc

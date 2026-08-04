@@ -55,3 +55,7 @@ def t_copula(u, v, rho, nu=4.0):
 
 def cheatsheet():
     return "copt: T_{nu,rho}(t^-1 u, t^-1 v); tau = (2/pi) arcsin rho, symmetric tails"
+
+
+# compact alias per ledger/NAMING.md
+tcopula = t_copula

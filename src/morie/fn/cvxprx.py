@@ -149,3 +149,7 @@ def _h_value(name, x, lo, hi):
 
 def cheatsheet():
     return 'cvxprx: prox of l1/l2/l2sq/nonneg/box in closed form; "l1" sparsifies, "l2" shrinks as a block'
+
+
+# compact alias per ledger/NAMING.md
+boydproximal = boyd_proximal

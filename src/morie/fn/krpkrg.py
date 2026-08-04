@@ -42,3 +42,7 @@ def poisson_kriging(coords, counts, population, variogram):
 
 def cheatsheet():
     return "krpkrg: Poisson kriging for rates"
+
+
+# compact alias per ledger/NAMING.md
+poissonkriging = poisson_kriging

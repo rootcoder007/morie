@@ -35,3 +35,7 @@ mds_ = mds_coords
 
 def cheatsheet() -> str:
     return "mds_coords({}) -> MDS coordinate extraction"
+
+
+# compact alias per ledger/NAMING.md
+mdscoords = mds_coords

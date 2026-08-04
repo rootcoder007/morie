@@ -90,3 +90,7 @@ def kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max=100.0, alpha=0.75):
 
 def cheatsheet():
     return "kmglv: sum f(X_ij)(w_i.w~_j + b_i + b~_j - log X_ij)^2"
+
+
+# compact alias per ledger/NAMING.md
+gloveweight = glove_weight

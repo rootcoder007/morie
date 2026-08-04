@@ -49,3 +49,7 @@ elbdm = elbow_mds_dim
 
 def cheatsheet() -> str:
     return "elbow_mds_dim({}) -> Elbow method for MDS dimensionality."
+
+
+# compact alias per ledger/NAMING.md
+elbowmdsdim = elbow_mds_dim

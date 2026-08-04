@@ -84,3 +84,7 @@ curei = cure_model
 
 def cheatsheet() -> str:
     return "cure_model({}) -> Mixture cure model."
+
+
+# compact alias per ledger/NAMING.md
+curemodel = cure_model

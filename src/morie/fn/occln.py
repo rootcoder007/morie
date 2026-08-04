@@ -38,3 +38,7 @@ occln = oc_cutting_line
 
 def cheatsheet() -> str:
     return "oc_cutting_line({}) -> OC cutting line equation."
+
+
+# compact alias per ledger/NAMING.md
+occuttingline = oc_cutting_line

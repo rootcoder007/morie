@@ -40,3 +40,7 @@ def weights_matrix(coords, method, k_or_threshold):
 
 def cheatsheet():
     return "wmtwgt: Spatial weights matrix construction"
+
+
+# compact alias per ledger/NAMING.md
+weightsmatrix = weights_matrix

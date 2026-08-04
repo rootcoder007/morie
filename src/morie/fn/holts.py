@@ -71,3 +71,7 @@ holts = holts_method
 
 def cheatsheet() -> str:
     return "holts_method({}) -> Holt's linear trend method."
+
+
+# compact alias per ledger/NAMING.md
+holtsmethod = holts_method

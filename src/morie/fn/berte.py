@@ -38,3 +38,7 @@ def bert_encoder(tokens, model):
 
 def cheatsheet():
     return "berte: BERT encoder forward pass"
+
+
+# compact alias per ledger/NAMING.md
+bertencoder = bert_encoder

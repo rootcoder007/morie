@@ -122,3 +122,7 @@ def esl_score_match(score, X, grad_score=None, eps=1e-5):
 
 def cheatsheet():
     return "eslsce: fits unnormalised models -- log Z cancels in grad_x, and the DATA score is never needed"
+
+
+# compact alias per ledger/NAMING.md
+eslscorematch = esl_score_match

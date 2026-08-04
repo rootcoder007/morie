@@ -32,3 +32,7 @@ d2nnt = d_to_nnt
 
 def cheatsheet() -> str:
     return "d_to_nnt({}) -> Convert Cohen's d to NNT (Kraemer and Kupfer, 2006)."
+
+
+# compact alias per ledger/NAMING.md
+dtonnt = d_to_nnt

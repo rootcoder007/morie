@@ -38,3 +38,7 @@ ameig = am_eigensolve
 
 def cheatsheet() -> str:
     return "am_eigensolve({}) -> A-M eigensolve for stimulus positions."
+
+
+# compact alias per ledger/NAMING.md
+ameigensolve = am_eigensolve

@@ -122,3 +122,7 @@ def aft_residuals(fit):
 
 def cheatsheet():
     return "aftres: Cox-Snell residuals are unit-exponential under ANY correct family -- one plot checks the lot"
+
+
+# compact alias per ledger/NAMING.md
+aftresiduals = aft_residuals

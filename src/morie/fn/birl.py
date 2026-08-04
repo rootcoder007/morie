@@ -38,3 +38,7 @@ def bayesian_irl(expert_trajs, prior):
 
 def cheatsheet():
     return "birl: Bayesian IRL"
+
+
+# compact alias per ledger/NAMING.md
+bayesianirl = bayesian_irl

@@ -40,3 +40,7 @@ def aitchison_ilr(x, V):
 
 def cheatsheet():
     return "aitilr: Isometric log-ratio (ILR) transform via SBP"
+
+
+# compact alias per ledger/NAMING.md
+aitchisonilr = aitchison_ilr

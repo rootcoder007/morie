@@ -40,3 +40,7 @@ def cat_next_item(theta_hat, item_pool, exposure_constraints):
 
 def cheatsheet():
     return "catnxt: CAT next-item selection"
+
+
+# compact alias per ledger/NAMING.md
+catnextitem = cat_next_item

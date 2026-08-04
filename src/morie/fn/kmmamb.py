@@ -93,3 +93,7 @@ def kamath_mamba_ssm(x, A, B, C, delta):
 
 def cheatsheet():
     return "kmmamb: h_t = exp(dt*A)h_{t-1} + dt*B x_t; y_t = C.h_t"
+
+
+# compact alias per ledger/NAMING.md
+kamathmambassm = kamath_mamba_ssm

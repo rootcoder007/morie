@@ -54,3 +54,7 @@ fbnds = filter_bounds
 
 def cheatsheet() -> str:
     return "filter_bounds({}) -> Filter transition band bounds."
+
+
+# compact alias per ledger/NAMING.md
+filterbounds = filter_bounds

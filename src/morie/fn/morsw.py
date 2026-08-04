@@ -63,3 +63,7 @@ morsw = morse_wavelet
 
 def cheatsheet() -> str:
     return "morse_wavelet({}) -> Generalized Morse wavelet."
+
+
+# compact alias per ledger/NAMING.md
+morsewavelet = morse_wavelet

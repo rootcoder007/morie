@@ -38,3 +38,7 @@ def slow_dp_truncate(alpha, eps):
 
 def cheatsheet():
     return "slowdp: Slow-decreasing DP truncation"
+
+
+# compact alias per ledger/NAMING.md
+slowdptruncate = slow_dp_truncate

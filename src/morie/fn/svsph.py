@@ -41,3 +41,7 @@ spat = spatial_phase
 
 def cheatsheet() -> str:
     return "spatial_phase({}) -> Spatial phase transition (chaos/order)"
+
+
+# compact alias per ledger/NAMING.md
+spatialphase = spatial_phase

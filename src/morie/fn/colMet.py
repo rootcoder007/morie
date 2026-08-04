@@ -40,3 +40,7 @@ def recall_at_k(pred_rank, relevant, k):
 
 def cheatsheet():
     return "colMet: Recall@k"
+
+
+# compact alias per ledger/NAMING.md
+recallatk = recall_at_k

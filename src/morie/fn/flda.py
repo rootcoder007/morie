@@ -32,3 +32,7 @@ flda = flda_fn
 
 def cheatsheet() -> str:
     return "flda_fn({}) -> Fisher Linear Discriminant Analysis."
+
+
+# compact alias per ledger/NAMING.md
+fldafn = flda_fn

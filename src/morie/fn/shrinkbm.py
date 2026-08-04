@@ -42,3 +42,7 @@ def shrinkage_bayes(X, y, prior_family):
 
 def cheatsheet():
     return "shrinkbm: Bayesian shrinkage (horseshoe / Laplace)"
+
+
+# compact alias per ledger/NAMING.md
+shrinkagebayes = shrinkage_bayes

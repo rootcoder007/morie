@@ -35,3 +35,7 @@ def cheatsheet() -> str:
 
 
 relu2 = relu_squared
+
+
+# compact alias per ledger/NAMING.md
+relusquared = relu_squared

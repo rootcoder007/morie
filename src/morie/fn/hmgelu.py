@@ -98,3 +98,7 @@ def geron_gelu(z, approximate=False):
 
 def cheatsheet():
     return "hmgelu: Gaussian error linear unit (GELU)"
+
+
+# compact alias per ledger/NAMING.md
+gerongelu = geron_gelu

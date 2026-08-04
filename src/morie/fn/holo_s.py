@@ -62,3 +62,7 @@ def holo_scatter(
 
 def cheatsheet() -> str:
     return "holo_scatter({}) -> Scatter plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoscatter = holo_scatter

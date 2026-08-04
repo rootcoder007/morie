@@ -75,3 +75,7 @@ rocdt = roc_det_curve
 
 def cheatsheet() -> str:
     return "roc_det_curve({}) -> ROC and DET curves with AUC."
+
+
+# compact alias per ledger/NAMING.md
+rocdetcurve = roc_det_curve

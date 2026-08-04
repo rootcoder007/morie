@@ -47,3 +47,7 @@ def ot_clustering_w(X_list, k, max_iter):
 
 def cheatsheet():
     return "otmcluster: Wasserstein-based k-means using Wasserstein-2 between samples"
+
+
+# compact alias per ledger/NAMING.md
+otclusteringw = ot_clustering_w

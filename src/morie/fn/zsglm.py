@@ -28,3 +28,7 @@ spat = spatial_glmm_sim
 
 def cheatsheet() -> str:
     return "spatial_glmm_sim({}) -> Spatial GLMM simulation"
+
+
+# compact alias per ledger/NAMING.md
+spatialglmmsim = spatial_glmm_sim

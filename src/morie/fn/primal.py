@@ -46,3 +46,7 @@ def primal_dual(F, G, K, tau, sigma):
 
 def cheatsheet():
     return "primal: Primal-dual hybrid gradient (Chambolle-Pock)"
+
+
+# compact alias per ledger/NAMING.md
+primaldual = primal_dual

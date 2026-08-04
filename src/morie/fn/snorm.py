@@ -57,3 +57,7 @@ def subscale_norms(
 
 def cheatsheet() -> str:
     return "subscale_norms({}) -> Normative table (mean, sd, percentiles) per subscale."
+
+
+# compact alias per ledger/NAMING.md
+subscalenorms = subscale_norms

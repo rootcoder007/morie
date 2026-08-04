@@ -90,3 +90,7 @@ def geron_softmax_score(X, theta):
 
 def cheatsheet():
     return "grsmxs: s_k(x) = theta_k^T x, the (m,K) score matrix X @ Theta before softmax"
+
+
+# compact alias per ledger/NAMING.md
+scorematrix = score_matrix

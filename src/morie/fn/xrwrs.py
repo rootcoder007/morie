@@ -29,3 +29,7 @@ w_ro = w_row_std
 
 def cheatsheet() -> str:
     return "w_row_std({}) -> Row-standardize weights"
+
+
+# compact alias per ledger/NAMING.md
+wrowstd = w_row_std

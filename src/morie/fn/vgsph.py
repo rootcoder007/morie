@@ -49,3 +49,7 @@ vari = vario_spherical
 
 def cheatsheet() -> str:
     return "vario_spherical({}) -> Spherical variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variospherical = vario_spherical

@@ -98,3 +98,7 @@ def irt_mle_theta(
 
 def cheatsheet() -> str:
     return "_icc_2pl({}) -> MLE theta estimation."
+
+
+# compact alias per ledger/NAMING.md
+irtmletheta = irt_mle_theta

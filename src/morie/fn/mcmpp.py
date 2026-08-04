@@ -138,3 +138,7 @@ def mcmcpack_irt(votes, n_iter=2000, burnin=500, seed=0, polarity_idx=None):
 
 def cheatsheet():
     return "mcmpp: truncated-normal augmentation, conjugate item/ability updates (Albert 1992)"
+
+
+# compact alias per ledger/NAMING.md
+mcmcpackirt = mcmcpack_irt

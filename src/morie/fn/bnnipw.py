@@ -40,3 +40,7 @@ def bound_no_iv_proxy(y, D, Z_proxy):
 
 def cheatsheet():
     return "bnnipw: Bound without IV using proxy"
+
+
+# compact alias per ledger/NAMING.md
+boundnoivproxy = bound_no_iv_proxy

@@ -57,3 +57,7 @@ ecgplt = plot_ecg_leads_fn
 
 def cheatsheet() -> str:
     return "plot_ecg_leads_fn({}) -> ECG multi-lead plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+plotecgleadsfn = plot_ecg_leads_fn

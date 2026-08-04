@@ -42,3 +42,7 @@ def f_nested_ss(ss_resid_restricted, ss_resid_full, k_full, k_restricted, n):
 
 def cheatsheet():
     return 'ca2e18: F = (SS_resid(R) - SS_resid(F)) / MS_resid(F) [Weisburd et al. 2022, eq. 2.18]'
+
+
+# compact alias per ledger/NAMING.md
+fnestedss = f_nested_ss

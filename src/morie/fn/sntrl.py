@@ -48,3 +48,7 @@ sntrl = sentence_by_year
 
 def cheatsheet() -> str:
     return "sentence_by_year({}) -> Sentence length trends over years."
+
+
+# compact alias per ledger/NAMING.md
+sentencebyyear = sentence_by_year

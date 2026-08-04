@@ -44,3 +44,7 @@ def ma_log_odds_ratio(a, b, c, d):
 
 def cheatsheet():
     return "malor: Log odds ratio + variance from a 2x2 table"
+
+
+# compact alias per ledger/NAMING.md
+malogoddsratio = ma_log_odds_ratio

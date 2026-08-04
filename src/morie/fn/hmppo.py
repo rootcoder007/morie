@@ -209,3 +209,7 @@ def geron_ppo(env, policy, epochs=20, lr=0.1, clip_eps=0.2, gamma=0.99,
 
 def cheatsheet():
     return "hmppo: PPO clipped-surrogate policy optimization"
+
+
+# compact alias per ledger/NAMING.md
+geronppo = geron_ppo

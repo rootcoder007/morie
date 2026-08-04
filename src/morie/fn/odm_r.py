@@ -66,3 +66,7 @@ def otis_demo_region(
 
 def cheatsheet() -> str:
     return "otis_demo_region({}) -> Demographic profile per region for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdemoregion = otis_demo_region

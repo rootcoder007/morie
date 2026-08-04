@@ -48,3 +48,7 @@ eigdp = eigen_decompose
 
 def cheatsheet() -> str:
     return "eigen_decompose({}) -> Eigendecomposition."
+
+
+# compact alias per ledger/NAMING.md
+eigendecompose = eigen_decompose

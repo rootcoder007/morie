@@ -64,3 +64,7 @@ def pettitt_test(x, cdf=None):
 
 def cheatsheet():
     return "pettit: Pettitt change-point test"
+
+
+# compact alias per ledger/NAMING.md
+pettitttest = pettitt_test

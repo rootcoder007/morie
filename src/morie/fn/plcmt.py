@@ -83,3 +83,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> rank_placements([1, 3, 5], [2, 4, 6])
 # placements = [1, 2, 3]; U_y = 6; E[U] = 4.5; Var[U] = 5.25
+
+
+# compact alias per ledger/NAMING.md
+rankplacements = rank_placements

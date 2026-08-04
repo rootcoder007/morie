@@ -40,3 +40,7 @@ def seasonal_naive(y, m, h):
 
 def cheatsheet():
     return "snaivf: Seasonal naive ŷ_{t+h}=y_{t+h-m}"
+
+
+# compact alias per ledger/NAMING.md
+seasonalnaive = seasonal_naive

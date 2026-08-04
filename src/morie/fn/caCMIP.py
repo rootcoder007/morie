@@ -38,3 +38,7 @@ def cmip_ensemble(models, weights):
 
 def cheatsheet():
     return "caCMIP: CMIP multi-model ensemble mean"
+
+
+# compact alias per ledger/NAMING.md
+cmipensemble = cmip_ensemble

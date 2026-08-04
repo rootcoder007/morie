@@ -48,3 +48,7 @@ crtya = court_youth
 
 def cheatsheet() -> str:
     return "court_youth({}) -> Youth court special metrics (YCJA compliance)."
+
+
+# compact alias per ledger/NAMING.md
+courtyouth = court_youth

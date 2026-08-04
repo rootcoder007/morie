@@ -32,3 +32,7 @@ eemd = eemd_fn
 
 def cheatsheet() -> str:
     return "eemd_fn({}) -> Ensemble Empirical Mode Decomposition."
+
+
+# compact alias per ledger/NAMING.md
+eemdfn = eemd_fn

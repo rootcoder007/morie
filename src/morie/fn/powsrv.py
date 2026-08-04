@@ -42,3 +42,7 @@ def power_survey(effect_size, alpha, DEFF, n):
 
 def cheatsheet():
     return "powsrv: Survey-design-aware power"
+
+
+# compact alias per ledger/NAMING.md
+powersurvey = power_survey

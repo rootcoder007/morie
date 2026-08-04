@@ -34,3 +34,7 @@ amr2 = am_r_squared
 
 def cheatsheet() -> str:
     return "am_r_squared({}) -> A-M R-squared goodness of fit."
+
+
+# compact alias per ledger/NAMING.md
+amrsquared = am_r_squared

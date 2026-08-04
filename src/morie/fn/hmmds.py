@@ -179,3 +179,11 @@ def geron_mds(X, n_components, precomputed=False):
 
 def cheatsheet():
     return "hmmds: classical MDS -- double-centre D^2, eigendecompose, Y = V sqrt(Lambda); flags non-Euclidean D"
+
+
+# compact alias per ledger/NAMING.md
+doublecenter = double_center
+
+
+# compact alias per ledger/NAMING.md
+geronmds = geron_mds

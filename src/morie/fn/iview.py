@@ -82,3 +82,11 @@ iview = image_info_result
 
 def cheatsheet() -> str:
     return "view_image({}) -> Image viewer and info."
+
+
+# compact alias per ledger/NAMING.md
+imageinfo = image_info
+
+
+# compact alias per ledger/NAMING.md
+viewimage = view_image

@@ -29,3 +29,7 @@ nash = nash_bargain_sp
 
 def cheatsheet() -> str:
     return "nash_bargain_sp({}) -> Nash bargaining in spatial game"
+
+
+# compact alias per ledger/NAMING.md
+nashbargainsp = nash_bargain_sp

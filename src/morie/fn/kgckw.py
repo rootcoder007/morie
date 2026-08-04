@@ -30,3 +30,7 @@ cok_ = cok_weights
 
 def cheatsheet() -> str:
     return "cok_weights({}) -> Co-kriging weights"
+
+
+# compact alias per ledger/NAMING.md
+cokweights = cok_weights

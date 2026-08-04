@@ -52,3 +52,7 @@ mccrr = mcc_score
 
 def cheatsheet() -> str:
     return "mcc_score({}) -> Matthews Correlation Coefficient."
+
+
+# compact alias per ledger/NAMING.md
+mccscore = mcc_score

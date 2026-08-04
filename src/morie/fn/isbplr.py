@@ -42,3 +42,7 @@ def isgp_bayes(y, sigma, alpha, c):
 
 def cheatsheet():
     return "isbplr: Indian buffet generalized prior"
+
+
+# compact alias per ledger/NAMING.md
+isgpbayes = isgp_bayes

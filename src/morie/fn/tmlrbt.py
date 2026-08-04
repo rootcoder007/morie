@@ -44,3 +44,7 @@ def tmle_robust(y, D, X, trim):
 
 def cheatsheet():
     return "tmlrbt: Robust TMLE under model misspecification"
+
+
+# compact alias per ledger/NAMING.md
+tmlerobust = tmle_robust

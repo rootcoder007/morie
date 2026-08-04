@@ -42,3 +42,7 @@ def smo_solver(X, y, C, kernel):
 
 def cheatsheet():
     return "smoopt: Sequential minimal optimization (SVM)"
+
+
+# compact alias per ledger/NAMING.md
+smosolver = smo_solver

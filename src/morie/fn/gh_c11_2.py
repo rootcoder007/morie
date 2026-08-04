@@ -51,3 +51,7 @@ def ghosal_rkhs_norm(f0_coefs, lambdas, eps, n_sim=3000, seed=42):
 
 def cheatsheet():
     return "gh_c11_2: Concentration-function terms"
+
+
+# compact alias per ledger/NAMING.md
+ghosalrkhsnorm = ghosal_rkhs_norm

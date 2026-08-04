@@ -45,3 +45,7 @@ medab = median_abs_dev
 
 def cheatsheet() -> str:
     return "median_abs_dev(x) -> Median absolute deviation."
+
+
+# compact alias per ledger/NAMING.md
+medianabsdev = median_abs_dev

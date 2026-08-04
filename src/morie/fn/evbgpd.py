@@ -59,3 +59,7 @@ def evt_bayes_gpd(y, n_draws=2000, seed=42, prior_sd=(10.0, 1.0)):
 
 def cheatsheet():
     return "evbgpd: Bayesian GPD posterior via Metropolis"
+
+
+# compact alias per ledger/NAMING.md
+evtbayesgpd = evt_bayes_gpd

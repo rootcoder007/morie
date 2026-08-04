@@ -132,3 +132,7 @@ def brr_balanced(strata, fay_k=0.0):
 
 def cheatsheet():
     return "brrest: Hadamard orthogonality is why R~H replicates suffice; pair with brr_variance's (1-k)^2"
+
+
+# compact alias per ledger/NAMING.md
+brrbalanced = brr_balanced

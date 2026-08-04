@@ -83,3 +83,7 @@ auc_ = auc_score
 
 def cheatsheet() -> str:
     return "auc_score({}) -> Area Under the ROC Curve (AUC) via trapezoidal integration."
+
+
+# compact alias per ledger/NAMING.md
+aucscore = auc_score

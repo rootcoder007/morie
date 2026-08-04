@@ -38,3 +38,7 @@ def calibrated_rec(pred, user_profile):
 
 def cheatsheet():
     return "caltbR: Calibrated recommendations"
+
+
+# compact alias per ledger/NAMING.md
+calibratedrec = calibrated_rec

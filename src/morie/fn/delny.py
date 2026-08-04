@@ -45,3 +45,7 @@ delny = delaunay_simple
 
 def cheatsheet() -> str:
     return "delny() -> Compute a Delaunay triangulation of 2-D points"
+
+
+# compact alias per ledger/NAMING.md
+delaunaysimple = delaunay_simple

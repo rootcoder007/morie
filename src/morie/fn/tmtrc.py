@@ -42,3 +42,7 @@ tmtrc = trace_over_time
 
 def cheatsheet() -> str:
     return "trace_over_time({}) -> Ideal point trajectories over time."
+
+
+# compact alias per ledger/NAMING.md
+traceovertime = trace_over_time

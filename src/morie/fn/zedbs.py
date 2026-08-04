@@ -28,3 +28,7 @@ spat = spatial_dbscan
 
 def cheatsheet() -> str:
     return "spatial_dbscan({}) -> Spatial DBSCAN cluster detection"
+
+
+# compact alias per ledger/NAMING.md
+spatialdbscan = spatial_dbscan

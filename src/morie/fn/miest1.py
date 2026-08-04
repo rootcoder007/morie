@@ -40,3 +40,7 @@ def mi_ksg(X, Y, k):
 
 def cheatsheet():
     return "miest1: Mutual information via KSG (k-NN)"
+
+
+# compact alias per ledger/NAMING.md
+miksg = mi_ksg

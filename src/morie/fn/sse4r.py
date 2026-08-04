@@ -40,3 +40,7 @@ def ssepta_seq(seqs, K):
 
 def cheatsheet():
     return "sse4r: SSE-PT sequential rec with personalization"
+
+
+# compact alias per ledger/NAMING.md
+sseptaseq = ssepta_seq

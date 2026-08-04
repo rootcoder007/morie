@@ -38,3 +38,7 @@ def cfa_fit_indices(fit):
 
 def cheatsheet():
     return "cfafit: CFA fit indices (CFI, RMSEA, SRMR, TLI)"
+
+
+# compact alias per ledger/NAMING.md
+cfafitindices = cfa_fit_indices

@@ -89,3 +89,7 @@ def ghosal_gauss_ker(x, grid=None, alpha=1.0, K=50, seed=0, n_draws=200):
 
 def cheatsheet():
     return "gh_c5_8: a discrete mixing law over a continuous kernel is what restores a density"
+
+
+# compact alias per ledger/NAMING.md
+ghosalgaussker = ghosal_gauss_ker

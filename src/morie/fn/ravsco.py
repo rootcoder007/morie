@@ -77,3 +77,7 @@ ravsco = raven_score
 
 def cheatsheet() -> str:
     return "raven_score({}) -> Raven's progressive matrices scoring."
+
+
+# compact alias per ledger/NAMING.md
+ravenscore = raven_score

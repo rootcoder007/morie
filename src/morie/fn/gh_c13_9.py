@@ -30,3 +30,7 @@ def ghosal_ntr_levy(f_vals, nu_masses):
 
 def cheatsheet():
     return "gh_c13_9: NTR Lévy (Laplace) functional"
+
+
+# compact alias per ledger/NAMING.md
+ghosalntrlevy = ghosal_ntr_levy

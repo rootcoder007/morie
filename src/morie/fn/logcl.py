@@ -34,3 +34,7 @@ logcl = logcl_fn
 
 def cheatsheet() -> str:
     return "logcl_fn({}) -> Logistic regression classifier (gradient descent)."
+
+
+# compact alias per ledger/NAMING.md
+logclfn = logcl_fn

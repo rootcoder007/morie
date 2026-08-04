@@ -197,3 +197,7 @@ def geron_masked_lm(X, mask_frac=0.15, model=None, vocab_size=None, seed=0, mask
 
 def cheatsheet():
     return "hmmlm: MLM loss over masked positions only, against a smoothed-unigram baseline"
+
+
+# compact alias per ledger/NAMING.md
+geronmaskedlm = geron_masked_lm

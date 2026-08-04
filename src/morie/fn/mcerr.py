@@ -58,3 +58,7 @@ mcerr = mcmc_se
 
 def cheatsheet() -> str:
     return "mcmc_se({}) -> MCMC standard error."
+
+
+# compact alias per ledger/NAMING.md
+mcmcse = mcmc_se

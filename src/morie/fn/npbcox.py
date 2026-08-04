@@ -42,3 +42,7 @@ def np_bayes_cox(time, event, X):
 
 def cheatsheet():
     return "npbcox: NP Bayes Cox model with Beta-process baseline"
+
+
+# compact alias per ledger/NAMING.md
+npbayescox = np_bayes_cox

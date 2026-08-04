@@ -52,3 +52,7 @@ def otis_demo_gender(
 
 def cheatsheet() -> str:
     return "otis_demo_gender({}) -> Demographic profile per gender for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdemogender = otis_demo_gender

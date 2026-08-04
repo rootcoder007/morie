@@ -37,3 +37,7 @@ idmds = indscal_mds
 
 def cheatsheet() -> str:
     return "indscal_mds({}) -> INDSCAL: Individual Differences MDS."
+
+
+# compact alias per ledger/NAMING.md
+indscalmds = indscal_mds

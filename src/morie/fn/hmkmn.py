@@ -156,3 +156,7 @@ def geron_kmeans(X, n_clusters, seed=0, max_iter=300, tol=1e-10, n_init=10):
 
 def cheatsheet():
     return "hmkmn: k-means by Lloyd's algorithm with k-means++ restarts (delegates seeding to hmkmpp)"
+
+
+# compact alias per ledger/NAMING.md
+geronkmeans = geron_kmeans

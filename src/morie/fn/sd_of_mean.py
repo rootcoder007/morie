@@ -35,3 +35,7 @@ def sd_of_mean(sigma, n):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e53: Standard deviation of the mean: sigma / sqrt(n). Morin (2016) eq (3.53)."
+
+
+# compact alias per ledger/NAMING.md
+sdofmean = sd_of_mean

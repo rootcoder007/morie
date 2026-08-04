@@ -81,3 +81,7 @@ gam = fit_gam
 
 def cheatsheet() -> str:
     return "_bspline_basis({}) -> Generalized additive model (B-spline basis + OLS)."
+
+
+# compact alias per ledger/NAMING.md
+fitgam = fit_gam

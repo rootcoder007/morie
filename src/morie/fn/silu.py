@@ -36,3 +36,7 @@ def silu_swish(y):
 
 def cheatsheet():
     return "silu: SiLU / Swish activation"
+
+
+# compact alias per ledger/NAMING.md
+siluswish = silu_swish

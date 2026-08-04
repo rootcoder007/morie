@@ -42,3 +42,7 @@ def spatial_glmm_fit(y, X, coords, family):
 
 def cheatsheet():
     return "sgflrt: Spatial GLMM fitting via Laplace"
+
+
+# compact alias per ledger/NAMING.md
+spatialglmmfit = spatial_glmm_fit

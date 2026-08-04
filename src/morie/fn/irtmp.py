@@ -81,3 +81,7 @@ map_theta = irt_map_theta
 
 def cheatsheet() -> str:
     return "irt_map_theta({}) -> MAP theta estimation with normal prior."
+
+
+# compact alias per ledger/NAMING.md
+irtmaptheta = irt_map_theta

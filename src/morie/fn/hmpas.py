@@ -170,3 +170,7 @@ def geron_pasting(X, y, base_estimator=None, n_estimators=10, sample_size=None, 
 
 def cheatsheet():
     return "hmpas: Pasting, base models on samples without replacement"
+
+
+# compact alias per ledger/NAMING.md
+geronpasting = geron_pasting

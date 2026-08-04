@@ -101,3 +101,7 @@ def lamb_optimizer(g, w, lr=0.001, beta1=0.9, beta2=0.999, wd=0.01, eps=1e-6, st
 
 def cheatsheet():
     return "lambopt: LAMB -- LARS trust ratio applied to Adam's direction; scales to very large batches"
+
+
+# compact alias per ledger/NAMING.md
+lamboptimizer = lamb_optimizer

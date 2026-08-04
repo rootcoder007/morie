@@ -77,3 +77,7 @@ def kamath_rouge_n(hypothesis, reference, n=1):
 
 def cheatsheet():
     return "kmroug: clipped n-gram matches / reference n-grams (+P, F1)"
+
+
+# compact alias per ledger/NAMING.md
+kamathrougen = kamath_rouge_n

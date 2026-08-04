@@ -42,3 +42,7 @@ def barrier_method(f, constraints, x0, tau):
 
 def cheatsheet():
     return "barerp: Logarithmic barrier method"
+
+
+# compact alias per ledger/NAMING.md
+barriermethod = barrier_method

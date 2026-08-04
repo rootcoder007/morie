@@ -143,3 +143,7 @@ def cheatsheet():
         "msmaln: Aalen-Johansen cumulative incidence with the naive "
         "Kaplan-Meier alongside to show what it overstates"
     )
+
+
+# compact alias per ledger/NAMING.md
+aalenjohansen = aalen_johansen

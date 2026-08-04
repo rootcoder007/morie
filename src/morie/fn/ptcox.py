@@ -30,3 +30,7 @@ cox_ = cox_process
 
 def cheatsheet() -> str:
     return "cox_process({}) -> Cox (doubly stochastic) process"
+
+
+# compact alias per ledger/NAMING.md
+coxprocess = cox_process

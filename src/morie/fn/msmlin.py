@@ -39,3 +39,7 @@ def msm_linear(y, treatment_history, covariate_history=None, weights=None):
 
 def cheatsheet():
     return "msmlin: Linear marginal structural model"
+
+
+# compact alias per ledger/NAMING.md
+msmlinear = msm_linear

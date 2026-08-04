@@ -42,3 +42,7 @@ def wald_statistic(b, se):
 
 def cheatsheet():
     return 'ca4e15: W = (b / se_b)^2 [Weisburd et al. 2022, eq. 4.15]'
+
+
+# compact alias per ledger/NAMING.md
+waldstatistic = wald_statistic

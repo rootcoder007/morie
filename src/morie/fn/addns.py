@@ -46,3 +46,7 @@ addns = add_noise
 
 def cheatsheet() -> str:
     return "add_noise({}) -> Add noise at specified SNR."
+
+
+# compact alias per ledger/NAMING.md
+addnoise = add_noise

@@ -143,3 +143,7 @@ def geron_oob_score(X, y, models, task="auto"):
 
 def cheatsheet():
     return "hmoob: Out-of-bag evaluation from per-estimator bag masks"
+
+
+# compact alias per ledger/NAMING.md
+geronoobscore = geron_oob_score

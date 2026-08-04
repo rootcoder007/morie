@@ -55,3 +55,7 @@ ahp = ahp_weights
 
 def cheatsheet() -> str:
     return "ahp_weights({}) -> Analytic Hierarchy Process (AHP) weights."
+
+
+# compact alias per ledger/NAMING.md
+ahpweights = ahp_weights

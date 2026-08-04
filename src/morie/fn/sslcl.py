@@ -97,3 +97,7 @@ sslcl = semi_supervised
 
 def cheatsheet() -> str:
     return "semi_supervised({}) -> Semi-supervised self-training classifier."
+
+
+# compact alias per ledger/NAMING.md
+semisupervised = semi_supervised

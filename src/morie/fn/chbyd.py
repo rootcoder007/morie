@@ -32,3 +32,7 @@ chbyd = chebyshev_dist
 
 def cheatsheet() -> str:
     return "chebyshev_dist({}) -> Chebyshev distance."
+
+
+# compact alias per ledger/NAMING.md
+chebyshevdist = chebyshev_dist

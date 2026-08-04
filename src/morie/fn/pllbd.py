@@ -50,3 +50,7 @@ pllbd = pll_bandwidth
 
 def cheatsheet() -> str:
     return "pll_bandwidth({}) -> Phase-locked loop bandwidth."
+
+
+# compact alias per ledger/NAMING.md
+pllbandwidth = pll_bandwidth

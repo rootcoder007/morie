@@ -38,3 +38,7 @@ def theta_mle(X, items):
 
 def cheatsheet():
     return "thetml: MLE of theta for IRT"
+
+
+# compact alias per ledger/NAMING.md
+thetamle = theta_mle

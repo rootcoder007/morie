@@ -40,3 +40,7 @@ def neural_prophet(ds, y, ar_layers):
 
 def cheatsheet():
     return "nprphet: NeuralProphet -- AR + MLP + holidays"
+
+
+# compact alias per ledger/NAMING.md
+neuralprophet = neural_prophet

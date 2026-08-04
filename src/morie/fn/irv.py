@@ -70,3 +70,7 @@ irv = instant_runoff
 
 def cheatsheet() -> str:
     return "instant_runoff({}) -> Instant runoff (ranked choice) voting."
+
+
+# compact alias per ledger/NAMING.md
+instantrunoff = instant_runoff

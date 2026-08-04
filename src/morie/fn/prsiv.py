@@ -54,3 +54,7 @@ prsiv = prime_sieve
 
 def cheatsheet() -> str:
     return "prime_sieve({}) -> Sieve of Eratosthenes for prime generation."
+
+
+# compact alias per ledger/NAMING.md
+primesieve = prime_sieve

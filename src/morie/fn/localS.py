@@ -36,3 +36,7 @@ def local_shift(IF):
 
 def cheatsheet():
     return "localS: Local-shift sensitivity λ*"
+
+
+# compact alias per ledger/NAMING.md
+localshift = local_shift

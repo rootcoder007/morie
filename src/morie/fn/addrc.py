@@ -80,3 +80,7 @@ short = full_adder
 
 def cheatsheet() -> str:
     return "full_adder({}) -> Full adder binary circuit."
+
+
+# compact alias per ledger/NAMING.md
+fulladder = full_adder

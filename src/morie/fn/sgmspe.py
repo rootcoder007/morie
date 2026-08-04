@@ -47,3 +47,7 @@ sgmspe = mspe_kriging
 
 def cheatsheet() -> str:
     return "mspe_kriging({}) -> Mean squared prediction error statistics."
+
+
+# compact alias per ledger/NAMING.md
+mspekriging = mspe_kriging

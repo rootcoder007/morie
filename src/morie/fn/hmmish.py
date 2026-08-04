@@ -113,3 +113,7 @@ def geron_mish(z):
 
 def cheatsheet():
     return "hmmish: Mish z*tanh(softplus(z)) with overflow-safe softplus and analytic derivative"
+
+
+# compact alias per ledger/NAMING.md
+geronmish = geron_mish

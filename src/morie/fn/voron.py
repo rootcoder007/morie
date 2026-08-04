@@ -87,3 +87,7 @@ voron = voronoi_areas
 
 def cheatsheet() -> str:
     return "voronoi_areas({}) -> Voronoi tessellation areas."
+
+
+# compact alias per ledger/NAMING.md
+voronoiareas = voronoi_areas

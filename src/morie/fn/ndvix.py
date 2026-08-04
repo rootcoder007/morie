@@ -139,3 +139,7 @@ ndvix = ndvi_exposure_rr
 
 def cheatsheet() -> str:
     return "ndvix(ndvi, outcome='all_cause') -> green-space exposure RR."
+
+
+# compact alias per ledger/NAMING.md
+ndviexposurerr = ndvi_exposure_rr

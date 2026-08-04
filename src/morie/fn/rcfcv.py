@@ -44,3 +44,7 @@ rcfcv = reflection_to_ar
 
 def cheatsheet() -> str:
     return "reflection_to_ar({}) -> Reflection coefficients to AR coefficients."
+
+
+# compact alias per ledger/NAMING.md
+reflectiontoar = reflection_to_ar

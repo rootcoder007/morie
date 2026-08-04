@@ -114,3 +114,7 @@ def esl_logistic_reg(X, y, newdata=None, threshold=0.5, **kwargs):
 
 def cheatsheet():
     return "esllgr: logistic regression via IRLS; odds_ratio = exp(beta), and 0.5 is a cost assumption not a default truth"
+
+
+# compact alias per ledger/NAMING.md
+esllogisticreg = esl_logistic_reg

@@ -123,3 +123,7 @@ rfcls = rf_classify_bio
 
 def cheatsheet() -> str:
     return "rf_classify_bio({}) -> Random forest classifier (pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+rfclassifybio = rf_classify_bio

@@ -36,3 +36,7 @@ def selfies_encode(smiles):
 
 def cheatsheet():
     return "selfgr: SELFIES encoding (robust to mutation)"
+
+
+# compact alias per ledger/NAMING.md
+selfiesencode = selfies_encode

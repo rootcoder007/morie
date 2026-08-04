@@ -44,3 +44,7 @@ def sensitivity_did(y, D, X, M):
 
 def cheatsheet():
     return "snmtst: DR-DiD sensitivity to parallel-trends violation"
+
+
+# compact alias per ledger/NAMING.md
+sensitivitydid = sensitivity_did

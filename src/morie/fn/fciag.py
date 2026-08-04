@@ -135,3 +135,7 @@ def fci_algorithm(data, alpha=0.01, max_cond=3, names=None):
 
 def cheatsheet():
     return "fciag: PC-style skeleton with sepsets, then unshielded-collider orientation"
+
+
+# compact alias per ledger/NAMING.md
+fcialgorithm = fci_algorithm

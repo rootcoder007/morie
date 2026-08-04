@@ -58,3 +58,7 @@ wlsci = wilson_ci
 
 def cheatsheet() -> str:
     return "wilson_ci({}) -> Wilson score interval for binomial proportion."
+
+
+# compact alias per ledger/NAMING.md
+wilsonci = wilson_ci

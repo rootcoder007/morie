@@ -57,3 +57,7 @@ intdt = interval_detect
 
 def cheatsheet() -> str:
     return "interval_detect({}) -> Detect inter-event intervals and statistics."
+
+
+# compact alias per ledger/NAMING.md
+intervaldetect = interval_detect

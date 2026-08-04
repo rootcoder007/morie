@@ -42,3 +42,7 @@ def r2_from_f2(f2):
 
 def cheatsheet():
     return 'ca8e7: R^2 = f^2 / (1 + f^2) [Weisburd et al. 2022, eq. 8.7]'
+
+
+# compact alias per ledger/NAMING.md
+r2fromf2 = r2_from_f2

@@ -39,3 +39,7 @@ odm_t = otis_demo_trend
 
 def cheatsheet() -> str:
     return "otis_demo_trend({}) -> Demographic trend over time."
+
+
+# compact alias per ledger/NAMING.md
+otisdemotrend = otis_demo_trend

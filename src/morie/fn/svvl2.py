@@ -29,3 +29,7 @@ vale = valence_2d
 
 def cheatsheet() -> str:
     return "valence_2d({}) -> 2D valence spatial model"
+
+
+# compact alias per ledger/NAMING.md
+valence2d = valence_2d

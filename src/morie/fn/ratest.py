@@ -79,3 +79,7 @@ def ratio_estimator(y, x, weights=None, X_total=None, X_mean=None):
 
 def cheatsheet():
     return "ratest: the auxiliary earns its place only when rho > CV(x)/(2 CV(y)) -- computed, not assumed"
+
+
+# compact alias per ledger/NAMING.md
+ratioestimator = ratio_estimator

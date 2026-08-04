@@ -38,3 +38,7 @@ def trim_weights(weights, quantile):
 
 def cheatsheet():
     return "trmwgt: Weight trimming at percentile"
+
+
+# compact alias per ledger/NAMING.md
+trimweights = trim_weights

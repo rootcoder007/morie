@@ -67,3 +67,7 @@ ompfn = omp_sparse
 
 def cheatsheet() -> str:
     return "omp_sparse({}) -> Orthogonal Matching Pursuit sparse approximation."
+
+
+# compact alias per ledger/NAMING.md
+ompsparse = omp_sparse

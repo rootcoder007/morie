@@ -38,3 +38,7 @@ def fairness_rec(pred, attrs):
 
 def cheatsheet():
     return "fairRC: Fairness-aware reranker"
+
+
+# compact alias per ledger/NAMING.md
+fairnessrec = fairness_rec

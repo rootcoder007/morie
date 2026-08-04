@@ -61,3 +61,7 @@ def cheatsheet() -> str:
 
 
 gkpw = gkp_witten
+
+
+# compact alias per ledger/NAMING.md
+gkpwitten = gkp_witten

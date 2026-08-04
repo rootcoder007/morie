@@ -30,3 +30,7 @@ wnom = wnominate_class
 
 def cheatsheet() -> str:
     return "wnominate_class({}) -> W-NOMINATE classification"
+
+
+# compact alias per ledger/NAMING.md
+wnominateclass = wnominate_class

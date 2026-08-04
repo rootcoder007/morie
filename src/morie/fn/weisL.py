@@ -40,3 +40,7 @@ def wl_kernel(G1, G2, K):
 
 def cheatsheet():
     return "weisL: Weisfeiler-Lehman graph kernel"
+
+
+# compact alias per ledger/NAMING.md
+wlkernel = wl_kernel

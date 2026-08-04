@@ -63,3 +63,7 @@ rpdur = rplace_duration
 
 def cheatsheet() -> str:
     return "rplace_duration({}) -> Placement duration statistics."
+
+
+# compact alias per ledger/NAMING.md
+rplaceduration = rplace_duration

@@ -40,3 +40,7 @@ def rate_distortion(px, distortion, D):
 
 def cheatsheet():
     return "rdfunc: Rate-distortion function R(D)"
+
+
+# compact alias per ledger/NAMING.md
+ratedistortion = rate_distortion

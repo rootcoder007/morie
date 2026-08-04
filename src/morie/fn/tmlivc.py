@@ -92,3 +92,7 @@ def tmle_iv(y, D, Z, covariates=None, trunc=0.01):
 
 def cheatsheet():
     return "tmlivc: TMLE(Y~Z) / TMLE(D~Z); IF = (IF_Y - LATE*IF_D) / compliance"
+
+
+# compact alias per ledger/NAMING.md
+tmleiv = tmle_iv

@@ -80,3 +80,7 @@ lifpol = lift_drag_polar
 
 def cheatsheet() -> str:
     return "lift_drag_polar({}) -> Lift-drag polar."
+
+
+# compact alias per ledger/NAMING.md
+liftdragpolar = lift_drag_polar

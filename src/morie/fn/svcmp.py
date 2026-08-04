@@ -29,3 +29,7 @@ comm = committee_med
 
 def cheatsheet() -> str:
     return "committee_med({}) -> Committee median voter model"
+
+
+# compact alias per ledger/NAMING.md
+committeemed = committee_med

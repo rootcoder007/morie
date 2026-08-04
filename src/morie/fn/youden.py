@@ -48,3 +48,7 @@ youden = youdens_j
 
 def cheatsheet() -> str:
     return "youdens_j({}) -> Youden's J index."
+
+
+# compact alias per ledger/NAMING.md
+youdensj = youdens_j

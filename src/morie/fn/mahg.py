@@ -53,3 +53,7 @@ def ma_hedges_g(m1, m2, s1, s2, n1, n2):
 
 def cheatsheet():
     return "mahg: Hedges' g standardised mean difference (small-sample bias correction)"
+
+
+# compact alias per ledger/NAMING.md
+mahedgesg = ma_hedges_g

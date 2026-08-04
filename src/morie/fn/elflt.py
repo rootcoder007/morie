@@ -56,3 +56,7 @@ elflt = elliptic_filter
 
 def cheatsheet() -> str:
     return "elliptic_filter({}) -> Elliptic (Cauer) filter."
+
+
+# compact alias per ledger/NAMING.md
+ellipticfilter = elliptic_filter

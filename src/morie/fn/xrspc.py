@@ -28,3 +28,7 @@ spat = spatial_poisson
 
 def cheatsheet() -> str:
     return "spatial_poisson({}) -> Spatial Poisson count model"
+
+
+# compact alias per ledger/NAMING.md
+spatialpoisson = spatial_poisson

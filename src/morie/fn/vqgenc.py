@@ -38,3 +38,7 @@ def vqgan_encode(image, codebook):
 
 def cheatsheet():
     return "vqgenc: VQ-GAN encoder + codebook"
+
+
+# compact alias per ledger/NAMING.md
+vqganencode = vqgan_encode

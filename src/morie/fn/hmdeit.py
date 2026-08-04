@@ -180,3 +180,7 @@ def geron_deit(
 
 def cheatsheet():
     return "hmdeit: Data-efficient Image Transformer (DeiT) with distillation token"
+
+
+# compact alias per ledger/NAMING.md
+gerondeit = geron_deit

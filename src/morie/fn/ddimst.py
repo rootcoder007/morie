@@ -42,3 +42,7 @@ def ddim_step(x_t, t, eps_theta, eta):
 
 def cheatsheet():
     return "ddimst: DDIM deterministic sampler"
+
+
+# compact alias per ledger/NAMING.md
+ddimstep = ddim_step

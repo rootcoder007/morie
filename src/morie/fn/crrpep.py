@@ -70,3 +70,7 @@ def pepe_mori(time, event_type, group, cause, cdf=None):
 
 def cheatsheet():
     return "crrpep: Pepe-Mori test of cumulative incidence"
+
+
+# compact alias per ledger/NAMING.md
+pepemori = pepe_mori

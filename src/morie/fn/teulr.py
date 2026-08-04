@@ -28,3 +28,7 @@ def torus_euler_char(genus: int = 1) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_euler_char(genus) -> chi = 2 - 2g"
+
+
+# compact alias per ledger/NAMING.md
+toruseulerchar = torus_euler_char

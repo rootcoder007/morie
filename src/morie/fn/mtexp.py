@@ -51,3 +51,7 @@ def matrix_exp(
 
 
 mtexp = matrix_exp
+
+
+# compact alias per ledger/NAMING.md
+matrixexp = matrix_exp

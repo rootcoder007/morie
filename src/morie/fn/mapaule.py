@@ -120,3 +120,7 @@ def ma_paule_mandel(yi, vi, max_iter=200, tol=1e-12):
 
 def cheatsheet():
     return "mapaule: solve generalised Q = k - 1 -- unique root, and tau^2 changes the pooled effect"
+
+
+# compact alias per ledger/NAMING.md
+mapaulemandel = ma_paule_mandel

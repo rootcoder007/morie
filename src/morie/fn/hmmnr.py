@@ -127,3 +127,7 @@ def geron_max_norm(w, r, axis=None):
 
 def cheatsheet():
     return "hmmnr: max-norm projection w <- w*r/||w|| when ||w|| > r (direction preserved)"
+
+
+# compact alias per ledger/NAMING.md
+geronmaxnorm = geron_max_norm

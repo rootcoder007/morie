@@ -40,3 +40,7 @@ def double_dqn(env, net):
 
 def cheatsheet():
     return "ddqn: Double DQN -- decouples action selection from value"
+
+
+# compact alias per ledger/NAMING.md
+doubledqn = double_dqn

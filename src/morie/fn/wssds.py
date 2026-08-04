@@ -51,3 +51,7 @@ wssds = wss_distance
 
 def cheatsheet() -> str:
     return "wss_distance({}) -> Weighted spectral slope distance."
+
+
+# compact alias per ledger/NAMING.md
+wssdistance = wss_distance

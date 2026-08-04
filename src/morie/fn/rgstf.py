@@ -66,3 +66,7 @@ def rangayyan_stft(x, fs=1.0, nperseg=256, noverlap=None, window="hann"):
 
 def cheatsheet():
     return "rgstf: short-time Fourier transform -- Rangayyan & Krishnan Sec 8.4.1"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanstft = rangayyan_stft

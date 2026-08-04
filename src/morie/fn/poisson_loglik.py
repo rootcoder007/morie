@@ -42,3 +42,7 @@ def poisson_loglik(b, x, y):
 
 def cheatsheet():
     return '4e3: sum -exp(Xb_i) + y_i Xb_i - log(y_i!) [Bilder & Loughin 2025, eq. 4.3]'
+
+
+# compact alias per ledger/NAMING.md
+poissonloglik = poisson_loglik

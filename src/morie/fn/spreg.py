@@ -67,3 +67,7 @@ spreg = spatial_regime
 
 def cheatsheet() -> str:
     return "spatial_regime({}) -> Spatial regimes (Chow test for spatial heterogeneity)."
+
+
+# compact alias per ledger/NAMING.md
+spatialregime = spatial_regime

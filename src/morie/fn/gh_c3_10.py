@@ -32,3 +32,7 @@ def ghosal_norm_crm(x, n_jumps=400, seed=42):
 
 def cheatsheet():
     return "gh_c3_10: Normalized completely random measure"
+
+
+# compact alias per ledger/NAMING.md
+ghosalnormcrm = ghosal_norm_crm

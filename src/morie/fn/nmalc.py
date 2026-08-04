@@ -30,3 +30,7 @@ alph = alpha_nom_conv
 
 def cheatsheet() -> str:
     return "alpha_nom_conv({}) -> Alpha-NOMINATE convergence"
+
+
+# compact alias per ledger/NAMING.md
+alphanomconv = alpha_nom_conv

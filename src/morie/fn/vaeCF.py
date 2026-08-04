@@ -38,3 +38,7 @@ def vae_cf(R, K):
 
 def cheatsheet():
     return "vaeCF: Variational autoencoder for CF"
+
+
+# compact alias per ledger/NAMING.md
+vaecf = vae_cf

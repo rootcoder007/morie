@@ -39,3 +39,7 @@ def burkov_ngram_mle(counts_ngram, counts_prefix):
 
 def cheatsheet():
     return "bkngr: n-gram MLE probability count/prefix (Burkov Ch 2)"
+
+
+# compact alias per ledger/NAMING.md
+burkovngrammle = burkov_ngram_mle

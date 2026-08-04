@@ -61,3 +61,7 @@ lbrst = lilliefors_test
 
 def cheatsheet() -> str:
     return "lilliefors_test(x) -> Lilliefors normality test."
+
+
+# compact alias per ledger/NAMING.md
+lillieforstest = lilliefors_test

@@ -80,3 +80,7 @@ ghosig = ghost_signal
 
 def cheatsheet() -> str:
     return "ghost_signal({}) -> Ghost signal detection in noise."
+
+
+# compact alias per ledger/NAMING.md
+ghostsignal = ghost_signal

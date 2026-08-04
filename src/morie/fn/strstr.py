@@ -83,3 +83,7 @@ strstr = stress_strain
 
 def cheatsheet() -> str:
     return "stress_strain({}) -> Material stress-strain curve analysis."
+
+
+# compact alias per ledger/NAMING.md
+stressstrain = stress_strain

@@ -128,3 +128,7 @@ def cheatsheet():
         "bkcbow: CBOW averaged-context softmax, with the order loss and "
         "rare-word dilution it trades for speed"
     )
+
+
+# compact alias per ledger/NAMING.md
+burkovcbow = burkov_cbow

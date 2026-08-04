@@ -134,3 +134,7 @@ def geron_gpt2(X, n_layers=None, n_heads=None, size="small", **config):
 
 def cheatsheet():
     return "hmgpt2: GPT-2: scaled-up decoder-only LM"
+
+
+# compact alias per ledger/NAMING.md
+gerongpt2 = geron_gpt2

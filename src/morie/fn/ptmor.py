@@ -30,3 +30,7 @@ pp_m = pp_morisita
 
 def cheatsheet() -> str:
     return "pp_morisita({}) -> Morisita index of dispersion"
+
+
+# compact alias per ledger/NAMING.md
+ppmorisita = pp_morisita

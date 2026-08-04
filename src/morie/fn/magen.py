@@ -49,3 +49,7 @@ magen = ma_generate_fn
 
 def cheatsheet() -> str:
     return "ma_generate_fn({}) -> Generate synthetic MA process."
+
+
+# compact alias per ledger/NAMING.md
+mageneratefn = ma_generate_fn

@@ -39,3 +39,7 @@ def rangayyan_ppv(y_true, y_pred):
 
 def cheatsheet():
     return "rgppv: Positive predictive value (precision)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanppv = rangayyan_ppv

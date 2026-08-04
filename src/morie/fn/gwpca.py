@@ -140,3 +140,7 @@ def gw_pca(
 
 def cheatsheet() -> str:
     return "gw_pca({}) -> Geographically weighted PCA (Harris et al. 2011)."
+
+
+# compact alias per ledger/NAMING.md
+gwpca = gw_pca

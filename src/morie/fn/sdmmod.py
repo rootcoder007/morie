@@ -40,3 +40,7 @@ def spatial_durbin(y, X, W):
 
 def cheatsheet():
     return "sdmmod: Spatial Durbin model"
+
+
+# compact alias per ledger/NAMING.md
+spatialdurbin = spatial_durbin

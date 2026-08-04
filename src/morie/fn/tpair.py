@@ -60,3 +60,7 @@ tpair = paired_t_test
 
 def cheatsheet() -> str:
     return "paired_t_test({}) -> Paired samples t-test."
+
+
+# compact alias per ledger/NAMING.md
+pairedttest = paired_t_test

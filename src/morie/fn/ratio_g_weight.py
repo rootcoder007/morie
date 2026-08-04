@@ -42,3 +42,7 @@ def ratio_g_weight(t_x_true, t_pi_x):
 
 def cheatsheet():
     return 'r10e27: g = t(x)/t_pi(x) [Brus 2022, eq. 10.27]'
+
+
+# compact alias per ledger/NAMING.md
+ratiogweight = ratio_g_weight

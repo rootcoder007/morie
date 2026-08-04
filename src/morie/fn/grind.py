@@ -70,3 +70,7 @@ grind = rosin_rammler
 
 def cheatsheet() -> str:
     return "rosin_rammler({}) -> Particle size distribution (Rosin-Rammler)."
+
+
+# compact alias per ledger/NAMING.md
+rosinrammler = rosin_rammler

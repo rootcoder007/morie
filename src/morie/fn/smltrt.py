@@ -40,3 +40,7 @@ def survey_ratio(y, x, weights):
 
 def cheatsheet():
     return "smltrt: Survey-weighted ratio"
+
+
+# compact alias per ledger/NAMING.md
+surveyratio = survey_ratio

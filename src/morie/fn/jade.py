@@ -108,3 +108,7 @@ jade = jade_ica
 
 def cheatsheet() -> str:
     return "jade_ica({}) -> JADE ICA via joint approximate diagonalization of eigenmatri"
+
+
+# compact alias per ledger/NAMING.md
+jadeica = jade_ica

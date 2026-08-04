@@ -45,3 +45,7 @@ def ghosal_smhaz_gp(n=500, seed=42):
 
 def cheatsheet():
     return "gh_c13_12: Smooth hazard via a Gaussian process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalsmhazgp = ghosal_smhaz_gp

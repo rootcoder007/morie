@@ -47,3 +47,7 @@ def egarch_nelson(x, p=1, q=1):
 
 def cheatsheet():
     return "egarcm: Nelson's EGARCH, spec 'egarch'"
+
+
+# compact alias per ledger/NAMING.md
+egarchnelson = egarch_nelson

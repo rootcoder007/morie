@@ -40,3 +40,7 @@ def umap_singlecell(X, n_neighbors, min_dist):
 
 def cheatsheet():
     return "scumap: UMAP for single-cell embedding"
+
+
+# compact alias per ledger/NAMING.md
+umapsinglecell = umap_singlecell

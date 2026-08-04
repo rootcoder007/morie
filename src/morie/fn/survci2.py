@@ -40,3 +40,7 @@ def uno_concordance(time, event, predicted_risk):
 
 def cheatsheet():
     return "survci2: Uno C-index for censored data"
+
+
+# compact alias per ledger/NAMING.md
+unoconcordance = uno_concordance

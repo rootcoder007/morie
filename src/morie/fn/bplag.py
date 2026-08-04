@@ -79,3 +79,7 @@ bplag = breusch_pagan_lm
 
 def cheatsheet() -> str:
     return "breusch_pagan_lm({}) -> BP LM test for random effects."
+
+
+# compact alias per ledger/NAMING.md
+breuschpaganlm = breusch_pagan_lm

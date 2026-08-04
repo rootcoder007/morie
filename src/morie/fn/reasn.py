@@ -75,3 +75,7 @@ reasn = reassigned_stft
 
 def cheatsheet() -> str:
     return "reassigned_stft({}) -> Reassigned spectrogram for sharper TF representation."
+
+
+# compact alias per ledger/NAMING.md
+reassignedstft = reassigned_stft

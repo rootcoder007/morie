@@ -33,3 +33,7 @@ dctln = dctln_fn
 
 def cheatsheet() -> str:
     return "dctln_fn({}) -> Dictionary Learning via K-SVD."
+
+
+# compact alias per ledger/NAMING.md
+dctlnfn = dctln_fn

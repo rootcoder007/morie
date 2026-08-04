@@ -42,3 +42,7 @@ vari = vario_rose
 
 def cheatsheet() -> str:
     return "vario_rose({}) -> Variogram rose diagram"
+
+
+# compact alias per ledger/NAMING.md
+variorose = vario_rose

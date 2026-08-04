@@ -123,3 +123,7 @@ thmss = record_linkage
 
 def cheatsheet() -> str:
     return "thmss() -> Probabilistic record linkage between two DataFrames"
+
+
+# compact alias per ledger/NAMING.md
+recordlinkage = record_linkage

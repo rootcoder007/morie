@@ -29,3 +29,7 @@ lm_r = lm_robust_error
 
 def cheatsheet() -> str:
     return "lm_robust_error({}) -> Robust LM test for error"
+
+
+# compact alias per ledger/NAMING.md
+lmrobusterror = lm_robust_error

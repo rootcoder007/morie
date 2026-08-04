@@ -75,3 +75,7 @@ swtch = encode_labels
 
 def cheatsheet() -> str:
     return "encode_labels({}) -> Label / one-hot encoding."
+
+
+# compact alias per ledger/NAMING.md
+encodelabels = encode_labels

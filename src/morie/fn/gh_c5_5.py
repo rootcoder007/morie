@@ -68,3 +68,7 @@ def ghosal_blk_gibbs(data, K=10, alpha=1.0, tau=1.0, sigma=0.5,
 
 def cheatsheet():
     return "gh_c5_5: Blocked Gibbs via truncated stick breaking"
+
+
+# compact alias per ledger/NAMING.md
+ghosalblkgibbs = ghosal_blk_gibbs

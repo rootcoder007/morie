@@ -43,3 +43,7 @@ def rangayyan_loo_cv(X, y, classifier):
 
 def cheatsheet():
     return "rgloo: Leave-one-out cross-validation (LOO-CV)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanloocv = rangayyan_loo_cv

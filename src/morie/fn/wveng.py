@@ -45,3 +45,7 @@ wveng = wavelet_energy
 
 def cheatsheet() -> str:
     return "wavelet_energy({}) -> Wavelet energy distribution across subbands."
+
+
+# compact alias per ledger/NAMING.md
+waveletenergy = wavelet_energy

@@ -49,3 +49,7 @@ def burkov_elman_rnn(x_t, h_prev, Wh, Wx, Wy, bh, by):
 
 def cheatsheet():
     return "bkelm: Elman RNN recurrence h_t = tanh(Wh h + Wx x + bh) (Burkov Ch 3)"
+
+
+# compact alias per ledger/NAMING.md
+burkovelmanrnn = burkov_elman_rnn

@@ -85,3 +85,7 @@ def kamath_nf4_datatype(n_bins=16):
 
 def cheatsheet():
     return "kmnf4: q_i = Phi^-1((i+0.5)/n), plus the [-1,1] normalised grid"
+
+
+# compact alias per ledger/NAMING.md
+normalquantile = normal_quantile

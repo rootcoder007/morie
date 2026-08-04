@@ -35,3 +35,7 @@ proc = procrustes_corr
 
 def cheatsheet() -> str:
     return "procrustes_corr({}) -> Procrustes correlation"
+
+
+# compact alias per ledger/NAMING.md
+procrustescorr = procrustes_corr

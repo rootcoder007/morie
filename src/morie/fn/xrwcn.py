@@ -29,3 +29,7 @@ w_co = w_connected
 
 def cheatsheet() -> str:
     return "w_connected({}) -> Weights connectivity check"
+
+
+# compact alias per ledger/NAMING.md
+wconnected = w_connected

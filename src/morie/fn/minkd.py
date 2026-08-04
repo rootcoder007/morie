@@ -36,3 +36,7 @@ minkd = minkowski_dist
 
 def cheatsheet() -> str:
     return "minkowski_dist({}) -> Minkowski distance."
+
+
+# compact alias per ledger/NAMING.md
+minkowskidist = minkowski_dist

@@ -113,3 +113,7 @@ def boyd_lagrangian(f0, f=None, h=None, lambda_=None, nu=None):
 
 def cheatsheet():
     return "cvxdul: lambda >= 0 is what makes the dual a LOWER bound; nu is free in sign"
+
+
+# compact alias per ledger/NAMING.md
+boydlagrangian = boyd_lagrangian

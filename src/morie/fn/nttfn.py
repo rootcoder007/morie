@@ -57,3 +57,7 @@ nttfn = ntt_transform
 
 def cheatsheet() -> str:
     return "ntt_transform({}) -> Number Theoretic Transform (NTT) over Z_q."
+
+
+# compact alias per ledger/NAMING.md
+ntttransform = ntt_transform

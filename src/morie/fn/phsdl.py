@@ -46,3 +46,7 @@ phsdl = phase_delay
 
 def cheatsheet() -> str:
     return "phase_delay({}) -> Phase delay of a digital filter."
+
+
+# compact alias per ledger/NAMING.md
+phasedelay = phase_delay

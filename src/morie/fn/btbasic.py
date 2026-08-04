@@ -42,3 +42,7 @@ def boot_basic_ci(theta_hat, theta_b, alpha):
 
 def cheatsheet():
     return "btbasic: Basic (reverse-percentile) bootstrap CI"
+
+
+# compact alias per ledger/NAMING.md
+bootbasicci = boot_basic_ci

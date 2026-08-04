@@ -45,3 +45,7 @@ def vol_gjr_garch(r):
 
 def cheatsheet():
     return "volgjr: GJR-GARCH fit, spec 'gjr'"
+
+
+# compact alias per ledger/NAMING.md
+volgjrgarch = vol_gjr_garch

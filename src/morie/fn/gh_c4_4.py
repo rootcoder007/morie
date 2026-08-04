@@ -29,3 +29,7 @@ def ghosal_dp_cov(G0_AB, G0_A, G0_B, alpha):
 
 def cheatsheet():
     return "gh_c4_4: DP prior covariance"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpcov = ghosal_dp_cov

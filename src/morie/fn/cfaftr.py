@@ -38,3 +38,7 @@ def cfa_one_factor(X, factor_structure):
 
 def cheatsheet():
     return "cfaftr: Confirmatory factor analysis 1-factor"
+
+
+# compact alias per ledger/NAMING.md
+cfaonefactor = cfa_one_factor

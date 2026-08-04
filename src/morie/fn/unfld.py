@@ -67,3 +67,7 @@ unfld = unfolding_model
 
 def cheatsheet() -> str:
     return "unfolding_model({}) -> Metric unfolding for ideal point estimation."
+
+
+# compact alias per ledger/NAMING.md
+unfoldingmodel = unfolding_model

@@ -90,3 +90,7 @@ def ghosal_mpt_prior(x, grid=None, levels=6, a_scale=1.0, shifts=None):
 
 def cheatsheet():
     return "gh_c3_14: mixing over the partition removes the tessellation's jumps, not a lack of flexibility"
+
+
+# compact alias per ledger/NAMING.md
+ghosalmptprior = ghosal_mpt_prior

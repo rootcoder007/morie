@@ -33,3 +33,7 @@ tfdft = tfdft_fn
 
 def cheatsheet() -> str:
     return "tfdft_fn({}) -> Time-Frequency Distribution feature extraction."
+
+
+# compact alias per ledger/NAMING.md
+tfdftfn = tfdft_fn

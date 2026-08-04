@@ -128,3 +128,7 @@ crosd = croston_method
 
 def cheatsheet() -> str:
     return "croston_method(y, alpha=0.1, sba=False) -> Croston's intermittent demand forecast."
+
+
+# compact alias per ledger/NAMING.md
+crostonmethod = croston_method

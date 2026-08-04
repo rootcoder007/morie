@@ -55,3 +55,7 @@ short = gdp_growth
 
 def cheatsheet() -> str:
     return "gdp_growth({}) -> GDP growth rate and trend."
+
+
+# compact alias per ledger/NAMING.md
+gdpgrowth = gdp_growth

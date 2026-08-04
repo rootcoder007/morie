@@ -46,3 +46,7 @@ def poisson_loss_dnn(y, y_hat):
 
 def cheatsheet():
     return "poilO: Poisson log-likelihood loss for DNN count genomic outcomes"
+
+
+# compact alias per ledger/NAMING.md
+poissonlossdnn = poisson_loss_dnn

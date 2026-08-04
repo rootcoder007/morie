@@ -40,3 +40,7 @@ def vqgan_decode(indices, codebook, decoder):
 
 def cheatsheet():
     return "vqgdec: VQ-GAN decoder"
+
+
+# compact alias per ledger/NAMING.md
+vqgandecode = vqgan_decode

@@ -130,3 +130,7 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
 
 def cheatsheet():
     return "gh_c13_15: BvM is what makes credible intervals valid confidence intervals -- it can fail elsewhere"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcoxbvm = ghosal_cox_bvm

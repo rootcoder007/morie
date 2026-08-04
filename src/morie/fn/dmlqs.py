@@ -40,3 +40,7 @@ def deepml_qsar(smiles, activities):
 
 def cheatsheet():
     return "dmlqs: Deep-learning QSAR (graph neural network)"
+
+
+# compact alias per ledger/NAMING.md
+deepmlqsar = deepml_qsar

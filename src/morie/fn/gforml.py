@@ -116,3 +116,7 @@ def robins_g_formula(y, treatment_history, covariate_history, intervention, n_mc
 
 def cheatsheet():
     return "gforml: MC parametric g-formula E[Y(abar)] under a static regime"
+
+
+# compact alias per ledger/NAMING.md
+robinsgformula = robins_g_formula

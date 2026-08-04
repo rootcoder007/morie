@@ -40,3 +40,7 @@ def gp_density_shift(y_stream, window, tau):
 
 def cheatsheet():
     return "gpdsh: GP-based density shift detection"
+
+
+# compact alias per ledger/NAMING.md
+gpdensityshift = gp_density_shift

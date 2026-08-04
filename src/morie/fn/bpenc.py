@@ -45,3 +45,7 @@ bpenc = bits_per_char
 
 def cheatsheet() -> str:
     return "bits_per_char(text) -> Bits per character."
+
+
+# compact alias per ledger/NAMING.md
+bitsperchar = bits_per_char

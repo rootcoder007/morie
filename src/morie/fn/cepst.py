@@ -42,3 +42,7 @@ cepst = real_cepstrum
 
 def cheatsheet() -> str:
     return "real_cepstrum({}) -> Real cepstrum."
+
+
+# compact alias per ledger/NAMING.md
+realcepstrum = real_cepstrum

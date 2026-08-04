@@ -46,3 +46,7 @@ def tmle_two_stage(y, D1, D2, X1, X2):
 
 def cheatsheet():
     return "tmltsm: Two-stage TMLE for staged interventions"
+
+
+# compact alias per ledger/NAMING.md
+tmletwostage = tmle_two_stage

@@ -42,3 +42,7 @@ rela = relative_vario
 
 def cheatsheet() -> str:
     return "relative_vario({}) -> Relative variogram"
+
+
+# compact alias per ledger/NAMING.md
+relativevario = relative_vario

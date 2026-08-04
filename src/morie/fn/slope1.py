@@ -40,3 +40,7 @@ def slope_one(R, u, i):
 
 def cheatsheet():
     return "slope1: Slope-one predictor"
+
+
+# compact alias per ledger/NAMING.md
+slopeone = slope_one

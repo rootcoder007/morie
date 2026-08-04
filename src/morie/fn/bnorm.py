@@ -92,3 +92,7 @@ bnorm = bayesian_normal
 
 def cheatsheet() -> str:
     return "bayesian_normal(data) -> Normal-normal conjugate Bayesian analysis."
+
+
+# compact alias per ledger/NAMING.md
+bayesiannormal = bayesian_normal

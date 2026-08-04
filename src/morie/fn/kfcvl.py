@@ -33,3 +33,7 @@ kfcvl = kfcvl_fn
 
 def cheatsheet() -> str:
     return "kfcvl_fn({}) -> K-fold cross-validation."
+
+
+# compact alias per ledger/NAMING.md
+kfcvlfn = kfcvl_fn

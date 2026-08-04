@@ -45,3 +45,7 @@ fib = fibonacci_ratio
 
 def cheatsheet() -> str:
     return "fibonacci_ratio({}) -> Fibonacci golden ratio convergence."
+
+
+# compact alias per ledger/NAMING.md
+fibonacciratio = fibonacci_ratio

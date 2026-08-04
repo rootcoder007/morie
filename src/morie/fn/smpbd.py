@@ -55,3 +55,7 @@ smpbd = sample_bound
 
 def cheatsheet() -> str:
     return "sample_bound({}) -> Sample size bound."
+
+
+# compact alias per ledger/NAMING.md
+samplebound = sample_bound

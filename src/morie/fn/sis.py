@@ -78,3 +78,7 @@ sis = sis_model
 
 def cheatsheet() -> str:
     return "sis_model({}) -> SIS compartmental model (no immunity)."
+
+
+# compact alias per ledger/NAMING.md
+sismodel = sis_model

@@ -60,3 +60,7 @@ pacf = partial_acf
 
 def cheatsheet() -> str:
     return "partial_acf({}) -> Partial autocorrelation function."
+
+
+# compact alias per ledger/NAMING.md
+partialacf = partial_acf

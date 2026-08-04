@@ -58,3 +58,7 @@ def theta_eap(X, items, prior=(0.0, 1.0), n_nodes=61):
 
 def cheatsheet():
     return "theteap: EAP over a response MATRIX -- same implementation as eapth"
+
+
+# compact alias per ledger/NAMING.md
+thetaeap = theta_eap

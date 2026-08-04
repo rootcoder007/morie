@@ -41,3 +41,7 @@ smom2 = central_moment
 
 def cheatsheet() -> str:
     return "central_moment({}) -> Central moment."
+
+
+# compact alias per ledger/NAMING.md
+centralmoment = central_moment

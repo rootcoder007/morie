@@ -40,3 +40,7 @@ def ehh_decay(haplotypes, core, d_grid):
 
 def cheatsheet():
     return "ehhdec: Extended haplotype homozygosity decay"
+
+
+# compact alias per ledger/NAMING.md
+ehhdecay = ehh_decay

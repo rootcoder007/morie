@@ -38,3 +38,7 @@ plam = plot_am_summary
 
 def cheatsheet() -> str:
     return "plot_am_summary({}) -> Plot summary data for Aldrich-McKelvey results."
+
+
+# compact alias per ledger/NAMING.md
+plotamsummary = plot_am_summary

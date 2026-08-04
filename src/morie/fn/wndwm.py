@@ -64,3 +64,7 @@ wndwm = window_function
 
 def cheatsheet() -> str:
     return "window_function({}) -> Window functions."
+
+
+# compact alias per ledger/NAMING.md
+windowfunction = window_function

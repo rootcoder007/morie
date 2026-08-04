@@ -107,3 +107,7 @@ optds = optimal_design
 
 def cheatsheet() -> str:
     return "optimal_design({}) -> D-optimal experimental design via coordinate exchange."
+
+
+# compact alias per ledger/NAMING.md
+optimaldesign = optimal_design

@@ -51,3 +51,7 @@ def tmle_censoring(time, event, censor, treatment, covariates):
 
 def cheatsheet():
     return "tmlcen: TMLE under right-censoring with inverse-probability-of-censoring weighting"
+
+
+# compact alias per ledger/NAMING.md
+tmlecensoring = tmle_censoring

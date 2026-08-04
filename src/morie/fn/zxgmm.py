@@ -29,3 +29,7 @@ gmm_ = gmm_spatial
 
 def cheatsheet() -> str:
     return "gmm_spatial({}) -> Spatial Gaussian mixture"
+
+
+# compact alias per ledger/NAMING.md
+gmmspatial = gmm_spatial

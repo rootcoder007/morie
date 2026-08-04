@@ -40,3 +40,7 @@ def shuffle_model(epsilon0, n, delta):
 
 def cheatsheet():
     return "shfflm: Shuffle model amplification"
+
+
+# compact alias per ledger/NAMING.md
+shufflemodel = shuffle_model

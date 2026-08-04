@@ -42,3 +42,7 @@ def d_from_t(t, n1, n2):
 
 def cheatsheet():
     return 'ca11e5: d = t sqrt((n1+n2)/(n1 n2)) [Weisburd et al. 2022, eq. 11.5]'
+
+
+# compact alias per ledger/NAMING.md
+dfromt = d_from_t

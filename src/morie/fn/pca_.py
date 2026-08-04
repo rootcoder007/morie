@@ -48,3 +48,7 @@ pca_ = pca_simple
 
 def cheatsheet() -> str:
     return "pca_simple({}) -> PCA via SVD (pure numpy)."
+
+
+# compact alias per ledger/NAMING.md
+pcasimple = pca_simple

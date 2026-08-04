@@ -34,3 +34,7 @@ iccfn = icc_curve_data
 
 def cheatsheet() -> str:
     return "icc_curve_data({}) -> ICC curve data for plotting."
+
+
+# compact alias per ledger/NAMING.md
+icccurvedata = icc_curve_data

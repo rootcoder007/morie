@@ -35,3 +35,7 @@ mds_ = mds_bootstrap
 
 def cheatsheet() -> str:
     return "mds_bootstrap({}) -> MDS bootstrap confidence"
+
+
+# compact alias per ledger/NAMING.md
+mdsbootstrap = mds_bootstrap

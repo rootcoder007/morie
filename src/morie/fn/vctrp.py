@@ -54,3 +54,7 @@ vctrp = victim_repeat
 
 def cheatsheet() -> str:
     return "victim_repeat({}) -> Repeat victimization analysis."
+
+
+# compact alias per ledger/NAMING.md
+victimrepeat = victim_repeat

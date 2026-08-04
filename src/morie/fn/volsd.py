@@ -59,3 +59,7 @@ def vol_simple_diff(r, window=20):
 
 def cheatsheet():
     return "volsd: sigma_t = sqrt(mean r^2 over the trailing window)"
+
+
+# compact alias per ledger/NAMING.md
+volsimplediff = vol_simple_diff

@@ -44,3 +44,7 @@ def particle_filter(y, f, h, N):
 
 def cheatsheet():
     return "prtcl: Sequential Monte Carlo / particle filter"
+
+
+# compact alias per ledger/NAMING.md
+particlefilter = particle_filter

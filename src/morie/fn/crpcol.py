@@ -42,3 +42,7 @@ def crp_collapsed(y, alpha, n_iter):
 
 def cheatsheet():
     return "crpcol: Collapsed CRP Gibbs (integrate out parameters)"
+
+
+# compact alias per ledger/NAMING.md
+crpcollapsed = crp_collapsed

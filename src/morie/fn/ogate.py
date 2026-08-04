@@ -60,3 +60,7 @@ def otis_gate_age(
 
 def cheatsheet() -> str:
     return "otis_gate_age({}) -> GATE by age group for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisgateage = otis_gate_age

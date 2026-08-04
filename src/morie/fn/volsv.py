@@ -40,3 +40,7 @@ def vol_sv_quasi_lik(r, init):
 
 def cheatsheet():
     return "volsv: Quasi-likelihood SV(1) Kalman-Harvey approx"
+
+
+# compact alias per ledger/NAMING.md
+volsvquasilik = vol_sv_quasi_lik

@@ -35,3 +35,7 @@ proc = procrustes_part
 
 def cheatsheet() -> str:
     return "procrustes_part({}) -> Partial Procrustes"
+
+
+# compact alias per ledger/NAMING.md
+procrustespart = procrustes_part

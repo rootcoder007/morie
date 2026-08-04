@@ -149,3 +149,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`random_forest_oob`.
 rf_oob_error = random_forest_oob
+
+
+# compact alias per ledger/NAMING.md
+rfooberror = rf_oob_error

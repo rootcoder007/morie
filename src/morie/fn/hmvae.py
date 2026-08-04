@@ -208,3 +208,7 @@ def geron_vae(X, latent_dim=2, epochs=200, lr=0.05, beta=1.0, seed=0):
 
 def cheatsheet():
     return "hmvae: Variational autoencoder with latent Gaussian prior"
+
+
+# compact alias per ledger/NAMING.md
+geronvae = geron_vae

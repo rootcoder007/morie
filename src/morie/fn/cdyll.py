@@ -43,3 +43,7 @@ cdyll = years_life_lost
 
 def cheatsheet() -> str:
     return "years_life_lost({}) -> Years of life lost (YLL)."
+
+
+# compact alias per ledger/NAMING.md
+yearslifelost = years_life_lost

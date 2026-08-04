@@ -44,3 +44,7 @@ def tmle_quasi_score(y, D, X, score_fn):
 
 def cheatsheet():
     return "tmlqsa: Quasi-score TMLE -- handles non-likelihood loss"
+
+
+# compact alias per ledger/NAMING.md
+tmlequasiscore = tmle_quasi_score

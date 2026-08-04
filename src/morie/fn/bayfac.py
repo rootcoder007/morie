@@ -38,3 +38,7 @@ def bayes_factor(log_evidence_1, log_evidence_2):
 
 def cheatsheet():
     return "bayfac: Bayes factor between models"
+
+
+# compact alias per ledger/NAMING.md
+bayesfactor = bayes_factor

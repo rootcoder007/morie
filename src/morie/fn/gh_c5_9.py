@@ -85,3 +85,7 @@ def ghosal_beta_ker(x, grid=None, alpha=1.0, precision=20.0, K=50, seed=0,
 
 def cheatsheet():
     return "gh_c5_9: a Gaussian kernel leaks mass past a bounded support -- the Beta kernel cannot"
+
+
+# compact alias per ledger/NAMING.md
+ghosalbetaker = ghosal_beta_ker

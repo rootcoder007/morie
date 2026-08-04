@@ -114,3 +114,7 @@ def boyd_conjugate(f, y, x_grid=None):
 
 def cheatsheet():
     return "cvxcjg: convex in y even when f is not; +inf just means the slope is outside dom f*"
+
+
+# compact alias per ledger/NAMING.md
+boydconjugate = boyd_conjugate

@@ -70,3 +70,7 @@ def sem_theta(theta, items):
 
 def cheatsheet():
     return "semthe: SE of ability from 2PL test information (Lord 1980)"
+
+
+# compact alias per ledger/NAMING.md
+semtheta = sem_theta

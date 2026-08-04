@@ -29,3 +29,7 @@ cope = copeland_winner
 
 def cheatsheet() -> str:
     return "copeland_winner({}) -> Copeland spatial winner"
+
+
+# compact alias per ledger/NAMING.md
+copelandwinner = copeland_winner

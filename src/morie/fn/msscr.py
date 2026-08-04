@@ -35,3 +35,7 @@ mds_ = mds_scree
 
 def cheatsheet() -> str:
     return "mds_scree({}) -> MDS scree plot values"
+
+
+# compact alias per ledger/NAMING.md
+mdsscree = mds_scree

@@ -37,3 +37,7 @@ orooc = ordered_oc
 
 def cheatsheet() -> str:
     return "ordered_oc({}) -> Ordered Optimal Classification for ordinal scales."
+
+
+# compact alias per ledger/NAMING.md
+orderedoc = ordered_oc

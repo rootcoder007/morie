@@ -199,3 +199,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`efficiency_bound`.
 bound_efficient = efficiency_bound
+
+
+# compact alias per ledger/NAMING.md
+boundefficient = bound_efficient

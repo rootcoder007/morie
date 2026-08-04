@@ -87,3 +87,7 @@ bic2b = bayes_factor_bic
 
 def cheatsheet() -> str:
     return "bayes_factor_bic(bic_null, bic_alt) -> BIC-based Bayes factor approximation."
+
+
+# compact alias per ledger/NAMING.md
+bayesfactorbic = bayes_factor_bic

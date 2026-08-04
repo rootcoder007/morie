@@ -169,3 +169,7 @@ def geron_optics(X, min_samples=5, max_eps=np.inf, eps_cluster=None):
 
 def cheatsheet():
     return "hmopt: OPTICS reachability ordering and cluster extraction"
+
+
+# compact alias per ledger/NAMING.md
+geronoptics = geron_optics

@@ -102,3 +102,7 @@ def geron_ridge_cost(X, y, theta, alpha, intercept=True):
 
 def cheatsheet():
     return "grridg: J = MSE + (alpha/2) sum_{i>=1} theta_i^2; bias unpenalised, gradient included"
+
+
+# compact alias per ledger/NAMING.md
+geronridgecost = geron_ridge_cost

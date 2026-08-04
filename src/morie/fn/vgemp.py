@@ -49,3 +49,7 @@ empi = empirical_vario
 
 def cheatsheet() -> str:
     return "empirical_vario({}) -> Empirical semivariogram"
+
+
+# compact alias per ledger/NAMING.md
+empiricalvario = empirical_vario

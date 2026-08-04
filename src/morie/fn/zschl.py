@@ -29,3 +29,7 @@ chol = chol_sim
 
 def cheatsheet() -> str:
     return "chol_sim({}) -> Cholesky spatial simulation"
+
+
+# compact alias per ledger/NAMING.md
+cholsim = chol_sim

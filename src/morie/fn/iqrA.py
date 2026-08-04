@@ -36,3 +36,7 @@ def iqr_outlier(x):
 
 def cheatsheet():
     return "iqrA: IQR outlier rule"
+
+
+# compact alias per ledger/NAMING.md
+iqroutlier = iqr_outlier

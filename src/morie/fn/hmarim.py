@@ -183,3 +183,7 @@ def geron_arima(y, p=1, d=0, q=0, include_mean=True):
 
 def cheatsheet():
     return "hmarim: ARIMA(p,d,q) model: ARMA applied to d-th differenced series"
+
+
+# compact alias per ledger/NAMING.md
+geronarima = geron_arima

@@ -34,3 +34,7 @@ cf = cohens_f
 
 def cheatsheet() -> str:
     return "cohens_f({}) -> Cohen's f effect size from eta-squared."
+
+
+# compact alias per ledger/NAMING.md
+cohensf = cohens_f

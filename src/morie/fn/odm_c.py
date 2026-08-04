@@ -38,3 +38,7 @@ odm_c = otis_demo_cross
 
 def cheatsheet() -> str:
     return "otis_demo_cross({}) -> Full demographic cross-tabulation."
+
+
+# compact alias per ledger/NAMING.md
+otisdemocross = otis_demo_cross

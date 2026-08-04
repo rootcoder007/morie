@@ -141,3 +141,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`preprocessing_pipeline`.
 geron_pipeline = preprocessing_pipeline
+
+
+# compact alias per ledger/NAMING.md
+geronpipeline = geron_pipeline

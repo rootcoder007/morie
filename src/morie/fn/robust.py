@@ -70,3 +70,7 @@ robust = eval_robustness
 
 def cheatsheet() -> str:
     return "eval_robustness({}) -> Random Forest classifier robustness evaluation."
+
+
+# compact alias per ledger/NAMING.md
+evalrobustness = eval_robustness

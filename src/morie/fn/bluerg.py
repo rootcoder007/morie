@@ -218,3 +218,7 @@ def cheatsheet():
         "bluerg: GLS/BLUE, or Henderson's MME for BLUE and BLUP together, "
         "with the MME-equals-GLS identity and an estimability test"
     )
+
+
+# compact alias per ledger/NAMING.md
+bluegls = blue_gls

@@ -30,3 +30,7 @@ shep = shepard_diag
 
 def cheatsheet() -> str:
     return "shepard_diag({}) -> Shepard diagram values"
+
+
+# compact alias per ledger/NAMING.md
+sheparddiag = shepard_diag

@@ -78,3 +78,7 @@ phicx = phi_complexity
 
 def cheatsheet() -> str:
     return "phi_complexity(cov_matrix) -> Integrated information phi."
+
+
+# compact alias per ledger/NAMING.md
+phicomplexity = phi_complexity

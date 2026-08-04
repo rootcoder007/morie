@@ -29,3 +29,7 @@ amen = amendment_seq
 
 def cheatsheet() -> str:
     return "amendment_seq({}) -> Sequential amendment procedure"
+
+
+# compact alias per ledger/NAMING.md
+amendmentseq = amendment_seq

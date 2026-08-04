@@ -46,3 +46,7 @@ def rangayyan_qda(X, y):
 
 def cheatsheet():
     return "rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanqda = rangayyan_qda

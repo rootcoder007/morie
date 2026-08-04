@@ -40,3 +40,7 @@ def emmax_gwas(y, M, K):
 
 def cheatsheet():
     return "gwasem: EMMAX GWAS"
+
+
+# compact alias per ledger/NAMING.md
+emmaxgwas = emmax_gwas

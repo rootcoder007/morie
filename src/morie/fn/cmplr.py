@@ -114,3 +114,7 @@ cmplr = complier_ate
 
 def cheatsheet() -> str:
     return "complier_ate({}) -> Complier Average Causal Effect (CACE/LATE)."
+
+
+# compact alias per ledger/NAMING.md
+complierate = complier_ate

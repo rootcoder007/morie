@@ -40,3 +40,7 @@ def cfa_multifactor(X, factor_pattern):
 
 def cheatsheet():
     return "cfafm2: CFA multi-factor with cross-loadings allowed"
+
+
+# compact alias per ledger/NAMING.md
+cfamultifactor = cfa_multifactor

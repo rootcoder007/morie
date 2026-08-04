@@ -121,3 +121,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`geron_oob_evaluation`.
 geron_oob_error = geron_oob_evaluation
+
+
+# compact alias per ledger/NAMING.md
+geronooberror = geron_oob_error

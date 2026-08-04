@@ -226,3 +226,7 @@ glmft = glm_fit
 
 def cheatsheet() -> str:
     return "glm_fit({}) -> Generalized linear model fitting."
+
+
+# compact alias per ledger/NAMING.md
+glmfit = glm_fit

@@ -103,3 +103,7 @@ def ml_mediation_dml(x, m, y, c, n_folds=5, seed=0):
 
 def cheatsheet():
     return "medML: residualise X, M, Y on C by cross-fitting, then a*b and c'"
+
+
+# compact alias per ledger/NAMING.md
+mlmediationdml = ml_mediation_dml

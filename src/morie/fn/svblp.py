@@ -29,3 +29,7 @@ blis = bliss_point
 
 def cheatsheet() -> str:
     return "bliss_point({}) -> Bliss point estimation"
+
+
+# compact alias per ledger/NAMING.md
+blisspoint = bliss_point

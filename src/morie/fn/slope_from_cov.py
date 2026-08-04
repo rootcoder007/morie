@@ -35,3 +35,7 @@ def slope_from_cov(x, y):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner6e13: Model slope from data: m = Cov(x,y)/s_x^2. Morin (2016) eq (6.13)."
+
+
+# compact alias per ledger/NAMING.md
+slopefromcov = slope_from_cov

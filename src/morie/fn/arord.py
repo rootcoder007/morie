@@ -36,3 +36,7 @@ arord = ar_order_select
 
 def cheatsheet() -> str:
     return "ar_order_select({}) -> Optimal AR model order selection via information criterion."
+
+
+# compact alias per ledger/NAMING.md
+arorderselect = ar_order_select

@@ -39,3 +39,7 @@ def rmse_metric(y_true, y_pred):
 
 def cheatsheet():
     return "rmsef: Root mean squared error"
+
+
+# compact alias per ledger/NAMING.md
+rmsemetric = rmse_metric

@@ -30,3 +30,7 @@ j_fu = j_function
 
 def cheatsheet() -> str:
     return "j_function({}) -> J-function (ratio F/G)"
+
+
+# compact alias per ledger/NAMING.md
+jfunction = j_function

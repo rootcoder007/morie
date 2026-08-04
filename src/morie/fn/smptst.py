@@ -75,3 +75,7 @@ def sample_test_msm(y, A, H, K, cdf=None):
 
 def cheatsheet():
     return "smptst: Subsample-based test of MSM specification"
+
+
+# compact alias per ledger/NAMING.md
+sampletestmsm = sample_test_msm

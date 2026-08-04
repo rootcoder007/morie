@@ -40,3 +40,7 @@ def sparse_gp(X, y, M):
 
 def cheatsheet():
     return "sgpr: FITC / DTC sparse GP"
+
+
+# compact alias per ledger/NAMING.md
+sparsegp = sparse_gp

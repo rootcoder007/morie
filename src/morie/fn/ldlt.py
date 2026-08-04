@@ -71,3 +71,7 @@ short = ldlt_factorize
 
 def cheatsheet() -> str:
     return "ldlt_factorize({}) -> LDL^T factorization for symmetric matrices."
+
+
+# compact alias per ledger/NAMING.md
+ldltfactorize = ldlt_factorize

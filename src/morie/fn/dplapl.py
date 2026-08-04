@@ -89,3 +89,7 @@ dplapl = dp_laplace
 
 def cheatsheet() -> str:
     return "dp_laplace({}) -> Differential privacy (Laplace mechanism)."
+
+
+# compact alias per ledger/NAMING.md
+dplaplace = dp_laplace

@@ -73,3 +73,7 @@ def hettest_bias(y, D, X, cdf=None):
 
 def cheatsheet():
     return "htbias: Heterogeneous treatment-effect bias test"
+
+
+# compact alias per ledger/NAMING.md
+hettestbias = hettest_bias

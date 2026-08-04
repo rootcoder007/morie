@@ -36,3 +36,7 @@ def rainbow_dqn(env):
 
 def cheatsheet():
     return "raindq: Rainbow: 6 DQN improvements combined"
+
+
+# compact alias per ledger/NAMING.md
+rainbowdqn = rainbow_dqn

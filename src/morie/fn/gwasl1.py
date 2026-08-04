@@ -40,3 +40,7 @@ def gwas_linear(y, M, K):
 
 def cheatsheet():
     return "gwasl1: Linear-mixed-model GWAS"
+
+
+# compact alias per ledger/NAMING.md
+gwaslinear = gwas_linear

@@ -94,3 +94,7 @@ qsim = queue_simulate
 
 def cheatsheet() -> str:
     return "queue_simulate({}) -> Discrete-event M/M/1 queue simulation."
+
+
+# compact alias per ledger/NAMING.md
+queuesimulate = queue_simulate

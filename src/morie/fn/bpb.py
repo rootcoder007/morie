@@ -43,3 +43,7 @@ def cheatsheet() -> str:
 
 
 bpb = bits_per_byte
+
+
+# compact alias per ledger/NAMING.md
+bitsperbyte = bits_per_byte

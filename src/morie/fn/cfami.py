@@ -116,3 +116,7 @@ def cfa_modindex(
 
 def cheatsheet() -> str:
     return "cfa_modindex({}) -> Modification indices for CFA models."
+
+
+# compact alias per ledger/NAMING.md
+cfamodindex = cfa_modindex

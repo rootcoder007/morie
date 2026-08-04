@@ -64,3 +64,7 @@ kpss = kpss_test
 
 def cheatsheet() -> str:
     return "kpss_test({}) -> KPSS stationarity test."
+
+
+# compact alias per ledger/NAMING.md
+kpsstest = kpss_test

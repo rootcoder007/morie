@@ -94,3 +94,7 @@ svmrb = svm_rbf
 
 def cheatsheet() -> str:
     return "svm_rbf({}) -> RBF kernel SVM classifier."
+
+
+# compact alias per ledger/NAMING.md
+svmrbf = svm_rbf

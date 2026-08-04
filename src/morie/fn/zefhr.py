@@ -29,3 +29,7 @@ fay_ = fay_herriot
 
 def cheatsheet() -> str:
     return "fay_herriot({}) -> Fay-Herriot small area estimator"
+
+
+# compact alias per ledger/NAMING.md
+fayherriot = fay_herriot

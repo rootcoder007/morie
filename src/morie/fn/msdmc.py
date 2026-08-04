@@ -37,3 +37,7 @@ dist = dist_mahal
 
 def cheatsheet() -> str:
     return "dist_mahal({}) -> Mahalanobis distance matrix"
+
+
+# compact alias per ledger/NAMING.md
+distmahal = dist_mahal

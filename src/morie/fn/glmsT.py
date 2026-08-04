@@ -66,3 +66,7 @@ def linear_trend(t, x, cdf=None):
 
 def cheatsheet():
     return "glmsT: Linear-trend test (Kendall tau)"
+
+
+# compact alias per ledger/NAMING.md
+lineartrend = linear_trend

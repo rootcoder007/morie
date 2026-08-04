@@ -83,3 +83,7 @@ sird = sir_model
 
 def cheatsheet() -> str:
     return "sir_model({}) -> SIR compartmental model (Susceptible-Infected-Recovered)."
+
+
+# compact alias per ledger/NAMING.md
+sirmodel = sir_model

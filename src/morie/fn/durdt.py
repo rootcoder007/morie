@@ -51,3 +51,7 @@ durdt = duration_detect
 
 def cheatsheet() -> str:
     return "duration_detect({}) -> Filter events by duration."
+
+
+# compact alias per ledger/NAMING.md
+durationdetect = duration_detect

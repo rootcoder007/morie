@@ -169,3 +169,7 @@ irm = estimate_irm
 def cheatsheet() -> str:
     return ("estimate_irm({}) -> Native double-ML IRM: cross-fitted "
             "forest nuisances, Neyman-orthogonal ATE score.")
+
+
+# compact alias per ledger/NAMING.md
+estimateirm = estimate_irm

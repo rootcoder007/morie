@@ -28,3 +28,7 @@ spat = spatial_probit
 
 def cheatsheet() -> str:
     return "spatial_probit({}) -> Spatial probit model"
+
+
+# compact alias per ledger/NAMING.md
+spatialprobit = spatial_probit

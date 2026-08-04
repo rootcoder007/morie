@@ -37,3 +37,7 @@ rcred = read_roll_call
 
 def cheatsheet() -> str:
     return "read_roll_call({}) -> Read roll-call vote matrix."
+
+
+# compact alias per ledger/NAMING.md
+readrollcall = read_roll_call

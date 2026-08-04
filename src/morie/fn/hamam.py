@@ -87,3 +87,7 @@ hamam = brownian_motion
 
 def cheatsheet() -> str:
     return "brownian_motion({}) -> Brownian motion simulation."
+
+
+# compact alias per ledger/NAMING.md
+brownianmotion = brownian_motion

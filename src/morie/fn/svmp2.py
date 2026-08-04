@@ -29,3 +29,7 @@ mult = multiparty_2d
 
 def cheatsheet() -> str:
     return "multiparty_2d({}) -> Multi-party 2D equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+multiparty2d = multiparty_2d

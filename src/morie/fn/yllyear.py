@@ -40,3 +40,7 @@ def yll_calculation(deaths, ages, life_table):
 
 def cheatsheet():
     return "yllyear: Years of life lost"
+
+
+# compact alias per ledger/NAMING.md
+yllcalculation = yll_calculation

@@ -42,3 +42,7 @@ def sliced_grf(y, D, X, time):
 
 def cheatsheet():
     return "slvgrf: Sliced GRF for cross-sectional CATE"
+
+
+# compact alias per ledger/NAMING.md
+slicedgrf = sliced_grf

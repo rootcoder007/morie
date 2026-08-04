@@ -40,3 +40,7 @@ def boot_normal_ci(theta_hat, theta_b, alpha):
 
 def cheatsheet():
     return "btnorm: Normal-approximation bootstrap CI"
+
+
+# compact alias per ledger/NAMING.md
+bootnormalci = boot_normal_ci

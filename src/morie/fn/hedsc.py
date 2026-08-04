@@ -50,3 +50,7 @@ hedsc = discount_rate
 
 def cheatsheet() -> str:
     return "discount_rate({}) -> Discount future costs/effects."
+
+
+# compact alias per ledger/NAMING.md
+discountrate = discount_rate

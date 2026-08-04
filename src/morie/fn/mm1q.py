@@ -82,3 +82,7 @@ mm1q = mm1_queue
 
 def cheatsheet() -> str:
     return "mm1_queue({}) -> M/M/1 queue steady-state metrics."
+
+
+# compact alias per ledger/NAMING.md
+mm1queue = mm1_queue

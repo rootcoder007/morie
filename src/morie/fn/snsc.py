@@ -90,3 +90,7 @@ def sn_scale(x):
 
 def cheatsheet():
     return "snsc: lomed of himed of pairwise differences -- the median conventions are load-bearing"
+
+
+# compact alias per ledger/NAMING.md
+snscale = sn_scale

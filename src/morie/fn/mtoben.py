@@ -41,3 +41,7 @@ mtoben = mto_benefit_cost
 
 def cheatsheet() -> str:
     return "mto_benefit_cost({}) -> Road safety intervention benefit-cost ratio."
+
+
+# compact alias per ledger/NAMING.md
+mtobenefitcost = mto_benefit_cost

@@ -40,3 +40,7 @@ def hierarchical_rl(env, options, meta):
 
 def cheatsheet():
     return "hier: Hierarchical RL (options framework)"
+
+
+# compact alias per ledger/NAMING.md
+hierarchicalrl = hierarchical_rl

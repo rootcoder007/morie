@@ -36,3 +36,7 @@ svpap = svp_approx
 
 def cheatsheet() -> str:
     return "svp_approx({}) -> Approximate Shortest Vector Problem via LLL."
+
+
+# compact alias per ledger/NAMING.md
+svpapprox = svp_approx

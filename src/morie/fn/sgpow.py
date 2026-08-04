@@ -53,3 +53,7 @@ sgpow = power_variogram
 
 def cheatsheet() -> str:
     return "power_variogram({}) -> Power variogram model."
+
+
+# compact alias per ledger/NAMING.md
+powervariogram = power_variogram

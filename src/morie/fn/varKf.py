@@ -40,3 +40,7 @@ def variational_gp(X, y, Z):
 
 def cheatsheet():
     return "varKf: Sparse variational GP"
+
+
+# compact alias per ledger/NAMING.md
+variationalgp = variational_gp

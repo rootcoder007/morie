@@ -40,3 +40,7 @@ def ma_random_dl(yi, vi):
 
 def cheatsheet():
     return "marndm: Random-effects pooled mean via DerSimonian-Laird τ²"
+
+
+# compact alias per ledger/NAMING.md
+marandomdl = ma_random_dl

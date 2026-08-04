@@ -99,3 +99,7 @@ trmwt = trimmed_weights
 
 def cheatsheet() -> str:
     return "trimmed_weights({}) -> Trimmed weights for causal inference."
+
+
+# compact alias per ledger/NAMING.md
+trimmedweights = trimmed_weights

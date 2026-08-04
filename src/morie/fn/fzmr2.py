@@ -83,3 +83,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`fauzi_mrl_boundary_free_2`.
 fauzi_mrl_est2 = fauzi_mrl_boundary_free_2
+
+
+# compact alias per ledger/NAMING.md
+fauzimrlest2 = fauzi_mrl_est2

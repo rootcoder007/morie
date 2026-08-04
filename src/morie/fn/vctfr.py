@@ -43,3 +43,7 @@ vctfr = victim_fear
 
 def cheatsheet() -> str:
     return "victim_fear({}) -> Fear of crime index."
+
+
+# compact alias per ledger/NAMING.md
+victimfear = victim_fear

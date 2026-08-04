@@ -40,3 +40,7 @@ def two_tower(user_X, item_X, K):
 
 def cheatsheet():
     return "twoT: Two-tower retrieval"
+
+
+# compact alias per ledger/NAMING.md
+twotower = two_tower

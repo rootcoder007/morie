@@ -24,3 +24,7 @@ alias = mean_abs_value
 
 def cheatsheet() -> str:
     return "mean_abs_value({}) -> Mean absolute value of a signal."
+
+
+# compact alias per ledger/NAMING.md
+meanabsvalue = mean_abs_value

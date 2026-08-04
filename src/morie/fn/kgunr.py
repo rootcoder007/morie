@@ -30,3 +30,7 @@ uk_r = uk_residual
 
 def cheatsheet() -> str:
     return "uk_residual({}) -> Universal kriging residual"
+
+
+# compact alias per ledger/NAMING.md
+ukresidual = uk_residual

@@ -50,3 +50,7 @@ qween_fn = queen_weights
 
 def cheatsheet() -> str:
     return "queen_weights({}) -> Queen contiguity spatial weights matrix from adjacency list."
+
+
+# compact alias per ledger/NAMING.md
+queenweights = queen_weights

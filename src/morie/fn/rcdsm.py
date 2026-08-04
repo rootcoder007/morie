@@ -56,3 +56,7 @@ rcdsm = recidivism_rate
 
 def cheatsheet() -> str:
     return "recidivism_rate({}) -> Overall recidivism rate."
+
+
+# compact alias per ledger/NAMING.md
+recidivismrate = recidivism_rate

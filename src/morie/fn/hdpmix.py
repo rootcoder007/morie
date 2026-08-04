@@ -49,3 +49,7 @@ def hierarchical_dp(y, groups, gamma, alpha):
 
 def cheatsheet():
     return "hdpmix: Hierarchical Dirichlet Process for shared mixture components"
+
+
+# compact alias per ledger/NAMING.md
+hierarchicaldp = hierarchical_dp

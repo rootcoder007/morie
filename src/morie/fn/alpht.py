@@ -117,3 +117,7 @@ alpht = prior_elicit
 
 def cheatsheet() -> str:
     return "prior_elicit({}) -> Bayesian prior elicitation."
+
+
+# compact alias per ledger/NAMING.md
+priorelicit = prior_elicit

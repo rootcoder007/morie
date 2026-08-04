@@ -63,3 +63,7 @@ def cheatsheet() -> str:
 
 
 gptq = gptq_quantize
+
+
+# compact alias per ledger/NAMING.md
+gptqquantize = gptq_quantize

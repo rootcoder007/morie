@@ -87,3 +87,7 @@ ltabl = life_table_full
 
 def cheatsheet() -> str:
     return "life_table_full({}) -> Full abridged life table."
+
+
+# compact alias per ledger/NAMING.md
+lifetablefull = life_table_full

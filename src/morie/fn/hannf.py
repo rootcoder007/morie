@@ -34,3 +34,7 @@ hannf = hann_filter
 
 def cheatsheet() -> str:
     return "hann_filter({}) -> Hann window filter."
+
+
+# compact alias per ledger/NAMING.md
+hannfilter = hann_filter

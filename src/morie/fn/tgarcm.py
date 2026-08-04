@@ -51,3 +51,7 @@ def tgarch_gjr(x, p=1, q=1):
 
 def cheatsheet():
     return "tgarcm: Threshold (GJR) GARCH, spec 'gjr'"
+
+
+# compact alias per ledger/NAMING.md
+tgarchgjr = tgarch_gjr

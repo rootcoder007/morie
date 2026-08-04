@@ -46,3 +46,7 @@ def brier_score(y_prob, y_true):
 
 def cheatsheet():
     return "brcls: Brier score for probabilistic prediction of binary outcomes"
+
+
+# compact alias per ledger/NAMING.md
+brierscore = brier_score

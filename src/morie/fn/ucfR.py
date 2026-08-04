@@ -42,3 +42,7 @@ def user_cf(R, u, i, k):
 
 def cheatsheet():
     return "ucfR: User-based collaborative filtering"
+
+
+# compact alias per ledger/NAMING.md
+usercf = user_cf

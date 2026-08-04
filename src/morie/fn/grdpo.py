@@ -129,3 +129,7 @@ def geron_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta=0.1):
 
 def cheatsheet():
     return "grdpo: -log sigma(beta * [(lp_w - ref_w) - (lp_l - ref_l)]); implicit reward, no reward model"
+
+
+# compact alias per ledger/NAMING.md
+gerondpoloss = geron_dpo_loss

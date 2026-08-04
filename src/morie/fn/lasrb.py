@@ -67,3 +67,7 @@ lasrb = iou_metric
 
 def cheatsheet() -> str:
     return "iou_metric({}) -> IoU tracking metric."
+
+
+# compact alias per ledger/NAMING.md
+ioumetric = iou_metric

@@ -50,3 +50,7 @@ cstmd = custody_medical
 
 def cheatsheet() -> str:
     return "custody_medical({}) -> Medical service utilization rate in custody."
+
+
+# compact alias per ledger/NAMING.md
+custodymedical = custody_medical

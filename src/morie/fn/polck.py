@@ -35,3 +35,7 @@ polck = polarity_check
 
 def cheatsheet() -> str:
     return "polarity_check({}) -> Polarity check and correction for stimulus positions."
+
+
+# compact alias per ledger/NAMING.md
+polaritycheck = polarity_check

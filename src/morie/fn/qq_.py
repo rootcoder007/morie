@@ -41,3 +41,7 @@ qq_ = qq_plot_data
 
 def cheatsheet() -> str:
     return "qq_plot_data({}) -> QQ-plot data for GWAS p-values."
+
+
+# compact alias per ledger/NAMING.md
+qqplotdata = qq_plot_data

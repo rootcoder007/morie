@@ -65,3 +65,7 @@ tukey = tukey_biweight
 
 def cheatsheet() -> str:
     return "tukey_biweight({}) -> Tukey biweight M-estimator of location."
+
+
+# compact alias per ledger/NAMING.md
+tukeybiweight = tukey_biweight

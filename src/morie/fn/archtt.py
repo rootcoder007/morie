@@ -66,3 +66,7 @@ def arch_test(residuals, lags, cdf=None):
 
 def cheatsheet():
     return "archtt: Engle ARCH test for heteroscedasticity"
+
+
+# compact alias per ledger/NAMING.md
+archtest = arch_test

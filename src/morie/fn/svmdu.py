@@ -40,3 +40,7 @@ def svm_dual_wolfe(X, y, K):
 
 def cheatsheet():
     return "svmdu: SVM Wolfe dual formulation"
+
+
+# compact alias per ledger/NAMING.md
+svmdualwolfe = svm_dual_wolfe

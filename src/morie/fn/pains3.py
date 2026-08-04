@@ -38,3 +38,7 @@ def pains_filter(smiles):
 
 def cheatsheet():
     return "pains3: Pan-assay interference compound filter (PAINS)"
+
+
+# compact alias per ledger/NAMING.md
+painsfilter = pains_filter

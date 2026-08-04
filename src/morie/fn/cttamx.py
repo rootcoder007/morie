@@ -36,3 +36,7 @@ def ctt_alpha_max(X):
 
 def cheatsheet():
     return "cttamx: CTT alpha-if-item-deleted"
+
+
+# compact alias per ledger/NAMING.md
+cttalphamax = ctt_alpha_max

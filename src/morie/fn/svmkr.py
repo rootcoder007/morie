@@ -76,3 +76,7 @@ if __name__ == "__main__":
     print("kernel:", r.kernel, "  C:", r.C, "  gamma:", r.gamma)
     print("train accuracy:", r.train_accuracy)
     print("n_support per class:", r.n_support)
+
+
+# compact alias per ledger/NAMING.md
+svmkerneltrick = svm_kernel_trick

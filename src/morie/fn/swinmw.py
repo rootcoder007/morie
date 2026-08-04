@@ -40,3 +40,7 @@ def swin_msa_window(x, window_size, relative_bias):
 
 def cheatsheet():
     return "swinmw: Swin MSA within window"
+
+
+# compact alias per ledger/NAMING.md
+swinmsawindow = swin_msa_window

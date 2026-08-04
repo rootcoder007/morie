@@ -36,3 +36,7 @@ def co2_trend(co2_monthly):
 
 def cheatsheet():
     return "co2Trnd: Mauna Loa CO₂ trend (Keeling curve)"
+
+
+# compact alias per ledger/NAMING.md
+co2trend = co2_trend

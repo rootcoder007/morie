@@ -67,3 +67,7 @@ def state_space(y, F=None, H=None, Q=None, R_noise=None):
 
 def cheatsheet() -> str:
     return "state_space({}) -> State-space model via Kalman filter."
+
+
+# compact alias per ledger/NAMING.md
+statespace = state_space

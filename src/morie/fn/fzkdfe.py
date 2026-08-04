@@ -90,3 +90,7 @@ def fauzi_kdfe(x, grid=None, h=None):
 
 def cheatsheet():
     return "fzkdfe: smooth with the kernel's INTEGRAL -- bias carries f', not f''"
+
+
+# compact alias per ledger/NAMING.md
+fauzikdfe = fauzi_kdfe

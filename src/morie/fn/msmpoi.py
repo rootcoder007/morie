@@ -37,3 +37,7 @@ def msm_poisson(y, treatment_history, covariate_history=None, offset=None,
 
 def cheatsheet():
     return "msmpoi: Poisson marginal structural model"
+
+
+# compact alias per ledger/NAMING.md
+msmpoisson = msm_poisson

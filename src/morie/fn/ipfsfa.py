@@ -40,3 +40,7 @@ def ipopt_solver(f, constraints, x0):
 
 def cheatsheet():
     return "ipfsfa: Interior-point NLP (IPOPT-style)"
+
+
+# compact alias per ledger/NAMING.md
+ipoptsolver = ipopt_solver

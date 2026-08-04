@@ -73,3 +73,7 @@ archt = arch_fit
 
 def cheatsheet() -> str:
     return "arch_fit({}) -> ARCH(p) conditional heteroscedasticity model."
+
+
+# compact alias per ledger/NAMING.md
+archfit = arch_fit

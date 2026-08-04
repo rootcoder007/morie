@@ -36,3 +36,7 @@ proxm = proximity_cost
 
 def cheatsheet() -> str:
     return "proximity_cost({}) -> Proximity cost vector for spatial voting."
+
+
+# compact alias per ledger/NAMING.md
+proximitycost = proximity_cost

@@ -145,3 +145,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`tpe_suggest`.
 geron_optuna = tpe_suggest
+
+
+# compact alias per ledger/NAMING.md
+geronoptuna = geron_optuna
+
+
+# compact alias per ledger/NAMING.md
+tpesuggest = tpe_suggest

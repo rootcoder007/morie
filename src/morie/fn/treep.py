@@ -122,3 +122,7 @@ treep = tpe_minimize
 
 def cheatsheet() -> str:
     return "tpe_minimize(objective, bounds) -> Tree-structured Parzen Estimator."
+
+
+# compact alias per ledger/NAMING.md
+tpeminimize = tpe_minimize

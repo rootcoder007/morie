@@ -73,3 +73,7 @@ mtxop = matrix_function
 
 def cheatsheet() -> str:
     return "mtxop() -> Compute a matrix function f(A) via eigendecomposition"
+
+
+# compact alias per ledger/NAMING.md
+matrixfunction = matrix_function

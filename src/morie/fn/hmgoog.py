@@ -206,3 +206,7 @@ def geron_googlenet(n_classes=1000, input_size=224, in_channels=3, dropout=0.4):
 
 def cheatsheet():
     return "hmgoog: GoogLeNet/Inception with parallel filter modules"
+
+
+# compact alias per ledger/NAMING.md
+gerongooglenet = geron_googlenet

@@ -67,3 +67,7 @@ btlmd = bradley_terry
 
 def cheatsheet() -> str:
     return "bradley_terry({}) -> Bradley-Terry-Luce paired comparison model."
+
+
+# compact alias per ledger/NAMING.md
+bradleyterry = bradley_terry

@@ -40,3 +40,7 @@ def thomas_cluster(lambda_p, mu, sigma):
 
 def cheatsheet():
     return "thmksp: Thomas cluster process"
+
+
+# compact alias per ledger/NAMING.md
+thomascluster = thomas_cluster

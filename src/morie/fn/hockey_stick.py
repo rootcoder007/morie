@@ -34,3 +34,7 @@ def hockey_stick(n, k):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner1e29: Hockey-stick identity: sum_{j=k-1}^{n-1} C(j,k-1) = C(n,k). Morin (2016) eq (1.29)."
+
+
+# compact alias per ledger/NAMING.md
+hockeystick = hockey_stick

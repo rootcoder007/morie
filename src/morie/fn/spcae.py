@@ -87,3 +87,7 @@ spcae = sparse_pca
 
 def cheatsheet() -> str:
     return "sparse_pca({}) -> Sparse PCA via iterative thresholding."
+
+
+# compact alias per ledger/NAMING.md
+sparsepca = sparse_pca

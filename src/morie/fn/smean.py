@@ -39,3 +39,7 @@ smean = sample_mean
 
 def cheatsheet() -> str:
     return "sample_mean({}) -> Sample mean."
+
+
+# compact alias per ledger/NAMING.md
+samplemean = sample_mean

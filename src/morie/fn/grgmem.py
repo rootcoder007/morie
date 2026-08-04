@@ -145,3 +145,7 @@ def geron_gmm_em_step(X, pi, means, covars, reg=1e-6):
 
 def cheatsheet():
     return "grgmem: E-step responsibilities then weighted pi/mu/Sigma updates; log L checked monotone"
+
+
+# compact alias per ledger/NAMING.md
+gerongmmemstep = geron_gmm_em_step

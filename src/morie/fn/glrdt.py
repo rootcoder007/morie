@@ -63,3 +63,7 @@ glrdt = glr_detector
 
 def cheatsheet() -> str:
     return "glr_detector({}) -> Generalized Likelihood Ratio change-point detector."
+
+
+# compact alias per ledger/NAMING.md
+glrdetector = glr_detector

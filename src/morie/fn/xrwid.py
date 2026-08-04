@@ -29,3 +29,7 @@ w_in = w_inverse_dist
 
 def cheatsheet() -> str:
     return "w_inverse_dist({}) -> Inverse distance weights matrix"
+
+
+# compact alias per ledger/NAMING.md
+winversedist = w_inverse_dist

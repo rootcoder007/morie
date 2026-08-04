@@ -38,3 +38,7 @@ def functional_cca(X, Y):
 
 def cheatsheet():
     return "funCA: Functional CCA"
+
+
+# compact alias per ledger/NAMING.md
+functionalcca = functional_cca

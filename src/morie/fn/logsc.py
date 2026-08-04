@@ -45,3 +45,7 @@ def cheatsheet() -> str:
 
 
 logsc = logit_softcap
+
+
+# compact alias per ledger/NAMING.md
+logitsoftcap = logit_softcap

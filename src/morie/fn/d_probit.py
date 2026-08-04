@@ -42,3 +42,7 @@ def d_probit(p1, p2):
 
 def cheatsheet():
     return 'ca11e20: d = probit(p1) - probit(p2) = z1 - z2 [Weisburd et al. 2022, eq. 11.20]'
+
+
+# compact alias per ledger/NAMING.md
+dprobit = d_probit

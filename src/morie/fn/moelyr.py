@@ -46,3 +46,7 @@ def moe_layer(y, x, W_g, experts, top_k):
 
 def cheatsheet():
     return "moelyr: MoE feed-forward layer with router + expert mix"
+
+
+# compact alias per ledger/NAMING.md
+moelayer = moe_layer

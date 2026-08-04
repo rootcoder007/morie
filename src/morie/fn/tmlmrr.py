@@ -40,3 +40,7 @@ def tmle_marginal_rr(y, D, X):
 
 def cheatsheet():
     return "tmlmrr: TMLE for marginal risk ratio"
+
+
+# compact alias per ledger/NAMING.md
+tmlemarginalrr = tmle_marginal_rr

@@ -39,3 +39,7 @@ def score_mean(
 
 def cheatsheet() -> str:
     return "score_mean({}) -> Mean score for each respondent."
+
+
+# compact alias per ledger/NAMING.md
+scoremean = score_mean

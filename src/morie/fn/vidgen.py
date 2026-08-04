@@ -40,3 +40,7 @@ def video_diffusion(t, conditions, n_frames):
 
 def cheatsheet():
     return "vidgen: Video diffusion frame generation"
+
+
+# compact alias per ledger/NAMING.md
+videodiffusion = video_diffusion

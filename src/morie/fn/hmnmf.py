@@ -106,3 +106,7 @@ def geron_nmf(X, n_components=2, max_iter=400, tol=1e-6, seed=42):
 
 def cheatsheet():
     return "hmnmf: Non-negative matrix factorization X ~ W H"
+
+
+# compact alias per ledger/NAMING.md
+geronnmf = geron_nmf

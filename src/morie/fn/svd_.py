@@ -44,3 +44,7 @@ svd_ = truncated_svd
 
 def cheatsheet() -> str:
     return "truncated_svd({}) -> Truncated SVD."
+
+
+# compact alias per ledger/NAMING.md
+truncatedsvd = truncated_svd

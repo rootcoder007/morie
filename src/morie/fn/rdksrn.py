@@ -44,3 +44,7 @@ def sharp_rdd(y, x, cutoff, bandwidth):
 
 def cheatsheet():
     return "rdksrn: Sharp RDD with local linear regression"
+
+
+# compact alias per ledger/NAMING.md
+sharprdd = sharp_rdd

@@ -35,3 +35,7 @@ mds_ = mds_aniso
 
 def cheatsheet() -> str:
     return "mds_aniso({}) -> MDS anisotropy measure"
+
+
+# compact alias per ledger/NAMING.md
+mdsaniso = mds_aniso

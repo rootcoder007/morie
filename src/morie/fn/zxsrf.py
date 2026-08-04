@@ -27,3 +27,7 @@ spat = spatial_rf
 
 def cheatsheet() -> str:
     return "spatial_rf({}) -> Spatial random forest"
+
+
+# compact alias per ledger/NAMING.md
+spatialrf = spatial_rf

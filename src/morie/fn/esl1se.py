@@ -76,3 +76,7 @@ def esl_one_se_rule(cv_err, cv_se):
 
 def cheatsheet():
     return "esl1se: threshold = min + se(min); pick lowest index under it"
+
+
+# compact alias per ledger/NAMING.md
+esloneserule = esl_one_se_rule

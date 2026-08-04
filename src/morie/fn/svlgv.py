@@ -29,3 +29,7 @@ logi = logit_vote
 
 def cheatsheet() -> str:
     return "logit_vote({}) -> Logit spatial voting probability"
+
+
+# compact alias per ledger/NAMING.md
+logitvote = logit_vote

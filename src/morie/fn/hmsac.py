@@ -195,3 +195,7 @@ def geron_sac(env, policy=None, critic=None, epochs=20, lr=0.5, alpha=0.2, gamma
 
 def cheatsheet():
     return "hmsac: Soft actor-critic (SAC): entropy-regularized max reward"
+
+
+# compact alias per ledger/NAMING.md
+geronsac = geron_sac

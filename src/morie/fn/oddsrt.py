@@ -42,3 +42,7 @@ def odds_ratio(a, b, c, d):
 
 def cheatsheet():
     return "oddsrt: Odds ratio"
+
+
+# compact alias per ledger/NAMING.md
+oddsratio = odds_ratio

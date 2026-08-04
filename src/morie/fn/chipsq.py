@@ -38,3 +38,7 @@ def chip_seq_peak(reads, control):
 
 def cheatsheet():
     return "chipsq: ChIP-seq peak calling (MACS2)"
+
+
+# compact alias per ledger/NAMING.md
+chipseqpeak = chip_seq_peak

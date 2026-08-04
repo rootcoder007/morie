@@ -98,3 +98,11 @@ nb_ = naive_bayes
 
 def cheatsheet() -> str:
     return "naive_bayes_fit({}) -> Gaussian Naive Bayes (pure numpy)."
+
+
+# compact alias per ledger/NAMING.md
+naivebayes = naive_bayes
+
+
+# compact alias per ledger/NAMING.md
+naivebayesfit = naive_bayes_fit

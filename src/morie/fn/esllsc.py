@@ -104,3 +104,7 @@ def esl_lda_disc(X, y, query=None):
 
 def cheatsheet():
     return "esllsc: common covariance => linear; use eslqda when that fails"
+
+
+# compact alias per ledger/NAMING.md
+eslldadisc = esl_lda_disc

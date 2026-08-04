@@ -53,3 +53,7 @@ def lstsq_qr(
 
 
 lstqr = lstsq_qr
+
+
+# compact alias per ledger/NAMING.md
+lstsqqr = lstsq_qr

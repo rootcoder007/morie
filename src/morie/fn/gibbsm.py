@@ -40,3 +40,7 @@ def gibbs_sampler(conditionals, x0, n_iter):
 
 def cheatsheet():
     return "gibbsm: Gibbs sampler"
+
+
+# compact alias per ledger/NAMING.md
+gibbssampler = gibbs_sampler

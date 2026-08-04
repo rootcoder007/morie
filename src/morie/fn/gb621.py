@@ -74,3 +74,7 @@ def gibbons_ks2samp(x, y, cdf=None):
 
 def cheatsheet():
     return "gb621: Wald-Wolfowitz two-sample runs test using combined pooled sequence"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsks2samp = gibbons_ks2samp

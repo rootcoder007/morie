@@ -128,3 +128,7 @@ dmlpl = dml_plr
 
 def cheatsheet() -> str:
     return "dml_plr({}) -> DML Partially Linear Model (PLR)."
+
+
+# compact alias per ledger/NAMING.md
+dmlplr = dml_plr

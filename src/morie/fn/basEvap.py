@@ -42,3 +42,7 @@ def penman_monteith(T, R_n, u2, VPD):
 
 def cheatsheet():
     return "basEvap: Penman-Monteith reference ET"
+
+
+# compact alias per ledger/NAMING.md
+penmanmonteith = penman_monteith

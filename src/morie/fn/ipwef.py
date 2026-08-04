@@ -172,3 +172,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ipw_ate`.
 ipw_estimator = ipw_ate
+
+
+# compact alias per ledger/NAMING.md
+ipwate = ipw_ate
+
+
+# compact alias per ledger/NAMING.md
+ipwestimator = ipw_estimator

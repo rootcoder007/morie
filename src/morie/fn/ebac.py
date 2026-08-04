@@ -39,3 +39,7 @@ ebac = calculate_ebac
 
 def cheatsheet() -> str:
     return "calculate_ebac({}) -> Estimated Blood Alcohol Concentration (eBAC) via Widmark for"
+
+
+# compact alias per ledger/NAMING.md
+calculateebac = calculate_ebac

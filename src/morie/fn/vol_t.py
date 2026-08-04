@@ -58,3 +58,7 @@ short = vol_trd
 
 def cheatsheet() -> str:
     return "vol_trd({}) -> Volatility trend over time."
+
+
+# compact alias per ledger/NAMING.md
+voltrd = vol_trd

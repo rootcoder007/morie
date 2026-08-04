@@ -80,3 +80,7 @@ ltmcr = little_mcar_test
 
 def cheatsheet() -> str:
     return "little_mcar_test({}) -> Little's MCAR test (alternative implementation)."
+
+
+# compact alias per ledger/NAMING.md
+littlemcartest = little_mcar_test

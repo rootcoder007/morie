@@ -108,3 +108,7 @@ def mi_scalar(
 
 def cheatsheet() -> str:
     return "mi_scalar({}) -> Scalar (strong) invariance: constrain loadings + intercepts."
+
+
+# compact alias per ledger/NAMING.md
+miscalar = mi_scalar

@@ -56,3 +56,7 @@ mispt = missing_pattern
 
 def cheatsheet() -> str:
     return "missing_pattern({}) -> Missing data pattern analysis."
+
+
+# compact alias per ledger/NAMING.md
+missingpattern = missing_pattern

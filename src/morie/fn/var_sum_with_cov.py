@@ -35,3 +35,7 @@ def var_sum_with_cov(var_x, var_y, cov_xy=0.0):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e26: Var(X + Y) expansion with the cross term 2Cov(X, Y). Morin (2016) eq (3.26)."
+
+
+# compact alias per ledger/NAMING.md
+varsumwithcov = var_sum_with_cov

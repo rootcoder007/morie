@@ -100,3 +100,7 @@ cvsbas = cvss_base
 
 def cheatsheet() -> str:
     return "cvsbas() -> Compute CVSS v3.1 base score from metric values"
+
+
+# compact alias per ledger/NAMING.md
+cvssbase = cvss_base

@@ -138,3 +138,7 @@ mice = mice_impute
 
 def cheatsheet() -> str:
     return "mice_impute({}) -> Multiple Imputation by Chained Equations (MICE)."
+
+
+# compact alias per ledger/NAMING.md
+miceimpute = mice_impute

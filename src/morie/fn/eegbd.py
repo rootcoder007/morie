@@ -51,3 +51,7 @@ eegbd = plot_eeg_bands_fn
 
 def cheatsheet() -> str:
     return "plot_eeg_bands_fn({}) -> EEG frequency band decomposition plot."
+
+
+# compact alias per ledger/NAMING.md
+ploteegbandsfn = plot_eeg_bands_fn

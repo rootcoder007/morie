@@ -70,3 +70,7 @@ flag_summary = dif_flag_summary
 
 def cheatsheet() -> str:
     return "dif_flag_summary({}) -> Summary of flagged DIF items across methods."
+
+
+# compact alias per ledger/NAMING.md
+difflagsummary = dif_flag_summary

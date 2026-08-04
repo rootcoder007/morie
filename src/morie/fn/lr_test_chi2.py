@@ -42,3 +42,7 @@ def lr_test_chi2(ll_null, ll_full):
 
 def cheatsheet():
     return 'ca7e8: chi2 = -2 (LL_1 - LL_2) [Weisburd et al. 2022, eq. 7.8]'
+
+
+# compact alias per ledger/NAMING.md
+lrtestchi2 = lr_test_chi2

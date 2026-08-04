@@ -38,3 +38,7 @@ def vep_annotation(variants, cache):
 
 def cheatsheet():
     return "vepan: VEP variant effect predictor"
+
+
+# compact alias per ledger/NAMING.md
+vepannotation = vep_annotation

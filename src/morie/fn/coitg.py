@@ -83,3 +83,7 @@ coitg = eg_coint
 
 def cheatsheet() -> str:
     return "eg_coint({}) -> Engle-Granger cointegration test."
+
+
+# compact alias per ledger/NAMING.md
+egcoint = eg_coint

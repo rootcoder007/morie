@@ -30,3 +30,7 @@ alias = onset_detect_fn
 
 def cheatsheet() -> str:
     return "onset_detect_fn({}) -> Onset detection via energy envelope."
+
+
+# compact alias per ledger/NAMING.md
+onsetdetectfn = onset_detect_fn

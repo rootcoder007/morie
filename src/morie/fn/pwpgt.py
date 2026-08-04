@@ -46,3 +46,7 @@ def pwp_gap_time(start, stop, event, X, occurrence):
 
 def cheatsheet():
     return "pwpgt: Prentice-Williams-Peterson gap-time model"
+
+
+# compact alias per ledger/NAMING.md
+pwpgaptime = pwp_gap_time

@@ -42,3 +42,7 @@ def se_log_rr(p1, p2, n1, n2):
 
 def cheatsheet():
     return 'ca11e9: se_lnRR = sqrt((1-p1)/(n1 p1) + (1-p2)/(n2 p2)) [Weisburd et al. 2022, eq. 11.9]'
+
+
+# compact alias per ledger/NAMING.md
+selogrr = se_log_rr

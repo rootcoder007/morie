@@ -48,3 +48,7 @@ def rangayyan_omp(x, D, sparsity):
 
 def cheatsheet():
     return "rgomp: Orthogonal matching pursuit (OMP) for sparse representation"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanomp = rangayyan_omp

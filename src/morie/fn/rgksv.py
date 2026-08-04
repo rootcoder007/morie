@@ -43,3 +43,7 @@ def rangayyan_ksvd(Y, n_atoms, sparsity, max_iter):
 
 def cheatsheet():
     return "rgksv: K-SVD dictionary learning algorithm"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanksvd = rangayyan_ksvd

@@ -69,3 +69,7 @@ def sgt_wiener_index(A, cdf=None):
 
 def cheatsheet():
     return "sgtwh: Wiener index = sum of all-pairs shortest distances"
+
+
+# compact alias per ledger/NAMING.md
+sgtwienerindex = sgt_wiener_index

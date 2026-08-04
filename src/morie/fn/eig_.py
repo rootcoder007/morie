@@ -52,3 +52,7 @@ eig_ = eigen_analysis
 
 def cheatsheet() -> str:
     return "eigen_analysis({}) -> Eigenvalue/eigenvector analysis."
+
+
+# compact alias per ledger/NAMING.md
+eigenanalysis = eigen_analysis

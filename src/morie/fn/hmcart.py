@@ -254,3 +254,7 @@ def geron_cart_algorithm(
 
 def cheatsheet():
     return "hmcart: CART algorithm: greedy binary splits minimizing impurity"
+
+
+# compact alias per ledger/NAMING.md
+predicttree = predict_tree

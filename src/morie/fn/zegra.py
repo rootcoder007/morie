@@ -29,3 +29,7 @@ grav = gravity_access
 
 def cheatsheet() -> str:
     return "gravity_access({}) -> Gravity-based accessibility"
+
+
+# compact alias per ledger/NAMING.md
+gravityaccess = gravity_access

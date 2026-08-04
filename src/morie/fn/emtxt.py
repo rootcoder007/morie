@@ -128,3 +128,7 @@ def em_irt_text(word_freq_matrix, max_iter=200, tol=1e-6, polarity=(0, 1)):
 
 def cheatsheet():
     return "emtxt: y ~ Poisson(exp(alpha_i + psi_k + beta_k theta_i)) (Slapin-Proksch 2008)"
+
+
+# compact alias per ledger/NAMING.md
+emirttext = em_irt_text

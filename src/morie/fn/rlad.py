@@ -60,3 +60,7 @@ rlad = lad_regression
 
 def cheatsheet() -> str:
     return "lad_regression({}) -> Least absolute deviations regression."
+
+
+# compact alias per ledger/NAMING.md
+ladregression = lad_regression

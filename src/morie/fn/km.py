@@ -65,3 +65,7 @@ km = kaplan_meier
 
 def cheatsheet() -> str:
     return "kaplan_meier({}) -> Kaplan-Meier survival estimator."
+
+
+# compact alias per ledger/NAMING.md
+kaplanmeier = kaplan_meier

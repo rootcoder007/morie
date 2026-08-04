@@ -61,3 +61,7 @@ def bound_post_test(lower, upper, spec_test, cdf=None):
 
 def cheatsheet():
     return "bndpst: Post-test bound"
+
+
+# compact alias per ledger/NAMING.md
+boundposttest = bound_post_test

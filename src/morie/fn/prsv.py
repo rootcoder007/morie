@@ -45,3 +45,7 @@ prsv = parseval_verify
 
 def cheatsheet() -> str:
     return "parseval_verify({}) -> Parseval's theorem verification."
+
+
+# compact alias per ledger/NAMING.md
+parsevalverify = parseval_verify

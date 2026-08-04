@@ -59,3 +59,7 @@ def mi_by_age(
 
 def cheatsheet() -> str:
     return "mi_by_age({}) -> Full measurement invariance ladder by age group."
+
+
+# compact alias per ledger/NAMING.md
+mibyage = mi_by_age

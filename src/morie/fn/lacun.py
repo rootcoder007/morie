@@ -34,3 +34,7 @@ lacun = lacunarity_fn
 
 def cheatsheet() -> str:
     return "lacunarity_fn({}) -> Lacunarity analysis for fractal texture characterization."
+
+
+# compact alias per ledger/NAMING.md
+lacunarityfn = lacunarity_fn

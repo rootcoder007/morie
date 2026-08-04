@@ -88,3 +88,7 @@ def extremal_copula(u, v, A="gumbel", theta=2.0):
 
 def cheatsheet():
     return "copExt: C = exp{ln(uv) A(ln v / ln(uv))}; max-stable by construction"
+
+
+# compact alias per ledger/NAMING.md
+extremalcopula = extremal_copula

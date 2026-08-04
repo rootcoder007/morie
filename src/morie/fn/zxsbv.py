@@ -27,3 +27,7 @@ spat = spatial_cv_block
 
 def cheatsheet() -> str:
     return "spatial_cv_block({}) -> Spatial block cross-validation"
+
+
+# compact alias per ledger/NAMING.md
+spatialcvblock = spatial_cv_block

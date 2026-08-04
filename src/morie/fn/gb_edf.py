@@ -74,3 +74,7 @@ def gibbons_edf_def(x, data, cdf=None):
 
 def cheatsheet():
     return "gb_edf: Empirical distribution function S_n(x) definition via order statistics"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsedfdef = gibbons_edf_def

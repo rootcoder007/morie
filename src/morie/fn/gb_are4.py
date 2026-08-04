@@ -76,3 +76,7 @@ def gibbons_are_kw(distribution="normal", cdf=None, f=None):
 
 def cheatsheet():
     return "gb_are4: HL bound 0.864 for Wilcoxon-vs-t; 1/3 for the sign test"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsarekw = gibbons_are_kw

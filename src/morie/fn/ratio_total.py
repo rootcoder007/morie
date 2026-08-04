@@ -42,3 +42,7 @@ def ratio_total(t_pi_z, t_pi_x, t_x_true):
 
 def cheatsheet():
     return 'r10e23: t_ratio = (t_pi(z)/t_pi(x)) t(x) [Brus 2022, eq. 10.23]'
+
+
+# compact alias per ledger/NAMING.md
+ratiototal = ratio_total

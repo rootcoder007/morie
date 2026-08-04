@@ -56,3 +56,7 @@ def mutual_info(x, y, n_bins=20):
 
 def cheatsheet() -> str:
     return "mutual_info({}) -> Mutual information estimation."
+
+
+# compact alias per ledger/NAMING.md
+mutualinfo = mutual_info

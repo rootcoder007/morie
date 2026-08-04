@@ -68,3 +68,7 @@ knox = knox_test
 
 def cheatsheet() -> str:
     return "knox_test({}) -> Knox test for space-time clustering."
+
+
+# compact alias per ledger/NAMING.md
+knoxtest = knox_test

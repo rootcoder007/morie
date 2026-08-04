@@ -29,3 +29,7 @@ wave = wavelet_mra_sp
 
 def cheatsheet() -> str:
     return "wavelet_mra_sp({}) -> Spatial wavelet MRA"
+
+
+# compact alias per ledger/NAMING.md
+waveletmrasp = wavelet_mra_sp

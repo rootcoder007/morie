@@ -39,3 +39,7 @@ def mae_metric(y_true, y_pred):
 
 def cheatsheet():
     return "maedf: Mean absolute error"
+
+
+# compact alias per ledger/NAMING.md
+maemetric = mae_metric

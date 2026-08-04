@@ -42,3 +42,7 @@ def ht_mean(z, pi, n_population):
 
 def cheatsheet():
     return 'r2e4: zbar_hat_pi = (1/N) sum_{k in S} z_k/pi_k [Brus 2022, eq. 2.4]'
+
+
+# compact alias per ledger/NAMING.md
+htmean = ht_mean

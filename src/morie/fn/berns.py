@@ -71,3 +71,7 @@ berns = bernstein_bound
 
 def cheatsheet() -> str:
     return "bernstein_bound(n, t) -> Bernstein concentration inequality."
+
+
+# compact alias per ledger/NAMING.md
+bernsteinbound = bernstein_bound

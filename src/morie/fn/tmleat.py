@@ -129,3 +129,7 @@ def cheatsheet():
         "tmleat: TMLE for the ATE -- doubly robust, substitution, with the "
         "influence-function check and positivity diagnostics"
     )
+
+
+# compact alias per ledger/NAMING.md
+tmleate = tmle_ate

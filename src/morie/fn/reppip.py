@@ -96,3 +96,7 @@ reppip = repair_pipeline
 
 def cheatsheet() -> str:
     return "repair_pipeline({}) -> Data cleaning / denoising pipeline."
+
+
+# compact alias per ledger/NAMING.md
+repairpipeline = repair_pipeline

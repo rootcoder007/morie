@@ -143,3 +143,7 @@ def jacquez_k_nn_test(coords, time, k=3, cdf=None, B=999, seed=None):
 
 def cheatsheet():
     return "jacqkn: Jacquez k-nearest-neighbour space-time interaction test"
+
+
+# compact alias per ledger/NAMING.md
+jacquezknntest = jacquez_k_nn_test

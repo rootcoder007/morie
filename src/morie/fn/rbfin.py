@@ -89,3 +89,7 @@ short = rbf_interp
 
 def cheatsheet() -> str:
     return "rbf_interp({}) -> Radial basis function interpolation."
+
+
+# compact alias per ledger/NAMING.md
+rbfinterp = rbf_interp

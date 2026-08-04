@@ -104,3 +104,7 @@ mankt = mantel_test
 
 def cheatsheet() -> str:
     return "mantel_test({}) -> Mantel test for spatial matrix correlation."
+
+
+# compact alias per ledger/NAMING.md
+manteltest = mantel_test

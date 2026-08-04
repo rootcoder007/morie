@@ -65,3 +65,7 @@ def gibbons_wrs_ties(x, y):
 
 def cheatsheet():
     return "gb821t: Var(W) = Var(U); W = U + m(m+1)/2"
+
+
+# compact alias per ledger/NAMING.md
+gibbonswrsties = gibbons_wrs_ties

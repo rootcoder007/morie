@@ -114,3 +114,7 @@ def mi_configural(
 
 def cheatsheet() -> str:
     return "mi_configural({}) -> Configural invariance: fit CFA separately per group."
+
+
+# compact alias per ledger/NAMING.md
+miconfigural = mi_configural

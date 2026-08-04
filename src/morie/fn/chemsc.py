@@ -38,3 +38,7 @@ def chemscore_dock(receptor, ligand):
 
 def cheatsheet():
     return "chemsc: ChemScore empirical docking"
+
+
+# compact alias per ledger/NAMING.md
+chemscoredock = chemscore_dock

@@ -109,3 +109,7 @@ def schabenberger_trans_gaussian_kriging(coords, z, target, phi, dphi, d2phi,
 
 def cheatsheet():
     return "sptgk: trans-Gaussian kriging, eqs (5.58)-(5.60) (Schabenberger Sec 5.6.2)"
+
+
+# compact alias per ledger/NAMING.md
+normalscores = normal_scores

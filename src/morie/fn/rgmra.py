@@ -43,3 +43,7 @@ def rangayyan_mra(x, wavelet, levels):
 
 def cheatsheet():
     return "rgmra: Multiresolution analysis (MRA) decomposition"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanmra = rangayyan_mra

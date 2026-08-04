@@ -81,3 +81,7 @@ alfrd = cooks_distance
 
 def cheatsheet() -> str:
     return "cooks_distance({}) -> Cook's distance diagnostic."
+
+
+# compact alias per ledger/NAMING.md
+cooksdistance = cooks_distance

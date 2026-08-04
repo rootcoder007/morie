@@ -37,3 +37,7 @@ def ghosal_dp_pred(x_seen, alpha, x_new_equals=None):
 
 def cheatsheet():
     return "gh_c4_7: DP predictive distribution"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldppred = ghosal_dp_pred

@@ -80,3 +80,7 @@ csmtx = sensing_matrix
 
 def cheatsheet() -> str:
     return "sensing_matrix({}) -> Random sensing matrix generation for compressed sensing."
+
+
+# compact alias per ledger/NAMING.md
+sensingmatrix = sensing_matrix

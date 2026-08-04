@@ -49,3 +49,7 @@ mstep = max_step_size
 
 def cheatsheet() -> str:
     return "max_step_size({}) -> Maximum LMS step size."
+
+
+# compact alias per ledger/NAMING.md
+maxstepsize = max_step_size

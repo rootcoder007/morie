@@ -39,3 +39,7 @@ mvsml_ann_train = mvsml_reproducing_kernel_eq_10_17
 
 def cheatsheet():
     return "msm255: Hidden-layer weight update and training loop"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlanntrain = mvsml_ann_train

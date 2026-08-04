@@ -446,3 +446,23 @@ def cheatsheet():
         "enumcb: Stirling, Bell, Catalan, partition and derangement counts, "
         "the twelvefold way and Mobius inversion -- all exact integers"
     )
+
+
+# compact alias per ledger/NAMING.md
+bellnumber = bell_number
+
+
+# compact alias per ledger/NAMING.md
+partitioncount = partition_count
+
+
+# compact alias per ledger/NAMING.md
+stirlingfirst = stirling_first
+
+
+# compact alias per ledger/NAMING.md
+stirlingsecond = stirling_second
+
+
+# compact alias per ledger/NAMING.md
+twelvefoldway = twelvefold_way

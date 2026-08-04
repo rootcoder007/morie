@@ -102,3 +102,7 @@ def boyd_newton(grad, hess, ridge=0.0):
 
 def cheatsheet():
     return "cvxntn: Newton step by linear solve, not inversion; reports whether the Hessian was PD"
+
+
+# compact alias per ledger/NAMING.md
+boydnewton = boyd_newton

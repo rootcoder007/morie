@@ -56,3 +56,7 @@ def cheatsheet() -> str:
 
 
 dqerr = dequant_error
+
+
+# compact alias per ledger/NAMING.md
+dequanterror = dequant_error

@@ -47,3 +47,7 @@ def ma_network_lme(yi, vi, design):
 
 def cheatsheet():
     return "manlmm: Network meta-analysis via linear mixed model on contrasts"
+
+
+# compact alias per ledger/NAMING.md
+manetworklme = ma_network_lme

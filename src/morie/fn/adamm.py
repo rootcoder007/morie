@@ -72,3 +72,7 @@ def adam_optimize(
 
 
 adamm = adam_optimize
+
+
+# compact alias per ledger/NAMING.md
+adamoptimize = adam_optimize

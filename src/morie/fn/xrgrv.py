@@ -29,3 +29,7 @@ grav = gravity_model
 
 def cheatsheet() -> str:
     return "gravity_model({}) -> Gravity spatial interaction"
+
+
+# compact alias per ledger/NAMING.md
+gravitymodel = gravity_model

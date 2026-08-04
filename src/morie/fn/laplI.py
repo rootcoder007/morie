@@ -40,3 +40,7 @@ def inverse_laplace(F, s, t):
 
 def cheatsheet():
     return "laplI: Inverse Laplace transform"
+
+
+# compact alias per ledger/NAMING.md
+inverselaplace = inverse_laplace

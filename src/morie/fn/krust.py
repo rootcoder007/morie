@@ -64,3 +64,7 @@ def kruskal_stress(D_observed, D_config):
 
 def cheatsheet():
     return "krust: S1 = sqrt(sum(dhat-d)^2 / sum d^2); 0.05 good, 0.20 poor (Kruskal 1964)"
+
+
+# compact alias per ledger/NAMING.md
+kruskalstress = kruskal_stress

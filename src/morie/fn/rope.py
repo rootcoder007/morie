@@ -75,3 +75,7 @@ rope = rope_test
 
 def cheatsheet() -> str:
     return "rope_test({}) -> Region of Practical Equivalence (ROPE) analysis."
+
+
+# compact alias per ledger/NAMING.md
+ropetest = rope_test

@@ -42,3 +42,7 @@ def logit_form(p):
 
 def cheatsheet():
     return '2e3: log(pi/(1-pi)) = Xb [Bilder & Loughin 2025, eq. 2.3]'
+
+
+# compact alias per ledger/NAMING.md
+logitform = logit_form

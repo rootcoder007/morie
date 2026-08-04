@@ -102,3 +102,7 @@ nominal_irt = irt_nominal
 
 def cheatsheet() -> str:
     return "irt_nominal({}) -> Nominal response model for multiple-choice items."
+
+
+# compact alias per ledger/NAMING.md
+irtnominal = irt_nominal

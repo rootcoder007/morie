@@ -40,3 +40,7 @@ def sgt_kernel_pca(X, kernel, k):
 
 def cheatsheet():
     return "sgtkpc: Kernel PCA top-k components"
+
+
+# compact alias per ledger/NAMING.md
+sgtkernelpca = sgt_kernel_pca

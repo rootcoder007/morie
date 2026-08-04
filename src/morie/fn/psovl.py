@@ -75,3 +75,7 @@ psovl = ps_overlap
 
 def cheatsheet() -> str:
     return "ps_overlap({}) -> Propensity score overlap check."
+
+
+# compact alias per ledger/NAMING.md
+psoverlap = ps_overlap

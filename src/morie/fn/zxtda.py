@@ -29,3 +29,7 @@ tda_ = tda_persistent
 
 def cheatsheet() -> str:
     return "tda_persistent({}) -> Persistent homology spatial"
+
+
+# compact alias per ledger/NAMING.md
+tdapersistent = tda_persistent

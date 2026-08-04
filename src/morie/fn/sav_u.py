@@ -52,3 +52,7 @@ ave_ua = subscale_ua_ave
 
 def cheatsheet() -> str:
     return "subscale_ua_ave({}) -> UA subscale average variance extracted."
+
+
+# compact alias per ledger/NAMING.md
+subscaleuaave = subscale_ua_ave

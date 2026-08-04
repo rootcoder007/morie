@@ -42,3 +42,7 @@ def rdkit_path_fp(smiles, n_bits, min_path, max_path):
 
 def cheatsheet():
     return "rdkfp: RDKit path-based fingerprint"
+
+
+# compact alias per ledger/NAMING.md
+rdkitpathfp = rdkit_path_fp

@@ -195,3 +195,7 @@ def geron_gan(X, G=None, D=None, z_dim=1, epochs=200, lr=0.05, seed=0, non_satur
 
 def cheatsheet():
     return "hmgan: Generative adversarial network: generator vs discriminator minimax"
+
+
+# compact alias per ledger/NAMING.md
+gerongan = geron_gan

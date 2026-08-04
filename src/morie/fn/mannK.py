@@ -57,3 +57,7 @@ def mann_kendall(x, cdf=None):
 
 def cheatsheet():
     return "mannK: Mann-Kendall trend test"
+
+
+# compact alias per ledger/NAMING.md
+mannkendall = mann_kendall

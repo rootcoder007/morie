@@ -42,3 +42,7 @@ def laggedval_iptw(y, A, H, lag):
 
 def cheatsheet():
     return "lggvls: Lagged-value IPTW"
+
+
+# compact alias per ledger/NAMING.md
+laggedvaliptw = laggedval_iptw

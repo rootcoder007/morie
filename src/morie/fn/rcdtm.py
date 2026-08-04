@@ -57,3 +57,7 @@ rcdtm = recidivism_time
 
 def cheatsheet() -> str:
     return "recidivism_time({}) -> Time-to-event summary for recidivism."
+
+
+# compact alias per ledger/NAMING.md
+recidivismtime = recidivism_time

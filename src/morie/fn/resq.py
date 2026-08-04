@@ -97,3 +97,7 @@ resq = resonance_q
 
 def cheatsheet() -> str:
     return "resonance_q({}) -> Mechanical resonance / Q-factor."
+
+
+# compact alias per ledger/NAMING.md
+resonanceq = resonance_q

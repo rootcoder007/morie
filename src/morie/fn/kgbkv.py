@@ -30,3 +30,7 @@ bk_v = bk_variance
 
 def cheatsheet() -> str:
     return "bk_variance({}) -> Block kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+bkvariance = bk_variance

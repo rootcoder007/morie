@@ -128,3 +128,7 @@ revsim = revised_simplex
 
 def cheatsheet() -> str:
     return "revsim() -> Solve a linear program via the revised simplex (Phase I / Phase II)"
+
+
+# compact alias per ledger/NAMING.md
+revisedsimplex = revised_simplex

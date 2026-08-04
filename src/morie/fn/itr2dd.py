@@ -42,3 +42,7 @@ def itr_optimal_did(y, D, W):
 
 def cheatsheet():
     return "itr2dd: Optimal individualized treatment regime via DR-DiD"
+
+
+# compact alias per ledger/NAMING.md
+itroptimaldid = itr_optimal_did

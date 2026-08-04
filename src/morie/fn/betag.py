@@ -110,3 +110,7 @@ betag = beta_regression
 
 def cheatsheet() -> str:
     return "beta_regression({}) -> Beta regression for rates/proportions in (0,1)."
+
+
+# compact alias per ledger/NAMING.md
+betaregression = beta_regression

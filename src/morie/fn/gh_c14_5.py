@@ -30,3 +30,7 @@ def ghosal_ssp_def(weights, atoms):
 
 def cheatsheet():
     return "gh_c14_5: Species sampling process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalsspdef = ghosal_ssp_def

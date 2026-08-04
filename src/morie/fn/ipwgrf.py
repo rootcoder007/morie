@@ -40,3 +40,7 @@ def ipw_grf(y, D, X):
 
 def cheatsheet():
     return "ipwgrf: IPW-augmented forest"
+
+
+# compact alias per ledger/NAMING.md
+ipwgrf = ipw_grf

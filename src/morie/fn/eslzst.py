@@ -113,3 +113,7 @@ def esl_z_score(X, y, beta):
 
 def cheatsheet():
     return "eslzst: z = beta/se; t tail with df = n-p is the honest one for small n"
+
+
+# compact alias per ledger/NAMING.md
+eslzscore = esl_z_score

@@ -56,3 +56,7 @@ def gibbons_pit(X, F=None):
 
 def cheatsheet():
     return "gb251: F(X) ~ U(0,1); K-S against uniform as the check"
+
+
+# compact alias per ledger/NAMING.md
+gibbonspit = gibbons_pit

@@ -40,3 +40,7 @@ def survey_xtab(x, y, weights):
 
 def cheatsheet():
     return "svytbl: Survey-weighted contingency table"
+
+
+# compact alias per ledger/NAMING.md
+surveyxtab = survey_xtab

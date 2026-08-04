@@ -87,3 +87,7 @@ def esl_shrinkage(nu, M=None, target_capacity=None):
 
 def cheatsheet():
     return "eslshk: nu and M trade off; capacity ~ nu*M, halve nu => double M"
+
+
+# compact alias per ledger/NAMING.md
+eslshrinkage = esl_shrinkage

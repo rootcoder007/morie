@@ -48,3 +48,7 @@ def separation_set(X, Y, ci_tests):
 
 def cheatsheet():
     return "sepst: Separation set (Sepset) for PC algorithm edge removal"
+
+
+# compact alias per ledger/NAMING.md
+separationset = separation_set

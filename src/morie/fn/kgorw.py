@@ -30,3 +30,7 @@ ok_w = ok_weights
 
 def cheatsheet() -> str:
     return "ok_weights({}) -> Ordinary kriging weights"
+
+
+# compact alias per ledger/NAMING.md
+okweights = ok_weights

@@ -43,3 +43,7 @@ spkfc = peak_factor
 
 def cheatsheet() -> str:
     return "peak_factor({}) -> Peak factor."
+
+
+# compact alias per ledger/NAMING.md
+peakfactor = peak_factor

@@ -54,3 +54,7 @@ ocbin = oc_binary_choice
 
 def cheatsheet() -> str:
     return "oc_binary_choice({}) -> OC for binary choice data with rating-to-pairwise conversion"
+
+
+# compact alias per ledger/NAMING.md
+ocbinarychoice = oc_binary_choice

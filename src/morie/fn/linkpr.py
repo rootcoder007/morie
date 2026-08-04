@@ -42,3 +42,7 @@ def link_prediction(G, u, v, method):
 
 def cheatsheet():
     return "linkPr: Link prediction (CN, AA, RA)"
+
+
+# compact alias per ledger/NAMING.md
+linkprediction = link_prediction

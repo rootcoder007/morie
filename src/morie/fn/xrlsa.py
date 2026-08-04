@@ -29,3 +29,7 @@ lisa = lisa_local
 
 def cheatsheet() -> str:
     return "lisa_local({}) -> Local Moran's I (LISA)"
+
+
+# compact alias per ledger/NAMING.md
+lisalocal = lisa_local

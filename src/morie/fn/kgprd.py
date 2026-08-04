@@ -35,3 +35,7 @@ krig = kriging_predict
 
 def cheatsheet() -> str:
     return "kriging_predict({}) -> Kriging prediction surface"
+
+
+# compact alias per ledger/NAMING.md
+krigingpredict = kriging_predict

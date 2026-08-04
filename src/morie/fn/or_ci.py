@@ -64,3 +64,7 @@ or_ci = odds_ratio_ci
 
 def cheatsheet() -> str:
     return "odds_ratio_ci({}) -> Odds ratio with confidence interval."
+
+
+# compact alias per ledger/NAMING.md
+oddsratioci = odds_ratio_ci

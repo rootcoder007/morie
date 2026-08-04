@@ -40,3 +40,7 @@ def glpk_lp(c, A, b):
 
 def cheatsheet():
     return "glpopt: GLPK LP wrapper"
+
+
+# compact alias per ledger/NAMING.md
+glpklp = glpk_lp

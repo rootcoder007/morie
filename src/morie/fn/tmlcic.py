@@ -42,3 +42,7 @@ def tmle_cluster_ic(y, D, X, cluster):
 
 def cheatsheet():
     return "tmlcic: Cluster-robust TMLE inference"
+
+
+# compact alias per ledger/NAMING.md
+tmleclusteric = tmle_cluster_ic

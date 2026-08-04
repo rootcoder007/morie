@@ -69,3 +69,7 @@ rejcl = reject_option
 
 def cheatsheet() -> str:
     return "reject_option({}) -> Classifier with reject (ambiguity rejection) option."
+
+
+# compact alias per ledger/NAMING.md
+rejectoption = reject_option

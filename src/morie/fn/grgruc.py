@@ -124,3 +124,7 @@ def geron_gru_cell(x_t, h_prev, Wz, Wr, W):
 
 def cheatsheet():
     return "grgruc: h = (1-z)*h_prev + z*tanh(W[r*h, x]); one tied gate instead of the LSTM's two"
+
+
+# compact alias per ledger/NAMING.md
+gerongrucell = geron_gru_cell

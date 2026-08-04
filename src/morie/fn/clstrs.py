@@ -38,3 +38,7 @@ def cluster_design(y, cluster):
 
 def cheatsheet():
     return "clstrs: Cluster sample variance"
+
+
+# compact alias per ledger/NAMING.md
+clusterdesign = cluster_design

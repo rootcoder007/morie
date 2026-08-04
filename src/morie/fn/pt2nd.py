@@ -30,3 +30,7 @@ seco = second_order_pp
 
 def cheatsheet() -> str:
     return "second_order_pp({}) -> Second-order point pattern stats"
+
+
+# compact alias per ledger/NAMING.md
+secondorderpp = second_order_pp

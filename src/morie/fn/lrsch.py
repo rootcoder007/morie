@@ -58,3 +58,7 @@ def cheatsheet() -> str:
 
 
 lrsch = lr_schedule
+
+
+# compact alias per ledger/NAMING.md
+lrschedule = lr_schedule

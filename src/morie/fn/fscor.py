@@ -51,3 +51,7 @@ fscor = f_score
 
 def cheatsheet() -> str:
     return "f_score({}) -> F-beta score."
+
+
+# compact alias per ledger/NAMING.md
+fscore = f_score

@@ -129,3 +129,7 @@ def geron_perceiver(x, latents, n_iter=2, W_q=None, W_k=None, W_v=None):
 
 def cheatsheet():
     return "hmprcv: Perceiver latent cross-attention over large inputs"
+
+
+# compact alias per ledger/NAMING.md
+geronperceiver = geron_perceiver

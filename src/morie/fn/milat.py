@@ -105,3 +105,7 @@ def mi_latent_means(
 
 def cheatsheet() -> str:
     return "mi_latent_means({}) -> Latent mean differences between groups (requires scalar inva"
+
+
+# compact alias per ledger/NAMING.md
+milatentmeans = mi_latent_means

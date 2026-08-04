@@ -40,3 +40,7 @@ def hot_cold_spots(x, W, alpha):
 
 def cheatsheet():
     return "hotcld: Getis-Ord hot/cold spot map"
+
+
+# compact alias per ledger/NAMING.md
+hotcoldspots = hot_cold_spots

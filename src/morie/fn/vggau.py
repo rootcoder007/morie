@@ -42,3 +42,7 @@ vari = vario_gaussian
 
 def cheatsheet() -> str:
     return "vario_gaussian({}) -> Gaussian variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variogaussian = vario_gaussian

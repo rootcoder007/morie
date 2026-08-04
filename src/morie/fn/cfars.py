@@ -71,3 +71,7 @@ def cfa_residuals(
 
 def cheatsheet() -> str:
     return "cfa_residuals({}) -> Residual correlation matrix from CFA."
+
+
+# compact alias per ledger/NAMING.md
+cfaresiduals = cfa_residuals

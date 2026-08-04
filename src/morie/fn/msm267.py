@@ -36,3 +36,7 @@ mvsml_fda_fit = mvsml_convolutional_nn_eq_14_4
 
 def cheatsheet():
     return "msm267: Maximum likelihood estimate of the basis coefficients"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlfdafit = mvsml_fda_fit

@@ -56,3 +56,7 @@ def holo_resid(
 
 def cheatsheet() -> str:
     return "holo_resid({}) -> Residual plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoresid = holo_resid

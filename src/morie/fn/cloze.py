@@ -56,3 +56,7 @@ cloze = cloze_score
 
 def cheatsheet() -> str:
     return "cloze_score({}) -> Cloze test scoring."
+
+
+# compact alias per ledger/NAMING.md
+clozescore = cloze_score

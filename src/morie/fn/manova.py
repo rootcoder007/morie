@@ -72,3 +72,7 @@ manova = manova_one
 
 def cheatsheet() -> str:
     return "manova_one({}) -> One-way MANOVA (Wilks' lambda)."
+
+
+# compact alias per ledger/NAMING.md
+manovaone = manova_one

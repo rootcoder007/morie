@@ -147,3 +147,7 @@ def cheatsheet():
         "heterogeneity, leaves filled from a held-out half, OOB spread "
         "reported next to in-sample"
     )
+
+
+# compact alias per ledger/NAMING.md
+causalforest = causal_forest

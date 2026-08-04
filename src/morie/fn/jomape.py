@@ -39,3 +39,7 @@ def joseph_mape(y_true, y_pred):
 
 def cheatsheet():
     return "jomape: Mean Absolute Percentage Error"
+
+
+# compact alias per ledger/NAMING.md
+josephmape = joseph_mape

@@ -54,3 +54,7 @@ kappa = cohens_kappa
 
 def cheatsheet() -> str:
     return "cohens_kappa({}) -> Cohen's kappa inter-rater agreement."
+
+
+# compact alias per ledger/NAMING.md
+cohenskappa = cohens_kappa

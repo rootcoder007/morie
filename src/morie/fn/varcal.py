@@ -40,3 +40,7 @@ def variant_calling(bam, reference):
 
 def cheatsheet():
     return "varcal: Variant calling (GATK HaplotypeCaller)"
+
+
+# compact alias per ledger/NAMING.md
+variantcalling = variant_calling

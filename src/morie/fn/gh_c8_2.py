@@ -37,3 +37,7 @@ def ghosal_ggv_thm(n, eps_n, log_prior_mass_B2, log_entropy,
 
 def cheatsheet():
     return "gh_c8_2: Basic contraction-rate theorem"
+
+
+# compact alias per ledger/NAMING.md
+ghosalggvthm = ghosal_ggv_thm

@@ -46,3 +46,7 @@ def sun_abraham_did(y, D, unit, time, cohort):
 
 def cheatsheet():
     return "sunabr: Sun-Abraham heterogeneous-treatment DID"
+
+
+# compact alias per ledger/NAMING.md
+sunabrahamdid = sun_abraham_did

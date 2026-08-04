@@ -42,3 +42,7 @@ def case_control(cases, controls, exposed, unexposed):
 
 def cheatsheet():
     return "ccdsgn: Unmatched case-control OR"
+
+
+# compact alias per ledger/NAMING.md
+casecontrol = case_control

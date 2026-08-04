@@ -68,3 +68,7 @@ def frailty_model(time, event, group, theta_init=1.0):
 
 def cheatsheet() -> str:
     return "frailty_model({}) -> Frailty model -- gamma-distributed shared frailty for surviva"
+
+
+# compact alias per ledger/NAMING.md
+frailtymodel = frailty_model

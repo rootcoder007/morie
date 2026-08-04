@@ -30,3 +30,7 @@ alph = alpha_nom_accept
 
 def cheatsheet() -> str:
     return "alpha_nom_accept({}) -> Alpha-NOMINATE acceptance rate"
+
+
+# compact alias per ledger/NAMING.md
+alphanomaccept = alpha_nom_accept

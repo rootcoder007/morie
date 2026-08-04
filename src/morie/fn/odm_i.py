@@ -46,3 +46,7 @@ odm_i = otis_demo_index
 
 def cheatsheet() -> str:
     return "otis_demo_index({}) -> Diversity index (Simpson/Shannon) for demographics."
+
+
+# compact alias per ledger/NAMING.md
+otisdemoindex = otis_demo_index

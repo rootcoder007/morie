@@ -50,3 +50,7 @@ def seasonal_arima(y, p, d, q, P, D, Q, s):
 
 def cheatsheet():
     return "sarima: SARIMA(p,d,q)(P,D,Q)_s"
+
+
+# compact alias per ledger/NAMING.md
+seasonalarima = seasonal_arima

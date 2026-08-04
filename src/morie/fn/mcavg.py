@@ -76,3 +76,7 @@ mcavg = multiclass_avg
 
 def cheatsheet() -> str:
     return "multiclass_avg({}) -> Multiclass averaging (macro/micro/weighted)."
+
+
+# compact alias per ledger/NAMING.md
+multiclassavg = multiclass_avg

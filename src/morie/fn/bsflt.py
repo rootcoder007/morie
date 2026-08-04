@@ -50,3 +50,7 @@ bsflt = bandstop_filter
 
 def cheatsheet() -> str:
     return "bandstop_filter({}) -> Bandstop Butterworth filter."
+
+
+# compact alias per ledger/NAMING.md
+bandstopfilter = bandstop_filter

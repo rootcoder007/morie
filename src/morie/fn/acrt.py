@@ -40,3 +40,7 @@ def actor_critic(env, actor, critic):
 
 def cheatsheet():
     return "acrt: Actor-critic with TD baseline"
+
+
+# compact alias per ledger/NAMING.md
+actorcritic = actor_critic

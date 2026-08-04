@@ -36,3 +36,7 @@ def girvan_newman(G):
 
 def cheatsheet():
     return "comgir: Girvan-Newman edge-betweenness"
+
+
+# compact alias per ledger/NAMING.md
+girvannewman = girvan_newman

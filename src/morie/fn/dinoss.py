@@ -42,3 +42,7 @@ def dino_centering(p_t, C, momentum):
 
 def cheatsheet():
     return "dinoss: DINO output centering (collapse-prevention)"
+
+
+# compact alias per ledger/NAMING.md
+dinocentering = dino_centering

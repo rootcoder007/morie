@@ -179,3 +179,7 @@ def geron_sft(model=None, instruction_data=None, epochs=200, lr=0.5, l2=0.0):
 
 def cheatsheet():
     return "hmsft: Supervised fine-tuning (SFT) on instruction-response pairs"
+
+
+# compact alias per ledger/NAMING.md
+geronsft = geron_sft

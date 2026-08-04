@@ -30,3 +30,7 @@ inho = inhom_poisson
 
 def cheatsheet() -> str:
     return "inhom_poisson({}) -> Inhomogeneous Poisson process"
+
+
+# compact alias per ledger/NAMING.md
+inhompoisson = inhom_poisson

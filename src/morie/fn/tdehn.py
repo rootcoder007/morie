@@ -33,3 +33,7 @@ def dehn_twist(curve_type: str = "a", n: int = 1) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "dehn_twist(curve_type, n) -> Dehn twist matrix on torus"
+
+
+# compact alias per ledger/NAMING.md
+dehntwist = dehn_twist

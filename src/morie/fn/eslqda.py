@@ -102,3 +102,7 @@ def esl_qda(X, y, query=None):
 
 def cheatsheet():
     return "eslqda: per-class covariance; needs n_k > p in EVERY class"
+
+
+# compact alias per ledger/NAMING.md
+eslqda = esl_qda

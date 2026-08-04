@@ -42,3 +42,7 @@ def svm_dual(X, y, C, kernel):
 
 def cheatsheet():
     return "svmopt: SVM dual QP"
+
+
+# compact alias per ledger/NAMING.md
+svmdual = svm_dual

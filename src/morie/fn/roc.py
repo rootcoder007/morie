@@ -61,3 +61,7 @@ roc = roc_auc
 
 def cheatsheet() -> str:
     return "roc_auc({}) -> ROC curve and AUC."
+
+
+# compact alias per ledger/NAMING.md
+rocauc = roc_auc

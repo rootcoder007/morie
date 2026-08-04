@@ -43,3 +43,7 @@ def vol_igarch_fit(r):
 
 def cheatsheet():
     return "volign: Integrated GARCH fit, spec 'igarch'"
+
+
+# compact alias per ledger/NAMING.md
+voligarchfit = vol_igarch_fit

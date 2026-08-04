@@ -42,3 +42,7 @@ def bound_iii(y, X, moments):
 
 def cheatsheet():
     return "bnsiii: Identification by intersection of inequalities"
+
+
+# compact alias per ledger/NAMING.md
+boundiii = bound_iii

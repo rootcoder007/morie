@@ -52,3 +52,7 @@ def cholesky_solve(
 
 
 chles = cholesky_solve
+
+
+# compact alias per ledger/NAMING.md
+choleskysolve = cholesky_solve

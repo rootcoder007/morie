@@ -47,3 +47,7 @@ skurt = kurtosis_coeff
 
 def cheatsheet() -> str:
     return "kurtosis_coeff({}) -> Kurtosis coefficient (excess)."
+
+
+# compact alias per ledger/NAMING.md
+kurtosiscoeff = kurtosis_coeff

@@ -44,3 +44,7 @@ def ma_log_risk_ratio(a, b, c, d):
 
 def cheatsheet():
     return "malrr: Log risk ratio + variance from a 2x2 table"
+
+
+# compact alias per ledger/NAMING.md
+malogriskratio = ma_log_risk_ratio

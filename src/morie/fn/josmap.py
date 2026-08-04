@@ -41,3 +41,7 @@ def joseph_smape(y_true, y_pred):
 
 def cheatsheet():
     return "josmap: Symmetric Mean Absolute Percentage Error"
+
+
+# compact alias per ledger/NAMING.md
+josephsmape = joseph_smape

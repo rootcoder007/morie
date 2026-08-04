@@ -40,3 +40,7 @@ def ld_pruning(genotypes, r2_threshold, window):
 
 def cheatsheet():
     return "ldprun: LD-based SNP pruning"
+
+
+# compact alias per ledger/NAMING.md
+ldpruning = ld_pruning

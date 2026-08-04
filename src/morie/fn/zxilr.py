@@ -29,3 +29,7 @@ ilr_ = ilr_spatial
 
 def cheatsheet() -> str:
     return "ilr_spatial({}) -> Isometric log-ratio spatial"
+
+
+# compact alias per ledger/NAMING.md
+ilrspatial = ilr_spatial

@@ -105,3 +105,7 @@ def rey_sv(
 
 def cheatsheet() -> str:
     return "rey_sv({}) -> Survey-weighted regression with robust (sandwich) standard e"
+
+
+# compact alias per ledger/NAMING.md
+reysv = rey_sv

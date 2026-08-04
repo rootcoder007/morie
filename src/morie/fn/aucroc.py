@@ -70,3 +70,7 @@ aucroc = auc_roc
 
 def cheatsheet() -> str:
     return "auc_roc({}) -> AUC-ROC via trapezoidal integration."
+
+
+# compact alias per ledger/NAMING.md
+aucroc = auc_roc

@@ -31,3 +31,7 @@ glrcd = glr_change
 
 def cheatsheet() -> str:
     return "glr_change({}) -> Generalized Likelihood Ratio change point detection."
+
+
+# compact alias per ledger/NAMING.md
+glrchange = glr_change

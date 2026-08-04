@@ -81,3 +81,7 @@ wlsmv = cfa_wlsmv
 
 def cheatsheet() -> str:
     return "cfa_wlsmv({}) -> WLSMV estimation for ordinal CFA."
+
+
+# compact alias per ledger/NAMING.md
+cfawlsmv = cfa_wlsmv

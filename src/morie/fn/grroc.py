@@ -118,3 +118,7 @@ def geron_roc_curve(y_true, y_scores):
 
 def cheatsheet():
     return "grroc: TPR vs FPR over the distinct scores (ties collapsed); AUC by trapezoid"
+
+
+# compact alias per ledger/NAMING.md
+geronroccurve = geron_roc_curve

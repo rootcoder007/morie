@@ -42,3 +42,7 @@ def twostage_mean(primary_unit_means):
 
 def cheatsheet():
     return 'r7e2: zbarbar_hat = (1/n) sum zbar_hat_j [Brus 2022, eq. 7.2]'
+
+
+# compact alias per ledger/NAMING.md
+twostagemean = twostage_mean

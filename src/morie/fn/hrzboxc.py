@@ -41,3 +41,7 @@ def horowitz_box_cox(x, y):
 
 def cheatsheet():
     return "hrzboxc: Box-Cox regression model: T_lambda(Y) = X'beta + U"
+
+
+# compact alias per ledger/NAMING.md
+horowitzboxcox = horowitz_box_cox

@@ -60,3 +60,7 @@ swtfn = swt_decompose
 
 def cheatsheet() -> str:
     return "swt_decompose({}) -> Stationary (undecimated) Wavelet Transform."
+
+
+# compact alias per ledger/NAMING.md
+swtdecompose = swt_decompose

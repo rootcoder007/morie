@@ -53,3 +53,7 @@ def cheatsheet() -> str:
 
 
 tokst = token_stats
+
+
+# compact alias per ledger/NAMING.md
+tokenstats = token_stats

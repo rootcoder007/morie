@@ -40,3 +40,7 @@ def epsilon_greedy(arms, epsilon, T):
 
 def cheatsheet():
     return "epsg: ε-greedy exploration"
+
+
+# compact alias per ledger/NAMING.md
+epsilongreedy = epsilon_greedy

@@ -35,3 +35,7 @@ proc = procrustes_orth
 
 def cheatsheet() -> str:
     return "procrustes_orth({}) -> Orthogonal Procrustes rotation"
+
+
+# compact alias per ledger/NAMING.md
+procrustesorth = procrustes_orth

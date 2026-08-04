@@ -128,3 +128,7 @@ def geron_sgd_update(X, y, theta, eta=0.1, seed=0, index=None):
 
 def cheatsheet():
     return "hmsgdu: SGD update using single random sample"
+
+
+# compact alias per ledger/NAMING.md
+geronsgdupdate = geron_sgd_update

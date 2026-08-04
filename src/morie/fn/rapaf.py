@@ -38,3 +38,7 @@ def adjusted_paf(RR_strata, prevalence_strata):
 
 def cheatsheet():
     return "rapaf: Adjusted PAF (Bruzzi)"
+
+
+# compact alias per ledger/NAMING.md
+adjustedpaf = adjusted_paf

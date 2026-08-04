@@ -30,3 +30,7 @@ uk_w = uk_weights
 
 def cheatsheet() -> str:
     return "uk_weights({}) -> Universal kriging weights"
+
+
+# compact alias per ledger/NAMING.md
+ukweights = uk_weights

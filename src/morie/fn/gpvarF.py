@@ -42,3 +42,7 @@ def gp_variance(X, X_star, kernel, sigma2):
 
 def cheatsheet():
     return "gpvarF: GP posterior variance"
+
+
+# compact alias per ledger/NAMING.md
+gpvariance = gp_variance

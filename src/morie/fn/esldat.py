@@ -109,3 +109,7 @@ def esl_dropout(X, p=0.5, training=True, seed=0):
 
 def cheatsheet():
     return "esldat: INVERTED dropout, p is the KEEP prob; E[out]=in so inference is the identity"
+
+
+# compact alias per ledger/NAMING.md
+esldropout = esl_dropout

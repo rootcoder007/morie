@@ -41,3 +41,7 @@ def cheatsheet() -> str:
 
 
 qjlmt = qjl_matrix
+
+
+# compact alias per ledger/NAMING.md
+qjlmatrix = qjl_matrix

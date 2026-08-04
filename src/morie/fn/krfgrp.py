@@ -38,3 +38,7 @@ def kronecker_graph(seed, k):
 
 def cheatsheet():
     return "krfgrp: Stochastic Kronecker graph"
+
+
+# compact alias per ledger/NAMING.md
+kroneckergraph = kronecker_graph

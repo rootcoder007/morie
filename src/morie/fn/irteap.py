@@ -94,3 +94,7 @@ def irt_eap_theta(
 
 def cheatsheet() -> str:
     return "_icc_2pl({}) -> EAP theta estimation."
+
+
+# compact alias per ledger/NAMING.md
+irteaptheta = irt_eap_theta

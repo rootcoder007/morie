@@ -40,3 +40,7 @@ def sobol_indices(model, input_dist, N):
 
 def cheatsheet():
     return "sobolI: Sobol global sensitivity indices"
+
+
+# compact alias per ledger/NAMING.md
+sobolindices = sobol_indices

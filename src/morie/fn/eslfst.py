@@ -63,3 +63,7 @@ def esl_f_test(model0, model1, X, y, cdf=None):
 
 def cheatsheet():
     return "eslfst: F-test of nested models"
+
+
+# compact alias per ledger/NAMING.md
+eslftest = esl_f_test

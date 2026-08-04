@@ -99,3 +99,7 @@ def cheatsheet():
 # X = column of ones + coord, y = 1 + 2*coord + small spatial error,
 # W = path-graph row-standardised (5x5)
 # Expect lambda in (-1, 1) and beta ~ [1, 2].
+
+
+# compact alias per ledger/NAMING.md
+spatialarerror = spatial_ar_error

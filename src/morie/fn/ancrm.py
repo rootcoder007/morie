@@ -51,3 +51,7 @@ ancrm = anc_remove
 
 def cheatsheet() -> str:
     return "anc_remove({}) -> Adaptive noise cancellation via LMS."
+
+
+# compact alias per ledger/NAMING.md
+ancremove = anc_remove

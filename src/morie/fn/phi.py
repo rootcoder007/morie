@@ -38,3 +38,7 @@ phi = phi_coefficient
 
 def cheatsheet() -> str:
     return "phi_coefficient({}) -> Phi coefficient for association in a 2x2 contingency table."
+
+
+# compact alias per ledger/NAMING.md
+phicoefficient = phi_coefficient

@@ -40,3 +40,7 @@ def hash_chain_audit(prev_hash, row, hash_alg):
 
 def cheatsheet():
     return "sechsh: Hash-chained audit log entry"
+
+
+# compact alias per ledger/NAMING.md
+hashchainaudit = hash_chain_audit

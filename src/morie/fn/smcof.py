@@ -34,3 +34,7 @@ smacof_scale = smacof_scale
 
 def cheatsheet() -> str:
     return "smacof_scale({}) -> SMACOF majorization scaling"
+
+
+# compact alias per ledger/NAMING.md
+smacofscale = smacof_scale

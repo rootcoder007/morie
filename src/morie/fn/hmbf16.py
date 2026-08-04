@@ -102,3 +102,7 @@ def geron_bf16(x, rounding="nearest_even"):
 
 def cheatsheet():
     return "hmbf16: Brain floating point (BF16): FP32-range with FP16-size"
+
+
+# compact alias per ledger/NAMING.md
+geronbf16 = geron_bf16

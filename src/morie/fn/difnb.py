@@ -110,3 +110,7 @@ nonuniform_dif = dif_nonuniform
 
 def cheatsheet() -> str:
     return "dif_nonuniform({}) -> Non-uniform DIF detection via interaction term."
+
+
+# compact alias per ledger/NAMING.md
+difnonuniform = dif_nonuniform

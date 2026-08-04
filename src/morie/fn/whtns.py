@@ -40,3 +40,7 @@ whtns = white_noise_gen
 
 def cheatsheet() -> str:
     return "white_noise_gen({}) -> White Gaussian noise generator."
+
+
+# compact alias per ledger/NAMING.md
+whitenoisegen = white_noise_gen

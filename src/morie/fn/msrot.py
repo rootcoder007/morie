@@ -30,3 +30,7 @@ rota = rotate_config
 
 def cheatsheet() -> str:
     return "rotate_config({}) -> Rotation of configuration"
+
+
+# compact alias per ledger/NAMING.md
+rotateconfig = rotate_config

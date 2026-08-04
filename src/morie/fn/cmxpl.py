@@ -61,3 +61,7 @@ cmxpl = confusion_plot
 
 def cheatsheet() -> str:
     return "confusion_plot({}) -> Confusion matrix with per-class metrics."
+
+
+# compact alias per ledger/NAMING.md
+confusionplot = confusion_plot

@@ -39,3 +39,7 @@ def torus_homology(dim: int = 2) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_homology(dim) -> H_k(T^n) via Kuenneth formula"
+
+
+# compact alias per ledger/NAMING.md
+torushomology = torus_homology

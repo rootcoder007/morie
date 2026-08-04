@@ -101,3 +101,7 @@ def network_compare(
 
 def cheatsheet() -> str:
     return "network_compare({}) -> Network comparison test (global strength and structure)."
+
+
+# compact alias per ledger/NAMING.md
+networkcompare = network_compare

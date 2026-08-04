@@ -27,3 +27,7 @@ def evt_gpd_quantile(p, sigma, xi):
 
 def cheatsheet():
     return "evgpdq: GPD quantile function"
+
+
+# compact alias per ledger/NAMING.md
+evtgpdquantile = evt_gpd_quantile

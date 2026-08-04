@@ -36,3 +36,7 @@ def prewhitening_mk(x):
 
 def cheatsheet():
     return "prtMK: Pre-whitened Mann-Kendall"
+
+
+# compact alias per ledger/NAMING.md
+prewhiteningmk = prewhitening_mk

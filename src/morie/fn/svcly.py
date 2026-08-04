@@ -29,3 +29,7 @@ coal = coalition_yolk
 
 def cheatsheet() -> str:
     return "coalition_yolk({}) -> Yolk of spatial game"
+
+
+# compact alias per ledger/NAMING.md
+coalitionyolk = coalition_yolk

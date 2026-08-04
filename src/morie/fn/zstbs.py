@@ -29,3 +29,7 @@ turn = turning_bands
 
 def cheatsheet() -> str:
     return "turning_bands({}) -> Turning bands simulation"
+
+
+# compact alias per ledger/NAMING.md
+turningbands = turning_bands

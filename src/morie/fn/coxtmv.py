@@ -157,3 +157,7 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
 
 def cheatsheet():
     return "coxtmv: time-varying COEFFICIENT (not covariate); the fix when Schoenfeld shows PH failing"
+
+
+# compact alias per ledger/NAMING.md
+coxtimevarying = cox_time_varying

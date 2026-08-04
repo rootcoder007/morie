@@ -38,3 +38,7 @@ def snp_blup(y, M):
 
 def cheatsheet():
     return "snpblr: SNP-BLUP additive prediction"
+
+
+# compact alias per ledger/NAMING.md
+snpblup = snp_blup

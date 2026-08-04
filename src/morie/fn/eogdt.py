@@ -59,3 +59,7 @@ eogdt = eog_detect
 
 def cheatsheet() -> str:
     return "eog_detect({}) -> EOG eye movement artifact detection."
+
+
+# compact alias per ledger/NAMING.md
+eogdetect = eog_detect

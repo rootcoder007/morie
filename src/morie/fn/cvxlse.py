@@ -96,3 +96,7 @@ def boyd_lse(x, temperature=1.0):
 
 def cheatsheet():
     return "cvxlse: shift invariant, so only logit DIFFERENCES are identified; T->0 one-hot, T->inf uniform"
+
+
+# compact alias per ledger/NAMING.md
+boydlse = boyd_lse

@@ -68,3 +68,7 @@ def gibbons_are_unif(distribution="uniform", cdf=None):
 
 def cheatsheet():
     return "gb_ar6: Table 13.3.1 at the uniform; re-derived from the density"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsareunif = gibbons_are_unif

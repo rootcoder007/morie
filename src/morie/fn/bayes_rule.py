@@ -42,3 +42,7 @@ def bayes_rule(p_a_given_b, p_b, p_a_given_notb):
 
 def cheatsheet():
     return '6e22: P(B|A) = P(A|B)P(B)/(P(A|B)P(B) + P(A|~B)P(~B)) [Bilder & Loughin 2025, eq. 6.22]'
+
+
+# compact alias per ledger/NAMING.md
+bayesrule = bayes_rule

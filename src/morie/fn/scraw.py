@@ -71,3 +71,7 @@ raw = raw_score
 
 def cheatsheet() -> str:
     return "raw_score({}) -> Compute raw total/subscale scores."
+
+
+# compact alias per ledger/NAMING.md
+rawscore = raw_score

@@ -126,3 +126,7 @@ def boyd_projection(v, C="ball", radius=1.0, lo=None, hi=None, A=None,
 
 def cheatsheet():
     return "cvxprc: unique and NONEXPANSIVE for convex C -- both fail on a nonconvex set"
+
+
+# compact alias per ledger/NAMING.md
+boydprojection = boyd_projection

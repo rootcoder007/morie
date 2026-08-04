@@ -135,3 +135,7 @@ fzinf = fuzzy_inference
 
 def cheatsheet() -> str:
     return "fuzzy_inference({}) -> Mamdani fuzzy inference system."
+
+
+# compact alias per ledger/NAMING.md
+fuzzyinference = fuzzy_inference

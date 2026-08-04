@@ -71,3 +71,7 @@ stsgm = st_segment
 
 def cheatsheet() -> str:
     return "st_segment({}) -> ST segment level analysis."
+
+
+# compact alias per ledger/NAMING.md
+stsegment = st_segment

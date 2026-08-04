@@ -59,3 +59,7 @@ def irt_likelihood(
 
 def cheatsheet() -> str:
     return "irt_likelihood({}) -> IRT log-likelihood at given theta."
+
+
+# compact alias per ledger/NAMING.md
+irtlikelihood = irt_likelihood

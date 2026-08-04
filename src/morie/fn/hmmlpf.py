@@ -196,3 +196,7 @@ def geron_mlp(X, weights, biases, activations):
 
 def cheatsheet():
     return "hmmlpf: MLP forward pass a <- phi(a W + b), keeping every pre-activation for backprop"
+
+
+# compact alias per ledger/NAMING.md
+geronmlp = geron_mlp

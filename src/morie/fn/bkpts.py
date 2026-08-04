@@ -192,3 +192,7 @@ breakpoint_detection = bai_perron
 
 def cheatsheet() -> str:
     return "bai_perron(y, max_breaks=3) -> Bai-Perron structural break detection."
+
+
+# compact alias per ledger/NAMING.md
+baiperron = bai_perron

@@ -51,3 +51,7 @@ g = hedges_g
 
 def cheatsheet() -> str:
     return "hedges_g({}) -> Hedges' g effect size (bias-corrected Cohen's d)."
+
+
+# compact alias per ledger/NAMING.md
+hedgesg = hedges_g

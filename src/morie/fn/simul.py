@@ -71,3 +71,7 @@ simul = simulation_gof
 
 def cheatsheet() -> str:
     return "simulation_gof({}) -> Goodness of fit to simulation."
+
+
+# compact alias per ledger/NAMING.md
+simulationgof = simulation_gof

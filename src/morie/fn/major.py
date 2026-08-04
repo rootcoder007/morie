@@ -58,3 +58,7 @@ major = majorize_step
 
 def cheatsheet() -> str:
     return "majorize_step({}) -> SMACOF majorize step (Guttman transform)."
+
+
+# compact alias per ledger/NAMING.md
+majorizestep = majorize_step

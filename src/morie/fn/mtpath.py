@@ -42,3 +42,7 @@ def meta_path(G, node_types, metapath):
 
 def cheatsheet():
     return "mtpath: Meta-path analysis on heterogeneous network"
+
+
+# compact alias per ledger/NAMING.md
+metapath = meta_path

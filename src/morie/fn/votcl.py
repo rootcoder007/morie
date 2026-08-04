@@ -62,3 +62,7 @@ votcl = voting_classify
 
 def cheatsheet() -> str:
     return "voting_classify({}) -> Majority / weighted voting classifier."
+
+
+# compact alias per ledger/NAMING.md
+votingclassify = voting_classify

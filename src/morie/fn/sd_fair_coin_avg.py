@@ -35,3 +35,7 @@ def sd_fair_coin_avg(n):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e52: sigma of the average Heads fraction in n fair flips: 1/(2 sqrt(n)). Morin (2016) eq (3.52)."
+
+
+# compact alias per ledger/NAMING.md
+sdfaircoinavg = sd_fair_coin_avg

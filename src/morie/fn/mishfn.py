@@ -36,3 +36,7 @@ def mish_activation(y):
 
 def cheatsheet():
     return "mishfn: Mish activation"
+
+
+# compact alias per ledger/NAMING.md
+mishactivation = mish_activation

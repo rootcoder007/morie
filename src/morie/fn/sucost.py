@@ -49,3 +49,7 @@ sucost = substance_cost
 
 def cheatsheet() -> str:
     return "substance_cost({}) -> Societal cost of substance use."
+
+
+# compact alias per ledger/NAMING.md
+substancecost = substance_cost

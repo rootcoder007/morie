@@ -62,3 +62,7 @@ rskbr = risk_base_rate
 
 def cheatsheet() -> str:
     return "risk_base_rate({}) -> Base rate of outcome overall and by group."
+
+
+# compact alias per ledger/NAMING.md
+riskbaserate = risk_base_rate

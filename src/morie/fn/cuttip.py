@@ -42,3 +42,7 @@ def cutting_plane(c, A, b, integer_indices):
 
 def cheatsheet():
     return "cuttip: Cutting plane method"
+
+
+# compact alias per ledger/NAMING.md
+cuttingplane = cutting_plane

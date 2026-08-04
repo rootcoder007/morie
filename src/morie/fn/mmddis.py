@@ -98,3 +98,7 @@ mmddis = mmd_distance
 
 def cheatsheet() -> str:
     return "mmd_distance({}) -> Domain adaptation via MMD."
+
+
+# compact alias per ledger/NAMING.md
+mmddistance = mmd_distance

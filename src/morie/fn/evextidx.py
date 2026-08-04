@@ -95,3 +95,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_extremal_runs`.
 evt_extremal_index_runs = ev_extremal_runs
+
+
+# compact alias per ledger/NAMING.md
+evextremalruns = ev_extremal_runs

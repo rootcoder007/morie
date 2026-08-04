@@ -40,3 +40,7 @@ lar = log_area_ratio_fn
 
 def cheatsheet() -> str:
     return "log_area_ratio_fn({}) -> Log Area Ratios from LPC coefficients."
+
+
+# compact alias per ledger/NAMING.md
+logarearatiofn = log_area_ratio_fn

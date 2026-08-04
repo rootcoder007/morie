@@ -101,3 +101,7 @@ def esl_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
 
 def cheatsheet():
     return "esllso: soft-threshold CD; intercept unpenalised; lambda scale != glmnet"
+
+
+# compact alias per ledger/NAMING.md
+esllasso = esl_lasso

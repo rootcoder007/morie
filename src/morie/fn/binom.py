@@ -56,3 +56,7 @@ binom = binomial_test
 
 def cheatsheet() -> str:
     return "binomial_test({}) -> Exact binomial test."
+
+
+# compact alias per ledger/NAMING.md
+binomialtest = binomial_test

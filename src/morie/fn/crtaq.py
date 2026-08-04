@@ -47,3 +47,7 @@ crtaq = court_acquittal
 
 def cheatsheet() -> str:
     return "court_acquittal({}) -> Acquittal rate by offense type."
+
+
+# compact alias per ledger/NAMING.md
+courtacquittal = court_acquittal

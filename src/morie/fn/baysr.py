@@ -50,3 +50,7 @@ def bayes_r_prior(y, X, pi, sigma_classes):
 
 def cheatsheet():
     return "baysr: BayesR: mixture of normals prior with different variance classes"
+
+
+# compact alias per ledger/NAMING.md
+bayesrprior = bayes_r_prior

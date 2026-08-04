@@ -170,3 +170,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`spectral_sbm`.
 sgt_sbm_spectral_estimate = spectral_sbm
+
+
+# compact alias per ledger/NAMING.md
+spectralsbm = spectral_sbm

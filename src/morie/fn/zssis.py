@@ -29,3 +29,7 @@ seq_ = seq_ind_sim
 
 def cheatsheet() -> str:
     return "seq_ind_sim({}) -> Sequential indicator simulation"
+
+
+# compact alias per ledger/NAMING.md
+seqindsim = seq_ind_sim
