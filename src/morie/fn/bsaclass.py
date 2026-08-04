@@ -750,22 +750,25 @@ def kld(p1, p2):
 
         KLD(p1, p2) = sum_l p2(x_l) ln[ p2(x_l) / p1(x_l) ]
 
-    Note the book's argument order: the sum is weighted by the SECOND
-    PDF, not the first.  KLD is not symmetric -- KLD(p1, p2) is not
-    KLD(p2, p1) -- so swapping the arguments gives a different number,
-    and both are returned so the asymmetry is visible rather than a trap.
-    The symmetric combination is the divergence of eq. (10.115), which is
-    exactly KLD(p1, p2) + KLD(p2, p1).
+    NOTE THE ARGUMENT ORDER.  The book weights by the SECOND pdf, which
+    makes its KLD(p1, p2) equal to D_KL(p2 || p1) in the standard
+    notation -- the REVERSE of what most texts and libraries mean by
+    KL(p, q).  That is the single most likely way to get a wrong number
+    out of this family, so both directions are returned and the
+    convention is stated in the payload.
+
+    The arithmetic is ``morie.fn.kldiv.kl_divergence`` called with the
+    arguments swapped; this is NOT a second implementation.
+
+    KLD is not symmetric.  The symmetric combination is the divergence of
+    eq. (10.115), which is exactly KLD(p1, p2) + KLD(p2, p1).
 
     The book uses this as a FEATURE: Rangayyan and Wu computed the KLD
     between the PDF of a signal to be classified and Parzen-window PDF
     models of the normal and abnormal VAG classes, reaching 73 per cent
     classification with the KLD alone.
-
-    Both PDFs must be positive wherever the weighting PDF is: a zero in
-    p1 where p2 is positive makes the ratio unbounded, and that is
-    reported rather than silently floored.
     """
+    from .kldiv import kl_divergence
     a, b = aslist(p1), aslist(p2)
     if len(a) != len(b):
         raise ValueError("the two PDFs must be sampled on the same grid")
@@ -777,15 +780,17 @@ def kld(p1, p2):
     if bad:
         raise ValueError("p1 vanishes at %d bin(s) where p2 does not; "
                          "the KLD is unbounded there" % len(bad))
-    fwd = fsum(b[i] * log(b[i] / a[i]) for i in range(len(a)) if b[i] > 0)
-    rev = fsum(a[i] * log(a[i] / b[i]) for i in range(len(a))
-               if a[i] > 0 and b[i] > 0)
+    fwd = float(kl_divergence(b, a).estimate)      # note the swap
+    rev = float(kl_divergence(a, b).estimate)
     return RichResult(payload={
         "kld": fwd, "reversed": rev, "symmetric_sum": fwd + rev,
         "asymmetric": abs(fwd - rev) > 1e-12,
         "weighted_by_the_second_pdf": True,
+        "book_order_is_the_reverse_of_the_standard": True,
+        "standard_notation": "KLD(p1, p2) here is D_KL(p2 || p1)",
         "symmetric_sum_is_the_divergence_of_eq_10_115": True,
         "nonnegative": fwd >= -1e-12,
+        "delegates_to": "morie.fn.kldiv.kl_divergence",
         "method": "Rangayyan (2024) eq. (5.33)"})
 
 
@@ -893,24 +898,23 @@ def chernoff(p1, p2, alpha=None, n_grid=201):
 
 
 def hellinger(p1, p2):
-    """Hellinger distance.
+    """Hellinger distance, in the class-separability framing.
 
         H(p1, p2) = sqrt( 1 - BC(p1, p2) )
 
-    with BC the Bhattacharyya coefficient, so H^2 = 1 - BC.  Unlike the
-    Bhattacharyya distance -ln BC, this one is a TRUE METRIC: bounded in
-    [0, 1], symmetric, and it satisfies the triangle inequality, which
-    -ln BC does not.  That is the reason to reach for it -- anything that
-    needs a metric (clustering, embedding, nearest-neighbour search over
-    distributions) needs this and not D_B.
+    The arithmetic is ``morie.fn.helld.hellinger_dist``.  This is NOT a
+    second implementation -- it is that one with the Bhattacharyya
+    relationship attached, because in a classification context the point
+    of H is its connection to the overlap BC.
 
-    The 1/2 normalization is the usual one, H^2 = (1/2) integral
-    (sqrt(p) - sqrt(q))^2; under the unnormalized convention H^2 is
-    2(1 - BC) instead, and both appear in the literature, so the
-    convention is reported rather than assumed.
+    Unlike the Bhattacharyya distance -ln BC, this is a TRUE METRIC:
+    bounded in [0, 1], symmetric, and it satisfies the triangle
+    inequality, which -ln BC does not.  That is the reason to reach for
+    it -- anything needing a metric over distributions needs this one.
 
     NOT FROM RANGAYYAN (2024).
     """
+    from .helld import hellinger_dist
     a, b = aslist(p1), aslist(p2)
     if len(a) != len(b):
         raise ValueError("the two PDFs must be sampled on the same grid")
@@ -918,17 +922,21 @@ def hellinger(p1, p2):
         raise ValueError("need at least one bin")
     if any(v < 0 for v in a) or any(v < 0 for v in b):
         raise ValueError("a PDF cannot be negative")
-    bc = fsum(sqrt(a[i] * b[i]) for i in range(len(a)))
-    h2 = max(0.0, 1.0 - bc)
+    h = float(hellinger_dist(a, b).estimate)
+    sa, sb = fsum(a), fsum(b)
+    if sa <= 0 or sb <= 0:
+        raise ValueError("a PDF has no mass")
+    bc = fsum(sqrt((a[i] / sa) * (b[i] / sb)) for i in range(len(a)))
     return RichResult(payload={
-        "hellinger": sqrt(h2), "squared": h2,
+        "hellinger": h, "squared": h * h,
         "bhattacharyya_coefficient": bc,
-        "identity_h2_equals_one_minus_bc": True,
+        "identity_h2_equals_one_minus_bc": abs(h * h - (1.0 - bc)) < 1e-12,
         "is_a_true_metric": True,
         "satisfies_the_triangle_inequality": True,
         "bhattacharyya_distance_does_not": True,
         "normalization": "one half; unnormalized gives 2(1 - BC)",
-        "in_unit_interval": -1e-12 <= sqrt(h2) <= 1.0 + 1e-12,
+        "in_unit_interval": -1e-12 <= h <= 1.0 + 1e-12,
+        "delegates_to": "morie.fn.helld.hellinger_dist",
         "reference": "Hellinger E. Neue Begruendung der Theorie "
                      "quadratischer Formen von unendlichvielen "
                      "Veraenderlichen. Journal fuer die reine und "
@@ -938,7 +946,7 @@ def hellinger(p1, p2):
         "method": "Hellinger distance, H^2 = 1 - BC"})
 
 
-def bhatt(m1, m2, C1, C2):
+def bhattgauss(m1, m2, C1, C2):
     """Bhattacharyya distance between two multivariate Gaussians.
 
         D_B = (1/8) (m1-m2)^T [(C1+C2)/2]^-1 (m1-m2)
