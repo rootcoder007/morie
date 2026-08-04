@@ -1,42 +1,49 @@
-"""Differential entropy of a continuous PDF in bits.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Differential entropy of a continuous PDF (Rangayyan eq. 3.6)."""
 
-from . import _array_core as np
 
+from math import inf, log
+
+from ._rgcore import checkpdf, pdfint
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_entropy_continuous"]
+__all__ = ["diffent", "rangayyan_ch3_entropy_continuous"]
 
 
-def rangayyan_ch3_entropy_continuous(eta, p_eta):
+def diffent(pdf=None, x=None, lower=-inf, upper=inf):
+    """Differential entropy in bits.
+
+    Rangayyan (2024) eq. (3.6):
+        H = - integral p(eta) log2[p(eta)] d eta.
+
+    p log2 p -> 0 as p -> 0, so zero-density points contribute nothing
+    rather than raising on log(0).  Unlike the discrete Shannon entropy
+    of eq. (3.11) this may be negative -- it is a density, not a
+    probability, inside the logarithm.
     """
-    Differential entropy of a continuous PDF in bits.
+    ln2 = log(2.0)
 
-    Formula: H_eta = - integral_{-inf}^{inf} p_eta(eta) * log2(p_eta(eta)) d(eta)
+    def term(p):
+        return 0.0 if p <= 0.0 else -p * log(p) / ln2
 
-    Parameters
-    ----------
-    eta : array-like
-        Input data.
-    p_eta : array-like
-        Input data.
+    if x is not None:
+        from ._rgcore import aslist, gridint
+        xs = aslist(x)
+        ps = [float(pdf(v)) for v in xs] if callable(pdf) else aslist(pdf)
+        h = gridint([term(p) for p in ps], xs)
+        mass = gridint(ps, xs)
+    else:
+        h = pdfint(lambda v: 1.0, lambda v: term(float(pdf(v))),
+                   None, lower, upper)
+        mass = pdfint(lambda v: 1.0, pdf, None, lower, upper)
+    out = {"entropy": float(h), "units": "bits",
+           "method": "Rangayyan (2024) eq. (3.6)"}
+    out.update(checkpdf(mass))
+    return RichResult(payload=out)
 
-    Returns
-    -------
-    result : dict
-        Keys: value
 
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.6, p. 94
-    """
-    eta = np.atleast_1d(np.asarray(eta, dtype=float))
-    n = len(eta)
-    result = float(np.mean(eta))
-    se = float(np.std(eta, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Differential entropy of a continuous PDF in bits."}
-    )
+rangayyan_ch3_entropy_continuous = diffent  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng006: Differential entropy of a continuous PDF in bits."
+    return "rng006: differential entropy of a PDF, Rangayyan eq. (3.6)"

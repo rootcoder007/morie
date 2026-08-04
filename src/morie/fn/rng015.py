@@ -1,49 +1,59 @@
-"""Ensemble mean of a random process at instant t1 from M observations.."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Ensemble mean at one instant (Rangayyan eq. 3.15)."""
 
-from . import _array_core as np
 
+from math import fsum, sqrt
+
+from ._rgcore import aslist
 from ._richresult import RichResult
 
-__all__ = ["rangayyan_ch3_ensemble_mean"]
+__all__ = ["ensmean", "rangayyan_ch3_ensemble_mean"]
 
 
-def rangayyan_ch3_ensemble_mean(x_k, t1, M):
-    """
-    Ensemble mean of a random process at instant t1 from M observations.
+def ensmean(observations, index=None):
+    """Ensemble mean of M observations at a single instant t1.
 
-    Formula: mu_x(t1) = lim_{M->inf} (1/M) * sum_{k=1}^{M} x_k(t1)
+    Rangayyan (2024) eq. (3.15):
+        mu_x(t1) = lim_{M->inf} (1/M) sum_{k=1}^{M} x_k(t1).
 
     Parameters
     ----------
-    x_k : array-like
-        Input data.
-    t1 : array-like
-        Input data.
-    M : array-like
-        Input data.
+    observations : sequence
+        Either the M values already sampled at t1, or M whole records
+        from which ``index`` selects the instant.
+    index : int, optional
+        Sample index t1 within each record.
 
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.15, p. 96
+    Notes
+    -----
+    The SE of the ensemble mean is sigma/sqrt(M): the 1/sqrt(M) noise
+    reduction the book attributes to synchronized averaging in Section
+    3.3.1 is exactly this, read one instant at a time.
     """
-    x_k = np.atleast_1d(np.asarray(x_k, dtype=float))
-    n = len(x_k)
-    result = float(np.mean(x_k))
-    se = float(np.std(x_k, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Ensemble mean of a random process at instant t1 from M observations.",
-        }
-    )
+    if index is None:
+        vals = aslist(observations)
+    else:
+        i = int(index)
+        vals = []
+        for rec in observations:
+            r = aslist(rec)
+            if i < 0 or i >= len(r):
+                raise IndexError("index %d outside a record of length %d"
+                                 % (i, len(r)))
+            vals.append(r[i])
+    m = len(vals)
+    if m == 0:
+        raise ValueError("need at least one observation")
+    mu = fsum(vals) / m
+    var = fsum((v - mu) ** 2 for v in vals) / m
+    return RichResult(payload={
+        "mean": mu, "m": m, "sd": sqrt(var),
+        "se": sqrt(var / m) if m > 0 else float("nan"),
+        "method": "Rangayyan (2024) eq. (3.15)"})
+
+
+rangayyan_ch3_ensemble_mean = ensmean  # pre-policy spelling
 
 
 def cheatsheet():
-    return "rng015: Ensemble mean of a random process at instant t1 from M observations."
+    return "rng015: ensemble mean at an instant, Rangayyan eq. (3.15)"
