@@ -31,6 +31,21 @@ inf = float("inf")
 nan = float("nan")
 
 
+def _num(v):
+    """Coerce one element, preserving int and complex.
+
+    numpy keeps an integer dtype for integer data, and that matters: an
+    integer from arange() is usable as a slice index, a float is not.
+    Complex is preserved for the same reason -- silently taking float()
+    of it would raise, or worse, drop the imaginary part.
+    """
+    if isinstance(v, bool):
+        return int(v)
+    if isinstance(v, (int, complex)):
+        return v
+    return float(v)
+
+
 class marr:
     """Minimal array: nested lists of floats, 1-D or 2-D."""
 
@@ -42,13 +57,13 @@ class marr:
                 if isinstance(data.data[0], list) else data.data[:]
             self.shape = data.shape
             return
-        if isinstance(data, (int, float)):
-            data = [float(data)]
+        if isinstance(data, (int, float, complex)):
+            data = [_num(data)]
         if hasattr(data, "tolist") and not isinstance(data, marr):
             fshape = tuple(int(v) for v in getattr(data, "shape", ()) or ())
             data = data.tolist()                 # foreign arrays (numpy)
-            if isinstance(data, (int, float)):
-                data = [float(data)]
+            if isinstance(data, (int, float, complex)):
+                data = [_num(data)]
             if len(fshape) == 2 and fshape[0] == 0:
                 self.data = []
                 self.shape = fshape
@@ -66,7 +81,7 @@ class marr:
             self.data = rows
             self.shape = (len(rows), ncol)
         else:
-            self.data = [float(v) for v in data]
+            self.data = [_num(v) for v in data]
             self.shape = (len(self.data),)
 
     # -- helpers -----------------------------------------------------
@@ -997,17 +1012,25 @@ def atleast_2d(x):
     return a if len(a.shape) == 2 else marr([a.data])
 
 
-def arange(start, stop=None, step=1.0, dtype=None):
-    del dtype
+def arange(start, stop=None, step=1, dtype=None):
+    """Like numpy.arange, including its dtype rule.
+
+    numpy yields an INTEGER array when start, stop and step are all
+    integers, and that is load-bearing: a float cannot be used as a slice
+    index, so returning floats unconditionally broke every caller that
+    wrote x[: n - m] for m in arange(...).
+    """
     if stop is None:
-        start, stop = 0.0, start
-    out = []
-    v = float(start)
+        start, stop = 0, start
+    exact = (dtype is None
+             and all(isinstance(v, int) and not isinstance(v, bool)
+                     for v in (start, stop, step)))
+    if dtype is not None:
+        exact = dtype in (int, "int", "int64", "int32", "i8", "i4")
     n = _bi.max(0, int(_math.ceil((stop - start) / step - 1e-12)))
-    for i in range(n):
-        out.append(start + i * step)
-    del v
-    return marr(out)
+    if exact:
+        return marr([int(start) + i * int(step) for i in range(n)])
+    return marr([float(start) + i * float(step) for i in range(n)])
 
 
 def zeros(n, dtype=None):
@@ -3150,22 +3173,92 @@ def in1d(a, b):
 
 
 def real(x):
-    return asarray(x)
+    """Real part.  marr holds complex values, so this must actually take
+    the real part rather than pass the value through."""
+    return asarray(x)._map(lambda v: v.real if isinstance(v, complex)
+                           else float(v))
 
 
 def imag(x):
-    return zeros_like(asarray(x))
+    """Imaginary part.  Returned a hard zero before, which was a silent
+    wrong answer for every complex input."""
+    return asarray(x)._map(lambda v: v.imag if isinstance(v, complex)
+                           else 0.0)
 
 
 def angle(x):
-    return asarray(x)._map(lambda v: 0.0 if v >= 0 else _math.pi)
+    """Phase angle in radians, atan2(imag, real).
+
+    The previous version tested `v >= 0`, which raises on a complex value
+    and, for real input, only ever returned 0 or pi.
+    """
+    def _ang(v):
+        if isinstance(v, complex):
+            return _math.atan2(v.imag, v.real)
+        return 0.0 if v >= 0 else _math.pi
+    return asarray(x)._map(_ang)
 
 
 def conjugate(x):
-    return asarray(x)
+    """Complex conjugate.  Returned its argument unchanged before, so
+    every conjugate-multiply in a spectrum was wrong."""
+    return asarray(x)._map(lambda v: v.conjugate()
+                           if isinstance(v, complex) else v)
 
 
 conj = conjugate
+
+
+def isreal(x):
+    """Elementwise: is this element real-valued?  numpy.isreal returns a
+    boolean array and is True for a complex whose imaginary part is 0."""
+    return asarray(x)._map(
+        lambda v: 1.0 if not isinstance(v, complex) or v.imag == 0 else 0.0)
+
+
+def iscomplex(x):
+    """Elementwise: does this element have a non-zero imaginary part?"""
+    return asarray(x)._map(
+        lambda v: 1.0 if isinstance(v, complex) and v.imag != 0 else 0.0)
+
+
+def isrealobj(x):
+    """Whole-array: does the container hold no complex element at all?
+    Unlike isreal this looks at storage, so a complex 0j counts."""
+    return not any(isinstance(v, complex) for v in asarray(x)._flat())
+
+
+def iscomplexobj(x):
+    return not isrealobj(x)
+
+
+class _RClass:
+    """numpy.r_ : concatenate the arguments into one 1-D array.
+
+    Only the concatenation behaviour is provided -- the slice/step-string
+    forms of numpy.r_ are not, and asking for one raises rather than
+    silently returning something else.
+    """
+
+    def __getitem__(self, key):
+        if not isinstance(key, tuple):
+            key = (key,)
+        out = []
+        for item in key:
+            if isinstance(item, str):
+                raise ValueError(
+                    "r_ string directives (%r) are not supported" % item)
+            if isinstance(item, slice):
+                raise ValueError("r_ slice syntax is not supported; pass "
+                                 "arange(...) explicitly")
+            if isinstance(item, (int, float, complex)):
+                out.append(item)
+            else:
+                out.extend(list(asarray(item)._flat()))
+        return marr(out)
+
+
+r_ = _RClass()
 
 
 def square(x):
@@ -3555,14 +3648,24 @@ def _tocomplex(x):
 
 class _FFT:
     @staticmethod
-    def fft(x, n=None):
+    def fft(x, n=None, axis=-1):
+        # 1-D only: axis is accepted for numpy call-compatibility
+        # and must select the single existing axis.
+        if axis not in (-1, 0):
+            raise ValueError("only 1-D transforms are "
+                             "supported; axis=%r" % (axis,))
         a = _tocomplex(x)
         if n is not None:
             a = a[:n] + [0j] * _bi.max(0, n - len(a))
         return carr(_fft_any(a, False))
 
     @staticmethod
-    def ifft(x, n=None):
+    def ifft(x, n=None, axis=-1):
+        # 1-D only: axis is accepted for numpy call-compatibility
+        # and must select the single existing axis.
+        if axis not in (-1, 0):
+            raise ValueError("only 1-D transforms are "
+                             "supported; axis=%r" % (axis,))
         a = _tocomplex(x)
         if n is not None:
             a = a[:n] + [0j] * _bi.max(0, n - len(a))
@@ -3570,7 +3673,12 @@ class _FFT:
         return carr([v / len(a) for v in out])
 
     @staticmethod
-    def rfft(x, n=None):
+    def rfft(x, n=None, axis=-1):
+        # 1-D only: axis is accepted for numpy call-compatibility
+        # and must select the single existing axis.
+        if axis not in (-1, 0):
+            raise ValueError("only 1-D transforms are "
+                             "supported; axis=%r" % (axis,))
         a = _tocomplex(x)
         if n is not None:
             a = a[:n] + [0j] * _bi.max(0, n - len(a))
@@ -3578,7 +3686,12 @@ class _FFT:
         return carr(full[:len(a) // 2 + 1])
 
     @staticmethod
-    def irfft(x, n=None):
+    def irfft(x, n=None, axis=-1):
+        # 1-D only: axis is accepted for numpy call-compatibility
+        # and must select the single existing axis.
+        if axis not in (-1, 0):
+            raise ValueError("only 1-D transforms are "
+                             "supported; axis=%r" % (axis,))
         half = _tocomplex(x)
         m = len(half)
         if n is None:

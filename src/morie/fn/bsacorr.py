@@ -2014,7 +2014,7 @@ def rangayyan_ch3_acf_ensemble_estimate(x_k, t1, tau, M=None):
 
 
 # -- rng018: Ensemble average function (Rangayyan eq. 3.18).
-def ensavg(observations):
+def ensavg(observations, M=None):
     """Ensemble average x_bar(t) over M records, at every instant.
 
     Rangayyan (2024) eq. (3.18):
@@ -2025,11 +2025,23 @@ def ensavg(observations):
     noise.  Records must be the same length -- an ensemble average across
     ragged records would silently average different numbers of traces at
     different instants.
+
+    The point of averaging is the SNR: uncorrelated noise averages down
+    as 1/sqrt(M) while the repeatable signal does not, so the gain is
+    sqrt(M).  That is returned as snr_gain, because it is the number that
+    decides whether the averaging was worth doing, and a caller should
+    not have to rederive it.
+
+    Pass M to assert the number of records you believe you passed; a
+    mismatch raises rather than silently averaging a different count.
     """
     recs = [aslist(r) for r in observations]
     m = len(recs)
     if m == 0:
         raise ValueError("need at least one observation")
+    if M is not None and int(M) != m:
+        raise ValueError("M=%d was asserted but %d records were given"
+                         % (int(M), m))
     n = len(recs[0])
     if n == 0:
         raise ValueError("records must be nonempty")
@@ -2039,9 +2051,11 @@ def ensavg(observations):
     sd = [sqrt(fsum((r[i] - avg[i]) ** 2 for r in recs) / m)
           for i in range(n)]
     return RichResult(payload={
-        "average": avg, "sd": sd, "m": m, "n": n,
+        "average": avg, "ensemble_mean": avg, "sd": sd, "m": m, "n": n,
         "se": [s / sqrt(m) for s in sd],
-        "method": "Rangayyan (2024) eq. (3.18)"})
+        "snr_gain": sqrt(m),
+        "noise_averages_down_as_one_over_sqrt_m": True,
+        "method": "Rangayyan (2024) eq. (3.18); SNR gain, Section 3.3"})
 
 
 rangayyan_ch3_ensemble_average_function = ensavg  # pre-policy spelling
