@@ -375,3 +375,95 @@ def hungarian(cost):
         if p[j] > 0:
             ans[p[j] - 1] = j - 1
     return ans
+
+
+def icc_ms(y, subject, rater):
+    """Two-way ANOVA mean squares for the intraclass correlations."""
+    yv = C.vec(y)
+    sv = [int(round(t)) for t in C.vec(subject)]
+    rv = [int(round(t)) for t in C.vec(rater)]
+    subs, rats = [], []
+    for t in sv:
+        if t not in subs:
+            subs.append(t)
+    for t in rv:
+        if t not in rats:
+            rats.append(t)
+    n, k = len(subs), len(rats)
+    grand = sum(yv) / len(yv)
+    rm = [sum(yv[i] for i in range(len(yv)) if sv[i] == s) /
+          max(sum(1 for i in range(len(yv)) if sv[i] == s), 1) for s in subs]
+    cm = [sum(yv[i] for i in range(len(yv)) if rv[i] == r) /
+          max(sum(1 for i in range(len(yv)) if rv[i] == r), 1) for r in rats]
+    ss_r = k * sum((t - grand) ** 2 for t in rm)
+    ss_c = n * sum((t - grand) ** 2 for t in cm)
+    ss_t = sum((t - grand) ** 2 for t in yv)
+    ss_e = ss_t - ss_r - ss_c
+    return {"ms_r": ss_r / (n - 1) if n > 1 else float("nan"),
+            "ms_c": ss_c / (k - 1) if k > 1 else float("nan"),
+            "ms_e": ss_e / ((n - 1) * (k - 1)) if n > 1 and k > 1 else float("nan"),
+            "k": float(k), "n": float(n)}
+
+
+def _gpdfit(x):
+    """Zhang-Stephens empirical-Bayes generalised Pareto fit.
+
+    ``x`` must be sorted ascending and positive.  A fixed grid of
+    ``30 + floor(sqrt(N))`` points, weighted by the profile likelihood --
+    no optimiser, so the two arms cannot land on different local optima.
+    Returns ``(k, sigma)``.
+    """
+    N = len(x)
+    if N < 5:
+        return float("nan"), float("nan")
+    M = 30 + int(math.floor(math.sqrt(N)))
+    xstar = x[int(math.floor(N / 4.0 + 0.5)) - 1]
+    theta = [1.0 / x[N - 1] + (1.0 - math.sqrt(M / (j - 0.5))) / (3.0 * xstar)
+             for j in range(1, M + 1)]
+    lt = []
+    for a in theta:
+        kk = sum(math.log1p(-a * t) for t in x) / N
+        lt.append(N * (math.log(-a / kk) - kk - 1.0) if kk < 0.0 and a != 0.0
+                  else -1e300)
+    mx = max(lt)
+    w = [math.exp(t - mx) for t in lt]
+    sw = sum(w)
+    th = sum(theta[i] * w[i] for i in range(M)) / sw if sw > 0 else 0.0
+    k = sum(math.log1p(-th * t) for t in x) / N
+    sigma = -k / th if th != 0.0 else float("nan")
+    # Vehtari et al weakly informative prior on k: shrink toward 0.5
+    k = k * N / (N + 10.0) + 0.5 * 10.0 / (N + 10.0)
+    return k, sigma
+
+
+def psis(lw):
+    """Pareto-smoothed importance sampling on log weights.
+
+    Returns ``(smoothed_log_weights, k)``.  With too few draws to fit a
+    tail the weights come back untouched and ``k`` is NaN, which is
+    honest -- a shape fitted to four points is not a diagnostic.
+    """
+    lw = list(C.vec(lw))
+    Sn = len(lw)
+    mx = max(lw)
+    lw = [t - mx for t in lw]
+    M = int(min(0.2 * Sn, 3.0 * math.sqrt(Sn)))
+    if M < 5:
+        return lw, float("nan")
+    o = order(lw)
+    tail = o[Sn - M:]
+    cut = lw[o[Sn - M - 1]]
+    ecut = math.exp(cut)
+    x = sorted(math.exp(lw[i]) - ecut for i in tail)
+    if x[-1] <= 0.0:
+        return lw, float("nan")
+    k, sigma = _gpdfit(x)
+    if k == k and sigma == sigma:
+        for z in range(1, M + 1):
+            p = (z - 0.5) / M
+            q = sigma / k * (math.expm1(-k * math.log1p(-p))) if k != 0.0 \
+                else -sigma * math.log1p(-p)
+            lw[tail[z - 1]] = math.log(q + ecut)
+    top = max(lw)
+    lw = [min(t, top) for t in lw]
+    return lw, k

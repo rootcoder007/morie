@@ -1,49 +1,65 @@
-"""Warner classic randomized response (sensitive yes/no)."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Warner randomized response estimator."""
 
-from . import _array_core as np
+import math
+
+from . import _s04core as S
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
 __all__ = ["randomized_response"]
 
 
-def randomized_response(y, truth, p):
-    """
-    Warner classic randomized response (sensitive yes/no)
+def randomized_response(y, truth=None, p=0.7):
+    """Recover a population rate from deliberately noised answers.
 
-    Formula: observed = p * truth + (1-p) * Bernoulli(0.5)
+    The respondent answers one of two questions chosen by a private
+    randomiser, so no individual answer reveals anything -- which is
+    exactly what makes people answer honestly about stigmatised
+    behaviour.  The population rate is still identified because the
+    noise mechanism is known.  The estimator blows up as ``p`` nears one
+    half, since at exactly one half the answer carries no information at
+    all.
+
+    Formula: with ``P(yes) = p pi + (1 - p)(1 - pi)``,
+    ``pi_hat = (lambda_hat - (1 - p)) / (2p - 1)`` and
+    ``Var(pi_hat) = lambda(1 - lambda) / (n (2p - 1)^2)``.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    truth : array-like
-        Input data.
-    p : array-like
-        Input data.
+    y : array-like, shape (n,)
+        Observed yes/no answers.
+    truth : array-like, optional
+        True statuses, when known; only used to report the gap.
+    p : float, default 0.7
+        Probability the randomiser selected the sensitive question.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``estimate`` (``pi_hat``), ``se``, ``lambda`` (raw yes rate),
+        ``truth_rate``, ``n``.
 
     References
     ----------
-    Warner (1965)
+    Warner, S. L. (1965).  Randomized response: a survey technique for
+    eliminating evasive answer bias.  Journal of the American
+    Statistical Association 60:63-69, equations (1) and (3).
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Warner classic randomized response (sensitive yes/no)",
-        }
-    )
+    v = C.vec(y)
+    n = len(v)
+    lam = sum(v) / n
+    p = float(p)
+    d = 2.0 * p - 1.0
+    pi = (lam - (1.0 - p)) / d if d != 0.0 else float("nan")
+    var = lam * (1.0 - lam) / (n * d * d) if d != 0.0 else float("nan")
+    tr = sum(C.vec(truth)) / n if truth is not None else float("nan")
+    return RichResult(payload={
+        "estimate": pi, "se": math.sqrt(var) if var == var and var >= 0 else float("nan"),
+        "lambda": lam, "truth_rate": tr, "n": n,
+        "method": "Warner randomized response estimator"})
 
 
 def cheatsheet():
-    return "randres: Warner classic randomized response (sensitive yes/no)"
+    return "randres: Warner randomized response estimator."
