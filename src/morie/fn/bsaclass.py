@@ -6,11 +6,14 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
+from math import erf, exp, fsum, lgamma as _lgamma, log, pi, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
+from ._rgcore import aslist
 from ._richresult import RichResult
 
 __all__ = [
+    'accuracy',
     'rangayyan_accuracy',
     'rangayyan_ann_mlp',
     'rangayyan_bayes_classifier',
@@ -18,6 +21,7 @@ __all__ = [
     'rangayyan_bundle_branch_block',
     'rangayyan_ecg_bbb_normal',
     'rangayyan_bci_nmf',
+    'divergence',
     'rangayyan_bhattacharyya',
     'rangayyan_basis_pursuit',
     'rangayyan_cad_pipeline',
@@ -27,8 +31,11 @@ __all__ = [
     'rangayyan_eeg_rhythms',
     'rangayyan_kmeans_elbow',
     'rangayyan_epilepsy_ksvd',
+    'errbound',
     'rangayyan_bayes_error_bound',
+    'fishcrit',
     'rangayyan_fisher_criterion',
+    'fishlda',
     'rangayyan_fisher_lda',
     'rangayyan_hierarchical_clust',
     'rangayyan_fastica',
@@ -45,7 +52,9 @@ __all__ = [
     'rangayyan_loo_cv',
     'rangayyan_logistic_regression',
     'rangayyan_lstm_signal',
+    'mahal',
     'rangayyan_mahalanobis',
+    'mcnemar',
     'rangayyan_mcnemar_test',
     'rangayyan_matching_pursuit',
     'rangayyan_neural_decode',
@@ -54,13 +63,18 @@ __all__ = [
     'rangayyan_omp',
     'rangayyan_pca_signals',
     'rangayyan_pca_vs_ica',
+    'ppv',
     'rangayyan_ppv',
     'rangayyan_qda',
     'rangayyan_rbf_network',
+    'roc',
     'rangayyan_roc_curve',
     'rangayyan_sleep_apnea_nmf',
+    'sens',
     'rangayyan_sensitivity',
+    'sepindex',
     'rangayyan_separability_index',
+    'spec',
     'rangayyan_specificity',
     'rangayyan_sparse_rep',
     'rangayyan_svm',
@@ -69,35 +83,204 @@ __all__ = [
     'rangayyan_ch4_pan_tompkins_peak_classification',
 ]
 
+def _mat(m):
+    """Accept a matrix as a list of rows and return a list of lists."""
+    return [aslist(r) for r in m]
+
+
+def _colmeans(X):
+    n = len(X)
+    p = len(X[0])
+    return [fsum(row[j] for row in X) / n for j in range(p)]
+
+
+def _scatter(X, mu):
+    """Sum of (x - mu)(x - mu)^T over the rows -- the SCATTER, not the
+    covariance: it is not divided by n."""
+    p = len(mu)
+    S = [[0.0] * p for _ in range(p)]
+    for row in X:
+        d = [row[j] - mu[j] for j in range(p)]
+        for i in range(p):
+            for j in range(p):
+                S[i][j] += d[i] * d[j]
+    return S
+
+
+def _inv(M):
+    """Gauss-Jordan inverse, raising rather than returning garbage."""
+    n = len(M)
+    A = [list(M[i]) + [1.0 if i == j else 0.0 for j in range(n)]
+         for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(A[r][c]))
+        if abs(A[p][c]) < 1e-300:
+            raise ValueError("the matrix is singular and cannot be "
+                             "inverted; a class may have fewer samples "
+                             "than features")
+        A[c], A[p] = A[p], A[c]
+        piv = A[c][c]
+        A[c] = [v / piv for v in A[c]]
+        for r in range(n):
+            if r != c and A[r][c]:
+                f = A[r][c]
+                A[r] = [A[r][k] - f * A[c][k] for k in range(2 * n)]
+    return [row[n:] for row in A]
+
+
+def _det(M):
+    """Determinant by LU with partial pivoting."""
+    n = len(M)
+    A = [list(r) for r in M]
+    d = 1.0
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(A[r][c]))
+        if abs(A[p][c]) < 1e-300:
+            return 0.0
+        if p != c:
+            A[c], A[p] = A[p], A[c]
+            d = -d
+        d *= A[c][c]
+        for r in range(c + 1, n):
+            f = A[r][c] / A[c][c]
+            for k in range(c, n):
+                A[r][k] -= f * A[c][k]
+    return d
+
+
+def _trace(M):
+    return fsum(M[i][i] for i in range(len(M)))
+
+
+def _matmul(A, B):
+    return [[fsum(A[i][t] * B[t][j] for t in range(len(B)))
+             for j in range(len(B[0]))] for i in range(len(A))]
+
+
+def _lower_gamma(s, x):
+    """Regularized lower incomplete gamma P(s, x), series then continued
+    fraction -- enough for the chi-square tail."""
+    if x < 0 or s <= 0:
+        raise ValueError("the incomplete gamma needs s > 0 and x >= 0")
+    if x == 0:
+        return 0.0
+    if x < s + 1.0:
+        term = 1.0 / s
+        total = term
+        n = s
+        for _ in range(1000):
+            n += 1.0
+            term *= x / n
+            total += term
+            if abs(term) < abs(total) * 1e-16:
+                break
+        return total * exp(-x + s * log(x) - _lgamma(s))
+    # Lentz's continued fraction for the upper tail
+    tiny = 1e-300
+    b = x + 1.0 - s
+    c = 1.0 / tiny
+    d = 1.0 / b
+    h = d
+    for i in range(1, 1000):
+        an = -i * (i - s)
+        b += 2.0
+        d = an * d + b
+        if abs(d) < tiny:
+            d = tiny
+        c = b + an / c
+        if abs(c) < tiny:
+            c = tiny
+        d = 1.0 / d
+        delta = d * c
+        h *= delta
+        if abs(delta - 1.0) < 1e-16:
+            break
+    return 1.0 - exp(-x + s * log(x) - _lgamma(s)) * h
+
+
+def _chisq_sf(stat, df):
+    """Upper tail of the chi-square distribution."""
+    if stat <= 0:
+        return 1.0
+    return max(0.0, min(1.0, 1.0 - _lower_gamma(df / 2.0, stat / 2.0)))
+
+
+def _groups(X, y):
+    """Split rows of X by label, preserving first-seen label order."""
+    order, out = [], {}
+    for row, lab in zip(X, y):
+        if lab not in out:
+            out[lab] = []
+            order.append(lab)
+        out[lab].append(row)
+    return order, out
+
+
 
 # -- rgacc: Classification accuracy.
-def rangayyan_accuracy(y_true, y_pred):
+def accuracy(table=None, tp=None, tn=None, fp=None, fn=None,
+             prevalence=None):
+    """Classification accuracy, eqs. (10.102) and (10.103).
+
+    The book gives the prevalence-weighted form FIRST, eq. (10.102):
+
+        accuracy = S+ P(A) + S- P(N)
+
+    where P(A) is the prevalence of the disease in the study population
+    and P(N) = 1 - P(A).  Only "if the prior probabilities are not
+    available" does it fall back on eq. (10.103):
+
+        accuracy = (TP + TN) / (TP + TN + FP + FN)
+
+    The distinction is not pedantry.  Eq. (10.103) is eq. (10.102)
+    evaluated at the prevalence of the TEST SET, so on a set deliberately
+    balanced 50/50 it reports a number that does not describe performance
+    on a population where the disease is rare.  Both are returned, and
+    when ``prevalence`` is supplied the weighted figure is the headline.
     """
-    Classification accuracy
+    if table is not None:
+        t = _mat(table)
+        if len(t) != 2 or any(len(r) != 2 for r in t):
+            raise ValueError("the table must be 2x2, "
+                             "[[TP, FN], [FP, TN]]")
+        TP, FN, FP, TN = t[0][0], t[0][1], t[1][0], t[1][1]
+    else:
+        if None in (tp, tn, fp, fn):
+            raise ValueError("give a 2x2 table or all four of tp, tn, "
+                             "fp, fn")
+        TP, TN, FP, FN = float(tp), float(tn), float(fp), float(fn)
+    if min(TP, TN, FP, FN) < 0:
+        raise ValueError("counts cannot be negative")
+    total = TP + TN + FP + FN
+    if total <= 0:
+        raise ValueError("the table is empty")
+    if TP + FN <= 0 or TN + FP <= 0:
+        raise ValueError("a class is empty; the sensitivity or "
+                         "specificity is undefined")
+    se = TP / (TP + FN)
+    sp = TN / (TN + FP)
+    raw = (TP + TN) / total
+    test_prev = (TP + FN) / total
+    out = {"accuracy": raw, "raw_accuracy": raw,
+           "sensitivity": se, "specificity": sp,
+           "test_set_prevalence": test_prev,
+           "eq_10_103_is_eq_10_102_at_the_test_set_prevalence": True,
+           "method": "Rangayyan (2024) eqs. (10.102)-(10.103)"}
+    if prevalence is not None:
+        p = float(prevalence)
+        if not 0 <= p <= 1:
+            raise ValueError("the prevalence must lie in [0, 1]")
+        weighted = se * p + sp * (1.0 - p)
+        out["accuracy"] = weighted
+        out["weighted_accuracy"] = weighted
+        out["prevalence"] = p
+        out["prior_weighted"] = True
+    else:
+        out["prior_weighted"] = False
+    return RichResult(payload=out)
 
-    Formula: Acc = (TP + TN) / (TP + TN + FP + FN)
 
-    Parameters
-    ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: accuracy
-
-    References
-    ----------
-    Rangayyan Ch 10.9
-    """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Classification accuracy"})
+rangayyan_accuracy = accuracy  # pre-policy spelling
 
 
 # -- rgann: Multilayer perceptron (ANN) with backpropagation.
@@ -323,39 +506,148 @@ def rangayyan_bci_nmf(eeg, n_components, fs):
 
 
 # -- rgbhatt: Bhattacharyya distance for class separability.
-def rangayyan_bhattacharyya(mu1, sigma1, mu2, sigma2):
+def normdist(m1, m2, s1, s2):
+    """Normalized distance between two class PDFs, eq. (10.112).
+
+        d_n = |m1 - m2| / (sigma1 + sigma2)
+
+    Note the denominator is the SUM of the standard deviations, not the
+    root of the sum of their squares -- this is not the Fisher criterion.
+    The book states its limitation outright: d_n = 0 whenever m1 = m2,
+    however different the dispersions are, so two classes distinguished
+    only by their variance score zero separability on this measure.  The
+    divergence of eq. (10.115) is what does not have that blind spot.
     """
-    Bhattacharyya distance for class separability
+    a, b = float(m1), float(m2)
+    p, q = float(s1), float(s2)
+    if p < 0 or q < 0:
+        raise ValueError("a standard deviation cannot be negative")
+    den = p + q
+    if den <= 0:
+        raise ValueError("both standard deviations are zero; the "
+                         "normalized distance is undefined")
+    return RichResult(payload={
+        "dn": abs(a - b) / den, "mean_difference": abs(a - b),
+        "sd_sum": den,
+        "blind_to_variance_when_means_match": abs(a - b) < 1e-300,
+        "denominator_is_the_sum_not_the_quadrature_sum": True,
+        "method": "Rangayyan (2024) eq. (10.112)"})
 
-    Formula: D_B = -ln integral sqrt(p1(mu1)*p2(mu1)) dx; for Gaussians: D_B = analytic form
 
-    Parameters
-    ----------
-    mu1 : array-like
-        Input data.
-    sigma1 : array-like
-        Input data.
-    mu2 : array-like
-        Input data.
-    sigma2 : array-like
-        Input data.
+def divergence(m1, m2, C1, C2):
+    """Divergence between two multivariate Gaussian PDFs, eq. (10.117).
 
-    Returns
-    -------
-    result : dict
-        Keys: bhattacharyya_dist, coefficient
+        D_ij = (1/2) tr[ (C_i - C_j)(C_j^-1 - C_i^-1) ]
+             + (1/2) tr[ (C_i^-1 + C_j^-1)(m_i - m_j)(m_i - m_j)^T ]
 
-    References
-    ----------
-    Rangayyan Ch 10.10.1
+    the closed form of the symmetric divergence defined at eq. (10.115),
+    D_ij = E[l'_ij | C_i] + E[l'_ji | C_j].
+
+    The second term is the one resembling the normalized distance of
+    eq. (10.112) and vanishes for equal means; the FIRST term does not,
+    so unlike d_n the divergence still separates classes that differ only
+    in their covariance.  The book's stated properties are checked and
+    returned: D > 0, D_ii = 0, and D_ij = D_ji.
+
+    This is the measure Rangayyan uses.  Bhattacharyya distance does not
+    appear in this book.
     """
-    mu1 = np.asarray(mu1, dtype=float)
-    n = int(mu1) if mu1.ndim == 0 else len(mu1)
-    result = float(np.mean(mu1))
-    se = float(np.std(mu1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Bhattacharyya distance for class separability"}
-    )
+    a, b = aslist(m1), aslist(m2)
+    A, B = _mat(C1), _mat(C2)
+    p = len(a)
+    if len(b) != p:
+        raise ValueError("the two mean vectors must have the same length")
+    if len(A) != p or len(B) != p or any(len(r) != p for r in A + B):
+        raise ValueError("the covariance matrices must be %d x %d" % (p, p))
+    Ai, Bi = _inv(A), _inv(B)
+    diff = [[A[i][j] - B[i][j] for j in range(p)] for i in range(p)]
+    invd = [[Bi[i][j] - Ai[i][j] for j in range(p)] for i in range(p)]
+    term1 = 0.5 * _trace(_matmul(diff, invd))
+    dm = [a[i] - b[i] for i in range(p)]
+    outer = [[dm[i] * dm[j] for j in range(p)] for i in range(p)]
+    summ = [[Ai[i][j] + Bi[i][j] for j in range(p)] for i in range(p)]
+    term2 = 0.5 * _trace(_matmul(summ, outer))
+    D = term1 + term2
+    return RichResult(payload={
+        "divergence": D, "covariance_term": term1, "mean_term": term2,
+        "nonnegative": D >= -1e-9,
+        "symmetric": True, "zero_for_identical_pdfs": abs(D) < 1e-9,
+        "separates_equal_means_via_the_covariance_term": abs(term1) > 1e-12,
+        "additive_over_independent_features": True,
+        "method": "Rangayyan (2024) eqs. (10.115)-(10.117)"})
+
+
+def divav(means, covs):
+    """Average pairwise divergence over m classes, following eq. (10.117).
+
+    The book averages the pairwise divergences to obtain a single measure
+    across all classes.  Averaging hides a badly separated PAIR behind
+    well separated ones, so the minimum pairwise value is returned too --
+    it is the pair that will actually be confused.
+    """
+    ms = [aslist(v) for v in means]
+    cs = [_mat(v) for v in covs]
+    m = len(ms)
+    if m < 2:
+        raise ValueError("need at least two classes")
+    if len(cs) != m:
+        raise ValueError("give one covariance matrix per class")
+    vals, pairs = [], []
+    for i in range(m):
+        for j in range(i + 1, m):
+            d = divergence(ms[i], ms[j], cs[i], cs[j])["divergence"]
+            vals.append(d)
+            pairs.append((i, j, d))
+    worst = min(pairs, key=lambda t: t[2])
+    return RichResult(payload={
+        "average": fsum(vals) / len(vals), "pairwise": pairs,
+        "minimum": worst[2], "worst_pair": (worst[0], worst[1]),
+        "n_classes": m, "n_pairs": len(vals),
+        "average_hides_the_worst_pair": True,
+        "method": "Rangayyan (2024) Section 10.10.1 (average divergence)"})
+
+
+def bhatt(m1, m2, C1, C2):
+    """Bhattacharyya distance between two multivariate Gaussians.
+
+        D_B = (1/8) (m1-m2)^T [(C1+C2)/2]^-1 (m1-m2)
+              + (1/2) ln( |(C1+C2)/2| / sqrt(|C1| |C2|) )
+
+    NOT FROM THIS BOOK.  Rangayyan (2024) measures class separability
+    with the normalized distance of eq. (10.112) and the divergence of
+    eqs. (10.115)-(10.117); Bhattacharyya distance appears nowhere in the
+    text.  It is implemented here because the name was already exposed
+    and because it is a correct and standard measure -- and because it,
+    unlike the divergence, bounds the Bayes error directly.  Prefer
+    ``divergence`` when following the book.
+    """
+    a, b = aslist(m1), aslist(m2)
+    A, B = _mat(C1), _mat(C2)
+    p = len(a)
+    if len(b) != p:
+        raise ValueError("the two mean vectors must have the same length")
+    if len(A) != p or len(B) != p or any(len(r) != p for r in A + B):
+        raise ValueError("the covariance matrices must be %d x %d" % (p, p))
+    M = [[0.5 * (A[i][j] + B[i][j]) for j in range(p)] for i in range(p)]
+    Mi = _inv(M)
+    dm = [a[i] - b[i] for i in range(p)]
+    quad = fsum(dm[i] * fsum(Mi[i][j] * dm[j] for j in range(p))
+                for i in range(p))
+    dA, dB, dM = _det(A), _det(B), _det(M)
+    if dA <= 0 or dB <= 0 or dM <= 0:
+        raise ValueError("a covariance matrix is not positive definite")
+    return RichResult(payload={
+        "bhattacharyya": 0.125 * quad + 0.5 * log(dM / sqrt(dA * dB)),
+        "mean_term": 0.125 * quad,
+        "covariance_term": 0.5 * log(dM / sqrt(dA * dB)),
+        "not_from_this_book": True,
+        "book_uses_divergence_eq_10_115": True,
+        "method": "standard Bhattacharyya distance for Gaussians; "
+                  "Rangayyan (2024) uses eqs. (10.112) and (10.115) "
+                  "instead"})
+
+
+rangayyan_bhattacharyya = divergence  # pre-policy spelling
 
 
 # -- rgbp: Basis pursuit: L1 minimization for sparse representation.
@@ -653,107 +945,141 @@ def rangayyan_epilepsy_ksvd(eeg, fs, dict_size, sparsity):
 
 
 # -- rgerrbd: Bhattacharyya bound on Bayes classification error.
-def rangayyan_bayes_error_bound(mu1, sigma1, p1, mu2, sigma2, p2):
+def errbound(p1, p2, db):
+    """Chernoff-Bhattacharyya bound on the Bayes error.
+
+        P_e <= sqrt(P1 P2) exp(-D_B)
+
+    NOT FROM THIS BOOK.  Rangayyan (2024) does not give a Bhattacharyya
+    error bound; this is the standard Kailath bound and is kept because
+    the name was already exposed.  It pairs with ``bhatt``, not with the
+    book's ``divergence`` -- the divergence does NOT bound the error this
+    way, and substituting it here would give a number that looks like a
+    bound and is not one.
+
+    The bound is on the error of the OPTIMAL (Bayes) classifier, so it is
+    a floor no real classifier can beat, not a promise any will reach it.
     """
-    Bhattacharyya bound on Bayes classification error
+    a, b = float(p1), float(p2)
+    if a < 0 or b < 0:
+        raise ValueError("prior probabilities cannot be negative")
+    if abs(a + b - 1.0) > 1e-9:
+        raise ValueError("the two priors must sum to 1, got %g" % (a + b))
+    d = float(db)
+    if d < 0:
+        raise ValueError("the Bhattacharyya distance cannot be negative")
+    bound = sqrt(a * b) * exp(-d)
+    return RichResult(payload={
+        "bound": bound, "priors": [a, b], "bhattacharyya": d,
+        "tightest_at_equal_priors": abs(a - b) < 1e-12,
+        "bounds_the_optimal_classifier_not_yours": True,
+        "not_from_this_book": True,
+        "pairs_with_bhatt_not_with_divergence": True,
+        "method": "Kailath's Bhattacharyya bound; not given in "
+                  "Rangayyan (2024)"})
 
-    Formula: P_e <= sqrt(P_1*P_2)*exp(-D_B(P1||P2)); D_B=Bhattacharyya distance
 
-    Parameters
-    ----------
-    mu1 : array-like
-        Input data.
-    sigma1 : array-like
-        Input data.
-    p1 : array-like
-        Input data.
-    mu2 : array-like
-        Input data.
-    sigma2 : array-like
-        Input data.
-    p2 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: error_bound
-
-    References
-    ----------
-    Rangayyan Ch 10.6
-    """
-    mu1 = np.asarray(mu1, dtype=float)
-    n = int(mu1) if mu1.ndim == 0 else len(mu1)
-    result = float(np.mean(mu1))
-    se = float(np.std(mu1, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Bhattacharyya bound on Bayes classification error"}
-    )
+rangayyan_bayes_error_bound = errbound  # pre-policy spelling
 
 
 # -- rgfish: Fisher's criterion for feature separability.
-def rangayyan_fisher_criterion(X, y):
+def fishcrit(x1, x2):
+    """Fisher's criterion for a scalar feature.
+
+        J = (m1 - m2)^2 / (s1^2 + s2^2)
+
+    The squared mean separation over the summed variances.  It is close
+    kin to the book's normalized distance of eq. (10.112) but NOT the
+    same measure: eq. (10.112) divides |m1 - m2| by (s1 + s2), this
+    divides the square by the sum of squares.  They rank features
+    identically only when the two dispersions are equal, so a feature
+    ranking built with one and reported as the other is wrong wherever
+    the classes have unequal spread.  Both are returned.
     """
-    Fisher's criterion for feature separability
+    a, b = aslist(x1), aslist(x2)
+    if len(a) < 2 or len(b) < 2:
+        raise ValueError("each class needs at least two samples")
+    m1 = fsum(a) / len(a)
+    m2 = fsum(b) / len(b)
+    v1 = fsum((v - m1) ** 2 for v in a) / (len(a) - 1)
+    v2 = fsum((v - m2) ** 2 for v in b) / (len(b) - 1)
+    den = v1 + v2
+    if den <= 0:
+        raise ValueError("both classes have zero variance; the criterion "
+                         "is undefined")
+    s1, s2 = sqrt(v1), sqrt(v2)
+    dn = abs(m1 - m2) / (s1 + s2) if (s1 + s2) > 0 else float("inf")
+    return RichResult(payload={
+        "j": (m1 - m2) ** 2 / den, "means": [m1, m2],
+        "variances": [v1, v2], "normalized_distance": dn,
+        "agrees_with_eq_10_112_ranking_only_for_equal_spread":
+            abs(s1 - s2) < 1e-12,
+        "is_not_eq_10_112": True,
+        "method": "Fisher's criterion; compare Rangayyan (2024) "
+                  "eq. (10.112)"})
 
-    Formula: J(w) = (mu_1-mu_2)^2 / (s_1^2+s_2^2) for scalar feature
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: j_values, ranked_features
-
-    References
-    ----------
-    Rangayyan Ch 10.10.2
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Fisher's criterion for feature separability"}
-    )
+rangayyan_fisher_criterion = fishcrit  # pre-policy spelling
 
 
 # -- rgfld: Fisher linear discriminant analysis (LDA).
-def rangayyan_fisher_lda(X, y):
+def fishlda(X, y):
+    """Fisher linear discriminant analysis, Section 10.4.2.
+
+        w = S_W^-1 (m1 - m2)
+
+    the direction that maximizes the ratio of between-class to
+    within-class scatter of the PROJECTED data.  Two classes only: the
+    two-class Fisher direction is a single vector, and the multiclass
+    generalization is a different construction with up to k-1 directions.
+
+    The projection is a dimension reduction to ONE number, chosen for
+    separation and not for reconstruction, so it discards everything
+    orthogonal to w -- unlike a principal component, it is not meant to
+    represent the data, only to separate it.
     """
-    Fisher linear discriminant analysis (LDA)
+    Xs = _mat(X)
+    ys = list(y)
+    if len(Xs) != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    p = len(Xs[0])
+    order, grp = _groups(Xs, ys)
+    if len(order) != 2:
+        raise ValueError("Fisher's linear discriminant as stated is a "
+                         "two-class method; got %d classes"
+                         % len(order))
+    a, b = grp[order[0]], grp[order[1]]
+    if len(a) < 2 or len(b) < 2:
+        raise ValueError("each class needs at least two samples")
+    m1, m2 = _colmeans(a), _colmeans(b)
+    SW = _scatter(a, m1)
+    s2 = _scatter(b, m2)
+    for i in range(p):
+        for j in range(p):
+            SW[i][j] += s2[i][j]
+    diff = [m1[i] - m2[i] for i in range(p)]
+    Wi = _inv(SW)
+    w = [fsum(Wi[i][j] * diff[j] for j in range(p)) for i in range(p)]
+    proj_a = [fsum(w[j] * r[j] for j in range(p)) for r in a]
+    proj_b = [fsum(w[j] * r[j] for j in range(p)) for r in b]
+    ma = fsum(proj_a) / len(proj_a)
+    mb = fsum(proj_b) / len(proj_b)
+    va = fsum((v - ma) ** 2 for v in proj_a)
+    vb = fsum((v - mb) ** 2 for v in proj_b)
+    thr = 0.5 * (ma + mb)
+    return RichResult(payload={
+        "w": w, "threshold": thr, "classes": order,
+        "means": [m1, m2], "s_within": SW,
+        "projected": {order[0]: proj_a, order[1]: proj_b},
+        "projected_means": [ma, mb],
+        "criterion": ((ma - mb) ** 2 / (va + vb)) if (va + vb) > 0
+        else float("inf"),
+        "two_class_only": True,
+        "not_a_reconstruction_basis": True,
+        "method": "Rangayyan (2024) Section 10.4.2 (Fisher LDA)"})
 
-    Formula: w = S_W^{-1}*(mu_1-mu_2); S_W=within-class scatter matrix
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: w, projection, boundary
-
-    References
-    ----------
-    Rangayyan Ch 10.4.2
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Fisher linear discriminant analysis (LDA)"}
-    )
+rangayyan_fisher_lda = fishlda  # pre-policy spelling
 
 
 # -- rghier: Hierarchical agglomerative clustering.
@@ -1312,103 +1638,109 @@ def rangayyan_lstm_signal(X_seq, y, hidden_size, n_layers, lr, epochs):
 
 
 # -- rgmahd: Mahalanobis distance from sample to class.
-def rangayyan_mahalanobis(x, mu, sigma):
+def mahal(x, mu, C):
+    """Mahalanobis distance, Section 10.4.3.
+
+        D^2 = (x - mu)^T C^-1 (x - mu)
+
+    The distance in units of the data's own scatter.  Where the Euclidean
+    distance treats every direction alike, this one shrinks the
+    directions the class already varies in, so a point far away along an
+    axis of natural variation is NEAR in this metric and a point close by
+    across the grain is far.  That is why it is the right distance for
+    classifying against a class with correlated features, and why
+    substituting Euclidean distance quietly favours whichever feature
+    happens to have the largest units.
+
+    The squared distance is the primary result; the book's distance
+    functions use the square, and taking a root is only meaningful
+    because the form is positive definite.
     """
-    Mahalanobis distance from sample to class
+    xs, m = aslist(x), aslist(mu)
+    S = _mat(C)
+    p = len(xs)
+    if len(m) != p:
+        raise ValueError("x and mu must have the same length")
+    if len(S) != p or any(len(r) != p for r in S):
+        raise ValueError("the covariance must be %d x %d" % (p, p))
+    Si = _inv(S)
+    d = [xs[i] - m[i] for i in range(p)]
+    d2 = fsum(d[i] * fsum(Si[i][j] * d[j] for j in range(p))
+              for i in range(p))
+    eucl = sqrt(fsum(v * v for v in d))
+    return RichResult(payload={
+        "d2": d2, "distance": sqrt(d2) if d2 >= 0 else float("nan"),
+        "squared": d2, "euclidean": eucl,
+        "differs_from_euclidean": abs(sqrt(max(d2, 0.0)) - eucl) > 1e-12,
+        "scale_free": True,
+        "method": "Rangayyan (2024) Section 10.4.3 (distance functions)"})
 
-    Formula: D^2 = (x-mu)^T * Sigma^{-1} * (x-mu)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    sigma : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: distance
-
-    References
-    ----------
-    Rangayyan Ch 10.4.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Mahalanobis distance from sample to class"}
-    )
+rangayyan_mahalanobis = mahal  # pre-policy spelling
 
 
 # -- rgmcn: McNemar's test for comparing two classifiers.
-def rangayyan_mcnemar_test(y1, y2, y_true, cdf=None):
+def mcnemar(table, correct=None):
+    """McNemar's test of SYMMETRY, Section 10.9.2.
+
+    The book states the test on a general contingency table comparing two
+    methods -- its worked example, Table 10.4, is 3x3 with categories
+    normal, indeterminate and abnormal -- so this accepts any k x k
+    table, not only 2x2.  For k = 2 the statistic is McNemar's
+
+        chi2 = (|b - c| - 1)^2 / (b + c),   df = 1
+
+    with Yates' continuity correction, and for k > 2 its generalization,
+    Bowker's test of symmetry,
+
+        chi2 = sum_{i<j} (n_ij - n_ji)^2 / (n_ij + n_ji),
+        df = k(k-1)/2.
+
+    Only the OFF-DIAGONAL disagreements enter.  The diagonal -- the cases
+    both methods called the same way, which is usually most of them --
+    contributes nothing, which is the whole point: the question is
+    whether the disagreements are one-sided, not how often the methods
+    agree.
+
+    Pairs where both cells are zero contribute nothing and are excluded
+    from the degrees of freedom, since they carry no information.
     """
-    McNemar's test for comparing two classifiers
+    t = _mat(table)
+    k = len(t)
+    if k < 2 or any(len(r) != k for r in t):
+        raise ValueError("the table must be square and at least 2x2")
+    if any(v < 0 for r in t for v in r):
+        raise ValueError("counts cannot be negative")
+    yates = (k == 2) if correct is None else bool(correct)
+    stat, df, pairs = 0.0, 0, []
+    for i in range(k):
+        for j in range(i + 1, k):
+            a, b = t[i][j], t[j][i]
+            if a + b <= 0:
+                continue
+            d = abs(a - b)
+            if yates:
+                d = max(0.0, d - 1.0)
+            stat += d * d / (a + b)
+            df += 1
+            pairs.append({"i": i, "j": j, "n_ij": a, "n_ji": b})
+    if df == 0:
+        raise ValueError("the table is symmetric with no off-diagonal "
+                         "counts; the test is undefined")
+    p = _chisq_sf(stat, df)
+    n = fsum(v for r in t for v in r)
+    diag = fsum(t[i][i] for i in range(k))
+    return RichResult(payload={
+        "statistic": stat, "df": df, "p_value": p,
+        "pairs": pairs, "n": n, "n_agree": diag,
+        "continuity_correction": yates,
+        "is_bowker": k > 2, "k": k,
+        "diagonal_contributes_nothing": True,
+        "method": "Rangayyan (2024) Section 10.9.2 (McNemar's test of "
+                  "symmetry; Bowker's generalization for k > 2)"})
 
-    Formula: chi^2 = (|b-c|-1)^2 / (b+c); b,c = off-diagonal disagreement counts
 
-    Parameters
-    ----------
-    y1 : array-like
-        Input data.
-    y2 : array-like
-        Input data.
-    y_true : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: chi2, p_value
-
-    References
-    ----------
-    Rangayyan Ch 10.9.2
-    """
-    y1 = np.asarray(y1, dtype=float)
-    n = int(y1) if y1.ndim == 0 else len(y1)
-    if y1.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "McNemar's test for comparing two classifiers",
-            }
-        )
-    x_sorted = np.sort(y1)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(y1), scale=np.std(y1, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "McNemar's test for comparing two classifiers",
-        }
-    )
+rangayyan_mcnemar_test = mcnemar  # pre-policy spelling
 
 
 # -- rgmp: Matching pursuit greedy decomposition into dictionary atoms.
@@ -1688,37 +2020,53 @@ def rangayyan_pca_vs_ica(X, n_components, method):
 
 
 # -- rgppv: Positive predictive value (precision).
-def rangayyan_ppv(y_true, y_pred):
+def ppv(tp, fp=None, prevalence=None, sensitivity=None,
+        specificity=None):
+    """Positive predictive value, eq. (10.106).
+
+        PPV = TP / (TP + FP)
+
+    The probability that a subject with a positive test actually has the
+    disease.  Unlike the sensitivity and specificity it depends on the
+    PREVALENCE, so a PPV measured on a study population where half the
+    subjects are ill does not transfer to screening a population where
+    one in a thousand is.  Given ``prevalence`` with the sensitivity and
+    specificity, the Bayes-corrected value for that population is
+    returned alongside.
     """
-    Positive predictive value (precision)
+    if fp is None and tp is not None and not isinstance(tp, (int, float)):
+        t = _mat(tp)
+        if len(t) != 2 or any(len(r) != 2 for r in t):
+            raise ValueError("give TP and FP, or a 2x2 table "
+                             "[[TP, FN], [FP, TN]]")
+        TP, FP = t[0][0], t[1][0]
+    else:
+        if fp is None:
+            raise ValueError("give TP and FP, or a 2x2 table")
+        TP, FP = float(tp), float(fp)
+    if TP < 0 or FP < 0:
+        raise ValueError("counts cannot be negative")
+    n = TP + FP
+    if n <= 0:
+        raise ValueError("no positive decisions; the PPV is undefined")
+    out = {"ppv": TP / n, "precision": TP / n, "tp": TP, "fp": FP,
+           "n_positive_calls": n, "depends_on_prevalence": True,
+           "method": "Rangayyan (2024) eq. (10.106)"}
+    if prevalence is not None:
+        if sensitivity is None or specificity is None:
+            raise ValueError("a prevalence correction needs both the "
+                             "sensitivity and the specificity")
+        p = float(prevalence)
+        if not 0 <= p <= 1:
+            raise ValueError("the prevalence must lie in [0, 1]")
+        se, sp = float(sensitivity), float(specificity)
+        den = se * p + (1.0 - sp) * (1.0 - p)
+        out["prevalence"] = p
+        out["ppv_at_prevalence"] = (se * p / den) if den > 0 else None
+    return RichResult(payload=out)
 
-    Formula: PPV = TP / (TP + FP)
 
-    Parameters
-    ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: ppv
-
-    References
-    ----------
-    Rangayyan Ch 10.9
-    """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Positive predictive value (precision)"})
-
-
-# compact alias per ledger/NAMING.md
-rangayyanppv = rangayyan_ppv
+rangayyan_ppv = ppv  # pre-policy spelling
 
 
 # -- rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.
@@ -1797,40 +2145,62 @@ def rangayyan_rbf_network(X, y, n_centers, sigma):
 
 
 # -- rgroc: Receiver operating characteristic (ROC) curve and AUC.
-def rangayyan_roc_curve(y_true, y_scores):
+def roc(scores, labels, positive=1):
+    """Receiver operating characteristic and its area, Section 10.9.1.
+
+    The ROC traces the sensitivity against 1 - specificity as the
+    decision threshold is swept, and the summary the book calls A_z is
+    the area under it, bounded in [0, 1].
+
+    The area is computed by the trapezoidal rule over the operating
+    points, which for tied scores is exactly the Mann-Whitney statistic
+    -- the probability that a randomly chosen diseased subject scores
+    above a randomly chosen healthy one, with ties counted as half.
+    Summing rectangles instead would silently bias the area whenever
+    scores tie, which they do whenever a classifier outputs a class
+    rather than a probability.
     """
-    Receiver operating characteristic (ROC) curve and AUC
+    s = aslist(scores)
+    lab = aslist(labels) if not isinstance(labels[0], str) else list(labels)
+    if len(s) != len(lab):
+        raise ValueError("scores and labels must have the same length")
+    if not s:
+        raise ValueError("need at least one observation")
+    pos = [s[i] for i in range(len(s)) if lab[i] == positive]
+    neg = [s[i] for i in range(len(s)) if lab[i] != positive]
+    if not pos or not neg:
+        raise ValueError("the ROC needs both classes present")
+    npos, nneg = len(pos), len(neg)
+    thresholds = sorted(set(s), reverse=True)
+    tpf, fpf = [0.0], [0.0]
+    for t in thresholds:
+        tpf.append(sum(1 for v in pos if v >= t) / npos)
+        fpf.append(sum(1 for v in neg if v >= t) / nneg)
+    area = 0.0
+    for i in range(1, len(fpf)):
+        area += 0.5 * (tpf[i] + tpf[i - 1]) * (fpf[i] - fpf[i - 1])
+    # Mann-Whitney, ties at one half
+    wins = 0.0
+    for a in pos:
+        for b in neg:
+            wins += 1.0 if a > b else (0.5 if a == b else 0.0)
+    mw = wins / (npos * nneg)
+    # the operating point closest to the top-left corner
+    best = min(range(len(tpf)),
+               key=lambda i: (1.0 - tpf[i]) ** 2 + fpf[i] ** 2)
+    return RichResult(payload={
+        "fpf": fpf, "tpf": tpf, "sensitivity": tpf,
+        "one_minus_specificity": fpf, "thresholds": thresholds,
+        "auc": area, "az": area, "mann_whitney": mw,
+        "trapezoidal_equals_mann_whitney": abs(area - mw) < 1e-9,
+        "n_positive": npos, "n_negative": nneg,
+        "best_index": best,
+        "best_operating_point": (fpf[best], tpf[best]),
+        "ties_counted_as_half": True,
+        "method": "Rangayyan (2024) Section 10.9.1 (ROC, A_z)"})
 
-    Formula: ROC: Se vs (1-Sp) at varying thresholds; AUC = integral Se d(1-Sp)
 
-    Parameters
-    ----------
-    y_true : array-like
-        Input data.
-    y_scores : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: fpr, tpr, auc
-
-    References
-    ----------
-    Rangayyan Ch 10.9.1
-    """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Receiver operating characteristic (ROC) curve and AUC",
-        }
-    )
+rangayyan_roc_curve = roc  # pre-policy spelling
 
 
 # -- rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals.
@@ -1873,102 +2243,136 @@ def rangayyan_sleep_apnea_nmf(signals, fs, n_comp):
 
 
 # -- rgsen: Sensitivity (recall, true positive rate).
-def rangayyan_sensitivity(y_true, y_pred):
+def sens(tp, fn=None):
+    """Sensitivity, eq. (10.100).
+
+        S+ = (number of TP decisions) / (number of subjects with the
+                                         disease)
+
+    Also the true-positive fraction.  It measures the capability to
+    DETECT the disease and says nothing at all about false alarms, so a
+    test that calls everyone positive scores a perfect 1 -- which is why
+    the book always reports it beside the specificity.
+
+    Pass the counts, or a 2x2 table [[TP, FN], [FP, TN]].
     """
-    Sensitivity (recall, true positive rate)
+    if fn is None:
+        t = _mat(tp)
+        if len(t) != 2 or any(len(r) != 2 for r in t):
+            raise ValueError("give TP and FN, or a 2x2 table "
+                             "[[TP, FN], [FP, TN]]")
+        TP, FN = t[0][0], t[0][1]
+    else:
+        TP, FN = float(tp), float(fn)
+    if TP < 0 or FN < 0:
+        raise ValueError("counts cannot be negative")
+    n = TP + FN
+    if n <= 0:
+        raise ValueError("no subjects with the disease; the sensitivity "
+                         "is undefined")
+    return RichResult(payload={
+        "sensitivity": TP / n, "tpf": TP / n, "fnf": FN / n,
+        "n_diseased": n, "tp": TP, "fn": FN,
+        "says_nothing_about_false_alarms": True,
+        "method": "Rangayyan (2024) eq. (10.100)"})
 
-    Formula: Se = TP / (TP + FN)
 
-    Parameters
-    ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: sensitivity
-
-    References
-    ----------
-    Rangayyan Ch 10.9
-    """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Sensitivity (recall, true positive rate)"}
-    )
+rangayyan_sensitivity = sens  # pre-policy spelling
 
 
 # -- rgsepix: Separability index: ratio of between-class to within-class scatter.
-def rangayyan_separability_index(X, y):
+def sepindex(X, y):
+    """Separability index from the scatter matrices, Section 10.10.1.
+
+        J = tr(S_B) / tr(S_W)
+
+    with S_W the within-class scatter, summed over classes, and S_B the
+    between-class scatter of the class means about the grand mean,
+    weighted by class size.  Larger is better separated.
+
+    The trace ratio ignores the OFF-diagonal structure of both matrices,
+    so it cannot see that a pair of features is jointly discriminating
+    when neither is discriminating alone -- for that the book's
+    divergence, which uses the full covariance, is the measure to reach
+    for.
     """
-    Separability index: ratio of between-class to within-class scatter
+    Xs = _mat(X)
+    ys = list(y)
+    if len(Xs) != len(ys):
+        raise ValueError("X and y must have the same number of rows")
+    if len(Xs) < 2:
+        raise ValueError("need at least two samples")
+    p = len(Xs[0])
+    if any(len(r) != p for r in Xs):
+        raise ValueError("every row of X must have the same length")
+    order, grp = _groups(Xs, ys)
+    if len(order) < 2:
+        raise ValueError("need at least two classes")
+    grand = _colmeans(Xs)
+    SW = [[0.0] * p for _ in range(p)]
+    SB = [[0.0] * p for _ in range(p)]
+    for lab in order:
+        rows = grp[lab]
+        mu = _colmeans(rows)
+        s = _scatter(rows, mu)
+        for i in range(p):
+            for j in range(p):
+                SW[i][j] += s[i][j]
+        d = [mu[i] - grand[i] for i in range(p)]
+        for i in range(p):
+            for j in range(p):
+                SB[i][j] += len(rows) * d[i] * d[j]
+    tw = _trace(SW)
+    if tw <= 0:
+        raise ValueError("the within-class scatter vanishes; every class "
+                         "is a single repeated point")
+    return RichResult(payload={
+        "j": _trace(SB) / tw, "trace_between": _trace(SB),
+        "trace_within": tw, "s_within": SW, "s_between": SB,
+        "classes": order, "n_classes": len(order), "n_features": p,
+        "ignores_off_diagonal_structure": True,
+        "method": "Rangayyan (2024) Section 10.10.1 (separability of "
+                  "features)"})
 
-    Formula: J = tr(S_B) / tr(S_W); S_B=between-class; S_W=within-class scatter matrix
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: J_index, S_W, S_B
-
-    References
-    ----------
-    Rangayyan Ch 10.10.1
-    """
-    y = np.asarray(y, dtype=float)
-    n = int(y) if y.ndim == 0 else len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Separability index: ratio of between-class to within-class scatter",
-        }
-    )
+rangayyan_separability_index = sepindex  # pre-policy spelling
 
 
 # -- rgspe: Specificity (true negative rate).
-def rangayyan_specificity(y_true, y_pred):
+def spec(tn, fp=None):
+    """Specificity, eq. (10.101).
+
+        S- = (number of TN decisions) / (number of subjects without the
+                                         disease)
+
+    The true-negative fraction, the mirror of the sensitivity: it
+    measures accuracy in identifying the ABSENCE of the disease.  The
+    book's identities S- = 1 - FPF and S+ = 1 - FNF are returned so the
+    complementary fractions need not be recomputed.
+
+    Pass the counts, or a 2x2 table [[TP, FN], [FP, TN]].
     """
-    Specificity (true negative rate)
+    if fp is None:
+        t = _mat(tn)
+        if len(t) != 2 or any(len(r) != 2 for r in t):
+            raise ValueError("give TN and FP, or a 2x2 table "
+                             "[[TP, FN], [FP, TN]]")
+        TN, FP = t[1][1], t[1][0]
+    else:
+        TN, FP = float(tn), float(fp)
+    if TN < 0 or FP < 0:
+        raise ValueError("counts cannot be negative")
+    n = TN + FP
+    if n <= 0:
+        raise ValueError("no subjects without the disease; the "
+                         "specificity is undefined")
+    return RichResult(payload={
+        "specificity": TN / n, "tnf": TN / n, "fpf": FP / n,
+        "n_healthy": n, "tn": TN, "fp": FP,
+        "method": "Rangayyan (2024) eq. (10.101)"})
 
-    Formula: Sp = TN / (TN + FP)
 
-    Parameters
-    ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: specificity
-
-    References
-    ----------
-    Rangayyan Ch 10.9
-    """
-    y_true = np.asarray(y_true, dtype=float)
-    n = int(y_true) if y_true.ndim == 0 else len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Specificity (true negative rate)"})
+rangayyan_specificity = spec  # pre-policy spelling
 
 
 # -- rgsprep: Sparse representation of biomedical signals in learned dictionary.
@@ -2195,62 +2599,62 @@ def rangayyan_ch4_pan_tompkins_peak_classification(PEAKI, SPKI=None, NPKI=None,
 
 
 _CHEATSHEET = [
-    'rgacc: Classification accuracy',
-    'rgann: Multilayer perceptron (ANN) with backpropagation',
-    'rgbayes: Bayes minimum-error classifier',
-    'rgbayng: Bayes classifier for normal (Gaussian) patterns',
-    'rgbbb: Bundle branch block (BBB) classification from ECG',
-    'rgbbnorm: Normal versus ectopic beat classification with LDA and Bayes',
-    'rgbci: BCI EEG channel selection via NMF spatial decomposition',
-    'rgbhatt: Bhattacharyya distance for class separability',
-    'rgbp: Basis pursuit: L1 minimization for sparse representation',
-    'rgcad: Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate',
-    'rgcnn: 1D CNN for biomedical signal classification',
-    'rgecgfe: Single-channel fetal ECG extraction using NMF/ICA',
-    'rgecgnl: Normal vs. ectopic ECG beat classification',
-    'rgeegb: EEG rhythm band classification (delta/theta/alpha/beta/gamma)',
-    'rgelbow: Elbow method for k-means cluster count selection',
-    'rgepiksv: Epileptic seizure detection using K-SVD dictionary learning',
-    'rgerrbd: Bhattacharyya bound on Bayes classification error',
-    "rgfish: Fisher's criterion for feature separability",
-    'rgfld: Fisher linear discriminant analysis (LDA)',
-    'rghier: Hierarchical agglomerative clustering',
-    'rgica: FastICA algorithm for independent component analysis',
-    'rgicaart: EEG artifact removal via ICA (eye blink, muscle, ECG)',
-    'rginf: Infomax ICA algorithm (Bell-Sejnowski)',
-    'rgkfcv: K-fold cross-validation',
-    'rgkmns: K-means clustering algorithm',
-    'rgkneecl: Knee-joint cartilage pathology classification via VAG features',
-    'rgknn: K-nearest neighbor (k-NN) classifier',
-    'rgksv: K-SVD dictionary learning algorithm',
-    'rgldsp: Sparse coding given fixed dictionary (OMP/LASSO)',
-    'rglindf: Linear discriminant function for pattern classification',
-    'rglindsep: Linear discriminant function with optimal separability',
-    'rgloo: Leave-one-out cross-validation (LOO-CV)',
-    'rglr: Logistic regression for binary classification',
-    'rglstm: LSTM recurrent network for biomedical time-series classification',
-    'rgmahd: Mahalanobis distance from sample to class',
-    "rgmcn: McNemar's test for comparing two classifiers",
-    'rgmp: Matching pursuit greedy decomposition into dictionary atoms',
-    'rgneural: Neural decoding for prosthesis control from spike trains',
-    'rgnmf: Nonnegative matrix factorization (NMF) with multiplicative update rules',
-    'rgnmfch: NMF-based EEG channel selection for BCI',
-    'rgomp: Orthogonal matching pursuit (OMP) for sparse representation',
-    'rgpca: PCA for signal mixture separation (eigendecomposition of covariance)',
-    'rgpcaica: Comparative analysis of PCA, ICA, and NMF for signal separation',
-    'rgppv: Positive predictive value (precision)',
-    'rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices',
-    'rgrbf: Radial basis function (RBF) network',
-    'rgroc: Receiver operating characteristic (ROC) curve and AUC',
-    'rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals',
-    'rgsen: Sensitivity (recall, true positive rate)',
-    'rgsepix: Separability index: ratio of between-class to within-class scatter',
-    'rgspe: Specificity (true negative rate)',
-    'rgsprep: Sparse representation of biomedical signals in learned dictionary',
-    'rgsvm: Support vector machine (SVM) via margin maximization',
-    'rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels)',
-    'rgvagadp: Adaptive TFD of VAG signals via matching pursuit',
-    'rng190: threshold = NPKI + 0.25(SPKI-NPKI), adapts without a fixed cutoff',
+    'accuracy, prevalence weighted, eqs. (10.102)-(10.103)',
+    'rgann: Multilayer perceptron (ANN) with backpropagation.',
+    'rgbayes: Bayes minimum-error classifier.',
+    'rgbayng: Bayes classifier for normal (Gaussian) patterns.',
+    'rgbbb: Bundle branch block (BBB) classification from ECG.',
+    'rgbbnorm: Normal versus ectopic beat classification with LDA and Bayes.',
+    'rgbci: BCI EEG channel selection via NMF spatial decomposition.',
+    'divergence eq. (10.117), normalized distance eq. (10.112)',
+    'rgbp: Basis pursuit: L1 minimization for sparse representation.',
+    'rgcad: Computer-aided diagnosis (CAD) pipeline: preprocess -> features -> classify -> validate.',
+    'rgcnn: 1D CNN for biomedical signal classification.',
+    'rgecgfe: Single-channel fetal ECG extraction using NMF/ICA.',
+    'rgecgnl: Normal vs. ectopic ECG beat classification.',
+    'rgeegb: EEG rhythm band classification (delta/theta/alpha/beta/gamma).',
+    'rgelbow: Elbow method for k-means cluster count selection.',
+    'rgepiksv: Epileptic seizure detection using K-SVD dictionary learning.',
+    'Bhattacharyya bound on the Bayes error (not from this book)',
+    "Fisher's criterion for a scalar feature",
+    'Fisher linear discriminant, Section 10.4.2',
+    'rghier: Hierarchical agglomerative clustering.',
+    'rgica: FastICA algorithm for independent component analysis.',
+    'rgicaart: EEG artifact removal via ICA (eye blink, muscle, ECG).',
+    'rginf: Infomax ICA algorithm (Bell-Sejnowski).',
+    'rgkfcv: K-fold cross-validation.',
+    'rgkmns: K-means clustering algorithm.',
+    'rgkneecl: Knee-joint cartilage pathology classification via VAG features.',
+    'rgknn: K-nearest neighbor (k-NN) classifier.',
+    'rgksv: K-SVD dictionary learning algorithm.',
+    'rgldsp: Sparse coding given fixed dictionary (OMP/LASSO).',
+    'rglindf: Linear discriminant function for pattern classification.',
+    'rglindsep: Linear discriminant function with optimal separability.',
+    'rgloo: Leave-one-out cross-validation (LOO-CV).',
+    'rglr: Logistic regression for binary classification.',
+    'rglstm: LSTM recurrent network for biomedical time-series classification.',
+    'Mahalanobis distance, Section 10.4.3',
+    'McNemar/Bowker test of symmetry, Section 10.9.2',
+    'rgmp: Matching pursuit greedy decomposition into dictionary atoms.',
+    'rgneural: Neural decoding for prosthesis control from spike trains.',
+    'rgnmf: Nonnegative matrix factorization (NMF) with multiplicative update rules.',
+    'rgnmfch: NMF-based EEG channel selection for BCI.',
+    'rgomp: Orthogonal matching pursuit (OMP) for sparse representation.',
+    'rgpca: PCA for signal mixture separation (eigendecomposition of covariance).',
+    'rgpcaica: Comparative analysis of PCA, ICA, and NMF for signal separation.',
+    'positive predictive value, eq. (10.106)',
+    'rgqda: Quadratic discriminant analysis (QDA) with unequal covariance matrices.',
+    'rgrbf: Radial basis function (RBF) network.',
+    'ROC curve and the area A_z, Section 10.9.1',
+    'rgsapnmf: Sleep apnea diagnosis via NMF of polysomnographic signals.',
+    'sensitivity (TPF), eq. (10.100)',
+    'separability index tr(S_B)/tr(S_W), Section 10.10.1',
+    'specificity (TNF), eq. (10.101)',
+    'rgsprep: Sparse representation of biomedical signals in learned dictionary.',
+    'rgsvm: Support vector machine (SVM) via margin maximization.',
+    'rgsvmk: SVM with kernel trick (RBF, polynomial, sigmoid kernels).',
+    'rgvagadp: Adaptive TFD of VAG signals via matching pursuit.',
+    'rng190: Pan-Tompkins peak classification.',
 ]
 
 
