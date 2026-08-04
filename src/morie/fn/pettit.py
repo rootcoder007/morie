@@ -1,69 +1,82 @@
+# morie.fn -- function file (rootcoder007/morie)
 """Pettitt change-point test."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+from __future__ import annotations
+
+import math
+
+from . import _t4core as T
 
 from ._richresult import RichResult
 
 __all__ = ["pettitt_test"]
 
 
-def pettitt_test(x, cdf=None):
-    """
-    Pettitt change-point test
+def pettitt_test(x):
+    """Pettitt's non-parametric test for a single change point.
 
-    Formula: non-parametric U statistic over splits
+    Formula: with ``r_i`` the midranks of ``x``,
+
+        ``U_k = 2 sum_{i<=k} r_i - k(n+1)``,  ``k = 1..n``
+
+    the statistic is ``U* = max_k |U_k|``, the change point is the ``k``
+    attaining it, and the two-sided p-value is approximated by
+
+        ``p = min(1, 2 exp(-6 U*^2 / (n^3 + n^2)))``.
+
+    The rank form is algebraically the Mann-Whitney form
+    ``sum_{i<=k} sum_{j>k} sign(x_i - x_j)`` but is O(n) per split rather
+    than O(n^2), so no separate double loop is carried here.  The
+    approximation is only trustworthy for ``p <= 0.5``, which is why it
+    is clamped rather than extrapolated.
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Series in time order.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
+    RichResult
+        ``statistic`` (U*), ``p_value``, ``changepoint`` (1-based),
+        ``U``, ``n``, ``method``.
 
     References
     ----------
-    Pettitt (1979)
+    Pettitt (1979), A non-parametric approach to the change point
+    problem, JRSS C (Applied Statistics) 28:126-135.  Paywalled; the
+    coded form was read from Pohlert's CRAN package ``trend``
+    (R/pettitt.test.R, tarball trend_1.1.7 fetched from CRAN), which
+    follows Verstraeten et al. (2006) in using the rank form and gives
+    ``pval <- min(1, 2.0 * exp((-6.0 * U^2) / (n^3 + n^2)))``.
     """
-    x = np.asarray(x, dtype=float)
+    x = T.vec(x)
     n = len(x)
     if n < 2:
-        return RichResult(
-            payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Pettitt change-point test"}
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        raise ValueError("need at least 2 observations")
+    r = T.ranks(x)
+    uk = []
+    acc = 0.0
+    for k in range(1, n + 1):
+        acc += r[k - 1]
+        uk.append(2.0 * acc - k * (n + 1.0))
+    ustar = max(abs(v) for v in uk)
+    kstar = min(k + 1 for k in range(n) if abs(uk[k]) == ustar)
+    p = min(1.0, 2.0 * math.exp(-6.0 * ustar * ustar / (n ** 3 + n ** 2)))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Pettitt change-point test",
+            "statistic": float(ustar),
+            "p_value": float(p),
+            "changepoint": int(kstar),
+            "U": uk,
+            "n": int(n),
+            "method": "Pettitt single change-point test",
         }
     )
 
 
 def cheatsheet():
-    return "pettit: Pettitt change-point test"
+    return "pettitt_test(x): U_k = 2 sum r_i - k(n+1); U* = max|U_k|."
 
 
 # compact alias per ledger/NAMING.md
