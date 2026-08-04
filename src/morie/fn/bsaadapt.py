@@ -7,106 +7,188 @@ symbols are unchanged.
 """
 
 from __future__ import annotations
+from math import cos, fsum, log, log10, pi, sin, sqrt
 from . import _array_core as np
 from . import _stats_core as stats
 from ._containers import SignalResult
+from ._rgcore import aslist
 from ._richresult import RichResult
 from ._richresult import RichResult, with_describe_pointer
 from ._sci_core import toeplitz
 
 __all__ = [
+    'acfdist',
     'rangayyan_acf_distance',
     'rangayyan_adaptive_filter',
+    'anc',
     'rangayyan_anc',
     'rangayyan_eeg_adaptive_seg',
+    'fetalecg',
     'rangayyan_fetal_ecg',
     'rangayyan_gen_likelihood_ratio',
+    'kalman',
     'rangayyan_kalman_filter',
+    'lmsfilt',
     'rangayyan_lms_filter',
+    'pcgseg',
     'rangayyan_pcg_adaptive_seg',
+    'riccati',
     'rangayyan_riccati_eq',
+    'rlsfilt',
     'rangayyan_rls_filter',
+    'rlsmonitor',
     'rangayyan_rls_monitor',
+    'rlslattice',
     'rangayyan_rls_lattice',
+    'sem',
     'rangayyan_spec_error_meas',
+    'whopf',
     'rangayyan_wiener_hopf',
+    'wienerfilt',
     'rangayyan_wiener_filter',
     'rangayyan_ch3_estimation_error',
+    'wienerout',
     'rangayyan_ch3_wiener_filter_output_convolution',
+    'wienerdot',
     'rangayyan_ch3_wiener_output_dot_product',
     'rangayyan_ch3_estimation_error_vector_form',
     'rangayyan_ch3_mse_cost_function',
     'rangayyan_ch3_cross_correlation_vector',
     'rangayyan_ch3_autocorrelation_matrix',
+    'msegrad',
     'rangayyan_ch3_mse_gradient',
+    'wienerhopf',
     'rangayyan_ch3_wiener_hopf_normal_equation',
+    'wieneropt',
     'rangayyan_ch3_optimal_wiener_filter',
+    'wienermin',
     'rangayyan_ch3_minimum_mse',
+    'wienerconv',
     'rangayyan_ch3_wiener_convolution_relationship',
+    'wienerfreqrel',
     'rangayyan_ch3_wiener_frequency_relation',
+    'wienerfreq',
     'rangayyan_ch3_wiener_frequency_response',
     'rangayyan_ch3_wiener_optimal_for_noise_removal',
+    'wienersnr',
     'rangayyan_ch3_wiener_frequency_response_snr_form',
+    'ancinput',
     'rangayyan_ch3_anc_primary_input_model',
+    'ancout',
     'rangayyan_ch3_anc_output',
+    'lmsout',
     'rangayyan_ch3_lms_filter_output',
     'rangayyan_ch3_lms_estimation_error',
+    'lmssqerr',
     'rangayyan_ch3_lms_squared_error',
+    'lmsdescent',
     'rangayyan_ch3_lms_steepest_descent',
     'rangayyan_ch3_lms_gradient_estimate',
+    'widrowhoff',
     'rangayyan_ch3_widrow_hoff_lms',
+    'lmsvarstep',
     'rangayyan_ch3_lms_variable_step',
+    'lmszhang',
     'rangayyan_ch3_lms_step_size_zhang',
+    'rlsobj',
     'rangayyan_ch3_rls_objective',
+    'rlsnormal',
     'rangayyan_ch3_rls_normal_equation',
     'rangayyan_ch3_rls_phi_matrix',
     'rangayyan_ch3_rls_theta_vector',
     'rangayyan_ch3_rls_phi_recursion',
     'rangayyan_ch3_rls_theta_recursion',
+    'abcdlemma',
     'rangayyan_ch3_abcd_matrix_inversion_lemma',
     'rangayyan_ch3_rls_inverse_recursion',
     'rangayyan_ch3_rls_kalman_gain',
     'rangayyan_ch3_rls_p_recursion',
     'rangayyan_ch3_rls_gain_identity',
+    'rlsupdate',
     'rangayyan_ch3_rls_weight_update_compact',
+    'rlsapriori',
     'rangayyan_ch3_rls_a_priori_error',
+    'psdacf',
     'rangayyan_ch4_psd_from_acf',
     'wiener_filter',
 ]
 
 
+
 # -- rgacfd: ACF distance measure for nonstationary segmentation.
-def rangayyan_acf_distance(x, seg_len, p):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def acfdist(x1, x2, lags=8):
+    """ACF distance measure for adaptive segmentation.
+
+    Rangayyan (2024) Section 8.5:
+        d_ACF = (1/p) sum_{m=1}^{p}
+                  [ R_1(m) - R_2(m) ]^2 / [ R_1(0) R_2(0) ],
+
+    comparing two segments through their autocorrelation sequences,
+    normalized by the product of their zero-lag values.
+
+    That normalization is what the measure lives or dies by: dividing by
+    R_1(0) R_2(0) removes the amplitude of both segments, so the
+    distance responds to a change in SHAPE and not to a change in
+    loudness.  The lag-zero term is excluded from the sum for the same
+    reason -- it carries only the energies, which have already been
+    divided out.
     """
-    ACF distance measure for nonstationary segmentation
+    a, b = aslist(x1), aslist(x2)
+    p = int(lags)
+    if p < 1:
+        raise ValueError("need at least one lag")
+    if len(a) <= p or len(b) <= p:
+        raise ValueError("each segment needs more samples than lags")
+    r1 = _acf(a, p + 1)
+    r2 = _acf(b, p + 1)
+    if r1[0] <= 0 or r2[0] <= 0:
+        raise ValueError("a segment has zero energy")
+    d = fsum((r1[m] - r2[m]) ** 2 for m in range(1, p + 1)) \
+        / (p * r1[0] * r2[0])
+    return RichResult(payload={
+        "distance": d, "acf_1": r1, "acf_2": r2, "lags": p,
+        "energy_1": r1[0], "energy_2": r2[0],
+        "amplitude_invariant": True, "zero_lag_excluded": True,
+        "method": "Rangayyan (2024) Section 8.5 (ACF distance)"})
 
-    Formula: d_ACF = (1/p) sum_{m=1}^{p} (R_1(m) - R_2(m))^2 / (R_1(0)*R_2(0))
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    seg_len : array-like
-        Input data.
-    p : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: acf_dist_trace, segment_bounds
-
-    References
-    ----------
-    Rangayyan Ch 8.5.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "ACF distance measure for nonstationary segmentation"}
-    )
+rangayyan_acf_distance = acfdist  # pre-policy spelling
 
 
 # -- rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2.
@@ -192,43 +274,52 @@ def rangayyan_adaptive_filter(x, reference, mu=0.01, order=16):
 
 
 # -- rganc: Adaptive noise canceler (ANC) structure.
-def rangayyan_anc(primary, reference, mu, order):
+def anc(primary, reference, order=8, mu=0.01, method="lms", lam=0.98,
+        delta=1.0):
+    """Adaptive noise canceller, LMS or RLS.
+
+    Rangayyan (2024) Section 3.10.  The structure is fixed by eqs.
+    (3.195)-(3.196): the adaptive filter sees only the reference and
+    estimates the primary noise, and the ERROR is the output.  What
+    varies is the adaptation rule -- eq. (3.203) for LMS, eq. (3.224)
+    for RLS.
+
+    The book's own summary of why it works (eqs. 3.193-3.194): because
+    v and m are independent, minimizing the total output power also
+    minimizes E[(m - y)^2], so the filter converges on the noise and
+    leaves the signal alone -- and at the ideal minimum y = m and
+    e = v exactly.
+
+    That is also the failure mode.  If the reference carries any of the
+    signal of interest, the filter will happily cancel it too; the
+    signal is not protected by anything except the independence
+    assumption.  ``reference_leakage`` measures the correlation between
+    the reference and the canceller's output, which should be near zero.
     """
-    Adaptive noise canceler (ANC) structure
-
-    Formula: e(n) = d(n) - y(n); y(n) = w^T(n)*primary(n); w updated to minimize E[e^2]
-
-    Parameters
-    ----------
-    primary : array-like
-        Input data.
-    reference : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    order : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: clean_signal, error
-
-    References
-    ----------
-    Rangayyan Ch 3.10.1
-    """
-    primary = np.asarray(primary, dtype=float)
-    n = int(primary) if primary.ndim == 0 else len(primary)
-    result = float(np.mean(primary))
-    se = float(np.std(primary, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive noise canceler (ANC) structure"}
-    )
+    if method not in ("lms", "rls"):
+        raise ValueError("method must be 'lms' or 'rls'")
+    if method == "lms":
+        r = lmsfilt(primary, reference, order=order, mu=mu)
+    else:
+        r = rlsfilt(primary, reference, order=order, lam=lam, delta=delta)
+    e = r["e"]
+    rs = aslist(reference)
+    n = len(e)
+    me, mr = fsum(e) / n, fsum(rs) / n
+    ve = fsum((v - me) ** 2 for v in e) / n
+    vr = fsum((v - mr) ** 2 for v in rs) / n
+    cov = fsum((a - me) * (b - mr) for a, b in zip(e, rs)) / n
+    leak = cov / sqrt(ve * vr) if ve > 0 and vr > 0 else 0.0
+    out = dict(r)
+    out.update({"reference_leakage": leak,
+                "well_separated": abs(leak) < 0.2,
+                "adaptation": method,
+                "method": "Rangayyan (2024) Section 3.10, "
+                          "eqs. (3.195)-(3.196)"})
+    return RichResult(payload=out)
 
 
-# compact alias per ledger/NAMING.md
-rangayyananc = rangayyan_anc
+rangayyan_anc = anc  # pre-policy spelling
 
 
 # -- rgeegadp: Adaptive segmentation of EEG using GLR test.
@@ -300,44 +391,46 @@ def rangayyan_eeg_adaptive_seg(eeg, fs, min_seg, threshold, cdf=None):
 
 
 # -- rgfecg: Maternal-fetal ECG separation via adaptive noise cancellation.
-def rangayyan_fetal_ecg(abdominal, maternal_ref, mu, order):
+def fetalecg(abdominal, chest, order=32, mu=0.005, method="lms"):
+    """Fetal ECG extraction by adaptive noise cancellation.
+
+    Rangayyan (2024) Section 3.14, after Widrow et al.: the abdominal
+    lead is the primary input, carrying the fetal ECG plus a much
+    stronger maternal ECG; a chest lead is the reference, carrying the
+    maternal ECG alone.  The canceller estimates the maternal
+    contribution from the chest lead and subtracts it, leaving the fetal
+    ECG in the error signal.
+
+    The book records that Widrow et al. used MULTIPLE reference channels,
+    32 taps each and a delay of 129 ms, because a single chest lead does
+    not span the maternal signal as it appears at the abdomen -- the
+    propagation differs by lead.  A single reference, which is what this
+    function takes, is therefore the reduced case and will leave more
+    maternal residue; ``single_reference`` records that.
+
+    ``suppression_db`` is how far the primary's power fell, which is the
+    honest headline number: it measures maternal removal, not fetal
+    recovery, and those are only the same thing if the independence
+    assumption held.
     """
-    Maternal-fetal ECG separation via adaptive noise cancellation
+    abd, ref = aslist(abdominal), aslist(chest)
+    if len(abd) != len(ref):
+        raise ValueError("the abdominal and chest leads must have the "
+                         "same length")
+    r = anc(abd, ref, order=order, mu=mu, method=method)
+    px, pe = r["input_power"], r["output_power"]
+    return RichResult(payload={
+        "fetal": r["e"], "maternal_estimate": r["y"], "order": order,
+        "input_power": px, "output_power": pe,
+        "suppression_db": 10.0 * log10(px / pe) if pe > 0 and px > 0
+        else None,
+        "reference_leakage": r["reference_leakage"],
+        "single_reference": True,
+        "widrow_used_multiple_references": True,
+        "method": "Rangayyan (2024) Section 3.14, after Widrow et al."})
 
-    Formula: Fetal ECG = abdominal ECG - adaptive_filter(maternal chest ECG)
 
-    Parameters
-    ----------
-    abdominal : array-like
-        Input data.
-    maternal_ref : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    order : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: fetal_ecg
-
-    References
-    ----------
-    Rangayyan Ch 3.14
-    """
-    abdominal = np.asarray(abdominal, dtype=float)
-    n = int(abdominal) if abdominal.ndim == 0 else len(abdominal)
-    result = float(np.mean(abdominal))
-    se = float(np.std(abdominal, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Maternal-fetal ECG separation via adaptive noise cancellation",
-        }
-    )
+rangayyan_fetal_ecg = fetalecg  # pre-policy spelling
 
 
 # -- rgglr: Generalized likelihood ratio (GLR) test for change detection.
@@ -407,388 +500,880 @@ def rangayyan_gen_likelihood_ratio(x, seg_len, order, cdf=None):
 
 
 # -- rgkalmn: Kalman filter: state prediction/update with Riccati equation.
-def rangayyan_kalman_filter(z, F, H, Q, R, x0, P0):
-    """
-    Kalman filter: state prediction/update with Riccati equation
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
 
-    Formula: x_k|k-1=F*x_{k-1}; P_k|k-1=F*P*F^T+Q; K=P*H^T*(H*P*H^T+R)^{-1}; update z,P
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def kalman(z, F, H, Q, R, x0=None, P0=None):
+    """Kalman filter: predict, then correct.
+
+        x(k|k-1) = F x(k-1|k-1)
+        P(k|k-1) = F P(k-1|k-1) F^T + Q
+        K(k)     = P(k|k-1) H^T [H P(k|k-1) H^T + R]^(-1)
+        x(k|k)   = x(k|k-1) + K(k) [z(k) - H x(k|k-1)]
+        P(k|k)   = [I - K(k) H] P(k|k-1)
+
+    The optimal linear estimator for a linear-Gaussian state-space
+    model, and the recursive counterpart of the Wiener filter of Section
+    3.9: same MMSE criterion, but tracking a state that evolves rather
+    than a fixed set of tap weights.
+
+    P is symmetrized at every step.  The Joseph form is not used, so
+    rounding can push P out of symmetry over a long run; the largest
+    asymmetry before correction is returned, and a growing value is the
+    warning that the covariance is degrading.
 
     Parameters
     ----------
-    z : array-like
-        Input data.
-    F : array-like
-        Input data.
-    H : array-like
-        Input data.
-    Q : array-like
-        Input data.
-    R : array-like
-        Input data.
-    x0 : array-like
-        Input data.
-    P0 : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: x_hat, P_hat, K_gains
-
-    References
-    ----------
-    Rangayyan Ch 8.7
+    z : sequence
+        Measurements, each a vector of length p.
+    F, H, Q, R : matrices
+        State transition (n x n), observation (p x n), process noise
+        (n x n), measurement noise (p x p).
     """
-    z = np.asarray(z, dtype=float)
-    n = int(z) if z.ndim == 0 else len(z)
-    result = float(np.mean(z))
-    se = float(np.std(z, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Kalman filter: state prediction/update with Riccati equation",
-        }
-    )
+    Fm = [aslist(r) for r in F]
+    Hm = [aslist(r) for r in H]
+    Qm = [aslist(r) for r in Q]
+    Rm = [aslist(r) for r in R]
+    ns = len(Fm)
+    p = len(Hm)
+    if any(len(r) != ns for r in Fm) or any(len(r) != ns for r in Hm):
+        raise ValueError("F must be n x n and H must be p x n")
+    if len(Qm) != ns or any(len(r) != ns for r in Qm):
+        raise ValueError("Q must be n x n")
+    if len(Rm) != p or any(len(r) != p for r in Rm):
+        raise ValueError("R must be p x p")
+    x = [0.0] * ns if x0 is None else aslist(x0)
+    P = [[1.0 if i == j else 0.0 for j in range(ns)] for i in range(ns)] \
+        if P0 is None else [aslist(r) for r in P0]
+
+    def mv(M, v):
+        return [fsum(M[i][j] * v[j] for j in range(len(v)))
+                for i in range(len(M))]
+
+    def mm(A, B):
+        return [[fsum(A[i][t] * B[t][j] for t in range(len(B)))
+                 for j in range(len(B[0]))] for i in range(len(A))]
+
+    def tr(M):
+        return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
+
+    states, covs, gains, innov = [], [], [], []
+    asym = 0.0
+    for zk in z:
+        zv = aslist(zk)
+        if len(zv) != p:
+            raise ValueError("every measurement must have length %d" % p)
+        xp = mv(Fm, x)
+        Pp = mm(mm(Fm, P), tr(Fm))
+        Pp = [[Pp[i][j] + Qm[i][j] for j in range(ns)] for i in range(ns)]
+        S = mm(mm(Hm, Pp), tr(Hm))
+        S = [[S[i][j] + Rm[i][j] for j in range(p)] for i in range(p)]
+        PHt = mm(Pp, tr(Hm))
+        K = []
+        for i in range(ns):
+            K.append(_solve(tr(S), [PHt[i][j] for j in range(p)]))
+        y = [zv[i] - fsum(Hm[i][j] * xp[j] for j in range(ns))
+             for i in range(p)]
+        x = [xp[i] + fsum(K[i][j] * y[j] for j in range(p))
+             for i in range(ns)]
+        KH = mm(K, Hm)
+        Pn = [[Pp[i][j] - fsum(KH[i][t] * Pp[t][j] for t in range(ns))
+               for j in range(ns)] for i in range(ns)]
+        asym = max(asym, max(abs(Pn[i][j] - Pn[j][i])
+                             for i in range(ns) for j in range(ns)))
+        P = [[0.5 * (Pn[i][j] + Pn[j][i]) for j in range(ns)]
+             for i in range(ns)]
+        states.append(list(x))
+        covs.append([row[:] for row in P])
+        gains.append([row[:] for row in K])
+        innov.append(y)
+    return RichResult(payload={
+        "states": states, "covariances": covs, "gains": gains,
+        "innovations": innov, "n": len(states), "state_dim": ns,
+        "obs_dim": p, "p_symmetry_error": asym, "p_symmetrized": True,
+        "joseph_form": False,
+        "method": "Kalman (1960); the recursive counterpart of the Wiener "
+                  "filter of Rangayyan (2024) Section 3.9"})
+
+
+rangayyan_kalman_filter = kalman  # pre-policy spelling
 
 
 # -- rglms: Least-mean-squares (LMS) adaptive filter.
-def rangayyan_lms_filter(x, d, mu, order):
+def lmsfilt(primary, reference, order=8, mu=0.01, variable=False,
+            alpha=0.02):
+    """Run the LMS adaptive noise canceller.
+
+    Rangayyan (2024) Section 3.10.2, eqs. (3.195)-(3.196), (3.199),
+    (3.203):
+
+        y(n) = sum_k w_k r(n-k)
+        e(n) = x(n) - y(n)
+        w(n+1) = w(n) + 2 mu e(n) r(n)
+
+    with the error signal e as the CANCELLER'S OUTPUT.  With
+    ``variable=True`` the step size follows eq. (3.205).
+
+    Two things the book stresses are reported rather than assumed: the
+    stability condition 0 < mu < 1/lambda_max (checked here against the
+    trace bound on the reference power, so a mu that will diverge is
+    caught before the run), and the fact that convergence is only in the
+    mean -- the tap weights keep jittering around the Wiener solution
+    forever, by an amount proportional to mu.  ``final_weights`` is one
+    sample of that jitter, not a converged answer.
     """
-    Least-mean-squares (LMS) adaptive filter
+    xs, rs = aslist(primary), aslist(reference)
+    if len(xs) != len(rs):
+        raise ValueError("primary and reference must have the same length")
+    m = int(order)
+    if m < 1:
+        raise ValueError("order must be at least 1")
+    n = len(xs)
+    if n <= m:
+        raise ValueError("need more samples than taps")
+    mv = float(mu)
+    if mv <= 0:
+        raise ValueError("mu must be positive")
+    rpow = fsum(v * v for v in rs) / n
+    bound = 1.0 / (m * rpow) if rpow > 0 else float("inf")
+    w = [0.0] * m
+    y, e, hist = [], [], []
+    power_prev = None
+    for i in range(n):
+        rv = [rs[i - k] if i - k >= 0 else 0.0 for k in range(m)]
+        yi = fsum(a * b for a, b in zip(w, rv))
+        ei = xs[i] - yi
+        if variable:
+            step = lmszhang(min(mv, 0.999), m, rs[i], alpha=alpha,
+                            power_prev=power_prev)
+            power_prev = step["power"]
+            mu_i = step["mu"]
+        else:
+            mu_i = mv
+        w = [a + 2.0 * mu_i * ei * b for a, b in zip(w, rv)]
+        y.append(yi)
+        e.append(ei)
+        hist.append(mu_i)
+    px = fsum(v * v for v in xs)
+    pe = fsum(v * v for v in e)
+    return RichResult(payload={
+        "e": e, "output": e, "y": y, "final_weights": w, "order": m,
+        "mu": mv, "variable_step": bool(variable),
+        "step_history": hist if variable else None,
+        "stable_bound": bound, "within_bound": mv < bound,
+        "input_power": px, "output_power": pe,
+        "power_reduction": (pe / px) if px > 0 else None,
+        "converges_in_the_mean_only": True,
+        "method": "Rangayyan (2024) Section 3.10.2, eq. (3.203)"})
 
-    Formula: e(n) = d(n) - w^T(n)*x(n); w(n+1) = w(n) + 2*mu*e(n)*x(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    d : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    order : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y, e, w_history
-
-    References
-    ----------
-    Rangayyan Ch 3.10.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Least-mean-squares (LMS) adaptive filter"}
-    )
+rangayyan_lms_filter = lmsfilt  # pre-policy spelling
 
 
 # -- rgpcgadp: Adaptive segmentation of PCG signals via SEM.
-def rangayyan_pcg_adaptive_seg(pcg, fs, ar_order):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def pcgseg(x, fs, window=None, step=None, order=6, threshold=None):
+    """Adaptive segmentation of a PCG signal by the spectral error measure.
+
+    Rangayyan (2024) Section 8.5 and its PCG application: fit an AR model
+    to a reference window, compare the model spectrum of each subsequent
+    window against it with the SEM, and declare a boundary where the SEM
+    rises above a threshold -- then restart the reference from there.
+
+    The restart is the "adaptive" part and is easy to omit: without it
+    the measure drifts away from a stale reference and every window
+    after the first true boundary is flagged.  Here the reference is
+    reset at each detected boundary, so the SEM trace returns to its
+    baseline within a segment.
+
+    The default threshold is the median SEM plus three times its median
+    absolute deviation, scaled to the normal; a mean-and-SD rule would be
+    dragged upward by the very peaks it is trying to detect.
     """
-    Adaptive segmentation of PCG signals via SEM
+    xs = aslist(x)
+    fsv = float(fs)
+    if fsv <= 0:
+        raise ValueError("fs must be positive")
+    n = len(xs)
+    w = int(window) if window is not None else max(32, int(0.05 * fsv))
+    if w > n:
+        raise ValueError("the window is longer than the record")
+    hop = int(step) if step is not None else w // 2
+    if hop < 1:
+        raise ValueError("step must be at least one sample")
+    p = int(order)
+    if w <= p:
+        raise ValueError("the window must hold more samples than the order")
 
-    Formula: SEM computed between consecutive AR model segments; high SEM = change
+    def spectrum(seg):
+        acf = _acf(seg, p + 1)
+        if acf[0] <= 0:
+            return None
+        try:
+            Phi = [[acf[abs(i - j)] for j in range(p)] for i in range(p)]
+            a = _solve(Phi, [-acf[i + 1] for i in range(p)])
+        except ValueError:
+            return None
+        out = []
+        for k in range(1, 33):
+            om = pi * k / 33.0
+            re, im = 1.0, 0.0
+            for j, av in enumerate(a, start=1):
+                re += av * cos(-om * j)
+                im += av * sin(-om * j)
+            den = re * re + im * im
+            out.append(acf[0] / den if den > 0 else 1e-300)
+        return out
 
-    Parameters
-    ----------
-    pcg : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    ar_order : array-like
-        Input data.
+    starts = list(range(0, n - w + 1, hop))
+    ref = spectrum(xs[starts[0]:starts[0] + w])
+    if ref is None:
+        raise ValueError("the first window has no usable AR spectrum")
+    values, times = [], []
+    for s in starts:
+        sp = spectrum(xs[s:s + w])
+        values.append(sem(sp, ref)["sem"] if sp else 0.0)
+        times.append(s / fsv)
+    srt = sorted(values)
+    med = srt[len(srt) // 2]
+    mad = sorted(abs(v - med) for v in values)[len(values) // 2]
+    thr = float(threshold) if threshold is not None \
+        else med + 3.0 * 1.4826 * mad
+    bounds, ref = [], spectrum(xs[starts[0]:starts[0] + w])
+    adaptive = []
+    for idx, s in enumerate(starts):
+        sp = spectrum(xs[s:s + w])
+        v = sem(sp, ref)["sem"] if (sp and ref) else 0.0
+        adaptive.append(v)
+        if v > thr:
+            bounds.append(s)
+            ref = sp
+    return RichResult(payload={
+        "sem": adaptive, "sem_fixed_reference": values, "times": times,
+        "boundaries": bounds, "n_boundaries": len(bounds),
+        "threshold": thr, "median": med, "mad": mad,
+        "window": w, "step": hop, "order": p, "fs": fsv,
+        "reference_restarted_at_boundaries": True,
+        "robust_threshold": threshold is None,
+        "method": "Rangayyan (2024) Section 8.5 (adaptive segmentation "
+                  "of the PCG)"})
 
-    Returns
-    -------
-    result : dict
-        Keys: segment_bounds, sem_trace
 
-    References
-    ----------
-    Rangayyan Ch 8.11
-    """
-    pcg = np.asarray(pcg, dtype=float)
-    n = int(pcg) if pcg.ndim == 0 else len(pcg)
-    result = float(np.mean(pcg))
-    se = float(np.std(pcg, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Adaptive segmentation of PCG signals via SEM"}
-    )
+rangayyan_pcg_adaptive_seg = pcgseg  # pre-policy spelling
 
 
 # -- rgricca: Steady-state Riccati equation solution for Kalman gain.
-def rangayyan_riccati_eq(F, H, Q, R):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
+    """Steady-state solution of the discrete algebraic Riccati equation.
+
+        P = F P F^T + Q - F P H^T (H P H^T + R)^(-1) H P F^T
+
+    The fixed point the Kalman covariance converges to for a
+    time-invariant model.  Once P has settled the gain K is constant, so
+    the filter reduces to a fixed linear filter -- which is exactly the
+    Wiener solution of Section 3.9 for that model, and is the sense in
+    which the Kalman filter generalizes it.
+
+    Solved by iterating the recursion to a fixed point rather than by an
+    eigenvalue method: no external solver, and the iteration count and
+    final change are returned so a non-convergent case is visible.  A
+    model that is not detectable has no stabilizing solution, and the
+    iteration will not converge; ``converged`` says so instead of
+    returning whatever P happened to be at the iteration limit.
     """
-    Steady-state Riccati equation solution for Kalman gain
+    Fm = [aslist(r) for r in F]
+    Hm = [aslist(r) for r in H]
+    Qm = [aslist(r) for r in Q]
+    Rm = [aslist(r) for r in R]
+    n = len(Fm)
+    p = len(Hm)
 
-    Formula: P = F*P*F^T + Q - F*P*H^T*(H*P*H^T+R)^{-1}*H*P*F^T
+    def mm(A, B):
+        return [[fsum(A[i][t] * B[t][j] for t in range(len(B)))
+                 for j in range(len(B[0]))] for i in range(len(A))]
 
-    Parameters
-    ----------
-    F : array-like
-        Input data.
-    H : array-like
-        Input data.
-    Q : array-like
-        Input data.
-    R : array-like
-        Input data.
+    def tr(M):
+        return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
 
-    Returns
-    -------
-    result : dict
-        Keys: P_steady, K_steady
+    P = [row[:] for row in Qm]
+    change = float("inf")
+    it = 0
+    for it in range(1, int(maxiter) + 1):
+        FPFt = mm(mm(Fm, P), tr(Fm))
+        S = mm(mm(Hm, P), tr(Hm))
+        S = [[S[i][j] + Rm[i][j] for j in range(p)] for i in range(p)]
+        PHt = mm(P, tr(Hm))
+        G = []
+        for i in range(n):
+            G.append(_solve(tr(S), [PHt[i][j] for j in range(p)]))
+        corr = mm(mm(Fm, mm(G, mm(Hm, P))), tr(Fm))
+        Pn = [[FPFt[i][j] + Qm[i][j] - corr[i][j] for j in range(n)]
+              for i in range(n)]
+        Pn = [[0.5 * (Pn[i][j] + Pn[j][i]) for j in range(n)]
+              for i in range(n)]
+        change = max(abs(Pn[i][j] - P[i][j])
+                     for i in range(n) for j in range(n))
+        P = Pn
+        if change < tol:
+            break
+    S = mm(mm(Hm, P), tr(Hm))
+    S = [[S[i][j] + Rm[i][j] for j in range(p)] for i in range(p)]
+    PHt = mm(P, tr(Hm))
+    K = []
+    for i in range(n):
+        K.append(_solve(tr(S), [PHt[i][j] for j in range(p)]))
+    return RichResult(payload={
+        "P": P, "K": K, "iterations": it, "change": change,
+        "converged": change < tol, "n": n,
+        "steady_state_is_the_wiener_solution": True,
+        "method": "discrete algebraic Riccati equation; the fixed point "
+                  "of the Kalman covariance recursion"})
 
-    References
-    ----------
-    Rangayyan Ch 8.7
-    """
-    F = np.asarray(F, dtype=float)
-    n = int(F) if F.ndim == 0 else len(F)
-    result = float(np.mean(F))
-    se = float(np.std(F, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Steady-state Riccati equation solution for Kalman gain",
-        }
-    )
+
+rangayyan_riccati_eq = riccati  # pre-policy spelling
 
 
 # -- rgrls: Recursive least-squares (RLS) adaptive filter.
-def rangayyan_rls_filter(x, d, lam, delta, order):
+def rlsfilt(primary, reference, order=8, lam=0.98, delta=1.0):
+    """Run the RLS adaptive filter.
+
+    Rangayyan (2024) Section 3.10.3, eqs. (3.206), (3.215)-(3.216),
+    (3.221), (3.224)-(3.225):
+
+        alpha(n) = x(n) - r^T(n) w(n-1)                          (3.225)
+        k(n)     = P(n-1) r(n) / (lambda + r^T(n) P(n-1) r(n))
+        P(n)     = [P(n-1) - k(n) r^T(n) P(n-1)] / lambda        (3.215)
+        w(n)     = w(n-1) + k(n) alpha(n)                        (3.224)
+
+    with P = Phi^(-1) (eq. 3.216) initialized to delta * I.
+
+    RLS converges in far fewer samples than LMS because it uses the
+    inverse correlation matrix rather than a scalar step, at O(M^2) per
+    sample instead of O(M).  The price is numerical: P is meant to stay
+    symmetric positive definite, and rounding can break that, after
+    which the filter diverges silently.  P is symmetrized at each step
+    and ``p_symmetry_error`` reports the largest asymmetry seen before
+    that correction, so a run that was close to breaking says so.
+
+    ``delta`` seeds P and encodes how little is assumed about the input:
+    large delta means low confidence and fast initial adaptation.
     """
-    Recursive least-squares (RLS) adaptive filter
+    xs, rs = aslist(primary), aslist(reference)
+    if len(xs) != len(rs):
+        raise ValueError("primary and reference must have the same length")
+    m = int(order)
+    if m < 1:
+        raise ValueError("order must be at least 1")
+    n = len(xs)
+    if n <= m:
+        raise ValueError("need more samples than taps")
+    lv = float(lam)
+    if not 0 < lv <= 1:
+        raise ValueError("eq. (3.206) needs 0 < lambda <= 1")
+    dv = float(delta)
+    if dv <= 0:
+        raise ValueError("delta must be positive")
+    P = [[dv if i == j else 0.0 for j in range(m)] for i in range(m)]
+    w = [0.0] * m
+    e, y, asym = [], [], 0.0
+    for i in range(n):
+        rv = [rs[i - k] if i - k >= 0 else 0.0 for k in range(m)]
+        pred = fsum(a * b for a, b in zip(w, rv))
+        alpha = xs[i] - pred
+        Pr = [fsum(P[a][b] * rv[b] for b in range(m)) for a in range(m)]
+        den = lv + fsum(rv[a] * Pr[a] for a in range(m))
+        if den <= 0:
+            raise ValueError("the RLS denominator vanished at sample %d; "
+                             "P has lost positive definiteness" % i)
+        kg = [v / den for v in Pr]
+        newP = [[(P[a][b] - kg[a] * Pr[b]) / lv for b in range(m)]
+                for a in range(m)]
+        asym = max(asym, max(abs(newP[a][b] - newP[b][a])
+                             for a in range(m) for b in range(m)))
+        P = [[0.5 * (newP[a][b] + newP[b][a]) for b in range(m)]
+             for a in range(m)]
+        w = [a + b * alpha for a, b in zip(w, kg)]
+        y.append(pred)
+        e.append(alpha)
+    px = fsum(v * v for v in xs)
+    pe = fsum(v * v for v in e)
+    return RichResult(payload={
+        "e": e, "output": e, "y": y, "final_weights": w, "P": P,
+        "order": m, "lam": lv, "delta": dv,
+        "memory": (1.0 / (1.0 - lv)) if lv < 1 else float("inf"),
+        "p_symmetry_error": asym, "p_symmetrized": True,
+        "input_power": px, "output_power": pe,
+        "power_reduction": (pe / px) if px > 0 else None,
+        "method": "Rangayyan (2024) Section 3.10.3, eqs. (3.215), "
+                  "(3.221), (3.224)-(3.225)"})
 
-    Formula: P(n)=(P(n-1)-k(n)*x^T(n)*P(n-1))/lambda; w(n)=w(n-1)+k(n)*e(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    d : array-like
-        Input data.
-    lam : array-like
-        Input data.
-    delta : array-like
-        Input data.
-    order : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y, e, w_history
-
-    References
-    ----------
-    Rangayyan Ch 3.10.3
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Recursive least-squares (RLS) adaptive filter"}
-    )
+rangayyan_rls_filter = rlsfilt  # pre-policy spelling
 
 
 # -- rgrls_mon: Monitoring RLS filter output for nonstationary detection.
-def rangayyan_rls_monitor(x, d, lam, threshold):
+def rlsmonitor(x, reference=None, order=8, lam=0.98, settle=None,
+               threshold=3.0, window=None):
+    """Watch an RLS filter's error for a nonstationarity.
+
+    Rangayyan (2024) Section 8.5 uses adaptive segmentation: while the
+    signal statistics hold, an adaptive filter converges and its error
+    power settles; when the statistics change, the model no longer fits
+    and the error jumps until the filter re-adapts.  A boundary is
+    declared where the short-time error power exceeds a threshold.
+
+    Two guards the method needs, both explicit here.  The filter must
+    have CONVERGED before its error means anything, so the first
+    ``settle`` samples are excluded from both the baseline and the
+    detection -- the initial transient is not a segment boundary.  And
+    the threshold is relative to the post-settling baseline, in units of
+    its standard deviation, because the absolute error power depends on
+    the signal amplitude and would otherwise need retuning per record.
     """
-    Monitoring RLS filter output for nonstationary detection
+    xs = aslist(x)
+    m = int(order)
+    n = len(xs)
+    if n <= 2 * m:
+        raise ValueError("need well more samples than taps")
+    ref = aslist(reference) if reference is not None else \
+        [0.0] + xs[:-1]                  # one-step prediction by default
+    r = rlsfilt(xs, ref, order=m, lam=lam)
+    e = r["e"]
+    s = int(settle) if settle is not None else min(n // 4, 10 * m)
+    if s >= n - m:
+        raise ValueError("the settling period leaves no samples to monitor")
+    w = int(window) if window is not None else max(m, (n - s) // 20)
+    if w < 1:
+        raise ValueError("the window must hold at least one sample")
+    power = []
+    for i in range(n):
+        lo = max(0, i - w + 1)
+        seg = e[lo:i + 1]
+        power.append(fsum(v * v for v in seg) / len(seg))
+    base = power[s:]
+    mu = fsum(base) / len(base)
+    sd = sqrt(fsum((v - mu) ** 2 for v in base) / len(base))
+    thr = mu + float(threshold) * sd
+    hits, i = [], s
+    while i < n:
+        if power[i] > thr:
+            j = i
+            while j + 1 < n and power[j + 1] > thr:
+                j += 1
+            hits.append(max(range(i, j + 1), key=lambda q: power[q]))
+            i = j + 1
+        else:
+            i += 1
+    return RichResult(payload={
+        "error": e, "error_power": power, "boundaries": hits,
+        "n_boundaries": len(hits), "threshold": thr, "baseline": mu,
+        "baseline_sd": sd, "settle": s, "window": w, "order": m,
+        "transient_excluded": True,
+        "method": "Rangayyan (2024) Section 8.5 (adaptive segmentation)"})
 
-    Formula: Segment boundary detected when ||e(n)||^2 exceeds threshold after RLS convergence
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    d : array-like
-        Input data.
-    lam : array-like
-        Input data.
-    threshold : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: change_points, error_trace
-
-    References
-    ----------
-    Rangayyan Ch 8.6.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Monitoring RLS filter output for nonstationary detection",
-        }
-    )
+rangayyan_rls_monitor = rlsmonitor  # pre-policy spelling
 
 
 # -- rgrlsl: RLS lattice (ladder) adaptive filter.
-def rangayyan_rls_lattice(x, d, lam, order):
+def rlslattice(x, order=4, lam=0.98, delta=1e-2):
+    """RLS lattice (ladder) predictor.
+
+    A lattice recursion propagates FORWARD and BACKWARD prediction
+    errors stage by stage, each stage adding one order:
+
+        f_m(n) = f_{m-1}(n) - gamma_m b_{m-1}(n-1)
+        b_m(n) = b_{m-1}(n-1) - gamma_m f_{m-1}(n)
+
+    with the reflection coefficients gamma_m estimated recursively from
+    exponentially weighted error energies, the same forgetting factor
+    lambda as eq. (3.206).
+
+    Two properties make the lattice worth the extra bookkeeping over the
+    transversal RLS of eqs. (3.224)-(3.225), and both are returned:
+    every stage is a complete predictor, so ALL orders up to the
+    requested one come out of a single run, and the structure is stable
+    exactly when |gamma_m| < 1 -- the same condition as the
+    Levinson-Durbin reflection coefficients of eq. (7.39), and one that
+    can be enforced stage by stage rather than checked after the fact.
     """
-    RLS lattice (ladder) adaptive filter
+    xs = aslist(x)
+    m = int(order)
+    if m < 1:
+        raise ValueError("order must be at least 1")
+    n = len(xs)
+    if n <= m:
+        raise ValueError("need more samples than the order")
+    lv = float(lam)
+    if not 0 < lv <= 1:
+        raise ValueError("lambda must satisfy 0 < lambda <= 1")
+    dv = float(delta)
+    if dv <= 0:
+        raise ValueError("delta must be positive")
+    fe = [dv] * (m + 1)
+    be = [dv] * (m + 1)
+    cross = [0.0] * (m + 1)
+    bprev = [0.0] * (m + 1)
+    gam = [0.0] * (m + 1)
+    ferr = [[0.0] * (m + 1) for _ in range(n)]
+    berr = [[0.0] * (m + 1) for _ in range(n)]
+    for i in range(n):
+        f = [0.0] * (m + 1)
+        b = [0.0] * (m + 1)
+        f[0] = b[0] = xs[i]
+        for s in range(1, m + 1):
+            cross[s] = lv * cross[s - 1 + 0] * 0.0 + cross[s]
+            cross[s] = lv * cross[s] + f[s - 1] * bprev[s - 1]
+            fe[s] = lv * fe[s] + f[s - 1] * f[s - 1]
+            be[s] = lv * be[s] + bprev[s - 1] * bprev[s - 1]
+            den = sqrt(fe[s] * be[s])
+            gam[s] = (cross[s] / den) if den > 0 else 0.0
+            if abs(gam[s]) >= 1.0:
+                gam[s] = 0.999 if gam[s] > 0 else -0.999
+            f[s] = f[s - 1] - gam[s] * bprev[s - 1]
+            b[s] = bprev[s - 1] - gam[s] * f[s - 1]
+        ferr[i] = f
+        berr[i] = b
+        bprev = b
+    return RichResult(payload={
+        "reflection": gam[1:], "forward_error": [row[m] for row in ferr],
+        "backward_error": [row[m] for row in berr],
+        "all_orders_forward": ferr, "order": m, "lam": lv,
+        "stable": all(abs(g) < 1.0 for g in gam[1:]),
+        "every_stage_is_a_predictor": True,
+        "method": "RLS lattice; the |gamma| < 1 stability condition is "
+                  "the same as Rangayyan (2024) eq. (7.39)"})
 
-    Formula: Forward/backward prediction errors updated with reflection coefficients
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    d : array-like
-        Input data.
-    lam : array-like
-        Input data.
-    order : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: y, e, k_f, k_b
-
-    References
-    ----------
-    Rangayyan Ch 8.6.2
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "RLS lattice (ladder) adaptive filter"})
+rangayyan_rls_lattice = rlslattice  # pre-policy spelling
 
 
 # -- rgsemm: Spectral error measure (SEM) for adaptive segmentation.
-def rangayyan_spec_error_meas(x, fs, p, seg_len):
+def sem(psd, reference):
+    """Spectral error measure between two PSDs.
+
+    Rangayyan (2024) Section 8.5 (adaptive segmentation):
+        SEM(m) = (1/p) sum_{k=1}^{p} [ log S_m(k) - log S_ref(k) ]^2,
+
+    the mean squared difference of LOG spectra.  The logarithm is what
+    makes it scale-free: a segment twice as loud as the reference but
+    identically shaped shifts every log bin by the same constant, so a
+    plain squared difference of PSDs would call it a change and the log
+    version registers only the offset.
+
+    Zero bins would send the logarithm to -inf, so they are floored and
+    counted; a spectrum with many zeros is one the measure does not
+    apply to.
     """
-    Spectral error measure (SEM) for adaptive segmentation
+    a = aslist(psd)
+    b = aslist(reference)
+    if len(a) != len(b):
+        raise ValueError("the two PSDs must have the same length")
+    if not a:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in a) or any(v < 0 for v in b):
+        raise ValueError("a PSD cannot be negative")
+    floor = 1e-300
+    zeros = sum(1 for v in a + b if v <= floor)
+    la = [log(v if v > floor else floor) for v in a]
+    lb = [log(v if v > floor else floor) for v in b]
+    d = [p - q for p, q in zip(la, lb)]
+    value = fsum(v * v for v in d) / len(d)
+    offset = fsum(d) / len(d)
+    shape = fsum((v - offset) ** 2 for v in d) / len(d)
+    return RichResult(payload={
+        "sem": value, "log_difference": d, "n_bins": len(d),
+        "mean_offset": offset, "shape_only": shape,
+        "gain_change_only": abs(value - offset * offset) < 1e-9,
+        "zero_bins": zeros, "scale_free": True,
+        "method": "Rangayyan (2024) Section 8.5 (spectral error measure)"})
 
-    Formula: SEM(m) = (1/p) sum_{k=1}^{p} (log S_m(k) - log S_{ref}(k))^2
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    fs : array-like
-        Input data.
-    p : array-like
-        Input data.
-    seg_len : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: sem_trace, segment_bounds
-
-    References
-    ----------
-    Rangayyan Ch 8.5.1
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Spectral error measure (SEM) for adaptive segmentation",
-        }
-    )
+rangayyan_spec_error_meas = sem  # pre-policy spelling
 
 
 # -- rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter.
-def rangayyan_wiener_hopf(x, d, order):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def whopf(x, d, order):
+    """Build and solve the Wiener-Hopf system from data.
+
+    Rangayyan (2024) eqs. (3.168), (3.171): the M x M autocorrelation
+    matrix Phi of the input and the M x 1 cross-correlation vector Theta
+    between input and desired response, solved for w_o.
+
+    Under wide-sense stationarity the book notes Phi is completely
+    specified by M autocorrelation values, so it is TOEPLITZ and is
+    built from a single lag sequence rather than M^2 separate estimates.
+    The biased ACF (divisor N) is used, which keeps that Toeplitz matrix
+    positive semidefinite; the unbiased 1/(N-m) estimator does not, and
+    an indefinite Phi turns the bowl of eq. (3.166) into a saddle.
     """
-    Wiener-Hopf matrix equations for FIR Wiener filter
+    xs, ds = aslist(x), aslist(d)
+    if len(xs) != len(ds):
+        raise ValueError("input and desired response must have equal length")
+    m = int(order)
+    if m < 1:
+        raise ValueError("order must be at least 1")
+    if len(xs) <= m:
+        raise ValueError("need more samples than taps")
+    phi = _acf(xs, m)
+    theta = _ccf(xs, ds, m)
+    Phi = [[phi[abs(i - j)] for j in range(m)] for i in range(m)]
+    r = wienerhopf(Phi, theta)
+    n = len(ds)
+    var_d = fsum(v * v for v in ds) / n - (fsum(ds) / n) ** 2
+    jm = wienermin(Phi, theta, var_d)
+    return RichResult(payload={
+        "w": r["w"], "phi": phi, "theta": theta, "Phi": Phi,
+        "order": m, "j_min": jm["j_min"], "var_d": var_d,
+        "toeplitz": True, "acf_biased": True,
+        "condition": r["condition"],
+        "method": "Rangayyan (2024) eqs. (3.168), (3.171)"})
 
-    Formula: R_xx * w_opt = r_dx; R_xx = autocorr matrix, r_dx = cross-corr vector
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    d : array-like
-        Input data.
-    order : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: w_opt
-
-    References
-    ----------
-    Rangayyan Ch 3.9
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Wiener-Hopf matrix equations for FIR Wiener filter"}
-    )
+rangayyan_wiener_hopf = whopf  # pre-policy spelling
 
 
 # -- rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter).
-def rangayyan_wiener_filter(x, noise_psd, signal_psd):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def wienerfilt(x, desired=None, order=8, sd=None, seta=None, fs=1.0):
+    """Wiener filter, in either the time or the frequency formulation.
+
+    Rangayyan (2024) Section 3.9.  Two routes, both in the book:
+
+    - with a desired signal available, solve eqs. (3.168)-(3.169) for the
+      M tap weights and filter (the ``desired`` argument);
+    - with the signal and noise PSDs available, apply eq. (3.186)
+      frequency by frequency (the ``sd`` and ``seta`` arguments).
+
+    The book's own illustration uses the second: a piecewise-linear model
+    of a clean ECG cycle supplies S_d, and the T-P interbeat intervals --
+    which should be isoelectric, so anything in them is noise -- supply
+    S_eta.  That is the practical answer to the obvious objection that
+    the desired signal is exactly what one does not have.
+
+    Exactly one route must be selected; asking for both would leave two
+    different filters with no rule for combining them.
     """
-    Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter)
+    xs = aslist(x)
+    if not xs:
+        raise ValueError("need at least one sample")
+    have_time = desired is not None
+    have_freq = sd is not None or seta is not None
+    if have_time == have_freq:
+        raise ValueError("give either a desired signal (time-domain route, "
+                         "eqs. 3.168-3.169) or both PSDs (frequency route, "
+                         "eq. 3.186), not both and not neither")
+    if have_time:
+        r = whopf(xs, desired, order)
+        y = wienerout(r["w"], xs)["d_hat"]
+        return RichResult(payload={
+            "y": y, "w": r["w"], "order": r["order"], "j_min": r["j_min"],
+            "route": "time", "method": "Rangayyan (2024) eqs. (3.168)-(3.169)"})
+    if sd is None or seta is None:
+        raise ValueError("the frequency route needs BOTH S_d and S_eta")
+    n = len(xs)
+    W = wienersnr(sd, seta)["W"]
+    half = n // 2 + 1
+    if len(W) != half:
+        raise ValueError("the PSDs need one value per one-sided DFT bin "
+                         "(%d for %d samples), got %d" % (half, n, len(W)))
+    re, im = [], []
+    step = 2.0 * pi / n
+    for k in range(n):
+        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(xs)))
+        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(xs)))
+    for k in range(n):
+        g = W[k] if k < half else W[n - k]
+        re[k] *= g
+        im[k] *= g
+    y = []
+    for i in range(n):
+        acc = 0.0
+        for k in range(n):
+            ang = step * i * k
+            acc += re[k] * cos(ang) - im[k] * sin(ang)
+        y.append(acc / n)
+    return RichResult(payload={
+        "y": y, "W": W, "route": "frequency", "fs": float(fs), "n": n,
+        "method": "Rangayyan (2024) eq. (3.186)"})
 
-    Formula: H_opt(f) = S_xd(f)/S_xx(f) = S_dd(f)/(S_dd(f)+S_nn(f))
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    noise_psd : array-like
-        Input data.
-    signal_psd : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: filtered_x
-
-    References
-    ----------
-    Rangayyan Ch 3.9
-    """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter)",
-        }
-    )
+rangayyan_wiener_filter = wienerfilt  # pre-policy spelling
 
 
 # -- rng137: Estimation error.
@@ -838,81 +1423,99 @@ def rangayyan_ch3_estimation_error(d, d_tilde, n=None):
 
 
 # -- rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights..
-def rangayyan_ch3_wiener_filter_output_convolution(x, w_k, n, M):
-    """
-    Output of the Wiener (transversal) filter as convolution of input with tap weights.
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
 
-    Formula: d_tilde(n) = sum_{k=0}^{M-1} w_k * x(n - k)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    w_k : array-like
-        Input data.
-    n : array-like
-        Input data.
-    M : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.154, p. 173
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
     n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output of the Wiener (transversal) filter as convolution of input with tap weights.",
-        }
-    )
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def wienerout(w, x):
+    """Output of the Wiener transversal filter, as a convolution.
+
+    Rangayyan (2024) eq. (3.154):
+        d~(n) = sum_{k=0}^{M-1} w_k x(n - k),
+
+    the tap-weight sequence being the impulse response of the FIR filter.
+    Eq. (3.153) then gives the estimation error e(n) = d(n) - d~(n),
+    which is what the optimization minimizes.
+
+    Samples before the filter has filled (n < M-1) use only the taps that
+    have data behind them; that transient is returned as ``settled_from``
+    so it is not mistaken for filter error.
+    """
+    ws, xs = aslist(w), aslist(x)
+    if not ws or not xs:
+        raise ValueError("both the tap weights and the input need samples")
+    m, n = len(ws), len(xs)
+    out = []
+    for i in range(n):
+        out.append(fsum(ws[k] * xs[i - k] for k in range(m) if i - k >= 0))
+    return RichResult(payload={
+        "d_hat": out, "n": n, "order": m, "settled_from": m - 1,
+        "method": "Rangayyan (2024) eq. (3.154)"})
+
+
+rangayyan_ch3_wiener_filter_output_convolution = wienerout  # pre-policy spelling
 
 
 # -- rng139: Wiener filter output expressed as inner product of tap-weight and input vectors..
-def rangayyan_ch3_wiener_output_dot_product(w, x):
+def wienerdot(w, xvec):
+    """Wiener filter output as an inner product.
+
+    Rangayyan (2024) eq. (3.155):
+        d~(n) = w^T x(n) = x^T(n) w = <x, w>,
+
+    with x(n) = [x(n), x(n-1), ..., x(n-M+1)]^T the tap-delay-line
+    vector.  Identical in value to eq. (3.154); the vector form is what
+    makes the MSE of eq. (3.166) a quadratic in w and the whole
+    optimization tractable.
+
+    Note the ORDER of the vector: it runs backwards in time, so x[0] is
+    the current sample.  Handing it forwards reverses the filter.
     """
-    Wiener filter output expressed as inner product of tap-weight and input vectors.
+    ws, xv = aslist(w), aslist(xvec)
+    if len(ws) != len(xv):
+        raise ValueError("w and x(n) must have the same length; x(n) runs "
+                         "backwards in time, x[0] being the current sample")
+    if not ws:
+        raise ValueError("need at least one tap")
+    return RichResult(payload={
+        "d_hat": fsum(a * b for a, b in zip(ws, xv)), "order": len(ws),
+        "vector_is_time_reversed": True,
+        "method": "Rangayyan (2024) eq. (3.155)"})
 
-    Formula: d_tilde(n) = w^T * x(n) = x^T(n) * w = <x, w>
 
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    x : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.157, p. 174
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wiener filter output expressed as inner product of tap-weight and input vectors.",
-        }
-    )
+rangayyan_ch3_wiener_output_dot_product = wienerdot  # pre-policy spelling
 
 
 # -- rng140: Estimation error in vector form.
@@ -1204,273 +1807,303 @@ def rangayyan_ch3_autocorrelation_matrix(x, M):
 
 
 # -- rng144: Gradient of MSE cost function with respect to tap-weight vector..
-def rangayyan_ch3_mse_gradient(w, Theta, Phi):
+def msegrad(phi, theta, w):
+    """Gradient of the MSE with respect to the tap weights.
+
+    Rangayyan (2024) eq. (3.167):
+        dJ(w)/dw = -2 Theta + 2 Phi w,
+
+    the derivative of the quadratic J(w) of eq. (3.166).  Setting it to
+    zero gives the Wiener-Hopf equation (3.168), and following its
+    negative is the steepest-descent step that LMS approximates in eq.
+    (3.201).
+
+    Because J is quadratic and Phi is positive semidefinite, the surface
+    is a bowl with a single minimum -- there are no local minima to get
+    stuck in, which is why gradient descent works here at all.
     """
-    Gradient of MSE cost function with respect to tap-weight vector.
+    P = [aslist(r) for r in phi]
+    t = aslist(theta)
+    ws = aslist(w)
+    m = len(ws)
+    if len(t) != m or any(len(r) != m for r in P) or len(P) != m:
+        raise ValueError("Phi must be M x M and Theta, w of length M")
+    g = [2.0 * (fsum(P[i][j] * ws[j] for j in range(m)) - t[i])
+         for i in range(m)]
+    return RichResult(payload={
+        "gradient": g, "norm": sqrt(fsum(v * v for v in g)),
+        "at_optimum": all(abs(v) < 1e-9 for v in g), "order": m,
+        "surface": "quadratic, single minimum",
+        "method": "Rangayyan (2024) eq. (3.167)"})
 
-    Formula: dJ(w)/dw = -2*Theta + 2*Phi*w
 
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    Theta : array-like
-        Input data.
-    Phi : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.167, p. 175
-    """
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Gradient of MSE cost function with respect to tap-weight vector.",
-        }
-    )
+rangayyan_ch3_mse_gradient = msegrad  # pre-policy spelling
 
 
 # -- rng145: Wiener-Hopf normal equation for the optimal tap weights..
-def rangayyan_ch3_wiener_hopf_normal_equation(Phi, w_o, Theta):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def wienerhopf(phi, theta):
+    """The Wiener-Hopf normal equation.
+
+    Rangayyan (2024) eq. (3.168):  Phi w_o = Theta.
+
+    The book calls it the normal equation because at the optimum each
+    element of the input vector is orthogonal to the estimation error --
+    the residual carries nothing the filter could still have used.  That
+    orthogonality is the check returned: ``residual`` is Phi w - Theta,
+    which is zero at the solution by construction, and ``condition``
+    warns when Phi is close to singular, where the solved weights are
+    numerically meaningless even though the residual looks small.
     """
-    Wiener-Hopf normal equation for the optimal tap weights.
+    P = [aslist(r) for r in phi]
+    t = aslist(theta)
+    m = len(t)
+    if len(P) != m or any(len(r) != m for r in P):
+        raise ValueError("Phi must be M x M and Theta of length M")
+    w = _solve(P, t)
+    resid = [fsum(P[i][j] * w[j] for j in range(m)) - t[i] for i in range(m)]
+    diag = [abs(P[i][i]) for i in range(m)]
+    return RichResult(payload={
+        "w": w, "residual": resid, "max_residual": max(abs(v) for v in resid),
+        "order": m,
+        "condition": (max(diag) / min(diag)) if min(diag) > 0 else float("inf"),
+        "orthogonality": "at w_o the input vector and the error are "
+                         "orthogonal, and so are the output and the error",
+        "method": "Rangayyan (2024) eq. (3.168)"})
 
-    Formula: Phi * w_o = Theta
 
-    Parameters
-    ----------
-    Phi : array-like
-        Input data.
-    w_o : array-like
-        Input data.
-    Theta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.168, p. 175
-    """
-    Phi = np.atleast_1d(np.asarray(Phi, dtype=float))
-    n = len(Phi)
-    result = float(np.mean(Phi))
-    se = float(np.std(Phi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wiener-Hopf normal equation for the optimal tap weights.",
-        }
-    )
+rangayyan_ch3_wiener_hopf_normal_equation = wienerhopf  # pre-policy spelling
 
 
 # -- rng146: Closed-form optimal Wiener filter tap weights..
-def rangayyan_ch3_optimal_wiener_filter(Phi, Theta):
+def wieneropt(phi, theta):
+    """Closed-form optimal Wiener tap weights.
+
+    Rangayyan (2024) eq. (3.169):  w_o = Phi^(-1) Theta.
+
+    Written as an inverse in the book, SOLVED as a linear system here.
+    Forming Phi^(-1) explicitly and multiplying costs more work and
+    loses accuracy for exactly the ill-conditioned Phi where the answer
+    matters most; Gaussian elimination with partial pivoting on the
+    system is the same mathematics with better numerics.
     """
-    Closed-form optimal Wiener filter tap weights.
+    r = wienerhopf(phi, theta)
+    out = dict(r)
+    out["w_o"] = r["w"]
+    out["solved_not_inverted"] = True
+    out["method"] = "Rangayyan (2024) eq. (3.169)"
+    return RichResult(payload=out)
 
-    Formula: w_o = Phi^(-1) * Theta
 
-    Parameters
-    ----------
-    Phi : array-like
-        Input data.
-    Theta : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.169, p. 175
-    """
-    Phi = np.atleast_1d(np.asarray(Phi, dtype=float))
-    n = len(Phi)
-    result = float(np.mean(Phi))
-    se = float(np.std(Phi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Closed-form optimal Wiener filter tap weights."}
-    )
+rangayyan_ch3_optimal_wiener_filter = wieneropt  # pre-policy spelling
 
 
 # -- rng147: Minimum mean-squared error achievable by the Wiener filter..
-def rangayyan_ch3_minimum_mse(sigma_d, Theta, Phi):
+def wienermin(phi, theta, var_d):
+    """Minimum MSE achievable by the Wiener filter.
+
+    Rangayyan (2024) eq. (3.172):
+        J_min = sigma_d^2 - Theta^T Phi^(-1) Theta.
+
+    The floor the filter cannot go below: the variance of the desired
+    signal less the part of it the input can explain.  J_min = 0 only if
+    the input determines the desired signal exactly.
+
+    A NEGATIVE J_min is impossible for consistent statistics, so it is
+    reported as ``consistent = False`` rather than returned as a number:
+    it means sigma_d^2, Phi and Theta were estimated from different data
+    or with different scalings, which is a silent and common error.
     """
-    Minimum mean-squared error achievable by the Wiener filter.
+    r = wienerhopf(phi, theta)
+    t = aslist(theta)
+    jmin = float(var_d) - fsum(a * b for a, b in zip(t, r["w"]))
+    return RichResult(payload={
+        "j_min": jmin, "w_o": r["w"], "var_d": float(var_d),
+        "explained": fsum(a * b for a, b in zip(t, r["w"])),
+        "consistent": jmin >= -1e-9 * max(abs(float(var_d)), 1.0),
+        "fraction_explained": (1.0 - jmin / float(var_d))
+        if var_d else None,
+        "method": "Rangayyan (2024) eq. (3.172)"})
 
-    Formula: J_min = sigma_d^2 - Theta^T * Phi^(-1) * Theta
 
-    Parameters
-    ----------
-    sigma_d : array-like
-        Input data.
-    Theta : array-like
-        Input data.
-    Phi : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.172, p. 175
-    """
-    sigma_d = np.atleast_1d(np.asarray(sigma_d, dtype=float))
-    n = len(sigma_d)
-    result = float(np.mean(sigma_d))
-    se = float(np.std(sigma_d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Minimum mean-squared error achievable by the Wiener filter.",
-        }
-    )
+rangayyan_ch3_minimum_mse = wienermin  # pre-policy spelling
 
 
 # -- rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity..
-def rangayyan_ch3_wiener_convolution_relationship(w_ok, phi, theta, k):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def wienerconv(w, phi, theta):
+    """Wiener-Hopf as a convolution relationship.
+
+    Rangayyan (2024) eqs. (3.173)-(3.174):
+        sum_i w_oi phi(k - i) = theta(k),  k = 0..M-1
+        w_ok * phi(k) = theta(k).
+
+    Eq. (3.171) has phi(i - k) and theta(-k); the step to eq. (3.173) is
+    the STATIONARITY assumption, under which phi and theta are
+    even-symmetric so the signs of the arguments may be dropped.  The
+    convolution form then follows, and Fourier-transforming it gives eq.
+    (3.175).
+
+    That assumption is the one to watch: for a nonstationary signal the
+    even symmetry fails and the convolution form is not equivalent to
+    eq. (3.168).
     """
-    Wiener-Hopf equation expressed as a convolution relationship under stationarity.
+    ws, p, t = aslist(w), aslist(phi), aslist(theta)
+    m = len(ws)
+    if len(p) < m or len(t) < m:
+        raise ValueError("need at least M lags of phi and theta")
+    lhs = [fsum(ws[i] * p[abs(k - i)] for i in range(m)) for k in range(m)]
+    gap = max(abs(a - b) for a, b in zip(lhs, t[:m]))
+    scale = max(abs(v) for v in t[:m]) or 1.0
+    return RichResult(payload={
+        "lhs": lhs, "theta": t[:m], "max_difference": gap,
+        "holds": gap <= 1e-8 * scale, "order": m,
+        "requires_stationarity": True,
+        "method": "Rangayyan (2024) eqs. (3.173)-(3.174)"})
 
-    Formula: w_ok * phi(k) = theta(k)
 
-    Parameters
-    ----------
-    w_ok : array-like
-        Input data.
-    phi : array-like
-        Input data.
-    theta : array-like
-        Input data.
-    k : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.174, p. 176
-    """
-    w_ok = np.atleast_1d(np.asarray(w_ok, dtype=float))
-    n = len(w_ok)
-    result = float(np.mean(w_ok))
-    se = float(np.std(w_ok, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wiener-Hopf equation expressed as a convolution relationship under stationarity.",
-        }
-    )
+rangayyan_ch3_wiener_convolution_relationship = wienerconv  # pre-policy spelling
 
 
 # -- rng149: Frequency-domain Wiener relation between PSD and CSD..
-def rangayyan_ch3_wiener_frequency_relation(W, S_xx, S_xd, omega):
+def wienerfreqrel(W, sxx, sxd):
+    """The frequency-domain Wiener relation.
+
+    Rangayyan (2024) eq. (3.175):
+        W(omega) S_xx(omega) = S_xd(omega),
+
+    the Fourier transform of the convolution form of eq. (3.174).  It is
+    the statement before the division: at any frequency where S_xx is
+    zero the relation is satisfied by ANY W, so the filter is
+    undetermined there -- which eq. (3.176) hides by dividing.
+
+    Those frequencies are reported as ``undetermined_bins``.
     """
-    Frequency-domain Wiener relation between PSD and CSD.
+    Ws = [complex(v) for v in W]
+    a = [complex(v) for v in sxx]
+    b = [complex(v) for v in sxd]
+    if not (len(Ws) == len(a) == len(b)):
+        raise ValueError("W, S_xx and S_xd must have the same length")
+    lhs = [w * s for w, s in zip(Ws, a)]
+    gap = max(abs(u - v) for u, v in zip(lhs, b))
+    scale = max(abs(v) for v in b) or 1.0
+    und = [i for i, v in enumerate(a) if abs(v) <= 1e-300]
+    return RichResult(payload={
+        "lhs": lhs, "sxd": b, "max_difference": gap,
+        "holds": gap <= 1e-8 * scale,
+        "undetermined_bins": und, "n_undetermined": len(und),
+        "method": "Rangayyan (2024) eq. (3.175)"})
 
-    Formula: W(omega) * S_xx(omega) = S_xd(omega)
 
-    Parameters
-    ----------
-    W : array-like
-        Input data.
-    S_xx : array-like
-        Input data.
-    S_xd : array-like
-        Input data.
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.175, p. 176
-    """
-    W = np.atleast_1d(np.asarray(W, dtype=float))
-    n = len(W)
-    result = float(np.mean(W))
-    se = float(np.std(W, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Frequency-domain Wiener relation between PSD and CSD.",
-        }
-    )
+rangayyan_ch3_wiener_frequency_relation = wienerfreqrel  # pre-policy spelling
 
 
 # -- rng150: Wiener filter frequency response as ratio of CSD to PSD of input..
-def rangayyan_ch3_wiener_frequency_response(S_xd, S_xx, omega):
+def wienerfreq(sxx, sxd):
+    """Wiener filter frequency response from the CSD and PSD.
+
+    Rangayyan (2024) eq. (3.176):
+        W(omega) = S_xd(omega) / S_xx(omega),
+
+    with S_xx the PSD of the input and S_xd the cross-spectral density
+    between input and desired signal.
+
+    Where S_xx vanishes the ratio is undefined; eq. (3.175) shows the
+    filter is genuinely undetermined there, so W is set to zero -- the
+    choice that adds nothing rather than amplifying a bin with no signal
+    in it -- and the affected bins are reported rather than hidden.
     """
-    Wiener filter frequency response as ratio of CSD to PSD of input.
+    a = [complex(v) for v in sxx]
+    b = [complex(v) for v in sxd]
+    if len(a) != len(b):
+        raise ValueError("S_xx and S_xd must have the same length")
+    if not a:
+        raise ValueError("need at least one bin")
+    W, und = [], []
+    for i, (p, c) in enumerate(zip(a, b)):
+        if abs(p) <= 1e-300:
+            W.append(0j)
+            und.append(i)
+        else:
+            W.append(c / p)
+    return RichResult(payload={
+        "W": W, "magnitude": [abs(v) for v in W],
+        "undetermined_bins": und, "n_undetermined": len(und),
+        "zero_where_undetermined": True, "n": len(W),
+        "method": "Rangayyan (2024) eq. (3.176)"})
 
-    Formula: W(omega) = S_xd(omega) / S_xx(omega)
 
-    Parameters
-    ----------
-    S_xd : array-like
-        Input data.
-    S_xx : array-like
-        Input data.
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.176, p. 176
-    """
-    S_xd = np.atleast_1d(np.asarray(S_xd, dtype=float))
-    n = len(S_xd)
-    result = float(np.mean(S_xd))
-    se = float(np.std(S_xd, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wiener filter frequency response as ratio of CSD to PSD of input.",
-        }
-    )
+rangayyan_ch3_wiener_frequency_response = wienerfreq  # pre-policy spelling
 
 
 # -- rng151: Optimal Wiener filter for noise removal (Rangayyan Eq 3.183).
@@ -1545,161 +2178,159 @@ def rangayyan_ch3_wiener_optimal_for_noise_removal(Phi_d, Phi_eta, Phi_1d):
 
 
 # -- rng152: Wiener filter frequency response in terms of signal and noise PSDs..
-def rangayyan_ch3_wiener_frequency_response_snr_form(S_d, S_eta, omega):
+def wienersnr(sd, seta):
+    """Wiener frequency response in terms of signal and noise PSDs.
+
+    Rangayyan (2024) eq. (3.186):
+        W(omega) = S_d(omega) / (S_d(omega) + S_eta(omega))
+                 = 1 / (1 + S_eta(omega) / S_d(omega)),
+
+    which follows from eq. (3.176) with S_xx = S_d + S_eta (3.184) and
+    S_xd = S_d (3.185), the additive-noise case of eq. (3.177).
+
+    The book lists three properties, all returned here as checks rather
+    than prose: W = 0 wherever S_d = 0 (a component absent from the
+    input is NOT restored), W = 1 wherever S_eta = 0 (clean components
+    pass with unit gain), and W decreases as S_eta rises -- the gain
+    tracks the per-frequency SNR.
+
+    Both PSDs zero at a bin leaves 0/0; the filter is undetermined
+    there and is set to zero, with the bin reported.
     """
-    Wiener filter frequency response in terms of signal and noise PSDs.
+    d = aslist(sd)
+    e = aslist(seta)
+    if len(d) != len(e):
+        raise ValueError("S_d and S_eta must have the same length")
+    if not d:
+        raise ValueError("need at least one bin")
+    if any(v < 0 for v in d) or any(v < 0 for v in e):
+        raise ValueError("a PSD cannot be negative")
+    W, und = [], []
+    for i, (a, b) in enumerate(zip(d, e)):
+        tot = a + b
+        if tot <= 0:
+            W.append(0.0)
+            und.append(i)
+        else:
+            W.append(a / tot)
+    snr = [(a / b if b > 0 else float("inf")) for a, b in zip(d, e)]
+    return RichResult(payload={
+        "W": W, "snr": snr, "undetermined_bins": und,
+        "zero_where_signal_absent": all(W[i] == 0.0 for i in range(len(d))
+                                        if d[i] == 0.0),
+        "unity_where_noise_absent": all(W[i] == 1.0 for i in range(len(d))
+                                        if e[i] == 0.0 and d[i] > 0),
+        "monotone_in_snr": all(
+            W[i] <= W[j] + 1e-12
+            for i in range(len(d)) for j in range(len(d))
+            if snr[i] <= snr[j] and snr[i] != float("inf")),
+        "n": len(W), "method": "Rangayyan (2024) eq. (3.186)"})
 
-    Formula: W(omega) = S_d(omega) / (S_d(omega) + S_eta(omega)) = 1 / (1 + S_eta(omega)/S_d(omega))
 
-    Parameters
-    ----------
-    S_d : array-like
-        Input data.
-    S_eta : array-like
-        Input data.
-    omega : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.186, p. 177
-    """
-    S_d = np.atleast_1d(np.asarray(S_d, dtype=float))
-    n = len(S_d)
-    result = float(np.mean(S_d))
-    se = float(np.std(S_d, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Wiener filter frequency response in terms of signal and noise PSDs.",
-        }
-    )
+rangayyan_ch3_wiener_frequency_response_snr_form = wienersnr  # pre-policy spelling
 
 
 # -- rng153: Primary input of an adaptive noise canceller (ANC): signal plus primary noise..
-def rangayyan_ch3_anc_primary_input_model(v, m, n):
+def ancinput(v, m):
+    """Primary input of an adaptive noise canceller.
+
+    Rangayyan (2024) Section 3.10.1:  x(n) = v(n) + m(n),
+
+    the signal of interest v plus a primary noise m.  The reference input
+    r(n) is a separate recording correlated with m but not with v.
+
+    Those two independence conditions are the whole basis of the method,
+    and the book is explicit that NOTHING else about the processes need
+    be known.  They are checked here on the supplied data rather than
+    assumed: if v and m are correlated, eq. (3.193) does not separate and
+    the canceller removes part of the signal along with the noise.
     """
-    Primary input of an adaptive noise canceller (ANC): signal plus primary noise.
+    vs, ms = aslist(v), aslist(m)
+    if len(vs) != len(ms):
+        raise ValueError("signal and noise must have the same length")
+    n = len(vs)
+    if not n:
+        raise ValueError("need at least one sample")
+    x = [a + b for a, b in zip(vs, ms)]
+    mv, mm = fsum(vs) / n, fsum(ms) / n
+    cov = fsum((a - mv) * (b - mm) for a, b in zip(vs, ms)) / n
+    sv = sqrt(fsum((a - mv) ** 2 for a in vs) / n)
+    sm = sqrt(fsum((b - mm) ** 2 for b in ms) / n)
+    rho = cov / (sv * sm) if sv > 0 and sm > 0 else 0.0
+    return RichResult(payload={
+        "x": x, "v": vs, "m": ms, "n": n, "correlation": rho,
+        "independent": abs(rho) < 0.1,
+        "assumption": "the method needs v and m statistically "
+                      "independent, and the reference correlated with m "
+                      "but not with v",
+        "method": "Rangayyan (2024) Section 3.10.1"})
 
-    Formula: x(n) = v(n) + m(n)
 
-    Parameters
-    ----------
-    v : array-like
-        Input data.
-    m : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.187, p. 181
-    """
-    v = np.atleast_1d(np.asarray(v, dtype=float))
-    n = len(v)
-    result = float(np.mean(v))
-    se = float(np.std(v, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Primary input of an adaptive noise canceller (ANC): signal plus primary noise.",
-        }
-    )
+rangayyan_ch3_anc_primary_input_model = ancinput  # pre-policy spelling
 
 
 # -- rng154: Output of the ANC as the difference between primary input and adaptive filter output..
-def rangayyan_ch3_anc_output(x, y, n):
+def ancout(x, y):
+    """Output of the adaptive noise canceller.
+
+    Rangayyan (2024) eq. (3.196):
+        v~(n) = e(n) = x(n) - y(n),
+
+    where y is the adaptive filter's estimate of the primary noise.  The
+    error signal IS the output -- that inversion is what makes an ANC
+    different from an ordinary filter, and it is why minimizing the
+    output power maximizes the output SNR (eqs. 3.193-3.194): the signal
+    component v is untouched by the adaptation, so all the power that
+    can be removed is noise.
+
+    ``power_reduction`` is the ratio the adaptation is minimizing.
     """
-    Output of the ANC as the difference between primary input and adaptive filter output.
+    xs, ys = aslist(x), aslist(y)
+    if len(xs) != len(ys):
+        raise ValueError("primary input and filter output must have the "
+                         "same length")
+    if not xs:
+        raise ValueError("need at least one sample")
+    e = [a - b for a, b in zip(xs, ys)]
+    px = fsum(v * v for v in xs)
+    pe = fsum(v * v for v in e)
+    return RichResult(payload={
+        "e": e, "v_hat": e, "n": len(e),
+        "input_power": px, "output_power": pe,
+        "power_reduction": (pe / px) if px > 0 else None,
+        "error_is_the_output": True,
+        "method": "Rangayyan (2024) eq. (3.196)"})
 
-    Formula: v_tilde(n) = e(n) = x(n) - y(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.188, p. 182
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Output of the ANC as the difference between primary input and adaptive filter output.",
-        }
-    )
+rangayyan_ch3_anc_output = ancout  # pre-policy spelling
 
 
 # -- rng155: Adaptive FIR filter output in LMS framework using reference input r(n)..
-def rangayyan_ch3_lms_filter_output(r, w_k, n, M):
+def lmsout(w, r):
+    """Adaptive FIR filter output in the LMS framework.
+
+    Rangayyan (2024) eq. (3.195):
+        y(n) = sum_{k=0}^{M-1} w_k r(n - k),
+
+    the filter acting on the REFERENCE input r, not on the primary input
+    x.  That is the structural point: the adaptive filter never sees the
+    signal of interest, so it cannot cancel it -- it can only build an
+    estimate of the noise out of the reference.
     """
-    Adaptive FIR filter output in LMS framework using reference input r(n).
+    ws, rs = aslist(w), aslist(r)
+    if not ws or not rs:
+        raise ValueError("both the tap weights and the reference need "
+                         "samples")
+    m = len(ws)
+    y = [fsum(ws[k] * rs[i - k] for k in range(m) if i - k >= 0)
+         for i in range(len(rs))]
+    return RichResult(payload={
+        "y": y, "n": len(y), "order": m, "settled_from": m - 1,
+        "filters_the_reference": True,
+        "method": "Rangayyan (2024) eq. (3.195)"})
 
-    Formula: y(n) = sum_{k=0}^{M-1} w_k * r(n - k)
 
-    Parameters
-    ----------
-    r : array-like
-        Input data.
-    w_k : array-like
-        Input data.
-    n : array-like
-        Input data.
-    M : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.195, p. 183
-    """
-    r = np.atleast_1d(np.asarray(r, dtype=float))
-    n = len(r)
-    result = float(np.mean(r))
-    se = float(np.std(r, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Adaptive FIR filter output in LMS framework using reference input r(n).",
-        }
-    )
+rangayyan_ch3_lms_filter_output = lmsout  # pre-policy spelling
 
 
 # -- rng156: LMS estimation error.
@@ -1764,83 +2395,78 @@ def rangayyan_ch3_lms_estimation_error(x, w, r, n=None):
 
 
 # -- rng157: Quadratic squared-error form used in LMS gradient derivations..
-def rangayyan_ch3_lms_squared_error(x, r, w, n):
+def lmssqerr(x, rvec, w):
+    """Instantaneous squared error, expanded.
+
+    Rangayyan (2024) eq. (3.200):
+        e^2(n) = x^2(n) - 2 x(n) r^T(n) w(n)
+                 + w^T(n) r(n) r^T(n) w(n),
+
+    the square of eq. (3.199).  The book reads it as a concave
+    hyperparaboloid that is never negative -- a bowl with one bottom --
+    which is why gradient descent on it converges.
+
+    LMS's simplification is to use this INSTANTANEOUS square as an
+    estimate of the MSE instead of taking expectations, which is what
+    makes the algorithm free of averaging and also what makes its
+    trajectory noisy.  Both the expanded form and the direct square are
+    returned and compared, since the expansion is the step the gradient
+    of eq. (3.202) is taken from.
     """
-    Quadratic squared-error form used in LMS gradient derivations.
+    rv, ws = aslist(rvec), aslist(w)
+    if len(rv) != len(ws):
+        raise ValueError("r(n) and w must have the same length")
+    if not rv:
+        raise ValueError("need at least one tap")
+    xv = float(x)
+    rw = fsum(a * b for a, b in zip(rv, ws))
+    expanded = xv * xv - 2.0 * xv * rw + rw * rw
+    e = xv - rw
+    return RichResult(payload={
+        "e": e, "e_squared": e * e, "expanded": expanded,
+        "max_difference": abs(expanded - e * e),
+        "agrees": abs(expanded - e * e) <= 1e-9 * (1 + abs(e * e)),
+        "nonnegative": expanded >= -1e-12,
+        "instantaneous_not_expected": True,
+        "method": "Rangayyan (2024) eq. (3.200)"})
 
-    Formula: e^2(n) = x^2(n) - 2*x(n)*r^T(n)*w(n) + w^T(n)*r(n)*r^T(n)*w(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    r : array-like
-        Input data.
-    w : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.200, p. 184
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Quadratic squared-error form used in LMS gradient derivations.",
-        }
-    )
+rangayyan_ch3_lms_squared_error = lmssqerr  # pre-policy spelling
 
 
 # -- rng158: Steepest-descent update rule for the tap-weight vector..
-def rangayyan_ch3_lms_steepest_descent(w, mu, n):
+def lmsdescent(w, e, rvec, mu):
+    """One steepest-descent step with the LMS gradient estimate.
+
+    Rangayyan (2024) eqs. (3.201)-(3.202):
+        w(n+1) = w(n) - mu grad(e^2(n))                          (3.201)
+        grad-hat(e^2(n)) = -2 e(n) r(n)                          (3.202)
+
+    Substituting the second into the first gives the Widrow-Hoff rule of
+    eq. (3.203).  Both the gradient and the resulting step are returned,
+    so the two equations can be seen separately rather than only in
+    their combined form.
+
+    The book states mu controls stability and rate: larger mu converges
+    faster and is less stable, and convergence in the mean requires
+    0 < mu < 1/lambda_max of the reference autocorrelation matrix.
     """
-    Steepest-descent update rule for the tap-weight vector.
+    ws, rv = aslist(w), aslist(rvec)
+    if len(ws) != len(rv):
+        raise ValueError("w and r(n) must have the same length")
+    if not ws:
+        raise ValueError("need at least one tap")
+    ev = float(e)
+    grad = [-2.0 * ev * v for v in rv]
+    step = [a - float(mu) * g for a, g in zip(ws, grad)]
+    return RichResult(payload={
+        "gradient": grad, "w_next": step, "mu": float(mu), "e": ev,
+        "order": len(ws),
+        "equals_widrow_hoff": True,
+        "method": "Rangayyan (2024) eqs. (3.201)-(3.202)"})
 
-    Formula: w(n+1) = w(n) - mu * grad(e^2(n))
 
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.201, p. 184
-    """
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Steepest-descent update rule for the tap-weight vector.",
-        }
-    )
+rangayyan_ch3_lms_steepest_descent = lmsdescent  # pre-policy spelling
 
 
 # -- rng159: LMS gradient estimate.
@@ -1897,197 +2523,217 @@ def rangayyan_ch3_lms_gradient_estimate(r, e, x=None, w=None, n=None):
 
 
 # -- rng160: Widrow-Hoff LMS tap-weight update rule..
-def rangayyan_ch3_widrow_hoff_lms(w, mu, e, r, n):
+def widrowhoff(w, e, rvec, mu):
+    """The Widrow-Hoff LMS tap-weight update.
+
+    Rangayyan (2024) eq. (3.203):
+        w(n+1) = w(n) + 2 mu e(n) r(n).
+
+    The factor of TWO is part of the equation, not a convention: it comes
+    from the 2 in the gradient of eq. (3.202).  Many texts fold it into
+    mu, so a step size copied between sources can be out by a factor of
+    two -- which, near the stability limit, is the difference between
+    converging and diverging.
+
+    The book's stability condition is 0 < mu < 1/lambda_max of the
+    reference autocorrelation matrix; ``stable_bound`` reports the
+    largest safe mu given the reference power seen here, using the
+    standard trace bound lambda_max <= M * E[r^2].
     """
-    Widrow-Hoff LMS tap-weight update rule.
+    ws, rv = aslist(w), aslist(rvec)
+    if len(ws) != len(rv):
+        raise ValueError("w and r(n) must have the same length")
+    if not ws:
+        raise ValueError("need at least one tap")
+    mv, ev = float(mu), float(e)
+    nxt = [a + 2.0 * mv * ev * b for a, b in zip(ws, rv)]
+    power = fsum(v * v for v in rv)
+    bound = 1.0 / power if power > 0 else float("inf")
+    return RichResult(payload={
+        "w_next": nxt, "mu": mv, "e": ev, "order": len(ws),
+        "factor_of_two_is_in_the_equation": True,
+        "stable_bound": bound, "within_bound": mv < bound,
+        "method": "Rangayyan (2024) eq. (3.203)"})
 
-    Formula: w(n+1) = w(n) + 2*mu*e(n)*r(n)
 
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    e : array-like
-        Input data.
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.203, p. 185
-    """
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Widrow-Hoff LMS tap-weight update rule."}
-    )
+rangayyan_ch3_widrow_hoff_lms = widrowhoff  # pre-policy spelling
 
 
 # -- rng161: Variable step-size LMS update rule..
-def rangayyan_ch3_lms_variable_step(w, mu, e, r, n):
+def lmsvarstep(w, e, rvec, mu_n):
+    """LMS update with a time-varying step size.
+
+    Rangayyan (2024) eq. (3.204):
+        w(n+1) = w(n) + 2 mu(n) e(n) r(n),
+
+    eq. (3.203) with mu allowed to change at every sample.  The point is
+    nonstationarity: a fixed mu that is stable for the loudest part of a
+    record is far too slow for the quietest, so the step is normalized by
+    a running estimate of the input power -- eq. (3.205) is one such rule.
     """
-    Variable step-size LMS update rule.
+    ws, rv = aslist(w), aslist(rvec)
+    if len(ws) != len(rv):
+        raise ValueError("w and r(n) must have the same length")
+    if not ws:
+        raise ValueError("need at least one tap")
+    mv, ev = float(mu_n), float(e)
+    nxt = [a + 2.0 * mv * ev * b for a, b in zip(ws, rv)]
+    return RichResult(payload={
+        "w_next": nxt, "mu": mv, "e": ev, "order": len(ws),
+        "time_varying": True,
+        "method": "Rangayyan (2024) eq. (3.204)"})
 
-    Formula: w(n+1) = w(n) + 2*mu(n)*e(n)*r(n)
 
-    Parameters
-    ----------
-    w : array-like
-        Input data.
-    mu : array-like
-        Input data.
-    e : array-like
-        Input data.
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.204, p. 185
-    """
-    w = np.atleast_1d(np.asarray(w, dtype=float))
-    n = len(w)
-    result = float(np.mean(w))
-    se = float(np.std(w, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Variable step-size LMS update rule."})
+rangayyan_ch3_lms_variable_step = lmsvarstep  # pre-policy spelling
 
 
 # -- rng162: Time-varying step size mu(n) per Zhang et al. for VAG signals..
-def rangayyan_ch3_lms_step_size_zhang(mu, M, x_bar, alpha, r, n):
+def lmszhang(mu, order, r, alpha=0.02, power_prev=None):
+    """Time-varying LMS step size after Zhang et al., for VAG signals.
+
+    Rangayyan (2024) eq. (3.205):
+        mu(n) = mu / ( (M + 1) xbar^2(n) ),   0 < mu < 1,
+    where the running power estimate is
+        xbar^2(n) = alpha r^2(n) + (1 - alpha) xbar^2(n - 1),
+    with a forgetting factor 0 <= alpha << 1.
+
+    The book presents this as Zhang et al.'s remedy for the high
+    nonstationarity of VAG signals: normalizing by the current input
+    power makes the effective step size scale-free, so the same mu works
+    across a record whose amplitude varies by an order of magnitude.
+
+    alpha must be small -- the book writes alpha << 1 -- because it sets
+    how fast the power estimate forgets; alpha near 1 tracks the
+    instantaneous sample and reintroduces exactly the jitter the
+    averaging was meant to remove.  A value above 0.5 is refused.
     """
-    Time-varying step size mu(n) per Zhang et al. for VAG signals.
+    m = int(order)
+    if m < 1:
+        raise ValueError("order must be at least 1")
+    mv = float(mu)
+    if not 0 < mv < 1:
+        raise ValueError("eq. (3.205) needs 0 < mu < 1")
+    av = float(alpha)
+    if not 0 <= av <= 0.5:
+        raise ValueError("the book writes 0 <= alpha << 1; alpha above 0.5 "
+                         "tracks the instantaneous sample instead of "
+                         "averaging, got %g" % av)
+    rv = float(r)
+    prev = rv * rv if power_prev is None else float(power_prev)
+    power = av * rv * rv + (1.0 - av) * prev
+    if power <= 0:
+        raise ValueError("the running power estimate vanished; mu(n) is "
+                         "unbounded")
+    step = mv / ((m + 1) * power)
+    return RichResult(payload={
+        "mu": step, "power": power, "power_prev": prev, "alpha": av,
+        "order": m, "base_mu": mv,
+        "method": "Rangayyan (2024) eq. (3.205), after Zhang et al."})
 
-    Formula: mu(n) = mu / ( (M+1) * x_bar^2(n) * [alpha, r(n), x_bar^2(n-1)] )
 
-    Parameters
-    ----------
-    mu : array-like
-        Input data.
-    M : array-like
-        Input data.
-    x_bar : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    r : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.205, p. 185
-    """
-    mu = np.atleast_1d(np.asarray(mu, dtype=float))
-    n = len(mu)
-    result = float(np.mean(mu))
-    se = float(np.std(mu, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Time-varying step size mu(n) per Zhang et al. for VAG signals.",
-        }
-    )
+rangayyan_ch3_lms_step_size_zhang = lmszhang  # pre-policy spelling
 
 
 # -- rng163: Weighted least-squares objective for the RLS algorithm with forgetting factor lambda..
-def rangayyan_ch3_rls_objective(e, lam, n):
+def rlsobj(errors, lam):
+    """Weighted least-squares objective of the RLS algorithm.
+
+    Rangayyan (2024) eq. (3.206):
+        xi(n) = sum_{i=1}^{n} lambda^(n-i) |e(i)|^2,   0 < lambda <= 1.
+
+    The weights lambda^(n-i) are below 1 for past errors, so recent ones
+    count for more.  The book gives the interpretation of 1/(1 - lambda)
+    as the MEMORY of the algorithm: lambda = 0.98 remembers about 50
+    samples, lambda = 1 remembers everything and RLS reduces to ordinary
+    growing-window least squares, which cannot track a nonstationary
+    signal at all.
+
+    That effective memory is returned, because it is the number that
+    decides whether a given lambda can follow the nonstationarity in a
+    given record.
     """
-    Weighted least-squares objective for the RLS algorithm with forgetting factor lambda.
-
-    Formula: xi(n) = sum_{i=1}^{n} lambda^(n-i) * |e(i)|^2
-
-    Parameters
-    ----------
-    e : array-like
-        Input data.
-    lam : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.206, p. 186
-    """
-    e = np.atleast_1d(np.asarray(e, dtype=float))
+    e = aslist(errors)
+    if not e:
+        raise ValueError("need at least one error value")
+    lv = float(lam)
+    if not 0 < lv <= 1:
+        raise ValueError("eq. (3.206) needs 0 < lambda <= 1")
     n = len(e)
-    result = float(np.mean(e))
-    se = float(np.std(e, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Weighted least-squares objective for the RLS algorithm with forgetting factor lambda.",
-        }
-    )
+    weights = [lv ** (n - 1 - i) for i in range(n)]
+    xi = fsum(wgt * v * v for wgt, v in zip(weights, e))
+    return RichResult(payload={
+        "xi": xi, "weights": weights, "lam": lv, "n": n,
+        "memory": (1.0 / (1.0 - lv)) if lv < 1 else float("inf"),
+        "growing_window": lv == 1.0,
+        "method": "Rangayyan (2024) eq. (3.206)"})
+
+
+rangayyan_ch3_rls_objective = rlsobj  # pre-policy spelling
 
 
 # -- rng164: Normal equation for the RLS algorithm..
-def rangayyan_ch3_rls_normal_equation(Phi, w_tilde, Theta, n):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def rlsnormal(phi, theta):
+    """Normal equation solved by the RLS procedure.
+
+    Rangayyan (2024) eq. (3.207):  Phi(n) w~(n) = Theta(n).
+
+    Structurally identical to the Wiener-Hopf equation (3.168) -- the
+    book says so, and derives it the same way -- but with Phi and Theta
+    now EXPONENTIALLY WEIGHTED and updated at every sample rather than
+    estimated once over the whole record.  That is the entire difference
+    between the optimal fixed filter and the adaptive one.
+
+    Solving this directly costs an M x M inversion per sample, which is
+    what the ABCD lemma of eq. (3.213) exists to avoid; this function is
+    the direct route, useful as the reference the recursion is checked
+    against.
     """
-    Normal equation for the RLS algorithm.
+    r = wienerhopf(phi, theta)
+    out = dict(r)
+    out["w_tilde"] = r["w"]
+    out["same_form_as_wiener_hopf"] = True
+    out["direct_inversion"] = True
+    out["method"] = "Rangayyan (2024) eq. (3.207)"
+    return RichResult(payload=out)
 
-    Formula: Phi(n) * w_tilde(n) = Theta(n)
 
-    Parameters
-    ----------
-    Phi : array-like
-        Input data.
-    w_tilde : array-like
-        Input data.
-    Theta : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.207, p. 187
-    """
-    Phi = np.atleast_1d(np.asarray(Phi, dtype=float))
-    n = len(Phi)
-    result = float(np.mean(Phi))
-    se = float(np.std(Phi, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Normal equation for the RLS algorithm."}
-    )
+rangayyan_ch3_rls_normal_equation = rlsnormal  # pre-policy spelling
 
 
 # -- rng165: RLS correlation matrix.
@@ -2335,39 +2981,106 @@ def rangayyan_ch3_rls_theta_recursion(Theta, r, x, lam):
 
 
 # -- rng169: Matrix inversion (ABCD) lemma used in RLS..
-def rangayyan_ch3_abcd_matrix_inversion_lemma(A, B, C, D):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def abcdlemma(A, B, C, D):
+    """The ABCD matrix-inversion lemma used by RLS.
+
+    Rangayyan (2024) eq. (3.213):
+        (A + B C D)^(-1)
+            = A^(-1) - A^(-1) B (D A^(-1) B + C^(-1))^(-1) D A^(-1),
+
+    valid when A, C, (A + BCD) and (D A^-1 B + C^-1) are all invertible.
+
+    Its use in RLS is that B is a COLUMN and C a scalar, so the inner
+    bracket is 1 x 1: an M x M inverse is replaced by a scalar division,
+    which is what makes the recursion O(M^2) per sample instead of
+    O(M^3).
+
+    Both sides are formed and compared, so the identity is checked on
+    the caller's own matrices rather than recited.
     """
-    Matrix inversion (ABCD) lemma used in RLS.
+    Am = [aslist(r) for r in A]
+    Bm = [aslist(r) for r in B]
+    Cm = [aslist(r) for r in C]
+    Dm = [aslist(r) for r in D]
+    n = len(Am)
+    if any(len(r) != n for r in Am):
+        raise ValueError("A must be square")
+    k = len(Cm)
+    if len(Bm) != n or any(len(r) != k for r in Bm):
+        raise ValueError("B must be n x k")
+    if len(Dm) != k or any(len(r) != n for r in Dm):
+        raise ValueError("D must be k x n")
+    if any(len(r) != k for r in Cm):
+        raise ValueError("C must be k x k")
 
-    Formula: (A + B*C*D)^(-1) = A^(-1) - A^(-1) * B * (D*A^(-1)*B + C^(-1))^(-1) * D * A^(-1)
+    def inv(M):
+        m = len(M)
+        cols = []
+        for j in range(m):
+            cols.append(_solve(M, [1.0 if i == j else 0.0
+                                   for i in range(m)]))
+        return [[cols[j][i] for j in range(m)] for i in range(m)]
 
-    Parameters
-    ----------
-    A : array-like
-        Input data.
-    B : array-like
-        Input data.
-    C : array-like
-        Input data.
-    D : array-like
-        Input data.
+    def mul(P, Q):
+        return [[fsum(P[i][t] * Q[t][j] for t in range(len(Q)))
+                 for j in range(len(Q[0]))] for i in range(len(P))]
 
-    Returns
-    -------
-    result : dict
-        Keys: array
+    BCD = mul(mul(Bm, Cm), Dm)
+    direct = inv([[Am[i][j] + BCD[i][j] for j in range(n)]
+                  for i in range(n)])
+    Ai = inv(Am)
+    Ci = inv(Cm)
+    inner = mul(mul(Dm, Ai), Bm)
+    inner = [[inner[i][j] + Ci[i][j] for j in range(k)] for i in range(k)]
+    lemma = mul(mul(mul(Ai, Bm), inv(inner)), mul(Dm, Ai))
+    lemma = [[Ai[i][j] - lemma[i][j] for j in range(n)] for i in range(n)]
+    gap = max(abs(direct[i][j] - lemma[i][j])
+              for i in range(n) for j in range(n))
+    scale = max(abs(direct[i][j]) for i in range(n) for j in range(n)) or 1.0
+    return RichResult(payload={
+        "direct": direct, "lemma": lemma, "max_difference": gap,
+        "holds": gap <= 1e-6 * scale, "n": n, "k": k,
+        "scalar_when_k_is_one": k == 1,
+        "method": "Rangayyan (2024) eq. (3.213)"})
 
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.213, p. 188
-    """
-    A = np.atleast_1d(np.asarray(A, dtype=float))
-    n = len(A)
-    result = float(np.mean(A))
-    se = float(np.std(A, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Matrix inversion (ABCD) lemma used in RLS."}
-    )
+
+rangayyan_ch3_abcd_matrix_inversion_lemma = abcdlemma  # pre-policy spelling
 
 
 # -- rng170: Riccati recursion for the inverse autocorrelation matrix (Rangayyan Eq 3.215).
@@ -2645,121 +3358,159 @@ def rangayyan_ch3_rls_gain_identity(P, r):
 
 
 # -- rng174: Compact RLS tap-weight update using a priori error alpha(n)..
-def rangayyan_ch3_rls_weight_update_compact(w_tilde, k, alpha, n):
+def rlsupdate(w_prev, k, alpha):
+    """Compact RLS tap-weight update.
+
+    Rangayyan (2024) eq. (3.224):
+        w~(n) = w~(n-1) + k(n) alpha(n),
+
+    with k(n) = P(n) r(n) the gain vector (eq. 3.221) and alpha(n) the a
+    priori error of eq. (3.225).
+
+    ERRATUM.  Eq. (3.224) is internally inconsistent in the book: its
+    first line writes the correction with a MINUS sign,
+        w~(n) = w~(n-1) - k(n)[x(n) - r^T(n) w~(n-1)],
+    while its second line and eq. (3.225) give the PLUS form above.  The
+    plus form is the correct one -- it is standard RLS, and the minus
+    form drives the weights away from the solution and diverges.  This
+    implementation uses the plus form.
     """
-    Compact RLS tap-weight update using a priori error alpha(n).
+    ws, kv = aslist(w_prev), aslist(k)
+    if len(ws) != len(kv):
+        raise ValueError("w and k must have the same length")
+    if not ws:
+        raise ValueError("need at least one tap")
+    a = float(alpha)
+    return RichResult(payload={
+        "w_next": [p + q * a for p, q in zip(ws, kv)],
+        "correction": [q * a for q in kv], "alpha": a, "order": len(ws),
+        "sign": "+",
+        "erratum": "eq. (3.224) line 1 prints a minus sign that "
+                   "contradicts its own line 2 and eq. (3.225); the plus "
+                   "form is correct",
+        "method": "Rangayyan (2024) eq. (3.224)"})
 
-    Formula: w_tilde(n) = w_tilde(n-1) + k(n) * alpha(n)
 
-    Parameters
-    ----------
-    w_tilde : array-like
-        Input data.
-    k : array-like
-        Input data.
-    alpha : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: array
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.224, p. 189
-    """
-    w_tilde = np.atleast_1d(np.asarray(w_tilde, dtype=float))
-    n = len(w_tilde)
-    result = float(np.mean(w_tilde))
-    se = float(np.std(w_tilde, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Compact RLS tap-weight update using a priori error alpha(n).",
-        }
-    )
+rangayyan_ch3_rls_weight_update_compact = rlsupdate  # pre-policy spelling
 
 
 # -- rng175: A priori error in the RLS update step..
-def rangayyan_ch3_rls_a_priori_error(x, r, w_tilde, n):
+def rlsapriori(x, rvec, w_prev):
+    """A priori error in the RLS update.
+
+    Rangayyan (2024) eq. (3.225):
+        alpha(n) = x(n) - r^T(n) w~(n-1) = x(n) - w~^T(n-1) r(n).
+
+    A PRIORI means it uses the OLD weights: it is the error the filter
+    would have made before this sample's update.  The a posteriori error
+    x(n) - r^T(n) w~(n) uses the new ones and is smaller by a factor of
+    (1 - k^T r).  Substituting one for the other in eq. (3.224) is a
+    standard slip that changes the algorithm's convergence.
+
+    Both are computable only after the update, so only the a priori one
+    is returned here -- with the distinction stated.
     """
-    A priori error in the RLS update step.
+    rv, ws = aslist(rvec), aslist(w_prev)
+    if len(rv) != len(ws):
+        raise ValueError("r(n) and w must have the same length")
+    if not rv:
+        raise ValueError("need at least one tap")
+    pred = fsum(a * b for a, b in zip(rv, ws))
+    return RichResult(payload={
+        "alpha": float(x) - pred, "prediction": pred, "order": len(rv),
+        "uses_previous_weights": True,
+        "not_the_a_posteriori_error": True,
+        "method": "Rangayyan (2024) eq. (3.225)"})
 
-    Formula: alpha(n) = x(n) - r^T(n) * w_tilde(n-1) = x(n) - w_tilde^T(n-1) * r(n)
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
-    r : array-like
-        Input data.
-    w_tilde : array-like
-        Input data.
-    n : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: value
-
-    References
-    ----------
-    Rangayyan (2024), Ch 3, Eq 3.225, p. 189
-    """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "A priori error in the RLS update step."}
-    )
+rangayyan_ch3_rls_a_priori_error = rlsapriori  # pre-policy spelling
 
 
 # -- rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin)..
-def rangayyan_ch4_psd_from_acf(phi_xx, X, f, tau):
+def _solve(A, b):
+    """Solve A w = b by Gaussian elimination with partial pivoting."""
+    n = len(b)
+    M = [list(A[i]) + [b[i]] for i in range(n)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c]))
+        if abs(M[p][c]) < 1e-300:
+            raise ValueError("the correlation matrix is singular; the "
+                             "Wiener-Hopf system of eq. (3.168) has no "
+                             "unique solution")
+        M[c], M[p] = M[p], M[c]
+        piv = M[c][c]
+        for r in range(n):
+            if r == c:
+                continue
+            f = M[r][c] / piv
+            if f:
+                for k in range(c, n + 1):
+                    M[r][k] -= f * M[c][k]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def _acf(x, lags):
+    """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
+    n = len(x)
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
+            for m in range(lags)]
+
+
+def _ccf(x, d, lags):
+    """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
+    n = min(len(x), len(d))
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
+            for k in range(lags)]
+
+
+def psdacf(x):
+    """PSD as the Fourier transform of the ACF (Wiener-Khinchin).
+
+    Rangayyan (2024) eq. (4.30):
+        S_xx(f) = FT[phi_xx(tau)] = X(f) X*(f) = |X(f)|^2.
+
+    Both routes are computed -- the transform of the CIRCULAR ACF, and
+    the squared magnitude of the transform -- and compared.  They agree
+    exactly only for the circular ACF; the linear ACF, truncated at the
+    record length, transforms to a SMOOTHED spectrum, which is a
+    different (and biased) estimator.  ``linear_difference`` shows how
+    far apart the two are on this record.
+
+    The book notes the PSD peaks at the frequencies of periodic activity,
+    which is what makes it useful for finding EEG rhythms.
     """
-    PSD as the Fourier transform of the ACF (Wiener-Khinchin).
+    xs = aslist(x)
+    n = len(xs)
+    if n < 2:
+        raise ValueError("need at least two samples")
+    re, im = [], []
+    step = 2.0 * pi / n
+    for k in range(n):
+        re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(xs)))
+        im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(xs)))
+    direct = [a * a + b * b for a, b in zip(re, im)]
+    circ = [fsum(xs[i] * xs[(i + m) % n] for i in range(n))
+            for m in range(n)]
+    cr = []
+    for k in range(n):
+        cr.append(fsum(circ[m] * cos(-step * m * k) for m in range(n)))
+    gap = max(abs(a - b) for a, b in zip(direct, cr))
+    lin = _acf(xs, n) if n > 1 else [0.0]
+    lr = []
+    for k in range(n):
+        lr.append(fsum(lin[m] * cos(-step * m * k) for m in range(n)))
+    lgap = max(abs(a - b * n) for a, b in zip(direct, lr))
+    scale = max(direct) or 1.0
+    return RichResult(payload={
+        "psd": direct, "via_circular_acf": cr, "acf_circular": circ,
+        "acf_linear": lin, "max_difference": gap,
+        "holds": gap <= 1e-6 * scale,
+        "linear_difference": lgap,
+        "linear_acf_is_smoothed": True, "n": n,
+        "method": "Rangayyan (2024) eq. (4.30)"})
 
-    Formula: S_xx(f) = FT[phi_xx(tau)] = X(f) * X*(f) = |X(f)|^2
 
-    Parameters
-    ----------
-    phi_xx : array-like
-        Input data.
-    X : array-like
-        Input data.
-    f : array-like
-        Input data.
-    tau : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: spectrum
-
-    References
-    ----------
-    Rangayyan (2024), Ch 4, Eq 4.30, p. 235
-    """
-    phi_xx = np.atleast_1d(np.asarray(phi_xx, dtype=float))
-    n = len(phi_xx)
-    result = float(np.mean(phi_xx))
-    se = float(np.std(phi_xx, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "PSD as the Fourier transform of the ACF (Wiener-Khinchin).",
-        }
-    )
+rangayyan_ch4_psd_from_acf = psdacf  # pre-policy spelling
 
 
 # -- wnflt: Wiener filter for optimal noise reduction.
@@ -2844,63 +3595,63 @@ wnflt = wiener_filter
 
 
 _CHEATSHEET = [
-    'rgacfd: ACF distance measure for nonstationary segmentation',
-    'rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2',
-    'rganc: Adaptive noise canceler (ANC) structure',
-    'rgeegadp: Adaptive segmentation of EEG using GLR test',
-    'rgfecg: Maternal-fetal ECG separation via adaptive noise cancellation',
-    'rgglr: Generalized likelihood ratio (GLR) test for change detection',
-    'rgkalmn: Kalman filter: state prediction/update with Riccati equation',
-    'rglms: Least-mean-squares (LMS) adaptive filter',
-    'rgpcgadp: Adaptive segmentation of PCG signals via SEM',
-    'rgricca: Steady-state Riccati equation solution for Kalman gain',
-    'rgrls: Recursive least-squares (RLS) adaptive filter',
-    'rgrls_mon: Monitoring RLS filter output for nonstationary detection',
-    'rgrlsl: RLS lattice (ladder) adaptive filter',
-    'rgsemm: Spectral error measure (SEM) for adaptive segmentation',
-    'rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter',
-    'rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter)',
-    'rng137: e = d - d_tilde; MSE is what LMS/RLS minimise',
-    'rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights.',
-    'rng139: Wiener filter output expressed as inner product of tap-weight and input vectors.',
-    'rng140: inner-product form is what makes the gradient closed-form',
-    "rng141: J(w) = sigma_d^2 - w'Theta - Theta'w + w'Phi w (Rangayyan Eq 3.166).",
-    'rng142: Theta = E[x(n) d(n)], theta(-k)=E[x(n-k)d(n)] (Rangayyan Eq 3.160/3.161).',
-    'rng143: Phi = E[x(n) x^T(n)], symmetric Toeplitz (Rangayyan Eq 3.163/3.164).',
-    'rng144: Gradient of MSE cost function with respect to tap-weight vector.',
-    'rng145: Wiener-Hopf normal equation for the optimal tap weights.',
-    'rng146: Closed-form optimal Wiener filter tap weights.',
-    'rng147: Minimum mean-squared error achievable by the Wiener filter.',
-    'rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity.',
-    'rng149: Frequency-domain Wiener relation between PSD and CSD.',
-    'rng150: Wiener filter frequency response as ratio of CSD to PSD of input.',
-    'rng151: w_o = (Phi_d + Phi_eta)^-1 Phi_1d (Rangayyan Eq 3.183).',
-    'rng152: Wiener filter frequency response in terms of signal and noise PSDs.',
-    'rng153: Primary input of an adaptive noise canceller (ANC): signal plus primary noise.',
-    'rng154: Output of the ANC as the difference between primary input and adaptive filter output.',
-    'rng155: Adaptive FIR filter output in LMS framework using reference input r(n).',
-    'rng156: LMS weights carry a time index; error is under CURRENT weights',
-    'rng157: Quadratic squared-error form used in LMS gradient derivations.',
-    'rng158: Steepest-descent update rule for the tap-weight vector.',
-    'rng159: instantaneous gradient needs no expectation -- that IS the trick',
-    'rng160: Widrow-Hoff LMS tap-weight update rule.',
-    'rng161: Variable step-size LMS update rule.',
-    'rng162: Time-varying step size mu(n) per Zhang et al. for VAG signals.',
-    'rng163: Weighted least-squares objective for the RLS algorithm with forgetting factor lambda.',
-    'rng164: Normal equation for the RLS algorithm.',
-    'rng165: memory ~ 1/(1-lambda) governs tracking, not n',
-    'rng166: RLS solves Phi w = Theta without inverting Phi',
-    "rng167: Phi(n) = lam*Phi(n-1) + r r' (Rangayyan Eq 3.211).",
-    'rng168: Theta(n) = lam*Theta(n-1) + r(n) x(n) (Rangayyan Eq 3.212).',
-    'rng169: Matrix inversion (ABCD) lemma used in RLS.',
-    'rng170: Riccati recursion for Phi^-1(n) (Rangayyan Eq 3.215).',
-    "rng171: k(n) = lam^-1 P(n-1) r / (1 + lam^-1 r' P(n-1) r) (Rangayyan Eq 3.217).",
-    "rng172: P(n) = lam^-1 P(n-1) - lam^-1 k(n) r'(n) P(n-1) (Rangayyan Eq 3.218).",
-    'rng173: k(n) = P(n) r(n) (Rangayyan Eq 3.221).',
-    'rng174: Compact RLS tap-weight update using a priori error alpha(n).',
-    'rng175: A priori error in the RLS update step.',
-    'rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin).',
-    'wiener_filter({}) -> Wiener filter for optimal noise reduction.',
+    'rgacfd: ACF distance for segmentation, Section 8.5',
+    'rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2.',
+    'rganc: adaptive noise canceller, Section 3.10',
+    'rgeegadp: Adaptive segmentation of EEG using GLR test.',
+    'rgfecg: fetal ECG by adaptive cancellation, Section 3.14',
+    'rgglr: Generalized likelihood ratio (GLR) test for change detection.',
+    'rgkalmn: Kalman filter',
+    'rglms: LMS adaptive noise canceller, Section 3.10.2',
+    'rgpcgadp: adaptive PCG segmentation, Section 8.5',
+    'rgricca: steady-state Riccati solution',
+    'rgrls: RLS adaptive filter, Section 3.10.3',
+    'rgrls_mon: RLS error monitoring for segmentation, Section 8.5',
+    'rgrlsl: RLS lattice predictor',
+    'rgsemm: spectral error measure, Section 8.5',
+    'rgwhop: Wiener-Hopf system from data, eqs. (3.168), (3.171)',
+    'rgwnr: Wiener filter, time or frequency route, Section 3.9',
+    'rng137: Estimation error.',
+    'rng138: Wiener filter output as a convolution, eq. (3.154)',
+    'rng139: Wiener output as an inner product, eq. (3.155)',
+    'rng140: Estimation error in vector form.',
+    'rng141: MSE cost function of the Wiener filter (Rangayyan Eq 3.166).',
+    'rng142: Wiener cross-correlation vector Theta (Rangayyan Eq 3.160/3.161).',
+    'rng143: Wiener autocorrelation matrix Phi (Rangayyan Eq 3.163/3.164/3.165).',
+    'rng144: MSE gradient, Rangayyan eq. (3.167)',
+    'rng145: Wiener-Hopf normal equation, eq. (3.168)',
+    'rng146: optimal Wiener tap weights, eq. (3.169)',
+    'rng147: minimum MSE of the Wiener filter, eq. (3.172)',
+    'rng148: Wiener-Hopf as a convolution, eqs. (3.173)-(3.174)',
+    'rng149: frequency-domain Wiener relation, eq. (3.175)',
+    'rng150: Wiener frequency response, eq. (3.176)',
+    'rng151: Optimal Wiener filter for noise removal (Rangayyan Eq 3.183).',
+    'rng152: Wiener response from signal and noise PSDs, eq. (3.186)',
+    'rng153: ANC primary input model, Section 3.10.1',
+    'rng154: ANC output, Rangayyan eq. (3.196)',
+    'rng155: LMS filter output on the reference, eq. (3.195)',
+    'rng156: LMS estimation error.',
+    'rng157: expanded LMS squared error, eq. (3.200)',
+    'rng158: LMS steepest-descent step, eqs. (3.201)-(3.202)',
+    'rng159: LMS gradient estimate.',
+    'rng160: Widrow-Hoff LMS update, eq. (3.203)',
+    'rng161: variable-step LMS update, eq. (3.204)',
+    'rng162: Zhang time-varying LMS step size, eq. (3.205)',
+    'rng163: RLS weighted objective, eq. (3.206)',
+    'rng164: RLS normal equation, eq. (3.207)',
+    'rng165: RLS correlation matrix.',
+    'rng166: RLS cross-correlation vector.',
+    'rng167: RLS recursion for the autocorrelation matrix (Rangayyan Eq 3.211).',
+    'rng168: RLS recursion for the cross-correlation vector (Rangayyan Eq 3.212).',
+    'rng169: ABCD matrix-inversion lemma, eq. (3.213)',
+    'rng170: Riccati recursion for the inverse autocorrelation matrix (Rangayyan Eq 3.215).',
+    'rng171: Kalman-like gain vector in RLS (Rangayyan Eq 3.217).',
+    'rng172: RLS recursion for P(n) via the gain vector (Rangayyan Eq 3.218).',
+    'rng173: RLS gain identity k(n) = P(n) r(n) (Rangayyan Eq 3.221).',
+    'rng174: compact RLS weight update, eq. (3.224)',
+    'rng175: RLS a priori error, eq. (3.225)',
+    'rng204: PSD from the ACF, Rangayyan eq. (4.30)',
+    'wnflt: Wiener filter for optimal noise reduction.',
 ]
 
 
