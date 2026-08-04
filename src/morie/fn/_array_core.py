@@ -2377,11 +2377,45 @@ def _pinv(a, rcond=1e-15):
     return _pinv_extended(a, rcond)[0]
 
 
+def ginv(a, tol=None):
+    """Moore-Penrose pseudo-inverse using MASS::ginv's cutoff.
+
+    ``MASS::ginv`` (MASS 7.3, Venables & Ripley, *Modern Applied
+    Statistics with S*, 4th ed.) keeps the singular values satisfying
+    ``d_i > max(tol * d_1, 0)`` with ``tol = sqrt(.Machine$double.eps)``,
+    i.e. about 1.49e-8 of the largest singular value, and drops the rest
+    of the columns entirely rather than zeroing their reciprocals.
+
+    This is deliberately NOT :func:`_pinv`. numpy's ``pinv`` cuts at
+    ``rcond * max(s)`` with ``rcond = 1e-15``, seven orders of magnitude
+    tighter, so on a matrix with singular values in between the two the
+    answers differ. Both are correct under their own convention; code
+    ported from ``MASS::ginv`` must keep MASS's answer, which is why both
+    exist. Mirrors the R arm ``MASS_ginv`` in aaa_tail1_core.R.
+    """
+    aa = atleast_2d(a)
+    m_, n_ = aa.shape
+    u, sv, vt = _svd(aa)
+    svals = list(sv._flat())
+    if tol is None:
+        tol = _math.sqrt(2.220446049250313e-16)
+    cutoff = _bi.max(tol * (svals[0] if svals else 0.0), 0.0)
+    keep = [i for i, v in enumerate(svals) if v > cutoff]
+    if not keep:
+        return marr([[0.0] * m_ for _ in range(n_)])
+    out = [[_math.fsum(vt.data[c][i] * (1.0 / svals[c]) * u.data[j][c]
+                       for c in keep)
+            for j in range(m_)] for i in range(n_)]
+    return marr(out)
+
+
 _LinalgExt.pinv = staticmethod(_pinv)
 _LinalgExt.matrix_rank = staticmethod(_matrix_rank)
 linalg.matrix_rank = _matrix_rank
 linalg.pinv = _pinv
 linalg.pinv_extended = _pinv_extended
+linalg.ginv = ginv
+_LinalgExt.ginv = staticmethod(ginv)
 linalg.slogdet = _LinalgExt.slogdet
 linalg.eigvalsh = _LinalgExt.eigvalsh
 linalg.cond = _LinalgExt.cond
