@@ -40,3 +40,7 @@ def random_walk(G, start, steps):
 
 def cheatsheet():
     return "randwk: Random walk on network"
+
+
+# compact alias per ledger/NAMING.md
+randomwalk = random_walk

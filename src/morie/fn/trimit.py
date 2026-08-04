@@ -40,3 +40,7 @@ def weight_trimming(y, weights, threshold):
 
 def cheatsheet():
     return "trimit: Weight trimming (cap extreme weights)"
+
+
+# compact alias per ledger/NAMING.md
+weighttrimming = weight_trimming

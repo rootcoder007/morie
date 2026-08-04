@@ -43,3 +43,7 @@ hthr = hard_threshold
 
 def cheatsheet() -> str:
     return "hard_threshold({}) -> Hard thresholding operator."
+
+
+# compact alias per ledger/NAMING.md
+hardthreshold = hard_threshold

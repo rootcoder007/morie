@@ -79,3 +79,7 @@ linking = irt_linking
 
 def cheatsheet() -> str:
     return "irt_linking({}) -> IRT scale linking (mean/sigma method)."
+
+
+# compact alias per ledger/NAMING.md
+irtlinking = irt_linking

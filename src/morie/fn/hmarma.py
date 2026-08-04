@@ -151,3 +151,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`arma_model`.
 geron_arma = arma_model
+
+
+# compact alias per ledger/NAMING.md
+armamodel = arma_model
+
+
+# compact alias per ledger/NAMING.md
+geronarma = geron_arma

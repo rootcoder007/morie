@@ -42,3 +42,7 @@ def variational_nf(log_p, flow, x):
 
 def cheatsheet():
     return "baynav: Variational inference with normalizing flow"
+
+
+# compact alias per ledger/NAMING.md
+variationalnf = variational_nf

@@ -39,3 +39,7 @@ def eigen_symmetric(
 
 
 eigsm = eigen_symmetric
+
+
+# compact alias per ledger/NAMING.md
+eigensymmetric = eigen_symmetric

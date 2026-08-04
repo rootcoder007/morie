@@ -29,3 +29,7 @@ have = haversine_dist
 
 def cheatsheet() -> str:
     return "haversine_dist({}) -> Haversine distance"
+
+
+# compact alias per ledger/NAMING.md
+haversinedist = haversine_dist

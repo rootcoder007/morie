@@ -42,3 +42,7 @@ cova = covario_matrix
 
 def cheatsheet() -> str:
     return "covario_matrix({}) -> Covariance matrix from variogram"
+
+
+# compact alias per ledger/NAMING.md
+covariomatrix = covario_matrix

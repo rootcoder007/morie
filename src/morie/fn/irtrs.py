@@ -102,3 +102,7 @@ rsm = irt_rsm
 
 def cheatsheet() -> str:
     return "irt_rsm({}) -> Rating Scale Model for Likert-type items."
+
+
+# compact alias per ledger/NAMING.md
+irtrsm = irt_rsm

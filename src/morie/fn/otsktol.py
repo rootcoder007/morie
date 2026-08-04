@@ -42,3 +42,7 @@ def ot_sinkhorn_tol(T, a, b):
 
 def cheatsheet():
     return "otsktol: Convergence tolerance check for Sinkhorn iterations"
+
+
+# compact alias per ledger/NAMING.md
+otsinkhorntol = ot_sinkhorn_tol

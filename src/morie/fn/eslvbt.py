@@ -72,3 +72,7 @@ def esl_var_beta_hat(X, sigma2):
 
 def cheatsheet():
     return "eslvbt: sigma^2 (X'X)^-1; y-free, so usable for design planning"
+
+
+# compact alias per ledger/NAMING.md
+eslvarbetahat = esl_var_beta_hat

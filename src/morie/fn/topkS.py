@@ -40,3 +40,7 @@ def top_k_sampling(logits, k, temp):
 
 def cheatsheet():
     return "topkS: Top-k sampling"
+
+
+# compact alias per ledger/NAMING.md
+topksampling = top_k_sampling

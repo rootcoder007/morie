@@ -63,3 +63,7 @@ elbmk = elbow_method
 
 def cheatsheet() -> str:
     return "elbow_method({}) -> Elbow method for optimal k."
+
+
+# compact alias per ledger/NAMING.md
+elbowmethod = elbow_method

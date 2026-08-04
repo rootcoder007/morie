@@ -133,3 +133,7 @@ pmrr = pm_relative_risk
 
 def cheatsheet() -> str:
     return "pmrr(C, pollutant='pm25', outcome='all_cause') -> log-linear RR."
+
+
+# compact alias per ledger/NAMING.md
+pmrelativerisk = pm_relative_risk

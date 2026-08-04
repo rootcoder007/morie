@@ -57,3 +57,7 @@ mds_ = metric_mds
 
 def cheatsheet() -> str:
     return "metric_mds({}) -> Classical (metric) multidimensional scaling."
+
+
+# compact alias per ledger/NAMING.md
+metricmds = metric_mds

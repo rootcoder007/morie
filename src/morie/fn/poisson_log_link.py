@@ -42,3 +42,7 @@ def poisson_log_link(b0, bs, xs):
 
 def cheatsheet():
     return '4e2: log(mu) = b0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 4.2]'
+
+
+# compact alias per ledger/NAMING.md
+poissonloglink = poisson_log_link

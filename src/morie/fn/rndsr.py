@@ -114,3 +114,7 @@ if __name__ == "__main__":
     print("best params:", r.best_params)
     print("best CV score:", r.best_score)
     print("number of samples:", r.n_iter)
+
+
+# compact alias per ledger/NAMING.md
+randomsearchcv = random_search_cv

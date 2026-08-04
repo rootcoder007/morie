@@ -40,3 +40,7 @@ def wasserstein_p_d(X_samples, Y_samples, p):
 
 def cheatsheet():
     return "wsdt2d: p-Wasserstein for general dimension"
+
+
+# compact alias per ledger/NAMING.md
+wassersteinpd = wasserstein_p_d

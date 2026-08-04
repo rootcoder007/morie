@@ -35,3 +35,7 @@ def sd_of_mean_hetero(sigmas):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e55: sigma of the average of n variables with different sigmas: sqrt(sum sigma_i^2)/n. Morin (2016) eq (3.55)."
+
+
+# compact alias per ledger/NAMING.md
+sdofmeanhetero = sd_of_mean_hetero

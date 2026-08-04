@@ -119,3 +119,7 @@ dbias = double_debias
 
 def cheatsheet() -> str:
     return "double_debias({}) -> Double debiasing estimator."
+
+
+# compact alias per ledger/NAMING.md
+doubledebias = double_debias

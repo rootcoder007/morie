@@ -44,3 +44,7 @@ def argon2id_kdf(password, salt, m, t, p):
 
 def cheatsheet():
     return "secarg: Argon2id password hashing"
+
+
+# compact alias per ledger/NAMING.md
+argon2idkdf = argon2id_kdf

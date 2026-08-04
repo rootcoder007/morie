@@ -61,3 +61,7 @@ def holo_qq(
 
 def cheatsheet() -> str:
     return "holo_qq({}) -> QQ plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoqq = holo_qq

@@ -48,3 +48,7 @@ def extended_kalman(y, f, h, F, H, Q, R):
 
 def cheatsheet():
     return "ekfF: Extended Kalman filter"
+
+
+# compact alias per ledger/NAMING.md
+extendedkalman = extended_kalman

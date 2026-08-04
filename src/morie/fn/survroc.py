@@ -42,3 +42,7 @@ def time_dep_roc(time, event, marker, t):
 
 def cheatsheet():
     return "survroc: Time-dependent ROC curve"
+
+
+# compact alias per ledger/NAMING.md
+timedeproc = time_dep_roc

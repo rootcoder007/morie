@@ -102,3 +102,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> r = mds_spatial_map(np.array([[0.,0.],[1.,0.],[0.,1.],[1.,1.]]), k=2)
 # >>> assert r["stress"] < 1e-6
+
+
+# compact alias per ledger/NAMING.md
+mdsspatialmap = mds_spatial_map

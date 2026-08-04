@@ -50,3 +50,7 @@ hotsp = hot_spots
 
 def cheatsheet() -> str:
     return "hot_spots({}) -> Repeat-address / hot-spot analysis."
+
+
+# compact alias per ledger/NAMING.md
+hotspots = hot_spots

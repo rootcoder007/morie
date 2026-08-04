@@ -95,3 +95,7 @@ def geron_discounted_return(rewards, gamma):
 
 def cheatsheet():
     return "grret: G_t = r_t + gamma G_{t+1} by backward sweep; horizon ~ 1/(1-gamma)"
+
+
+# compact alias per ledger/NAMING.md
+returnscurve = returns_curve

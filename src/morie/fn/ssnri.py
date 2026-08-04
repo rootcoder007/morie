@@ -43,3 +43,7 @@ ssnri = snr_improvement
 
 def cheatsheet() -> str:
     return "snr_improvement({}) -> SNR improvement via synchronized averaging."
+
+
+# compact alias per ledger/NAMING.md
+snrimprovement = snr_improvement

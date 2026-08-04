@@ -44,3 +44,7 @@ def kalman_smoother(y, F, H, Q, R):
 
 def cheatsheet():
     return "kalmS: Rauch-Tung-Striebel smoother"
+
+
+# compact alias per ledger/NAMING.md
+kalmansmoother = kalman_smoother

@@ -29,3 +29,7 @@ st_c = st_cov_sep
 
 def cheatsheet() -> str:
     return "st_cov_sep({}) -> Separable space-time covariance"
+
+
+# compact alias per ledger/NAMING.md
+stcovsep = st_cov_sep

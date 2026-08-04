@@ -32,3 +32,7 @@ def ghosal_ncrm_def(jump_sizes, jump_locs, set_lo=0.0, set_hi=0.5):
 
 def cheatsheet():
     return "gh_c14_15: Normalized completely random measure"
+
+
+# compact alias per ledger/NAMING.md
+ghosalncrmdef = ghosal_ncrm_def

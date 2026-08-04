@@ -38,3 +38,7 @@ def limma_voom(counts, design):
 
 def cheatsheet():
     return "limmav: limma-voom for RNA-seq"
+
+
+# compact alias per ledger/NAMING.md
+limmavoom = limma_voom

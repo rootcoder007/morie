@@ -219,3 +219,7 @@ def geron_hf_trainer(model, args, train_ds, eval_ds=None):
 
 def cheatsheet():
     return "hmhftn: Trainer loop -- mini-batch SGD, per-epoch eval, best-checkpoint selection, enforced grad contract"
+
+
+# compact alias per ledger/NAMING.md
+geronhftrainer = geron_hf_trainer

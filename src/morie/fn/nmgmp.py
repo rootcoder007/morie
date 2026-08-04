@@ -30,3 +30,7 @@ gmp_ = gmp_stat
 
 def cheatsheet() -> str:
     return "gmp_stat({}) -> Geometric Mean Probability"
+
+
+# compact alias per ledger/NAMING.md
+gmpstat = gmp_stat

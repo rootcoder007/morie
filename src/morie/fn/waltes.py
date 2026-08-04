@@ -34,3 +34,7 @@ waltes = wald_test
 
 def cheatsheet() -> str:
     return "wald_test({}) -> Wald test."
+
+
+# compact alias per ledger/NAMING.md
+waldtest = wald_test

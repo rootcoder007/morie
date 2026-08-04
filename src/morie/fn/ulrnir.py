@@ -40,3 +40,7 @@ def u_learner(y, D, X):
 
 def cheatsheet():
     return "ulrnir: U-learner for CATE"
+
+
+# compact alias per ledger/NAMING.md
+ulearner = u_learner

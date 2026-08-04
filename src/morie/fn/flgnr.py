@@ -45,3 +45,7 @@ flgnr = fligner_killeen
 
 def cheatsheet() -> str:
     return "fligner_killeen({}) -> Fligner-Killeen test for homogeneity of variance."
+
+
+# compact alias per ledger/NAMING.md
+flignerkilleen = fligner_killeen

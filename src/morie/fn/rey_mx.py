@@ -136,3 +136,7 @@ def rey_mx(
 
 def cheatsheet() -> str:
     return "rey_mx({}) -> Mixed-effects model (random intercept via EM algorithm)."
+
+
+# compact alias per ledger/NAMING.md
+reymx = rey_mx

@@ -89,3 +89,7 @@ def kamath_fasttext_subword(word, ngram_embeddings, n_min, n_max):
 
 def cheatsheet():
     return "kmfst: v_w = sum of the char n-gram vectors of <word>"
+
+
+# compact alias per ledger/NAMING.md
+wordngrams = word_ngrams

@@ -42,3 +42,7 @@ vari = vario_matern
 
 def cheatsheet() -> str:
     return "vario_matern({}) -> Matern variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variomatern = vario_matern

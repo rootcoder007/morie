@@ -29,3 +29,7 @@ radi = radiation_model
 
 def cheatsheet() -> str:
     return "radiation_model({}) -> Radiation model (mobility)"
+
+
+# compact alias per ledger/NAMING.md
+radiationmodel = radiation_model

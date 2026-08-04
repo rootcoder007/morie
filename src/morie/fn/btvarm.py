@@ -38,3 +38,7 @@ def boot_var_mean(x, B):
 
 def cheatsheet():
     return "btvarm: Bootstrap variance of the sample mean"
+
+
+# compact alias per ledger/NAMING.md
+bootvarmean = boot_var_mean

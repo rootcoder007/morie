@@ -38,3 +38,7 @@ def nash_q_learning(agents, env):
 
 def cheatsheet():
     return "nashq: Nash-Q for Markov games"
+
+
+# compact alias per ledger/NAMING.md
+nashqlearning = nash_q_learning

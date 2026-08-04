@@ -68,3 +68,7 @@ logln = loglinear_model
 
 def cheatsheet() -> str:
     return "loglinear_model({}) -> Log-linear model for multi-way tables."
+
+
+# compact alias per ledger/NAMING.md
+loglinearmodel = loglinear_model

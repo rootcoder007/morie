@@ -38,3 +38,7 @@ def survey_total(y, weights):
 
 def cheatsheet():
     return "smltot: Survey-weighted total"
+
+
+# compact alias per ledger/NAMING.md
+surveytotal = survey_total

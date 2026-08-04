@@ -30,3 +30,7 @@ roll = roll_call_yea_nay
 
 def cheatsheet() -> str:
     return "roll_call_yea_nay({}) -> Roll call yea/nay summary"
+
+
+# compact alias per ledger/NAMING.md
+rollcallyeanay = roll_call_yea_nay

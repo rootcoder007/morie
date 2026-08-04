@@ -71,3 +71,7 @@ lpflt = lowpass_filter
 
 def cheatsheet() -> str:
     return "lowpass_filter({}) -> Butterworth lowpass filter."
+
+
+# compact alias per ledger/NAMING.md
+lowpassfilter = lowpass_filter

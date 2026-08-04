@@ -98,3 +98,7 @@ def boyd_huber_loss(u, M=1.0):
 
 def cheatsheet():
     return "cvxhrm: influence saturates at 2M -- an outlier can bias a Huber fit but cannot dominate it"
+
+
+# compact alias per ledger/NAMING.md
+boydhuberloss = boyd_huber_loss

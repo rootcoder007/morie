@@ -44,3 +44,7 @@ def ghosal_crp_def(n=100, alpha=2.0, seed=42):
 
 def cheatsheet():
     return "gh_c14_3: Chinese restaurant process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcrpdef = ghosal_crp_def

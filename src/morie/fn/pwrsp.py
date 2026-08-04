@@ -42,3 +42,7 @@ pwrsp = power_spectrum
 
 def cheatsheet() -> str:
     return "power_spectrum({}) -> Power spectrum (periodogram)."
+
+
+# compact alias per ledger/NAMING.md
+powerspectrum = power_spectrum

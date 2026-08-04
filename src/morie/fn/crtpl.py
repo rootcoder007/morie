@@ -45,3 +45,7 @@ crtpl = court_plea_rate
 
 def cheatsheet() -> str:
     return "court_plea_rate({}) -> Guilty plea rate."
+
+
+# compact alias per ledger/NAMING.md
+courtplearate = court_plea_rate

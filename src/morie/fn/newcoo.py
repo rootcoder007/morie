@@ -90,3 +90,7 @@ newcoo = newton_cooling
 
 def cheatsheet() -> str:
     return "newton_cooling({}) -> Newton's law of cooling."
+
+
+# compact alias per ledger/NAMING.md
+newtoncooling = newton_cooling

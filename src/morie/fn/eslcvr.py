@@ -149,3 +149,7 @@ def _ols(X_tr, y_tr, X_te):
 
 def cheatsheet():
     return "eslcvr: k-fold CV for any model(X_tr,y_tr,X_te); `se` is across folds, correlated and biased low"
+
+
+# compact alias per ledger/NAMING.md
+eslcvscore = esl_cv_score

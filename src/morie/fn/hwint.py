@@ -79,3 +79,7 @@ hwint = holt_winters
 
 def cheatsheet() -> str:
     return "holt_winters({}) -> Holt-Winters additive seasonal method."
+
+
+# compact alias per ledger/NAMING.md
+holtwinters = holt_winters

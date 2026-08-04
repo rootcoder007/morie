@@ -44,3 +44,7 @@ def cheatsheet() -> str:
 
 
 kaimg = kaiming_init
+
+
+# compact alias per ledger/NAMING.md
+kaiminginit = kaiming_init

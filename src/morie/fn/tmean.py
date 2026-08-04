@@ -47,3 +47,7 @@ tmean = trimmed_mean
 
 def cheatsheet() -> str:
     return "trimmed_mean(x, proportion=0.1) -> Trimmed mean."
+
+
+# compact alias per ledger/NAMING.md
+trimmedmean = trimmed_mean

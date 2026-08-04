@@ -80,3 +80,7 @@ def geron_mc_dropout(model, x, K, p, cdf=None):
 
 def cheatsheet():
     return "grmcd: Monte Carlo dropout: K stochastic forward passes at test time for uncertainty"
+
+
+# compact alias per ledger/NAMING.md
+geronmcdropout = geron_mc_dropout

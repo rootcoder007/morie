@@ -46,3 +46,7 @@ def cheatsheet() -> str:
 
 
 grdst = gradient_stats
+
+
+# compact alias per ledger/NAMING.md
+gradientstats = gradient_stats

@@ -41,3 +41,7 @@ butthp = butter_highpass
 
 def cheatsheet() -> str:
     return "butter_highpass({}) -> Butterworth highpass filter."
+
+
+# compact alias per ledger/NAMING.md
+butterhighpass = butter_highpass

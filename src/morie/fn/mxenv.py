@@ -50,3 +50,7 @@ def multi_env_model(y, markers, env, G):
 
 def cheatsheet():
     return "mxenv: Multi-environment genomic model: environment as factor in LMM"
+
+
+# compact alias per ledger/NAMING.md
+multienvmodel = multi_env_model

@@ -146,3 +146,7 @@ def irt_calibrate(
 
 def cheatsheet() -> str:
     return "_icc_2pl({}) -> IRT calibration pipeline (JMLE for 1PL/2PL)."
+
+
+# compact alias per ledger/NAMING.md
+irtcalibrate = irt_calibrate

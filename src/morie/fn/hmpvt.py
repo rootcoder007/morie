@@ -169,3 +169,7 @@ def geron_pvt(image, stage_cfgs, seed=0):
 
 def cheatsheet():
     return "hmpvt: Pyramid Vision Transformer multi-scale stages"
+
+
+# compact alias per ledger/NAMING.md
+geronpvt = geron_pvt

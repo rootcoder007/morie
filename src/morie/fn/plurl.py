@@ -28,3 +28,7 @@ plurl = plurality_vote
 
 def cheatsheet() -> str:
     return "plurality_vote({}) -> Plurality (first-past-the-post) voting."
+
+
+# compact alias per ledger/NAMING.md
+pluralityvote = plurality_vote

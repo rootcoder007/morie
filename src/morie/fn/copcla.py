@@ -50,3 +50,7 @@ def clayton_copula(u, v, theta):
 
 def cheatsheet():
     return "copcla: clayton copula CDF + Kendall tau (theta > 0)"
+
+
+# compact alias per ledger/NAMING.md
+claytoncopula = clayton_copula

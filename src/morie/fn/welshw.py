@@ -38,3 +38,7 @@ def welsch_weight(y, c):
 
 def cheatsheet():
     return "welshw: Welsch (Gaussian) weight function"
+
+
+# compact alias per ledger/NAMING.md
+welschweight = welsch_weight

@@ -75,3 +75,7 @@ def simplex_lp(
 
 
 simpx = simplex_lp
+
+
+# compact alias per ledger/NAMING.md
+simplexlp = simplex_lp

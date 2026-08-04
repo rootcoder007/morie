@@ -43,3 +43,7 @@ trim = ps_trim
 
 def cheatsheet() -> str:
     return "ps_trim({}) -> Propensity score trimming for overlap enforcement."
+
+
+# compact alias per ledger/NAMING.md
+pstrim = ps_trim

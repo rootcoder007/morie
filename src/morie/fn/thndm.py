@@ -74,3 +74,7 @@ thndm = mach_shock
 
 def cheatsheet() -> str:
     return "mach_shock({}) -> Shock wave Mach number."
+
+
+# compact alias per ledger/NAMING.md
+machshock = mach_shock

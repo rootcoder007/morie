@@ -36,3 +36,7 @@ def optimal_huber_k(target_eff):
 
 def cheatsheet():
     return "opthr: Optimal Huber k for given efficiency"
+
+
+# compact alias per ledger/NAMING.md
+optimalhuberk = optimal_huber_k

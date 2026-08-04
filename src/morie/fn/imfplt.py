@@ -51,3 +51,7 @@ imfplt = plot_imf_stack_fn
 
 def cheatsheet() -> str:
     return "plot_imf_stack_fn({}) -> IMF decomposition stack plot."
+
+
+# compact alias per ledger/NAMING.md
+plotimfstackfn = plot_imf_stack_fn

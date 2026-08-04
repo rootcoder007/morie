@@ -97,3 +97,7 @@ polya = polya_urn
 
 def cheatsheet() -> str:
     return "polya_urn(n_draws=100, initial_colors={'red': 1, 'black': 1}) -> Pólya urn"
+
+
+# compact alias per ledger/NAMING.md
+polyaurn = polya_urn

@@ -61,3 +61,7 @@ def secant_method(
 
 
 secnt = secant_method
+
+
+# compact alias per ledger/NAMING.md
+secantmethod = secant_method

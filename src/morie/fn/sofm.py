@@ -89,3 +89,7 @@ sofm = self_org_map
 
 def cheatsheet() -> str:
     return "self_org_map({}) -> Self-organizing map (Kohonen network)."
+
+
+# compact alias per ledger/NAMING.md
+selforgmap = self_org_map

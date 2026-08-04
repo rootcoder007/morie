@@ -89,3 +89,7 @@ csrip = rip_check
 
 def cheatsheet() -> str:
     return "rip_check({}) -> Restricted Isometry Property (RIP) check."
+
+
+# compact alias per ledger/NAMING.md
+ripcheck = rip_check

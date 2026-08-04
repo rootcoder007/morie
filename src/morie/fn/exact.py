@@ -62,3 +62,7 @@ def exact_perm_test(x, y, n_perm=9999, stat="mean"):
 
 def cheatsheet() -> str:
     return "exact_perm_test({}) -> Exact permutation test for two-sample location."
+
+
+# compact alias per ledger/NAMING.md
+exactpermtest = exact_perm_test

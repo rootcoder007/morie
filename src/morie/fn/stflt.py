@@ -81,3 +81,7 @@ stflt = subband_filter
 
 def cheatsheet() -> str:
     return "_db_filter({}) -> Extract specific subband from wavelet decomposition."
+
+
+# compact alias per ledger/NAMING.md
+subbandfilter = subband_filter

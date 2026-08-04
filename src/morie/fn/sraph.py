@@ -111,3 +111,7 @@ sraph = validate_inputs
 
 def cheatsheet() -> str:
     return "validate_inputs({}) -> Input validation / sanitization metrics."
+
+
+# compact alias per ledger/NAMING.md
+validateinputs = validate_inputs

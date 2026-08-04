@@ -30,3 +30,7 @@ roll = roll_call_filter
 
 def cheatsheet() -> str:
     return "roll_call_filter({}) -> Roll call filtering"
+
+
+# compact alias per ledger/NAMING.md
+rollcallfilter = roll_call_filter

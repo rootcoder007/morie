@@ -60,3 +60,7 @@ adf = adf_test
 
 def cheatsheet() -> str:
     return "adf_test({}) -> Augmented Dickey-Fuller stationarity test."
+
+
+# compact alias per ledger/NAMING.md
+adftest = adf_test

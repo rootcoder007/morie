@@ -416,3 +416,11 @@ def cheatsheet():
         "extremal sequence, the happy ending theorem verified over every "
         "5-subset, and Helly on the line"
     )
+
+
+# compact alias per ledger/NAMING.md
+hellyintervals = helly_intervals
+
+
+# compact alias per ledger/NAMING.md
+picktheorem = pick_theorem

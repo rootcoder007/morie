@@ -44,3 +44,7 @@ def augmented_owl(y, D, W, pi, Q):
 
 def cheatsheet():
     return "awltrn: Augmented outcome-weighted learning"
+
+
+# compact alias per ledger/NAMING.md
+augmentedowl = augmented_owl

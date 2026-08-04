@@ -63,3 +63,7 @@ savgf = savgol_smooth
 
 def cheatsheet() -> str:
     return "savgol_smooth({}) -> Savitzky-Golay filter."
+
+
+# compact alias per ledger/NAMING.md
+savgolsmooth = savgol_smooth

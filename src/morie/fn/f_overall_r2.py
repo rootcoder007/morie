@@ -42,3 +42,7 @@ def f_overall_r2(r2, n, k):
 
 def cheatsheet():
     return 'ca2e17: F = R^2 (n-k-1) / ((1-R^2) k) [Weisburd et al. 2022, eq. 2.17]'
+
+
+# compact alias per ledger/NAMING.md
+foverallr2 = f_overall_r2

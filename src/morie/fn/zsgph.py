@@ -29,3 +29,7 @@ gp_h = gp_hyperparams
 
 def cheatsheet() -> str:
     return "gp_hyperparams({}) -> GP hyperparameter optimization"
+
+
+# compact alias per ledger/NAMING.md
+gphyperparams = gp_hyperparams

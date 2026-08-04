@@ -129,3 +129,7 @@ stcox = spacetime_cox
 
 def cheatsheet() -> str:
     return "spacetime_cox({}) -> Spatiotemporal Cox process intensity estimation."
+
+
+# compact alias per ledger/NAMING.md
+spacetimecox = spacetime_cox

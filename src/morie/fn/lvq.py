@@ -91,3 +91,7 @@ lvq = learning_vq
 
 def cheatsheet() -> str:
     return "learning_vq({}) -> Learning vector quantization classifier."
+
+
+# compact alias per ledger/NAMING.md
+learningvq = learning_vq

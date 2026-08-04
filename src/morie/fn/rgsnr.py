@@ -39,3 +39,7 @@ def rangayyan_snr(signal, noise):
 
 def cheatsheet():
     return "rgsnr: Signal-to-noise ratio (dB)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyansnr = rangayyan_snr

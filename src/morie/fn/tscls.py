@@ -59,3 +59,7 @@ tscls = ts_classify
 
 def cheatsheet() -> str:
     return "_dtw_dist({}) -> 1-NN DTW time series classifier."
+
+
+# compact alias per ledger/NAMING.md
+tsclassify = ts_classify

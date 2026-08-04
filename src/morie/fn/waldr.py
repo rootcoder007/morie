@@ -161,3 +161,7 @@ def cheatsheet():
         "waldr: reduced form over first stage, with the weak-instrument F "
         "and the complier-only estimand stated"
     )
+
+
+# compact alias per ledger/NAMING.md
+waldestimator = wald_estimator

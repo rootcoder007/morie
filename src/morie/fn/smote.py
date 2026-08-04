@@ -115,3 +115,7 @@ def apply_smote(
         "n_synthetic": len(new_rows),
         "k_neighbors": k_neighbors,
     }
+
+
+# compact alias per ledger/NAMING.md
+applysmote = apply_smote

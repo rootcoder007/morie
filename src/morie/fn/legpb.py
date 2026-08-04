@@ -38,3 +38,7 @@ def legendre_basis(x, K):
 
 def cheatsheet():
     return "legpb: Legendre polynomial basis"
+
+
+# compact alias per ledger/NAMING.md
+legendrebasis = legendre_basis

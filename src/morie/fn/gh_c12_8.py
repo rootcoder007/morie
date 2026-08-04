@@ -43,3 +43,7 @@ def ghosal_cox_bvm_sp(beta0=0.8, n=600, seed=42):
 
 def cheatsheet():
     return "gh_c12_8: Cox-model BvM"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcoxbvmsp = ghosal_cox_bvm_sp

@@ -29,3 +29,7 @@ acfds = acf_dist
 
 def cheatsheet() -> str:
     return "acf_dist({}) -> ACF-based distance between two signals."
+
+
+# compact alias per ledger/NAMING.md
+acfdist = acf_dist

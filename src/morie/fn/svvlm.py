@@ -29,3 +29,7 @@ vale = valence_model
 
 def cheatsheet() -> str:
     return "valence_model({}) -> Valence advantage model (Groseclose)"
+
+
+# compact alias per ledger/NAMING.md
+valencemodel = valence_model

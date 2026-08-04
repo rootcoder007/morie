@@ -42,3 +42,7 @@ def inla_spatial(y, X, field, precision_matrix):
 
 def cheatsheet():
     return "inlasm: INLA approximation for spatial GLMM"
+
+
+# compact alias per ledger/NAMING.md
+inlaspatial = inla_spatial

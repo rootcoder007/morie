@@ -33,3 +33,7 @@ def ghosal_nig_proc(alpha_par=1.0, u_max=10.0, n_grid=6000):
 
 def cheatsheet():
     return "gh_c14_14: Normalized inverse-Gaussian process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalnigproc = ghosal_nig_proc

@@ -42,3 +42,7 @@ def boot_jackknife_d(x, d, stat):
 
 def cheatsheet():
     return "btjknd: Delete-d jackknife generalising leave-one-out"
+
+
+# compact alias per ledger/NAMING.md
+bootjackknifed = boot_jackknife_d

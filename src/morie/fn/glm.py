@@ -40,3 +40,7 @@ def glr_test(x, p0, p1):
 
 def cheatsheet():
     return "glm: Generalized likelihood ratio"
+
+
+# compact alias per ledger/NAMING.md
+glrtest = glr_test

@@ -38,3 +38,7 @@ def waic_diagnostic(log_lik):
 
 def cheatsheet():
     return "waicd: Watanabe-Akaike information criterion (WAIC)"
+
+
+# compact alias per ledger/NAMING.md
+waicdiagnostic = waic_diagnostic

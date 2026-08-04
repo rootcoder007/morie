@@ -30,3 +30,7 @@ k_fu = k_function
 
 def cheatsheet() -> str:
     return "k_function({}) -> Ripley's K-function"
+
+
+# compact alias per ledger/NAMING.md
+kfunction = k_function

@@ -40,3 +40,7 @@ def sex_specific_h2(y, sex, K):
 
 def cheatsheet():
     return "sxrhrt: Sex-specific heritability"
+
+
+# compact alias per ledger/NAMING.md
+sexspecifich2 = sex_specific_h2

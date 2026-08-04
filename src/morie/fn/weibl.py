@@ -94,3 +94,7 @@ weibl = weibull_fit
 
 def cheatsheet() -> str:
     return "weibull_fit({}) -> Weibull distribution MLE fit."
+
+
+# compact alias per ledger/NAMING.md
+weibullfit = weibull_fit

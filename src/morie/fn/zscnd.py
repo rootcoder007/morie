@@ -29,3 +29,7 @@ cond = conditional_sim
 
 def cheatsheet() -> str:
     return "conditional_sim({}) -> Conditional simulation"
+
+
+# compact alias per ledger/NAMING.md
+conditionalsim = conditional_sim

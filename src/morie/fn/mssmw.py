@@ -30,3 +30,7 @@ smac = smacof_weight
 
 def cheatsheet() -> str:
     return "smacof_weight({}) -> Weighted SMACOF MDS"
+
+
+# compact alias per ledger/NAMING.md
+smacofweight = smacof_weight

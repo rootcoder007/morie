@@ -28,3 +28,7 @@ def snp_blup_gebv(X, y, M, sigma2_m, sigma2_e=1.0):
 
 def cheatsheet():
     return "msm243: SNP-BLUP mixed model equation"
+
+
+# compact alias per ledger/NAMING.md
+snpblupgebv = snp_blup_gebv

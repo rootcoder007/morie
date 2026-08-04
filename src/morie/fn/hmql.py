@@ -119,3 +119,7 @@ def geron_q_learning(Q, s, a, r, s_next, alpha, gamma, done=False):
 
 def cheatsheet():
     return "hmql: Q-learning off-policy TD control update"
+
+
+# compact alias per ledger/NAMING.md
+geronqlearning = geron_q_learning

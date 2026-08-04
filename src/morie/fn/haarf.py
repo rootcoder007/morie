@@ -48,3 +48,7 @@ haarf = haar_transform
 
 def cheatsheet() -> str:
     return "haar_transform({}) -> Haar wavelet transform."
+
+
+# compact alias per ledger/NAMING.md
+haartransform = haar_transform

@@ -35,3 +35,7 @@ def ghosal_dp_tails(MG_x, r=2.0):
 
 def cheatsheet():
     return "gh_c4_16: DP tail bounds"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldptails = ghosal_dp_tails

@@ -107,3 +107,7 @@ def boyd_minimax(A, b=None):
 
 def cheatsheet():
     return "cvxmnr: max of affine is convex (an LP); MIN of convex is not -- minimax and maximin differ"
+
+
+# compact alias per ledger/NAMING.md
+boydminimax = boyd_minimax

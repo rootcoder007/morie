@@ -62,3 +62,7 @@ agrmt = agreement_score
 
 def cheatsheet() -> str:
     return "agreement_score({}) -> Pairwise agreement score computation."
+
+
+# compact alias per ledger/NAMING.md
+agreementscore = agreement_score

@@ -195,3 +195,7 @@ def geron_dino(
 
 def cheatsheet():
     return "hmdino: DINO: self-distillation with no labels for visual representation"
+
+
+# compact alias per ledger/NAMING.md
+gerondino = geron_dino

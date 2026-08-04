@@ -41,3 +41,7 @@ eqplm = palma_ratio
 
 def cheatsheet() -> str:
     return "palma_ratio({}) -> Palma ratio (top 10% / bottom 40%)."
+
+
+# compact alias per ledger/NAMING.md
+palmaratio = palma_ratio

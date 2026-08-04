@@ -40,3 +40,7 @@ def ddpm_step(x_t, t, eps_theta):
 
 def cheatsheet():
     return "ddpmst: DDPM reverse step"
+
+
+# compact alias per ledger/NAMING.md
+ddpmstep = ddpm_step

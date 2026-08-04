@@ -42,3 +42,7 @@ def club_upper_bound(x, y, q):
 
 def cheatsheet():
     return "clbuvc: CLUB contrastive log-ratio upper bound"
+
+
+# compact alias per ledger/NAMING.md
+clubupperbound = club_upper_bound

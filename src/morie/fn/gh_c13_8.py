@@ -38,3 +38,7 @@ def ghosal_ntr_def(increments, seed=42):
 
 def cheatsheet():
     return "gh_c13_8: Neutral-to-the-right processes"
+
+
+# compact alias per ledger/NAMING.md
+ghosalntrdef = ghosal_ntr_def

@@ -40,3 +40,7 @@ def em_state_space(y, init, max_iter):
 
 def cheatsheet():
     return "emkfst: EM for state-space parameters"
+
+
+# compact alias per ledger/NAMING.md
+emstatespace = em_state_space

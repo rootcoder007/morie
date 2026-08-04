@@ -67,3 +67,7 @@ def wasserman_bic(loglik, k, n):
 
 def cheatsheet():
     return "wsmbic: -2 ll + k log n; ll - (k/2) log n variant in payload"
+
+
+# compact alias per ledger/NAMING.md
+wassermanbic = wasserman_bic

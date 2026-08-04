@@ -43,3 +43,7 @@ siurgn = siu_by_region
 
 def cheatsheet() -> str:
     return "siu_by_region({}) -> SIU cases by geographic region."
+
+
+# compact alias per ledger/NAMING.md
+siubyregion = siu_by_region

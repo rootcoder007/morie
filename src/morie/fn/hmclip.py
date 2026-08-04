@@ -128,3 +128,7 @@ def geron_clip(images, texts, tau=0.07, normalize=True, class_prompts=None):
 
 def cheatsheet():
     return "hmclip: CLIP: contrastive image-text pretraining"
+
+
+# compact alias per ledger/NAMING.md
+geronclip = geron_clip

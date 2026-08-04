@@ -46,3 +46,7 @@ gbdsb = gbd_subgroup
 
 def cheatsheet() -> str:
     return "gbd_subgroup({}) -> Burden by subgroup (GBD-style)."
+
+
+# compact alias per ledger/NAMING.md
+gbdsubgroup = gbd_subgroup

@@ -38,3 +38,7 @@ def aic_ar_order(x, max_p):
 
 def cheatsheet():
     return "aikarp: AIC for AR(p) order selection"
+
+
+# compact alias per ledger/NAMING.md
+aicarorder = aic_ar_order

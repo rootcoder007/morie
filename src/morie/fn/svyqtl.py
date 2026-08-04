@@ -40,3 +40,7 @@ def survey_quantile(y, weights, quantile):
 
 def cheatsheet():
     return "svyqtl: Survey-weighted quantile"
+
+
+# compact alias per ledger/NAMING.md
+surveyquantile = survey_quantile

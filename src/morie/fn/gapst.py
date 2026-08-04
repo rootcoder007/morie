@@ -102,3 +102,7 @@ gapst = gap_statistic
 
 def cheatsheet() -> str:
     return "gap_statistic({}) -> Gap statistic for optimal k."
+
+
+# compact alias per ledger/NAMING.md
+gapstatistic = gap_statistic

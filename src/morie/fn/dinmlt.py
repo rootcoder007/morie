@@ -40,3 +40,7 @@ def dino_multicrop(image, global_size, local_size):
 
 def cheatsheet():
     return "dinmlt: DINO multi-crop augmentation"
+
+
+# compact alias per ledger/NAMING.md
+dinomulticrop = dino_multicrop

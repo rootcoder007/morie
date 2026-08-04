@@ -57,3 +57,7 @@ def wasserman_aic(loglik, k):
 
 def cheatsheet():
     return "wsmaic: -2 ll + 2k; Wasserman's ll - k variant in payload"
+
+
+# compact alias per ledger/NAMING.md
+wassermanaic = wasserman_aic

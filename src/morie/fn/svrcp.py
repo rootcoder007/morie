@@ -29,3 +29,7 @@ roll = roll_call_prob
 
 def cheatsheet() -> str:
     return "roll_call_prob({}) -> Roll call vote probability model"
+
+
+# compact alias per ledger/NAMING.md
+rollcallprob = roll_call_prob

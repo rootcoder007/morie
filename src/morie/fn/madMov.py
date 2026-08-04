@@ -40,3 +40,7 @@ def moving_mad(x, window, k):
 
 def cheatsheet():
     return "madMov: Moving MAD threshold"
+
+
+# compact alias per ledger/NAMING.md
+movingmad = moving_mad

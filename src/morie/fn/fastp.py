@@ -94,3 +94,7 @@ def fast_pca(
 
 def cheatsheet() -> str:
     return "fast_pca({}) -> Randomized PCA."
+
+
+# compact alias per ledger/NAMING.md
+fastpca = fast_pca

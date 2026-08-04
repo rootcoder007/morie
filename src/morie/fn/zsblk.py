@@ -29,3 +29,7 @@ bloc = block_bootstrap
 
 def cheatsheet() -> str:
     return "block_bootstrap({}) -> Spatial block bootstrap"
+
+
+# compact alias per ledger/NAMING.md
+blockbootstrap = block_bootstrap

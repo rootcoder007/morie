@@ -42,3 +42,7 @@ def ma_trim_fill(yi, vi, side):
 
 def cheatsheet():
     return "matrim: Duval-Tweedie trim-and-fill missing-study correction"
+
+
+# compact alias per ledger/NAMING.md
+matrimfill = ma_trim_fill

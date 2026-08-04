@@ -44,3 +44,7 @@ idft = idft_compute
 
 def cheatsheet() -> str:
     return "idft_compute({}) -> Inverse Discrete Fourier Transform."
+
+
+# compact alias per ledger/NAMING.md
+idftcompute = idft_compute

@@ -38,3 +38,7 @@ def zscore_anomaly(x, k):
 
 def cheatsheet():
     return "zscoreA: Z-score anomaly"
+
+
+# compact alias per ledger/NAMING.md
+zscoreanomaly = zscore_anomaly

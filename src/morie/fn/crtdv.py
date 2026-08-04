@@ -40,3 +40,7 @@ crtdv = court_diversion
 
 def cheatsheet() -> str:
     return "court_diversion({}) -> Diversion program utilization."
+
+
+# compact alias per ledger/NAMING.md
+courtdiversion = court_diversion

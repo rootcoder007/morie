@@ -121,3 +121,7 @@ def geron_one_cycle(t, T, lr_max, lr_min, mom_max=0.95, mom_min=0.85):
 
 def cheatsheet():
     return "hml1c: 1cycle LR policy (delegates the ramp to gr1cy) with phase and mirrored momentum"
+
+
+# compact alias per ledger/NAMING.md
+gerononecycle = geron_one_cycle

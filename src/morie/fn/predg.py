@@ -57,3 +57,7 @@ predg = prediction_gain
 
 def cheatsheet() -> str:
     return "prediction_gain({}) -> Linear prediction gain."
+
+
+# compact alias per ledger/NAMING.md
+predictiongain = prediction_gain

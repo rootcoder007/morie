@@ -42,3 +42,7 @@ def n_for_mean_length(u_crit, s_star, l_max):
 
 def cheatsheet():
     return 'r12e7: n = (u S*/(l_max/2))^2 [Brus 2022, eq. 12.7]'
+
+
+# compact alias per ledger/NAMING.md
+nformeanlength = n_for_mean_length

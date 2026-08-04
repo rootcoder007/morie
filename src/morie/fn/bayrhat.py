@@ -36,3 +36,7 @@ def r_hat(chains):
 
 def cheatsheet():
     return "bayrhat: Potential scale reduction R-hat"
+
+
+# compact alias per ledger/NAMING.md
+rhat = r_hat

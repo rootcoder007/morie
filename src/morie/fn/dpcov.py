@@ -133,3 +133,7 @@ def dp_covariance(X, C=1.0, epsilon=1.0, delta=1e-5, seed=None, project_psd=True
 
 def cheatsheet():
     return "dpcov: noise breaks PSD; projection is free post-processing, and many negatives = budget too small"
+
+
+# compact alias per ledger/NAMING.md
+dpcovariance = dp_covariance

@@ -53,3 +53,7 @@ shply = shapley_value
 
 def cheatsheet() -> str:
     return "shapley_value({}) -> Shapley values for cooperative games."
+
+
+# compact alias per ledger/NAMING.md
+shapleyvalue = shapley_value

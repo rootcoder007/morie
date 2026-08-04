@@ -182,3 +182,7 @@ def geron_isomap(X, n_components, n_neighbors=5):
 
 def cheatsheet():
     return "hmiso: Isomap -- kNN graph, Dijkstra geodesics, then classical MDS (delegates to hmmds)"
+
+
+# compact alias per ledger/NAMING.md
+geronisomap = geron_isomap

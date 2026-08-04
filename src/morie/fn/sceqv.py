@@ -70,3 +70,7 @@ def score_equate(
 
 def cheatsheet() -> str:
     return "score_equate({}) -> Score equating between forms."
+
+
+# compact alias per ledger/NAMING.md
+scoreequate = score_equate

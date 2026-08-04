@@ -37,3 +37,7 @@ df_ = df_dist
 
 def cheatsheet() -> str:
     return "df_dist({}) -> F-distribution probability density function."
+
+
+# compact alias per ledger/NAMING.md
+dfdist = df_dist

@@ -29,3 +29,7 @@ goppa = goppa_code
 
 def cheatsheet() -> str:
     return "goppa_code({}) -> Binary Goppa code construction."
+
+
+# compact alias per ledger/NAMING.md
+goppacode = goppa_code

@@ -35,3 +35,7 @@ isq = i_squared
 
 def cheatsheet() -> str:
     return "i_squared({}) -> Higgins' I-squared heterogeneity statistic."
+
+
+# compact alias per ledger/NAMING.md
+isquared = i_squared

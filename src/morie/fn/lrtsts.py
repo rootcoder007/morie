@@ -68,3 +68,7 @@ def logrank_test(time, event, group, cdf=None):
 
 def cheatsheet():
     return "lrtsts: Log-rank test for two-sample survival"
+
+
+# compact alias per ledger/NAMING.md
+logranktest = logrank_test

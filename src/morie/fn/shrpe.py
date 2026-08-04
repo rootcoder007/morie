@@ -76,3 +76,7 @@ shrpe = sharpe_ratio
 
 def cheatsheet() -> str:
     return "sharpe_ratio({}) -> Sharpe ratio."
+
+
+# compact alias per ledger/NAMING.md
+sharperatio = sharpe_ratio

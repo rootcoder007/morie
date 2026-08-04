@@ -40,3 +40,7 @@ def ot_cost_pairwise(X, Y):
 
 def cheatsheet():
     return "otc2c: Pairwise squared-Euclidean cost matrix"
+
+
+# compact alias per ledger/NAMING.md
+otcostpairwise = ot_cost_pairwise

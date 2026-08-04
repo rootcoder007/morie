@@ -47,3 +47,7 @@ catsc = cat_score_fn
 
 def cheatsheet() -> str:
     return "cat_score_fn({}) -> Criterion Autoregressive Transfer function for model order s"
+
+
+# compact alias per ledger/NAMING.md
+catscorefn = cat_score_fn

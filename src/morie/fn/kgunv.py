@@ -30,3 +30,7 @@ uk_v = uk_variance
 
 def cheatsheet() -> str:
     return "uk_variance({}) -> Universal kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+ukvariance = uk_variance

@@ -42,3 +42,7 @@ def sir_epidemic(G, beta, gamma, initial):
 
 def cheatsheet():
     return "siaepi: Network SIR epidemic"
+
+
+# compact alias per ledger/NAMING.md
+sirepidemic = sir_epidemic

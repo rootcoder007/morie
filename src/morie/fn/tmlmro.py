@@ -40,3 +40,7 @@ def tmle_marginal_or(y, D, X):
 
 def cheatsheet():
     return "tmlmro: TMLE for marginal odds ratio"
+
+
+# compact alias per ledger/NAMING.md
+tmlemarginalor = tmle_marginal_or

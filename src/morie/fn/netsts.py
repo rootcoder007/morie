@@ -40,3 +40,7 @@ def neural_ts_lstm(y, hidden, horizon):
 
 def cheatsheet():
     return "netsts: LSTM time-series forecaster"
+
+
+# compact alias per ledger/NAMING.md
+neuraltslstm = neural_ts_lstm

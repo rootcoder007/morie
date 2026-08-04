@@ -60,3 +60,7 @@ def gibbons_pp_plot(x, F0=None):
 
 def cheatsheet():
     return "gb_pp: centre-sensitive; max vertical departure = K-S D_n"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsppplot = gibbons_pp_plot

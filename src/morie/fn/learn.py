@@ -94,3 +94,7 @@ learn = learning_curve
 
 def cheatsheet() -> str:
     return "learning_curve({}) -> Learning curve: train/test error vs. training set size."
+
+
+# compact alias per ledger/NAMING.md
+learningcurve = learning_curve

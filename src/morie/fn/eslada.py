@@ -150,3 +150,7 @@ def esl_adaboost_predict(model, X):
 
 def cheatsheet():
     return "eslada: alpha = log((1-err)/err) (ESL form, not half-log); stumps + predict"
+
+
+# compact alias per ledger/NAMING.md
+esladaboost = esl_adaboost

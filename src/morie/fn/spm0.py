@@ -48,3 +48,7 @@ spm0 = spectral_moment
 
 def cheatsheet() -> str:
     return "spectral_moment({}) -> Spectral moment."
+
+
+# compact alias per ledger/NAMING.md
+spectralmoment = spectral_moment

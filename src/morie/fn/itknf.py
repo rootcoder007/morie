@@ -54,3 +54,7 @@ itknf = itakura_dist
 
 def cheatsheet() -> str:
     return "itakura_dist({}) -> Itakura spectral distance."
+
+
+# compact alias per ledger/NAMING.md
+itakuradist = itakura_dist

@@ -29,3 +29,7 @@ sali = salience_model
 
 def cheatsheet() -> str:
     return "salience_model({}) -> Issue salience weighted model"
+
+
+# compact alias per ledger/NAMING.md
+saliencemodel = salience_model

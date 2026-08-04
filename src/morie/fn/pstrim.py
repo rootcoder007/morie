@@ -53,3 +53,7 @@ pstrim = propensity_trim
 
 def cheatsheet() -> str:
     return "propensity_trim({}) -> Propensity score trimming."
+
+
+# compact alias per ledger/NAMING.md
+propensitytrim = propensity_trim

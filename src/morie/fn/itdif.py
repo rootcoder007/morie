@@ -38,3 +38,7 @@ def item_difficulty(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "item_difficulty({}) -> Item difficulty (classical)."
+
+
+# compact alias per ledger/NAMING.md
+itemdifficulty = item_difficulty

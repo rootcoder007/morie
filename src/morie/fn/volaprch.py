@@ -45,3 +45,7 @@ def vol_aparch_fit(r):
 
 def cheatsheet():
     return "volaprch: Asymmetric power ARCH, spec 'aparch'"
+
+
+# compact alias per ledger/NAMING.md
+volaparchfit = vol_aparch_fit

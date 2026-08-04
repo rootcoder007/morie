@@ -174,3 +174,7 @@ def geron_kernel_pca_rbf(X, n_components, gamma=None):
 
 def cheatsheet():
     return "hmkprbf: RBF kernel PCA -- centred Gram matrix eigendecomposition (shared core for poly/sigmoid)"
+
+
+# compact alias per ledger/NAMING.md
+centergram = center_gram

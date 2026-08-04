@@ -59,3 +59,7 @@ pdftx = pdf_to_text
 
 def cheatsheet() -> str:
     return "pdf_to_text({}) -> PDF text extraction."
+
+
+# compact alias per ledger/NAMING.md
+pdftotext = pdf_to_text

@@ -172,3 +172,7 @@ def geron_torchscript(model, example_inputs):
 
 def cheatsheet():
     return "hmtsc: TorchScript: statically-typed graph representation of PyTorch models"
+
+
+# compact alias per ledger/NAMING.md
+rungraph = run_graph

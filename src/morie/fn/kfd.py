@@ -44,3 +44,7 @@ kfd = katz_fd
 
 def cheatsheet() -> str:
     return "katz_fd({}) -> Katz fractal dimension."
+
+
+# compact alias per ledger/NAMING.md
+katzfd = katz_fd

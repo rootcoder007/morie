@@ -63,3 +63,7 @@ gwas1 = gwas_single_snp
 
 def cheatsheet() -> str:
     return "gwas_single_snp({}) -> Single-SNP GWAS association test."
+
+
+# compact alias per ledger/NAMING.md
+gwassinglesnp = gwas_single_snp

@@ -48,3 +48,7 @@ rang = range_est
 
 def cheatsheet() -> str:
     return "range_est({}) -> Effective range estimation"
+
+
+# compact alias per ledger/NAMING.md
+rangeest = range_est

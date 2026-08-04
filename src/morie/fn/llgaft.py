@@ -40,3 +40,7 @@ def log_logistic_aft(time, event, X):
 
 def cheatsheet():
     return "llgaft: Log-logistic AFT model"
+
+
+# compact alias per ledger/NAMING.md
+loglogisticaft = log_logistic_aft

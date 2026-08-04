@@ -89,3 +89,7 @@ ksvd = ksvd_dictionary
 
 def cheatsheet() -> str:
     return "ksvd_dictionary({}) -> K-SVD dictionary learning."
+
+
+# compact alias per ledger/NAMING.md
+ksvddictionary = ksvd_dictionary

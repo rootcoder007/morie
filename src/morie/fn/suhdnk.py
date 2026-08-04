@@ -54,3 +54,7 @@ suhdnk = heavy_drinking
 
 def cheatsheet() -> str:
     return "heavy_drinking({}) -> Heavy/binge drinking prevalence."
+
+
+# compact alias per ledger/NAMING.md
+heavydrinking = heavy_drinking

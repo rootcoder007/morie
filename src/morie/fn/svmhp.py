@@ -40,3 +40,7 @@ def svm_hyperplane(X, y):
 
 def cheatsheet():
     return "svmhp: SVM maximum margin hyperplane (hard margin)"
+
+
+# compact alias per ledger/NAMING.md
+svmhyperplane = svm_hyperplane

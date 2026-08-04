@@ -46,3 +46,7 @@ def vol_tgarch_fit(r):
 
 def cheatsheet():
     return "voltgr: Threshold GARCH fit, spec 'tgarch'"
+
+
+# compact alias per ledger/NAMING.md
+voltgarchfit = vol_tgarch_fit

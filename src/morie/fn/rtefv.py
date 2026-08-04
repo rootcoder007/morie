@@ -118,3 +118,7 @@ rtefv = rt_effective
 
 def cheatsheet() -> str:
     return "rt_effective({}) -> Effective reproduction number Rt (EpiEstim-style)."
+
+
+# compact alias per ledger/NAMING.md
+rteffective = rt_effective

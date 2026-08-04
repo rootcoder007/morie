@@ -29,3 +29,7 @@ przpd = parzen_pdf
 
 def cheatsheet() -> str:
     return "parzen_pdf({}) -> Parzen window probability density estimation."
+
+
+# compact alias per ledger/NAMING.md
+parzenpdf = parzen_pdf

@@ -42,3 +42,7 @@ def chi2_2x2(a, b, c, d):
 
 def cheatsheet():
     return 'ca9e4: chi2 = (ad-bc)^2 (a+b+c+d) / [(a+b)(c+d)(a+c)(b+d)] [Weisburd et al. 2022, eq. 9.4]'
+
+
+# compact alias per ledger/NAMING.md
+chi22x2 = chi2_2x2

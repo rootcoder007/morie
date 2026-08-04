@@ -39,3 +39,7 @@ spowr = signal_power
 
 def cheatsheet() -> str:
     return "signal_power({}) -> Signal power."
+
+
+# compact alias per ledger/NAMING.md
+signalpower = signal_power

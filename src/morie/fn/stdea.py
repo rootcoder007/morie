@@ -46,3 +46,7 @@ st_diff_equation = st_diff_equation
 
 def cheatsheet() -> str:
     return "st_diff_equation({}) -> Differential equation spatio-temporal covariance"
+
+
+# compact alias per ledger/NAMING.md
+stdiffequation = st_diff_equation

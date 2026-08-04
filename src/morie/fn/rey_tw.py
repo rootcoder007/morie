@@ -123,3 +123,7 @@ def rey_tw(
 
 def cheatsheet() -> str:
     return "rey_tw({}) -> Tweedie regression (compound Poisson-gamma GLM)."
+
+
+# compact alias per ledger/NAMING.md
+reytw = rey_tw

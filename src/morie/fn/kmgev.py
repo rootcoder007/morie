@@ -83,3 +83,7 @@ def kamath_g_eval(x, y, rubric, model):
 
 def cheatsheet():
     return "kmgev: sum_s s * softmax(judge logits)_s over the rubric"
+
+
+# compact alias per ledger/NAMING.md
+kamathgeval = kamath_g_eval

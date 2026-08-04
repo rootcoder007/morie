@@ -29,3 +29,7 @@ gini = gini_spatial
 
 def cheatsheet() -> str:
     return "gini_spatial({}) -> Spatial Gini coefficient"
+
+
+# compact alias per ledger/NAMING.md
+ginispatial = gini_spatial

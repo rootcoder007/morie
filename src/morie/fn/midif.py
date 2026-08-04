@@ -58,3 +58,7 @@ def mi_delta_fit(
 
 def cheatsheet() -> str:
     return "mi_delta_fit({}) -> Delta-fit indices between measurement invariance levels."
+
+
+# compact alias per ledger/NAMING.md
+mideltafit = mi_delta_fit

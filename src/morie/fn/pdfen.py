@@ -44,3 +44,7 @@ pdfen = pdf_estimate
 
 def cheatsheet() -> str:
     return "pdf_estimate({}) -> Non-parametric PDF estimation."
+
+
+# compact alias per ledger/NAMING.md
+pdfestimate = pdf_estimate

@@ -38,3 +38,7 @@ def sample_qc(genotypes, filters):
 
 def cheatsheet():
     return "smplqc: Sample QC (call rate, het, kinship)"
+
+
+# compact alias per ledger/NAMING.md
+sampleqc = sample_qc

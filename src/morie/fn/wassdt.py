@@ -40,3 +40,7 @@ def wasserstein_1d(p, q, support):
 
 def cheatsheet():
     return "wassdt: 1-Wasserstein distance (1D)"
+
+
+# compact alias per ledger/NAMING.md
+wasserstein1d = wasserstein_1d

@@ -38,3 +38,7 @@ def edger_diff(counts, design):
 
 def cheatsheet():
     return "edgrn: edgeR differential expression"
+
+
+# compact alias per ledger/NAMING.md
+edgerdiff = edger_diff

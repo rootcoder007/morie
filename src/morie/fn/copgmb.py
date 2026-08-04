@@ -50,3 +50,7 @@ def gumbel_copula(u, v, theta):
 
 def cheatsheet():
     return "copgmb: gumbel copula CDF + Kendall tau (theta >= 1)"
+
+
+# compact alias per ledger/NAMING.md
+gumbelcopula = gumbel_copula

@@ -38,3 +38,7 @@ def km_pointwise_ci(fit, alpha):
 
 def cheatsheet():
     return "kpmnci: KM pointwise CI via Greenwood"
+
+
+# compact alias per ledger/NAMING.md
+kmpointwiseci = km_pointwise_ci

@@ -48,3 +48,7 @@ susngl = single_use_risk
 
 def cheatsheet() -> str:
     return "single_use_risk({}) -> Single-occasion acute harm risk from BAC levels."
+
+
+# compact alias per ledger/NAMING.md
+singleuserisk = single_use_risk

@@ -29,3 +29,7 @@ grid = grid_zonal
 
 def cheatsheet() -> str:
     return "grid_zonal({}) -> Zonal grid statistics"
+
+
+# compact alias per ledger/NAMING.md
+gridzonal = grid_zonal

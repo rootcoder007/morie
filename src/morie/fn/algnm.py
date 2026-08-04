@@ -101,3 +101,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> r = party_alignment([1,1,1,1,0])
 # >>> assert abs(r["estimate"] - 0.6) < 1e-9
+
+
+# compact alias per ledger/NAMING.md
+partyalignment = party_alignment

@@ -36,3 +36,7 @@ def pde_separation(pde):
 
 def cheatsheet():
     return "pdesl: Separation of variables PDE"
+
+
+# compact alias per ledger/NAMING.md
+pdeseparation = pde_separation

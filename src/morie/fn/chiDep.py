@@ -44,3 +44,7 @@ def _ranks01(v):
 
 def cheatsheet():
     return "chiDep: Tail-dependence χ"
+
+
+# compact alias per ledger/NAMING.md
+chidependence = chi_dependence

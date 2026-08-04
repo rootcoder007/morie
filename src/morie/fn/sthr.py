@@ -41,3 +41,7 @@ sthr = soft_threshold
 
 def cheatsheet() -> str:
     return "soft_threshold({}) -> Soft thresholding operator."
+
+
+# compact alias per ledger/NAMING.md
+softthreshold = soft_threshold

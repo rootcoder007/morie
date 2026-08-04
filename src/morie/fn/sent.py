@@ -46,3 +46,7 @@ sent = sentence_stats
 
 def cheatsheet() -> str:
     return "sentence_stats({}) -> Sentence length distribution stats."
+
+
+# compact alias per ledger/NAMING.md
+sentencestats = sentence_stats

@@ -42,3 +42,7 @@ def tmle_qlearning(state, action, reward, time):
 
 def cheatsheet():
     return "tmlqlc: Q-learning compatible TMLE"
+
+
+# compact alias per ledger/NAMING.md
+tmleqlearning = tmle_qlearning

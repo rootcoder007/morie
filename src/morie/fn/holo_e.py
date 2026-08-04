@@ -68,3 +68,7 @@ def holo_effect(
 
 def cheatsheet() -> str:
     return "holo_effect({}) -> Effect size forest plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoeffect = holo_effect

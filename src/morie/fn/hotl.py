@@ -65,3 +65,7 @@ hotl = hotelling_t2
 
 def cheatsheet() -> str:
     return "hotelling_t2({}) -> Hotelling's T-squared test."
+
+
+# compact alias per ledger/NAMING.md
+hotellingt2 = hotelling_t2

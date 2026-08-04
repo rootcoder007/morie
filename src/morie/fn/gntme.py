@@ -79,3 +79,7 @@ gntme = generation_time
 
 def cheatsheet() -> str:
     return "generation_time({}) -> Generation time distribution estimation."
+
+
+# compact alias per ledger/NAMING.md
+generationtime = generation_time

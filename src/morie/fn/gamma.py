@@ -103,3 +103,7 @@ gamma_glm_fn = gamma_glm
 
 def cheatsheet() -> str:
     return "gamma_glm({}) -> Gamma GLM with log link via IRLS."
+
+
+# compact alias per ledger/NAMING.md
+gammaglm = gamma_glm

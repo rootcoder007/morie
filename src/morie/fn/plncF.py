@@ -38,3 +38,7 @@ def planck_function(lam, T):
 
 def cheatsheet():
     return "plncF: Planck blackbody spectrum"
+
+
+# compact alias per ledger/NAMING.md
+planckfunction = planck_function

@@ -42,3 +42,7 @@ def pps_sampling(y, size, n):
 
 def cheatsheet():
     return "ppsamp: Probability proportional to size sampling weight"
+
+
+# compact alias per ledger/NAMING.md
+ppssampling = pps_sampling

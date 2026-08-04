@@ -54,3 +54,7 @@ brpgn = breusch_pagan
 
 def cheatsheet() -> str:
     return "breusch_pagan({}) -> Breusch-Pagan test for heteroscedasticity."
+
+
+# compact alias per ledger/NAMING.md
+breuschpagan = breusch_pagan

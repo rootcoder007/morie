@@ -38,3 +38,7 @@ def cross_spectrum(x, y):
 
 def cheatsheet():
     return "speccs: Cross-spectrum between series"
+
+
+# compact alias per ledger/NAMING.md
+crossspectrum = cross_spectrum

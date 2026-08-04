@@ -122,3 +122,7 @@ def dp_adam(grads, C=1.0, sigma=1.0, lr=1e-3, betas=(0.9, 0.999), eps=1e-8,
 
 def cheatsheet():
     return "dpadam: free post-processing, but under heavy noise v_hat tracks NOISE -- watch signal_to_noise"
+
+
+# compact alias per ledger/NAMING.md
+dpadam = dp_adam

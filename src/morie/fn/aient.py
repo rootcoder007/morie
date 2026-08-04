@@ -46,3 +46,7 @@ aient = aic_entropy
 
 def cheatsheet() -> str:
     return "aic_entropy(log_likelihood, k, n) -> AIC from entropy."
+
+
+# compact alias per ledger/NAMING.md
+aicentropy = aic_entropy

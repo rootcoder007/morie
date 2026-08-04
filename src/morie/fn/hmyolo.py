@@ -180,3 +180,11 @@ def geron_yolo(image, model, n_boxes=1, conf_threshold=0.5, iou_threshold=0.45):
 
 def cheatsheet():
     return "hmyolo: YOLO: single-shot object detection via grid regression"
+
+
+# compact alias per ledger/NAMING.md
+boxiou = box_iou
+
+
+# compact alias per ledger/NAMING.md
+geronyolo = geron_yolo

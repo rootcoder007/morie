@@ -30,3 +30,7 @@ quad = quadrat_test
 
 def cheatsheet() -> str:
     return "quadrat_test({}) -> Quadrat count test"
+
+
+# compact alias per ledger/NAMING.md
+quadrattest = quadrat_test

@@ -43,3 +43,7 @@ buttbs = butter_bandstop
 
 def cheatsheet() -> str:
     return "butter_bandstop({}) -> Butterworth bandstop (notch) filter."
+
+
+# compact alias per ledger/NAMING.md
+butterbandstop = butter_bandstop

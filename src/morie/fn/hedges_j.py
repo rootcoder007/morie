@@ -42,3 +42,7 @@ def hedges_j(n1, n2):
 
 def cheatsheet():
     return 'ca11e3: J = 1 - 3/(4(n1+n2)-9) [Weisburd et al. 2022, eq. 11.3]'
+
+
+# compact alias per ledger/NAMING.md
+hedgesj = hedges_j

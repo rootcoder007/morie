@@ -39,3 +39,7 @@ bkz = bkz_reduce
 
 def cheatsheet() -> str:
     return "bkz_reduce({}) -> BKZ lattice basis reduction."
+
+
+# compact alias per ledger/NAMING.md
+bkzreduce = bkz_reduce

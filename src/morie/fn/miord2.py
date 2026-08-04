@@ -42,3 +42,7 @@ def mi_chained_eq(data, R, models, K):
 
 def cheatsheet():
     return "miord2: MICE (chained equations)"
+
+
+# compact alias per ledger/NAMING.md
+michainedeq = mi_chained_eq

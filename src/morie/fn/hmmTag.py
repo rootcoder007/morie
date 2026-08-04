@@ -38,3 +38,7 @@ def hmm_pos(X, tagset):
 
 def cheatsheet():
     return "hmmTag: HMM POS tagging"
+
+
+# compact alias per ledger/NAMING.md
+hmmpos = hmm_pos

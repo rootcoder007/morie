@@ -129,3 +129,7 @@ def geron_momentum(grads, v=None, beta=0.9, eta=0.01, theta=None, nesterov=False
 
 def cheatsheet():
     return "hmmom: momentum v <- beta*v + g; theta <- theta - eta*v (terminal speed g/(1-beta))"
+
+
+# compact alias per ledger/NAMING.md
+geronmomentum = geron_momentum

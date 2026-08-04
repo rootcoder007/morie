@@ -30,3 +30,7 @@ sk_v = sk_variance
 
 def cheatsheet() -> str:
     return "sk_variance({}) -> Simple kriging variance"
+
+
+# compact alias per ledger/NAMING.md
+skvariance = sk_variance

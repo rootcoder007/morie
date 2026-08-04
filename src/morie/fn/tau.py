@@ -42,3 +42,7 @@ tau = kendall_tau
 
 def cheatsheet() -> str:
     return "kendall_tau({}) -> Kendall's tau-b rank correlation coefficient."
+
+
+# compact alias per ledger/NAMING.md
+kendalltau = kendall_tau

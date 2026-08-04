@@ -71,3 +71,7 @@ def maxpool_forward(x, kernel_size: int = 2, stride=None):
 
 def cheatsheet():
     return "mxpol: MaxPool2D y[i,j] = max over k x k window at stride s"
+
+
+# compact alias per ledger/NAMING.md
+maxpoolforward = maxpool_forward

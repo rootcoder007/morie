@@ -95,3 +95,7 @@ def esl_weight_decay(weights, lambda_=0.01, loss=0.0, norm="l2"):
 
 def cheatsheet():
     return "eslwgt: penalty lambda*||w||^2 so the gradient is 2*lambda*w -- twice the lambda/2 convention"
+
+
+# compact alias per ledger/NAMING.md
+eslweightdecay = esl_weight_decay

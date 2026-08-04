@@ -40,3 +40,7 @@ def gp_multitask(X, y_tasks, X_test):
 
 def cheatsheet():
     return "gpmlt: Multi-task GP regression"
+
+
+# compact alias per ledger/NAMING.md
+gpmultitask = gp_multitask

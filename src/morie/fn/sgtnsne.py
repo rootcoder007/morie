@@ -42,3 +42,7 @@ def sgt_isomap(X, k, dim):
 
 def cheatsheet():
     return "sgtnsne: Isomap MDS on geodesic distance matrix"
+
+
+# compact alias per ledger/NAMING.md
+sgtisomap = sgt_isomap

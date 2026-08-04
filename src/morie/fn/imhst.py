@@ -44,3 +44,7 @@ imhst = image_histogram
 
 def cheatsheet() -> str:
     return "image_histogram({}) -> Image histogram computation."
+
+
+# compact alias per ledger/NAMING.md
+imagehistogram = image_histogram

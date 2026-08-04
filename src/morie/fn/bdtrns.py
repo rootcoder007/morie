@@ -42,3 +42,7 @@ def bound_transport(y, D, X, S):
 
 def cheatsheet():
     return "bdtrns: Bound under transport assumption"
+
+
+# compact alias per ledger/NAMING.md
+boundtransport = bound_transport

@@ -96,3 +96,7 @@ def ghosal_surv_dp_km(x, event=None, alpha=1.0, g0_rate=None):
 
 def cheatsheet():
     return "gh_c13_2: as alpha -> 0 the Bayes answer IS Kaplan-Meier -- measured, not asserted"
+
+
+# compact alias per ledger/NAMING.md
+ghosalsurvdpkm = ghosal_surv_dp_km

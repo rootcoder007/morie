@@ -94,3 +94,7 @@ seir = seir_model
 
 def cheatsheet() -> str:
     return "seir_model({}) -> SEIR compartmental model (Susceptible-Exposed-Infected-Recov"
+
+
+# compact alias per ledger/NAMING.md
+seirmodel = seir_model

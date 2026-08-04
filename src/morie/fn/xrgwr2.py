@@ -29,3 +29,7 @@ gwr_ = gwr_rsquared
 
 def cheatsheet() -> str:
     return "gwr_rsquared({}) -> GWR local R-squared"
+
+
+# compact alias per ledger/NAMING.md
+gwrrsquared = gwr_rsquared

@@ -61,3 +61,7 @@ def holo_box(
 
 def cheatsheet() -> str:
     return "holo_box({}) -> Box plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holobox = holo_box

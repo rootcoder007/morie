@@ -34,3 +34,7 @@ em_irt_estimate = em_irt_estimate
 
 def cheatsheet() -> str:
     return "em_irt_estimate({}) -> EM algorithm IRT estimation"
+
+
+# compact alias per ledger/NAMING.md
+emirtestimate = em_irt_estimate

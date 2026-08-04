@@ -67,3 +67,7 @@ def brunner_munzel(x, y):
 
 def cheatsheet() -> str:
     return "brunner_munzel({}) -> Brunner-Munzel test for stochastic equality."
+
+
+# compact alias per ledger/NAMING.md
+brunnermunzel = brunner_munzel

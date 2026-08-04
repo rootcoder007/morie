@@ -51,3 +51,7 @@ alias = aliasing_demo
 
 def cheatsheet() -> str:
     return "aliasing_demo({}) -> Aliasing demonstration."
+
+
+# compact alias per ledger/NAMING.md
+aliasingdemo = aliasing_demo

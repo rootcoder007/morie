@@ -215,3 +215,7 @@ def geron_autograd(loss, params):
 
 def cheatsheet():
     return "hmagrd: Automatic differentiation via reverse-mode autograd"
+
+
+# compact alias per ledger/NAMING.md
+geronautograd = geron_autograd

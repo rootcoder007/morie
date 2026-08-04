@@ -54,3 +54,7 @@ epi_c = epidemic_curve
 
 def cheatsheet() -> str:
     return "epidemic_curve({}) -> Epidemic curve (epi curve) construction."
+
+
+# compact alias per ledger/NAMING.md
+epidemiccurve = epidemic_curve

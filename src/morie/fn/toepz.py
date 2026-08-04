@@ -46,3 +46,7 @@ toepz = toeplitz_matrix
 
 def cheatsheet() -> str:
     return "toeplitz_matrix({}) -> Toeplitz matrix construction."
+
+
+# compact alias per ledger/NAMING.md
+toeplitzmatrix = toeplitz_matrix

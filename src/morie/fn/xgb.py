@@ -132,3 +132,7 @@ xgb = xgb_classify
 
 def cheatsheet() -> str:
     return "xgb_classify({}) -> XGBoost / gradient boosting classifier wrapper."
+
+
+# compact alias per ledger/NAMING.md
+xgbclassify = xgb_classify

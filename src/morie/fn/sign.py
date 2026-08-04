@@ -81,3 +81,7 @@ sign = sign_test
 
 def cheatsheet() -> str:
     return "sign_test({}) -> Sign test for paired data."
+
+
+# compact alias per ledger/NAMING.md
+signtest = sign_test

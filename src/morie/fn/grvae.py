@@ -131,3 +131,7 @@ def geron_vae_elbo(x, mu, logvar, recon, likelihood="gaussian", beta=1.0):
 
 def cheatsheet():
     return "grvae: ELBO = E_q[log p(x|z)] - KL; KL = -0.5 sum(1 + logvar - mu^2 - exp(logvar)) in closed form"
+
+
+# compact alias per ledger/NAMING.md
+geronvaeelbo = geron_vae_elbo

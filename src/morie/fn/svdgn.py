@@ -29,3 +29,7 @@ deeg = deegan_packel
 
 def cheatsheet() -> str:
     return "deegan_packel({}) -> Deegan-Packel power index"
+
+
+# compact alias per ledger/NAMING.md
+deeganpackel = deegan_packel

@@ -42,3 +42,7 @@ def cohens_d_sample(m1, m2, s1, s2, n1, n2):
 
 def cheatsheet():
     return 'ca11e1: d = (xbar_1 - xbar_2) / s_pooled [Weisburd et al. 2022, eq. 11.1]'
+
+
+# compact alias per ledger/NAMING.md
+cohensdsample = cohens_d_sample

@@ -107,3 +107,7 @@ def sem_mediation(model_spec, data):
 
 def cheatsheet():
     return "medSEM: OLS per equation; path effect = product of edge coefficients"
+
+
+# compact alias per ledger/NAMING.md
+semmediation = sem_mediation

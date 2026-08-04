@@ -93,3 +93,7 @@ iv = iv_2sls
 
 def cheatsheet() -> str:
     return "iv_2sls({}) -> Instrumental variables (2SLS)."
+
+
+# compact alias per ledger/NAMING.md
+iv2sls = iv_2sls

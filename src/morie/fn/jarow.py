@@ -40,3 +40,7 @@ def jaro_winkler(s1, s2, p):
 
 def cheatsheet():
     return "jarow: Jaro-Winkler similarity"
+
+
+# compact alias per ledger/NAMING.md
+jarowinkler = jaro_winkler

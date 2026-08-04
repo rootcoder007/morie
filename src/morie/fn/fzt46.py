@@ -78,3 +78,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`fauzi_theorem_4_6`.
 fauzi_thm4_6_mean_value = fauzi_theorem_4_6
+
+
+# compact alias per ledger/NAMING.md
+fauzitheorem46 = fauzi_theorem_4_6

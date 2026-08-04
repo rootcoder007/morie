@@ -27,3 +27,7 @@ mldsa = mldsa_keygen
 
 def cheatsheet() -> str:
     return "mldsa_keygen({}) -> ML-DSA (Dilithium) post-quantum signature -- keygen."
+
+
+# compact alias per ledger/NAMING.md
+mldsakeygen = mldsa_keygen

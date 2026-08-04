@@ -161,3 +161,7 @@ def grm_vanraden(markers, method=1):
 
 def cheatsheet():
     return "gmatv: Genomic relationship matrix (VanRaden G_VR1 / G_VR2, plus G_XX)"
+
+
+# compact alias per ledger/NAMING.md
+grmvanraden = grm_vanraden

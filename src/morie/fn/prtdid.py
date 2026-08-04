@@ -40,3 +40,7 @@ def partition_did(y, D, X):
 
 def cheatsheet():
     return "prtdid: Partition-based DiD"
+
+
+# compact alias per ledger/NAMING.md
+partitiondid = partition_did

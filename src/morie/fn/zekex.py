@@ -29,3 +29,7 @@ kern = kernel_exposure
 
 def cheatsheet() -> str:
     return "kernel_exposure({}) -> Kernel density exposure"
+
+
+# compact alias per ledger/NAMING.md
+kernelexposure = kernel_exposure

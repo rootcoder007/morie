@@ -101,3 +101,7 @@ def esl_subsampling(eta, n=None, seed=13):
 
 def cheatsheet():
     return "eslsmp: eta-fraction per stage; regularises AND cuts cost by eta; LCG draw"
+
+
+# compact alias per ledger/NAMING.md
+eslsubsampling = esl_subsampling

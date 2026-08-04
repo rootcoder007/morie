@@ -85,3 +85,7 @@ def boot_jackknife(x, stat):
 
 def cheatsheet():
     return "btjkn: the (n-1) factors ARE the estimator -- and the median breaks it"
+
+
+# compact alias per ledger/NAMING.md
+bootjackknife = boot_jackknife

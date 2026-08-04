@@ -29,3 +29,7 @@ w_is = w_islands
 
 def cheatsheet() -> str:
     return "w_islands({}) -> Weights islands detection"
+
+
+# compact alias per ledger/NAMING.md
+wislands = w_islands

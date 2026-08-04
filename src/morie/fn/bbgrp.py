@@ -32,3 +32,7 @@ bbgrp = bb_group_color
 
 def cheatsheet() -> str:
     return "bb_group_color({}) -> Blackbox positions colored by group."
+
+
+# compact alias per ledger/NAMING.md
+bbgroupcolor = bb_group_color

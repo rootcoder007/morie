@@ -31,3 +31,7 @@ aryw = ar_yule_walker_fn
 
 def cheatsheet() -> str:
     return "ar_yule_walker_fn({}) -> AR model estimation via Yule-Walker equations."
+
+
+# compact alias per ledger/NAMING.md
+aryulewalkerfn = ar_yule_walker_fn

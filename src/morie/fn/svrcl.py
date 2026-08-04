@@ -29,3 +29,7 @@ roll = roll_call_logit
 
 def cheatsheet() -> str:
     return "roll_call_logit({}) -> Roll call logit model"
+
+
+# compact alias per ledger/NAMING.md
+rollcalllogit = roll_call_logit

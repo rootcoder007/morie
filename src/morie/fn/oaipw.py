@@ -103,3 +103,7 @@ def otis_aipw(
 
 def cheatsheet() -> str:
     return "otis_aipw({}) -> AIPW doubly-robust estimator for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisaipw = otis_aipw

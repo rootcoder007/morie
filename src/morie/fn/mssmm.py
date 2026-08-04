@@ -30,3 +30,7 @@ smac = smacof_missing
 
 def cheatsheet() -> str:
     return "smacof_missing({}) -> SMACOF with missing data"
+
+
+# compact alias per ledger/NAMING.md
+smacofmissing = smacof_missing

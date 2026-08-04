@@ -42,3 +42,7 @@ def se_fisher_z(n):
 
 def cheatsheet():
     return 'ca11e13: se_Zr = 1 / sqrt(n - 3) [Weisburd et al. 2022, eq. 11.13]'
+
+
+# compact alias per ledger/NAMING.md
+sefisherz = se_fisher_z

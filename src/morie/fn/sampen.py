@@ -56,3 +56,7 @@ sampen = sample_entropy
 
 def cheatsheet() -> str:
     return "sample_entropy({}) -> Sample entropy."
+
+
+# compact alias per ledger/NAMING.md
+sampleentropy = sample_entropy

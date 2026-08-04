@@ -40,3 +40,7 @@ def scaffold_hop(lead_smiles, scaffold_db):
 
 def cheatsheet():
     return "scfhop: Scaffold hopping -- bioisosteric replacement"
+
+
+# compact alias per ledger/NAMING.md
+scaffoldhop = scaffold_hop

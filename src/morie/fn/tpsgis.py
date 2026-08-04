@@ -54,3 +54,7 @@ tpsgis = tps_geo_analysis
 
 def cheatsheet() -> str:
     return "tps_geo_analysis({}) -> Geographic crime density."
+
+
+# compact alias per ledger/NAMING.md
+tpsgeoanalysis = tps_geo_analysis

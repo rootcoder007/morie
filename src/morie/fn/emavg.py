@@ -46,3 +46,7 @@ emavg = exponential_ma
 
 def cheatsheet() -> str:
     return "exponential_ma({}) -> Exponential moving average."
+
+
+# compact alias per ledger/NAMING.md
+exponentialma = exponential_ma

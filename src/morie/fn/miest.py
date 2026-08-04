@@ -101,3 +101,7 @@ def mi_effect_size(
 
 def cheatsheet() -> str:
     return "mi_effect_size({}) -> Effect sizes for measurement invariance (dMACS, signed area)"
+
+
+# compact alias per ledger/NAMING.md
+mieffectsize = mi_effect_size

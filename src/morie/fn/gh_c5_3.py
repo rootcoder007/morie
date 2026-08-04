@@ -66,3 +66,7 @@ def ghosal_cgibbs(data, alpha=1.0, tau=1.0, sigma=0.5, n_sweeps=30,
 
 def cheatsheet():
     return "gh_c5_3: Collapsed Gibbs sampler for DPM"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcgibbs = ghosal_cgibbs

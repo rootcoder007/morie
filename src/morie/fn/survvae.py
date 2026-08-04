@@ -42,3 +42,7 @@ def vae_survival(time, event, X):
 
 def cheatsheet():
     return "survvae: VAE for survival representation learning"
+
+
+# compact alias per ledger/NAMING.md
+vaesurvival = vae_survival

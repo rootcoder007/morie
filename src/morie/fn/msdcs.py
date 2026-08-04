@@ -37,3 +37,7 @@ dist = dist_cosine
 
 def cheatsheet() -> str:
     return "dist_cosine({}) -> Cosine distance matrix"
+
+
+# compact alias per ledger/NAMING.md
+distcosine = dist_cosine

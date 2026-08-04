@@ -38,3 +38,7 @@ def huber_loss(r, k):
 
 def cheatsheet():
     return "hubrho: Huber loss function"
+
+
+# compact alias per ledger/NAMING.md
+huberloss = huber_loss

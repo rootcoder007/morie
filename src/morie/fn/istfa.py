@@ -35,3 +35,7 @@ istfa = istft_synth
 
 def cheatsheet() -> str:
     return "istft_synth({}) -> Inverse Short-Time Fourier Transform signal synthesis."
+
+
+# compact alias per ledger/NAMING.md
+istftsynth = istft_synth

@@ -61,3 +61,7 @@ def wasserman_lln(data):
 
 def cheatsheet():
     return "wsmlln: running means cumsum/1..n; final mean is the estimate"
+
+
+# compact alias per ledger/NAMING.md
+wassermanlln = wasserman_lln

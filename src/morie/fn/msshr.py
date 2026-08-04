@@ -30,3 +30,7 @@ shep = shepard_resid
 
 def cheatsheet() -> str:
     return "shepard_resid({}) -> Shepard residuals"
+
+
+# compact alias per ledger/NAMING.md
+shepardresid = shepard_resid

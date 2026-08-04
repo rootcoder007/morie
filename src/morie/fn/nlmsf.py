@@ -59,3 +59,7 @@ nlmsf = nlms_filter
 
 def cheatsheet() -> str:
     return "nlms_filter({}) -> Normalized LMS adaptive filter."
+
+
+# compact alias per ledger/NAMING.md
+nlmsfilter = nlms_filter

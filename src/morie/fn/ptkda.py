@@ -30,3 +30,7 @@ kde_ = kde_adaptive
 
 def cheatsheet() -> str:
     return "kde_adaptive({}) -> Adaptive kernel density"
+
+
+# compact alias per ledger/NAMING.md
+kdeadaptive = kde_adaptive

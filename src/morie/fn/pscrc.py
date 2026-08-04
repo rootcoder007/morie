@@ -91,3 +91,7 @@ def pscl_rollcall(vote_matrix, lop=0.025, yea=(1,), nay=(0,), missing=None):
 
 def cheatsheet():
     return "pscrc: recode to 1/0/NaN, drop roll calls with minority share <= lop"
+
+
+# compact alias per ledger/NAMING.md
+psclrollcall = pscl_rollcall

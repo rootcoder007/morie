@@ -29,3 +29,7 @@ fpca = fpca_spatial
 
 def cheatsheet() -> str:
     return "fpca_spatial({}) -> Spatial functional PCA"
+
+
+# compact alias per ledger/NAMING.md
+fpcaspatial = fpca_spatial

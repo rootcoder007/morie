@@ -123,3 +123,7 @@ leadiq = lead_iq_loss
 
 def cheatsheet() -> str:
     return "leadiq(BLL_ug_dL) -> IQ loss (Lanphear 2005 pooled log-linear)."
+
+
+# compact alias per ledger/NAMING.md
+leadiqloss = lead_iq_loss

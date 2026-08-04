@@ -40,3 +40,7 @@ def prs_cs_clump(sumstats, ld_ref, p_threshold):
 
 def cheatsheet():
     return "prsclm: PRS clumping + thresholding"
+
+
+# compact alias per ledger/NAMING.md
+prscsclump = prs_cs_clump

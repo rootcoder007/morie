@@ -28,3 +28,7 @@ cntrt = centroidal_time
 
 def cheatsheet() -> str:
     return "centroidal_time({}) -> Centroidal time of a signal."
+
+
+# compact alias per ledger/NAMING.md
+centroidaltime = centroidal_time

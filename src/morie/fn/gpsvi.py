@@ -44,3 +44,7 @@ def gp_stochastic_vi(X, y, X_test, inducing, batch_size):
 
 def cheatsheet():
     return "gpsvi: Stochastic variational GP"
+
+
+# compact alias per ledger/NAMING.md
+gpstochasticvi = gp_stochastic_vi

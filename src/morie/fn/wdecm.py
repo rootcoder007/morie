@@ -38,3 +38,7 @@ def cheatsheet() -> str:
 
 
 wdecm = weight_decay
+
+
+# compact alias per ledger/NAMING.md
+weightdecay = weight_decay

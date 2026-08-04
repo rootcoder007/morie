@@ -29,3 +29,7 @@ dela = delaunay_mesh
 
 def cheatsheet() -> str:
     return "delaunay_mesh({}) -> Delaunay triangulation mesh"
+
+
+# compact alias per ledger/NAMING.md
+delaunaymesh = delaunay_mesh

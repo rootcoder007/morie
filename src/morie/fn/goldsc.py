@@ -38,3 +38,7 @@ def gold_score(receptor, ligand):
 
 def cheatsheet():
     return "goldsc: GOLD genetic-algorithm docking score"
+
+
+# compact alias per ledger/NAMING.md
+goldscore = gold_score

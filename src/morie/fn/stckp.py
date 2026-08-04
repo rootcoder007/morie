@@ -53,3 +53,7 @@ stckp = stick_breaking
 
 def cheatsheet() -> str:
     return "stick_breaking({}) -> Stick-breaking construction for Dirichlet process."
+
+
+# compact alias per ledger/NAMING.md
+stickbreaking = stick_breaking

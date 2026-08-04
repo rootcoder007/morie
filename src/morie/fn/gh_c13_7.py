@@ -33,3 +33,7 @@ def ghosal_mix_bp(lambdas=(0.5, 1.0, 2.0), weights=None, c=3.0,
 
 def cheatsheet():
     return "gh_c13_7: Mixtures of beta processes"
+
+
+# compact alias per ledger/NAMING.md
+ghosalmixbp = ghosal_mix_bp

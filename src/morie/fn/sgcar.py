@@ -212,3 +212,11 @@ sgcar = conditional_autoregressive
 
 def cheatsheet() -> str:
     return "conditional_autoregressive({}) -> Gaussian CAR by ML over the valid rho range."
+
+
+# compact alias per ledger/NAMING.md
+carrhobounds = car_rho_bounds
+
+
+# compact alias per ledger/NAMING.md
+carrhools = car_rho_ols

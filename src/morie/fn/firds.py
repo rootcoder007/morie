@@ -45,3 +45,7 @@ firds = fir_design
 
 def cheatsheet() -> str:
     return "fir_design({}) -> FIR filter design via windowed sinc."
+
+
+# compact alias per ledger/NAMING.md
+firdesign = fir_design

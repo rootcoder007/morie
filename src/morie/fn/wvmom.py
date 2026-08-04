@@ -90,3 +90,7 @@ wvmom = wavelet_moments
 
 def cheatsheet() -> str:
     return "_db_filter({}) -> Statistical moments of wavelet coefficients."
+
+
+# compact alias per ledger/NAMING.md
+waveletmoments = wavelet_moments

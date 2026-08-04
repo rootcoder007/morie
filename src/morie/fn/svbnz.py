@@ -29,3 +29,7 @@ banz = banzhaf_spatial
 
 def cheatsheet() -> str:
     return "banzhaf_spatial({}) -> Banzhaf power index spatial"
+
+
+# compact alias per ledger/NAMING.md
+banzhafspatial = banzhaf_spatial

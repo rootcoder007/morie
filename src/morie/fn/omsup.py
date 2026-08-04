@@ -90,3 +90,7 @@ omsup = minimax_solve
 
 def cheatsheet() -> str:
     return "minimax_solve({}) -> Minimax optimization."
+
+
+# compact alias per ledger/NAMING.md
+minimaxsolve = minimax_solve

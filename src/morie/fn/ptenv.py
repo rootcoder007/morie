@@ -30,3 +30,7 @@ pp_e = pp_envelope
 
 def cheatsheet() -> str:
     return "pp_envelope({}) -> Point pattern Monte Carlo envelope"
+
+
+# compact alias per ledger/NAMING.md
+ppenvelope = pp_envelope

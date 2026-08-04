@@ -42,3 +42,7 @@ def f_overall_ss(ss_model, ss_resid, n, k):
 
 def cheatsheet():
     return 'ca2e16: F = (SS_model/df_model) / (SS_resid/df_resid) [Weisburd et al. 2022, eq. 2.16]'
+
+
+# compact alias per ledger/NAMING.md
+foverallss = f_overall_ss

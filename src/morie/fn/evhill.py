@@ -101,3 +101,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_hill`.
 evt_hill_estimator = ev_hill
+
+
+# compact alias per ledger/NAMING.md
+evhill = ev_hill

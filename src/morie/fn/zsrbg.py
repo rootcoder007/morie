@@ -29,3 +29,7 @@ rbf_ = rbf_gaussian
 
 def cheatsheet() -> str:
     return "rbf_gaussian({}) -> Gaussian RBF interpolation"
+
+
+# compact alias per ledger/NAMING.md
+rbfgaussian = rbf_gaussian

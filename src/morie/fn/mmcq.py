@@ -95,3 +95,7 @@ mmcq = mmc_queue
 
 def cheatsheet() -> str:
     return "mmc_queue({}) -> M/M/c multi-server queue steady-state metrics."
+
+
+# compact alias per ledger/NAMING.md
+mmcqueue = mmc_queue

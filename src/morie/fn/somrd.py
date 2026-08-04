@@ -50,3 +50,7 @@ somrd = somers_d
 
 def cheatsheet() -> str:
     return "somers_d(x, y) -> Somers' D ordinal association."
+
+
+# compact alias per ledger/NAMING.md
+somersd = somers_d

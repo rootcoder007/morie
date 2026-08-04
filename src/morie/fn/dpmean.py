@@ -121,3 +121,7 @@ def dp_mean(x, a, b, epsilon=1.0, seed=None, split=0.5, known_n=True):
 
 def cheatsheet():
     return "dpmean: sensitivity (b-a)/n with n public; a PRIVATE n needs a budget split and is biased"
+
+
+# compact alias per ledger/NAMING.md
+dpmean = dp_mean

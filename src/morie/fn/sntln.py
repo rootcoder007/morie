@@ -57,3 +57,7 @@ sntln = sentence_length
 
 def cheatsheet() -> str:
     return "sentence_length({}) -> Sentence length distribution summary."
+
+
+# compact alias per ledger/NAMING.md
+sentencelength = sentence_length

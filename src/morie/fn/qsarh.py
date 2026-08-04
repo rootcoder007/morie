@@ -38,3 +38,7 @@ def hansch_qsar(activities, descriptors):
 
 def cheatsheet():
     return "qsarh: Hansch QSAR linear regression"
+
+
+# compact alias per ledger/NAMING.md
+hanschqsar = hansch_qsar

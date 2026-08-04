@@ -94,3 +94,7 @@ def esl_knn(X, y, k, query=None):
 
 def cheatsheet():
     return "eslknn: mean of k nearest y; = majority vote for 0/1; scale-sensitive"
+
+
+# compact alias per ledger/NAMING.md
+eslknn = esl_knn

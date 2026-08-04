@@ -46,3 +46,7 @@ prime = prime_density
 
 def cheatsheet() -> str:
     return "prime_density({}) -> Prime density -- pi(n) counting function."
+
+
+# compact alias per ledger/NAMING.md
+primedensity = prime_density

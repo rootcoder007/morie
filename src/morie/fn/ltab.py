@@ -108,3 +108,7 @@ ltab = life_table
 
 def cheatsheet() -> str:
     return "life_table({}) -> Abridged life table construction."
+
+
+# compact alias per ledger/NAMING.md
+lifetable = life_table

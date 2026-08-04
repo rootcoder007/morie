@@ -36,3 +36,7 @@ irtpb = irt_probability
 
 def cheatsheet() -> str:
     return "irt_probability({}) -> IRT probability of correct response."
+
+
+# compact alias per ledger/NAMING.md
+irtprobability = irt_probability

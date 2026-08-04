@@ -98,3 +98,7 @@ irt_dif = dif_irt_based
 
 def cheatsheet() -> str:
     return "dif_irt_based({}) -> IRT-based DIF using likelihood ratio."
+
+
+# compact alias per ledger/NAMING.md
+difirtbased = dif_irt_based

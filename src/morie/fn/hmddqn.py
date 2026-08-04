@@ -146,3 +146,7 @@ def geron_double_dqn(env, Q, Q_target, buffer, epochs=10, lr=0.1, gamma=0.95, ta
 
 def cheatsheet():
     return "hmddqn: Double DQN: decouple action selection and evaluation"
+
+
+# compact alias per ledger/NAMING.md
+gerondoubledqn = geron_double_dqn

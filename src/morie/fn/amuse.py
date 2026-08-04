@@ -68,3 +68,7 @@ amuse = amuse_bss
 
 def cheatsheet() -> str:
     return "amuse_bss({}) -> AMUSE algorithm for blind source separation."
+
+
+# compact alias per ledger/NAMING.md
+amusebss = amuse_bss

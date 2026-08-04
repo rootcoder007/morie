@@ -46,3 +46,7 @@ def otis_chi2_test(
 
 def cheatsheet() -> str:
     return "otis_chi2_test({}) -> Chi-squared test of independence for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otischi2test = otis_chi2_test

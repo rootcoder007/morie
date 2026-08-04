@@ -69,3 +69,7 @@ l1min = l1_minimize
 
 def cheatsheet() -> str:
     return "l1_minimize({}) -> L1-minimization via ISTA."
+
+
+# compact alias per ledger/NAMING.md
+l1minimize = l1_minimize

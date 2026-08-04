@@ -33,3 +33,7 @@ def stars_and_bars(n, N):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner1e57: Stars and bars: N_U_n = C(n+N-1, N-1) unordered samples with repetition. Morin (2016) eq (1.57)."
+
+
+# compact alias per ledger/NAMING.md
+starsandbars = stars_and_bars

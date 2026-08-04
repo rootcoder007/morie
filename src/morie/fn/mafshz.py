@@ -94,3 +94,7 @@ def ma_fishers_z(r, n=None):
 
 def cheatsheet():
     return "mafshz: z = arctanh(r) = 0.5 ln((1+r)/(1-r)), Var = 1/(n-3) (Fisher 1921)."
+
+
+# compact alias per ledger/NAMING.md
+mafishersz = ma_fishers_z

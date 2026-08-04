@@ -125,3 +125,7 @@ def geron_vanishing_gradients(grads, tol=0.5):
 
 def cheatsheet():
     return "hmvgr: Vanishing gradients: small gradients shrink through many layers"
+
+
+# compact alias per ledger/NAMING.md
+layernorms = layer_norms

@@ -29,3 +29,7 @@ bord = borda_spatial
 
 def cheatsheet() -> str:
     return "borda_spatial({}) -> Borda count in spatial model"
+
+
+# compact alias per ledger/NAMING.md
+bordaspatial = borda_spatial

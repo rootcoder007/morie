@@ -60,3 +60,7 @@ gcd_ = extended_gcd
 
 def cheatsheet() -> str:
     return "extended_gcd({}) -> Extended Euclidean algorithm."
+
+
+# compact alias per ledger/NAMING.md
+extendedgcd = extended_gcd

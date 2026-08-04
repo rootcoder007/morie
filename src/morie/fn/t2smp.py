@@ -77,3 +77,7 @@ t2smp = two_sample_t_test
 
 def cheatsheet() -> str:
     return "two_sample_t_test({}) -> Two-sample t-test (Welch or Student)."
+
+
+# compact alias per ledger/NAMING.md
+twosamplettest = two_sample_t_test

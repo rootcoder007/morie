@@ -289,3 +289,27 @@ def cheatsheet():
         "circuits, duality, and the Rado-Edmonds greedy theorem tested in "
         "both directions"
     )
+
+
+# compact alias per ledger/NAMING.md
+graphicmatroid = graphic_matroid
+
+
+# compact alias per ledger/NAMING.md
+ismatroid = is_matroid
+
+
+# compact alias per ledger/NAMING.md
+matroidbases = matroid_bases
+
+
+# compact alias per ledger/NAMING.md
+matroiddual = matroid_dual
+
+
+# compact alias per ledger/NAMING.md
+matroidrank = matroid_rank
+
+
+# compact alias per ledger/NAMING.md
+uniformmatroid = uniform_matroid

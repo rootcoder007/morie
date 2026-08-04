@@ -42,3 +42,7 @@ def did_forest(y, D, X, time):
 
 def cheatsheet():
     return "didfst: DiD random forest"
+
+
+# compact alias per ledger/NAMING.md
+didforest = did_forest

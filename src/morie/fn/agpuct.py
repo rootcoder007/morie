@@ -49,3 +49,7 @@ def alphazero_puct(P, N, Q, c_puct):
 
 def cheatsheet():
     return "agpuct: PUCT (Predictor Upper Confidence Tree) score for AlphaZero MCTS"
+
+
+# compact alias per ledger/NAMING.md
+alphazeropuct = alphazero_puct

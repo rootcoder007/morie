@@ -46,3 +46,7 @@ sigplt = plot_signal_fn
 
 def cheatsheet() -> str:
     return "plot_signal_fn({}) -> Generic signal plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+plotsignalfn = plot_signal_fn

@@ -46,3 +46,7 @@ fertl = fertility_rate
 
 def cheatsheet() -> str:
     return "fertility_rate({}) -> Total fertility rate from age-specific fertility rates."
+
+
+# compact alias per ledger/NAMING.md
+fertilityrate = fertility_rate

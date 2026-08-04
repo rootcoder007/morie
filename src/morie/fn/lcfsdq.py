@@ -38,3 +38,7 @@ def lc_first_sd_query(x, coords):
 
 def cheatsheet():
     return "lcfsdq: Local-cluster first-order SD query"
+
+
+# compact alias per ledger/NAMING.md
+lcfirstsdquery = lc_first_sd_query

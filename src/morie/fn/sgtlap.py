@@ -36,3 +36,7 @@ def sgt_laplacian(A):
 
 def cheatsheet():
     return "sgtlap: Combinatorial Laplacian"
+
+
+# compact alias per ledger/NAMING.md
+sgtlaplacian = sgt_laplacian

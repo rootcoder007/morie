@@ -30,3 +30,7 @@ smac = smacof_indiv
 
 def cheatsheet() -> str:
     return "smacof_indiv({}) -> Individual differences SMACOF"
+
+
+# compact alias per ledger/NAMING.md
+smacofindiv = smacof_indiv

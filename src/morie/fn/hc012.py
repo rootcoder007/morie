@@ -104,3 +104,7 @@ hc012 = hc_robust_se
 
 def cheatsheet() -> str:
     return "hc_robust_se({}) -> OLS with HC0/HC1/HC2/HC3 robust SE."
+
+
+# compact alias per ledger/NAMING.md
+hcrobustse = hc_robust_se

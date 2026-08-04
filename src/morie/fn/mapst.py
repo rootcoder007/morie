@@ -64,3 +64,7 @@ mapst = map_estimate
 
 def cheatsheet() -> str:
     return "map_estimate({}) -> MAP estimate with Gaussian prior."
+
+
+# compact alias per ledger/NAMING.md
+mapestimate = map_estimate

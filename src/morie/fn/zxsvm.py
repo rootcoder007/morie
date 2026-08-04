@@ -27,3 +27,7 @@ spat = spatial_svm
 
 def cheatsheet() -> str:
     return "spatial_svm({}) -> Spatial SVM"
+
+
+# compact alias per ledger/NAMING.md
+spatialsvm = spatial_svm

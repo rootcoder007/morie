@@ -38,3 +38,7 @@ def resnext_block(x, cardinality):
 
 def cheatsheet():
     return "resnxt: ResNeXt grouped-convolution block"
+
+
+# compact alias per ledger/NAMING.md
+resnextblock = resnext_block

@@ -27,3 +27,7 @@ def ghosal_dp_var(G0_A, alpha):
 
 def cheatsheet():
     return "gh_c4_3: DP prior variance"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpvar = ghosal_dp_var

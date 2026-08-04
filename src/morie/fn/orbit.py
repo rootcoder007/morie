@@ -66,3 +66,7 @@ short = kepler_orbit
 
 def cheatsheet() -> str:
     return "kepler_orbit({}) -> Keplerian orbit generator."
+
+
+# compact alias per ledger/NAMING.md
+keplerorbit = kepler_orbit

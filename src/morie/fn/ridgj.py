@@ -45,3 +45,7 @@ def ridge_objective(y, X, beta, lam):
 
 def cheatsheet():
     return "ridgj: Ridge regression (L2 penalized) objective function"
+
+
+# compact alias per ledger/NAMING.md
+ridgeobjective = ridge_objective

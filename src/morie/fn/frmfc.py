@@ -24,3 +24,7 @@ alias = form_factor_fn
 
 def cheatsheet() -> str:
     return "form_factor_fn({}) -> Form factor of a waveform."
+
+
+# compact alias per ledger/NAMING.md
+formfactorfn = form_factor_fn

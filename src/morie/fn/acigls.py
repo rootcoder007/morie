@@ -44,3 +44,7 @@ def adjusted_ipgls(y, A, H, cluster):
 
 def cheatsheet():
     return "acigls: Adjusted IP-weighted GLS for clustered"
+
+
+# compact alias per ledger/NAMING.md
+adjustedipgls = adjusted_ipgls

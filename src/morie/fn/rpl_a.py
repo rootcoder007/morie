@@ -40,3 +40,7 @@ rpl_a = rplace_by_age
 
 def cheatsheet() -> str:
     return "rplace_by_age({}) -> Placement counts by age group."
+
+
+# compact alias per ledger/NAMING.md
+rplacebyage = rplace_by_age

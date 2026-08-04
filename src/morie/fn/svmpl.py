@@ -81,3 +81,7 @@ svmpl = svm_poly
 
 def cheatsheet() -> str:
     return "svm_poly({}) -> Polynomial kernel SVM classifier."
+
+
+# compact alias per ledger/NAMING.md
+svmpoly = svm_poly

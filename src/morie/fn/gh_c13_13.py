@@ -33,3 +33,7 @@ def ghosal_cox_model(beta=0.7, z=(0.0, 1.0), t=1.0, c=2.0):
 
 def cheatsheet():
     return "gh_c13_13: Cox model with a beta-process baseline"
+
+
+# compact alias per ledger/NAMING.md
+ghosalcoxmodel = ghosal_cox_model

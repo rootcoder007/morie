@@ -50,3 +50,7 @@ def lmm_form_eq2_1(Y, X, Z, beta_init):
 
 def cheatsheet():
     return "lmmf1: Linear mixed model general form (Eq 2.1): Y = Xbeta + Zu + epsilon"
+
+
+# compact alias per ledger/NAMING.md
+lmmformeq21 = lmm_form_eq2_1

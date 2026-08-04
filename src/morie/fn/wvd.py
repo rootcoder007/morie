@@ -31,3 +31,7 @@ wvd = wigner_ville_fn
 
 def cheatsheet() -> str:
     return "wigner_ville_fn({}) -> Wigner-Ville distribution (time-frequency representation)."
+
+
+# compact alias per ledger/NAMING.md
+wignervillefn = wigner_ville_fn

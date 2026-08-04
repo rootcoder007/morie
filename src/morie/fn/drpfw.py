@@ -86,3 +86,7 @@ def dropout_forward(x, p: float = 0.5, seed: int = 0, training: bool = True, det
 
 def cheatsheet():
     return "drpfw: Inverted dropout y = x*mask/(1-p), mask~Bern(1-p)"
+
+
+# compact alias per ledger/NAMING.md
+dropoutforward = dropout_forward

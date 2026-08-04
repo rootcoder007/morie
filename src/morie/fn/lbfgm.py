@@ -95,3 +95,7 @@ def lbfgs_optimize(
 
 
 lbfgm = lbfgs_optimize
+
+
+# compact alias per ledger/NAMING.md
+lbfgsoptimize = lbfgs_optimize

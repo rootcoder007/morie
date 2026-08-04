@@ -29,3 +29,7 @@ rubi = rubinstein_sp
 
 def cheatsheet() -> str:
     return "rubinstein_sp({}) -> Rubinstein spatial bargaining"
+
+
+# compact alias per ledger/NAMING.md
+rubinsteinsp = rubinstein_sp

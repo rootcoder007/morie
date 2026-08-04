@@ -128,3 +128,7 @@ def bayesian_ppc(
 
 def cheatsheet() -> str:
     return "bayesian_ppc({}) -> Posterior predictive check for Bayesian psychometric models."
+
+
+# compact alias per ledger/NAMING.md
+bayesianppc = bayesian_ppc

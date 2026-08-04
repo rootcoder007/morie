@@ -39,3 +39,7 @@ def rangayyan_rms(x):
 
 def cheatsheet():
     return "rgrms: Root mean square (RMS) value of a signal"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanrms = rangayyan_rms

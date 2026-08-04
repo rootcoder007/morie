@@ -30,3 +30,7 @@ mate = matern_process
 
 def cheatsheet() -> str:
     return "matern_process({}) -> Matern cluster process"
+
+
+# compact alias per ledger/NAMING.md
+maternprocess = matern_process

@@ -29,3 +29,7 @@ baye = bayes_outbreak
 
 def cheatsheet() -> str:
     return "bayes_outbreak({}) -> Bayesian outbreak detection"
+
+
+# compact alias per ledger/NAMING.md
+bayesoutbreak = bayes_outbreak

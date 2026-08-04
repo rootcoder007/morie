@@ -44,3 +44,7 @@ def projected_gd(f, grad_f, project, x0, lr):
 
 def cheatsheet():
     return "pgdsdg: Projected gradient descent"
+
+
+# compact alias per ledger/NAMING.md
+projectedgd = projected_gd

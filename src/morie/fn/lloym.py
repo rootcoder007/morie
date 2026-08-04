@@ -60,3 +60,7 @@ def cheatsheet() -> str:
 
 
 lloym = lloyd_max
+
+
+# compact alias per ledger/NAMING.md
+lloydmax = lloyd_max

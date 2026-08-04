@@ -40,3 +40,7 @@ def se3_transformer(G, X, coords):
 
 def cheatsheet():
     return "se3T: SE(3)-equivariant transformer"
+
+
+# compact alias per ledger/NAMING.md
+se3transformer = se3_transformer

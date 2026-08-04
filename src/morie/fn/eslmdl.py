@@ -116,3 +116,7 @@ def esl_mdl(loglik, theta, n=None, prior_sd=None):
 
 def cheatsheet():
     return "eslmdl: MDL = -loglik + (d/2)log n = BIC/2 exactly; `bits` divides by log 2"
+
+
+# compact alias per ledger/NAMING.md
+eslmdl = esl_mdl

@@ -179,3 +179,7 @@ def geron_detr(
 
 def cheatsheet():
     return "hmdetr: DETR: CNN-transformer hybrid for end-to-end object detection"
+
+
+# compact alias per ledger/NAMING.md
+gerondetr = geron_detr

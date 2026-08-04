@@ -84,3 +84,7 @@ def holo_roc(
 
 def cheatsheet() -> str:
     return "holo_roc({}) -> ROC curve visualization."
+
+
+# compact alias per ledger/NAMING.md
+holoroc = holo_roc

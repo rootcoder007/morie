@@ -103,3 +103,7 @@ timstr = time_stretch
 
 def cheatsheet() -> str:
     return "timstr() -> Phase vocoder time-stretching (no pitch change)"
+
+
+# compact alias per ledger/NAMING.md
+timestretch = time_stretch

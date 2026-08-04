@@ -98,3 +98,7 @@ def geron_adagrad(grads, s=None, eta=0.01, eps=1e-10, theta=None):
 
 def cheatsheet():
     return "hmadgr: AdaGrad: per-parameter learning rates scaled by historical gradients"
+
+
+# compact alias per ledger/NAMING.md
+geronadagrad = geron_adagrad

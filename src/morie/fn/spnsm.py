@@ -69,3 +69,7 @@ spnsm = spline_smooth
 
 def cheatsheet() -> str:
     return "spline_smooth({}) -> Smoothing spline."
+
+
+# compact alias per ledger/NAMING.md
+splinesmooth = spline_smooth

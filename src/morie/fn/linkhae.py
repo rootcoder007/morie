@@ -40,3 +40,7 @@ def linking_haebara(params_form_a, params_form_b, common_items):
 
 def cheatsheet():
     return "linkhae: IRT linking -- Haebara"
+
+
+# compact alias per ledger/NAMING.md
+linkinghaebara = linking_haebara

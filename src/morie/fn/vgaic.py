@@ -42,3 +42,7 @@ vari = vario_aic
 
 def cheatsheet() -> str:
     return "vario_aic({}) -> Variogram model AIC"
+
+
+# compact alias per ledger/NAMING.md
+varioaic = vario_aic

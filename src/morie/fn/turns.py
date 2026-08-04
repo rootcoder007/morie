@@ -23,3 +23,7 @@ alias = turns_count_fn
 
 def cheatsheet() -> str:
     return "turns_count_fn({}) -> Turns count of a signal."
+
+
+# compact alias per ledger/NAMING.md
+turnscountfn = turns_count_fn

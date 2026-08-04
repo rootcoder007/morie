@@ -42,3 +42,7 @@ def mts_mtr_combined(y, D, y_min, y_max):
 
 def cheatsheet():
     return "mtsmtv: Combined MTS+MTR Manski-Pepper bounds"
+
+
+# compact alias per ledger/NAMING.md
+mtsmtrcombined = mts_mtr_combined

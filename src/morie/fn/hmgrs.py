@@ -204,3 +204,7 @@ def geron_grid_search(param_grid, X, y, estimator=None, K=3, score=None, shuffle
 
 def cheatsheet():
     return "hmgrs: exhaustive grid search over the Cartesian product, scored by K-fold CV (delegates to grcvs)"
+
+
+# compact alias per ledger/NAMING.md
+ridgeestimator = ridge_estimator

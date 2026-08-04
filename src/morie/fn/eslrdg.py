@@ -103,3 +103,7 @@ def _ridge(X, y, lambda_, penalize_intercept):
 
 def cheatsheet():
     return "eslrdg: intercept UNpenalised; not scale-invariant, standardisation reported"
+
+
+# compact alias per ledger/NAMING.md
+eslridge = esl_ridge

@@ -45,3 +45,7 @@ def ghosal_func_reg(n=300, K=4, seed=42):
 
 def cheatsheet():
     return "gh_c10_11: Functional linear regression"
+
+
+# compact alias per ledger/NAMING.md
+ghosalfuncreg = ghosal_func_reg

@@ -64,3 +64,7 @@ fzor = fuzzy_or
 
 def cheatsheet() -> str:
     return "fuzzy_or({}) -> Fuzzy OR (t-conorm) operation."
+
+
+# compact alias per ledger/NAMING.md
+fuzzyor = fuzzy_or

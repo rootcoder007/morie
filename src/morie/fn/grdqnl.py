@@ -140,3 +140,7 @@ def geron_dqn_loss(Q, Q_target, batch, gamma=0.99):
 
 def cheatsheet():
     return "grdqnl: L = mean((r + gamma max_a' Q_target(s') - Q(s,a))^2); terminal drops the bootstrap"
+
+
+# compact alias per ledger/NAMING.md
+gerondqnloss = geron_dqn_loss

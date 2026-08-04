@@ -73,3 +73,7 @@ def gray_cif_test(time, cause, group, cdf=None):
 
 def cheatsheet():
     return "gracif: Gray's k-sample test for CIF comparison"
+
+
+# compact alias per ledger/NAMING.md
+grayciftest = gray_cif_test

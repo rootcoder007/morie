@@ -34,3 +34,7 @@ def prob_or_general(p_a, p_b, p_ab):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner2e21: General or rule: P(A or B) = P(A) + P(B) - P(A and B). Morin (2016) eq (2.21)."
+
+
+# compact alias per ledger/NAMING.md
+proborgeneral = prob_or_general

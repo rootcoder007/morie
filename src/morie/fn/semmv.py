@@ -145,3 +145,7 @@ def spatial_error_ml(
 
 def cheatsheet() -> str:
     return "spatial_error_ml({}) -> Spatial error model via maximum likelihood."
+
+
+# compact alias per ledger/NAMING.md
+spatialerrorml = spatial_error_ml

@@ -129,3 +129,7 @@ def geron_padding(x, pad_h=None, pad_w=None, kernel_size=None, stride=1):
 
 def cheatsheet():
     return "hmpd: Zero-padding around input for valid/same convolutions"
+
+
+# compact alias per ledger/NAMING.md
+geronpadding = geron_padding

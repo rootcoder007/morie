@@ -188,3 +188,7 @@ def geron_xception(n_classes=1000, in_channels=3, input_size=299):
 
 def cheatsheet():
     return "hmxcpt: Xception: extreme inception using depthwise separable convolutions"
+
+
+# compact alias per ledger/NAMING.md
+geronxception = geron_xception

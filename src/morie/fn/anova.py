@@ -54,3 +54,7 @@ anova = anova_one_way
 
 def cheatsheet() -> str:
     return "anova_one_way({}) -> One-way ANOVA F-test."
+
+
+# compact alias per ledger/NAMING.md
+anovaoneway = anova_one_way

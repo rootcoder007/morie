@@ -39,3 +39,7 @@ def joseph_rmse(y_true, y_pred):
 
 def cheatsheet():
     return "jormse: Root mean squared error for forecasts"
+
+
+# compact alias per ledger/NAMING.md
+josephrmse = joseph_rmse

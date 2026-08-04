@@ -111,3 +111,7 @@ def cheatsheet():
 # CANONICAL TEST
 # np.random.seed(12); M = np.random.randn(25, 4); y = np.sin(M[:,0]) + 0.2*np.random.randn(25)
 # r = svm_genomic(np.zeros(25), y, M); residual SE small.
+
+
+# compact alias per ledger/NAMING.md
+svmgenomic = svm_genomic

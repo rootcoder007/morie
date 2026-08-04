@@ -72,3 +72,7 @@ dnntt = dunnett_test
 
 def cheatsheet() -> str:
     return "dunnett_test({}) -> Dunnett's test -- multiple treatment groups vs control."
+
+
+# compact alias per ledger/NAMING.md
+dunnetttest = dunnett_test

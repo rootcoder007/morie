@@ -154,3 +154,7 @@ srd = sharp_rd
 
 def cheatsheet() -> str:
     return "sharp_rd({}) -> Sharp RDD with bandwidth selection."
+
+
+# compact alias per ledger/NAMING.md
+sharprd = sharp_rd

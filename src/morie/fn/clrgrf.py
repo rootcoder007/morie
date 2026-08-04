@@ -42,3 +42,7 @@ def clustered_grf(y, D, X, cluster):
 
 def cheatsheet():
     return "clrgrf: Cluster-aware GRF"
+
+
+# compact alias per ledger/NAMING.md
+clusteredgrf = clustered_grf

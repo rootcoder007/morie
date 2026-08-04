@@ -35,3 +35,7 @@ def sd_bernoulli(p):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e46: sigma of one biased coin flip: sqrt(pq). Morin (2016) eq (3.46)."
+
+
+# compact alias per ledger/NAMING.md
+sdbernoulli = sd_bernoulli

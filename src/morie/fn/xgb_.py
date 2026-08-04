@@ -91,3 +91,7 @@ xgb_ = xgboost_simple
 
 def cheatsheet() -> str:
     return "_xgb_build({}) -> Simplified XGBoost (L2 regularized gradient boosting)."
+
+
+# compact alias per ledger/NAMING.md
+xgboostsimple = xgboost_simple

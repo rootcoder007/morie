@@ -36,3 +36,7 @@ def nao_index(slp):
 
 def cheatsheet():
     return "naoIdx: North Atlantic Oscillation"
+
+
+# compact alias per ledger/NAMING.md
+naoindex = nao_index

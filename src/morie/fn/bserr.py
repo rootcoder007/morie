@@ -47,3 +47,7 @@ bserr = bias_error
 
 def cheatsheet() -> str:
     return "bias_error({}) -> Estimation bias analysis."
+
+
+# compact alias per ledger/NAMING.md
+biaserror = bias_error

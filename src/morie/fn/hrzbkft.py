@@ -85,3 +85,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_backfitting`.
 horowitz_backfitting = hrz_backfitting
+
+
+# compact alias per ledger/NAMING.md
+hrzbackfitting = hrz_backfitting

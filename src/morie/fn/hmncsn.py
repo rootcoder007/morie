@@ -216,3 +216,7 @@ def geron_ncsn(X, sigmas=(1.0,), epochs=400, lr=0.5, n_noise=32, seed=0,
 
 def cheatsheet():
     return "hmncsn: Noise conditional score network by denoising score matching"
+
+
+# compact alias per ledger/NAMING.md
+geronncsn = geron_ncsn

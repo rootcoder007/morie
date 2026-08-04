@@ -57,3 +57,7 @@ def esl_aic_score(loglik, d):
 
 def cheatsheet():
     return "eslaic: AIC = -2 log L + 2d; lower is better"
+
+
+# compact alias per ledger/NAMING.md
+eslaicscore = esl_aic_score

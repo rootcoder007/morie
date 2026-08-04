@@ -42,3 +42,7 @@ mtodr = mto_driver_risk
 
 def cheatsheet() -> str:
     return "mto_driver_risk({}) -> Driver risk profile by age/gender."
+
+
+# compact alias per ledger/NAMING.md
+mtodriverrisk = mto_driver_risk

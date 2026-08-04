@@ -39,3 +39,7 @@ emdd = earth_mover_dist
 
 def cheatsheet() -> str:
     return "earth_mover_dist({}) -> Earth mover's (Wasserstein-1) distance."
+
+
+# compact alias per ledger/NAMING.md
+earthmoverdist = earth_mover_dist

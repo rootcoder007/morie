@@ -35,3 +35,7 @@ mds_ = mds_gof
 
 def cheatsheet() -> str:
     return "mds_gof({}) -> MDS goodness of fit"
+
+
+# compact alias per ledger/NAMING.md
+mdsgof = mds_gof

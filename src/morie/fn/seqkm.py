@@ -64,3 +64,7 @@ short = kmer_frequency
 
 def cheatsheet() -> str:
     return "kmer_frequency({}) -> K-mer frequency counting."
+
+
+# compact alias per ledger/NAMING.md
+kmerfrequency = kmer_frequency

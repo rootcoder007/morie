@@ -114,3 +114,7 @@ def geron_adamax(grads, m=None, u=None, b1=0.9, b2=0.999, eta=0.002, t=1, theta=
 
 def cheatsheet():
     return "hmadmx: AdaMax: Adam variant using L-infinity norm"
+
+
+# compact alias per ledger/NAMING.md
+geronadamax = geron_adamax

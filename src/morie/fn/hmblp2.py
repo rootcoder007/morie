@@ -161,3 +161,7 @@ def geron_blip2(image, text, n_query=4, d_query=8, d_llm=None, temperature=1.0, 
 
 def cheatsheet():
     return "hmblp2: BLIP-2: frozen image encoder + lightweight Q-Former"
+
+
+# compact alias per ledger/NAMING.md
+geronblip2 = geron_blip2

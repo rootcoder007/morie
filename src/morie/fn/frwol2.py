@@ -44,3 +44,7 @@ def frank_wolfe(f, grad_f, domain, x0, steps):
 
 def cheatsheet():
     return "frwol2: Frank-Wolfe / conditional gradient"
+
+
+# compact alias per ledger/NAMING.md
+frankwolfe = frank_wolfe

@@ -38,3 +38,7 @@ def mean_excess(x, u_grid):
 
 def cheatsheet():
     return "meplt: Mean excess plot"
+
+
+# compact alias per ledger/NAMING.md
+meanexcess = mean_excess

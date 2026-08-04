@@ -45,3 +45,7 @@ def ecs_tcr(model_run, CO2_traj):
 
 def cheatsheet():
     return "ecsTCR: Equilibrium climate sensitivity / transient climate response"
+
+
+# compact alias per ledger/NAMING.md
+ecstcr = ecs_tcr

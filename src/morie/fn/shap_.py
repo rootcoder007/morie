@@ -69,3 +69,7 @@ shap_ = shap_values
 
 def cheatsheet() -> str:
     return "shap_values({}) -> Simplified SHAP values via permutation-based feature attribu"
+
+
+# compact alias per ledger/NAMING.md
+shapvalues = shap_values

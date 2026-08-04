@@ -42,3 +42,7 @@ def s2_residuals(e, n):
 
 def cheatsheet():
     return 'r11e8: S2_hat(e) = (1/(n2-1)) sum e_k^2 [Brus 2022, eq. 11.8]'
+
+
+# compact alias per ledger/NAMING.md
+s2residuals = s2_residuals

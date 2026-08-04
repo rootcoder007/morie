@@ -168,3 +168,7 @@ def geron_adaboost(X, y, base_estimator=None, n_estimators=10, eps=1e-10):
 
 def cheatsheet():
     return "hmadab: AdaBoost: train sequential weighted weak learners"
+
+
+# compact alias per ledger/NAMING.md
+geronadaboost = geron_adaboost

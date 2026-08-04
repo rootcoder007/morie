@@ -92,3 +92,7 @@ def boyd_indicator(x, C="ball", tol=1e-09, **set_kw):
 
 def cheatsheet():
     return "cvxind: +inf (not 1) is what enforces the constraint; its prox IS the projection"
+
+
+# compact alias per ledger/NAMING.md
+boydindicator = boyd_indicator

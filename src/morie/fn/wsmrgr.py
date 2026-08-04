@@ -81,3 +81,7 @@ def wasserman_ridge(X, y, lambda_):
 
 def cheatsheet():
     return "wsmrgr: closed-form ridge; effective df = tr(X G^-1 X')"
+
+
+# compact alias per ledger/NAMING.md
+wassermanridge = wasserman_ridge

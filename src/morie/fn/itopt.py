@@ -45,3 +45,7 @@ def item_option_freq(data: pd.DataFrame | np.ndarray) -> dict[str, pd.DataFrame]
 
 def cheatsheet() -> str:
     return "item_option_freq({}) -> Item response option frequencies."
+
+
+# compact alias per ledger/NAMING.md
+itemoptionfreq = item_option_freq

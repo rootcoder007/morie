@@ -81,3 +81,7 @@ cocht = cochrans_q_test
 
 def cheatsheet() -> str:
     return "cochrans_q_test({}) -> Cochran's Q test for k related binary samples."
+
+
+# compact alias per ledger/NAMING.md
+cochransqtest = cochrans_q_test

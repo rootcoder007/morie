@@ -121,3 +121,7 @@ hmc = hamiltonian_mc
 
 def cheatsheet() -> str:
     return "hamiltonian_mc(log_target, grad, init) -> Hamiltonian Monte Carlo sampler."
+
+
+# compact alias per ledger/NAMING.md
+hamiltonianmc = hamiltonian_mc

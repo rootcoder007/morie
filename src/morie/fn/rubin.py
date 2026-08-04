@@ -141,3 +141,7 @@ rubin = rubins_rules
 
 def cheatsheet() -> str:
     return "rubins_rules({}) -> Rubin's rules for pooling multiply imputed estimates."
+
+
+# compact alias per ledger/NAMING.md
+rubinsrules = rubins_rules

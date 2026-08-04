@@ -37,3 +37,7 @@ spgrm = spectrogram_fn
 
 def cheatsheet() -> str:
     return "spectrogram_fn({}) -> Spectrogram (squared magnitude STFT)."
+
+
+# compact alias per ledger/NAMING.md
+spectrogramfn = spectrogram_fn

@@ -92,3 +92,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`average_pooling`.
 geron_average_pool = average_pooling
+
+
+# compact alias per ledger/NAMING.md
+averagepooling = average_pooling

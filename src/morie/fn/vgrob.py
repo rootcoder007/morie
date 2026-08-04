@@ -42,3 +42,7 @@ vari = vario_robust
 
 def cheatsheet() -> str:
     return "vario_robust({}) -> Robust semivariogram (Cressie-Hawkins)"
+
+
+# compact alias per ledger/NAMING.md
+variorobust = vario_robust

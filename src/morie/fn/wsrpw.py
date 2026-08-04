@@ -98,3 +98,7 @@ def cheatsheet():
 # CANONICAL TEST
 # >>> wilcoxon_power(np.zeros(20), effect_size=0.5, alpha=0.05, nsim=2000)
 # Expected power ≈ 0.55-0.65 for n=20, delta=0.5, sigma=1
+
+
+# compact alias per ledger/NAMING.md
+wilcoxonpower = wilcoxon_power

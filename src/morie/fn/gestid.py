@@ -154,3 +154,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`g_estimation_snmm`.
 g_estimation_snm = g_estimation_snmm
+
+
+# compact alias per ledger/NAMING.md
+gestimationsnm = g_estimation_snm

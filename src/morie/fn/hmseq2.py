@@ -161,3 +161,7 @@ def geron_seq2seq(src, tgt, encoder, decoder, max_len=None, eos=None):
 
 def cheatsheet():
     return "hmseq2: Sequence-to-sequence encoder-decoder architecture"
+
+
+# compact alias per ledger/NAMING.md
+geronseq2seq = geron_seq2seq

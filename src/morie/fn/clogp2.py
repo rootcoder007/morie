@@ -36,3 +36,7 @@ def clogp_estimate(smiles):
 
 def cheatsheet():
     return "clogp2: Crippen calculated LogP"
+
+
+# compact alias per ledger/NAMING.md
+clogpestimate = clogp_estimate

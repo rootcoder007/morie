@@ -72,3 +72,7 @@ def ghosal_test_cond(x, cdf=None):
 
 def cheatsheet():
     return "gh_c8_3: Test condition for contraction: exponentially powerful tests at scale eps_n"
+
+
+# compact alias per ledger/NAMING.md
+ghosaltestcond = ghosal_test_cond

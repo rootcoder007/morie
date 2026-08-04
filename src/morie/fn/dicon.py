@@ -75,3 +75,7 @@ dicon = compute_dic
 
 def cheatsheet() -> str:
     return "compute_dic(log_lik_samples, log_lik_mean) -> Deviance Information Criterion."
+
+
+# compact alias per ledger/NAMING.md
+computedic = compute_dic

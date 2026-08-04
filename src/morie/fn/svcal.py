@@ -29,3 +29,7 @@ calv = calvert_model
 
 def cheatsheet() -> str:
     return "calvert_model({}) -> Calvert uncertainty model"
+
+
+# compact alias per ledger/NAMING.md
+calvertmodel = calvert_model

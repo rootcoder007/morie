@@ -159,3 +159,7 @@ pliv_fn = estimate_pliv
 
 def cheatsheet() -> str:
     return "estimate_pliv({}) -> Partially Linear IV (PLIV) for LATE via DoubleML or 2SLS fal"
+
+
+# compact alias per ledger/NAMING.md
+estimatepliv = estimate_pliv

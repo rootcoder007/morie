@@ -46,3 +46,7 @@ def ot_sinkhorn(a, b, C, epsilon, max_iter):
 
 def cheatsheet():
     return "otsinkhorn: Entropic-regularised OT via Sinkhorn iterations"
+
+
+# compact alias per ledger/NAMING.md
+otsinkhorn = ot_sinkhorn

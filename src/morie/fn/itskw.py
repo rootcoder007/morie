@@ -48,3 +48,7 @@ def item_skew_kurt(data: pd.DataFrame | np.ndarray) -> pd.DataFrame:
 
 def cheatsheet() -> str:
     return "item_skew_kurt({}) -> Item skewness and kurtosis."
+
+
+# compact alias per ledger/NAMING.md
+itemskewkurt = item_skew_kurt

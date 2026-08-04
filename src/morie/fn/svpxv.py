@@ -29,3 +29,7 @@ prox = proximity_vote
 
 def cheatsheet() -> str:
     return "proximity_vote({}) -> Proximity voting model probability"
+
+
+# compact alias per ledger/NAMING.md
+proximityvote = proximity_vote

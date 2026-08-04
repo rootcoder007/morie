@@ -43,3 +43,7 @@ def trend_weights(times):
 
 def cheatsheet():
     return 'r15e4: w_j = (t_j - tbar)/sum(t - tbar)^2 [Brus 2022, eq. 15.4]'
+
+
+# compact alias per ledger/NAMING.md
+trendweights = trend_weights

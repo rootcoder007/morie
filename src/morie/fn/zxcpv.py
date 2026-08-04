@@ -82,3 +82,7 @@ def copula_vine_sp(data):
 
 def cheatsheet():
     return "zxcpv: vine copula fitted by pairwise Kendall-tau inversion"
+
+
+# compact alias per ledger/NAMING.md
+copulavinesp = copula_vine_sp

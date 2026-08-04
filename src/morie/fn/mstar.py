@@ -87,3 +87,7 @@ mstar = ms_ar
 
 def cheatsheet() -> str:
     return "ms_ar({}) -> Markov-switching AR model."
+
+
+# compact alias per ledger/NAMING.md
+msar = ms_ar

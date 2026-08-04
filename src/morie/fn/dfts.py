@@ -50,3 +50,7 @@ dfts = dft_spectrum
 
 def cheatsheet() -> str:
     return "dft_spectrum({}) -> Power spectral density via FFT."
+
+
+# compact alias per ledger/NAMING.md
+dftspectrum = dft_spectrum

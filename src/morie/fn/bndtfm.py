@@ -42,3 +42,7 @@ def bound_transform(y, D, X, transform):
 
 def cheatsheet():
     return "bndtfm: Bound under outcome transformation"
+
+
+# compact alias per ledger/NAMING.md
+boundtransform = bound_transform

@@ -42,3 +42,7 @@ def baxter_king(y, p_low, p_high, K):
 
 def cheatsheet():
     return "bxprfl: Baxter-King band-pass filter"
+
+
+# compact alias per ledger/NAMING.md
+baxterking = baxter_king

@@ -36,3 +36,7 @@ def smt_solver(formula):
 
 def cheatsheet():
     return "smtZ3: SMT solver framework"
+
+
+# compact alias per ledger/NAMING.md
+smtsolver = smt_solver

@@ -61,3 +61,7 @@ short = polar_decompose
 
 def cheatsheet() -> str:
     return "polar_decompose({}) -> Polar decomposition A = UP."
+
+
+# compact alias per ledger/NAMING.md
+polardecompose = polar_decompose

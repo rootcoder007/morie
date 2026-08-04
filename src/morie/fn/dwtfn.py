@@ -127,3 +127,7 @@ dwtfn = dwt_decompose
 
 def cheatsheet() -> str:
     return "_daubechies_filter({}) -> Discrete Wavelet Transform via filter bank convolution."
+
+
+# compact alias per ledger/NAMING.md
+dwtdecompose = dwt_decompose

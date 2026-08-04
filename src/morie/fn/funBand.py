@@ -38,3 +38,7 @@ def functional_band(Y, alpha):
 
 def cheatsheet():
     return "funBand: Functional confidence band"
+
+
+# compact alias per ledger/NAMING.md
+functionalband = functional_band

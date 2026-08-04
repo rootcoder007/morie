@@ -49,3 +49,7 @@ rsknb = risk_nagelkerke
 
 def cheatsheet() -> str:
     return "risk_nagelkerke({}) -> Nagelkerke R-squared for risk model."
+
+
+# compact alias per ledger/NAMING.md
+risknagelkerke = risk_nagelkerke

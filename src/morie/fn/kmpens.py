@@ -139,3 +139,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`prompt_ensemble`.
 kamath_prompt_ensemble = prompt_ensemble
+
+
+# compact alias per ledger/NAMING.md
+promptensemble = prompt_ensemble

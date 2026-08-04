@@ -100,3 +100,7 @@ short = bst_operations
 
 def cheatsheet() -> str:
     return "bst_operations({}) -> Binary search tree operations."
+
+
+# compact alias per ledger/NAMING.md
+bstoperations = bst_operations

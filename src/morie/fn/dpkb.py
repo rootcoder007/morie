@@ -40,3 +40,7 @@ def k_anonymity(X, quasi_ids, k):
 
 def cheatsheet():
     return "dpkb: k-anonymity baseline (NOT DP)"
+
+
+# compact alias per ledger/NAMING.md
+kanonymity = k_anonymity

@@ -325,3 +325,11 @@ def cheatsheet():
         "the diagonal out so measurement error is estimated rather than "
         "smoothed into the surface"
     )
+
+
+# compact alias per ledger/NAMING.md
+bsplinebasis = bspline_basis
+
+
+# compact alias per ledger/NAMING.md
+facesmooth = face_smooth

@@ -112,3 +112,7 @@ def efa_nfactors(
 
 def cheatsheet() -> str:
     return "efa_nfactors({}) -> Determine optimal number of factors (parallel analysis, MAP,"
+
+
+# compact alias per ledger/NAMING.md
+efanfactors = efa_nfactors

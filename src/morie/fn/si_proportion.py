@@ -42,3 +42,7 @@ def si_proportion(y):
 
 def cheatsheet():
     return 'r3e6: p_hat = (1/n) sum y_k [Brus 2022, eq. 3.6]'
+
+
+# compact alias per ledger/NAMING.md
+siproportion = si_proportion

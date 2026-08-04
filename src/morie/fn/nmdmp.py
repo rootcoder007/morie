@@ -30,3 +30,7 @@ part = party_diverge
 
 def cheatsheet() -> str:
     return "party_diverge({}) -> Party divergence measure"
+
+
+# compact alias per ledger/NAMING.md
+partydiverge = party_diverge

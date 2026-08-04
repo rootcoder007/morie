@@ -29,3 +29,7 @@ sali = salience_2issue
 
 def cheatsheet() -> str:
     return "salience_2issue({}) -> Two-issue salience model"
+
+
+# compact alias per ledger/NAMING.md
+salience2issue = salience_2issue

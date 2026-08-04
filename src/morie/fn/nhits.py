@@ -40,3 +40,7 @@ def n_hits(y, stacks, mlp_units):
 
 def cheatsheet():
     return "nhits: N-HiTS hierarchical interpolation"
+
+
+# compact alias per ledger/NAMING.md
+nhits = n_hits

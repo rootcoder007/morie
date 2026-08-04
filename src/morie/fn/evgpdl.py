@@ -26,3 +26,7 @@ def evt_gpd_loglik(y, sigma, xi):
 
 def cheatsheet():
     return "evgpdl: Log-likelihood of a GPD sample"
+
+
+# compact alias per ledger/NAMING.md
+evtgpdloglik = evt_gpd_loglik

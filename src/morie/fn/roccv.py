@@ -75,3 +75,7 @@ roccv = roc_curve
 
 def cheatsheet() -> str:
     return "roc_curve({}) -> ROC curve (FPR, TPR at thresholds)."
+
+
+# compact alias per ledger/NAMING.md
+roccurve = roc_curve

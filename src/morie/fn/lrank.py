@@ -58,3 +58,7 @@ lrank = log_rank
 
 def cheatsheet() -> str:
     return "log_rank({}) -> Log-rank test for comparing survival curves."
+
+
+# compact alias per ledger/NAMING.md
+logrank = log_rank

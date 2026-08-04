@@ -105,3 +105,7 @@ def geron_resnet(x, F, projection=None):
 
 def cheatsheet():
     return "hmresn: ResNet residual block y = F(x) + x"
+
+
+# compact alias per ledger/NAMING.md
+geronresnet = geron_resnet

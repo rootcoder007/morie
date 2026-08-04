@@ -67,3 +67,7 @@ aucfn = auc_compute
 
 def cheatsheet() -> str:
     return "auc_compute({}) -> Area under ROC curve."
+
+
+# compact alias per ledger/NAMING.md
+auccompute = auc_compute

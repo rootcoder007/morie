@@ -33,3 +33,7 @@ def exact_half_heads(n):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner2e65: Exact P(n Heads in 2n fair flips) = C(2n,n)/4^n. Morin (2016) eq (2.65)."
+
+
+# compact alias per ledger/NAMING.md
+exacthalfheads = exact_half_heads

@@ -110,3 +110,7 @@ def dp_count(D, epsilon=1.0, predicate=None, seed=None, nonneg=True):
 
 def cheatsheet():
     return "dpcnt: sensitivity 1 whatever n, so noise is O(1) and relative error falls like 1/n"
+
+
+# compact alias per ledger/NAMING.md
+dpcount = dp_count

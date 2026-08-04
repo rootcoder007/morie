@@ -92,3 +92,7 @@ def causal_dml_iv(y, D, Z, X, n_folds=5, seed=0):
 
 def cheatsheet():
     return "causdmliv: theta = <rz, ry> / <rz, rd> on cross-fitted residuals"
+
+
+# compact alias per ledger/NAMING.md
+causaldmliv = causal_dml_iv

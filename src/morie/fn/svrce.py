@@ -29,3 +29,7 @@ roll = roll_call_error
 
 def cheatsheet() -> str:
     return "roll_call_error({}) -> Roll call classification error"
+
+
+# compact alias per ledger/NAMING.md
+rollcallerror = roll_call_error

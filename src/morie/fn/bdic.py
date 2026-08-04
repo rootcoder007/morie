@@ -57,3 +57,7 @@ bdic = bayesian_dic
 
 def cheatsheet() -> str:
     return "bayesian_dic({}) -> Bayesian DIC (deviance information criterion)."
+
+
+# compact alias per ledger/NAMING.md
+bayesiandic = bayesian_dic

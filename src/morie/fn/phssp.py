@@ -41,3 +41,7 @@ phssp = phase_spectrum
 
 def cheatsheet() -> str:
     return "phase_spectrum({}) -> Phase spectrum."
+
+
+# compact alias per ledger/NAMING.md
+phasespectrum = phase_spectrum

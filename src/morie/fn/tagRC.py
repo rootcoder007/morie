@@ -38,3 +38,7 @@ def tag_aware_rec(UTI, alpha):
 
 def cheatsheet():
     return "tagRC: Tag-aware recommendation (FolkRank)"
+
+
+# compact alias per ledger/NAMING.md
+tagawarerec = tag_aware_rec

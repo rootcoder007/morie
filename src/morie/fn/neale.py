@@ -113,3 +113,7 @@ neale = neal_algorithm_8
 
 def cheatsheet() -> str:
     return "neal_algorithm_8(x, alpha=1.0, n_iter=1000) -> DP mixture MCMC results"
+
+
+# compact alias per ledger/NAMING.md
+nealalgorithm8 = neal_algorithm_8

@@ -246,3 +246,7 @@ def geron_xgboost(
 
 def cheatsheet():
     return "hmxgb: XGBoost: regularized gradient boosting with second-order Taylor approximation"
+
+
+# compact alias per ledger/NAMING.md
+geronxgboost = geron_xgboost

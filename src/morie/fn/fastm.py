@@ -40,3 +40,7 @@ def fast_mcd(X, h, n_starts):
 
 def cheatsheet():
     return "fastm: FAST-MCD algorithm"
+
+
+# compact alias per ledger/NAMING.md
+fastmcd = fast_mcd

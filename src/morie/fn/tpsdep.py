@@ -53,3 +53,7 @@ tpsdep = tps_deployment
 
 def cheatsheet() -> str:
     return "tps_deployment({}) -> Officer deployment analysis by division."
+
+
+# compact alias per ledger/NAMING.md
+tpsdeployment = tps_deployment

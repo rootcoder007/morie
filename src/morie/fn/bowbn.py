@@ -44,3 +44,7 @@ def bow_ban_theorem(graph):
 
 def cheatsheet():
     return "bowbn: Bow-ban (no self-loops): DAG acyclicity condition ensuring no cycles"
+
+
+# compact alias per ledger/NAMING.md
+bowbantheorem = bow_ban_theorem

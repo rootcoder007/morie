@@ -36,3 +36,7 @@ def shunting_yard(tokens):
 
 def cheatsheet():
     return "shYa: Shunting-yard infix->RPN"
+
+
+# compact alias per ledger/NAMING.md
+shuntingyard = shunting_yard

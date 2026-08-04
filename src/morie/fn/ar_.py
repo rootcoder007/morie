@@ -65,3 +65,7 @@ ar_ = attack_rate
 
 def cheatsheet() -> str:
     return "attack_rate({}) -> Attack Rate (cumulative incidence)."
+
+
+# compact alias per ledger/NAMING.md
+attackrate = attack_rate

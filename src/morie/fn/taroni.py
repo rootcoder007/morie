@@ -61,3 +61,7 @@ def taroni_ware(time, event, group, cdf=None):
 
 def cheatsheet():
     return "taroni: Tarone-Ware test"
+
+
+# compact alias per ledger/NAMING.md
+taroniware = taroni_ware

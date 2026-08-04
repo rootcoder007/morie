@@ -78,3 +78,7 @@ prmsc = vae_sample
 
 def cheatsheet() -> str:
     return "prmsc() -> Sample from a VAE latent space using the reparameterization trick"
+
+
+# compact alias per ledger/NAMING.md
+vaesample = vae_sample

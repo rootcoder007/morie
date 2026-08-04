@@ -88,3 +88,7 @@ ewma = ewma_detect
 
 def cheatsheet() -> str:
     return "ewma_detect({}) -> EWMA control chart for outbreak detection."
+
+
+# compact alias per ledger/NAMING.md
+ewmadetect = ewma_detect

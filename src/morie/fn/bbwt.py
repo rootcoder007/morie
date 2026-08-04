@@ -36,3 +36,7 @@ bbwt = bb_weight_matrix
 
 def cheatsheet() -> str:
     return "bb_weight_matrix({}) -> Blackbox weight matrix estimation."
+
+
+# compact alias per ledger/NAMING.md
+bbweightmatrix = bb_weight_matrix

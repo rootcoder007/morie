@@ -45,3 +45,7 @@ odm_e = otis_demo_equity
 
 def cheatsheet() -> str:
     return "otis_demo_equity({}) -> Equity metrics: representation index and disparity ratio."
+
+
+# compact alias per ledger/NAMING.md
+otisdemoequity = otis_demo_equity

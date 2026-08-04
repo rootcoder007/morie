@@ -42,3 +42,7 @@ vari = vario_power
 
 def cheatsheet() -> str:
     return "vario_power({}) -> Power variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variopower = vario_power

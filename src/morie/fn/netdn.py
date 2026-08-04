@@ -42,3 +42,7 @@ def network_density(
 
 def cheatsheet() -> str:
     return "network_density({}) -> Network density (proportion of non-zero edges)."
+
+
+# compact alias per ledger/NAMING.md
+networkdensity = network_density

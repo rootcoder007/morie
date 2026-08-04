@@ -137,3 +137,15 @@ def gpkrn(
 
 def cheatsheet() -> str:
     return "gpkrn(data=None, coords=None, n=50, kernel_type='se') -> SpatialResult with kernel matrix summary"
+
+
+# compact alias per ledger/NAMING.md
+gpkernelmatrix = gp_kernel_matrix
+
+
+# compact alias per ledger/NAMING.md
+maternkernel = matern_kernel
+
+
+# compact alias per ledger/NAMING.md
+periodickernel = periodic_kernel

@@ -96,3 +96,7 @@ def vol_har_rv(RV, h=1):
 
 def cheatsheet():
     return "volhar: RV_t ~ c + b_d RV_{t-1} + b_w mean5 + b_m mean22 (Corsi 2009)"
+
+
+# compact alias per ledger/NAMING.md
+volharrv = vol_har_rv

@@ -50,3 +50,7 @@ def rangayyan_nmf(V, r, max_iter, tol):
 
 def cheatsheet():
     return "rgnmf: Nonnegative matrix factorization (NMF) with multiplicative update rules"
+
+
+# compact alias per ledger/NAMING.md
+rangayyannmf = rangayyan_nmf

@@ -117,3 +117,7 @@ def geron_revnet(x, F, G):
 
 def cheatsheet():
     return "hmrvn: RevNet: reversible residual blocks enabling activation-free backprop"
+
+
+# compact alias per ledger/NAMING.md
+geronrevnet = geron_revnet

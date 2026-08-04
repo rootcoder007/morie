@@ -49,3 +49,7 @@ suage = substance_by_age
 
 def cheatsheet() -> str:
     return "substance_by_age({}) -> Age-specific substance use rates."
+
+
+# compact alias per ledger/NAMING.md
+substancebyage = substance_by_age

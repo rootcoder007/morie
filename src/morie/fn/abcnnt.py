@@ -44,3 +44,7 @@ def abc_neural(sim, obs, theta_prior, n_train):
 
 def cheatsheet():
     return "abcnnt: ABC with neural likelihood-free inference"
+
+
+# compact alias per ledger/NAMING.md
+abcneural = abc_neural

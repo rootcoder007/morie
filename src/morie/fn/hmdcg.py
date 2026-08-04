@@ -218,3 +218,7 @@ def geron_dcgan(X, z_dim=100, filters=64, epochs=50, lr=0.0002, seed_shape=(4, 4
 
 def cheatsheet():
     return "hmdcg: Deep convolutional GAN (DCGAN)"
+
+
+# compact alias per ledger/NAMING.md
+gerondcgan = geron_dcgan

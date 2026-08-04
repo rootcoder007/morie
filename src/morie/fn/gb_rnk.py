@@ -52,3 +52,7 @@ def gibbons_rank_def(x):
 
 def cheatsheet():
     return "gb_rnk: rank = n * EDF at the point; needs distinct values"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsrankdef = gibbons_rank_def

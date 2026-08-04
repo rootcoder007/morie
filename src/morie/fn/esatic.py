@@ -40,3 +40,7 @@ def eap_information(item_pool, theta):
 
 def cheatsheet():
     return "esatic: Information-criterion-based item selection"
+
+
+# compact alias per ledger/NAMING.md
+eapinformation = eap_information

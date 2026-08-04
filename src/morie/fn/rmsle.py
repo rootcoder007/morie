@@ -46,3 +46,7 @@ rmsle = rms_log_error
 
 def cheatsheet() -> str:
     return "rms_log_error({}) -> RMS log spectral error."
+
+
+# compact alias per ledger/NAMING.md
+rmslogerror = rms_log_error

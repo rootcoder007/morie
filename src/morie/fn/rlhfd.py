@@ -55,3 +55,7 @@ def cheatsheet():
 # >>> r = rlhf_reward(np.array([[1.0, 1.0]]), w=np.array([0.5, 0.5]), b=0.0)
 # >>> float(r["value"])
 # 1.0
+
+
+# compact alias per ledger/NAMING.md
+rlhfreward = rlhf_reward

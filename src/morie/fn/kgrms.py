@@ -35,3 +35,7 @@ krig = kriging_rmse
 
 def cheatsheet() -> str:
     return "kriging_rmse({}) -> Kriging RMSE"
+
+
+# compact alias per ledger/NAMING.md
+krigingrmse = kriging_rmse

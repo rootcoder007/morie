@@ -74,3 +74,7 @@ cpbbs = bbs_changepoint
 
 def cheatsheet() -> str:
     return "bbs_changepoint({}) -> Binary segmentation for change-point detection."
+
+
+# compact alias per ledger/NAMING.md
+bbschangepoint = bbs_changepoint

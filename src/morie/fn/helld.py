@@ -44,3 +44,7 @@ helld = hellinger_dist
 
 def cheatsheet() -> str:
     return "hellinger_dist({}) -> Hellinger distance."
+
+
+# compact alias per ledger/NAMING.md
+hellingerdist = hellinger_dist

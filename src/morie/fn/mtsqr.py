@@ -57,3 +57,7 @@ def matrix_sqrt(
 
 
 mtsqr = matrix_sqrt
+
+
+# compact alias per ledger/NAMING.md
+matrixsqrt = matrix_sqrt

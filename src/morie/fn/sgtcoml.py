@@ -38,3 +38,7 @@ def sgt_louvain_step(A, labels):
 
 def cheatsheet():
     return "sgtcoml: Louvain modularity-greedy single pass"
+
+
+# compact alias per ledger/NAMING.md
+sgtlouvainstep = sgt_louvain_step

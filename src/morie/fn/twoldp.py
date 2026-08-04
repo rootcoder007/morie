@@ -38,3 +38,7 @@ def two_locus_dprime(geno1, geno2):
 
 def cheatsheet():
     return "twoldp: D' two-locus disequilibrium"
+
+
+# compact alias per ledger/NAMING.md
+twolocusdprime = two_locus_dprime

@@ -29,3 +29,7 @@ grea = great_circle
 
 def cheatsheet() -> str:
     return "great_circle({}) -> Great circle distance"
+
+
+# compact alias per ledger/NAMING.md
+greatcircle = great_circle

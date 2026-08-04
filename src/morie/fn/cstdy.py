@@ -34,3 +34,7 @@ def custody_days(
 
 def cheatsheet() -> str:
     return "custody_days({}) -> Total custody days per individual."
+
+
+# compact alias per ledger/NAMING.md
+custodydays = custody_days

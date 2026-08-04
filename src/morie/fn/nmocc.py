@@ -30,3 +30,7 @@ oc_c = oc_classify
 
 def cheatsheet() -> str:
     return "oc_classify({}) -> OC classification rate"
+
+
+# compact alias per ledger/NAMING.md
+occlassify = oc_classify

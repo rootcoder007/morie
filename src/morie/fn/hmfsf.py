@@ -151,3 +151,7 @@ def geron_few_shot(model, examples, query, k=None, separator="\n", template="{x}
 
 def cheatsheet():
     return "hmfsf: Few-shot learning: small number of in-context examples"
+
+
+# compact alias per ledger/NAMING.md
+geronfewshot = geron_few_shot

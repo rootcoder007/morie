@@ -44,3 +44,7 @@ def tmle_non_smooth(y, D, X, bw):
 
 def cheatsheet():
     return "tmlnsm: TMLE for non-smooth functionals (median, etc.)"
+
+
+# compact alias per ledger/NAMING.md
+tmlenonsmooth = tmle_non_smooth

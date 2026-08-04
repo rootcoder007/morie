@@ -42,3 +42,7 @@ def blip2_qformer(image_features, queries, llm):
 
 def cheatsheet():
     return "blip2v: BLIP-2 Q-Former vision-language alignment"
+
+
+# compact alias per ledger/NAMING.md
+blip2qformer = blip2_qformer

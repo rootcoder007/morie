@@ -123,3 +123,7 @@ def aft_weibull(time, event, X, **kwargs):
 
 def cheatsheet():
     return "aftwbl: AFT -- exp(beta) is a TIME RATIO; positive beta means LONGER survival, unlike Cox"
+
+
+# compact alias per ledger/NAMING.md
+aftweibull = aft_weibull

@@ -38,3 +38,7 @@ amres = am_residuals
 
 def cheatsheet() -> str:
     return "am_residuals({}) -> A-M residual matrix computation."
+
+
+# compact alias per ledger/NAMING.md
+amresiduals = am_residuals

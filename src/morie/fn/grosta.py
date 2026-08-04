@@ -35,3 +35,7 @@ grosta = grouped_stats
 
 def cheatsheet() -> str:
     return "grouped_stats({}) -> Grouped summary statistics."
+
+
+# compact alias per ledger/NAMING.md
+groupedstats = grouped_stats

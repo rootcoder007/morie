@@ -40,3 +40,7 @@ def kernel_cusum(x, kernel, threshold):
 
 def cheatsheet():
     return "kcusum: Kernel CUSUM"
+
+
+# compact alias per ledger/NAMING.md
+kernelcusum = kernel_cusum

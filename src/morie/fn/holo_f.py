@@ -65,3 +65,7 @@ def holo_forest(
 
 def cheatsheet() -> str:
     return "holo_forest({}) -> Forest plot for meta-analysis."
+
+
+# compact alias per ledger/NAMING.md
+holoforest = holo_forest

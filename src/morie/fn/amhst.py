@@ -25,3 +25,7 @@ alias = amplitude_hist
 
 def cheatsheet() -> str:
     return "amplitude_hist({}) -> Amplitude histogram of a signal."
+
+
+# compact alias per ledger/NAMING.md
+amplitudehist = amplitude_hist

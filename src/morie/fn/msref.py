@@ -30,3 +30,7 @@ refl = reflect_config
 
 def cheatsheet() -> str:
     return "reflect_config({}) -> Reflection of configuration"
+
+
+# compact alias per ledger/NAMING.md
+reflectconfig = reflect_config

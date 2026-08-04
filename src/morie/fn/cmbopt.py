@@ -433,3 +433,15 @@ def cheatsheet():
         "with Konig and Hall, and max-flow min-cut -- each returning both "
         "sides of the duality and the residual between them"
     )
+
+
+# compact alias per ledger/NAMING.md
+hallcondition = hall_condition
+
+
+# compact alias per ledger/NAMING.md
+konigtheorem = konig_theorem
+
+
+# compact alias per ledger/NAMING.md
+maxflowmincut = max_flow_min_cut

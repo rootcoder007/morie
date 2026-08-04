@@ -59,3 +59,7 @@ qn_es = qn_estimator
 
 def cheatsheet() -> str:
     return "qn_estimator(x) -> Rousseeuw-Croux Qn scale estimator."
+
+
+# compact alias per ledger/NAMING.md
+qnestimator = qn_estimator

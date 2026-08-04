@@ -24,3 +24,7 @@ alias = entropy_hist
 
 def cheatsheet() -> str:
     return "entropy_hist({}) -> Entropy from amplitude histogram of a signal."
+
+
+# compact alias per ledger/NAMING.md
+entropyhist = entropy_hist

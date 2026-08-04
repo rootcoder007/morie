@@ -45,3 +45,7 @@ def rangayyan_svm(X, y, kernel, C):
 
 def cheatsheet():
     return "rgsvm: Support vector machine (SVM) via margin maximization"
+
+
+# compact alias per ledger/NAMING.md
+rangayyansvm = rangayyan_svm

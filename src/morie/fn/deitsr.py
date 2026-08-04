@@ -38,3 +38,7 @@ def deit_distill(x, teacher):
 
 def cheatsheet():
     return "deitsr: DeiT distillation token"
+
+
+# compact alias per ledger/NAMING.md
+deitdistill = deit_distill

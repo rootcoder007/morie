@@ -47,3 +47,7 @@ jnent = joint_entropy
 
 def cheatsheet() -> str:
     return "joint_entropy({}) -> Joint entropy."
+
+
+# compact alias per ledger/NAMING.md
+jointentropy = joint_entropy

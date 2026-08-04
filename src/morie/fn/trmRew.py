@@ -38,3 +38,7 @@ def term_rewriting(term, rules):
 
 def cheatsheet():
     return "trmRew: Term rewriting"
+
+
+# compact alias per ledger/NAMING.md
+termrewriting = term_rewriting

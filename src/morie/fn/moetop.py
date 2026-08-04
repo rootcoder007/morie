@@ -46,3 +46,7 @@ def moe_topk_routing(y, x, W_g, experts, k):
 
 def cheatsheet():
     return "moetop: MoE top-k routing with auxiliary load-balance loss"
+
+
+# compact alias per ledger/NAMING.md
+moetopkrouting = moe_topk_routing

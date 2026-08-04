@@ -69,3 +69,7 @@ sntsr = sentence_served
 
 def cheatsheet() -> str:
     return "sentence_served({}) -> Proportion of sentence served."
+
+
+# compact alias per ledger/NAMING.md
+sentenceserved = sentence_served

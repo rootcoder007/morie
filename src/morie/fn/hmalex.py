@@ -144,3 +144,7 @@ def geron_alexnet(n_classes=1000, input_size=227, in_channels=3, dropout=0.5):
 
 def cheatsheet():
     return "hmalex: AlexNet: deep CNN for ImageNet with ReLU and dropout"
+
+
+# compact alias per ledger/NAMING.md
+geronalexnet = geron_alexnet

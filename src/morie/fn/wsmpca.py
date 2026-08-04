@@ -86,3 +86,7 @@ def wasserman_pca(X, k):
 
 def cheatsheet():
     return "wsmpca: top-k eigh of cov; deterministic sign; components row-major k x d"
+
+
+# compact alias per ledger/NAMING.md
+wassermanpca = wasserman_pca

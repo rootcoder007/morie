@@ -29,3 +29,7 @@ fda_ = fda_spatial
 
 def cheatsheet() -> str:
     return "fda_spatial({}) -> Functional data analysis spatial"
+
+
+# compact alias per ledger/NAMING.md
+fdaspatial = fda_spatial

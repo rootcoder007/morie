@@ -40,3 +40,7 @@ def model_based_rl(env, model, planner):
 
 def cheatsheet():
     return "mfomf: Model-based RL planning"
+
+
+# compact alias per ledger/NAMING.md
+modelbasedrl = model_based_rl

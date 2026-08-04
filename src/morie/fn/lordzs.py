@@ -75,3 +75,7 @@ def lord_chi_square(y, b_R, b_F, V, cdf=None):
 
 def cheatsheet():
     return "lordzs: Lord chi-square DIF (parameter-difference test)"
+
+
+# compact alias per ledger/NAMING.md
+lordchisquare = lord_chi_square

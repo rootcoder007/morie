@@ -84,3 +84,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`kosorok_no_bias`.
 kosorok_ch3_z_estimator_no_bias = kosorok_no_bias
+
+
+# compact alias per ledger/NAMING.md
+kosoroknobias = kosorok_no_bias

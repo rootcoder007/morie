@@ -35,3 +35,7 @@ mds_ = mds_elbow
 
 def cheatsheet() -> str:
     return "mds_elbow({}) -> MDS elbow detection"
+
+
+# compact alias per ledger/NAMING.md
+mdselbow = mds_elbow

@@ -29,3 +29,7 @@ norm = normal_vote
 
 def cheatsheet() -> str:
     return "normal_vote({}) -> Normal kernel vote probability"
+
+
+# compact alias per ledger/NAMING.md
+normalvote = normal_vote

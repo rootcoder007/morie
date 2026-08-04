@@ -98,3 +98,7 @@ def tmle_quantile(y, D, X, quantile=0.5, n_grid=60, trunc=0.01):
 
 def cheatsheet():
     return "tmlqct: TMLE each F_a(t) on 1{Y<=t}, monotonise, invert at tau"
+
+
+# compact alias per ledger/NAMING.md
+tmlequantile = tmle_quantile

@@ -38,3 +38,7 @@ wnksr = kaiser_window
 
 def cheatsheet() -> str:
     return "kaiser_window({}) -> Kaiser window."
+
+
+# compact alias per ledger/NAMING.md
+kaiserwindow = kaiser_window

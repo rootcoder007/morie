@@ -36,3 +36,7 @@ def rna_fold(sequence):
 
 def cheatsheet():
     return "rnafld: RNA secondary structure (Zuker)"
+
+
+# compact alias per ledger/NAMING.md
+rnafold = rna_fold

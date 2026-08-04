@@ -79,3 +79,7 @@ rwmh = random_walk_mh
 
 def cheatsheet() -> str:
     return "random_walk_mh({}) -> Random walk Metropolis-Hastings with adaptive step size."
+
+
+# compact alias per ledger/NAMING.md
+randomwalkmh = random_walk_mh

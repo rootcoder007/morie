@@ -29,3 +29,7 @@ w_ro = w_rook
 
 def cheatsheet() -> str:
     return "w_rook({}) -> Rook contiguity weights"
+
+
+# compact alias per ledger/NAMING.md
+wrook = w_rook

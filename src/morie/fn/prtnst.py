@@ -73,3 +73,7 @@ def partition_test(y, groups, alpha, cdf=None):
 
 def cheatsheet():
     return "prtnst: Test of partition equality across groups"
+
+
+# compact alias per ledger/NAMING.md
+partitiontest = partition_test

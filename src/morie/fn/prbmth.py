@@ -511,3 +511,7 @@ def cheatsheet():
         "Lovasz Local Lemma, and Chernoff and Azuma inequalities -- each "
         "checked against the exact quantity it bounds"
     )
+
+
+# compact alias per ledger/NAMING.md
+azumabound = azuma_bound

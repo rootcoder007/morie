@@ -38,3 +38,7 @@ def conditional_mi(pxyz):
 
 def cheatsheet():
     return "cmutif: Conditional mutual information I(X;Y|Z)"
+
+
+# compact alias per ledger/NAMING.md
+conditionalmi = conditional_mi

@@ -61,3 +61,7 @@ def jacobi_solve(
 
 
 jacbi = jacobi_solve
+
+
+# compact alias per ledger/NAMING.md
+jacobisolve = jacobi_solve

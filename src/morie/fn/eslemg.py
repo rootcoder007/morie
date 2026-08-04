@@ -164,3 +164,7 @@ def _log_mvn(X, mu, S):
 
 def cheatsheet():
     return "eslemg: EM for GMM; loglik is asserted non-decreasing, and `reg` is what stops component collapse"
+
+
+# compact alias per ledger/NAMING.md
+eslemgmm = esl_em_gmm

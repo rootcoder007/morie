@@ -80,3 +80,7 @@ def efa_scores(
 
 def cheatsheet() -> str:
     return "efa_scores({}) -> Compute factor scores from data and loadings."
+
+
+# compact alias per ledger/NAMING.md
+efascores = efa_scores

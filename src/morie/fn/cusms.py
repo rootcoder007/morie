@@ -70,3 +70,7 @@ cusms = cusum_test
 
 def cheatsheet() -> str:
     return "cusum_test({}) -> CUSUM test for structural change."
+
+
+# compact alias per ledger/NAMING.md
+cusumtest = cusum_test

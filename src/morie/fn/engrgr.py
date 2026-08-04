@@ -52,3 +52,7 @@ def engle_granger(Y1, Y2, lags=1):
 
 def cheatsheet():
     return "engrgr: OLS long-run relation + ADF on residual, MacKinnon CVs"
+
+
+# compact alias per ledger/NAMING.md
+englegranger = engle_granger

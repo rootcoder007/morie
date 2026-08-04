@@ -83,3 +83,7 @@ rhatd = rhat_diagnostic
 
 def cheatsheet() -> str:
     return "rhat_diagnostic(chains) -> R-hat (Gelman-Rubin) convergence diagnostic."
+
+
+# compact alias per ledger/NAMING.md
+rhatdiagnostic = rhat_diagnostic

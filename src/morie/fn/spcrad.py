@@ -36,3 +36,7 @@ def spectral_radius(G):
 
 def cheatsheet():
     return "spcrad: Spectral radius of adjacency"
+
+
+# compact alias per ledger/NAMING.md
+spectralradius = spectral_radius

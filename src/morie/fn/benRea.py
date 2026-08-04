@@ -38,3 +38,7 @@ def named_entity(sentence, model):
 
 def cheatsheet():
     return "benRea: Named-entity recognition (BIO)"
+
+
+# compact alias per ledger/NAMING.md
+namedentity = named_entity

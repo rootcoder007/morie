@@ -137,3 +137,7 @@ def geron_logistic_probability(X, theta, add_bias=False):
 
 def cheatsheet():
     return "hmlogp: logistic p_hat = sigma(theta^T x) with an overflow-safe sigmoid"
+
+
+# compact alias per ledger/NAMING.md
+addbiascolumn = add_bias_column

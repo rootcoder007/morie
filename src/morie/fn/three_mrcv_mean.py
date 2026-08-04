@@ -42,3 +42,7 @@ def three_mrcv_mean(b0, beta_w_a, beta_y_b, beta_z_c):
 
 def cheatsheet():
     return '6e16: log(mu_abc(ijk)) = b0 + bW_a + bY_b + bZ_c [Bilder & Loughin 2025, eq. 6.16]'
+
+
+# compact alias per ledger/NAMING.md
+threemrcvmean = three_mrcv_mean

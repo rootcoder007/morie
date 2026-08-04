@@ -92,3 +92,7 @@ spemb = spectral_embed
 
 def cheatsheet() -> str:
     return "spectral_embed({}) -> Spectral embedding via Laplacian eigenmaps."
+
+
+# compact alias per ledger/NAMING.md
+spectralembed = spectral_embed

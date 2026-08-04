@@ -117,3 +117,7 @@ psbal = ps_balance
 
 def cheatsheet() -> str:
     return "ps_balance({}) -> Propensity score balancing weights."
+
+
+# compact alias per ledger/NAMING.md
+psbalance = ps_balance

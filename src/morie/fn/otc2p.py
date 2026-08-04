@@ -40,3 +40,7 @@ def ot_cost_lp(X, Y, p):
 
 def cheatsheet():
     return "otc2p: Pairwise L_p cost matrix"
+
+
+# compact alias per ledger/NAMING.md
+otcostlp = ot_cost_lp

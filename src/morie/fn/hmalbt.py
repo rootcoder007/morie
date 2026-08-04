@@ -189,3 +189,7 @@ def geron_albert(X, n_layers=4, n_heads=2, d_model=8, d_embed=4, vocab_size=None
 
 def cheatsheet():
     return "hmalbt: ALBERT: cross-layer parameter sharing + factorized embeddings"
+
+
+# compact alias per ledger/NAMING.md
+geronalbert = geron_albert

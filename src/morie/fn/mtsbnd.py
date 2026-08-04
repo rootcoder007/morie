@@ -40,3 +40,7 @@ def mts_bounds(Y, X, monotone):
 
 def cheatsheet():
     return "mtsBnd: Monotone treatment selection bounds"
+
+
+# compact alias per ledger/NAMING.md
+mtsbounds = mts_bounds

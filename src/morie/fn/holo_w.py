@@ -76,3 +76,7 @@ def holo_funnel(
 
 def cheatsheet() -> str:
     return "holo_funnel({}) -> Funnel plot visualization."
+
+
+# compact alias per ledger/NAMING.md
+holofunnel = holo_funnel

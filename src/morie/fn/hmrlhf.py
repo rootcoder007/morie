@@ -154,3 +154,7 @@ def geron_rlhf(policy, reward_model, prompts=None, beta=0.1, lr=0.5, epochs=500)
 
 def cheatsheet():
     return "hmrlhf: RLHF, reward maximisation under a KL penalty"
+
+
+# compact alias per ledger/NAMING.md
+geronrlhf = geron_rlhf

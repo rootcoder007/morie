@@ -42,3 +42,7 @@ def cox_snell_r2(neg2ll_null, neg2ll_full, n):
 
 def cheatsheet():
     return 'ca4e13: 1 - e^-[(-2LLnull) - (-2LLfull)]/n [Weisburd et al. 2022, eq. 4.13]'
+
+
+# compact alias per ledger/NAMING.md
+coxsnellr2 = cox_snell_r2

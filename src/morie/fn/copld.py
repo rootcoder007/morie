@@ -35,3 +35,7 @@ copld = copeland_method
 
 def cheatsheet() -> str:
     return "copeland_method({}) -> Copeland pairwise comparison voting."
+
+
+# compact alias per ledger/NAMING.md
+copelandmethod = copeland_method

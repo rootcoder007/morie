@@ -42,3 +42,7 @@ def smith_waterman(seq1, seq2, sub_matrix, gap):
 
 def cheatsheet():
     return "alnsw: Smith-Waterman local alignment"
+
+
+# compact alias per ledger/NAMING.md
+smithwaterman = smith_waterman

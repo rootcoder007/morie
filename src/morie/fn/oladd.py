@@ -54,3 +54,7 @@ oladd = overlap_add
 
 def cheatsheet() -> str:
     return "overlap_add({}) -> Overlap-add fast convolution."
+
+
+# compact alias per ledger/NAMING.md
+overlapadd = overlap_add

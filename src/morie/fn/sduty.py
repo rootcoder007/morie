@@ -41,3 +41,7 @@ sduty = duty_cycle
 
 def cheatsheet() -> str:
     return "duty_cycle({}) -> Duty cycle."
+
+
+# compact alias per ledger/NAMING.md
+dutycycle = duty_cycle

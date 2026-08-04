@@ -25,3 +25,7 @@ boxfd = box_counting_fd
 
 def cheatsheet() -> str:
     return "box_counting_fd({}) -> Box-counting fractal dimension."
+
+
+# compact alias per ledger/NAMING.md
+boxcountingfd = box_counting_fd

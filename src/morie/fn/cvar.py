@@ -83,3 +83,7 @@ cvar = conditional_var
 
 def cheatsheet() -> str:
     return "conditional_var({}) -> Conditional VaR (Expected Shortfall)."
+
+
+# compact alias per ledger/NAMING.md
+conditionalvar = conditional_var

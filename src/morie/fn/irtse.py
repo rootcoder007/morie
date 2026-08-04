@@ -63,3 +63,7 @@ se_theta = irt_se_theta
 
 def cheatsheet() -> str:
     return "irt_se_theta({}) -> Standard error of theta at each ability level."
+
+
+# compact alias per ledger/NAMING.md
+irtsetheta = irt_se_theta

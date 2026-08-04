@@ -111,3 +111,7 @@ def deer_dr_bounds(y, D, Z, X=None):
 
 def cheatsheet():
     return "ddrbnd: LATE = AIPW(Y~Z) / AIPW(D~Z); compliance is the denominator"
+
+
+# compact alias per ledger/NAMING.md
+deerdrbounds = deer_dr_bounds

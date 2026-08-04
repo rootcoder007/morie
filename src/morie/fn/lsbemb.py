@@ -92,3 +92,11 @@ lsbemb = lsb_embed
 
 def cheatsheet() -> str:
     return "lsb_embed({}) -> LSB steganography."
+
+
+# compact alias per ledger/NAMING.md
+lsbembed = lsb_embed
+
+
+# compact alias per ledger/NAMING.md
+lsbextract = lsb_extract

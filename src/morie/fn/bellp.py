@@ -66,3 +66,7 @@ bellp = bell_polynomial
 
 def cheatsheet() -> str:
     return "bell_polynomial({}) -> Bell number and partition count."
+
+
+# compact alias per ledger/NAMING.md
+bellpolynomial = bell_polynomial

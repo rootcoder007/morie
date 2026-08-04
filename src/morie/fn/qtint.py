@@ -57,3 +57,7 @@ qtint = qt_interval
 
 def cheatsheet() -> str:
     return "qt_interval({}) -> QT interval measurement."
+
+
+# compact alias per ledger/NAMING.md
+qtinterval = qt_interval

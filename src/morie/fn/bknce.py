@@ -138,3 +138,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`burkov_nce_loss`.
 burkov_noise_contrastive_estimation = burkov_nce_loss
+
+
+# compact alias per ledger/NAMING.md
+burkovnceloss = burkov_nce_loss

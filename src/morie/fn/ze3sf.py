@@ -29,3 +29,7 @@ thre = three_step_fca
 
 def cheatsheet() -> str:
     return "three_step_fca({}) -> Three-step FCA"
+
+
+# compact alias per ledger/NAMING.md
+threestepfca = three_step_fca

@@ -38,3 +38,7 @@ def rna_covariance(alignment, structure):
 
 def cheatsheet():
     return "rnacov: Covariance model RNA family"
+
+
+# compact alias per ledger/NAMING.md
+rnacovariance = rna_covariance

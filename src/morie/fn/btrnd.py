@@ -43,3 +43,7 @@ def boot_rng_seeded(seed):
 
 def cheatsheet():
     return "btrnd: Deterministic seeded RNG factory for reproducible bootstrap"
+
+
+# compact alias per ledger/NAMING.md
+bootrngseeded = boot_rng_seeded

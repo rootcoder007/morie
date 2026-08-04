@@ -40,3 +40,7 @@ def clp_lp(c, A, b):
 
 def cheatsheet():
     return "clpopt: CLP LP solver wrapper"
+
+
+# compact alias per ledger/NAMING.md
+clplp = clp_lp

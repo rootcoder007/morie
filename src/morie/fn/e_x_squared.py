@@ -35,3 +35,7 @@ def e_x_squared(sigma, mu):
 
 def cheatsheet():
     return "david_j_morin_probability_for_the_enthusiastic_beginner3e70: E[X^2] = sigma^2 + mu^2. Morin (2016) eq (3.70)."
+
+
+# compact alias per ledger/NAMING.md
+exsquared = e_x_squared

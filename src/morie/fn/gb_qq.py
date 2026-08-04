@@ -65,3 +65,7 @@ def gibbons_qq_plot(x, F0_inv=None):
 
 def cheatsheet():
     return "gb_qq: tail-sensitive; slope/intercept = scale/location estimates"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsqqplot = gibbons_qq_plot

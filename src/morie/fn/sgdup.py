@@ -87,3 +87,7 @@ def sgd_update(beta, batch_grads, eta=0.01):
 
 def cheatsheet():
     return "sgdup: averages per-example gradients so the step is batch-size invariant; grad_se reports the noise"
+
+
+# compact alias per ledger/NAMING.md
+sgdupdate = sgd_update

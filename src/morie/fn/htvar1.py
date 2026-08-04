@@ -42,3 +42,7 @@ def ht_variance(y, pi, pi_ij):
 
 def cheatsheet():
     return "htvar1: HT variance via second-order inclusion"
+
+
+# compact alias per ledger/NAMING.md
+htvariance = ht_variance

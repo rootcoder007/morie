@@ -40,3 +40,7 @@ def rbf_kernel(x, y, sigma):
 
 def cheatsheet():
     return "rbfk: RBF (Gaussian) kernel"
+
+
+# compact alias per ledger/NAMING.md
+rbfkernel = rbf_kernel

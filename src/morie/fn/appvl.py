@@ -43,3 +43,7 @@ appvl = approval_vote
 
 def cheatsheet() -> str:
     return "approval_vote({}) -> Approval voting method."
+
+
+# compact alias per ledger/NAMING.md
+approvalvote = approval_vote

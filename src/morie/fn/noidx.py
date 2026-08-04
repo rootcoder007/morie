@@ -59,3 +59,7 @@ noidx = noise_exposure
 
 def cheatsheet() -> str:
     return "noise_exposure({}) -> Noise exposure assessment (TWA dBA)."
+
+
+# compact alias per ledger/NAMING.md
+noiseexposure = noise_exposure

@@ -34,3 +34,7 @@ def ghosal_kl_props(p, q):
 
 def cheatsheet():
     return "gh_ap_b1: KL divergence properties (Pinsker)"
+
+
+# compact alias per ledger/NAMING.md
+ghosalklprops = ghosal_kl_props

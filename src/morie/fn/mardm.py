@@ -64,3 +64,7 @@ mardm = mardia_test
 
 def cheatsheet() -> str:
     return "mardm() -> Mardia's test for multivariate normality"
+
+
+# compact alias per ledger/NAMING.md
+mardiatest = mardia_test

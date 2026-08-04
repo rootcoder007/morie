@@ -42,3 +42,7 @@ vari = vario_loglik
 
 def cheatsheet() -> str:
     return "vario_loglik({}) -> Variogram log-likelihood"
+
+
+# compact alias per ledger/NAMING.md
+variologlik = vario_loglik

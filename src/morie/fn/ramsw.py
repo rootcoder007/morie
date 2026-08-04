@@ -38,3 +38,7 @@ def ramsay_weight(y, a):
 
 def cheatsheet():
     return "ramsw: Ramsay E-type weight function"
+
+
+# compact alias per ledger/NAMING.md
+ramsayweight = ramsay_weight

@@ -36,3 +36,7 @@ def jackknife_repl(theta_replicates):
 
 def cheatsheet():
     return "jkrand: Jackknife replicate weights variance"
+
+
+# compact alias per ledger/NAMING.md
+jackkniferepl = jackknife_repl

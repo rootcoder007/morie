@@ -40,3 +40,7 @@ def vit_finetune(model, data, mode):
 
 def cheatsheet():
     return "vitfsv: ViT fine-tune for downstream"
+
+
+# compact alias per ledger/NAMING.md
+vitfinetune = vit_finetune

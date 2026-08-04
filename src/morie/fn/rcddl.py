@@ -80,3 +80,7 @@ rcddl = recidivism_dml
 
 def cheatsheet() -> str:
     return "recidivism_dml({}) -> Double Machine Learning for recidivism treatment effect."
+
+
+# compact alias per ledger/NAMING.md
+recidivismdml = recidivism_dml

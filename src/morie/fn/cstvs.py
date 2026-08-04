@@ -46,3 +46,7 @@ cstvs = custody_visits
 
 def cheatsheet() -> str:
     return "custody_visits({}) -> Visitation frequency analysis in custody."
+
+
+# compact alias per ledger/NAMING.md
+custodyvisits = custody_visits

@@ -70,3 +70,7 @@ def iv_weak_test(endogenous, instrument, covariates=None, cdf=None):
 
 def cheatsheet() -> str:
     return "iv_weak_test({}) -> Weak instrument diagnostics for IV estimation."
+
+
+# compact alias per ledger/NAMING.md
+ivweaktest = iv_weak_test

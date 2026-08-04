@@ -59,3 +59,7 @@ short = alrt_mh
 
 def cheatsheet() -> str:
     return "alrt_mh({}) -> Mental health alert prevalence by year."
+
+
+# compact alias per ledger/NAMING.md
+alrtmh = alrt_mh

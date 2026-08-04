@@ -84,3 +84,7 @@ sir_v = sir_vaccination
 
 def cheatsheet() -> str:
     return "sir_vaccination({}) -> SIR model with vaccination."
+
+
+# compact alias per ledger/NAMING.md
+sirvaccination = sir_vaccination

@@ -78,3 +78,7 @@ def vol_har_rv_jump(RV, BPV):
 
 def cheatsheet():
     return "volharj: HAR + beta_J max(RV - BPV, 0)_{t-1} (ABD 2007)"
+
+
+# compact alias per ledger/NAMING.md
+volharrvjump = vol_har_rv_jump

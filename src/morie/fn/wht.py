@@ -53,3 +53,7 @@ def cheatsheet() -> str:
 
 
 wht = walsh_hadamard
+
+
+# compact alias per ledger/NAMING.md
+walshhadamard = walsh_hadamard

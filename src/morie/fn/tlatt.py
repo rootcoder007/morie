@@ -51,3 +51,7 @@ def torus_lattice(
 
 def cheatsheet() -> str:
     return "torus_lattice(a, b, angle, n) -> lattice on flat torus"
+
+
+# compact alias per ledger/NAMING.md
+toruslattice = torus_lattice

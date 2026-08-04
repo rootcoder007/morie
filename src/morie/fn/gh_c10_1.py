@@ -54,3 +54,7 @@ def ghosal_adapt_thm(y=None, n=200, K_true=3, lam=1.0, K_max=12,
 
 def cheatsheet():
     return "gh_c10_1: Adaptive hierarchical model prior"
+
+
+# compact alias per ledger/NAMING.md
+ghosaladaptthm = ghosal_adapt_thm

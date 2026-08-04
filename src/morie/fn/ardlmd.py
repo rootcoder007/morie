@@ -75,3 +75,7 @@ def ardl_bounds_test(y, X, p, q, cdf=None):
 
 def cheatsheet():
     return "ardlmd: ARDL bounds test for level relationship"
+
+
+# compact alias per ledger/NAMING.md
+ardlboundstest = ardl_bounds_test

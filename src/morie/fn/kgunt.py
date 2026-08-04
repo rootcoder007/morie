@@ -30,3 +30,7 @@ uk_t = uk_trend
 
 def cheatsheet() -> str:
     return "uk_trend({}) -> Universal kriging trend"
+
+
+# compact alias per ledger/NAMING.md
+uktrend = uk_trend

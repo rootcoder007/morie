@@ -56,3 +56,7 @@ def subscale_ea(
 
 def cheatsheet() -> str:
     return "subscale_ea({}) -> EA subscale reliability (alpha, omega, CR, AVE)."
+
+
+# compact alias per ledger/NAMING.md
+subscaleea = subscale_ea

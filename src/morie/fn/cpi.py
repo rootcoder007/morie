@@ -76,3 +76,7 @@ short = cpi_inflation
 
 def cheatsheet() -> str:
     return "cpi_inflation({}) -> CPI and inflation rate."
+
+
+# compact alias per ledger/NAMING.md
+cpiinflation = cpi_inflation

@@ -85,3 +85,7 @@ bode = bode_plot
 
 def cheatsheet() -> str:
     return "bode_plot({}) -> Bode magnitude and phase plot computation."
+
+
+# compact alias per ledger/NAMING.md
+bodeplot = bode_plot

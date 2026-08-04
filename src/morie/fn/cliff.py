@@ -61,3 +61,7 @@ cliff = cliffs_delta
 
 def cheatsheet() -> str:
     return "cliffs_delta({}) -> Cliff's delta (non-parametric effect size)."
+
+
+# compact alias per ledger/NAMING.md
+cliffsdelta = cliffs_delta

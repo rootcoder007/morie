@@ -68,3 +68,7 @@ short = lagrange_interp
 
 def cheatsheet() -> str:
     return "lagrange_interp({}) -> Lagrange interpolation."
+
+
+# compact alias per ledger/NAMING.md
+lagrangeinterp = lagrange_interp

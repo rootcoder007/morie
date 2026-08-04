@@ -93,3 +93,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_gev_lmoments`.
 evt_gev_lmoments = ev_gev_lmoments
+
+
+# compact alias per ledger/NAMING.md
+evgevlmoments = ev_gev_lmoments
+
+
+# compact alias per ledger/NAMING.md
+evtgevlmoments = evt_gev_lmoments

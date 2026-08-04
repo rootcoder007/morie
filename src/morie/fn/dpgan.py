@@ -106,3 +106,7 @@ def dp_gan(disc_grads, C=1.0, sigma=1.0, lr=0.1, n_disc_steps=1, seed=None):
 
 def cheatsheet():
     return "dpgan: privatise the DISCRIMINATOR only; the generator is post-processing and free"
+
+
+# compact alias per ledger/NAMING.md
+dpgan = dp_gan

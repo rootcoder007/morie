@@ -40,3 +40,7 @@ def admixture_seq(genotypes, K):
 
 def cheatsheet():
     return "adseqs: Admixture analysis (model-based clustering)"
+
+
+# compact alias per ledger/NAMING.md
+admixtureseq = admixture_seq

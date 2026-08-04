@@ -113,3 +113,7 @@ def geron_prelu(z, alpha=0.25, upstream=None):
 
 def cheatsheet():
     return "hmprel: Parametric ReLU with per-channel learnable slope"
+
+
+# compact alias per ledger/NAMING.md
+geronprelu = geron_prelu

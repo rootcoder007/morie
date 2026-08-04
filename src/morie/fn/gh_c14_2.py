@@ -34,3 +34,7 @@ def ghosal_ewens_esf(multiplicities, alpha=1.0):
 
 def cheatsheet():
     return "gh_c14_2: Ewens sampling formula"
+
+
+# compact alias per ledger/NAMING.md
+ghosalewensesf = ghosal_ewens_esf

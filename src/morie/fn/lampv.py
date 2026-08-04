@@ -30,3 +30,7 @@ lampv = lamport_verify
 
 def cheatsheet() -> str:
     return "lamport_verify({}) -> Lamport one-time signature -- verify."
+
+
+# compact alias per ledger/NAMING.md
+lamportverify = lamport_verify

@@ -40,3 +40,7 @@ def mi_fmi(between, within, m):
 
 def cheatsheet():
     return "miefa1: Fraction of missing information"
+
+
+# compact alias per ledger/NAMING.md
+mifmi = mi_fmi

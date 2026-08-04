@@ -40,3 +40,7 @@ nuc = nucleotide_freq
 
 def cheatsheet() -> str:
     return "nucleotide_freq({}) -> Nucleotide frequency distribution (A/T/G/C counts and propor"
+
+
+# compact alias per ledger/NAMING.md
+nucleotidefreq = nucleotide_freq

@@ -30,3 +30,7 @@ oc_ = oc_2d
 
 def cheatsheet() -> str:
     return "oc_2d({}) -> Optimal Classification 2D"
+
+
+# compact alias per ledger/NAMING.md
+oc2d = oc_2d

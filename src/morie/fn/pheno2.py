@@ -38,3 +38,7 @@ def phenotype_qc(y):
 
 def cheatsheet():
     return "pheno2: Phenotype QC (outlier removal + transform)"
+
+
+# compact alias per ledger/NAMING.md
+phenotypeqc = phenotype_qc

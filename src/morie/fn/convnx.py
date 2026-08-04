@@ -38,3 +38,7 @@ def convnext_block(x, filters):
 
 def cheatsheet():
     return "convnx: ConvNeXt block (modernized ResNet)"
+
+
+# compact alias per ledger/NAMING.md
+convnextblock = convnext_block

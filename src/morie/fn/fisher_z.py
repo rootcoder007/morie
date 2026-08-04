@@ -42,3 +42,7 @@ def fisher_z(r):
 
 def cheatsheet():
     return 'ca11e12: Zr = (1/2) ln((1+r)/(1-r)) [Weisburd et al. 2022, eq. 11.12]'
+
+
+# compact alias per ledger/NAMING.md
+fisherz = fisher_z

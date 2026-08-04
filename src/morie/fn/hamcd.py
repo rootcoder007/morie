@@ -41,3 +41,7 @@ hamcd = hamming_code
 
 def cheatsheet() -> str:
     return "hamming_code({}) -> Hamming code encode/decode."
+
+
+# compact alias per ledger/NAMING.md
+hammingcode = hamming_code

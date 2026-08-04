@@ -33,3 +33,7 @@ mdslb = label_mds_points
 
 def cheatsheet() -> str:
     return "mdslb() -> Attach labels to MDS coordinate matrix"
+
+
+# compact alias per ledger/NAMING.md
+labelmdspoints = label_mds_points

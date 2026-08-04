@@ -38,3 +38,7 @@ def risk_ratio(p_exposed, p_unexposed):
 
 def cheatsheet():
     return "riskrt: Risk ratio (relative risk)"
+
+
+# compact alias per ledger/NAMING.md
+riskratio = risk_ratio

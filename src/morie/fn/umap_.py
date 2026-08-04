@@ -151,3 +151,7 @@ def umap_(
 
 def cheatsheet() -> str:
     return "_fuzzy_simplicial_set({}) -> UMAP (Uniform Manifold Approximation and Projection) -- simpl"
+
+
+# compact alias per ledger/NAMING.md
+umap = umap_

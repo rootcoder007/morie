@@ -38,3 +38,7 @@ def fourier_basis(t, K):
 
 def cheatsheet():
     return "fhar: Fourier basis"
+
+
+# compact alias per ledger/NAMING.md
+fourierbasis = fourier_basis

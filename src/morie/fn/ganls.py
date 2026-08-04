@@ -89,3 +89,7 @@ def gan_loss(D_real, D_fake, kind: str = "minimax"):
 
 def cheatsheet():
     return "ganls: GAN V(D)=E[log D(x)]+E[log(1-D(G(z)))]; d_loss=-V"
+
+
+# compact alias per ledger/NAMING.md
+ganloss = gan_loss

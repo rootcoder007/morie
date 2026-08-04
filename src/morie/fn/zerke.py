@@ -29,3 +29,7 @@ risk = risk_exceedance
 
 def cheatsheet() -> str:
     return "risk_exceedance({}) -> Risk exceedance probability"
+
+
+# compact alias per ledger/NAMING.md
+riskexceedance = risk_exceedance

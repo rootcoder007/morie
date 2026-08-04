@@ -42,3 +42,7 @@ def ghosal_poi_ker(k_values, lambdas=None, weights=None, alpha=1.0,
 
 def cheatsheet():
     return "gh_c5_10: Poisson-kernel Dirichlet mixture"
+
+
+# compact alias per ledger/NAMING.md
+ghosalpoiker = ghosal_poi_ker

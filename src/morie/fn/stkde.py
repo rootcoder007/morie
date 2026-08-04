@@ -125,3 +125,7 @@ def st_kde(
 
 def cheatsheet() -> str:
     return "st_kde({}) -> Spatiotemporal kernel density estimation."
+
+
+# compact alias per ledger/NAMING.md
+stkde = st_kde

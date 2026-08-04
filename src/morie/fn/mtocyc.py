@@ -41,3 +41,7 @@ mtocyc = mto_cyclist
 
 def cheatsheet() -> str:
     return "mto_cyclist({}) -> Cyclist safety analysis."
+
+
+# compact alias per ledger/NAMING.md
+mtocyclist = mto_cyclist

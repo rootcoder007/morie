@@ -101,3 +101,7 @@ def vol_ccc_garch(R_panel, init=None):
 
 def cheatsheet():
     return "volccc: Constant Conditional Correlation MGARCH"
+
+
+# compact alias per ledger/NAMING.md
+volcccgarch = vol_ccc_garch

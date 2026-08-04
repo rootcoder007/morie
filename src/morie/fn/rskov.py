@@ -73,3 +73,7 @@ rskov = risk_overlap
 
 def cheatsheet() -> str:
     return "risk_overlap({}) -> Risk score distribution overlap between groups."
+
+
+# compact alias per ledger/NAMING.md
+riskoverlap = risk_overlap

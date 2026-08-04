@@ -90,3 +90,7 @@ def plot_spatial(ideal_points, party_labels=None, stimuli=None, stimuli_labels=N
 
 def cheatsheet():
     return "plpol: coords padded to 2-D, party centroids, 10%-margin limits"
+
+
+# compact alias per ledger/NAMING.md
+plotspatial = plot_spatial

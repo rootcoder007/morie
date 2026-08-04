@@ -64,3 +64,7 @@ markge = markov_generate
 
 def cheatsheet() -> str:
     return "markov_generate({}) -> Stochastic sequence generation (Markov chain)."
+
+
+# compact alias per ledger/NAMING.md
+markovgenerate = markov_generate

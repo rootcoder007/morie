@@ -120,3 +120,7 @@ def cheatsheet():
 # np.random.seed(0); M = np.random.randint(0,3,(4,5)).astype(float)
 # y = np.array([1.0, 2.0, 3.0, 2.5]); x = np.zeros(4)
 # r = gblup_full(x, y, M); should give g_hat length 4, mean≈0.
+
+
+# compact alias per ledger/NAMING.md
+gblupfull = gblup_full

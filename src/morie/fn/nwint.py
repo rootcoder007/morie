@@ -66,3 +66,7 @@ short = newton_interp
 
 def cheatsheet() -> str:
     return "newton_interp({}) -> Newton divided-difference interpolation."
+
+
+# compact alias per ledger/NAMING.md
+newtoninterp = newton_interp

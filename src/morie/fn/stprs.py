@@ -45,3 +45,7 @@ stprs = step_response
 
 def cheatsheet() -> str:
     return "step_response({}) -> Step response of a discrete-time system."
+
+
+# compact alias per ledger/NAMING.md
+stepresponse = step_response

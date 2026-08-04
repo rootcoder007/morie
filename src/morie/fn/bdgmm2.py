@@ -42,3 +42,7 @@ def bound_gmm_alt(y, X, moments, W):
 
 def cheatsheet():
     return "bdgmm2: Bound via GMM-alt criterion"
+
+
+# compact alias per ledger/NAMING.md
+boundgmmalt = bound_gmm_alt

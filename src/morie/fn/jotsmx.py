@@ -48,3 +48,7 @@ def joseph_tsmixer(x, n_blocks, hidden_dim):
 
 def cheatsheet():
     return "jotsmx: TSMixer: MLP-only architecture mixing across time and features alternately"
+
+
+# compact alias per ledger/NAMING.md
+josephtsmixer = joseph_tsmixer

@@ -56,3 +56,7 @@ manht = manhattan_data
 
 def cheatsheet() -> str:
     return "manhattan_data({}) -> Manhattan plot data preparation for GWAS results."
+
+
+# compact alias per ledger/NAMING.md
+manhattandata = manhattan_data

@@ -42,3 +42,7 @@ def qb_cf_score(y, D, X, quantile):
 
 def cheatsheet():
     return "qbcfgs: Quantile-balanced score for forests"
+
+
+# compact alias per ledger/NAMING.md
+qbcfscore = qb_cf_score

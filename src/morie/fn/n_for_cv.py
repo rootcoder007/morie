@@ -42,3 +42,7 @@ def n_for_cv(u_crit, cv_star, r_max):
 
 def cheatsheet():
     return 'r12e10: n = (u cv*/r_max)^2 [Brus 2022, eq. 12.10]'
+
+
+# compact alias per ledger/NAMING.md
+nforcv = n_for_cv

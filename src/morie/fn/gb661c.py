@@ -76,3 +76,7 @@ def gibbons_mw_ci(x, y, alpha, cdf=None):
 
 def cheatsheet():
     return "gb661c: Confidence interval for location shift from Mann-Whitney test"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsmwci = gibbons_mw_ci

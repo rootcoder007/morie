@@ -137,3 +137,7 @@ o3acut = o3_acute_rr
 
 def cheatsheet() -> str:
     return "o3acut(C, outcome='all_cause', unit='ppb') -> acute O3 RR (NMMAPS)."
+
+
+# compact alias per ledger/NAMING.md
+o3acuterr = o3_acute_rr

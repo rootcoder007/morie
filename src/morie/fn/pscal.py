@@ -87,3 +87,7 @@ pscal = ps_calibrate
 
 def cheatsheet() -> str:
     return "pscal() -> Calibrate propensity scores using Platt scaling"
+
+
+# compact alias per ledger/NAMING.md
+pscalibrate = ps_calibrate

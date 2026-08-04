@@ -133,3 +133,7 @@ def bayesian_rci(
 
 def cheatsheet() -> str:
     return "bayesian_rci({}) -> Bayesian reliable change index."
+
+
+# compact alias per ledger/NAMING.md
+bayesianrci = bayesian_rci

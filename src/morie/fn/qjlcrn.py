@@ -40,3 +40,7 @@ def qjl_compression(x, bits, seed):
 
 def cheatsheet():
     return "qjlcrn: QJL JL-quantization combination"
+
+
+# compact alias per ledger/NAMING.md
+qjlcompression = qjl_compression

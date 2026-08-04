@@ -128,3 +128,7 @@ def esl_svc(X, y, C=1.0, newdata=None, tol=1e-3, max_passes=50, seed=0):
 
 def cheatsheet():
     return "eslsvc: linear soft-margin SVC; w is explicit and margin = 2/||w|| widens as C falls"
+
+
+# compact alias per ledger/NAMING.md
+eslsvc = esl_svc

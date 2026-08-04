@@ -87,3 +87,7 @@ dbscr = dbscan_dr
 
 def cheatsheet() -> str:
     return "dbscan_dr({}) -> DBSCAN clustering (DescriptiveResult)."
+
+
+# compact alias per ledger/NAMING.md
+dbscandr = dbscan_dr

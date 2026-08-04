@@ -117,3 +117,7 @@ spwgt = spatial_weights
 
 def cheatsheet() -> str:
     return "spatial_weights({}) -> Spatial weight matrix construction."
+
+
+# compact alias per ledger/NAMING.md
+spatialweights = spatial_weights

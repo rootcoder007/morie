@@ -38,3 +38,7 @@ def local_gearys_c(x, W):
 
 def cheatsheet():
     return "gearyl: Local Geary's c per location"
+
+
+# compact alias per ledger/NAMING.md
+localgearysc = local_gearys_c

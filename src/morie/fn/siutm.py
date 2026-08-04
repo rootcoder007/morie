@@ -53,3 +53,7 @@ siutm = siu_timeline
 
 def cheatsheet() -> str:
     return "siu_timeline({}) -> SIU case processing time."
+
+
+# compact alias per ledger/NAMING.md
+siutimeline = siu_timeline

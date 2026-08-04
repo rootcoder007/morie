@@ -61,3 +61,7 @@ pcafd = pca_features
 
 def cheatsheet() -> str:
     return "pca_features({}) -> PCA feature extraction."
+
+
+# compact alias per ledger/NAMING.md
+pcafeatures = pca_features

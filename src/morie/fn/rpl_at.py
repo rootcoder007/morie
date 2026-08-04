@@ -43,3 +43,7 @@ rpl_at = rplace_age_trend
 
 def cheatsheet() -> str:
     return "rplace_age_trend({}) -> Age group placement trend over years."
+
+
+# compact alias per ledger/NAMING.md
+rplaceagetrend = rplace_age_trend

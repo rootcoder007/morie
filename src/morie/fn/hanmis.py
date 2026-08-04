@@ -51,3 +51,7 @@ hanmis = handle_missing
 
 def cheatsheet() -> str:
     return "handle_missing({}) -> Missing data handler."
+
+
+# compact alias per ledger/NAMING.md
+handlemissing = handle_missing

@@ -38,3 +38,7 @@ def free_wilson_qsar(activities, substituent_indicators):
 
 def cheatsheet():
     return "frwil: Free-Wilson QSAR additive scheme"
+
+
+# compact alias per ledger/NAMING.md
+freewilsonqsar = free_wilson_qsar

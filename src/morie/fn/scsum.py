@@ -39,3 +39,7 @@ def score_sum(
 
 def cheatsheet() -> str:
     return "score_sum({}) -> Sum score for each respondent."
+
+
+# compact alias per ledger/NAMING.md
+scoresum = score_sum

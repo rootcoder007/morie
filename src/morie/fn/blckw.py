@@ -78,3 +78,7 @@ blckw = snr_degradation
 
 def cheatsheet() -> str:
     return "snr_degradation({}) -> SNR degradation model."
+
+
+# compact alias per ledger/NAMING.md
+snrdegradation = snr_degradation

@@ -49,3 +49,7 @@ mnfrq = mean_frequency
 
 def cheatsheet() -> str:
     return "mean_frequency({}) -> Mean frequency from spectral moments."
+
+
+# compact alias per ledger/NAMING.md
+meanfrequency = mean_frequency

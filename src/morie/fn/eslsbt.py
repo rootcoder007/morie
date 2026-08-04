@@ -77,3 +77,7 @@ def esl_se_beta(X, y, beta):
 
 def cheatsheet():
     return "eslsbt: sigma_hat^2 = RSS/(n-p) at the SUPPLIED beta, then sqrt(diag)"
+
+
+# compact alias per ledger/NAMING.md
+eslsebeta = esl_se_beta

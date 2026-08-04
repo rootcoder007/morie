@@ -100,3 +100,7 @@ def cheatsheet():
 # np.random.seed(1); M = np.random.randint(0,3,(5,4)).astype(float)
 # y = np.array([1.0,2.0,1.5,2.5,2.0]); x = np.zeros(5)
 # r = rkhs_full(x, y, M); 0 < r.h < inf; alpha is length 5.
+
+
+# compact alias per ledger/NAMING.md
+rkhsfull = rkhs_full

@@ -69,3 +69,7 @@ def gibbons_mw_ties(x, y):
 
 def cheatsheet():
     return "gb661t: ties shrink Var(U); uncorrected formula is conservative"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsmwties = gibbons_mw_ties

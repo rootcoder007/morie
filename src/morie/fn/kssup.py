@@ -80,3 +80,7 @@ kssup = ks_supremum
 
 def cheatsheet() -> str:
     return "ks_supremum({}) -> Supremum test / KS statistic."
+
+
+# compact alias per ledger/NAMING.md
+kssupremum = ks_supremum

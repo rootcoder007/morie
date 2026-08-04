@@ -38,3 +38,7 @@ def vit_mlp_block(x, hidden_dim):
 
 def cheatsheet():
     return "vitmlp: ViT MLP block"
+
+
+# compact alias per ledger/NAMING.md
+vitmlpblock = vit_mlp_block

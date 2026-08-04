@@ -43,3 +43,7 @@ def rangayyan_swt(x, wavelet, levels):
 
 def cheatsheet():
     return "rgswt: Stationary wavelet transform (SWT, undecimated DWT)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyanswt = rangayyan_swt

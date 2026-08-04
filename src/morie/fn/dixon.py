@@ -59,3 +59,7 @@ def dixon_test(x, alpha, cdf=None):
 
 def cheatsheet():
     return "dixon: Dixon Q test"
+
+
+# compact alias per ledger/NAMING.md
+dixontest = dixon_test

@@ -91,3 +91,7 @@ firth = firth_logistic
 
 def cheatsheet() -> str:
     return "firth_logistic({}) -> Firth penalized logistic regression."
+
+
+# compact alias per ledger/NAMING.md
+firthlogistic = firth_logistic

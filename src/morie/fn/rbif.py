@@ -62,3 +62,7 @@ bif_omega = bifactor_omega
 
 def cheatsheet() -> str:
     return "bifactor_omega({}) -> Omega from bifactor model."
+
+
+# compact alias per ledger/NAMING.md
+bifactoromega = bifactor_omega

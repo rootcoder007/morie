@@ -53,3 +53,7 @@ kfocv = kfold_cv
 
 def cheatsheet() -> str:
     return "kfold_cv({}) -> K-fold cross-validation."
+
+
+# compact alias per ledger/NAMING.md
+kfoldcv = kfold_cv

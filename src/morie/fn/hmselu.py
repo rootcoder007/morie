@@ -97,3 +97,7 @@ def geron_selu(z, lam=SELU_LAMBDA, alpha=SELU_ALPHA):
 
 def cheatsheet():
     return "hmselu: Scaled ELU (SELU) for self-normalizing networks"
+
+
+# compact alias per ledger/NAMING.md
+geronselu = geron_selu

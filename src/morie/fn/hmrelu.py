@@ -85,3 +85,7 @@ def geron_relu(z, leaky=0.0):
 
 def cheatsheet():
     return "hmrelu: Rectified linear unit activation"
+
+
+# compact alias per ledger/NAMING.md
+geronrelu = geron_relu

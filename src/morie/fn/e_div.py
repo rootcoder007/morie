@@ -38,3 +38,7 @@ def e_divisive(x, sig):
 
 def cheatsheet():
     return "e_div: E-divisive (energy distance)"
+
+
+# compact alias per ledger/NAMING.md
+edivisive = e_divisive

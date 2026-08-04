@@ -50,3 +50,7 @@ def multi_trait_lmm(Y, X, Z, A):
 
 def cheatsheet():
     return "mtlmm: Multi-trait linear mixed model with Kronecker covariance"
+
+
+# compact alias per ledger/NAMING.md
+multitraitlmm = multi_trait_lmm

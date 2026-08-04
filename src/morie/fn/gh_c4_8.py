@@ -34,3 +34,7 @@ def ghosal_dp_ndist(n, alpha):
 
 def cheatsheet():
     return "gh_c4_8: Number of distinct values"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpndist = ghosal_dp_ndist

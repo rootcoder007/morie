@@ -88,3 +88,7 @@ def boyd_hinge_loss(u, margin=1.0):
 
 def cheatsheet():
     return "cvxhng: flat past the margin, so only margin-violating points move the boundary; kink at u=1"
+
+
+# compact alias per ledger/NAMING.md
+boydhingeloss = boyd_hinge_loss

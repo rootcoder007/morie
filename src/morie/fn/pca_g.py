@@ -57,3 +57,7 @@ pca_g = pca_genotype
 
 def cheatsheet() -> str:
     return "pca_genotype({}) -> PCA on genotype matrix for population stratification."
+
+
+# compact alias per ledger/NAMING.md
+pcagenotype = pca_genotype

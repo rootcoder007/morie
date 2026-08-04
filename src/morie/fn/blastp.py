@@ -38,3 +38,7 @@ def blast_protein(query, db):
 
 def cheatsheet():
     return "blastp: BLAST protein heuristic"
+
+
+# compact alias per ledger/NAMING.md
+blastprotein = blast_protein

@@ -114,3 +114,7 @@ def gru_cell(
 
 def cheatsheet():
     return "grucl: GRU h = (1-z)*n + z*h_prev, n=tanh(Wn+r*Un)"
+
+
+# compact alias per ledger/NAMING.md
+grucell = gru_cell

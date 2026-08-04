@@ -61,3 +61,7 @@ def cheatsheet() -> str:
 
 
 plykv = polyakov_action
+
+
+# compact alias per ledger/NAMING.md
+polyakovaction = polyakov_action

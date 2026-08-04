@@ -97,3 +97,7 @@ bnpar = dp_density
 
 def cheatsheet() -> str:
     return "dp_density({}) -> Bayesian nonparametric density estimation via Dirichlet process."
+
+
+# compact alias per ledger/NAMING.md
+dpdensity = dp_density

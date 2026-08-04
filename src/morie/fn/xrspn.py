@@ -28,3 +28,7 @@ spat = spatial_panel_fe
 
 def cheatsheet() -> str:
     return "spatial_panel_fe({}) -> Spatial panel fixed effects"
+
+
+# compact alias per ledger/NAMING.md
+spatialpanelfe = spatial_panel_fe

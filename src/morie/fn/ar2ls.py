@@ -52,3 +52,7 @@ ar2ls = ar_to_lsf
 
 def cheatsheet() -> str:
     return "ar_to_lsf({}) -> AR coefficients to line spectral frequencies."
+
+
+# compact alias per ledger/NAMING.md
+artolsf = ar_to_lsf

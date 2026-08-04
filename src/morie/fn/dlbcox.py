@@ -80,3 +80,7 @@ def dfbeta_cox(time, event, X, ties="efron"):
 
 def cheatsheet():
     return "dlbcox: fit + dfbeta in one call; identical arithmetic to coxdfb on an existing fit"
+
+
+# compact alias per ledger/NAMING.md
+dfbetacox = dfbeta_cox

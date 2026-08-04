@@ -193,3 +193,7 @@ def cheatsheet() -> str:
         "ordered_logit({}) -> Ordered logit (proportional odds) model. "
         "ordered_alternatives_test([groups]) -> Jonckheere-Terpstra test."
     )
+
+
+# compact alias per ledger/NAMING.md
+orderedlogit = ordered_logit

@@ -36,3 +36,7 @@ def maccs_keys(smiles):
 
 def cheatsheet():
     return "maccs: MACCS 166-bit structural keys"
+
+
+# compact alias per ledger/NAMING.md
+maccskeys = maccs_keys

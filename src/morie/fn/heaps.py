@@ -58,3 +58,7 @@ heaps = heaps_law
 
 def cheatsheet() -> str:
     return "heaps_law(tokens) -> Heaps' law K, beta estimation."
+
+
+# compact alias per ledger/NAMING.md
+heapslaw = heaps_law

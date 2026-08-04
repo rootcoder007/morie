@@ -46,3 +46,7 @@ pbr = point_biserial_r
 
 def cheatsheet() -> str:
     return "point_biserial_r({}) -> Point-biserial correlation between a binary and a continuous"
+
+
+# compact alias per ledger/NAMING.md
+pointbiserialr = point_biserial_r

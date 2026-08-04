@@ -38,3 +38,7 @@ def meta_rl(task_dist, rnn):
 
 def cheatsheet():
     return "mtdrl: Meta-RL (e.g. RL² with recurrent net)"
+
+
+# compact alias per ledger/NAMING.md
+metarl = meta_rl

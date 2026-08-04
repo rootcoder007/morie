@@ -42,3 +42,7 @@ def cma_es(f, x0, sigma, lam):
 
 def cheatsheet():
     return "cmaopt: CMA-ES evolution strategy"
+
+
+# compact alias per ledger/NAMING.md
+cmaes = cma_es

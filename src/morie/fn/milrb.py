@@ -103,3 +103,7 @@ milrb = miller_rabin
 
 def cheatsheet() -> str:
     return "miller_rabin({}) -> Miller-Rabin probabilistic primality test."
+
+
+# compact alias per ledger/NAMING.md
+millerrabin = miller_rabin

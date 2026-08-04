@@ -43,3 +43,7 @@ def rf_multivariate(X, Y_matrix, n_trees):
 
 def cheatsheet():
     return "rfmlt: Random forest for multivariate/multi-output response"
+
+
+# compact alias per ledger/NAMING.md
+rfmultivariate = rf_multivariate

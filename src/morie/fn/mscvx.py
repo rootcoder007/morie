@@ -30,3 +30,7 @@ conv = convex_hull_2d
 
 def cheatsheet() -> str:
     return "convex_hull_2d({}) -> 2D convex hull"
+
+
+# compact alias per ledger/NAMING.md
+convexhull2d = convex_hull_2d

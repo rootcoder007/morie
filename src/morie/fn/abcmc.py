@@ -78,3 +78,7 @@ abcmc = abc_mcmc
 
 def cheatsheet() -> str:
     return "abc_mcmc({}) -> ABC-MCMC (Marjoram et al. 2003)."
+
+
+# compact alias per ledger/NAMING.md
+abcmcmc = abc_mcmc

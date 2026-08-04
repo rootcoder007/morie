@@ -58,3 +58,7 @@ f1_ = f1_score
 
 def cheatsheet() -> str:
     return "f1_score({}) -> F1 score, precision, and recall."
+
+
+# compact alias per ledger/NAMING.md
+f1score = f1_score

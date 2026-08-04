@@ -106,3 +106,7 @@ epirf = effective_rt
 
 def cheatsheet() -> str:
     return "effective_rt({}) -> Effective reproduction number Rt (Wallinga-Teunis)."
+
+
+# compact alias per ledger/NAMING.md
+effectivert = effective_rt

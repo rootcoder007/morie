@@ -86,3 +86,7 @@ moran_fn = morans_i
 
 def cheatsheet() -> str:
     return "morans_i({}) -> Moran's I global spatial autocorrelation statistic."
+
+
+# compact alias per ledger/NAMING.md
+moransi = morans_i

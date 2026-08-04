@@ -49,3 +49,7 @@ def cheatsheet() -> str:
 
 
 bpsst = bps_state
+
+
+# compact alias per ledger/NAMING.md
+bpsstate = bps_state

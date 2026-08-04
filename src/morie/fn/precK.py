@@ -40,3 +40,7 @@ def precision_at_k(pred_rank, relevant, k):
 
 def cheatsheet():
     return "precK: Precision@k"
+
+
+# compact alias per ledger/NAMING.md
+precisionatk = precision_at_k

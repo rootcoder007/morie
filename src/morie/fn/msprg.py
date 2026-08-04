@@ -35,3 +35,7 @@ proc = procrustes_gen
 
 def cheatsheet() -> str:
     return "procrustes_gen({}) -> Generalized Procrustes analysis"
+
+
+# compact alias per ledger/NAMING.md
+procrustesgen = procrustes_gen

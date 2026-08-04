@@ -96,3 +96,7 @@ def esl_naive_bayes(X, y, query=None, var_smoothing=1e-9):
 
 def cheatsheet():
     return "eslnnb: log-space product of per-feature Gaussians; ranking right, probs not"
+
+
+# compact alias per ledger/NAMING.md
+eslnaivebayes = esl_naive_bayes

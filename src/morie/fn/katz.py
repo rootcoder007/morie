@@ -38,3 +38,7 @@ def katz_centrality(A, alpha):
 
 def cheatsheet():
     return "katz: Katz centrality"
+
+
+# compact alias per ledger/NAMING.md
+katzcentrality = katz_centrality

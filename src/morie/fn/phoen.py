@@ -121,3 +121,7 @@ phoen = phoenix_break
 
 def cheatsheet() -> str:
     return "phoenix_break({}) -> Time series structural break detection + recovery."
+
+
+# compact alias per ledger/NAMING.md
+phoenixbreak = phoenix_break

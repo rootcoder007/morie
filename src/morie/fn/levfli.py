@@ -82,3 +82,7 @@ levfli = levy_flight
 
 def cheatsheet() -> str:
     return "levy_flight({}) -> Levy flight random walk."
+
+
+# compact alias per ledger/NAMING.md
+levyflight = levy_flight

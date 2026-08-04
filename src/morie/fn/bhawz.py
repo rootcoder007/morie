@@ -79,3 +79,7 @@ bhawz = bayesian_hazard
 
 def cheatsheet() -> str:
     return "bayesian_hazard({}) -> Bayesian hazard estimation."
+
+
+# compact alias per ledger/NAMING.md
+bayesianhazard = bayesian_hazard

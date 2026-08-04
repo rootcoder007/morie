@@ -38,3 +38,7 @@ def mafft_alignment(sequences, mode):
 
 def cheatsheet():
     return "mafft: MAFFT FFT-NS-2 / L-INS-i alignment"
+
+
+# compact alias per ledger/NAMING.md
+mafftalignment = mafft_alignment

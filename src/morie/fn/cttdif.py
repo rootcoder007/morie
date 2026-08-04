@@ -36,3 +36,7 @@ def ctt_difficulty(X):
 
 def cheatsheet():
     return "cttdif: CTT item difficulty"
+
+
+# compact alias per ledger/NAMING.md
+cttdifficulty = ctt_difficulty

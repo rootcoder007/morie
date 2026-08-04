@@ -112,3 +112,7 @@ def boyd_log_barrier(f, t=1.0, f0=None):
 
 def cheatsheet():
     return "cvxbar: central point is within m/t of optimal; strict feasibility is required, not preferred"
+
+
+# compact alias per ledger/NAMING.md
+boydlogbarrier = boyd_log_barrier

@@ -42,3 +42,7 @@ def se_d_from_se_r(r, se_r):
 
 def cheatsheet():
     return 'ca11e23: se_d = sqrt(4 se_r^2 / (1 - r^2)^3) [Weisburd et al. 2022, eq. 11.23]'
+
+
+# compact alias per ledger/NAMING.md
+sedfromser = se_d_from_se_r

@@ -48,3 +48,7 @@ prgef = program_effect
 
 def cheatsheet() -> str:
     return "program_effect({}) -> Pre-post program effect size (Cohen's d)."
+
+
+# compact alias per ledger/NAMING.md
+programeffect = program_effect

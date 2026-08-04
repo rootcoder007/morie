@@ -64,3 +64,7 @@ def phillips_perron(y, cdf=None):
 
 def cheatsheet():
     return "phlpr: Phillips-Perron unit-root test"
+
+
+# compact alias per ledger/NAMING.md
+phillipsperron = phillips_perron

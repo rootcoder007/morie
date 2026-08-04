@@ -30,3 +30,7 @@ roll = roll_call_matrix
 
 def cheatsheet() -> str:
     return "roll_call_matrix({}) -> Roll call matrix construction"
+
+
+# compact alias per ledger/NAMING.md
+rollcallmatrix = roll_call_matrix

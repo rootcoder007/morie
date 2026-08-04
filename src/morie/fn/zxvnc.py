@@ -29,3 +29,7 @@ vinc = vincenty_dist
 
 def cheatsheet() -> str:
     return "vincenty_dist({}) -> Vincenty geodesic distance"
+
+
+# compact alias per ledger/NAMING.md
+vincentydist = vincenty_dist

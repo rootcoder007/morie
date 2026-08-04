@@ -134,3 +134,7 @@ olswt = ols_weighted
 
 def cheatsheet() -> str:
     return "ols_weighted({}) -> OLS with IPW weights for causal ATE estimation."
+
+
+# compact alias per ledger/NAMING.md
+olsweighted = ols_weighted

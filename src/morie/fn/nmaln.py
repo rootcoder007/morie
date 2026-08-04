@@ -30,3 +30,7 @@ alph = alpha_nominate
 
 def cheatsheet() -> str:
     return "alpha_nominate({}) -> Alpha-NOMINATE (Bayesian MCMC)"
+
+
+# compact alias per ledger/NAMING.md
+alphanominate = alpha_nominate

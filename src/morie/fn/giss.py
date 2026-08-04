@@ -38,3 +38,7 @@ def giss_anomaly(T, baseline):
 
 def cheatsheet():
     return "giss: GISS surface temp anomaly"
+
+
+# compact alias per ledger/NAMING.md
+gissanomaly = giss_anomaly

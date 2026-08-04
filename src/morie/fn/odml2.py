@@ -106,3 +106,7 @@ def otis_dml_alert(
 
 def cheatsheet() -> str:
     return "otis_dml_alert({}) -> DML for alert treatment effect in OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdmlalert = otis_dml_alert

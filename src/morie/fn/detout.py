@@ -51,3 +51,7 @@ detout = detect_outliers
 
 def cheatsheet() -> str:
     return "detect_outliers({}) -> Outlier detection."
+
+
+# compact alias per ledger/NAMING.md
+detectoutliers = detect_outliers

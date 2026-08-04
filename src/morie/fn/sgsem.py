@@ -92,3 +92,7 @@ sgsem = sem_error_model
 
 def cheatsheet() -> str:
     return "sem_error_model({}) -> Spatial error model (SEM)."
+
+
+# compact alias per ledger/NAMING.md
+semerrormodel = sem_error_model

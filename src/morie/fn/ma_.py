@@ -58,3 +58,7 @@ def ma_(
 
 def cheatsheet() -> str:
     return "ma_({}) -> Moving average smoother for time series."
+
+
+# compact alias per ledger/NAMING.md
+ma = ma_

@@ -50,3 +50,7 @@ rskcl = risk_classify
 
 def cheatsheet() -> str:
     return "risk_classify({}) -> Classify individuals into risk levels."
+
+
+# compact alias per ledger/NAMING.md
+riskclassify = risk_classify

@@ -54,3 +54,7 @@ prdur = pr_duration
 
 def cheatsheet() -> str:
     return "pr_duration({}) -> PR interval/duration measurement."
+
+
+# compact alias per ledger/NAMING.md
+prduration = pr_duration

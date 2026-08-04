@@ -401,3 +401,7 @@ def geron_symbolic_diff(expr, var="x", at=None):
 
 def cheatsheet():
     return "hmsymd: Symbolic differentiation: manipulate algebraic expressions analytically"
+
+
+# compact alias per ledger/NAMING.md
+tostring = to_string

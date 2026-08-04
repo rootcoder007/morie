@@ -29,3 +29,7 @@ bett = betti_numbers
 
 def cheatsheet() -> str:
     return "betti_numbers({}) -> Betti numbers computation"
+
+
+# compact alias per ledger/NAMING.md
+bettinumbers = betti_numbers

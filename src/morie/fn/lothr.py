@@ -101,3 +101,7 @@ lothr = template_match
 
 def cheatsheet() -> str:
     return "template_match({}) -> Template matching (NCC)."
+
+
+# compact alias per ledger/NAMING.md
+templatematch = template_match

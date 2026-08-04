@@ -61,3 +61,7 @@ short = batch_norm
 
 def cheatsheet() -> str:
     return "batch_norm({}) -> Batch normalization."
+
+
+# compact alias per ledger/NAMING.md
+batchnorm = batch_norm

@@ -70,3 +70,7 @@ def torus_distance(
 
 def cheatsheet() -> str:
     return "torus_distance(p1, p2, R, r) -> geodesic distance on torus"
+
+
+# compact alias per ledger/NAMING.md
+torusdistance = torus_distance

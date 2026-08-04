@@ -42,3 +42,7 @@ def ipa_brier(fit, null_fit, time):
 
 def cheatsheet():
     return "survipa: Index of Prediction Accuracy (IPA) -- Brier"
+
+
+# compact alias per ledger/NAMING.md
+ipabrier = ipa_brier

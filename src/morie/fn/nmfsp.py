@@ -79,3 +79,7 @@ nmfsp = nmf_sparse
 
 def cheatsheet() -> str:
     return "nmf_sparse({}) -> Sparse Non-negative Matrix Factorization."
+
+
+# compact alias per ledger/NAMING.md
+nmfsparse = nmf_sparse

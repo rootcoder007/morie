@@ -92,3 +92,7 @@ def esl_bh_fdr(pvalues, alpha):
 
 def cheatsheet():
     return "eslfdr: reject ranks 1..j for the LARGEST j with p_(j) <= j alpha/m"
+
+
+# compact alias per ledger/NAMING.md
+eslbhfdr = esl_bh_fdr

@@ -40,3 +40,7 @@ def tau_leap_sim(state, rates, tau):
 
 def cheatsheet():
     return "taulep: Tau-leap stochastic SIR"
+
+
+# compact alias per ledger/NAMING.md
+tauleapsim = tau_leap_sim

@@ -44,3 +44,7 @@ def torus_genus(
 
 def cheatsheet() -> str:
     return "torus_genus(handles | V,E,F) -> genus of surface"
+
+
+# compact alias per ledger/NAMING.md
+torusgenus = torus_genus

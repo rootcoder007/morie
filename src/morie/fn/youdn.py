@@ -79,3 +79,7 @@ youdn = youden_index
 
 def cheatsheet() -> str:
     return "youden_index({}) -> Youden's J index for optimal classification threshold."
+
+
+# compact alias per ledger/NAMING.md
+youdenindex = youden_index

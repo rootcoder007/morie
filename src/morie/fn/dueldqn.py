@@ -40,3 +40,7 @@ def dueling_dqn(env, net):
 
 def cheatsheet():
     return "dueldqn: Dueling architecture: separate V and A streams"
+
+
+# compact alias per ledger/NAMING.md
+duelingdqn = dueling_dqn

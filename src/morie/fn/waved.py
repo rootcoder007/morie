@@ -80,3 +80,7 @@ short = wave_1d
 
 def cheatsheet() -> str:
     return "wave_1d({}) -> 1D wave equation solver."
+
+
+# compact alias per ledger/NAMING.md
+wave1d = wave_1d

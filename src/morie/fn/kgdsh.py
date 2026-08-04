@@ -30,3 +30,7 @@ dk_h = dk_hermite
 
 def cheatsheet() -> str:
     return "dk_hermite({}) -> Disjunctive kriging Hermite polynomials"
+
+
+# compact alias per ledger/NAMING.md
+dkhermite = dk_hermite

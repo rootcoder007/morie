@@ -47,3 +47,7 @@ def cheatsheet() -> str:
 
 
 susyq = susy_algebra
+
+
+# compact alias per ledger/NAMING.md
+susyalgebra = susy_algebra

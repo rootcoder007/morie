@@ -29,3 +29,7 @@ quot = quota_game
 
 def cheatsheet() -> str:
     return "quota_game({}) -> Quota game equilibrium"
+
+
+# compact alias per ledger/NAMING.md
+quotagame = quota_game

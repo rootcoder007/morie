@@ -28,3 +28,7 @@ def evt_gev_cdf(x, mu, sigma, xi):
 
 def cheatsheet():
     return "evgevc: GEV distribution CDF"
+
+
+# compact alias per ledger/NAMING.md
+evtgevcdf = evt_gev_cdf

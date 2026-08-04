@@ -89,3 +89,7 @@ armam = arma_fit
 
 def cheatsheet() -> str:
     return "arma_fit({}) -> ARMA(p,q) model via conditional MLE."
+
+
+# compact alias per ledger/NAMING.md
+armafit = arma_fit

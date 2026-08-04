@@ -58,3 +58,7 @@ hotdk = hot_deck_impute
 
 def cheatsheet() -> str:
     return "hot_deck_impute({}) -> Hot-deck imputation."
+
+
+# compact alias per ledger/NAMING.md
+hotdeckimpute = hot_deck_impute

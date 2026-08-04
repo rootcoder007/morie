@@ -42,3 +42,7 @@ gbdcm = gbd_compare
 
 def cheatsheet() -> str:
     return "gbd_compare({}) -> Compare burden across conditions (GBD-style)."
+
+
+# compact alias per ledger/NAMING.md
+gbdcompare = gbd_compare

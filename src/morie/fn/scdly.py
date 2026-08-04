@@ -81,3 +81,7 @@ scdly = case_delay
 
 def cheatsheet() -> str:
     return "case_delay({}) -> Surveillance case reporting delay distribution."
+
+
+# compact alias per ledger/NAMING.md
+casedelay = case_delay

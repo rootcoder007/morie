@@ -60,3 +60,7 @@ def cheatsheet() -> str:
 
 
 bpetm = bpe_train_merges
+
+
+# compact alias per ledger/NAMING.md
+bpetrainmerges = bpe_train_merges

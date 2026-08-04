@@ -40,3 +40,7 @@ def ghosal_dpm_model(x, alpha=1.0, n_terms=200, kernel_sd=0.25,
 
 def cheatsheet():
     return "gh_c5_1: Dirichlet process mixture model"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpmmodel = ghosal_dpm_model

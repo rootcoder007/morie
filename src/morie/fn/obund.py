@@ -45,3 +45,7 @@ obund = otis_bounds
 
 def cheatsheet() -> str:
     return "otis_bounds({}) -> Manski partial identification bounds."
+
+
+# compact alias per ledger/NAMING.md
+otisbounds = otis_bounds

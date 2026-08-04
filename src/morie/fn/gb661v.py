@@ -42,3 +42,7 @@ def gibbons_mw_var(m, n):
 
 def cheatsheet():
     return "gb661v: E = mn/2, Var = mn(m+n+1)/12"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsmwvar = gibbons_mw_var

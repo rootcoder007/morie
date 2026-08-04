@@ -159,3 +159,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`bridge_sampling`.
 bridge_sampling_marginal = bridge_sampling
+
+
+# compact alias per ledger/NAMING.md
+bridgesampling = bridge_sampling

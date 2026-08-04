@@ -82,3 +82,7 @@ hazker = hazard_kernel
 
 def cheatsheet() -> str:
     return "hazard_kernel({}) -> Hazard function estimation."
+
+
+# compact alias per ledger/NAMING.md
+hazardkernel = hazard_kernel

@@ -84,3 +84,7 @@ def otis_table1(
 
 def cheatsheet() -> str:
     return "otis_table1({}) -> Table 1 (baseline characteristics by group) for OTIS data."
+
+
+# compact alias per ledger/NAMING.md
+otistable1 = otis_table1

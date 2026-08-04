@@ -40,3 +40,7 @@ def xgb_survival(time, event, X):
 
 def cheatsheet():
     return "surxgb: XGBoost survival objective"
+
+
+# compact alias per ledger/NAMING.md
+xgbsurvival = xgb_survival

@@ -40,3 +40,7 @@ def saige_gwas(y, M, K):
 
 def cheatsheet():
     return "saigeg: SAIGE for case-control GWAS"
+
+
+# compact alias per ledger/NAMING.md
+saigegwas = saige_gwas

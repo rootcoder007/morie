@@ -37,3 +37,7 @@ cjrit = cjr_irt_model
 
 def cheatsheet() -> str:
     return "cjr_irt_model({}) -> Clinton-Jackman-Rivers IRT model for roll-call data."
+
+
+# compact alias per ledger/NAMING.md
+cjrirtmodel = cjr_irt_model

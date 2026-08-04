@@ -30,3 +30,7 @@ alph = alpha_nom_post
 
 def cheatsheet() -> str:
     return "alpha_nom_post({}) -> Alpha-NOMINATE posterior"
+
+
+# compact alias per ledger/NAMING.md
+alphanompost = alpha_nom_post

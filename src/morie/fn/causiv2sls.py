@@ -128,3 +128,7 @@ def causal_iv_2sls(y, X, Z, cluster=None):
 
 def cheatsheet():
     return "causiv2sls: residuals use the ORIGINAL X, never the first-stage fit"
+
+
+# compact alias per ledger/NAMING.md
+causaliv2sls = causal_iv_2sls

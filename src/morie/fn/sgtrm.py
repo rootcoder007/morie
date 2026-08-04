@@ -41,3 +41,7 @@ sgtrm = trim_signal
 
 def cheatsheet() -> str:
     return "trim_signal({}) -> Signal trimming (segment extraction)."
+
+
+# compact alias per ledger/NAMING.md
+trimsignal = trim_signal

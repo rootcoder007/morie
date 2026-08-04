@@ -179,3 +179,11 @@ def geron_dqn(env, Q, Q_target, buffer, epochs=10, lr=0.1, gamma=0.95, target_sy
 
 def cheatsheet():
     return "hmdqn: Deep Q-network (DQN): neural Q-function with replay buffer and target net"
+
+
+# compact alias per ledger/NAMING.md
+checkbuffer = check_buffer
+
+
+# compact alias per ledger/NAMING.md
+gerondqn = geron_dqn

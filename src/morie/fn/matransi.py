@@ -36,3 +36,7 @@ def ma_logit_inverse(z):
 
 def cheatsheet():
     return "matransi: Inverse logit back to proportion"
+
+
+# compact alias per ledger/NAMING.md
+malogitinverse = ma_logit_inverse

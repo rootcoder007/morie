@@ -36,3 +36,7 @@ def dssp_secondary(coords):
 
 def cheatsheet():
     return "dssprt: DSSP secondary structure assignment"
+
+
+# compact alias per ledger/NAMING.md
+dsspsecondary = dssp_secondary

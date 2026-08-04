@@ -53,3 +53,7 @@ ate_fn = estimate_ate
 
 def cheatsheet() -> str:
     return "estimate_ate({}) -> IPW-weighted OLS ATE estimator."
+
+
+# compact alias per ledger/NAMING.md
+estimateate = estimate_ate

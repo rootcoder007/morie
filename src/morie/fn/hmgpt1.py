@@ -144,3 +144,7 @@ def geron_gpt1(X, n_layers=None, n_heads=None, logits=None, targets=None, **conf
 
 def cheatsheet():
     return "hmgpt1: GPT-1: decoder-only transformer pretrained on next-token prediction"
+
+
+# compact alias per ledger/NAMING.md
+gerongpt1 = geron_gpt1

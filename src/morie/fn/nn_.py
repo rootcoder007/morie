@@ -113,3 +113,7 @@ nn_ = nn_classify
 
 def cheatsheet() -> str:
     return "nn_classify({}) -> Simple neural network (1 hidden layer, pure NumPy)."
+
+
+# compact alias per ledger/NAMING.md
+nnclassify = nn_classify

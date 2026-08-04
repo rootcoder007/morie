@@ -68,3 +68,7 @@ gaubea = gaussian_beam
 
 def cheatsheet() -> str:
     return "gaussian_beam({}) -> Gaussian beam optics."
+
+
+# compact alias per ledger/NAMING.md
+gaussianbeam = gaussian_beam

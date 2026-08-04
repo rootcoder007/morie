@@ -111,3 +111,7 @@ blade = edge_detect
 
 def cheatsheet() -> str:
     return "edge_detect({}) -> Edge detection (Canny variant)."
+
+
+# compact alias per ledger/NAMING.md
+edgedetect = edge_detect

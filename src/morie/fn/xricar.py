@@ -29,3 +29,7 @@ icar = icar_model
 
 def cheatsheet() -> str:
     return "icar_model({}) -> Intrinsic CAR (ICAR)"
+
+
+# compact alias per ledger/NAMING.md
+icarmodel = icar_model

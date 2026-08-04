@@ -151,3 +151,7 @@ def baron_kenny(Y, X, M, alpha=0.05):
 
 def cheatsheet():
     return "bkmed: Baron-Kenny stepwise mediation"
+
+
+# compact alias per ledger/NAMING.md
+baronkenny = baron_kenny

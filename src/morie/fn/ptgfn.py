@@ -30,3 +30,7 @@ g_fu = g_function
 
 def cheatsheet() -> str:
     return "g_function({}) -> Nearest-neighbor G-function"
+
+
+# compact alias per ledger/NAMING.md
+gfunction = g_function

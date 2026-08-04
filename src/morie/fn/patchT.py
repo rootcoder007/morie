@@ -45,3 +45,7 @@ def patch_tst(X, patch_len):
 
 def cheatsheet():
     return "patchT: PatchTST -- channel-independent patches + Transformer"
+
+
+# compact alias per ledger/NAMING.md
+patchtst = patch_tst

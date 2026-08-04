@@ -67,3 +67,7 @@ def sobol_sequence(x=None, N: int = 128, d: int = 1, f=None, scramble: bool = Tr
 
 def cheatsheet():
     return "sobls(N=128, d=1, f=None): Sobol QMC points + integral estimate."
+
+
+# compact alias per ledger/NAMING.md
+sobolsequence = sobol_sequence

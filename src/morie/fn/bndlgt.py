@@ -40,3 +40,7 @@ def bound_logistic(y, D, X):
 
 def cheatsheet():
     return "bndlgt: Logistic odds-ratio bound"
+
+
+# compact alias per ledger/NAMING.md
+boundlogistic = bound_logistic

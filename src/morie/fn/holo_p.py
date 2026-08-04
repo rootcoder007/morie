@@ -76,3 +76,7 @@ def holo_pair(
 
 def cheatsheet() -> str:
     return "holo_pair({}) -> Pair plot (scatter matrix) visualization."
+
+
+# compact alias per ledger/NAMING.md
+holopair = holo_pair

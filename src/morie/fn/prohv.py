@@ -101,3 +101,7 @@ prohv = prohorov_metric
 
 def cheatsheet() -> str:
     return "prohorov_metric({x}, {y}) -> Prohorov metric between distributions."
+
+
+# compact alias per ledger/NAMING.md
+prohorovmetric = prohorov_metric

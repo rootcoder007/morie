@@ -82,3 +82,7 @@ adwdri = adwin_drift
 
 def cheatsheet() -> str:
     return "adwin_drift({}) -> Concept drift detection (ADWIN)."
+
+
+# compact alias per ledger/NAMING.md
+adwindrift = adwin_drift

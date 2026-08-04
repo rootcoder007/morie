@@ -29,3 +29,7 @@ wgs8 = wgs84_to_local
 
 def cheatsheet() -> str:
     return "wgs84_to_local({}) -> WGS84 to local tangent plane"
+
+
+# compact alias per ledger/NAMING.md
+wgs84tolocal = wgs84_to_local

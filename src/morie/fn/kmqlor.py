@@ -95,3 +95,7 @@ def kamath_qlora_4bit(W0_nf4, A, B, alpha, r, x, n_bins=16):
 
 def cheatsheet():
     return "kmqlor: kmnf4 grid dequantises W0, kmlora adds (alpha/r)BA x"
+
+
+# compact alias per ledger/NAMING.md
+dequantizenf4 = dequantize_nf4

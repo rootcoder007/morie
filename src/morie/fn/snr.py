@@ -35,3 +35,7 @@ snr = snr_estimate_fn
 
 def cheatsheet() -> str:
     return "snr_estimate_fn({}) -> SNR estimation."
+
+
+# compact alias per ledger/NAMING.md
+snrestimatefn = snr_estimate_fn

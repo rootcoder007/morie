@@ -29,3 +29,7 @@ cars = carstairs_index
 
 def cheatsheet() -> str:
     return "carstairs_index({}) -> Carstairs deprivation index"
+
+
+# compact alias per ledger/NAMING.md
+carstairsindex = carstairs_index

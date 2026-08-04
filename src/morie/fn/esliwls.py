@@ -178,3 +178,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
 
 def cheatsheet():
     return "esliwls: Fisher scoring for binomial/Poisson GLMs; flags separation instead of returning huge betas"
+
+
+# compact alias per ledger/NAMING.md
+esliwls = esl_iwls

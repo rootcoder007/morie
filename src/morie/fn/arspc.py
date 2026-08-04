@@ -39,3 +39,7 @@ arspc = ar_spectrum_fn
 
 def cheatsheet() -> str:
     return "ar_spectrum_fn({}) -> AR model power spectral density from estimated coefficients."
+
+
+# compact alias per ledger/NAMING.md
+arspectrumfn = ar_spectrum_fn

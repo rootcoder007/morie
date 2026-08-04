@@ -94,3 +94,7 @@ bnd = manski_bounds
 
 def cheatsheet() -> str:
     return "manski_bounds({}) -> Partial identification bounds (Manski bounds) under missing "
+
+
+# compact alias per ledger/NAMING.md
+manskibounds = manski_bounds

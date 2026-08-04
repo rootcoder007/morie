@@ -81,3 +81,7 @@ def geron_elu(z, alpha=1.0):
 
 def cheatsheet():
     return "hmelu: Exponential linear unit"
+
+
+# compact alias per ledger/NAMING.md
+geronelu = geron_elu

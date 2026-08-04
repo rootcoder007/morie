@@ -35,3 +35,7 @@ mds_ = mds_rsq
 
 def cheatsheet() -> str:
     return "mds_rsq({}) -> MDS R-squared goodness of fit"
+
+
+# compact alias per ledger/NAMING.md
+mdsrsq = mds_rsq

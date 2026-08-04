@@ -41,3 +41,7 @@ svar = sample_variance
 
 def cheatsheet() -> str:
     return "sample_variance({}) -> Sample variance."
+
+
+# compact alias per ledger/NAMING.md
+samplevariance = sample_variance

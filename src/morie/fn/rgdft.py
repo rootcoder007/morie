@@ -37,3 +37,7 @@ def rangayyan_dft(x):
 
 def cheatsheet():
     return "rgdft: Discrete Fourier transform (DFT)"
+
+
+# compact alias per ledger/NAMING.md
+rangayyandft = rangayyan_dft

@@ -98,3 +98,7 @@ dpmmx = dp_mixture_model
 
 def cheatsheet() -> str:
     return "dp_mixture_model({}) -> Dirichlet process mixture model."
+
+
+# compact alias per ledger/NAMING.md
+dpmixturemodel = dp_mixture_model

@@ -48,3 +48,7 @@ acfbi = acf_biased
 
 def cheatsheet() -> str:
     return "acf_biased({}) -> Biased autocorrelation function."
+
+
+# compact alias per ledger/NAMING.md
+acfbiased = acf_biased

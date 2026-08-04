@@ -148,3 +148,7 @@ def geron_zero_shot(model, prompt, labels=None, null_prompt=None):
 
 def cheatsheet():
     return "hmzsl: Zero-shot learning: LLM generalizes to unseen tasks from prompt only"
+
+
+# compact alias per ledger/NAMING.md
+geronzeroshot = geron_zero_shot

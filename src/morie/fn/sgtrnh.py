@@ -36,3 +36,7 @@ def sgt_randic_index(A):
 
 def cheatsheet():
     return "sgtrnh: Randić connectivity index"
+
+
+# compact alias per ledger/NAMING.md
+sgtrandicindex = sgt_randic_index

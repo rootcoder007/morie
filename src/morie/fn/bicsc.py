@@ -37,3 +37,7 @@ bicsc = bic_score_fn
 
 def cheatsheet() -> str:
     return "bic_score_fn({}) -> Bayesian Information Criterion for AR model order selection."
+
+
+# compact alias per ledger/NAMING.md
+bicscorefn = bic_score_fn

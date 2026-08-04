@@ -179,3 +179,7 @@ def csr_test(coords, window=None, nsim=99, cdf=None, radii=None, seed=None):
 
 def cheatsheet():
     return "mrkcsr: CSR test via Monte Carlo envelopes on Ripley's K"
+
+
+# compact alias per ledger/NAMING.md
+csrtest = csr_test

@@ -40,3 +40,7 @@ def hybrid_rec(scores_cf, scores_cb, alpha):
 
 def cheatsheet():
     return "hybRC: Hybrid CF + content"
+
+
+# compact alias per ledger/NAMING.md
+hybridrec = hybrid_rec

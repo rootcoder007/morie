@@ -143,3 +143,7 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
 
 def cheatsheet():
     return "mcdAnm: defeats MASKING -- classical covariance is inflated by the outliers so they hide themselves"
+
+
+# compact alias per ledger/NAMING.md
+mcdoutlier = mcd_outlier

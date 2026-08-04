@@ -204,3 +204,7 @@ def cheatsheet():
         "gatep: average a CATE within groups, flagging the outward bias when "
         "the groups are cut from the estimate itself"
     )
+
+
+# compact alias per ledger/NAMING.md
+gateestimation = gate_estimation

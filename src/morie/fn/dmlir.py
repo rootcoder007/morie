@@ -141,3 +141,7 @@ dmlir = dml_irm
 
 def cheatsheet() -> str:
     return "dml_irm({}) -> DML Interactive Regression Model (IRM)."
+
+
+# compact alias per ledger/NAMING.md
+dmlirm = dml_irm

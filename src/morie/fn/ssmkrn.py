@@ -46,3 +46,7 @@ def s4_ssm_kernel(y, x, A, B, C, L):
 
 def cheatsheet():
     return "ssmkrn: S4 structured state-space kernel"
+
+
+# compact alias per ledger/NAMING.md
+s4ssmkernel = s4_ssm_kernel

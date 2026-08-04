@@ -68,3 +68,7 @@ kstst = ks_test
 
 def cheatsheet() -> str:
     return "ks_test(x, y=None) -> Kolmogorov-Smirnov test."
+
+
+# compact alias per ledger/NAMING.md
+kstest = ks_test

@@ -29,3 +29,7 @@ mixe = mixed_utility
 
 def cheatsheet() -> str:
     return "mixed_utility({}) -> Mixed-norm spatial utility"
+
+
+# compact alias per ledger/NAMING.md
+mixedutility = mixed_utility

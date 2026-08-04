@@ -78,3 +78,7 @@ plakb = plackett_burman
 
 def cheatsheet() -> str:
     return "plackett_burman({}) -> Plackett-Burman screening design."
+
+
+# compact alias per ledger/NAMING.md
+plackettburman = plackett_burman

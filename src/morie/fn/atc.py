@@ -111,3 +111,7 @@ atc = estimate_atc
 
 def cheatsheet() -> str:
     return "estimate_atc({}) -> Average Treatment Effect on the Controls (ATC) via Hajek-wei"
+
+
+# compact alias per ledger/NAMING.md
+estimateatc = estimate_atc

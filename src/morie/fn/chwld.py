@@ -33,3 +33,7 @@ chwld = choi_williams_fn
 
 def cheatsheet() -> str:
     return "choi_williams_fn({}) -> Choi-Williams distribution (reduced cross-term TFR)."
+
+
+# compact alias per ledger/NAMING.md
+choiwilliamsfn = choi_williams_fn

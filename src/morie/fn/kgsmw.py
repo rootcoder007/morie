@@ -30,3 +30,7 @@ sk_w = sk_weights
 
 def cheatsheet() -> str:
     return "sk_weights({}) -> Simple kriging weights"
+
+
+# compact alias per ledger/NAMING.md
+skweights = sk_weights

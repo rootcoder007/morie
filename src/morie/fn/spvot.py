@@ -37,3 +37,7 @@ spvot = spatial_vote
 
 def cheatsheet() -> str:
     return "spatial_vote({}) -> Spatial vote choice -- pick closest candidate."
+
+
+# compact alias per ledger/NAMING.md
+spatialvote = spatial_vote

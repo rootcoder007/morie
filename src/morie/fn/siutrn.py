@@ -42,3 +42,7 @@ siutrn = siu_trend
 
 def cheatsheet() -> str:
     return "siu_trend({}) -> SIU case trend over years."
+
+
+# compact alias per ledger/NAMING.md
+siutrend = siu_trend

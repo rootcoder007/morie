@@ -50,3 +50,7 @@ rskdc = risk_decile
 
 def cheatsheet() -> str:
     return "risk_decile({}) -> Outcome rate by risk score decile."
+
+
+# compact alias per ledger/NAMING.md
+riskdecile = risk_decile

@@ -40,3 +40,7 @@ def evt_bv_evd_sim(alpha, n):
 
 def cheatsheet():
     return "evbevsim: Simulate from a bivariate extreme-value copula"
+
+
+# compact alias per ledger/NAMING.md
+evtbvevdsim = evt_bv_evd_sim

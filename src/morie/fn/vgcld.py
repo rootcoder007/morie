@@ -42,3 +42,7 @@ vari = vario_cloud
 
 def cheatsheet() -> str:
     return "vario_cloud({}) -> Variogram cloud"
+
+
+# compact alias per ledger/NAMING.md
+variocloud = vario_cloud

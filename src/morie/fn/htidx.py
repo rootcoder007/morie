@@ -73,3 +73,7 @@ htidx = heat_index
 
 def cheatsheet() -> str:
     return "heat_index({}) -> Heat index calculation."
+
+
+# compact alias per ledger/NAMING.md
+heatindex = heat_index

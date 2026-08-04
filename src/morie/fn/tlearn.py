@@ -40,3 +40,7 @@ def t_learner(y, D, X):
 
 def cheatsheet():
     return "tlearn: T-learner for CATE"
+
+
+# compact alias per ledger/NAMING.md
+tlearner = t_learner

@@ -72,3 +72,7 @@ vtbal = viterbi_align
 
 def cheatsheet() -> str:
     return "viterbi_align({}) -> Viterbi algorithm for optimal state alignment."
+
+
+# compact alias per ledger/NAMING.md
+viterbialign = viterbi_align

@@ -30,3 +30,7 @@ pp_i = pp_intensity
 
 def cheatsheet() -> str:
     return "pp_intensity({}) -> Point pattern intensity"
+
+
+# compact alias per ledger/NAMING.md
+ppintensity = pp_intensity

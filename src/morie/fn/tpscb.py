@@ -52,3 +52,7 @@ tpscb = tps_cost_benefit
 
 def cheatsheet() -> str:
     return "tps_cost_benefit({}) -> Cost-benefit analysis of policing intervention."
+
+
+# compact alias per ledger/NAMING.md
+tpscostbenefit = tps_cost_benefit

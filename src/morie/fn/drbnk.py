@@ -42,3 +42,7 @@ def dr_bandit_did(y, D_t, X, pi_t):
 
 def cheatsheet():
     return "drbnk: DR for adaptive bandit-DiD"
+
+
+# compact alias per ledger/NAMING.md
+drbanditdid = dr_bandit_did

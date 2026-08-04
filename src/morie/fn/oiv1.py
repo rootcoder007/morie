@@ -101,3 +101,7 @@ def otis_iv_distance(
 
 def cheatsheet() -> str:
     return "otis_iv_distance({}) -> IV estimation (2SLS) for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisivdistance = otis_iv_distance

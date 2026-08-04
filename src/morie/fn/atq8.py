@@ -46,3 +46,7 @@ def int8_attention(y, Q, K, V, scales):
 
 def cheatsheet():
     return "atq8: INT8 quantized attention via per-row scales"
+
+
+# compact alias per ledger/NAMING.md
+int8attention = int8_attention

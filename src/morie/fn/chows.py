@@ -65,3 +65,7 @@ chows = chow_test
 
 def cheatsheet() -> str:
     return "chow_test({}) -> Chow structural break F-test."
+
+
+# compact alias per ledger/NAMING.md
+chowtest = chow_test

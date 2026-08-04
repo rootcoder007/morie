@@ -42,3 +42,7 @@ def n_design_effect(design_effect, n_si):
 
 def cheatsheet():
     return 'r12e14: n(p, zbar) = sqrt(de) n(SI, pi) [Brus 2022, eq. 12.14]'
+
+
+# compact alias per ledger/NAMING.md
+ndesigneffect = n_design_effect

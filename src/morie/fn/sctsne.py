@@ -38,3 +38,7 @@ def tsne_embedding(X, perplexity):
 
 def cheatsheet():
     return "sctsne: t-SNE embedding"
+
+
+# compact alias per ledger/NAMING.md
+tsneembedding = tsne_embedding

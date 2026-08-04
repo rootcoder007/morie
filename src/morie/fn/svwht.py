@@ -29,3 +29,7 @@ witt = wittman_model
 
 def cheatsheet() -> str:
     return "wittman_model({}) -> Wittman divergence model (policy-motivated)"
+
+
+# compact alias per ledger/NAMING.md
+wittmanmodel = wittman_model

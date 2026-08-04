@@ -42,3 +42,7 @@ def penalty_method(f, constraints, x0, mu):
 
 def cheatsheet():
     return "penmth: Penalty method for constrained"
+
+
+# compact alias per ledger/NAMING.md
+penaltymethod = penalty_method

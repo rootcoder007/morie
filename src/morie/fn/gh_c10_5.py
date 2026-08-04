@@ -39,3 +39,7 @@ def ghosal_wn_adapt(y=None, n=400, pi_incl=0.2, tau2=1.0, seed=42):
 
 def cheatsheet():
     return "gh_c10_5: Spike-and-slab white-noise adaptation"
+
+
+# compact alias per ledger/NAMING.md
+ghosalwnadapt = ghosal_wn_adapt

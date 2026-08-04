@@ -78,3 +78,7 @@ ewens = ewens_partition
 
 def cheatsheet() -> str:
     return "ewens(n, theta=1.0) -> Ewens sampling formula random partition"
+
+
+# compact alias per ledger/NAMING.md
+ewenspartition = ewens_partition

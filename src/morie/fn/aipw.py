@@ -164,3 +164,7 @@ aipw = estimate_aipw
 
 def cheatsheet() -> str:
     return "estimate_aipw({}) -> Augmented Inverse Probability Weighting (AIPW) doubly-robust"
+
+
+# compact alias per ledger/NAMING.md
+estimateaipw = estimate_aipw

@@ -44,3 +44,7 @@ rsmpl = resample_signal
 
 def cheatsheet() -> str:
     return "resample_signal({}) -> Rational resampling."
+
+
+# compact alias per ledger/NAMING.md
+resamplesignal = resample_signal

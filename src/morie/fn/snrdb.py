@@ -37,3 +37,7 @@ snrdb = snr_to_linear
 
 def cheatsheet() -> str:
     return "snr_to_linear({}) -> SNR dB to linear conversion."
+
+
+# compact alias per ledger/NAMING.md
+snrtolinear = snr_to_linear

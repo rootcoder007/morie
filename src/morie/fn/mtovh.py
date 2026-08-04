@@ -44,3 +44,7 @@ mtovh = mto_vehicle_type
 
 def cheatsheet() -> str:
     return "mto_vehicle_type({}) -> Crash rates by vehicle type."
+
+
+# compact alias per ledger/NAMING.md
+mtovehicletype = mto_vehicle_type

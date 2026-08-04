@@ -48,3 +48,7 @@ def rkhs_multitrait(Y, K, n_iter):
 
 def cheatsheet():
     return "rkhsmt: Multi-trait Bayesian kernel regression with shared kernel matrix"
+
+
+# compact alias per ledger/NAMING.md
+rkhsmultitrait = rkhs_multitrait

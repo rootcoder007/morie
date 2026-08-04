@@ -41,3 +41,7 @@ hotlg = hotelling_model
 
 def cheatsheet() -> str:
     return "hotelling_model({}) -> Hotelling model of spatial competition."
+
+
+# compact alias per ledger/NAMING.md
+hotellingmodel = hotelling_model

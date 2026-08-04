@@ -65,3 +65,7 @@ def cheatsheet() -> str:
 
 
 qjl = qjl_project
+
+
+# compact alias per ledger/NAMING.md
+qjlproject = qjl_project

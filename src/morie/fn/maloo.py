@@ -116,3 +116,7 @@ def ma_leave_one_out(yi, vi, method="PM"):
 
 def cheatsheet():
     return "maloo: refit tau^2 each time -- deletion moves every weight, not just one"
+
+
+# compact alias per ledger/NAMING.md
+maleaveoneout = ma_leave_one_out

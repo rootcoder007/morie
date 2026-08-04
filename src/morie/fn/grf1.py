@@ -114,3 +114,7 @@ def geron_f1_score(y_true, y_pred, positive_class=1):
 
 def cheatsheet():
     return "grf1: F1 = 2PR/(P+R), harmonic mean; counts delegated to grcfm"
+
+
+# compact alias per ledger/NAMING.md
+geronf1score = geron_f1_score

@@ -76,3 +76,7 @@ catfit = catenary_fit
 
 def cheatsheet() -> str:
     return "_catenary({}) -> Catenary curve fitting."
+
+
+# compact alias per ledger/NAMING.md
+catenaryfit = catenary_fit

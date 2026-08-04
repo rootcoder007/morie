@@ -64,3 +64,7 @@ def avg_path_length(G, cdf=None):
 
 def cheatsheet():
     return "avglen: Average shortest path length"
+
+
+# compact alias per ledger/NAMING.md
+avgpathlength = avg_path_length

@@ -40,3 +40,7 @@ def torus_modular(tau: complex = 1j) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_modular(tau) -> modular parameter of complex torus"
+
+
+# compact alias per ledger/NAMING.md
+torusmodular = torus_modular

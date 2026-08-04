@@ -42,3 +42,7 @@ def piecewise_cubic(x, knot, coef_left, coef_right):
 
 def cheatsheet():
     return '6e34: f(x) = delta-cubic for x <= k; gamma-cubic for x > k [Bilder & Loughin 2025, eq. 6.34]'
+
+
+# compact alias per ledger/NAMING.md
+piecewisecubic = piecewise_cubic

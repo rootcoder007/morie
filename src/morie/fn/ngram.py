@@ -75,3 +75,7 @@ def ngram_freq(
 
 def cheatsheet() -> str:
     return "ngram_freq({}) -> N-gram frequency analysis."
+
+
+# compact alias per ledger/NAMING.md
+ngramfreq = ngram_freq

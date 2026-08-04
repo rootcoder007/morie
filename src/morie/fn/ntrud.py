@@ -32,3 +32,7 @@ ntrud = ntru_decrypt
 
 def cheatsheet() -> str:
     return "ntru_decrypt({}) -> NTRU decryption."
+
+
+# compact alias per ledger/NAMING.md
+ntrudecrypt = ntru_decrypt

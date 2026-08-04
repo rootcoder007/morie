@@ -42,3 +42,7 @@ def dr_spatial_did(y, D, X, W_neighbors):
 
 def cheatsheet():
     return "drspa: Spatial DR-DiD with neighbor effects"
+
+
+# compact alias per ledger/NAMING.md
+drspatialdid = dr_spatial_did

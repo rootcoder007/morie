@@ -61,3 +61,7 @@ def generalized_esd(x, alpha, r, cdf=None):
 
 def cheatsheet():
     return "esd: Generalized ESD test"
+
+
+# compact alias per ledger/NAMING.md
+generalizedesd = generalized_esd

@@ -29,3 +29,7 @@ thei = theil_spatial
 
 def cheatsheet() -> str:
     return "theil_spatial({}) -> Spatial Theil decomposition"
+
+
+# compact alias per ledger/NAMING.md
+theilspatial = theil_spatial

@@ -29,3 +29,7 @@ vote = vote_trading
 
 def cheatsheet() -> str:
     return "vote_trading({}) -> Vote trading (logrolling) model"
+
+
+# compact alias per ledger/NAMING.md
+votetrading = vote_trading

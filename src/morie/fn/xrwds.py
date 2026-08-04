@@ -29,3 +29,7 @@ w_di = w_distance
 
 def cheatsheet() -> str:
     return "w_distance({}) -> Distance-band weights"
+
+
+# compact alias per ledger/NAMING.md
+wdistance = w_distance

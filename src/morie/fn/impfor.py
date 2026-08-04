@@ -64,3 +64,7 @@ impfor = impact_force
 
 def cheatsheet() -> str:
     return "impact_force({}) -> Impact force modeling."
+
+
+# compact alias per ledger/NAMING.md
+impactforce = impact_force

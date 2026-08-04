@@ -33,3 +33,7 @@ def ghosal_bp_cont(c=2.0, t_max=1.0, n_grid=2000):
 
 def cheatsheet():
     return "gh_c13_5: Beta-process Lévy measure"
+
+
+# compact alias per ledger/NAMING.md
+ghosalbpcont = ghosal_bp_cont

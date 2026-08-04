@@ -38,3 +38,7 @@ def local_getis_g(x, W):
 
 def cheatsheet():
     return "lisgst: Local Getis-Ord G_i*"
+
+
+# compact alias per ledger/NAMING.md
+localgetisg = local_getis_g

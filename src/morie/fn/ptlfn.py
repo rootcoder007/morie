@@ -30,3 +30,7 @@ l_fu = l_function
 
 def cheatsheet() -> str:
     return "l_function({}) -> L-function (variance-stabilized K)"
+
+
+# compact alias per ledger/NAMING.md
+lfunction = l_function

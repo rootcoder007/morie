@@ -75,3 +75,7 @@ def esl_softmax(T):
 
 def cheatsheet():
     return "eslsft: exp(T-max)/sum exp(T-max); shift-invariant, so scores unidentifiable"
+
+
+# compact alias per ledger/NAMING.md
+eslsoftmax = esl_softmax

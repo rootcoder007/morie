@@ -74,3 +74,7 @@ freze = freeze_thaw
 
 def cheatsheet() -> str:
     return "freeze_thaw({}) -> Freeze-thaw cycle degradation model."
+
+
+# compact alias per ledger/NAMING.md
+freezethaw = freeze_thaw

@@ -71,3 +71,7 @@ def ma_begg_test(yi, vi, cdf=None):
 
 def cheatsheet():
     return "mabegg: Begg-Mazumdar rank-correlation funnel asymmetry test"
+
+
+# compact alias per ledger/NAMING.md
+mabeggtest = ma_begg_test

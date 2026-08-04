@@ -35,3 +35,7 @@ krig = kriging_matrix
 
 def cheatsheet() -> str:
     return "kriging_matrix({}) -> Kriging system matrix"
+
+
+# compact alias per ledger/NAMING.md
+krigingmatrix = kriging_matrix

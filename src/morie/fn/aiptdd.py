@@ -169,3 +169,7 @@ def aipw_did(y_pre, y_post, D, X, trim=0.995, alpha=0.05):
 
 def cheatsheet():
     return "aiptdd: doubly robust (AIPW) difference-in-differences"
+
+
+# compact alias per ledger/NAMING.md
+aipwdid = aipw_did

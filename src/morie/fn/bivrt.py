@@ -88,3 +88,7 @@ bivrt = bayesian_iv
 
 def cheatsheet() -> str:
     return "bayesian_iv({}) -> Bayesian IV regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianiv = bayesian_iv

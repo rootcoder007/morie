@@ -141,3 +141,7 @@ def geron_one_vs_one(X, y, base_fit=None, eta=0.5, n_iter=400):
 
 def cheatsheet():
     return "grovo: K(K-1)/2 pairwise duels, majority vote; each model sees only two classes' rows"
+
+
+# compact alias per ledger/NAMING.md
+gerononevsone = geron_one_vs_one

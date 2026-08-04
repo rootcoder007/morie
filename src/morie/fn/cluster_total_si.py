@@ -42,3 +42,7 @@ def cluster_total_si(cluster_totals, n_clusters_population, n):
 
 def cheatsheet():
     return 'r6e9: t_hat(z) = (N/n) sum t_j [Brus 2022, eq. 6.9]'
+
+
+# compact alias per ledger/NAMING.md
+clustertotalsi = cluster_total_si

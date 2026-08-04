@@ -42,3 +42,7 @@ def em_algorithm(log_lik, Q, x0, steps):
 
 def cheatsheet():
     return "epsig1: Expectation-maximization"
+
+
+# compact alias per ledger/NAMING.md
+emalgorithm = em_algorithm

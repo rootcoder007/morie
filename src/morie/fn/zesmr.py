@@ -29,3 +29,7 @@ smr_ = smr_compute
 
 def cheatsheet() -> str:
     return "smr_compute({}) -> Standardized Morbidity Ratio"
+
+
+# compact alias per ledger/NAMING.md
+smrcompute = smr_compute

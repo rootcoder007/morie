@@ -31,3 +31,7 @@ ntruc = ntru_encrypt
 
 def cheatsheet() -> str:
     return "ntru_encrypt({}) -> NTRU encryption."
+
+
+# compact alias per ledger/NAMING.md
+ntruencrypt = ntru_encrypt

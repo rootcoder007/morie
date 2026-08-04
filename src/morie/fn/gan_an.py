@@ -38,3 +38,7 @@ def gan_anomaly(X, gan):
 
 def cheatsheet():
     return "gan_an: GAN-based anomaly (AnoGAN)"
+
+
+# compact alias per ledger/NAMING.md
+gananomaly = gan_anomaly

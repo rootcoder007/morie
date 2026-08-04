@@ -49,3 +49,7 @@ vari = vario_jackknife
 
 def cheatsheet() -> str:
     return "vario_jackknife({}) -> Variogram jackknife"
+
+
+# compact alias per ledger/NAMING.md
+variojackknife = vario_jackknife

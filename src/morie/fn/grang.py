@@ -71,3 +71,7 @@ grang = granger_test
 
 def cheatsheet() -> str:
     return "granger_test({}) -> Granger causality F-test."
+
+
+# compact alias per ledger/NAMING.md
+grangertest = granger_test

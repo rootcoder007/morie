@@ -65,3 +65,7 @@ def kamath_ch6_pll(S, theta=None):
 
 def cheatsheet():
     return "km086: sum of log P(token | rest of the sentence)"
+
+
+# compact alias per ledger/NAMING.md
+kamathch6pll = kamath_ch6_pll

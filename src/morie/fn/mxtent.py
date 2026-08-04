@@ -36,3 +36,7 @@ def max_entropy(constraints):
 
 def cheatsheet():
     return "mxtent: Maximum entropy distribution"
+
+
+# compact alias per ledger/NAMING.md
+maxentropy = max_entropy

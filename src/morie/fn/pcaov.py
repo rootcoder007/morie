@@ -70,3 +70,7 @@ pcaov = pca_overlap
 
 def cheatsheet() -> str:
     return "pca_overlap({}) -> PCA on overlapping signal windows."
+
+
+# compact alias per ledger/NAMING.md
+pcaoverlap = pca_overlap

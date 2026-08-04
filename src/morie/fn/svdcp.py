@@ -39,3 +39,7 @@ def svd_compute(
 
 
 svdcp = svd_compute
+
+
+# compact alias per ledger/NAMING.md
+svdcompute = svd_compute

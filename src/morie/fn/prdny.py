@@ -64,3 +64,7 @@ prdny = prony_method_fn
 
 def cheatsheet() -> str:
     return "prony_method_fn({}) -> Prony's method for pole-zero estimation."
+
+
+# compact alias per ledger/NAMING.md
+pronymethodfn = prony_method_fn

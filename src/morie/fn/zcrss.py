@@ -66,3 +66,7 @@ def zero_crossings(
 
 def cheatsheet() -> str:
     return "zero_crossings({}) -> Zero-crossing detection."
+
+
+# compact alias per ledger/NAMING.md
+zerocrossings = zero_crossings

@@ -36,3 +36,7 @@ def sem_sb_chi_sq(fit):
 
 def cheatsheet():
     return "semsbn: Satorra-Bentler chi-square correction"
+
+
+# compact alias per ledger/NAMING.md
+semsbchisq = sem_sb_chi_sq

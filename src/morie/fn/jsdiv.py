@@ -48,3 +48,7 @@ jsdiv = js_divergence
 
 def cheatsheet() -> str:
     return "js_divergence({}) -> Jensen-Shannon divergence."
+
+
+# compact alias per ledger/NAMING.md
+jsdivergence = js_divergence

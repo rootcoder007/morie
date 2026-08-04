@@ -91,3 +91,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_pickands`.
 evt_pickands_estimator = ev_pickands
+
+
+# compact alias per ledger/NAMING.md
+evpickands = ev_pickands

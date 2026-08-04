@@ -40,3 +40,7 @@ def regenie_lmm(y, M, blocks):
 
 def cheatsheet():
     return "regmlm: Regenie LMM stage-1 + stage-2"
+
+
+# compact alias per ledger/NAMING.md
+regenielmm = regenie_lmm

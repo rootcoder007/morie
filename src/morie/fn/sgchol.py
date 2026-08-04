@@ -82,3 +82,7 @@ sgchol = cholesky_grf_sim
 
 def cheatsheet() -> str:
     return "cholesky_grf_sim({}) -> Cholesky-based Gaussian random field simulation."
+
+
+# compact alias per ledger/NAMING.md
+choleskygrfsim = cholesky_grf_sim

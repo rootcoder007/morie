@@ -36,3 +36,7 @@ def galois_group(poly):
 
 def cheatsheet():
     return "galois: Galois group of polynomial"
+
+
+# compact alias per ledger/NAMING.md
+galoisgroup = galois_group

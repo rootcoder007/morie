@@ -109,3 +109,7 @@ doseq = dose_response
 
 def cheatsheet() -> str:
     return "dose_response({}) -> Dose-response analysis (logistic/probit)."
+
+
+# compact alias per ledger/NAMING.md
+doseresponse = dose_response

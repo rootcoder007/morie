@@ -84,3 +84,7 @@ lts = least_trimmed_sq
 
 def cheatsheet() -> str:
     return "least_trimmed_sq({}) -> Least Trimmed Squares (LTS) robust regression."
+
+
+# compact alias per ledger/NAMING.md
+leasttrimmedsq = least_trimmed_sq

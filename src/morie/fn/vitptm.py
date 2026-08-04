@@ -40,3 +40,7 @@ def vit_patch_embed(image, patch_size, embed_dim):
 
 def cheatsheet():
     return "vitptm: ViT patch embedding via 2D conv"
+
+
+# compact alias per ledger/NAMING.md
+vitpatchembed = vit_patch_embed

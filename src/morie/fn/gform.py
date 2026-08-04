@@ -84,3 +84,7 @@ gform = g_formula
 
 def cheatsheet() -> str:
     return "g_formula({}) -> Parametric g-formula (g-computation)."
+
+
+# compact alias per ledger/NAMING.md
+gformula = g_formula

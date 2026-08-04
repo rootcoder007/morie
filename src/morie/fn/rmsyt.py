@@ -55,3 +55,7 @@ def ramsey_reset(y: np.ndarray, X: np.ndarray, cdf=None, *, powers: list[int] | 
 
 def cheatsheet() -> str:
     return "ramsey_reset({}) -> Ramsey RESET specification test."
+
+
+# compact alias per ledger/NAMING.md
+ramseyreset = ramsey_reset

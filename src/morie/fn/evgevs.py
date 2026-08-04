@@ -26,3 +26,7 @@ def evt_gev_sample(n, mu, sigma, xi, seed=42):
 
 def cheatsheet():
     return "evgevs: Sample from a GEV distribution"
+
+
+# compact alias per ledger/NAMING.md
+evtgevsample = evt_gev_sample

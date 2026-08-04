@@ -29,3 +29,7 @@ gaus = gauss_utility
 
 def cheatsheet() -> str:
     return "gauss_utility({}) -> Gaussian spatial utility function"
+
+
+# compact alias per ledger/NAMING.md
+gaussutility = gauss_utility

@@ -61,3 +61,7 @@ d = cohens_d
 
 def cheatsheet() -> str:
     return "cohens_d({}) -> Cohen's d effect size for two independent groups."
+
+
+# compact alias per ledger/NAMING.md
+cohensd = cohens_d

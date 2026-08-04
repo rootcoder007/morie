@@ -76,3 +76,7 @@ def cheatsheet() -> str:
 
 
 raman = ramanujan_tau
+
+
+# compact alias per ledger/NAMING.md
+ramanujantau = ramanujan_tau

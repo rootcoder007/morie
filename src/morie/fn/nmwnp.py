@@ -30,3 +30,7 @@ wnom = wnominate_prob
 
 def cheatsheet() -> str:
     return "wnominate_prob({}) -> W-NOMINATE vote probability"
+
+
+# compact alias per ledger/NAMING.md
+wnominateprob = wnominate_prob

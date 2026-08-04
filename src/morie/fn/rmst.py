@@ -47,3 +47,7 @@ rmst = rmst_estimate
 
 def cheatsheet() -> str:
     return "rmst_estimate({}) -> Restricted mean survival time."
+
+
+# compact alias per ledger/NAMING.md
+rmstestimate = rmst_estimate

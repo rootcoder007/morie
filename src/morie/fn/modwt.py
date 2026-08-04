@@ -63,3 +63,7 @@ modwt = modwt_decompose
 
 def cheatsheet() -> str:
     return "modwt_decompose({}) -> MODWT (maximal overlap DWT, translation-invariant)."
+
+
+# compact alias per ledger/NAMING.md
+modwtdecompose = modwt_decompose

@@ -124,3 +124,7 @@ bdd = bunching_did
 
 def cheatsheet() -> str:
     return "bunching_did({}) -> Bunching difference-in-differences."
+
+
+# compact alias per ledger/NAMING.md
+bunchingdid = bunching_did

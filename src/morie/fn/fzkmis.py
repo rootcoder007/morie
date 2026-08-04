@@ -39,3 +39,7 @@ def fauzi_kdfe_mise(x, bandwidth):
 
 def cheatsheet():
     return "fzkmis: MISE of standard KDFE"
+
+
+# compact alias per ledger/NAMING.md
+fauzikdfemise = fauzi_kdfe_mise

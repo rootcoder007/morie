@@ -523,3 +523,27 @@ def cheatsheet():
         "the Bose construction verified, Latin squares and orthogonality, "
         "and the Hamming and Singleton coding bounds"
     )
+
+
+# compact alias per ledger/NAMING.md
+areorthogonal = are_orthogonal
+
+
+# compact alias per ledger/NAMING.md
+bibdparameters = bibd_parameters
+
+
+# compact alias per ledger/NAMING.md
+hammingbound = hamming_bound
+
+
+# compact alias per ledger/NAMING.md
+islatinsquare = is_latin_square
+
+
+# compact alias per ledger/NAMING.md
+latinsquare = latin_square
+
+
+# compact alias per ledger/NAMING.md
+singletonbound = singleton_bound

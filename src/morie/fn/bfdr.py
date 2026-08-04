@@ -47,3 +47,7 @@ bfdr = bayesian_fdr
 
 def cheatsheet() -> str:
     return "bayesian_fdr({}) -> Bayesian FDR."
+
+
+# compact alias per ledger/NAMING.md
+bayesianfdr = bayesian_fdr

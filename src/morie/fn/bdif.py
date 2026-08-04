@@ -129,3 +129,7 @@ def bayesian_dif(
 
 def cheatsheet() -> str:
     return "bayesian_dif({}) -> Bayesian DIF detection via parameter posterior differences."
+
+
+# compact alias per ledger/NAMING.md
+bayesiandif = bayesian_dif

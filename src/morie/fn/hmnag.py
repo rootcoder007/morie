@@ -117,3 +117,7 @@ def geron_nesterov(grads, v=None, beta=0.9, eta=0.001, theta=None):
 
 def cheatsheet():
     return "hmnag: Nesterov accelerated gradient (NAG)"
+
+
+# compact alias per ledger/NAMING.md
+geronnesterov = geron_nesterov

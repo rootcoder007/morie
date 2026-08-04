@@ -40,3 +40,7 @@ def trimmed_kmeans(X, k, alpha):
 
 def cheatsheet():
     return "rkmeans: Trimmed k-means"
+
+
+# compact alias per ledger/NAMING.md
+trimmedkmeans = trimmed_kmeans

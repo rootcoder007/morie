@@ -38,3 +38,7 @@ def small_worldness(G, random_baseline):
 
 def cheatsheet():
     return "smwgrp: Small-world coefficient sigma"
+
+
+# compact alias per ledger/NAMING.md
+smallworldness = small_worldness

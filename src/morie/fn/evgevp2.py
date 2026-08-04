@@ -45,3 +45,11 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_gev_pwm`.
 evt_gev_pwm = ev_gev_pwm
+
+
+# compact alias per ledger/NAMING.md
+evgevpwm = ev_gev_pwm
+
+
+# compact alias per ledger/NAMING.md
+evtgevpwm = evt_gev_pwm

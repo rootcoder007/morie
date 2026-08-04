@@ -40,3 +40,7 @@ def map_at_k(pred_rank, relevant, k):
 
 def cheatsheet():
     return "mapMet: MAP@k"
+
+
+# compact alias per ledger/NAMING.md
+mapatk = map_at_k

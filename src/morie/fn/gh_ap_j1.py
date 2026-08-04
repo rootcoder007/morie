@@ -34,3 +34,7 @@ def ghosal_levy_ito(fixed_atoms=(0.5,), atom_masses=(0.2,),
 
 def cheatsheet():
     return "gh_ap_j1: Lévy-Itô decomposition"
+
+
+# compact alias per ledger/NAMING.md
+ghosallevyito = ghosal_levy_ito

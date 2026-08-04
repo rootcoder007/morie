@@ -98,3 +98,7 @@ esem = cfa_esem
 
 def cheatsheet() -> str:
     return "cfa_esem({}) -> Exploratory SEM (ESEM) via rotated CFA loadings."
+
+
+# compact alias per ledger/NAMING.md
+cfaesem = cfa_esem

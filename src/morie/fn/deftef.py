@@ -38,3 +38,7 @@ def design_effect(design_var, srs_var):
 
 def cheatsheet():
     return "deftef: Design effect (DEFF)"
+
+
+# compact alias per ledger/NAMING.md
+designeffect = design_effect

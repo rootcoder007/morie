@@ -65,3 +65,7 @@ hrvfd = hrv_freq_domain
 
 def cheatsheet() -> str:
     return "hrv_freq_domain({}) -> HRV frequency-domain metrics."
+
+
+# compact alias per ledger/NAMING.md
+hrvfreqdomain = hrv_freq_domain

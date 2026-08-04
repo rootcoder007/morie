@@ -156,3 +156,7 @@ def esl_boltzmann(v, h=4, lr=0.1, n_epochs=200, k_cd=1, seed=0, batch_size=None)
 
 def cheatsheet():
     return "eslbrm: RBM by CD-k; Z is intractable so NO log-likelihood -- reconstruction error can mislead"
+
+
+# compact alias per ledger/NAMING.md
+eslboltzmann = esl_boltzmann

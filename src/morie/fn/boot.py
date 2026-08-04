@@ -73,3 +73,7 @@ boot = bootstrap_ci
 
 def cheatsheet() -> str:
     return "bootstrap_ci({}) -> Non-parametric percentile bootstrap confidence intervals."
+
+
+# compact alias per ledger/NAMING.md
+bootstrapci = bootstrap_ci

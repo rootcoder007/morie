@@ -52,3 +52,7 @@ cjs = cjs_flow
 
 def cheatsheet() -> str:
     return "cjs_flow({}) -> CJS flow / attrition calculation."
+
+
+# compact alias per ledger/NAMING.md
+cjsflow = cjs_flow

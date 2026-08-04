@@ -38,3 +38,7 @@ def haplotype_block(genotypes, cm_window):
 
 def cheatsheet():
     return "hapblk: Haplotype block (Gabriel)"
+
+
+# compact alias per ledger/NAMING.md
+haplotypeblock = haplotype_block

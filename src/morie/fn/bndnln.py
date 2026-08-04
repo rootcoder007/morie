@@ -138,3 +138,7 @@ def bound_nonlinear(data, g, theta_grid, alpha=0.05, B=500, seed=0):
 
 def cheatsheet():
     return "bndnln: [x]_+ in the criterion, recentred bootstrap for the cutoff"
+
+
+# compact alias per ledger/NAMING.md
+boundnonlinear = bound_nonlinear

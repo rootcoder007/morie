@@ -49,3 +49,7 @@ dispr = disparity_fit
 
 def cheatsheet() -> str:
     return "disparity_fit({}) -> Disparity fit via isotonic regression."
+
+
+# compact alias per ledger/NAMING.md
+disparityfit = disparity_fit

@@ -65,3 +65,7 @@ strat = stratified_mean
 
 def cheatsheet() -> str:
     return "stratified_mean({}) -> Stratified mean estimator."
+
+
+# compact alias per ledger/NAMING.md
+stratifiedmean = stratified_mean

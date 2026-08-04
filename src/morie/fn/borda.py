@@ -43,3 +43,7 @@ borda = borda_count
 
 def cheatsheet() -> str:
     return "borda_count({}) -> Borda count election method."
+
+
+# compact alias per ledger/NAMING.md
+bordacount = borda_count

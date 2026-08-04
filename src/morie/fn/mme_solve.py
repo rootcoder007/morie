@@ -28,3 +28,7 @@ def mme_solve(X, Z, y, Sigma_inv, R_inv=None):
 
 def cheatsheet():
     return "msm241: Henderson's mixed model equations"
+
+
+# compact alias per ledger/NAMING.md
+mmesolve = mme_solve

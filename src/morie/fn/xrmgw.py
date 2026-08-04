@@ -29,3 +29,7 @@ mgwr = mgwr_estimate
 
 def cheatsheet() -> str:
     return "mgwr_estimate({}) -> MGWR estimation"
+
+
+# compact alias per ledger/NAMING.md
+mgwrestimate = mgwr_estimate

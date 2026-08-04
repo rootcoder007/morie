@@ -91,3 +91,7 @@ storm = markov_weather
 
 def cheatsheet() -> str:
     return "markov_weather({}) -> Markov chain weather model."
+
+
+# compact alias per ledger/NAMING.md
+markovweather = markov_weather

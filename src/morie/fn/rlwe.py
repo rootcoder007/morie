@@ -30,3 +30,7 @@ rlwe = rlwe_keygen
 
 def cheatsheet() -> str:
     return "rlwe_keygen({}) -> Ring-LWE key generation in Z_q[x]/(x^n+1)."
+
+
+# compact alias per ledger/NAMING.md
+rlwekeygen = rlwe_keygen

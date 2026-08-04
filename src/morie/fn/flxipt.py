@@ -40,3 +40,7 @@ def flexible_iptw(A, H, library):
 
 def cheatsheet():
     return "flxipt: Flexible IPTW with super learner"
+
+
+# compact alias per ledger/NAMING.md
+flexibleiptw = flexible_iptw

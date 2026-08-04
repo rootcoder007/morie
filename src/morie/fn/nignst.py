@@ -44,3 +44,7 @@ def normal_inv_gamma(y, mu0, kappa0, alpha0, beta0):
 
 def cheatsheet():
     return "nignst: Normal-Inverse-Gamma conjugate"
+
+
+# compact alias per ledger/NAMING.md
+normalinvgamma = normal_inv_gamma

@@ -42,3 +42,7 @@ vari = vario_cubic
 
 def cheatsheet() -> str:
     return "vario_cubic({}) -> Cubic variogram model"
+
+
+# compact alias per ledger/NAMING.md
+variocubic = vario_cubic

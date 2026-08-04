@@ -77,3 +77,7 @@ mvsml_ridge_lasso_elastic_eq_9_1 = hyperplane_side
 
 def cheatsheet():
     return "msm164: hyperplane evaluation f(x) = beta0 + beta'x (MVSML Eq. 9.1)"
+
+
+# compact alias per ledger/NAMING.md
+hyperplaneside = hyperplane_side

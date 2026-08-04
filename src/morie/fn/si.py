@@ -79,3 +79,7 @@ si = serial_interval
 
 def cheatsheet() -> str:
     return "serial_interval({}) -> Serial interval estimation from case pairs."
+
+
+# compact alias per ledger/NAMING.md
+serialinterval = serial_interval

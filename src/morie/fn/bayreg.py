@@ -40,3 +40,7 @@ def bayes_linear(y, X, prior_var):
 
 def cheatsheet():
     return "bayreg: Bayesian linear regression"
+
+
+# compact alias per ledger/NAMING.md
+bayeslinear = bayes_linear

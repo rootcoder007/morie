@@ -40,3 +40,7 @@ def bayes_b_marker(y, M, pi):
 
 def cheatsheet():
     return "baysbm: BayesB sparse marker prior"
+
+
+# compact alias per ledger/NAMING.md
+bayesbmarker = bayes_b_marker

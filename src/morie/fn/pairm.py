@@ -31,3 +31,7 @@ pairm = pairwise_matrix
 
 def cheatsheet() -> str:
     return "pairwise_matrix({}) -> Build pairwise comparison matrix from rankings."
+
+
+# compact alias per ledger/NAMING.md
+pairwisematrix = pairwise_matrix

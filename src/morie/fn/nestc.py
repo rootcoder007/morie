@@ -72,3 +72,7 @@ def cheatsheet() -> str:
 
 
 nestc = nested_cv
+
+
+# compact alias per ledger/NAMING.md
+nestedcv = nested_cv

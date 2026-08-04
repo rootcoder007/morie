@@ -70,3 +70,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`hrz_sieve_iv`.
 horowitz_sieve_npiv = hrz_sieve_iv
+
+
+# compact alias per ledger/NAMING.md
+hrzsieveiv = hrz_sieve_iv

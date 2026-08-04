@@ -38,3 +38,7 @@ def renyi_dp(alpha, sigma):
 
 def cheatsheet():
     return "rdpc: Rényi differential privacy (RDP)"
+
+
+# compact alias per ledger/NAMING.md
+renyidp = renyi_dp

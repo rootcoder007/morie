@@ -69,3 +69,7 @@ short = qr_factorize
 
 def cheatsheet() -> str:
     return "qr_factorize({}) -> QR factorization via Householder."
+
+
+# compact alias per ledger/NAMING.md
+qrfactorize = qr_factorize

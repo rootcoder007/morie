@@ -47,3 +47,7 @@ sprmn = spearman_corr
 
 def cheatsheet() -> str:
     return "spearman_corr(x, y) -> Spearman rank correlation."
+
+
+# compact alias per ledger/NAMING.md
+spearmancorr = spearman_corr

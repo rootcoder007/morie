@@ -42,3 +42,7 @@ def tmle_pooled(y, D, X, site):
 
 def cheatsheet():
     return "tmlpoo: Pooled TMLE for multi-site data"
+
+
+# compact alias per ledger/NAMING.md
+tmlepooled = tmle_pooled

@@ -29,3 +29,7 @@ merc = mercator_proj
 
 def cheatsheet() -> str:
     return "mercator_proj({}) -> Mercator projection"
+
+
+# compact alias per ledger/NAMING.md
+mercatorproj = mercator_proj

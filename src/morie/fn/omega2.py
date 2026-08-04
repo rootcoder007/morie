@@ -35,3 +35,7 @@ omega2 = omega_squared
 
 def cheatsheet() -> str:
     return "omega_squared({}) -> Omega-squared from ANOVA -- less biased than eta-squared."
+
+
+# compact alias per ledger/NAMING.md
+omegasquared = omega_squared

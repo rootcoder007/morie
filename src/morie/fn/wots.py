@@ -38,3 +38,7 @@ wots = wots_sign
 
 def cheatsheet() -> str:
     return "wots_sign({}) -> Winternitz One-Time Signature (WOTS+) -- sign."
+
+
+# compact alias per ledger/NAMING.md
+wotssign = wots_sign

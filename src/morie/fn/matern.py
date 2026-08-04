@@ -40,3 +40,7 @@ def matern_cluster(lambda_p, mu, r):
 
 def cheatsheet():
     return "matern: Matérn cluster process"
+
+
+# compact alias per ledger/NAMING.md
+materncluster = matern_cluster

@@ -24,3 +24,7 @@ or2r = or_to_r
 
 def cheatsheet() -> str:
     return "or_to_r({}) -> Convert odds ratio to Pearson r via d."
+
+
+# compact alias per ledger/NAMING.md
+ortor = or_to_r

@@ -111,3 +111,7 @@ tsnred = tsne_reduce
 
 def cheatsheet() -> str:
     return "tsne_reduce({}) -> Dimensionality reduction via Barnes-Hut t-SNE."
+
+
+# compact alias per ledger/NAMING.md
+tsnereduce = tsne_reduce

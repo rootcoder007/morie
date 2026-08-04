@@ -66,3 +66,7 @@ def qq_data(x, distribution="norm"):
 
 def cheatsheet() -> str:
     return "qq_data({}) -> Quantile-quantile plot data for distribution comparison."
+
+
+# compact alias per ledger/NAMING.md
+qqdata = qq_data

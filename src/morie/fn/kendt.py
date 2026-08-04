@@ -52,3 +52,7 @@ kendt = kendall_tau_b
 
 def cheatsheet() -> str:
     return "kendall_tau_b({}) -> Kendall's tau-b with CI."
+
+
+# compact alias per ledger/NAMING.md
+kendalltaub = kendall_tau_b

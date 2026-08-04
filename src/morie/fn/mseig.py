@@ -35,3 +35,7 @@ mds_ = mds_eigen
 
 def cheatsheet() -> str:
     return "mds_eigen({}) -> MDS eigendecomposition"
+
+
+# compact alias per ledger/NAMING.md
+mdseigen = mds_eigen

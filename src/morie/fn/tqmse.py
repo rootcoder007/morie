@@ -79,3 +79,7 @@ def cheatsheet() -> str:
 
 
 tqmse = turboquant_mse
+
+
+# compact alias per ledger/NAMING.md
+turboquantmse = turboquant_mse

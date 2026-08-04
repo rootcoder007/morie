@@ -32,3 +32,7 @@ def ghosal_ssp_post(counts, alpha=2.0):
 
 def cheatsheet():
     return "gh_c14_6: Species-sampling posterior"
+
+
+# compact alias per ledger/NAMING.md
+ghosalssppost = ghosal_ssp_post

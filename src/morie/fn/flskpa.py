@@ -36,3 +36,7 @@ def fleiss_kappa(X):
 
 def cheatsheet():
     return "flskpa: Fleiss kappa for multiple raters"
+
+
+# compact alias per ledger/NAMING.md
+fleisskappa = fleiss_kappa

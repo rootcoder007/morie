@@ -42,3 +42,7 @@ def compliance_rate(
 
 def cheatsheet() -> str:
     return "compliance_rate({}) -> Overall and by-group compliance rate."
+
+
+# compact alias per ledger/NAMING.md
+compliancerate = compliance_rate

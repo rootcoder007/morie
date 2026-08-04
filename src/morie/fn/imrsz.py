@@ -62,3 +62,7 @@ imrsz = image_resize
 
 def cheatsheet() -> str:
     return "image_resize({}) -> Bilinear interpolation image resize."
+
+
+# compact alias per ledger/NAMING.md
+imageresize = image_resize

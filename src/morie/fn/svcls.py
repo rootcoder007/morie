@@ -29,3 +29,7 @@ coal = coalition_size
 
 def cheatsheet() -> str:
     return "coalition_size({}) -> Minimum winning coalition size"
+
+
+# compact alias per ledger/NAMING.md
+coalitionsize = coalition_size

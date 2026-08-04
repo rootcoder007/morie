@@ -160,3 +160,7 @@ def bayesian_mi(
 
 def cheatsheet() -> str:
     return "bayesian_mi({}) -> Bayesian measurement invariance across groups."
+
+
+# compact alias per ledger/NAMING.md
+bayesianmi = bayesian_mi

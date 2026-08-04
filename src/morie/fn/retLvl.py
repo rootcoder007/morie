@@ -26,3 +26,7 @@ def return_level(mu, sigma, xi, T):
 
 def cheatsheet():
     return "retLvl: Return level z_p"
+
+
+# compact alias per ledger/NAMING.md
+returnlevel = return_level

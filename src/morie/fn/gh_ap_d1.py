@@ -72,3 +72,7 @@ def ghosal_exp_test(x, cdf=None):
 
 def cheatsheet():
     return "gh_ap_d1: Exponentially consistent test: test phi_n with both errors decaying exponentially"
+
+
+# compact alias per ledger/NAMING.md
+ghosalexptest = ghosal_exp_test

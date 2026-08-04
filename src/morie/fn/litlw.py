@@ -69,3 +69,7 @@ litlw = littles_law
 
 def cheatsheet() -> str:
     return "littles_law({}) -> Little's law: L = lambda * W."
+
+
+# compact alias per ledger/NAMING.md
+littleslaw = littles_law

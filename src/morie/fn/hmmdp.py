@@ -191,3 +191,7 @@ def geron_mdp(states, actions, P, R, gamma=0.95, max_iter=1000, tol=1e-10):
 
 def cheatsheet():
     return "hmmdp: MDP tuple validation plus value iteration; enforces row-stochastic P and gamma < 1"
+
+
+# compact alias per ledger/NAMING.md
+geronmdp = geron_mdp

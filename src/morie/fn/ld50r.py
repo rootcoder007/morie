@@ -464,3 +464,7 @@ def cheatsheet():
         "assay, with Fieller limits that go unbounded when the slope is not "
         "significant"
     )
+
+
+# compact alias per ledger/NAMING.md
+effectivedose = effective_dose

@@ -46,3 +46,7 @@ def mamba_ssm_step(y, x, A, B, C, D):
 
 def cheatsheet():
     return "mambss: Mamba selective SSM step (S6)"
+
+
+# compact alias per ledger/NAMING.md
+mambassmstep = mamba_ssm_step

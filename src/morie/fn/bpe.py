@@ -53,3 +53,7 @@ def cheatsheet() -> str:
 
 
 bpe = bpe_encode
+
+
+# compact alias per ledger/NAMING.md
+bpeencode = bpe_encode

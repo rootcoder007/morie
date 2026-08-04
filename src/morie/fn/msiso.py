@@ -30,3 +30,7 @@ isot = isotonic_reg
 
 def cheatsheet() -> str:
     return "isotonic_reg({}) -> Isotonic regression for MDS"
+
+
+# compact alias per ledger/NAMING.md
+isotonicreg = isotonic_reg

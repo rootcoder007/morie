@@ -66,3 +66,7 @@ def f_statistics(allele_freqs, populations, cdf=None):
 
 def cheatsheet():
     return "strfst: Wright F-statistics (FST/FIS/FIT)"
+
+
+# compact alias per ledger/NAMING.md
+fstatistics = f_statistics

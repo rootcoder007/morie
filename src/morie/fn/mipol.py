@@ -51,3 +51,7 @@ def mi_pool(estimates, variances):
 
 def cheatsheet() -> str:
     return "mi_pool({}) -> Multiple imputation via predictive mean matching."
+
+
+# compact alias per ledger/NAMING.md
+mipool = mi_pool

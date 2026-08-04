@@ -127,3 +127,7 @@ iptw = stabilized_iptw
 
 def cheatsheet() -> str:
     return "stabilized_iptw({}) -> Stabilized IPTW with diagnostics."
+
+
+# compact alias per ledger/NAMING.md
+stabilizediptw = stabilized_iptw

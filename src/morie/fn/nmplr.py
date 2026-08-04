@@ -30,3 +30,7 @@ leg_ = leg_polarize
 
 def cheatsheet() -> str:
     return "leg_polarize({}) -> Legislative polarization"
+
+
+# compact alias per ledger/NAMING.md
+legpolarize = leg_polarize

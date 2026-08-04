@@ -80,3 +80,7 @@ rlts = lts_regression
 
 def cheatsheet() -> str:
     return "lts_regression({}) -> Least trimmed squares regression."
+
+
+# compact alias per ledger/NAMING.md
+ltsregression = lts_regression

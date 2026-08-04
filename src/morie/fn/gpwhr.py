@@ -42,3 +42,7 @@ def gp_warped(X, y, X_test, warp):
 
 def cheatsheet():
     return "gpwhr: Warped Gaussian process"
+
+
+# compact alias per ledger/NAMING.md
+gpwarped = gp_warped

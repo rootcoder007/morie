@@ -71,3 +71,7 @@ def ma_cochran_q(yi, vi, cdf=None):
 
 def cheatsheet():
     return "macn: Cochran's Q statistic for heterogeneity"
+
+
+# compact alias per ledger/NAMING.md
+macochranq = ma_cochran_q

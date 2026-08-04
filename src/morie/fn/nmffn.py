@@ -31,3 +31,7 @@ nmffn = nmf_fn
 
 def cheatsheet() -> str:
     return "nmf_fn({}) -> Non-negative Matrix Factorization."
+
+
+# compact alias per ledger/NAMING.md
+nmffn = nmf_fn

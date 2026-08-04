@@ -42,3 +42,7 @@ vari = vario_envelope
 
 def cheatsheet() -> str:
     return "vario_envelope({}) -> Variogram Monte Carlo envelope"
+
+
+# compact alias per ledger/NAMING.md
+varioenvelope = vario_envelope

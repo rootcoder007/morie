@@ -38,3 +38,7 @@ def peg_parser(grammar, input):
 
 def cheatsheet():
     return "prsPEG: Parsing expression grammar"
+
+
+# compact alias per ledger/NAMING.md
+pegparser = peg_parser

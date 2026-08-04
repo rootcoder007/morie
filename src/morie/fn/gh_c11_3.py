@@ -32,3 +32,7 @@ def ghosal_gp_crt_thm(phi_exponent=2.0, n=10000):
 
 def cheatsheet():
     return "gh_c11_3: Gaussian contraction-rate equation"
+
+
+# compact alias per ledger/NAMING.md
+ghosalgpcrtthm = ghosal_gp_crt_thm

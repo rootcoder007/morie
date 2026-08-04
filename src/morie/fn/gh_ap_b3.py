@@ -34,3 +34,7 @@ def ghosal_renyi_div(p, q, alpha=0.5):
 
 def cheatsheet():
     return "gh_ap_b3: Rényi divergence"
+
+
+# compact alias per ledger/NAMING.md
+ghosalrenyidiv = ghosal_renyi_div

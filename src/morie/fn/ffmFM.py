@@ -40,3 +40,7 @@ def field_aware_fm(X, y, K):
 
 def cheatsheet():
     return "ffmFM: Field-aware FM"
+
+
+# compact alias per ledger/NAMING.md
+fieldawarefm = field_aware_fm

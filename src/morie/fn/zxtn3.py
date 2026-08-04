@@ -29,3 +29,7 @@ tens = tensor_3way_sp
 
 def cheatsheet() -> str:
     return "tensor_3way_sp({}) -> Three-way spatial tensor"
+
+
+# compact alias per ledger/NAMING.md
+tensor3waysp = tensor_3way_sp

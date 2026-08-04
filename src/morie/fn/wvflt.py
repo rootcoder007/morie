@@ -92,3 +92,7 @@ wvflt = wavelet_filter
 
 def cheatsheet() -> str:
     return "_db_filter({}) -> Wavelet-based filtering (keep approx or detail)."
+
+
+# compact alias per ledger/NAMING.md
+waveletfilter = wavelet_filter

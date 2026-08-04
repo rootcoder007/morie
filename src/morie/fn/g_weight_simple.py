@@ -42,3 +42,7 @@ def g_weight_simple(x_k, xbar_true, xbar_sample, s2_x):
 
 def cheatsheet():
     return 'r10e17: g_k = 1 + (xbar - xbar_S)(x_k - xbar_S)/S2_hat(x) [Brus 2022, eq. 10.17]'
+
+
+# compact alias per ledger/NAMING.md
+gweightsimple = g_weight_simple

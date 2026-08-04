@@ -29,3 +29,7 @@ town = townsend_index
 
 def cheatsheet() -> str:
     return "townsend_index({}) -> Townsend deprivation index"
+
+
+# compact alias per ledger/NAMING.md
+townsendindex = townsend_index

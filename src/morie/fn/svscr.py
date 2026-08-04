@@ -29,3 +29,7 @@ scre = scree_spatial
 
 def cheatsheet() -> str:
     return "scree_spatial({}) -> Scree test for spatial dimensions"
+
+
+# compact alias per ledger/NAMING.md
+screespatial = scree_spatial

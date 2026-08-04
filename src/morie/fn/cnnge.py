@@ -183,3 +183,7 @@ def cheatsheet():
 # CANONICAL TEST
 # np.random.seed(7); M = np.random.randn(20, 8); y = M[:,1]+M[:,3]+0.2*np.random.randn(20)
 # r = cnn_genomic(np.zeros(20), y, M, seed=7); loss decreases over epochs.
+
+
+# compact alias per ledger/NAMING.md
+cnngenomic = cnn_genomic

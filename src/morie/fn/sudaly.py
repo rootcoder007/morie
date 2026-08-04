@@ -42,3 +42,7 @@ sudaly = substance_daly
 
 def cheatsheet() -> str:
     return "substance_daly({}) -> DALYs from substance use."
+
+
+# compact alias per ledger/NAMING.md
+substancedaly = substance_daly

@@ -29,3 +29,7 @@ bank = banks_set
 
 def cheatsheet() -> str:
     return "banks_set({}) -> Banks set computation"
+
+
+# compact alias per ledger/NAMING.md
+banksset = banks_set

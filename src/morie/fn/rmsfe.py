@@ -51,3 +51,7 @@ rmsfe = rmsfe_calc
 
 def cheatsheet() -> str:
     return "rmsfe_calc({}) -> Root Mean Square Forecast Error."
+
+
+# compact alias per ledger/NAMING.md
+rmsfecalc = rmsfe_calc

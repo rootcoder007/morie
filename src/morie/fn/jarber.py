@@ -36,3 +36,7 @@ jarber = jarque_bera
 
 def cheatsheet() -> str:
     return "jarque_bera({}) -> Jarque-Bera normality test."
+
+
+# compact alias per ledger/NAMING.md
+jarquebera = jarque_bera

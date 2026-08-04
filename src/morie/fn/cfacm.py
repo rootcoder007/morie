@@ -60,3 +60,7 @@ def cfa_compare(fit1: dict, fit2: dict, cdf=None, *, alpha: float = 0.05) -> dic
 
 def cheatsheet() -> str:
     return "cfa_compare({}) -> Nested CFA model comparison (chi-square difference test)."
+
+
+# compact alias per ledger/NAMING.md
+cfacompare = cfa_compare

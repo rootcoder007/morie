@@ -30,3 +30,7 @@ inds = indscal_3way
 
 def cheatsheet() -> str:
     return "indscal_3way({}) -> Three-way INDSCAL"
+
+
+# compact alias per ledger/NAMING.md
+indscal3way = indscal_3way

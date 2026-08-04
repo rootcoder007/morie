@@ -38,3 +38,7 @@ def partial_credit(X, ncats):
 
 def cheatsheet():
     return "irtprc: Partial credit model (Masters)"
+
+
+# compact alias per ledger/NAMING.md
+partialcredit = partial_credit

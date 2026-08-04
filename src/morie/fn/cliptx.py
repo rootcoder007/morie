@@ -40,3 +40,7 @@ def clip_image_text(images, texts, tau):
 
 def cheatsheet():
     return "cliptx: CLIP image-text contrastive alignment"
+
+
+# compact alias per ledger/NAMING.md
+clipimagetext = clip_image_text

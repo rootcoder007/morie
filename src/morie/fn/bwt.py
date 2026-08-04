@@ -89,3 +89,7 @@ bwt = rdd_bandwidth
 
 def cheatsheet() -> str:
     return "rdd_bandwidth({}) -> Bandwidth selection for regression discontinuity designs."
+
+
+# compact alias per ledger/NAMING.md
+rddbandwidth = rdd_bandwidth

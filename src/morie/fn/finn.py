@@ -48,3 +48,7 @@ finn = find_patterns
 
 def cheatsheet() -> str:
     return "find_patterns({}) -> Correlation pattern finder."
+
+
+# compact alias per ledger/NAMING.md
+findpatterns = find_patterns

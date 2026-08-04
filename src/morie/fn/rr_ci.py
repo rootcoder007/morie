@@ -62,3 +62,7 @@ rr_ci = rate_ratio_ci
 
 def cheatsheet() -> str:
     return "rate_ratio_ci({}) -> Incidence rate ratio (IRR) with asymptotic log-normal confid"
+
+
+# compact alias per ledger/NAMING.md
+rateratioci = rate_ratio_ci

@@ -111,3 +111,7 @@ def esl_mds(D, k):
 
 def cheatsheet():
     return "eslmds: B = -1/2 J D^2 J, top-k eigenpairs; negatives => not Euclidean"
+
+
+# compact alias per ledger/NAMING.md
+eslmds = esl_mds

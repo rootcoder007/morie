@@ -53,3 +53,7 @@ rrvar = rr_variability
 
 def cheatsheet() -> str:
     return "rr_variability({}) -> R-R interval variability metrics."
+
+
+# compact alias per ledger/NAMING.md
+rrvariability = rr_variability

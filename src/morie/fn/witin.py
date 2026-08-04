@@ -56,3 +56,7 @@ def cheatsheet() -> str:
 
 
 witin = witten_index
+
+
+# compact alias per ledger/NAMING.md
+wittenindex = witten_index

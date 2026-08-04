@@ -72,3 +72,7 @@ def ghosal_fano_ineq(x, cdf=None):
 
 def cheatsheet():
     return "gh_ap_k1: Fano inequality: lower bound on probability of error in hypothesis testing"
+
+
+# compact alias per ledger/NAMING.md
+ghosalfanoineq = ghosal_fano_ineq

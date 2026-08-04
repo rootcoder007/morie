@@ -42,3 +42,7 @@ def lda_topic(docs, K, alpha, beta):
 
 def cheatsheet():
     return "lda: Latent Dirichlet Allocation"
+
+
+# compact alias per ledger/NAMING.md
+ldatopic = lda_topic

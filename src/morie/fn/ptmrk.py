@@ -30,3 +30,7 @@ mark = marked_pp
 
 def cheatsheet() -> str:
     return "marked_pp({}) -> Marked point pattern analysis"
+
+
+# compact alias per ledger/NAMING.md
+markedpp = marked_pp

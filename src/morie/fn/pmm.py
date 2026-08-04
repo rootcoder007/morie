@@ -128,3 +128,7 @@ pmm = pmm_impute
 
 def cheatsheet() -> str:
     return "pmm_impute({}) -> Predictive mean matching imputation."
+
+
+# compact alias per ledger/NAMING.md
+pmmimpute = pmm_impute

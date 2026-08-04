@@ -42,3 +42,7 @@ vari = vario_fit_wls
 
 def cheatsheet() -> str:
     return "vario_fit_wls({}) -> Variogram WLS fitting"
+
+
+# compact alias per ledger/NAMING.md
+variofitwls = vario_fit_wls

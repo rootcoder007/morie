@@ -38,3 +38,7 @@ def graded_response(X, ncats):
 
 def cheatsheet():
     return "irtgrm: Samejima graded response model"
+
+
+# compact alias per ledger/NAMING.md
+gradedresponse = graded_response

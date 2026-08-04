@@ -38,3 +38,7 @@ def ma_fail_safe_n(z_scores, alpha):
 
 def cheatsheet():
     return "mafsn: Rosenthal's fail-safe N (file-drawer)"
+
+
+# compact alias per ledger/NAMING.md
+mafailsafen = ma_fail_safe_n

@@ -28,3 +28,7 @@ def evt_gev_quantile(p, mu, sigma, xi):
 
 def cheatsheet():
     return "evgevq: GEV quantile (return-level) function"
+
+
+# compact alias per ledger/NAMING.md
+evtgevquantile = evt_gev_quantile

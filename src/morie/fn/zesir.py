@@ -28,3 +28,7 @@ spat = spatial_sir
 
 def cheatsheet() -> str:
     return "spatial_sir({}) -> Spatial SIR diffusion"
+
+
+# compact alias per ledger/NAMING.md
+spatialsir = spatial_sir

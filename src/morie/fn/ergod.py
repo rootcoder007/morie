@@ -54,3 +54,7 @@ ergod = ergodicity_test
 
 def cheatsheet() -> str:
     return "ergodicity_test({}) -> Ergodicity test."
+
+
+# compact alias per ledger/NAMING.md
+ergodicitytest = ergodicity_test

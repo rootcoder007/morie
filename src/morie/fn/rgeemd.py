@@ -45,3 +45,7 @@ def rangayyan_eemd(x, n_ensembles, noise_std, max_imfs):
 
 def cheatsheet():
     return "rgeemd: Ensemble EMD (EEMD) for mode mixing alleviation"
+
+
+# compact alias per ledger/NAMING.md
+rangayyaneemd = rangayyan_eemd

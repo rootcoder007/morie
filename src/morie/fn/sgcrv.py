@@ -69,3 +69,7 @@ sgcrv = cross_variogram
 
 def cheatsheet() -> str:
     return "cross_variogram({}) -> Cross-variogram estimation."
+
+
+# compact alias per ledger/NAMING.md
+crossvariogram = cross_variogram

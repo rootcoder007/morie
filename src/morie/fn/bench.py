@@ -88,3 +88,7 @@ bench = benchmark_dose
 
 def cheatsheet() -> str:
     return "benchmark_dose({}) -> Benchmark dose (BMD/BMDL) calculation."
+
+
+# compact alias per ledger/NAMING.md
+benchmarkdose = benchmark_dose

@@ -33,3 +33,7 @@ def ghosal_inv_dp(x, data, alpha_x, alpha_total):
 
 def cheatsheet():
     return "gh_c4_21: Invariant (symmetrized) Dirichlet process"
+
+
+# compact alias per ledger/NAMING.md
+ghosalinvdp = ghosal_inv_dp

@@ -36,3 +36,7 @@ def signal_peptide(sequence):
 
 def cheatsheet():
     return "sigpep: SignalP signal peptide prediction"
+
+
+# compact alias per ledger/NAMING.md
+signalpeptide = signal_peptide

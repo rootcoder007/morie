@@ -58,3 +58,7 @@ lcgm = latent_growth
 
 def cheatsheet() -> str:
     return "latent_growth({}) -> Latent growth curve model (simplified OLS-based)."
+
+
+# compact alias per ledger/NAMING.md
+latentgrowth = latent_growth

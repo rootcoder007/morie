@@ -30,3 +30,7 @@ kde_ = kde_bandwidth
 
 def cheatsheet() -> str:
     return "kde_bandwidth({}) -> KDE bandwidth selection (spatial)"
+
+
+# compact alias per ledger/NAMING.md
+kdebandwidth = kde_bandwidth

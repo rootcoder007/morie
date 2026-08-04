@@ -37,3 +37,7 @@ aicsc = aic_score_fn
 
 def cheatsheet() -> str:
     return "aic_score_fn({}) -> Akaike Information Criterion for AR model order selection."
+
+
+# compact alias per ledger/NAMING.md
+aicscorefn = aic_score_fn

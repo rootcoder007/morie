@@ -29,3 +29,7 @@ w_qu = w_queen
 
 def cheatsheet() -> str:
     return "w_queen({}) -> Queen contiguity weights"
+
+
+# compact alias per ledger/NAMING.md
+wqueen = w_queen

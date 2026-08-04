@@ -50,3 +50,7 @@ def torus_bundle(monodromy: list | np.ndarray = None) -> DescriptiveResult:
 
 def cheatsheet() -> str:
     return "torus_bundle(monodromy) -> torus bundle geometry classification"
+
+
+# compact alias per ledger/NAMING.md
+torusbundle = torus_bundle

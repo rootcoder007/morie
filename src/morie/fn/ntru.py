@@ -29,3 +29,7 @@ ntru = ntru_keygen
 
 def cheatsheet() -> str:
     return "ntru_keygen({}) -> NTRU post-quantum key exchange -- keygen."
+
+
+# compact alias per ledger/NAMING.md
+ntrukeygen = ntru_keygen

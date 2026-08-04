@@ -40,3 +40,7 @@ def ma_freeman_tukey(x, n):
 
 def cheatsheet():
     return "mafrt: Freeman-Tukey arcsine transform for proportions"
+
+
+# compact alias per ledger/NAMING.md
+mafreemantukey = ma_freeman_tukey

@@ -116,3 +116,7 @@ def geron_fp16_quant(x):
 
 def cheatsheet():
     return "hmfp16: FP16 half precision"
+
+
+# compact alias per ledger/NAMING.md
+geronfp16quant = geron_fp16_quant

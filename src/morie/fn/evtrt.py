@@ -55,3 +55,7 @@ evtrt = event_rate
 
 def cheatsheet() -> str:
     return "event_rate({}) -> Compute event firing rate over time windows."
+
+
+# compact alias per ledger/NAMING.md
+eventrate = event_rate

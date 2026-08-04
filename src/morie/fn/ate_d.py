@@ -131,3 +131,7 @@ def ate_definition(Y1, Y0, paired=True, alpha=0.05):
 
 def cheatsheet():
     return "ate_d: average treatment effect under potential outcomes"
+
+
+# compact alias per ledger/NAMING.md
+atedefinition = ate_definition

@@ -70,3 +70,7 @@ short = boolean_eval
 
 def cheatsheet() -> str:
     return "boolean_eval({}) -> Boolean expression evaluator."
+
+
+# compact alias per ledger/NAMING.md
+booleaneval = boolean_eval

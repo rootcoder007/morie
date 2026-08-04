@@ -42,3 +42,7 @@ def deep_q_network(env, net, buffer, target_update):
 
 def cheatsheet():
     return "dqnv: DQN with target network + replay"
+
+
+# compact alias per ledger/NAMING.md
+deepqnetwork = deep_q_network

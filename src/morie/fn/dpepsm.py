@@ -129,3 +129,7 @@ def epsilon_dp(mech, D, D_prime, n_samples=20000, bins=50, seed=None):
 
 def cheatsheet():
     return "dpepsm: LOWER bound only -- can disprove a guarantee, never certify one"
+
+
+# compact alias per ledger/NAMING.md
+epsilondp = epsilon_dp

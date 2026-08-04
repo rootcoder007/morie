@@ -45,3 +45,7 @@ def aitchison_alr(x, ref):
 
 def cheatsheet():
     return "aitalr: Additive log-ratio (ALR) transform with reference part"
+
+
+# compact alias per ledger/NAMING.md
+aitchisonalr = aitchison_alr

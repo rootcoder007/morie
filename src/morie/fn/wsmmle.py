@@ -136,3 +136,7 @@ def wasserman_mle(data, f, theta0, bounds=None, se=True):
 
 def cheatsheet():
     return "wsmmle: MLE is an M-estimator; a non-positive-definite Hessian means it is not a maximum"
+
+
+# compact alias per ledger/NAMING.md
+wassermanmle = wasserman_mle

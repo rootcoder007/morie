@@ -29,3 +29,7 @@ hote = hotelling_multi
 
 def cheatsheet() -> str:
     return "hotelling_multi({}) -> Multi-candidate Hotelling model"
+
+
+# compact alias per ledger/NAMING.md
+hotellingmulti = hotelling_multi

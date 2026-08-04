@@ -57,3 +57,7 @@ lmsfl = lms_filter
 
 def cheatsheet() -> str:
     return "lms_filter({}) -> LMS adaptive filter."
+
+
+# compact alias per ledger/NAMING.md
+lmsfilter = lms_filter

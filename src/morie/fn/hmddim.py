@@ -137,3 +137,7 @@ def geron_ddim(x_T, model, T, n_steps, beta_schedule="linear", clip_x0=None):
 
 def cheatsheet():
     return "hmddim: Denoising diffusion implicit models (DDIM) for faster sampling"
+
+
+# compact alias per ledger/NAMING.md
+geronddim = geron_ddim

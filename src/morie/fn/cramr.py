@@ -42,3 +42,7 @@ cramr = cramer_rao_bound
 
 def cheatsheet() -> str:
     return "cramer_rao_bound(fisher_info, n) -> Cramer-Rao lower bound."
+
+
+# compact alias per ledger/NAMING.md
+cramerraobound = cramer_rao_bound

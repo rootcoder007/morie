@@ -37,3 +37,7 @@ def ghosal_mix_dp(G0_A_by_xi, alpha_by_xi, pi_weights):
 
 def cheatsheet():
     return "gh_c4_20: Mixture of Dirichlet processes"
+
+
+# compact alias per ledger/NAMING.md
+ghosalmixdp = ghosal_mix_dp

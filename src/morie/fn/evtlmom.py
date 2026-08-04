@@ -42,3 +42,7 @@ def evt_trimmed_lmom(x, s, t, order):
 
 def cheatsheet():
     return "evtlmom: Trimmed L-moments TL(s,t) of a sample"
+
+
+# compact alias per ledger/NAMING.md
+evttrimmedlmom = evt_trimmed_lmom

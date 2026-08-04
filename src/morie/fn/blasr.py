@@ -93,3 +93,7 @@ blasr = bayesian_lasso
 
 def cheatsheet() -> str:
     return "bayesian_lasso({}) -> Bayesian LASSO regression."
+
+
+# compact alias per ledger/NAMING.md
+bayesianlasso = bayesian_lasso

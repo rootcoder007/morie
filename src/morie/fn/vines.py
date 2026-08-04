@@ -97,3 +97,7 @@ def vine_copula(x):
 
 def cheatsheet():
     return "vines(X): Gaussian D-vine partial-corr matrix + log-likelihood."
+
+
+# compact alias per ledger/NAMING.md
+vinecopula = vine_copula

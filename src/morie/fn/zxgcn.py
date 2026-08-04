@@ -29,3 +29,7 @@ grap = graph_conv_sp
 
 def cheatsheet() -> str:
     return "graph_conv_sp({}) -> Graph convolution spatial"
+
+
+# compact alias per ledger/NAMING.md
+graphconvsp = graph_conv_sp

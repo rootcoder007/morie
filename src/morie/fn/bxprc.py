@@ -66,3 +66,7 @@ def box_pierce_test(x, lags, cdf=None):
 
 def cheatsheet():
     return "bxprc: Box-Pierce Q test for autocorrelation"
+
+
+# compact alias per ledger/NAMING.md
+boxpiercetest = box_pierce_test

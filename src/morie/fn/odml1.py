@@ -110,3 +110,7 @@ def otis_dml_region(
 
 def cheatsheet() -> str:
     return "otis_dml_region({}) -> DML ATE by region for OTIS correctional data."
+
+
+# compact alias per ledger/NAMING.md
+otisdmlregion = otis_dml_region

@@ -51,3 +51,7 @@ def ghosal_bpoly_crt(ns=(100, 800, 6400), seed=42):
 
 def cheatsheet():
     return "gh_c9_3: Bernstein-polynomial density rate"
+
+
+# compact alias per ledger/NAMING.md
+ghosalbpolycrt = ghosal_bpoly_crt

@@ -53,3 +53,7 @@ sudast = dast_score
 
 def cheatsheet() -> str:
     return "dast_score({}) -> DAST drug screening score."
+
+
+# compact alias per ledger/NAMING.md
+dastscore = dast_score

@@ -44,3 +44,7 @@ def trust_region(f, grad_f, hess_f, x0, delta):
 
 def cheatsheet():
     return "trupek: Trust-region method"
+
+
+# compact alias per ledger/NAMING.md
+trustregion = trust_region

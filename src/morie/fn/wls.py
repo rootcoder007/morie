@@ -83,3 +83,7 @@ wls = weighted_ls
 
 def cheatsheet() -> str:
     return "weighted_ls({}) -> Weighted least squares."
+
+
+# compact alias per ledger/NAMING.md
+weightedls = weighted_ls

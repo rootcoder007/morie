@@ -33,3 +33,7 @@ mvsml_ann_sse = mvsml_reproducing_kernel_eq_10_5
 
 def cheatsheet():
     return "msm249: Sum-of-squares loss"
+
+
+# compact alias per ledger/NAMING.md
+mvsmlannsse = mvsml_ann_sse

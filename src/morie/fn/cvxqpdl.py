@@ -167,3 +167,7 @@ def boyd_qp_dual(P, q, G, h):
 
 def cheatsheet():
     return "cvxqpdl: dual QP has one variable per CONSTRAINT -- why the SVM is solved in its dual"
+
+
+# compact alias per ledger/NAMING.md
+boydqpdual = boyd_qp_dual

@@ -29,3 +29,7 @@ dise = disease_map_pois
 
 def cheatsheet() -> str:
     return "disease_map_pois({}) -> Poisson disease mapping"
+
+
+# compact alias per ledger/NAMING.md
+diseasemappois = disease_map_pois

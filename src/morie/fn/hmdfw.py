@@ -176,3 +176,7 @@ def geron_diffusion_forward(x0, T, beta_schedule="linear", t=None, seed=0):
 
 def cheatsheet():
     return "hmdfw: Diffusion forward process adds Gaussian noise over T steps"
+
+
+# compact alias per ledger/NAMING.md
+lcgnormal = lcg_normal

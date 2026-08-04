@@ -49,3 +49,7 @@ def ghosal_frs_reg(n=600, seed=42):
 
 def cheatsheet():
     return "gh_c10_8: Finite-random-series regression"
+
+
+# compact alias per ledger/NAMING.md
+ghosalfrsreg = ghosal_frs_reg

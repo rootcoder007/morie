@@ -101,3 +101,7 @@ def dp_histogram(x, bins=10, epsilon=1.0, range_=None, seed=None, nonneg=True):
 
 def cheatsheet():
     return "dphis: disjoint bins = PARALLEL composition; one epsilon covers all bins, do not divide it"
+
+
+# compact alias per ledger/NAMING.md
+dphistogram = dp_histogram

@@ -40,3 +40,7 @@ def forensic_lr(E, H1, H2):
 
 def cheatsheet():
     return "forsnp: Forensic likelihood ratio"
+
+
+# compact alias per ledger/NAMING.md
+forensiclr = forensic_lr

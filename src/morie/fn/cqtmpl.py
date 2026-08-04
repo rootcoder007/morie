@@ -42,3 +42,7 @@ def cim_qtl(y, markers, positions, cofactors):
 
 def cheatsheet():
     return "cqtmpl: Composite interval mapping"
+
+
+# compact alias per ledger/NAMING.md
+cimqtl = cim_qtl

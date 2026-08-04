@@ -35,3 +35,7 @@ bndpw = band_power_fn
 
 def cheatsheet() -> str:
     return "band_power_fn({}) -> Band power of a signal in a frequency range."
+
+
+# compact alias per ledger/NAMING.md
+bandpowerfn = band_power_fn

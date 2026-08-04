@@ -39,3 +39,7 @@ lwe = lwe_sample
 
 def cheatsheet() -> str:
     return "lwe_sample({}) -> LWE (Learning With Errors) sample generation."
+
+
+# compact alias per ledger/NAMING.md
+lwesample = lwe_sample

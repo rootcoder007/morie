@@ -29,3 +29,7 @@ pola = polarization_2d
 
 def cheatsheet() -> str:
     return "polarization_2d({}) -> 2D spatial polarization"
+
+
+# compact alias per ledger/NAMING.md
+polarization2d = polarization_2d

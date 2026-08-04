@@ -50,3 +50,7 @@ crtbk = court_backlog
 
 def cheatsheet() -> str:
     return "court_backlog({}) -> Court backlog analysis."
+
+
+# compact alias per ledger/NAMING.md
+courtbacklog = court_backlog

@@ -64,3 +64,7 @@ olsav = overlap_save
 
 def cheatsheet() -> str:
     return "overlap_save({}) -> Overlap-save fast convolution."
+
+
+# compact alias per ledger/NAMING.md
+overlapsave = overlap_save

@@ -77,3 +77,7 @@ def adam_optimizer(theta, grad, lr=1e-3, beta1=0.9, beta2=0.999, eps=1e-8, state
 
 def cheatsheet():
     return "adamO: parameter-in/parameter-out Adam; same math as adamopt.adam, different calling convention"
+
+
+# compact alias per ledger/NAMING.md
+adamoptimizer = adam_optimizer

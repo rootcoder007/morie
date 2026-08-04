@@ -33,3 +33,7 @@ arbrg = ar_burg_fn
 
 def cheatsheet() -> str:
     return "ar_burg_fn({}) -> AR model estimation via Burg algorithm."
+
+
+# compact alias per ledger/NAMING.md
+arburgfn = ar_burg_fn

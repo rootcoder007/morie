@@ -90,3 +90,7 @@ def geron_mae(y_true, y_pred):
 
 def cheatsheet():
     return "grmae: MAE = mean|y_pred - y_true|; RMSE reported alongside -- Geron Eq 2-2"
+
+
+# compact alias per ledger/NAMING.md
+geronmae = geron_mae

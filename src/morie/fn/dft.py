@@ -44,3 +44,7 @@ dft = dft_compute
 
 def cheatsheet() -> str:
     return "dft_compute({}) -> Discrete Fourier Transform."
+
+
+# compact alias per ledger/NAMING.md
+dftcompute = dft_compute

@@ -60,3 +60,7 @@ nomgr = fagan_nomogram
 
 def cheatsheet() -> str:
     return "fagan_nomogram({}) -> Fagan nomogram (post-test probability)."
+
+
+# compact alias per ledger/NAMING.md
+fagannomogram = fagan_nomogram

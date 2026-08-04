@@ -40,3 +40,7 @@ def ocr_wit_layout(image, ocr_tokens, bboxes):
 
 def cheatsheet():
     return "ocrwit: OCR with layout (LayoutLMv3)"
+
+
+# compact alias per ledger/NAMING.md
+ocrwitlayout = ocr_wit_layout

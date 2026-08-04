@@ -40,3 +40,7 @@ def spatial_gams(y, X, coords):
 
 def cheatsheet():
     return "spgams: Spatial GAM with bivariate smooth"
+
+
+# compact alias per ledger/NAMING.md
+spatialgams = spatial_gams

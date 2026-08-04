@@ -38,3 +38,7 @@ def halfspace_depth(X, theta):
 
 def cheatsheet():
     return "depthH: Tukey halfspace depth"
+
+
+# compact alias per ledger/NAMING.md
+halfspacedepth = halfspace_depth

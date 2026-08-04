@@ -97,3 +97,7 @@ def wasserman_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
 
 def cheatsheet():
     return "wsmlas: coord descent S(rho,lam)/||x_j||^2; lambda unscaled (n x glmnet's)"
+
+
+# compact alias per ledger/NAMING.md
+wassermanlasso = wasserman_lasso

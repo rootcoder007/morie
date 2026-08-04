@@ -43,3 +43,7 @@ wnblk = blackman_window
 
 def cheatsheet() -> str:
     return "blackman_window({}) -> Blackman window."
+
+
+# compact alias per ledger/NAMING.md
+blackmanwindow = blackman_window

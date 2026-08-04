@@ -209,3 +209,7 @@ def geron_td3(
 
 def cheatsheet():
     return "hmtd3: Twin delayed DDPG (TD3): two critics + delayed policy updates"
+
+
+# compact alias per ledger/NAMING.md
+gerontd3 = geron_td3

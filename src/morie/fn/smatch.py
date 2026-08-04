@@ -40,3 +40,7 @@ def sccs_design(events, exposure_windows, person_id):
 
 def cheatsheet():
     return "smatch: Self-controlled case series"
+
+
+# compact alias per ledger/NAMING.md
+sccsdesign = sccs_design

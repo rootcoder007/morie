@@ -38,3 +38,7 @@ def dif_p_diff(X, group):
 
 def cheatsheet():
     return "difpst: DIF p-difference (raw)"
+
+
+# compact alias per ledger/NAMING.md
+difpdiff = dif_p_diff

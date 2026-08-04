@@ -29,3 +29,7 @@ aitc = aitchison_sp
 
 def cheatsheet() -> str:
     return "aitchison_sp({}) -> Aitchison compositional spatial"
+
+
+# compact alias per ledger/NAMING.md
+aitchisonsp = aitchison_sp

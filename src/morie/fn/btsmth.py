@@ -44,3 +44,7 @@ def boot_smoothed(x, stat, h, B):
 
 def cheatsheet():
     return "btsmth: Smoothed bootstrap with kernel-perturbed samples"
+
+
+# compact alias per ledger/NAMING.md
+bootsmoothed = boot_smoothed

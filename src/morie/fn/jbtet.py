@@ -50,3 +50,7 @@ jbtet = jarque_bera_test
 
 def cheatsheet() -> str:
     return "jarque_bera_test(x) -> Jarque-Bera normality test."
+
+
+# compact alias per ledger/NAMING.md
+jarqueberatest = jarque_bera_test

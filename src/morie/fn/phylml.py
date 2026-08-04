@@ -38,3 +38,7 @@ def phylogenetic_ml(alignment, model):
 
 def cheatsheet():
     return "phylml: Maximum likelihood phylogeny"
+
+
+# compact alias per ledger/NAMING.md
+phylogeneticml = phylogenetic_ml

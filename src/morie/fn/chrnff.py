@@ -38,3 +38,7 @@ def chernoff_bound(mgf, threshold):
 
 def cheatsheet():
     return "chrnff: Chernoff bound on tail"
+
+
+# compact alias per ledger/NAMING.md
+chernoffbound = chernoff_bound

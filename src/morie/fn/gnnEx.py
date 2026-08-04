@@ -40,3 +40,7 @@ def gnn_explainer(model, graph, node):
 
 def cheatsheet():
     return "gnnEx: GNNExplainer mask learning"
+
+
+# compact alias per ledger/NAMING.md
+gnnexplainer = gnn_explainer

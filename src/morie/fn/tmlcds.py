@@ -40,3 +40,7 @@ def tmle_cdrs(y, D, X):
 
 def cheatsheet():
     return "tmlcds: Collaborative double-robust TMLE"
+
+
+# compact alias per ledger/NAMING.md
+tmlecdrs = tmle_cdrs

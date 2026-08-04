@@ -29,3 +29,7 @@ util = utility_max
 
 def cheatsheet() -> str:
     return "utility_max({}) -> Spatial utility maximizer"
+
+
+# compact alias per ledger/NAMING.md
+utilitymax = utility_max

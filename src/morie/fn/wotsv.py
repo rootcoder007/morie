@@ -30,3 +30,7 @@ wotsv = wots_verify
 
 def cheatsheet() -> str:
     return "wots_verify({}) -> Winternitz One-Time Signature (WOTS+) -- verify."
+
+
+# compact alias per ledger/NAMING.md
+wotsverify = wots_verify

@@ -88,3 +88,7 @@ sest = s_estimator
 
 def cheatsheet() -> str:
     return "sest() -> S-estimator for robust regression"
+
+
+# compact alias per ledger/NAMING.md
+sestimator = s_estimator

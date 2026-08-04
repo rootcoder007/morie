@@ -40,3 +40,7 @@ def ghosal_ntr_bvm(n=1500, n_sim=300, seed=42):
 
 def cheatsheet():
     return "gh_c13_11: NTR functional BvM"
+
+
+# compact alias per ledger/NAMING.md
+ghosalntrbvm = ghosal_ntr_bvm

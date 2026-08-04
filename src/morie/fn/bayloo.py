@@ -36,3 +36,7 @@ def loo_psi(log_lik):
 
 def cheatsheet():
     return "bayloo: PSIS-LOO leave-one-out"
+
+
+# compact alias per ledger/NAMING.md
+loopsi = loo_psi

@@ -71,3 +71,7 @@ def join_count(x, W, cdf=None):
 
 def cheatsheet():
     return "jjmsta: Join-count statistics for binary spatial data"
+
+
+# compact alias per ledger/NAMING.md
+joincount = join_count

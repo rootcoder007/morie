@@ -48,3 +48,7 @@ def chain_structure(A, B, C, alpha=0.01):
 
 def cheatsheet():
     return "chstr: chain A->B->C -- same Markov signature as a fork; blocked on B"
+
+
+# compact alias per ledger/NAMING.md
+chainstructure = chain_structure

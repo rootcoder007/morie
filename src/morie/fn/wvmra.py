@@ -64,3 +64,7 @@ wvmra = wavelet_mra
 
 def cheatsheet() -> str:
     return "wavelet_mra({}) -> Wavelet multiresolution analysis."
+
+
+# compact alias per ledger/NAMING.md
+waveletmra = wavelet_mra

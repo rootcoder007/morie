@@ -65,3 +65,7 @@ lexlr = lexico_rank
 
 def cheatsheet() -> str:
     return "lexico_rank({}) -> Lexicographic rank aggregation."
+
+
+# compact alias per ledger/NAMING.md
+lexicorank = lexico_rank

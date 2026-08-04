@@ -142,3 +142,7 @@ em_i = em_impute
 
 def cheatsheet() -> str:
     return "em_impute({}) -> EM algorithm imputation for multivariate normal data."
+
+
+# compact alias per ledger/NAMING.md
+emimpute = em_impute

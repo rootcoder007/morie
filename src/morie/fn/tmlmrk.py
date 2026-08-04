@@ -42,3 +42,7 @@ def tmle_markov(state, action, reward, policy):
 
 def cheatsheet():
     return "tmlmrk: TMLE for Markov decision processes"
+
+
+# compact alias per ledger/NAMING.md
+tmlemarkov = tmle_markov

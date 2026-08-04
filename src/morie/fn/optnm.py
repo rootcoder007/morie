@@ -54,3 +54,7 @@ optnm = nelder_mead_mds
 
 def cheatsheet() -> str:
     return "nelder_mead_mds({}) -> Nelder-Mead MDS optimisation."
+
+
+# compact alias per ledger/NAMING.md
+neldermeadmds = nelder_mead_mds

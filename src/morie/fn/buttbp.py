@@ -43,3 +43,7 @@ buttbp = butter_bandpass
 
 def cheatsheet() -> str:
     return "butter_bandpass({}) -> Butterworth bandpass filter."
+
+
+# compact alias per ledger/NAMING.md
+butterbandpass = butter_bandpass

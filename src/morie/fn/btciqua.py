@@ -44,3 +44,7 @@ def boot_ci_quantile(x, tau, B, alpha):
 
 def cheatsheet():
     return "btciqua: Bootstrap percentile CI for an arbitrary quantile"
+
+
+# compact alias per ledger/NAMING.md
+bootciquantile = boot_ci_quantile

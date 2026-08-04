@@ -165,3 +165,7 @@ def geron_dueling_dqn(env, V, A, buffer, epochs=10, lr=0.1, gamma=0.95, target_s
 
 def cheatsheet():
     return "hmdldqn: Dueling DQN: separate value and advantage streams"
+
+
+# compact alias per ledger/NAMING.md
+duelingq = dueling_q

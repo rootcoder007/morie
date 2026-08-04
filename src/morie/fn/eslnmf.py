@@ -117,3 +117,7 @@ def esl_nmf(X, k, max_iter=500, tol=1e-10, seed=13):
 
 def cheatsheet():
     return "eslnmf: parts-based because nothing cancels; non-convex and scale-nonunique"
+
+
+# compact alias per ledger/NAMING.md
+eslnmf = esl_nmf

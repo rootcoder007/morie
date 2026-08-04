@@ -84,3 +84,11 @@ wscrp = web_scrape_result
 
 def cheatsheet() -> str:
     return "web_scrape({}) -> Web page fetch + text extraction."
+
+
+# compact alias per ledger/NAMING.md
+extracttext = extract_text
+
+
+# compact alias per ledger/NAMING.md
+webscrape = web_scrape

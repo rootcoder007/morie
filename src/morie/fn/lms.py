@@ -71,3 +71,7 @@ lms = least_median_sq
 
 def cheatsheet() -> str:
     return "least_median_sq({}) -> Least Median of Squares (LMS) robust regression."
+
+
+# compact alias per ledger/NAMING.md
+leastmediansq = least_median_sq

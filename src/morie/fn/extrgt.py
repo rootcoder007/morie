@@ -428,3 +428,31 @@ def cheatsheet():
         "extrgt: Turan, Mantel, Sperner, Erdos-Ko-Rado and Dilworth, each "
         "with the construction that attains the bound built and checked"
     )
+
+
+# compact alias per ledger/NAMING.md
+countedges = count_edges
+
+
+# compact alias per ledger/NAMING.md
+erdoskorado = erdos_ko_rado
+
+
+# compact alias per ledger/NAMING.md
+hasclique = has_clique
+
+
+# compact alias per ledger/NAMING.md
+mantelnumber = mantel_number
+
+
+# compact alias per ledger/NAMING.md
+spernerwidth = sperner_width
+
+
+# compact alias per ledger/NAMING.md
+turangraph = turan_graph
+
+
+# compact alias per ledger/NAMING.md
+turannumber = turan_number

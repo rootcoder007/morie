@@ -36,3 +36,7 @@ def matrix_game(A):
 
 def cheatsheet():
     return "mtxrl: Matrix game / minimax"
+
+
+# compact alias per ledger/NAMING.md
+matrixgame = matrix_game

@@ -145,3 +145,7 @@ def cheatsheet():
 # >>> Y = (X_true[:, None] + rng.normal(size=(20, 10)) > 0).astype(int)
 # >>> r = irt_spatial(Y, n_iter=20)
 # >>> assert abs(np.corrcoef(r["x_hat"], X_true)[0,1]) > 0.6
+
+
+# compact alias per ledger/NAMING.md
+irtspatial = irt_spatial

@@ -38,3 +38,7 @@ def aitchison_clr(x):
 
 def cheatsheet():
     return "aitclr: Centred log-ratio (CLR) transform of a composition"
+
+
+# compact alias per ledger/NAMING.md
+aitchisonclr = aitchison_clr

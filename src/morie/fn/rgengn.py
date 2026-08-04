@@ -50,3 +50,7 @@ def rangayyan_eng(t, n_fibers, cv_range, amp_range):
 
 def cheatsheet():
     return "rgengn: Electroneurogram (ENG) compound action potential model"
+
+
+# compact alias per ledger/NAMING.md
+rangayyaneng = rangayyan_eng

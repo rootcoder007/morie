@@ -73,3 +73,7 @@ def wasserman_lrt(data, f, theta0, cdf=None):
 
 def cheatsheet():
     return "wsmlrt: Likelihood ratio test 2 log(L1/L0) ~ chi2"
+
+
+# compact alias per ledger/NAMING.md
+wassermanlrt = wasserman_lrt

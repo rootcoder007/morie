@@ -48,3 +48,7 @@ def vol_garch_t(r, nu=None):
 
 def cheatsheet():
     return "volgargt: GARCH with Student t innovations, spec 'garch'"
+
+
+# compact alias per ledger/NAMING.md
+volgarcht = vol_garch_t

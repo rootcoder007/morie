@@ -91,3 +91,7 @@ paropt = pareto_optimize
 
 def cheatsheet() -> str:
     return "paropt() -> Identify the Pareto-optimal front from a set of multi-objective"
+
+
+# compact alias per ledger/NAMING.md
+paretooptimize = pareto_optimize

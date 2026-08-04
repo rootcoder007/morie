@@ -36,3 +36,7 @@ def veber_rule(smiles):
 
 def cheatsheet():
     return "vebr3: Veber rule for oral bioavailability"
+
+
+# compact alias per ledger/NAMING.md
+veberrule = veber_rule

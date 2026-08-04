@@ -208,3 +208,7 @@ def cheatsheet():
         "catep: CATE by S-, T-, X-, R-learner or causal forest, all five "
         "returned so their disagreement is visible"
     )
+
+
+# compact alias per ledger/NAMING.md
+cateestimation = cate_estimation

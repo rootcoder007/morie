@@ -111,3 +111,7 @@ def causal_iv_late(y, D, Z):
 
 def cheatsheet():
     return "causivla: LATE is the compliers' effect -- check complier_share to see who that is"
+
+
+# compact alias per ledger/NAMING.md
+causalivlate = causal_iv_late

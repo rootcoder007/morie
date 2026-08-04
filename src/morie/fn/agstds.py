@@ -38,3 +38,7 @@ def age_standardize(age_specific_rates, standard_pop):
 
 def cheatsheet():
     return "agstds: Age-standardized rate (direct)"
+
+
+# compact alias per ledger/NAMING.md
+agestandardize = age_standardize

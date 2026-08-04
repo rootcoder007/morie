@@ -51,3 +51,7 @@ sgcld = variogram_cloud
 
 def cheatsheet() -> str:
     return "variogram_cloud({}) -> Variogram cloud (all pairwise differences)."
+
+
+# compact alias per ledger/NAMING.md
+variogramcloud = variogram_cloud

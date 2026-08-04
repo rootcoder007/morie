@@ -111,3 +111,7 @@ sarim = sarima_fit
 
 def cheatsheet() -> str:
     return "sarima_fit({}) -> Seasonal ARIMA (SARIMA) model."
+
+
+# compact alias per ledger/NAMING.md
+sarimafit = sarima_fit

@@ -40,3 +40,7 @@ def db_wavelet(y, n, levels):
 
 def cheatsheet():
     return "wvltdb: Daubechies wavelet decomposition"
+
+
+# compact alias per ledger/NAMING.md
+dbwavelet = db_wavelet

@@ -43,3 +43,7 @@ cramv = cramers_v
 
 def cheatsheet() -> str:
     return "cramers_v({}) -> Cramer's V for categorical association."
+
+
+# compact alias per ledger/NAMING.md
+cramersv = cramers_v

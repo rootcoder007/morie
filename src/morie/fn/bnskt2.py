@@ -40,3 +40,7 @@ def bound_kink_te(y, x, cutoff):
 
 def cheatsheet():
     return "bnskt2: Bound on kink TE"
+
+
+# compact alias per ledger/NAMING.md
+boundkinkte = bound_kink_te

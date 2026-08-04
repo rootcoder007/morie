@@ -69,3 +69,7 @@ def sor_solve(
 
 
 sorsl = sor_solve
+
+
+# compact alias per ledger/NAMING.md
+sorsolve = sor_solve

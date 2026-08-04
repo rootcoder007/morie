@@ -30,3 +30,7 @@ def ghosal_dp_def(partition_base_masses, seed=42):
 
 def cheatsheet():
     return "gh_c4_1: Dirichlet process definition"
+
+
+# compact alias per ledger/NAMING.md
+ghosaldpdef = ghosal_dp_def

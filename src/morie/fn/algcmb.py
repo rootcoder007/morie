@@ -433,3 +433,19 @@ def cheatsheet():
         "its inverse, Burnside's lemma and necklace counting -- bijections "
         "checked by round-tripping, counts by direct enumeration"
     )
+
+
+# compact alias per ledger/NAMING.md
+hooklengths = hook_lengths
+
+
+# compact alias per ledger/NAMING.md
+partitionsof = partitions_of
+
+
+# compact alias per ledger/NAMING.md
+rskinsert = rsk_insert
+
+
+# compact alias per ledger/NAMING.md
+rskinverse = rsk_inverse

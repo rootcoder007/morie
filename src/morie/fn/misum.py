@@ -66,3 +66,7 @@ def mi_summary(
 
 def cheatsheet() -> str:
     return "mi_summary({}) -> Summary table of invariance levels with pass/fail."
+
+
+# compact alias per ledger/NAMING.md
+misummary = mi_summary

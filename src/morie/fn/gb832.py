@@ -74,3 +74,7 @@ def gibbons_vdw_test(x, y, cdf=None):
 
 def cheatsheet():
     return "gb832: Van der Waerden test using inverse-normal scores"
+
+
+# compact alias per ledger/NAMING.md
+gibbonsvdwtest = gibbons_vdw_test

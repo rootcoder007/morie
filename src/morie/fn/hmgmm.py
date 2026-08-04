@@ -195,3 +195,7 @@ def geron_gaussian_mixture(X, n_components=2, seed=0, max_iter=100, tol=1e-6, re
 
 def cheatsheet():
     return "hmgmm: Gaussian mixture model fit via EM"
+
+
+# compact alias per ledger/NAMING.md
+gmmlogpdf = gmm_log_pdf

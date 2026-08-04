@@ -55,3 +55,7 @@ rnsum = runs_test
 
 def cheatsheet() -> str:
     return "runs_test({}) -> Wald-Wolfowitz runs test for randomness."
+
+
+# compact alias per ledger/NAMING.md
+runstest = runs_test

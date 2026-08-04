@@ -129,3 +129,7 @@ def geron_policy(state, pi, seed=0):
 
 def cheatsheet():
     return "hmpol: Policy pi(a|s) with entropy and sampled action"
+
+
+# compact alias per ledger/NAMING.md
+geronpolicy = geron_policy

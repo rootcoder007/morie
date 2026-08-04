@@ -44,3 +44,7 @@ def dr_lp_did(y, D, unit, time, horizon):
 
 def cheatsheet():
     return "drlp1: DR-DiD via local projection"
+
+
+# compact alias per ledger/NAMING.md
+drlpdid = dr_lp_did

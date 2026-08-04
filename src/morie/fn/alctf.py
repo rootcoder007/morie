@@ -43,3 +43,7 @@ def alammar_c_tfidf(term_counts_by_class, corpus_freq=None, A=None):
 
 def cheatsheet():
     return "alctf: class counts times log(1 + A/f_t), BERTopic Eq 3"
+
+
+# compact alias per ledger/NAMING.md
+alammarctfidf = alammar_c_tfidf

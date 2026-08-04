@@ -100,3 +100,7 @@ def geron_aic(log_lik, k, n=None):
 
 def cheatsheet():
     return "hmaic: Akaike information criterion for cluster-number selection"
+
+
+# compact alias per ledger/NAMING.md
+geronaic = geron_aic

@@ -42,3 +42,7 @@ def ghosal_kl_perm(p0, q0, p, q):
 
 def cheatsheet():
     return "gh_c6_9: Permanence of the KL property"
+
+
+# compact alias per ledger/NAMING.md
+ghosalklperm = ghosal_kl_perm

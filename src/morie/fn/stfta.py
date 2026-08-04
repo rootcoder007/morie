@@ -37,3 +37,7 @@ stfta = stft_analysis
 
 def cheatsheet() -> str:
     return "stft_analysis({}) -> Short-Time Fourier Transform analysis."
+
+
+# compact alias per ledger/NAMING.md
+stftanalysis = stft_analysis

@@ -132,3 +132,7 @@ advi = advi_meanfield
 
 def cheatsheet() -> str:
     return "advi_meanfield(log_target, dim) -> Mean-field ADVI."
+
+
+# compact alias per ledger/NAMING.md
+advimeanfield = advi_meanfield

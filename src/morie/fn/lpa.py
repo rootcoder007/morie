@@ -86,3 +86,7 @@ lpa = latent_profile
 
 def cheatsheet() -> str:
     return "latent_profile({}) -> Latent profile analysis (GMM for continuous data)."
+
+
+# compact alias per ledger/NAMING.md
+latentprofile = latent_profile

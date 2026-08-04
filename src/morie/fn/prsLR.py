@@ -38,3 +38,7 @@ def lr_parser(grammar, tokens):
 
 def cheatsheet():
     return "prsLR: LR(1) parser"
+
+
+# compact alias per ledger/NAMING.md
+lrparser = lr_parser

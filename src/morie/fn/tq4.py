@@ -24,3 +24,7 @@ def cheatsheet() -> str:
 
 
 tq4 = turboquant_4bit
+
+
+# compact alias per ledger/NAMING.md
+turboquant4bit = turboquant_4bit

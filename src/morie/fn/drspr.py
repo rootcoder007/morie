@@ -42,3 +42,7 @@ def dr_spillover(y, D, X, exposure):
 
 def cheatsheet():
     return "drspr: DR-DiD with spillover"
+
+
+# compact alias per ledger/NAMING.md
+drspillover = dr_spillover

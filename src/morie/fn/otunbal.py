@@ -46,3 +46,7 @@ def ot_unbalanced(a, b, C, epsilon, lam):
 
 def cheatsheet():
     return "otunbal: Unbalanced OT with KL marginal penalties"
+
+
+# compact alias per ledger/NAMING.md
+otunbalanced = ot_unbalanced

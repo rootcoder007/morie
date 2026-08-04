@@ -78,3 +78,7 @@ def mtbf_estimate(
 
 def cheatsheet() -> str:
     return "mtbf_estimate({}) -> Mean Time Between Failures."
+
+
+# compact alias per ledger/NAMING.md
+mtbfestimate = mtbf_estimate

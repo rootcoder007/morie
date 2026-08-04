@@ -75,3 +75,7 @@ ckmra = cochran_mantel
 
 def cheatsheet() -> str:
     return "cochran_mantel({}) -> Cochran-Mantel-Haenszel test."
+
+
+# compact alias per ledger/NAMING.md
+cochranmantel = cochran_mantel

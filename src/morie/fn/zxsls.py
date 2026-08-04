@@ -27,3 +27,7 @@ spat = spatial_lasso
 
 def cheatsheet() -> str:
     return "spatial_lasso({}) -> Spatial LASSO"
+
+
+# compact alias per ledger/NAMING.md
+spatiallasso = spatial_lasso

@@ -38,3 +38,7 @@ def herg_inhibition(smiles):
 
 def cheatsheet():
     return "hergp: hERG cardiac potassium-channel inhibition risk"
+
+
+# compact alias per ledger/NAMING.md
+herginhibition = herg_inhibition

@@ -76,3 +76,7 @@ grnln = greens_convolve
 
 def cheatsheet() -> str:
     return "greens_convolve({}) -> Green's function convolution."
+
+
+# compact alias per ledger/NAMING.md
+greensconvolve = greens_convolve

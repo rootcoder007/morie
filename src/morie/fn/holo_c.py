@@ -64,3 +64,7 @@ def holo_corr(
 
 def cheatsheet() -> str:
     return "holo_corr({}) -> Correlation heatmap visualization."
+
+
+# compact alias per ledger/NAMING.md
+holocorr = holo_corr

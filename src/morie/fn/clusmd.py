@@ -40,3 +40,7 @@ def butina_cluster(fps, cutoff):
 
 def cheatsheet():
     return "clusmd: Butina compound clustering by similarity"
+
+
+# compact alias per ledger/NAMING.md
+butinacluster = butina_cluster

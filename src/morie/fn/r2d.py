@@ -27,3 +27,7 @@ r2d = r_to_d
 
 def cheatsheet() -> str:
     return "r_to_d({}) -> Convert Pearson r to Cohen's d."
+
+
+# compact alias per ledger/NAMING.md
+rtod = r_to_d

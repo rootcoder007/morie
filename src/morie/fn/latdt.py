@@ -57,3 +57,7 @@ latdt = latency_detect
 
 def cheatsheet() -> str:
     return "latency_detect({}) -> Event latency measurement from stimulus."
+
+
+# compact alias per ledger/NAMING.md
+latencydetect = latency_detect

@@ -106,3 +106,7 @@ sveir = sveir_model
 
 def cheatsheet() -> str:
     return "sveir_model({}) -> SVEIR model with vaccination and exposed class."
+
+
+# compact alias per ledger/NAMING.md
+sveirmodel = sveir_model

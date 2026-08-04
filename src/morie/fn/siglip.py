@@ -40,3 +40,7 @@ def siglip_pairwise(image_emb, text_emb):
 
 def cheatsheet():
     return "siglip: SigLIP sigmoid loss (per-pair, not softmax)"
+
+
+# compact alias per ledger/NAMING.md
+siglippairwise = siglip_pairwise

@@ -32,3 +32,7 @@ gf2ml = gf2_matrix_mul
 
 def cheatsheet() -> str:
     return "gf2_matrix_mul({}) -> GF(2) matrix multiplication."
+
+
+# compact alias per ledger/NAMING.md
+gf2matrixmul = gf2_matrix_mul

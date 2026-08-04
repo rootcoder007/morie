@@ -179,3 +179,7 @@ def geron_videobert(video_tokens, text_tokens, d_model=8, mask_positions=None, m
 
 def cheatsheet():
     return "hmvbrt: VideoBERT: transformer on discretized video tokens + text"
+
+
+# compact alias per ledger/NAMING.md
+geronvideobert = geron_videobert

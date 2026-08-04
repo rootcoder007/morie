@@ -42,3 +42,7 @@ def survey_cox(time, event, X, weights):
 
 def cheatsheet():
     return "svycox: Survey-weighted Cox"
+
+
+# compact alias per ledger/NAMING.md
+surveycox = survey_cox

@@ -180,3 +180,7 @@ def geron_bagging(X, y, base_estimator=None, n_estimators=10, seed=0, task="auto
 
 def cheatsheet():
     return "hmbag: Bagging (bootstrap aggregating): train on bootstrap samples, aggregate outputs"
+
+
+# compact alias per ledger/NAMING.md
+geronbagging = geron_bagging

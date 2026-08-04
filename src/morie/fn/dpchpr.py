@@ -131,3 +131,7 @@ def dp_changepoint(y, epsilon=1.0, bounds=None, min_segment=5, seed=None):
 
 def cheatsheet():
     return "dpchpr: selects a LOCATION by exponential mechanism; always returns one, so check best_utility"
+
+
+# compact alias per ledger/NAMING.md
+dpchangepoint = dp_changepoint

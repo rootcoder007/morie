@@ -38,3 +38,7 @@ def bic_ar_order(x, max_p):
 
 def cheatsheet():
     return "bicarp: BIC for AR(p) order selection"
+
+
+# compact alias per ledger/NAMING.md
+bicarorder = bic_ar_order

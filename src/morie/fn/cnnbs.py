@@ -37,3 +37,7 @@ cnnbs = cnnbs_fn
 
 def cheatsheet() -> str:
     return "cnnbs_fn({}) -> 1D Convolutional Neural Network for biosignal classification"
+
+
+# compact alias per ledger/NAMING.md
+cnnbsfn = cnnbs_fn

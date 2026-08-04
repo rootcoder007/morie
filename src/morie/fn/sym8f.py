@@ -91,3 +91,7 @@ sym8f = symlet_coeffs
 
 def cheatsheet() -> str:
     return "symlet_coeffs({}) -> Symlet wavelet filter coefficients."
+
+
+# compact alias per ledger/NAMING.md
+symletcoeffs = symlet_coeffs

@@ -82,3 +82,7 @@ aqman = idw_interpolate
 
 def cheatsheet() -> str:
     return "idw_interpolate({}) -> Aquifer/water table interpolation."
+
+
+# compact alias per ledger/NAMING.md
+idwinterpolate = idw_interpolate

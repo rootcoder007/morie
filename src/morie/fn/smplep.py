@@ -252,3 +252,7 @@ def cheatsheet():
         "smplep: Hartley dual-frame total, blending the twice-measured "
         "overlap domain at the variance-minimising weight"
     )
+
+
+# compact alias per ledger/NAMING.md
+sampleoverlap = sample_overlap

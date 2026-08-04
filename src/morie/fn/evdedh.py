@@ -96,3 +96,7 @@ def cheatsheet():
 
 #: Catalogue alias for :func:`ev_dedh`.
 evt_dekkers_einmahl_dehaan = ev_dedh
+
+
+# compact alias per ledger/NAMING.md
+evdedh = ev_dedh

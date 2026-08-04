@@ -40,3 +40,7 @@ def tmle_marginal_rd(y, D, X):
 
 def cheatsheet():
     return "tmlmrd: TMLE for marginal risk difference"
+
+
+# compact alias per ledger/NAMING.md
+tmlemarginalrd = tmle_marginal_rd

@@ -37,3 +37,7 @@ plcmb = plot_coombs_data
 
 def cheatsheet() -> str:
     return "plot_coombs_data({}) -> Coombs mesh visualization data."
+
+
+# compact alias per ledger/NAMING.md
+plotcoombsdata = plot_coombs_data

@@ -60,3 +60,7 @@ def kamath_pass_at_k(n, c, k):
 
 def cheatsheet():
     return "kmpask: 1 - C(n-c,k)/C(n,k) via an overflow-free product"
+
+
+# compact alias per ledger/NAMING.md
+kamathpassatk = kamath_pass_at_k

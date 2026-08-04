@@ -82,3 +82,7 @@ sgblp = blup_spatial
 
 def cheatsheet() -> str:
     return "blup_spatial({}) -> Best linear unbiased predictor (BLUP) for spatial data."
+
+
+# compact alias per ledger/NAMING.md
+blupspatial = blup_spatial
