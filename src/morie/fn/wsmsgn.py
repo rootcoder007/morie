@@ -1,61 +1,78 @@
-"""Sign test for median."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Sign test for a median."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["wasserman_sign_test"]
+__all__ = ["sgntest", "wasserman_sign_test"]
 
 
-def wasserman_sign_test(x, theta0, cdf=None):
-    """
-    Sign test for median
+def sgntest(x, md=0.0):
+    """Exact sign test of H0: median = md.
 
-    Formula: S = sum I(X_i > theta_0)
+    The sign test throws away the magnitudes and keeps only the signs,
+    which costs power but buys an EXACT p-value under nothing more than
+    continuity -- no symmetry, no normality, no finite variance.  Ties
+    at md carry no information about direction and are discarded, which
+    reduces the effective n; that reduced n is returned rather than the
+    input length.
+
+    Formula: S = #{x_i > md}, m = #{x_i != md};
+             S ~ Binomial(m, 1/2) under H0;
+             two-sided p = 2 P(Bin(m, 1/2) >= max(S, m - S)), capped at 1
 
     Parameters
     ----------
     x : array-like
-        Input data.
-    theta0 : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        The sample.
+    md : float
+        Null median.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        ``statistic`` (S), ``p_value``, ``n_effective``, ``n_ties``,
+        ``estimate`` (sample median), ``n``.
 
     References
     ----------
-    Wasserman (2004), Ch 10
+    Dixon & Mood (1946), The statistical sign test, Journal of the
+    American Statistical Association 41(236), 557-566 -- the primary
+    source.  Wasserman (2004), All of Statistics, does NOT contain the
+    sign test; the full text of the book was fetched and searched to
+    establish that, so it is not cited for this formula.
     """
-    x = np.asarray(x, dtype=float)
+    x = C.vec(x)
     n = len(x)
-    if n < 2:
-        return RichResult(payload={"statistic": np.nan, "p_value": np.nan, "n": n, "method": "Sign test for median"})
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={"statistic": float(statistic), "p_value": float(p_value), "n": n, "method": "Sign test for median"}
-    )
+    if n < 1:
+        raise ValueError("the sample must be non-empty")
+    md = float(md)
+    pos = sum(1 for v in x if v > md)
+    neg = sum(1 for v in x if v < md)
+    m = pos + neg
+    if m == 0:
+        raise ValueError("every observation equals md; the test is vacuous")
+    k = max(pos, neg)
+    # Exact upper tail of Binomial(m, 1/2), computed in logs so that a
+    # large m does not overflow the binomial coefficient.
+    tail = 0.0
+    for j in range(k, m + 1):
+        lg = (math.lgamma(m + 1) - math.lgamma(j + 1) - math.lgamma(m - j + 1)
+              - m * math.log(2.0))
+        tail += math.exp(lg)
+    s = sorted(x)
+    med = (s[n // 2] if n % 2 == 1 else 0.5 * (s[n // 2 - 1] + s[n // 2]))
+    return RichResult(payload={
+        "statistic": float(pos), "p_value": min(1.0, 2.0 * tail),
+        "n_effective": float(m), "n_ties": float(n - m), "estimate": med,
+        "n": float(n), "method": "Exact sign test, Binomial(m, 1/2)"})
+
+
+wasserman_sign_test = sgntest
 
 
 def cheatsheet():
-    return "wsmsgn: Sign test for median"
+    return "wsmsgn: S ~ Bin(m, 1/2); ties at md dropped from m"

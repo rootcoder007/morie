@@ -1,77 +1,62 @@
-"""Cochran's Q statistic for heterogeneity."""
+# morie.fn -- function file (rootcoder007/morie)
+"""Cochran's Q test for heterogeneity."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
+
+from . import _tail1core as C
 
 from ._richresult import RichResult
 
-__all__ = ["ma_cochran_q"]
+__all__ = ['cochranq', 'ma_cochran_q']
 
 
-def ma_cochran_q(yi, vi, cdf=None):
-    """
-    Cochran's Q statistic for heterogeneity
+def cochranq(yi, vi):
+    """Cochran's Q test for heterogeneity.
 
-    Formula: Q = Σ w_i (y_i - θ̂_FE)²
+    Q is a weighted residual sum of squares around the fixed-effect pooled estimate, so it tests whether the studies are consistent with one common effect. Its power is poor with few studies and excessive with many, which is why the statistic is returned alongside the p-value rather than the p-value alone.
+
+
+    Formula: Q = sum_i w_i (y_i - theta_FE)^2 with w_i = 1/v_i, theta_FE = sum w y / sum w; Q ~ chi2_{k-1}
 
     Parameters
     ----------
     yi : array-like
-        Input data.
+        Effect estimates, one per study.
     vi : array-like
-        Input data.
-    cdf : array-like
-        Input data.
+        Their sampling variances.
 
     Returns
     -------
-    result : dict
-        Keys: Q, df, p
+    RichResult
+        ``Q``, ``df``, ``p_value``, ``theta_fe``, ``se_fe``, ``weights``, ``k``.
 
     References
     ----------
-    Cochran (1954)
+    Cochran (1954), The combination of estimates from different
+    experiments, Biometrics 10:101-129.  Not held locally; Q = sum w_i
+    (y_i - theta_FE)^2 on k-1 degrees of freedom is the standard
+    published form and is what metafor's rma() reports as QE.
     """
-    yi = np.asarray(yi, dtype=float)
-    n = len(yi)
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Cochran's Q statistic for heterogeneity",
-            }
-        )
-    x_sorted = np.sort(yi)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(yi), scale=np.std(yi, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
-    return RichResult(
-        payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "Cochran's Q statistic for heterogeneity",
-        }
-    )
+    y = C.vec(yi); v = C.vec(vi)
+    k = len(y)
+    if k != len(v):
+        raise ValueError("yi and vi must be the same length")
+    if any(t <= 0 for t in v):
+        raise ValueError("variances must be positive")
+    w = [1.0 / t for t in v]
+    sw = sum(w)
+    th = sum(w[i] * y[i] for i in range(k)) / sw
+    Q = sum(w[i] * (y[i] - th) ** 2 for i in range(k))
+    df = k - 1
+    return RichResult(payload={
+        "Q": Q, "df": df,
+        "p_value": 1.0 - C.pchisq(Q, df) if df > 0 else float("nan"),
+        "theta_fe": th, "se_fe": math.sqrt(1.0 / sw), "weights": w, "k": k,
+        "method": "Cochran's Q test for heterogeneity"})
+
+
+ma_cochran_q = cochranq
 
 
 def cheatsheet():
-    return "macn: Cochran's Q statistic for heterogeneity"
-
-
-# compact alias per ledger/NAMING.md
-macochranq = ma_cochran_q
+    return "macn: Cochran's Q test for heterogeneity."
