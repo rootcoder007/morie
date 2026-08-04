@@ -1,56 +1,55 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Pearl's do-operator: intervention by setting variable to value."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""The do-operator as graph surgery.
 
-from . import _array_core as np
+Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 7 p. 154
+"""
+
+from . import _molak as _core
 
 from ._richresult import RichResult
 
-__all__ = ["do_operator"]
+__all__ = ["dointerv", "do_operator"]
+
+_METHOD = "The do-operator as graph surgery"
 
 
-def do_operator(Y, X, x_val, model):
-    """
-    Pearl's do-operator: intervention by setting variable to value
+def dointerv(dag, x):
+    """The do-operator as graph surgery.
 
-    Formula: P(Y|do(X=Y)) = sum_z P(Y|X=Y,Z=z)*P(Z); marginalizes over pre-intervention Z distribution
+    The do-operator as graph surgery (modularity, ch. 7 p. 154).
+
+    ``do(X = x)`` deletes every edge into X and leaves every other
+    structural equation untouched.
 
     Parameters
     ----------
-    Y : array-like
-        Input data.
-    X : array-like
-        Input data.
-    x_val : array-like
-        Input data.
-    model : array-like
-        Input data.
+    dag : as documented for the shelf core
+        See ``morie.fn._molak.dointerv``.
+    x : as documented for the shelf core
+        See ``morie.fn._molak.dointerv``.
 
     Returns
     -------
-    result : dict
-        Keys: {'p_y_do_x': 'distribution'}
+    result : RichResult
+        Payload keys: nremoved, nkept, nnodes.
 
     References
     ----------
-    Molak Ch 2
+    Molak, A., Causal Inference and Discovery in Python, Packt (corpus copy: 2023 first edition), ch. 7 p. 154
     """
-    Y = np.asarray(Y, dtype=float)
-    n = int(Y) if Y.ndim == 0 else len(Y)
-    result = float(np.mean(Y))
-    se = float(np.std(Y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.dointerv(dag=dag, x=x)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Pearl's do-operator: intervention by setting variable to value",
-        }
+        title=_METHOD,
+        summary_lines=[("nremoved", res["nremoved"]), ("nkept", res["nkept"]), ("nnodes", res["nnodes"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+do_operator = dointerv
+
+
 def cheatsheet():
-    return "doop: Pearl's do-operator: intervention by setting variable to value"
-
-
-# compact alias per ledger/NAMING.md
-dooperator = do_operator
+    return "dointerv: The do-operator as graph surgery"

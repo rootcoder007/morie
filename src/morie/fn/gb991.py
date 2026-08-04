@@ -1,76 +1,96 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Conover squared ranks test for equality of variances."""
+"""Westenberg interquartile-range scale test -- eq. (9.9.1)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_conover_scale"]
+__all__ = ['wstnbrg', 'gibbons_conover_scale']
 
 
-def gibbons_conover_scale(x, y, cdf=None):
-    """
-    Conover squared ranks test for equality of variances
+def wstnbrg(x, y):
+    """U = number of X observations inside the Y interquartile range.
 
-    Formula: T = [sum R_i^2 - m*n*(N+1)^2/(4*(N+1))] / Var; uses squared ranks
+    Section 9.9 (book p. 329), eq. (9.9.1).  Two populations differing
+    only in scale put unequal proportions of their samples between two
+    symmetric quantile points of the combined sample.  Taking those
+    quantiles to be the quartiles, U is the count of X's inside the
+    Y-sample interquartile range and, when N = m + n is divisible by 4
+    so no observation coincides with a quartile, U is hypergeometric:
+
+    .. math:: f_U(u) = \\frac{\\binom{m}{u}\\binom{n}{N/2 - u}}
+        {\\binom{N}{N/2}}.
+
+    Small U says the X's are the more widely dispersed sample, so the
+    rejection region for that alternative is the lower tail.
+
+    NOTE ON THE MODULE LABEL: the generated stub called this a
+    "Conover squared ranks test".  The phrase "squared ranks" does not
+    occur anywhere in Gibbons & Chakraborti (2011), and Conover's
+    squared-ranks test is not in the book; Sec. 9.9 -- the only place
+    the cited source treats further scale tests -- gives Westenberg's
+    test and Rosenbaum's.  This module implements the cited source.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    y : array-like
-        Input data.
+    x, y : sequence of float
+        The two samples.
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``statistic`` (U), ``p_value`` (lower tail), ``pmf``,
+        ``q1``, ``q3`` (the Y quartiles used), ``mean``, ``var``,
+        ``m``, ``n``, ``method``.
 
     References
     ----------
-    Gibbons Ch 9.9
+    Gibbons & Chakraborti (2011), Sec. 9.9, eq. (9.9.1), p. 329
+    (Westenberg, 1948).
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
+    xs = [float(v) for v in x]
+    ys = sorted(float(v) for v in y)
+    m = len(xs)
+    n = len(ys)
+    if m < 1 or n < 2:
+        raise ValueError("need m >= 1 and n >= 2.")
+    nn = m + n
+
+    def _q(p):
+        h = (n - 1) * p
+        lo = int(math.floor(h))
+        hi = min(lo + 1, n - 1)
+        return ys[lo] + (h - lo) * (ys[hi] - ys[lo])
+
+    q1 = _q(0.25)
+    q3 = _q(0.75)
+    u = sum(1 for v in xs if q1 <= v <= q3)
+    half = nn // 2
+    den = math.comb(nn, half)
+    pmf = [
+        (
+            math.comb(m, k) * math.comb(n, half - k) / den
+            if 0 <= half - k <= n
+            else 0.0
         )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Conover squared ranks test for equality of variances",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+        for k in range(m + 1)
+    ]
+    mean = m * half / float(nn)
+    var = m * n * half * (nn - half) / (float(nn) ** 2 * (nn - 1.0))
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "statistic": int(u),
+            "p_value": float(min(1.0, sum(pmf[: u + 1]))),
+            "pmf": pmf,
+            "q1": float(q1),
+            "q3": float(q3),
+            "mean": float(mean),
+            "var": float(var),
+            "m": m,
             "n": n,
-            "method": "Conover squared ranks test for equality of variances",
+            "method": "Westenberg interquartile scale test, eq. (9.9.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb991: Conover squared ranks test for equality of variances"
+gibbons_conover_scale = wstnbrg

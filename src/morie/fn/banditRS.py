@@ -1,40 +1,17 @@
-"""Contextual bandit recommendation."""
+# morie.fn -- function file (rootcoder007/morie)
+"""LinUCB arm scores -- re-export.
 
-from . import _array_core as np
+The generator emitted more than one module for this method.  The
+implementation lives once in ``morie.fn.linucb`` and this module
+re-exports it.
+"""
 
-from ._richresult import RichResult
+from .linucb import linucb
 
-__all__ = ["contextual_bandit_rec"]
+__all__ = ["linucb", "contextual_bandit_rec"]
 
-
-def contextual_bandit_rec(context, arms):
-    """
-    Contextual bandit recommendation
-
-    Formula: LinUCB or Thompson sampling per arm
-
-    Parameters
-    ----------
-    context : array-like
-        Input data.
-    arms : array-like
-        Input data.
-
-    Returns
-    -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Li et al (2010) LinUCB
-    """
-    context = np.atleast_1d(np.asarray(context, dtype=float))
-    n = len(context)
-    result = float(np.mean(context))
-    se = float(np.std(context, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Contextual bandit recommendation"})
+contextual_bandit_rec = linucb
 
 
 def cheatsheet():
-    return "banditRS: Contextual bandit recommendation"
+    return "banditRS: LinUCB arm scores -- re-export (see linucb)"

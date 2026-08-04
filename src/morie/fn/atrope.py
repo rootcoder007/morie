@@ -1,44 +1,33 @@
-"""Rotary position embedding (RoPE)."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Rotary position embedding."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["rotary_position_embedding"]
+__all__ = ["rope", "rotary_position_embedding"]
 
 
-def rotary_position_embedding(y, q, m, theta):
-    """
-    Rotary position embedding (RoPE)
+def rope(q, m, theta):
+    """Rotary position embedding.
 
-    Formula: f(q_m, m) = R_theta_m q_m, R_theta_m = block-diag rotation by m * theta_i
+    Rotary position embedding: f(q, m) = R_{theta, m} q.
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    q : array-like
-        Input data.
-    m : array-like
-        Input data.
-    theta : array-like
-        Input data.
+    Su et al. (2021), RoFormer.  Coordinate pairs (q_{2i}, q_{2i+1}) are
+    rotated by angle m * theta_i.  Because the rotation is orthogonal,
+    the inner product of two rotated vectors depends only on their
+    relative position m - n, which is the property the construction was
+    built to get.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Su et al. (2021) RoFormer
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Rotary position embedding (RoPE)"})
+    return RichResult(title="Rotary position embedding", payload=_c.rope(q=q, m=m, theta=theta))
+
+
+rotary_position_embedding = rope
 
 
 def cheatsheet():
-    return "atrope: Rotary position embedding (RoPE)"
+    return "atrope: Rotary position embedding"

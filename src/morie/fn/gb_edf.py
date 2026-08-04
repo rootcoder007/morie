@@ -1,80 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Empirical distribution function S_n(x) definition via order statistics."""
+"""Empirical distribution function S_n(x) -- Gibbons eq. (2.3.1)."""
 
-from . import _array_core as np
-from . import _stats_core as stats
+import math
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_edf_def"]
+__all__ = ['edfstep', 'gibbons_edf_def']
 
 
-def gibbons_edf_def(x, data, cdf=None):
-    """
-    Empirical distribution function S_n(x) definition via order statistics
+def edfstep(x, t):
+    """Empirical cdf of a sample evaluated at one or more points.
 
-    Formula: S_n(x) = i/n if X_(i) <= x < X_(i+1); 0 if x < X_(1); 1 if x >= X_(n)
+    Equation (2.3.1) (book p. 32): with X_(1) <= ... <= X_(n),
+
+    .. math::
+        S_n(x) = 0,\\; x < X_{(1)};\\quad
+        S_n(x) = k/n,\\; X_{(k)} \\le x < X_{(k+1)};\\quad
+        S_n(x) = 1,\\; x \\ge X_{(n)}.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
-    data : array-like
-        Input data.
+    x : sequence of float
+        The sample, n >= 1.
+    t : float or sequence of float
+        Evaluation point(s).
 
     Returns
     -------
-    result : dict
-        Keys: edf_value
+    RichResult
+        keys ``edf`` (list, one per t), ``count`` (list of n*S_n),
+        ``n``, ``sorted`` (the order statistics), ``method``.
 
     References
     ----------
-    Gibbons eq 2.3.1
+    Gibbons & Chakraborti (2011), eq. (2.3.1), p. 32.
     """
-    x = np.asarray(x, dtype=float)
-    n = int(x) if x.ndim == 0 else len(x)
-    if x.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "Empirical distribution function S_n(x) definition via order statistics",
-            }
-        )
-    x_sorted = np.sort(x)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(x), scale=np.std(x, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    xs = sorted(float(v) for v in x)
+    n = len(xs)
+    if n < 1:
+        raise ValueError("x must be non-empty.")
+    ts = [float(t)] if not hasattr(t, "__iter__") else [float(v) for v in t]
+    counts = []
+    for v in ts:
+        c = 0
+        for xi in xs:
+            if xi <= v:
+                c += 1
+            else:
+                break
+        counts.append(c)
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
+            "edf": [c / n for c in counts],
+            "count": counts,
             "n": n,
-            "method": "Empirical distribution function S_n(x) definition via order statistics",
+            "sorted": xs,
+            "method": "S_n(x) = (# X_i <= x)/n (Gibbons eq. 2.3.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb_edf: Empirical distribution function S_n(x) definition via order statistics"
-
-
-# compact alias per ledger/NAMING.md
-gibbonsedfdef = gibbons_edf_def
+gibbons_edf_def = edfstep

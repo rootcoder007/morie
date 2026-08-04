@@ -1,6 +1,7 @@
 """Pairwise squared-Euclidean cost matrix."""
 
 from . import _array_core as np
+from . import _big2 as _big2
 
 from ._richresult import RichResult
 
@@ -9,32 +10,53 @@ __all__ = ["ot_cost_pairwise"]
 
 def ot_cost_pairwise(X, Y):
     """
-    Pairwise squared-Euclidean cost matrix
+    Squared-Euclidean ground cost matrix.
 
-    Formula: C_ij = ||x_i-y_j||²
+    Formula: C_ij = ||x_i - y_j||^2
+
+    Verified against Peyre & Cuturi (2019), Remark 2.19 and Sec. 2.4
+    (the p = 2 Wasserstein ground cost) -- source consulted.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    Y : array-like
-        Input data.
+    X, Y : nested sequence
+        Point sets, ``n x d`` and ``m x d``.
 
     Returns
     -------
-    result : dict
-        Keys: C
+    RichResult
+        Keys: estimate (the matrix), nrow, ncol, total, method.
 
     References
     ----------
-    Peyré & Cuturi (2019)
+    Peyre, G. & Cuturi, M. (2019). Computational Optimal Transport,
+    Sec. 2.4.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    A = _big2.mat(X)
+    B = _big2.mat(Y)
+    d = len(A[0])
+    if len(B[0]) != d:
+        raise ValueError("X and Y must have the same dimension")
+    C = []
+    total = 0.0
+    for i in range(len(A)):
+        row = []
+        for j in range(len(B)):
+            s = 0.0
+            for k in range(d):
+                t = A[i][k] - B[j][k]
+                s += t * t
+            row.append(s)
+            total += s
+        C.append(row)
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Pairwise squared-Euclidean cost matrix"}
+        payload={
+            "estimate": C,
+            "nrow": len(A),
+            "ncol": len(B),
+            "total": total,
+            "method": "Squared-Euclidean ground cost -- Peyre & Cuturi (2019) Sec. 2.4",
+        }
     )
 
 

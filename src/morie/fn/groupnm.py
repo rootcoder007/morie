@@ -1,54 +1,37 @@
-"""GroupNorm -- per-group channel normalization."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Group normalisation."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["group_norm"]
+__all__ = ["grpnorm", "groupnorm", "group_norm"]
 
 
-def group_norm(y, x, groups, g, b, eps):
-    """
-    GroupNorm -- per-group channel normalization
+def grpnorm(x, n_groups, eps=1e-05):
+    """Group normalisation.
 
-    Formula: normalize across (C/G, H, W) groups
+    Group normalisation over channel groups.
 
-    Parameters
-    ----------
-    y : array-like
-        Input data.
-    x : array-like
-        Input data.
-    groups : array-like
-        Input data.
-    g : array-like
-        Input data.
-    b : array-like
-        Input data.
-    eps : array-like
-        Input data.
+    Wu & He (2018).  Channels are split into ``n_groups`` groups and each
+    group is standardised over its own elements.  Unlike batch norm the
+    statistics come from one sample, so the result does not depend on
+    batch size -- which is why it holds up at batch size 1.
+    ``x`` is a flat channel-major vector of length C * S.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Wu & He (2018)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "GroupNorm -- per-group channel normalization"}
-    )
+    return RichResult(title="Group normalisation", payload=_c.grpnorm(x=x, n_groups=n_groups, eps=eps))
+
+
+group_norm = grpnorm
 
 
 def cheatsheet():
-    return "groupnm: GroupNorm -- per-group channel normalization"
+    return "groupnm: Group normalisation"
 
 
-# compact alias per ledger/NAMING.md
-groupnorm = group_norm
+# compact alias per ledger/NAMING.md (pre-existing spelling, kept working)
+groupnorm = grpnorm

@@ -1,54 +1,50 @@
-"""Probability equation extracted from Information theory MacKay.."""
+# morie.fn -- function file (rootcoder007/morie)
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Uniform prior density on the bent-coin bias.
 
-from . import _array_core as np
+MacKay (2003) eq. (3.9), p. 51
+"""
+
+from . import _itila as _core
 
 from ._richresult import RichResult
 
-__all__ = ["information_theory_mackay_chapter_3_equation_9"]
+__all__ = ["bcoinpri", "information_theory_mackay_chapter_3_equation_9"]
+
+_METHOD = "Uniform prior density on the bent-coin bias"
 
 
-def information_theory_mackay_chapter_3_equation_9(x):
-    """
-    Probability equation extracted from Information theory MacKay.
+def bcoinpri(pa):
+    """Uniform prior density on the bent-coin bias.
 
-    Formula: [For example, P(s= aabajpa;F =4;H1) = papa(1pa)pa:] Our
+    (3.9) p.51 -- the uniform prior density P(p_a | H1) = 1.
 
     Parameters
     ----------
-    x : array-like
-        Input data.
+    pa : as documented for the shelf core
+        See ``morie.fn._itila.bcoinpri``.
 
     Returns
     -------
     result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('information_theory_mackay3e9')`` for the full guide.
+        Payload keys: density, logdensity.
 
     References
     ----------
-    Information theory MacKay, ch.3 eq.3.9
+    MacKay (2003) eq. (3.9), p. 51
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+    res = _core.bcoinpri(pa=pa)
     return RichResult(
-        title="Probability equation extracted from Information theory MacKay.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Information theory MacKay.",
-        },
+        title=_METHOD,
+        summary_lines=[("density", res["density"]), ("logdensity", res["logdensity"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+information_theory_mackay_chapter_3_equation_9 = bcoinpri
+
+
 def cheatsheet():
-    return "information_theory_mackay3e9: Probability equation extracted from Information theory MacKay."
+    return "bcoinpri: Uniform prior density on the bent-coin bias -- MacKay (2003) eq. (3.9), p. 51"

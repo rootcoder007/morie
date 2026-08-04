@@ -1,76 +1,102 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""k-sample extension of control median test."""
+"""Sen's k-sample extension of the control median test."""
 
-from . import _array_core as np
+import math
+
 from . import _stats_core as stats
 
 from ._richresult import RichResult
 
-__all__ = ["gibbons_k_ctrl_median"]
+__all__ = ['kctrlmed', 'gibbons_k_ctrl_median']
 
 
-def gibbons_k_ctrl_median(groups, control, cdf=None):
-    """
-    k-sample extension of control median test
+def kctrlmed(samples, p=(0.5,)):
+    """Block counts V_ij against the control-sample quantiles.
 
-    Formula: Compare k treatment groups to control median via sign test statistic
+    Section 10.3 (book pp. 350-351), eq. (10.3.1) (Sen, 1962).  Sample
+    1 is the control.  For fractions 0 < p_1 < ... < p_q < 1 take the
+    control order statistics with r_i = [n_1 p_i] + 1; these cut the
+    line into q + 1 contiguous blocks I_0, ..., I_q.  V_ij counts the
+    observations of sample i falling in block I_j, and conditional on
+    the control quantiles the rows are independent multinomials, which
+    is eq. (10.3.1).
+
+    Under H0 the expected cell probability is the Beta mean of the
+    corresponding control order statistic,
+    P(I_j) = (r_{j+1} - r_j)/(n_1 + 1) with r_0 = 0 and
+    r_{q+1} = n_1 + 1, so a Pearson statistic on the (k-1) x (q+1)
+    table of treatment counts follows, with (k-2)(q) + q degrees of
+    freedom in the usual goodness-of-fit sense -- reported here as
+    (k - 2) * q + q = (k - 1) q.
 
     Parameters
     ----------
-    groups : array-like
-        Input data.
-    control : array-like
-        Input data.
+    samples : sequence of sequence of float
+        The k samples; ``samples[0]`` is the control.
+    p : sequence of float, optional
+        The quantile fractions (default the median alone).
 
     Returns
     -------
-    result : dict
-        Keys: statistic, p_value
+    RichResult
+        keys ``counts`` (rows = treatments, cols = blocks),
+        ``cuts`` (the control quantiles), ``r`` (their indices),
+        ``pcell``, ``statistic``, ``df``, ``p_value``, ``k``,
+        ``method``.
 
     References
     ----------
-    Gibbons Ch 10.3
+    Gibbons & Chakraborti (2011), Sec. 10.3, eq. (10.3.1), pp. 350-351
+    (Sen, 1962).
     """
-    groups = np.asarray(groups, dtype=float)
-    n = int(groups) if groups.ndim == 0 else len(groups)
-    if groups.ndim == 0:
-        return RichResult(
-            payload={"statistic": float("nan"), "p_value": float("nan"), "n": 1, "method": "scalar-input placeholder"}
-        )
-    if n < 2:
-        return RichResult(
-            payload={
-                "statistic": np.nan,
-                "p_value": np.nan,
-                "n": n,
-                "method": "k-sample extension of control median test",
-            }
-        )
-    x_sorted = np.sort(groups)
-    if cdf is None:
-        cdf_vals = stats.norm.cdf(x_sorted, loc=np.mean(groups), scale=np.std(groups, ddof=1))
-    else:
-        cdf_vals = np.array([cdf(xi) for xi in x_sorted])
-    ecdf = np.arange(1, n + 1) / n
-    ecdf_prev = np.arange(0, n) / n
-    d_plus = np.max(ecdf - cdf_vals)
-    d_minus = np.max(cdf_vals - ecdf_prev)
-    statistic = max(d_plus, d_minus)
-    if n <= 40:
-        p_value = 1.0 - stats.ksone.cdf(statistic, n)
-    else:
-        lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * statistic
-        p_value = 2.0 * np.sum([(-1) ** (k - 1) * np.exp(-2 * k**2 * lam**2) for k in range(1, 101)])
-        p_value = max(0.0, min(1.0, p_value))
+    ss = [[float(v) for v in s] for s in samples]
+    k = len(ss)
+    if k < 2:
+        raise ValueError("need at least 2 samples.")
+    ps = sorted(float(v) for v in p)
+    if not ps or any(not 0.0 < v < 1.0 for v in ps):
+        raise ValueError("p must lie strictly inside (0, 1).")
+    ctrl = sorted(ss[0])
+    n1 = len(ctrl)
+    r = [int(math.floor(n1 * v)) + 1 for v in ps]
+    if any(v > n1 for v in r):
+        raise ValueError("a quantile index exceeds the control sample size.")
+    cuts = [ctrl[v - 1] for v in r]
+    q = len(cuts)
+    counts = []
+    for s in ss[1:]:
+        row = [0] * (q + 1)
+        for v in s:
+            j = 0
+            while j < q and v > cuts[j]:
+                j += 1
+            row[j] += 1
+        counts.append(row)
+    edges = [0] + r + [n1 + 1]
+    pcell = [
+        (edges[j + 1] - edges[j]) / (n1 + 1.0) for j in range(q + 1)
+    ]
+    stat = 0.0
+    for i, row in enumerate(counts):
+        ni = sum(row)
+        for j in range(q + 1):
+            e = ni * pcell[j]
+            if e > 0.0:
+                stat += (row[j] - e) ** 2 / e
+    df = (k - 1) * q
     return RichResult(
         payload={
-            "statistic": float(statistic),
-            "p_value": float(p_value),
-            "n": n,
-            "method": "k-sample extension of control median test",
+            "counts": counts,
+            "cuts": cuts,
+            "r": r,
+            "pcell": pcell,
+            "statistic": float(stat),
+            "df": int(df),
+            "p_value": float(stats.chi2.sf(stat, df)) if df > 0 else 1.0,
+            "k": int(k),
+            "method": "k-sample control median test, eq. (10.3.1)",
         }
     )
 
 
-def cheatsheet():
-    return "gb1031: k-sample extension of control median test"
+gibbons_k_ctrl_median = kctrlmed

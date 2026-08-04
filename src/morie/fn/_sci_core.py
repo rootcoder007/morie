@@ -800,9 +800,12 @@ def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
         T.append(row + srow + arow + [rhs[i]])
         basis.append(n + nslack + i)
 
-    def pivot(T, basis, obj):
+    def pivot(T, basis, obj, ncols=total):
+        # ncols excludes the artificial columns in phase 2: letting an
+        # artificial re-enter the basis there returns a point that is
+        # infeasible for the original problem while reporting status 0.
         while True:
-            piv_col = min(range(total),
+            piv_col = min(range(ncols),
                           key=lambda j: obj[j])
             if obj[piv_col] > -1e-10:
                 return True
@@ -844,7 +847,7 @@ def linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
             if fac != 0.0:
                 for j in range(total + 1):
                     obj2[j] -= fac * T[i][j]
-    ok = pivot(T, basis, obj2)
+    ok = pivot(T, basis, obj2, ncols=n + nslack)
     if not ok:
         return OptimizeResult(x=None, fun=None, success=False,
                               status=3, message="unbounded")

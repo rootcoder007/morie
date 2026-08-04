@@ -1,54 +1,33 @@
-"""Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Independence of k events."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_1"]
+__all__ = ["indevk", "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_1"]
 
 
-def shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_1(x):
-    """
-    Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.
+def indevk(p, joint):
+    """Independence of k events.
 
-    Formula: = 2k − k − 1
+    P(A_i1 ... A_ir) = prod_l P(A_il) for every 2 <= r <= k   (Deshmukh eq. 5.1).
 
-    Parameters
-    ----------
-    x : array-like
-        Input data.
+    Independence of k events requires every one of the
+    2^k - k - 1 subset conditions to hold, not just pairwise ones.
+    ``joint[m]`` is P of the intersection of the events whose bits are
+    set in the mask m, for m = 0 .. 2^k - 1; masks with fewer than two
+    bits set are ignored.
 
     Returns
     -------
-    result : RichResult
-        Inherits from ``dict`` (so ``isinstance(result, dict)`` is True
-        and ``result["statistic"]`` / ``result.get(...)`` keep working),
-        but also exposes a multi-section ``str(result)`` render. Keys: value.
-        See ``morie.fn.describe('shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e1')`` for the full guide.
-
-    References
-    ----------
-    Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R, ch.5 eq.5.1
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    x = np.atleast_1d(np.asarray(x, dtype=float))
-    n = len(x)
-    result = float(np.mean(x))
-    se = float(np.std(x, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return RichResult(
-        title="Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        summary_lines=[
-            ("Estimate", result),
-            ("Standard error", se),
-            ("n", n),
-        ],
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R.",
-        },
-    )
+    return RichResult(title="Independence of k events", payload=_c.indevk(p=p, joint=joint))
+
+
+shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_5_equation_1 = indevk
 
 
 def cheatsheet():
-    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e1: Probability equation extracted from Shailaja R. Deshmukh, Akanksha S. Kashikar - Probability Theory  An Introduction Using R."
+    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a5e1: Independence of k events"

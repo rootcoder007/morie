@@ -1,44 +1,36 @@
-"""Sum / mean / max graph pooling."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Graph readout by sum pooling."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["sum_pool"]
+__all__ = ["sumpl", "sumpool", "sum_pool"]
 
 
-def sum_pool(X, mode):
-    """
-    Sum / mean / max graph pooling
+def sumpl(H):
+    """Graph readout by sum pooling.
 
-    Formula: h_G = aggregate over node embeddings
+    Graph readout by summing node embeddings: h_G = sum_v h_v.
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    mode : array-like
-        Input data.
+    Sum pooling is the readout that makes a message-passing network as
+    discriminative as the Weisfeiler-Lehman test (Xu et al. 2019, GIN);
+    mean and max pooling both collapse multisets that sum pooling keeps
+    apart, so all three are returned for comparison.
 
     Returns
     -------
-    result : dict
-        Keys: estimate
-
-    References
-    ----------
-    Xu et al (2019)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Sum / mean / max graph pooling"})
+    return RichResult(title="Graph readout by sum pooling", payload=_c.sumpl(H=H))
+
+
+sum_pool = sumpl
 
 
 def cheatsheet():
-    return "sumP: Sum / mean / max graph pooling"
+    return "sumP: Graph readout by sum pooling"
 
 
-# compact alias per ledger/NAMING.md
-sumpool = sum_pool
+# compact alias per ledger/NAMING.md (pre-existing spelling, kept working)
+sumpool = sumpl

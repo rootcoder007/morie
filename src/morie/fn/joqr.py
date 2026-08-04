@@ -1,50 +1,61 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Quantile regression: minimize pinball loss at target quantile."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Linear quantile regression.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 17 p. 500
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_quantile_regression"]
+__all__ = ["quantreg", "joseph_quantile_regression"]
+
+_METHOD = "Linear quantile regression"
 
 
-def joseph_quantile_regression(X, y, tau):
-    """
-    Quantile regression: minimize pinball loss at target quantile
+def quantreg(x, y, q, iters=25):
+    """Linear quantile regression.
 
-    Formula: beta_tau = argmin_beta sum_i L_tau(y_i, x_i^T beta)
+    Linear quantile regression, ch. 17 p. 500.
+
+    Fitted by iteratively reweighted least squares on the pinball loss
+    with a fixed iteration count and a fixed smoothing floor -- no
+    convergence test, so both arms take identical steps.  ``x`` is a
+    list of feature rows; an intercept is added.
 
     Parameters
     ----------
-    X : array-like
-        Input data.
-    y : array-like
-        Input data.
-    tau : array-like
-        Input data.
+    x : as documented for the shelf core
+        See ``morie.fn._joseph.quantreg``.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.quantreg``.
+    q : as documented for the shelf core
+        See ``morie.fn._joseph.quantreg``.
+    iters : as documented for the shelf core
+        See ``morie.fn._joseph.quantreg``.
 
     Returns
     -------
-    result : dict
-        Keys: beta_tau
+    result : RichResult
+        Payload keys: intercept, loss, q, n.
 
     References
     ----------
-    Joseph Ch 17, Quantile Regression section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 17 p. 500
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.quantreg(x=x, y=y, q=q, iters=iters)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Quantile regression: minimize pinball loss at target quantile",
-        }
+        title=_METHOD,
+        summary_lines=[("intercept", res["intercept"]), ("loss", res["loss"]), ("q", res["q"]), ("n", res["n"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_quantile_regression = quantreg
+
+
 def cheatsheet():
-    return "joqr: Quantile regression: minimize pinball loss at target quantile"
+    return "quantreg: Linear quantile regression"

@@ -1,42 +1,33 @@
-"""Log-ratio EM imputation of compositional zeros."""
-
-from . import _array_core as np
+# morie.fn -- function file (rootcoder007/morie)
+"""Log-ratio EM for values below a detection limit."""
 
 from ._richresult import RichResult
+from . import _unclrcore as _c
 
-__all__ = ["compositional_zero_lrem"]
+__all__ = ["lrem", "compositional_zero_lrem"]
 
 
-def compositional_zero_lrem(X, max_iter):
-    """
-    Log-ratio EM imputation of compositional zeros
+def lrem(X, dl, n_iter=20):
+    """Log-ratio EM for values below a detection limit.
 
-    Formula: iterate E[log x_i | observed] under multivariate normal in ALR
+    Log-ratio EM imputation of values below a detection limit.
 
-    Parameters
-    ----------
-    X : array-like
-        Input data.
-    max_iter : array-like
-        Input data.
+    Palarea-Albaladejo & Martin-Fernandez (2008).  Replacing rounded
+    zeros by a fraction of the detection limit distorts the covariance
+    structure; lrEM instead imputes the conditional expectation under a
+    normal model in alr coordinates, which preserves the ratios that
+    compositional analysis actually uses.  ``n_iter`` is fixed.
 
     Returns
     -------
-    result : dict
-        Keys: X_imp, ll
-
-    References
-    ----------
-    Palarea-Albaladejo & Martín-Fernández (2008)
+    RichResult
+        Inherits from ``dict``; keys are listed above.
     """
-    X = np.atleast_1d(np.asarray(X, dtype=float))
-    n = len(X)
-    result = float(np.mean(X))
-    se = float(np.std(X, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Log-ratio EM imputation of compositional zeros"}
-    )
+    return RichResult(title="Log-ratio EM for values below a detection limit", payload=_c.lrem(X=X, dl=dl, n_iter=n_iter))
+
+
+compositional_zero_lrem = lrem
 
 
 def cheatsheet():
-    return "aitzlr: Log-ratio EM imputation of compositional zeros"
+    return "aitzlr: Log-ratio EM for values below a detection limit"

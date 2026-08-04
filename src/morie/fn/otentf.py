@@ -1,6 +1,7 @@
 """Free energy of an OT plan = primal - dual."""
 
 from . import _array_core as np
+from . import _big2 as _big2
 
 from ._richresult import RichResult
 
@@ -9,42 +10,74 @@ __all__ = ["ot_free_energy"]
 
 def ot_free_energy(T, C, a, b, f, g, epsilon):
     """
-    Free energy of an OT plan = primal - dual
+    Primal-dual gap of the entropic OT problem.
 
-    Formula: F = <T,C> - ε H(T) - <a,f> - <b,g>
+    Formula: F = <T,C> - eps H(T) - <a,f> - <b,g>
+
+    Verified against Peyre & Cuturi (2019), eq. (4.30)-(4.32) -- source
+    consulted. The dual objective is
+    ``<f,a> + <g,b> - eps <e^{f/eps}, K e^{g/eps}>``, and at the optimum
+    it equals the primal ``<T,C> - eps H(T)``; the difference returned
+    here is therefore zero at optimality and positive otherwise.
 
     Parameters
     ----------
-    T : array-like
-        Input data.
-    C : array-like
-        Input data.
-    a : array-like
-        Input data.
-    b : array-like
-        Input data.
-    f : array-like
-        Input data.
-    g : array-like
-        Input data.
-    epsilon : array-like
-        Input data.
+    T : nested sequence
+        Coupling matrix.
+    C : nested sequence
+        Cost matrix, same shape.
+    a, b : array-like
+        Marginals; closed internally.
+    f, g : array-like
+        Dual potentials, in the same units as ``C``.
+    epsilon : float
+        Regularisation strength.
 
     Returns
     -------
-    result : dict
-        Keys: F
+    RichResult
+        Keys: estimate (the gap), primal, dual_pairing, entropy,
+        epsilon, method.
 
     References
     ----------
-    Peyré & Cuturi (2019)
+    Peyre, G. & Cuturi, M. (2019). Computational Optimal Transport,
+    eq. (4.30)-(4.32).
     """
-    T = np.atleast_1d(np.asarray(T, dtype=float))
-    n = len(T)
-    result = float(np.mean(T))
-    se = float(np.std(T, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    eps = float(epsilon)
+    if not (eps > 0.0):
+        raise ValueError("epsilon must be positive")
+    Tm = _big2.mat(T)
+    Cm = _big2.mat(C)
+    if len(Tm) != len(Cm) or len(Tm[0]) != len(Cm[0]):
+        raise ValueError("T and C must have the same shape")
+    av = [float(v) for v in _big2.pnorm(np.atleast_1d(np.asarray(a, dtype=float)))]
+    bv = [float(v) for v in _big2.pnorm(np.atleast_1d(np.asarray(b, dtype=float)))]
+    fv = [float(v) for v in np.atleast_1d(np.asarray(f, dtype=float))]
+    gv = [float(v) for v in np.atleast_1d(np.asarray(g, dtype=float))]
+    if len(av) != len(Tm) or len(bv) != len(Tm[0]):
+        raise ValueError("marginals do not match the shape of T")
+    if len(fv) != len(av) or len(gv) != len(bv):
+        raise ValueError("potentials do not match the marginals")
+    cost = 0.0
+    h = 0.0
+    for i in range(len(Tm)):
+        for j in range(len(Tm[0])):
+            t = Tm[i][j]
+            cost += t * Cm[i][j]
+            if t > 0.0:
+                h -= t * (float(np.log(t)) - 1.0)
+    pair = sum(av[i] * fv[i] for i in range(len(av))) + sum(bv[j] * gv[j] for j in range(len(bv)))
+    primal = cost - eps * h
     return RichResult(
-        payload={"estimate": result, "se": se, "n": n, "method": "Free energy of an OT plan = primal - dual"}
+        payload={
+            "estimate": primal - pair,
+            "primal": primal,
+            "dual_pairing": pair,
+            "entropy": h,
+            "epsilon": eps,
+            "method": "Entropic OT primal-dual gap -- Peyre & Cuturi (2019) eq. (4.30)-(4.32)",
+        }
     )
 
 

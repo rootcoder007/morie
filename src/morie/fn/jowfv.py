@@ -1,50 +1,63 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Walk-forward validation: refit model after each new observation."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Walk-forward validation.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 126
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_walk_forward_validation"]
+__all__ = ["walkfwd", "joseph_walk_forward_validation"]
+
+_METHOD = "Walk-forward validation"
 
 
-def joseph_walk_forward_validation(y, model, T_start):
-    """
-    Walk-forward validation: refit model after each new observation
+def walkfwd(y, yhat, initial, testsize, step=None):
+    """Walk-forward validation.
 
-    Formula: for t in T_start..T: refit on y[0..t-1]; predict y_hat_t; compare to y_t
+    Walk-forward validation, ch. 5 p. 126.
+
+    Scores an already-produced forecast series fold by fold on an
+    expanding-window layout, and reports the fold RMSEs plus their mean
+    and spread -- which is the number the book actually reads off a
+    walk-forward run.
 
     Parameters
     ----------
-    y : array-like
-        Input data.
-    model : array-like
-        Input data.
-    T_start : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.walkfwd``.
+    yhat : as documented for the shelf core
+        See ``morie.fn._joseph.walkfwd``.
+    initial : as documented for the shelf core
+        See ``morie.fn._joseph.walkfwd``.
+    testsize : as documented for the shelf core
+        See ``morie.fn._joseph.walkfwd``.
+    step : as documented for the shelf core
+        See ``morie.fn._joseph.walkfwd``.
 
     Returns
     -------
-    result : dict
-        Keys: predictions, errors
+    result : RichResult
+        Payload keys: rmse, sd, best, worst.
 
     References
     ----------
-    Joseph Ch 20, Walk-Forward Validation section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 5 p. 126
     """
-    y = np.atleast_1d(np.asarray(y, dtype=float))
-    n = len(y)
-    result = float(np.mean(y))
-    se = float(np.std(y, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
+    res = _core.walkfwd(y=y, yhat=yhat, initial=initial, testsize=testsize, step=step)
     return RichResult(
-        payload={
-            "estimate": result,
-            "se": se,
-            "n": n,
-            "method": "Walk-forward validation: refit model after each new observation",
-        }
+        title=_METHOD,
+        summary_lines=[("rmse", res["rmse"]), ("sd", res["sd"]), ("best", res["best"]), ("worst", res["worst"])],
+        payload=dict(res, method=_METHOD),
     )
 
 
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_walk_forward_validation = walkfwd
+
+
 def cheatsheet():
-    return "jowfv: Walk-forward validation: refit model after each new observation"
+    return "walkfwd: Walk-forward validation"

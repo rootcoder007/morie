@@ -1,45 +1,56 @@
 # morie.fn -- function file (rootcoder007/morie)
-"""Mean Absolute Percentage Error."""
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Mean absolute percentage error.
 
-from . import _array_core as np
+Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 568
+"""
+
+from . import _joseph as _core
 
 from ._richresult import RichResult
 
-__all__ = ["joseph_mape"]
+__all__ = ["mapets", "joseph_mape"]
+
+_METHOD = "Mean absolute percentage error"
 
 
-def joseph_mape(y_true, y_pred):
-    """
-    Mean Absolute Percentage Error
+def mapets(y, yhat):
+    """Mean absolute percentage error.
 
-    Formula: MAPE = (100/H) sum_h |y_h - y_hat_h| / |y_h|
+    Mean absolute percentage error, ch. 19 p. 568.
+
+    The book's own warning is honoured: MAPE "breaks down when the
+    actual observation is zero (due to division by zero)" (p. 568), so
+    zero actuals raise rather than silently returning infinity.
 
     Parameters
     ----------
-    y_true : array-like
-        Input data.
-    y_pred : array-like
-        Input data.
+    y : as documented for the shelf core
+        See ``morie.fn._joseph.mapets``.
+    yhat : as documented for the shelf core
+        See ``morie.fn._joseph.mapets``.
 
     Returns
     -------
-    result : dict
-        Keys: mape
+    result : RichResult
+        Payload keys: mape, mdape, maxape.
 
     References
     ----------
-    Joseph Ch 19, MAPE section
+    Joseph, M. and Tackes, J. (2024). Modern Time Series Forecasting with Python, 2nd ed. Packt, ch. 19 p. 568
     """
-    y_true = np.atleast_1d(np.asarray(y_true, dtype=float))
-    n = len(y_true)
-    result = float(np.mean(y_true))
-    se = float(np.std(y_true, ddof=1) / np.sqrt(n)) if n > 1 else np.nan
-    return RichResult(payload={"estimate": result, "se": se, "n": n, "method": "Mean Absolute Percentage Error"})
+    res = _core.mapets(y=y, yhat=yhat)
+    return RichResult(
+        title=_METHOD,
+        summary_lines=[("mape", res["mape"]), ("mdape", res["mdape"]), ("maxape", res["maxape"])],
+        payload=dict(res, method=_METHOD),
+    )
+
+
+# legacy spelling from the extraction pipeline -- kept working per
+# ledger/NAMING.md ("renames always leave the old spelling working")
+joseph_mape = mapets
 
 
 def cheatsheet():
-    return "jomape: Mean Absolute Percentage Error"
-
-
-# compact alias per ledger/NAMING.md
-josephmape = joseph_mape
+    return "mapets: Mean absolute percentage error"
